@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import java.util.*;
 import org.mmbase.util.Casting;
 
 /**
@@ -20,7 +19,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.8
- * @version $Id: AbstractDataType.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AbstractDataType.java,v 1.2 2005-01-30 16:46:36 nico Exp $
  */
 
 abstract public class AbstractDataType implements DataType, Comparable {

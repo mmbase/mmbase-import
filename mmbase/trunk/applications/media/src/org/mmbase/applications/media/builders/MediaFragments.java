@@ -14,7 +14,6 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.cache.URLCache;
 
 import java.util.*;
-import java.net.URL;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.40 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: MediaFragments.java,v 1.41 2005-01-30 16:46:39 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -412,7 +411,7 @@ public class MediaFragments extends MMObjectBuilder {
       */
      private void retrieveClassificationInfo() {
 
-         MMObjectBuilder lookup = (MMObjectBuilder) mmb.getMMObject("lookup");
+         MMObjectBuilder lookup = mmb.getMMObject("lookup");
          if(lookup == null) {
              log.debug("Downwards compatible classification code not used.");
              return;

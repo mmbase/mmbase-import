@@ -15,8 +15,6 @@ import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMBaseObserver;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * Implementation of UserContext (the security presentation of a User).
@@ -25,11 +23,10 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.12 2004-09-07 13:57:51 michiel Exp $
+ * @version $Id: User.java,v 1.13 2005-01-30 16:46:35 nico Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends UserContext implements MMBaseObserver {
-    private static final Logger log = Logging.getLoggerInstance(User.class);
     protected MMObjectNode node;
     private long key;
 

@@ -22,7 +22,6 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
-import org.mmbase.storage.search.SortOrder;
 
 import org.mmbase.util.logging.*;
 
@@ -48,7 +47,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.12 2004-07-26 20:18:02 nico Exp $
+ * @version $Id: TreeTag.java,v 1.13 2005-01-30 16:46:38 nico Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);

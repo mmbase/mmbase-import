@@ -14,7 +14,6 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
 
 /**
  * This class represents a virtual node type information object.
@@ -24,10 +23,9 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.21 2004-06-18 12:33:02 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.22 2005-01-30 16:46:36 nico Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
-    private static final Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
 
     VirtualNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
         super(builder, cloud);

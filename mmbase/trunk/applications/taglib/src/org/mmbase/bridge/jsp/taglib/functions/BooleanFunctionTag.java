@@ -11,13 +11,10 @@ package org.mmbase.bridge.jsp.taglib.functions;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.FieldValue;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
-import org.mmbase.util.logging.*;
-
 
 /**
  * A Function tag for a function with a 'boolean' result. It is a Condition tag, which means that
@@ -25,11 +22,9 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: BooleanFunctionTag.java,v 1.3 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: BooleanFunctionTag.java,v 1.4 2005-01-30 16:46:38 nico Exp $
  */
 public class BooleanFunctionTag extends AbstractFunctionTag implements Condition, FunctionContainerReferrer {
-
-    private static final Logger log = Logging.getLoggerInstance(BooleanFunctionTag.class);
 
     protected Attribute  inverse      = Attribute.NULL;
 

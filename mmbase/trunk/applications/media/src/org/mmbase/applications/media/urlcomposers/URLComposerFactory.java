@@ -19,7 +19,6 @@ import org.mmbase.util.*;
 import org.w3c.dom.Element;
 import java.util.*;
 import java.io.File;
-import java.lang.reflect.*;
 
 /**
  * The URLComposerFactory contains the code to decide which kind of

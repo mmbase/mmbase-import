@@ -18,7 +18,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @application Admin, Application
  * @author Daniel Ockeloen
- * @version $Id: MMAdminProbe.java,v 1.8 2004-10-11 11:08:51 pierre Exp $
+ * @version $Id: MMAdminProbe.java,v 1.9 2005-01-30 16:46:35 nico Exp $
  */
 public class MMAdminProbe implements Runnable {
 
@@ -69,7 +69,7 @@ public class MMAdminProbe implements Runnable {
 
     public void run() {
         try {
-            while (parent.mmb.getState()==false) {
+            while (!parent.mmb.getState()) {
                 try {Thread.sleep(startdelay);} catch (InterruptedException e){ return;}
             }
             try { Thread.sleep(sleeptime); } catch (InterruptedException e){ return;}

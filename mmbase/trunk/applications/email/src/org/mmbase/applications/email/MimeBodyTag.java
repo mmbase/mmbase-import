@@ -10,17 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.email;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.bridge.*;
-import javax.naming.*;
-import javax.mail.*;
+
+import javax.mail.MessagingException;
 import javax.mail.internet.*;
 import javax.activation.*;
 
@@ -240,7 +237,7 @@ public class MimeBodyTag {
                 Enumeration e=altnodes.elements();
                 while (e.hasMoreElements()) {
                     MimeBodyTag t=(MimeBodyTag)e.nextElement();
-			
+            
                     r=t.getRelatedpart();
                     if (r==null) {
                         result.addBodyPart(t.getMimeBodyPart());
@@ -249,13 +246,14 @@ public class MimeBodyTag {
                         wrapper.setContent(r);
                         result.addBodyPart(wrapper);
                     }
-			
+            
                 }
                 return result;
             }
             if (relatednodes!=null) return relatednodes;
-        } catch(Exception e) {
-            e.printStackTrace();
+        }
+        catch (MessagingException e) {
+            log.debug("Failed to get Multipart",e);
         }
         return null;
     }

@@ -20,7 +20,7 @@ import java.util.*;
  *
  * @deprecated Applies to MMBase 1.4 and earlier. Not needed anymore.
  * @author Pierre van Rooden
- * @version $Id: InsRelConvert.java,v 1.4 2004-10-07 12:22:24 pierre Exp $
+ * @version $Id: InsRelConvert.java,v 1.5 2005-01-30 16:46:35 nico Exp $
  */
 public class InsRelConvert extends Object {
     /**
@@ -46,7 +46,6 @@ public class InsRelConvert extends Object {
             log.fatal("Usage: java -Dmmbase.config=<path-to-config> RelDefConvert");
         } else {
             try {
-                InsRelConvert rdc=new InsRelConvert();
                 if (!InsRel.usesdir) {
                     throw new RuntimeException("You have not yet converted all relation builders - you need to define a dir field!");
                 }
@@ -77,7 +76,7 @@ public class InsRelConvert extends Object {
                     }
                 }
             } catch(Exception e) {
-                log.fatal( e.toString() ); e.printStackTrace();
+                log.fatal( e.toString(), e);
             }
 
         }

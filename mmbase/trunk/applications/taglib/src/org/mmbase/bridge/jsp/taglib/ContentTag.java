@@ -13,7 +13,6 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.User;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
-import javax.servlet.jsp.tagext.BodyContent;
 import java.util.*;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.28 2004-11-26 15:11:25 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.29 2005-01-30 16:46:35 nico Exp $
  **/
 
 public class ContentTag extends LocaleTag  {

@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers;
 import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.HashCodeUtil;
 
 import java.util.*;
 
@@ -50,15 +50,22 @@ abstract public class FragmentURLComposer extends URLComposer  {
         return fragmentAvailable.booleanValue() &&  super.isAvailable();
     }
     
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public boolean equals(Object o) {
-        if (o.getClass().equals(getClass())) {
+        if (super.equals(o)) {
             FragmentURLComposer r = (FragmentURLComposer) o;
-            return
-            (fragment == null ? r.fragment == null : fragment.getNumber() == r.fragment.getNumber()) &&
-            (source == null ? r.source == null : source.getNumber() == r.source.getNumber()) &&
-            (provider == null ? r.provider == null : provider.getNumber() == r.provider.getNumber()) &&
-            (info == null ? r.info == null : info.equals(r.info));
+            return (fragment == null ? r.fragment == null : fragment.getNumber() == r.fragment.getNumber());
         }
         return false;
+    }
+    
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return HashCodeUtil.hashCode(super.hashCode(), fragment);
     }
 }

@@ -12,17 +12,14 @@ package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import java.util.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
 
 /**
  * @javadoc
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.36 2004-10-11 11:08:42 pierre Exp $
+ * @version $Id: BasicCloudContext.java,v 1.37 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);

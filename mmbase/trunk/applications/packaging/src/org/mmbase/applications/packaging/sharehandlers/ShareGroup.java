@@ -6,24 +6,16 @@
  */
 package org.mmbase.applications.packaging.sharehandlers;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import org.mmbase.applications.packaging.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
+import org.mmbase.applications.packaging.ShareManager;
 
 /**
  * @author     Daniel Ockeloen
  */
 public class ShareGroup {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(ShareGroup.class);
     private String name;
 
     private HashMap members = new HashMap();

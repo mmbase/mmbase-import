@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.42 2004-03-23 17:48:09 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.43 2005-01-30 16:46:35 nico Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
@@ -132,7 +132,7 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             if (cookies != null) { 
                 for (int i = 0; i< cookies.length; i++) {
                     Cookie c = cookies[i];
-                    if (c.getName().equals(cookie)) {
+                    if (c.getName().equals(cookie.toString())) {
                         cookiecount++;
                     }
                 }

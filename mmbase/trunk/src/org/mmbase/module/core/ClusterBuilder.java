@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.68 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.69 2005-01-30 16:46:36 nico Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -88,10 +88,6 @@ public class ClusterBuilder extends VirtualBuilder {
 
     // logging variable
     private static final Logger log= Logging.getLoggerInstance(ClusterBuilder.class);
-
-    /** Logger instance dedicated to logging fallback to legacy code. */
-    private final static Logger fallbackLog =
-        Logging.getLoggerInstance(ClusterBuilder.class.getName() + ".fallback");
 
     /**
      * Creates <code>ClusterBuilder</code> instance.
@@ -468,8 +464,6 @@ public class ClusterBuilder extends VirtualBuilder {
         List sortFields,
         List directions,
         int searchdir) {
-        String stables, relstring, select, order, basenodestring;
-        Vector alltables, selectTypes;
 
         // Create the query.
         BasicSearchQuery query= new BasicSearchQuery();

@@ -6,12 +6,13 @@
  */
 package org.mmbase.applications.packaging.providerhandlers;
 
-import java.io.*;
-import java.util.*;
-import org.mmbase.module.core.*;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Iterator;
 
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.ProviderManager;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

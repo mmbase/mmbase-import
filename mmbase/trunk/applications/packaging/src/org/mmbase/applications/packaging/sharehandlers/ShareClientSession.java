@@ -6,16 +6,12 @@
  */
 package org.mmbase.applications.packaging.sharehandlers;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import org.mmbase.applications.packaging.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author     Daniel Ockeloen

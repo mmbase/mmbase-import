@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.8 2004-05-06 12:34:38 keesj Exp $
+ * @version $Id: MagicParser.java,v 1.9 2005-01-30 16:46:35 nico Exp $
  * @todo NOT TESTED YET
  */
 
@@ -74,7 +74,7 @@ public class MagicParser implements DetectorProvider {
                 }
             }
         } catch (Exception e) {
-            System.out.println("" + e.getMessage() + "}");
+            log.error("" + e.getMessage() + "}", e);
         };
     }
 
@@ -455,7 +455,7 @@ public class MagicParser implements DetectorProvider {
             // If there are multiple test level, an upper one doesn't have to have a message string
             if (n > 0) {
                 level = "parseMessageString";
-                n = parseMessageString(line, n);
+                parseMessageString(line, n);
             } else {
                 message = "";
             }

@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,12 +20,13 @@ import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**
  * @javadoc
  * @deprecated is this (cacheversionfile) used? seems obsolete now
  * @author Daniel Ockeloen
- * @version $Id: VersionXMLCacheNodeReader.java,v 1.4 2004-10-08 13:03:44 pierre Exp $
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.5 2005-01-30 16:46:38 nico Exp $
  */
 public class VersionXMLCacheNodeReader {
 
@@ -40,8 +42,12 @@ public class VersionXMLCacheNodeReader {
                 log.error("no cache version " + filename + " found)");
             }
             document = db.parse(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (SAXException e) {
+            log.error("", e);
+        }
+        catch (IOException e) {
+            log.error("", e);
         }
     }
 

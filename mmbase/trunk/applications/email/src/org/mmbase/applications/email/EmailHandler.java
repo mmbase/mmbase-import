@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
  * @author Simon Groenewolt
- * @verson $Id: EmailHandler.java,v 1.12 2004-04-21 13:32:23 daniel Exp $
+ * @verson $Id: EmailHandler.java,v 1.13 2005-01-30 16:46:34 nico Exp $
  * @since  MMBase-1.7
  */
 public class EmailHandler {
@@ -389,7 +389,7 @@ public class EmailHandler {
                 return false;
             }
         }
-        public int hashcode() {
+        public int hashCode() {
             return email.hashCode() + nodeNumber;
         }
         public String toString() {

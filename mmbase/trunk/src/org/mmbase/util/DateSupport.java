@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @deprecated use Calendar and java.util.DateFormat
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.23 2004-09-29 14:29:23 pierre Exp $
+ * @version $Id: DateSupport.java,v 1.24 2005-01-30 16:46:35 nico Exp $
  */
 public class DateSupport {
 
@@ -488,7 +488,6 @@ public class DateSupport {
             // Do not worry about the code below, since it will never be called
 
             TimeZone tz1, tz2;
-            long off = 5400;
             int off1, off2;
             Date d = new Date();
 
@@ -503,8 +502,7 @@ public class DateSupport {
             if (tz2.inDaylightTime(d)) {
                 off2 += (3600 * 1000);
             }
-            off = off1 - off2;
-            return off;
+            return off1 - off2;
         } else {
             return (long) offset * 1000;
         }
@@ -558,16 +556,6 @@ public class DateSupport {
      * ----- private functions used by convertDateToLong --------
      */
 
-    /**
-     * Convert a string with a fixed (3:30) timezone offset
-     * @obsolete Do not use this method ever!!
-     */
-    private static long convertStringToLong(String date) {
-        // Set timezone to local timezone (Netherlands = 3:30 difference)
-        // NEVER, NEVER CALL THIS METHOD!!! IT IS OBSOLETE!!!
-        log.warn("DateSupport::converStringToLong   Obsolete code!");
-        return convertDateToLongWithTimeZone(date, 3, 30);
-    }
 
     /**
      * @obsolete Do not use this method ever!!

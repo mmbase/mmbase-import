@@ -6,20 +6,21 @@
  */
 package org.mmbase.applications.packaging.projects;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.projects.creators.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
+import org.mmbase.applications.packaging.ProjectManager;
+import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.logging.Logger;
-
-import org.w3c.dom.*;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * @author     Daniel Ockeloen

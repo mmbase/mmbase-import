@@ -13,7 +13,6 @@ import org.mmbase.bridge.Query;
 import org.mmbase.cache.Cache;
 import org.mmbase.storage.search.*;
 import java.util.*;
-import java.io.FileInputStream;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.35 2004-11-11 17:10:33 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.36 2005-01-30 16:46:36 nico Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {

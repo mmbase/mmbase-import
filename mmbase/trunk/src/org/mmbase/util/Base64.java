@@ -21,7 +21,7 @@ package org.mmbase.util;
  * @deprecated-now use org.mmbase.util.transformers.BAse64 or sun.misc.BASE64Encoder
  * @author Robert Harder - rob@iharder.net
  * @author Rob van Maris
- * @version $Id: Base64.java,v 1.8 2004-09-29 14:29:22 pierre Exp $
+ * @version $Id: Base64.java,v 1.9 2005-01-30 16:46:35 nico Exp $
  */
 public class Base64 {
 
@@ -252,7 +252,6 @@ public class Base64 {
          oos.writeObject( serializableObject );
       }   // end try
       catch( java.io.IOException e ) {
-         e.printStackTrace();
          return null;
       }   // end catch
       finally {
@@ -665,10 +664,10 @@ public class Base64 {
 
             return 3;
          }catch( Exception e){
-            System.out.println(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) );
-            System.out.println(""+source[srcOffset+1]+  ": " + ( DECODABET[ source[ srcOffset + 1 ] ]  ) );
-            System.out.println(""+source[srcOffset+2]+  ": " + ( DECODABET[ source[ srcOffset + 2 ] ]  ) );
-            System.out.println(""+source[srcOffset+3]+  ": " + ( DECODABET[ source[ srcOffset + 3 ] ]  ) );
+//            System.out.println(""+source[srcOffset]+ ": " + ( DECODABET[ source[ srcOffset     ] ]  ) );
+//            System.out.println(""+source[srcOffset+1]+  ": " + ( DECODABET[ source[ srcOffset + 1 ] ]  ) );
+//            System.out.println(""+source[srcOffset+2]+  ": " + ( DECODABET[ source[ srcOffset + 2 ] ]  ) );
+//            System.out.println(""+source[srcOffset+3]+  ": " + ( DECODABET[ source[ srcOffset + 3 ] ]  ) );
             return -1;
          }   //e nd catch
       }
@@ -722,11 +721,9 @@ public class Base64 {
          return ois.readObject();
       }   // end try
       catch( java.io.IOException e ) {
-         e.printStackTrace();
          return null;
       }   // end catch
       catch( java.lang.ClassNotFoundException e ) {
-         e.printStackTrace();
          return null;
       }   // end catch
       finally {
@@ -776,7 +773,7 @@ public class Base64 {
 
          }   // end if: white space, equals sign or better
          else {
-            System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
+//            System.err.println( "Bad Base64 input character at " + i + ": " + source[i] + "(decimal)" );
             return null;
          }   // end else:
       }   // each input character

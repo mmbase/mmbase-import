@@ -154,7 +154,8 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         case Level.INFO_INT:    setLevel(Level.INFO);    break;
         case Level.WARN_INT:    setLevel(Level.WARN);    break;
         case Level.ERROR_INT:   setLevel(Level.ERROR);   break;
-        case Level.FATAL_INT:   setLevel(Level.FATAL);
+        case Level.FATAL_INT:   setLevel(Level.FATAL);   break;
+        default: break;
         }
 
     }

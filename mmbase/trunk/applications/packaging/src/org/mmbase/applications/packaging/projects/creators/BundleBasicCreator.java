@@ -10,24 +10,27 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging.projects.creators;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.projects.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
-
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.projects.IncludedPackage;
+import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.projects.packageStep;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * BundleBasicCreator, Handler for basic bundles

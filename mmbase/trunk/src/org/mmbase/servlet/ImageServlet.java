@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletException;
 
 import java.util.Map;
@@ -28,7 +27,7 @@ import org.mmbase.util.functions.*;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.17 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ImageServlet.java,v 1.18 2005-01-30 16:46:36 nico Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages

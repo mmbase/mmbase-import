@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.42 2004-11-17 20:39:04 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.43 2005-01-30 16:46:35 nico Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -363,6 +363,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 dateFormat.applyPattern(pattern);
                 Date datum = new Date((new Long(body)).longValue() * 1000);
                 helper.setValue(dateFormat.format(datum));
+                break;
+            default:
+                log.debug("Unknown format "+getFormat());
                 break;
             }
         } else {

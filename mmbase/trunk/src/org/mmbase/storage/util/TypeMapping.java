@@ -11,8 +11,6 @@ package org.mmbase.storage.util;
 
 import java.text.MessageFormat;
 
-import org.mmbase.util.logging.*;
-
 /**
  * The TypeMapping class helps translating MMBase types to storage-specific type descriptions.
  * Examples of type mappings are mappings that convert to database field types.
@@ -29,12 +27,10 @@ import org.mmbase.util.logging.*;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.4 2004-07-30 16:45:47 michiel Exp $
+ * @version $Id: TypeMapping.java,v 1.5 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class TypeMapping implements Comparable {
-
-    private static final Logger log = Logging.getLoggerInstance(TypeMapping.class);
 
     /**
      * The expression this type should translate to.

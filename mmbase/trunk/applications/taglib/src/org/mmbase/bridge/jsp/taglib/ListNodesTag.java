@@ -16,7 +16,6 @@ import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.logging.*;
 
 /**
  * ListNodesTag, provides functionality for listing single nodes in MMBase
@@ -24,11 +23,10 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.25 2004-07-26 20:17:59 nico Exp $
+ * @version $Id: ListNodesTag.java,v 1.26 2005-01-30 16:46:35 nico Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
-    private static final Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
     protected Attribute type = Attribute.NULL;
     protected Attribute container = Attribute.NULL;

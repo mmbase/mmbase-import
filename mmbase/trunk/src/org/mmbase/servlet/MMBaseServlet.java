@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.36 2004-11-26 18:44:48 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.37 2005-01-30 16:46:36 nico Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -243,7 +243,6 @@ public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
                             }
                         }
                     }
-                    webDotXml = null;
                 }
             } catch (Exception e) {
                 log.error(e.getMessage() + Logging.stackTrace(e));

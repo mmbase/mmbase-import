@@ -10,20 +10,15 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
-import org.mmbase.applications.packaging.*;
-
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.installhandlers.installThread;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * install manager, keeps track of what is being installed, provides background

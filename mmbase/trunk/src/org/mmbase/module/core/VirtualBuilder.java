@@ -12,9 +12,6 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
  * This class is intended to facilitate practical creation of virtual
@@ -22,12 +19,9 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualBuilder.java,v 1.11 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: VirtualBuilder.java,v 1.12 2005-01-30 16:46:36 nico Exp $
  */
 public class VirtualBuilder extends MMObjectBuilder {
-
-    // logging variable
-    private static final Logger log = Logging.getLoggerInstance(VirtualBuilder.class);
 
     /**
      * Creates an instance of a Virtual builder.

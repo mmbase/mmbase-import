@@ -13,9 +13,9 @@ import java.util.*;
 
 import org.mmbase.cache.*;
 import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.134 2005-01-26 10:21:57 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.135 2005-01-30 16:46:36 nico Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -300,7 +300,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public void remove(UserContext user) {
         parent.removeNode(this);
-        parent.getMMBase().getMMBaseCop().getAuthorization().remove((UserContext)user, getNumber());
+        parent.getMMBase().getMMBaseCop().getAuthorization().remove(user, getNumber());
     }
 
     /**
@@ -396,7 +396,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     String key = (String) entry.getKey();
                     int dbtype = getDBType(key);
                     String value = "" + entry.getValue();  // XXX:should be retrieveValue ?
-                    if (result.equals("")) {
+                    if ("".equals(result.toString())) {
                         result = new StringBuffer(key+"="+dbtype+":'"+value+"'"); // can this occur?
                     } else {
                         result.append(","+key+"="+dbtype+":'");
@@ -1433,7 +1433,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.debug("Getting related nodes of " + this + " of type " + type);
         }
 
-        if(parent.mmb.getInsRel().usesdir) {
+        if(InsRel.usesdir) {
             return  getRelatedNodes(type, RelationStep.DIRECTIONS_BOTH);
         } else {
             //
@@ -1480,7 +1480,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     public Vector getRelatedNodes(String type, String role, int search_type) {
         Vector result = null;
 
-        MMObjectBuilder builder = (MMObjectBuilder) parent.mmb.getBuilder(type);
+        MMObjectBuilder builder = parent.mmb.getBuilder(type);
 
         // example: we want a thisnode.relatedNodes(mediaparts) where mediaparts are of type
         // audioparts and videoparts. This method will return the real nodes (thus of type audio/videoparts)

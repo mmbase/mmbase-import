@@ -3,7 +3,6 @@ package org.mmbase.util.magicfile;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Element;

@@ -10,11 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.lang.reflect.InvocationTargetException;
 
 import org.mmbase.bridge.*;
-import org.mmbase.util.logging.*;
 
 /**
  * The FunctionFactory instanciates {@link Function} objects. There are 6 static getFunctions
@@ -36,12 +34,10 @@ import org.mmbase.util.logging.*;
  </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.6 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: FunctionFactory.java,v 1.7 2005-01-30 16:46:36 nico Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {
-
-    private static final Logger log = Logging.getLoggerInstance(FunctionFactory.class);
 
     /**
      * Gets a function from a function set

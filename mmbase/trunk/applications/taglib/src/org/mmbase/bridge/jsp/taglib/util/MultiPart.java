@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 import java.util.*;
-import java.io.*;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
@@ -22,7 +21,7 @@ import org.apache.commons.fileupload.*;
 /**
  * Taglib needs to read Multipart request sometimes. Functionallity is centralized here.
  * @author Michiel Meeuwissen
- * @version $Id: MultiPart.java,v 1.9 2004-12-16 18:35:18 michiel Exp $
+ * @version $Id: MultiPart.java,v 1.10 2005-01-30 16:46:36 nico Exp $
  **/
 
 public class MultiPart {
@@ -62,7 +61,7 @@ public class MultiPart {
     }
 
     static public class MMultipartRequest {
-        private static final Logger log = Logging.getLoggerInstance(MultiPart.class);
+
         private Map parametersMap = new HashMap();
         private String coding = null;
 
@@ -130,7 +129,7 @@ public class MultiPart {
             byte[] xmlbytes = new byte[60];
             int sz = data.length;
             if (sz > 60) sz = 60;
-            System.arraycopy((byte[])data, 0, xmlbytes, 0, sz);
+            System.arraycopy(data, 0, xmlbytes, 0, sz);
             String xmltext = new String(xmlbytes);
             if (xmltext.startsWith("<?xml")) {
                 int i = xmltext.indexOf("encoding");

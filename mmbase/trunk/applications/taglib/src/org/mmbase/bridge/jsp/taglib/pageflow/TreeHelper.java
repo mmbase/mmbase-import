@@ -29,7 +29,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.9 2004-06-08 12:29:59 johannes Exp $
+ * @version $Id: TreeHelper.java,v 1.10 2005-01-30 16:46:38 nico Exp $
  */
 
 public class TreeHelper {
@@ -64,11 +64,10 @@ public class TreeHelper {
      * @param session The session context can contain version information (used in getVerion).
      */
     protected String findLeafFile(String includePage, String objectlist, HttpSession session) throws JspTagException {
-    	String lf = ""; 
     	if ("".equals(objectlist)) {
     		return encodedPath(includePage);
     	}
-        lf = getLeafFile("/", objectlist, includePage, true, session);
+        String lf = getLeafFile("/", objectlist, includePage, true, session);
         log.debug("findLeafFile = [" + lf + "]");
         return encodedPath(lf);
 	}

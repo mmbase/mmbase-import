@@ -9,12 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import org.mmbase.module.core.MMBase;
+import java.util.*;
+
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-import java.util.*;
 
 /**
  * The Informix query handler, implements {@link
@@ -35,7 +34,7 @@ import java.util.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: InformixSqlHandler.java,v 1.16 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: InformixSqlHandler.java,v 1.17 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -576,7 +575,7 @@ public class InformixSqlHandler extends BasicSqlHandler implements SqlHandler {
                     // If there are just two relation-constraint-elements, we don't need to combine
                     if (counter != counter2 && orElements.size() > 2) {
                         // also add the additinal constraints
-                        if (skipCombination==false ) {
+                        if (!skipCombination) {
                             combinedElements.addElement(orElements.elementAt(counter) + " AND " + orElements.elementAt(counter2) + unionConstraints);
                         }
                     } else {

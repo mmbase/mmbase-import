@@ -13,7 +13,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import java.util.Hashtable;
 import java.util.Enumeration;
-import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
@@ -22,11 +21,9 @@ import org.mmbase.util.logging.*;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: XMLModuleReader.java,v 1.13 2004-11-11 16:52:57 michiel Exp $
+ * @version $Id: XMLModuleReader.java,v 1.14 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLModuleReader extends XMLBasicReader {
-    // logger
-    private static final Logger log = Logging.getLoggerInstance(XMLModuleReader.class);
 
     /** Public ID of the Module DTD version 1.0 */
     public static final String PUBLIC_ID_MODULE_1_0 = "-//MMBase//DTD module config 1.0//EN";

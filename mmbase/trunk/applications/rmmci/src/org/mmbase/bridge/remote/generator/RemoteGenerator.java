@@ -119,10 +119,8 @@ public class RemoteGenerator {
         while (methodsEnum.hasMoreElements()) {
             XMLMethod xmlMethod = (XMLMethod)methodsEnum.nextElement();
             String methodName = xmlMethod.getName();
-            boolean wrapped = false;
             if (methodName.equals("equals") || methodName.equals("hashCode") || methodName.equals("toString") || methodName.equals("clone")) {
                 methodName = "wrapped_" + methodName;
-                wrapped = true;
             }
             XMLClass returnType = xmlMethod.getReturnType();
             String retTypeName = xmlMethod.getReturnType().getShortName();
@@ -246,10 +244,8 @@ public class RemoteGenerator {
         while (methodsEnum.hasMoreElements()) {
             XMLMethod xmlMethod = (XMLMethod)methodsEnum.nextElement();
             String methodName = xmlMethod.getName();
-            boolean wrapped = false;
             if (methodName.equals("equals") || methodName.equals("hashCode") || methodName.equals("toString") || methodName.equals("clone")) {
                 methodName = "wrapped_" + methodName;
-                wrapped = true;
             }
             XMLClass returnType = xmlMethod.getReturnType();
             String retTypeName = xmlMethod.getReturnType().getName();
@@ -414,11 +410,9 @@ public class RemoteGenerator {
         if (!xmlClass.getImplements().equals("")) {
             impl += ",";
         }
-        boolean extendsAbstractList = false;
         String extendsString = "";
         if (xmlClass.getImplements().indexOf("List") != -1 && xmlClass.getImplements().indexOf("Iterator") == -1) {
             extendsString = " extends AbstractList ";
-            extendsAbstractList = true;
         }
         sb.append("public class " + className + extendsString + " implements " + impl + xmlClass.getImplements() + "  {\n");
         System.err.println("generate implementation " + className);
@@ -591,7 +585,6 @@ public class RemoteGenerator {
 
         Collections.sort(v, new Comparator() {
             public int compare(Object one, Object two) {
-                int retval = 0;
                 XMLClass oneClass = (XMLClass)one;
                 XMLClass twoClass = (XMLClass)two;
 
@@ -701,7 +694,7 @@ public class RemoteGenerator {
         }
     }
 
-    private static Vector getSubClasses(XMLClass xmlClass) {
+    static Vector getSubClasses(XMLClass xmlClass) {
         Vector retval = new Vector();
         MMCI mmci = null;
         try {
@@ -726,12 +719,10 @@ public class RemoteGenerator {
         return retval;
     }
 
-    private static Vector getSuperClasses(XMLClass xmlClass) {
-        //System.err.println(xmlClass.getName());
-        MMCI mmci = null;
+    static Vector getSuperClasses(XMLClass xmlClass) {
         Vector retval = new Vector();
         try {
-            mmci = MMCI.getDefaultMMCI();
+            MMCI.getDefaultMMCI();
         } catch (Exception e) {
             System.err.println("can not get MMCI");
         }

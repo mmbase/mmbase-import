@@ -6,21 +6,13 @@
  */
 package org.mmbase.applications.packaging.providerhandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.*;
-import org.xml.sax.*;
+import java.util.Iterator;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.BundleManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * DiskProvider, Handler for Disk Providers. gets packages and bundles from

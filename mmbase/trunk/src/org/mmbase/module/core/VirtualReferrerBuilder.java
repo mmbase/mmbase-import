@@ -11,9 +11,6 @@ package org.mmbase.module.core;
 
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * VirtualBuilder is a builder which creates 'virtual' nodes.
  * This class is intended to facilitate practical creation of virtual
@@ -21,13 +18,10 @@ import org.mmbase.util.logging.Logging;
  * faulty behavior.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualReferrerBuilder.java,v 1.2 2004-05-06 12:34:37 keesj Exp $
+ * @version $Id: VirtualReferrerBuilder.java,v 1.3 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  */
 public class VirtualReferrerBuilder extends VirtualBuilder {
-
-    // logging variable
-    private static Logger log = Logging.getLoggerInstance(VirtualReferrerBuilder.class.getName());
 
     private MMObjectBuilder originalBuilder=null;
 

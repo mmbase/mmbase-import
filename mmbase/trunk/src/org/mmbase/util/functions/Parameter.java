@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
-import org.mmbase.util.Casting;
 
 /**
  * Each (function) argument is specified by a Parameter object.
@@ -22,7 +21,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.10 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Parameter.java,v 1.11 2005-01-30 16:46:36 nico Exp $
  * @see Parameters
  */
 

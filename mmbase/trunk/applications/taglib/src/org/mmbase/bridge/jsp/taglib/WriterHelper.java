@@ -11,11 +11,9 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
-import java.io.StringReader;
 
 import java.util.*;
 
-import org.mmbase.util.StringSplitter;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.util.*;
 
@@ -29,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.57 2005-01-06 20:24:33 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.58 2005-01-30 16:46:35 nico Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -37,8 +35,8 @@ public class WriterHelper extends BodyTagSupport {
     // this tag is not acutally used as a tag
 
     private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
-    public static boolean NOIMPLICITLIST = true;
-    public static boolean IMPLICITLIST   = false;
+    public static final boolean NOIMPLICITLIST = true;
+    public static final boolean IMPLICITLIST   = false;
 
     public static final String STACK_ATTRIBUTE = "org_mmbase_taglib__stack";
 
@@ -279,7 +277,6 @@ public class WriterHelper extends BodyTagSupport {
                     }
                     break;
                 case TYPE_UNSET:
-                    v = v; // leave it as it was.
                     break;
                 case TYPE_INTEGER:
                     if (! (v instanceof Integer)) {
@@ -325,6 +322,9 @@ public class WriterHelper extends BodyTagSupport {
                     if (! (v instanceof org.mmbase.bridge.Node)) {
                         throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
                     }
+                    break;
+                default:
+                    log.debug("Unknown vartype" + vartype);
                     break;
             }
             value = v;
@@ -501,7 +501,7 @@ public class WriterHelper extends BodyTagSupport {
         pop_Stack();
         release();
         log.debug("End of doEndTag");
-        return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
+        return javax.servlet.jsp.tagext.Tag.EVAL_PAGE;
     }
 
     public void release() {

@@ -19,7 +19,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.SearchQueryException;
 import org.mmbase.storage.StorageException;
-import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
@@ -38,7 +37,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.95 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.96 2005-01-30 16:46:35 nico Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -758,7 +757,6 @@ public class MMAdmin extends ProcessorModule {
                         Enumeration b = syncbul.search(query);
                         if (b.hasMoreElements()) {
                             // XXX To do : we may want to load the node and check/change the fields
-                            MMObjectNode syncnode = (MMObjectNode)b.nextElement();
                             log.debug("node allready installed : " + exportnumber);
                         } else {
                             newNode.setValue("number", -1);
@@ -846,7 +844,6 @@ public class MMAdmin extends ProcessorModule {
     private int doKeyMergeNode(MMObjectBuilder syncbul, MMObjectNode newnode, String exportsource, ApplicationResult result) {
         MMObjectBuilder bul = newnode.parent;
         if (bul != null) {
-            String checkQ = "";
             List vec = bul.getFields();
             Constraint constraint = null;
             NodeSearchQuery query = null;
@@ -984,7 +981,6 @@ public class MMAdmin extends ProcessorModule {
                             syncbul.search("exportnumber==" + exportnumber + "+exportsource=='" + exportsource + "'");
                         if (b.hasMoreElements()) {
                             // XXX To do : we may want to load the relation node and check/change the fields
-                            MMObjectNode syncnode = (MMObjectNode)b.nextElement();
                             log.debug("node allready installed : " + exportnumber);
                         } else {
                             newnode.setValue("number", -1);
@@ -1083,7 +1079,7 @@ public class MMAdmin extends ProcessorModule {
             String guitargetname = (String)bh.get("guitargetname");
             // retrieve builder info
             int builder = -1;
-            if (mmb.getRelDef().usesbuilder) {
+            if (RelDef.usesbuilder) {
                 String buildername = (String)bh.get("builder");
                 // if no 'builder' attribute is present (old format), use source name as builder name
                 if (buildername == null) {
@@ -1218,7 +1214,7 @@ public class MMAdmin extends ProcessorModule {
                 node.setValue("dir", dir);
                 node.setValue("sguiname", sguiname);
                 node.setValue("dguiname", dguiname);
-                if (reldef.usesbuilder) {
+                if (RelDef.usesbuilder) {
                     // if builder is unknown (falsely specified), use the InsRel builder
                     if (builder <= 0) {
                         builder = mmb.getInsRel().oType;
@@ -1595,18 +1591,6 @@ public class MMAdmin extends ProcessorModule {
             }
         }
         return results;
-    }
-
-    /**
-     * @javadoc
-     */
-    private boolean fileExists(String path) {
-        File f = new File(path);
-        if (f.exists() && f.isFile()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**

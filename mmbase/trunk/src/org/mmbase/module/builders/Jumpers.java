@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  * @application Tools, Jumpers
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Jumpers.java,v 1.29 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Jumpers.java,v 1.30 2005-01-30 16:46:38 nico Exp $
  */
 public class Jumpers extends MMObjectBuilder {
 
@@ -148,7 +148,7 @@ public class Jumpers extends MMObjectBuilder {
         StepField field = query.getField(fieldDefs);
         FieldDefs numberFieldDefs = getField("number");
         StepField numberField = query.getField(numberFieldDefs);
-        BasicSortOrder sortOrder = query.addSortOrder(numberField); // use 'oldest' jumper
+        query.addSortOrder(numberField); // use 'oldest' jumper
         BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, key);
         query.setConstraint(cons);
         query.setMaxNumber(1);

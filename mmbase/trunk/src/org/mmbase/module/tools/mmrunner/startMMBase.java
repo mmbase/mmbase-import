@@ -17,7 +17,7 @@ import java.io.*;
  * @deprecated MMRunner is not used anymore
  * @rename StartMMBase
  * @author Daniel Ockeloen
- * @version $Id: startMMBase.java,v 1.13 2004-10-07 12:22:24 pierre Exp $
+ * @version $Id: startMMBase.java,v 1.14 2005-01-30 16:46:38 nico Exp $
  */
 public class startMMBase extends Object {
 
@@ -120,22 +120,13 @@ public class startMMBase extends Object {
 
 
     static String executeSpawn(String command) {
-        Process p=null;
-        String s="",tmp="";
-
-        BufferedReader	dip= null;
-        BufferedReader	dep= null;
-
         try {
-            p = (Runtime.getRuntime()).exec(command,null);
-            //p.waitFor();
+            Process p = (Runtime.getRuntime()).exec(command,null);
         }
         catch (Exception e) {
-            s+=e.toString();
-            return s;
+            return e.toString();
         }
         return("");
-
     }
 
     static private boolean firstContact(String curdir) {

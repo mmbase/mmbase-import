@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
-import java.io.File;
 import java.util.*;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Element;
@@ -22,7 +20,7 @@ import org.w3c.dom.Element;
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.12 2004-12-06 14:41:40 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.13 2005-01-30 16:46:36 nico Exp $
  */
 public class UtilReader {
 

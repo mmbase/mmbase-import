@@ -14,9 +14,6 @@ import org.mmbase.cache.Cache;
 import java.lang.reflect.*;
 import java.util.*;
 
-import org.mmbase.util.logging.*;
-
-
 /**
  * One or more functions based on a Java-bean. Every setter method of the bean corresponds with one
  * parameter.  The default value of the parameter can be defined with the getter method (which will
@@ -29,13 +26,12 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.4 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: BeanFunction.java,v 1.5 2005-01-30 16:46:36 nico Exp $
  * @see org.mmbase.util.functions.MethodFunction
  * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
 public class BeanFunction extends AbstractFunction {
-    private static final Logger log = Logging.getLoggerInstance(BeanFunction.class);
 
     /**
      * Utility function, searches an inner class of a given class. This inner class can perhaps be used as a

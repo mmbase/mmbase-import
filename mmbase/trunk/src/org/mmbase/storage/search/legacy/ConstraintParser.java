@@ -110,7 +110,7 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.22 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: ConstraintParser.java,v 1.23 2005-01-30 16:46:39 nico Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -261,7 +261,7 @@ public class ConstraintParser {
      *
      * @param token The token.
      * @param steps The steps.
-     * @param Query The used query
+     * @param query The used query
      * @return The field.
      * @since MMBase-1.7.1
      */
@@ -333,7 +333,9 @@ public class ConstraintParser {
         throw new IllegalArgumentException("Unknown table alias: \"" + alias + "\"");
     }
 
-    /** Creates a new instance of ConstraintParser */
+    /** Creates a new instance of ConstraintParser 
+     * @param query  
+     */
     public ConstraintParser(SearchQuery query) {
         this.query = query;
         this.steps = query.getSteps();
@@ -545,7 +547,7 @@ public class ConstraintParser {
                 }
             }
             result = new BasicFieldValueConstraint(field, value)
-                .setOperator(FieldValueConstraint.LIKE)
+                .setOperator(FieldCompareConstraint.LIKE)
                 .setCaseSensitive(caseSensitive);
 
         } else if (token.equalsIgnoreCase("IS")) {
@@ -627,14 +629,14 @@ public class ConstraintParser {
                     // == value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.EQUAL);
+                        .setOperator(FieldCompareConstraint.EQUAL);
                 } catch (NumberFormatException e) {
                     // == field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.EQUAL);
+                        .setOperator(FieldCompareConstraint.EQUAL);
                 }
             } else {
                 iTokens.previous();
@@ -652,7 +654,7 @@ public class ConstraintParser {
                         }
                     }
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.EQUAL)
+                        .setOperator(FieldCompareConstraint.EQUAL)
                         .setCaseSensitive(caseSensitive);
                 } catch (NumberFormatException e) {
                     // = field2
@@ -660,7 +662,7 @@ public class ConstraintParser {
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.EQUAL);
+                        .setOperator(FieldCompareConstraint.EQUAL);
                 }
             }
         } else if (token.equals("<")) {
@@ -670,28 +672,28 @@ public class ConstraintParser {
                     // <= value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.LESS_EQUAL);
+                        .setOperator(FieldCompareConstraint.LESS_EQUAL);
                 } catch (NumberFormatException e) {
                     // <= field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.LESS_EQUAL);
+                        .setOperator(FieldCompareConstraint.LESS_EQUAL);
                 }
             } else if (token.equals(">")) {
                 try {
                     // <> value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
                 } catch (NumberFormatException e) {
                     // <> field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
                 }
             } else {
                 try {
@@ -699,14 +701,14 @@ public class ConstraintParser {
                     iTokens.previous();
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.LESS);
+                        .setOperator(FieldCompareConstraint.LESS);
                 } catch (NumberFormatException e) {
                     // < field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.LESS);
+                        .setOperator(FieldCompareConstraint.LESS);
                 }
             }
         } else if (token.equals(">")) {
@@ -716,14 +718,14 @@ public class ConstraintParser {
                     // >= value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.GREATER_EQUAL);
+                        .setOperator(FieldCompareConstraint.GREATER_EQUAL);
                 } catch (NumberFormatException e) {
                     // >= field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.GREATER_EQUAL);
+                        .setOperator(FieldCompareConstraint.GREATER_EQUAL);
                 }
             } else {
                 try {
@@ -731,14 +733,14 @@ public class ConstraintParser {
                     iTokens.previous();
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.GREATER);
+                        .setOperator(FieldCompareConstraint.GREATER);
                 } catch (NumberFormatException e) {
                     // > field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.GREATER);
+                        .setOperator(FieldCompareConstraint.GREATER);
                 }
             }
         } else if (token.equals("!")) {
@@ -748,14 +750,14 @@ public class ConstraintParser {
                     // != value
                     Object value = parseValue(iTokens, field);
                     result = new BasicFieldValueConstraint(field, value)
-                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
                 } catch (NumberFormatException e) {
                     // != field2
                     iTokens.previous();
                     token = (String) iTokens.next();
                     StepField field2 = getField(token);
                     result = new BasicCompareFieldsConstraint(field, field2)
-                        .setOperator(FieldValueConstraint.NOT_EQUAL);
+                        .setOperator(FieldCompareConstraint.NOT_EQUAL);
                 }
             } else {
                 throw new IllegalArgumentException(
@@ -787,8 +789,6 @@ public class ConstraintParser {
      */
     private BasicStringSearchConstraint parseStringSearchCondition(
             ListIterator iTokens) {
-
-        BasicStringSearchConstraint result = null;
 
         String token = (String) iTokens.next();
         if (!token.equals("(")) {
@@ -895,7 +895,7 @@ public class ConstraintParser {
                 + token + "\"");
         }
 
-        result = (BasicStringSearchConstraint)
+        BasicStringSearchConstraint result = (BasicStringSearchConstraint)
             new BasicStringSearchConstraint(
                 field, searchType, matchType, searchTerms)
                     .setCaseSensitive(caseSensitive);

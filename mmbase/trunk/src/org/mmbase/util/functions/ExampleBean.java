@@ -1,18 +1,12 @@
 package org.mmbase.util.functions;
 
-import java.util.*;
-
-import org.mmbase.util.logging.*;
-
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBean.java,v 1.1 2004-11-03 17:43:38 michiel Exp $
+ * @version $Id: ExampleBean.java,v 1.2 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.8
  */
 public final class ExampleBean {
-    private static final Logger log = Logging.getLoggerInstance(ExampleBean.class);
-
 
     private String parameter1;
     private Integer parameter2;    

@@ -6,20 +6,11 @@
  */
 package org.mmbase.applications.packaging.packagehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import java.io.File;
-import java.util.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
+import org.mmbase.applications.packaging.sharehandlers.ShareInfo;
 
 /**
  * The package version container, keeps all track of all the packages with
@@ -28,7 +19,6 @@ import org.w3c.dom.*;
  * @author     Daniel Ockeloen (MMBased)
  */
 public class PackageVersionContainer {
-    private static Logger log = Logging.getLoggerInstance(PackageVersionContainer.class);
 
     private ShareInfo shareinfo;
     private String version;

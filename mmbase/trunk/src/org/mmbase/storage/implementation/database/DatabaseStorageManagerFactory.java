@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
-import java.io.InputStream;
 import java.sql.*;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.naming.*;
@@ -39,7 +37,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.18 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.19 2005-01-30 16:46:39 nico Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 

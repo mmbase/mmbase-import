@@ -16,13 +16,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.Source;
 
 /**
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.15 2004-12-20 14:57:48 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {

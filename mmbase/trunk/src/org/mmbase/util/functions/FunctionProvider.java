@@ -11,21 +11,14 @@ package org.mmbase.util.functions;
 
 import java.util.*;
 
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.module.core.*;
-
 /**
  * @javadoc
  *
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: FunctionProvider.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: FunctionProvider.java,v 1.2 2005-01-30 16:46:36 nico Exp $
  */
 public class FunctionProvider {
-
-    // logger instance
-    private static final Logger log = Logging.getLoggerInstance(FunctionProvider.class);
 
     /**
      * @javadoc

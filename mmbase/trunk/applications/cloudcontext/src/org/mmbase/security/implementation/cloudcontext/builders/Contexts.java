@@ -35,7 +35,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.40 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: Contexts.java,v 1.41 2005-01-30 16:46:35 nico Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -861,7 +861,6 @@ public class Contexts extends MMObjectBuilder {
      */
 
     protected boolean revoke(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation, MMObjectNode user) {
-        Users users = Users.getBuilder();
         if (!allows(contextNode, groupOrUserNode, operation)) return true; // already disallowed
 
         if (mayRevoke(contextNode, groupOrUserNode, operation, user)) {

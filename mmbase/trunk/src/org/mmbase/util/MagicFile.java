@@ -21,7 +21,7 @@ import org.mmbase.util.magicfile.*;
  * @move org.mmbase.util.magicfile
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.15 2004-10-01 08:41:09 pierre Exp $
+ * @version $Id: MagicFile.java,v 1.16 2005-01-30 16:46:35 nico Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
@@ -46,11 +46,6 @@ public class MagicFile {
             instance = new MagicFile();
         }
         return instance;
-    }
-
-    // obsolete
-    private MagicFile(DetectorProvider d) {
-        detectors = d;
     }
 
     private MagicFile() {

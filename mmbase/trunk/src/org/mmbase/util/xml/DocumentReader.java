@@ -26,7 +26,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.mmbase.util.XMLEntityResolver;
 import org.mmbase.util.XMLErrorHandler;
-import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -40,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.5 2005-01-20 17:26:54 michiel Exp $
+ * @version $Id: DocumentReader.java,v 1.6 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  */
 public class DocumentReader  {

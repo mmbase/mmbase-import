@@ -11,9 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.util.Casting;
-import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.corebuilders.InsRel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.util.*;
@@ -23,7 +21,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.10 2005-01-03 12:11:23 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.11 2005-01-30 16:46:36 nico Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {

@@ -12,18 +12,14 @@ package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.Format;
 import org.mmbase.applications.media.urlcomposers.RamURLComposer;
 import org.mmbase.applications.media.urlcomposers.RealURLComposer;
-import org.mmbase.module.core.*;
 
-import java.util.*;
-import java.net.*;
-import java.text.*;
 
 
 /**
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.7 2004-01-07 20:54:26 michiel Exp $
+ * @version $Id: CgiURLComposer.java,v 1.8 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {

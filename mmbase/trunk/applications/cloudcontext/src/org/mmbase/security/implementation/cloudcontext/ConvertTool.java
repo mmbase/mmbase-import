@@ -27,14 +27,13 @@ import org.mmbase.util.logging.Logging;
  * A tool to convert between 'cloud' context security and 'xml' context security. Used in /mmbase/security/admin/
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertTool.java,v 1.2 2004-07-30 17:14:31 michiel Exp $
+ * @version $Id: ConvertTool.java,v 1.3 2005-01-30 16:46:35 nico Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  * @since MMBase-1.7
  */
 public class ConvertTool {
     private static final Logger    log = Logging.getLoggerInstance(ConvertTool.class);
 
-    private Cloud cloud;
     private Class contextAuthentication;
     private NodeManager contextManager;
     private NodeManager groupManager;
@@ -50,7 +49,6 @@ public class ConvertTool {
     private StringBuffer result = new StringBuffer();
 
     public ConvertTool(Cloud cloud) throws ClassNotFoundException {
-        this.cloud = cloud;
         contextManager = cloud.getNodeManager("mmbasecontexts");
         groupManager = cloud.getNodeManager("mmbasegroups");
         userManager = cloud.getNodeManager("mmbaseusers");

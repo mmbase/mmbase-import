@@ -6,15 +6,14 @@
  */
 package org.mmbase.applications.packaging.packagehandlers;
 
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.io.BufferedInputStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.JarFile;
+
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 
 /**
  * Interface for all the package handlers

@@ -10,22 +10,30 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging.bundlehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.BundleManager;
+import org.mmbase.applications.packaging.InstallManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.Person;
+import org.mmbase.applications.packaging.UninstallManager;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
+import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * BasicBundle, base class for bundles
@@ -51,7 +59,7 @@ public class BasicBundle implements BundleInterface {
     private String licenseversion = "";
     private String licensebody = "";
     private ProviderInterface provider;
-    private ShareInfo shareinfo;
+
     private HashMap neededpackages = new HashMap();
     private ArrayList initiators,supporters,contacts,developers,screenshots,starturls;
     private float progressbar = 0;
@@ -259,7 +267,6 @@ public class BasicBundle implements BundleInterface {
                     HashMap np = (HashMap)e.next();
                     PackageInterface pkg = PackageManager.getPackage((String)np.get("id"));
                     if (pkg != null) {
-                        String state = pkg.getState();
                         String name = pkg.getName();
                         step=getNextInstallStep();
                         step.setUserFeedBack("calling package uninstaller "+name+"..");
@@ -394,7 +401,6 @@ public class BasicBundle implements BundleInterface {
                         String maintainer = null;
                         String type = null;
                         String version = null;
-                        String included = null;
              
                         // decode name
                         org.w3c.dom.Node n5 = nm.getNamedItem("name");

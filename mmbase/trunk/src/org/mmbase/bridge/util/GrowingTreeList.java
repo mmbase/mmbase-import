@@ -14,7 +14,6 @@ import java.util.Iterator;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Queries a Tree from MMBase. A Tree is presented as a List of MultiLevel results (ClusterNodes),
@@ -23,12 +22,11 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.6 2004-10-09 09:37:34 nico Exp $
+ * @version $Id: GrowingTreeList.java,v 1.7 2005-01-30 16:46:39 nico Exp $
  * @since   MMBase-1.7
  */
 
 public  class GrowingTreeList extends TreeList {
-    private static final Logger log = Logging.getLoggerInstance(GrowingTreeList.class);
 
     protected Constraint cleanConstraint;
     protected NodeQuery  pathElementTemplate;

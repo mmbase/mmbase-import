@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7.2
- * @version $Id: CP1252Surrogator.java,v 1.3 2004-11-15 09:33:08 michiel Exp $
+ * @version $Id: CP1252Surrogator.java,v 1.4 2005-01-30 16:46:38 nico Exp $
  */
 
 public class CP1252Surrogator extends ConfigurableReaderTransformer implements CharTransformer {
@@ -154,7 +154,7 @@ public class CP1252Surrogator extends ConfigurableReaderTransformer implements C
         try {
             testStringISO1   = "bla bla " + new String(getTestBytes(), "ISO-8859-1"); /// it's a lie, but try it anyway.
         } catch (Exception e) {
-            System.err.println("" + e);            
+            log.error("", e);
         }
 
         CharTransformer transOk  = new CP1252Surrogator();

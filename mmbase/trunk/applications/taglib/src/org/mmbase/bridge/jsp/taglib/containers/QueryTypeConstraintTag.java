@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.2 2004-07-26 20:18:01 nico Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.3 2005-01-30 16:46:34 nico Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -90,8 +90,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
         }
         StepField stepField = query.createStepField(step, "otype");
 
-        Constraint newConstraint = null;
-        newConstraint = query.createConstraint(stepField, getOTypes(name.getList(this)));
+        Constraint newConstraint = query.createConstraint(stepField, getOTypes(name.getList(this)));
 
         if (newConstraint != null) {
             if (inverse.getBoolean(this, false)) {
@@ -105,7 +104,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
-                newConstraint = Queries.addConstraint(query, newConstraint);
+                Queries.addConstraint(query, newConstraint);
             }
         }
 

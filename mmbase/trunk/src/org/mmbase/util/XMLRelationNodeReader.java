@@ -33,7 +33,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLRelationNodeReader.java,v 1.22 2004-11-11 16:52:57 michiel Exp $
+ * @version $Id: XMLRelationNodeReader.java,v 1.23 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLRelationNodeReader extends XMLBasicReader {
 
@@ -271,7 +271,7 @@ public class XMLRelationNodeReader extends XMLBasicReader {
         byte[] buffer = new byte[filesize];
         try {
             FileInputStream scan = new FileInputStream(bfile);
-            int len = scan.read(buffer, 0, filesize);
+            scan.read(buffer, 0, filesize);
             scan.close();
         } catch (FileNotFoundException e) {
             log.error("error getfile : " + filename + " " + Logging.stackTrace(e));

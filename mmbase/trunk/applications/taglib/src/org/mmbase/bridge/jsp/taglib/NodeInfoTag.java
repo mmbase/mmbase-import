@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.34 2004-12-10 15:50:02 pierre Exp $
+ * @version $Id: NodeInfoTag.java,v 1.35 2005-01-30 16:46:35 nico Exp $
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -114,8 +114,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         case TYPE_GUI: {
             helper.useEscaper(false); // gui produces html
             String sessionName = "";
-            CloudTag ct = null;
-            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }

@@ -9,22 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Map;
 import java.util.Hashtable;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * Take the systemId and converts it into a local file, using the MMBase config path
@@ -33,7 +29,7 @@ import org.xml.sax.SAXException;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.43 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.44 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -122,7 +118,7 @@ public class XMLEntityResolver implements EntityResolver {
     /**
      * takes the systemId and returns the local location of the dtd/xsd
      */
-    public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+    public InputSource resolveEntity(String publicId, String systemId) {
 
         if (log.isDebugEnabled()) {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);

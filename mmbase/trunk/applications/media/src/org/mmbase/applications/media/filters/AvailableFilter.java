@@ -15,16 +15,13 @@ import java.util.ListIterator;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 import java.util.List;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * This removes all URLComposers wich are not available.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableFilter.java,v 1.4 2003-07-15 12:50:24 vpro Exp $
+ * @version $Id: AvailableFilter.java,v 1.5 2005-01-30 16:46:35 nico Exp $
  */
 public class AvailableFilter implements Filter {
-    private static Logger log = Logging.getLoggerInstance(AvailableFilter.class);
 
     public List filter(List urlcomposers) {
         ListIterator i = urlcomposers.listIterator();

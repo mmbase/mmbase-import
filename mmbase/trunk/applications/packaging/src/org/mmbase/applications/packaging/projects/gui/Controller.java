@@ -6,24 +6,32 @@
  */
 package org.mmbase.applications.packaging.projects.gui;
 
-import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
-import java.util.*;
-import java.util.jar.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.*;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
-import org.mmbase.applications.packaging.projects.creators.*;
-import org.mmbase.applications.packaging.projects.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.module.core.*;
+import org.mmbase.applications.packaging.InstallManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.Person;
+import org.mmbase.applications.packaging.ProjectManager;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.projects.IncludedPackage;
+import org.mmbase.applications.packaging.projects.PackageDepend;
+import org.mmbase.applications.packaging.projects.Project;
+import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.projects.packageStep;
+import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.CloudContext;
+import org.mmbase.bridge.LocalContext;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.VirtualBuilder;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author     Daniel Ockeloen

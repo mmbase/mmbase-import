@@ -6,25 +6,33 @@
  */
 package org.mmbase.applications.packaging.packagehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+import org.mmbase.applications.packaging.InstallManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.Person;
+import org.mmbase.applications.packaging.ShareManager;
+import org.mmbase.applications.packaging.UninstallManager;
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.applications.packaging.providerhandlers.DiskProvider;
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
 import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.InputSource;
 
 /**
  * BasicPackage, base class for packages
@@ -50,7 +58,6 @@ public class BasicPackage implements PackageInterface {
     private String licenseversion = "";
     private String licensebody = "";
     private ProviderInterface provider;
-    private ShareInfo shareinfo;
     private installStep bundlestep;
     private boolean dependsfailed = false;
     private BundleInterface parentbundle = null;

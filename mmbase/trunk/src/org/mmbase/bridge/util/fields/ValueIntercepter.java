@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.14 2004-12-15 12:38:38 daniel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.15 2005-01-30 16:46:38 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -228,8 +228,6 @@ public class ValueIntercepter {
         InputSource fieldTypes = new InputSource(ValueIntercepter.class.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
         readFieldTypeDefinitions(fieldTypes);
 
-    }
-    private static void readFieldTypeDefinitions(String fieldTypes) {
     }
 
     /**

@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.36 2005-01-27 23:37:53 michiel Exp $
+ * @version $Id: Casting.java,v 1.37 2005-01-30 16:46:35 nico Exp $
  */
 
 import java.util.*;
@@ -63,7 +63,7 @@ public class Casting {
 
     /**
      * Returns whether the passed object is of the given class.
-     * Unlike {@link Class.instanceof} this also includes Object Types that
+     * Unlike Class instanceof this also includes Object Types that
      * are representative for primitive types (i.e. Integer for int).
      * @param type the type (class) to check
      * @param value the value whose type to check
@@ -715,7 +715,7 @@ public class Casting {
             if (log.isDebugEnabled()) {
                 log.debug("converting the string to something else using conversion: " + conversion);
             }
-            value = org.mmbase.util.Encode.decode(conversion, (String)value);
+            value = org.mmbase.util.Encode.decode(conversion, value);
         }
 
         if (log.isDebugEnabled()) {

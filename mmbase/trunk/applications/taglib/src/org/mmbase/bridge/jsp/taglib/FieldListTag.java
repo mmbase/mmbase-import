@@ -18,19 +18,13 @@ import javax.servlet.jsp.JspTagException;
 import java.util.*;
 import org.mmbase.bridge.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.StringSplitter;
-
 /**
  * This class makes a tag which can list the fields of a NodeManager.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldListTag.java,v 1.45 2005-01-06 20:22:10 michiel Exp $
+ * @version $Id: FieldListTag.java,v 1.46 2005-01-30 16:46:35 nico Exp $
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
-
-    private static final Logger log = Logging.getLoggerInstance(FieldListTag.class);
 
     private FieldList     returnList;
     private FieldIterator fieldIterator;

@@ -6,21 +6,15 @@
  */
 package org.mmbase.applications.packaging.projects.creators;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.projects.*;
+import java.io.FileOutputStream;
+import java.util.Date;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.projects.packageStep;
+import org.mmbase.util.XMLEntityResolver;
 
 /**
  * DisplayHtmlPackage, Handler for html packages
@@ -28,8 +22,6 @@ import org.w3c.dom.*;
  * @author     Daniel Ockeloen (MMBased)
  */
 public class DisplayHtmlCreator extends BasicCreator implements CreatorInterface {
-
-    private static Logger log = Logging.getLoggerInstance(DisplayHtmlCreator.class);
 
     /**
      *  Description of the Field
