@@ -1,5 +1,6 @@
 i have tested taglib with tomcat therefore i had to add the following
 to web.xml
+This should also be done for Orion.
 ----------------------------------------------------------------------
 <taglib>
    <taglib-uri>
@@ -12,3 +13,7 @@ to web.xml
 ----------------------------------------------------------------------
 you also need to put the mmbase-taglib.tld in the WEB-INF dir
 and the taglib.jar in WEB-INF/lib/
+
+To create the mmbase-tablib.tld, you could first run 'ant web' in the
+mmbase/scripts directory, and in build/mmbase/web it will appear.
+
