@@ -3,7 +3,7 @@
 	<node number="667" owner="admin" alias="Forum">
 		<maxusers>-1</maxusers>
 		<state>0</state>
-		<name>Forum #1</name>
+		<title>Forum #1</title>
 		<open>2</open>
 		<highseq>9</highseq>
 		<body>This is a demonstration of the forum capability of MMBase.
@@ -16,7 +16,7 @@
 	<node number="574" owner="admin" alias="Chat">
 		<maxusers>-1</maxusers>
 		<state>0</state>
-		<name>Chat #1</name>
+		<title>Chat #1</title>
 		<open>2</open>
 		<highseq>-1</highseq>
 		<body></body>
