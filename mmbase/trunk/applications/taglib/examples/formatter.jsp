@@ -13,29 +13,8 @@
 <mm:node id="ok" referid="node" notfound="skip" />
 
 <mm:notpresent referid="ok">
-  <mm:cloud method="http">
-     Creating the test node.
-	 <mm:createnode id="ok" type="news">
-       <mm:setfield name="title">XML Test Node</mm:setfield>
-       <mm:setfield name="subtitle">A nice example</mm:setfield>
-       <mm:setfield name="body">$An MMXF field can be divided in sections
-
- _Don't_ forget to add some relations to this node (this is not done  yet automaticly, an application must be created first).
-
-- dogs
-- cats
-- mice
-
-$Section 2
-
-Be aware that this examples assume that the body of your news builder is of type XML.
-
-</mm:setfield>
-     </mm:createnode>
-     <mm:node referid="ok">
-			<mm:createalias>xmltest</mm:createalias>
-     </mm:node>
-  </mm:cloud>
+   The RichText application was not deployed. That is necessary for
+   this page.
 </mm:notpresent>
 
 <mm:present referid="ok">
