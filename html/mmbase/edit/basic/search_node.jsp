@@ -25,7 +25,7 @@
             </th>
     	    <mm:present referid="node_type">
     	    	<th width="80%"><%=m.getString("search_node.type")%> <mm:nodeinfo nodetype="$node_type" type="guitype" />
-                                              (<mm:nodeinfo nodetype="$node_type" type="type" />)
+                                              (<mm:nodeinfo nodetype="$node_type" type="type" /> <mm:listnodescontainer type="$node_type"><mm:size /></mm:listnodescontainer>)
 				</th>
     	    </mm:present>		
     	    <mm:notpresent referid="node_type">
@@ -91,7 +91,7 @@
                <mm:maycreate type="$node_type">
               	    	<table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
 	      	    	    <tr>
-	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />)</td>
+	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />) </td>
 	      	    	    	<td class="navigate">
 	      	    	    	    <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
                              <span class="create"></span><span class="alt">[create]</span>
