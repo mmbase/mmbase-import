@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.4.2.2 2002-10-03 07:23:30 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.4.2.3 2002-10-18 15:02:34 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -376,6 +376,11 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // get the relation string
         relstring=getRelationString(alltables, searchdir, roles);
+        // check if this is an 'invalid' condition (one which never produces results,
+        // in that case, return empty resultset
+        if (relstring==null) {
+            return new Vector();
+        }
         if ((relstring.length()>0) && (basenodestring.length()>0)) {
                 relstring=" AND "+relstring;
         }
@@ -869,7 +874,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 for (Enumeration e=typerel.getAllowedRelations(so, ro); e.hasMoreElements(); ) {
                     // get the allowed relation definitions
                     typenode = (MMObjectNode)e.nextElement();
-                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("dnumber")==ro);
+                    desttosrc= (searchdir!=SEARCH_DESTINATION) && (desttosrc || typenode.getIntValue("snumber")==ro);
                     srctodest= (searchdir!=SEARCH_SOURCE) && (srctodest || typenode.getIntValue("snumber")==so);
                     if (desttosrc && srctodest) break;
                 }
@@ -899,11 +904,14 @@ public class ClusterBuilder extends VirtualBuilder {
                                 numberOf(idx2char(i+2))+"="+idx2char(i+1)+".snumber"+dirstring);
                 }
             } else {
-                // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
+                if (srctodest) {
+                    // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
+                    result.append(numberOf(idx2char(i))+"="+idx2char(i+1)+".snumber AND "+
                             numberOf(idx2char(i+2))+"="+idx2char(i+1)+".dnumber");
+                } else {
+                    return null;
+                }
             }
-
         }
         return result.toString();
     }
