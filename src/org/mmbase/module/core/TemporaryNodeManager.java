@@ -18,9 +18,12 @@ import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.InsRel;
 
 /*
-	$Id: TemporaryNodeManager.java,v 1.17 2001-03-09 13:57:40 pierre Exp $
+	$Id: TemporaryNodeManager.java,v 1.18 2001-03-23 03:31:00 eduard Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.17  2001/03/09 13:57:40  pierre
+	pierre: changed so builder for relation is correctly determined
+	
 	Revision 1.16  2001/03/06 11:00:10  install
 	Rico: fixed accessObject duplicate bug
 	
@@ -75,7 +78,7 @@ import org.mmbase.module.corebuilders.InsRel;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.17 2001-03-09 13:57:40 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.18 2001-03-23 03:31:00 eduard Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -143,6 +146,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		if (node==null) {
 			if (_debug) debug("getNode tmp not node found "+key);
 			node=bul.getNode(key);
+			if(node==null) throw new java.lang.RuntimeException("HUGE ERROR, NODE NOT FOUND !!" + key);
 		}
 		node.parent.checkAddTmpField("_number");
 		if (node.parent instanceof InsRel) {
