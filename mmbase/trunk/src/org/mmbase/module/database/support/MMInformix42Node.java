@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.20 $ $Date: 2000-10-12 11:38:40 $
+* @$Revision: 1.21 $ $Date: 2000-10-12 11:40:42 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -360,7 +360,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	*/
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
 		try {
-			debug("decodeDBNodeField()");
 			if (node==null) {
 				debug("decodeDBNodeField() ERROR node is null");
 			}
@@ -376,13 +375,6 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 
 			int type=node.getDBType(prefix+fieldname);
 			
-			if (debug) {
-				debug("Node "+node);
-				debug("Fieldname "+fieldname+" Prefix '"+prefix+"'");
-			}
-
-			debug("1");
-
 			switch (type) {
 			case FieldDefs.TYPE_STRING:
 	
@@ -430,12 +422,10 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				debug("decodeDBNodeField(): unknown type="+type+" fieldname="+fieldname);
 				break;
 			}			
-			debug("6");
 		} catch(SQLException e) {
 			debug("mmObject->"+fieldname+" node="+node.getIntValue("number"));
 			e.printStackTrace();
 		}
-		debug("decodeDBNodeField end");
 		return(node);
 	}
 
