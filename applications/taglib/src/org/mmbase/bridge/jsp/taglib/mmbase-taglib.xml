@@ -249,13 +249,31 @@ one or more examplevalue tags is you want to give some example values.
     <name>first</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListFirstTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is the fist item in the list.</info>
+    <info>The tag can be used in a list to determine if this is the
+    fist item in the list.</info>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  Inverse the sense of the condition.
+	</info>
+    </attribute>
   </tag>
   <tag>
     <name>last</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>The tag can be used in a list to determine if this is the fist item in the list.</info>
+    <info>The tag can be used in a list to determine if this is the
+    fist item in the list.</info>
+    <attribute>
+        <name>inverse</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	  Inverse the sense of the condition.
+	</info>
+    </attribute>
   </tag>
   <tag>
     <name>cloud</name>
@@ -770,5 +788,68 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>    
+  </tag>
+  <tag>
+    <name>fieldlist</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>A list of fields. A field can list inside a NodeProvider in which case the NodeManager if found by means of 
+    the parent node. It can also be stand alone, then you have to supply the 'nodemanager' attribute.
+    </info>
+    <attribute>
+      <name>nodemanager</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The id of the fieldlist.</info>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>What kind of fields must be listed</info>
+      <possiblevalue>
+        <value>create</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>edit</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>list</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>search</value>
+      </possiblevalue>
+    </attribute>
+  </tag>
+  <tag>
+    <name>fieldinfo</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
+    <bodycontent>JSP</bodycontent>
+    <info>This thing can be used inside a FieldListTag</info>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <possiblevalue>
+        <value>name</value>
+        <info>The name of the field</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>guiname</value>
+        <info>The GUI name of the field (can be in other language)</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>input</value>         
+        <info>A form entry for the field. This can only be used if the
+        FieldList was in a NodeProvider tag. If the FieldList has an
+        id, the names of the form entries will be prefixed with it.
+        </info>
+      </possiblevalue>
+    </attribute>
   </tag>
 </taglib>
