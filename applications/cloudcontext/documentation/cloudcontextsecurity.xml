@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Cloud Context Security</title>
     <date>2003-09-12</date>
-    <edition>$Id: cloudcontextsecurity.xml,v 1.2 2003-11-17 12:46:31 michiel Exp $</edition>
+    <edition>$Id: cloudcontextsecurity.xml,v 1.3 2003-11-28 17:16:50 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -53,9 +53,10 @@
       Because of the nature of this security implementation, the object model of your MMBase
       installation must be enriched with several new object types and relations types. This section
       describes the object model needed for this security implemenation.
-    </para>
-    <para>
-      <graphic fileref="Security.jpg"/>
+      <figure>
+        <title>The Cloud Context Security Object Model</title>
+        <graphic fileref="Security.jpg"/>
+      </figure>
     </para>
     <section id="contexts">
       <title>Contexts</title>
@@ -67,7 +68,7 @@
       </para>
       <para>
         To which other security contexts a context of a certain node may be changed is fixed by the
-        'allowed' relation between contexts objects.
+        'allowed' relation between contexts objects (this feature it turned off on default).
       </para>
     </section>
     <section id="groups">
@@ -103,6 +104,16 @@
         used to block low ranked users to certain parts of your site.
       </para>
     </section>
+    <section id="buildernaming">
+      <title>Naming</title>
+      <para>
+        The builders are for legacy reasons called 'mmbaseusers', 'mmbasegroups', 'mmbasecontexts',
+        'mmbaseranks'. But because these things are essentially related to 
+        security (rather then to 'mmbase' which is a bit of a non-statement in this context..) the
+        gui names of these builders will start with 'security' rather then with
+        'mmbase'. So in generic editors you wil see them listed under 's' rather then under 'm'.
+      </para>
+    </section>
   </section>
   <section id="editors">
     <title>Security editors</title>
@@ -111,13 +122,28 @@
       'generic' editors. Cloud context security is however shipped with specialized editors.
     </para>
     <para>
-     <graphic fileref="editors.png"/>
-      These editors work only in MMBase-1.7. They are implemented as 'pieces of
+      <figure>
+        <title>The Cloud Context Security Editors</title>
+        <screenshot>
+          <graphic fileref="editors.png"/>
+        </screenshot>
+      </figure>
+      These editors work only in MMBase-1.7 (and upwards). They are implemented as 'pieces of
       html', which makes it possible to include the entire editors into other
       editors (I use this to integrate them in the editors for a certain site),
       and you can configure extra links for users (e.g. make a link to a 'people'
       editwizard to relate people objects to accounts). There is an index.jsp
       available to use them stand-alone. 
+    </para>
+    <para>
+      When defining a new 'context' object with the security editors, it might be convenient to
+      allow read rights on it to most or all users. To facilitate this, this editors looks for a group with 
+      alias 'mayreadallgroup' when creating a context object, and if it exists the read operation is
+      automaticly link to it immediately.
+    </para>
+    <para>
+      Often you would want to associate a context with every 'group' of users, so on the creation of
+      one of those, you get the option to create to other one in one go.
     </para>
   </section>
   <section id="extraadmins">
@@ -138,6 +164,67 @@
       it, remove it), so you can add and remove such administrators on a running MMBase (without affecting 'normal' users).  So as long as you
       have access to the file system, you can in this way always administrate you site running Cloud
       Context Security, in a reasonably secure way.
+    </para>
+  </section>
+  <section id="otheroptions">
+    <title>Other configuration</title>
+    <para>
+      Some other things can be configured in cloud context secuity. These setting are available as 'properties' in the builder xml of mmbasecontexts.
+      <variablelist>
+        <varlistentry>
+          <term>readall</term>
+          <listitem>
+            <para>
+              If you don't care for read protection, you can considerably simplify configuration
+              by setting this property to 'true'. Every object may always be read by every
+              user. This should also have a possitive effect on the performance impact of
+              security.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>allcontextspossible</term>
+          <listitem>
+            <para>
+              Setting this to false, would make it possible to implement a simple kind of workflow
+              using security, because then you must explicitily indicate which context may be changed to
+              which other contexts explicitely. Unpublished nodes can then be owned by a security
+              context which does not allow reading by everybody. You can arrange then that the
+              context can only be changed in one direction (to publish). The security editors do currently
+              not support this (no way to link to next context)
+            </para>
+            <para>
+              If this property is true (the default), then you may change any object (on which you
+              have the 'change context' right, to any other context (which you can see).
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>maxcontextsinquery</term>
+          <listitem>
+            <para>
+              When checking read rights, in the query things like 'WHERE owner in (&lt;list of contexts&gt;)' can
+              appear. This property is an indication for how much the query may (expressed in the number of times
+              one contexts is added to the query) grow. If the query would have to be more complex this is not
+              done, but the result would need checking. This means also that the result of a 'count'
+              on a query might not be excactly right any more, because it might have counted some
+              objects which you are not allowed to actually read.
+            </para>
+            <para>
+              Warnings will be issued in the log when this number is too small (an postprocessing of
+              query-results is needed), which you can solve in several ways. Firstly you can
+              increase this property. You can also simply the used query (perhaps it has
+              an extraordinary lot of steps), and lastly you could also make sure that there is for
+              any user only a limited number of contexts which he can see or a limited number of
+              contexts which he can not see (the query must contain for every step either contain a
+              list of all 'invisible' contexts or all 'visibile' contexts).
+            </para>
+            <para>
+              This property defaults to 50.
+            </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>        
     </para>
   </section>
 </article>
