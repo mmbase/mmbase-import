@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.40 2002-01-24 10:59:50 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.41 2002-03-21 10:02:37 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -366,7 +366,7 @@ public class MMAdmin extends ProcessorModule {
      */
     int getBuilderVersion(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
+        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
         if (app!=null) {
             return app.getBuilderVersion();
         }
@@ -378,7 +378,7 @@ public class MMAdmin extends ProcessorModule {
      */
     String getBuilderClass(String bulname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml");
+        XMLBuilderReader bul=new XMLBuilderReader(path+bulname+".xml",mmb);
         if (bul!=null) {
             return bul.getClassFile();
         }
@@ -458,7 +458,7 @@ public class MMAdmin extends ProcessorModule {
      */
     String getBuilderDescription(String appname) {
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml");
+        XMLBuilderReader app=new XMLBuilderReader(path+appname+".xml",mmb);
         if (app!=null) {
             Hashtable desc=app.getDescriptions();
             String us=(String)desc.get("us");
@@ -1108,7 +1108,7 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name=aname;
                     String sname=name.substring(0,name.length()-4);
-                    XMLBuilderReader app=new XMLBuilderReader(configpath+subpath+aname);
+                    XMLBuilderReader app=new XMLBuilderReader(configpath+subpath+aname,mmb);
                     results.addElement(subpath+sname);
                     results.addElement(""+app.getBuilderVersion());
                     int installedversion=ver.getInstalledVersion(sname,"builder");
@@ -1152,7 +1152,7 @@ public class MMAdmin extends ProcessorModule {
     Vector getFields(String buildername) {
         Vector results=new Vector();
         String path=MMBaseContext.getConfigPath()+File.separator+"builders"+File.separator;
-        XMLBuilderReader bul=new XMLBuilderReader(path+buildername+".xml");
+        XMLBuilderReader bul=new XMLBuilderReader(path+buildername+".xml",mmb);
         if (bul!=null) {
             Vector defs=bul.getFieldDefs();
             for (Enumeration h = defs.elements();h.hasMoreElements();) {
@@ -1248,7 +1248,7 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name=aname;
                     String sname=name.substring(0,name.length()-4);
-                    XMLBuilderReader app=new XMLBuilderReader(path+aname);
+                    XMLBuilderReader app=new XMLBuilderReader(path+aname,mmb);
                     results.addElement(sname);
 
                     results.addElement("0");

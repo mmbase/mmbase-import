@@ -9,51 +9,155 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database.support;
 
-import java.util.*;
-import java.net.*;
 import java.sql.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
-import org.mmbase.module.database.support.*;
-import org.mmbase.util.*;
-
-//XercesParser
-import org.apache.xerces.parsers.*;
-import org.xml.sax.*;
+import org.mmbase.util.XMLDatabaseReader;
 
 /**
-* MMJdbc2NodeInterface interface needs to be implemented to support a new database
-* it is used to abstact the query's needed for mmbase for each database.
-*/
+ * MMJdbc2NodeInterface interface needs to be implemented to support a new database
+ * It is used to abstract the query's needed for mmbase for each database.
+ * @author Vpro
+ * @author Pierre van Rooden
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.16 2002-03-21 10:02:36 pierre Exp $
+ */
 public interface MMJdbc2NodeInterface {
-	//public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i);
-	//public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix);
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
-	public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
-	public String getShortedText(String tableName,String fieldname,int number);
-	public byte[] getShortedByte(String tableName,String fieldname,int number);
-	public byte[] getDBByte(ResultSet rs,int idx);
-	public String getDBText(ResultSet rs,int idx);
-	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node);
-	public boolean commit(MMObjectBuilder bul,MMObjectNode node);
-	public void removeNode(MMObjectBuilder bul,MMObjectNode node);
-	public int getDBKey();
-	public void init(MMBase mmb,XMLDatabaseReader parser);
-	public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
-	public boolean created(String tableName);
-	public boolean create(MMObjectBuilder bul);
-	public boolean createObjectTable(String baseName);
- 	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
-	public String getDisallowedField(String allowedfield);
-	public String getAllowedField(String disallowedfield);
-	public String getNumberString();
-	public String getOwnerString();
-	public String getOTypeString();
-	public boolean drop(MMObjectBuilder bul);
-	public boolean updateTable(MMObjectBuilder bul);
-	public boolean addField(MMObjectBuilder bul,String dbname);
-	public boolean removeField(MMObjectBuilder bul,String dbname);
-	public boolean changeField(MMObjectBuilder bul,String dbname);
+    /**
+     * Returns whether this database support layer allows for buidler to be a parent builder
+     * (that is, other builders can 'extend' this builder and its database tables).
+     *
+     * @since MMBase-1.6
+     * @param builder the builder to test
+     * @return true if the builder can be extended
+     */
+    public boolean isAllowedParentBuilder(MMObjectBuilder builder);
+
+    /**
+     * Registers a builder as a parent builder (that is, other buidlers can 'extend' this
+     * builder and its database tables).
+     * At the least, this code should check whether the builder is allowed as a parent builder,
+     * and throw an exception if this is not possible.
+     * This method can be overridden to allow for optimization of code regarding such builders.
+     *
+     * @since MMBase-1.6
+     * @param parent the parent builder to register
+     * @param child the builder to register as the parent's child
+     * @throws UnsupportedDatabaseOperationException when the databse layer does not allow extension of this builder
+     */
+    public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
+        throws UnsupportedDatabaseOperationException;
+
+    /**
+     * @javadoc
+     */
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
+    /**
+     * @javadoc
+     */
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
+    /**
+     * @javadoc
+     */
+    public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
+    /**
+     * @javadoc
+     */
+    public String getShortedText(String tableName,String fieldname,int number);
+    /**
+     * @javadoc
+     */
+    public byte[] getShortedByte(String tableName,String fieldname,int number);
+    /**
+     * @javadoc
+     */
+    public byte[] getDBByte(ResultSet rs,int idx);
+    /**
+     * @javadoc
+     */
+    public String getDBText(ResultSet rs,int idx);
+    /**
+     * @javadoc
+     */
+    public int insert(MMObjectBuilder bul,String owner, MMObjectNode node);
+    /**
+     * @javadoc
+     */
+    public boolean commit(MMObjectBuilder bul,MMObjectNode node);
+    /**
+     * @javadoc
+     */
+    public void removeNode(MMObjectBuilder bul,MMObjectNode node);
+    /**
+     * Gives an unique number for a node to be inserted.
+     * This method should be implemneted to work with multiple mmbase instances working on
+     * the same storage.
+     * @return unique number
+     */
+    public int getDBKey();
+    /**
+     * @javadoc
+     */
+    public void init(MMBase mmb,XMLDatabaseReader parser);
+    /**
+     * @javadoc
+     */
+    public void setDBByte(int i, PreparedStatement stmt,byte[] bytes);
+    /**
+     * Tells if a table already exists
+     * @return true if table exists, false if table doesn't exists
+     */
+    public boolean created(String tableName);
+    /**
+     * @javadoc
+     */
+    public boolean create(MMObjectBuilder bul);
+    /**
+     * @javadoc
+     */
+    public boolean createObjectTable(String baseName);
+     /**
+     * @javadoc
+     */
+    public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
+     /**
+     * @javadoc
+     */
+    public String getDisallowedField(String allowedfield);
+     /**
+     * @javadoc
+     */
+    public String getAllowedField(String disallowedfield);
+     /**
+     * @javadoc
+     */
+    public String getNumberString();
+    /**
+     * @javadoc
+     */
+    public String getOwnerString();
+    /**
+     * @javadoc
+     */
+    public String getOTypeString();
+    /**
+     * @javadoc
+     */
+    public boolean drop(MMObjectBuilder bul);
+    /**
+     * @javadoc
+     */
+    public boolean updateTable(MMObjectBuilder bul);
+    /**
+     * @javadoc
+     */
+    public boolean addField(MMObjectBuilder bul,String dbname);
+    /**
+     * @javadoc
+     */
+    public boolean removeField(MMObjectBuilder bul,String dbname);
+    /**
+     * @javadoc
+     */
+    public boolean changeField(MMObjectBuilder bul,String dbname);
 }

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.56 2002-02-22 16:01:39 kees Exp $
+ * @version $Id: MMSQL92Node.java,v 1.57 2002-03-21 10:02:36 pierre Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -111,16 +111,46 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     }
 
     /**
+     * Returns whether this database support layer allows for buidler to be a parent builder
+     * (that is, other builders can 'extend' this builder and its database tables).
+     *
+     * @since MMBase-1.6
+     * @param builder the builder to test
+     * @return true if the builder can be extended
+     */
+    public boolean isAllowedParentBuilder(MMObjectBuilder builder) {
+        String buildername=builder.getTableName();
+        return buildername.equals("object") || buildername.equals("insrel");
+    }
+
+    /**
+     * Registers a builder as a parent builder (that is, other buidlers can 'extend' this
+     * builder and its database tables).
+     * At the least, this code should check whether the builder is allowed as a parent builder,
+     * and throw an exception if this is not possible.
+     * This method can be overridden to allow for optimization of code regarding such builders.
+     *
+     * @since MMBase-1.6
+     * @param parent the parent builder to register
+     * @param child the builder to register as the parent's child
+     * @throws UnsupportedDatabaseOperationException when the databse layer does not allow extension of this builder
+     */
+    public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
+        throws UnsupportedDatabaseOperationException {
+        if (!isAllowedParentBuilder(parent)) {
+            throw new UnsupportedDatabaseOperationException("Cannot extend the builder with name "+parent.getTableName());
+        }
+    }
+
+    /**
      * @javadoc
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
         try {
-
             // is this fieldname disallowed ? ifso map it back
             if (allowed2disallowed.containsKey(fieldname)) {
                 fieldname=(String)allowed2disallowed.get(fieldname);
             }
-
 
             int type=node.getDBType(prefix+fieldname);
             switch (type) {
@@ -128,20 +158,20 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             case FieldDefs.TYPE_STRING: {
                 // original:
                 //String tmp=rs.getString(i);
-                                   
+
                 String tmp = null;
                 try {
-                    tmp = new String(rs.getBytes(i), mmb.getEncoding());                
+                    tmp = new String(rs.getBytes(i), mmb.getEncoding());
                 } catch (Exception e) {
                     log.error(e.toString());
                 }
-                if (tmp==null) { 
+                if (tmp==null) {
                     node.setValue(prefix+fieldname,"");
                 } else {
                     node.setValue(prefix+fieldname,tmp);
                 }
                 break;
-            }            
+            }
             case FieldDefs.TYPE_INTEGER:
                 node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
                 break;
@@ -520,22 +550,24 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
             }
         }
 
-
-        try {
-            con=mmb.getConnection();
-            stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
-            stmt.setInt(1,number);
-            stmt.setInt(2,node.getIntValue("otype"));
-            stmt.setString(3,node.getStringValue("owner"));
-            stmt.executeUpdate();
-            stmt.close();
-            con.close();
-        } catch (SQLException e) {
-            log.error("Error on : "+number+" "+owner+" fake");
-            log.error(Logging.stackTrace(e));
-            return -1;
+        // update the object table unless this is the 'object' builder
+        // since MMbase-1.6 'object' can also appear as a builder
+        if (!tableName.equals("object")) {
+            try {
+                con=mmb.getConnection();
+                stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
+                stmt.setInt(1,number);
+                stmt.setInt(2,node.getIntValue("otype"));
+                stmt.setString(3,node.getStringValue("owner"));
+                stmt.executeUpdate();
+                stmt.close();
+                con.close();
+            } catch (SQLException e) {
+                log.error("Error on : "+number+" "+owner+" fake");
+                log.error(Logging.stackTrace(e));
+                return -1;
+            }
         }
-
 
         //bul.signalNewObject(tableName,number);
         if (bul.broadcastChanges) {
@@ -607,7 +639,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         String builderFieldSql = null;
         boolean changeObjectFields = false;
         boolean changeInsrelFields = false;
-        boolean isInsrelSubTable = node.parent!=null && node.parent instanceof InsRel && !bul.tableName.equals("insrel");
+        boolean isInsrelSubTable = node.parent!=null && node.parent instanceof InsRel && !bul.getTableName().equals("insrel");
 
         // create the prepared statement
         for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
@@ -636,18 +668,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                     log.warn("Changing the otype field - should not be allowed?");
                 }
 
-                // change the status, that object should be updated..
-                changeObjectFields = true;
-
-                // if it is a relation, then also adjust the insrel table if it is a sub table of that one..
-                if(isInsrelSubTable) {
-
-                    // change the status, that insrel should be updated..
-                    changeInsrelFields = true;
-
-                    // give a warning that we are changing more then 1 table..
-                    log.warn("changing the '"+key+"' field, could give probems due to update on 3 tables without locking(builder, insrel, object)");
-                } else {
+                // change the status, that object should be updated, unless this is the object builder itself
+                changeObjectFields = !bul.getTableName().equals("object");
+                if (changeObjectFields) {
+                    // if it is a relation, then also adjust the insrel table if it is a sub table of that one..
+                    changeInsrelFields =isInsrelSubTable;
                     log.warn("changing the '"+key+"' field, could give probems due to update on 2 tables without locking(builder, object)");
                 }
             } // object fields
@@ -662,7 +687,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
         // when we had a update...
         if(builderFieldSql != null) {
-            String sql = "UPDATE "+mmb.baseName+"_"+bul.tableName+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number");
+            String sql = "UPDATE "+mmb.baseName+"_"+bul.getTableName()+" SET " + builderFieldSql + " WHERE "+getNumberString()+" = "+node.getValue("number");
             log.debug("Temporary SQL statement, which will be filled with parameters : " + sql);
 
             try {
@@ -720,6 +745,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                 }
 
                 // also change the object table, when it was a field from there..
+                // update the object table unless this is the 'object' builder
+                // since MMbase-1.6 'object' can also appear as a builder
                 if (changeObjectFields) {
                     String objectSql = "UPDATE  "+mmb.baseName+"_object SET otype="+node.getIntValue("otype")+", owner='"+node.getStringValue("owner")+"'";
                     objectSql += " WHERE " + getNumberString() + "=" + node.getValue("number");
@@ -754,14 +781,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         // broadcast the changes, if nessecary...
         if (bul.broadcastChanges) {
             if (bul instanceof InsRel) {
-                bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+                bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"c");
                 // figure out tables to send the changed relations
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
                 mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
                 mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
             } else {
-                mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+                mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"c");
             }
         }
         // done !
@@ -775,28 +802,28 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
         int number=node.getIntValue("number");
         if(log.isDebugEnabled()) {
-            log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+            log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.getTableName()+" where "+getNumberString()+"="+number);
             log.trace("SAVECOPY "+node.toString());
         }
         Vector rels=bul.getRelations_main(number);
         if (rels!=null && rels.size()>0) {
-            log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+            log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.getTableName()+" where "+getNumberString()+"="+number);
         } else {
             if (number!=-1) {
-		//first alway's remove the "requested" object from the table it belongs to
+                //first alway's remove the "requested" object from the table it belongs to
                 try {
                     MultiConnection con=mmb.getConnection();
                     Statement stmt=con.createStatement();
-                    stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+                    stmt.executeUpdate("delete from "+mmb.baseName+"_"+bul.getTableName()+" where "+getNumberString()+"="+number);
                     stmt.close();
                     con.close();
                 } catch (SQLException e) {
                     log.error(Logging.stackTrace(e));
                 }
-		//during the OO->relational mapping it wat decided that all relations should remain
-		//in the insrel table. If the node requested to delete is a relation node and it is not insrel
-		//we need to also remove it from the insrel table
-                if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
+                //during the OO->relational mapping it wat decided that all relations should remain
+                //in the insrel table. If the node requested to delete is a relation node and it is not insrel
+                //we need to also remove it from the insrel table
+                if (node.parent!=null && (node.parent instanceof InsRel) && !bul.getTableName().equals("insrel")) {
                     try {
                         MultiConnection con=mmb.getConnection();
                         Statement stmt=con.createStatement();
@@ -807,45 +834,48 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
                         log.error(Logging.stackTrace(e));
                     }
                 }
-		//due to optimalisation when one requests the "relations" that a node has the layer
-		//returns relations of type insrel. If you then call "delete" on that insrel it might
-		//be that case that at this point in the stage of delete that there are still fields
-		//in for example a posrel tables. We need to find out if the object we are trying to delete
-		//is keeps it's information somewhere else so this only happens when the builder when the builder 
-		//is InsRel and the table is insrel but the real tables is not insrel
+                //due to optimalisation when one requests the "relations" that a node has the layer
+                //returns relations of type insrel. If you then call "delete" on that insrel it might
+                //be that case that at this point in the stage of delete that there are still fields
+                //in for example a posrel tables. We need to find out if the object we are trying to delete
+                //is keeps it's information somewhere else so this only happens when the builder when the builder
+                //is InsRel and the table is insrel but the real tables is not insrel
 
-		//if insrel but otype != insrel
-		String otypeString = mmb.getTypeDef().getValue(node.getOType());
-                if (node.parent!=null && (node.parent instanceof InsRel) && bul.tableName.equals("insrel") && !otypeString.equals("insrel")
-		    ) {
-		    log.debug("deleting row in subtable of insrel the subtable is of type("+ otypeString +") and the object number is="+ number);
-		    try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("delete from "+mmb.baseName+"_"+otypeString+" where "+getNumberString()+"="+number);
-			stmt.close();
-			con.close();
-		    } catch (SQLException e) {
-			log.error(Logging.stackTrace(e));
-		    }
-		}
+                //if insrel but otype != insrel
+                String otypeString = mmb.getTypeDef().getValue(node.getOType());
+                if (node.parent!=null && (node.parent instanceof InsRel) && bul.getTableName().equals("insrel") &&
+                    !otypeString.equals("insrel")) {
+                    log.debug("deleting row in subtable of insrel the subtable is of type("+ otypeString +") and the object number is="+ number);
+                    try {
+                        MultiConnection con=mmb.getConnection();
+                        Statement stmt=con.createStatement();
+                        stmt.executeUpdate("delete from "+mmb.baseName+"_"+otypeString+" where "+getNumberString()+"="+number);
+                        stmt.close();
+                        con.close();
+                    } catch (SQLException e) {
+                        log.error(Logging.stackTrace(e));
+                    }
+                }
 
-
-		//during the OO->relational mapping the object table is not anymore "automaticatly" updated
-		//so we also need to remove the object from the object table
-                try {
-                    MultiConnection con=mmb.getConnection();
-                    Statement stmt=con.createStatement();
-                    stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
-                    stmt.close();
-                    con.close();
-                } catch (SQLException e) {
-                    log.error(Logging.stackTrace(e));
+                //during the OO->relational mapping the object table is not anymore "automaticatly" updated
+                //so we also need to remove the object from the object table
+                // update the object table unless this is the 'object' builder
+                // since MMbase-1.6 'object' can also appear as a builder
+                if (!bul.getTableName().equals("object")) {
+                    try {
+                        MultiConnection con=mmb.getConnection();
+                        Statement stmt=con.createStatement();
+                        stmt.executeUpdate("delete from "+mmb.baseName+"_object where "+getNumberString()+"="+number);
+                        stmt.close();
+                        con.close();
+                    } catch (SQLException e) {
+                        log.error(Logging.stackTrace(e));
+                    }
                 }
             }
         }
         if (bul.broadcastChanges) {
-            mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"d");
+            mmb.mmc.changedNode(node.getIntValue("number"),bul.getTableName(),"d");
             if (bul instanceof InsRel) {
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
@@ -883,7 +913,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
     }
 
     /**
-     * Gives an unique number
+     * Gives an unique number for a node to be inserted.
      * This method will work with multiple mmbases
      * @return unique number
      */
