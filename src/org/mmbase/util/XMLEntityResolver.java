@@ -119,11 +119,11 @@ public class XMLEntityResolver implements EntityResolver {
                 } 
             }
             if (dtdStream == null) {
-                log.error("Could not find MMBase dtd '" + dtdName + "' (did you make a typo?), returning an 'empty' DTD.");
+                log.error("Could not find MMBase dtd '" + dtdName + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                 // not sure, probably should return 'null' after all, then it will be resolved with internet.
                 // but this can not happen, in fact...
-                return new InputSource(new StringReader(""));
-                //return null;
+                //return new InputSource(new StringReader(""));
+                return null;
             }
 
 
