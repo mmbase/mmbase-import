@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Hashtable;
 
 import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.xml.BuilderReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.xml.sax.EntityResolver;
@@ -31,7 +32,7 @@ import org.xml.sax.SAXException;
  * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.32 2003-04-10 13:51:37 pierre Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.33 2003-04-11 11:05:49 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -70,7 +71,7 @@ public class XMLEntityResolver implements EntityResolver {
     static {
         // ask known (core) xml readers to register their public ids and dtds
         XMLBasicReader.registerPublicIDs();
-        XMLBuilderReader.registerPublicIDs();
+        BuilderReader.registerPublicIDs();
         XMLApplicationReader.registerPublicIDs();
         XMLDatabaseReader.registerPublicIDs();
         XMLModuleReader.registerPublicIDs();
