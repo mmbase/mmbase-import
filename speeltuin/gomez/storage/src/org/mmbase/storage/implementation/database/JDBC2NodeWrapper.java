@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.1 2003-08-20 13:25:45 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.2 2003-08-20 15:03:26 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -81,6 +81,8 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public String getShortedText(String tableName,String fieldname,int number) {
+        // capture calls form temporary nodes
+        if (number < 0) return null;
         try {
             MMObjectBuilder bul = mmbase.getMMObject(tableName);
             return factory.getStorageManager().getStringValue(bul.getNode(number),bul.getField(fieldname));
@@ -94,6 +96,8 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public byte[] getShortedByte(String tableName,String fieldname,int number) {
+        // capture calls form temporary nodes
+        if (number < 0) return null;
         try {
             MMObjectBuilder bul = mmbase.getMMObject(tableName);
             return factory.getStorageManager().getBinaryValue(bul.getNode(number),bul.getField(fieldname));
