@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.39 2004-11-08 12:49:08 michiel Exp $
+ * @version $Id: servscan.java,v 1.40 2004-11-15 14:06:49 michiel Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -53,8 +53,8 @@ public class servscan extends JamesServlet {
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(servscan.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+        log = Logging.getLoggerInstance(servscan.class);
+        //log.info("Init of servlet " + getServletConfig().getServletName() + ".");
     }
     
 
@@ -65,10 +65,10 @@ public class servscan extends JamesServlet {
         } catch (Exception e){
             log.error(e);            
         }
-        
+        log.info("Getting scan parser");        
         parser = (scanparser)getModule("SCANPARSER");
         if(parser == null) {
-            String msg = "module with name 'scanparser' should be active";
+            String msg = "Module with name 'scanparser' should be active";
             log.error(msg);
             throw new RuntimeException(msg);
         }
@@ -107,6 +107,10 @@ public class servscan extends JamesServlet {
         if (!checkInited(res)) {
             return;            
         }
+        if (parser == null) {
+            throw new ServletException("No scan parser for request " + req.getRequestURI());
+        }
+        
 
         incRefCount(req);
         try {
@@ -219,41 +223,39 @@ public class servscan extends JamesServlet {
         // res.setContentLength(len);
 
     	Date lastmod = null;
-		if (lastModDate > 0) {
-			lastmod = new Date(lastModDate);
-		}
-		else {
-			lastmod = new Date(); //current time
-		}
+        if (lastModDate > 0) {
+            lastmod = new Date(lastModDate);
+        } else {
+            lastmod = new Date(); //current time
+        }
     	Date expire = null;
         if (expireDate > 0) {
-        	expire = new Date(expireDate);
+            expire = new Date(expireDate);
+        } else {
+            // 2 hours back in time. So it will expire at once?
+            expire = new Date(System.currentTimeMillis() - 7200000); 
         }
-        else {
-        	// 2 hours back in time. So it will expire at once?
-        	expire = new Date(System.currentTimeMillis() - 7200000); 
-        }
-
+        
 //    	String dateStr = RFC1123.makeDate(new Date());
         String lastmodStr = RFC1123.makeDate(lastmod);
         String expireStr = RFC1123.makeDate(expire);
 
-		log.debug("Set headers for URL: " + sp.req_line + "\nExpires: " + expireStr + "\nLast-Modified: " + lastmodStr );
+        log.debug("Set headers for URL: " + sp.req_line + "\nExpires: " + expireStr + "\nLast-Modified: " + lastmodStr );
             
         res.setHeader("Expires", expireStr);
         res.setHeader("Last-Modified", lastmodStr);
 //        res.setHeader("Date", dateStr);
-
-		// You dhoulfn't set the no-cache headers 
-		// when you want the browser and proxies to cache the page until it is expired
-		// otherwise it will go through the proxies to MMBase.
-
-		//      res.setHeader("Cache-Control"," no-cache");
-		//      res.setHeader("Pragma", "no-cache");
+        
+        // You dhoulfn't set the no-cache headers 
+        // when you want the browser and proxies to cache the page until it is expired
+        // otherwise it will go through the proxies to MMBase.
+        
+        //      res.setHeader("Cache-Control"," no-cache");
+        //      res.setHeader("Pragma", "no-cache");
     }
 
     public String getServletInfo() {
-        return("extended html parser that adds extra html commands and a interface to modules.");
+        return "extended html parser that adds extra html commands and a interface to modules.";
     }
 
      void handlePost(scanpage sp, HttpServletResponse res) throws Exception {
