@@ -14,7 +14,11 @@
     <create-extended>CREATE TABLE {0} ({1}) INHERITS ({2})</create-extended>
     <not-null>{0} {1} NOT NULL</not-null>
     <primary-key>{0} {1} NOT NULL, PRIMARY KEY ({0})</primary-key>
-		<foreign-key>{0} {1} NOT NULL, INDEX ({0})</foreign-key>
+    <!-- here (foreign-key) we want something like 
+    {0} {1} NOT NULL, FOREIGN KEY ({0}) REFERENCES install_object(number) 
+    but the current "sheme" does not allow this
+    -->
+    <foreign-key>{0} {1} NOT NULL</foreign-key>
     <key>{0} {1} NOT NULL, UNIQUE ({0})</key>
   </scheme>
   <mapping>
@@ -25,6 +29,7 @@
     <type-mapping mmbase-type="NODE">INTEGER</type-mapping>
     <type-mapping mmbase-type="STRING">TEXT</type-mapping>
     <type-mapping mmbase-type="XML">TEXT</type-mapping>
+    <!-- <type-mapping mmbase-type="BYTE">OID</type-mapping> -->
     <type-mapping mmbase-type="BYTE">bytea</type-mapping>
   </mapping>
   &extra;
