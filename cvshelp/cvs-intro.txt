@@ -5,6 +5,9 @@ Short Short Version:
 
 Local access: export CVSROOT=/usr/local/cvs 
 Remote access: export CVS_RSH=ssh ; export CVSROOT=:ext:you@host:/usr/local/cvs' 
+Anonymous access: export CVSROOT=:pserver:guest@www.mmbase.org:/usr/local/cvs
+cvs login (password guest)
+
 Getting the source the 1st time: cvs checkout myproj
 Commiting changes: cvs commit -m 'I did this thing'
 Getting new versions of files: cvs update -P -d
