@@ -15,35 +15,15 @@ import java.net.*;
 
 import javax.servlet.http.*;
 
+import org.mmbase.util.logging.*;
 
 /**
- *
+ * 
  */
 
-/*
- */
 public class HttpAuth {
-
-	public String 	classname = getClass().getName();
-	public boolean  debug		= false;
-	public static void debug( String msg ) { System.out.println( "org.mmbase.util.HttpAuth:"+ msg ); }
-	// public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-
-    public static final int SC_OK = 200;
-    public static final int SC_CREATED = 201;
-    public static final int SC_ACCEPTED = 202;
-    public static final int SC_NO_CONTENT = 204;
-    public static final int SC_MOVED_PERMANENTLY = 301;
-    public static final int SC_MOVED_TEMPORARILY = 302;
-    public static final int SC_NOT_MODIFIED = 304;
-    public static final int SC_BAD_REQUEST = 400;
-    public static final int SC_UNAUTHORIZED = 401;
-    public static final int SC_FORBIDDEN = 403;
-    public static final int SC_NOT_FOUND = 404;
-    public static final int SC_INTERNAL_SERVER_ERROR = 500;
-    public static final int SC_NOT_IMPLEMENTED = 501;
-    public static final int SC_BAD_GATEWAY = 502;
-    public static final int SC_SERVICE_UNAVAILABLE = 503;
+	
+	static Logger log = Logging.getLoggerInstance(HttpAuth.class.getName());
 
 	static Hashtable p_base64;
 
@@ -141,6 +121,9 @@ public class HttpAuth {
 	 */
 	public static String getAuthorization(HttpServletRequest req,HttpServletResponse res,String server, String level) throws AuthorizationException, NotLoggedInException {
 	
+		if (log.isDebugEnabled()) {
+			log.debug("server: " + server + ", level: " + level);
+		}
 		//debug("BASE="+p_base64);
 		if (p_base64==null) {
 			p_base64=readPasswordFromDisk();
@@ -152,20 +135,23 @@ public class HttpAuth {
 
 		/** Is user authorized yet? **/
         if (passwd==null) {
-    			res.setStatus(SC_UNAUTHORIZED);
-				res.setHeader("WWW-Authenticate","Basic realm=\""+server+"\"");
-				throw new NotLoggedInException("Not logged in Exception (Generate page)");
+			log.info("page " + req.getRequestURI() + " is secure, and user not yet authenticated");
+			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			res.setHeader("WWW-Authenticate","Basic realm=\""+server+"\"");
+			throw new NotLoggedInException("Not logged in Exception (Generate page)");
 		} else {
 			//debug("passwd="+passwd);
 			/** Get name from user **/
 			String name=getLoginName(passwd);
 
 			/** Authenticate user **/
-			if (!checkUser(name,passwd)) {
-    			res.setStatus(SC_UNAUTHORIZED);
+			if (!checkUser(name, passwd)) {
+				log.service("Logging in of user " + name + "failed");
+    			res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				res.setHeader("WWW-Authenticate","Basic realm=\""+server+"\"");
 				throw new AuthorizationException("User authorization failed (Generate page)");
 			} else {
+				log.service("User " + name + " succesfully logged in");
 				//if (users!=null) users.addUser(name,requestInfo);
 				return(name);
 			}
@@ -182,7 +168,7 @@ public class HttpAuth {
 		}
 	}
 
-	public static String getRemoteUser(scanpage sp) {
+public static String getRemoteUser(scanpage sp) {
 		HttpServletRequest req=sp.req;
         String mimeline = ((String)req.getHeader("Authorization"));
 		String name=(String)p_base64.get(mimeline);
@@ -192,7 +178,7 @@ public class HttpAuth {
 
 
 	static boolean checkLocal(String name, String area, String passwd, String level) {
-		debug("checkLocal("+name+","+area+", ... , "+level+"): checking remote("+checklocalurl+") for name("+name+")");
+		log.info("checkLocal("+name+","+area+", ... , "+level+"): checking remote("+checklocalurl+") for name("+name+")");
 		String passwd2=(String)LocalCache.get(name+area);
 		if(passwd2==null) { // Not in cache so retrieve
 			try {
@@ -292,7 +278,7 @@ public class HttpAuth {
 			try {
 				name=decodedline.substring(0,decodedline.indexOf(':'));
 			} catch (Exception e) {
-				debug("getLoginName(): Exception: while decoding("+decodedline+"): " + e);
+				log.error("getLoginName(): Exception: while decoding("+decodedline+"): " + e);
 			}
 			newobject = new Hashtable();	
 			newobject.put("base64",mimel.substring(mimel.indexOf(' ')+1));
@@ -307,9 +293,9 @@ public class HttpAuth {
 
 	public static void setLocalCheckUrl(String url) {
 		if (checklocalurl!=null) {
-			debug("setLocalCheckUrl("+url+"): SetLocalUrl ALLREADY SET !!!!");
+			log.error("setLocalCheckUrl("+url+"): SetLocalUrl ALLREADY SET !!!!");
 		} else {
-			debug("setLocalUrl("+url+"): url is set to local");
+			log.info("setLocalUrl("+url+"): url is set to local");
 			checklocalurl=url;
 		}
 	}
