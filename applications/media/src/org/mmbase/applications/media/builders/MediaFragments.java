@@ -19,7 +19,6 @@ import java.net.URL;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
-import org.mmbase.util.media.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -33,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.27 2003-08-20 10:09:29 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.28 2003-08-26 09:28:27 michiel Exp $
  * @since MMBase-1.7
  */
 
