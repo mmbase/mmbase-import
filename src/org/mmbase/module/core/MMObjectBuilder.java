@@ -63,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.254 2003-12-21 13:26:35 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.255 2004-01-06 10:51:20 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -188,13 +188,13 @@ public class MMObjectBuilder extends MMTable {
      * changes are commited to the database.
      * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
      */
-    public boolean broadcastChanges=true;
+    public boolean broadcastChanges = true;
 
     /**
      *  Maintainer information for builder registration
      *  Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
      */
-    String maintainer="mmbase.org";
+    String maintainer = "mmbase.org";
 
     /**
      * Default output when no data is available to determine a node's GUI description
@@ -506,7 +506,7 @@ public class MMObjectBuilder extends MMTable {
      * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
-        return mmb.getDatabase().commit(this,node);
+        return mmb.getDatabase().commit(this, node);
     }
 
     /**
@@ -779,13 +779,13 @@ public class MMObjectBuilder extends MMTable {
      * during the commit.
      */
     public boolean safeCommit(MMObjectNode node) {
-        boolean res=false;
+        boolean res = false;
         try {
             synchronized(nodeCache) {
                 cacheLocked++;
             }
             nodeCache.remove(new Integer(node.getNumber()));
-            res=node.commit();
+            res = node.commit();
             if (res) {
                 nodeCache.put(new Integer(node.getNumber()),node);
             };
