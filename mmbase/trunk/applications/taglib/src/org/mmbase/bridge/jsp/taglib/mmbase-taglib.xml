@@ -1068,4 +1068,19 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         </possiblevalue>
     </attribute>
   </tag>
+  <tag>
+    <name>import</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ImportTag</tagclass>
+    <info>
+    To put Strings in the session (Perhaps we could change it, to make
+    it possible to put other things in it too).
+    </info>
+    <attribute>
+        <name>key</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>	
+	</info>
+    </attribute>
+  </tag>
 </taglib>
