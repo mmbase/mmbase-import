@@ -81,6 +81,13 @@ public abstract class FileWatcher extends Thread {
 	    return (lastModified < file.lastModified());
 	}
 
+        /**
+         * Call if changes were treated.
+         */
+        public void updated() {
+            lastModified = file.lastModified();
+        }
+
     	public File getFile() {
 	    return file;
 	}	
@@ -117,10 +124,10 @@ public abstract class FileWatcher extends Thread {
 
     /**
      * Put here the stuff that has to be executed, when a file has been changed.
-     *@param file The file that was changed..
+     * @param file The file that was changed..
      */
     abstract protected void onChange(File file);
-    
+
     /**
      * Set the delay to observe between each check of the file changes.
      */
@@ -186,8 +193,10 @@ public abstract class FileWatcher extends Thread {
 		if(fe.changed()) {
 		    log.info("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
 		    onChange(fe.getFile());
-                    if (! continueAfterChange) {
-                        return true;
+                    if (continueAfterChange) {                        
+                        fe.updated(); // onChange was called now, it can be marked up-to-date again
+                    } else { // 
+                        return true; // stop watching
                     }
 		}
 	    }
