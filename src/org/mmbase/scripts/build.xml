@@ -1421,7 +1421,7 @@ Change directory to ${build.dir}/orion and run:
 
   <target name="get.log4j" depends="init.get" unless="log4j.present">
     <get src="${log4j.url}"
-         dest="${download.dir}/${log4j.version}.tgz"
+         dest="${download.dir}/jakarta-log4j-${log4j.version}.tgz"
          verbose="on"/>
   </target>
 
