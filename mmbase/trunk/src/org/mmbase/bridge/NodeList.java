@@ -14,11 +14,15 @@ package org.mmbase.bridge;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.8 2003-08-27 21:26:02 michiel Exp $
+ * @version $Id: NodeList.java,v 1.9 2003-12-17 09:14:45 michiel Exp $
  */
 public interface NodeList extends BridgeList {
 
-
+    /**
+     * In the propery of the list with this name you find back the original Query object
+     * by which this NodeList was created (if it as created like that)
+     * @since MMBase-1.7
+     */
     public static final String QUERY_PROPERTY = "query";
     /**
      * Returns the Node at the indicated postion in the list
