@@ -19,6 +19,9 @@
 
 <p>
   We demonstrate a simple editor here.
+  It allows you to select the nodes from a nodemanager and delete these.
+  Note that this example is not optimized, and if a nodemanager contains a lot objects, the system may not be able to handle the request.
+  Some objects are protected. You may not be allowed to remove them.
 </p>
 
 <%@include file="codesamples/listdelete.jsp.1" %>

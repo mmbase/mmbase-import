@@ -10,7 +10,7 @@
 
 <h1>Cloud tag</h1>
 <p>
-  The 'method' attribute can be used to force http authentications.
+  The 'method' attribute can be used to force http authentication.
 </p>
 <table>
 <tr valign="top">
