@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.11 2002-11-06 10:59:18 michiel Exp $
+ * @version  $Id: validator.js,v 1.12 2003-04-01 12:16:22 mark Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -46,6 +46,39 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
         return value.replace(/(\{0\})/g, param);
     }
     return value;
+}
+
+// Here some date-related code that we need top determine if we're living within Daylight Saving Time
+//
+function makeArray()    {
+    this[0] = makeArray.arguments.length;
+    for (i = 0; i<makeArray.arguments.length; i++)
+        this[i+1] = makeArray.arguments[i];
+}
+
+var daysofmonth   = new makeArray( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+var daysofmonthLY = new makeArray( 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+
+function LeapYear(year) {
+    if ((year/4)   != Math.floor(year/4))   return false;
+    if ((year/100) != Math.floor(year/100)) return true;
+    if ((year/400) != Math.floor(year/400)) return false;
+    return true;
+}
+
+function NthDay(nth,weekday,month,year) {
+    if (nth > 0) return (nth-1)*7 + 1 + (7 + weekday - DayOfWeek((nth-1)*7 + 1,month,year))%7;
+    if (LeapYear(year)) var days = daysofmonthLY[month];
+    else                var days = daysofmonth[month];
+    return days - (DayOfWeek(days,month,year) - weekday + 7)%7;
+}
+
+function DayOfWeek(day,month,year) {
+    var a = Math.floor((14 - month)/12);
+    var y = year - a;
+    var m = month + 12*a - 2;
+    var d = (day + y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) + Math.floor((31*m)/12)) % 7;
+    return d+1;
 }
 
 function validateElement_validator(el, silent) {
@@ -114,21 +147,20 @@ function validateElement_validator(el, silent) {
                 var minutes = 0;
             }
 
-
-			// We don't want -1 = 2 BC, 0 = 1 BC,  -1 = 2 BC but
-			//               0 -> error, -1 = 1 BC   1 = 1 AC
-			if (year == 0) {
-			    err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
+            // We don't want -1 = 2 BC, 0 = 1 BC,  -1 = 2 BC but
+            //               0 -> error, -1 = 1 BC   1 = 1 AC
+            if (year == 0) {
+                err += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
             }
-			if (year < 0 ) year++;
+            if (year < 0 ) year++;
 
-			var date = new Date();
-			date.setMonth(month, day);
-			date.setFullYear(year);
-			date.setHours(hours, minutes);
+            var date = new Date();
+            date.setMonth(month, day);
+            date.setFullYear(year);
+            date.setHours(hours, minutes);
 			
             var ms = date.getTime();
-			
+
             //form.elements["debug"].value = ms + "\n" + form.elements["debug"].value;;
 
             if (date.getDate() != day) {
@@ -150,9 +182,26 @@ function validateElement_validator(el, silent) {
                            d.getDate() + " " + months[d.getMonth()] + " " + d.getUTCFullYear());
                 }
             }
-            if (err.length == 0) {
-                form.elements[id].value = Math.round(ms/1000);
-				 // - (60*d.getTimezoneOffset()));
+
+            // Here we'll  calculate the start and end of Daylight Saving Time
+            // We need that in order to display correct date and times in IE on Macintosh
+            var DSTstart = new Date(year,4-1,NthDay(1,1,4,year),2,0,0);
+            var DSTend   = new Date(year,10-1,NthDay(-1,1,10,year),2,0,0);
+            var DSTstartMS = Date.parse(DSTstart);
+            var DSTendMS = Date.parse(DSTend);
+
+            // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes 
+            // 
+            if ((navigator.appVersion.indexOf('MSIE')!=-1) && (navigator.appVersion.indexOf('Mac')!=-1) && (ms>DSTstartMS) && (ms<DSTendMS)) {
+                if (err.length == 0) {
+                    form.elements[id].value = Math.round(ms/1000-(60*60));
+                    //alert(form.elements[id].value + " = " + day + " " + month + " " + year + " " + hours + ":" + minutes);
+                }
+            } else {
+                if (err.length == 0) {
+                    form.elements[id].value = Math.round(ms/1000); // - (60*d.getTimezoneOffset()));
+                    //alert(form.elements[id].value + " = " + day + " " + month + " " + year + " " + hours + ":" + minutes);
+                }
             }
             break;
     }
