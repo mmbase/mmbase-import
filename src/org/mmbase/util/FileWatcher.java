@@ -58,7 +58,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
  */
-public abstract class FileWatcher extends Thread {
+public abstract class FileWatcher  { //extends Thread {
     static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
 
     /**
@@ -68,6 +68,7 @@ public abstract class FileWatcher extends Thread {
     public static void reinitLogger() {
         log = Logging.getLoggerInstance(FileWatcher.class.getName());
     }
+
 
     private class FileEntry {
     	// static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
@@ -130,6 +131,11 @@ public abstract class FileWatcher extends Thread {
      *  seconds.  
      */
     static final public long DEFAULT_DELAY = 60000; 
+
+    /**
+     * The one thread doing al the work also needs a delay.
+     */
+    static final public long THREAD_DELAY = 1000; 
     
     /**
      * The delay to observe between every check. By default set {@link
@@ -138,16 +144,20 @@ public abstract class FileWatcher extends Thread {
     private long delay = DEFAULT_DELAY; 
     private boolean stop = false;
     private boolean continueAfterChange = false;
+    private long lastCheck = 0;
   
     protected FileWatcher() {
-    	// make it end when parent treath ends..
-    	setDaemon(true);
+        this(true);
     }
 
     protected FileWatcher(boolean c) {
     	// make it end when parent treath ends..
         continueAfterChange = c;
-    	setDaemon(true);
+    }
+
+
+    public void start() {
+        fileWatchers.add(this);
     }
 
     /**
@@ -195,8 +205,6 @@ public abstract class FileWatcher extends Thread {
     }
 
     /**
-     * Add's a file to be checked...
-     *@param file The file which has to be monitored..
      */
     public void exit() {
     	synchronized(this) {
@@ -278,23 +286,103 @@ public abstract class FileWatcher extends Thread {
 	}
     }
 
-    /**
-     *  Main loop, will repeat every amount of time.
-     *	It will stop, when either a file has been changed, or exit() has been called
-     */
-    public void run() {
-    	do {
-    	    try {
-    	    	if(log.isDebugEnabled()) { 
-                    log.trace("Filewatcher will sleep for : " + delay / 1000 + " s. " + 
-                              "Currently watching: " + toString());
+    public boolean equals(Object o) {
+        if (! (o instanceof FileWatcher)) return false;
+        FileWatcher f = (FileWatcher) o;
+        return this.getClass().equals(f.getClass()) && this.files.equals(f.files);
+    }
+
+    private static FileWatcherRunner fileWatchers = new FileWatcherRunner();
+    static {
+        fileWatchers.start();
+    }
+
+    private static class FileWatcherRunner extends Thread {
+
+        private Set watchers = new HashSet();
+        FileWatcherRunner() {
+            setPriority(MIN_PRIORITY);
+            setDaemon(true);
+        }
+
+        void add(FileWatcher f) {
+            watchers.add(f);
+        }
+
+        /**
+         *  Main loop, will repeat every amount of time.
+         *	It will stop, when either a file has been changed, or exit() has been called
+         */
+        public void run() {
+            do {
+                try {
+                    Iterator i = watchers.iterator();
+                    long now = System.currentTimeMillis();
+                    while (i.hasNext()) {
+                        FileWatcher f = (FileWatcher) i.next();
+                        if (now - f.lastCheck > f.delay) {
+                            if(log.isDebugEnabled()) { 
+                                log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + 
+                                          "Currently watching: " + f.toString());
+                            }
+                            System.out.print(".");
+                            f.removeFiles();
+                            if (f.changed() || f.mustStop()) watchers.remove(f); 
+                        }
+                    }
+                    Thread.currentThread().sleep(THREAD_DELAY);
+                } catch(InterruptedException e) {
+                    System.out.println("interrupted");
+                    // no interruption expected
                 }
-	    	Thread.currentThread().sleep(delay);
-                removeFiles();
-      	    } catch(InterruptedException e) {
-	    	// no interruption expected
-      	    }
-	// when we found a change, we exit..
-	} while (!mustStop() && !changed());
+                // when we found a change, we exit..
+            } while (true);
+        }
+                
+    }
+
+
+    /**
+     * Performance test
+     */
+
+    private static class TestFileWatcher extends FileWatcher {
+        int i = 0;
+        protected void onChange(java.io.File f) {
+            // do something..
+            i++;
+        }
+        protected void finalize() {
+            System.out.println(toString() + ":" + i);
+        }
+    }
+
+    public static void main(String[] args) {
+        
+        // start some filewatchers
+        for (int i = 0; i < 100; i++) {
+            FileWatcher w = new TestFileWatcher();
+            // add some files
+            for (int j = 0; j < 4; j++) {
+                try {
+                    w.add(File.createTempFile("filewatchertestfile", ".txt"));
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            }
+            //set a delay and start it.
+            w.setDelay(1 * 1000); // 1 s
+            w.start();
+            //this.wait(123); // make all watchers out sync
+        }
+
+        System.out.println("Starting");
+        // ok, a lot of those are running now, let time something else, and see if it suffers.
+        long start = System.currentTimeMillis();
+        long k;
+        for (k = 0; k < 400000000;) {
+            k++;
+        }
+        System.out.println("\ntook " + (System.currentTimeMillis() - start) + " ms");
     }
 }
