@@ -492,7 +492,7 @@ textarea {
 }
 #searchform
 {
-	margin: 20px 10px 20px 0;
+	margin: 15px 10px 20px 0;
 	padding: 10px;
 	width: 50%;
 	border-color: #666;
@@ -500,6 +500,7 @@ textarea {
 	background-color: #efefef;
 	border-width: 1px;
 }
+.documentXYZ { margin: 10pt 0 10pt 0; }
 #results { margin: 10px 10px 10px 0; }
 #results ul
 {
