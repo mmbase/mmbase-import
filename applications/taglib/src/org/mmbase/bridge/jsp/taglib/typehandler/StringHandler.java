@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.29 2004-07-10 12:16:46 nico Exp $
+ * @version $Id: StringHandler.java,v 1.30 2004-07-12 13:47:17 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -86,28 +86,30 @@ public class StringHandler extends AbstractTypeHandler {
                 }
             } else { // not 'owner'
 
-                if(field.getMaxLength() > 2048)  {
-                    // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
-                    buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
-                    addExtraAttributes(buffer);
-                    buffer.append(" name=\"");
-                    buffer.append(prefix(field.getName()));
-                    buffer.append("\">");
-                    if (node != null) {
-                        buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
-                    }
-                    buffer.append("</textarea>");
-                } else if(field.getMaxLength() > 255 )  {
-                    buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
-                    addExtraAttributes(buffer);
-                    buffer.append(" name=\"");
-                    buffer.append(prefix(field.getName()));
-                    buffer.append("\">");
-                    if (node != null) {
-                        buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
-                    }
-                    buffer.append("</textarea>");
-                } else {
+                if (guiType.equals("field")) {
+                    if(field.getMaxLength() > 2048)  {
+                        // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
+                        buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"");
+                        addExtraAttributes(buffer);
+                        buffer.append(" name=\"");
+                        buffer.append(prefix(field.getName()));
+                        buffer.append("\">");
+                        if (node != null) {
+                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                        }
+                        buffer.append("</textarea>");
+                    } else if(field.getMaxLength() > 255 )  {
+                        buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
+                        addExtraAttributes(buffer);
+                        buffer.append(" name=\"");
+                        buffer.append(prefix(field.getName()));
+                        buffer.append("\">");
+                        if (node != null) {
+                            buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                        }
+                        buffer.append("</textarea>");
+                    } 
+                } else { // not 'field' perhaps it's 'string'.
                     if (guiType.indexOf("password") > -1) {
                         buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
                     } else {
