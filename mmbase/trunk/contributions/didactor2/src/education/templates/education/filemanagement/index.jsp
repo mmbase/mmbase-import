@@ -1,7 +1,7 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 
-<%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList"%>
+<%@page import="java.io.File, org.apache.commons.fileupload.*, java.util.List, java.util.Iterator, java.util.Collections, java.util.ArrayList, org.mmbase.bridge.Node, org.mmbase.bridge.NodeManager, org.mmbase.bridge.NodeIterator"%>
 <%
 
 //    String directory = getServletContext().getRealPath("/education/files");
@@ -14,7 +14,8 @@
     }
     
     boolean uploadOK = false;
-
+    String fileName = null;
+    String mtype = null;
     if (request.getSession(false) != null && "true".equals(request.getSession(false).getAttribute("mayupload"))) {
 
         if (FileUpload.isMultipartContent(request)) {
@@ -26,10 +27,15 @@
             Iterator itr = items.iterator();
             while(itr.hasNext()) {
                 FileItem item = (FileItem) itr.next();
-                if(!item.isFormField()) {
+                if (item.isFormField()) {
+                    if (item.getFieldName().equals("manager")) {
+                        mtype = item.getString();
+                    }
+                }
+                else {
                     String fieldName = item.getFieldName();
                     if(fieldName.equals("filename")) {
-                        String fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
+                        fileName = item.getName().replaceFirst("\\A.*?[/\\\\:]([^/\\\\:]+)$\\z","$1");
                         File savedFile = new File(directory,fileName);
                         item.write(savedFile);
                         uploadOK=true;
@@ -46,6 +52,34 @@
 
 <di:hasrole role="filemanager">
 <% request.getSession().setAttribute("mayupload","true"); %>
+<%
+    String msg = "";
+    if (uploadOK && fileName != null) {
+        // add link to specific builder
+        
+        String manager = null;
+        if ("audio".equals(mtype)) {
+            manager = "audiotapes";
+        } else if ("video".equals(mtype)) {
+            manager = "videotapes";
+        } else if ("url".equals(mtype)) {
+            manager = "urls";
+        }
+        
+        if (manager == null) {
+            msg = "Onbekend bestands type '"+mtype+"'";
+        }
+        else {
+            Node n = cloud.getNodeManager(manager).createNode();
+            n.setValue( "urls".equals(manager) ? "name" : "title" ,fileName);
+            n.setValue("url",baseUrl+"/"+fileName);
+            n.commit();
+        }
+    }
+%>
+      
+        
+
 <html>
 <head>
 <title>File manager</title>
@@ -72,7 +106,14 @@
         if (file.isDirectory()) {
             continue;
         }
-        if (file.getName().equals(deletefile)) {
+        if (deletefile != null && file.getName().equals(deletefile)) {
+            String[] managers = {"audiotapes","videotapes","urls"};
+            for (int i = 0; i < managers.length; i++) {
+                NodeIterator ni = cloud.getNodeManager(managers[i]).getList("url='"+baseUrl+"/"+deletefile+"'",null,null).nodeIterator();
+                while(ni.hasNext()) {
+                    ni.nextNode().delete(true);
+                }
+            }
             file.delete();
             continue;
         }
@@ -88,8 +129,14 @@
 <%  } %>
 </table>
     <% if (uploadOK) { %><b>Upload OK</b><br><% } %>
+    <b><%= msg %></b><br>
     <form action="index.jsp" method="POST" enctype="multipart/form-data">
     <input type="file" name="filename">
+    <select name="manager">
+        <option value="url">Algemeen URL</option>
+        <option value="audio">Audio</option>
+        <option value="video">Video</option>
+    </select>
     <input type="submit" value="Ok">
     </form>
 
