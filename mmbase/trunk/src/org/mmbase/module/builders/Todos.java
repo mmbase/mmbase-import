@@ -53,7 +53,7 @@ public class Todos extends MMObjectBuilder {
 				case 7: return("Finished");
 				default: return("Unknown");
 			}
-		}
-		return(null);
+		} else
+			return super.getValue( node, field );
 	}
 }

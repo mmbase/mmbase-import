@@ -1,11 +1,14 @@
 /*
 
+$Id: Teasers.java,v 1.3 2000-03-17 12:31:27 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
@@ -23,7 +26,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version 7 Jul 1999
+ * @version $Revision: 1.3 $ $Date: 2000-03-17 12:31:27 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -120,7 +123,9 @@ public class Teasers extends MMObjectBuilder {
 			
 		}
 		return(null);
-	}		/**
+	}
+	
+	/**
 	* Generate a list of values from a command to the processor
 	*/
 	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
@@ -138,20 +143,30 @@ public class Teasers extends MMObjectBuilder {
 		return(results);
 	}
 
-	private Vector getKeyWords(StringTagger tagger)	{		String nodeNr = tagger.Value("NODE");		MMObjectNode node = getNode(nodeNr);
+	private Vector getKeyWords(StringTagger tagger)
+	{
+		String nodeNr = tagger.Value("NODE");
+		MMObjectNode node = getNode(nodeNr);
 		if (node==null)
-			return new Vector();		String s = node.getStringValue("title")+" "+node.getStringValue("body");
-		//debug("getKeyWords "+s);		return Keywords.createKeywords(s);	}
+			return new Vector();
+		String s = node.getStringValue("title")+" "+node.getStringValue("body");
+		//debug("getKeyWords "+s);
+		return Keywords.createKeywords(s);
+	}
 
 	public Object getValue(MMObjectNode node,String field) {
+		Object result = null;
+
 		if (field.equals("image")) {
 			Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),6);
 			if (e.hasMoreElements()) {
 				MMObjectNode node2=(MMObjectNode)e.nextElement();
-				return("<IMG SRC=\"/img.db?"+node2.getIntValue("number")+"+s(118x3000)\" ALIGN=\"BOTTOM\">");
+				result = ("<IMG SRC=\"/img.db?"+node2.getIntValue("number")+"+s(118x3000)\" ALIGN=\"BOTTOM\">");
 			}
-		}
-		return(null);
+        } else 
+			result = super.getValue( node, field ); 
+
+		return(result);
 	}
 
 	public String getDefaultUrl(int src) {
@@ -163,7 +178,9 @@ public class Teasers extends MMObjectBuilder {
 
 		if (url!=null) 
 			return(url);
-		// No url related to teaser, now walk through all related objects		// and ask their builders for a url through builder.getDefaultUrl(relatedNodeNr)
+
+		// No url related to teaser, now walk through all related objects
+		// and ask their builders for a url through builder.getDefaultUrl(relatedNodeNr)
 		Enumeration e=node.getRelations();
 		while (e.hasMoreElements()) {
 			MMObjectNode node2=(MMObjectNode)e.nextElement();
@@ -451,7 +468,8 @@ public class Teasers extends MMObjectBuilder {
 	}
 
 	/** @return the url related to this teaser or null if none
-	 */	private String getUrl(int src) {
+	 */
+	private String getUrl(int src) {
 		Enumeration e=mmb.getInsRel().getRelated(src,8); // 8 = objectNr URL
 		if (e.hasMoreElements()) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -583,14 +601,16 @@ public class Teasers extends MMObjectBuilder {
 		return(-1);
 	}
 	*/
-	/*	Nothing as we would get dup's otherwise
+
+	/*	Nothing as we would get dup's otherwise
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
         super.nodeRemoteChanged(number,builder,ctype);
 		if (builder.equals(tableName)) {
 			// Nothing as we would get dup's otherwise
 		}
 		return(true);
-	}	*/
+	}
+	*/
 
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
         super.nodeLocalChanged(number,builder,ctype);
