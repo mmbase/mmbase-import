@@ -10,9 +10,17 @@
 	<action type="create">
 		<object type="mags">
       <field name="title" ftype="string">My Magazine</field>		
-</object>
+    </object>
 	</action>
 
+
+ <lists>
+   <optionlist name="subtitle">
+     <option id="interesting" >A magazine with lots of interesting stuff</option>
+		 <option id="dull"        >A dull magazine</option> 
+		 <option id="exciting"    >The _MOST_ Exciting Magazine!!</option> 
+   </optionlist>
+  </lists>
 
   <form-schema id="mags">  
 
@@ -20,9 +28,10 @@
 			<prompt>Title</prompt>
 		</field>
 
-		<field name="subtitle" >
-			<prompt>Subtitle</prompt>
-		</field>
+    <field name="subtitle" dtminlength="1" dtmaxlength="10" ftype="enum" dtrequired="true">
+	    <prompt>Subtitle (showing the use of optionlists)</prompt>
+      <optionlist select="subtitle" />
+   	</field>
 
 		<field name="intro" ftype="text" rows="4" >
 			<prompt>Intro</prompt>
