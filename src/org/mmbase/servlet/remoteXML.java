@@ -1,19 +1,23 @@
 /*
 
+$Id: remoteXML.java,v 1.4 2000-03-13 10:30:15 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
+
 package org.mmbase.servlet;
  
-// import the needed packages
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
@@ -24,6 +28,8 @@ import org.mmbase.module.core.*;
  * be seen as a change on a object. It uses a POST command to get the
  * XML and will respond with a 200 OK if the xml was understood by the
  * mmbase system.
+ *
+ * @version $Revision: 1.4 $ $Date: 2000-03-13 10:30:15 $
  */
 public class remoteXML extends JamesServlet {
 
@@ -44,11 +50,10 @@ public class remoteXML extends JamesServlet {
  	*/
 	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
 	{	
-
-		// POST
 		if (req.getMethod().equals("POST")) {
 			handlePost(req,res);
-		} else if (req.getMethod().equals("GET")) {
+		} else 
+		if (req.getMethod().equals("GET")) {
 			handleGet(req,res);
 		}
 	}
@@ -58,7 +63,6 @@ public class remoteXML extends JamesServlet {
 		HttpPost poster=new HttpPost(req);
 
 		String xml=poster.getPostParameter("xmlnode");
-		//System.out.println("WOW GOT="+xml);
 		commitXML(xml,req);
 		} catch(Exception e) {
 			System.out.println("POST failed from remoteXML");
@@ -74,7 +78,7 @@ public class remoteXML extends JamesServlet {
 		String host			= getParam(req,3);
 		String port			= getParam(req,4);
 
-		String servername		= proto+"://"+host+":"+port;
+		String servername	= proto+"://"+host+":"+port;
 
 		MMObjectBuilder bul=mmbase.getMMObject(buildername);
 		String number=bul.getNumberFromName(nodename);
@@ -139,7 +143,11 @@ public class remoteXML extends JamesServlet {
 			out.flush();
 			out.close();
 		} catch(Exception e) {
-			System.out.println("GET failed from remoteXML");
+			debug("handleGet(): GET failed from remoteXML");
+            debug("handleGet(): buildername("+buildername+")");
+            debug("handleGet(): nodename("+nodename+")");
+            debug("handleGet(): number("+number+")");
+            debug("handleGet(): server("+servername+")");
 		}
 	}
 	
@@ -150,13 +158,12 @@ public class remoteXML extends JamesServlet {
 		String remhost=req.getRemoteAddr();
 		String givenhost=(String)values.get("host");
 
+		if (debug) debug("commitXML "+xml);
 		// hack for braindead psion jdk
 		if (givenhost!=null && givenhost.indexOf("http://localhost")!=-1) {
 			System.out.println("HOST REPLACE=http://"+remhost+":8080");
 			values.put("host","http://"+remhost+":8080");	
 		}
-
-			
 
 		String buildername=(String)values.get("buildername");
 		values.remove("buildername");
