@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.70 2002-10-04 22:29:25 michiel Exp $
+ * @version $Id: Wizard.java,v 1.71 2002-10-24 12:56:06 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -126,9 +126,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private List errors = new Vector();
 
     /**
-     * 
+     *
      */
-    private String popupId = "";  
+    private String popupId = "";
 
     private boolean debug = false;
 
@@ -137,20 +137,20 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         return getByteSize(new org.mmbase.util.SizeOf());
     }
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
-        return 
+        return
             sizeof.sizeof(preform) +
-            sizeof.sizeof(cloud)   + 
-            sizeof.sizeof(uriResolver) + 
-            sizeof.sizeof(schema) + 
-            sizeof.sizeof(data) + 
+            sizeof.sizeof(cloud)   +
+            sizeof.sizeof(uriResolver) +
+            sizeof.sizeof(schema) +
+            sizeof.sizeof(data) +
             sizeof.sizeof(originalData) +
             sizeof.sizeof(binaries) +
             sizeof.sizeof(binaryNames) +
             sizeof.sizeof(binaryPaths) +
             sizeof.sizeof(constraints);
-              
+
     }
-    
+
 
     /**
      * Constructor. Setup initial variables and connects to mmbase to load the data structure.
@@ -182,7 +182,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
 
     private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException, SecurityException {
-        
+
         context = c;
         uriResolver = uri;
         constraints = Utils.parseXML("<constraints/>");
@@ -403,7 +403,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("cloud",      cloud);
         params.put("debug",      "" + debug);
         if (templatesDir != null) params.put("templatedir",  templatesDir);
-        
+
         Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
     }
 
@@ -452,7 +452,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     storeValue(ids[0], ids[1], result);
                 }
             }
-        }                
+        }
     }
 
     /**
@@ -733,7 +733,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         //set number attribute in field
                         Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
                         createFormField(form, field, fieldDataNode);
-                        
+
                     }
                 }
 
@@ -858,7 +858,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     private void resolveShortcuts(Node schemanode, boolean recurse) {
         String xpath;
         if (recurse) xpath=".//field|.//list"; else xpath="field|list";
-        NodeList children = Utils.selectNodeList(schemanode, xpath);        
+        NodeList children = Utils.selectNodeList(schemanode, xpath);
         if(children == null) {
             throw new RuntimeException("could not perform xpath:"+xpath+" for schemanode:\n" + schemanode);
         }
@@ -943,7 +943,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         if (value==null) value=defaultvalue;
         if (value!=null) Utils.setAttribute(node,name,value);
     }
-    
+
     /**
      * 	Creates a form item (each of which may consist of several single form fields)
      *  for each given datanode.
@@ -1285,7 +1285,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
 	String xpath =  ".//*[@fid='" + fid + "']/@dttype";
         Node dttypeNode = Utils.selectSingleNode(schema, xpath);
-	
+
         if (dttypeNode == null) {
 	    String msg = "No node with fid=" + fid + " could be found";
 	    if(log.isDebugEnabled() && schema != null) {
@@ -1293,7 +1293,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 	    }
             throw new WizardException(msg);
         }
-	
+
         String dttype = dttypeNode.getNodeValue();
 	xpath = ".//*[@did='" + did + "']";
         Node datanode = Utils.selectSingleNode(data, xpath);
@@ -1313,7 +1313,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 Utils.setAttribute(datanode, "href", did);
                 Utils.storeText(datanode,getBinaryName(did));
             }
-        } 
+        }
 	else {  // default behavior: store content as text
             Utils.storeText(datanode, value);
         }
@@ -1348,13 +1348,13 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         processCommand(wc);
                     } catch (RuntimeException e){
                         // Have to accumulate the exceptions and report them at the end.
-                        // Michiel XXX Why? What's the point? 
+                        // Michiel XXX Why? What's the point?
                         // I think the code can be simplied by taking away all exception handlin in this function.
 
                         String errormsg = Logging.stackTrace(e);
                         log.error(errormsg);
                         errors.add(new WizardException("* Could not process command:" + commandname + "=" + commandvalue + "\n" + errormsg));
-                    }                
+                    }
             } else {
                 if (log.isDebugEnabled()) log.trace("ignoring non-command " + commandname);
             }
@@ -1569,7 +1569,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 log.debug("orig: " +     Utils.stringFormatted(originalData));
                 log.debug("new orig: " + Utils.stringFormatted(data));
             }
-            
+
             Element results = databaseConnector.put(originalData, data, binaries);
 
             // find the (new) objectNumber and store it.
@@ -1578,7 +1578,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 log.trace("results : " + results);
                 log.debug("found old number " + oldnumber);
             }
-            
+
             // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this
             // xpath
             String newnumber = Utils.selectSingleNodeText(results,".//object[@oldnumber='" + oldnumber + "']/@number", null);
@@ -1587,7 +1587,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             committed = true;
             mayBeClosed =  (cmd.getType() == WizardCommand.COMMIT);
             if (! mayBeClosed) {
-                if (log.isDebugEnabled()) { 
+                if (log.isDebugEnabled()) {
                     log.trace("Using data was " + Utils.getSerializedXML(originalData));
                     log.trace("is " + Utils.getSerializedXML(data));
                 }
@@ -1772,12 +1772,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
         String required = Utils.selectSingleNodeText(con,  "required", "false");
         String guiname = Utils.selectSingleNodeText(con,   "guiname", "");
+        String description = Utils.selectSingleNodeText(con,   "description", "");
         String maxlength = Utils.selectSingleNodeText(con, "maxlength", "-1");
 
         // dttype?
         String ftype = Utils.getAttribute(fielddef, "ftype", null);
         String dttype = Utils.getAttribute(fielddef, "dttype", null);
         Node prompt = Utils.selectSingleNode(fielddef, "prompt");
+        Node descriptiontag = Utils.selectSingleNode(fielddef, "description");
         if (dttype == null) {
             // import xmlSchemaType (dttype)
             // note :
@@ -1863,6 +1865,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // add guiname as prompt
         if (prompt == null) {
             Utils.createAndAppendNode(fielddef, "prompt", guiname);
+        }
+
+        // add description as helptext
+        if (descriptiontag == null) {
+            Utils.createAndAppendNode(fielddef, "description", description);
         }
 
         // process requiredness

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.29 2002-06-27 14:42:59 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.30 2002-10-24 12:56:07 pierre Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -61,7 +61,8 @@ public class FieldDefs implements Comparable {
     /**
      * @scope private
      */
-    private Hashtable GUINames = new Hashtable();
+    private Map GUINames = new Hashtable();
+    private Map descriptions = new Hashtable();
     private String GUIType;
     private int GUISearch = -1;
     private int GUIList = -1;
@@ -216,7 +217,6 @@ public class FieldDefs implements Comparable {
      * Retrieve the GUI name of the field.
      * If possible, the "en" value is returned.
      * If that one is unavailable the internal fieldname is returned.
-     * @param lang the language to return the name in
      * @return the GUI Name
      */
     public String getGUIName() {
@@ -229,11 +229,48 @@ public class FieldDefs implements Comparable {
     }
 
     /**
-     * Retrieve a Hashtable with all GUI names for this field,
+     * Retrieve the description of the field depending on specified langauge.
+     * If the language is not available, the "en" value is returned instead.
+     * @param lang the language to return the name in
+     * @return the description
+     */
+    public String getDescription(String lang) {
+        String tmp=(String)descriptions.get(lang);
+        if (tmp!=null) {
+            return tmp;
+        } else {
+            return getDescription();
+        }
+    }
+
+    /**
+     * Retrieve the GUI name of the field.
+     * If possible, the "en" value is returned.
+     * @return the Description
+     */
+    public String getDescription() {
+        String value=(String)descriptions.get("en");
+        if (value!=null) {
+            return value;
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Retrieve a Map with all GUI names for this field,
      * accessible by language.
      */
-    public Hashtable getGUINames() {
+    public Map getGUINames() {
         return GUINames;
+    }
+
+    /**
+     * Retrieve a Map with all descriptions for this field,
+     * accessible by language.
+     */
+    public Map getDescriptions() {
+        return descriptions;
     }
 
     /**
@@ -329,11 +366,24 @@ public class FieldDefs implements Comparable {
      * @param lang the language to set the name for
      * @param value the value to set
      */
-    public void setGUIName(String country,String value) {
+    public void setGUIName(String lang,String value) {
         if ((value==null) || value.equals("")) {
-            GUINames.remove(country);
+            GUINames.remove(lang);
         } else {
-            GUINames.put(country,value);
+            GUINames.put(lang,value);
+        }
+    }
+
+    /**
+     * Set the description of the field for a specified langauge.
+     * @param lang the language to set the description for
+     * @param value the value to set
+     */
+    public void setDescription(String lang,String value) {
+        if ((value==null) || value.equals("")) {
+            descriptions.remove(lang);
+        } else {
+            descriptions.put(lang,value);
         }
     }
 

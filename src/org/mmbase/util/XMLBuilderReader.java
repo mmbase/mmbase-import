@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.25 2002-07-12 07:31:52 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.26 2002-10-24 12:56:09 pierre Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -218,7 +218,11 @@ public class XMLBuilderReader extends XMLBasicReader {
                         Map.Entry p = (Map.Entry) guinames.next();
                         newfield.setGUIName((String)p.getKey(), (String)p.getValue());
                     }
-
+                    Iterator descriptions = f.getDescriptions().entrySet().iterator();
+                    while(descriptions.hasNext()) {
+                        Map.Entry p = (Map.Entry) descriptions.next();
+                        newfield.setDescription((String)p.getKey(), (String)p.getValue());
+                    }
                     results.add(newfield);
                     oldset.put(newfield.getDBName(),newfield);
                 }
@@ -265,6 +269,16 @@ public class XMLBuilderReader extends XMLBasicReader {
         String lang;
         // Gui
         Enumeration enum;
+
+        Element descriptions = getElementByPath(field,"field.descriptions");
+        if (descriptions!=null) {
+            for (enum = getChildElements(descriptions,"description"); enum.hasMoreElements(); ) {
+                tmp = (Element)enum.nextElement();
+                lang = getElementAttributeValue(tmp,"xml:lang");
+                def.setDescription(lang,getElementValue(tmp));
+            }
+        }
+
         Element gui = getElementByPath(field,"field.gui");
         if (gui!=null) {
             for (enum = getChildElements(gui,"guiname"); enum.hasMoreElements(); ) {
