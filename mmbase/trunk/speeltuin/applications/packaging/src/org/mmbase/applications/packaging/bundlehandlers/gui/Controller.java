@@ -54,13 +54,13 @@ public class Controller {
 
     public List getBundles() {
         // get the current best bundles
-        Enumeration bundles = BundleManager.getBundles();
+        Iterator bundles = BundleManager.getBundles();
 
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
-        while (bundles.hasMoreElements()) {
-            BundleInterface  b = (BundleInterface)bundles.nextElement();
+        while (bundles.hasNext()) {
+            BundleInterface  b = (BundleInterface)bundles.next();
             MMObjectNode virtual = builder.getNewNode("admin");
             virtual.setValue("id",b.getId());
             virtual.setValue("name",b.getName());
