@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.27 2003-08-20 11:39:33 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.28 2003-08-20 11:57:43 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -671,7 +671,7 @@ public class DatabaseStorageManager implements StorageManager {
             }
         } else {
             // retrieve node as a numeric value
-            statement.setInt(index, value.getIntValue(field.getDBName()));
+            statement.setInt(index, value.getNumber());
         }
     }
 
