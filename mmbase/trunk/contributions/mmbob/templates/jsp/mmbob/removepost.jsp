@@ -24,7 +24,7 @@
   <tr><th colspan="3" align="left" >Bericht : <p />
 	<mm:node referid="postingid">
 	<mm:field name="subject" /> van <mm:field name="poster" /><p />
-	<mm:field name="html(body)" />
+	<mm:field name="body" />
 	<p />
 	</mm:node> echt verwijderen ??</th></tr>
   <tr><td>
