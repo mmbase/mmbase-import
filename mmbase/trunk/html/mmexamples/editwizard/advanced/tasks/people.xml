@@ -6,15 +6,14 @@
 		<relation destination="images"   role="related"  />
 		<relation destination="news"     role="related"  />
 	</action>
-	
+
 	<action type="create">
 		<object type="people">
 			<field name="firstname" ftype="string">John</field>
 			<field name="lastname"  ftype="string">Doe</field>
 		</object>
 	</action>
- 
-	
+
 	<form-schema id="personals">
 		<title>Personal information</title>
 		<field name="firstname" ftype="string"> <!-- xdttype="html" -->
@@ -24,33 +23,28 @@
 			<prompt>Last name</prompt>
 		</field>
 
-    <list extends="lib/addimages.xml">
-      <title>photo</title>      			
-			<action type="create">
-				<relation role="related" destinationtype="images" />
-			</action>
-    </list>		
+    <list extends="lib/addsingleimage.xml">
+      <title>Photo</title>
+    </list>
   </form-schema>
-
 
 	<form-schema id="articles">
     <title>Written articles</title>
-    <list fdatapath="relation[object/@type='news']" minoccurs="0" maxoccurs="*" type="news">
+    <list role="related" destination="news">
       <title>Written articles</title>
+
+      <item>
+        <field name="title" ftype="data" />
+      </item>
 
       <command name="search" nodepath="news" fields="title">
         <prompt>Search for articles </prompt>
       </command>
-      
-      <item>
-        <field name="title" ftype="data" />
-      </item>
+
       <action type="create">
         <relation role="related" destinationtype="news" />
       </action>
-
     </list>
 	</form-schema>
-
 
 </wizard-schema>
