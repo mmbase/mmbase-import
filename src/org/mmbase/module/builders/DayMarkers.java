@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.29 2003-08-26 09:59:55 vpro Exp $
+ * @version $Id: DayMarkers.java,v 1.30 2003-10-13 08:36:10 keesj Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -97,7 +97,7 @@ public class DayMarkers extends MMObjectBuilder {
      * The current time in days since 1-1-1970
      */
     private int currentDay() {
-        return (int)(DateSupport.currentTimeMillis()/(1000*60*60*24));
+        return (int)(System.currentTimeMillis()/(1000*60*60*24));
     }
 
 
