@@ -65,7 +65,7 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
     private CronEntry createJCronEntry(Node node) {
         try {
             return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"));
-        } catch (Exception e) {
+        } catch (Throwable e) {
             System.err.println(e.getMessage());
         }
         return null;

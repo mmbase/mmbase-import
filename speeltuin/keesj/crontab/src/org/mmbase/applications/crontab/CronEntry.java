@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.3 2004-05-04 13:23:48 keesj Exp $
+ * @version $Id: CronEntry.java,v 1.4 2004-05-24 13:00:50 keesj Exp $
  */
 
 public class CronEntry {
@@ -126,6 +126,7 @@ public class CronEntry {
 
     boolean mustRun(Date date) {
         Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
         if (minute.valid(cal.get(Calendar.MINUTE))
             && hour.valid(cal.get(Calendar.HOUR_OF_DAY))
             && dayOfMonth.valid(cal.get(Calendar.DAY_OF_MONTH))
