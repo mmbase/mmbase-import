@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.71 2003-07-03 10:50:16 michiel Exp $ 
+ * @version $Id: CloudTag.java,v 1.72 2003-07-09 14:18:54 michiel Exp $ 
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -596,8 +596,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             && getMethod() != METHOD_ASIS) {
             // authorisation was requested, but not indicated for whom
             if (log.isDebugEnabled())
-                log.debug(
-                    "implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
+                log.debug("Implicitily requested non-anonymous (by method) cloud. Current user: " + cloud.getUser().getIdentifier());
             if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                 log.debug("there was a cloud, but anonymous. log it on");
                 cloud = null;
@@ -607,8 +606,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
         } else if (logon != null) {
             if (log.isDebugEnabled())
-                log.debug(
-                    "explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
+                log.debug("Explicitily requested non-anonymous cloud (by logon). Current user: " + cloud.getUser().getIdentifier());
             // a logon name was given, check if logged on as the right one
             if (!logon.contains(cloud.getUser().getIdentifier())) { // no!
                 log.debug("logged on, but as wrong user. log out first.");
@@ -620,20 +618,23 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("Cloud is ok already");
             }
         } else if (rank != Attribute.NULL) {
-            if (log.isDebugEnabled())
-                log.debug(
-                    "explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
-            Rank curRank = Rank.getRank(cloud.getUser().getRank());
-            if (curRank.getInt() < getRank().getInt()) {
+            String rankString = rank.getString(this);
+            if (! rankString.equals("") && ! rankString.equals(Rank.ANONYMOUS.toString())) {
                 if (log.isDebugEnabled()) {
-                    log.debug("logged on, but rank of user (" + curRank.toString() + ") is too low (must be " + getRank().toString() + "). log out first.");
+                    log.debug("Explicitily requested non-anonymous cloud (by rank). Current user: " + cloud.getUser().getIdentifier() + " rank: " + cloud.getUser().getRank());
                 }
-                cloud = null;
-                if (session != null) {
-                    session.removeAttribute(getSessionName());
+                Rank curRank = Rank.getRank(cloud.getUser().getRank());
+                if (curRank.getInt() < getRank().getInt()) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("logged on, but rank of user (" + curRank.toString() + ") is too low (must be " + getRank().toString() + "). log out first.");
+                    }
+                    cloud = null;
+                    if (session != null) {
+                        session.removeAttribute(getSessionName());
+                    }
+                } else {
+                    log.debug("Cloud is ok already");
                 }
-            } else {
-                log.debug("Cloud is ok already");
             }
         }
 
