@@ -70,7 +70,7 @@
 		<!-- database related  -->
 		<db>
 			<!-- name of the field in the database -->
-			<name>hight</name>
+			<name>height</name>
 			<!-- MMBase datatype and demands on it -->
 			<type state="persistent" notnull="false">INTEGER</type>
 		</db>
