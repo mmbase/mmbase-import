@@ -110,13 +110,18 @@ public class RelDef extends MMObjectBuilder {
 
     /**
     * Returns the builder name of a relation definition.
+    * If the buildername cannot be accurately determined, the <code>sname</code> field will be returned instead.
     * @return the builder name
     **/
     public String getBuilderName(MMObjectNode node) {
         String bulname=null;
   	    if (usesbuilder) {
   	        int builder = node.getIntValue("builder");
-  	        bulname=mmb.getTypeDef().getValue(builder);
+  	        if (builder<=0) {
+  	            bulname=node.getStringValue("sname");
+  	        } else {
+  	            bulname=mmb.getTypeDef().getValue(builder);
+  	        }
   	    } else {
   	        bulname=node.getStringValue("sname");
   	    }
