@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.24 2003-07-21 15:25:08 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.25 2003-07-21 20:04:04 keesj Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -274,9 +274,9 @@ public class MMBaseServlet extends  HttpServlet {
         if (m != null && (priority.intValue() < m.priority)) return;
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
-        log.service("Associating function '" + function + "' with servletname " + servletName +
-           (e == null ? ""  : " (removing " + e.name +")")+
-           (m == null ? ""  : " (removing " + m.name +")"));
+        log.service("Associating function '" + function + "' with servletname " + servletName + 
+           (e == null ? ""  : " (previous assosation was with " + e.name +")")+
+           (m == null ? ""  : " (previous assosation was with " + m.name +")"));
         associatedServlets.put(function, new ServletEntry(servletName, priority));
         if (m != null) {
             associatedServletMappings.remove(function);
@@ -299,8 +299,8 @@ public class MMBaseServlet extends  HttpServlet {
         ServletEntry e = (ServletEntry) associatedServlets.get(function);
         if (e != null && (priority.intValue() < e.priority)) return;
         log.service("Associating function '" + function + "' with servletmapping " + servletMapping +
-           (e == null ? ""  : " (removing " + e.name +")")+
-           (m == null ? ""  : " (removing " + m.name +")"));
+           (e == null ? ""  : " (previous assosation was with " + e.name +")")+
+           (m == null ? ""  : " (previous assosation was with " + m.name +")"));
         associatedServletMappings.put(function, new ServletEntry(servletMapping, priority));
         if (e != null) {
             associatedServlets.remove(function);
