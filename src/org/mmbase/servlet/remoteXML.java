@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.15  2001/04/03 15:45:48  install
+Rob changed to new SecurityManager
+
 Revision 1.14  2001/04/03 15:09:54  install
 Rob
 
@@ -24,7 +27,7 @@ they will be ignored and request will be cancelled.
 All other node requests that can be find in mmbase will be handled correctly.
 Finally, I removed some weird vpro specific code.
 
-$Id: remoteXML.java,v 1.15 2001-04-03 15:45:48 install Exp $
+$Id: remoteXML.java,v 1.16 2001-04-03 16:22:36 eduard Exp $
 */
 package org.mmbase.servlet;
  
@@ -50,12 +53,12 @@ import org.mmbase.security.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.15 $ $Date: 2001-04-03 15:45:48 $
+ * @version $Revision: 1.16 $ $Date: 2001-04-03 16:22:36 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
 	MMBase mmbase;
-	private org.mmbase.security.SecurityManager MMBaseCop = null;
+	private org.mmbase.security.MMBaseCop mmbaseCop = null;
 
 	/**
 	 * Initializing mmbase root variable.
@@ -63,7 +66,7 @@ public class remoteXML extends JamesServlet {
 	public void init() {
 		if (debug) debug("init: Initializing mmbase root variable.");
 		mmbase=(MMBase)getModule("MMBASEROOT");
-		MMBaseCop = mmbase.getMMBaseCop();
+		mmbaseCop = mmbase.getMMBaseCop();
 	}
 
 	/**
@@ -79,7 +82,7 @@ public class remoteXML extends JamesServlet {
 			//debug("Sharedsecret = "+sharedsecret);
 
 			// Check if the remote machine knows the same shared secret. 
-			if(MMBaseCop.checkSharedSecret(sharedsecret)) {
+			if(mmbaseCop.checkSharedSecret(sharedsecret)) {
 				debug("warning - sharedsecret is correct, system is authenticated"); 
 			} else {
 				debug("warning - sharedsecret is NOT correct, system is NOT authenticated"); 
