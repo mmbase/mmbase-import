@@ -9,6 +9,7 @@
   <action type="load">
     <field name="title" />
     <field name="description" />
+    <field name="handle" />
   </action>
 
   <action type="delete">
