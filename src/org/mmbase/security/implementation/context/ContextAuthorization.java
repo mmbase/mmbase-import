@@ -379,7 +379,7 @@ public class ContextAuthorization extends Authorization {
         if (operation.getInt() > Operation.READ_INT ) {
             log.service("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         } else if (log.isDebugEnabled() ) {
-            log.service("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+            log.debug("assert on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
         }
         if (!check(user, nodeNumber, operation) ) {
             String msg = "Operation '" + operation + "' on " + nodeNumber + " was NOT permitted to " + user.getIdentifier();
