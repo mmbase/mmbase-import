@@ -16,6 +16,10 @@
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/query.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/query.jsp" %></td>
 </tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include cite="true" page="codesamples/query.cluster.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><%@include file="codesamples/query.cluster.jsp" %></td>
+</tr>
 </table>
 </mm:cloud>
 </body>
