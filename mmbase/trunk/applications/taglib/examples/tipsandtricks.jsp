@@ -1,4 +1,6 @@
-<%@page language="java" contentType="text/html; charset=UTF-8" %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@page errorPage="error.jsp" session="false"%>
+<mm:content type="text/html">
 <mm:cloud>
 <html>
 <head>
@@ -26,8 +28,8 @@
   <li><a name="iterate" /><em>How can I iterate?</em>
      <p>
        You can iterate over MMBase lists by use of the
-       several nodelists. For other iterations I'd like to refer to
-       external taglibs.
+       several nodelists. For other iterations you could consider also 
+       external taglibs or inlined java.
      </p>
      <p>
        But there is a trick to do it with the MMBase taglib as
@@ -43,7 +45,11 @@
   <li><a name="listempty" /><em>How do I find out if a list is empty?</em>
      <p>
       Define a variable in the mm:first tag. After the list you can put in the body of mm:notpresent 
-	  the things which should happen if the list is empty.
+      the things which should happen if the list is empty.
+     </p>
+     <p>
+       Since MMBase 1.7.0 you can also use the mm:size tag inside 'container' tags. Currently only the node list tags 
+       do have a 'container' counterpart. See <a href="query.jsp"> Query </a> example.
      </p>
   </li>
   <li><a name="isempty" /><em>How can I write a field only if another field is empty?</em>
@@ -54,6 +60,7 @@
    You need the 'write' attribute because it is false on default if the tag has a body.
    </p>
   </li>
+  <!--
   <li><a name="idsinlist" /><em>I get an exception if I use the 'id' attribute in a tag in
      the body of a list.</em><p>This can be solved in several
      ways.</p><p> The first solution is to make sure that the tag with
@@ -69,6 +76,7 @@
     <p>The last, and perhaps ugliest solution, is to 'remove' the id concerned at the end of the
      body of the list, by using the 'mm:remove' tag.</p>
   </li>
+  -->
   <li><a name="contextsession" /><em>How to make personalized pages (taking a collection of info from page to page)?</em>
   <p>
    It is possible to write a whole `context' to the session. Give a context an id, and with the
@@ -94,8 +102,11 @@
    </p>
   </li>
   <li><a name="dividelist" /><em>How do I divide my list in pages?</em> 
-   <p>There is no prefabricated solution for this, but using the 'undocumented' ${+ } feature it can be
-   done relatively nicely in a taglib-only way. With for example the following list attributes:
+   <p>
+     You could use the mm:previousbatches and mm:nextbatches tags. See documentation.
+   </p>
+
+     <!--
 <pre>
       offset="${+$page*$config.page_size}"  max="$config.page_size"
  </pre>
@@ -121,6 +132,7 @@
                next page
             &lt;/a&gt;
   </pre>
+  -->
   </li>
   <li><a name="notpossible" /><em>If something is not possible with the MMBase taglib, you can alway use jsp (or other taglibs)!</em>
    <p>
@@ -146,7 +158,7 @@
     you need it.
     </p>
     <p>
-     Another possibility is to use the '<a href="../../mmdocs/taglib/include.jsp">mm:include</a>' tag. The included page must be a stand alone
+     Another possibility is to use the '<a href="../../mmdocs/reference/taglib/include.jsp">mm:include</a>' tag. The included page must be a stand alone
      taglib page (with its own &lt;@taglib directive and so on), and the result is simply included
      in your page. You can feed the mm:include-d page with the mm:param tag.
     </p>
@@ -157,7 +169,7 @@
       The difference is that 'listnodes' and 'relatednodes' return real nodes, and the fields you
       can refer to simply by their name.  'list' and 'related' return 'cluster' nodes, which are
       nodes combined of several types. Fields must be prefixed by their element in the 'path'. See
-      documentation of <a href="../../mmdocs/taglib/list.jsp">mm:list</a>.
+      documentation of <a href="../../mmdocs/reference/taglib/list.jsp">mm:list</a>.
     </p>
     <p>
       It is possible to get the 'real' nodes from the 'cluster' nodes of the 'list' and 'related'
@@ -180,3 +192,4 @@
 </html>
 
 </mm:cloud>
+</mm:content>

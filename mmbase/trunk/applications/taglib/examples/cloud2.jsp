@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<%@ page session="false" %>
+<%@ page session="false" errorPage="error.jsp" %>
 <html>
 <head>
 <title>Http authentication</title>

@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><%@page errorPage="error.jsp" session="false"%>
+<mm:content type="text/html">
+<html>
 <head>
   <title>context 5</title>
   <link href="style.css" rel="stylesheet" type="text/css"/>
@@ -16,3 +18,4 @@ Perhaps an example with transactions?
 	 </mm:url>'>back</a>
 </body>
 </html>
+</mm:content>

@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><html>
+%><%@page errorPage="error.jsp" session="false"%>
+<mm:content type="text/html">
+<html>
 <head>
   <title>context 4</title>
   <link href="style.css" rel="stylesheet" type="text/css"/>
@@ -20,3 +22,4 @@ Reusing the node of the previous page.
 </mm:cloud>
 </body>
 </html>
+</mm:content>

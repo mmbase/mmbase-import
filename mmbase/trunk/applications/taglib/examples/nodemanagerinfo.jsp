@@ -1,5 +1,7 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud name="mmbase">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><%@page errorPage="error.jsp" session="false"%>
+<mm:content type="text/html">
+<mm:cloud>
 
 <html>
 
@@ -30,3 +32,4 @@ It was implemented like this:
 </html>
 
 </mm:cloud>
+</mm:content>
