@@ -127,7 +127,7 @@ public class Logging {
         String classToUse    = "org.mmbase.util.logging.SimpleImpl"; // default
         String configuration = "stderr,debug";                        // default
         try { // to read the XML configuration file            
-            String claz = reader.getElementValue("logging.class");
+           String claz = reader.getElementValue("logging.class");
             if (claz != null) classToUse = claz;
             String config = reader.getElementValue("logging.configuration");
             if (config != null) configuration = config;
@@ -143,20 +143,14 @@ public class Logging {
         System.out.println("selected logging system for more hints where logging will appear)");
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
-            //System.out.println("classloader1: " + ClassLoader.getSystemClassLoader().getClass().getName());
-            //System.out.println("classloader2: " + Logging.class.getClassLoader().getClass().getName());            
-            //logclass = Logging.class.getClassLoader().loadClass(classToUse);
-            //logclass = Class.forName(classToUse, true, ClassLoader.getSystemClassLoader());  
             logClass = Class.forName(classToUse);
-            // logclass = Thread.currentThread().getContextClassLoader().loadClass(classToUse);                
-            // It's a little tricky to find the right classloader, but as it is now, it works for me.
-            
         } catch (ClassNotFoundException e) {
             System.err.println("Could not find class " + classToUse);
             System.err.println(e.toString());
             logClass = logClassCopy;
         } catch (Throwable e) {
             System.err.println("Exception to find class " + classToUse + ": " +  e);
+            System.err.println("Falling back to " + logClassCopy.getName());
             logClass = logClassCopy;
         }
         // System.out.println("logging to " + getLocations());
@@ -236,8 +230,7 @@ public class Logging {
      */
     public static void shutdown() {
         try {
-            Method shutdown = 
-                logClass.getMethod("shutdown", new Class[] {} ); 
+            Method shutdown = logClass.getMethod("shutdown", new Class[] {} ); 
             shutdown.invoke(null, new String[] {} );    
         } catch (NoSuchMethodException e) {
             // System.err.println("No such method"); // okay, nothing to shutdown.
