@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.7 2002-05-07 18:37:36 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.8 2002-05-08 09:29:30 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -339,22 +339,72 @@ public class ObjectTypes extends TypeDef {
         if(file == null) {
             throw new RuntimeException("file was null, could not continue");
         }
-        // TODO: only write to disk if document really is different from our document....
-        // otherwise return just file,.. when this has been done, the  TransformerException should
-        // be catched and throw an runtime exception!
+        if(file.exists()) {
+            log.debug("found file: " + file + ", only store when changed.");
+            // we already had a file, look if we have to save it (only needed when was modified)
+            try {
+                org.w3c.dom.Document original =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(file);
+                if(equals(doc,original)) {
+                    // doc's were the same.. 
+                    log.debug("document already there, with same data, xml will not be written to file:" + file);
+                    return file;
+                }                
+            }
+            catch(org.xml.sax.SAXException se) {
+                // original document wasnt a xml document?
+                log.warn("found an other file on location, which wasnt xml(can't compare), gonna overwrite the file with current config.(error:" + se.toString() + ")");
+            }
+            catch(java.io.IOException ioe) {
+                // original document gave an io exception, strange...
+                throw new RuntimeException("failure opening old configuration for comparison, error: " + ioe.toString());
+            }                        
+        }
         try {
             javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.ENCODING, mmb.getEncoding());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
+            log.service("gonna save builderconfig to file:" + file);            
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
         }
         catch(javax.xml.transform.TransformerException te) {
-            log.warn("failure saving configuration to disk : " + te.toString());
+            throw new RuntimeException("failure saving configuration to disk : " + te.toString());
             // storing the builder failed!
         }
         return file;
+    }
+
+    /**
+        documents may not be null!
+    */
+    private boolean equals(org.w3c.dom.Document a, org.w3c.dom.Document b) {
+        try {
+            //make a string from the XML
+            javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
+            javax.xml.transform.Transformer serializer = tfactory.newTransformer();
+            // serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+            // serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
+            
+            // maybe some better code?
+            java.io.StringWriter asw = new java.io.StringWriter();
+            serializer.transform(new javax.xml.transform.dom.DOMSource(a),  new javax.xml.transform.stream.StreamResult(asw));
+
+            java.io.StringWriter bsw = new java.io.StringWriter();
+            serializer.transform(new javax.xml.transform.dom.DOMSource(b),  new javax.xml.transform.stream.StreamResult(bsw));
+            
+            // compare the 2 document-strings
+            return asw.toString().equals(bsw.toString());
+            
+        } catch(javax.xml.transform.TransformerConfigurationException tce) {
+            String message = tce.toString() + " " + Logging.stackTrace(tce);
+            log.error(message);
+            throw new RuntimeException(message);
+        } catch(javax.xml.transform.TransformerException te) {
+            String message = te.toString() + " " + Logging.stackTrace(te);
+            log.error(message);
+            throw new RuntimeException(message);
+        }        
     }
 
     /**
