@@ -351,7 +351,7 @@ public class servdb extends JamesServlet {
 
 						if (cline.buffer!=null) {
 							//debug("Buffer not null, returning stream");
-							cline.mimetype="video/vnd.rn-realvideo";
+							cline.mimetype="application/x-pn-realmedia";
 							mimetype=cline.mimetype;
 						} else {
 							String ur=getParamValue("url",getParamVector(req));
