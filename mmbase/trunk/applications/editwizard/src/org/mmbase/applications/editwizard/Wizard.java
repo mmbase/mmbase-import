@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.115 2004-01-09 12:16:30 pierre Exp $
+ * @version $Id: Wizard.java,v 1.116 2004-02-04 18:33:58 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -818,8 +818,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
 
             // Remind the current time.
-            Utils.setAttribute(query, "last-executed",
-               String.valueOf(currentTime));
+            Utils.setAttribute(query, "last-executed", String.valueOf(currentTime));
 
             // Remove any already existing options.
             NodeList olditems = Utils.selectNodeList(list, "option");
@@ -927,7 +926,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
                   if (fieldDataNode != null) {
                      // create normal formfield.
-                     Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", null));
+                     Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", "true"));
                      mergeConstraints(field, fieldDataNode);
                      createFormField(form, field, fieldDataNode);
                   } else {
@@ -936,9 +935,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                      if ("function".equals(ftype)) {
                         log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
 
-                        //set number attribute in field, then you can use in in wizard.xsl
-                        Utils.setAttribute(field, "number",   Utils.selectSingleNodeText(data, "object/@number", null));
-                        Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", null));
+                        //set number attribute in field, then you can use it in wizard.xsl
+                        Utils.setAttribute(field, "number",   Utils.selectSingleNodeText(data, "object/@number", ""));
+                        Utils.setAttribute(field, "maywrite", Utils.selectSingleNodeText(data, "object/@maywrite", "true"));
 
                         // create the formfield (should be using the current data node ???)
                         createFormField(form, field, fieldDataNode);
@@ -1777,10 +1776,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     * @param  fid     The wizarddefinition field id what applies to this data
     * @param  value   The (String) value what should be stored in the data.
     */
-   private void storeValue(String did, String fid, String value)
-      throws WizardException {
+   private void storeValue(String did, String fid, String value) throws WizardException {
       if (log.isDebugEnabled()) {
-         log.debug("String value " + value + " in " + did + " for field " + fid);
+         log.debug("String value " + value + " in " + did + " for  field " + fid);
          log.trace("Using data: " +
             Utils.getSerializedXML(Utils.selectSingleNode(schema,
                   ".//*[@fid='" + fid + "']")));
@@ -1805,9 +1803,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       Node datanode = Utils.selectSingleNode(data, xpath);
 
       if (datanode == null) {
-         String msg = "Unable to store value for field with dttype " + dttype +
-            ". fid=" + fid + ", did=" + did + ", value=" + value + ", wizard:" +
-            wizardName;
+         String msg = "Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value + ", wizard:" + wizardName;
 
          if (data != null) {
              msg += "\nxpath was:" + xpath + " on:\n" + data.getDocumentElement();
