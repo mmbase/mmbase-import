@@ -61,8 +61,11 @@
               <select name="languages" onChange="document.forms['config'].elements['lang'].value = document.forms['config'].elements['languages'].value;">
            <mm:import id="langs" vartype="list">en,nl,it,es,fr,eo,fy,de,zh,ja</mm:import>
            <mm:aliaslist referid="langs">
-             <option value="<mm:write />" <mm:compare referid2="config.lang">selected="selected"</mm:compare>><mm:locale language="$_" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
+             <option value="<mm:write />" <mm:compare referid2="config.lang"><mm:import id="found" />selected="selected"</mm:compare>><mm:locale language="$_" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
            </mm:aliaslist>
+           <mm:notpresent referid="found">
+             <option value="<mm:write referid="config.lang" />" selected="selected"><mm:locale language="$config.lang" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
+           </mm:notpresent>
          </select>
          </td>
 
