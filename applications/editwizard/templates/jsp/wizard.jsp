@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.15 2002-08-21 16:43:36 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.16 2002-08-28 13:10:05 eduard Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -112,7 +112,7 @@ if (wizardConfig.wiz.startWizard()) {
     String origin = cmd.getParameter(3);
     String wizardname = cmd.getValue();
     response.sendRedirect(
-              response.encodeURL("wizard.jsp?fid="+parentFid+
+              response.encodeRedirectURL("wizard.jsp?fid="+parentFid+
                                  "&did="+parentDid+
                                  "&proceed=true&wizard="+wizardname+
                                  "&sessionkey="+ewconfig.sessionKey+
@@ -122,7 +122,7 @@ if (wizardConfig.wiz.startWizard()) {
                                  "&language=" + ewconfig.language));
 } else if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
-    response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey + 
+    response.sendRedirect(response.encodeRedirectURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey + 
                                              "&proceed=true" + 
                                              "&remove=true" + 
                                              "&popupid=" + popupId ));
