@@ -45,7 +45,7 @@ important files (webapp, database) before upgrading.
   itself. So if you wrote mmbase.jar here in web.xml you have to
   change it. 
 
-- copy and/or merge configuration files from WEB-INF/config
+- copy and/or merge configuration files from WEB-INF/config.
 
 - Clean the working directory of your app-server (to recompile jsp's)
 

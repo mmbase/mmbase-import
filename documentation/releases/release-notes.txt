@@ -213,6 +213,10 @@ Know Issues and Problems:
   similar to each other. We will try to make MMBase Taglib compatible
   (perhaps optionally so) with EL in a next release. 
 
+- The old database support classes are still in this release, but are
+  not fully tested. These are deprecated please DO NOT use them
+  anymore, but switch to the new database storage classes.
+
 - Orion version < 2.x doesn't support the final servlet api 2.3,
   because of this the jumpersFilter will not work. You will need to
   remove the following lines from <WEB-INF/web.xml>:
@@ -250,8 +254,8 @@ Know Issues and Problems:
 - Not all HTML is html4 or xhtml valid
 
 - Sometimes it is needed to copy xml-apis.jar to
-  <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
-  or if you're using the editwizards.
+  <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing
+  xslt-transformation or if you're using the editwizards. 
 
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
