@@ -42,6 +42,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     public Object getWriterValue() {
         return helper.getValue();
     }
+    public void haveBody() {  helper.haveBody(); }
     
     protected Node   node;
     protected NodeProvider nodeProvider;
@@ -108,9 +109,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     }
 
     public int doStartTag() throws JspTagException {
+        log.debug("Field.doStartTag()" );
         node= null;
         fieldName = name;
-        setFieldVar(fieldName);                       
+        setFieldVar(fieldName); // set field and node
+
         // found the node now. Now we can decide what must be shown:
         Object value;
         // now also 'node' is availabe;
@@ -120,21 +123,24 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             } else {                    // function
                 value = getNodeVar().getStringValue(fieldName);
             }
-        } else { // a field was found!
-            if (helper.getVartype() == WriterHelper.TYPE_NODE) {
-                value = node.getNodeValue(fieldName);
-            } else {
-                switch(field.getType()) {
-                case Field.TYPE_BYTE:    value = node.getByteValue(fieldName);                break; 
-                case Field.TYPE_INTEGER: value = new Integer(node.getIntValue(fieldName));    break;
-                case Field.TYPE_DOUBLE:  value = new Double(node.getStringValue(fieldName));  break;
-                case Field.TYPE_LONG:    value = new Long(node.getLongValue(fieldName));      break;
-                case Field.TYPE_FLOAT:   value = new Float(node.getFloatValue(fieldName));    break;
-                default:
-                    value = convert(node.getStringValue(fieldName));
+        } else {                        // a field was found!
+            
+                if (helper.getVartype() == WriterHelper.TYPE_NODE) {
+                    value = node.getNodeValue(fieldName);
+                } else {
+                    switch(field.getType()) {
+                    case Field.TYPE_BYTE:    value = node.getByteValue(fieldName);                break; 
+                    case Field.TYPE_INTEGER: value = new Integer(node.getIntValue(fieldName));    break;
+                    case Field.TYPE_DOUBLE:  value = new Double(node.getStringValue(fieldName));  break;
+                    case Field.TYPE_LONG:    value = new Long(node.getLongValue(fieldName));      break;
+                    case Field.TYPE_FLOAT:   value = new Float(node.getFloatValue(fieldName));    break;
+                    default:
+                        value = convert(node.getStringValue(fieldName));
+                    }
                 }
-            }
+    
         }
+        if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
         helper.setValue(value);
         helper.setJspvar(pageContext);        
         if (getId() != null) {           
@@ -151,7 +157,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         helper.setBodyContent(bodyContent);
         if ((! "".equals(bodyContent.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
-        }        
+        }
+
         return helper.doAfterBody();
     }
 }
