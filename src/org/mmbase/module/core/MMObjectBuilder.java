@@ -1,12 +1,12 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
- */
+
+*/
 package org.mmbase.module.core;
 
 import java.util.*;
@@ -50,20 +50,20 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.15 2003-02-21 12:48:39 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.16 2003-02-21 13:21:56 vpro Exp $
  */
 public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.SizeMeasurable {{
-    
+
     // Max size of the object type cache
     public final static int OBJ2TYPE_MAX_SIZE=20000;
-    
+
     // Default size of the temporary node cache
     public final static int TEMPNODE_DEFAULT_SIZE=1024;
-    
+
     // Default replacements for method getHTML()
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
-    
+
     /**
      * The cache that contains the last X types of all requested objects
      * X is currently set to 20000.
@@ -71,12 +71,12 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * seems strange - as other caches are instantiated during variable declaration.
      */
     public static LRUHashtable obj2type;
-    
+
     /**
      * The cache that contains the X last requested nodes
      */
     public static org.mmbase.cache.NodeCache nodeCache = org.mmbase.cache.NodeCache.getCache();
-    
+
     /**
      * Collection for temporary nodes,
      * Used by the Temporarynodemanager when working with transactions
@@ -85,13 +85,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @scope  protected
      */
     public static Hashtable TemporaryNodes = new Hashtable(TEMPNODE_DEFAULT_SIZE);
-    
+
     /**
      * The class used to store and retrieve data in the database that is currently in use.
      * @deprecated use MMBase.getMMBase().getDatabase() or mmb.getDatabase() instead
      */
     public static MMJdbc2NodeInterface database = null;
-    
+
     /**
      * Determines whether the cache is locked.
      * A locked cache can be read, and nodes can be removed from it (allowing it to
@@ -99,31 +99,31 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Needed for committing nodes from transactions.
      */
     private static int cacheLocked=0;
-    
+
     /**
      * Logger routine
      */
     private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
-    
+
     /**
      * The current builder's object type
      * Retrieved from the TypeDef builder.
      * @scope private, use getObjectType()
      */
     public int oType=-1;
-    
+
     /**
      * Description of the builder in the currently selected language
      * Not that the first time the builder is created, this value is what is stored in the TypeDef table.
      */
     public String description="Base Object";
-    
+
     /**
      * Descriptions of the builder per language
      * Can be set with the &lt;descriptions&gt; tag in the xml builder file.
      */
     public Hashtable descriptions;
-    
+
     /**
      * Contains the list of fieldnames as they used in the database.
      * The list (which is based on input from the xml builder file)
@@ -133,21 +133,21 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @deprecated this vector should not be used - if the order of the fields is an issue, use getFields(sortorder).
      */
     public Vector sortedDBLayout = null;
-    
+
     /**
      * The default search age for this builder.
      * Used for intializing editor search forms (see HtmlBase)
      * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
      */
     public String searchAge="31";
-    
+
     /**
      * Detemines whether the cache need be refreshed?
      * Seems useless, as this value is never changed (always true)
      * @see #processSearchResults(List)
      */
     public boolean REPLACE_CACHE=true;
-    
+
     /**
      * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
      * This setting also governs whether the cache for relation builders is emptied when a relation changes.
@@ -156,70 +156,70 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
      */
     public boolean broadcastChanges=true;
-    
+
     /**
      *  Maintainer information for builder registration
      *  Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
      */
     String maintainer="mmbase.org";
-    
+
     /**
      * Default output when no data is available to determine a node's GUI description
      */
     static String GUI_INDICATOR = "no info";
-    
+
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
      */
     Hashtable singularNames;
-    
+
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
      */
     Hashtable pluralNames;
-    
+
     /** List of remote observers, which are notified when a node of this type changes
      */
     Vector remoteObservers = new Vector();
-    
+
     /** List of local observers, which are notified when a node of this type changes
      */
     Vector localObservers = new Vector();
-    
+
     /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
      * It is relative from the '/builders/' subdir
      */
     String xmlPath = "";
-    
+
     // contains the builder's field definitions
     protected Hashtable fields;
-    
+
     /**
      * Reference to the builders that this builder extends.
      * @since MMBase-1.6.2 (parentBuilder in 1.6.0)
      */
     private Stack ancestors = new Stack();
-    
+
     // Version information for builder registration
     // Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
     private int version=0;
-    
+
     /**
      * Determines whether a builder is virtual (data is not stored in a database).
      */
     protected boolean virtual=false;
-    
+
     /**
      * Contains lists of builder fields in specified order
      * (ORDER_CREATE, ORDER_EDIT, ORDER_LIST, ORDER_SEARCH)
      */
     private HashMap sortedFieldLists = new HashMap();
-    
+
     /** Properties of a specific Builder.
      * Specified in the xml builder file with the <properties> tag.
      * The use of properties is determined by builder
      */
     private Hashtable properties = null;
-    
+
     /**
      * Whenever a list should always return the correct types of nodes
      * old behaviour is not...
@@ -248,7 +248,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * _really_ need this thing turned into true.
      */
     private static boolean CORRECT_NODE_TYPES = true;
-    
+
     /**
      * Maximum number of nodes to return on a query (-1 means no limit, and is also the default)
      */
@@ -258,13 +258,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Max length of a query, informix = 32.0000 so we assume a bit less for other databases
      */
     private static final int MAX_QUERY_SIZE = 20000;
-    
+
     /**
      * The string that can be used inside the builder.xml as property,
      * to define the maximum number of nodes to return.
      */
     private static String  MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
-    
+
     /**
      * Constructor.
      * Derived builders should provide their own constructors, rather than use this one.
@@ -277,7 +277,6 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
     }
 
-    
     /**
      * Initializes this builder
      * The property 'mmb' needs to be set for the builder before this method can be called.
@@ -290,7 +289,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // skip initialisation if oType has been set (happend at end of init)
         // note that init can be called twice
         if (oType!=-1) return true;
-        
+
         // first make sure parent builders are initalized
         initAncestors();
 
@@ -311,16 +310,15 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
                 MMObjectNode node = typeDef.getNewNode("system");
                 node.setValue("name", tableName);
-                
-                
+
                 // This sucks:
                 if (description == null) description = "not defined in this language";
                 node.setValue("description", description);
-                
+
                 oType = mmb.getDatabase().getDBKey();
                 if (log.isDebugEnabled()) log.debug("Got key " + oType);
                 node.setValue("number", oType);
-                
+
                 // for typedef, set otype explictly, as it wasn't set in getNewNode()
                 if (this == typeDef) {
                     node.setValue("otype", oType);
@@ -342,11 +340,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         // should this be here??
         if (obj2type==null) init_obj2type();
-        
+
         // add temporary fields
         checkAddTmpField("_number");
         checkAddTmpField("_exists");
-        
+
         // get property dof maximum number of queries..
         String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
         if(property != null) {
@@ -359,8 +357,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return true;
     }
-    
-    
+
+
     /**
      * Creates a new builder table in the current database.
      */
@@ -368,7 +366,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         log.debug(tableName);
         return mmb.getDatabase().create(this);
     }
-    
+
     /**
      * Drops the builder table from the current database
      */
@@ -377,7 +375,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if(size() > 0) throw new RuntimeException("cannot drop a builder, that still contains nodes");
         return mmb.getDatabase().drop(this);
     }
-    
+
     /**
      * Tests whether the data in a node is valid (throws an exception if this is not the case).
      * @param node The node whose data to check
@@ -387,18 +385,18 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void testValidData(MMObjectNode node) throws InvalidDataException {
         return;
     };
-    
+
     /**
      * Insert a new, empty, object of a certain type.
      * @param oType The type of object to create
      * @param owner The administrator creating the node
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
-     *        The basic routine does not create any nodes this way and always fails.
+     *         The basic routine does not create any nodes this way and always fails.
      */
     public int insert(int oType,String owner) {
         return -1;
     }
-    
+
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
      * This method indirectly calls {@link #preCommit}.
@@ -423,21 +421,21 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             throw e;
         }
     }
-    
+
     /**
      * Once a insert is done in the editor this method is called.
      * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-     *        'settings' and 'parameters' - value pairs that have been the during the edit process.
+     *          'settings' and 'parameters' - value pairs that have been the during the edit process.
      * @param node The node thatw as inserted
      * @return An <code>int</code> value. It's meaning is undefined.
-     *        The basic routine returns -1.
+     *          The basic routine returns -1.
      * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-     *    endangering the separation between content and layout, and has an undefined return value.
+     *          endangering the separation between content and layout, and has an undefined return value.
      */
     public int insertDone(EditState ed, MMObjectNode node) {
         return -1;
     }
-    
+
     /**
      * Check and make last changes before calling {@link #commit} or {@link #insert}.
      * This method is called by the editor. This differs from {@link #preCommit}, which is called by the database system
@@ -453,7 +451,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public int preEdit(EditState ed, MMObjectNode node) {
         return -1;
     }
-    
+
     /**
      * This method is called before an actual write to the database is performed.
      * It is called from within the database routines, unlike {@link #preEdit}, which is called by the editor.
@@ -464,7 +462,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public MMObjectNode preCommit(MMObjectNode node) {
         return node;
     }
-    
+
     /**
      * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
      * Use only to commit changes - for adding node, use {@link #insert}.
@@ -474,7 +472,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean commit(MMObjectNode node) {
         return mmb.getDatabase().commit(this,node);
     }
-    
+
     /**
      *  Creates an alias for a node, provided the OAlias builder is loaded.
      *  @param number the to-be-aliased node's unique number
@@ -495,19 +493,17 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return false;
         }
     }
-    
-    
-    
+
     /**
      * Creates a cache for storing types and objects.
      * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
      * Note that this should possibly be moved to the variable declaration part (like nodecache)?
      */
     public synchronized void init_obj2type() {
-        
+
         if (obj2type!=null) return;
         obj2type = new LRUHashtable(OBJ2TYPE_MAX_SIZE);
-        
+
         // This doesn't do anything...
         if (false) {
             MultiConnection con = null;
@@ -528,7 +524,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return;
     }
-    
+
     /**
      * Returns the builder that this builder extends.
      *
@@ -539,11 +535,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (ancestors.empty()) return null;
         return (MMObjectBuilder) ancestors.peek();
     }
+
     /**
      * Gives the list of parent-builders.
      *
      * @since MMBase-1.6.2
-     
      */
     protected List  getAncestors() {
         return ancestors;
@@ -578,16 +574,16 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         ancestors.addAll(parent.getAncestors());
         ancestors.push(parent);
     }
-    
+
     /**
      * Checks wether this builder is an extension of the argument builder
      *
      * @since MMBase-1.6.2
      */
-    public boolean isExtensionOf(MMObjectBuilder o) {    
+    public boolean isExtensionOf(MMObjectBuilder o) {
         return ancestors.contains(o);
     }
-    
+
     /**
      * Get a new node, using this builder as its parent. The new node is not a part of the cloud yet, and thus has
      * the value -1 as a number. (Call {@link #insert} to add the node to the cloud).
@@ -602,14 +598,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         setDefaults(node);
         return node;
     }
-    
+
     /**
      * Sets defaults for a node. Fields "number", "owner" and "otype" are not set by this method.
      * @param node The node to set the defaults of.
      */
     public void setDefaults(MMObjectNode node) {
     }
-    
+
     /**
      * Remove a node from the cloud.
      * @param node The node to remove.
@@ -622,13 +618,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             // ? why not an node.remove()
             throw new RuntimeException("Builder with name:" + getTableName() + "("+oType+") is not the actual builder.");
         }
-        
+
         // removes the node FROM THIS BUILDER
         // seems not a very logical call, as node.parent is the node's actual builder,
         // which may - possibly - be very different from the current builder
         mmb.getDatabase().removeNode(this,node);
     }
-    
+
     /**
      * Remove the relations of a node.
      * @param node The node whose relations to remove.
@@ -649,7 +645,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             }
         }
     }
-    
+
     /**
      * Is this node cached at this moment?
      * @param number The number of the node to check.
@@ -658,7 +654,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean isNodeCached(int number) {
         return nodeCache.containsKey(new Integer(number));
     }
-    
+
     /**
      * Is this byuilder virtual?
      * A virtual builder represents nodes that are not stored or retrieved directly
@@ -668,7 +664,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean isVirtual() {
         return virtual;
     }
-    
+
     /**
      * Returns the objecttype (otype).
      * This is similar to the otype field value of objects of teh builder,
@@ -680,7 +676,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public int getObjectType() {
         return oType;
     }
-    
+
     /**
      * Stores a node in the cache provided the cache is not locked.
      */
@@ -691,7 +687,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             }
         }
     }
-    
+
     /**
      * Locks the node cache during the commit of a node.
      * This prevents the cache from gaining an invalid state
@@ -715,7 +711,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return res;
     }
-    
+
     /**
      * Locks the node cache during the insert of a node.
      * This prevents the cache from adding the node, which
@@ -743,7 +739,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return res;
     }
-    
+
     /**
      * Retrieves an object's type. If necessary, the type is added to the cache.
      * @param number The number of the node to search for
@@ -751,8 +747,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      */
     public int getNodeType(int number) {
         // assertment
-        if(number < 0 ) throw new RuntimeException("node number was invalid("+ number+")" );
-        
+        if(number < 0 ) throw new RuntimeException("node number was invalid("+number+")");
+
         int otype=-1;
         MultiConnection con = null;
         Statement stmt2 = null;
@@ -792,7 +788,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return otype;
     }
-    
+
     /**
      * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
      * or the string-form of an integer value (the number field of an object node).
@@ -864,7 +860,6 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         return result;
     }
 
-    
     /**
      * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
      * or the string-form of an integer value (the number field of an object node).
@@ -900,7 +895,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             }
         }
     }
-    
+
     /**
      * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
      * or the string-form of an integer value (the number field of an object node).
@@ -912,7 +907,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public MMObjectNode getNode(String key) {
         return getNode(key,true);
     }
-    
+
     /**
      * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
      * or the string-form of an integer value (the number field of an object node).
@@ -924,7 +919,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public MMObjectNode getHardNode(String key) {
         return getNode(key,false);
     }
-    
+
     /**
      * Retrieves a node based on it's number (a unique key).
      * @param number The number of the node to search for
@@ -951,7 +946,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         try {
             // retrieve node's objecttype
             int bi=getNodeType(number);
-            
+
             String bul = null;
             if(bi == 0) {
                 bul = "typedef";
@@ -963,12 +958,12 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 log.debug(msg);
                 throw new RuntimeException(msg);
             }
-            
+
             if (bul == null) {
                 log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + bi + ")");
                 return null;
             }
-            
+
             MultiConnection con =null;
             Statement stmt = null;
             try {
@@ -1019,7 +1014,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return null;
         }
     }
-    
+
     /**
      * Retrieves a node based on it's number (a unique key), retrieving the node
      * from the node cache if possible.
@@ -1030,7 +1025,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public MMObjectNode getNode(int number) {
         return getNode(number,true);
     }
-    
+
     /**
      * Retrieves a node based on it's number (a unique key), directly from
      * the database, not using the node cache.
@@ -1041,7 +1036,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public MMObjectNode getHardNode(int number) {
         return getNode(number,false);
     }
-    
+
     /**
      * Create a new temporary node and put it in the temporary _exist
      * node space
@@ -1053,7 +1048,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         TemporaryNodes.put(key,node);
         return node;
     }
-    
+
     /**
      * Put a Node in the temporary node list
      * @param key  The (temporary) key under which to store the node
@@ -1063,7 +1058,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         node.setValue("_number",key);
         TemporaryNodes.put(key,node);
     }
-    
+
     /**
      * Defines a virtual field to use for temporary nodes
      * @param field the name of the temporary field
@@ -1080,7 +1075,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return rtn;
     }
-    
+
     /**
      * Get nodes from the temporary node space
      * @param key  The (temporary) key to use under which the node is stored
@@ -1093,7 +1088,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return node;
     }
-    
+
     /**
      * Remove a node from the temporary node space
      * @param key  The (temporary) key under which the node is stored
@@ -1103,7 +1098,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         node=(MMObjectNode)TemporaryNodes.remove(key);
         if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
     }
-    
+
     /**
      * Count all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
@@ -1119,7 +1114,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String query="SELECT Count(*) FROM "+getFullTableName()+" "+where;
         return basicCount(query);
     }
-    
+
     /**
      * Executes a search (sql query) on the current database
      * and returns the nodes that result from the search as a Vector.
@@ -1146,7 +1141,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return nodecount;
     }
-    
+
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
@@ -1155,13 +1150,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Enumeration search(String where) {
         return searchVector(where).elements();
     }
-    
-    
+
+
     /**
      * Parses arguments of searchVector and searchList
      * @since MMBase-1.6
      */
-    
+
     protected String getQuery(String where) {
         log.debug("where: " + where);
         if (where == null) where="";
@@ -1173,7 +1168,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return "SELECT " + getNonByteArrayFields(tableName) +" FROM " + getFullTableName() + " " + where;
     }
-    
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
@@ -1184,18 +1179,18 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // do the query on the database
         return basicSearch(getQuery(where));
     }
-    
+
     /**
      * As searchVector. Differences are:
      * - Throws exception on SQL errors
      * - returns List rather then Vector.
      * @since MMBase-1.6
      */
-    
+
     public List searchList(String where) throws SQLException {
         return getList(getQuery(where));
     }
-    
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
@@ -1208,7 +1203,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
-    
+
     /**
      * Executes a search (sql query) on the current database
      * and returns the nodes that result from the search as a Vector.
@@ -1227,7 +1222,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return results;
     }
-    
+
     /**
      * As basicSearch
      * But:
@@ -1235,7 +1230,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * - Returns List
      * @since MMBase-1.6
      */
-    
+
     private List getList(String query) throws SQLException {
         MultiConnection con=null;
         Statement stmt=null;
@@ -1254,7 +1249,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // return the results
         return results;
     }
-    
+
     /**
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
@@ -1267,7 +1262,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         try {
             con=mmb.getConnection();
             stmt=con.createStatement();
-            
+
             ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase()));
             Vector results=new Vector();
             Integer number;
@@ -1283,9 +1278,9 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         } finally {
             mmb.closeConnection(con,stmt);
         }
-        
+
     }
-    
+
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1295,7 +1290,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Enumeration search(String where,String sort) {
         return searchVector(where,sort).elements();
     }
-    
+
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1306,7 +1301,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Enumeration searchIn(String where,String sort,String in) {
         return searchVectorIn(where,sort,in).elements();
     }
-    
+
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1316,7 +1311,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Enumeration searchIn(String where,String in) {
         return searchVectorIn(where,in).elements();
     }
-    
+
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1328,7 +1323,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Enumeration search(String where,String sort,boolean direction) {
         return searchVector(where,sort,direction).elements();
     }
-    
+
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1341,8 +1336,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
         return searchVectorIn(where,sort,direction,in).elements();
     }
-    
-    
+
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1358,14 +1353,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         } else {
             where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
         }
-        
+
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
         return basicSearch(query);
     }
-    
-    
+
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1382,7 +1377,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
         return basicSearch(query);
     }
-    
+
     /*
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1396,13 +1391,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
-    
+
     /**
      * Parses arguments of searchVector and searchList
      *
      * @since MMBase-1.6
      */
-    
+
     protected String getQuery(String where, String sorted, boolean direction) {
         log.debug("where: " + where);
         if (where==null) {
@@ -1417,13 +1412,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String query;
         if (direction) {
             query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
-            
+
         } else {
             query="SELECT " + getNonByteArrayFields(tableName) +" FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
         }
         return query;
     }
-    
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1436,13 +1431,13 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // do the query on the database
         return basicSearch(getQuery(where, sorted, direction));
     }
-    
+
     /**
      * Parses arguments of searchVector and searchList
      *
      * @since MMBase-1.6
      */
-    
+
     protected String getQuery(String where, String sorted, String directions) {
         if (where==null) {
             where="";
@@ -1478,7 +1473,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return "SELECT " + getNonByteArrayFields(tableName) +" FROM " + getFullTableName() + " " + where + " ORDER BY " + orderBy;
     }
-    
+
     /**
      * Returns a vector containing all the objects that match the searchkeys in
      * a given order.
@@ -1508,7 +1503,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Vector searchVector(String where, String sorted, String directions) {
         return basicSearch(getQuery(where, sorted, directions));
     }
-    
+
     /**
      * As searchVector
      * But
@@ -1517,11 +1512,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      *
      * @since MMBase-1.6
      */
-    
+
     public List searchList(String where, String sorted, String  directions) throws SQLException {
         return getList(getQuery(where, sorted, directions));
     }
-    
+
     /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1545,7 +1540,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return basicSearch(query);
         }
     }
-    
+
     /**
      * Enumerate all the objects that match the where clause
      * This method is slightly faster than search(), since it does not try to 'parse'
@@ -1563,7 +1558,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return null;
         }
     }
-    
+
     /**
      * Store the nodes in the resultset, obtained from a builder, in a vector.
      * The nodes retrieved are added to the cache.
@@ -1582,7 +1577,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                     log.warn(msg);
                     break;
                 }
-                
+
                 // create the node from the record-set
                 MMObjectNode node = new MMObjectNode(this);
                 ResultSetMetaData rd = rs.getMetaData();
@@ -1596,11 +1591,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         } catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
         }
-        
+
         processSearchResults(results);
         return results;
     }
-    
+
     /**
      * Performs some necessary postprocessing on nodes retrieved from a
      * search query.
@@ -1625,11 +1620,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         int convertedCount = 0;
         int cacheGetCount = 0;
         int cachePutCount = 0;
-        
+
         ListIterator iResults = results.listIterator();
         while (iResults.hasNext()) {
             MMObjectNode node = (MMObjectNode) iResults.next();
-            
+
             Integer number = new Integer(node.getNumber());
             if(number.intValue() < 0) {
                 // never happend to me, and never should!
@@ -1639,7 +1634,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 iResults.remove();
                 continue;
             }
-            
+
             boolean fromCache = false;
             // only active when builder loaded (oType != -1)
             // maybe we got the wrong node typeback, if so
@@ -1682,7 +1677,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             } else {
                 // skipping everything, our builder hasnt been started yet...
             }
-            
+
             // we can add the node to the cache _if_
             // it was not from cache already, and it
             // is of the correct type..
@@ -1694,14 +1689,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 cachePutCount++;
             }
         }
-        
+
         if(CORRECT_NODE_TYPES && convert.size() > 0){
             // retieve the nodes from the builders....
             // and put them into one big hashmap (integer/node)
             // after that replace all the nodes in result, that
             // were invalid.
             Map convertedNodes = new HashMap();
-            
+
             // process all the different types (builders)
             Iterator types = convert.entrySet().iterator();
             while(types.hasNext()){
@@ -1743,7 +1738,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 }
                 else throw new RuntimeException("how can the numbers string be null?");
             }
-            
+
             // insert all the corrected nodes that were found into the list..
             for(int i=0; i<results.size(); i++) {
                 MMObjectNode current = (MMObjectNode) results.get(i);
@@ -1774,7 +1769,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             " from cache, " + cachePutCount + " to cache)");
         }
     }
-    
+
     /**
      * Store the nodes in the resultset, obtained from a builder, in a sorted vector.
      * (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult ?)
@@ -1788,7 +1783,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             ResultSetMetaData rsmd = rs.getMetaData();
             int numberOfColumns = rsmd.getColumnCount();
             MMObjectNode node;
-            
+
             while(rs.next()) {
                 node = new MMObjectNode(this);
                 for (int index = 1; index <= numberOfColumns; index++) {
@@ -1798,7 +1793,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 }
                 sv.addUniqueSorted(node);
             }
-            
+
             return sv;
         } catch (SQLException e) {
             // something went wrong print it to the logs
@@ -1806,8 +1801,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return null;
     }
-    
-    
+
+
     /**
      * Build a set command string from a set nodes ( should be moved )
      * @parame nodes Vector containg the nodes to put in the set
@@ -1818,21 +1813,21 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String result = "(";
         Enumeration enum = nodes.elements();
         MMObjectNode node;
-        
+
         while (enum.hasMoreElements()) {
             node = (MMObjectNode)enum.nextElement();
-            
+
             if(enum.hasMoreElements()) {
                 result += node.getValue(fieldName) + ", ";
             } else {
                 result += node.getValue(fieldName);
             }
-            
+
         }
         result += ")";
         return result;
     }
-    
+
     /**
      * Return a list of field definitions of this table.
      * @return a <code>Vector</code> with the tables fields (FieldDefs)
@@ -1846,8 +1841,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return results;
     }
-    
-    
+
+
     /**
      * Return a list of field names of this table.
      * @return a <code>Vector</code> with the tables field anmes (String)
@@ -1861,7 +1856,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return results;
     }
-    
+
     /**
      * Return a field's definition
      * @param the requested field's name
@@ -1871,7 +1866,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         FieldDefs fielddefs = (FieldDefs) fields.get(fieldName);
         return fielddefs;
     }
-    
+
     /**
      * Clears all field list caches, and recalculates the database field list.
      */
@@ -1882,7 +1877,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         setDBLayout_xml(fields);
         // log.service("currently fields: " + fields);
     }
-    
+
     /**
      * Add a field to this builder.
      * This does not affect the builder config file, nor the table used.
@@ -1892,8 +1887,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         fields.put(def.getDBName(),def);
         updateFields();
     }
-    
-    
+
+
     /**
      * Remove a field from this builder.
      * This does not affect the builder config file, nor the table used.
@@ -1911,8 +1906,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         updateFields();
     }
-    
-    
+
+
     /**
      * Return a field's database type. The returned value is one of the following values
      * declared in FieldDefs:
@@ -1942,7 +1937,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return node.getDBType();
     }
-    
+
     /**
      * Return a field's database state. The returned value is one of the following values
      * declared in FieldDefs:
@@ -1959,7 +1954,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (node==null) return FieldDefs.DBSTATE_UNKNOWN;
         return node.getDBState();
     }
-    
+
     /**
      * What should a GUI display for this node.
      * Default is the first non system field (first field after owner).
@@ -1983,8 +1978,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return GUI_INDICATOR;
         }
     }
-    
-    
+
+
     /**
      * What should a GUI display for this node/field combo.
      * Default is null (indicating to display the field as is)
@@ -1996,8 +1991,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getGUIIndicator(String field, MMObjectNode node) {
         return null;
     }
-    
-    
+
+
     /**
      * The GUIIndicator can depend on the locale. Override this function
      * @since MMBase-1.6
@@ -2005,8 +2000,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
         return getGUIIndicator(field, node);
     }
-    
-    
+
+
     /**
      * The GUIIndicator can depend on the locale. Override this function
      * @since MMBase-1.6
@@ -2014,8 +2009,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
         return getGUIIndicator(node);
     }
-    
-    
+
+
     /**
      * Get the field definitions for the editor, sorted according to the specified order.
      * This method makes an explicit sort (it does not use a cached list).
@@ -2029,17 +2024,17 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 FieldDefs node=(FieldDefs)i.next();
                 // include only fields which have been assigned a valid position
                 if (((sortorder==FieldDefs.ORDER_CREATE) && (node.getDBPos()>-1)) ||
-                ((sortorder==FieldDefs.ORDER_EDIT) && (node.getGUIPos()>-1)) ||
-                ((sortorder==FieldDefs.ORDER_SEARCH) && (node.getGUISearch()>-1)) ||
-                ((sortorder==FieldDefs.ORDER_LIST) && (node.getGUIList()>-1))
-                ) orderedFields.add(node);
+                    ((sortorder==FieldDefs.ORDER_EDIT) && (node.getGUIPos()>-1)) ||
+                    ((sortorder==FieldDefs.ORDER_SEARCH) && (node.getGUISearch()>-1)) ||
+                    ((sortorder==FieldDefs.ORDER_LIST) && (node.getGUIList()>-1))
+                    ) orderedFields.add(node);
             }
             FieldDefs.sort(orderedFields,sortorder);
             sortedFieldLists.put(new Integer(sortorder),orderedFields);
         }
         return orderedFields;
     }
-    
+
     /**
      * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
      * Used for creating search-forms.
@@ -2049,7 +2044,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Vector getEditFields() {
         return (Vector)getFields(FieldDefs.ORDER_SEARCH);
     }
-    
+
     /**
      * Get the field definitions for the editor, sorted accoring to it's GUIList property (as set in the builder xml file).
      * Used for creating list-forms (tables).
@@ -2059,7 +2054,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Vector getSortedListFields() {
         return (Vector)getFields(FieldDefs.ORDER_LIST);
     }
-    
+
     /**
      * Get the field definitions for the editor, sorted according to it's GUIPos property (as set in the builder xml file).
      * Used for creating edit-forms.
@@ -2069,7 +2064,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Vector getSortedFields() {
         return (Vector)getFields(FieldDefs.ORDER_EDIT);
     }
-    
+
     /**
      * Returns the next field as defined by its sortorder, according to the specified order.
      */
@@ -2082,7 +2077,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return null;
     }
-    
+
     /**
      * Returns the next field as defined by its sortorder, according to it's GUIPos property (as set in the builder xml file).
      * Used for moving between fields in an edit-form.
@@ -2091,7 +2086,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public FieldDefs getNextField(String currentfield) {
         return getNextField(currentfield,FieldDefs.ORDER_EDIT);
     }
-    
+
     /**
      * Retrieve the table name (without the clouds' base name)
      * @return a <code>String</code> containing the table name
@@ -2100,7 +2095,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getTableName() {
         return tableName;
     }
-    
+
     /**
      * Retrieve the full table name (including the clouds' base name)
      * @return a <code>String</code> containing the full table name
@@ -2108,7 +2103,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getFullTableName() {
         return mmb.baseName+"_"+tableName;
     }
-    
+
     /**
      * Provides additional functionality when obtaining field values.
      * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
@@ -2126,7 +2121,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      */
     public Object getValue(MMObjectNode node, String field) {
         Object rtn = getObjectValue(node, field);
-        
+
         // Old code
         if (field.indexOf("short_")==0) {
             String val=node.getStringValue(field.substring(6));
@@ -2148,7 +2143,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Like getValue, but without the 'old' code.
      * @since MMBase-1.6
      */
-    
+
     protected Object getObjectValue(MMObjectNode node, String field) {
         Object rtn = null;
         int pos1 = field.indexOf('(');
@@ -2166,11 +2161,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return rtn;
     }
-    
+
     /**
      * @deprecated use executeFunction(node, function, list)
      */
-    
+
     protected Vector getFunctionParameters(String fields) {
         int commapos=0;
         int nested  =0;
@@ -2196,14 +2191,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return v;
     }
-    
+
     /**
      * @since MMBase-1.6
      */
     final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
         Object rtn = null;
         if (arguments == null) arguments = new Vector();
-        
+
         // for backwards compatibility (calling with string function with more then one argument)
         if (arguments.size() == 1 && arguments.get(0) instanceof String) {
             String arg = (String) arguments.get(0);
@@ -2212,26 +2207,26 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             arguments = getFunctionParameters(arg);
         }
         return executeFunction(node, function, arguments);
-        
+
     }
-    
+
     /**
      * @since MMBase-1.6
      * @throw IllegalArgumentException if the argument List does not fit the function
      */
-    
+
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
         if (log.isDebugEnabled()) {
             log.debug("Executing function " + function + " on node " + node.getNumber() + " with argument " + arguments);
         }
-        
+
         if (function.equals("info")) {
             Map info = new HashMap();
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
             info.put("gui",  "(field, language, session, response) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
             // language is only implemented in TypeDef now, session in AbstractServletBuilder
             // if needed on more place, then it can be generalized to here.
-            
+
             info.put("html",  "(field), XHTML escape the field");
             info.put("substring", "(string, length, fill)");
             info.put("date", "deprecated, use time-tag");
@@ -2315,7 +2310,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                         rtn = getLocaleGUIIndicator(locale, field, node);
                     }
                 }
-                
+
                 if (rtn == null) {
                     FieldDefs fdef = getField(field);
                     if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
@@ -2335,14 +2330,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 return rtn;
             }
         }
-        
+
         String field;
         if (arguments == null || arguments.size() == 0) {
             field = "";
         } else {
             field = (String) arguments.get(0);
         }
-        
+
         // time functions
         if(function.equals("date")) {                    // date
             int v=node.getIntValue(field);
@@ -2429,7 +2424,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return null;
     }
-    
+
     /**
      * Executes a function on the field of a node, and returns the result.
      * This method is called by the builder's {@link #getValue} method.
@@ -2452,7 +2447,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return null;
     }
-    
+
     /**
      * Returns all relations of a node.
      * This returns the relation objects, not the objects related to.
@@ -2468,7 +2463,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return bul.getRelationsVector(src);
     }
-    
+
     /**
      * Return the default url of this object.
      * The basic value returned is <code>null</code>.
@@ -2478,7 +2473,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getDefaultUrl(int src) {
         return null;
     }
-    
+
     /**
      * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
      * The system searches in a provided base path for a filename that matches the supplied number/alias of
@@ -2500,7 +2495,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return path + matches[0] + File.separator;
     }
-    
+
     /**
      * Gets the number of nodes currently in the cache.
      * @return the number of nodes in the cache
@@ -2508,7 +2503,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public int getCacheSize() {
         return nodeCache.size();
     }
-    
+
     /**
      * Return the number of nodes in the cache of one objecttype.
      * @param type the object type to count
@@ -2523,7 +2518,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return j;
     }
-    
+
     /**
      * Get the numbers of the nodes cached (will be removed).
      */
@@ -2539,14 +2534,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return results;
     }
-    
+
     /**
      * Delete the nodes cache.
      */
     public void deleteNodeCache() {
         nodeCache.clear();
     }
-    
+
     /**
      * Get the next database key (unique index for an object).
      * @return an <code>int</code> value that is the next available key for an object.
@@ -2554,7 +2549,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public int getDBKey() {
         return mmb.getDBKey();
     }
-    
+
     /**
      * Return the age of the node, determined using the daymarks builder.
      * @param node The node whose age to determine
@@ -2563,7 +2558,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public int getAge(MMObjectNode node) {
         return ((DayMarkers)mmb.getMMObject("daymarks")).getAge(node);
     }
-    
+
     /**
      * Get the name of this mmserver from the MMBase Root
      * @return a <code>String</code> which is the server's name
@@ -2571,7 +2566,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getMachineName() {
         return mmb.getMachineName();
     }
-    
+
     /**
      * Called when a remote node is changed.
      * Should be called by subclasses if they override it.
@@ -2606,23 +2601,23 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 log.error(Logging.stackTrace(e));
             }
         }
-        
+
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
         for (Enumeration e=remoteObservers.elements();e.hasMoreElements();) {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
             o.nodeRemoteChanged(machine,number,builder,ctype);
         }
-        
+
         MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
         if(pb != null && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeRemoteChanged(machine, number, builder, ctype);
         }
-        
+
         return true;
     }
-    
+
     /**
      * Called when a local node is changed.
      * Should be called by subclasses if they override it.
@@ -2646,8 +2641,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 log.error("Not a number");
                 log.error(Logging.stackTrace(e));
             }
-        } else
-            if (ctype.equals("r")) {
+        } else if (ctype.equals("r")) {
                 try {
                     Integer i=new Integer(number);
                     MMObjectNode node=(MMObjectNode)nodeCache.get(i);
@@ -2657,8 +2651,9 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 } catch (Exception e) {
                     log.error(Logging.stackTrace(e));
                 }
-                
+
             }
+
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
         for (Enumeration e=localObservers.elements();e.hasMoreElements();) {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
@@ -2671,11 +2666,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
             pb.nodeLocalChanged(machine, number, builder, ctype);
         }
-        
+
         return true;
     }
-    
-    
+
+
     /**
      * Called when a local field is changed.
      * @param number Number of the changed node as a <code>String</code>
@@ -2688,8 +2683,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         log.debug("FLC="+number+" BUL="+builder+" FIELD="+field+" value="+value);
         return true;
     }
-    
-    
+
     /**
      * Adds a remote observer to this builder.
      * The observer is notified whenever an object of this builder is changed, added, or removed.
@@ -2701,7 +2695,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return true;
     }
-    
+
     /**
      * Adds a local observer to this builder.
      * The observer is notified whenever an object of this builder is changed, added, or removed.
@@ -2713,7 +2707,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return true;
     }
-    
+
     /**
      *  Used to create a default teaser by any builder
      *  @deprecated Will be removed?
@@ -2722,7 +2716,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         log.warn("getDefaultTeaser(): Generate Teaser,Should be overridden");
         return tnode;
     }
-    
+
     /**
      * Waits until a node is changed (multicast).
      * @param node the node to wait for
@@ -2730,7 +2724,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean waitUntilNodeChanged(MMObjectNode node) {
         return mmb.mmc.waitUntilNodeChanged(node);
     }
-    
+
     /**
      * Obtains a list of string values by performing the provided command and parameters.
      * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
@@ -2742,8 +2736,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
         throw new ParseException(getClass().getName() +" should override the getList method (you've probably made a typo)");
     }
-    
-    
+
+
     /**
      * Obtains a string value by performing the provided command.
      * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
@@ -2755,7 +2749,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         log.warn("replace(): replace called should be overridden");
         return "";
     }
-    
+
     /**
      * The hook that passes all form related pages to the correct handler.
      * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
@@ -2771,7 +2765,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
-    
+
     /**
      * Converts an MMNODE expression to SQL.
      * MMNODE expressions are resolved by the database support classes.
@@ -2785,7 +2779,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         log.debug("convertMMNode2SQL(): results : "+result);
         return result;
     }
-    
+
     /**
      * Set the MMBase object, and retrieve the database lasyer.
      * @param m the MMBase object to set as owner of this builder
@@ -2795,7 +2789,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // XXX: deprecated
         database=mmb.getDatabase();
     }
-    
+
     /**
      * Stores the fieldnames of a table in a vector, based on the current fields definition.
      * The fields 'otype' and 'owner' become the first and second fieldnames.
@@ -2806,9 +2800,9 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         sortedDBLayout=new Vector();
         sortedDBLayout.addElement("otype");
         sortedDBLayout.addElement("owner");
-        
+
         FieldDefs node;
-        
+
         List orderedfields=getFields(FieldDefs.ORDER_CREATE);
         for (Iterator i=orderedfields.iterator();i.hasNext();) {
             node=(FieldDefs)i.next();
@@ -2822,7 +2816,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             }
         }
     }
-    
+
     /**
      * Set tablename of the builder. Should be used to initialize a MMTable object before calling init().
      * @param the name of the table
@@ -2830,7 +2824,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void setTableName(String tableName) {
         this.tableName=tableName;
     }
-    
+
     /**
      * Set description of the builder
      * @param the description text
@@ -2838,7 +2832,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void setDescription(String e) {
         this.description=e;
     }
-    
+
     /**
      * Set descriptions of the builder
      * @param a <code>Hashtable</code> containing the descriptions
@@ -2846,7 +2840,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void setDescriptions(Hashtable e) {
         this.descriptions=e;
     }
-    
+
     /**
      * Get description of the builder
      * @return the description text
@@ -2854,7 +2848,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getDescription() {
         return description;
     }
-    
+
     /**
      * Gets description of the builder, using the specified language.
      * @param lang The language requested
@@ -2864,7 +2858,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (descriptions==null) return null;
         return (String)descriptions.get(lang);
     }
-    
+
     /**
      * Get descriptions of the builder
      * @return  a <code>Hashtable</code> containing the descriptions
@@ -2872,7 +2866,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Hashtable getDescriptions() {
         return descriptions;
     }
-    
+
     /**
      * Sets search Age.
      * @param age the search age as a <code>String</code>
@@ -2880,7 +2874,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void setSearchAge(String age) {
         this.searchAge=age;
     }
-    
+
     /**
      * Gets search Age
      * @return the search age as a <code>String</code>
@@ -2888,7 +2882,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getSearchAge() {
         return searchAge;
     }
-    
+
     /**
      * Gets short name of the builder, using the specified language.
      * @param lang The language requested
@@ -2898,7 +2892,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (singularNames==null) return null;
         return (String)singularNames.get(lang);
     }
-    
+
     /**
      * Gets short name of the builder in the current default language.
      * If the current language is not available, the "en" version is returned instead.
@@ -2911,7 +2905,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (tmp==null) tmp = tableName;
         return tmp;
     }
-    
+
     /**
      * Gets long name of the builder, using the specified language.
      * @param lang The language requested
@@ -2921,7 +2915,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (pluralNames==null) return null;
         return (String)pluralNames.get(lang);
     }
-    
+
     /**
      * Gets long name of the builder in the current default language.
      * If the current language is not available, the "en" version is returned instead.
@@ -2934,7 +2928,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (tmp==null) tmp = getSingularName();
         return tmp;
     }
-    
+
     /**
      * Returns the classname of this builder
      * @deprecated don't use
@@ -2942,7 +2936,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getClassName() {
         return this.getClass().getName();
     }
-    
+
     /**
      * Send a signal to other servers that a field was changed.
      * @param node the node the field was changed in
@@ -2954,11 +2948,11 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // who to notify of this change
         int state=getDBState(fieldname);
         log.debug("Changed field="+fieldname+" dbstate="+state);
-        
+
         // still a large hack need to figure out remote changes
         if (state==0) {}
         // convert the field to a string
-        
+
         int type=getDBType(fieldname);
         String value="";
         if ((type==FieldDefs.TYPE_INTEGER) || (type==FieldDefs.TYPE_NODE)) {
@@ -2968,12 +2962,12 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         } else {
             // should be mapped to the builder
         }
-        
+
         fieldLocalChanged(""+node.getNumber(),tableName,fieldname,value);
         //mmb.mmc.changedNode(node.getNumber(),tableName,"f");
         return true;
     }
-    
+
     /**
      * Send a signal to other servers that a new node was created.
      * @param tableName the table in which a node was edited (?)
@@ -2986,8 +2980,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return true;
     }
-    
-    
+
+
     /**
      * Converts a node to XML.
      * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
@@ -3015,35 +3009,35 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         body+="</"+tableName+">\n";
         return body;
     }
-    
+
     /**
      * Sets a list of singular names (language - value pairs)
      */
     public void setSingularNames(Hashtable names) {
         singularNames=names;
     }
-    
+
     /**
      * Gets a list of singular names (language - value pairs)
      */
     public Hashtable getSingularNames() {
         return singularNames;
     }
-    
+
     /**
      * Sets a list of plural names (language - value pairs)
      */
     public void setPluralNames(Hashtable names) {
         pluralNames=names;
     }
-    
+
     /**
      * Gets a list of plural names (language - value pairs)
      */
     public Hashtable getPluralNames() {
         return pluralNames;
     }
-    
+
     /**
      * Get text from a blob field. the text is cut if it is to long.
      * @param fieldname name of the field
@@ -3053,7 +3047,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getShortedText(String fieldname,int number) {
         return mmb.getDatabase().getShortedText(tableName,fieldname,number);
     }
-    
+
     /**
      * Get binary data of a database blob field. the data is cut if it is to long.
      * @param fieldname name of the field
@@ -3063,7 +3057,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public byte[] getShortedByte(String fieldname,int number) {
         return mmb.getDatabase().getShortedByte(tableName,fieldname,number);
     }
-    
+
     /**
      * Get binary data of a database blob field.
      * @param fieldname name of the field
@@ -3073,7 +3067,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public byte[] getDBByte(ResultSet rs,int idx) {
         return mmb.getDatabase().getDBByte(rs,idx);
     }
-    
+
     /**
      * Get text from a blob field.
      * @param fieldname name of the field
@@ -3083,7 +3077,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getDBText(ResultSet rs,int idx) {
         return mmb.getDatabase().getDBText(rs,idx);
     }
-    
+
     /**
      * Tests whether a builder table is created.
      * XXX Should be moved to MMTable.
@@ -3096,7 +3090,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return super.created();
         }
     }
-    
+
     /**
      * Returns the number of the node with the specified name.
      * Tests whether a builder table is created.
@@ -3112,8 +3106,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return number;
     }
-    
-    
+
+
     /**
      *  Sets a key/value pair in the main values of this node.
      *  Note that if this node is a node in cache, the changes are immediately visible to
@@ -3128,7 +3122,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean setValue(MMObjectNode node,String fieldName, Object originalValue) {
         return setValue(node,fieldName);
     }
-    
+
     /**
      * Provides additional functionality when setting field values.
      * This method is called whenever a Node of the builder's type tries to change a value.
@@ -3141,7 +3135,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public boolean setValue(MMObjectNode node,String fieldname) {
         return true;
     }
-    
+
     /**
      * Returns a HTML-version of a string.
      * This replaces a number of tokens with HTML sequences.
@@ -3161,7 +3155,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * @param body text to convert
      * @return the convert text
      */
-    
+
     protected String getHTML(String body) {
         String rtn="";
         if (body!=null) {
@@ -3169,10 +3163,10 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             obj.replace("<","&lt;");
             obj.replace(">","&gt;");
             obj.replace("$","&#36;");
-            
+
             String alinea=getInitParameter("html.alinea");
             String endofline=getInitParameter("html.endofline");
-            
+
             if (alinea!=null) {
                 obj.replace("\r\n\r\n",alinea);
                 obj.replace("\n\n",alinea);
@@ -3180,7 +3174,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 obj.replace("\r\n\r\n", DEFAULT_ALINEA);
                 obj.replace("\n\n", DEFAULT_ALINEA);
             }
-            
+
             if (endofline!=null) {
                 obj.replace("\r\n",endofline);
                 obj.replace("\n",endofline);
@@ -3188,12 +3182,12 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
                 obj.replace("\r\n", DEFAULT_EOL);
                 obj.replace("\n", DEFAULT_EOL);
             }
-            
+
             rtn=obj.toString();
         }
         return rtn;
     }
-    
+
     /**
      * Returns a WAP-version of a string.
      * This replaces a number of tokens with WAP sequences.
@@ -3213,7 +3207,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return result;
     }
-    
+
     /**
      * Returns a URLEncoded-version (MIME x-www-form-urlencoded) of a string.
      * This version uses the java.net.URLEncoder class to encode it.
@@ -3227,7 +3221,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return rtn;
     }
-    
+
     /**
      * Support routine to return shorter strings.
      * Cuts a string to a amximum length if it exceeds the length specified.
@@ -3242,7 +3236,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             return str;
         }
     }
-    
+
     /**
      * Stores fields information of this table.
      * Asside from the fields supplied by the caller, a field 'otype' is added.
@@ -3253,7 +3247,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      */
     public void setXMLValues(Vector xmlfields) {
         fields=new Hashtable();
-        
+
         Enumeration enum = xmlfields.elements();
         while (enum.hasMoreElements()) {
             FieldDefs def=(FieldDefs)enum.nextElement();
@@ -3261,7 +3255,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             def.setParent(this);
             fields.put(name,def);
         }
-        
+
         // should be TYPE_NODE ???
         if (fields.get("otype")==null) {
             FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
@@ -3280,14 +3274,14 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         updateFields();
     }
-    
+
     /**
      * Sets the subpath of the builder's xml configuration file.
      */
     public void setXMLPath(String m) {
         xmlPath = m;
     }
-    
+
     /**
      * Retrieves the subpath of the builder's xml configuration file.
      * Needed for builders that reside in subdirectories in the builder configuration file directory.
@@ -3295,7 +3289,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getXMLPath() {
         return xmlPath;
     }
-    
+
     /**
      * Gets the file that contains the configuration of this builder
      * @return the builders configuration File object
@@ -3304,7 +3298,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         // what is the location of our builder?
         return new File(MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + getXMLPath() + File.separator + getTableName() + ".xml");
     }
-    
+
     /**
      * Set all builder properties
      * Changed properties will not be saved.
@@ -3313,7 +3307,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     void setInitParameters(Hashtable properties) {
         this.properties=properties;
     }
-    
+
     /**
      * Get all builder properties
      * @return a <code>Hashtable</code> containing the current properties
@@ -3321,7 +3315,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public Hashtable getInitParameters() {
         return properties;
     }
-    
+
     /**
      * Set a single builder property
      * The propertie will not be saved.
@@ -3332,7 +3326,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         if (properties==null) properties=new Hashtable();
         properties.put(name,value);
     }
-    
+
     /**
      * Retrieve a specific property.
      * @param name the name of the property to get
@@ -3344,7 +3338,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         else
             return (String)properties.get(name);
     }
-    
+
     /**
      * Sets the version of this builder
      * @param i the version number
@@ -3352,7 +3346,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void setVersion(int i) {
         version=i;
     }
-    
+
     /**
      * Retrieves the version of this builder
      * @return the version number
@@ -3360,7 +3354,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public int getVersion() {
         return version;
     }
-    
+
     /**
      * Retrieves the maintainer of this builder
      * @return the name of the maintainer
@@ -3368,7 +3362,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public String getMaintainer() {
         return maintainer;
     }
-    
+
     /**
      * Sets the maintainer of this builder
      * @param m the name of the maintainer
@@ -3376,8 +3370,8 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     public void setMaintainer(String m) {
         maintainer=m;
     }
-    
-    
+
+
     /**
      * hostname, parses the hostname from a url, so http://www.somesite.com/index.html
      * becomed www.somesite.com
@@ -3392,7 +3386,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return url;
     }
-    
+
     /**
      * Wraps a string.
      * Inserts newlines (\n) into a string at periodic intervals, to simulate wrapping.
@@ -3406,7 +3400,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         String word;
         StringBuffer dst=new StringBuffer();
         int pos;
-        
+
         tok=new StringTokenizer(text," \n\r",true);
         pos=0;
         while(tok.hasMoreTokens()) {
@@ -3434,7 +3428,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
         }
         return dst.toString();
     }
-    
+
     /**
      * Gets a substring.
      * @param value the string to get a substring of
@@ -3459,6 +3453,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
             }
         }
     }
+
     /**
      * This method returns all fields of the builder that have a FieldDefs.DBSTATE_PERSISTENT or a FieldDefs.DBSTATE_SYSTEM DBState ecluding fields  that have a DBType FieldDefs.TYPE_BYTE
      * @param builderName the name of the builder
@@ -3467,16 +3462,16 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
     private String getNonByteArrayFields(String builderName){
         StringBuffer sb = new StringBuffer();
         Iterator fieldIter = mmb.getBuilder(builderName).getFields(FieldDefs.ORDER_CREATE).iterator();
-        
+
         boolean first = true;
-        
+
         while(fieldIter.hasNext()){
             FieldDefs def = (FieldDefs)fieldIter.next();
             if (def.getDBType() != FieldDefs.TYPE_BYTE && (def.getDBState() == FieldDefs.DBSTATE_PERSISTENT || def.getDBState() == FieldDefs.DBSTATE_SYSTEM)){
                 if (! first) {
                     sb.append(",");
                 }
-                
+
                 sb.append(database.getAllowedField(def.getDBName()));
                 first = false;
             }
@@ -3489,7 +3484,6 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      *
      * @since MMBase-1.6.2
      */
-
     public String toString() {
         return getSingularName();
     }
@@ -3498,10 +3492,10 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Implements for MMObjectNode
      * @since MMBase-1.6.2
      */
-
     public String toString(MMObjectNode n) {
         return n.defaultToString();
     }
+
     /**
      * Equals must be implemented because of the list of MMObjectBuilder which is used for ancestors
      *
@@ -3520,7 +3514,6 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      *
      * @since MMBase-1.6.2
      */
-
     public boolean equals(MMObjectNode o1, MMObjectNode o2) {
         return o1.defaultEquals(o2);
     }
@@ -3529,11 +3522,7 @@ public class MMObjectBuilder extends MMTable { //  implements org.mmbase.util.Si
      * Implements for MMObjectNode
      * @since MMBase-1.6.2
      */
-
     public int hashCode(MMObjectNode o) {
         return 127 * o.getNumber();
     }
-
 }
-
-
