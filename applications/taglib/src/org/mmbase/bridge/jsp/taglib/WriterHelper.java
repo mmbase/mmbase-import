@@ -50,39 +50,43 @@ public class WriterHelper extends BodyTagSupport {
     static final int TYPE_LONG    = 8;
     static final int TYPE_FLOAT   = 9;
     static final int TYPE_DECIMAL = 10;
+    static final int TYPE_DATE    = 11;
 
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
 
 
-    static final int stringToType(String t) {
-        if ("String".equalsIgnoreCase(t)) {
+    static final int stringToType(String tt) {
+        String t = tt.toLowerCase();
+        if ("string".equals(tt)) {
             return TYPE_STRING;
-        } else if ("Node".equalsIgnoreCase(t)) {
+        } else if ("node".equals(t)) {
             return TYPE_NODE;
-        } else if ("Cloud".equalsIgnoreCase(t)) {
+        } else if ("cloud".equals(t)) {
             return TYPE_CLOUD;
-        } else if ("Transaction".equalsIgnoreCase(t)) {
+        } else if ("transaction".equals(t)) {
             return TYPE_TRANSACTION;
-        } else if ("decimal".equalsIgnoreCase(t)) {
+        } else if ("decimal".equals(t)) {
             return TYPE_DECIMAL;
-        } else if ("Integer".equalsIgnoreCase(t)) {
+        } else if ("integer".equals(t)) {
             return TYPE_INTEGER;
-        } else if ("Long".equalsIgnoreCase(t)) {
+        } else if ("long".equals(t)) {
             return TYPE_LONG;
-        } else if ("Double".equalsIgnoreCase(t)) {
+        } else if ("double".equals(t)) {
             return TYPE_DOUBLE;
-        } else if ("Float".equalsIgnoreCase(t)) {
+        } else if ("float".equals(t)) {
             return TYPE_FLOAT;
-        } else if ("Vector".equalsIgnoreCase(t)) {
+        } else if ("vector".equals(t)) {
             return TYPE_VECTOR;
-        } else if ("List".equalsIgnoreCase(t)) {
+        } else if ("list".equals(t)) {
             return TYPE_LIST;
-        } else if ("bytes".equalsIgnoreCase(t)) {
+        } else if ("bytes".equals(t)) {
             return TYPE_BYTES;
-        } else if ("Object".equalsIgnoreCase(t)) {
+        } else if ("object".equals(t)) {
             return TYPE_OBJECT;
+        } else if ("date".equals(t)) {
+            return TYPE_DATE;
         } else {
             return TYPE_UNKNOWN;
         }
@@ -279,6 +283,13 @@ public class WriterHelper extends BodyTagSupport {
                 return;
             } 
             break;
+        case TYPE_DATE:
+            if (! (v instanceof java.util.Date)) {                
+                value = Casting.toDate(v);
+                setJspvar();
+                return;
+            } 
+            break;
         case TYPE_NODE:
             if (! (v instanceof org.mmbase.bridge.Node)) {
                 throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
@@ -338,13 +349,14 @@ public class WriterHelper extends BodyTagSupport {
      * Returns a string which can be written to the page.
      */
 
-    protected String getPageString() throws JspTagException {
-        if (value == null) return "";
+    protected java.io.Writer getPageString(java.io.Writer w) throws JspTagException, IOException {
+        if (value == null) return w;
 
         if (value instanceof byte[]) {         
             // writing bytes to the page?? We write base64 encoded...
             // this is an ondocumented feature...
-            return org.mmbase.util.Encode.encode("BASE64", (byte[]) value); 
+            w.write(org.mmbase.util.Encode.encode("BASE64", (byte[]) value)); 
+            return w;
         }
         ContentTag.Escaper escaper;
         if (escape != Attribute.NULL) {
@@ -355,7 +367,7 @@ public class WriterHelper extends BodyTagSupport {
         if (log.isDebugEnabled()) {
             log.debug("Using escaper " + escaper);
         }
-        return  escaper.transform(value.toString());
+        return  escaper.transform(value.toString(), w);
     }
 
     /**
@@ -398,7 +410,7 @@ public class WriterHelper extends BodyTagSupport {
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 log.debug("writing to page");
-                pageContext.getOut().print(getPageString() + body);
+                getPageString(pageContext.getOut()).write(body);
             } else {
                 log.debug("not writing to page");
             }
