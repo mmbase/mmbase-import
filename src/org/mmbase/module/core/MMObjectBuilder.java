@@ -128,7 +128,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * The default search age for this builder.
-    * Used for intializing editor search forms (see HtmlBase)
+    * Used for intializing editor search forms (see Htmlase)
     * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
     */
     public String searchAge="31";
@@ -1968,10 +1968,10 @@ public class MMObjectBuilder extends MMTable {
             obj.replace(">","&gt;");
             obj.replace("$","&#36;");
 
-            obj.replace("\r\n\r\n","<P>");
-            obj.replace("\n\n","<P>");
-            obj.replace("\r\n","<BR>");
-            obj.replace("\n","<BR>");
+            obj.replace("\r\n\r\n","<p></p>");
+            obj.replace("\n\n","<p></p>");
+            obj.replace("\r\n","<br />");
+            obj.replace("\n","<br />");
             rtn=obj.toString();
         }
         return rtn;
