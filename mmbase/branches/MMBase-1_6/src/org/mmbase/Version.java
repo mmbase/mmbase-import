@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.16.2.2 2003-01-31 15:27:41 michiel Exp $
+ * @version $Id: Version.java,v 1.16.2.3 2003-03-24 10:19:02 michiel Exp $
  */
 public class Version {
    
@@ -48,7 +48,7 @@ public class Version {
      * Returns the patch level numer of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getPatchLevel()  { return 2; }
+    public static int     getPatchLevel()  { return 3; }
 
     /**
      * Returns the build date of this MMBase. During the build, the
