@@ -8,42 +8,40 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: exception.xsl,v 1.2 2003-05-28 11:45:38 pierre Exp $
+  @version $Id: exception.xsl,v 1.3 2003-06-03 12:18:25 michiel Exp $
   -->
 
-  <xsl:import href="xsl/base.xsl" />
-
-  <xsl:param name="backpage" />
+  <xsl:import href="xsl/base.xsl" />   
 
   <xsl:template name="errortitle">
-	  DON'T PANIC - But Something Went Wrong
-	</xsl:template>
-
+    DON'T PANIC - But Something Went Wrong
+  </xsl:template>
+    
   <xsl:template name="errormessage">
-		<h2>DON'T PANIC!</h2>
-		<h3>But Something Went Wrong</h3>
-		<p>An error occurred in the editwizards. This may be caused because you have insufficient rigths to make changes,
-		because your edit-session expired, or because the editwizard definition has a bug.</p>
-		<p>When reporting the error, pass the error message (in red, below) and if so requested the expanded message to the responsible party.</p>
-	</xsl:template>
-	
+    <h2>DON'T PANIC!</h2>
+    <h3>But Something Went Wrong</h3>
+    <p>An error occurred in the editwizards. This may be caused because you have insufficient rigths to make changes,
+    because your edit-session expired, or because the editwizard definition has a bug.</p>
+    <p>When reporting the error, pass the error message (in red, below) and if so requested the expanded message to the responsible party.</p>
+  </xsl:template>
+  
   <xsl:template match="error">
-		<html>
-		<head>
-				<title><xsl:call-template name="errortitle" /></title>
-		</head>
-		<body>
-			<xsl:call-template name="errormessage" />
-			<xsl:if test="$backpage!=''">
-				<p><a href="{$backpage}">Return Home.</a></p>
-			</xsl:if>
-			<h3 style="color:#ff0000;">Error: <xsl:value-of select="exception" /></h3>
-			<h3>Expanded error:</h3>
-			<small><pre>
-			  <xsl:value-of select="stacktrace" />
-			</pre></small>
-		</body>
-		</html>
+    <html>
+      <head>
+        <title><xsl:call-template name="errortitle" /></title>
+      </head>
+      <body>
+        <xsl:call-template name="errormessage" />
+          <xsl:if test="$referrer!=''">
+            <p><a href="{$rootreferrer}">Return Home.</a></p>
+          </xsl:if>
+          <h3 style="color:#ff0000;">Error: <xsl:value-of select="exception" /></h3>
+          <h3>Expanded error:</h3>
+          <small><pre>
+          <xsl:value-of select="stacktrace" />
+          </pre></small>
+        </body>
+      </html>
   </xsl:template>
 
 </xsl:stylesheet>
