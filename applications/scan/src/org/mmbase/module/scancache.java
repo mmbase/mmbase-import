@@ -619,6 +619,7 @@ public class scancache extends Module implements scancacheInterface {
     }
 
 	private void signalProcessor(scanpage sp, String uri) {
-		scanparser.processPage(sp,uri);
+		scanpage fakesp=new scanpage();
+		scanparser.processPage(fakesp,uri);
 	}
 }
