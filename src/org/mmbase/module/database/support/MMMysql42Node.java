@@ -303,7 +303,7 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 		try {
 			inp=rs.getAsciiStream(idx);
 			if (inp==null) {
-				System.out.println("MMObjectBuilder -> Informix42Node DBtext no ascii "+inp);
+				//System.out.println("MMObjectBuilder -> Informix42Node DBtext no ascii "+inp);
 				 return("");
 			}
 			if (rs.wasNull()) {
@@ -359,21 +359,13 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			stmt.setEscapeProcessing(false);
 			stmt.setInt(1,number);
 			int i=2;
+
 			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
-				String key=(String)e.nextElement();	
-				String type=node.getDBType(key);
-				// System.out.println("TYPE="+type+" key="+key);
-				if (type.equals("int") || type.equals("integer")) {
-					stmt.setInt(i,node.getIntValue(key));
-				} else if (type.equals("text")) {
-					setDBText(i,stmt,node.getStringValue(key));
-				} else if (type.equals("byte")) {
-					setDBByte(i,stmt,node.getByteValue(key));
-				} else {
-					stmt.setString(i,node.getStringValue(key));
-				}
+				String key = (String)e.nextElement();	
+				setValuePreparedStatement( stmt, node, key, i );
 				i++;
 			}
+
 			stmt.executeUpdate();
 			stmt.close();
 			con.close();
@@ -704,6 +696,36 @@ public class MMMysql42Node implements MMJdbc2NodeInterface {
 			con.close();
 			} catch(Exception t) {}
 			return(-1);
+		}
+	}
+
+
+
+	/**
+	* set prepared statement field i with value of key from node
+	*/
+	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
+		throws SQLException
+	{
+		String type = node.getDBType(key);
+		if (type.equals("int") || type.equals("integer")) {
+			stmt.setInt(i, node.getIntValue(key));
+		} else if (type.equals("text") || type.equals("clob")) {
+			String tmp=node.getStringValue(key);
+			if (tmp!=null) {
+				setDBText(i, stmt,tmp);
+			} else {
+				setDBText(i, stmt,"");
+			}
+		} else if (type.equals("byte")) {	
+				setDBByte(i, stmt, node.getByteValue(key));
+		} else { 
+			String tmp=node.getStringValue(key);
+			if (tmp!=null) {
+				stmt.setString(i, tmp);
+			} else {
+				stmt.setString(i, "");
+			}
 		}
 	}
 
