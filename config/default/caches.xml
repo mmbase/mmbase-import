@@ -2,28 +2,54 @@
 <!DOCTYPE caches SYSTEM "dtd/caches_1_0.dtd">
 <!-- 
   Not all caches are configurable already, but those which are, can be 
-  configured here. It can also be done by the admin pages, but 
-  changing it here works just as well.
+  configured here. It can also be done by the admin pages, but
+  changing it here works just as well (better for the moment, because
+  the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.2 2002-05-15 17:06:57 michiel Exp $
+  @version $Id: caches.xml,v 1.3 2002-05-15 18:06:13 michiel Exp $
   @author  Michiel Meeuwissen
 -->
 <caches>
-   <cache name="MultilevelCache">
-     <status>active</status>
-     <size>300</size>
-   </cache>
-   <cache name="XSLTemplates">
-     <status>active</status>
-     <size>50</size>
-   </cache>
-   <cache name="XSLFactories">
-     <status>active</status>
-     <size>50</size>
-   </cache>
-   <cache name="XSLTResults">
-     <status>inactive</status>
-     <size>50</size>
-   </cache>
+  <!-- ================================================================================
+  Node caches
+  ================================================================================  -->
+
+  <!-- simple nodes -->
+  <cache name="Nodes">
+    <status>active</status>
+    <size>4096</size>
+  </cache>
+  <!-- cluster nodes -->
+  <cache name="MultilevelCache">
+    <status>active</status>
+    <size>300</size>
+  </cache>
+  
+
+  <!-- ================================================================================
+  Caches for XSL Transformations
+  ================================================================================  -->
+
+  <!-- Compiled templates -->
+  <cache name="XSLTemplates">
+    <status>active</status>
+    <size>50</size>
+  </cache>
+  
+  <!-- A factory for every URIResolver -->
+  <cache name="XSLFactories">
+    <status>active</status>
+    <size>50</size>
+  </cache>
+
+  <!-- If it makes sense (e.g. not in Editwizard) also the results of
+  XSL transformations can be cached. Because it is a little difficult
+  to invalidate cache entries, this cache is now inactive on default.
+  -->
+  <cache name="XSLTResults">
+    <status>inactive</status>
+    <size>50</size>
+  </cache>
+
 </caches>
