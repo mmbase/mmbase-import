@@ -176,9 +176,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		   			log.error("No xFile and no iSource file received!");
 				}
 			}
-			Enumeration e = XEH.getResultList().elements();
-			while (e.hasMoreElements()) {
-				log.error(""+e.nextElement());
+			Iterator i = XEH.getResultList().iterator();
+			while (i.hasNext()) {
+				log.error(""+i.next());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
