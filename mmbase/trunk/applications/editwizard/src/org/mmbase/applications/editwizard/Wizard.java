@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.99 2003-07-09 18:12:42 michiel Exp $
+ * @version $Id: Wizard.java,v 1.100 2003-07-14 10:58:46 johannes Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1321,11 +1321,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       }
 
       // expand attribute 'objectnumber' en 'origin' for editwizard command
-      command = Utils.selectSingleNode(newlist, "command[@name='startwizard']");
-
-      if (command != null) {
-         expandAttribute(command, "objectnumber", "new");
-         expandAttribute(command, "origin", dataId);
+      //command = Utils.selectSingleNode(newlist, "command[@name='startwizard']");
+      NodeList commands = Utils.selectNodeList(newlist, "command[@name='startwizard']");
+      if (commands != null) {
+         for (int i=0; i<commands.getLength(); i++) {
+            command = commands.item(i);
+            if (command!=null) {
+               expandAttribute(command,"objectnumber","new");
+               expandAttribute(command,"origin",dataId);
+            }
+         }
       }
 
       String hiddenCommands = "|" +
