@@ -27,18 +27,18 @@ import org.mmbase.util.logging.Logging;
 /**
  * This class contains functionality for retrieving StorageManager instances, which give access to the storage device.
  * It also provides functionality for setting and retrieving configuration data.
- * This is an abstract class. You cannot instantiate it. Use the static {@link #newInstance()} or {@link #newInstance(MMBase)} 
+ * This is an abstract class. You cannot instantiate it. Use the static {@link #newInstance()} or {@link #newInstance(MMBase)}
  * methods to obtain a factory class.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.2 2003-08-22 12:34:47 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.3 2003-09-18 12:20:26 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
-    
+
     /**
      * A reference to the MMBase module
      */
@@ -82,10 +82,10 @@ public abstract class StorageManagerFactory {
      * Assign a value to this class if you want to set a default query handler.
      */
     protected Class queryHandlerClass;
-    
+
     /**
      * The default storage factory class.
-     * This classname is used if you doe not spevify the clasanme in the 'storagemanagerfactory' proeprty in mmabseroot.xml. 
+     * This classname is used if you doe not spevify the clasanme in the 'storagemanagerfactory' proeprty in mmabseroot.xml.
      */
     static private final Class DEFAULT_FACTORY_CLASS = org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory.class;
 
@@ -103,7 +103,7 @@ public abstract class StorageManagerFactory {
         // instantiate and initialize the class
         try {
             Class factoryClass = DEFAULT_FACTORY_CLASS;
-            if (factoryClassName != null) {  
+            if (factoryClassName != null) {
                 factoryClass = Class.forName(factoryClassName);
             }
             StorageManagerFactory factory = (StorageManagerFactory)factoryClass.newInstance();
@@ -176,7 +176,7 @@ public abstract class StorageManagerFactory {
                 return;
             }
         }
-        
+
         // get the storage manager class
         Class configuredClass = reader.getStorageManagerClass();
         if (configuredClass != null) {
@@ -189,7 +189,7 @@ public abstract class StorageManagerFactory {
         setAttributes(reader.getAttributes());
         // get disallowed fields, and add these to the default list
         disallowedFields.putAll(reader.getDisallowedFields());
-        
+
         // add default replacements when DEFAULT_STORAGE_IDENTIFIER_PREFIX is given
         String prefix = (String)getAttribute(Attributes.DEFAULT_STORAGE_IDENTIFIER_PREFIX);
         if (prefix !=null) {
@@ -229,7 +229,7 @@ public abstract class StorageManagerFactory {
                 Class handlerClass = (Class) iHandlers.next();
                 constructor = handlerClass.getConstructor(new Class[] {SqlHandler.class});
                 queryHandler = (SearchQueryHandler) constr2.newInstance(new Object[] {queryHandler});
-                log.service("Instantiated chained SearchQueryHandler of type " 
+                log.service("Instantiated chained SearchQueryHandler of type "
                     + handlerClass.getName());
             }
             */
@@ -283,7 +283,7 @@ public abstract class StorageManagerFactory {
             return queryHandler;
         }
     }
-    
+
     /**
      * Locates and opens the storage configuration document, if available.
      * The configuration document to open can be set in mmbasereoot (using the storage property).
@@ -355,27 +355,27 @@ public abstract class StorageManagerFactory {
 
     /**
      * Obtain a scheme from this factory.
-     * Schemes are special attributes, consisting of patterned strings that can be 
+     * Schemes are special attributes, consisting of patterned strings that can be
      * expanded with arguments.
      * @param key the key of the attribute
      * @return the scheme value, or null if it is unknown
      */
     public Scheme getScheme(Object key) {
-        return (Scheme)getAttribute(key);
+        return getScheme(key,null);
     }
 
     /**
      * Obtain a scheme from this factory.
-     * Schemes are special attributes, consisting of patterned strings that can be 
+     * Schemes are special attributes, consisting of patterned strings that can be
      * expanded with arguments.
      * If no scheme is present, the default pattern is used to create a scheme and add it to the factory.
      * @param key the key of the attribute
-     * @param defaltPattern the pattern to use for the default scheme 
-     * @return the scheme value
+     * @param defaltPattern the pattern to use for the default scheme, <code>null</code> if there is no default
+     * @return the scheme value, <code>null</code> if there is no scheme
      */
     public Scheme getScheme(Object key, String defaultPattern) {
-        Scheme scheme = getScheme(key);
-        if (scheme == null) {
+        Scheme scheme =(Scheme)getAttribute(key);
+        if (scheme == null && defaultPattern != null) {
             if (attributes.containsKey(key)) return null;
             scheme = new Scheme(this,defaultPattern);
             setAttribute(key,scheme);
@@ -385,7 +385,7 @@ public abstract class StorageManagerFactory {
 
     /**
      * Set a scheme of this factory, using a string pattern to base the Scheme on.
-     * Schemes are special attributes, consisting of patterned strings that can be 
+     * Schemes are special attributes, consisting of patterned strings that can be
      * expanded with arguments.
      * @param key the key of the scheme
      * @param pattern the pattern to use for the scheme
@@ -519,6 +519,13 @@ public abstract class StorageManagerFactory {
      */
     public ChangeManager getChangeManager() {
         return changeManager;
+    }
+
+    /**
+     * Returns the name of the catalog used by this storage (<code>null</code> if no catalog is used).
+     */
+    public String getCatalog() {
+        return null;
     }
 
     /**

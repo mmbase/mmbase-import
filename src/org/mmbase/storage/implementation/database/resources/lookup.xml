@@ -30,7 +30,7 @@
 	</filter>
 
 	<!-- hsqldb -->
-	<filter resource="/org/mmbase/storage/implementation/database/resources/hsqldbii.xml">
+	<filter resource="/org/mmbase/storage/implementation/database/resources/hsqldb.xml">
 		<driver-class>org.hsqldb.</driver-class>
 	</filter>
 
