@@ -39,7 +39,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.26 2002-10-25 13:15:32 michiel Exp $
+ * @version $Id: Utils.java,v 1.27 2003-03-28 17:51:47 michiel Exp $
  */
 public class Utils {
 
@@ -447,15 +447,14 @@ public class Utils {
             } else {
                 doc = node.getOwnerDocument();
             }
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
 
-            format.setIndenting(true);
-            format.setPreserveSpace(false);
-            //  format.setOmitXMLDeclaration(true);
-            //  format.setOmitDocumentType(true);
-            java.io.StringWriter result = new java.io.StringWriter();
-            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(doc);
+            Source domSource = new DOMSource(doc);
+            StringWriter result = new StringWriter();
+            StreamResult streamResult = new StreamResult(result);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer serializer = tf.newTransformer();
+            serializer.setOutputProperty(OutputKeys.INDENT,"yes");
+            serializer.transform(domSource, streamResult); 
             return result.toString();
         } catch (Exception e) {
             return e.toString();
@@ -500,7 +499,7 @@ public class Utils {
     public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
         if (log.isDebugEnabled()) log.trace("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
-        java.io.StringWriter res = new java.io.StringWriter();
+        StringWriter res = new StringWriter();
         transformNode(node, xslFile, uri, new javax.xml.transform.stream.StreamResult(res),  params);
         if (log.isDebugEnabled()) log.trace("transformation result " + res.toString());
         try {
