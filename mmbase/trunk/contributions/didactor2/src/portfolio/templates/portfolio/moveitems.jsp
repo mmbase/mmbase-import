@@ -168,6 +168,7 @@
     <fmt:message key="MOVESELECTED" />
   </div>
   <div class="contentBodywit">
+  <br><br><br>
     <%-- Show the form --%>
     <form name="moveitems" method="post" action="<mm:treefile page="/portfolio/moveitems.jsp" objectlist="$includePath" referids="$referids"/>">
       <table class="Font">

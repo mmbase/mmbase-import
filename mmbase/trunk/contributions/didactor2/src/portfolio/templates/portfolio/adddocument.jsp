@@ -37,11 +37,12 @@
 
     <div class="navigationbar">
       <div class="titlebar">
+        <mm:import id="titletext"><fmt:message key="MYDOCUMENTS" /></mm:import>
         <mm:compare referid="typeof" value="1">
-          <mm:import id="titletext"><fmt:message key="MYDOCUMENTS" /></mm:import>
+          <mm:import id="titletext" reset="true"><fmt:message key="MYDOCUMENTS" /></mm:import>
         </mm:compare>
         <mm:compare referid="typeof" value="2">
-          <mm:import id="titletext"><fmt:message key="SHAREDDOCUMENTS" /></mm:import>
+          <mm:import id="titletext" reset="true"><fmt:message key="SHAREDDOCUMENTS" /></mm:import>
         </mm:compare>
         <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
         <mm:write referid="titletext"/>
@@ -58,6 +59,7 @@
         <fmt:message key="ADDDOCUMENT" />
       </div>
       <div class="contentBodywit">
+      <br><br><br>
 
       <%-- create a html form  with method post and enctype multipart   --%>
       <form name="adddocument" method="post" enctype="multipart/form-data" action="<mm:treefile page="/portfolio/adddocument.jsp" objectlist="$includePath" referids="$referids"/>">
