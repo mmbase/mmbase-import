@@ -5,7 +5,7 @@ about the Ant build tool.
 
 ============================================================================ -->
 
-<project name="MMBase" default="compile" basedir=".">
+<project name="MMBase" default="usage" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Initialization target                                               -->
@@ -292,17 +292,19 @@ about the Ant build tool.
     </copydir> 
 
     <!-- copy the scripts -->
-    <copydir src="${top.dir}/scripts" dest="${dist.scripts}"/>
-
+    <copydir src="${top.dir}/scripts" dest="${dist.scripts}">
+      <exclude name="compile"/>
+      <exclude name="compile2"/>
+      <exclude name="createjar"/>
+      <exclude name="oriondoc"/>
+    </copydir>
     <!-- make scripts executable -->
-    <chmod perm="ugo+x" file="${dist.scripts}/compile"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/compile2"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/createjar"/>
-    <chmod perm="ugo+x" file="${dist.scripts}/oriondoc"/>
     <chmod perm="ugo+x" file="${dist.scripts}/startorion"/>
     <chmod perm="ugo+x" file="${dist.scripts}/tomcat_mmbase.sh"/>
     <chmod perm="ugo+x" file="${dist.scripts}/startup_tomcat_mmbase.sh"/>
     <chmod perm="ugo+x" file="${dist.scripts}/shutdown_tomcat_mmbase.sh"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/ant"/>
+    <chmod perm="ugo+x" file="${dist.scripts}/antRun"/>
 
     <!-- copy the javadocs -->
     <copydir src="${build.javadocs}" dest="${dist.docs}/api"/>
