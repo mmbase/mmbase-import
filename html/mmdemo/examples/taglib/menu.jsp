@@ -13,5 +13,13 @@
   |
   <a href="variables.jsp">variables</a>
   |
+  <a href="list.jsp">list</a>
+  |
+  <a href="related.jsp">related</a>
+  |
+  <a href="listnodes.jsp">listnodes</a>
+  |
+  <a href="relatednodes.jsp">relatednodes</a>
+  |
   <a href="../../../mmdocs/mmbase-taglib.html">taglib doc</a>
 </p>
