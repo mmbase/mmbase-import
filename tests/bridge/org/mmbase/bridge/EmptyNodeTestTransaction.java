@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Transaction;
-
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
  * an empty node inside a transaction.

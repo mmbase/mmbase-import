@@ -10,9 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import junit.framework.*;
-import org.mmbase.bridge.*;
-
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
  * an empty node.

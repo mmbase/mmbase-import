@@ -10,15 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import junit.framework.*;
-import org.mmbase.bridge.*;
 
 /**
  * Test class <code>Cloud</code> from the bridge package.
  *
  * @author Jaco de Groot
  */
-public class CloudTest extends TestCase {
+public class CloudTest extends BridgeTest {
     Cloud cloud;
     Node aaNode1;
     Node aaNode2;
@@ -32,7 +30,7 @@ public class CloudTest extends TestCase {
 
     public void setUp() {
         // Create a test node.
-        cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        cloud = getCloud();
         aaNode1 = cloud.getNodeManager("aa").createNode();
         aaNode1.setStringValue("stringfield", "startnode1");
         aaNode1.commit();
