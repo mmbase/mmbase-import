@@ -20,7 +20,7 @@
 
   <properties>
     <!-- specify which protocols to use for which media formats -->
-    <property name="g2/sure">rtsp://</property>
+    <property name="rm">rtsp://</property>
     <property name="ra">pnm://</property>
     <property name="default">http://</property>
   </properties>
