@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.9 2002-11-27 14:56:22 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.10 2003-08-27 12:30:21 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -95,13 +95,13 @@ if (! ewconfig.subObjects.empty()) {
     } catch (java.lang.SecurityException e) {
   %>
       Uploaded file exceeds maximum file size of <%=maxsize%> bytes.<br />
-      <a href="upload.jsp?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
+      <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
       <a href="javascript:window.close();">abandon upload</a>.
   <%
     } catch (Exception e) {
   %>
       An error ocurred while uploading this file (<%=e.toString()%>).<br />
-      <a href="upload.jsp?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
+      <a href="<mm:url page="upload.jsp" />?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
       <a href="javascript:window.close();">abandon upload</a>.
   <%
     }
