@@ -155,81 +155,79 @@ public class BasicBundle implements BundleInterface {
 
     public boolean install() {
         // step1
-	log.info("WOOO1");
         installStep step = getNextInstallStep();
         step.setUserFeedBack("bundle/basic installer started");
 
         setProgressBar(1000); // lets have 100 steps;
+        step = getNextInstallStep();
+        step.setUserFeedBack("getting the mmb bundle... ");
         JarFile jf = getJarFile();
-        increaseProgressBar(100); // downloading is 25%
+        if (jf != null) {
+            step.setUserFeedBack("getting the mmb bundle...done ");
+            increaseProgressBar(100); // downloading is 25%
 
-        int pbs = 0; 
-        // figure out how many packages we have for the progressbar
-        Iterator d = getNeededPackages();
-        while (d.hasNext()) {
-            pbs++;
-            d.next();
-        }
-        int pss = 800/pbs; // guess the progressbar per installed package
-	log.info("WOOO2");
+            int pbs = 0; 
+            // figure out how many packages we have for the progressbar
+            Iterator d = getNeededPackages();
+            while (d.hasNext()) {
+                pbs++;
+                d.next();
+            }
+            int pss = 800/pbs; // guess the progressbar per installed package
 
-        boolean changed = true; // signals something was installed
-        while (changed) {
-            Iterator e = getNeededPackages();
-            changed = false;
-            while (e.hasNext()) {
-		log.info("WOOO3");
-                Object o=e.next();
-		log.info("WOOO3b"+o);
-		log.info("WOOO3b"+o.getClass());
-		if (o instanceof HashMap) {
-		log.info("WOOO3c");
-		} else {
-		log.info("WOOO3d");
-		}
-                HashMap np = (HashMap)o;
-		log.info("WOOO4");
-                String tmp=(String)np.get("id");
-		log.info("WOOO5");
-                pkg = PackageManager.getPackage(tmp);
-		log.info("WOOO6");
-                if (pkg != null) {
-                    String state = pkg.getState();
-		    log.info("WOOO5");
-                    String name = pkg.getName();
-                    if (!state.equals("installed")) {
-                        step = getNextInstallStep();
-                        step.setUserFeedBack("calling package installer "+name+"..");
-                        boolean ins = pkg.install(step);
-                        if (ins) {
-                            step.setUserFeedBack("calling package installer "+name+"...done");
-                            increaseProgressBar(pss);
-                            changed = true;
-                        } else {
-                            if (pkg.getDependsFailed()) {
-                                removeInstallStep(step);
-                                // step.setUserFeedBack("calling package installer "+name+"...skipped (depends on other package maybe in bundle)");
+            boolean changed = true; // signals something was installed
+            while (changed) {
+                Iterator e = getNeededPackages();
+                changed = false;
+                while (e.hasNext()) {
+                    Object o=e.next();
+        	    if (o instanceof HashMap) {
+	            } else {
+    	            }
+                    HashMap np = (HashMap)o;
+                    String tmp=(String)np.get("id");
+                    pkg = PackageManager.getPackage(tmp);
+                    if (pkg != null) {
+                        String state = pkg.getState();
+                        String name = pkg.getName();
+                        if (!state.equals("installed")) {
+                            step = getNextInstallStep();
+                            step.setUserFeedBack("calling package installer "+name+"..");
+                            boolean ins = pkg.install(step);
+                            if (ins) {
+                                step.setUserFeedBack("calling package installer "+name+"...done");
+                                increaseProgressBar(pss);
+                                changed = true;
                             } else {
-                                step.setUserFeedBack("calling package installer "+name+"...failed");
-                                return false;
+                                if (pkg.getDependsFailed()) {
+                                    removeInstallStep(step);
+                                } else {
+                                    step.setUserFeedBack("calling package installer "+name+"...failed");
+                                    return false;
+                                }
                             }
                         }
+                    } else {
+                        log.error("Missing package on +"+np.get("id"));
                     }
-                } else {
-                    log.error("Missing package on +"+np.get("id"));
-                }
-            }            
-        }
+                }            
+            }
 
-        step = getNextInstallStep();
-        step.setUserFeedBack("updating mmbase registry ..");
-        updateRegistryInstalled();
-        increaseProgressBar(100);
-        step.setUserFeedBack("updating mmbase registry ... done");
+            step = getNextInstallStep();
+            step.setUserFeedBack("updating mmbase registry ..");
+            updateRegistryInstalled();
+            increaseProgressBar(100);
+            step.setUserFeedBack("updating mmbase registry ... done");
+        } else {
+            step.setUserFeedBack("getting the mmb bundle...failed (server down or removed disk ? )");
+            step.setType(installStep.TYPE_ERROR);
+            try {
+                Thread.sleep(2000);
+            } catch(Exception ee) {}
+        }
 
         step=getNextInstallStep();
         step.setUserFeedBack("bundle/basic installer ended");
-	log.info("WOO10");
         return true;
     }
 
@@ -324,7 +322,8 @@ public class BasicBundle implements BundleInterface {
 
     public JarFile getJarFile() {
         if (provider != null) {
-            return provider.getJarFile(getPath(),getId(),getVersion());
+            JarFile jf=provider.getJarFile(getPath(),getId(),getVersion());
+            return jf;
         }
         return null;    
     }
