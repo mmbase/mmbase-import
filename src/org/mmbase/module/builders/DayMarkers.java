@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.23 2002-01-16 09:28:08 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.24 2002-07-19 09:41:41 eduard Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -30,6 +30,8 @@ public class DayMarkers extends MMObjectBuilder {
     private int day = 0; // current day number/count
     //private Hashtable daycache = new Hashtable(); 	// day -> mark
     private TreeMap daycache = new TreeMap();           // day -> mark, but ordered
+    
+    public static String FIELD_DAYCOUNT =   "daycount";
 
     private int smallestMark = 0; // will be queried when this builder is started
     private int smallestDay  = 0; // will be queried when this builder is started
@@ -444,4 +446,26 @@ public class DayMarkers extends MMObjectBuilder {
         months=month+year*12;
         return months;
     }
+
+    
+    /**
+     *  Returns the date of a daymarker
+     *  @param node The node of which the date is wanted
+     *  @return a <code>Date</code> which is the date
+     */
+    public java.util.Date getDate(MMObjectNode node) {
+        int dayCount = node.getIntValue(FIELD_DAYCOUNT);
+         return new java.util.Date(((long)dayCount)*24*3600*1000);        
+    }
+    
+    /**
+     *  Returns gui information for a specific node. This value is retrieved by retrieving the field 'gui()' of the node (node.getStringValue("gui()") )
+     *  @param node The node of which the gui information is wanted
+     *  @return a <code>String</code> in which the current date is shown
+     */
+    public String getGUIIndicator(MMObjectNode node) {    
+        java.text.DateFormat format = java.text.DateFormat.getDateInstance(java.text.DateFormat.DEFAULT, java.util.Locale.getDefault());
+        return format.format(getDate(node));
+    }
+    
 }
