@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
  * Creates the index page for the documentation.
  * @since MMBase-1.8
  * @author Pierre van Rooden
- * @version $Id: DocumentationIndex.java,v 1.4 2004-11-02 11:08:50 pierre Exp $
+ * @version $Id: DocumentationIndex.java,v 1.5 2004-11-03 08:33:16 pierre Exp $
  */
 public class DocumentationIndex {
 
@@ -335,48 +335,45 @@ public class DocumentationIndex {
 
     /**
      * Creates a bulleted list of documentation references for one section in the documentation index.
-     * @param resourceDir the full path/reference to the documentation section
+     * @param resourceList list of resources to output
      * @param parentPath the path to use as a parent path when generating documentation links
      * @param maxDepth maximum depth to which to recurse through this section
      * @param out the Writer to send output to
      */
-    protected void listResources(Object resourceDir, String parentPath, int maxDepth, java.io.Writer out) throws IOException {
-         if (exists(resourceDir)) {
-             List resourceList = getList(resourceDir);
-             if (resourceList.size() > 0) {
-                 out.write("<ul type=\"disc\">");
-                 java.util.Collections.sort(resourceList);
-                 for (Iterator i = resourceList.iterator(); i.hasNext();) {
-                     Object resource = i.next();
-                     if (maxDepth > 0 || !isDirectory(resource)) {
-                         String name = getTitle(resource);
-                         String path = getLastOfPath(resource);
-                         if (name != null && !("index.html".equals(path))) {
-                             if (parentPath != null) {
-                                 path = parentPath + "/" + path;
-                             }
-                             out.write("<li><p>"+name+" (");
-                             if (path.endsWith(".txt")) { // text file
-                                 out.write("<a href=\""+path+"\" target=\"_top\">Text</a>");
-                             } else if (path.endsWith(".html")) {  // html file
-                                 out.write("<a href=\""+path+"\" target=\"_top\">HTML</a>");
-                                 String fullPath = resource.toString();
-                                addAdditionalPath(resource, parentPath, fullPath,".pdf", "PDF", out);
-                             } else { // directory with index.html file
-                                 out.write("<a href=\"" + path+"/index.html\" target=\"_top\">HTML</a>");
-                                 String fullPath = getChild(resource, "index.html").toString();
-                                 addAdditionalPath(resource, path, fullPath,".pdf", "PDF", out);
-                             }
-                             out.write(")</p>");
-                             if (maxDepth > 1) {
-                                 listResources(resource, path, maxDepth-1, out);
-                             }
-                             out.write("</li>");
+    protected void listResources(List resourceList, String parentPath, int maxDepth, java.io.Writer out) throws IOException {
+         if (resourceList.size() > 0) {
+             out.write("<ul type=\"disc\">");
+             java.util.Collections.sort(resourceList);
+             for (Iterator i = resourceList.iterator(); i.hasNext();) {
+                 Object resource = i.next();
+                 if (maxDepth > 0 || !isDirectory(resource)) {
+                     String name = getTitle(resource);
+                     String path = getLastOfPath(resource);
+                     if (name != null && !("index.html".equals(path))) {
+                         if (parentPath != null) {
+                             path = parentPath + "/" + path;
                          }
+                         out.write("<li><p>"+name+" (");
+                         if (path.endsWith(".txt")) { // text file
+                             out.write("<a href=\""+path+"\" target=\"_top\">Text</a>");
+                         } else if (path.endsWith(".html")) {  // html file
+                             out.write("<a href=\""+path+"\" target=\"_top\">HTML</a>");
+                             String fullPath = resource.toString();
+                            addAdditionalPath(resource, parentPath, fullPath,".pdf", "PDF", out);
+                         } else { // directory with index.html file
+                             out.write("<a href=\"" + path+"/index.html\" target=\"_top\">HTML</a>");
+                             String fullPath = getChild(resource, "index.html").toString();
+                             addAdditionalPath(resource, path, fullPath,".pdf", "PDF", out);
+                         }
+                         out.write(")</p>");
+                         if (maxDepth > 1) {
+                             listResources(getList(resource), path, maxDepth-1, out);
+                         }
+                         out.write("</li>");
                      }
                  }
-                 out.write("</ul>");
              }
+             out.write("</ul>");
          }
     }
 
@@ -392,17 +389,28 @@ public class DocumentationIndex {
             String sectionPath = (String)section.getKey();
             String sectionTitle = (String)section.getValue();
             // the first entry is the root
-            out.write("<div class=\"titlepage\"><h2 class=\"title\" style=\"clear: both\">");
-            out.write("<a id=\"" + sectionPath + "\" />"+sectionTitle);
-            out.write("</h2></div><div class=\"itemizedlist\">");
-            if (first) { // introduction: show only html files
-                listResources(documentationRoot, null, 0, out);
-            } else if (sectionPath.startsWith("javadoc")) {  // only show top directories in javadoc
-                listResources(getChildDir(documentationRoot, sectionPath), sectionPath, 1, out);
-            } else { // other documentation: show up to two directories deep
-                listResources(getChildDir(documentationRoot, sectionPath), sectionPath, 2, out);
+            Object resourceDir;
+            if (first) {
+                resourceDir = documentationRoot;
+            } else {
+                resourceDir =getChildDir(documentationRoot, sectionPath);
             }
-            out.write("</div>");
+            if (exists(resourceDir)) {
+                List resourceList = getList(resourceDir);
+                if (resourceList.size() > 1) { // should contain more than just index.html
+                    out.write("<div class=\"titlepage\"><h2 class=\"title\" style=\"clear: both\">");
+                    out.write("<a id=\"" + sectionPath + "\" />"+sectionTitle);
+                    out.write("</h2></div><div class=\"itemizedlist\">");
+                    if (first) { // introduction: show only html files
+                        listResources(resourceList, null, 0, out);
+                    } else if (sectionPath.startsWith("javadoc")) {  // only show top directories in javadoc
+                        listResources(resourceList, sectionPath, 1, out);
+                    } else { // other documentation: show up to two directories deep
+                        listResources(resourceList, sectionPath, 2, out);
+                    }
+                    out.write("</div>");
+                }
+            }
             first = false;
         }
         out.write("</div>");
