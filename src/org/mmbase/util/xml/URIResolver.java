@@ -39,10 +39,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.6 2002-06-14 19:47:52 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.7 2002-09-23 11:06:46 michiel Exp $
  */
 
-public class URIResolver implements javax.xml.transform.URIResolver {
+public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
     
     private static Logger log = Logging.getLoggerInstance(URIResolver.class.getName());
 
@@ -80,18 +80,38 @@ public class URIResolver implements javax.xml.transform.URIResolver {
     }
 
     /**
+     * Create an URIResolver without support for a certain directory. (Will be taken the first root).
+     */
+    public URIResolver() {
+        this(null, null); 
+    }
+
+    /**
      * Besides the current working directory you can also supply an
      * ordered list of URIResolver.Entry's. First in this list are the
      * directories which must be checked first, in case no prefix is
      * given.
-     * @param extradirs A EntryLis, containing 'extra' dirs with
+     * @param extradirs A EntryList, containing 'extra' dirs with
      * prefixes.  If not specified or null, there will still be one
      * 'extra dir' available, namely the MMBase configuration
      * directory (with prefix mm:)
      */
     public URIResolver(File c, EntryList extradirs) {
         if (log.isDebugEnabled()) log.debug("Creating URI Resolver for " + c);
-        cwd = c;
+        if (c == null) {
+            log.debug("No working directory specified, using filesystem root");
+            File[] roots = File.listRoots();
+            if (roots != null && roots.length > 0) {
+                cwd = roots[0];
+            } else {
+                log.warn("No filesystem root available, trying with 'null'");
+                cwd = null; 
+                // will this result in anything useful? 
+                // well, I don't think we will use mmbase on root-less systems anyway?
+            }
+        } else {
+            cwd = c;
+        }
         extraDirs = new EntryList();
         if (extradirs != null) {
             extraDirs.addAll(extradirs);
@@ -252,6 +272,15 @@ public class URIResolver implements javax.xml.transform.URIResolver {
             return hashCode == o.hashCode();
         }
         return false;        
+    }
+
+
+    public int getByteSize() {
+        return getByteSize(new org.mmbase.util.SizeOf());
+    }
+
+    public int getByteSize(org.mmbase.util.SizeOf sizeof) {
+        return sizeof.sizeof(extraDirs);
     }
 
     /**
