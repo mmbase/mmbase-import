@@ -66,22 +66,6 @@ table {
  border-spacing: 0;
 }
 
-table.movie {
- width: 350;
- height: 300;
- margin: 0;
- border: 0;
- border-spacing: 0;
- cellpadding: 0;
- cellspacing: 0;
-}
-
-td.movie {
-  padding: 0;
-  margin: 0;
-  valign: top;
-  align: left;
-}
 
 td {
   padding: 2;
@@ -92,6 +76,25 @@ td {
   valign: top;
   align: left;
 }
+
+
+
+table.movie {
+ margin: 2px;
+ border: 0px;
+ border-spacing: 0px;
+}
+
+table.movie td {
+ border-spacing: 0px;
+  padding: 0px;
+  border: 0px;
+  margin: 0px;
+  spacing: 0px;
+
+}
+
+
 
 a {
 	font-family : Verdana;

@@ -7,24 +7,20 @@
 <mm:node id="s" number="$source">
 <!-- this is completey stupid, but it works for the moment -->
 <mm:relatednodes type="mediaproviders" max="1">
-<smil>
+
+<smil xmlns="http://www.w3.org/2001/SMIL20/Language" xmlns:rn="http://features.real.com/2001/SMIL20/Extensions">
   <head>
      <meta name="copyright" content="NOS Internet" />
      <layout>
         <root-layout width="260" height="200" background-color="#717171" />
+        <region id="video_region"  fit="fill" z-index="2" />
+        <regPoint id="middle" regAlign="center" left="50%" top="50%"/>
      </layout>
-      <layout type="text/css">
-           [region="filpje"] { 
-                        top: 10px; left: 20px; 
-                        background-color: red;
-             }
-       </layout>
-
   </head>
   <body>    
      <par>
       <mm:field name="name">
-         <video  screen-height="200" screen-width="260" src="<mm:field node="s" name="urlresult($_)" />" region="filmpje"  />
+         <video  src="<mm:field node="s" name="urlresult($_)" />" region="video_region" regPoint="center" regAlign="center" />
       </mm:field>
      </par>
   </body>

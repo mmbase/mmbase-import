@@ -1,14 +1,15 @@
   <action type="delete" />
 
   <action type="create">
-    <object type="&fragments;">
-    </object>
+    <object type="&fragments;" />
   </action>
 
 	<action type="load">
-		<relation destination="&fragments;" role="parent"  />
-		<relation destination="&fragments;" role="posrel"  />
-		<relation destination="publishtimes"   role="related" />
+		<relation destination="&fragments;"    role="parent"  />
+		<relation destination="&fragments;"    role="posrel"  />
+		<relation destination="publishtimes"   role="related">
+       <object type="publishtimes"/>
+    </relation>
 	</action>
 
   <form-schema id="publish">
