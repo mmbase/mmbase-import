@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -48,10 +49,10 @@ public class TimerTag extends ContextReferrerTag {
     private HashMap totalTimes;
 
     private int lastTimer;
-    private String name = null;
+    private Attribute name = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
-        name = getAttributeValue(n);
+        name = getAttribute(n);
     }
 
     /**
@@ -63,7 +64,7 @@ public class TimerTag extends ContextReferrerTag {
      */
 
 
-    public int startTimer(String id, String id2) {
+    public int startTimer(String id, String id2) throws JspTagException {
         if (id == null) {
             return startTimer(id2);
         } else {
@@ -75,9 +76,9 @@ public class TimerTag extends ContextReferrerTag {
      *
      */
 
-    public int startTimer(String id) {
+    public int startTimer(String id) throws JspTagException  {
         if (log.isDebugEnabled()) {
-            log.debug("Starting timer " + name + ": " + id);
+            log.debug("Starting timer " + name.getString(this) + ": " + id);
         }
         timers.add(new Long(System.currentTimeMillis()));
         if (totalTimes.get(id) == null) {
@@ -91,11 +92,11 @@ public class TimerTag extends ContextReferrerTag {
      * Stops the timer identified by the handle, and logs and returns the result in second.
      */
 
-    public long haltTimer(int handle) {
+    public long haltTimer(int handle) throws JspTagException  {
         long duration = System.currentTimeMillis() - ((Long)timers.get(handle)).longValue();
         String id = (String)timerIds.get(handle);
         if (log.isDebugEnabled()) {
-            log.debug("Timer " + (name != null ? name + ":"  : "")  + id + ": " + (double)duration / 1000 + " s");
+            log.debug("Timer " + (name != Attribute.NULL ? name.getString(this) + ":"  : "")  + id + ": " + (double)duration / 1000 + " s");
         }
         ((LongContainer)totalTimes.get(id)).value += duration;
         return duration;
@@ -105,7 +106,7 @@ public class TimerTag extends ContextReferrerTag {
      * Initialize timer.
      */
     public int doStartTag() throws JspTagException {
-        log.info("Starting timer " + name );
+        log.info("Starting timer " + name.getString(this));
         timers     = new Vector(1);
         timerIds   = new Vector(1);
         totalTimes = new HashMap();
@@ -120,7 +121,7 @@ public class TimerTag extends ContextReferrerTag {
 
     public int doAfterBody() throws JspTagException {
         haltTimer(0);
-        String result = "Timer " + name + " totals:\n";
+        String result = "Timer " + name.getString(this) + " totals:\n";
         Iterator i = totalTimes.keySet().iterator();
 
         while (i.hasNext()) {

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
@@ -30,14 +31,14 @@ import org.mmbase.util.logging.Logging;
 public class ImageTag extends FieldTag {
 
     private static Logger log = Logging.getLoggerInstance(ImageTag.class.getName());
-    private String template = null;
+    private Attribute template = Attribute.NULL;
 
     /**
      * The transformation template
      */
 
     public void setTemplate(String t) throws JspTagException {
-        template = getAttributeValue(t);
+        template = getAttribute(t);
     }
 
     public int doStartTag() throws JspTagException {
@@ -66,13 +67,14 @@ public class ImageTag extends FieldTag {
         }
 
         String number;
-        if (template == null || "".equals(template)) {
+        String t = template.getString(this);
+        if ("".equals(t)) {
             // the node/image itself
             number = node.getStringValue("number");
         } else {
             // the cached image
             List args = new ArrayList();
-            args.add(template);
+            args.add(t);
             number = node.getFunctionValue("cache", args).toString();
         }
 
