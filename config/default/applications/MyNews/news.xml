@@ -17,8 +17,7 @@ for publishing texts, images, audio, and video via digital media, such as the We
 
 Over the past three years, the program has grown into a flexible and reliable publishing system. During the 1999 Pinkpop festival, for example, it handled some 5.1 million hits per day. During the three-day festival period, the VPRO published to the site reviews of all the Pinkpop bands, hundreds of images, and dozens of on-site audio reports and concert compilations. The broadcaster also uses MMBase to automatically record, digitize, and publish radio programs to the VPRO website; the system processes more than 100 gigabytes of raw audio per week. In addition, approximately 80 VPRO employees have direct access to the content of the VPRO sites via an  editor  interface, and add daily updates to their own programs  websites.
 
-By distributing MMBase as Open Source software, the VPRO is creating a community of developers who will ensure the program s robustness by testing it on various platforms. By working together on programming for MMBase, this community will also ensure that the program will take advantage of the latest technological developments. More documentation can be found at the MMBase website: www.mmbase.org
-		</body>
+By distributing MMBase as Open Source software, the VPRO is creating a community of developers who will ensure the program s robustness by testing it on various platforms. By working together on programming for MMBase, this community will also ensure that the program will take advantage of the latest technological developments. More documentation can be found at the MMBase website: www.mmbase.org</body>
 		<type>-1</type>
 		<subtitle></subtitle>
 	</node>
@@ -36,8 +35,7 @@ Authorisation, Wizards, Editors / HTML-input, JSP, Documentation, Status of XML 
 Many of these topics will become projects, if you're interested in a certain topic you can participate in the project. See the project page at www.mmbase.org and email the person that is responsible for a certain project.
 
 The following companies where present:
-VPRO, Submarine, DDS, Lunatech, Sun Microsystems, Triple-P, CWI, Mediamatic, EO, UTwente, Soze, Netling, KPN, Telebasics, V2, NOB, Organisatie, Waag, VARA,  Advise Online, org.net, Advance, C-Factory, Amaze, XS4ALL, Pine, CNN-Europa, Skydancer.
-		</body>
+VPRO, Submarine, DDS, Lunatech, Sun Microsystems, Triple-P, CWI, Mediamatic, EO, UTwente, Soze, Netling, KPN, Telebasics, V2, NOB, Organisatie, Waag, VARA,  Advise Online, org.net, Advance, C-Factory, Amaze, XS4ALL, Pine, CNN-Europa, Skydancer.</body>
 		<type>-1</type>
 		<subtitle></subtitle>
 	</node>
@@ -51,8 +49,7 @@ Dutch radio and TV broadcaster EO will be co-user and developer of VPRO's Open S
 
 The EO assigns her team of software developers and web designers to work on MMBase together with the VPRO and other developers. The fast growing group of contributors to the MMBase project consists of, amongst others, Sun Microsystems, broadcaster the NOS, ISP XS4ALL, ISP De Digitale Stad, the University of Twente, Submarine, V2, de Waag, and Mediamatic. In addition, a large number of other broadcasting organizations are investigating MMBase.
 
-The EO selected MMBase considering the following criteria: the system has to be modular in order for it to grow flexibly, it should be possible to implement it fast in the existing Internet department and the other departments, it should use open and object-oriented technology (such as Java and XML), and it should be scalable.
-		</body>
+The EO selected MMBase considering the following criteria: the system has to be modular in order for it to grow flexibly, it should be possible to implement it fast in the existing Internet department and the other departments, it should use open and object-oriented technology (such as Java and XML), and it should be scalable.</body>
 		<type>-1</type>
 		<subtitle></subtitle>
 	</node>
@@ -64,8 +61,7 @@ The EO selected MMBase considering the following criteria: the system has to be 
 
 MMBase had an uptime of almost 100%. Technical people of the VPRO had to bring MMBase down for a little adjustment to some code. 10 computer were available for entering information. During the festival 10 broadbox sessions were followed. See for yourself what is created in three days by visiting the Pinkpop site (see link at bottom).
 
-The webdesign of the Pinkpop site was finished before the start of the festival. During the festival all people could concentrate on the content. All information added to the Pinkpop site can be reused in other parts of the VPRO site. 
-</body>
+The webdesign of the Pinkpop site was finished before the start of the festival. During the festival all people could concentrate on the content. All information added to the Pinkpop site can be reused in other parts of the VPRO site.</body>
 		<type>-1</type>
 		<subtitle></subtitle>
 	</node>
