@@ -16,9 +16,9 @@ public class PriorityURL implements Sortable {
 	public static int MIN_PRIORITY=0;
 	public static int LOW_PRIORITY=20;
 	public static int DEF_PRIORITY=80;
-	public static int MEDIUM_PRIORITY=80;
-	public static int HIGH_PRIORITY=90;
-	public static int MAX_PRIORITY=100;
+	public static int MEDIUM_PRIORITY=100;
+	public static int HIGH_PRIORITY=150;
+	public static int MAX_PRIORITY=160;
 
 	private String url;
 	private int priority;
