@@ -1,8 +1,11 @@
 
 /* 
-	$Id: HtmlBase.java,v 1.13 2000-03-29 10:42:19 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.14 2000-03-29 11:06:00 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2000/03/29 10:42:19  wwwtech
+	Rob: Licenses changed
+	
 	Revision 1.12  2000/03/29 10:07:49  wwwtech
 	Wilbert Removed TSEARCH from getList
 	
@@ -59,7 +62,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.13 2000-03-29 10:42:19 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.14 2000-03-29 11:06:00 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -565,15 +568,6 @@ public class HtmlBase extends ProcessorModule {
 					return(mmb.getAuthType());
 			} else if (cmd.equals("GETSEARCHAGE")) {
 					return(getSearchAge(tok));
-			} else if (cmd.equals("TSEARCH")) {
-				// should be removed soon !
-				Teasers bul=(Teasers)mmb.getMMObject("teasers");
-				if (bul!=null) {
-					return(""+bul.doTSearchSize(sp,tok));
-				} else {
-					debug("MMBASE -> can't use teasers");
-					return(null);
-				}
 			} else if (cmd.equals("CACHE")) {
 				return(""+doCache(sp,tok));
 			} else if (cmd.equals("GETDAYMARKER")) {
