@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -46,9 +46,20 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     /** 
      * Creator.
      *
-     * @param builder The builder for the nodetype.
+     * @param builder The builder for the nodetype, must not be a 
+     *        {@link @org.mmbase.module.core.VirtualBuilder virtual} builder.
+     * @throws IllegalArgumentException when an invalid argument is supplied
      */
     public NodeSearchQuery(MMObjectBuilder builder) {
+        if (builder == null) {
+            throw new IllegalArgumentException(
+                "Invalid builder value: " + builder);
+        }
+        if (builder instanceof VirtualBuilder) {
+            throw new IllegalArgumentException(
+                "Invalid builder type, because this is a virtual builder: "
+                + builder.getClass().getName());
+        }
         this.builder = builder;
         Step step = super.addStep(builder);
         Iterator iFields = builder.getFields().iterator();
