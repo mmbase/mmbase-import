@@ -31,6 +31,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
     protected String type = null;
     protected String role = null;
+    protected String searchDir = null;
 
     /**
      * @param type a nodeManager
@@ -43,6 +44,12 @@ public class RelatedNodesTag extends AbstractNodeListTag {
      */
     public void setRole(String role) throws JspTagException {
         this.role = getAttributeValue(role);
+    }
+
+    /**
+     */
+    public void setSearchdir(String search) throws JspTagException {
+        searchDir = getAttributeValue(search);
     }
 
     /**
@@ -74,7 +81,12 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             if (role == null) {
                 initialnodes = parentNode.getRelatedNodes(type);
             } else {
-                initialnodes = parentNode.getRelatedNodes(type, role, directions);
+                if (searchDir == null && directions != null) {
+                    log.error("WRONG use of 'directions' attribute of relatednodes (should be searchdir). Fix this page before 1.7!");
+                    initialnodes = parentNode.getRelatedNodes(type, role, directions);
+                } else {
+                    initialnodes = parentNode.getRelatedNodes(type, role, searchDir);
+                }
             }
 
             StringBuffer where = null;
@@ -103,7 +115,12 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 if (role == null) {
                     nodes = parentNode.getRelatedNodes(type);
                 } else {
-                    nodes = parentNode.getRelatedNodes(type, role, directions);
+                    if (searchDir == null && directions != null) {
+                        log.error("WRONG use of 'directions' attribute of relatednodes (should be searchdir). Fix this page before 1.7");
+                        nodes = parentNode.getRelatedNodes(type, role, directions);
+                    } else {
+                        nodes = parentNode.getRelatedNodes(type, role, searchDir);
+                    }
                 }
             }
         }
