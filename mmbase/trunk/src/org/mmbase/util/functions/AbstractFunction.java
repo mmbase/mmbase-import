@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AbstractFunction.java,v 1.2 2004-12-20 10:37:50 michiel Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
@@ -157,6 +157,10 @@ abstract public class AbstractFunction implements Function, Comparable {
     public boolean equals(Object o) {
         return (o instanceof Function) &&
                ((Function)o).getName().equals(name);
+    }
+
+    public String toString() {
+        return "" + returnType + " " + name + Arrays.asList(parameterDefinition);
     }
 
 }
