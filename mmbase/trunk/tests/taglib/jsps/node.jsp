@@ -111,9 +111,9 @@ notfound="skip"<br />
 <em>see <a href="<mm:url page="${taglibdoc}/listrelations.jsp" />">listrelations</a></em><br />
 <em>see <a href="<mm:url page="${taglibdoc}/relatednode.jsp" />">relatednode</a></em><br />
 <mm:node referid="node">
-   countrelations (not specified type): <mm:countrelations /> (should be 1)<br />
-   countrelations (specified type): <mm:countrelations type="urls" /> (should be 1)<br />
-   ountrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="destination" /> (should be 1)<br />
+   countrelations (not specified type): <mm:countrelations /> (should be 3)<br />
+   countrelations (specified type): <mm:countrelations type="urls" /> (should be 2)<br />
+   ountrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="destination" /> (should be 2)<br />
    countrelations (specified type, searchdir): <mm:countrelations type="urls" searchdir="source" /> (should be 0)<br />
    countrelations (specified searchdir): <mm:countrelations  searchdir="source" /> (should be 0)<br />
    countrelations (specified role): <mm:countrelations  role="posrel" /> (should be 1)<br />
@@ -255,8 +255,8 @@ using list tag: <br />
        </mm:relatednodes>
      </mm:relatednodescontainer>
      <mm:relatednodes type="object" role="posrel" orderby="posrel.pos" jspvar="node">
-	   <mm:log><%=node%></mm:log>
-          15  actual type (listing object): <mm:nodeinfo type="nodemanager" /> (should be 'urls'): <mm:field name="url" /> (should see the url)<br />
+       <mm:log><%=node%></mm:log>
+       15  actual type (listing object): <mm:nodeinfo type="nodemanager" /> (should be 'urls'): <mm:field name="url" /> (should see the url)<br />
      </mm:relatednodes>
      <em>Testing with 'sorted' role (a posrel)</em><br />
      <mm:relatednodescontainer type="urls" role="sorted">
@@ -268,6 +268,14 @@ using list tag: <br />
        18 using 'sorted' path: size <mm:size /> (should be 1)<br />
        <mm:constraint field="sorted.pos" value="100" />
        19 using 'sorted' path (and constraint): size <mm:size /> (should be 1)<br />
+     </mm:relatednodescontainer>
+     <mm:relatednodescontainer path="sorted,news" element="news">
+       20 using 'sorted' path: size <mm:size /> (should be 1)<br />
+       <mm:constraint field="sorted.pos" value="100" />
+       21 using 'sorted' path (and constraint): size <mm:size /> (should be 1)<br />
+       <mm:relatednodes>
+         <mm:field name="title" /> (should be 'Another news article (...)')<br />
+       </mm:relatednodes>
      </mm:relatednodescontainer>
    </mm:node>
 </mm:list>
