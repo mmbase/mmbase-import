@@ -622,7 +622,7 @@ NetComponents can be found at:
                 <include name="mmbase.jar"/>
                 <include name="log4j.jar"/>
                 <include name="xml-apis.jar"/>
-                <include name="xalan.jar"/>
+                <include name="xerces.jar"/>
                 <include name="xalan.jar"/>
                 <include name="hsqldb.jar"/>
             </lib>
