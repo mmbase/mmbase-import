@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.24 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: XSLTransformer.java,v 1.25 2005-03-03 17:14:43 michiel Exp $
  */
 public class XSLTransformer {
     private static final Logger log = Logging.getLoggerInstance(XSLTransformer.class);
@@ -99,7 +99,11 @@ public class XSLTransformer {
      * This is the base function which calls the actual XSL
      * transformations. Performs XSL transformation on MMBase specific
      * way (using MMBase cache, and URIResolver).
-     * @javadoc
+     * @param xml The source XML
+     * @param xslFile The XSL which must be used for the transformation
+     * @param result  The XSL out will be written to this
+     * @param params  <code>null</code> or a Map to XSL transformations parameters
+     * @param considerDir If <code>true</code>, an URIResolver will be instantiated which can resolve entities relative to the XSL file.
      *
      * @since MMBase-1.6
      */
