@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.*;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
@@ -29,11 +30,13 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.56 2003-11-07 10:40:30 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.57 2003-12-04 18:25:45 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
     private static final Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
+
+    private static final int QUERY_WARN_SIZE = 1000;
 
     /**
      * Holds the list of fields to sort the list on.
@@ -183,6 +186,59 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         constraints = getAttribute(where);
     }
 
+
+
+
+
+    protected static class NodesAndTrim {
+        boolean  needsTrim;
+        NodeList nodeList;
+    }
+
+    protected final NodesAndTrim getNodesAndTrim(Query query) throws JspTagException {
+        return getNodesAndTrim(query, 0);
+    }
+    /**
+     *
+     * @param more  How many more than max must be queried (if something will be subtracted later)
+     * @since MMBase-1.7
+     * @return true If successful
+     */
+    protected NodesAndTrim getNodesAndTrim(Query query, int more) throws JspTagException {
+        NodesAndTrim result = new NodesAndTrim();
+        if (comparator.getString(this).equals("")) {
+            if (max != Attribute.NULL) {
+                int m = max.getInt(this, -1);
+                if (m != -1) {
+                    query.setMaxNumber(m + more);
+                }
+            }
+            if (offset != Attribute.NULL) {
+                query.setOffset(offset.getInt(this, 0));
+            }
+            result.nodeList = query.getCloud().getList(query);
+            result.needsTrim = more > 0;
+        } else { 
+            // using comparator, doing max and offset programmaticly, otherwise the comparator is loosing most of its use
+            result.nodeList = query.getCloud().getList(query);
+
+            // give a warning if what you are doing right now is not very smart
+            if(result.nodeList.size() > QUERY_WARN_SIZE) {
+                log.warn("Trying to use compare on a query with result size " + result.nodeList.size() + " > " + QUERY_WARN_SIZE + " in page " + 
+                         ((HttpServletRequest)pageContext.getRequest()).getRequestURI() + "." + 
+                         " Note that the attribute 'max' will in combination with the 'comparator' attribute not set a limit on the query" + 
+                         " (but the result will be limited afterwards). You might want to limit the query in another way (use a container?)");
+            }
+            result.needsTrim = true;
+        }
+        return result;
+    }
+
+
+
+
+
+
     // ContextProvider implementation
     public ContextContainer getContextContainer() throws JspTagException {
         if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
@@ -241,6 +297,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected int setReturnValues(NodeList nodes) throws JspTagException {
         return setReturnValues(nodes, false);
     }
+
+
 
     /**
      * Creates the node iterator and sets appropriate variables (such as listsize).
