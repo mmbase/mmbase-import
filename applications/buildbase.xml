@@ -32,7 +32,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="project.source.dir" location="." />
   <property name="project.build.dir"  location="./build" />
-  <property name="project.metainf.dir"    value="${project.build.dir}/build/metainf" />
+  <property name="project.metainf.dir"    value="${project.build.dir}/metainf" />
   <property name="project.javadoc.packages" value="org.mmbase.*"/>
 
 
