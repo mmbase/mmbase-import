@@ -144,7 +144,7 @@ Build-compiler: ${build.compiler}
 
   <target name="package" depends="package.check" unless="package.uptodate">   
     <antcall target="jar" />
-    <antcall target="doc" />
+    <antcall target="documentation" />
     <echo file="${project.build.dir}/README-PACKAGE.txt">
 This is the '${project.name}' package of MMBase. 
 
@@ -230,10 +230,10 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="doc" description="Documentation" depends="javadocs,docbook">
+  <target name="documentation" description="Documentation" depends="javadocs,documentation.html">
   </target>
 
-  <target name="docbook" depends="init" if="documentation.available">
+  <target name="documentation.html" depends="init" if="documentation.available">
     <ant dir="${documentation.home}" target="documentation.html">
       <property name="documentation.xml-source.dir" value="${project.documentation.dir}" />
       <property name="documentation.dest.dir"       value="${project.build.dir}/documentation" />
