@@ -14,37 +14,36 @@ import org.mmbase.util.logging.Logging;
  */
 public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
-    private String configFile = null;
+    private File configFile = null;
 
     public void load(HashMap properties) {
         String passwordFile = (String)properties.get("file");
 
         if (passwordFile == null || passwordFile.equals("")) {
-            configFile = org.mmbase.module.core.MMBaseContext.getConfigPath() + java.io.File.separator + "accounts.properties";
+            configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath() + java.io.File.separator + "accounts.properties");
             log.warn("property file not specified, now using as config file :" + configFile);
         } else {
-            configFile = passwordFile;
+            configFile = new File(passwordFile);
         }
 
-        log.debug("trying to load file login modules with password file:"  + configFile);
-
-        File file = new File(configFile);
-
-        if (! file.isAbsolute()) {
+        if (! configFile.isAbsolute()) {
             File   parentFile   = (File) properties.get("_parentFile");
-            file = new File(parentFile.getParent() + File.separator + configFile);
-            log.debug("" + configFile + " is not absolute. Trying " + file.getAbsolutePath());            
+            log.debug("" + configFile.getPath() + " is not absolute."); 
+            configFile = new File(parentFile.getParent() + File.separator + configFile.getPath());
+            log.debug("Trying " + configFile.getAbsolutePath()); 
         }
 
-        if ( !file.exists() ) {
+        log.debug("trying to load file login modules with password file:"  + configFile.getAbsolutePath());
+
+        if ( ! configFile.exists() ) {
             log.error("file: '"+configFile+"' did not exist.");
             throw new org.mmbase.security.SecurityException("file: '"+configFile+"' did not exist.");
         }
-        if ( !file.isFile() ) {
+        if ( ! configFile.isFile() ) {
             log.error("file: '"+configFile+"' is not a file.");
             throw new org.mmbase.security.SecurityException("file: '"+configFile+"' is not a file.");
         }
-        if ( !file.canRead() ) {
+        if ( ! configFile.canRead() ) {
             log.error("file: '"+configFile+"' is not readable.");
             throw new org.mmbase.security.SecurityException("file: '"+configFile+"' is not readable.");
         }
@@ -57,7 +56,7 @@ public class FileLoginModule implements LoginModule {
         ExtendedProperties reader = new ExtendedProperties();
 
         log.debug("reading accounts from " + configFile);
-        java.util.Hashtable accounts = reader.readProperties(configFile);
+        java.util.Hashtable accounts = reader.readProperties(configFile.getAbsolutePath());
 
         if (accounts == null) {
             log.error("Could not find accounts!");
