@@ -212,6 +212,7 @@ version=1.6.0-rc1
       <fileset dir="${source-documentation.dir}/releases"
                defaultexcludes="yes">
         <exclude name="legal"/>
+        <exclude name="building.txt"/>
         <include name="*.txt"/>
       </fileset>
     </copy>
