@@ -671,7 +671,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
         from = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", from);
-        String url = response.encodeRedirectURL(loginpage + "?from="+from+"&reference=" + reference + "&reason=" + reason);
+        String url = response.encodeRedirectURL(loginpage + "?from="+from+"&referrer=" + reference + "&reason=" + reason);
         try {
             if (log.isDebugEnabled()) log.debug("redirecting to:" + url);
             response.sendRedirect(url);
@@ -695,7 +695,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (rank != null) {
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
                 if (curRank.getInt() < rank.getInt()) {
-                    if (log.isDebugEnabled()) log.debug("logged on, but rank of user is too low (" + cloud.getUser().getRank() + ". log out first.");
+                  if (log.isDebugEnabled()) log.debug("logged on, but rank of user is too low (" + cloud.getUser().getRank() + ". log out first.");
                     cloud = null;
                     if (session != null) {
                         session.removeAttribute(getSessionName());
