@@ -60,7 +60,6 @@ public class MMBase extends ProcessorModule  {
 	MultiRelations MultiRelations;
 	private String dtdbase="http://www.mmbase.org";
 	MMJdbc2NodeInterface database;
-	//String databasename;
 
 	public Hashtable mmobjs=new Hashtable();
 	String machineName="unknown";
@@ -120,16 +119,7 @@ public class MMBase extends ProcessorModule  {
 			multicasthost=tmp;
 		}
 
-		/*
-		tmp=getInitParameter("DATABASE");
-		if (tmp!=null && !tmp.equals("")) {
-			databasename=tmp;
-		} else {
-			debug("init(): ERROR: No database defined !");
-		}
-		*/
-
-    		sendmail=(SendMailInterface)getModule("sendmail");
+   		sendmail=(SendMailInterface)getModule("sendmail");
 		machineName=getInitParameter("MACHINENAME");
 
 		jdbc=(JDBCInterface)getModule("JDBC");
@@ -170,8 +160,6 @@ public class MMBase extends ProcessorModule  {
 
 		MultiRelations = new MultiRelations(this);
 
-		// moved up ! mmc=new MMBaseMultiCast(this);
-
 		// weird place needs to rethink (daniel).
 		Vwms bul=(Vwms)getMMObject("vwms");
 		if (bul!=null) {
@@ -199,7 +187,7 @@ public class MMBase extends ProcessorModule  {
 	 * general info like dates, times, browser info etc etc
 	 */
 	public MMBase() {
-		if (debug) debug("MMBase constructed");
+		debug("MMBase constructed");
 	}
 
 	/**
@@ -223,7 +211,7 @@ public class MMBase extends ProcessorModule  {
 	* create a new mmbase under the name defined in baseName
 	*/
 	boolean createMMBase() {
-		debug("MMBASE-> creating new multimedia base : "+baseName);
+		debug(" creating new multimedia base : "+baseName);
 		Vector v;
 		database=getDatabase();
 		database.create("object");
@@ -258,7 +246,6 @@ public class MMBase extends ProcessorModule  {
 
 	public MultiConnection getConnection() {
 		try {
-			//MultiConnection con=jdbc.getConnection(jdbc.makeUrl(databasename));
 			MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
 			return(con);
 		} catch (SQLException e) {
@@ -411,7 +398,7 @@ public class MMBase extends ProcessorModule  {
 				int agecount=((DayMarkers)getMMObject("daymarks")).getDayCountAge(agenr);
 				return(""+agecount);
 			} catch (Exception e) {
-				debug("MMBASE -> Not a valid AGE");
+				debug(" Not a valid AGE");
 				return("No valid age given");
 			}
 		} else {
@@ -535,7 +522,7 @@ public class MMBase extends ProcessorModule  {
 	boolean startBuilder(String classname,String objectname, String description, String dutchsname,String searchage, Vector fields) {
 		if (searchage==null) searchage="14";
 		if (!classname.equals("core")) {
-			System.out.println("MMBASE -> Starting builder : "+objectname);
+			debug(" Starting builder : "+objectname);
 			try {
 				// is it a full name or inside the org.mmase.* path
 				int pos=classname.indexOf('.');
@@ -637,7 +624,7 @@ public class MMBase extends ProcessorModule  {
 			try {
 				String tmp=getInitParameter("JDBC2NODE");
 				Class newclass=Class.forName("org.mmbase.module.database.support."+tmp);
-				if (debug) debug("MMBASE -> Loaded load class : "+newclass);
+				if (debug) debug("Loaded load class : "+newclass);
 				database=(MMJdbc2NodeInterface)newclass.newInstance();
 				database.init(this);
 			} catch(Exception e) {
