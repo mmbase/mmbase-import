@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.113 2004-01-18 12:08:51 nico Exp $
+    @version $Id: wizard.xsl,v 1.114 2004-01-19 10:06:46 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -265,7 +265,7 @@
 
   <xsl:template match="steps-validator">
     <!-- when multiple steps, otherwise do nothing -->
-    <xsl:if test="count(step) > 1">
+    <xsl:if test="count(step) &gt; 1">
       <xsl:call-template name="steps"/>
     </xsl:if>
   </xsl:template>
