@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.190 2002-12-04 11:01:01 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.191 2002-12-04 12:18:00 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1087,6 +1087,8 @@ public class MMObjectBuilder extends MMTable {
      * Enumerate all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where) {
         return searchVector(where).elements();
@@ -1097,6 +1099,8 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort) {
         return searchVector(where,sort).elements();
@@ -1109,6 +1113,8 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration search(String where,String sort,boolean direction) {
         return searchVector(where,sort,direction).elements();
@@ -1118,7 +1124,8 @@ public class MMObjectBuilder extends MMTable {
      * Returns a vector containing all the objects that match the searchkeys
      * @param where scan expression that the objects need to fulfill
      * @return a vector containing all the objects that apply.
-     * @deprecated Use search() instead
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where) {
         // do the query on the database
@@ -1131,6 +1138,8 @@ public class MMObjectBuilder extends MMTable {
      * @param sorted      a comma separated list of field names on wich the
      *                    returned list should be sorted
      * @return a vector containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where,String sorted) {
         return searchVector(where, sorted, true);
@@ -1143,6 +1152,8 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where,String sorted,boolean direction) {
         String directions = (direction? "UP": "DOWN");
@@ -1174,6 +1185,8 @@ public class MMObjectBuilder extends MMTable {
      *                    value.
      * @return            a vector containing all the objects that apply in the
      *                    requested order
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVector(String where, String sorted, String directions) {
         // In order to support this method:
@@ -1195,6 +1208,8 @@ public class MMObjectBuilder extends MMTable {
      * - Throws exception on SQL errors
      * - returns List rather then Vector.
      * @since MMBase-1.6
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
     public List searchList(String where) throws SQLException {
@@ -1221,6 +1236,8 @@ public class MMObjectBuilder extends MMTable {
      * @param directions Comma-separated list of sorting directions ("UP" 
      *        or "DOWN") of the fields to sort on.
      * @since MMBase-1.6
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
     public List searchList(String where, String sorted, String directions) 
@@ -1358,7 +1375,8 @@ public class MMObjectBuilder extends MMTable {
      * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
      * @param query The SQL query
      * @return A Vector which contains all nodes that were found
-     * @deprecated Use getNodes(NodeSearchQuery) instead.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     private Vector basicSearch(String query) {
         // In order to support this method:
@@ -1380,12 +1398,14 @@ public class MMObjectBuilder extends MMTable {
      * - Throws exception on error
      * - Returns List
      * @since MMBase-1.6
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
 
     private List getList(String query) throws SQLException {
         MultiConnection con=null;
         Statement stmt=null;
-        Vector results;
+        Vector results = new Vector();
         if (log.isDebugEnabled()) {
             log.debug("query: " + query);
         }
@@ -1393,11 +1413,34 @@ public class MMObjectBuilder extends MMTable {
             con = mmb.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            results = readSearchResults(rs);
+            
+            for (int counter = 0; rs.next(); counter++) {
+                // check if we are allowed to do this iteration...
+                if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
+                    // to much nodes found...
+                    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
+                    log.warn(msg);
+                    break;
+                }
+
+                // create the node from the record-set
+                MMObjectNode node = new MMObjectNode(this);
+                ResultSetMetaData rd = rs.getMetaData();
+                for (int i=1; i<=rd.getColumnCount(); i++) {
+                    String fieldname = rd.getColumnName(i);
+                    // node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
+                    mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
+                }
+                results.add(node);
+            }
+        } catch(java.sql.SQLException e) {
+            log.error(Logging.stackTrace(e));
         } finally {
             mmb.closeConnection(con,stmt);
         }
-        // return the results
+        
+        // Process and return the results.
+        processSearchResults(results);
         return results;
     }
 
@@ -1437,7 +1480,8 @@ public class MMObjectBuilder extends MMTable {
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
-     * @sql
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchNumbers(String where) {
         // In order to support this method:
@@ -1478,6 +1522,8 @@ public class MMObjectBuilder extends MMTable {
      * @param sorted order in which to return the objects
      * @param in lost of node numbers to filter on
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String sort,String in) {
         return searchVectorIn(where,sort,in).elements();
@@ -1488,6 +1534,8 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param in lost of node numbers to filter on
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String in) {
         return searchVectorIn(where,in).elements();
@@ -1501,6 +1549,8 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
         return searchVectorIn(where,sort,direction,in).elements();
@@ -1513,6 +1563,8 @@ public class MMObjectBuilder extends MMTable {
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      * @sql
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String in) {
         if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
@@ -1545,6 +1597,8 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
     public Vector searchVectorIn(String where, String in) {
@@ -1580,7 +1634,8 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
-     * @sql
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public Vector searchVectorIn(String where,String sorted,String in) {
         return searchVectorIn(where, sorted, true, in);
@@ -1595,6 +1650,8 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      * @sql
      */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
@@ -1716,8 +1773,8 @@ public class MMObjectBuilder extends MMTable {
      * the where clause.
      * @param where where clause (SQL-syntax) that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
-     * @sql
-     * @deprecated Use one of the other search methods instead.
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      *             The performance gain is negligible and does not justify
      *             another method.
      */
@@ -1725,43 +1782,6 @@ public class MMObjectBuilder extends MMTable {
         return search(where);
     }
 
-    /**
-     * Store the nodes in the resultset, obtained from a builder, in a vector.
-     * The nodes retrieved are added to the cache.
-     * @param rs The resultset containing the nodes
-     * @return The vector which is to hold the data
-     */
-    // TODO RvM: move this code to getList(String).
-    private Vector readSearchResults(ResultSet rs) {
-        Vector results = new Vector();
-        try {
-            for(int counter = 0; rs.next(); counter++) {
-                // check if we are allowed to do this iteration...
-                if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
-                    // to much nodes found...
-                    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
-                    log.warn(msg);
-                    break;
-                }
-                
-                // create the node from the record-set
-                MMObjectNode node = new MMObjectNode(this);
-                ResultSetMetaData rd = rs.getMetaData();
-                for (int i=1;i<=rd.getColumnCount();i++) {
-                    String fieldname = rd.getColumnName(i);
-                    // node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
-                    mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
-                }
-                results.add(node);
-            }
-        } catch(java.sql.SQLException e) {
-            log.error(Logging.stackTrace(e));
-        }
-        
-        processSearchResults(results);
-        return results;
-    }
-    
     /**
      * Performs some necessary postprocessing on nodes retrieved from a 
      * search query.
