@@ -31,18 +31,18 @@ public class ExportTEI extends TagExtraInfo {
         VariableInfo[] variableInfo =  new VariableInfo[1];
         
         String typeAttribute    = (String) data.getAttribute("type"); 
-        if (typeAttribute == null) typeAttribute = "java.lang.Object";
+        if (typeAttribute == null) typeAttribute = "Object";
 
         String type = "java.lang.Object";
 
-        if ("Object".equals(typeAttribute)) {
+        if ("Object".equalsIgnoreCase(typeAttribute)) {
             type = "java.lang.Object";
-        } else if ("String".equals(typeAttribute)) {
+        } else if ("String".equalsIgnoreCase(typeAttribute)) {
             type = "java.lang.String";
-        } else if ("Node".equals(typeAttribute)) {
+        } else if ("Node".equalsIgnoreCase(typeAttribute)) {
             type = "org.mmbase.bridge.Node";
         } else {
-            //type = "org.lang.Object"; 
+            //type = "java.lang.Object"; 
             throw new RuntimeException("Unknown type '" + typeAttribute + "'");
         }
 
