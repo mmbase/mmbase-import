@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <wizard-schema id="empty">
-	<title>Example 1 people editor!</title>
+	<title>Example 1 people editor!!</title>
 	<action type="load">
     <object type="people" />
-		<relation destination="news"     role="related"  />
 		<relation destination="images"   role="related"  />
+		<relation destination="news"     role="related"  />
 	</action>
 	
 	<action type="create">
@@ -14,17 +14,42 @@
 		</object>
 	</action>
 	
-	<form-schema id="step1">
-		<title>Step 1</title>
+	<form-schema id="personals">
+		<title>Personal information</title>
 		<field name="firstname" ftype="string" xdttype="html">
 			<prompt>First name</prompt>
 		</field>
-
 		<field name="lastname" ftype="string" xdttype="html">
 			<prompt>Last name</prompt>
 		</field>
-		
-    <list include="lib/addimages.xml" />
-		
+
+    <list extends="lib/addimages.xml">
+      <title>photo</title>      			
+			<action type="create">
+				<relation role="related" destinationtype="images" />
+			</action>
+    </list>		
+  </form-schema>
+
+
+	<form-schema id="articles">
+    <title>Written articles</title>
+    <list fdatapath="relation[object/@type='news']" minoccurs="0" maxoccurs="*" type="news">
+      <title>Written articles</title>
+
+      <command name="search" nodepath="news" fields="title">
+        <prompt>Search for articles </prompt>
+      </command>
+      
+      <item>
+        <field name="title" ftype="data" />
+      </item>
+      <action type="create">
+        <relation role="related" destinationtype="news" />
+      </action>
+
+    </list>
 	</form-schema>
+
+
 </wizard-schema>
