@@ -7,7 +7,7 @@
     @author Pierre van Rooden
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: debug.xsl,v 1.1 2003-11-30 19:53:28 nico Exp $
+    @version $Id: debug.xsl,v 1.2 2003-12-14 16:20:55 nico Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -41,8 +41,8 @@
   </xsl:template>
 
   <xsl:template name="javascript" >
-      <script language="javascript" src="{$javascriptdir}tools.js"></script>
-      <script language="javascript" src="{$javascriptdir}debug.js"></script>
+      <script type="text/javascript" src="{$javascriptdir}tools.js"></script>
+      <script type="text/javascript" src="{$javascriptdir}debug.js"></script>
   </xsl:template>
 
   <xsl:template name="bodycontent" >

@@ -3,7 +3,8 @@
   version="1.0"
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
-  xmlns:date="org.mmbase.bridge.util.xml.DateFormat">
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
+  extension-element-prefixes="node date">
   <!--
     wizard.xsl
     
@@ -12,7 +13,11 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.1 2003-11-30 19:53:28 nico Exp $
+    @version $Id: wizard.xsl,v 1.2 2003-12-14 16:20:55 nico Exp $
+    
+    This xsl uses Xalan functionality to call java classes
+    to format dates and call functions on nodes
+    See the xmlns attributes of the xsl:stylesheet
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -28,20 +33,19 @@
   <xsl:variable name="BodyOnunLoad">doOnUnLoad_ew();</xsl:variable>
 
   <xsl:template name="javascript">
-    <script language="javascript" src="{$javascriptdir}tools.js">
+    <script type="text/javascript" src="{$javascriptdir}tools.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript" src="{$javascriptdir}date.js">
+    <script type="text/javascript" src="{$javascriptdir}date.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript" src="{$javascriptdir}validator.js">
+    <script type="text/javascript" src="{$javascriptdir}validator.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript"
-      src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}&amp;language={$language}">
+    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}&amp;language={$language}">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript">
+    <script type="text/javascript">
       <xsl:text disable-output-escaping="yes">
       <![CDATA[
       <!--
@@ -59,7 +63,7 @@
     <!-- SEARCH_LIST_TYPE is defined in the base.xsl-->
     <xsl:choose>
       <xsl:when test="$SEARCH_LIST_TYPE=&apos;IFRAME&apos;">
-        <script language="javascript">
+        <script type="text/javascript">
           <xsl:text disable-output-escaping="yes">
           <![CDATA[
           <!--
@@ -68,12 +72,12 @@
           ]]>
           </xsl:text>
         </script>
-        <script language="javascript" src="{$javascriptdir}searchiframe.js">
+        <script type="text/javascript" src="{$javascriptdir}searchiframe.js">
           <xsl:comment>help IE</xsl:comment>
         </script>
       </xsl:when>
       <xsl:otherwise>
-        <script language="javascript" src="{$javascriptdir}searchwindow.js">
+        <script type="text/javascript" src="{$javascriptdir}searchwindow.js">
           <xsl:comment>help IE</xsl:comment>
         </script>
       </xsl:otherwise>	
@@ -86,7 +90,7 @@
 
   <xsl:template name="javascript-html">
       <!-- no need to add the wysiwyg button bar if there are not fields of this type -->
-      <script language="javascript" src="{$javascriptdir}wysiwyg.js">
+      <script type="text/javascript" src="{$javascriptdir}wysiwyg.js">
         <xsl:comment>help IE</xsl:comment>
       </script>
   </xsl:template>
@@ -109,15 +113,11 @@
 
   <xsl:template name="title">
     <td>
-      <nobr>
         <xsl:value-of select="$wizardtitle" />
-      </nobr>
     </td>
     <td>
-      <nobr>
         <xsl:call-template name="help" />
         <xsl:call-template name="debug" />
-      </nobr>
     </td>
   </xsl:template>
 
@@ -329,16 +329,14 @@
       <table class="buttonscontent">
         <tr>
           <td>
-              <nobr>
-                <!-- cancel -->
-                <xsl:call-template name="cancelbutton" />
-                -
-                <!-- commit  -->
-                <xsl:call-template name="savebutton" />
-                -
-                <!-- Saveonly  -->
-                <xsl:call-template name="saveonlybutton"/>
-              </nobr>
+						<!-- cancel -->
+						<xsl:call-template name="cancelbutton" />
+						-
+						<!-- commit  -->
+						<xsl:call-template name="savebutton" />
+						-
+						<!-- Saveonly  -->
+						<xsl:call-template name="saveonlybutton"/>
           </td>
         </tr>
       </table>
@@ -927,37 +925,35 @@
 				</a>
 			</xsl:when>
 			<xsl:otherwise>
-				<nobr>
-					<input type="hidden" name="{@fieldname}" value="YES" />
-					<xsl:choose>
-						<xsl:when test="not(upload)">
-							<xsl:call-template name="prompt_no_file" />
-							<br />
-							<xsl:if test="not(starts-with(@number, &apos;n&apos;))">
-								<a
-									target="_blank"
-									href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
-									<xsl:call-template name="prompt_do_download" />
-								</a>
-								<br />
-							</xsl:if>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:call-template name="prompt_uploaded" />
-							<xsl:value-of select="upload/@name" />
-							<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-							(<xsl:value-of select="round((upload/@size) div 100) div 10" /> K)
-							<br />
-							<a target="_blank" href="file://{upload/path}">
+				<input type="hidden" name="{@fieldname}" value="YES" />
+				<xsl:choose>
+					<xsl:when test="not(upload)">
+						<xsl:call-template name="prompt_no_file" />
+						<br />
+						<xsl:if test="not(starts-with(@number, &apos;n&apos;))">
+							<a
+								target="_blank"
+								href="{node:function($cloud, string(@number), concat(&apos;servletpath(&apos;, $cloudkey, &apos;,number)&apos;))}">
 								<xsl:call-template name="prompt_do_download" />
 							</a>
-						</xsl:otherwise>
-					</xsl:choose>
-					<a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}"
-						onclick="return doStartUpload(this);">
-						<xsl:call-template name="prompt_do_upload" />
-					</a>
-				</nobr>
+							<br />
+						</xsl:if>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="prompt_uploaded" />
+						<xsl:value-of select="upload/@name" />
+						<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+						(<xsl:value-of select="round((upload/@size) div 100) div 10" /> K)
+						<br />
+						<a target="_blank" href="file://{upload/path}">
+							<xsl:call-template name="prompt_do_download" />
+						</a>
+					</xsl:otherwise>
+				</xsl:choose>
+				<a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}"
+					onclick="return doStartUpload(this);">
+					<xsl:call-template name="prompt_do_upload" />
+				</a>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>		
@@ -1001,19 +997,17 @@
 
   <xsl:template name="realposition">
     <span style="width:128">
-      <nobr>
-        <input
-          type="text"
-          name="{@fieldname}"
-          value="{value}"
-          class="input">
-          <xsl:apply-templates select="@*" />
-        </input>
-        <input
-          type="button"
-          value="get"
-          onClick="document.forms[&apos;form&apos;].{@fieldname}.value = document.embeddedplayer.GetPosition();" />
-      </nobr>
+			<input
+				type="text"
+				name="{@fieldname}"
+				value="{value}"
+				class="input">
+				<xsl:apply-templates select="@*" />
+			</input>
+			<input
+				type="button"
+				value="get"
+				onClick="document.forms[&apos;form&apos;].{@fieldname}.value = document.embeddedplayer.GetPosition();" />
     </span>
   </xsl:template>
 

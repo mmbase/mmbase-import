@@ -6,18 +6,24 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.2 2003-12-01 09:30:45 nico Exp $
+    @version $Id: base.xsl,v 1.3 2003-12-14 16:20:55 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
+	<!--
+		For the people who are wondering why we don't use an DOCTYPE.
+		The editwizards are using extra attributes to do validation and
+		other dynamic stuff. So the editwizards don't comply to the DOCTYPE standards
+		
+    The xsl:output will generate
+		<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+	-->
   <xsl:output
-    method="xml"
-    version="1.0"
+    method="html"
     encoding="utf-8"
-    omit-xml-declaration="no"
+    omit-xml-declaration="yes"
     standalone="yes"
-    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//"
-    indent="no" />
+    indent="yes" />
 
   <xsl:param name="cloud" />
   <xsl:param name="username">(unknown)</xsl:param>
@@ -93,7 +99,7 @@
     <xsl:call-template name="i18n">
       <xsl:with-param name="nodes" select="/*/title" />
     </xsl:call-template>
-    <!-- We need this xsl:text to prevent that some browsers can't understand <title/> -->
+    <!-- We need this xsl:text, because some browsers don't understand <title/> -->
     <xsl:text> </xsl:text>
   </xsl:variable>
   <!-- No Clue why we need this. It throws an exception when it is not here -->
@@ -111,11 +117,7 @@
   <xsl:template match="/">
     <html>
       <head>
-        <title>
-          <xsl:call-template name="htmltitle" />
-        </title>
-        <!-- We require doing everything in UTF-8 -->
-        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+        <title><xsl:call-template name="htmltitle" /></title>
         <xsl:call-template name="extrameta" />
         <xsl:call-template name="style" />
         <xsl:call-template name="colorstyle" />
@@ -125,12 +127,12 @@
       </head>
       <body>
         <xsl:if test="not($BodyOnLoad=&apos;&apos;)">
-          <xsl:attribute name="onLoad">
+          <xsl:attribute name="onload">
             <xsl:value-of select="$BodyOnLoad" />
           </xsl:attribute>
         </xsl:if>
         <xsl:if test="not($BodyOnunLoad=&apos;&apos;)">
-          <xsl:attribute name="onunLoad">
+          <xsl:attribute name="onunload">
             <xsl:value-of select="$BodyOnunLoad" />
           </xsl:attribute>
         </xsl:if>
