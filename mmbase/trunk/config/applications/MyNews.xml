@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
 <application name="MyNews" maintainer="mmbase.org" version="1" auto-deploy="false">
+  <requirements>
+    <requires name="Resources" maintainer="mmbase.org" version="1" />
+  </requirements>
+
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="1">mags</builder>
     <builder maintainer="mmbase.org" version="1">urls</builder>
@@ -49,7 +53,7 @@
 
   <description>
    <![CDATA[MyNews is an example of a magazine with news articles.
-It depends on the Resources application, please install that one before installing this one.
+It depends on the Resources application.
     ]]></description>
 
    <install-notice>
