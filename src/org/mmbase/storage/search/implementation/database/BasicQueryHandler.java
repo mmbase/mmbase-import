@@ -28,7 +28,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.28 2004-06-17 11:23:34 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.29 2004-07-30 16:59:32 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -88,6 +88,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
             con = mmbase.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
+
             try {
                 if (mustSkipResults) {
                     log.debug("skipping results, to provide weak support for offset");
@@ -117,13 +118,13 @@ public class BasicQueryHandler implements SearchQueryHandler {
             } finally {
                 rs.close();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             // Something went wrong, log exception
             // and rethrow as SearchQueryException.
             if (log.isDebugEnabled()) {
                 log.debug("Query failed:" + query + "\n" + e + Logging.stackTrace(e));
             }
-            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getMessage(), e);
+            throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         } finally {
             mmbase.closeConnection(con, stmt);
         }
@@ -258,25 +259,25 @@ public class BasicQueryHandler implements SearchQueryHandler {
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int supportLevel;
         switch (feature) {
-            case SearchQueryHandler.FEATURE_OFFSET:
-                // When sql handler does not support OFFSET, this query handler
-                // provides weak support by skipping resultsets.
-                // (falls through)
-            case SearchQueryHandler.FEATURE_MAX_NUMBER:
-                // When sql handler does not support MAX NUMBER, this query
-                // handler provides weak support by truncating resultsets.
-                int handlerSupport = sqlHandler.getSupportLevel(feature, query);
-                if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
-                    // TODO: implement weak support.
-                    //supportLevel = SearchQueryHandler.SUPPORT_WEAK;
-                     supportLevel = SearchQueryHandler.SUPPORT_NONE;
-               } else {
-                    supportLevel = handlerSupport;
-                }
-                break;
-
-            default:
-                supportLevel = sqlHandler.getSupportLevel(feature, query);
+        case SearchQueryHandler.FEATURE_OFFSET:
+            // When sql handler does not support OFFSET, this query handler
+            // provides weak support by skipping resultsets.
+            // (falls through)
+        case SearchQueryHandler.FEATURE_MAX_NUMBER:
+            // When sql handler does not support MAX NUMBER, this query
+            // handler provides weak support by truncating resultsets.
+            int handlerSupport = sqlHandler.getSupportLevel(feature, query);
+            if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
+                // TODO: implement weak support.
+                //supportLevel = SearchQueryHandler.SUPPORT_WEAK;
+                supportLevel = SearchQueryHandler.SUPPORT_NONE;
+            } else {
+                supportLevel = handlerSupport;
+            }
+            break;
+            
+        default:
+            supportLevel = sqlHandler.getSupportLevel(feature, query);
         }
         return supportLevel;
     }
