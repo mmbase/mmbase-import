@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.10 2002-05-28 09:20:19 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.11 2002-05-28 16:31:39 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -164,10 +164,6 @@ public class ObjectTypes extends TypeDef {
         // TODO: merging code!        
         MMObjectBuilder builder = getObjectBuilder(node);
         
-        // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
-        // if(builder == null) throw new RuntimeException("I can only change active builders(otherwise information could get lost..)");
-        if(builder != null && builder.size() > 0 ) throw new RuntimeException("Cannot chage node which represents a builder, (otherwise information could get lost..)");
-
         // first save our config,...
         storeBuilderFile(node);
 
@@ -228,15 +224,21 @@ public class ObjectTypes extends TypeDef {
      *	<code>false</code> if original value was set back into the field.
      */
     public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
+        Object newValue = node.values.get(fieldname);
         // the field with the name 'name' may not be changed.....
-        if(fieldname.equals("name")) {
-	    Object newValue = node.values.get(fieldname);
-	    if(originalValue!=null && !originalValue.equals(newValue)) {
+        if(originalValue !=null && !originalValue.equals(newValue)) {
+            if(fieldname.equals("name")) {
 		// restore the original value...
                 node.values.put(fieldname,originalValue);
                 return false;
-	    }
-     	}
+            } else if (fieldname.equals("config")) {        
+                MMObjectBuilder builder = getObjectBuilder(node);
+                // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
+                if(builder != null && builder.size() > 0) { 
+                    throw new RuntimeException("Cannot change builder config it has nodes (otherwise information could get lost..)");
+                }
+            }
+        }
         return true;
     }   
 
