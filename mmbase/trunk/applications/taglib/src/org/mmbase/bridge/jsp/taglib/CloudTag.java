@@ -269,7 +269,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } catch (IOException ioe) {
             throw new JspTagException(ioe.toString());
         }
-        setAnonymousCloud(cloudName, cloudURI); // there must also be _some_ cloud, to avoid exception on u
+        setAnonymousCloud(); // there must also be _some_ cloud, to avoid exception on u
         evalBody(); //  register var
         return SKIP_BODY;
     }
@@ -278,9 +278,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         removeRealm();
     }
 
-    private void setAnonymousCloud(String name, String uri) {
+    private void setAnonymousCloud() {
         log.debug("using a anonymous cloud");
-        String key = name + (uri != null ? "@" +  uri : "");
+        String key = cloudName + (cloudURI != null ? "@" +  cloudURI : "");
         cloud = (Cloud) anonymousClouds.get(key);
         if (cloud == null) {
             log.debug("couldn't find one");
@@ -342,7 +342,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if ( (method == METHOD_UNSET && logon == null && rank == null) ||
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
-            setAnonymousCloud(cloudName, cloudURI);
+            setAnonymousCloud();
             return evalBody();
         }
 
@@ -370,7 +370,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("session is not null");
                 session.removeAttribute(getSessionName());       // remove cloud itself
             }
-            setAnonymousCloud(cloudName, cloudURI);
+            setAnonymousCloud();
             // the available cloud in this case is a anonymous one
             return evalBody();
         }
@@ -523,7 +523,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             } else {
                 log.debug("no login given, creating anonymous cloud");
                 // no logon, create an anonymous cloud.
-                setAnonymousCloud(cloudName, cloudURI);
+                setAnonymousCloud();
             }
 
             if (cloud == null) { // stil null, give it up then...
