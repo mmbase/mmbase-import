@@ -9,7 +9,7 @@
    <mm:context>
 
     <ul>
-    <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos">
+    <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos" searchdir="destination">
        <mm:context>
         <mm:node id="fragment" element="${actualtype}2">
            <li>

@@ -3,7 +3,7 @@
 %><mm:import externid="fragment" required="true"  
 /><mm:cloud><mm:node  number="$fragment"><a href="#" onClick="javascript:window.open('http://<%=getHost() + getTemplatesDir() + "rvu/popuppage.jsp?fragment="%><mm:field name="number" />','<mm:field name="title" />', 'width=350,height=280,scrollbars=no');"><mm:field name="title" /></a> <mm:field name="html(intro)" />
     <mm:nodeinfo id="actualtype" type="type" write="false" />
-    <mm:related  path="posrel,${actualtype}2" fields="posrel.pos" orderby="posrel.pos">
+    <mm:related  path="posrel,${actualtype}2" fields="posrel.pos"     orderby="posrel.pos" searchdir="destination">
     <mm:first><ul></mm:first>
        <mm:context>
         <mm:node id="fragment" element="${actualtype}2">
