@@ -1,4 +1,4 @@
-\package nl.didactor.builders;
+package nl.didactor.builders;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.corebuilders.InsRel;
@@ -17,3 +17,6 @@ public class AuthRel extends InsRel {
         return super.init();
     }
 }
+
+
+pub
