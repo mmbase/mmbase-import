@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.11 2003-02-20 16:41:51 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.12 2003-03-13 15:45:50 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -66,6 +66,10 @@ public class MediaSources extends MMObjectBuilder {
     public final static int DIV3_CODEC   = 3;
     public final static int DIV4_CODEC   = 4;
     public final static int DIVX_CODEC   = 5;
+    public final static int MP1_CODEC   = 6;
+    public final static int MP2_CODEC   = 7;
+    public final static int MP3_CODEC   = 8;
+    public final static int MP4_CODEC   = 9;
     
     // Status
     public final static int    STATE_DONE   = 3; // jikes
