@@ -3,7 +3,15 @@
 	version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
- <xsl:output method="xml" omit-xml-declaration="yes"  />
+<xsl:output method="xml"
+                version="1.0"
+                encoding="UTF-8"
+                omit-xml-declaration="yes"
+                doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+                doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+                indent="yes"
+        />
+
 
 <!-- some configuration -->
 <xsl:variable name="extendscolor">blue</xsl:variable>
@@ -15,10 +23,11 @@
 <xsl:template match="taglib">
   <html>
     <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <title>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</title>
       <xsl:if test="@author"><meta name="Author" value="{@author}"/></xsl:if>
     </head>
-      <body marginwidth="0" marginheight="0" leftmargin="0" rightmargin="0" topmargin="0"
+      <body 
         bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
         <h1>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</h1>
       <table width="100%" cellpadding="5">
@@ -153,9 +162,7 @@
       <td colspan="2">
         <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
         <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
-        <p>
         <xsl:apply-templates select="info"/>
-        </p>
       </td>
     </tr>
     <xsl:if test="see">
@@ -174,6 +181,7 @@
         </td>
       </tr>
     </xsl:if>
+    
     <xsl:apply-templates select="extends" />
     <xsl:if test="xxbodycontent">
       <tr>
@@ -217,12 +225,14 @@
   <tr>
       <td width="100" valign="top"><xsl:if test="/taglib/taginterface/name[.=$e]"><a href="#{$e}"><font color="{$extendscolor}"><xsl:value-of select="." /></font></a></xsl:if> attributes</td>
 	  <td>
+	  <xsl:if test="/taglib/taginterface/name[.=$e]/parent::*/attribute|/taglib/tag/name[.=$e]/parent::*/attribute">
       <ul>   	   
        <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/attribute|/taglib/tag/name[.=$e]/parent::*/attribute"  mode="extends" />
-       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/extends|/taglib/tag/name[.=$e]/parent::*/extends"  />
       </ul>
+      </xsl:if>
 	  </td>
-	</tr>
+   </tr>
+   <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/extends|/taglib/tag/name[.=$e]/parent::*/extends"  />
 </xsl:template>
 
 <xsl:template match="attribute" mode="extends">
