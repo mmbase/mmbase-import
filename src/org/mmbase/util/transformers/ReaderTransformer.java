@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.mmbase.util.logging.*;
 
