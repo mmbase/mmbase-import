@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
+<wizard-schema id="empty">
+  <title xml:lang="en">Web Links</title>
+  <title xml:lang="nl">Links</title>
+
+  <action type="load">
+    <relation destination="urls" role="related" />
+  </action>
+
+  <form-schema id="basics">
+
+    <field name="title" ftype="data" />
+
+    <list include="tasks/urls/list_exactly_one.xml" />
+
+  </form-schema>
+</wizard-schema>

@@ -1,0 +1,31 @@
+<list role="posrel" destination="attachments" ordertype="number" orderby="field[@name='pos']">
+  <title xml:lang="en">Attachments</title>
+  <title xml:lang="nl">Bijlagen</title>
+
+  <item>
+    <field ftype="data" name="title" />
+    <field ftype="startwizard" wizardname="tasks/attachments/attachments" inline="true" />
+  </item>
+
+  <command name="search" nodepath="attachments" fields="title" age="-1" >
+    <prompt xml:lang="en">Search an attachment</prompt>
+    <prompt xml:lang="nl">Zoek een bijlage</prompt>
+    <search-filter>
+      <name xml:lang="en">Contains</name>
+      <name xml:lang="nl">Bevat</name>
+      <search-fields>title</search-fields>
+    </search-filter>
+  </command>
+
+  <command name="startwizard" inline="true" wizardname="tasks/attachments/attachments" objectnumber="new" >
+    <prompt xml:lang="en">New attachment</prompt>
+    <prompt xml:lang="nl">Nieuwe bijlage</prompt>
+  </command>
+
+  <action type="add">
+    <relation role="posrel">
+      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+    </relation>
+  </action>
+</list>
+
