@@ -165,6 +165,7 @@ Generic Bug Fixes:
 - #6570 Multicast does not refresh reldef and oalias caches 
 - #6583 code does not check key == null
 - #6578 does not implement nodeRemoteChanged
+- #6585 Dove: Lack of base64 support in dove. Adding encoding attribute to dove dtd
 - EmailSendProbe: mailtime now may be null. Rewrote deprecated
   search() method to searchQuery and added constraint to match
   null-values.
