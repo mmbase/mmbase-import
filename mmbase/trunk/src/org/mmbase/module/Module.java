@@ -1,4 +1,4 @@
-/*
+/* 
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.6 $ $Date: 2000-03-31 15:17:27 $
+ * @version $Revision: 1.7 $ $Date: 2000-04-11 14:33:13 $
  */
 public abstract class Module {
 
@@ -354,7 +354,10 @@ public abstract class Module {
 		if (obj!=null) {
 			return(obj);
 		} else {
-			debug("getModule("+name+"): Warning: No module loaded with this name!");
+			// Ugly and should be removed ROB
+ 			if(!name.equals("PLAYLISTS")) {
+				debug("getModule("+name+"): ERROR: No module loaded with this name!");
+			}
 			return(null);
 		}
 	}	
