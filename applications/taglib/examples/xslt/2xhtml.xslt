@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.6 2002-06-25 18:18:59 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.7 2002-06-25 19:30:17 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -33,6 +33,15 @@
       <xsl:if test="not(field[@name='subtitle'] = '')">
         <font color="{$subtitle_color}"><xsl:apply-templates select="field[@name='subtitle']" /></font>
       </xsl:if>
+      <div class="toc">
+        table of contents:<br />
+        <xsl:for-each select="field[@name='body']/mmxf/section">
+          <a>
+            <xsl:attribute name="href">#<xsl:value-of select="generate-id(.)" /></xsl:attribute>
+            <xsl:value-of select="@title" />
+            </a><br />
+        </xsl:for-each>
+      </div>
 	<xsl:apply-templates select="field[@name='body']" />
 	<p>
       <xsl:call-template name="date">     
@@ -42,7 +51,7 @@
   </xsl:template>
 
    <xsl:template match = "section" >
-     <xsl:if test="count(ancestor::section)=0"><h3><font color="red"><xsl:value-of select="@title" /></font></h3></xsl:if>
+     <xsl:if test="count(ancestor::section)=0"><h3><font color="red"><a><xsl:attribute name="id"><xsl:value-of select="generate-id(.)" /></xsl:attribute><xsl:value-of select="@title" /></a></font></h3></xsl:if>
      <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="@title" /></b></p></xsl:if>
      <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="@title" /></p></xsl:if>
      <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="@title" /><br /></xsl:if>
