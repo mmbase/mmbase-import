@@ -5,7 +5,7 @@ import org.w3c.dom.*;
 import java.io.*;
 import java.util.*;
 import javax.servlet.*;
-import org.mmbase.applications.dove.*;
+//import org.mmbase.applications.dove.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -98,6 +98,18 @@ public class Wizard {
         variables = new Hashtable();
         errors = new Vector();
         constraints = Utils.parseXML("<constraints/>");
+    }
+
+    /**
+     * Constructor. Setup initial variables. No connection to mmbase is made yet.
+     * Make sure a valid path is supplied.
+     * Use initialize() to really startup the wizard and start communicating with mmbase
+     *
+     * @param apath       the path should point to the data directory of the editwizard. From that dir the wizard schema's and the xsl's will be loaded
+     */
+    public Wizard(String apath, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
+        this(apath);
+        initialize(wizardname,dataid,cloud);
     }
 
     /**

@@ -569,15 +569,15 @@ public void getRelations(Node targetNode, String objectnumber, NodeList loadacti
     Document req = Utils.parseXML("<request/>");
     Node docel = req.getDocumentElement();
 
-        // Add security tag if necessary.
-        if (username != null && !username.equals("anonymous")){
-            Element secure = req.createElement("security");
-            secure.setAttribute("name",this.username);
-            secure.setAttribute("password",this.password);
-            secure.setAttribute("method",this.logonmethodname);
-            secure.setAttribute("cloud",this.cloudname);
-            docel.appendChild(secure);
-        }
+    // Add security tag if necessary.
+    if (username != null && !username.equals("anonymous")){
+        Element secure = req.createElement("security");
+        secure.setAttribute("name",this.username);
+        secure.setAttribute("password",this.password);
+        secure.setAttribute("method",this.logonmethodname);
+        secure.setAttribute("cloud",this.cloudname);
+        docel.appendChild(secure);
+    }
 
     Enumeration enum = commands.elements();
     while (enum.hasMoreElements()) {
@@ -585,27 +585,26 @@ public void getRelations(Node targetNode, String objectnumber, NodeList loadacti
       docel.appendChild(req.importNode(cmd.getCommandXML().getDocumentElement().cloneNode(true), true));
     }
 
-        String res="";
-        Element results=null;
-        try {
-                Document tmp = Utils.EmptyDocument();
-            Dove dove = new Dove(tmp);
-            if (userCloud!=null) {
-                results = dove.executeRequest(req.getDocumentElement(),userCloud,null);
-            } else {
-                results = dove.executeRequest(req.getDocumentElement(),null,null);
-            }
-
-        } catch (Exception e) {
-            throw new WizardException("Error while communicating with Dove servlet. "+e.getMessage());
+    String res="";
+    Element results=null;
+    try {
+        Document tmp = Utils.EmptyDocument();
+        Dove dove = new Dove(tmp);
+        if (userCloud!=null) {
+            results = dove.executeRequest(req.getDocumentElement(),userCloud,null);
+        } else {
+            results = dove.executeRequest(req.getDocumentElement(),null,null);
         }
-        Document response = Utils.EmptyDocument();
-        response.appendChild(response.importNode(results,true));
+    } catch (Exception e) {
+        throw new WizardException("Error while communicating with Dove servlet. "+e.getMessage());
+    }
+    Document response = Utils.EmptyDocument();
+    response.appendChild(response.importNode(results,true));
 
-        Node securityError = Utils.selectSingleNode(response,"/response/security/error");
-        if (securityError != null){
-            throw new SecurityException("Login incorrect for user '" + this.username + "'.");
-        }
+    Node securityError = Utils.selectSingleNode(response,"/response/security/error");
+    if (securityError != null){
+        throw new SecurityException("Login incorrect for user '" + this.username + "'.");
+    }
 
     // map response back to each command.
     enum = commands.elements();
