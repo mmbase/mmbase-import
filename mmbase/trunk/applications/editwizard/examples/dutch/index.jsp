@@ -46,7 +46,7 @@
   </table>
   <hr />
 
-  <a href="../index.html">back</a><br />
+  <a href="../">back</a><br />
   <a href="index.jsp?language=<%=java.util.Locale.getDefault().getLanguage()%>">default</a><br />
   <a href="index.jsp?language=en">english</a><br />
   <a href="index.jsp?language=nl">dutch</a><br />
