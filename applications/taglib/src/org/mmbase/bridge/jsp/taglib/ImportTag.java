@@ -111,7 +111,7 @@ public class ImportTag extends WriteTag {
             return SKIP_BODY;
         } else {
             helper.setValue(null);
-            return EVAL_BODY_AGAIN;
+            return EVAL_BODY_BUFFERED;
         }
 
     }
