@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.5 2003-12-11 12:23:36 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.6 2003-12-11 13:05:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -73,6 +73,36 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
         }
         return result;
     }
+
+
+    protected boolean useLower(FieldCompareConstraint constraint) {
+        if (constraint.getOperator() == FieldValueConstraint.LIKE) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
+        if (caseSensitive) {
+            sb.append(" LIKE ");
+        } else {
+            sb.append(" ILIKE ");
+        }
+        return sb;
+    }
+
+    /*
+    protected StringBuffer appendRegularExpressionOperator(StringBuffer sb, boolean caseSensitive) {
+        if (caseSensitive) {
+            sb.append(" ~ ");
+        } else {
+            sb.append(" ~* ");
+        }
+        return sb;
+    }
+    */
 
 
 
