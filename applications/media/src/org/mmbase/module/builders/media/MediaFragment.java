@@ -159,8 +159,10 @@ public class MediaFragment extends MMObjectBuilder {
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    private boolean isSubFragment(MMObjectNode mediafragment) {
-        return (mediafragment.getRelationCount("mediasources")==0 && mediafragment.getRelationCount("mediafragments")>0);
+    public boolean isSubFragment(MMObjectNode mediafragment) {
+        int mediacount = mediafragment.getRelationCount("audiosources")+mediafragment.getRelationCount("videosources");
+        
+        return (mediacount==0 && mediafragment.getRelationCount("mediafragments")>0);
     }
     
     /**
@@ -168,7 +170,7 @@ public class MediaFragment extends MMObjectBuilder {
      * @param mediafragment sub media fragment
      * @return the parent media fragment
      */
-    private MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+    public MMObjectNode getParentFragment(MMObjectNode mediafragment) {
         Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
         if(!e.hasMoreElements()) {

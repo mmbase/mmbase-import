@@ -41,13 +41,74 @@ public class MediaUrlComposer {
     
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
     
+    // MediaFragment builder
+    private static MediaFragment mediaFragmentBuilder = null;
+    
+    // MediaSource builder
+    private static MediaSource mediaSourceBuilder = null;
     
     /**
      * construct the MediaProviderFilter
      */
-    public MediaUrlComposer(MediaSource ms) {
-        
+    public MediaUrlComposer(MediaFragment mf, MediaSource ms) {
+        mediaFragmentBuilder = mf;
+        mediaSourceBuilder = ms;
     }
+    
+    /**
+     * just an implemetation
+     */
+    public String composeUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+        Vector params = new Vector();
+        String urlpart = "";
+        
+        // Evaluate title
+        String title = makeRealCompatible(mediafragment.getStringValue("title"));
+        if(title!=null && !title("")) {
+            params.addElement("title="+title);
+        }
+        
+        // Evaluate author
+        String author=null;
+        MMObjectNode rootFragment = null;
+        if(mediaFragmentBuilder.isSubFragment(mediafragment)) {
+            rootFragment = mediaFragmentBuilder.getParentFragment(mediafragment);
+        } else {
+            rootFragment = mediafragment;
+        }
+        Enumeration e = rootFragment.getRelations("groups");
+        if (e.hasMoreElements()) {
+            MMObjectNode group = (MMObjectNode)e.nextElement();
+            String name = makeRealCompatible(group.getStringValue("name"));
+            if( name!=null && !name.equals("")) {
+                params.addElement("author="+name);
+            }
+        }
+        
+        // Evaluate start & end
+        if(mediaFragmentBuilder.isSubFragment(mediafragment)) {
+            String start = makeRealCompatible(mediafragment.getStringValue("start"));
+            if(start!=null && !start.equals("")) {
+                params.addElement("start="+start);
+            }
+            String stop = makeRealCompatible(mediafragment.getStringValue("stop"));
+            if(stop!=null && !stop.equals("")) {
+                params.addElement("end="+stop);
+            }
+        }
+        
+        if(params.size()!=0) {
+            urlpart+="?";
+            for (e = params.elements();e.hasMoreElements();) {
+                urlpart+=(String)e.nextElement();
+                if(e.hasMoreElements()) {
+                    urlpart+="&";
+                }
+            }
+        }
+        return urlpart;
+    }
+    
     
     /**
      * Replaces all plus characters to procent 20
