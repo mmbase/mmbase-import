@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.pageflow;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.bridge.NotFoundException;
 import java.net.*;
 //import javax.net.ssl.*;
@@ -32,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.57 2005-03-15 12:56:38 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.58 2005-03-16 23:23:52 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -44,10 +45,9 @@ public class IncludeTag extends UrlTag {
     private static final int DEBUG_HTML = 1;
     private static final int DEBUG_CSS  = 2;
 
-    private static  Set invalidIncludingAppServerRequestClasses = new HashSet();
+    public static final String INCLUDE_PATH_KEY   = "javax.servlet.include.servlet_path";
+    public static final String INCLUDE_LEVEL_KEY = "org.mmbase.taglib.includeLevel";
 
-    static {
-    }
 
     protected Attribute debugType = Attribute.NULL;
 
@@ -208,6 +208,8 @@ public class IncludeTag extends UrlTag {
             }
         } 
 
+        req.removeAttribute(ContextTag.CONTEXTTAG_KEY);
+
         if (attributes != Attribute.NULL) {
             Iterator i = Referids.getReferids(attributes, this).entrySet().iterator();
             while (i.hasNext()) {
@@ -264,6 +266,9 @@ public class IncludeTag extends UrlTag {
      * When staying in the same web-application, then the file also can be found on the file system,
      * and the possibility arises simply citing it (passing the web-server). It is in no way
      * interpreted then. This can be useful when creating example pages.
+     * @param bodyContent unused
+     * @param relativeUrl URL to cite relative to root of web-app.
+     * @param request     unused
      */
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
@@ -284,7 +289,7 @@ public class IncludeTag extends UrlTag {
             }
 
 
-            String resource = relativeUrl.substring(request.getContextPath().length());
+            String resource = relativeUrl;
             if (log.isDebugEnabled()) log.debug("Citing " + resource);
             
             
@@ -310,19 +315,13 @@ public class IncludeTag extends UrlTag {
      */
     protected void includePage() throws JspTagException {
         try {
-            // Variables to keep track of which level we are at and what URI is current
-            int includeLevel;
-            String includeURI="";
-            String previncludeURI="";
+
 
             String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
 
             if (pageLog.isServiceEnabled()) {
                 pageLog.service("Parsing mm:include JSP page: " + gotUrl);
             }
-            // if not absolute, make it absolute:
-            // (how does one check something like that?)
-            String urlString;
 
             // Do some things to make the URL absolute.
             String nudeUrl; // url withouth the params
@@ -343,82 +342,66 @@ public class IncludeTag extends UrlTag {
 
 
             if (nudeUrl.indexOf(':') == -1) { // relative
-                // This code, which passes the RequestURI through Attributes is necessary
-                // Because Orion doesn't adapt the RequestURI when using the RequestDispatcher
-                // This breaks relative includes of more than 1 level.
-
-                // Fetch includelevel en reqeust URI from Attributes.
-                Integer level = (Integer) request.getAttribute("includeTagLevel");
+                // Fetch include level from Attributes, mainly for debugging
+                Integer level = (Integer) request.getAttribute(INCLUDE_LEVEL_KEY);
+                int includeLevel;
                 if (level == null) {
                     includeLevel = 0;
                 } else {
                     includeLevel = level.intValue();
                 }
-                includeURI = (String) request.getAttribute("includeTagURI");
-                if (includeLevel == 0 || includeURI==null) {
-                    includeURI = request.getRequestURI();
-                    paramsIndex = includeURI.indexOf('?');
-                    if (paramsIndex != -1) {
-                        includeURI = includeURI.substring(0, paramsIndex);
-                    }
+
+                // Fetch the current servlet from request attribute.
+                // This is needed when we are resolving relatively.
+                String includingServlet = (String) request.getAttribute(INCLUDE_PATH_KEY);
+
+                if (includingServlet == null) {
+                    includingServlet = request.getServletPath();
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("Include: Level=" + includeLevel + " URI=" + includeURI);
+                    log.debug("Including from : Level=" + includeLevel + " URI=" + includingServlet);
                 }
 
+                String includedServlet;
                 if (nudeUrl.charAt(0) == '/') {
                     log.debug("URL was absolute on servletcontext");
-                    urlString = gotUrl;
+                    includedServlet = gotUrl;
                 } else {
                     log.debug("URL was relative");
-                    File currentDir = new File(includeURI + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)
-                    
-                    urlString =
-                        // find the parent directory of the relativily given URL:
-                        // parent-file: the directory in which the current file is.
-                        // nude-Url   : is the relative path to this dir
-                        // canonicalPath: to get rid of /../../ etc
-                        // replace:  windows uses \ as path seperator..., but they may not be in URL's..
-                        new File(currentDir.getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
-
-                    // getCanonicalPath gives also gives c: in windows:
-                    // take it off again if necessary:
-                    int colIndex = urlString.indexOf(':');
-                    if (colIndex == -1) {
-                        urlString += params;
-                    } else {
-                        urlString = urlString.substring(colIndex + 1) + params;
-                    }
+                    // Using url-objects only because they know how to resolve relativity
+                    URL u = new URL("http", "localhost", includingServlet);
+                    URL dir = new URL(u, "."); // directory
+                   
+                    File currentDir = new File(includingServlet + "includetagpostfix"); // to make sure that it is not a directory (tomcat 5 does not redirect then)                    
+                    nudeUrl = new URL(dir, nudeUrl).getFile();
+                    includedServlet = nudeUrl + params;
                 }
 
                 // Increase level and put it together with the new URI in the Attributes of the request
                 includeLevel++;
-                request.setAttribute("includeTagLevel", new Integer(includeLevel));
-                // keep current URI so we can retrieve it after the include
-                previncludeURI = includeURI;
-                includeURI = urlString;
-                paramsIndex = includeURI.indexOf('?');
-                if (paramsIndex != -1) {
-                    includeURI = includeURI.substring(0, paramsIndex);
-                }
-                request.setAttribute("includeTagURI", includeURI);
+                request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
+                request.setAttribute(INCLUDE_PATH_KEY, nudeUrl);
                 if (log.isDebugEnabled()) {
-                    log.debug("Next Include: Level=" + includeLevel + " URI=" + includeURI);
+                    log.debug("Next Include: Level=" + includeLevel + " URI=" + includedServlet);
                 }
 
                 if (getCite()) {
-                    cite(bodyContent, urlString, request);
+                    cite(bodyContent, includedServlet, request);
                 } else {
-                    if (invalidIncludingAppServerRequestClasses.contains(request.getClass().getName())) {
-                        externalRelative(bodyContent, response.encodeURL(urlString), request, response);
-                    } else {
-                        internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
-                    }
+                    internal(bodyContent, includedServlet, request, response);
                 }
                 // Reset include level and URI to previous state
                 includeLevel--;
-                request.setAttribute("includeTagLevel", new Integer(includeLevel));
-                request.setAttribute("includeTagURI", previncludeURI);
+                if (includeLevel == 0) {
+                    request.removeAttribute(INCLUDE_LEVEL_KEY);
+                } else {
+                    request.setAttribute(INCLUDE_LEVEL_KEY, new Integer(includeLevel));
+                }
+                if (includingServlet == null) {
+                    request.removeAttribute(INCLUDE_PATH_KEY);
+                } else {                 
+                    request.setAttribute(INCLUDE_PATH_KEY,  includingServlet);
+                }
             } else { // really absolute
                 if (getCite()) {
                     cite(bodyContent, gotUrl, request);
