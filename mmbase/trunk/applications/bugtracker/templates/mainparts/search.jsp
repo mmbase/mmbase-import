@@ -26,6 +26,7 @@
       </mm:listnodescontainer>>
     </select>
   </td>
+  <td colspan="2">&nbsp;</td>
 </tr>
 <tr class="listsearch">
    <td width="50">
@@ -244,6 +245,7 @@
      </mm:write>
    </td>
    <td colspan="3" class="listpaging">
+    &nbsp;
     <mm:previousbatches indexoffset="1" max="10">
 	<mm:first><mm:index><mm:compare value="1" inverse="true">...</mm:compare></mm:index></mm:first>
         <a href="<mm:url referid="pagingurl"><mm:param name="noffset"><mm:write /></mm:param></mm:url>"><mm:index /></a>
