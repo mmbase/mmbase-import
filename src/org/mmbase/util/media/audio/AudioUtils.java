@@ -25,19 +25,21 @@ import org.mmbase.util.logging.Logging;
 /**
  * Rawaudio related file.
  * @javadoc
- * @deprecation contains commented-out code
+ * @deprecation-used contains commented-out code
  *
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioUtils.java,v 1.9 2002-01-25 14:03:56 pierre Exp $
+ * @version $Id: AudioUtils.java,v 1.10 2002-01-28 16:35:01 pierre Exp $
  */
 public class AudioUtils extends MediaUtils {
 
+    // logging
     private static Logger log = Logging.getLoggerInstance(AudioUtils.class.getName());
 
     /**
      * Vector with MMObjectNodes (rawaudios), number can be cdtrack or audiopart
+     * @javadoc parameters
      */
     public static Vector getRawAudios( MMBase mm, int number ) {
         Vector            result     = null;
@@ -47,11 +49,13 @@ public class AudioUtils extends MediaUtils {
         return result;
     }
 
-    /*
-    * Find a best match in rawaudios:
-    *   - if a g2 file is found which is encoded (status=done), set this as preffered
-    *   - else find r5 file with best match with respect to wanted speed/channels
-    */
+    /**
+     * Find a best match in rawaudios:
+     *   - if a g2 file is found which is encoded (status=done), set this as preffered
+     *   - else find r5 file with best match with respect to wanted speed/channels
+     * @javadoc parameters
+     * @bad-literal wantedchannels
+     */
     public static RawAudioDef getBestRawAudio( Vector rawaudios, int wantedspeed, int wantedchannels ) {
         RawAudioDef result = null;
 
@@ -124,6 +128,9 @@ public class AudioUtils extends MediaUtils {
         return result;
     }
 
+    /**
+     * @javadoc
+     */
     public static Vector getRawAudios( MMBase mmbase, int tracknumber, boolean sort ) {
         Vector result = null;
 
@@ -158,11 +165,16 @@ public class AudioUtils extends MediaUtils {
         return result;
     }
 
+    /**
+     * @javadoc
+     */
     private static Vector sort( Vector unsorted ) {
         return SortedVector.SortVector(unsorted);
     }
 
-
+    /**
+     * @javadoc
+     */
     public static String getAudioUrl( MMBase mmbase, scanpage sp, int number, int speed, int channels ) {
         String url = null;
         if( number > 0 && speed > 0 && channels > 0 ) {
@@ -176,7 +188,10 @@ public class AudioUtils extends MediaUtils {
         return url;
     }
 
-
+    /**
+     * @javadoc
+     * @deprecation-used contains commented-out code
+     */
     public static String getAudiopartUrl(MMBase mmbase, int number, scanpage sp, int speed, int channels) {
         String url = null;
         AudioPartDef ap = new AudioPartDef();

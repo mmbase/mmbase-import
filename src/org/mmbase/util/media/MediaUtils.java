@@ -8,169 +8,146 @@ See http://www.MMBase.org/license
 
 */
 
-/*
-
-	(c) 2000 VPRO
-	 
-	@author 	Marcel Maatkamp, marmaa@vpro.nl
-	@version	$version$
-    
-    $log$    
-*/
-
 package org.mmbase.util.media;
 
-import java.net.*;
 import java.util.*;
 
-import org.mmbase.util.*;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.StringTagger;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * @javadoc
+ * @author 	Marcel Maatkamp, marmaa@vpro.nl
+ * @version $Id: MediaUtils.java,v 1.10 2002-01-28 16:35:01 pierre Exp $
+ */
 
-public class MediaUtils
-{
-    // vars 
-    // ----
+public class MediaUtils {
 
+    // logging
     private static Logger log = Logging.getLoggerInstance(MediaUtils.class.getName());
 
     /**
-    * 
-    */
-    public static String getBestMirrorUrl( scanpage sp, String url )
-    {
-        String     result     = null;
-
+     * @javadoc
+     * @deprecation-used contains commented-out code
+     * @dependency scanpage (SCAN)
+     * @vpro uses fixed urls/paths
+     */
+    public static String getBestMirrorUrl( scanpage sp, String url ) {
+        String result = null;
         // parameters ok?
-        // --------------
-
         if (log.isDebugEnabled()) {
             log.debug("getBestMirrorUrl("+url+")");
         }
 
         //if( sp != null )
-        {
-            if( checkstring("getBestMirrorUrl","url",url) )
-            {
-                // start tagging the url, format is one of two formats:
-                // 
-                //         - "http://station.vpro.nl/data/<nr>/<speed>_<channels>.ra" or            (old way)
-                //         - "F=/<nr>/<speed>_<channels>.ra H1=station.vpro.nl H2=streams.omroep.nl"  (new)
-                //         - "F=/<nr>/surestream.rm H1=station.vpro.nl H2=streams.omroep.nl"        (newest :)
-                
-                StringTagger     tagger     = new StringTagger( url );
-                String            file    = tagger.Value("F");
-                String             u         = url;
+        //{
+        if( checkstring("getBestMirrorUrl","url",url) ) {
+            // start tagging the url, format is one of two formats:
+            //         - "http://station.vpro.nl/data/<nr>/<speed>_<channels>.ra" or            (old way)
+            //         - "F=/<nr>/<speed>_<channels>.ra H1=station.vpro.nl H2=streams.omroep.nl"  (new)
+            //         - "F=/<nr>/surestream.rm H1=station.vpro.nl H2=streams.omroep.nl"        (newest :)
+            StringTagger tagger = new StringTagger( url );
+            String file = tagger.Value("F");
+            String u = url;
+            // is it format "F=.."?
+            if( file != null && !file.equals("") ) {
+                // is this class used by VPRO or is it for others
+                Hashtable urls = getUrls( url );
 
-                // is it format "F=.."?
-                // --------------------
-                if( file != null && !file.equals("") )
-                {
-                    // is this class used by VPRO or is it for others
-                    // ----------------------------------------------
-                    Hashtable     urls             = getUrls( url );
-                    
-                    file = file.trim();
+                file = file.trim();
 
-                    u = filterBestUrl(sp, urls);
+                u = filterBestUrl(sp, urls);
 
-                    if( u.endsWith("/") )
-                    {
-                        if( file.startsWith("/") )
+                if( u.endsWith("/") ) {
+                    if( file.startsWith("/") )
                         // too many /'s
-                        // ------------
                         file = file.substring(1);
-
-                    }
-                    else
-                    {
-                        if( !file.startsWith("/") )
-                        // too few /'s
-                        // -----------
-                        file = file + "/";
+                    } else {
+                        // ??? should be endsWith?
+                        if( !file.startsWith("/") ) {
+                            // too few /'s
+                            file = file + "/";
+                        }
                     }
                     result = u + file;
-                }
-                else
-                {
+            } else {
                     // format = http://station.vpro.nl/audio/ra/<nr>/<speed>_<chan>.ra
                     // output = station.vpro.nl/<nr>/<speed>_<chan>.ra
-
                     u = url;
-                    int i = u.indexOf("//");    
-                    if( i > 0 )
-                    {
+                    int i = u.indexOf("//");
+                    if( i > 0 ) {
                         u = u.substring( i+2 );
-                        
+
                         i = u.indexOf("/");
-                        if( i > -1 )
-                        {
+                        if( i > -1 ) {
                             String hostname = u.substring(0, i);
                             u = u.substring( i+1 );
 
-                            if( u.startsWith("data/") )
+                            if( u.startsWith("data/") ) {
                                 u = u.substring( 5 );
-
-                            if( u.startsWith("audio/") )
+                            }
+                            if( u.startsWith("audio/") ) {
                                 u = u.substring( 6 );
-
-                            if( u.startsWith("ra/") )
+                            }
+                            if( u.startsWith("ra/") ) {
                                 u = u.substring( 3 );
-
-                            if( u.startsWith("/") )
+                            }
+                            if( u.startsWith("/") ) {
                                 u = hostname + u;
-                            else
-                                u = hostname + "/" + u; 
+                            } else {
+                                u = hostname + "/" + u;
+                            }
                         }
                     }
                     result = u ;
-                }
             }
         }
-        if( url != null && !url.equals(""))
-        {
+        // }
+        if( url != null && !url.equals("")) {
             if (log.isDebugEnabled()) {
                 log.debug("getBestMirrorUrl("+url+"): result("+result+")");
             }
-        }
-        else
+        } else {
             log.error("getBestMirrorUrl("+url+"): No url found for this node on page("+sp.getUrl()+"), ref("+sp.req.getHeader("Referer")+")") ;
-
+        }
         return result;
     }
 
-
+    /**
+     * @javadoc
+     * @dependency scanpage (SCAN)
+     * @vpro uses fixed urls/path (beep.vpro.nl)s
+     */
     private static String filterBestUrl( scanpage sp, Hashtable urls) {
-        String         result     = null;
-        String         key     = null;
-        String         value    = null;    
-        Enumeration e         = urls.keys();    
+        String result = null;
+        String key = null;
+        String value = null;
+        Enumeration e = urls.keys();
 
         while( e.hasMoreElements() ) {
-            key     = (String) e.nextElement();
-            value     = (String) urls.get( key );
+            key = (String) e.nextElement();
+            value = (String) urls.get( key );
 
             // not null or empty
-            // -----------------
-            if( checkstring( "filterBestUrl","value",value) )
-            {
-                if( value.startsWith("station") || value.startsWith("beep") 
-				        || value.startsWith("streams.vpro.nl")) {
-                    
+            if( checkstring( "filterBestUrl","value",value) ) {
+                if( value.startsWith("station") || value.startsWith("beep")
+                        || value.startsWith("streams.vpro.nl")) {
                        // only use if none better found
-                       // -----------------------------
-                       if( result == null )
+                       if( result == null ) {
                            result = value;
+                       }
                 } else if( value.startsWith("streams.omroep.nl") ) {
                         result = value;
-                } else
+                } else {
                     log.warn("filterBestUrl("+sp+","+urls+"): Found url("+value+") with unknown server!");
+                }
             }
         }
 
-        if (log.isDebugEnabled()) { 
+        if (log.isDebugEnabled()) {
             log.debug("filterBestUrl("+sp+","+urls+"): found url("+result+")");
         }
 
@@ -179,7 +156,7 @@ public class MediaUtils
             Enumeration e2 = urls.keys();
             int i = 1;
 
-            String k = null; 
+            String k = null;
             String v = null;
 
             while( e2.hasMoreElements() ) {
@@ -189,115 +166,100 @@ public class MediaUtils
                     log.debug("url("+i+"): key("+k+"), value("+v+")");
                 }
                 i++;
-            }    
+            }
             result = "beep.vpro.nl";
         }
         return result;
     }
 
     /**
-    * Get all the tags in form 'H<nr>=<url>' out of this string and put urls in hashtable
-    */
-    private static Hashtable getUrls( String url )    
-    {
-        Hashtable         result    = new Hashtable();
-        StringTokenizer tok     = new StringTokenizer( url );
-        String             other    = null;
-        int             i         = 0;
+     * Get all the tags in form 'H<nr>=<url>' out of this string and put urls in hashtable
+     * @javadoc parameters
+     */
+    private static Hashtable getUrls( String url ) {
+        Hashtable result = new Hashtable();
+        StringTokenizer tok = new StringTokenizer( url );
+        String other = null;
+        int i = 0;
 
-        String            snumber = null;
-        int                number    = 0;
+        String snumber = null;
+        int number = 0;
 
         if (log.isDebugEnabled()) {
             log.debug("getUrls("+url+")");
         }
 
-        while( tok.hasMoreTokens() )
-        {
-            other = tok.nextToken();            
-            if( other.startsWith("F=") )
-            { 
+        while( tok.hasMoreTokens() ) {
+            other = tok.nextToken();
+            if( other.startsWith("F=") ) {
                 // do nothing, have already
-                // ------------------------
-            }
-            else
-            {
-                if( other.startsWith("H") )
-                {
+            } else {
+                if( other.startsWith("H") ) {
                     i = other.indexOf("=");
-                    
-                    // -1 is def wrong, 0 = serious trouble in the JVM :) 
-                    // --------------------------------------------------
-
-                    if( i > 0 )
-                    {
+                    // -1 is def wrong, 0 = serious trouble in the JVM :)
+                    if( i > 0 ) {
                         snumber = other.substring(1, i).trim();
-                        try
-                        {
+                        try {
                             // number not actually needed (yet?) but fetch it anyway
-                            // -----------------------------------------------------
-    
                             number     = Integer.parseInt( snumber );
                             other     = other.substring( i+1 ).trim();
-
                             // add url in hashtable
-                            // --------------------
                             result.put( snumber, other );
                             if (log.isDebugEnabled()) {
                                 log.debug("urls(): got url("+number+","+other+")");
                             }
 
-                        }
-                        catch( NumberFormatException e )
-                        {
+                        } catch( NumberFormatException e ) {
                             log.error("urls("+url+"): While parsing url("+other+"): This is not a number("+snumber+")!");
-                        }    
-
+                        }
+                    } else {
+                        log.error("urls("+url+"): This url("+other+") is malformed! (Where is the '='?)");
                     }
-                    else
-                        log.error("urls("+url+"): This url("+other+") is malformed! (Where is the '='?)");    
+                } else {
+                    log.warn("urls("+url+"): got something, dunno what("+other+")! (not 'F=..' or 'H<nr>=..')");
                 }
-                else
-                    log.warn("urls("+url+"): got something, dunno what("+other+")! (not 'F=..' or 'H<nr>=..')");    
             }
-        }    
-
-        return result;    
-    }
-
-
-    private static boolean checkstring( String method, String name, String value )
-    {
-        boolean result = false;
-
-    //            if(method == null)         debug("checkstring("+method+","+name+","+value+"): ERROR: method("+method+") is null!");
-    //    else     if(method.equals(""))     debug("checkstring("+method+","+name+","+value+"): ERROR: method("+method+") is empty!");
-    //    else     if(name == null)         debug("checkstring("+method+","+name+","+value+"): ERROR: name("+method+") is null!");
-    //    else     if(name.equals(""))     debug("checkstring("+method+","+name+","+value+"): ERROR: name("+method+") is empty!");
-    //    else    
-        if(value == null)            log.error( method+"(): "+name+"("+value+") is null!");
-        else if(value.equals(""))    log.error( method+"(): "+name+"("+value+") is empty!");
-        else    
-            result = true;
-            
+        }
         return result;
     }
 
-    /** 
+    /**
+     * @javadoc
+     */
+    private static boolean checkstring( String method, String name, String value ) {
+        boolean result = false;
+        //            if(method == null)         debug("checkstring("+method+","+name+","+value+"): ERROR: method("+method+") is null!");
+        //    else     if(method.equals(""))     debug("checkstring("+method+","+name+","+value+"): ERROR: method("+method+") is empty!");
+        //    else     if(name == null)         debug("checkstring("+method+","+name+","+value+"): ERROR: name("+method+") is null!");
+        //    else     if(name.equals(""))     debug("checkstring("+method+","+name+","+value+"): ERROR: name("+method+") is empty!");
+        //    else
+        if (value == null) {
+            log.error( method+"(): "+name+"("+value+") is null!");
+        } else if (value.equals("")) {
+            log.error( method+"(): "+name+"("+value+") is empty!");
+        } else {
+           result = true;
+        }
+        return result;
+    }
+
+    /**
      * Replaces all plus characters to procent 20
      * @param s String in which chars will be replaced.
      * @return replaced String
      */
-    public static String plusToProcent20(String s) { 
+    public static String plusToProcent20(String s) {
         String result = "";
-        for(int i=0; i<s.length(); i++)
-            if (s.charAt(i) != '+')
+        for(int i=0; i<s.length(); i++) {
+            if (s.charAt(i) != '+') {
                 result += s.charAt(i);
-            else
+            } else {
                 result += "%20";
+            }
+        }
         return result;
     }
-    
+
     /**
      * Removes RealPlayer incompatible characters from the string.
      * '#' characters are replaced by space characters.
@@ -324,13 +286,16 @@ public class MediaUtils
         }
     }
 
-    public static void main( String args[] )
-    {
+    /**
+     * Get all the tags in form 'H<nr>=<url>' out of this string and put urls in hashtable
+     * @javadoc parameters
+     */
+    public static void main( String args[] ) {
         String filename;
         String classname = "MediaUtils";
 
         System.out.println( classname + ": Test the methods:");
-        
+
         filename = "F=/1426/40_1.ra H1=station.vpro.nl/ H2=streams.omroep.nl/vpro/";
         System.out.println( classname +": -> " + filename + " : " + org.mmbase.util.media.MediaUtils.getBestMirrorUrl(null, filename) );
         filename = "http://station.vpro.nl/audio/ra/1200/40_1.ra";
