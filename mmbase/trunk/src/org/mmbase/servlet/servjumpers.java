@@ -59,12 +59,10 @@ public class servjumpers extends JamesServlet
 		String url=null;
 		Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
 		if (bul!=null) {
-			if (key.indexOf('-')==-1) {
-				if (key.endsWith("/")) { 
-					url=bul.getJump(key.substring(0,key.length()-1));
-				} else {
-					url=bul.getJump(key);
-				}
+			if (key.endsWith("/")) { 
+				url=bul.getJump(key.substring(0,key.length()-1));
+			} else {
+				url=bul.getJump(key);
 			}
 			if (url!=null) return(url);
 		} else {
