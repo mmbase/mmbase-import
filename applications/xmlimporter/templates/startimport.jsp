@@ -2,6 +2,8 @@
  import="java.io.*, org.mmbase.applications.xmlimporter.Consultant,
  org.mmbase.applications.xmlimporter.TransactionHandler, org.mmbase.module.Module,
  org.mmbase.util.logging.Logger, org.mmbase.util.logging.Logging" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:import externid="mmbase_xmlimportdir" jspvar="importDir" from="session" />
 
 <jsp:useBean id="consultant" scope="session"
  class="org.mmbase.applications.xmlimporter.Consultant" />
@@ -9,9 +11,10 @@
 <%!  Logger log = Logging.getLoggerInstance(
      "org.mmbase.applications.xmlimporter.jsp.startimport.jsp"); %>
 
-<% try {
+<% 
+try {
       consultant.init();
-      String importDir = System.getProperty("mmbase.config") + "/import/";
+      // String importDir = System.getProperty("mmbase.config") + "/import/";
       String importFile = importDir + request.getParameter("choosenFile");
       boolean interactive = new Boolean(request.getParameter("interactive")
       ).booleanValue();
