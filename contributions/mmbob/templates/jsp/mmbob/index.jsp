@@ -110,9 +110,11 @@
 
           <p>
             <br />
-            <b>
-              you have <mm:field name="messagecount" /> <a href="<mm:url page="privatemessages.jsp" referids="forumid" />">private messages</a> (<mm:field name="messagenewcount" /> new and <mm:field name="messageunreadcount" /> unread)
-            </b>
+            <mm:import id="mailboxid">Inbox</mm:import>
+            <mm:nodefunction set="mmbob" name="getMailboxInfo" referids="forumid,posterid,mailboxid">
+              <b>you have <mm:field name="messagecount" /> <a href="<mm:url page="privatemessages.jsp" referids="forumid" />">private messages</a> (<mm:field name="messagenewcount" /> new and <mm:field name="messageunreadcount" /> unread)</b>
+            </mm:nodefunction>
+
             <h4>At the moment : <mm:field name="postersonline" /> users online.</h4>
           </p>
         </mm:compare>
