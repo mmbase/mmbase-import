@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.221 2003-03-19 15:19:34 kees Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.222 2003-03-25 18:57:52 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -753,17 +753,21 @@ public class MMObjectBuilder extends MMTable {
                 stmt2 = con.createStatement();
                 String sql = "SELECT "+mmb.getDatabase().getOTypeString()+" FROM "+mmb.baseName+"_object WHERE "+mmb.getDatabase().getNumberString()+"="+number;
                 ResultSet rs=stmt2.executeQuery(sql);
-                if (rs.next()) {
-                    otype=rs.getInt(1);
-                    // hack hack need a better way
-                    if (otype!=0) {
-                        if (typeCache!=null) typeCache.put(new Integer(number),new Integer(otype));
+                try {
+                    if (rs.next()) {
+                        otype=rs.getInt(1);
+                        // hack hack need a better way
+                        if (otype!=0) {
+                            if (typeCache!=null) typeCache.put(new Integer(number),new Integer(otype));
+                        }
+                    } else {
+                        log.debug("Could not find the otype (no records) using following query:" + sql);
+                        return -1;
+                        // duh a SQLException??
+                        // throw new SQLException("Could not find the otype (no records) using following query:"+sql);
                     }
-                } else {
-                    log.debug("Could not find the otype (no records) using following query:" + sql);
-                    return -1;
-                    // duh a SQLException??
-                    // throw new SQLException("Could not find the otype (no records) using following query:"+sql);
+                } finally {
+                    rs.close();
                 }
              }
         } catch (SQLException e) {
@@ -966,34 +970,38 @@ public class MMObjectBuilder extends MMTable {
                 stmt=con.createStatement();
                 String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
  
-		ResultSet rs = stmt.executeQuery(query);
-                if (rs.next()) {
-                    // create a new object and add it to the result vector
-                    MMObjectBuilder bu = mmb.getBuilder(bul);
-                    if (bu == null) {
-                        log.warn("Builder of node " + number + " could not be found, taking it 'object'");
-                        bu = mmb.getBuilder("object");
+                ResultSet rs = stmt.executeQuery(query);
+                try {
+                    if (rs.next()) {
+                        // create a new object and add it to the result vector
+                        MMObjectBuilder bu = mmb.getBuilder(bul);
+                        if (bu == null) {
+                            log.warn("Builder of node " + number + " could not be found, taking it 'object'");
+                            bu = mmb.getBuilder("object");
+                        }
+                        if (bu == null) {
+                            log.error("Could not get the builder for nodetype with name : " + bul + " (node #" + number + " nodetype #" + bi + ")");
+                            return null;
+                        }
+                        node=new MMObjectNode(bu);
+                        ResultSetMetaData rd=rs.getMetaData();
+                        String fieldname;
+                        for (int i=1;i<=rd.getColumnCount();i++) {
+                            fieldname=database.getDisallowedField( rd.getColumnName(i));
+                            node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
+                        }
+                        // store in cache if indicated to do so
+                        if (usecache) {
+                            safeCache(integerNumber,node);
+                        }
+                        // clear the changed signal
+                        node.clearChanged();
+                    } else {
+                        log.warn("Node #" + number + " could not be found(nodetype: " + bul + "(" + bi + "))");
+                        return null; // not found
                     }
-                    if (bu == null) {
-                        log.error("Could not get the builder for nodetype with name : " + bul + " (node #" + number + " nodetype #" + bi + ")");
-                        return null;
-                    }
-                    node=new MMObjectNode(bu);
-                    ResultSetMetaData rd=rs.getMetaData();
-                    String fieldname;
-                    for (int i=1;i<=rd.getColumnCount();i++) {
-                        fieldname=database.getDisallowedField( rd.getColumnName(i));
-                        node=mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i);
-                    }
-                    // store in cache if indicated to do so
-                    if (usecache) {
-                        safeCache(integerNumber,node);
-                    }
-                    // clear the changed signal
-                    node.clearChanged();
-                } else {
-                    log.warn("Node #" + number + " could not be found(nodetype: " + bul + "(" + bi + "))");
-                    return null; // not found
+                } finally {
+                    rs.close();
                 }
             } finally {
                 mmb.closeConnection(con,stmt);
@@ -1490,25 +1498,29 @@ public class MMObjectBuilder extends MMTable {
             con = mmb.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
+            
+            try {
+                for (int counter = 0; rs.next(); counter++) {
+                    // check if we are allowed to do this iteration...
+                    if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
+                        // to much nodes found...
+                        String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
+                        log.warn(msg);
+                        break;
+                    }
 
-            for (int counter = 0; rs.next(); counter++) {
-                // check if we are allowed to do this iteration...
-                if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
-                    // to much nodes found...
-                    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
-                    log.warn(msg);
-                    break;
+                    // create the node from the record-set
+                    MMObjectNode node = new MMObjectNode(this);
+                    ResultSetMetaData rd = rs.getMetaData();
+                    for (int i=1; i<=rd.getColumnCount(); i++) {
+                        String fieldname = rd.getColumnName(i);
+                        // node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
+                        mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
+                    }
+                    results.add(node);
                 }
-
-                // create the node from the record-set
-                MMObjectNode node = new MMObjectNode(this);
-                ResultSetMetaData rd = rs.getMetaData();
-                for (int i=1; i<=rd.getColumnCount(); i++) {
-                    String fieldname = rd.getColumnName(i);
-                    // node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
-                    mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
-                }
-                results.add(node);
+            } finally {
+                rs.close();
             }
         } catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
