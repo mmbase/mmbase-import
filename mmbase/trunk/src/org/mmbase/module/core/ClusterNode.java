@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.17 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ClusterNode.java,v 1.18 2005-03-29 14:54:01 michiel Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -251,7 +251,7 @@ public class ClusterNode extends VirtualNode {
         String tmp =  Casting.toString(getValue(fieldName));
 
         // check if the object is shorted
-        if (tmp.indexOf("$SHORTED")==0) {
+        if (tmp.equals(MMObjectNode.VALUE_SHORTED)) {
             log.debug("getStringValue(): node=" + this + " -- fieldName " + fieldName);
             // obtain the database type so we can check if what
             // kind of object it is. this have be changed for
