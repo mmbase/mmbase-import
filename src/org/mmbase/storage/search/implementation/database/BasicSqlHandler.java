@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.34 2004-05-07 14:44:54 michiel Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.35 2004-06-11 11:35:20 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -666,7 +666,7 @@ public class BasicSqlHandler implements SqlHandler {
                 // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
                 if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
-                    sb.append(overallInverse? "NOT ( ": "");
+                    sb.append(overallInverse? "NOT (": "");
                 }
 
                 if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
