@@ -31,22 +31,24 @@ import org.xml.sax.*;
  * This class parses the TML code and calls the appropriate methods
  * in TransactionManager TemporarayNodeManager org.mmabse.module.core
  * Furthermore is does some nameserving.
- *
  */
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
 	
 	private static boolean _debug = true;
- 	private sessionsInterface sessions = null;
-	private MMBase mmbase = null;
+ 	private static sessionsInterface sessions = null;
+	private static MMBase mmbase = null;
 
-	// Cashes all transaction belonging to one user.
-	private static Hashtable cashUser = new Hashtable();
-	// Handle to the transaction manager.
-	private TransactionManagerInterface transactionManager;
-	// Handle to the temporary object manager.
-	private TemporaryNodeManagerInterface tmpObjectManager;
+	// Cashes all transactions belonging to a user.
+	private static Hashtable transactionsOfUser = new Hashtable();
+	// Reference to the transactionManager.
+	private static TransactionManagerInterface transactionManager;
+	// Reference to the temporaryNodeManager
+	private static TemporaryNodeManagerInterface tmpObjectManager;
 
+	/**
+	 * prints debug
+	 */
 	private void debug( String msg, int indent) {
 		System.out.print("TR: ");
 		for (int i = 1; i < indent; i++) System.out.print("\t");
@@ -57,7 +59,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	}
 	
 	/**
-	 * init
+	 * initialize the transactionhandler
 	 */
 	public void init(){
 		if (_debug) debug(">> init TransactionHandler Module ", 0);
@@ -80,9 +82,11 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private final String xmlHeader =
 	"<?xml version='1.0'?> <!DOCTYPE TRANSACTION SYSTEM \"Transactions.dtd\">";
 	
-	/*
-	 * handleTransaction is the method that is called externally
-	 * by scanparser. It is the start of the whole chain.
+	/**
+	 * handleTransaction can be called externally and will execute the TCP commands.
+	 * @param template The template containing the TCP commands 
+	 * @param the session variables of an user
+	 * @param sp the scanpage 
 	 */
 	public void handleTransaction(String template, sessionInfo session, scanpage sp) {
 			
@@ -91,13 +95,15 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		
 		InputSource is = new InputSource();
 		is.setCharacterStream(new StringReader(template));
-		// get handle to all transactions of a user.
+		// get the 'name' of the user.
 		String user = session.getCookie();
+		// get all transactions of the user.
 		UserTransactionInfo uti = userInfo(user); 
 
-		try {  //catch TransactionHandlerException's here
+		try {  
 			parse(null, is, uti);
 		} catch (TransactionHandlerException t) {
+			// Register the exception
   			sessions.setValue (session, "TRANSACTIONEXCEPTION",t.transactionException); 
   			sessions.setValue (session, "TRANSACTIONID",t.transactionId); 
   			sessions.setValue (session, "OBJECTEXCEPTION",t.objectException); 
@@ -247,7 +253,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					}
 				} 
 
-				if (tName.equals("openTransaction")) { // no-op we only need currentTransactionContext
+				if (tName.equals("openTransaction")) { 
+					// TIMEOUT ADJUSTMENT IS NOT ACCORDING TO THE MANUAL
 					// Check if the transaction exists.
 					if (userTransactionInfo.knownTransactionContexts.get(id) == null) {
 						throw new TransactionHandlerException(tName + " transaction doesn't exists id = " + id);
@@ -407,7 +414,10 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 						transactionInfo.knownObjectContexts.put(id, currentObjectContext);
 				}
 				if (oName.equals("openObject")) {
-					// no-op we only need current object context
+					if (transactionInfo.knownObjectContexts.get(id) == null) {
+						throw new TransactionHandlerException(oName + " Object id doesn't exists: " + id);
+					}
+					currentObjectContext = (String)transactionInfo.knownObjectContexts.get(id);
 				}
 				if (oName.equals("deleteObject")) {
 					if (oMmbaseId==null) { 
@@ -503,16 +513,16 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 
 	
 	private UserTransactionInfo userInfo(String user) {
-		if (!cashUser.containsKey(user)) {
+		if (!transactionsOfUser.containsKey(user)) {
 			if (_debug) debug("Create UserTransactionInfo for user "+user,0);
 			// make acess to all variables indexed by user;
 			UserTransactionInfo uti = new UserTransactionInfo();
-			cashUser.put(user, uti);
+			transactionsOfUser.put(user, uti);
 			uti.user = new User(user);
 		} else {
 			if (_debug) debug("UserTransactionInfo already known for user "+user,0);
 		}
-		return ((UserTransactionInfo) cashUser.get(user));
+		return ((UserTransactionInfo) transactionsOfUser.get(user));
 	}
 		
 		
