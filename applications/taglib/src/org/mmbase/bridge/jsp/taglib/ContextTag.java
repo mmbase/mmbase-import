@@ -561,6 +561,14 @@ public class ContextTag extends ContextReferrerTag {
     }
 
 
+
+    private static boolean isContextVarNameChar(char c) {
+        return Character.isLetter(c) || Character.isDigit(c) || c == '_';
+    }
+    public static boolean isContextIdentifierChar(char c) {
+        return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility? 
+    }
+
     /**
      * Register an Object with a key in the context. If the Context is
      * a session context, then it will be put in the session, otherwise in the hashmap.
@@ -569,13 +577,37 @@ public class ContextTag extends ContextReferrerTag {
     protected void register(String newid, Object n, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + getId());
+        }        
+        // Check if the id is a valid identifier
+        // A valid id must begin with a letter or underscore, followed
+        // by letters, underscores and digits.
+        boolean valid = true;
+        char chars[] = newid.toCharArray();
+        if (chars.length < 1) {
+            valid = false;
+        } else {
+            if (Character.isLetter(chars[0]) || chars[0] == '_') {
+                for (int i = 1; i < chars.length; ++i) {
+                    if (! isContextVarNameChar(chars[0])) {
+                        valid = false;
+                        break;
+                    }
+                }
+            } else {
+                valid = false;
+            }
         }
+        
+        if (! valid) throw new JspTagException ("'" + newid + "' is not a valid Context identifier");
+
         //pageContext.setAttribute(id, n);
-        if (check && isRegistered(newid)) {
+        if (check && isRegistered(newid)) { 
             String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
             log.error(mes);
             throw new JspTagException(mes);
         }
+
+
         container.put(newid, n);
     }
 
