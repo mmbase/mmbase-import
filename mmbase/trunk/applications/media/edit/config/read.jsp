@@ -7,28 +7,30 @@
  String thisServer(javax.servlet.http.HttpServletRequest request, String url) { 
     return "http://" + getHost() + request.getContextPath() + url;
  } 
-%>
+%><mm:content postprocessor="reducespace" type="">
 <mm:import externid="logout" />
 <mm:present referid="logout">
   <mm:cloud method="logout" />
 </mm:present>
 
 <mm:context id="config">
-<mm:cloud method="asis">
+<mm:cloud method="asis" jspvar="cloud">
+  <mm:import id="user"><%=cloud.getUser().getIdentifier()%></mm:import>
   <%-- get config from cookies --%>
   <mm:import id="lang"    externid="mmjspeditors_language"   from="parameters,cookie">nl</mm:import>
   <mm:import id="quality" externid="mediaeditors_quality"    from="parameters,cookie">any</mm:import>
   <mm:import id="player"  externid="mediaeditors_player"     from="parameters,cookie">any</mm:import>
-  <mm:import              externid="mediaeditors_origin"     from="parameters,cookie" /> <%-- no default, will be ask on first entry --%>
+  <mm:import id="mediaeditors_origin_default"   externid="mediaeditors_origin_anonymous"   from="parameters,cookie" /> <%-- no default, will be ask on first entry --%>
+  <mm:import id="mediaeditors_origin"   externid="mediaeditors_origin_$user"   from="parameters,cookie"><mm:write referid="mediaeditors_origin_default" /></mm:import><%-- default to value of anonymous --%>
   
   <mm:present referid="mediaeditors_origin">
     <mm:isempty referid="mediaeditors_origin">
       <mm:import id="mediaeditors_origin_set">yes</mm:import>
-      <mm:write  referid="mediaeditors_origin"  cookie="mediaeditors_origin" />
+      <mm:write  referid="mediaeditors_origin"  cookie="mediaeditors_origin_$user" />
     </mm:isempty>
     <mm:node number="$mediaeditors_origin" notfound="skip">
       <mm:import id="mediaeditors_origin_set">yes</mm:import>
-      <mm:write  referid="mediaeditors_origin"  cookie="mediaeditors_origin" />
+      <mm:write  referid="mediaeditors_origin"  cookie="mediaeditors_origin_$user" />
     </mm:node>
   </mm:present>
   
@@ -38,7 +40,9 @@
 
   <mm:import id="editwizards"><%=org.mmbase.applications.media.urlcomposers.Config.editwizardsDir == null ? "/mmapps/editwizard" : org.mmbase.applications.media.urlcomposers.Config.editwizardsDir%></mm:import>
 </mm:cloud>
-</mm:context><% 
+</mm:context>
+
+</mm:content><% 
    java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; 
    java.util.Map options = null;

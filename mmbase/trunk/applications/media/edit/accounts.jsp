@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html; charset=UTF-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><%@include file="config/read.jsp" %><mm:content language="$config.lang" postprocessor="reducespace">
+%><%@include file="config/read.jsp" %><mm:content language="$config.lang" type="text/html" expires="0">
 <mm:import externid="language"><mm:write value="$config.lang" /></mm:import>
 
 <mm:import externid="parameters" />

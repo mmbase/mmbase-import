@@ -1,6 +1,6 @@
 <list role="related" destination="publishtimes" minoccurs="0" maxoccurs="1">
-  <title xml:lang="en">Valid period (optional)</title>
-  <title xml:lang="nl">Geldigheidsperiode (optioneel)</title>
+  <title xml:lang="en">Valid period</title>
+  <title xml:lang="nl">Geldigheidsperiode</title>
   <item>
     <field name="begin"/>
     <field name="end"/>

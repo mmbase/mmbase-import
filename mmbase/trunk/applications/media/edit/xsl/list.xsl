@@ -4,11 +4,8 @@
 
   <xsl:import href="ew:xsl/list.xsl" /> <!-- extend from standard  editwizard xslt -->
 
- <xsl:template name="body"> 
-    <body onLoad="window.focus(); init(''); ">
-      <xsl:call-template name="bodycontent" />
-    </body>
-  </xsl:template>
+
+  <xsl:variable name="BodyOnLoad">window.focus(); init('');</xsl:variable>
 
 
 </xsl:stylesheet>

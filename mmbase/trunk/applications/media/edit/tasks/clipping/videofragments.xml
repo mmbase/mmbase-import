@@ -7,7 +7,6 @@
    <!ENTITY type         "video">
   ]
 >
-
 <wizard-schema id="media">
   <title>Videoclip-editor</title>
   <title xml:lang="nl">Video-knipper</title>

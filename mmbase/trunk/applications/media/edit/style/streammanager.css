@@ -1,16 +1,17 @@
 body {
-	background-color: #fff;
-	font-family : Verdana;
-	font-size : 10px;
-	color: #000000;
-	margin: 0 0 0 0;
-	scrollbar-face-color:#1C5BA2; 
-	scrollbar-highlight-color:#D0CECE; 
-	scrollbar-3dlight-color:#D0CECE; 
-	scrollbar-darkshadow-color:#000000; 
-	scrollbar-shadow-color:#fff; 
-	scrollbar-arrow-color:#fff; 
-	scrollbar-track-color:#BDC6D1;
+  background-color: #fff;
+  font-family : Verdana;
+  font-size : 10px;
+  color: #000000;
+  margin: 0 0 0 0;
+  scrollbar-face-color:#1C5BA2; 
+  scrollbar-highlight-color:#D0CECE; 
+  scrollbar-3dlight-color:#D0CECE; 
+  scrollbar-darkshadow-color:#000000; 
+  scrollbar-shadow-color:#fff; 
+  scrollbar-arrow-color:#fff; 
+  scrollbar-track-color:#BDC6D1;
+  /*  overflow: auto; */
 }
 
 body.help { 
@@ -18,20 +19,22 @@ body.help {
 }
 
 body.left {
-   background-image: url(../images/bckplaceholder.png);
+  background-image: url(../images/bckplaceholder.png);
 }
 
 hr {
-	color : #1C5BA2;
-/*	width: 10px; */
+  color : #1C5BA2;
+  /*	width: 10px; */
 }
 
 #colofon {
-     position: absolute;
-     left: 80%;
-     top:  80%;
-     width: 10%;
+  position: absolute;
+  left: 80%;
+  top:  80%;
+  width: 10%;
 }
+
+
 
 h1, h2, h3  {
 	background-color: #fff;
@@ -64,6 +67,8 @@ input {
 body.left input {
    background-color : #fff;
 }
+
+
 
 p.menu { 
   text-align: right;
@@ -110,9 +115,9 @@ nobr input.input {
 }
 
 table {
- margin: 0;
- border: 0;
- border-spacing: 0;
+ margin: 0px;
+ border-width: 0px;
+ border-spacing: 0px;
 }
 
 
@@ -189,6 +194,11 @@ a:hover {
 
 /* wizard */
 
+
+div.editform  {   
+  overflow: auto;
+
+}
 a.bottombutton:link {
 	font-family : Verdana;
 	font-size : 10px;
@@ -291,9 +301,9 @@ ul {
 /* for searchlist */
 
 table.searchresult {
-	font-size : 10px;
- 	color: #fff;
-  	background-color: #BCBDBF;
+  font-size : 10px;
+  color: #fff;
+  background-color: #BCBDBF;
 }
 
 table.searchresult tr.even td { background-color: #fff; }
@@ -318,4 +328,10 @@ tr.itemrow-hover td	{
    background-color: #fff;
    text-decoration: none; 
    font-weight: bold;	
+}
+
+
+/* for security editors */
+div#you {
+   display: none;
 }

@@ -5,11 +5,7 @@
   <xsl:import href="ew:xsl/wizard.xsl" /> <!-- extend from standard  editwizard xslt -->
 
 
-  <xsl:template name="body"> 
-  <body onload="doOnLoad_ew();init('{/wizard/curform}');" onunload="doOnUnLoad_ew();">
-    <xsl:call-template name="bodycontent" />
-    </body>
-  </xsl:template>
+  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); startHtmlArea();init('<xsl:value-of select="/wizard/curform" />');</xsl:variable>
 
 
   <xsl:template name="realposition">
@@ -19,7 +15,8 @@
 	<xsl:if test="@dttype != 'string'"> <!-- e.g. field ftype="realposition" name="title" (just to get the 'view' link ) -->
 
     <input type="button" value="{$button_current}{$thisprompt}"  title="{$tooltip_current}"  onClick="document.forms['form'].elements['{@fieldname}'].value = getPosition();" />
-    <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
+
+    <xsl:if test="not(preceding-sibling::field[@ftype='realposition' and @dttype='long'])">
       <input type="button" value="{$button_start}{$thisprompt}"  title="{$tooltip_start}"    onClick="document.forms['form'].elements['{@fieldname}'].value = 0;" />
     </xsl:if>
     <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
@@ -32,8 +29,8 @@
        <input type="button" value="{$button_next}{$thisprompt}"  title="{$tooltip_next}"     onClick="document.forms['form'].elements['{@fieldname}'].value = document.forms['form'].elements['{following::field[@ftype='realposition']/@fieldname}'].value;" />        
        </xsl:if>
      </xsl:if>
-     <xsl:if test="preceding::field[@ftype='realposition']">
-       <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
+     <xsl:if test="preceding::field[@ftype='realposition' and @dttype='long']">
+       <xsl:if test="not(preceding-sibling::field[@ftype='realposition' and @dttype='long'])">
        <input type="button" value="{$button_previous}{$thisprompt}"  title="{$tooltip_previous}"    onClick="document.forms['form'].elements['{@fieldname}'].value = document.forms['form'].elements['{preceding::field[@ftype='realposition'][1]/@fieldname}'].value;" />        
        </xsl:if>
      </xsl:if>
@@ -69,59 +66,6 @@
 
     </nobr>
   </span>
-  </xsl:template>
-
-
-  
-  <xsl:template name="formcontent">
-    <table class="body">
-      <xsl:call-template name="title" />
-      <xsl:call-template name="subtitle" />
-      <tr>
-        <td class="steps">
-          <table>
-            <xsl:apply-templates select="/*/steps-validator" />
-          </table>
-        </td>
-        <td>
-          <table>
-            <xsl:apply-templates select="form[@id=/wizard/curform]" />
-          </table>
-        </td>
-      </tr>
-    </table>
-  </xsl:template>
-
-
-  <xsl:template name="steps">
-    <tr>
-      <td>
-        <xsl:for-each select="step">
-            <xsl:call-template name="steptemplate" /> <br />
-        </xsl:for-each>
-      </td>
-    </tr>
-  </xsl:template>
-
- <!-- The appearance of one 'step' button -->
-  <xsl:template name="step">
-    <a>
-      <xsl:call-template name="stepaattributes" />
-      <xsl:call-template name="prompt_step" />
-      </a><br />
-      <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="/*/form[@id=current()/@form-schema]/title" /></xsl:call-template>
-  </xsl:template>
-
-
- <xsl:template name="buttons">
-    <tr>
-      <td colspan="2">
-        <hr />
-        <xsl:call-template name="cancelbutton" /><br />
-        <xsl:call-template name="savebutton" /><br />
-		<xsl:call-template name="saveonlybutton" /> 
-      </td>
-    </tr>    
   </xsl:template>
 
       
