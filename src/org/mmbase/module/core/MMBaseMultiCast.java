@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -16,6 +16,9 @@ import java.io.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Builds a MultiCast Thread to receive  and send 
  * changes from other MMBase Servers.
@@ -25,6 +28,8 @@ import org.mmbase.util.*;
  * @author Rico Jansen
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
+
+    private static Logger log = Logging.getLoggerInstance(MMBaseMultiCast.class.getName()); 
 
 	Thread kicker = null;
 	MMBase parent=null;
@@ -86,8 +91,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 			kicker.setPriority(Thread.NORM_PRIORITY+1);  
 			doWork();
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast -> ");
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -103,8 +107,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 		try {
 			ia = InetAddress.getByName(multicastaddress);
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast -> ");
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 		}
 		try {
 			MulticastSocket ms = new MulticastSocket(mport);
@@ -115,14 +118,12 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 					ms.receive(dp);
 					s=new String(dp.getData(),0,0,dp.getLength());
 					nodesTospawn.append(s);
-				} catch (Exception f) {
-					System.out.println("MMBaseMultiCast -> ");
-					f.printStackTrace();
+				} catch (Exception f) {                  
+                    log.error(Logging.stackTrace(f));
 				}
 			}
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast -> ");
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -134,7 +135,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 		//System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
 		MMObjectBuilder bul=parent.getMMObject(tb);
 		if (bul==null) {
-			System.out.println("MMBaseMultiCast -> Unknown builder="+tb);
+			log.error("Unknown builder=" + tb);
 			return(false);
 		}
 		if (machine.equals(parent.machineName)) {
@@ -154,14 +155,14 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 							nodesTosend.append(chars);
 
 						} else {
-							System.out.println("MMBaseMultiCast-> can't get node "+id);
+							log.error("can't get node " + id);
 						}
 					} else {
-						System.out.println("MMBaseMultiCast-> can't find builder "+bul);
+						log.error("can't find builder " + bul);
 					}
 				}
 			} catch(Exception e) {
-				e.printStackTrace();
+				log.error(Logging.stackTrace(e));
 			}
 		}
 		return(true);
@@ -193,11 +194,11 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 				MMBaseMultiCastWaitNode n=(MMBaseMultiCastWaitNode)e.nextElement();
 				if (n.doNotifyCheck(number)) {
 					waitingNodes.removeElement(n);
-					System.out.println("MMBaseMultiCast-> waitingNodes size="+waitingNodes.size());
+					log.debug("waitingNodes size=" + waitingNodes.size());
 				}
 			}
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast-> not a valid number "+snumber);
+			log.error("not a valid number " + snumber);
 		}
 	}
 
@@ -208,7 +209,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 		//System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'"+xml);
 		MMObjectBuilder bul=parent.getMMObject(tb);
 		if (bul==null) {
-			System.out.println("MMBaseMultiCast -> Unknown builder="+tb);
+			log.error("Unknown builder=" + tb);
 			return(false);
 		}
 		if (machine.equals(parent.machineName)) {
@@ -221,12 +222,12 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 				node.commit();
 				
 			} else {
-				System.out.println("MMBaseMultiCast-> can't get node "+id);
+				log.error("can't get node "+id);
 			}
 		}
 		} catch(Exception e) {
-			System.out.println("MMBaseMultiCast-> commitXML error");
-			e.printStackTrace();	
+			log.error("commitXML error");
+			log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
