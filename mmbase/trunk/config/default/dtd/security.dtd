@@ -1,4 +1,4 @@
-<!ATTLIST security active NMTOKEN #REQUIRED >
+<!ATTLIST security active (true|false) #REQUIRED >
 <!ELEMENT security ( authentication, authorization, sharedsecret ) >
     <!ELEMENT authentication EMPTY >
     <!ATTLIST authentication class NMTOKEN #REQUIRED >
