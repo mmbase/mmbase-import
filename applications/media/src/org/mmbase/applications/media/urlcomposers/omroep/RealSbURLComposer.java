@@ -22,7 +22,7 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RealSbURLComposer.java,v 1.1 2003-02-16 18:53:36 michiel Exp $
+ * @version $Id: RealSbURLComposer.java,v 1.2 2003-02-17 09:11:29 michiel Exp $
  * @since MMBase-1.7
  */
 public class RealSbURLComposer extends RealURLComposer {
@@ -39,6 +39,9 @@ public class RealSbURLComposer extends RealURLComposer {
     
     protected String getBandPrefix() {
         return "sb.";
+    }
+    public String getGUIIndicator(Locale locale) {
+        return super.getGUIIndicator(locale) + " (smalband)";
     }
 
     protected StringBuffer getURLBuffer() {
