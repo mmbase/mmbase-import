@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if node may be created
  *
  * @author Michiel Meeuwissen
- * @version $Id: MayCreateTag.java,v 1.7 2004-07-10 12:16:46 nico Exp $
+ * @version $Id: MayCreateTag.java,v 1.8 2004-07-19 15:25:54 michiel Exp $
  */
 
 public class MayCreateTag extends CloudReferrerTag implements Condition {
@@ -40,24 +40,23 @@ public class MayCreateTag extends CloudReferrerTag implements Condition {
 
     public int doStartTag() throws JspTagException {
         if ((getProviderCloudVar().getNodeManager(type.getString(this)).mayCreateNode()) != getInverse()) {
-            return EVAL_BODY_BUFFERED;
+            return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
     }
 
     public int doAfterBody() throws JspTagException {
-        try{
-            if(bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
+            try{
+                if(bodyContent != null) {
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch(java.io.IOException e){
+                throw new JspTagException("IO Error: " + e.getMessage());
             }
-        } catch(java.io.IOException e){
-            throw new JspTagException("IO Error: " + e.getMessage());
         }
-        return EVAL_PAGE;
+        return SKIP_BODY;
     }
 
-    public int doEndTag() throws JspTagException {
-        return EVAL_PAGE;
-    }
 }
