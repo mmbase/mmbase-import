@@ -21,6 +21,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.RequestDispatcher;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.ContextProvider;
 import org.mmbase.security.Rank; // hmm, not from bridge, but we do need it anyway
 
 import org.mmbase.util.StringSplitter;
@@ -326,8 +327,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             // not know the password anymore.
             // this is how 'logout' works.
             if (!setRealm("MMBase@" + request.getServerName()
-                          //+ "."
-                          //+ java.util.Calendar.getInstance().getTime().getTime()
+                          + "."
+                          + java.util.Calendar.getInstance().getTime().getTime()
                           )) {
                 return SKIP_BODY;
             }
