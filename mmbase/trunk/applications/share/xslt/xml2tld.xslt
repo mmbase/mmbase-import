@@ -19,7 +19,7 @@
   <xsl:template match="taglib">
     <xsl:if test="$version = '1.2'">        
         <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE taglib  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" 
-     "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_2.dtd"&gt;
+        "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd"&gt;
 </xsl:text>
       </xsl:if>
     <taglib>
