@@ -24,17 +24,21 @@ import org.mmbase.util.logging.*;
  * images holds the images and provides ways to insert, retract and
  * search on them.
  *
- * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.48 2002-02-26 10:42:30 michiel Exp $
+ * @author Daniel Ockeloen
+ * @author Rico Jansen
+ * @author Michiel Meeuwissen
+ * @version $Id: Images.java,v 1.49 2002-03-05 15:27:24 michiel Exp $
  */
-public class Images extends MMObjectBuilder {
+public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
+
+    private LRUHashtable templateCacheNumberCache = new LRUHashtable(500); 
 
     ImageConvertInterface imageconvert=null;
     Hashtable ImageConvertParams=new Hashtable();
 
     // Currenctly only ImageMagick works / this gets parameterized soon
-    protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick";
+    protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick"; 
     protected int MaxConcurrentRequests=2;
 
     protected int MaxRequests=32;
@@ -76,38 +80,44 @@ public class Images extends MMObjectBuilder {
         return(true);
     }
 
-    public String getGUIIndicator(MMObjectNode node) {
-        int num = node.getNumber();
-        if (num == -1 ) {   // img.db cannot handle uncommited images..
-            return null; // ObjectBuilder itself will handle this case.
+    /**
+     * The executeFunction of this builder adds the 'cache' function.
+     * The cache function accepts a conversion template as argument and returns the cached image
+     * node number. Using this you order to pre-cache an image.
+     *
+     * @since MMBase-1.6
+     */
+
+    protected Object executeFunction(MMObjectNode node, String function, String field) {
+        if ("cache".equals(function)) {
+            return new Integer(cacheImage(node, field));
+        } else {
+            return super.executeFunction(node, function, field);
         }
-        // NOTE that this has to be configurable instead of static like this
-        String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db";
-        String image      = servlet + "?" + num;
-        String imagethumb = image   + "+s(100x60)";
-        String title      = node.getStringValue("title");
-        return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"" + title + "\" /></a>");
     }
 
     public void setDefaults(MMObjectNode node) {
         node.setValue("description","");
     }
 
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("handle")) { 
-            int num = node.getNumber();
-            if(num == -1) { // img.db cannot handle uncommited images..
-                return null;
-            }
-            // NOTE that this has to be configurable instead of static like this
-            String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db";
-            String image      = servlet + "?" + num;
-            String imagethumb = servlet + "?" + num + "+s(100x60)";
+    /**
+     * @since MMBase-1.6
+     **/
 
-            return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"*\" /></a>");
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title) {
+        int num = node.getNumber();
+        if (num == -1 ) {   // img.db cannot handle uncommited images..
+            return null; // ObjectBuilder itself will handle this case.
         }
-        // other fields can be handled by the gui function...
-        return null;
+        // NOTE that this has to be configurable instead of static like this
+        String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db?";
+        String imageThumb = servlet + node.getIntValue("cache(s(100x60))");
+        String image      = servlet + node.getNumber();
+        return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>");
+    }
+
+    public String getGUIIndicator(MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, node.getStringValue("title"));
     }
 
     // called by init..used to retrieve all settings
@@ -154,10 +164,14 @@ public class Images extends MMObjectBuilder {
      * Will return "jpg" as default type, or one of the strings in params, must contain the following "f(type)" where type will be returned
      * @param params a <code>Vector</code> of <code>String</code>s, which could contain the "f(type)" string
      * @return "jpg" by default, or the first occurence of "f(type)"
+     *
+     * 
      */
     public String getImageMimeType(Vector params) {
         String format=null;
         String key;
+
+        // WHY the itype colomn isn't used?
 
         for (Enumeration e=params.elements();e.hasMoreElements();) {
             key=(String)e.nextElement();
@@ -169,7 +183,7 @@ public class Images extends MMObjectBuilder {
                     // one search function remaining...
                     int pos=key.lastIndexOf(')');
                     // we know for sure that our "(" is at pos 1, so we can define this hard...
-                    format = key.substring(2,pos);
+                    format = key.substring(2, pos);
                     break;
                 }
             }
@@ -178,37 +192,111 @@ public class Images extends MMObjectBuilder {
         String mimetype=mmb.getMimeType(format);
         log.debug("getImageMimeType: mmb.getMimeType("+format+") = "+mimetype);
         return(mimetype);
-    }    
-
-    // glue method until org.mmbase.servlet.servdb is updated
-    /** Returns a picture wich belongs to the given param line, with caching
-     * @param sp Not needed at this moment,... 
-     * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
-     * @return null if something goes wrong, otherwise the picture in a byte[]
-     * @deprecated glue method until org.mmbase.servlet.servdb is updated
-     */    
-    public byte[] getImageBytes5(scanpage sp,Vector params) {
-        return getImageBytes(sp,params);
     }
 
-    /** Returns a picture wich belongs to the given param line, with caching
-     * @param sp Not needed at this moment,... 
+    
+
+    /**
+     * Explicity cache this image with the given template and return the cached node number.
+     *
+     * Called by the cache() function.
+     *
+     * @since MMBase-1.6
+     */
+
+    private int cacheImage(MMObjectNode node, String template) {
+        String cacheKey = "" + node.getNumber() + template;        
+        Integer i = (Integer) templateCacheNumberCache.get(cacheKey);
+        if (i != null) { 
+            if (log.isDebugEnabled()) log.debug("found image in cache " + i);
+            return i.intValue();
+        }
+                                     
+        Vector params = new Vector();
+        params.add("" + node.getNumber());
+        if (template != null) {
+            StringTokenizer tok=new StringTokenizer(template,"+");
+            while(tok.hasMoreTokens()) {
+                params.add(tok.nextToken());
+            }
+        }
+        i = new Integer(cacheImage(params));
+        templateCacheNumberCache.put(cacheKey, i);
+        return i.intValue();
+    }
+    /**
+     * Explicity cache this image with params and return the cached node number.
+     *
+     * This function is called by servdb. So when servdb is not used
+     * for images anymore, this function can be deprecated (and the
+     * functionality moved to cacheImage(node, template).
+     *
+     * @since MMBase-1.6
+     */
+    public int cacheImage(Vector params) {
+        if (log.isDebugEnabled()) log.debug("Caching image " + params);
+        
+
+        if (getImageBytes(params) != null) {
+            // this will also calculate ckey, so it is not optimally efficient now.
+            // but at least it will make sure that the image is cached.
+            
+            String ckey = flattenParameters(params);
+            
+            // Using the cache which is also used for templates (this
+            // avoids the SQL statement in getCachedNodeNumber)
+            // Templates and ckeys are not excactly the same, but
+            // well, this function is only used in servdb.
+            
+            Integer cachedNodeNumber = (Integer) templateCacheNumberCache.get(ckey);
+            if (cachedNodeNumber == null ) {
+                // get a connection to the cache module
+                ImageCaches imageCacheBuilder = (ImageCaches) mmb.getMMObject("icaches");
+                cachedNodeNumber = new Integer(imageCacheBuilder.getCachedNodeNumber(ckey));
+                templateCacheNumberCache.put(ckey, cachedNodeNumber);
+            }
+            return cachedNodeNumber.intValue();           
+        } else {
+            return -1;
+        }
+    }
+    
+ 
+
+    /**    
+     * @deprecated Use getImageBytes(params);
+     */
+    public byte[] getImageBytes5(scanpage sp, Vector params) {
+        return getImageBytes(params);
+    }
+    /**    
+     * @deprecated Use getImageBytes(params);
+     */
+    public byte[] getImageBytes(scanpage sp, Vector params) {
+        return getImageBytes(params);
+    }
+    /** 
+     * Returns a picture wich belongs to the given param line, with caching.
+     *
      * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
-    // should scanpage be removed ???? when yes, must be marked as deprecated
-    public byte[] getImageBytes(scanpage sp, Vector params) {
-        byte[] picture = getCachedImage(params);
+    public byte[] getImageBytes(Vector params) {
 
+        byte[] picture = getCachedImage(params);
         if(picture != null && picture.length > 0) {
+            if (log.isDebugEnabled()) log.debug("Image was cached already");
             return picture;
         } else {
+            if (log.isDebugEnabled()) log.debug("Image was not cached, caching now");
             return getOriginalImage(params);
         }
     }
 
     /** 
-     * This function will flatten the parameters to an unique key, so that an image can be found in the cache
+     * This function will flatten the parameters to an unique key, so that an image can be found in the cache.
+     * In other words, this function could have been called 'getCKey'.
+     *
      * @param params a <code>Vector</code> of <code>String</code>s, with a size greater then 0 and not null
      * @return a string containing the key for this vector, or <code>null</code>,....
      */
@@ -221,16 +309,24 @@ public class Images extends MMObjectBuilder {
         StringBuffer sckey = new StringBuffer("");
         Enumeration enum=params.elements();
         while(enum.hasMoreElements()) {
-            sckey.append((String) enum.nextElement());
+            sckey.append(enum.nextElement().toString());
         }
-        // skip spaces at beginning and ending..
-        String ckey = org.mmbase.util.transformers.Sql.singlequote(sckey.toString().trim());
+        // skip spaces at beginning and ending, URL param escape to avoid everything strange in it.
+        String ckey = "";
+        try {
+            ckey = new String(sckey.toString().trim().getBytes("US-ASCII")).replace('"', 'X').replace('\'', 'X');
+        } catch (java.io.UnsupportedEncodingException e) {
+            log.error(e.toString());
+        }
+        // of course it is not a very good idea to convert to US-ASCII, but 
+        // in ImageCaches this string is used in a select statement, without using 
+        // a database layer. So we must have something which works always.
+        // Some texts, however will lead to the same ckey now.
 
-        log.debug("using ckey" + ckey);
+        if(log.isDebugEnabled()) log.debug("using ckey" + ckey);
         if(ckey.length() > 0) {
             return ckey;
-        }            
-        else {
+        } else {
             log.debug("flattenParameters: empty parameters");        
             return null;
         }
@@ -241,11 +337,11 @@ public class Images extends MMObjectBuilder {
      * @param params a <code>Vector</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
-    public byte[] getCachedImage(Vector params) {        
+    protected byte[] getCachedImage(Vector params) {        
         // get a connection to the cache module
         ImageCaches imageCacheBuilder = (ImageCaches) mmb.getMMObject("icaches");
         if(imageCacheBuilder == null) {
-            log.error("getCachedImage(): ERROR builder icaches not loaded, load it by putting it in objects.def");
+            log.error("getCachedImage(): ERROR builder icaches not loaded, load it by setting it active in icaches.xml");
             return null;
         }
         
@@ -263,12 +359,14 @@ public class Images extends MMObjectBuilder {
         return cachedPicture;
     }
     
+
     /**    
-     * Will return null when something goes wrong otherwise, a byte[] whcih represents the picture
+     * Will return null when something goes wrong otherwise, a byte[] which represents the picture.
+     *
      * @param params a <code>Vector</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
-    public byte[] getOriginalImage(Vector params) {
+    protected byte[] getOriginalImage(Vector params) {
         if (params==null || params.size() == 0) {
             log.debug("getOriginalImage: no parameters");
             return null;
@@ -290,8 +388,7 @@ public class Images extends MMObjectBuilder {
         }
 
         // retrieve the original image
-        MMObjectNode node;
-        node=getNode(objectId);
+        MMObjectNode node = getNode(objectId);
         
         // get the Object...
         if(node == null) {
@@ -300,7 +397,7 @@ public class Images extends MMObjectBuilder {
         }
         
         // get  the bytes from the Object (assume in field handle)
-        byte[] inputPicture=node.getByteValue("handle");
+        byte[] inputPicture = node.getByteValue("handle");
         if(inputPicture == null) {
             log.warn("ConvertImage: Image Node is bad "+objectId);
             return null;
@@ -321,8 +418,12 @@ public class Images extends MMObjectBuilder {
         return req.getOutput();
     }
 
+
+    /**
+     * Check if its a number if not check for name.
+     * @javadoc Not clear enough
+     */
     public int convertAlias(String num) {
-        // check if its a number if not check for name
         int number=-1;
         try {
             number=Integer.parseInt(num);
@@ -339,15 +440,15 @@ public class Images extends MMObjectBuilder {
     }
 
     /**
-     *    
+     * @javadoc  
      */
-     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
+    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
         Vector devices = new Vector();
-    
+        
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-
-      if (cmd.equals("devices")) {
+            
+            if (cmd.equals("devices")) {
                 if(mmb.getMMObject("scanners")!=null) {
                     getDevices("scanners",devices);
                 } 
@@ -357,11 +458,11 @@ public class Images extends MMObjectBuilder {
                 if(mmb.getMMObject("pccards")!=null) {
                     getDevices("pccards",devices);
                 } 
-            tagger.setValue("ITEMS","2");
+                tagger.setValue("ITEMS","2");
                 return devices;    
             }
         }
-      return(null);
+        return(null);
   }
     
 
@@ -425,6 +526,10 @@ public class Images extends MMObjectBuilder {
 	    // we have a icache that is active...
 	    icache.invalidate(node);
 	}
+    }
+
+    void invalidateTemplateCacheNumberCache() {
+        templateCacheNumberCache.clear();
     }
 }
         
