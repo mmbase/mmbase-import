@@ -12,7 +12,6 @@ package org.mmbase.storage.search.implementation.database;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
-import org.mmbase.bridge.NodeQuery;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
@@ -28,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.19 2003-11-27 17:58:41 robmaris Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.20 2003-12-17 20:48:01 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -155,11 +154,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     MMObjectNode node = null;
                     if (builder instanceof ClusterBuilder) {
                         // Cluster nodes.
-                        if (query instanceof NodeQuery) { // hmm
-                            node = new MMObjectNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()));
-                        } else {
-                            node = new ClusterNode(builder, steps.size());
-                        }
+                        node = new ClusterNode(builder, steps.size());
                     } else if (builder instanceof ResultBuilder) {
                         // Result nodes.
                         node = new ResultNode((ResultBuilder) builder);
@@ -174,17 +169,12 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         String prefix;
                         if (builder instanceof ClusterBuilder) {
                             fieldName = fields[i].getFieldName();
-                            if (query instanceof NodeQuery) { // hmm
-                                // no prefix if node.getBuilder() is not a clusterbuilder
-                                prefix = "";
-                            } else {
-                                String alias = fields[i].getStep().getAlias();
-                                if (alias == null) {
-                                    // Use tablename as alias when no alias is specified.
-                                    alias = fields[i].getStep().getTableName();
-                                }
-                                prefix = alias +  '.';
+                            String alias = fields[i].getStep().getAlias();
+                            if (alias == null) {
+                                // Use tablename as alias when no alias is specified.
+                                alias = fields[i].getStep().getTableName();
                             }
+                            prefix = alias +  '.';
                         } else if (builder instanceof ResultBuilder) {
                             fieldName = fields[i].getAlias();
                             if (fieldName == null) {
