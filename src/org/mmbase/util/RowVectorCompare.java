@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
-import org.mmbase.util.*;
 
 /**
  * RowVectorCompare compares a given row element in two Vectors.

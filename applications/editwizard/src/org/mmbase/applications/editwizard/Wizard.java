@@ -16,7 +16,6 @@ import javax.servlet.ServletRequest;
 import org.w3c.dom.*;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.util.logging.*;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerException;
 import org.mmbase.util.xml.URIResolver;
 
@@ -27,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74 2002-11-04 16:04:55 pierre Exp $
+ * @version $Id: Wizard.java,v 1.75 2003-03-04 13:27:09 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {

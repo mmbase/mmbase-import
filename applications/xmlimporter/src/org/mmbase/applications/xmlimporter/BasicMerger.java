@@ -16,7 +16,6 @@ package org.mmbase.applications.xmlimporter;
 import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.applications.xmlimporter.*;
 
 /**
  * This is a basic implementation of ObjectMerger.
@@ -31,7 +30,7 @@ import org.mmbase.applications.xmlimporter.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: BasicMerger.java,v 1.2 2002-02-27 16:54:24 pierre Exp $
+ * @version $Id: BasicMerger.java,v 1.3 2003-03-04 13:27:08 nico Exp $
  */
 public class BasicMerger implements ObjectMerger {
 
