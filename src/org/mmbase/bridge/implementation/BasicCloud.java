@@ -26,7 +26,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.85 2003-04-29 20:07:43 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.86 2003-04-29 21:15:07 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -684,11 +684,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         return resultNodeList;
     }
-
     /*
-      new implementation of getList based on the above version (to be tested)
+    new implementation of getList based on the above version (to be tested)
 
-
+      
     //javadoc inherited
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
@@ -737,13 +736,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         return getList(query);
     }
-    */
-
+    */    
 
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
             String searchDir, boolean distinct) {
 
+
+        MultilevelCacheHandler multilevelCache = MultilevelCacheHandler.getCache(); // this hides
+                                                                                    // the member
+                                                                                    // (for now)
         // begin of check invalid search command
         org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
         // if(startNodes != null) startNodes = encoder.encode(startNodes);
@@ -793,7 +795,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
           pars+=" SEARCH='"+searchDir+"'";
         }
 
-        StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
+        org.mmbase.util.StringTagger tagger= new org.mmbase.util.StringTagger(pars,' ','=',',','\'');
         if (searchDir != null) {
             search = ClusterBuilder.getSearchDir(searchDir);
         }
@@ -871,7 +873,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             throw new BridgeException("Parameters are invalid :" + pars + " - " + constraints);
         }
     }
-    
+
     
 
     /**
