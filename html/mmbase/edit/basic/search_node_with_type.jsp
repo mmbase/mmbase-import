@@ -21,33 +21,36 @@
 
 <!-- import search age and store in session -->
 
-<mm:import externid="_search_form_minage" ></mm:import>
-<mm:import externid="_search_form_maxage" ><mm:listnodes type="typedef" constraints="[name]='${node_type}'" max="1"><mm:field name="defaultsearchage()" /></mm:listnodes></mm:import>
+<mm:import externid="_search_form_minage_$node_type" from="parameters,session"></mm:import>
+<mm:import externid="_search_form_maxage_$node_type" from="parameters,session"><mm:listnodes type="typedef" constraints="[name]='${node_type}'" max="1"><mm:field name="defaultsearchage()" /></mm:listnodes></mm:import>
+
+<mm:write session="_search_form_minage_$node_type" referid="_search_form_minage_$node_type" />
+<mm:write session="_search_form_maxage_$node_type" referid="_search_form_maxage_$node_type" />
 
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
 <mm:context>
   <form name="search" method="post" action='<mm:url referids="node,node_type,role_name,direction" />'>
-      <table class="search" align="center" width="100%" border="0" cellspacing="1">
-        <%-- search table --%>
-        <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-            <tr align="left">
-              <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
-             <td width="100%"><mm:fieldinfo type="searchinput" /></td>
-           </tr>
-        </mm:fieldlist>
-         <tr align="left">
-            <td width="20%"><%=m.getString("search.minage")%></td>
-            <td width="100%"><input type ="text" class="small" size="80" name="_search_form_minage" value="<mm:write referid="_search_form_minage" />" /></td>
-         </tr>
-         <tr align="left">
-            <td width="20%"><%=m.getString("search.maxage")%></td>
-            <td width="100%"><input type ="text" class="small" size="80" name="_search_form_maxage" value="<mm:write referid="_search_form_maxage" />" /></td>
-         </tr>
-        <tr>
-           <td colspan="2"><input class="search" type ="submit" name="search" value="<%=m.getString("search")%>" /></td>
+    <table class="search" align="center" width="100%" border="0" cellspacing="1">
+      <%-- search table --%>
+      <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+        <tr align="left">
+          <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
+          <td width="100%"><mm:fieldinfo type="searchinput" /></td>
         </tr>
-      </table>
+      </mm:fieldlist>
+      <tr align="left">
+        <td width="20%"><%=m.getString("search.minage")%></td>
+        <td width="100%"><input type ="text" class="small" size="80" name="_search_form_minage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_minage_$node_type" />" /></td>
+      </tr>
+      <tr align="left">
+        <td width="20%"><%=m.getString("search.maxage")%></td>
+        <td width="100%"><input type ="text" class="small" size="80" name="_search_form_maxage_<mm:write referid="node_type" />" value="<mm:write referid="_search_form_maxage_$node_type" />" /></td>
+      </tr>
+      <tr>          
+        <td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td>
+      </tr>
+    </table>
   </form>
 </mm:context>
 <%-- /mm:compare --%>
@@ -64,7 +67,7 @@
 </mm:present>
 
 <%-- apply age-constraint always --%>
-<mm:ageconstraint minage="$_search_form_minage" maxage="$_search_form_maxage" />
+<mm:ageconstraint minage="${_search_form_minage_$node_type}" maxage="${_search_form_maxage_$node_type}" />
 
 
 <% boolean mayLink = false; %><mm:present referid="maylink"><% mayLink = true; %></mm:present>
@@ -90,7 +93,7 @@
            </mm:compare>
         </mm:index>
       </mm:first>
-      <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage,orderby">
+      <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
         <mm:param name="page"><mm:index /></mm:param>
         <!--pass all search field values -->
         <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
@@ -100,7 +103,7 @@
       <mm:last>
          <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
       </mm:last>
-        </a>
+    </a>
    </mm:previousbatches>
      </nobr>
    </td>
@@ -114,7 +117,7 @@
       <mm:nextbatches max="21">
        <mm:index>
        <mm:compare value="21" inverse="true">
-       <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage,orderby">
+       <a href='<mm:url referids="node,node_type,role_name,direction,orderby">
        <mm:param name="page"><mm:index /></mm:param>
         <!--pass all search field values -->
          <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
@@ -149,7 +152,7 @@
     <mm:context>
     <mm:fieldlist nodetype="$node_type" type="list" jspvar="field">
          <% if (field.hasIndex()) { %>
-         <th><a href="<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
+         <th><a href="<mm:url referids="node,node_type,role_name,direction,search">
          <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
              <mm:fieldinfo type="reusesearchinput" />
          </mm:fieldlist>
