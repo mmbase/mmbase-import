@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.11 2000-07-15 10:14:42 daniel Exp $
+	$Id: MultiRelations.java,v 1.12 2000-07-15 19:18:09 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.11  2000/07/15 10:14:42  daniel
+	Changed getDBType to int
+	
 	Revision 1.10  2000/03/30 13:11:32  wwwtech
 	Rico: added license
 	
@@ -52,11 +55,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.11 2000-07-15 10:14:42 daniel Exp $
+ * @version $Id: MultiRelations.java,v 1.12 2000-07-15 19:18:09 daniel Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
-	final static boolean debug=true;
+	final static boolean debug=false;
 
 	public MultiRelations(MMBase m) {
 		this.mmb=m;
@@ -131,7 +134,6 @@ public class MultiRelations extends MMObjectBuilder {
 
 
 	public Object getValue(MMObjectNode node,String fieldName) {
-		System.out.println("WWWW7");
 		// oke oke we expect a '.' in the name
 		int pos=fieldName.indexOf('.');
 		if (pos!=-1) {
@@ -255,7 +257,6 @@ public class MultiRelations extends MMObjectBuilder {
 					prefix=selectTypes.elementAt(i-1)+".";
 					fieldname=rd.getColumnName(i);	
 					//fieldtype=rd.getColumnTypeName(i);	
-					System.out.println("WWWW30="+fieldname);
 					node=database.decodeDBnodeField(node,fieldname,rs,i,prefix);
 					if (debug) debug("Node="+node);
 				}
@@ -627,4 +628,7 @@ public class MultiRelations extends MMObjectBuilder {
 		}
 		return(null);
 	}
+
+
+
 }

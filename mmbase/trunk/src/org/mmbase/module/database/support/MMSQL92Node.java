@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.29 2000-07-15 13:06:21 daniel Exp $
+$Id: MMSQL92Node.java,v 1.30 2000-07-15 19:18:38 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.29  2000/07/15 13:06:21  daniel
+removed some debug
+
 Revision 1.28  2000/07/15 10:02:15  daniel
 Changed getDBType to int
 
@@ -128,7 +131,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.29 $ $Date: 2000-07-15 13:06:21 $
+* @$Revision: 1.30 $ $Date: 2000-07-15 19:18:38 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -167,7 +170,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			fieldname=(String)allowed2disallowed.get(fieldname);
 		}
 
-		int type=node.getDBType(fieldname);
+
+		int type=node.getDBType(prefix+fieldname);
 		switch (type) {
 			case FieldDefs.TYPE_STRING:
 				String tmp=rs.getString(i);
