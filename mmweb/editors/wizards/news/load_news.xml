@@ -6,7 +6,8 @@
 	<field name="intro" />
 	<field name="body" />
 	<relation destination="mmevents" role="related" />
-	<relation destination="urls" role="posrel"  />
-	<relation destination="images" role="posrel"   />
+	<relation destination="urls" role="posrel" />
+	<relation destination="images" role="posrel" />
+	<relation destination="category" role="posrel" />
 </action>
 

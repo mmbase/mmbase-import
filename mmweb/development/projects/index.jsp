@@ -4,7 +4,7 @@
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp" %>
 <td class="white" colspan="2" valign="top">
-  <mm:listnodes type="project" orderby="subtitle" id="projectlist">
+  <mm:listnodes type="project" orderby="status,number" directions="down" id="projectlist">
     <mm:changed>
       [<a href="#<mm:field name="number" />"><mm:field name="status" /></a>]&nbsp;
     </mm:changed>
@@ -17,6 +17,7 @@
     <h2><a href="/development/projects/project.jsp?project=<mm:field name="number" />&portal=<mm:write referid="portal" />"><mm:field name="title" /></a></h2>
     <mm:field name="intro" />
   </mm:list>
+   <br/><br/>
 </td>
 
 <%@include file="/includes/footer.jsp" %>

@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <!DOCTYPE list PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <list role="posrel" destination="urls" minoccurs="0" maxoccurs="1">
-	<title></title>
+	<title>Homepage</title>
 	<description></description>
 
 	<command name="search" nodepath="urls" fields="url,description" age="-1">
 		<prompt></prompt>
 		<search-filter>
-        		<name>Url bevat</name>
+        		<name>Url contains</name>
 	        	<search-fields>url</search-fields>
 		</search-filter>
 		<search-filter>
-	        	<name>Omschrijving bevat</name>
+	        	<name>Description contains</name>
 	        	<search-fields>description</search-fields>
 		</search-filter>
 	</command>
@@ -21,7 +21,7 @@
 		<title></title>
 		<description></description>
 		<field name="url" ftype="data" >
-			<prompt></prompt>
+			<prompt>Url</prompt>
 		</field>
 		<field fdatapath="." ftype="startwizard" inline="true" objectnumber="{object/@number}" wizardname="wizards/urls/urls">
 			<prompt></prompt>

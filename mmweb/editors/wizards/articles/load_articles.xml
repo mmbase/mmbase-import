@@ -4,6 +4,7 @@
   	<field name="title" />
 	<field name="subtitle" />
 	<field name="intro" />
+	<field name="body" />
 	<field name="quotetitle" />
 	<field name="quote" />
 	<field name="copyright" />
@@ -11,5 +12,8 @@
 	<field name="source" />
 	<field name="expiredate" />
 	<field name="displaydate" />
+	<relation destination="urls" role="posrel"/>
+	<relation destination="images" role="posrel"/>
+	<relation destination="attachments" role="posrel"/>
 </action>
 

@@ -23,7 +23,7 @@
 --%>
 <tr><td><a href="/editors/logout.jsp" target="search">Uitloggen</a></td></tr>
 <mm:import id="referrer">/editors/empty.jsp</mm:import>
-<mm:list path="mmbaseusers,posrel,groups" constraints="<%= userconstraint %>"
+<mm:list path="mmbaseusers,posrel,groups" constraints=""
 	orderby="posrel.pos" directions="UP">
 	<tr><td>&nbsp;</td></tr>
 	<tr><td class="prikbord_text"><mm:field name="groups.name" /></a>&nbsp;&nbsp;&nbsp;</td></tr>

@@ -8,12 +8,6 @@
 	<relation destination="news" role="posrel" />
 	<relation destination="articles" role="posrel" />
 	<relation destination="documentation" role="posrel" />
-	<relation destination="images" role="posrel" >
-			<object>
-		        <relation destination="urls" role="posrel">
-			         <object />
-		        </relation>
-	    	</object>
-	</relation>
+	<relation destination="organisation" role="posrel" />
 </action>
 

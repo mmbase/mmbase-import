@@ -2,6 +2,7 @@
 <!DOCTYPE form-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
 <form-schema id="edit_news">
 	<title></title>
+	<list include="wizards/category/add_category_posrel.xml" />
 	<field name="title" dtminlength="1"><prompt>Titel</prompt></field>
 	<field name="subtitle" ><prompt>Subtitel</prompt></field>
 	<field name="intro" ftype="html" rows="8" ><prompt>Introductie</prompt></field>
