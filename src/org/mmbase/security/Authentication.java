@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.20 2003-09-26 17:41:10 michiel Exp $
+ * @version $Id: Authentication.java,v 1.21 2004-03-08 17:42:30 michiel Exp $
  */
 public abstract class Authentication extends Configurable {
 
@@ -41,7 +41,7 @@ public abstract class Authentication extends Configurable {
      *
      *	@return <code>null</code if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
      *
-     *	@exception org.mmbase.security.SecurityException When something strang happend
+     *	@exception org.mmbase.security.SecurityException When something strang happened
      */
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
 

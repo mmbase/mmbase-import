@@ -14,7 +14,7 @@ package org.mmbase.security;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Operation.java,v 1.9 2003-08-27 19:29:20 michiel Exp $
+ * @version $Id: Operation.java,v 1.10 2004-03-08 17:42:30 michiel Exp $
  */
 public final class Operation {
     /** int value for the read Operation*/
@@ -32,8 +32,17 @@ public final class Operation {
     /** int value for the remove Operation */
     public final static int DELETE_INT = 4;
 
-    /** int value for the remove Operation */
-    public final static int CHANGECONTEXT_INT = 6;
+    /**
+     * int value for change context operation
+     * @since MMBase-1.7
+     */
+    public final static int CHANGE_CONTEXT_INT = 6;
+
+    /**
+     * @deprecated use CHANGE_CONTEXT_INTK
+     */
+    public final static int CHANGECONTEXT_INT = CHANGE_CONTEXT_INT;
+
 
     /** Identifier for read operation, which is used for reading information*/
     public final static Operation READ = new Operation(READ_INT, "read");
@@ -57,10 +66,17 @@ public final class Operation {
     public final static Operation DELETE = new Operation(DELETE_INT, "delete");
 
     /** 
-     *   Identifier for change context operation, which is used when changing the context of a node 
-     * @todo why is this not CHANGE_CONTEXT, like CHANGE_RELATION
+     * Identifier for change context operation, which is used when changing the context of a node 
+     * @since MMBase-1.7
      */
-    public final static Operation CHANGECONTEXT = new Operation(CHANGECONTEXT_INT, "change context");
+    public final static Operation CHANGE_CONTEXT = new Operation(CHANGE_CONTEXT_INT, "change context");
+
+
+    /** 
+     * Identifier for change context operation, which is used when changing the context of a node 
+     * @deprecated Use CHANGE_CONTEXT
+     */
+    public final static Operation CHANGECONTEXT = CHANGE_CONTEXT;
 
     /**
      *	Private constructor, to prevent creation of new Operations
@@ -99,7 +115,7 @@ public final class Operation {
         if(CREATE.toString().equals(operationString)) return CREATE;
         if(CHANGE_RELATION.toString().equals(operationString)) return CHANGE_RELATION;
         if(DELETE.toString().equals(operationString)) return DELETE;
-        if(CHANGECONTEXT.toString().equals(operationString)) return CHANGECONTEXT;
+        if(CHANGE_CONTEXT.toString().equals(operationString)) return CHANGE_CONTEXT;
         throw new org.mmbase.security.SecurityException("Could not find a operation for the operation with name:" + operationString);
     }
 }

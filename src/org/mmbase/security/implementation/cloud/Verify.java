@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.13 2003-11-24 15:30:12 robmaris Exp $
+ * @version $Id: Verify.java,v 1.14 2004-03-08 17:42:30 michiel Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class);
@@ -111,7 +111,7 @@ public class Verify extends Authorization {
 	    }
 
 	    // change context and change node itselve only allowed for the owner...	    
-	    if(operation == Operation.WRITE || operation == Operation.CHANGECONTEXT || operation == Operation.DELETE) {
+	    if(operation == Operation.WRITE || operation == Operation.CHANGE_CONTEXT || operation == Operation.DELETE) {
 		// look if this is a valid context...
 		String context = node.getStringValue("owner");
 		if(!getPossibleContexts(user, nodeid).contains(context)) {
@@ -151,7 +151,7 @@ public class Verify extends Authorization {
 	}
     
 	// check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-	verify(user, nodeid, Operation.CHANGECONTEXT);
+	verify(user, nodeid, Operation.CHANGE_CONTEXT);
 
 	// well now really set it...
 	MMObjectNode node = getMMNode(nodeid);
