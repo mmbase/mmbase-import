@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 december 2002</date>
-    <edition>$Id: index.xml,v 1.15 2003-04-18 07:44:04 michiel Exp $</edition>
+    <edition>$Id: index.xml,v 1.16 2003-04-24 15:19:41 michiel Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -63,6 +63,10 @@
       <listitem>
         <!-- old format (mmdocs) documentation -->
         <para><ulink url="administrators/builders.html">Builder configuration file</ulink></para>
+      </listitem>
+      <listitem>
+        <!-- old format (mmdocs) documentation -->
+        <para><ulink url="administrators/relations.html">MMBase relations</ulink></para>
       </listitem>
       <listitem>
         <para><ulink url="administrators/applications.html">Applications documentation</ulink></para>
