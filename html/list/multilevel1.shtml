@@ -1,0 +1,11 @@
+<SECURE><BR>
+<PROCESSOR MMBASE>
+<H3> This pages creates < LIST MULTILEVEL TAGS ><BR><BR>
+
+Current LIST: <B>&lt;LIST MULTILEVEL TYPE="..." NODE="...
+<BR><BR>
+<FORM METHOD=POST ACTION="multilevel2.shtml">
+        <INPUT TYPE="TEXT" NAME="SESSION-NODE" value=""><BR>
+        <INPUT TYPE="SUBMIT" VALUE="Use this node"></td>
+</FORM>
+
