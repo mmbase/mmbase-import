@@ -876,8 +876,8 @@ public class MMObjectBuilder extends MMTable {
         if (sortedDBLayout.size()>0) {
             String fname=(String)sortedDBLayout.elementAt(2);
             String str = node.getValueAsString( fname );
-            if (str.length()>15) {
-                return(str.substring(0,12)+"...");
+            if (str.length()>128) {
+                return(str.substring(0,128)+"...");
             }
             return(str);
         } else {
