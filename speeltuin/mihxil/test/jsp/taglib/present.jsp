@@ -1,10 +1,10 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
-<html>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"
+%><html>
 <body>
 <h1>Testing taglib</h1>
 <h2>Testing import/present/notpresent/compare tags</h2>
 <mm:import externid="a_param" required="true" />
-
+<mm:log>tadaaam</mm:log>
 <% try { %>
 <mm:import externid="b_param" required="true" />
 WRONG: required attribute of import didn't throw exception<br />
@@ -138,6 +138,24 @@ Testing writer functionality of field tag<br />
 Should see nothing here: <mm:field id="node_title" name="title" write="false" /><br />
 But see the title here: <mm:field referid="node_title" /><br />
 </mm:node>
+<p>
+Testing 'reset' attribute.<br />
+<mm:import id="some_id">testtest</mm:import>
+<% try { %>
+ <mm:import id="some_id">test2test2</mm:import>
+ WRONG, should have thrown exception.<br />
+<% } catch (Exception e) { %>
+Ok, threw exception without 'reset'.<br />
+<% } %>
+
+<% try { %>
+ <mm:import id="some_id" reset="true">test2test2</mm:import>
+Ok, did not throw exception with 'reset'.<br />
+<% } catch (Exception e) { %>
+ WRONG, should not have thrown exception with reset="true".<br />
+<% } %>
+
+</p>
 
 <hr />
 This link should result an exception: <a href="<mm:url page="present.jsp" />">present.jsp</a><br />
