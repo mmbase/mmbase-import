@@ -314,8 +314,8 @@ public class MMExamples extends ProcessorModule {
 			checkAuthRelation(p1,e1,"authrel",1,1,1);	
 			//e1=bul.getIntValue("fielddef");
 			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
-			e1=bul.getIntValue("groups");
-			checkAuthRelation(p1,e1,"authrel",1,1,1);	
+			//e1=bul.getIntValue("groups");
+			//checkAuthRelation(p1,e1,"authrel",1,1,1);	
 			e1=bul.getIntValue("insrel");
 			checkAuthRelation(p1,e1,"authrel",1,1,1);	
 			e1=bul.getIntValue("jumpers");
