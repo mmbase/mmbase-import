@@ -26,11 +26,16 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.47 2004-10-13 16:06:45 michiel Exp $
+ * @version $Id: Queries.java,v 1.48 2004-11-30 14:06:55 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
-abstract public  class Queries {
+abstract public class Queries {
+
+    public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
+    public static final int OPERATOR_IN = 10000; // not a FieldCompareConstraint (non numeric)
+    public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
+
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
 
     /**
@@ -66,7 +71,7 @@ abstract public  class Queries {
      * getList, but you want to use new Query features without rewriting the complete thing.
      *
      * It can also be simply handy to specify things as Strings.
-     * 
+     *
      * @param cloud
      * @param startNodes
      * @param nodePath
@@ -324,7 +329,7 @@ abstract public  class Queries {
     }
 
     /**
-     * Adds a Constraint to the already present constraint (with AND). 
+     * Adds a Constraint to the already present constraint (with AND).
      * @param query query to add the constraint to
      * @param newConstraint constraint to add
      * @return The new constraint.
@@ -345,10 +350,6 @@ abstract public  class Queries {
         }
         return newConstraint;
     }
-
-    public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
-    public static final int OPERATOR_IN = 10000; // not a FieldCompareConstraint (non numeric)
-    public static final int OPERATOR_NULL = 10001; // FieldIsNullConstraint
 
     /**
      * Creates a operator constant for use by createConstraint
@@ -411,7 +412,17 @@ abstract public  class Queries {
      * @return new Compare value
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
+        return getCompareValue(fieldType, operator, value, -1);
+    }
 
+    /**
+     * Used in implementation of createConstraint
+     * @param fieldType Field Type constant (@link Field)
+     * @param operator Compare operator
+     * @param value value to convert
+     * @return new Compare value
+     */
+    protected static Object getCompareValue(int fieldType, int operator, Object value, int datePart) {
         if (operator == OPERATOR_IN) {
             SortedSet set;
             if (value instanceof SortedSet) {
@@ -450,7 +461,11 @@ abstract public  class Queries {
                     return getNumberValue(Casting.toString(value));
                 }
             case Field.TYPE_DATETIME:
-                return Casting.toDate(value);
+                if (datePart > -1) {
+                    return Casting.toInteger(value);
+                } else {
+                    return Casting.toDate(value);
+                }
             case Field.TYPE_BOOLEAN:
                 return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
             default:
@@ -460,8 +475,8 @@ abstract public  class Queries {
     }
 
     /**
-     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean)}.
-     * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used).
+     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
+     * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used), datePart set to -1 (so no date part comparison)
      * @param query      The query to create the constraint for
      * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
      * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
@@ -469,8 +484,24 @@ abstract public  class Queries {
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value) {
-        return createConstraint(query, fieldName, operator, value, null, false);
+        return createConstraint(query, fieldName, operator, value, null, false, -1);
     }
+
+    /**
+     * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean, int)}.
+     * DatePart set to -1 (so no date part comparison)
+     * @param query      The query to create the constraint for
+     * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
+     * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
+     * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
+     * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
+     * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
+     * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
+     */
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value,  Object value2, boolean caseSensitive) {
+        return createConstraint(query, fieldName, operator, value, value2, caseSensitive, -1);
+    }
+
     /**
      * Creates a constraint smartly, depending on the type of the field, the value is casted to the
      * right type, and the right type of constraint is created.
@@ -482,10 +513,10 @@ abstract public  class Queries {
      * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
      * @param value2     The other value (only relevant if operator is BETWEEN, the only terniary operator)
      * @param caseSensitive  Whether it should happen case sensitively (not relevant for number fields)
+     * @param datePart       The part of a DATETIME value that is to be checked
      * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
-
-    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive) {
+    public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive, int datePart) {
 
         StepField stepField = query.createStepField(fieldName);
         if (stepField == null) {
@@ -526,18 +557,25 @@ abstract public  class Queries {
                             } else {
                                 list.add(new Integer(-1));
                             }
-                            
+
                         }
                     }
-                    
+
                 }
             }
 
-            Object compareValue = getCompareValue(fieldType, operator, value);
+            Object compareValue = getCompareValue(fieldType, operator, value, datePart);
 
             if (operator > 0 && operator < OPERATOR_IN) {
-                newConstraint = query.createConstraint(stepField, operator, compareValue);
+                if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
+                    newConstraint = query.createConstraint(stepField, operator, compareValue, datePart);
+                } else {
+                    newConstraint = query.createConstraint(stepField, operator, compareValue);
+                }
             } else {
+                if (fieldType == Field.TYPE_DATETIME && datePart> -1) {
+                    throw new RuntimeException("Cannot apply IN or BETWEEN to a partial date field");
+                }
                 switch (operator) {
                 case OPERATOR_BETWEEN :
                     Object compareValue2 = getCompareValue(fieldType, operator, value2);
@@ -834,7 +872,7 @@ abstract public  class Queries {
 
     /**
      * Adds a number of fields. Fields is represented as a comma separated string.
-     * @param query The query where the fields should be added to 
+     * @param query The query where the fields should be added to
      * @param fields a comma separated string of fields
      * @return The new stepfields
      */
@@ -862,8 +900,8 @@ abstract public  class Queries {
      *
      * Furthermore may the nodes by identified by their alias, if they have one.
      * @param query query to add the startnodes
-     * @param startNodes start nodes 
-     * 
+     * @param startNodes start nodes
+     *
      * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery(List, List, String, List, String, List, List, int)
      * (this is essentially a 'bridge' version of the startnodes part)
      */
@@ -1040,7 +1078,7 @@ abstract public  class Queries {
 
     /**
      * Returns a query to find the nodes related to the given node.
-     * @param node start node 
+     * @param node start node
      * @param otherNodeManager node manager on the other side of the relation
      * @param role role of the relation
      * @param direction direction of the relation

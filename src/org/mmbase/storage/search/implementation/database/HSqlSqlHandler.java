@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.4 2004-09-17 09:57:33 michiel Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.5 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -43,15 +43,47 @@ public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         case SearchQueryHandler.FEATURE_MAX_NUMBER:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-            
+
         case SearchQueryHandler.FEATURE_OFFSET:
             result = SearchQueryHandler.SUPPORT_OPTIMAL;
             break;
-            
+
         default:
             result = super.getSupportLevel(feature, query);
         }
         return result;
+    }
+
+    /**
+     * @javadoc
+     */
+    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+        String datePartFunction = null;
+        switch (datePart) {
+            case FieldValueDateConstraint.CENTURY:
+                datePartFunction = "CENTURY";
+                break;
+            case FieldValueDateConstraint.QUARTER:
+                datePartFunction = "QUARTER";
+                break;
+            case FieldValueDateConstraint.WEEK:
+                datePartFunction = "WEEK";
+                break;
+            case FieldValueDateConstraint.DAY_OF_YEAR:
+                datePartFunction = "DAYOFYEAR";
+                break;
+            case FieldValueDateConstraint.DAY_OF_WEEK:
+                datePartFunction = "DAYOFWEEK";
+                break;
+        }
+        if (datePartFunction != null) {
+            sb.append(datePartFunction);
+            sb.append("(");
+            appendField(sb, step, fieldName, multipleSteps);
+            sb.append(")");
+        } else {
+            super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
+        }
     }
 
     // javadoc is inherited

@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.11 2004-09-17 10:10:32 michiel Exp $
+ * @version $Id: BasicStepField.java,v 1.12 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -41,12 +41,12 @@ public class BasicStepField implements StepField {
     // package visibility!
     static void testValue(Object value, StepField field) {
         int type = field.getType();
-        
+
         // Test for null value.
         if (value == null) {
             throw new IllegalArgumentException("Invalid value for " + FieldDefs.getDBTypeDescription(type) + " field: " + value);
         }
-        
+
         // Test for compatible type.
         boolean ok;
         switch (type) {
@@ -61,27 +61,27 @@ public class BasicStepField implements StepField {
         case FieldDefs.TYPE_NODE:
             ok = value instanceof Number;
             break;
-            
+
             // String types.
         case FieldDefs.TYPE_STRING:
         case FieldDefs.TYPE_XML:
             ok = value instanceof String;
             break;
-        case FieldDefs.TYPE_BOOLEAN: 
+        case FieldDefs.TYPE_BOOLEAN:
             ok = value instanceof Boolean;
             break;
-        case FieldDefs.TYPE_DATETIME: 
-            ok = value instanceof java.util.Date;
+        case FieldDefs.TYPE_DATETIME:
+            ok = value instanceof java.util.Date || value instanceof Integer;
             break;
-        case FieldDefs.TYPE_LIST: 
+        case FieldDefs.TYPE_LIST:
             ok = value instanceof java.util.List;
             break;
 
-            
+
         default: // Unknown field type, should not occur.
             throw new IllegalStateException("Unknown field type: " + type);
         }
-        
+
         if (!ok) {
             throw new IllegalArgumentException("Invalid value for " + FieldDefs.getDBTypeDescription(type) + " field: "
                                                + value + ", of type " + value.getClass().getName());
