@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.35 2005-01-23 22:04:57 michiel Exp $
+ * @version $Id: Casting.java,v 1.36 2005-01-27 23:37:53 michiel Exp $
  */
 
 import java.util.*;
@@ -29,6 +29,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.util.NodeWrapper;
+import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.core.*;
 import org.mmbase.util.transformers.XmlField;
 import org.mmbase.util.logging.*;
@@ -201,7 +202,7 @@ public class Casting {
         if (o == null || o == MMObjectNode.VALUE_NULL) {
             return "";
         } else if (o instanceof Node) {
-            return new NodeWrapper((Node)o) {
+            return new MapNode((Node)o) {
                     public String toString() {
                         return "" + node.getNumber();
                     }
