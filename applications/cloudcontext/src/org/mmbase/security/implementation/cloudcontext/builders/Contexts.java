@@ -34,7 +34,7 @@ import org.mmbase.cache.AggregatedResultCache;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.29 2003-12-21 13:27:19 michiel Exp $
+ * @version $Id: Contexts.java,v 1.30 2004-01-19 17:27:25 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify
  * @see    org.mmbase.security.Authorization
  */
@@ -158,7 +158,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation.
-     * @see Verify#check(user, nodeId, sourceNodeI, destinationNodeI, operation);
+     * @see Verify#check(user, nodeId, sourceNodeI, destinationNodeI, operation)
      */
 
     public boolean mayDo(User user, int nodeId, int sourceNodeId, int destinationNodeId, Operation operation) throws SecurityException {
@@ -176,7 +176,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(user, nodeId, operation);
+     * @see Verify#check(user, nodeId, operation)
      */
     public boolean mayDo(User user, int nodeId, Operation operation) throws SecurityException {
 
@@ -420,7 +420,7 @@ public class Contexts extends MMObjectBuilder {
 
     /**
      * Implements check function with same arguments of Authorisation security implementation
-     * @see Verify#check(user, query, operation);
+     * @see Verify#check(user, query, operation)
      */
 
     public Authorization.QueryCheck check(User userContext, Query query, Operation operation) {

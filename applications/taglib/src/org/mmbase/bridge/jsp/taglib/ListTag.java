@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.45 2004-01-16 20:18:46 michiel Exp $
+ * @version $Id: ListTag.java,v 1.46 2004-01-19 17:22:08 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -62,7 +62,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     }
 
     /**
-     * @param type a comma separated list of nodeManagers
+     * @param path a comma separated list of nodeManagers
      */
     public void setPath(String path) throws JspTagException {
         this.path = getAttribute(path);

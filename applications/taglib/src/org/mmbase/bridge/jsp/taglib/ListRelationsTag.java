@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.9 2004-01-14 22:06:15 michiel Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.10 2004-01-19 17:22:08 michiel Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
@@ -40,13 +40,13 @@ public class ListRelationsTag extends AbstractNodeListTag {
     }
 
     /**
-     * @param type a nodeManager
+     * @param t The name of a node manager
      */
     public void setType(String t) throws JspTagException {
         type  = getAttribute(t);
     }
     /**
-     * @param role a role
+     * @param r a role
      */
     public void setRole(String r) throws JspTagException {
         role  = getAttribute(r);

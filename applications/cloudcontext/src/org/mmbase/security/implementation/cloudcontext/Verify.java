@@ -23,8 +23,8 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.8 2003-09-22 17:19:58 michiel Exp $
- * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts; 
+ * @version $Id: Verify.java,v 1.9 2004-01-19 17:27:24 michiel Exp $
+ * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
     private static final Logger    log = Logging.getLoggerInstance(Verify.class);

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.60 2004-01-14 22:06:14 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.61 2004-01-19 17:22:08 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -85,7 +85,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     /**
      * Sets the fields to sort on.
-     * @param sorted A comma separated list of fields on which the returned
+     * @param orderby A comma separated list of fields on which the returned
      * nodes should be sorted
      */
     public void setOrderby(String orderby) throws JspTagException {
@@ -94,7 +94,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     /**
      * Sets the direction to sort on
-     * @param direction the selection query for the object we are looking for
+     * @param directions the selection query for the object we are looking for
      * direction
      */
     public void setDirections(String directions) throws JspTagException {
@@ -105,8 +105,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Set the list maximum
      * @param max the max number of values returned
      */
-    public void setMax(String m) throws JspTagException {
-        listHelper.setMax(m);
+    public void setMax(String max) throws JspTagException {
+        listHelper.setMax(max);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     /**
      * Set the list offset
-     * @param max the max number of values returned
+     * @param o Offset for the returned list.
      */
     public void setOffset(String o) throws JspTagException {
         listHelper.setOffset(o);

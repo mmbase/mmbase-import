@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.63 2003-11-20 11:11:05 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.64 2004-01-19 17:22:08 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -141,8 +141,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
      * @param node the node to put in the hashmap
      * @deprecated Use getContextProvider().getContextContainer().registerNode
      */
-    public void  registerNode(String key, Node n) throws JspTagException {
-        container.registerNode(key, n);
+    public void  registerNode(String key, Node node) throws JspTagException {
+        container.registerNode(key, node);
     }
 
 

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.13 2003-12-18 09:03:49 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.14 2004-01-19 17:22:09 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -40,7 +40,7 @@ public class DateHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for LongHandler.
-     * @param context
+     * @param tag
      */
     public DateHandler(FieldInfoTag tag) {
         super(tag);
