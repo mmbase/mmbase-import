@@ -92,16 +92,16 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     }
 
     protected String getUrl(boolean writeamp) throws JspTagException {
-        String show = page;
+        StringBuffer show = new StringBuffer(page);
         String amp = (writeamp ? "&amp;" : "&");
 
         if (show.charAt(0) == '/') { // absolute on servercontex
             log.debug("'absolute' url");
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            show = req.getContextPath() + show;
+            show.insert(0,  req.getContextPath());
         }
 
-        String connector = (show.indexOf('?') == -1 ? "?" : amp);
+        String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
 
         if (referids != null) {
             Iterator i = referids.iterator();
@@ -111,7 +111,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
                 if (log.isDebugEnabled()) {
                     log.debug("adding parameter (with referids) " + key + "/" + value);
                 }
-                show += connector + key + "=" + (value == null ? "" : org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value));
+                show.append(connector).append(key).append("=").append((value == null ? "" : org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value)));
                 connector = amp;
             }
         }
@@ -120,16 +120,15 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
             Iterator i = extraParameters.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry map  = (Map.Entry) i.next();
-                show += connector + (String) map.getKey() + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", map.getValue().toString());
+                show.append(connector).append(map.getKey()).append("=").append(org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", map.getValue().toString()));
                 connector = amp;
             }
         }
 
         {
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
-            show = response.encodeURL(show);
+            return response.encodeURL(show.toString());
         }
-        return show;
 
     }
     protected String getUrl() throws JspTagException {

@@ -362,11 +362,7 @@ public class ContextTag extends ContextReferrerTag {
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
-                    Vector rresult = new Vector(resultvec.length);
-                    for (int i = 0; i < resultvec.length; i++) {
-                        rresult.add(resultvec[i]);
-                    }
-                    result  = rresult;
+                    result = java.util.Arrays.asList(resultvec);
                 } else {
                     // The norms say that Strings in posts are encoding according to ISO-8859-1.
                     // But of course, this does not need to be true, so we repair it if necessary
