@@ -41,7 +41,7 @@ public class DatabaseLookup {
 
         try {
             InputSource in = new InputSource(new FileInputStream(lookupConfig));
-            document = XMLBasicReader.getDocumentBuilder().parse(in);
+            document = XMLBasicReader.getDocumentBuilder(DatabaseLookup.class).parse(in);
         } catch(org.xml.sax.SAXException se) {
             String message = "error loading configfile :'" + lookupConfig + "'" + Logging.stackTrace(se);
 	    log.error(message);
