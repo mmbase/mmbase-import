@@ -14,7 +14,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: MMServersProbe.java,v 1.11 2003-03-07 08:50:09 pierre Exp $
+ * @version $Id: MMServersProbe.java,v 1.12 2003-05-03 09:48:08 kees Exp $
  */
 public class MMServersProbe implements Runnable {
 
@@ -40,6 +40,7 @@ public class MMServersProbe implements Runnable {
                 /* Start up the main thread */
                 if (kicker == null) {
                         kicker = new Thread(this,"mmserversprobe");
+			kicker.setDaemon(true);
                         kicker.start();
                 }
         }
@@ -48,10 +49,7 @@ public class MMServersProbe implements Runnable {
          * Stops the main Thread.
          */
         public void stop() {
-                /* Stop thread */
-                kicker.setPriority(Thread.MIN_PRIORITY);
-                kicker.suspend();
-                kicker.stop();
+                kicker.interrupt();
                 kicker = null;
         }
 
