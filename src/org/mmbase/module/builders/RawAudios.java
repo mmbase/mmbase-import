@@ -1,11 +1,12 @@
 /*
-
+$Id: RawAudios.java,v 1.2 2000-02-24 12:35:44 wwwtech Exp $
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
@@ -20,13 +21,21 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
- * 17Dec1999 Added static method getFileName, davzev
+ * @author David van Zeventer
+ * @$Revision: 1.2 $ $Date: 2000-02-24 12:35:44 $
+ *
+ * 17 Dec 1999 davzev Added static methods getFileName, getHostName and getProtocolName used by Audioparts $MOD GETURL.
  */
 public class RawAudios extends MMObjectBuilder {
+
+	private String classname = getClass().getName();
+	private boolean debug = false;
+	private void debug ( String msg ) { System.out.println( classname +":"+ msg ); }
+	private static void debug2( String msg ) { System.out.println( "org.mmbase.modules.builders.RawAudios:"+ msg ); }
+
  	public boolean replaceCache=true;
 
-	// These contstants are used by the new AudioParts.getUrl() method.
+	// These contstants are used by the new AudioParts.doGetUrl() method.
 	public final static int MP3_FORMAT         = 1;
 	public final static int RA_FORMAT          = 2;
 	public final static int WAV_FORMAT         = 3;
@@ -131,7 +140,7 @@ public class RawAudios extends MMObjectBuilder {
 		audios=search("WHERE id="+id);
 		while(audios.hasMoreElements()) {
 			node=(MMObjectNode)audios.nextElement();
-			System.out.println("RawAudios -> Zapping "+node.getIntValue("number")+","+node.getStringValue("url"));
+			debug("removeAudio("+id+"): Zapping "+node.getIntValue("number")+","+node.getStringValue("url"));
 			removeRelations(node);
 			removeNode(node);
 			zapPhysical(node);
@@ -226,14 +235,14 @@ public class RawAudios extends MMObjectBuilder {
 
 		f=new File(path,name);
 		if (f.isDirectory()) {
-			System.out.println("Removing dir "+f.getPath());
+			debug("removeFile("+path+"/"+name+"): Removing dir "+f.getPath());
 			if (!f.delete()) {
-				System.out.println("Can't delete directory "+f.getPath());
+				debug("removeFile("+path+"/"+name+"): Can't delete directory "+f.getPath());
 			}
 		} else {
-			System.out.println("Removing file "+f.getPath());
+			debug("Removing file "+f.getPath());
 			if (!f.delete()) {
-				System.out.println("Can't delete file "+f.getPath());
+				debug("removeFile("+path+"/"+name+"): Can't delete file "+f.getPath());
 			}
 		}
 	}
@@ -243,44 +252,78 @@ public class RawAudios extends MMObjectBuilder {
 	 * @param format The audio format used.
 	 * @param speed The speed value.
 	 * @param channels The channels value.
-	 * @returns The audio fileName
+	 * @return The audio fileName
 	 */
 	public static String getFileName(int format, int speed, int channels) {	
 		String fileName = new String();
 		String SURESTREAM_FILENAME = "surestream.rm"; 
-	
-		if (format == 2) {
-			fileName = ""+(speed/1000)+"_"+channels; 
-		} else if (format == 3) {
-			System.out.println("RawAudios::getFilename: Yeah right!! I'm NOT giving you the wav filename!"); 
-		} else if (format == 6) {
+
+		if (format == RA_FORMAT) {
+			fileName = ""+(speed/1000)+"_"+channels+".ra";
+		} else if (format == WAV_FORMAT) {
+			debug2("getFileName("+format+","+speed+","+channels+"): Yeah right!! I'm NOT giving you the wav filename!");
+		} else if (format == SURESTREAM_FORMAT) {
 			fileName = SURESTREAM_FILENAME;
 		}
-		
-		return fileName;
+        return fileName;
 	}
 
 	/**
-	 * getHostName: Gets the right hostname using String containing a rawaudios.url field.
+	 * getHostName: Gets the right hostname and using String containing a rawaudios.url field.
+	 * This method contains a lot of if-then-else constructs, since the RawAudios.url field uses
+	 * such a StrangE! format.
 	 * @param url A String containing the contents of the rawaudios.url field.
-	 * @returns The hostName
+	 * @return The hostName
 	 */
-	public static String getHostName(String url) {	
-		String FLIPSYMBOL = "F"; 
-		String HOSTSYMBOL = "H"; 
+	public static String getHostName(String url) {
+		String FLIPSYMBOL = "F";
+		String HOSTSYMBOL = "H";
+		String DEFAULTHOST = "station.vpro.nl";
 		String hostName = new String();
 
-		if (url.startsWith(FLIPSYMBOL)) {
-			// Substring starting at H2=here ,thus 3 chars further.
-			hostName = url.substring(3 + url.indexOf(HOSTSYMBOL+"2")); 
-		} else {
-			int h1Index = url.indexOf(HOSTSYMBOL+"2"); 
-			int h2Index = url.indexOf(HOSTSYMBOL+"1"); 
-			// Substring starting at H1=here ,thus 3 chars further. and 1 char before H2.
-			hostName = url.substring(3 + h1Index, h2Index - 1); 
+		try {
+			if (url.startsWith(FLIPSYMBOL)) {
+				// If H2 exists, then return H2 else return H1. If H1 Also doesn't exist, return DEFAULTHOST.
+				if (url.indexOf(HOSTSYMBOL+"2") != -1) {
+					// Get everything starting at H2=here ,thus 3 chars further.
+					hostName = url.substring(url.indexOf(HOSTSYMBOL+"2") + 3);
+				} else if (url.indexOf(HOSTSYMBOL+"1") != -1) {
+					// Get everything starting at H1=here ,thus 3 chars further.
+					hostName = url.substring(url.indexOf(HOSTSYMBOL+"1") + 3);
+				} else {
+					debug2("getHostName("+url+"): ERROR: Url field contains "+FLIPSYMBOL+" symbol but NO "+HOSTSYMBOL+" symbol -> returning defaulthost:"+DEFAULTHOST);
+					hostName = DEFAULTHOST;
+				}
+			} else {
+				// Get the hostname after the protocolname up until the first slash. (This is probably station.vpro.nl)
+				int fromIndex = url.indexOf("://") + 3;
+				hostName = url.substring(fromIndex, url.indexOf("/",fromIndex));
+			}
+			return hostName;
+		} catch (Exception e) {
+			// If the format of the Url field is changed, an exception could be thrown during manipulation,
+			// then return the defaulthost.
+			debug2("getHostName("+url+"): ERROR: Url field format is unknown to me, returning defaulthost("+DEFAULTHOST+"), exception was: " + e.toString());
+			return DEFAULTHOST;
 		}
-		
-		return hostName;
 	}
 
+	/**
+	 * getProtocolName: Gets the protocol name used for this audiofile.
+	 * Currently only SURESTREAM and RA is supported and the method returns HTTP if another.
+	 * @param format The audio format used.
+	 * @return A String containing the protocolName.
+	 */
+	public static String getProtocolName(int format) {
+		String protName = new String();
+
+		if (format == SURESTREAM_FORMAT) {
+			protName = "rtsp";
+		} else if (format == RA_FORMAT) {
+			protName = "pnm";
+		} else {
+			protName = "http";
+		}
+		return protName;
+	}
 }
