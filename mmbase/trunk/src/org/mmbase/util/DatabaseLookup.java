@@ -120,7 +120,7 @@ public class DatabaseLookup {
      */
     private boolean match(String database, Node filterNode, Connection connection) {
 	// process all the conditions of this filternode...
-	int i=0;
+	int i = 0;
 	Node current = filterNode.getFirstChild();
 	while(current != null) {
 	    // look if we have a condition (is an element)
@@ -165,8 +165,9 @@ public class DatabaseLookup {
 	    }
 	    current = current.getNextSibling();
 	}
-	log.info("Selected database: '"+database+"' based on #" + i + " rules in it's filter.("+connection.getClass().getName() + ")");
-	if(i<=1) { log.warn("Please add additional filter,  add filter-rules and/or change the order in file: config/databases/lookup.xml, database lookup information:\n"+databaseInformation(connection));
+	log.info("Selected database: '" + database + "' based on " + i + " rules in it's filter.(" + connection.getClass().getName() + ")");
+	if(i <= 1) { 
+            log.warn("Small number of rules. Please add additional filter if this match is good, add filter-rules and/or change the order in file: config/databases/lookup.xml, database lookup information:\n"+databaseInformation(connection));
 	}
 	return true;
     }
