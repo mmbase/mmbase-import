@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.2 - Release Notes
+                     MMBase 1.6.3 - Release Notes
 ===================================================================
 
 ============
@@ -81,6 +81,11 @@ MMCI New Features:
 ---------------------
 [1.6.2]
 - Inheritance support in getAllowed relations
+
+- (rmmci) improved support for casting (a nodemanager extends a node etc)
+- (rmmci) iterators work
+- (rmmci) rmmci target has been added to the build.xml
+
  
 [1.6.1]
 [1.6.0]
@@ -91,6 +96,7 @@ MMCI New Features:
 - Users can now create their own MMCI lists (such as NodeList)
 - better exception handling (NotFoundException and AlreadyExistsException)
 - more filters to retrieve relations or related nodes
+
 
 -------------------
 Taglib New Features:
@@ -108,8 +114,8 @@ Taglib New Features:
 Examples New Features:
 ---------------------
 [1.6.2]
-- jsp editors use MMCI 1.2 features now (getAllowedRelations etc)
-
+- jsp editors use MMCI 1.2 features now (getAllowedRelations etc), and use their error-page
+- new version of my_editors
 [1.6.1]
 [1.6.0]
 - Alternative jsp-editors (aka my_editors) added as an example.
@@ -185,6 +191,7 @@ Security Bug Fixes:
 - Security can be set in no-read-check mode
 - Performance workaround for context/cloud security (possible to grant
   read privilege to everyone)
+
 
 ----------------
 MMCI Bug Fixes:
@@ -342,7 +349,12 @@ Known Issues and Problems:
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
   this by changing the properties in
-  <mmbase-webapp/WEB-INF/config/builders/images.xml> into:
+
+   <mmbase-webapp>/WEB-INF/config/builders/applications/images.xml (after installation of 'Resource')
+   or 
+   <mmbase-webapp>/WEB-INF/config/applications/Resources/builders/images.xml (before installation of 'Resource')
+
+   into:
 
   <properties>
     <property name="ImageConvertClass">
