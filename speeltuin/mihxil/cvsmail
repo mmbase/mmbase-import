@@ -1,10 +1,10 @@
 #!/usr/local/bin/perl -w
 
-#
+
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#
+#  $Id: cvsmail,v 1.7 2002-11-08 19:50:00 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -22,7 +22,7 @@ my $toaddress     = "cvs\@mmbase.org";
 # mail too
 my $child;
 if ($child = fork()) {
-    exit 1; # ok, we are ready
+    exit 1; # be 'ready' immediatiely, don't let the commiter wait
 } else { 
     sleep 5;
     # mesagxoj estas je STDIN:
