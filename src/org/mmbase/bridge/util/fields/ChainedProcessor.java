@@ -16,11 +16,11 @@ import java.util.*;
  * Chains a bunch of other processors into one new processor.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ChainedProcessor.java,v 1.1 2003-12-05 09:23:24 michiel Exp $
+ * @version $Id: ChainedProcessor.java,v 1.2 2003-12-09 22:26:16 michiel Exp $
  * @since MMBase-1.7
  */
 
-public class ChainedProcessor {
+public class ChainedProcessor implements Processor {
 
     private List processors = new ArrayList();
 
