@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.33 $ $Date: 2001-06-23 16:46:18 $
+ * @version $Revision: 1.34 $ $Date: 2001-07-16 10:08:08 $
  */
 public abstract class Module {
 
@@ -424,31 +424,7 @@ public abstract class Module {
 
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results=new Hashtable();
-
-        String dtmp=System.getProperty("mmbase.mode");
-        if (dtmp!=null && dtmp.equals("demo")) {
-            String curdir=System.getProperty("user.dir");
-            if (curdir.endsWith("orion")) {
-                curdir=curdir.substring(0,curdir.length()-6);
-            }
-            mmbaseconfig=curdir+"/config";
-        } else {
-            mmbaseconfig=MMBaseContext.getConfigPath();
-            if (mmbaseconfig == null) {
-                log.error("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
-            } else {
-                File file = new File(mmbaseconfig);
-                if (!file.isDirectory()) {
-                    log.error("mmbase.config is not a valid directory");
-                } else {
-                    // Make it absolute. Needed for servscan and servdb to
-                    // to startup properly.
-                    mmbaseconfig = file.getAbsolutePath();
-                }
-            }
-        }
-        MMBaseContext.setConfigPath(mmbaseconfig);
-
+        mmbaseconfig = MMBaseContext.getConfigPath();
         String dirname=(mmbaseconfig+"/modules/");
         File bdir = new File(dirname);
         if (bdir.isDirectory()) {

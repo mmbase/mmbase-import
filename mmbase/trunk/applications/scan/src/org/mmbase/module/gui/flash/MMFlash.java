@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implements the parsing and generating of dynamic flash files
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.9 2001-07-09 12:30:04 jaco Exp $
+ * @version $Id: MMFlash.java,v 1.10 2001-07-16 10:08:09 jaco Exp $
  */
 public class MMFlash extends Module {
 
@@ -48,13 +48,7 @@ public class MMFlash extends Module {
 	MMBase mmb;
 
 	public void init() {
-		String dtmp=System.getProperty("mmbase.mode");
-		if (dtmp!=null && dtmp.equals("demo")) {
-			String curdir=System.getProperty("user.dir");
-			htmlroot=curdir+"/default-web-app/";
-		} else {
-			htmlroot = MMBaseContext.getHtmlRoot();
-		}
+		htmlroot = MMBaseContext.getHtmlRoot();
 		mmb=(MMBase)getModule("MMBASEROOT");
 		scanp=(scanparser)getModule("SCANPARSER");
 		generatortemppath=getInitParameter("generatortemppath");

@@ -27,17 +27,15 @@ import org.mmbase.util.logging.*;
  * @version 24 Apr 2001
  */
 public class servjumpers extends JamesServlet {
-
-    // logger
-    private static Logger log = Logging.getLoggerInstance(servjumpers.class.getName());
+    private static Logger log;
     // reference to the MMBase cloud
     static MMBase mmbase;
 
-    /**
-     * Initializes the servlet, by obtaining a reference to the MMBase module.
-     */
-    public void init() {
-	super.init();
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        // Initializing log here because log4j has to be initialized first.
+        log = Logging.getLoggerInstance(servjumpers.class.getName());
+        log.info("Init of servlet " + config.getServletName() + ".");
         mmbase=(MMBase)getModule("MMBASEROOT");
     }
 

@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.46 2001-06-23 16:18:57 daniel Exp $
+$Id: scanparser.java,v 1.47 2001-07-16 10:08:09 jaco Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.46  2001/06/23 16:18:57  daniel
+moved inits to MMBaseContext
+
 Revision 1.45  2001/05/17 17:22:14  daniel
 fixed a bug in do_part to allow background generating
 
@@ -161,7 +164,7 @@ import org.mmbase.util.logging.*;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.46 $ $Date: 2001-06-23 16:18:57 $
+ * @$Revision: 1.47 $ $Date: 2001-07-16 10:08:09 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -185,28 +188,12 @@ public class scanparser extends ProcessorModule {
 	// needs fix !
     private static String loadmode="no-cache";
     private static String htmlroot;
-	private static String documentRoot;
     Hashtable Roots;
 
 
-	public scanparser() {
-		documentRoot=MMBaseContext.getHtmlRoot();
-		if (documentRoot==null) {
-			String dtmp=System.getProperty("mmbase.mode");
-			if (dtmp!=null && dtmp.equals("demo")) {
-				String curdir=System.getProperty("user.dir");
-				htmlroot=curdir+"/default-web-app/";
-			} else {
-				log.error("could not retrieve document root, use property (-D)mmbase.htmlroot=/my/html/root/dir !");
-			}
-		} else {
-			if (documentRoot.endsWith(File.separator)) {
-				documentRoot=documentRoot.substring(0,documentRoot.length()-1);
-			}
-			htmlroot=documentRoot+File.separatorChar;
-			log.debug("Using documentRoot : "+documentRoot);
-		}
-	}
+    public scanparser() {
+        htmlroot = MMBaseContext.getHtmlRoot();
+    }
 
     /**
      * Init the servscan, this is needed because it was created using
@@ -918,7 +905,7 @@ public class scanparser extends ProcessorModule {
 				
 		// Ask the builder of the node to create the path to search for the part
 		// If null returned we're done and return bestFile
-		path = node.parent.getSmartPath(documentRoot, path, nodeNumber, getVersion(node.getName(), session));
+		path = node.parent.getSmartPath(htmlroot, path, nodeNumber, getVersion(node.getName(), session));
 		if (path==null) {
 			if (log.isDebugEnabled()) log.debug("getSmartFile: no dir found for node "+nodeNumber+". Returning "+bestFile);
 			return bestFile;
@@ -936,7 +923,7 @@ public class scanparser extends ProcessorModule {
 		} else newFileName = path + fileName;
 					
 		// Check if file present if so, select it as the new bestFile to use
-		String fileToCheck = documentRoot+newFileName;
+		String fileToCheck = htmlroot+newFileName;
 		File f = new File(fileToCheck);
 		if (f.exists()) {
 			bestFile = newFileName;

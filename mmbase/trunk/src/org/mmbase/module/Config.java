@@ -57,9 +57,12 @@ import org.mmbase.module.core.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.13 2001-06-23 16:42:38 daniel Exp $
+ * @version $Id: Config.java,v 1.14 2001-07-16 10:08:07 jaco Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  2001/06/23 16:42:38  daniel
+ * changed init to MMBaseContect
+ *
  * Revision 1.12  2001/03/06 16:17:35  pierre
  * pierre: added logging
  *
@@ -229,19 +232,7 @@ public class Config extends ProcessorModule {
     }
 
     public void init() {
-        String dtmp=System.getProperty("mmbase.mode");
-        if (dtmp!=null && dtmp.equals("demo")) {
-            String curdir=System.getProperty("user.dir");
-            if (curdir.endsWith("orion")) {
-                curdir=curdir.substring(0,curdir.length()-6);
-            }
-            configpath=curdir+File.separator+"config";
-        } else {
-	    configpath=MMBaseContext.getConfigPath();
-        }
-        if (configpath.endsWith(File.separator)) {
-            configpath = configpath.substring(0,configpath.length()-1);
-        }
+        configpath = MMBaseContext.getConfigPath();
     }
 
 

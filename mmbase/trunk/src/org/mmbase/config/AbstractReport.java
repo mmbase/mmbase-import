@@ -26,9 +26,12 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Case Roole, cjr@dds.nl
  * 
- * $Id: AbstractReport.java,v 1.4 2001-07-09 12:30:02 jaco Exp $
+ * $Id: AbstractReport.java,v 1.5 2001-07-16 10:08:07 jaco Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2001/07/09 12:30:02  jaco
+ * jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
+ *
  * Revision 1.3  2001/04/10 11:02:07  michiel
  * michiel: new logging system
  *
@@ -236,19 +239,6 @@ public abstract class AbstractReport implements ReportInterface {
     }
 
     private String getMMBaseConfigPath() {
-	String dtmp=System.getProperty("mmbase.mode");
-	if (dtmp!=null && dtmp.equals("demo")) {
-	    String curdir=System.getProperty("user.dir");
-	    if (curdir.endsWith("orion")) {
-		curdir=curdir.substring(0,curdir.length()-6);
-	    }
-	    configpath=curdir+File.separator+"config";
-	} else {
-	    configpath = MMBaseContext.getConfigPath();
-	}
-	if (configpath != null && configpath.endsWith(File.separator)) {
-	    configpath = configpath.substring(0,configpath.length()-1);
-	}
-	return configpath;
+	return MMBaseContext.getConfigPath();
     }
 }

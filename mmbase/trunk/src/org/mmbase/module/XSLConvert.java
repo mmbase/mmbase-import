@@ -29,9 +29,12 @@ import org.mmbase.util.logging.Logging;
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
- * $Id: XSLConvert.java,v 1.5 2001-07-09 12:30:02 jaco Exp $
+ * $Id: XSLConvert.java,v 1.6 2001-07-16 10:08:08 jaco Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2001/07/09 12:30:02  jaco
+ * jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
+ *
  * Revision 1.4  2001/04/11 10:06:55  michiel
  * michiel: new logging system
  *
@@ -52,19 +55,7 @@ public class XSLConvert extends ProcessorModule {
     private String configpath;
 
     public void init() {
-        String dtmp=System.getProperty("mmbase.mode");
-        if (dtmp!=null && dtmp.equals("demo")) {
-            String curdir=System.getProperty("user.dir");
-            if (curdir.endsWith("orion")) {
-                curdir=curdir.substring(0,curdir.length()-6);
-            }
-            configpath=curdir+"/config";
-        } else {
-            configpath = MMBaseContext.getConfigPath();
-        }
-        if (configpath.endsWith(File.separator)) {
-            configpath = configpath.substring(0,configpath.length()-1);
-        }
+        configpath = MMBaseContext.getConfigPath();
     }
 
 
