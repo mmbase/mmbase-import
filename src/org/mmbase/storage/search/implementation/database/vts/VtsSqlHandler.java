@@ -24,7 +24,7 @@ import org.xml.sax.*;
  * The Vts query handler adds support for Verity Text Search constraints.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 // TODO: (later) add javadoc, elaborate on overwritten methods.
@@ -295,7 +295,16 @@ public class VtsSqlHandler extends ChainedSqlHandler implements SqlHandler {
         }
         
         String builderName = dbTable.substring(tablePrefix.length());
-        MMObjectBuilder builder = mmbase.getBuilder(builderName);
+        // TODO: Update code below when bug has been resolved.
+//        MMObjectBuilder builder = mmbase.getBuilder(builderName);
+        
+       // (temp?) fix for bug #4091.
+        MMObjectBuilder builder = null;
+        try {
+            builder = mmbase.getBuilder(builderName);
+        } catch (BuilderConfigurationException e){
+            // Unknown builder.
+        }
 
         if (builder == null) {
             throw new IllegalArgumentException(
