@@ -3,6 +3,8 @@ package org.mmbase.security;
 import java.util.HashMap;
 import java.io.File;
 
+import org.mmbase.util.FileWatcher;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -21,18 +23,23 @@ public abstract class Authentication {
     /** The absolute file which is the config file */
     protected File configFile;
 
+    /** The file watcher */
+    protected FileWatcher fileWatcher;
+
     /** 
      *	The method which sets the settings of this class. This method is 
      *	shouldn't be overrided.
      *	This class will set the member variables of this class and then
      *	call the member function load();
      *	@param manager The class that created this instance.
+     *	@param fileWatcher checks the files     
      *	@param configPath The url which contains the config information for.     
      *	    the authorization.
      */        
-    public final void load(MMBaseCop manager, String configPath) {
+    public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
     	log.debug("Calling load() with as config file:" + configPath);
-     	this.manager = manager;
+     	this.manager = manager;	
+	this.fileWatcher = fileWatcher;
 	if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
 	load();
     }
