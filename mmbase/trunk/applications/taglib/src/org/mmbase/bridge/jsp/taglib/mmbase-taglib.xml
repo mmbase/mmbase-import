@@ -44,223 +44,247 @@ one or more examplevalue tags is you want to give some example values.
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>
     <p>
-    Tag library for MMBase. MMBase consists of a cloud of nodes (objects) wich
-    can be related to each other. Relations can be seen as nodes with two arms
-    wich they use to connect two other nodes. Nodes of a specific type (like a
-    person node who holds a person's data) have their own nodemanager. A node
-    manager can have functions wich are specific for the type of nodes it is
-    managing. Just like a cloud can contain different type of nodes it can
-    contain different type of relations. And just like specific type of nodes
-    have their own nodemanager, relations of a specific type have their own
+    MMBase consists of a cloud of nodes (objects) wich can be related to each other. Relations can
+    be seen as nodes with two arms which they use to connect two other nodes. Nodes of a specific
+    type (like a person node who holds a person's data) have their own nodemanager. A node manager
+    can have functions wich are specific for the type of nodes it is managing. Just like a cloud can
+    contain different type of nodes it can contain different type of relations. And just like
+    specific type of nodes have their own nodemanager, relations of a specific type have their own
     relation manager.
     </p>
     <p>
     Tags can exchange variables by use of a 'context', and 'variables'
-    in it. Please read the documenation for mm:context if you want to
+    in it. Please read the <a href="#context">documenation for mm:context</a> if you want to
     know how this works.
     </p>
   </info>
   <taginterface>
     <info>
-      Contextreferrer Tags refer to the context.
+      Contextreferrer tags refer to the context. This means that (most of) their attributes can
+      contain `context' variables.
     </info>
-	<name>contextreferrer</name>
+    <name>contextreferrer</name>
     <attribute>
-        <name>id</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the `id' attribute you define an unique identifier for
-	  this node. Nested tags can refer to this directly and other
-	  tags by means of a context.
-        </info>
+      <name>context</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	If you want to get it from another context than the direct parent.
+      </info>
     </attribute>
-	  <attribute>
-        <name>context</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-	      If you want to get it from another context than the direct parent.
-	   </info>
+  </taginterface>
+  <taginterface>
+    <info>
+      A contextwriter is a contextreferrer, but it can also write itself to the context (using the
+      id attibute), or read itself from it (using the 'referid' attribute).
+    </info>
+    <name>contextwriter</name>
+    <extends>contextreferrer</extends>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	With the `id' attribute you define an unique identifier for this context referrer. Nested tags
+	can refer to this directly and other tags by means of a context.
+      </info>
     </attribute>
     <attribute>
       <name>referid</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		  Reuses a previously defined tag of the same type.
+	Reuses a previously defined tag of the same type.
       </info>
-     </attribute>
+    </attribute>
   </taginterface>
   <taginterface>
-	 <name>listreferrer</name>
-	  <attribute>
-        <name>list</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-		 Which list to use.
-	   </info>
-     </attribute>
-  </taginterface>
-  <taginterface>
-	 <name>condition</name>
-	  <attribute>
-        <name>inverse</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-		 The inverse of the condition holds.
-	   </info>
-     </attribute>
-  </taginterface>
-  <taginterface>	 
-	 <name>nodeprovider</name>
-	  <attribute>
-        <name>jspvar</name>
-        <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-        <info>
-		  A jspvar of type Node can be created.
-	   </info>
-     </attribute>
-	  <attribute>
-        <name>id</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-		An id for the node in the context.
-	   </info>
-     </attribute>
-  </taginterface>
-  <taginterface>	 
-	 <name>fieldreferrer</name>
-	  <attribute>
-        <name>field</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-
-	   </info>
-     </attribute>
-  </taginterface>
-  <taginterface>	 
-	 <name>nodereferrer</name>
-	 <extends>contextreferrer</extends>
-     <!-- in reality noderefferer extends cloudreffer, but only few tags use that -->
-	  <attribute>
-        <name>node</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-		 Which node to use.
-	   </info>
-     </attribute>
-  </taginterface>
-  <taginterface>	 
-	 <name>cloudreferrer</name>
-	 <extends>contextreferrer</extends>
-	  <attribute>
-        <name>cloud</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>
-		 Which cloud to use.
-	   </info>
-     </attribute>
-  </taginterface>
-  <taginterface>
-	 <name>writer</name>
-	 <info>
-       A writer is a tag that can produce output to the page.
-     </info> 
+    <name>listreferrer</name>
+    <info>
+      A listreferrer tag has to live in the body of list tags.
+    </info>
     <attribute>
-        <name>jspvar</name>
-        <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-	<info>
-	The name of the variable to create/used. If not specified,
-	then the value will be written to the page.
-	</info>
+      <name>list</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	Which list to use, if the tag is in the body of more than one list, and you don't need the
+	direct parent.
+      </info>
+    </attribute>
+  </taginterface>
+  <taginterface>
+    <name>listprovider</name>
+    <info>
+      A list provider has a body which is evaluated repeatedly.  If a list is a  contextreferrer,
+      then in the body of the list a list item is in the context, and afterwards a 'List', which can
+      normally be reused with the 'referid' of some list.
+    </info>
+    <see>listreferrer</see>
+  </taginterface>
+  <taginterface>
+    <name>condition</name>
+    <info>
+      Condition tag do have a body which is evaluated or not, depending on certain attributes or
+      surrouning tags.
+    </info>
+    <attribute>
+      <name>inverse</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Turns the condition around, such that precisely the inverse will happen. This attribute is
+        of course false on default. You can set it to true.
+      </info>
+    </attribute>
+  </taginterface>
+  <taginterface>     
+    <name>nodeprovider</name>
+    <info>
+      A node provider makes an MMBase Node available to its body.
+    </info>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+        A jspvar of type Node can be created.
+      </info>
     </attribute>
     <attribute>
-        <name>vartype</name>
-        <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-	<info>
-	The type of the variable to create (default depends on the implementations)
-	</info>
-	<possiblevalue>
-          <value>Object</value>
-        </possiblevalue>
-	<possiblevalue>
-          <value>String</value>
-        </possiblevalue>
-	<possiblevalue>
-          <value>Node</value>
-        </possiblevalue>
-	<possiblevalue>
-          <value>Integer</value>
-        </possiblevalue>
-	<possiblevalue>
-          <value>Vector</value>
-    </possiblevalue>
-	<possiblevalue>
-          <value>List</value>
-    </possiblevalue>
-	<possiblevalue>
-          <value>Long</value>
-    </possiblevalue>
-	<possiblevalue>
-          <value>Double</value>
-    </possiblevalue>
-	<possiblevalue>
-          <value>Float</value>
-    </possiblevalue>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        An id for the node in the context.
+      </info>
+    </attribute>
+  </taginterface>
+  <taginterface>     
+    <name>fieldreferrer</name>
+    <info>
+      A tag that can live in the body of a fieldprovider tag. 
+    </info>
+    <attribute>
+      <name>field</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	If the tag is living in more than one fieldprovider, and you you don't need the direct parent.
+      </info>
+    </attribute>
+  </taginterface>
+  <taginterface>     
+    <name>nodereferrer</name>
+    <info>
+      A nodereferrer tag is a tag that can (needs to) live in the body of a nodeprovider, and uses
+      the node that that tag makes available.
+    </info>
+    <!-- in reality noderefferer extends cloudreffer, but only few tags use that -->
+    <attribute>
+      <name>node</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Which node to use. You can use this attribute if your Nodereferrer is living in more than
+        one NodeProvider, and you don't need the direct parent.
+      </info>
+    </attribute>
+  </taginterface>
+  <taginterface>     
+    <name>cloudreferrer</name>
+    <info>
+      A cloud referrer tag is a tag that needs to live in the body of a cloud tag.
+    </info>
+    <attribute>
+      <name>cloud</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	Which cloud to use. If the tag is living in more than one cloud tag, and you want to refer
+	to another then the direct parent.
+      </info>
+    </attribute>
+  </taginterface>
+  <taginterface>     
+    <name>writerreferrer</name>
+    <info>
+      A writerreferrer tag can live in the body of a writer tag, and use the supplied information.
+    </info>
+    <see>writer</see>
+  </taginterface>
+  <taginterface>
+    <name>writer</name>
+    <info>
+      A writer is a tag that can produce output. Normally the default will be to write to the page,
+      unless the tag has body.
+    </info> 
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+	The name of a variable to created. Normally, but not always, the scope of this variable is
+	the body of tag. This attribute never can contain context variables.
+      </info>
     </attribute>
     <attribute>
-        <name>write</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	    <info>Wether to write to the page or not. Normally the default value will suffice</info>
+      <name>vartype</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <info>
+	The type of the variable to create. Ussually there is a reasonable default for this
+	attribute. This attribute never can contain context variables.
+      </info>
+      <possiblevalue><value>Object</value>  <info>java.lang.Object</info></possiblevalue>
+      <possiblevalue><value>String</value>  <info>java.lang.String</info></possiblevalue>
+      <possiblevalue><value>Node</value>    <info>org.mmbase.bridge.Node</info></possiblevalue>
+      <possiblevalue><value>Integer</value> <info>java.lang.Integer</info></possiblevalue>
+      <possiblevalue><value>Vector</value>  <info>java.util.Vector. It's better to use List, normally.</info></possiblevalue>
+      <possiblevalue><value>List</value>    <info>java.util.List</info></possiblevalue>
+      <possiblevalue><value>Long</value>    <info>java.lang.Long</info></possiblevalue>
+      <possiblevalue><value>Double</value>  <info>java.lang.Double</info></possiblevalue>
+      <possiblevalue><value>Float</value>   <info>java.lang.Float</info></possiblevalue>
+    </attribute>
+    <attribute>
+      <name>write</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Whether to write to the page or not. Normally the default value will suffice</info>
     </attribute>
   </taginterface>
   <tag>
     <name>list</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
+    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-      Returns a list of nodes. Starting at one or more nodes
-      traversals are made according to a specified path of nodemanagers. One
-      traversal makes up
-      one record returned by the list. All possible traversals that can be made
-      starting at one or more nodes of the same type and following a specified
-      path are returned. Additional attributes can be used to exclude records
-      from the returned list or to influence the order of the returned list.
-      Because the returned records can contain more than one
-      node you will have to prefix the field name with the nodemanager name and
-      a dot if you want to refer to them. When using a jsp variable a underscore
-      has to be used to separate a nodemanager name from a field name.
+      Returns a list of nodes. Starting at one or more nodes traversals are made according to a
+      specified path of nodemanagers. One traversal makes up one record returned by the list. All
+      possible traversals that can be made starting at one or more nodes of the same type and
+      following a specified path are returned. Additional attributes can be used to exclude records
+      from the returned list or to influence the order of the returned list.  Because the returned
+      records can contain more than one node you will have to prefix the field name with the
+      nodemanager name and a dot if you want to refer to them. When using a jsp variable a
+      underscore has to be used to separate a nodemanager name from a field name.
     </info>
+    <see>listnodes</see>
+    <see>node.element</see>
     <attribute>
       <name>nodes</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        Comma-separated list of nodes that should be used as start nodes.
-        The start nodes don't have to be a member of the first nodemanager in
-        the path. For example, if the start nodes belong to the second
-        nodemanager in a path with a length of three nodemanagers, traversals will
-        go into two directions at the same time. All traversals that make up a
-        complete path are returned.
-        If a node belongs to the last nodemanager in a path traversals will go
-        from right to left starting at the last nodemanager.
-        All start nodes specified in this attribute have to belong to the same
-        nodemanager. Nodes that belong to a different nodemanager than the first
-        node are ignored
-        In case this attribute is not specified all nodes from the first
+        Comma-separated list of nodes that should be used as start nodes.  The start nodes don't
+        have to be a member of the first nodemanager in the path. For example, if the start nodes
+        belong to the second nodemanager in a path with a length of three nodemanagers, traversals
+        will go into two directions at the same time. All traversals that make up a complete path
+        are returned.  If a node belongs to the last nodemanager in a path traversals will go from
+        right to left starting at the last nodemanager.  All start nodes specified in this attribute
+        have to belong to the same nodemanager. Nodes that belong to a different nodemanager than
+        the first node are ignored In case this attribute is not specified all nodes from the first
         nodemanager in the path are used as start nodes.
       </info>
     </attribute>
@@ -475,7 +499,9 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>related</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.RelatedTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -485,6 +511,9 @@ one or more examplevalue tags is you want to give some example values.
       and prefixed to the path specified bij the path attribute.
       By default, the node used is that of the parent node tag.
     </info>
+    <see>list</see>
+    <see>relatednodes</see>
+    <see>node.element</see>
     <attribute>
       <name>number</name>
       <required>false</required>
@@ -582,7 +611,8 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>listnodes</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
+    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -592,6 +622,8 @@ one or more examplevalue tags is you want to give some example values.
       the attributes of the list tag except that it is not needed to prefix
       the fieldnames with nodemanager names.
     </info>
+    <see>list</see>
+    <see>relatednodes</see>
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -634,8 +666,8 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		Reuses a previously defined list. In this way you can use the
-		same result more than once.
+        Reuses a previously defined list. In this way you can use the
+        same result more than once.
       </info>
     </attribute>
 
@@ -647,7 +679,9 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>relatednodes</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -658,6 +692,9 @@ one or more examplevalue tags is you want to give some example values.
       not needed to prefix the fieldnames with a nodemanager name.
       By default, the node used is that of the parent node tag.
     </info>
+    <see>list</see>
+    <see>listnodes</see>
+    <see>related</see>
     <attribute>
       <name>type</name>
       <required>false</required>
@@ -705,24 +742,24 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>even</name>
-	<extends>condition</extends>
-	<extends>listreferrer</extends>
+    <extends>condition</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListEvenTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is an even item</info>
   </tag>
   <tag>
     <name>odd</name>
-	<extends>condition</extends>
-	<extends>listreferrer</extends>
+    <extends>condition</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListOddTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is an odd item</info>
   </tag>
   <tag>
     <name>changed</name>
-	<extends>condition</extends>
-	<extends>listreferrer</extends>
+    <extends>condition</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListChangedTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this item has changed compared to the previous one.
@@ -733,8 +770,8 @@ one or more examplevalue tags is you want to give some example values.
 
   <tag>
     <name>first</name>
-	<extends>condition</extends>
-	<extends>listreferrer</extends>
+    <extends>condition</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListFirstTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is the
@@ -742,8 +779,8 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>last</name>
-	<extends>condition</extends>
-	<extends>listreferrer</extends>
+    <extends>condition</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The tag can be used in a list to determine if this is the
@@ -751,6 +788,7 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>cloud</name>
+    <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.CloudTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -821,7 +859,7 @@ one or more examplevalue tags is you want to give some example values.
       <possiblevalue>
         <value>logout</value>
         <info>
-    	  When used `http' to logon, the browser will store name and
+          When used `http' to logon, the browser will store name and
           password. If you want to logon again, then you can first
           `logout'. Then the `realm' of the http authenication will be
           changed, and you obtain a new possibility to logon after
@@ -843,15 +881,15 @@ one or more examplevalue tags is you want to give some example values.
         </info>
       </possiblevalue>
     </attribute>
-	<attribute>
+    <attribute>
       <name>sessionname</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-		The name the cloud must get in the session. Using this it is
-		possible to avoid keeping to have to type your password when
-		switching between two sites wich both use http
-		authentication.
+        The name the cloud must get in the session. Using this it is
+        possible to avoid keeping to have to type your password when
+        switching between two sites wich both use http
+        authentication.
       </info>
     </attribute>
     <attribute>
@@ -906,7 +944,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>nodemanager</name>
         <required>false</required>
-	<rtexprvalue>true</rtexprvalue>
+    <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
         <name>module</name>
@@ -921,108 +959,111 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>node</name>
-	<extends>nodeprovider</extends>
-	<extends>nodereferrer</extends>
+    <extends>nodeprovider</extends>
+    <extends>nodereferrer</extends>
+    <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
-      A tag to make a node available. Normally it will enclose
-      some field tags.
+      A tag to make a node available. Normally it will enclose some field tags, but is is also
+      possible to only write to the context, or to a jsp variable.
     </info>
     <attribute>
-        <name>number</name>
-        <required>false</required>
-        <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
-        <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-	  The nodenumber or alias identifying this node in MMBase.
-	</info>
+      <name>number</name>
+      <required>false</required>
+      <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+	The nodenumber or alias identifying this node in MMBase.
+    </info>
     </attribute>
     <attribute>
-        <name>element</name>
-        <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
-        <required>false</required>
-         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The name of the node manager, identifying the node in a list or related list tag.
-	</info>
+      <name>element</name>
+      <requirednote>Either 'number', 'element' or 'referid' must be supplied.</requirednote>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	The name of the node manager, identifying the node in a list or related list tag.
+      </info>
     </attribute>
   </tag>
   <tag>
     <name>field</name>
-	<extends>writer</extends>
-	<extends>fieldreferrer</extends>
-	<extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>fieldreferrer</extends>
+    <extends>nodereferrer</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
-      Gets the field `name' from node `node' (can also be
-      list).
+      Gets the field `name' from node `node' (can also be list).
     </info>
     <attribute>
-        <name>name</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <refercontext>true</refercontext>
-	<info>
-	  The name of the field to get.
-	</info>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+	The name of the field to get.
+      </info>
     </attribute>
   </tag>
   <tag>
     <name>createalias</name>
-	<extends>nodereferrer</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateAliasTag</tagclass>
     <info>
       Lives in a NodeProvider. Creates the bodycontent as an alias for the node.
     </info>
     <attribute>
-        <name>name</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  In stead of giving it in the body, you can also indicate it
-	  with this parameter.
-	</info>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    <info>
+	In stead of giving it in the body, you can also indicate it with this parameter.
+      </info>
     </attribute>
   </tag>
   <tag>
     <name>deletealias</name>
-	<extends>nodereferrer</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteAliasTag</tagclass>
     <info>
       Lives in a NodeProvider. Deletes the bodycontent as an alias for the node.
     </info>
     <attribute>
-        <name>name</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  In stead of giving it in the body, you can also indicate it
-	  with this parameter.
-	</info>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	In stead of giving it in the body, you can also indicate it with this parameter.
+      </info>
     </attribute>
   </tag>
   <tag>
     <name>listcondition</name>
-	<extends>condition</extends>
-	<extends>listreferrer</extends>
+    <extends>condition</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
     <info>
-    Must be used in the body of a list tag. And the body of itself
-    will only be evaluated if some condition is true.
+      Must be used in the body of a list tag. And the body of itself will only be evaluated if some
+      condition is true.
     </info>
+    <see>first</see>
+    <see>last</see>
+    <see>changed</see>
+    <see>even</see>
+    <see>odd</see>
     <attribute>
-        <name>value</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	 The `value' of the condition, in other words what the
-         condition is, described with a string. There is a limited set
-         available now. They are also availabe as `macro'-tags on this
-         tag.
-	 </info>
+      <name>value</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	The `value' of the condition, in other words what the condition is, described with a
+	string. There is a limited set available now. They are also availabe as `macro'-tags on this
+	tag.
+      </info>
         <possiblevalue>
           <value>first</value>
           <info>
@@ -1057,7 +1098,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>context</name>
-	<extends>contextreferrer</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ContextTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
@@ -1116,49 +1157,48 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </p>
     </info>
     <attribute>
-        <name>id</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	This id is used in context referring attributes. On default a
-	context has no id. The implicit 'page' context also doesn't
-	have. If a context has no id, there is no way of referring to
-	variables of it if you are not in the context itself (or one of
-	the subcontextes).
-    </info>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	This id is used in context referring attributes. On default a context has no id. The
+	implicit 'page' context also doesn't have. If a context has no id, there is no way of
+	referring to variables of it if you are not in the context itself (or one of the
+	subcontextes).
+      </info>
     </attribute>
   </tag>
   <tag>
     <name>createrelation</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateRelationTag</tagclass>
     <info>
-    Creates a relation between two nodes.
+      Creates a relation between two nodes.
     </info>
     <attribute>
         <name>role</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-	The role for the new relation.
+    <refercontext>true</refercontext>
+      <info>
+    The role for the new relation.
         </info>
     </attribute>
     <attribute>
         <name>source</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
+    <info>
          The id of the node which will be on the source side of the relation.
-	</info>
+    </info>
     </attribute>
     <attribute>
         <name>destination</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
+    <info>
          The id of the node which will be on the destination side of the relation.
-	</info>
+    </info>
     </attribute>
     <example>
 &lt;mm:cloud&gt;
@@ -1175,64 +1215,46 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>createnode</name>
+    <extends>nodeprovider</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
-    Creates a new node.
+      Creates a new node.
     </info>
     <attribute>
-        <name>type</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-         The type (NodeManager name) of the new node.
-        </info>
-        <examplevalue>
-          <value>news</value>
-        </examplevalue>
-        <examplevalue>
-          <value>people</value>
-        </examplevalue>
-    </attribute>
-    <attribute>
-      <name>id</name>
-      <required>false</required>
+      <name>type</name>
+      <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
       <info>
-        See the `id' attribute of the Node tag.
+	The type (NodeManager name) of the new node.
       </info>
       <examplevalue>
-        <value>a_new_node</value>
+	<value>news</value>
       </examplevalue>
-    </attribute>
-    <attribute>
-      <name>jspvar</name>
-      <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
-      <info>
-        See the `jspvar' attribute of the Node tag.
-      </info>
+      <examplevalue>
+	<value>people</value>
+      </examplevalue>
     </attribute>
   </tag>
   <tag>
     <name>setfield</name>
-	<extends>fieldreferrer</extends>
-	<extends>nodereferrer</extends>
+    <extends>fieldreferrer</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTEI</teiclass>
     <info>
-      Changes the field `name' from node `node' (can also be
-      list).
+      Changes the field `name' from node `node' (can also be list).
     </info>
     <attribute>
-        <name>name</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The name of the field to set. If this field is not set this tag will
-          look for a surrounding fieldlist tag to retrieve name and node from.
-	</info>
+      <name>name</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+	The name of the field to set. If this field is not set this tag will
+	look for a surrounding fieldlist tag to retrieve name and node from.
+      </info>
     </attribute>
   </tag>
   <tag>
@@ -1320,6 +1342,9 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>deletenode</name>
+    <extends>cloudreferrer</extends>
+    <extends>nodereferrer</extends>
+    <extends>nodeprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
@@ -1331,33 +1356,23 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <required>false</required>
         <requirednote>If stand alone, either `number' or `referid' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
+    <refercontext>true</refercontext>
     </attribute>
     <attribute>
-        <name>referid</name>
-        <required>false</required>
-	<requirednote>If stand alone, either `number' or `referid' must be supplied.</requirednote>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>jspvar</name>
-        <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>deleterelations</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <possiblevalue>
-           <value>true</value>
-        </possiblevalue>
-        <possiblevalue>
-           <value>false</value>
-        </possiblevalue>
+      <name>deleterelations</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <possiblevalue>
+	<value>true</value>
+      </possiblevalue>
+      <possiblevalue>
+	<value>false</value>
+      </possiblevalue>
     </attribute>
   </tag>
   <tag>
     <name>fieldlist</name>
+    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>A list of fields. A field can list inside a NodeProvider in which case the NodeManager is found by means of
@@ -1442,8 +1457,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </possiblevalue>
       <possiblevalue>
         <value>input</value>
-	<info>
-	A form entry for the field. This can only be used if the
+    <info>
+    A form entry for the field. This can only be used if the
         FieldList was in a Noderovider tag, of if you have provided
         the `nodemanager' attribute. If the FieldList has an id, the
         names of the form entries will be prefixed with it.
@@ -1452,29 +1467,29 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <possiblevalue>
         <value>useinput</value>
         <info>
-	<p>
-	If you have create a form with type="input" and this form was
+    <p>
+    If you have create a form with type="input" and this form was
         submitted, then you can use type="useinput" under a
         NodeProvider, and it will get the request/post parameter
         produced by "input" and make the right changes to the node.
-	</p>
-	<p>
-	The necessary externid's for this will be implicity imported
-	in the context. You don't have to worry about them.
-	</p>
+    </p>
+    <p>
+    The necessary externid's for this will be implicity imported
+    in the context. You don't have to worry about them.
+    </p>
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>searchinput</value>
         <info>
-	A form entry for the field, fit for use for searching. That
+    A form entry for the field, fit for use for searching. That
         means that not textareas will be used and such.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>usesearchinput</value>
         <info>
-	If you have create a form with type="searchinput" and this
+    If you have create a form with type="searchinput" and this
         form was submitted, then you can use this. It will produce a
         part of a where clause which you can use to construct a whole
         `where' for the list tag you are going to use.
@@ -1501,8 +1516,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>nodeinfo</name>
-	<extends>writer</extends>
-	<extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeInfoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>This thing can be used inside a NodeProvider tag, to get
@@ -1538,17 +1553,17 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>present</name>
-	<extends>condition</extends>
-	<extends>contextreferrer</extends>
+    <extends>condition</extends>
+    <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
     <info>
-    Checks if a certain id is present in the parent Context tag.
+      Checks if a certain id is present in the parent Context tag.
     </info>
   </tag>
   <tag>
     <name>notpresent</name>
-	<extends>condition</extends>
-	<extends>contextreferrer</extends>
+    <extends>condition</extends>
+    <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
     <info>
     Checks if a certain id is missing in the parent Context tag.
@@ -1556,8 +1571,10 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>write</name>
-	<extends>writer</extends>
-	<extends>contextreferrer</extends>
+    <extends>writer</extends>
+    <extends>writerreferrer</extends>
+    <extends>contextreferrer</extends>
+
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
@@ -1565,37 +1582,37 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     context. Or, if the attribute `jspvar' is missing, to write the
     value of a context variable to the page.
     </info>
-
+    <see>import</see>
     <attribute>
         <name>referid</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-	The key of the variable to get. It it is missing (and value is
-	missing), then the parent Writer tag is written (if it exist).
-	</info>
+    <refercontext>true</refercontext>
+    <info>
+    The key of the variable to get. It it is missing (and value is
+    missing), then the parent Writer tag is written (if it exist).
+    </info>
     </attribute>
     <attribute>
       <name>value</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
 	The value to write.
-	</info>
+      </info>
     </attribute>
     <attribute>
         <name>session</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	    <info>You can also put things into the session with this.</info>
+        <info>You can also put things into the session with this.</info>
     </attribute>
     <attribute>
         <name>cookie</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	    <info>Writing thinks to cookie is also possible.</info>
+        <info>Writing things to cookie is also possible.</info>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
@@ -1615,74 +1632,80 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     (postparameters) or the session). You can also create a new variable
     with this.
     </info>
+    <see>context</see>
+    <see>write</see>
+    <see>contextreferrer</see>
     <attribute>
         <name>id</name>
         <required>false</required>
         <requirednote>Either `id' or `externid' or both must be supplied.</requirednote>
         <rtexprvalue>false</rtexprvalue>
-	<info>
+    <info>
         This is the key by which the object will be registered in the
-   	    context. This key may not already exist. You must use the
+        context. This key may not already exist. You must use the
         remove tag first, if you need to change the value of the
         registered object. If you do not supply this attribute, it is
         supposed to have the same value as `externid' which should be
-	    present then.
-	</info>
+        present then.
+    </info>
     </attribute>
     <attribute>
         <name>externid</name>
         <required>false</required>
         <requirednote>Either `id' or `externid' or both must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	<info>
+    <info>
         <p>
-	The `externid' is the name of an attribute in the session,
-	parameter in the request, or id in the parent context. The
-	value of this thing is imported in the current context, with
-	the id given by the attribute `id'.
+    The `externid' is the name of an attribute in the session,
+    parameter in the request, or id in the parent context. The
+    value of this thing is imported in the current context, with
+    the id given by the attribute `id'.
         </p>
         <p>
-	If there is no attribute `externid' then the value of the new
-	object in the context is taken from the body of this import
-	tag. In that way you can create a variable.
+    If there is no attribute `externid' then the value of the new
+    object in the context is taken from the body of this import
+    tag. In that way you can create a variable.
         </p>
-	</info>
+    </info>
     </attribute>
     <attribute>
         <name>required</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
-	<info>
-	If this object is required to be present. If it has to be
-	present, then the present tag will always evaluate. If there
-	can nothing be found by externid and a default value in the
-	body is missing too, then an exception will follow if required
-	is true.
-	</info>
+    <info>
+    If this object is required to be present. If it has to be
+    present, then the present tag will always evaluate. If there
+    can nothing be found by externid and a default value in the
+    body is missing too, then an exception will follow if required
+    is true.
+    </info>
     </attribute>
     <attribute>
         <name>from</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	Where to search the externid in. On default it is searched in
-	several sources, but you can limit it by this. In this way it
-	is also possible to get different variables with the same name
-	from different sources.
-	</info>
-	<possiblevalue>
+    <info>
+    Where to search the externid in. On default it is searched in
+    several sources, but you can limit it by this. In this way it
+    is also possible to get different variables with the same name
+    from different sources.
+    </info>
+    <possiblevalue>
           <value>parent</value>
         </possiblevalue>
-	<possiblevalue>
+    <possiblevalue>
           <value>page</value>
         </possiblevalue>
-	<possiblevalue>
+    <possiblevalue>
           <value>session</value>
         </possiblevalue>
-	<possiblevalue>
+    <possiblevalue>
+          <value>cookie</value>
+        </possiblevalue>
+    <possiblevalue>
           <value>parameters</value>
         </possiblevalue>
-	<possiblevalue>
+    <possiblevalue>
           <value>postparameters</value>
         </possiblevalue>
     </attribute>
@@ -1690,22 +1713,22 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
-	<info>
-	If you specify `jspvar' a jsp-variable with this name will be
-	created too. It is available after the closing of the
-	tag. Jsp-variables can also be created with the `write'
-	tag. You have preciser scoping for them then.
-	</info>
+    <info>
+    If you specify `jspvar' a jsp-variable with this name will be
+    created too. It is available after the closing of the
+    tag. Jsp-variables can also be created with the `write'
+    tag. You have preciser scoping for them then.
+    </info>
     </attribute>
     <attribute>
         <name>vartype</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
-	<info>
-	If you specify `jspvar' you can also specify a type for
-	it. Default, this is a String, but you could e.g. also want an
-	Integer.
-	</info>
+    <info>
+    If you specify `jspvar' you can also specify a type for
+    it. Default, this is a String, but you could e.g. also want an
+    Integer.
+    </info>
     </attribute>
 
 <example>&lt;!-- Create a variable `hoi' from the parameter `haj', 
@@ -1735,66 +1758,68 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>referid</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-		<refercontext>true</refercontext>
-	<info>
-	</info>
+        <refercontext>true</refercontext>
+    <info>
+    </info>
     </attribute>
   </tag>
   <tag>
     <name>url</name>
-	<extends>writer</extends>
-	<extends>contextreferrer</extends>
+    <extends>writer</extends>
+    <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
     Returns an URL with parameters from the context.
     </info>
+    <see>param</see>
+    <see>image</see>
     <attribute>
         <name>referids</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-    	<refercontext>true</refercontext>
-	<info>
-	Specify which parameters. A comma seperated list of context
-	variable id's.
-	</info>
+        <refercontext>true</refercontext>
+    <info>
+    Specify which parameters. A comma seperated list of context
+    variable id's.
+    </info>
     </attribute>
     <attribute>
         <name>page</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-	The url to refer to. If not specified, then it becomes the
+    <refercontext>true</refercontext>
+    <info>
+    The url to refer to. If not specified, then it becomes the
         result of getRequestURI. 
-	</info>
+    </info>
     </attribute>
   </tag>
   <tag>
     <name>image</name>
-	<extends>nodereferrer</extends>
-	<extends>writer</extends>
+    <extends>nodereferrer</extends>
+    <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
      <p>
-	 Returns an URL to the image servlet. This is a NodeReferrer and
-	 consequently has to live as a child of a (image) node.
+     Returns an URL to the image servlet. This is a NodeReferrer and
+     consequently has to live as a child of a (image) node.
     </p>
     <p>
-		Using this tag makes your pages more
-		portable to other system, and hopefully less sensitive for future
-		changes in how the image servlet works.
+        Using this tag makes your pages more
+        portable to other system, and hopefully less sensitive for future
+        changes in how the image servlet works.
     </p>
     </info>
     <attribute>
         <name>template</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-    	<refercontext>true</refercontext>
-	<info>
-		A 'transformation' template.
-	</info>
+        <refercontext>true</refercontext>
+    <info>
+        A 'transformation' template.
+    </info>
     <examplevalue>
         <value>s(100x100)</value>
     </examplevalue>
@@ -1804,19 +1829,21 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>include</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <info>
-	  Does an include. This tag is rather similar to mm:url, but in
-	  stead of returing the url, it returns the page itself. In that
-	  respect it is also very similar to jsp:include.
+      Does an include. This tag is rather similar to mm:url, but in
+      stead of returing the url, it returns the page itself. In that
+      respect it is also very similar to jsp:include.
     </info>
+    <see>param</see>
+    <see>url</see>
     <attribute>
         <name>referids</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-    	<refercontext>true</refercontext>
-	<info>
-	Specify which parameters. A comma seperated list of context
-	variable id's.
-	</info>
+        <refercontext>true</refercontext>
+    <info>
+    Specify which parameters. A comma seperated list of context
+    variable id's.
+    </info>
     </attribute>
     <attribute>
         <name>id</name>
@@ -1827,10 +1854,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <name>page</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
-	<refercontext>true</refercontext>
-	<info>
-	The url to refer to.
-	</info>
+    <refercontext>true</refercontext>
+    <info>
+    The url to refer to.
+    </info>
     </attribute>
   </tag>
   <tag>
@@ -1839,87 +1866,95 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Adds a parameter to the parent URL Tag.
     </info>
+    <see>url</see>
+    <see>include</see>
     <attribute>
         <name>name</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
         <refercontext>true</refercontext>
-	<info>
-	The name of the parameter. The value is the body.
-	</info>
+    <info>
+    The name of the parameter. The value is the body.
+    </info>
     </attribute>
   </tag>
 
   <tag>
     <name>compare</name>
-	<extends>condition</extends>
-	<extends>contextreferrer</extends>
+    <extends>condition</extends>
+    <extends>contextreferrer</extends>
+    <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
     <info>
     Compares the value of a context variable to a String value. Only if
     they are equal the body is evaluated.
     </info>
+    <see>isempty</see>
+    <see>isnotempty</see>
     <attribute>
         <name>value</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
         <refercontext>true</refercontext>
-	<info>
-	The value which the context variable must have.
-	</info>
+    <info>
+    The value which the context variable must have.
+    </info>
     </attribute>
   </tag>
   <tag>
     <name>isnotempty</name>
-	<extends>condition</extends>
+    <extends>condition</extends>
+    <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
     <info>
-	  Checks if parent writer is not empty.
+      Checks if parent writer is not empty.
     </info>
   </tag>
   <tag>
     <name>isempty</name>
-	<extends>condition</extends>
+    <extends>condition</extends>
+    <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsEmptyTag</tagclass>
     <info>
-	  Checks if parent writer is empty.
+      Checks if parent writer is empty.
     </info>
   </tag>
   <tag>
     <name>aliaslist</name>
-	<extends>nodereferrer</extends>
-	<extends>writer</extends>
+    <extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>listprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
     <info>
-	This is a list which can only live under a NodeProvider. It has to
-	have an id, which can be used with the write tag in the body.
+    This is a list which can only live under a NodeProvider. It has to
+    have an id, which can be used with the write tag in the body.
     </info>
   </tag>
   <tag>
     <name>maywrite</name>
-	<extends>nodereferrer</extends>
-	<extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayWriteTag</tagclass>
     <info>
-	Check if node may be changed.
+    Check if node may be changed.
     </info>
   </tag>
   <tag>
     <name>maydelete</name>
-	<extends>nodereferrer</extends>
-	<extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayDeleteTag</tagclass>
     <info>
-	Check if node may be deleted
+    Check if node may be deleted
     </info>
   </tag>
   <tag>
     <name>maycreate</name>
-	<extends>cloudreferrer</extends>
-	<extends>condition</extends>
+    <extends>cloudreferrer</extends>
+    <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
     <info>
-	Check if node may be create
+    Check if node may be create
     </info>
     <attribute>
         <name>type</name>
@@ -1928,20 +1963,20 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>maylink</name>
-	<extends>nodereferrer</extends>
-	<extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
     <info>
-	Check if node may be linked to.
+    Check if node may be linked to.
     </info>
   </tag>
   <tag>
     <name>maychangecontext</name>
-	<extends>nodereferrer</extends>
-	<extends>condition</extends>
+    <extends>nodereferrer</extends>
+    <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayChangeContextTag</tagclass>
     <info>
-	Check if context of node may be changed
+    Check if context of node may be changed
     </info>
   </tag>
   <tag>
@@ -1949,12 +1984,12 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.SetContextTag</tagclass>
     <info>
-	  Change the context of a node. New context is in body.
+      Change the context of a node. New context is in body.
     </info>
   </tag>
   <tag>
     <name>countrelations</name>
-	<extends>writer</extends>
+    <extends>writer</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
@@ -1974,71 +2009,73 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>listrelations</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-	   List the relations belonging to this nodes. Relations are nodes too.
+       List the relations belonging to this nodes. Relations are nodes too.
     </info>
+    <see>relatednode</see>
     <attribute>
       <name>type</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	  <info>Only list the relations where the other node is of this type.</info>
+      <info>Only list the relations where the other node is of this type.</info>
     </attribute>
     <attribute>
       <name>role</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	  <info>Only list the relations which are of this role.</info>
+      <info>Only list the relations which are of this role.</info>
     </attribute>
   </tag>
   <tag>
     <name>relatednode</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
-	   For use under listrelations tag. With this you can easily find
-	   the other node (it uses the 'snumber' and 'dnumber' fields for you.
+       For use under listrelations tag. With this you can easily find
+       the other node (it uses the 'snumber' and 'dnumber' fields for you.
     </info>
+    <see>listrelations</see>
     <attribute>
         <name>listrelations</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
         <refercontext>true</refercontext>
-	<info>
-	  To refer to another listrelations tag then the direct parent.
-	</info>
+    <info>
+      To refer to another listrelations tag then the direct parent.
+    </info>
     </attribute>
   </tag>
-  <tag>	
+  <tag> 
     <name>size</name>
-	<extends>writer</extends>
-	<extends>listreferrer</extends>
+    <extends>writer</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.SizeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
-	  The size of the current list.
+      The size of the current list.
     </info>
   </tag>
-  <tag>	  
+  <tag>   
     <name>index</name>
-	<extends>writer</extends>
-	<extends>listreferrer</extends>
+    <extends>writer</extends>
+    <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.IndexTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
-	  The index of the current item of the current list.
+      The index of the current item of the current list.
     </info>
     <attribute>
       <name>offset</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	  <info>
-		 Where do you want to start counting. Default this is 1.
-		</info>
+      <info>
+         Where do you want to start counting. Default this is 1.
+        </info>
     </attribute>
    </tag>
 </taglib>
