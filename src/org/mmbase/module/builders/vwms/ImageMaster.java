@@ -8,26 +8,6 @@ See http://www.MMBase.org/license
 
 */
 
-/*
-$Id: ImageMaster.java,v 1.16 2000-09-28 13:56:37 vpro Exp $
-$Log: not supported by cvs2svn $
-Revision 1.15  2000/07/04 12:05:30  vpro
-Rico: fixed bug when find . in netfile
-
-Revision 1.14  2000/06/14 15:22:15  wwwtech
-Rico: made netfiles object check/create synchronized
-
-Revision 1.13  2000/06/08 09:16:58  wwwtech
-Wilbert: buggie method path2ckey no longer converts alias to number, so the correct images from ICaches wil be found
-
-Revision 1.12  2000/06/05 15:36:39  wwwtech
-Rico: added a dup eliminator
-
-Revision 1.11  2000/06/05 10:56:56  wwwtech
-Rico: added support for new 3voor12
-
-*/
-
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
@@ -40,7 +20,7 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
-
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
@@ -48,16 +28,16 @@ import org.mmbase.module.builders.*;
 
 public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterface {
 
+    private static Logger log = Logging.getLoggerInstance(ImageMaster.class.getName());
 	Hashtable properties;
 	boolean first=true;
-	private boolean debug=false;
 	Object syncobj=new Object();
 	private int maxSweep=16;
 	Vector files=new Vector();
 	ImagePusher pusher;
 
 	public ImageMaster() {
-		debug("ready for action");
+		log.info("VWM ImageMaster started");
 	}
 
 
@@ -87,7 +67,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					i++;
 				}
 			} catch(Exception e) {
-				debug("probeCall exception "+e);
+				log.error("probeCall exception "+e);
 				e.printStackTrace();
 			}	
 		}
@@ -103,13 +83,13 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		if (debug) debug("sees that : "+number+" has changed type="+ctype);
+		log.debug("sees that : "+number+" has changed type="+ctype);
 		return(true);
 	}
 
 	public boolean fileChange(String service,String subservice,String filename) {
 		filename=URLEscape.unescapeurl(filename);
-		if (debug) debug("fileChange -> "+filename);
+		log.debug("fileChange -> "+filename);
 		// jump to correct subhandles based on the subservice
 		if (subservice.equals("main")) {
 			handleMainCheck(service,subservice,filename);
@@ -128,7 +108,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 			String subservice=filenode.getStringValue("subservice");
 			int status=filenode.getIntValue("status");
 
-			debug("fileChange "+number+" "+subservice+" "+status);
+			log.debug("fileChange "+number+" "+subservice+" "+status);
 
 			// jump to correct subhandles based on the subservice
 			if (subservice.equals("main")) {
@@ -142,30 +122,30 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 	public boolean handleMirror(MMObjectNode filenode,int status,String ctype) {
 		if (filenode==null) {
-			debug("ERROR: handleMirror filenode null!");
+			log.error("ERROR: handleMirror filenode null!");
 			return true;
 		}
 		
-		if (debug) debug("Node "+filenode+" status "+status+" type "+ctype);
+		log.debug("Node "+filenode+" status "+status+" type "+ctype);
 		switch(status) {
 			case 1:  // Verzoek
-				if (debug) debug("status==1");
+				log.debug("status==1");
 				filenode.setValue("status",2);
 				filenode.commit();
-				if (debug) debug("Starting real work");
+				log.debug("Starting real work");
 				// do stuff
 				String filename=filenode.getStringValue("filename");
 				if ((filename==null) || filename.equals("")) {
-					debug("ERROR handleMirror: filename null");
+					log.error("ERROR handleMirror: filename null");
 					return true;
 				}
-				if (debug) debug("handleMirror"+filename);
+				log.debug("handleMirror"+filename);
 				String dstserver=filenode.getStringValue("mmserver");
 				
 				// save the image to disk
 				ImageCaches bul=(ImageCaches)Vwms.mmb.getMMObject("icaches");
 				if (bul==null) {
-					debug("ERROR: ImageCaches builder is null");
+					log.error("ERROR: ImageCaches builder is null");
 					return true;
 				}
 			
@@ -187,7 +167,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					}
 					Images imagesBuilder = (Images)Vwms.mmb.getMMObject("images");
 					if (imagesBuilder==null) {
-						debug("ERROR handleMirror images builder not found");
+						log.error("ERROR handleMirror images builder not found");
 						return true;
 					}
 					mimetype = imagesBuilder.getImageMimeType(ckeyVec);
@@ -195,12 +175,12 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					ckey=path2ckey(ckey, imagesBuilder);
 				}
 
-				debug("handleMirror: ckey "+ckey);
+				log.debug("handleMirror: ckey "+ckey);
 				byte[] filebuf=bul.getCkeyNode(ckey);
 				if (filebuf==null) {
-					debug("handleMirror: no icaches entry yet");
+					log.debug("handleMirror: no icaches entry yet");
 				}
-				if (debug) debug("verzoek size "+filebuf.length);
+				log.debug("verzoek size "+filebuf.length);
 				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
 				// Pass mimetype.
 				saveImageAsisFile(srcpath,filename,filebuf,mimetype);
@@ -230,7 +210,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 			case 3:  // Gedaan
 				break;
 			default:
-				debug("ljjljkljkjol error");
+				log.error("This cannot happen, email rico@vpro.nl");
 				break;
 		}
 		return(true);
@@ -252,14 +232,14 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 			case 3:  // Gedaan
 				break;
 			default:
-				debug("aslfaslfasfasljk error");
+				log.error("This cannot happen, email rico@vpro.nl");
 				break;
 		}
 		return(true);
 	}
 
 	public boolean doMainRequest(MMObjectNode filenode) {
-		debug("doMainRequest for "+filenode.getIntValue("number")+" "+filenode.getStringValue("filename"));
+		log.debug("doMainRequest for "+filenode.getIntValue("number")+" "+filenode.getStringValue("filename"));
 		// so this file has changed probably, check if the file is ready on
 		// disk and set the mirrors to dirty/request.
 		String filename = filenode.getStringValue("filename");
@@ -269,11 +249,11 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='mirror'");
 		if (!e.hasMoreElements()) {
-			debug("doMainRequest: No mirror nodes found for : "+filenode.toString()+" !!");
+			log.debug("doMainRequest: No mirror nodes found for : "+filenode.toString()+" !!");
 		}
 		while (e.hasMoreElements()) {
 			MMObjectNode mirrornode=(MMObjectNode)e.nextElement();
-			if (debug) debug("doMainRequest sending change for "+mirrornode.getIntValue("number"));
+			log.debug("doMainRequest sending change for "+mirrornode.getIntValue("number"));
 			mirrornode.setValue("status",1);
 			mirrornode.commit();
 		}
@@ -284,7 +264,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
 		if (e.hasMoreElements()) {
-			if (debug) debug("handleMainCheck: existing file");
+			log.debug("handleMainCheck: existing file");
 			MMObjectNode mainnode=(MMObjectNode)e.nextElement();
 			int currentstatus=mainnode.getIntValue("status");
 			if (currentstatus>2) { // check only the ones that are done
@@ -292,7 +272,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 				mainnode.commit();
 			}
 		} else {
-			if (debug) debug("handleMainCheck: new file");
+			log.debug("handleMainCheck: new file");
 			MMObjectNode mainnode=bul.getNewNode("system");
 			mainnode.setValue("filename",filename);
 			mainnode.setValue("mmserver","test1");
