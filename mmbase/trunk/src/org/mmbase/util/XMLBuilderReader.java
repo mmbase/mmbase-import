@@ -21,15 +21,50 @@ import org.mmbase.util.logging.*;
 /**
  * This class is used to parse and retrieve data from a builder configuration file.
  *
+ * @move xml/BuilderReader.java
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.28 2003-03-07 09:45:31 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.29 2003-04-10 13:51:37 pierre Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(XMLBuilderReader.class.getName());
+
+    /** Public ID of the Builder DTD version 1.0 */
+    public static final String PUBLIC_ID_BUILDER_1_0 = "-//MMBase//DTD builder config 1.0//EN";
+    private static final String PUBLIC_ID_BUILDER_1_0_FAULT = "-//MMBase/DTD builder config 1.0//EN";
+    private static final String PUBLIC_ID_BUILDER_OLD = "/MMBase - builder//";
+
+    /** Public ID of the Builder DTD version 1.1 */
+    public static final String PUBLIC_ID_BUILDER_1_1 = "-//MMBase//DTD builder config 1.1//EN";
+    private static final String PUBLIC_ID_BUILDER_1_1_FAULT = "-//MMBase/DTD builder config 1.1//EN";
+
+    /** DTD resource filename of the Builder DTD version 1.0 */
+    public static final String DTD_BUILDER_1_0 = "builder_1_0.dtd";
+    /** DTD resource filename of the Builder DTD version 1.1 */
+    public static final String DTD_BUILDER_1_1 = "builder_1_1.dtd";
+
+    /** Public ID of the most recent Builder DTD */
+    public static final String PUBLIC_ID_BUILDER = PUBLIC_ID_BUILDER_1_1;
+    /** DTD respource filename of the most recent Builder DTD */
+    public static final String DTD_BUILDER = DTD_BUILDER_1_1;
+
+    /**
+     * Register the Public Ids for DTDs used by XMLBasicReader
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerPublicIDs() {
+        // various builder dtd versions
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0, DTD_BUILDER_1_0, XMLBuilderReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1, DTD_BUILDER_1_0, XMLBuilderReader.class);
+
+        // legacy public IDs (wrong, don't use these)
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_0_FAULT, DTD_BUILDER_1_0, XMLBuilderReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_OLD, DTD_BUILDER_1_0, XMLBuilderReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_BUILDER_1_1_FAULT, DTD_BUILDER_1_1, XMLBuilderReader.class);
+    }
 
     /**
      * MMBase instance, used to load parent (extending) builders

@@ -20,12 +20,41 @@ import org.mmbase.util.logging.Logging;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.18 2003-03-18 16:21:47 pierre Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.19 2003-04-10 13:51:37 pierre Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(XMLApplicationReader.class.getName());
+
+    /** Public ID of the Application DTD version 1.0 */
+    public static final String PUBLIC_ID_APPLICATION_1_0 = "-//MMBase//DTD application config 1.0//EN";
+    private static final String PUBLIC_ID_APPLICATION_1_0_FAULT = "-//MMBase/DTD application config 1.0//EN";
+    /** Public ID of the Application DTD version 1.1 */
+    public static final String PUBLIC_ID_APPLICATION_1_1 = "-//MMBase//DTD application config 1.1//EN";
+
+    /** DTD resource filename of the Application DTD version 1.0 */
+    public static final String DTD_APPLICATION_1_0 = "application_1_0.dtd";
+    /** DTD resource filename of the Application DTD version 1.1 */
+    public static final String DTD_APPLICATION_1_1 = "application_1_1.dtd";
+
+    /** Public ID of the most recent Application DTD */
+    public static final String PUBLIC_ID_APPLICATION = PUBLIC_ID_APPLICATION_1_1;
+    /** DTD resource filename of the most Application DTD */
+    public static final String DTD_APPLICATION = DTD_APPLICATION_1_1;
+
+    /**
+     * Register the Public Ids for DTDs used by XMLApplicationReader
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerPublicIDs() {
+        // various builder dtd versions
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0, DTD_APPLICATION_1_0, XMLApplicationReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_1, DTD_APPLICATION_1_1, XMLApplicationReader.class);
+
+        // legacy public IDs (wrong, don't use these)
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_APPLICATION_1_0_FAULT, DTD_APPLICATION_1_0, XMLApplicationReader.class);
+    }
 
     private Element root;
 
