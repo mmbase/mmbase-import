@@ -23,15 +23,15 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: CgiURLComposer.java,v 1.3 2003-02-20 16:41:52 michiel Exp $
+ * @version $Id: CgiURLComposer.java,v 1.4 2003-07-11 13:57:02 vpro Exp $
  * @since MMBase-1.7
  */
 public class CgiURLComposer extends RamURLComposer {
     
     private static Logger log = Logging.getLoggerInstance(CgiURLComposer.class.getName());
 
-    public CgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public CgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
     }
     public Format getFormat() {
         Format format = super.getFormat();

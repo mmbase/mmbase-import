@@ -12,22 +12,19 @@ package org.mmbase.applications.media.urlcomposers;
 import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.applications.media.Format;
 import org.mmbase.module.core.MMObjectNode;
-import java.util.Map;
-import java.util.Hashtable;
+import java.util.*;
 
 /**
  * A RealURLComposer is an URLComposer which can produce URL's to RM/RA streams.
  *
- *
  * @author Michiel Meeuwissen
- * @version $Id: RealURLComposer.java,v 1.7 2003-02-20 16:41:52 michiel Exp $
- * @todo    Move to org.mmbase.util.media, I think
+ * @author Rob Vermeulen (VPRO)
  */
 
 public class RealURLComposer extends FragmentURLComposer  {
 
-    public RealURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public RealURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
     }
 
     protected StringBuffer getURLBuffer() {

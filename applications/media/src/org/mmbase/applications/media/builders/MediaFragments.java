@@ -32,8 +32,8 @@ import org.mmbase.util.logging.Logging;
  * The classification, and replace methods are added for backwards compatibility.
  *
  * @author Rob Vermeulen (VPRO)
- * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.18 2003-07-10 17:12:35 michiel Exp $
+ * @author Michiel Meeuwissen (NOS)
+ * @version $Id: MediaFragments.java,v 1.19 2003-07-11 13:57:00 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -116,9 +116,9 @@ public class MediaFragments extends MMObjectBuilder {
                 return info.get(args.get(0));
             }            
         } else if (FUNCTION_URLS.equals(function)) {
-            return getURLs(node, translateURLArguments(args, null), null);
+            return getURLs(node, translateURLArguments(args, null), null,null);
         } else if (FUNCTION_FILTEREDURLS.equals(function)) {
-            return getFilteredURLs(node, translateURLArguments(args, null));
+            return getFilteredURLs(node, translateURLArguments(args, null),null);
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
             return new Boolean(isSubFragment(node));
         } else if (FUNCTION_ROOT.equals(function)) {
@@ -215,21 +215,21 @@ public class MediaFragments extends MMObjectBuilder {
      *
      * @author mm
      */
-    protected List getURLs(MMObjectNode fragment, Map info, List urls) {
+    protected List getURLs(MMObjectNode fragment, Map info, List urls, List cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
 
         Iterator i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = (MMObjectNode) i.next();
             MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
-            bul.getURLs(source, fragment, info, urls);
+            bul.getURLs(source, fragment, info, urls, cacheExpireObjects);
         }
         return urls;        
     }   
 
-    protected List getFilteredURLs(MMObjectNode fragment, Map info) {
+    protected List getFilteredURLs(MMObjectNode fragment, Map info, List cacheExpireObjects) {
         log.debug("getfilteredurls");
-        List urls =  getURLs(fragment, info, null);
+        List urls =  getURLs(fragment, info, null,cacheExpireObjects);
         return MainFilter.getInstance().filter(urls);
     }
 
@@ -240,34 +240,35 @@ public class MediaFragments extends MMObjectBuilder {
      *
      * @param mediaFragment the media fragment
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
-     * @return the url of the media source best describing this fragment
+     * @return the url of the audio file
      */ 
     protected  String getURL(MMObjectNode fragment, Map info) {
         log.debug("Getting url of a fragment.");        
 	String key = URLCache.toKey(fragment, info);
-
-        if (cache.containsKey(key)) {
-            log.debug("Cache hit, key = "+key);
-            return (String)cache.get(key);
+        if(cache.containsKey(key)) {
+		log.debug("Cache hit, key = "+key);
+		return (String)cache.get(key);
 	} else {
-            log.debug("No cache hit, key = "+key);
+		log.debug("No cache hit, key = "+key);
 	}
 
-        List urls = getFilteredURLs(fragment, info);
+	List cacheExpireObjects = new Vector();
+        List urls = getFilteredURLs(fragment, info,cacheExpireObjects);
 	String result = "";
         if (urls.size() > 0) {
             result = ((URLComposer) urls.get(0)).getURL();
         } 
 	// put result in cache
-	// XXX also notify the cache with objects that invalidate the cache
-	log.debug("Add to cache, key=" + key);
-	cache.put(key, result, null);
+	log.debug("Add to cache, key="+key);
+	cache.put(key,result,cacheExpireObjects);
 	return result;
     }
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
         log.debug("Getting format of a fragment.");        
-        List urls = getFilteredURLs(fragment, info);
+	// XXX also cache this ?
+	// XXX can be done in the same cache if we extend the key...
+        List urls = getFilteredURLs(fragment, info,null);
         if (urls.size() > 0) {
             return ((URLComposer) urls.get(0)).getFormat().toString();
         } else {
@@ -368,8 +369,6 @@ public class MediaFragments extends MMObjectBuilder {
             source.parent.removeNode(source);
         }
     }
-
-
 
     // --------------------------------------------------------------------------------
     // These methods are added to be backwards compatible. 

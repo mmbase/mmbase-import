@@ -17,19 +17,18 @@ import java.util.*;
 import java.net.*;
 import java.text.*;
 
-
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: WmSbURLComposer.java,v 1.3 2003-02-18 00:11:16 michiel Exp $
+ * @version $Id: WmSbURLComposer.java,v 1.4 2003-07-11 13:57:03 vpro Exp $
  * @since MMBase-1.7
  */
 public class WmSbURLComposer extends URLComposer {
     
     private static Logger log = Logging.getLoggerInstance(WmSbURLComposer.class.getName());
 
-    public WmSbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public WmSbURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
     }
 
     public boolean canCompose() {

@@ -29,7 +29,7 @@ import java.net.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.11 2003-03-18 10:06:24 pierre Exp $
+ * @author Rob Vermeulen (VPRO)
  * @since MMBase-1.7
  * @see   Config
  */
@@ -37,8 +37,8 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     private static Logger log = Logging.getLoggerInstance(RamURLComposer.class.getName());
     
     protected  Format          format;
-    public RamURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(provider, source, fragment, info);
+    public RamURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info, List cacheExpireObjects) {
+        super(provider, source, fragment, info, cacheExpireObjects);
         this.format = Format.get(source.getIntValue("format"));
     }
     protected StringBuffer  getURLBuffer() {
