@@ -76,6 +76,13 @@
     <td class="navigate">
     <nobr>
     <mm:previousbatches max="20">
+      <mm:first>
+        <mm:index>
+          <mm:compare value="0" inverse="true">
+          ...
+           </mm:compare>
+        </mm:index>
+      </mm:first>
       <a href='<mm:url referids="node,node_type,role_name,direction,search,_search_form_minage,_search_form_maxage">
         <mm:param name="page"><mm:index /></mm:param>
         <!--pass all search field values -->
