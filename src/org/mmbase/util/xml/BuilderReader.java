@@ -28,7 +28,8 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: BuilderReader.java,v 1.2 2003-04-11 17:46:37 kees Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: BuilderReader.java,v 1.3 2003-05-05 11:08:52 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
@@ -88,7 +89,15 @@ public class BuilderReader extends XMLBasicReader {
      * The default value is false, as resolving Inheritance is mandatory when loading builders.
      * @since MMbase-1.6
      */
-    private boolean inheritanceresolved= false;
+    private boolean inheritanceResolved= false;
+
+
+    /**
+     * @since MMBase-1.7
+     */
+    private int maxSearchPos = -1;
+    private int maxInputPos = -1;
+
 
     /**
      * Creates an instance by reading a builder configuration (xml) file.
@@ -112,7 +121,7 @@ public class BuilderReader extends XMLBasicReader {
     public BuilderReader(String filename) {
         this(filename, null);
         // fake resolving inheritance
-        inheritanceresolved=true;
+        inheritanceResolved=true;
     }
 
     /**
@@ -130,18 +139,30 @@ public class BuilderReader extends XMLBasicReader {
      * @throws RuntimeException when the builder to extend from is not allowed as parent
      */
     protected boolean resolveInheritance() {
-        String buildername=getBuilderExtends();
+        String buildername = getBuilderExtends();
         if (buildername.equals("")) {
-            parentBuilder=null;
-            inheritanceresolved=true;
+            parentBuilder = null;
+            inheritanceResolved = true;
         } else {
-            inheritanceresolved=false;
-            if (mmbase!=null) {
+            inheritanceResolved = false;
+            if (mmbase != null) {
                 parentBuilder = mmbase.getBuilder(buildername);
-                inheritanceresolved=(parentBuilder!=null);
+                inheritanceResolved = (parentBuilder != null);
+                if (inheritanceResolved) { // determin maxInputPos, maxSearchPos
+                    Iterator fields = parentBuilder.getFields(FieldDefs.ORDER_EDIT).iterator();
+                    while (fields.hasNext()) {
+                        FieldDefs def = (FieldDefs) fields.next();
+                        if (def.getGUIPos() > maxInputPos) maxInputPos = def.getGUIPos();
+                    }
+                    fields = parentBuilder.getFields(FieldDefs.ORDER_SEARCH).iterator();
+                    while (fields.hasNext()) {
+                        FieldDefs def = (FieldDefs) fields.next();
+                        if (def.getGUISearch() > maxSearchPos) maxSearchPos = def.getGUISearch();
+                    }
+                }
             }
         }
-        return inheritanceresolved;
+        return inheritanceResolved;
     }
 
     /**
@@ -154,7 +175,7 @@ public class BuilderReader extends XMLBasicReader {
      * @see #resolveInheritance()
      */
     public boolean isInheritanceResolved() {
-        return inheritanceresolved;
+        return inheritanceResolved;
     }
 
     /**
@@ -163,7 +184,7 @@ public class BuilderReader extends XMLBasicReader {
      * @return a String decribing the status ("active" or "inactive")
      */
     public String getStatus() {
-        if (!inheritanceresolved) return "inactive";
+        if (!inheritanceResolved) return "inactive";
         String val=getElementValue("builder.status").toLowerCase();
         if (val.equals("")) {
            if (parentBuilder!=null) {
@@ -339,19 +360,29 @@ public class BuilderReader extends XMLBasicReader {
         }
         if (tmp != null) {
             def.setGUIType(getElementValue(tmp));
+        } else {
+            def.setGUIType(""); // it may not be null.
         }
         // Editor
         Element editorpos = getElementByPath(field,"field.editor.input");
-        if (editorpos!=null) {
-            def.setGUIPos( getEditorPos(editorpos));
+        if (editorpos != null) {
+            int inputPos = getEditorPos(editorpos);
+            if (inputPos > -1 && inputPos > maxInputPos) maxInputPos = inputPos;
+            def.setGUIPos(inputPos);
+        } else {
+            def.setGUIPos(++maxInputPos);
         }
         editorpos = getElementByPath(field,"field.editor.list");
         if (editorpos!=null) {
             def.setGUIList( getEditorPos(editorpos));
         }
         editorpos = getElementByPath(field,"field.editor.search");
-        if (editorpos!=null) {
-            def.setGUISearch( getEditorPos(editorpos));
+        if (editorpos != null) {
+            int searchPos = getEditorPos(editorpos);
+            if (searchPos > -1 && searchPos > maxSearchPos) maxSearchPos = searchPos;
+            def.setGUISearch(searchPos);
+        } else {
+            def.setGUISearch(++maxSearchPos);
         }
     }
 
