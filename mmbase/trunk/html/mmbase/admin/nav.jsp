@@ -43,7 +43,7 @@
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top">
     <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
         <hr />
-        <% if("about".equals(category)) { %>
+    <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top"
     ><span class="<%=("about".equals(subcategory)) ? "current" : ""%>menuitem">ABOUT</span></a>
@@ -91,6 +91,12 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top" >
     <span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="/mmbase/packagemanager/index.jsp" />" target="_top" >
+    <span class="<%=("packagemanager".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEMANAGER</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="/mmbase/packagebuilder/index.jsp" />" target="_top" >
+    <span class="<%=("packagebuilder".equals(subcategory)) ? "current" : ""%>menuitem">PACKAGEBUILDER</span></a>
         <% } %>
 </td>
 </tr>
