@@ -35,6 +35,11 @@
   <tr><td>Simple jsp:include/import</td><td>B | B,X</td><td><jsp:include page="writea.jsp"><jsp:param name="a" value="<%=b%>" /></jsp:include></td></tr>
   <tr><td>Simple jsp:include/import</td><td>C | C,X</td><td><jsp:include page="writea.jsp"><jsp:param name="a" value="<%=c%>" /></jsp:include></td></tr>
   <tr><td>Simple jsp:include of list</td><td>A,B | A,B,X</td><td><jsp:include page="writea.jsp"><jsp:param name="a" value="<%=l%>" /></jsp:include></td></tr>
+  <tr><th colspan="3">jsp:include with mm:write request </th></tr>
+  <tr><td>Simple jsp:include</td><td>A | A</td><td><mm:write request="b" referid="a" /><jsp:include page="writeb.jsp" /></td></tr>
+  <tr><td>Simple jsp:include/import</td><td>B | B</td><td><mm:write request="b" referid="b" /><jsp:include page="writeb.jsp" /></td></tr>
+  <tr><td>Simple jsp:include/import</td><td>C | C </td><td><mm:write request="b" referid="c" /><jsp:include page="writeb.jsp" /></td></tr>
+  <tr><td>Simple jsp:include of list</td><td>A, B | A,B</td><td><mm:write request="b" referid="l" /><jsp:include page="writeb.jsp"  /></td></tr>
 </table>
 </body>
 </html>
