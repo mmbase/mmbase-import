@@ -6,20 +6,11 @@
 
 <module>
 
-	<!-- <status>
-		what is the status of this builder options : active or inactive
-	-->
 	<status>inactive</status>
-
-
-	<!-- <classfile>
-		main classfile that this module is defined in
-	-->
 	<classfile>org.mmbase.module.LinkChecker</classfile>
 
-	<!-- <properties>
-		 you can define properties to be used by the classfile (if used) it uses
-		 a key/value system. Its a optional tag.
+	<!-- 
+     @javadoc
 	 -->
 	<properties>
 			<property name="from">linkchecker@mmbase.org</property>
