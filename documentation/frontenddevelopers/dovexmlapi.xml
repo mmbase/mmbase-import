@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>20 july 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.5 2003-02-27 15:48:48 pierre Exp $</edition>
+    <edition>$Id: dovexmlapi.xml,v 1.6 2003-02-27 16:18:40 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -832,11 +832,55 @@
     <example>
       <title>Example:</title>
       <programlisting format="linespecific"><![CDATA[
-      An example is forthcoming
+<request>
+
+  <put>
+    <original>
+      <object number="675" status="change">
+        <field name="firstname">Harrison</field>
+        <field name="lastname">Ford</field>
+        <field name="email">harrisonford@hollywood.com</field>
+      </object>
+      <object number="296" status="delete">
+        <field name="firstname">Carry</field>
+        <field name="lastname">Fisher</field>
+        <field name="email">cfish@yahoo.com</field>
+      </object>
+    </original>
+    <new>
+      <object number="675">
+        <field name="email">harrison@aol.com</field>
+      </object>
+      <object status="new">
+        <field name="firstname">Alec</field>
+        <field name="lastname">Guinness</field>
+        <field name="email">n.a.</field>
+      </object>
+    </new>
+  </put>
+
+</request>
 ]]></programlisting>
       <para></para>
       <programlisting format="linespecific"><![CDATA[
-      An example is forthcoming
+<response>
+
+  <put>
+    <new>
+      <object number="675">
+        <field name="firstname">Harrison</field>
+        <field name="lastname">Ford</field>
+        <field name="email">harrison@aol.com</field>
+      </object>
+      <object number="1423">
+        <field name="firstname">Alec</field>
+        <field name="lastname">Guinness</field>
+        <field name="email">n.a.</field>
+      </object>
+    </new>
+  </put>
+
+</response>
 ]]></programlisting>
     </example>
   </section>
