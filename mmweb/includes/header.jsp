@@ -1,6 +1,8 @@
 <%!
 
     // MM: hard node numbers ?!?!
+    // To create an URL you need a request and a response (jsessionid encoding, contextpath)
+    // these functions can't be right!
 
     /* Transforms a portal node number into the base url for that portal
      * Notice that the old format (/index.jsp?portal=123) will still work
