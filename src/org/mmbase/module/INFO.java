@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: INFO.java,v 1.30 2001-02-07 16:22:49 daniel Exp $
+$Id: INFO.java,v 1.31 2001-03-06 16:18:50 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.30  2001/02/07 16:22:49  daniel
+small fixes on times
+
 Revision 1.29  2001/02/07 10:23:03  daniel
 yet more time methods (yes they should be moved one of these days)
 
@@ -44,7 +47,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  *
- * @$Revision: 1.30 $ $Date: 2001-02-07 16:22:49 $
+ * @$Revision: 1.31 $ $Date: 2001-03-06 16:18:50 $
  */
 public class INFO extends ProcessorModule {
 
@@ -106,9 +109,9 @@ public class INFO extends ProcessorModule {
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
-			if (cmd.equals("COLOR")) return doColor(tok);
-			if (cmd.equals("RANGE")) return doRange(tok);
-			if (cmd.equals("SCANDATE")) return doScanDate(sp,tagger);
+			if (cmd.equals("COLOR")) { tagger.setValue("ITEMS","2"); return doColor(tok); }
+			if (cmd.equals("RANGE")) { tagger.setValue("ITEMS","1"); return doRange(tok); }
+			if (cmd.equals("SCANDATE")) { tagger.setValue("ITEMS","4"); return doScanDate(sp,tagger); }
 		}
 		return null;
 	}
