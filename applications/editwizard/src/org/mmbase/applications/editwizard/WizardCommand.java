@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.4 2002-02-26 14:24:32 pierre Exp $
+ * @version $Id: WizardCommand.java,v 1.5 2002-02-27 12:12:37 pierre Exp $
  */
 public class WizardCommand {
 
@@ -94,15 +94,11 @@ public class WizardCommand {
                 if (!tok.equals("/")) {
                     params.add(tok);
                     st.nextToken();
+                } else {
+                    params.add("");
                 }
             }
         }
-        log.info("type: "+getType()+
-                 "fid : "+getFid()+
-                 "did : "+getDid()+
-                 "otherdid : "+getParameter(2)+
-                 "value : "+getValue());
-
     }
 
     /**
