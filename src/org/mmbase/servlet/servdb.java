@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.52 2003-08-25 15:52:59 vpro Exp $
+ * @version $Id: servdb.java,v 1.53 2003-08-25 16:01:44 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -43,17 +43,8 @@ public class servdb extends JamesServlet {
     private		cacheInterface 		cache;
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
-    //	private		imagesInterface 	images;
     private		MMBase 	mmbase;
-    private		PlaylistsInterface 	playlists;
     private 	sessionsInterface 	sessions;
-    // org.mmbase private 	StatisticsInterface stats;
-    private		static boolean 		flipper		=false;
-
-    int 	minSpeed	= 16000;	// 16 is min for speed
-    int		maxSpeed	= 80000;	// 80 is max for speed
-    int		minChannels	= 1;		// 1 channel is min for channels
-    int		maxChannels	= 2;		// 2 channels is max for channels
 
     /**
      * Construct a servfile worker, it should be places in a worker
@@ -69,8 +60,8 @@ public class servdb extends JamesServlet {
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(servdb.class.getName());
-        playlists = (PlaylistsInterface) getModule("PLAYLISTS");
+        log = Logging.getLoggerInstance(servdb.class);
+
         cache = (cacheInterface) getModule("cache");
         if (cache == null) {
             log.debug("Could not find cache module, proceeding without cache");
@@ -88,8 +79,6 @@ public class servdb extends JamesServlet {
         // Needed because servdb explicitly tests on these maps
         associateMapping("images","/img.db",new Integer(10));
         associateMapping("attachments","/attachment.db",new Integer(10));
-        associateMapping("audio","/rastreams.db",new Integer(10));
-        associateMapping("video","/rmstreams.db",new Integer(10));
     }
 
     // utility method for converting strings to bytes
