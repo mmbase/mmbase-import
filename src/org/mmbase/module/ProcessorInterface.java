@@ -14,20 +14,20 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @javadoc and/or deprecated because it seems to be for scan.
+ * @javadoc
  */
-public interface  ProcessorInterface  {
+public interface ProcessorInterface  {
 
     /**
-     * Returns a virtual builder used to create node lists from the results
-     * returned by getList().
+     * Returns a virtual builder.
+     * Used to create node lists from the results returned by {@link #getList}.
      * The default method does not associate the builder with a cloud (mmbase module),
      * so processormodules that need this association need to override this method.
      * Note that different lists may return different builders.
      * @param command the LIST command for which to retrieve the builder
      * @param params contains the attributes for the list
      */
-    public MMObjectBuilder getListBuilder(String command,Map params);
+    public MMObjectBuilder getListBuilder(String command, Map params);
 
     /**
      * Generate a list of values from a command to the processor.
@@ -37,33 +37,43 @@ public interface  ProcessorInterface  {
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values contained in MMObjectNode objects
      */
-    public Vector getNodeList(Object context,String command, Map params) throws ParseException;
+    public Vector getNodeList(Object context, String command, Map params) throws ParseException;
 
     /**
-     * Generate a list of values from a command to the processor
+     * Generate a list of values from a command to the processor.
      * @param sp the page context
      * @param tagger contains the attributes for the list
      * @param command the list command to execute.
      */
-    abstract public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException;
+    public Vector getList(scanpage context, StringTagger tagger, String value) throws ParseException;
 
     /**
-     * Execute the commands provided in the form values
+     * Execute the commands provided in the form values.
+     * @param sp the page context
+     * @param cmds contains the list of commands to run
+     * @param vars contains the attributes for the process
      */
-    abstract public boolean process(scanpage sp, Hashtable cmds,Hashtable vars);
+    public boolean process(scanpage context, Hashtable cmds, Hashtable vars);
 
     /**
-     *    Replace a command by a string
+     * Replace a command by a string.
+     * @param sp the page context
+     * @param command the command to execute.
      */
-    abstract public String replace (scanpage sp, String command);
+    public String replace (scanpage context, String command);
 
     /**
-     *    Replace a command by a string
+     * Replace a command by a string.
+     * @param sp the page context
+     * @param command the command to execute
      */
-    abstract public String replace (scanpage sp, StringTagger command);
+    public String replace (scanpage context, StringTagger command);
 
     /**
-     * Do a cache check (304) for this request
+     * Do a cache check (304) for this request.
+     * @param sp the page context
+     * @param command the command to execute.
      */
-    abstract public boolean cacheCheck(scanpage sp,String cmd);
+    public boolean cacheCheck(scanpage context, String command);
 }
+
