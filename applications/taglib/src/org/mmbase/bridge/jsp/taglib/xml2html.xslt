@@ -212,11 +212,11 @@
 <xsl:template name="tagref">
   <xsl:param name="file" select="false()" />
   <xsl:param name="type" select="'all'" />
-  <xsl:param name="tag" />
+  <xsl:param name="tag"/>
+  <xsl:param name="attribute" select="''" /> 
   <xsl:variable name="usefile" select="$file or (not($type='all') and not(/taglib/*[name = $tag]/type and contains(/taglib/*[name = $tag]/type, $type)))" />
-  <xsl:param name="attribute" />   
   <xsl:if test="$usefile"><xsl:value-of select="$tag" />.jsp</xsl:if>
-  <xsl:if test="$attribute or not($usefile)">#<xsl:value-of select="$tag" /></xsl:if>
+  <xsl:if test="not($attribute='') or not($usefile)">#<xsl:value-of select="$tag" /></xsl:if>
   <xsl:if test="$attribute">.<xsl:value-of select="$attribute" /></xsl:if>
 </xsl:template>
 
