@@ -52,9 +52,9 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.20 2004-01-15 12:38:26 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.21 2004-02-16 15:31:07 keesj Exp $
  */
-public abstract class FileWatcher  {
+public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
 
     private static FileWatcherRunner fileWatchers = new FileWatcherRunner();
@@ -78,7 +78,7 @@ public abstract class FileWatcher  {
      * #DEFAULT_DELAY}.
      */
     private long delay = DEFAULT_DELAY;
-    private Set files       = new HashSet();
+    private Set files = new HashSet();
     private Set removeFiles = new HashSet();
     private boolean stop = false;
     private boolean continueAfterChange = false;
@@ -93,8 +93,7 @@ public abstract class FileWatcher  {
         continueAfterChange = c;
     }
 
-
-    public void start() {        
+    public void start() {
         fileWatchers.add(this);
     }
     /**
@@ -117,9 +116,10 @@ public abstract class FileWatcher  {
      */
     public void add(File file) {
         FileEntry fe = new FileEntry(file);
-        synchronized(this) {
+        synchronized (this) {
             files.add(fe);
-            if (removeFiles.remove(fe)) log.service("Canceling removal from filewatcher " + fe);
+            if (removeFiles.remove(fe))
+                log.service("Canceling removal from filewatcher " + fe);
         }
     }
 
@@ -136,7 +136,7 @@ public abstract class FileWatcher  {
      * Remove file from the watch-list
      */
     public void remove(File file) {
-        synchronized(this) {
+        synchronized (this) {
             removeFiles.add(file);
         }
     }
@@ -144,7 +144,7 @@ public abstract class FileWatcher  {
     /**
      */
     public void exit() {
-        synchronized(this) {
+        synchronized (this) {
             stop = true;
         }
     }
@@ -164,11 +164,11 @@ public abstract class FileWatcher  {
      *
      */
     private boolean changed() {
-        synchronized(this) {
+        synchronized (this) {
             Iterator i = files.iterator();
-            while(i.hasNext()) {
-                FileEntry fe = (FileEntry) i.next();
-                if(fe.changed()) {
+            while (i.hasNext()) {
+                FileEntry fe = (FileEntry)i.next();
+                if (fe.changed()) {
                     log.debug("the file :" + fe.getFile().getAbsolutePath() + " has changed.");
                     try {
                         onChange(fe.getFile());
@@ -188,20 +188,20 @@ public abstract class FileWatcher  {
     }
 
     private void removeFiles() {
-        synchronized(this) {
+        synchronized (this) {
             // remove files if necessary
             Iterator ri = removeFiles.iterator();
             while (ri.hasNext()) {
-                File f = (File) ri.next();
+                File f = (File)ri.next();
                 FileEntry found = null;
 
                 // search the file
                 Iterator i = files.iterator();
                 while (i.hasNext()) {
-                    FileEntry fe = (FileEntry) i.next();
+                    FileEntry fe = (FileEntry)i.next();
                     if (fe.getFile().equals(f)) {
-                        if (log.isDebugEnabled()){
-                            log.debug("removing file["+ fe.getFile().getName() +"]");
+                        if (log.isDebugEnabled()) {
+                            log.debug("removing file[" + fe.getFile().getName() + "]");
                         }
                         found = fe;
                         break;
@@ -219,15 +219,16 @@ public abstract class FileWatcher  {
     /**
      * Looks if we have to stop
      */
-    private boolean mustStop(){
-        synchronized(this) {
+    private boolean mustStop() {
+        synchronized (this) {
             return stop;
         }
     }
 
     public boolean equals(Object o) {
-        if (! (o instanceof FileWatcher)) return false;
-        FileWatcher f = (FileWatcher) o;
+        if (!(o instanceof FileWatcher))
+            return false;
+        FileWatcher f = (FileWatcher)o;
         return this.getClass().equals(f.getClass()) && this.files.equals(f.files);
     }
 
@@ -268,17 +269,28 @@ public abstract class FileWatcher  {
      */
     private static class FileWatcherRunner extends Thread {
 
+        /**
+         * Set of wachters
+         */
         private Set watchers = new HashSet();
+
+        /**
+         * Set of wachters to be added. This set is used because
+         * in the run method of the this thread the filewachter implementation might decide to 
+         * add a new fileWachter (for example in in the onChange method) 
+         */
+        private Set watchersToAdd = new HashSet();
+
         FileWatcherRunner() {
-            super("MMBase FileWatchers");
+            super("MMBase FileWatcher thread");
             log.info("Starting the file-watcher thread");
             setPriority(MIN_PRIORITY);
             setDaemon(true);
         }
 
         void add(FileWatcher f) {
-            synchronized(watchers) {
-                watchers.add(f);
+            synchronized (watchersToAdd) {
+                watchersToAdd.add(f);
             }
         }
 
@@ -290,17 +302,17 @@ public abstract class FileWatcher  {
             do {
                 try {
                     long now = System.currentTimeMillis();
-                    synchronized(watchers) {
+                    synchronized (watchers) {
                         Iterator i = watchers.iterator();
                         while (i.hasNext()) {
-                            FileWatcher f = (FileWatcher) i.next();
+                            FileWatcher f = (FileWatcher)i.next();
                             if (now - f.lastCheck > f.delay) {
-                                if(log.isDebugEnabled()) {
-                                    log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " +
-                                              "Currently watching: " + f.getClass().getName() + " " + f.toString());
+                                if (log.isDebugEnabled()) {
+                                    log.trace("Filewatcher will sleep for : " + f.delay / 1000 + " s. " + "Currently watching: " + f.getClass().getName() + " " + f.toString());
                                 }
                                 // System.out.print(".");
                                 f.removeFiles();
+                                //changed returns true if we can stop watching
                                 if (f.changed() || f.mustStop()) {
                                     if (log.isDebugEnabled()) {
                                         log.debug("Removing filewatcher " + f + " " + f.mustStop());
@@ -310,17 +322,27 @@ public abstract class FileWatcher  {
                                 f.lastCheck = now;
                             }
                         }
+                        synchronized (watchersToAdd) {
+                            if (watchersToAdd.size() > 0) {
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Adding" + watchersToAdd);
+                                }
+                                watchers.addAll(watchersToAdd);
+                                watchersToAdd.clear();
+                            }
+                        }
                     }
                     Thread.sleep(THREAD_DELAY);
-                } catch(InterruptedException e) {
+                } catch (InterruptedException e) {
                     log.error("Interrupted" + Logging.stackTrace(e));
                     // no interruption expected
-                } catch (Throwable ex) { 
+                } catch (Throwable ex) {
                     // unexpected exception?? This run method should never interrupt, so we catch everything.
-                    log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage()  + Logging.stackTrace(ex));
+                    log.error("Exception: " + ex.getClass().getName() + ": " + ex.getMessage() + Logging.stackTrace(ex));
                 }
                 // when we found a change, we exit..
-            } while (true);
+            }
+            while (true);
         }
     }
 
@@ -343,23 +365,23 @@ public abstract class FileWatcher  {
      */
     private class FileEntry {
         // static final Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
-        private long lastModified=-1;
-        private boolean exists=false;
+        private long lastModified = -1;
+        private boolean exists = false;
         private File file;
 
         public FileEntry(File file) {
-            if(file == null) {
+            if (file == null) {
                 String msg = "file was null";
                 // log.error(msg);
                 throw new RuntimeException(msg);
             }
-            exists=file.exists();
-            if(!exists) {
+            exists = file.exists();
+            if (!exists) {
                 // file does not exist. A change will be triggered
                 // once the file comes into existence
-log.info("file :"  + file.getAbsolutePath() + " did not exist (yet)");
-                log.debug("file :"  + file.getAbsolutePath() + " did not exist (yet)");
-                lastModified=-1;
+                log.info("file :" + file.getAbsolutePath() + " did not exist (yet)");
+                log.debug("file :" + file.getAbsolutePath() + " did not exist (yet)");
+                lastModified = -1;
             } else {
                 lastModified = file.lastModified();
             }
@@ -374,18 +396,18 @@ log.info("file :"  + file.getAbsolutePath() + " did not exist (yet)");
         public boolean changed() {
             if (file.exists()) {
                 if (!exists) {
-                    log.info("file :"  + file.getAbsolutePath() + " added");
+                    log.info("file :" + file.getAbsolutePath() + " added");
                     return true;
                 } else {
-                    boolean result=lastModified < file.lastModified();
+                    boolean result = lastModified < file.lastModified();
                     if (result) {
-                        log.info("file :"  + file.getAbsolutePath() + " changed");
+                        log.info("file :" + file.getAbsolutePath() + " changed");
                     }
                     return result;
                 }
             } else {
                 if (exists) {
-                    log.info("file :"  + file.getAbsolutePath() + " removed");
+                    log.info("file :" + file.getAbsolutePath() + " removed");
                 }
                 return exists;
             }
@@ -395,7 +417,7 @@ log.info("file :"  + file.getAbsolutePath() + " did not exist (yet)");
          * Call if changes were treated.
          */
         public void updated() {
-            exists=file.exists();
+            exists = file.exists();
             if (exists) {
                 lastModified = file.lastModified();
             } else {
@@ -413,10 +435,10 @@ log.info("file :"  + file.getAbsolutePath() + " did not exist (yet)");
 
         public boolean equals(Object o) {
             if (o instanceof FileEntry) {
-                FileEntry fe = (FileEntry) o;
+                FileEntry fe = (FileEntry)o;
                 return file.equals(fe.file);
             } else if (o instanceof File) {
-                return file.equals((File) o);
+                return file.equals((File)o);
             }
             return false;
         }
