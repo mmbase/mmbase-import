@@ -20,9 +20,12 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * @version $Id: XMLBuilderReader.java,v 1.17 2000-08-22 11:32:53 daniel Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.18 2000-08-29 10:55:24 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.17  2000/08/22 11:32:53  daniel
+ * small fix for maintainer default
+ *
  * Revision 1.16  2000/08/18 19:42:13  case
  * cjr: Fixed bug whereby adding <?xml version="1.0"?> and <!DOCTYPE blabla>
  *      to the top of the xml file resulted in a parse error.
@@ -220,26 +223,22 @@ public class XMLBuilderReader extends XMLBasicReader {
     }
 
     /**
-    * get the properties of this builder
-    *
-    * XXX Eh, is this in the builder format? -cjr
+    * Get the properties of this builder
     */
     public Hashtable getProperties() {
         Hashtable hash=new Hashtable();
-        Element e = getElementByPath("builder.names");
-        Node n3=e.getFirstChild();
-        while (n3!=null) {
-            String val=n3.getNodeValue();
-            if (n3.getNodeName().equals("property")) {
-                Node n4=n3.getFirstChild();
-                NamedNodeMap nm=n3.getAttributes();
-                if (nm!=null) {
-                    Node n5=nm.getNamedItem("name");
-                    hash.put(n5.getNodeValue(),n4.getNodeValue());
-                }
-            }
-            n3=n3.getNextSibling();
-        }
+        Element e = getElementByPath("builder.properties");
+	if (e!=null) {
+	    Enumeration enum = getChildElements(e,"property");
+	    Element p;
+	    String name, value;
+	    while (enum.hasMoreElements()) {
+		p = (Element)enum.nextElement();
+		name = getElementAttributeValue(e,"name");
+		value = getElementValue(e);
+		hash.put(name,value);
+	    }
+	}
         return(hash);
     }
 
