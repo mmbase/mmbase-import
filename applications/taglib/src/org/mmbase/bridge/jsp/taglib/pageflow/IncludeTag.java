@@ -46,7 +46,6 @@ public class IncludeTag extends UrlTag {
     private static  Set invalidIncludingAppServerRequestClasses = new HashSet();
 
     static {
-        invalidIncludingAppServerRequestClasses.add("com.evermind.server.http.EvermindHttpServletRequest");  // Orion
     }
     
     protected int debugtype = DEBUG_NONE;
@@ -68,7 +67,7 @@ public class IncludeTag extends UrlTag {
     }
 
     protected void doAfterBodySetValue() throws JspTagException {        
-    	includePage();
+        includePage();
     }
 
     /**
@@ -155,15 +154,18 @@ public class IncludeTag extends UrlTag {
             String targetEncoding   = resp.getCharacterEncoding();
             log.debug("encoding: " + targetEncoding);
         }
+
         ResponseWrapper response = new ResponseWrapper(resp);
-  
+
         if (log.isDebugEnabled()) {
             log.debug("req Parameters");
             Map params = req.getParameterMap();
             Iterator i = params.entrySet().iterator();
+            Object o;
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                log.debug("key '" + e.getKey() + "' value '" + e.getKey() + "'");
+                o=e.getValue();
+                log.debug("key '" + e.getKey() + "' value '" + e.getValue().toString() + "'");
             }
         }
 
@@ -189,7 +191,7 @@ public class IncludeTag extends UrlTag {
             Iterator i = params.entrySet().iterator();
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
-                log.debug("key '" + e.getKey() + "' value '" + e.getKey() + "'");
+                log.debug("key '" + e.getKey() + "' value '" + e.getValue() + "'");
             }
         }
     }
@@ -241,8 +243,12 @@ public class IncludeTag extends UrlTag {
      */
     protected void includePage() throws JspTagException {
         try {
+			// Variables to keep track of which level we are at and what URI is current
+            int includeLevel;
+            String includeURI="";
+            String previncludeURI="";
+
             String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
-                                                           
             
             if (pageLog.isServiceEnabled()) {
                 pageLog.service("Parsing mm:include JSP page: " + gotUrl);
@@ -265,8 +271,30 @@ public class IncludeTag extends UrlTag {
             if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+
                
             if (nudeUrl.indexOf(':') == -1) { // relative
+				// This code, which passes the RequestURI through Attributes is necessary
+				// Because Orion doesn't adapt the RequestURI when using the RequestDispatcher
+				// This breaks relative includes of more than 1 level.
+
+                // Fetch includelevel en reqeust URI from Attributes.
+                Integer level=(Integer)request.getAttribute("includeTagLevel");
+                if (level==null) {
+                    includeLevel=0;
+                } else {
+                    includeLevel=level.intValue();
+                }
+                includeURI=(String)request.getAttribute("includeTagURI");
+                if (includeLevel==0 || includeURI==null) {
+                    includeURI=request.getRequestURI();
+                    paramsIndex = includeURI.indexOf('?');
+                    if (paramsIndex != -1) {
+                        includeURI = includeURI.substring(0, paramsIndex);
+                    }
+                } 
+                log.debug("Include: Level="+includeLevel+" URI="+includeURI);
+
                 if (nudeUrl.charAt(0) == '/') {
                     log.debug("URL was absolute on servletcontext");
                     urlString = gotUrl;
@@ -278,8 +306,8 @@ public class IncludeTag extends UrlTag {
                         // nude-Url   : is the relative path to this dir
                         // canonicalPath: to get rid of /../../ etc
                         // replace:  windows uses \ as path seperator..., but they may not be in URL's.. 
-                        new java.io.File(new java.io.File(request.getRequestURI()).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
-                    
+                        new java.io.File(new java.io.File(includeURI).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
+                   
                     // getCanonicalPath gives also gives c: in windows:
                     // take it off again if necessary:
                     int colIndex = urlString.indexOf(':');
@@ -289,6 +317,20 @@ public class IncludeTag extends UrlTag {
                         urlString = urlString.substring(colIndex + 1) + params;
                     }
                 }
+
+                // Increase level and put it together with the new URI in the Attributes of the request
+                includeLevel++;
+                request.setAttribute("includeTagLevel",new Integer(includeLevel));
+                // keep current URI so we can retrieve it after the include
+                previncludeURI=includeURI;
+                includeURI=urlString;
+                paramsIndex = includeURI.indexOf('?');
+                if (paramsIndex != -1) {
+                    includeURI = includeURI.substring(0, paramsIndex);
+                }
+                request.setAttribute("includeTagURI",includeURI);
+                log.debug("Next Include: Level="+includeLevel+" URI="+includeURI);
+
                 if (cite) {
                     cite(bodyContent, urlString, request); 
                 } else {
@@ -298,6 +340,10 @@ public class IncludeTag extends UrlTag {
                         internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
                     }
                 }
+                // Reset include level and URI to previous state
+                includeLevel--;
+                request.setAttribute("includeTagLevel",new Integer(includeLevel));
+                request.setAttribute("includeTagURI",previncludeURI);
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
                                                                // also no need to encode the URL.
