@@ -1,0 +1,19 @@
+<provider>
+	<info name="MMBase" description="Dit is een test provider" />
+
+	<application name="MyNews">
+		<user name"MMBase" />
+		<user name"submarin" />
+	</application>
+
+	<application name="BasicJumpers">
+		<user name"submarin" />
+	</application>
+
+	<application name="test">
+		<user name"submarin" />
+	</application>
+
+	<userinfo user="submarin" password="brrr" />
+	<userinfo user="MMBase" password="hebebs" />
+</provider>

@@ -1,0 +1,4 @@
+<PROCESSOR MMBASE>
+	<LIST OBJECTS TYPE="mags" WHERE="title=='MyNews magazine'" FIELDS="number">
+	<GOTO /mmexamples/mynews/scan/index.shtml?$ITEM1>
+</LIST>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<insrel exportsource="mmbase://127.0.0.1/install/b1" timestamp="20000602143030">
+	<node number="91" owner="system" snumber="69" dnumber="75" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="113" owner="admin" snumber="71" dnumber="79" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="89" owner="admin" snumber="63" dnumber="81" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="111" owner="admin" snumber="71" dnumber="73" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="87" owner="system" snumber="60" dnumber="69" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="109" owner="admin" snumber="65" dnumber="73" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="85" owner="admin" snumber="63" dnumber="73" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="107" owner="admin" snumber="67" dnumber="73" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="105" owner="system" snumber="60" dnumber="67" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="103" owner="system" snumber="60" dnumber="65" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="101" owner="system" snumber="60" dnumber="63" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="99" owner="system" snumber="60" dnumber="71" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="97" owner="admin" snumber="60" dnumber="83" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="95" owner="system" snumber="69" dnumber="77" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="93" owner="admin" snumber="69" dnumber="73" rtype="related" dir="bidirectional">
+	</node>
+
+</insrel>
