@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.23.2.1 2002-11-28 10:28:51 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.23.2.2 2003-04-03 16:03:26 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -166,7 +166,7 @@ public class ObjectTypes extends TypeDef {
      * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
-        log.info("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+        log.info("Commit of builder-node with name '" + node.getStringValue("name") + "' (#" + node.getNumber() + ")");
 
         // in future make it also possible to change active / not active... als builder merging, first make this work!
         // TODO: merging code!
@@ -319,7 +319,7 @@ public class ObjectTypes extends TypeDef {
             String file = builder.getConfigFile().getAbsoluteFile().getParent();
             if (log.isDebugEnabled()) log.debug("builder file:" + file);
             return file;
-        }
+        }  
         // builder was inactive... try to get the correct path in some other way :(
         String pathInBuilderDir = mmb.getBuilderPath(node.getStringValue("name"), "");
         if(pathInBuilderDir != null) {
@@ -337,7 +337,7 @@ public class ObjectTypes extends TypeDef {
     /**
      */
     protected  MMObjectBuilder loadBuilder(MMObjectNode node) {
-        if (log.isDebugEnabled()) log.debug("Load builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+        if (log.isDebugEnabled()) log.debug("Load builder '" + node.getStringValue("name") + "' (#"+node.getNumber()+")");
         String path = getBuilderPath(node);
         // remove everything till last '/builders/'
         // TODO: find a better way for whole file location stuff
