@@ -7,16 +7,16 @@
 </head>
 <body>
 <form>
-<mm:cloud method="http"><!-- make sure the user is logged in, because	editwizard sometimes is buggy -->
-    <h1>Editwizard - samples</h1>
+<mm:cloud rank="basic user"><!-- make sure the user is logged in, because	editwizard sometimes is buggy -->
+  <h1>Editwizard - samples</h1>
   <p>
-   This example adds a logo to the default editwizard XSL's.
+    This example adds a logo to the default editwizard XSL's.
   </p>
-    <table>
-  <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
-  <tr><td>
+  <table>
+    <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%></mm:import>
+    <tr><td>
     <a href="<mm:url referids="referrer" page="/mmbase/edit/wizard/jsp/list.jsp?wizard=../samples/people&nodepath=people&fields=firstname,lastname,owner" />" >Person-Test</a>
-  </td><td>
+    </td><td>
   A simple one-step person editor. First-name, last-name and related articles.
   </td></tr>
   <tr><td>
