@@ -8,13 +8,13 @@
 <tr><th>The MMBase taglib editors</th></tr>
 <tr><td class="data">
 <p>
-These are the <a href="http://www.mmbase.org/" target="_new">MMBase</a> generic editors, based on 
-<a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+3747+projects" target="_new">
+These are the <a href="http://www.mmbase.org/" target="_blank">MMBase</a> generic editors, based on 
+<a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+3747+projects" target="_blank">
 MMCI</a> (version 1.0) with usage of 
-<a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+6176+projects" target="_new">
+<a href="http://www.mmbase.org/mmbasenew/index3.shtml?development+452+6176+projects" target="_blank">
 Taglibs</a> (version 1.0), created by 
-<a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+547+427+organization" target="_new">NOS Internet</a> under the 
-<a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+541+3649+documentation" target="_new">Mozilla License 1.0</a>
+<a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+547+427+organization" target="_blank">NOS Internet</a> under the 
+<a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+541+3649+documentation" target="_blank">Mozilla License 1.0</a>
 </p>
 <p>
   version of the editors: 2002-03-28

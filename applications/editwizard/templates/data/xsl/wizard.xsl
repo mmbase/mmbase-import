@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.67 2002-08-15 15:25:24 michiel Exp $
+  @version $Id: wizard.xsl,v 1.68 2002-08-20 07:39:27 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -495,13 +495,13 @@
         <xsl:when test="@ftype='file'">
           <xsl:choose>
             <xsl:when test="@dttype='data'">
-              <a target="_new" href="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a>
+              <a target="_blank" href="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a>
             </xsl:when>
             <xsl:otherwise>
               <nobr><input type="hidden" name="{@fieldname}" value="YES" />
                 <xsl:choose>
                   <xsl:when test="not(upload)"><xsl:call-template name="prompt_no_file" /><br />
-                  <a target="_new" href="{node:function(cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
+                  <a target="_blank" href="{node:function(cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a><br />
                   </xsl:when>
                   <xsl:otherwise><xsl:call-template name="prompt_uploaded" /><xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text>(<xsl:value-of select="round((upload/@size) div 100) div 10" />K)<br />
                   </xsl:otherwise>
