@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.18 2002-11-08 20:23:49 michiel Exp $
+#  $Id: cvsmail,v 1.19 2002-11-08 20:30:00 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -27,7 +27,7 @@ my $dir = shift @files;
 
 my $child;
 if ($child = fork()) {
-    exit 1; # be 'ready' immediatiely, don't let the commiter wait
+    exit 0; # be 'ready' immediatiely, don't let the commiter wait
 } else { 
     sleep 5;
     # mesages are on  STDIN:

@@ -3,7 +3,7 @@
   <head>
    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
   </head>
- 
+  <mm:import externid="from" from="parameters">this page</mm:import>
     <h1>Cloud method='asis' attribute then loginpage.</h1>
     <p>
       Logged out in previous-page, so 'asis' must be anonymous:
@@ -18,6 +18,9 @@
         You are logged in as: <%=cloud.getUser().getIdentifier() %>
         (must not be anonymous)
       </mm:cloud>
+    </p>
+    <p>
+     From: <mm:write referid="from" /> (must be '4' if you clicked from cloud4.jsp)
     </p>
   <hr />
   <a href="cloud4.jsp">Previous</a><br />
