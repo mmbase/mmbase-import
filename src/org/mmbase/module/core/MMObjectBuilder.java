@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.197 2002-12-06 15:58:25 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.198 2002-12-11 12:04:25 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2328,8 +2328,12 @@ public class MMObjectBuilder extends MMTable {
         return rtn;
     }
     /**
-     * Like getValue, but without the 'old' code.
+     * Like getValue, but without the 'old' code (short_ html_ etc). This is for
+     * protected use, when you are sure this is not used, and you can
+     * avoid the overhead.
+     *
      * @since MMBase-1.6
+     * @seet #getValue
      */
 
     protected Object getObjectValue(MMObjectNode node, String field) {
@@ -2388,8 +2392,22 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Executes a 'function' on a MMObjectNode. The function is
+     * identified by a string, and its arguments are passed by a List.
+     *
+     * The function 'info' should exist, and this will return a Map
+     * with descriptions of the possible functions.
+     *
+     * Override executeFunction in your extension if you want to add functions.
+     *
+     * @param node The node on which the function must be executed
+     * @param function The string identifying the funcion
+     * @param arguments The list with function argument or null (which means 'no arguments')
+     *
+     * @see #executeFunction
      * @since MMBase-1.6
      */
+    // package because called from MMObjectNode
     final Object getFunctionValue(MMObjectNode node, String function, List arguments) {
 
         Object rtn = null;
@@ -2406,8 +2424,14 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Executes a function on the field of a node, and returns the result.
+     * This method is called by the builder's {@link #getValue} method.
+     * Derived builders should override this method to provide additional functions.
+    * 
      * @since MMBase-1.6
-     * @throw IllegalArgumentException if the argument List does not fit the function
+     * @throw IllegalArgumentException if the argument List does not
+     * fit the function
+     * @see #executeFunction
      */
 
     protected Object executeFunction(MMObjectNode node, String function, List arguments) {
