@@ -21,7 +21,7 @@ import org.mmbase.util.xml.XMLWriter;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.21 2004-03-05 10:41:25 michiel Exp $
+ * @version $Id: Generator.java,v 1.22 2004-10-09 09:37:32 nico Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -40,7 +40,7 @@ public class Generator {
      *
      * @param documentBuilder The DocumentBuilder which will be used to create the Document.
      * @param cloud           The cloud from which the data will be.
-     * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder
+     * @see   org.mmbase.util.xml.DocumentReader#getDocumentBuilder()
      */
     public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, Cloud cloud) {
         DOMImplementation impl = documentBuilder.getDOMImplementation();
@@ -80,7 +80,7 @@ public class Generator {
      * @return the generated xml as a (formatted) string
      */
     public String toString(boolean ident) {
-        return XMLWriter.write(document, true);
+        return XMLWriter.write(document, ident);
     }
 
     private void addCloud() {
@@ -90,8 +90,8 @@ public class Generator {
     /**
      * Adds a field to the DOM Document. This means that there will
      * also be added a Node if this is necessary.
-     * @param An MMbase bridge Node.
-     * @param An MMBase bridge Field.
+     * @param node An MMbase bridge Node.
+     * @param fieldDefinition An MMBase bridge Field.
      */
     public void add(org.mmbase.bridge.Node node, Field fieldDefinition) {
         if (cloud == null) {
@@ -121,7 +121,7 @@ public class Generator {
         field.setAttribute("name", fieldDefinition.getName());
         // now fill it with the new info...
         // format
-        field.setAttribute("format", getFieldFormat(node, fieldDefinition));
+        field.setAttribute("format", getFieldFormat(fieldDefinition));
         // the value
         switch (fieldDefinition.getType()) {
         case Field.TYPE_XML :
@@ -187,6 +187,8 @@ public class Generator {
     }
     /**
      * Creates an Element which represents a bridge.Node with all fields unfilled.
+     * @param node MMbase node
+     * @return Element which represents a bridge.Node
      */
     private Element getNode(org.mmbase.bridge.Node node) {
         // MMBASE BUG...
@@ -277,7 +279,7 @@ public class Generator {
         return fieldContent;
     }
 
-    private String getFieldFormat(org.mmbase.bridge.Node node, Field field) {
+    private String getFieldFormat(Field field) {
         switch (field.getType()) {
         case Field.TYPE_XML :
             return "xml";

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.util.xml;
 
 import org.apache.xpath.XPathAPI;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.mmbase.bridge.*;
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.10 2004-09-29 07:10:24 pierre Exp $
+ * @version $Id: DateFormat.java,v 1.11 2004-10-09 09:37:31 nico Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -44,6 +43,8 @@ public class DateFormat {
     /**
      * TimeZone null or blank means server timezone. If timeZone is not
      * recognized it will fall back to GMT.
+     * @param timeZone String representation of a timezine
+     * @return TimeZone object or the default timezone when id does not exist
      */
     private static TimeZone getTimeZone(String timeZone) {
         if (timeZone == null || "".equals(timeZone.trim())) {
@@ -62,7 +63,9 @@ public class DateFormat {
      * @param number the number or alias of the node containing the field
      * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
-     * @param timeZone  timezone
+     * @param timeZone  timezone of the field value
+     * @param language Language of the field value
+     * @param country country  of the field value
      * @return the formatted string
      */
     public static String format(String number, String fieldName, String pattern, String timeZone, String language, String country) {
@@ -76,7 +79,9 @@ public class DateFormat {
      * @param number the number or alias of the node containing the field
      * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
-     * @param timeZone  timezone
+     * @param timeZone  timezone of the field value
+     * @param language Language of the field value
+     * @param country country  of the field value
      * @return the formatted string
      */
     public static String format(String cloudName, String number, String fieldName, String pattern, String timeZone, String language, String country) {
@@ -92,11 +97,11 @@ public class DateFormat {
 
     /**
      * Formats a node's field value with the date pattern
-     * @param cloudName the cloud in which to find the node
+     * @param cloud the cloud in which to find the node
      * @param number the number or alias of the node containing the field
      * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
-     * @param timeZone  timezone
+     * @param timeZone  timezone of the field value
      * @return the formatted string
      */
     public static String format(Cloud cloud, String number, String fieldName, String pattern, String timeZone) {
@@ -115,10 +120,12 @@ public class DateFormat {
 
     /**
      * Formats the fieldvalue to a date pattern
-     *
-     * @param fieldvalue  time-stamp in seconds
+     * 
+     * @param fieldValue  time-stamp in seconds
      * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
-     * @param timeZone  timezone
+     * @param timeZone  timezone of the field value
+     * @param language Language of the field value
+     * @param country country  of the field value
      * @return the formatted string
      */
     public static String format(String fieldValue, String pattern, String timeZone, String language, String country) {
@@ -132,12 +139,21 @@ public class DateFormat {
      * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
      * @param language  The language for which the date must be formatted.
+     * @param country   The country for which the date must be formatted.
      * @return the formatted string
      */
     public static String format(String fieldValue, String pattern, int factor, String timeZone, String language, String country) {
         return format(fieldValue, pattern, factor, timeZone, new Locale(language, country));
     }
 
+    /**
+     * @param fieldValue  time-stamp
+     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
+     * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
+     * @param timeZone  Timezone. Null or blank means server timezone. If not recognized it will fall back to GMT.
+     * @param locale    The locale for which the date must be formatted.
+     * @return
+     */
     protected static String format(String fieldValue, String pattern, int factor, String timeZone, Locale locale) {
         if (fieldValue == null || "".equals(fieldValue)) {
            return "";
@@ -151,10 +167,12 @@ public class DateFormat {
      * Formats a node's field value with the date pattern.
      * This version requires you to supply a DOM node. It will search for a tag of the form
      * &lt;field name='number' &gt; and uses it's contents to retrieve the node.
-     * @param cloudName the cloud in which to find the node
+     * @deprecated not sure where this is used?
+     * @param cloud the cloud in which to find the node
      * @param node A DOM node (xml) containing the node's fields as subtags
-     * @param fieldname the name of the field to format
+     * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+     * @param timeZone The timezone of the field value
      * @return the formatted string
      * @throws javax.xml.transform.TransformerException if something went wrong while searching the DOM Node
      */
@@ -182,6 +200,7 @@ public class DateFormat {
     public static int getMonth(String fieldValue) {
         return getDatePart(fieldValue, 1000, Calendar.MONTH, "") + 1;
     }
+    
     /** Returns the day of the month part of the date
      *
      * @param fieldValue  time-stamp
@@ -190,6 +209,7 @@ public class DateFormat {
     public static int getDay(String fieldValue) {
         return getDatePart(fieldValue, 1000, Calendar.DAY_OF_MONTH, "");
     }
+    
     /** Returns the hours part of the date
      *
      * @param fieldValue  time-stamp
@@ -198,6 +218,7 @@ public class DateFormat {
     public static int getHours(String fieldValue) {
         return getDatePart(fieldValue, 1000, Calendar.HOUR_OF_DAY, "");
     }
+    
     /** Returns the minutes part of the date
      *
      * @param fieldValue  time-stamp
@@ -206,6 +227,7 @@ public class DateFormat {
     public static int getMinutes(String fieldValue) {
         return getDatePart(fieldValue, 1000, Calendar.MINUTE, "");
     }
+    
     /** Returns the seconds part of the date
      *
      * @param fieldValue  time-stamp
@@ -234,6 +256,7 @@ public class DateFormat {
     public static int getMonth(String fieldValue, String timeZone) {
         return getDatePart(fieldValue, 1000, Calendar.MONTH, timeZone) + 1;
     }
+    
     /** Returns the day of the month part of the date
      *
      * @param fieldValue  time-stamp
@@ -243,6 +266,7 @@ public class DateFormat {
     public static int getDay(String fieldValue, String timeZone) {
         return getDatePart(fieldValue, 1000, Calendar.DAY_OF_MONTH, timeZone);
     }
+    
     /** Returns the hours part of the date
      *
      * @param fieldValue  time-stamp
@@ -252,6 +276,7 @@ public class DateFormat {
     public static int getHours(String fieldValue, String timeZone) {
         return getDatePart(fieldValue, 1000, Calendar.HOUR_OF_DAY, timeZone);
     }
+    
     /** Returns the minutes part of the date
      *
      * @param fieldValue  time-stamp
@@ -261,6 +286,7 @@ public class DateFormat {
     public static int getMinutes(String fieldValue, String timeZone) {
         return getDatePart(fieldValue, 1000, Calendar.MINUTE, timeZone);
     }
+    
     /** Returns the seconds part of the date
      *
      * @param fieldValue  time-stamp

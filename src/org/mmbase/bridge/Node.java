@@ -20,17 +20,19 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.50 2004-09-22 14:50:37 pierre Exp $
+ * @version $Id: Node.java,v 1.51 2004-10-09 09:39:31 nico Exp $
  */
 public interface Node {
 
     /**
      * Returns the cloud this node belongs to.
+     * @return the Cloud
      */
     public Cloud getCloud();
 
     /**
      * Returns the node manager for this node.
+     * @return the node manager
      */
     public NodeManager getNodeManager();
 
@@ -58,7 +60,7 @@ public interface Node {
      * Returns this as a Relation.
      * @since MMBase-1.6
      * @return a <code>Relation</code> object
-     * @throws ClasscastException if the Node is not a Relation
+     * @throws ClassCastException if the Node is not a Relation
      */
     public Relation toRelation();
 
@@ -73,7 +75,7 @@ public interface Node {
      * Returns this as a NodeManager.
      * @since MMBase-1.6
      * @return a <code>NodeManager</code> object
-     * @throws ClasscastException if the Node is not a NodeManager
+     * @throws ClassCastException if the Node is not a NodeManager
      */
     public NodeManager toNodeManager();
 
@@ -88,7 +90,7 @@ public interface Node {
      * Returns this as a RelationManager.
      * @since MMBase-1.6
      * @return a <code>NodeManager</code> object
-     * @throws ClasscastException if the Node is not a RelationManager
+     * @throws ClassCastException if the Node is not a RelationManager
      */
     public RelationManager toRelationManager();
 
@@ -197,10 +199,24 @@ public interface Node {
     public void setStringValue(String fieldName, String value);
 
     /**
+     * Sets the value of the specified field using a <code>Date</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
      * @since MMBase-1.8
      */
     public void setDateValue(String fieldName, Date value);
+
+    
     /**
+     * Sets the value of the specified field using a <code>List</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
      * // not yet working
      * @since MMBase-1.8
      */
@@ -220,9 +236,10 @@ public interface Node {
 
     /**
      * Returns the field's value as an object. It is not delegated to the right get--Value.
+     * @param fieldName name of the field
+     * @return object value
      * @since MMBase-1.7
      */
-
     public Object getObjectValue(String fieldName);
 
     /**
@@ -246,9 +263,9 @@ public interface Node {
      * original field value to a Node, by trying to retrieve a Node using
      * the field value as a Node number or alias.<br />
      * For instance, getNodeValue("destination"), when run on a OAlias object,
-     * returns the referenced destination node (instead of teh number, which is
+     * returns the referenced destination node (instead of the number, which is
      * what it normally holds).<br />
-     * Mosty, this call is used in cluster nodes (nodes retrived by using the
+     * Mostly, this call is used in cluster nodes (nodes retrieved by using the
      * Cloud.getList method. A cluster node returns one of its compound nodes
      * when an appropriate nodemanager name (name from the nodepath) is specified.
      * I.e. getNodeValue("people") will return the people-node in the cluster.
@@ -264,7 +281,7 @@ public interface Node {
      *
      * @param fieldName  the name of the field to be returned
      * @return           the value of the specified field
-     * @see Cloud#getList
+     * @see Cloud#getList(String, String, String, String, String, String, String, boolean)
      */
     public Node getNodeValue(String fieldName);
 
@@ -348,11 +365,15 @@ public interface Node {
     public String getStringValue(String fieldName);
 
     /**
+     * @param fieldName  the name of the field to be returned
+     * @return           the value of the specified field
      * @since MMBase-1.8
      */
     public Date getDateValue(String fieldName);
 
     /**
+     * @param fieldName  the name of the field to be returned
+     * @return           the value of the specified field
      * not yet working
      * @since MMBase-1.8
      */
@@ -428,6 +449,7 @@ public interface Node {
 
     /**
      * Converts the node to a string
+     * @return string representation of a node
      */
     public String toString();
 
@@ -537,6 +559,10 @@ public interface Node {
 
 
     /**
+     * @param role forward role of a relation
+     * @param nodeManager node manager on the other side of the relation 
+     * @param searchDir the direction of the relation
+     * @return List of relations
      * @since MMBase-1.7
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
@@ -551,7 +577,7 @@ public interface Node {
     /**
      * Returns the number of relation nodes attached to this node that have a
      * specific relation manager.
-     *
+     * @param relationManager relation manager
      * @return the number of relation nodes attached to this node that have a
      *         specific relation manager
      */
@@ -647,6 +673,10 @@ public interface Node {
 
 
     /**
+     * @param otherNodeManager the node manager the nodes should have
+     * @param role the role of the relation
+     * @param searchDir the direction of the relation
+     * @return number of related nodes
      * @since MMBase-1.7
      */
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir);

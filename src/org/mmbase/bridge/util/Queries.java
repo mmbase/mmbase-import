@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.44 2004-09-30 14:54:55 pierre Exp $
+ * @version $Id: Queries.java,v 1.45 2004-10-09 09:37:34 nico Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -36,6 +36,8 @@ abstract public  class Queries {
     /**
      * Translates a string to a search direction constant. If the string is <code>null</code> then
      * 'BOTH' is returned.
+     * @param search string representation of the searchdir constant
+     * @return Searchdir constant (@link RelationStep)
      * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
@@ -59,11 +61,22 @@ abstract public  class Queries {
     }
 
     /**
-     * Creates a Query object using arguments for {@link Cloud#getList} (this function is of course
-     * implemented using this utility). This is useful to convert (legacy) code which uses
+     * Creates a Query object using arguments for {@link Cloud#getList(String, String, String, String, String, String, String, boolean)}
+     * (this function is of course implemented using this utility). This is useful to convert (legacy) code which uses
      * getList, but you want to use new Query features without rewriting the complete thing.
      *
      * It can also be simply handy to specify things as Strings.
+     * 
+     * @param cloud
+     * @param startNodes
+     * @param nodePath
+     * @param fields
+     * @param constraints
+     * @param orderby
+     * @param directions
+     * @param searchDir
+     * @param distinct
+     * @return
      * @todo Should this method be part of Cloud itself?
      */
     public static Query createQuery(Cloud cloud, String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct) {
@@ -135,6 +148,8 @@ abstract public  class Queries {
     /**
      * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing)
      * This is used by createQuery (i wonder if it still makes sense)
+     * @param constraints constraint to check
+     * @return is valid constraint
      */
     static private boolean validConstraints(String constraints) {
         // first remove all the escaped "'" ('' occurences) chars...
@@ -201,6 +216,8 @@ abstract public  class Queries {
      * Converts a constraint by turning all 'quoted' fields into
      * database supported fields.
      * XXX: todo: escape characters for '[' and ']'.
+     * @param constraints constraint to convert
+     * @return Converted constraint
      */
     private static String convertClausePartToDBS(String constraints) {
         // obtain dbs for fieldname checks
@@ -234,6 +251,8 @@ abstract public  class Queries {
      * Converts a constraint by turning all 'quoted' fields into
      * database supported fields.
      * XXX: todo: escape characters for '[' and ']'.
+     * @param constraints constraints to convert
+     * @return converted constraint
      */
     private static String convertClauseToDBS(String constraints) {
         if (constraints.startsWith("MMNODE")) {
@@ -279,9 +298,16 @@ abstract public  class Queries {
     }
 
     /**
+<<<<<<< Queries.java
+     * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
+     * by a string. Alreading existing constraints remain ('AND' is used)
+     * @param query query to add constraint to
+     * @param constraints string representation of constraints
+=======
      * Adds a 'legacy' constraint to the query, such as constraint(s) represented
      * by a string.
      * Alreading existing constraints remain ('AND' is used)
+>>>>>>> 1.43
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
@@ -304,7 +330,13 @@ abstract public  class Queries {
     }
 
     /**
+<<<<<<< Queries.java
+     * Adds a Constraint to the already present constraint (with AND). 
+     * @param query query to add the constraint to
+     * @param newConstraint constraint to add
+=======
      * Adds a Constraint to the already present constraint (with AND).
+>>>>>>> 1.43
      * @return The new constraint.
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
@@ -330,7 +362,10 @@ abstract public  class Queries {
 
     /**
      * Creates a operator constant for use by createConstraint
-     * @see #createConstraint
+     * @param s String representation of operator
+     * @return FieldCompareConstraint operator constant
+     * @see #createConstraint(Query, String, int, Object)
+     * @see #createConstraint(Query, String, int, Object, Object, boolean)
      */
     public static int getOperator(String s) {
         String op = s.toUpperCase();
@@ -362,6 +397,9 @@ abstract public  class Queries {
     }
     /**
      * Used in implementation of createConstraint
+     * @param stringValue string representation of a number
+     * @return Number object
+     * @throws BridgeException when failed to convert the string
      */
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         try {
@@ -377,6 +415,10 @@ abstract public  class Queries {
 
     /**
      * Used in implementation of createConstraint
+     * @param fieldType Field Type constant (@link Field)
+     * @param operator Compare operator
+     * @param value value to convert
+     * @return new Compare value
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
 
@@ -430,6 +472,11 @@ abstract public  class Queries {
     /**
      * Defaulting version of {@link #createConstraint(Query, String, int, Object, Object, boolean)}.
      * Casesensitivity defaults to false, value2 to null (so 'BETWEEN' cannot be used).
+     * @param query      The query to create the constraint for
+     * @param fieldName  The field to create the constraint on (as a string, so it can include the step), e.g. 'news.number'
+     * @param operator   The operator to use. This constant can be produces from a string using {@link #getOperator(String)}.
+     * @param value      The value to compare with, which must be of the right type. If field is number it might also be an alias.
+     * @return The new constraint, or <code>null</code> it by chance the specified arguments did not lead to a new actual constraint (e.g. if value is an empty set)
      */
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value) {
         return createConstraint(query, fieldName, operator, value, null, false);
@@ -506,14 +553,14 @@ abstract public  class Queries {
      * Constraints on different steps then the given 'sourceStep' are ignored. CompositeConstraints
      * cause recursion and would work too (but same limitation are valid for the childs).
      *
-     * @param Constraint The constrain to be copied (for example the result of sourceQuery.getConstraint()).
+     * @param c          The constrain to be copied (for example the result of sourceQuery.getConstraint()).
      * @param sourceStep The step in the 'source' query.
      * @param query      The receiving query
      * @param step       The step of the receiving query which must 'receive' the sort orders.
      * @since MMBase-1.7.1
      * @see   org.mmbase.storage.search.implementation.BasicSearchQuery#copyConstraint Functions are similar
      * @throws IllegalArgumentException If the given constraint is not compatible with the given step.
-     * @throws UnsuporteOperationException If CompareFieldsConstraints or LegacyConstraints are encountered.
+     * @throws UnsupportedOperationException If CompareFieldsConstraints or LegacyConstraints are encountered.
      * @return The new constraint or null
      */
     public static Constraint copyConstraint(Constraint c, Step sourceStep, Query query, Step step) {
@@ -618,6 +665,8 @@ abstract public  class Queries {
 
     /**
      * Converts a String to a SortOrder constant
+     * @param dir string representation of direction of sortorder
+     * @return SortOrder constant
      * @since MMBase-1.7.1
      */
     public static int getSortOrder(String dir) {
@@ -639,6 +688,9 @@ abstract public  class Queries {
 
     /**
      * Adds sort orders to the query, using two strings. Like in 'getList' of Cloud. Several tag-attributes need this.
+     * @param query query to add the sortorders to
+     * @param sorted string with comma-separated fields
+     * @param directions string with comma-separated directions
      *
      * @todo implement for normal query.
      * @return The new sort orders
@@ -681,6 +733,8 @@ abstract public  class Queries {
 
     /**
      * Returns substring of given string without the leading digits (used in 'paths')
+     * @param complete string with leading digits
+     * @return string with digits removed
      */
     protected static String removeDigits(String complete) {
         int end = complete.length() - 1;
@@ -693,6 +747,9 @@ abstract public  class Queries {
     /**
      * Adds path of steps to an existing query. The query may contain steps already. Per step also
      * the 'search direction' may be specified.
+     * @param query extend this query
+     * @param path create steps from this path
+     * @param searchDirs add steps with these relation directions
      * @return The new steps.
      */
     public static List addPath(Query query, String path, String searchDirs) {
@@ -767,9 +824,10 @@ abstract public  class Queries {
 
     /**
      * Adds a number of fields. Fields is represented as a comma separated string.
+     * @param query The query where the fields should be added to 
+     * @param fields a comma separated string of fields
      * @return The new stepfields
      */
-
     public static List addFields(Query query, String fields) {
         List result = new ArrayList();
         if (fields == null || fields.equals("")) {
@@ -793,8 +851,16 @@ abstract public  class Queries {
      * another then this found step.
      *
      * Furthermore may the nodes by identified by their alias, if they have one.
+<<<<<<< Queries.java
+     * @param query query to add the startnodes
+     * @param startNodes start nodes 
+     * 
+     * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery(List, List, String, List, String, List, List, int)
+     * (this is essentially a 'bridge' version of the startnodes part)
+=======
      *
      * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery (this is essentially a 'bridge' version of the startnodes part)
+>>>>>>> 1.43
      */
     public static void addStartNodes(Query query, String startNodes) {
         if (startNodes == null || "".equals(startNodes) || "-1".equals(startNodes)) {
@@ -867,6 +933,8 @@ abstract public  class Queries {
 
     /**
      * Takes the query, and does a count with the same constraints (so ignoring 'offset' and 'max')
+     * @param query query as base for the count
+     * @return number of results
      */
     public static int count(Query query) {
         Cloud cloud = query.getCloud();
@@ -921,6 +989,8 @@ abstract public  class Queries {
 
     /**
      * Searches a list of Steps for a step with a certain name. (alias or tableName)
+     * @param steps steps to search through
+     * @param stepAlias alias to search for
      * @return The Step if found, otherwise null
      * @throws ClassCastException if list does not contain only Steps
      */
@@ -951,6 +1021,7 @@ abstract public  class Queries {
      * Returns the NodeQuery returning the given Node. This query itself is not very useful, because
      * you already have its result (the node), but it is convenient as a base query for many other
      * goals.
+     * @param node Node to create the query from
      * @return A new NodeQuery object
      */
     public static NodeQuery createNodeQuery(Node node) {
@@ -964,6 +1035,10 @@ abstract public  class Queries {
 
     /**
      * Returns a query to find the nodes related to the given node.
+     * @param node start node 
+     * @param otherNodeManager node manager on the other side of the relation
+     * @param role role of the relation
+     * @param direction direction of the relation
      * @return A new NodeQuery object
      */
     public static NodeQuery createRelatedNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
@@ -976,6 +1051,10 @@ abstract public  class Queries {
 
     /**
      * Returns a query to find the relations nodes of the given node.
+     * @param node start node
+     * @param otherNodeManager node manager on the other side of the relation
+     * @param role role of the relation
+     * @param direction direction of the relation
      * @return A new NodeQuery object
      */
     public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
@@ -990,6 +1069,7 @@ abstract public  class Queries {
     /**
      * Add a sortorder (DESCENDING) on al the'number' fields of the query, on which there is not yet a
      * sortorder. This ensures that the query result is ordered uniquely.
+     * @param q query to change
      * @return The changed Query
      */
     public static Query sortUniquely(Query q) {

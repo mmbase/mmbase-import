@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.117 2004-09-17 09:25:44 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.118 2004-10-09 09:37:33 nico Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -89,6 +89,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
+     * @param cloudName name of cloud
+     * @param cloud parent cloud
      */
     BasicCloud(String cloudName, BasicCloud cloud) {
         cloudContext = cloud.cloudContext;
@@ -107,6 +109,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     /**
+     * @param name name of cloud
+     * @param authenticationType authentication type
+     * @param loginInfo Map with login credentials
+     * @param cloudContext cloudContext of cloud
      */
     BasicCloud(String name, String authenticationType, Map loginInfo, CloudContext cloudContext) {
         // get the cloudcontext and mmbase root...
@@ -290,6 +296,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * Retrieves a node manager
      * @param nodeManagerId ID of the NodeManager to retrieve
      * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
+     * @throws NotFoundException node manager not found
      */
     public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException {
         return getNodeManager(typedef.getValue(nodeManagerId));
@@ -298,9 +305,9 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     /**
      * Retrieves a RelationManager.
      * Note that you can retrieve a manager with source and destination reversed.
-     * @param sourceManagerID number of the NodeManager of the source node
-     * @param destinationManagerID number of the NodeManager of the destination node
-     * @param roleID number of the role
+     * @param sourceManagerId number of the NodeManager of the source node
+     * @param destinationManagerId number of the NodeManager of the destination node
+     * @param roleId number of the role
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
@@ -572,6 +579,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      * Aggregating query result.
+     * @param query query to execute
+     * @return list of nodes
      * @since MMBase-1.7
      */
     protected NodeList getResultNodeList(Query query) {
@@ -609,9 +618,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * Result with all Cluster - MMObjectNodes, with cache. Security is not considered here (the
      * query is executed thoughtlessly). The security check is done in getSecureNodes, which calls
      * this one.
+     * @param query query to execute
+     * @return list of cluster nodes
      * @since MMBase-1.7
      */
-
     protected List    getClusterNodes(Query query) {
 
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
@@ -635,6 +645,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     /**
+     * @param query add security constaint to this query
+     * @return is query secure 
      * @since MMBase-1.7
      */
     boolean setSecurityConstraint(Query query) {
@@ -709,6 +721,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     /**
      * Result with Cluster Nodes (checked security)
+     * @param query query to execute
+     * @return lisr of cluster nodes
      * @since MMBase-1.7
      */
     protected NodeList getSecureList(Query query) {
@@ -819,8 +833,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * 'last' NodeManager and the relation should be queried.  If fields are present already, but
      * not like this, an exception is thrown. If not fields are present, the rights fields are added
      * first (if the query is still unused, otherwise trhows Exception).
+     * @param query query to execute
+     * @return list of normal nodes
      *
-     * @throws BridgException If wrong fields in query or could not be added.
+     * @throws BridgeException If wrong fields in query or could not be added.
      *
      * @since MMBase-1.7
      */
@@ -836,6 +852,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @todo There is no specific order in which clouds are ordered at this moment.
      *       Currently, all clouds within one CloudContext are treated as being equal.
      * @param o the object to compare it with
+     * @return compare number
      */
     public int compareTo(Object o) {
         int h1 = ((Cloud)o).getCloudContext().hashCode();
@@ -857,6 +874,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @todo Add checks for multiple clouds in the same cloudcontext
      *       Currently, all clouds within one CloudContext are treated as being equal.
      * @param o the object to compare it with
+     * @return is equal
      */
     public boolean equals(Object o) {
         // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext

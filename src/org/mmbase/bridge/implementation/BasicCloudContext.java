@@ -22,7 +22,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.34 2004-06-12 11:00:38 eduard Exp $
+ * @version $Id: BasicCloudContext.java,v 1.35 2004-10-09 09:37:32 nico Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -132,6 +132,9 @@ public class BasicCloudContext implements CloudContext {
 
     /**
      * Create a temporary scanpage object.
+     * @param rq ServletRequest
+     * @param resp ServletResponse
+     * @return temporary scanpage
      */
     static scanpage getScanPage(ServletRequest rq, ServletResponse resp) {
         scanpage sp = new scanpage();
