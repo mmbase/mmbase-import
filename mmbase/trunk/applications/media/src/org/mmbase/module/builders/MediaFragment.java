@@ -106,6 +106,36 @@ public class MediaFragment extends MMObjectBuilder {
         return ""; //getAudiopartUrl(mmb,sp,number,userSpeed,userChannels);
     }
     
+    private String getUrl(int starttime, int stoptime) {
+        
+    }
+    
+    /**
+     * which is the mediasource we want to return.
+     */
+    private MMObjectNode findBestMediaSource(int userSpeed, int userChannels) {
+        
+    }
+    
+    /**
+     * if a mediafragment is coupled to another mediafragment instead of being directly
+     * coupled to mediasources, the mediafragment is a subfragment.
+     * @return true if the mediafragment is coupled to another fragment, false otherwise.
+     */
+    private boolean isSubFragment(int nodenr) {
+        MMObjectNode node = getNode(nodenr);
+        
+        return (!node.getRelationCount("mediasources") && node.getRelationCount("mediafragments"))
+    }
+    
+    /**
+     * get all mediasources belonging to this mediafragment
+     */
+    private Enumeration getMediaSources() {
+        MMobjectNode node = getNode(nodenr);
+        return node.getRelations("mediasources");
+    }
+    
     /**
      * used by the editors
      */
