@@ -1401,9 +1401,9 @@ Change directory to ${build.dir}/orion and run:
                file="${expand.dir}/${hsql.version}"/>
                
     <!-- hsqldb -->
-    <property name="hsqldb.version" value="hsqldb_v.1.61"/>
+    <property name="hsqldb.version" value="hsqldb_1_7_0_RC6a"/>
     <property name="hsqldb.url" value="http://belnet.dl.sourceforge.net/sourceforge/hsqldb/${hsqldb.version}.zip"/>
-    <property name="hsqldb.jar" value="${expand.dir}/${hsqldb.version}/lib/hsqldb.jar"/>
+    <property name="hsqldb.jar" value="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
     <available property="hsqldb.present"
                file="${download.dir}/${hsqldb.version}.zip"/>
     <available property="hsqldb.expanded"
