@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.13 2004-02-13 10:45:20 gerard Exp $
+ * @version $Id: CommunityPrc.java,v 1.14 2004-03-08 14:10:37 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -71,7 +71,7 @@ public class CommunityPrc extends ProcessorModule {
      */
     public void init() {
         // load MMBase and make sure it is started first
-        mmb = (MMBase)getModule("MMBASEROOT", true);
+        mmb = MMBase.getMMBase();
         activate();
     }
 
@@ -79,23 +79,25 @@ public class CommunityPrc extends ProcessorModule {
      * Initialize the community and activate it if all builders are present.
      * @since MMBase-1.7
      */
-    public boolean activate() {
+    protected boolean activate() {
         if (!active) {
-            messageBuilder = (Message) mmb.getMMObject("message");
+
+            messageBuilder = (Message) mmb.getBuilder("message");
             if (messageBuilder == null  || !messageBuilder.activate()) {
-                log.warn("Community module could not be activated because message builder missing or could not be activated");
+                log.warn("Community module could not be activated because message builder missing or could not be activated (" + messageBuilder + ")");
                 return false;
             }
-            communityBuilder = (Community)mmb.getMMObject("community");
+            communityBuilder = (Community)mmb.getBuilder("community");
             if (communityBuilder == null || !communityBuilder.activate()) {
                 log.info("Community builder missing or could not be activated. Communityprc can work without it though.");
             }
-            channelBuilder = (Channel) mmb.getMMObject("channel");
+            channelBuilder = (Channel) mmb.getBuilder("channel");
             if (channelBuilder == null || ! channelBuilder.activate()) {
                 log.info("Channel builder missing or could not be activated. Communityprc can work without it though.");
             }
             initializeTreeBuilder();
             active = true;
+            log.service("Community module was activated sucessfully");
         }
         return active;
     }
@@ -305,6 +307,7 @@ public class CommunityPrc extends ProcessorModule {
      * @param params contains the attributes for the list
      */
     public MMObjectBuilder getListBuilder(String command, Map params) {
+        activate();
         if (command.equals("TREE")) return treeBuilder;
         if (command.equals("WHO") || command.equals("TEMPORARYRELATIONS")) {
             String type=(String)params.get("TYPE");
@@ -324,9 +327,10 @@ public class CommunityPrc extends ProcessorModule {
      * @return a <code>Vector</code> that contains the list values as MMObjectNodes
      */
     public Vector getNodeList(Object context, String command, Map params) throws ParseException {
+        activate();
         if (command.equals("WHO")) return channelBuilder.getNodeListUsers(params);
         if (command.equals("TEMPORARYRELATIONS")) return getNodeListTemporaryRelations(params);
-        return super.getNodeList(context,command,params);
+        return super.getNodeList(context,command, params);
     }
 
     /**
@@ -343,8 +347,11 @@ public class CommunityPrc extends ProcessorModule {
             if (command.equals("TREE")) return messageBuilder.getListMessages(params);
             if (command.equals("WHO")) return channelBuilder.getListUsers(params);
             if (command.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(params);
+            throw new ParseException("Unknown command '" + command + "'");
+        } else {
+            throw new RuntimeException("CommunityPrc module could not be activated");
+            // return null; // returning null gives NPE in ProcessorModule, how nice it that?
         }
-        return null; // returning null gives NPE in ProcessorModule, how nice it that?
     }
 
     /**
@@ -390,6 +397,7 @@ public class CommunityPrc extends ProcessorModule {
      * </ul>
      */
     public Vector getNodeListTemporaryRelations(Map params) {
+        activate();
         String number = (String)params.get("NODE");
         MMObjectNode node;
         if (number == null) {
