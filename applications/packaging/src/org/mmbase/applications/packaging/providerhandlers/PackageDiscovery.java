@@ -27,7 +27,6 @@ import org.w3c.dom.*;
  * the provider and feeds them to the package and bundle managers.
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class PackageDiscovery implements Runnable {
     private static Logger log = Logging.getLoggerInstance(PackageDiscovery.class);

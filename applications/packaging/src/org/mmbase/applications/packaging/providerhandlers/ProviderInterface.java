@@ -18,7 +18,6 @@ import org.mmbase.applications.packaging.projects.*;
  * Interface for all the provider handlers
  *
  * @author     danielockeloen
- * @created    July 20, 2004
  */
 public interface ProviderInterface {
 
