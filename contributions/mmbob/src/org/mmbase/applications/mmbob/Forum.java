@@ -707,7 +707,12 @@ public class Forum {
         if (nm != null) {
             Node pnode = nm.createNode();
             pnode.setStringValue("account", account);
-            pnode.setStringValue("password", password);
+
+            org.mmbase.util.transformers.MD5 md5 = new org.mmbase.util.transformers.MD5();
+            String md5passwd = md5.transform(password);
+
+            pnode.setStringValue("password", md5passwd);
+            //  pnode.setStringValue("password",password);
             pnode.setIntValue("postcount", 0);
             pnode.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
             pnode.setIntValue("lastseen", ((int) (System.currentTimeMillis() / 1000)));
@@ -765,6 +770,7 @@ public class Forum {
      */
     public void childRemoved(Poster p) {
         posters.remove(p);
+        syncNode(ForumManager.SLOWSYNC);
     }
 
     /**
