@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.74 2005-04-01 14:04:17 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.75 2005-04-01 14:11:55 michiel Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -128,16 +128,18 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         parent = null;
         searchedParent = false;
 
-        if (referid != Attribute.NULL) {
+        int s = getScope();
+        if (referid != Attribute.NULL || (s != PageContext.PAGE_SCOPE && getId() != null)) {
             Object o;
-            int s = getScope();
             if (s == PageContext.PAGE_SCOPE) {
                 o = getObject(referid.getString(this));
             } else {
-                o = pageContext.getAttribute(referid.getString(this), s);
-                if (o != null) {
-                    log.info("Found context in " + scope + " " + o);
+                String id = referid.getString(this);
+                if (id.equals("")) {
+                    id = getId();
+                    if (id == null) throw new JspTagException("Must use id or referid attributes when using 'scope' attibute of context tag");
                 }
+                o = pageContext.getAttribute(id, s);
             }
             if (o == null || "".equals(o)) { // that means, lets ignore it.
                 createContainer(getContextProvider().getContextContainer());
@@ -296,9 +298,11 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         }
         int s = getScope();
         if (s != PageContext.PAGE_SCOPE) {
-            log.info("Setting to " + scope + " " + container);
-            pageContext.setAttribute(getId(), container, s);
-            
+            String id = getId();
+            if (id == null) {
+                id = referid.getString(this);
+            }
+            pageContext.setAttribute(id, container, s);            
         }
         container.release(); // remove the vars from 'page-context' again if necessary.
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
