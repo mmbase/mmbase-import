@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.TransformingBodyContent;
 import org.mmbase.bridge.User;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.*;
@@ -33,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.22 2004-06-14 12:52:08 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.23 2004-06-14 14:29:21 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
