@@ -1600,10 +1600,14 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("substring")) {
             Vector v=getFunctionParameters(field);
             try {
-                int wrappos=Integer.parseInt((String)v.get(0));
-                String val=node.getStringValue((String)v.get(1));
-                log.debug("WRAPPOS="+wrappos);
-                rtn=wrap(val,wrappos);
+                String val=node.getStringValue((String)v.get(0));
+                int len=Integer.parseInt((String)v.get(1));
+		if (v.size()>2) {
+			String filler=(String)v.get(2);
+                	rtn=substring(val,len,filler);
+		} else {
+                	rtn=substring(val,len,null);
+		}
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
@@ -2638,5 +2642,22 @@ public class MMObjectBuilder extends MMTable {
 			dst.append(word);
 		}
 		return(dst.toString());
+	}
+
+	private String substring(String value,int len,String filler) {
+		if (filler==null) {
+			if (value.length()>len) {
+				return(value.substring(0,len));
+			} else {
+				return(value);
+			}
+		} else {
+			int len2=filler.length();
+			if ((value.length()+len2)>len) {
+				return(value.substring(0,(len-len2))+filler);
+			} else {
+				return(value);
+			}
+		}
 	}
 }
