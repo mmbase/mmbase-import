@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.27 2004-02-25 19:39:23 michiel Exp $
+ * @version $Id: Users.java,v 1.28 2004-04-19 16:19:52 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -124,14 +124,18 @@ public class Users extends MMObjectBuilder {
             } else {
                 List ranks =  userNode.getRelatedNodes("mmbaseranks", RelationStep.DIRECTIONS_DESTINATION);
                 if (ranks.size() > 1) {
-                    throw new SecurityException("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
+                    log.warn("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
                 }
+                rank = Rank.ANONYMOUS;
                 if (ranks.size() == 0) {
                     log.debug("No ranks related to this user");
-                    rank = Rank.ANONYMOUS;
                 } else {
-                    Ranks rankBuilder = Ranks.getBuilder();
-                    rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
+                    Iterator i = ranks.iterator();
+                    while (i.hasNext()) {
+                        Ranks rankBuilder = Ranks.getBuilder();
+                        Rank r = rankBuilder.getRank((MMObjectNode) i.next());
+                        if (r.compareTo(rank) > 0) rank = r; // choose the highest  one
+                    }
                 }
             }
             rankCache.put(userNode, rank);
@@ -242,7 +246,7 @@ public class Users extends MMObjectBuilder {
     /**
      * Gets the usernode by userName (the 'identifier'). Or 'null' if not found.
      */
-    MMObjectNode getUser(String userName)   {
+    public MMObjectNode getUser(String userName)   {
         MMObjectNode user = (MMObjectNode) userCache.get(userName);
         if (user == null) {
             NodeSearchQuery nsq = new NodeSearchQuery(this);
