@@ -22,14 +22,17 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
-
 [1.6.4]
-- Improved documentation
-- Added search facilities to the editwizard list page. Made the error page configurable.
-  Added the searchdir attribute to list and relation creation tags. Made optionlist sortable.
-- Added functionality to the jsp editors: you can now create an object as you add a relation.
-  Added a shortlist option for the editors to make the pages a bit more userfriendly.
-  Fills in default age.
+- jsp editors: 
+  - you can now create an object as you add a relation.
+  - Added a shortlist option for the editors to make the pages a bit
+    more userfriendly (wish #6062).
+  - Fills in default age.
+- Security: Rank has been backported from cvs-head. You can create
+  your own ranks now.
+- A CharacterEncodingFilter has been added. This can be used to set
+  the character encoding of a request if the browser didn't set
+  one. To use it, uncomment the lines in the web.xml. 
 
 [1.6.3]
 - added ConvertDummy class, which can be used if ImageMagic or JAI are unavailable
@@ -77,9 +80,28 @@ General New Features:
 - Builder extension (not completely finished)
 
 
+------------------------
+Editwizard New Features:
+------------------------
+[1.6.4]
+- Added search facilities to the editwizard list page. 
+- Made the error page configurable. 
+- Added the searchdir attribute to list and relation creation
+  tags. 
+- Made optionlist sortable.
+- Added the forcesearch attribute (see wish #6079).
+- Added list attribute "destinationtype' to replace 'destination'
+  (destination still available for backward-compatiblity)
+- improved searchbox, so you can now search on owner and number
+- added search-type attribute to allow for more search posibilities
+- dtd version has been upgraded to 1.1
+
+
 --------------------------
 Documentation New Features:
 --------------------------
+[1.6.4]
+- Documentation has been improved a lot.
 
 [1.6.3]
 [1.6.2]
@@ -94,14 +116,16 @@ Documentation New Features:
 ---------------------
 MMCI New Features:
 ---------------------
+[1.6.4]
+- ContextProvider.getDefaultCloudContext() has been backported from
+  cvs-head to make it easier to port applications to MMBase-1.6.4
+
 [1.6.3]
 [1.6.2]
 - Inheritance support in getAllowed relations
-
 - (rmmci) improved support for casting (a nodemanager extends a node etc)
 - (rmmci) iterators work
 - (rmmci) rmmci target has been added to the build.xml
-
 
 [1.6.1]
 [1.6.0]
@@ -128,14 +152,23 @@ Taglib New Features:
 - mm:locale : for setting country locale and language
 - mm:cloud tag: new loginpage attribute
 
+
 ---------------------
 Examples New Features:
 ---------------------
 [1.6.4]
+- new version of my_editors. Most important changes:
+  - creating an object while creating a relation is possible
+  - updated look-and-feel (better useability)
+  - support for inheritance (bug #5998)
+- new editwizard example for overriding stylesheets (based on vpro's 3voor12
+  wizards)
+
 [1.6.3]
 [1.6.2]
 - jsp editors use MMCI 1.2 features now (getAllowedRelations etc), and use their error-page
 - new version of my_editors
+
 [1.6.1]
 [1.6.0]
 - Alternative jsp-editors (aka my_editors) added as an example.
@@ -148,7 +181,6 @@ BUG FIXES AND IMPROVEMENTS:
 ------------------
 General Bug Fixes:
 ------------------
-
 [1.6.4]
 - #6073 Flash does not pass image parameters to servlet
 - #6071 html() field format function does not escape properly 
@@ -160,15 +192,30 @@ General Bug Fixes:
 - #6030/5933 ConvectImageMagick issues warnings.
 - #6024 Unable to search on fields with reserved word name in the JSP Editors.
 - #6007 Config files (modules) etc. still use bad public IDs 
-  
+- #5993 Multilevel queries of parents are not invalidated
+- #6103 Cannot associate functionality with servdb
+- #6124 Reldef returns role instead of buildername in old
+        systems. Roles that are not themselves buildernames now return
+	'insrel' in older systems
+- #6106 Deleting relations with jsp-editors give error message
+- #6024 Unable to search on fields with reserved word name in
+        jsp-editors 
+- #6133 Servdb throws NUllpointerException when determining mirror
+        server
+- #6030 ImageMagick blocked when using jdk1.4
+- #6052 Problems with setting start/stop times in audioparts
+        (scaneditors) 
+- FileWatcher backported from cvs-head (uses only one thread, so likely better
+  performance)
+
 [1.6.3]
 - #5978 MMInformix42Node throws nullpointer as reading empty
-  database-field
+        database-field
 - #5969 MMInformix42Node ignores notnull-fields
 - #5960 search on 'object' in multilevel fails. This fix needs to be
-  tested.
+        tested.
 - #5994 TypeDef.getAllowedRelationType returned typerel number instead
-  of reldef number
+        of reldef number
 
 [1.6.2]
  - Bytearray fields are not queried by default any more this was resulting in
@@ -207,8 +254,9 @@ General Bug Fixes:
 ---------------------
 Editwizard bug fixes:
 ---------------------
-
 [1.6.4]
+- #6072 Cannot list number in wizard list
+- #3563 pupup wizards cannot upload images
 - #6132 javascript validation makes editors a bit sluggish in browsers   	
 - #6129 multiple 'startwizard' commands fail  	
 - #6123 If title is emplty, then IE shows empty page.  	
@@ -220,26 +268,26 @@ Editwizard bug fixes:
 - #6089 In [action type=delete] the language setting doesn't work  	
 - #6081 No authority check on startwizard to related object 
 - #6080 Debug page doesn't work when sessionkey used 
-- #6072 Cannot list number in wizard list 
 - #6041 Cannot search for number in editwizard relation search
 - #6040 Search LIKE in editwizards not case-insenstitive 
 - #6035 Wizards don't work if server=tomcat and client refuses cookies.  
-- #6029 Cannot show 'number' field in wizards
 - #6021 Wizards do not check required fields 
 - #6020 Invalid lists are not checked outside the form they are in
 - #6019 Wizards do not validate string fields 
 - #5982 Wrong epoch-time when manipulating datetime in MSIE on the Mac 
+- Added caches for xsl-files, nodes and fields in Wizard-class for
+  better performance.
+
 
 ---------------------
 Application bug fixes:
 ---------------------
-
 [1.6.4]
 - #6076 community message does not use NODE type thread field. 
 - #5996 myyahoo/install.jsp shows messy installation notes 
+- #5984 Incomplete files generated by backup
 
 [1.6.3]
-
 [1.6.2]
 - Errors during installation of an application will be displayed in
   the resultpage.
@@ -248,12 +296,11 @@ Application bug fixes:
 - Using comments in application files results in errors in the log:
   #4952
 
+
 ------------------
 Security Bug Fixes:
 ------------------
-
 [1.6.4]
-
 [1.6.3]
 -  #5976  mm:relatednodes doesn't check read rights of destination node
 
@@ -273,12 +320,13 @@ Security Bug Fixes:
 ----------------
 MMCI Bug Fixes:
 ----------------
-
 [1.6.4]
 - #6126 transaction.getName() does not return correct name   	
 - #6099 directions attribute permit nonsensical values.  	
 - #6083 cannot check rights on newly created node  	
 - #6001 Cannot call 'equals' on deleted node
+- #6126 Transaction.getName() does not return correct name
+- #6116 BasicNode.getRelatedNodes() always throws NullPointerException
 
 [1.6.3]
 - #5961 'contains' of NodeList work oddly
@@ -287,21 +335,20 @@ MMCI Bug Fixes:
 - #5568 getAllowedRelations(NodeManager nodeManager, String role,
   String direction) fails to allow relation between two same types
 
+
 ----------------
 RMMCI Bug Fixes:
 ----------------
-
 [1.6.4]
-
 [1.6.2]
 - improved support for casting (a nodemanager extends a node etc)
 - iterators are working
 - rmmci target has been added to the build.xml
 
+
 ----------------
 Taglib Bug Fixes:
 ----------------
-
 [1.6.4]
 - #6131 Enumhandler does not order optionlists 
 - #6028 Cannot specify 'either' as searchdir value in mm:list tag
@@ -340,6 +387,7 @@ Example Bug Fixes:
 - advanced editwizard example didn't make much sense, because original
   list.xml changed.
 
+
 ========
 Upgrade:
 ========
@@ -374,10 +422,25 @@ the builders:
 ========================
 Known Issues and Problems:
 ========================
-[1.6.3]
-- myeditors don't honour inheritance, see bug #5998 for more
-  information.  
-- Multilevel queries of parents are not invalidated, see bug #5993.
+[1.6.4]
+- RMMCI will fail on JDK-1.4.x when using an JDK-1.3.x compiled
+  mmbase.jar (ie the default distribution). You will need an
+  mmbase.jar compiled with JDK-1.4.x.
+- There has been a lot of confusion about the different databaselayers
+  (storage vs databasesupport) and their status. At this moment
+  there's no clear overview of all the different implementations. This
+  will be solved with the MMBase-1.7.0 release, which will contain a
+  completely rewritten databaselayer.
+- Builder inheritance is still a new feature and has not fully been
+  implemented in all database implementations (it has been implemented
+  in most of the 'storage' classes). 
+  If an implementation doesn't fully support inheritance, the
+  following is true if mynews extends news:
+  - new mynews nodes don't appear in news
+  - mynews allows the same relations as news
+- It's best to move all mmbase-webapp/WEB-INF/lib/x* jars to
+  tomcat/common/endorsed and remove the ones already in this
+  directory. 
 
 [1.6.2]
 - XXXX The jsp-editor update might also have solved the tomcat 4.0 issue?
@@ -449,15 +512,6 @@ Known Issues and Problems:
 
 - Html isn't html4 or xhtml valid
 
-- Sometimes it is needed to copy xml-apis.jar to
-  <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
-  or if you're using the editwizards.
-
-- When using Tomcat 4.1.x you have to replace xercesImpl.jar from
-  <$CATALINA_HOME/common/endorsed/> with xerces.jar from
-  <mmbase-webapp/WEB-INF/lib>, otherwise you'll get
-  java.lang.VerifyErrors or MMbase won't start at all.
-
 - Sometimes a servlet-engine won't stop when running MMBase, if you're
   using the shutdown script provided by the servlet-engine. This is
   caused by the fact that the jvm won't quit if there are non-daemon
@@ -506,17 +560,15 @@ Known Issues and Problems:
 ============
 Requirements:
 ============
-
 MMBase needs an servlet engine which supports the servlet api 2.3 and
 jsp api 1.2. Furthermore it needs a database and a jdbc-driver.
 
-The 'bin' distro does include a hsql database and driver.
+The 'bin' distro does include a hsqldb database and driver.
 
 
 =========
 Tested on:
 =========
-
 The applications listed here are known to be tested with MMBase, but
 the list is probably a lot bigger :-)
 
@@ -524,18 +576,20 @@ the list is probably a lot bigger :-)
 Java versions
 -------------
 - J2SE 1.3
+- J2SE 1.4.2 (see known problems about problem with RMMCI)
+
 
 ------------------
 Servlet engines /
 Applicationservers
 ------------------
-- Tomcat 4.0.4 (although Tomcat 4.1.x is recommended because it's a lot faster than 4.0.x)
 - Tomcat 4.1.12 (log-messages from mmbase are logged in 2 different
-logfiles in this version, catalina.out and localhost_log), 4.1.17, 4.1.18, 4,1,21
+  logfiles in this version, catalina.out and localhost_log), 4.1.17,
+  4.1.18, 4,1,21, 4.1.24, 4.1.27 
+- Tomcat 4.0.4 (although Tomcat 4.1.x is recommended because it's a lot faster than 4.0.x)
 - Orion 1.5.2, 1.5.4, 1.6.0 (experimental)
 - Jetty 4.0.0
-- Resin 2.1.0, Resin 2.1.4 (Taglib attribute problems, filed as bug #3823 in
-www.mmbase.org/bug)
+
 
 ---------
 Databases
