@@ -251,18 +251,21 @@ public abstract class FileWatcher  { //extends Thread {
     }
     
     private void removeFiles() {
-        log.debug("Start");
         synchronized(this) {
             // remove files if necessary
             Iterator ri = removeFiles.iterator();
             while (ri.hasNext()) {    
                 File f = (File) ri.next();
                 FileEntry found = null;
+
                 // search the file
                 Iterator i = files.iterator();
                 while (i.hasNext()) {
                     FileEntry fe = (FileEntry) i.next();
                     if (fe.getFile().equals(f)) {
+			if (log.isDebugEnabled()){
+				log.debug("removing file["+ fe.getFile().getName() +"]");
+			}
                         found = fe;
                         break;
                     }
@@ -274,7 +277,6 @@ public abstract class FileWatcher  { //extends Thread {
             }
             removeFiles.clear();
         }
-        log.debug("End");
     }
 
     /**
