@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" ?>
 <!--
     The 'objects' documenttype contains the results of org.mmbase.bridge.util.xml.Generator.
     Representing structures from a cloud.
     
-     @version: $Id: objects_1_0.dtd,v 1.1 2002-06-24 13:38:00 michiel Exp $
+     @version: $Id: objects_1_0.dtd,v 1.2 2002-06-26 11:00:41 michiel Exp $
      @Author: Eduard Witteveen   
      @Author: Michiel Meeuwissen 
      @since : MMBase-1.6
