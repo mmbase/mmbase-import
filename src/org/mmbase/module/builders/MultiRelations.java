@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.31 2003-03-07 11:49:14 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.32 2003-05-08 11:24:51 pierre Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -101,6 +101,7 @@ public class MultiRelations extends MMObjectBuilder {
         this.mmb=m;
         this.tableName="multirelations";
         this.description="";
+        this.fields=new Hashtable();
         m.mmobjs.put(tableName,this);
         virtual=true;
     }
