@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud jspvar="cloud" sessionname="$SESSION" method="asis">
+%><mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
   <mm:import id="username"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
 </mm:cloud>
 <mm:compare referid="username" value="anonymous">
@@ -7,7 +7,7 @@
   <mm:import id="username" />
 </mm:compare>
 
-<mm:cloud method="logout" sessionname="$SESSION" jspvar="cloud">
+<mm:cloud method="logout" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" />
 <title>Logging out</title>
 </head>

@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
+%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" />
 <title>Edit aliases</title>
 </head>

@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="http" sessionname="${SESSION}" jspvar="cloud">
+%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" />
 <title>Create a node</title>
 </head>
@@ -21,11 +21,15 @@
          <td class="listdata"><mm:fieldinfo type="input" /></td>
        </tr>
     </mm:fieldlist>
+<%--tr><td class="data"><em><%=m.getString("change_node.context")%></em></td>
+    <td class="listdata"><%=((org.mmbase.mode.core.MMBase.getMMBaseCop().getAuthentication().log %></td>
+</tr--%>
+
         <tr>
 	 <td class="data"><em><%= m.getString("alias")%></em></td>
 	 <td class="listdata"><input type="text" name="alias_name" /></td>
         </tr>
-<tr>
+ <tr>
 <td colspan="2" class="buttons">
 <input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
