@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.5 2004-02-02 14:25:22 michiel Exp $
+ * @version $Id: Parameter.java,v 1.6 2004-02-09 17:58:05 michiel Exp $
  * @see Parameters
  */
 
@@ -32,6 +32,7 @@ public class Parameter {
     public static final Parameter USER     = new Parameter("user",     org.mmbase.bridge.User.class);
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
+    public static final Parameter CLOUD    = new Parameter("cloud",    org.mmbase.bridge.Cloud.class);
 
     // package for Parameters (direct access avoids function calls)
     String key;
@@ -73,8 +74,31 @@ public class Parameter {
     public Parameter(String name, Class type, Object defaultValue) {
         this.key = name;
         this.type = type;
-        this.required = required;
-        setDefaultValue(defaultValue);
+        this.defaultValue = defaultValue;
+    }
+
+
+    /**
+     * Copy-constructor, just to copy it with different requiredness
+     */
+    public Parameter(Parameter p, boolean required) {
+        this.key = p.key;
+        this.type = p.type;
+        this.required = required; 
+        if (! required) { // otherwise it makes no sense
+            this.defaultValue = p.defaultValue;
+        }
+    }
+
+
+    /**
+     * Copy-constructor, just to copy it with different defaultValue (which implies that it is not required now)
+     */
+    public Parameter(Parameter p, Object defaultValue) {
+        this.key = p.key;
+        this.type = p.type;
+        this.defaultValue = defaultValue;
+        // not need to copy 'required', it should be 'false'.
     }
 
     /**
@@ -178,6 +202,12 @@ public class Parameter {
     }
 
 
+
+    /**
+     * Whether parameter equals to other parameter. Only key and type are consided. DefaultValue and
+     * required propererties are only 'utilities'.
+     * @return true if o is Parameter of which key and type equal to this' key and type.
+     */
     public boolean equals(Object o) {
         if (o instanceof Parameter) {
             Parameter a = (Parameter) o;
