@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.16 2003-07-15 19:04:10 michiel Exp $
+ * @version  $Id: validator.js,v 1.17 2003-07-23 14:14:52 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -43,8 +43,8 @@ function detach_validator(element) {
 function validate_validator(event, el) {
     // called from html: when user pressed a key or leaves a field.
 
-
     if (!el) var el = event.srcElement || event.target;
+ 
 
     if (event.type == "blur" || event.type == "change") {
        formValid = null;
@@ -53,7 +53,7 @@ function validate_validator(event, el) {
        if (formValid == null) {
           formValid = doValidateForm(el);
        }
-       var valid = formValid && validateElement_validator(el);
+       var valid = validateElement_validator(el) && formValid; 
 	   doValidateAndUpdateButtons(valid);
     }
 
@@ -136,7 +136,7 @@ function validateElement_validator(el, silent) {
 
             break;
         case "int":
-            if (isNaN(v) || parseInt(v)==null) err += "value '" + v + "' is not a valid integer number";
+            if (isNaN(v) || parseInt(v) == null) err += "value '" + v + "' is not a valid integer number";
             else {
                 if ((el.dtmin || (el.dtmin!=null)) && (parseInt(v) < el.dtmin))
                     err += getToolTipValue(form,'message_min',
