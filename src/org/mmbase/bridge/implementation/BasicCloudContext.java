@@ -22,10 +22,10 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.30 2003-03-04 13:44:37 nico Exp $
+ * @version $Id: BasicCloudContext.java,v 1.31 2003-08-13 16:40:14 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
-    private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
 
     /**
     * Link to the mmbase root

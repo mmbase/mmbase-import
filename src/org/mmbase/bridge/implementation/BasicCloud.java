@@ -28,10 +28,10 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.98 2003-08-08 12:08:43 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.99 2003-08-13 16:40:14 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
-    private static Logger log = Logging.getLoggerInstance(BasicCloud.class);
+    private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
 
     // lastRequestId
     // used to generate a temporary ID number

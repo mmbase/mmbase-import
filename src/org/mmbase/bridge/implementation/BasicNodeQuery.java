@@ -21,14 +21,14 @@ import org.mmbase.util.logging.*;
  * 'Basic' implementation of bridge NodeQuery. Wraps a 'NodeSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.5 2003-08-06 19:42:30 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.6 2003-08-13 16:40:14 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     
 
-    private static Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
+    private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
 
     protected NodeManager nodeManager;
 
