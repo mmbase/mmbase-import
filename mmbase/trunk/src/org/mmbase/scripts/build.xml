@@ -267,6 +267,7 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <target name="clean" depends="init">
     <deltree dir="${build.dir}"/>
+    <deltree dir="${dist.root}"/>
   </target>
 
 </project>
