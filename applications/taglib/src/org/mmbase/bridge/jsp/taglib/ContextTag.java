@@ -440,9 +440,11 @@ public class ContextTag extends ContextReferrerTag {
     }
 
 
-    //
-
     public Object findAndRegister(int from, String referid, String newid) throws JspTagException {
+        return findAndRegister(from, referid, newid, true);
+    }
+
+    protected Object findAndRegister(int from, String referid, String newid, boolean check) throws JspTagException {
         if (newid == null) {
             throw new JspTagException("Cannot register with id is null");
         }
@@ -458,14 +460,18 @@ public class ContextTag extends ContextReferrerTag {
             break;
         case LOCATION_MULTIPART: 
             if (isMultipart()) {
-                log.debug("searching " + referid + " in multipart post");
+                if (log.isDebugEnabled()) {
+                    log.debug("searching " + referid + " in multipart post");
+                }
                 result = getMultipartRequest().getParameterValues(referid);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
             break;
         case LOCATION_PARAMETERS: {
-            log.debug("searching parameter " + referid);
+            if (log.isDebugEnabled()) {
+                log.debug("searching parameter " + referid);
+            }
             Object[] resultvec = getHttpRequest().getParameterValues(referid);
             if (resultvec != null) {
                 if (resultvec.length > 1) {
@@ -496,7 +502,7 @@ public class ContextTag extends ContextReferrerTag {
         default:
             result = null;
         }
-        register(newid, result);
+        register(newid, result, check);
         if (log.isDebugEnabled()) {
             log.debug("found " + newid + " (" + result + ")");
         }
@@ -511,26 +517,29 @@ public class ContextTag extends ContextReferrerTag {
      */
 
     public Object findAndRegister(String externid, String newid) throws JspTagException {
-        log.debug("searching to register object " + externid + " in context " + getId());
+        if (log.isDebugEnabled()) {
+            log.debug("searching to register object " + externid + " in context " + getId());
+        }
+        if (isRegistered(newid)) {
+            String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
+            log.error(mes);
+            throw new JspTagException(mes);
+        }
         // if (findAndRegister(LOCATION_PAGE, referid, id)) return true;
         log.debug("searching in parent");
         Object result; 
-        result = findAndRegister(LOCATION_PARENT, externid, newid);
+        result = findAndRegister(LOCATION_PARENT, externid, newid, false); // don't check, we have checked already.
         if (result != null) return result;
-        unRegister(newid); // unregister the 'null' value
         log.debug("searching in parameters");
-        result = findAndRegister(LOCATION_PARAMETERS, externid, newid);
+        result = findAndRegister(LOCATION_PARAMETERS, externid, newid, false);
         if (result != null) return result;
-        unRegister(newid);
         if (isMultipart()) {
             log.debug("searching in multipart post");
-            result = findAndRegister(LOCATION_MULTIPART, externid, newid);
+            result = findAndRegister(LOCATION_MULTIPART, externid, newid, false);
             if (result != null) return result;
-            unRegister(newid);
         }
         log.debug("searching in session");
-        result = findAndRegister(LOCATION_SESSION, externid, newid);
-        // don't unregister now, it stays registered as a null value,t hat is registerd, but not found.
+        result = findAndRegister(LOCATION_SESSION, externid, newid, false);
         return result;
     }
 
@@ -540,18 +549,23 @@ public class ContextTag extends ContextReferrerTag {
      * a session context, then it will be put in the session, otherwise in the hashmap.
      */
 
-    public void register(String newid, Object n) throws JspTagException {
+    protected void register(String newid, Object n, boolean check) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + getId());
         }
         //pageContext.setAttribute(id, n);
-        if (isRegistered(newid)) {
+        if (check && isRegistered(newid)) {
             String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
             log.error(mes);
             throw new JspTagException(mes);
         }
         container.put(newid, n);
     }
+
+    public void register(String newid, Object n) throws JspTagException {
+        register(newid, n, true);
+    }
+    
 
     public void unRegister(String key) throws JspTagException {
         //pageContext.removeAttribute(key);
