@@ -61,8 +61,8 @@ public class UserBuilder extends MMObjectBuilder {
     }
     
     public boolean exists(String username, String password) {
-        log.trace("username: '"+username+"' password: '"+password+"'");
-        java.util.Enumeration e = searchWithWhere("username LIKE('"+username+"')");
+       log.trace("username: '"+username+"' password: '"+password+"'");
+        java.util.Enumeration e = searchWithWhere(" username = '"+username+"' ");
 	while(e.hasMoreElements()) {       
             MMObjectNode node = (MMObjectNode) e.nextElement();
             if(encode(password).equals(node.getStringValue("password"))) {
