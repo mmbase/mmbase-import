@@ -4,12 +4,14 @@
 
    Author: yigal
    Created: 25-07-2003
-   Version: $Revision: 1.1 $, $Date: 2003-12-19 11:09:17 $
+   Version: $Revision: 1.2 $, $Date: 2004-01-18 12:09:44 $
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/base.xsl"/>
+
+  <xsl:variable name="imagesize">+s(50x50)</xsl:variable>
 
   <xsl:variable name="mediadir"><xsl:value-of select="$referrerdir"/>media/</xsl:variable>
 
