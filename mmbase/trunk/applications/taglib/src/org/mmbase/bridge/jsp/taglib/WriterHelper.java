@@ -332,7 +332,7 @@ public class WriterHelper  {
         value         = null;
         jspvar        = null;
         write         = null;
-        vartype       = TYPE_UNSET:
+        vartype       = TYPE_UNSET;
     }
 
     /**
