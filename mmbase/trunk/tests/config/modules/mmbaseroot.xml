@@ -5,6 +5,7 @@
   <classfile>org.mmbase.module.core.MMBase</classfile>
   <properties>
     <property name="machinename">MMBaseserver</property>
+    <property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
     <property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
     <property name="multicastport">16080</property>
     <property name="host">127.0.0.1</property>
