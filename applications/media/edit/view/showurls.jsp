@@ -19,9 +19,8 @@
 <mm:field name="issubfragment()" jspvar="bool">
      <% subfragment = ((Boolean) bool).booleanValue(); %>
 </mm:field>
-<h1><mm:field name="title" /></h1>
-<table>
-<tr><th>Description</th><th>URL</th></tr>
+<h1><%= m.getString("urlsto") %>: <mm:field name="title" /></h1>
+
 <mm:log jspvar="log">
 <mm:field name="filteredurls(html,ram,wmp,rm)" jspvar="urls" vartype="list">
    <%
@@ -37,17 +36,20 @@
            completeIndication = " (*)";
            foundNonFragments = true;
          }
-         out.println("<tr><td>" + uc.getGUIIndicator(locale, options) + "</td><td><a href='" + url + "'>" + url + "</a>" + completeIndication + "</td></tr>"); 
+         String description = uc.getDescription(options);
+         out.println("<h3>" + uc.getGUIIndicator(options) + "</h3>" + 
+                     "<p><a href='" + url + "'>" + url + "</a>" + completeIndication + "<//p>" + 
+                     (description != null ? "<p>" + description + "</p>" : "")
+                      ); 
        
 
       }
    %>
 </mm:field>
 </mm:log>
-</table>
 <% if (foundNonFragments) { %>
   <hr />
-  *: This URL cannot present this fragment. It is only contained by this URL.
+  *: <%= m.getString("cannotpresent") %>
 <% } %>
 </mm:node>
 </body>
