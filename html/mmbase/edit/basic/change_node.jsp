@@ -26,7 +26,7 @@
 <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
-  <mm:field name="sgui($config.session,)" />:
+  <mm:nodeinfo type="gui" />:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
   </th></tr>

@@ -24,10 +24,10 @@
      <tr><th><%=m.getString("new_relation.new")%></th></tr>
      
     <mm:compare referid="direction" value="create_child">     
-        <tr><th><%=m.getString("new_relation.from")%>: <mm:field name="sgui($config.session,)" /></th></tr>
+        <tr><th><%=m.getString("new_relation.from")%>: <mm:nodeinfo type="gui" /></th></tr>
     </mm:compare>
     <mm:compare referid="direction" value="create_parent">
-        <tr><th><%=m.getString("new_relation.to")%>: <mm:field name="sgui($config.session,)" /></th></tr>
+        <tr><th><%=m.getString("new_relation.to")%>: <mm:nodeinfo type="gui" /></th></tr>
     </mm:compare>     
      
      <tr><td>
@@ -79,7 +79,7 @@
         <input type="hidden" name="create_relation" value="yes" />
         <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
         <tr><th colspan="2"><%= m.getString("new_relation.new") %> (<mm:write referid="role_name" />)</th></tr>
-        <tr><th colspan="2">between <mm:field node="node_number" name="sgui($config.session,)" /> and <mm:field node="node" name="sgui($config.session,)" /></th></tr>
+        <tr><th colspan="2">between <mm:nodeinfo node="node_number" type="gui" /> and <mm:nodeinfo node="node" type="gui" /></th></tr>
         <mm:node referid="relation">
      	    <input type="hidden" name="relation" value="<mm:field name="number" />" />
   	    <mm:fieldlist id="edit_relation" type="edit"><mm:context>
