@@ -21,22 +21,18 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* Who tag, provides functionality for listing users of a channel.
-*
-* @author Pierre van Rooden
-**/
+ * Who tag, provides functionality for listing users of a channel.
+ *
+ * @author Pierre van Rooden
+ **/
 public class WhoTag extends AbstractNodeListTag {
     //this class is growing to big..
     private static Logger log = Logging.getLoggerInstance(WhoTag.class.getName());
 
-    private String channel=null;
-    private String type=null;
+    private String channel= null;
+    private String type   = null;
 
     protected Module community = null;
-
-    public int getIndex() {
-        return currentItemIndex;
-    }
 
     public void setChannel(String channel) throws JspTagException {
         this.channel= getAttributeValue(channel);

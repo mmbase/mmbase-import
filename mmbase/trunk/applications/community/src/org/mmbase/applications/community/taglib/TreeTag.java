@@ -21,10 +21,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* TreeTag, provides functionality for listing messages in community.
-*
-* @author Pierre van Rooden
-**/
+ * TreeTag, provides functionality for listing messages in community.
+ *
+ * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
+ **/
 public class TreeTag extends AbstractNodeListTag {
     //this class is growing to big..
     private static Logger log = Logging.getLoggerInstance(TreeTag.class.getName());
@@ -38,21 +39,7 @@ public class TreeTag extends AbstractNodeListTag {
     private String opentag=null;
     private String closetag=null;
 
-    /**
-     * private data member to hold an enumeration
-     * of the values to return. this variable will be set in
-     * the start tag, and will be used to fill de return variables
-     * for every iteration.
-     */
-    protected NodeIterator returnValues;
-    protected boolean changed = true;
-
     protected Module community = null;
-    private int currentItemIndex= -1;
-
-    public int getIndex() {
-        return currentItemIndex;
-    }
 
     public void setThread(String thread) throws JspTagException {
         this.thread=getAttributeValue(thread);
