@@ -23,34 +23,34 @@ import org.mmbase.util.logging.*;
 *
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.5 2003-03-04 14:39:57 nico Exp $
+* @version $Id: MMHsqldb2Node.java,v 1.6 2003-05-02 07:55:03 michiel Exp $
 *  
 */
 public class MMHsqldb2Node extends MMSQL92Node {
-
-
-   /**
+    /**
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
+    
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
+        fieldname = fieldname.toLowerCase();
+        return super.decodeDBnodeField(node,fieldname,rs,i,prefix);
+    }
+    
 
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
-		fieldname=fieldname.toLowerCase();
-		return(super.decodeDBnodeField(node,fieldname,rs,i,prefix));
-	}
-
-
-	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
-		MultiConnection con=jdbc.getConnection("jdbc:hsqldb:"+jdbc.getDatabaseName(),jdbc.getUser(),jdbc.getPassword());
-
-		return(con);
-	}
-
+    public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
+        MultiConnection con = jdbc.getConnection(jdbc.makeUrl(), 
+                                                 jdbc.getUser(),
+                                                 jdbc.getPassword());        
+        return con;
+    }
+    
+    
     public String getDBText(ResultSet rs,int idx) {
         String result = null;
         try {
             result = rs.getString(idx);
-       } catch (Exception e) {
+        } catch (Exception e) {
             log.error("MMObjectBuilder -> MMHsqldb2Node text exception "+e);
             log.error(Logging.stackTrace(e));
             return "";
