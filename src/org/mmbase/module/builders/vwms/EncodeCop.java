@@ -84,7 +84,7 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.22 $ $Date: 2001-07-25 12:49:04 $
+ * @version $Revision: 1.23 $ $Date: 2001-07-27 13:10:26 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -339,11 +339,16 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			if (infoTagger.containsKey(idname)) {
 				try {
 					apnumber = Integer.parseInt((String) infoTagger.Value(idname));
-					log.info("Service: "+servicenode.getStringValue("name")+" is "+busyWith+" audiopart "+apnumber);
-					log.info("Adding new EncodeHandler, task '"+task+"' for it.");
+					log.info("Service: "+servicenode.getStringValue("name")+"("+number+") is "+busyWith+" audiopart "+apnumber);
+					log.info("Adding new EncodeHandler, task '"+task+":"+number+"' for it.");
 					raenum = rabul.search("WHERE id="+apnumber+" AND format="+raformat+" AND status="+rastate);
-					if (raenum.hasMoreElements())
+					if (raenum.hasMoreElements()) {
 						EncoderHandlers.addElement(new EncodeHandler(this,task+":"+number,(MMObjectNode)raenum.nextElement()));
+					} else {
+						log.error("Can't add EncodeHandler, task '"+task+"' for audiopart:"+apnumber
+						        +", because related rawaudio (id:"+apnumber+" format:"+raformat+" status:"+rastate
+								+") can't be found anymore!");
+					}
 				} catch (NumberFormatException nfe) {
 					log.error(idname+":"+infoTagger.Value(idname)+" is no int");
 					nfe.printStackTrace();
@@ -396,11 +401,16 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 			if (infoTagger.containsKey(result) && infoTagger.containsKey(idname)) {
 				try {
 					apnumber = Integer.parseInt((String) infoTagger.Value(idname));
-					log.info("Service: "+servicenode.getStringValue("name")+" just "+finishedWith+" audiopart "+apnumber);
-					log.info("Adding new EncodeHandler, task '"+task+"' for it.");
+					log.info("Service: "+servicenode.getStringValue("name")+"("+number+") just "+finishedWith+" audiopart "+apnumber);
+					log.info("Adding new EncodeHandler, task '"+task+":"+number+"' for it.");
 					raenum = rabul.search("WHERE id="+apnumber+" AND format="+raformat+" AND status="+rastate);
-					if (raenum.hasMoreElements())
+					if (raenum.hasMoreElements()) {
 						EncoderHandlers.addElement(new EncodeHandler(this,task+":"+number,(MMObjectNode)raenum.nextElement()));
+					} else {
+						log.error("Can't add EncodeHandler, task '"+task+"' for audiopart:"+apnumber
+						        +", because related rawaudio (id:"+apnumber+" format:"+raformat+" status:"+rastate
+								+") can't be found anymore!");
+					}
 				} catch (NumberFormatException nfe) {
 					log.error(idname+":"+infoTagger.Value(idname)+" is no int");
 					nfe.printStackTrace();
