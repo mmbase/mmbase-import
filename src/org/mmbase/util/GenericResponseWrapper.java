@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.2 2004-04-08 09:14:23 keesj Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.3 2004-04-08 09:20:08 keesj Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -104,7 +104,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     /**
      * Returns the name of the charset used for the MIME body sent in this response.
      * If no charset has been assigned, it is implicitly set to ISO-8859-1 (Latin-1).
-     * See <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2047</a> for more information about character encoding and MIME.
+     * See <a href="http://www.ietf.org/rfc/rfc2047.txt">RFC 2047</a> for more information about character encoding and MIME.
      * returns the encoding
      */
     public String getCharacterEncoding() {
