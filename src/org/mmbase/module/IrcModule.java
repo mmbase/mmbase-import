@@ -72,6 +72,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 						question+=st.nextToken()+" ";
 					}
 					addQuestion(im.getFromNick(),question);
+					matchQuestion(question);
 				}
 
 				if(secondToken.equals("help")) {
@@ -154,6 +155,28 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 		int rnumber = mmbase.InsRel.getGuessedNumber("related");
 		MMObjectNode question = (MMObjectNode)number2question.get(number);
 		mmbase.InsRel.insert("irc",answer.getIntValue("number"),question.getIntValue("number"),rnumber);
+	}
+
+	private MMObjectNode matchQuestion (String question) {
+		MMObjectNode matchedquestion = null;
+		float value = 0;
+		float highestValue = 0;
+
+	 	Enumeration g = questions.search("WHERE title ='*'");
+        while (g.hasMoreElements()) { 
+     		MMObjectNode questionNode=(MMObjectNode)g.nextElement();
+       		System.out.print("MATCHING => "+questionNode.getStringValue("title")+" "+question);
+       		value = Matcher.match(questionNode.getStringValue("title"),question);
+       		System.out.print(" value = "+value);
+			if (highestValue<=value) {
+				matchedquestion=questionNode;
+			}
+		}
+		if (highestValue>0.75) {
+			return matchedquestion;
+		} else {
+			return null;
+		}
 	}
 
 	private void debug( String msg ) {
