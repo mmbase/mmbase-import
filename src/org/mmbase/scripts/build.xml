@@ -246,7 +246,7 @@ about the Ant build tool.
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
 
-  <target name="dist" depends="compile">
+  <target name="dist" depends="compile,jar">
 
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.dir}"/>
@@ -257,6 +257,18 @@ about the Ant build tool.
     <mkdir dir="${dist.docs}"/>
     <mkdir dir="${dist.scripts}"/>
     <mkdir dir="${dist.html}"/>
+
+    <!-- copy the java-sources -->
+    <copydir src="${src.dir}" dest="${dist.src}"/>
+
+    <!-- copy the scripts -->
+    <copydir src="${src.dir}/org/mmbase/scripts" dest="${dist.scripts}"/>
+
+    <!-- copy the config -->
+    <!-- ToDo -->
+
+    <!-- copy the html -->
+    <!-- ToDo --> 
 
     <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
 
