@@ -29,7 +29,6 @@ import org.mmbase.bridge.Cloud;
 import java.util.*;
 import java.io.Writer;
 
-
 public class Casting {
     private static final Logger log = Logging.getLoggerInstance(Casting.class);
 
@@ -41,7 +40,12 @@ public class Casting {
      * @return the field's value as a <code>String</code>
      */
     public static String toString(Object o) {
-        if (o == null) return "";
+        if (o instanceof String) {
+            return (String)o;
+        }
+        if (o == null) {
+            return "";
+        }
         return toStringBuffer(new StringBuffer(), o).toString();
     }
 
@@ -59,20 +63,23 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static Writer toWriter(Writer writer, Object o) throws java.io.IOException {
-        if (o == null) return writer;
+        if (o == null || o instanceof Writer) {
+            return writer;
+        }
+
         if (o instanceof String) {
-            writer.write((String) o);
+            writer.write((String)o);
         } else if (o instanceof byte[]) {
             writer.write(new String((byte[])o));
-        } else if(o instanceof MMObjectNode) {
+        } else if (o instanceof MMObjectNode) {
             writer.write("" + ((MMObjectNode)o).getNumber());
-        } else if(o instanceof Node) {
+        } else if (o instanceof Node) {
             writer.write("" + ((Node)o).getNumber());
         } else if (o instanceof Document) {
             // doctype unknown.
-            writer.write(convertXmlToString(null, (Document) o ));
+            writer.write(convertXmlToString(null, (Document)o));
         } else if (o instanceof List) {
-            Iterator i = ((List) o).iterator();
+            Iterator i = ((List)o).iterator();
             boolean hasNext = i.hasNext();
             while (i.hasNext()) {
                 toWriter(writer, i.next());
@@ -92,8 +99,10 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static List toList(Object o) {
-        if (o == null) return new ArrayList();
-        if (o instanceof List) return (List) o;
+        if (o == null)
+            return new ArrayList();
+        if (o instanceof List)
+            return (List)o;
         return StringSplitter.split(toString(o));
     }
 
@@ -117,14 +126,14 @@ public class Casting {
             String xmltext = toString(o);
             if (log.isServiceEnabled()) {
                 String msg = xmltext;
-                if (msg.length()>20) msg = msg.substring(0,20);
+                if (msg.length() > 20)
+                    msg = msg.substring(0, 20);
                 log.service("Object " + msg + "... is not a Document, but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
             }
             return convertStringToXML(xmltext, documentType, conversion);
         }
-        return (Document) o;
+        return (Document)o;
     }
-
 
     /**
      * Get a binary value of a object.
@@ -134,7 +143,7 @@ public class Casting {
     static public byte[] toByte(Object obj) {
         if (obj instanceof byte[]) {
             // was allready unmapped so return the value
-            return (byte[]) obj;
+            return (byte[])obj;
         } else {
             return toString(obj).getBytes();
         }
@@ -153,15 +162,17 @@ public class Casting {
      * @return the field's value as an <code>int</code>
      */
     public static MMObjectNode toNode(Object i, MMObjectBuilder parent) {
-        MMObjectNode res=null;
+        MMObjectNode res = null;
         if (i instanceof MMObjectNode) {
             res = (MMObjectNode)i;
+        } else if (i instanceof Node) {
+            res = parent.getNode(((Node)i).getNumber());
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
             if (nodenumber != -1) {
                 res = parent.getNode(nodenumber);
             }
-        } else if (i!=null && !i.equals("")) {
+        } else if (i != null && !i.equals("")) {
             res = parent.getNode(i.toString());
         }
         return res;
@@ -172,14 +183,16 @@ public class Casting {
      */
     public static Node toNode(Object i, Cloud cloud) {
         Node res = null;
-        if (i instanceof MMObjectNode) {
+        if (i instanceof Node) {
+            res = (Node)i;
+        } else if (i instanceof MMObjectNode) {
             res = cloud.getNode(((MMObjectNode)i).getNumber());
         } else if (i instanceof Number) {
             int nodenumber = ((Number)i).intValue();
             if (nodenumber != -1) {
                 res = cloud.getNode(nodenumber);
             }
-        } else if (i!=null && !i.equals("")) {
+        } else if (i != null && !i.equals("")) {
             res = cloud.getNode(i.toString());
         }
         return res;
@@ -208,6 +221,8 @@ public class Casting {
         int res = def;
         if (i instanceof MMObjectNode) {
             res = ((MMObjectNode)i).getNumber();
+        } else if (i instanceof Node) {
+            res = ((Node)i).getNumber();
         } else if (i instanceof Boolean) {
             res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
@@ -247,7 +262,7 @@ public class Casting {
         if (b instanceof Boolean) {
             return ((Boolean)b).booleanValue();
         } else if (b instanceof Number) {
-            return ((Number)b).intValue()>0;
+            return ((Number)b).intValue() > 0;
         } else if (b instanceof String) {
             // note: we don't use Boolean.valueOf() because that only captures
             // the value "true"
@@ -260,8 +275,8 @@ public class Casting {
                 // still not yet!
                 // Call MMLanguage, and compare to
                 // the 'localized' values of true or yes.
-                org.mmbase.module.gui.html.MMLanguage languages = (org.mmbase.module.gui.html.MMLanguage) org.mmbase.module.Module.getModule("mmlanguage");
-                if (languages!=null) {
+                org.mmbase.module.gui.html.MMLanguage languages = (org.mmbase.module.gui.html.MMLanguage)org.mmbase.module.Module.getModule("mmlanguage");
+                if (languages != null) {
                     return s.equals(languages.getFromCoreEnglish("true")) || s.equals(languages.getFromCoreEnglish("yes"));
                 }
             }
@@ -279,26 +294,11 @@ public class Casting {
      * @return the field's value as an <code>Integer</code>
      */
     static public Integer toInteger(Object i) {
-        int res= -1;
+        int res = -1;
         if (i instanceof Integer) {
-            return (Integer) i;
-        } else if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
-        } else if (i instanceof Number) {
-            res=((Number)i).intValue();
-        } else if (i!=null) {
-            try {
-              res = Integer.parseInt(""+i);
-            } catch (NumberFormatException e) {
-                // not an integer? perhaps it is a float or double represented as String.
-                try {
-                    res = Double.valueOf("" + i).intValue();
-                } catch (NumberFormatException ex) {
-                    // give up, fall back to default.
-                }
-            }
+            return (Integer)i;
         }
-        return new Integer(res);
+        return new Integer(toInt(i));
     }
 
     /**
@@ -314,12 +314,14 @@ public class Casting {
     static public long toLong(Object i, long def) {
         long res = def;
         if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
+            res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
-            res=((Number)i).longValue();
-        } else if (i!=null) {
+            res = ((Number)i).longValue();
+        } else if (i != null) {
+            //keesj:
+            //TODO:add Node and MMObjectNode  
             try {
-              res=Long.parseLong(""+i);
+                res = Long.parseLong("" + i);
             } catch (NumberFormatException e) {
                 // not an integer? perhaps it is a float or double represented as String.
                 try {
@@ -346,14 +348,14 @@ public class Casting {
      * @return the field's value as a <code>float</code>
      */
     static public float toFloat(Object i) {
-        float res =-1;
+        float res = -1;
         if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
+            res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
-            res=((Number)i).floatValue();
-        } else if (i!=null) {
+            res = ((Number)i).floatValue();
+        } else if (i != null) {
             try {
-                res=Float.parseFloat(""+i);
+                res = Float.parseFloat("" + i);
             } catch (NumberFormatException e) {}
         }
         return res;
@@ -367,7 +369,7 @@ public class Casting {
     static public java.util.Date toDate(Object i) {
         long date = -1;
         if (i instanceof Integer) {
-            date = ((Integer) i).longValue();
+            date = ((Integer)i).longValue();
         } else if (i instanceof Number) {
             date = ((Number)i).longValue();
         } else if (i != null) {
@@ -375,13 +377,12 @@ public class Casting {
                 date = Long.parseLong("" + i);
             } catch (NumberFormatException e) {}
         }
-        if (date == -1 ) {
+        if (date == -1) {
             return new java.util.Date(-1);
         } else {
             return new java.util.Date(date * 1000);
         }
     }
-
 
     /**
      * Get a value of a certain field.
@@ -393,19 +394,18 @@ public class Casting {
      * @return the field's value as a <code>double</code>
      */
     static public double toDouble(Object i) {
-        double res =-1;
+        double res = -1;
         if (i instanceof Boolean) {
-            res=((Boolean)i).booleanValue() ? 1 : 0;
+            res = ((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
-            res=((Number)i).doubleValue();
-        } else if (i!=null) {
+            res = ((Number)i).doubleValue();
+        } else if (i != null) {
             try {
-                res=Double.parseDouble(""+i);
+                res = Double.parseDouble("" + i);
             } catch (NumberFormatException e) {}
         }
         return res;
     }
-
 
     /**
      * Convert a String value of a field to a Document
@@ -414,16 +414,17 @@ public class Casting {
      * @throws RuntimeException When value was null and not allowed by builer, and xml failures.
      */
     static private Document convertStringToXML(String value, String documentType, String conversion) {
-        if (value == null) return null;
+        if (value == null)
+            return null;
         if (value.startsWith("<")) { // _is_ already XML, only presented as a string.
             // removing doc-headers if nessecary
 
             // remove all the <?xml stuff from beginning if there....
             //  <?xml version="1.0" encoding="utf-8"?>
-            if(value.startsWith("<?xml")) {
+            if (value.startsWith("<?xml")) {
                 // strip till next ?>
                 int stop = value.indexOf("?>");
-                if(stop > 0) {
+                if (stop > 0) {
                     value = value.substring(stop + 2).trim();
                     log.debug("removed <?xml part");
                 } else {
@@ -435,10 +436,10 @@ public class Casting {
 
             // remove all the <!DOCTYPE stuff from beginning if there....
             // <!DOCTYPE builder PUBLIC "-//MMBase/builder config 1.0 //EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-            if(value.startsWith("<!DOCTYPE")) {
+            if (value.startsWith("<!DOCTYPE")) {
                 // strip till next >
                 int stop = value.indexOf(">");
-                if(stop > 0) {
+                if (stop > 0) {
                     value = value.substring(stop + 1).trim();
                     log.debug("removed <!DOCTYPE part");
                 } else {
@@ -449,14 +450,14 @@ public class Casting {
             }
         } else {
             // not XML, make it XML, when conversion specified, use it...
-            if(conversion == null) {
+            if (conversion == null) {
                 conversion = "MMXF_POOR";
                 log.warn("Using default for XML conversion: '" + conversion + "'.");
             }
             if (log.isDebugEnabled()) {
                 log.debug("converting the string to something else using conversion: " + conversion);
             }
-            value = org.mmbase.util.Encode.decode(conversion, (String) value);
+            value = org.mmbase.util.Encode.decode(conversion, (String)value);
         }
 
         if (log.isDebugEnabled()) {
@@ -464,14 +465,14 @@ public class Casting {
         }
         // add the header stuff...
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
-        if(documentType != null) {
+        if (documentType != null) {
             xmlHeader += "\n" + documentType;
         }
         value = xmlHeader + "\n" + value;
 
         try {
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-            if(documentType != null) {
+            if (documentType != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("validating with doctype: " + documentType);
                 }
@@ -489,23 +490,20 @@ public class Casting {
             if (log.isDebugEnabled()) {
                 log.trace("parsed: " + convertXmlToString(null, doc));
             }
-            if(! errorHandler.foundNothing()) {
-                throw new RuntimeException("xml invalid:\n"+errorHandler.getMessageBuffer()+"for xml:\n"+value);
+            if (!errorHandler.foundNothing()) {
+                throw new RuntimeException("xml invalid:\n" + errorHandler.getMessageBuffer() + "for xml:\n" + value);
             }
             return doc;
-        }
-        catch(ParserConfigurationException pce) {
-            String msg = "[sax parser] not well formed xml: "+pce.toString() + "\n" + Logging.stackTrace(pce);
+        } catch (ParserConfigurationException pce) {
+            String msg = "[sax parser] not well formed xml: " + pce.toString() + "\n" + Logging.stackTrace(pce);
             log.error(msg);
             throw new RuntimeException(msg);
-        }
-        catch(org.xml.sax.SAXException se) {
-            String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")\n" + Logging.stackTrace(se);
+        } catch (org.xml.sax.SAXException se) {
+            String msg = "[sax] not well formed xml: " + se.toString() + "(" + se.getMessage() + ")\n" + Logging.stackTrace(se);
             log.error(msg);
             throw new RuntimeException(msg);
-        }
-        catch(java.io.IOException ioe) {
-            String msg = "[io] not well formed xml: "+ioe.toString() + "\n" + Logging.stackTrace(ioe);
+        } catch (java.io.IOException ioe) {
+            String msg = "[io] not well formed xml: " + ioe.toString() + "\n" + Logging.stackTrace(ioe);
             log.error(msg);
             throw new RuntimeException(msg);
         }
@@ -515,18 +513,18 @@ public class Casting {
         log.debug("converting from xml to string");
 
         // check for null values
-        if(xml == null) {
+        if (xml == null) {
             log.debug("field was empty");
             // string with null isnt allowed in mmbase...
             return "";
         }
         // check if we are using the right DOC-type for this field....
         //String doctype = parent.getField(fieldName).getDBDocType();
-        if(doctype != null) {
+        if (doctype != null) {
             // we have a doctype... the doctype of the document has to mach the doctype of the doctype which is needed..
-            org.w3c.dom.DocumentType type =  xml.getDoctype();
+            org.w3c.dom.DocumentType type = xml.getDoctype();
             String publicId = type.getPublicId();
-            if(doctype.indexOf(publicId) == -1) {
+            if (doctype.indexOf(publicId) == -1) {
                 //throw new RuntimeException("doctype('"+doctype+"') required by field '"+fieldName+"' and public id was NOT in it : '"+publicId+"'");
             }
             log.warn("doctype check can not completely be trusted");
@@ -544,22 +542,20 @@ public class Casting {
             serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
             java.io.StringWriter str = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
+            serializer.transform(new javax.xml.transform.dom.DOMSource(xml), new javax.xml.transform.stream.StreamResult(str));
             if (log.isDebugEnabled()) {
                 log.debug("xml -> string:\n" + str.toString());
             }
             return str.toString();
-        } catch(TransformerConfigurationException tce) {
+        } catch (TransformerConfigurationException tce) {
             String message = tce.toString() + " " + Logging.stackTrace(tce);
             log.error(message);
             throw new RuntimeException(message);
-        } catch(TransformerException te) {
+        } catch (TransformerException te) {
             String message = te.toString() + " " + Logging.stackTrace(te);
             log.error(message);
             throw new RuntimeException(message);
         }
     }
-
-
 
 }
