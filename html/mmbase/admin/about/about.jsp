@@ -21,6 +21,12 @@ The Binary distro includes a database. Since we wanted a simple and 100% java so
 The Source distro includes all the sources to build your own MMBase.
 
 			</p>
+
+<p>
+Please take some time to answer a few questions at: 
+<a href="http://www.mmbase.org/enquete" target="_ext">http://www.mmbase.org/enquete</a><br />
+This information will be used to improve MMBase.
+</p>
 <p>
 If you run into problems you can get help from the following sources :<br/ ><br />
 readme/releasenotes/installation docs - These documents are in the root of the binary distro<br />
