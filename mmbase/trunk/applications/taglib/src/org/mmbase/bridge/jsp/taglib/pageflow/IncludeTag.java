@@ -86,14 +86,14 @@ public class IncludeTag extends UrlTag {
                 // Then these, and the session,  also can be used in the include-d page
                 Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
-                    String koekjes = "";
+                    StringBuffer koekjes = new StringBuffer();
                     for (int i=0; i < cookies.length; i++) {
                         if (log.isDebugEnabled()) {
                             log.debug("setting cookie " + i + ":" + cookies[i].getName() + "=" + cookies[i].getValue());
                         }
-                        koekjes += (i > 0 ? ";" : "") + cookies[i].getName() + "=" + cookies[i].getValue();
+                        koekjes.append((i > 0 ? ";" : "")).append(cookies[i].getName()).append("=").append(cookies[i].getValue());
                     }
-                    connection.setRequestProperty("Cookie", koekjes);
+                    connection.setRequestProperty("Cookie", koekjes.toString());
                 }
             }
 

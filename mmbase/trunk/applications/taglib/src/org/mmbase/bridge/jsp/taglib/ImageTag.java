@@ -12,7 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import org.mmbase.bridge.Node;
@@ -68,14 +68,14 @@ public class ImageTag extends FieldTag {
             number = node.getStringValue("number");
         } else {
             // the cached image
-            List args = new Vector();
+            List args = new ArrayList();
             args.add(template);
             number = node.getFunctionValue("cache", args).toString();
         }
 
         String servletPath;
         {
-            List args = new Vector();
+            List args = new ArrayList();
             args.add(sessionName);
             args.add("");
             args.add(context);
