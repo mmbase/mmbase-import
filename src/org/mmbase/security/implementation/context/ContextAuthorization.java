@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.24.2.2 2002-12-04 19:10:41 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.24.2.3 2003-02-13 14:39:38 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
@@ -80,8 +80,12 @@ public class ContextAuthorization extends Authorization {
             } catch(javax.xml.transform.TransformerException te) {
                 log.error("error executing query: '"+xpath+"' on file: '"+configFile+"'" );
                 log.error( Logging.stackTrace(te));
-                throw new java.lang.SecurityException("error executing query: '"+xpath+"' on file: '"+configFile+"'");
+                throw new SecurityException("error executing query: '"+xpath+"' on file: '"+configFile+"'");
             }
+            if (found == null) {
+                throw new SecurityException("Could not find user " + user.getIdentifier() + " in context security context file (" + configFile + ")") ;
+            }
+
             NamedNodeMap nnm = found.getAttributes();
             Node contextNode = nnm.getNamedItem("context");
             defaultContext = contextNode.getNodeValue();
