@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.20 2002-11-18 12:24:18 pierre Exp $
+ * @version $Id: BasicRelationManager.java,v 1.21 2003-04-08 14:35:42 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
@@ -77,12 +77,12 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public Node createNode() {
         Node relation = super.createNode();
-	if(relation == null) {
-	    throw new RuntimeException("relation node is null");
-	}
-	if(relDefNode == null) {
-	    throw new RuntimeException("reldef node is null");
-	}
+        if(relation == null) {
+            throw new RuntimeException("relation node is null");
+        }
+        if(relDefNode == null) {
+            throw new RuntimeException("reldef node is null");
+        }
         ((BasicNode)relation)._setValue("rnumber", new Integer(relDefNode.getNumber()));
         return relation;
     }
@@ -164,17 +164,6 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
             result.add(r);
         }
         return new BasicRelationList(result, this);
-    }
-
-    /**
-     * Compares two relationmanagers, and returns true if they are equal.
-     * This effectively means that both objects are relationmanagers, and they both have the same number and cloud
-     * @param o the object to compare it with
-     */
-    public boolean equals(Object o) {
-        return (o instanceof RelationManager) &&
-               getNumber()==((RelationManager)o).getNumber() &&
-               cloud.equals(((RelationManager)o).getCloud());
     }
 
     public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
