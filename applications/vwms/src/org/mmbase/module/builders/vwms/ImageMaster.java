@@ -32,27 +32,39 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	Object syncobj=new Object();
 	Queue files2copy=new Queue(128);
 	FileCopier filecopier=new FileCopier(files2copy);
+	private int maxSweep=16;
 
 	public ImageMaster() {
-		System.out.println("PageMaster ready for action");
+		debug("ready for action");
 	}
 
 
 	public boolean probeCall() {
-		System.out.println("ImageMaster probe");
+		debug("probe");
 		if (first) {
 			first=false;
 		} else {
 			try {
 				Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
-				Enumeration e=bul.search("WHERE service='images' AND subservice='mirror' AND status=1 ORDER BY number DESC");
+				debug("probeCall: resolving unresolved main requests");
+				Enumeration e=bul.search("WHERE service='images' AND subservice='main' AND status=1 ORDER BY number DESC");
 				int i=0;
-				while (e.hasMoreElements() && i<10) {
+				while (e.hasMoreElements() && i<maxSweep) {
 					MMObjectNode node=(MMObjectNode)e.nextElement();
 					fileChange(""+node.getIntValue("number"),"c");
 					i++;
 				}
+				try { Thread.sleep(1500); } catch(InterruptedException x) {}
+				debug("probeCall: resolving unresolved mirror requests");
+				Enumeration f=bul.search("WHERE service='images' AND subservice='mirror' AND status=1 ORDER BY number DESC");
+				i=0;
+				while (f.hasMoreElements() && i<maxSweep) {
+					MMObjectNode node=(MMObjectNode)f.nextElement();
+					fileChange(""+node.getIntValue("number"),"c");
+					i++;
+				}
 			} catch(Exception e) {
+				debug("probeCall exception "+e);
 				e.printStackTrace();
 			}	
 		}
@@ -68,13 +80,13 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		System.out.println("Image sees that : "+number+" has changed type="+ctype);
+		debug("sees that : "+number+" has changed type="+ctype);
 		return(true);
 	}
 
 	public boolean fileChange(String service,String subservice,String filename) {
 		filename=URLEscape.unescapeurl(filename);
-		System.out.println("ImageMaster frontend change -> "+filename);
+		debug("fileChange -> "+filename);
 		// jump to correct subhandles based on the subservice
 		if (subservice.equals("main")) {
 			handleMainCheck(service,subservice,filename);
@@ -83,7 +95,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 	public boolean fileChange(String number, String ctype) {
-		// System.out.println("ImageMaster -> fileChange="+number+" "+ctype);
+		debug("fileChange="+number+" "+ctype);
 		// first get the change node so we can see what is the matter with it.
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		MMObjectNode filenode=bul.getNode(number);
@@ -92,6 +104,8 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 			String service=filenode.getStringValue("service");
 			String subservice=filenode.getStringValue("subservice");
 			int status=filenode.getIntValue("status");
+
+			debug("fileChange "+number+" "+subservice+" "+status);
 
 			// jump to correct subhandles based on the subservice
 			if (subservice.equals("main")) {
@@ -106,7 +120,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	public boolean handleMirror(MMObjectNode filenode,int status,String ctype) {
 		switch(status) {
 			case 1:  // Verzoek
-				System.out.println("ImageMaster-> mirror verzoek");
+				debug("mirror verzoek");
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
@@ -124,9 +138,9 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					ckey=path2ckey(ckey);
 				}
 
-				System.out.println("ImageMaster -> "+ckey);
+				debug("verzoek ckey "+ckey);
 				byte[] filebuf=bul.getCkeyNode(ckey);
-				System.out.println("ImageMaster -> "+filebuf.length);
+				debug("verzoek size "+filebuf.length);
 				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
 				saveImageAsisFile(srcpath,filename,filebuf);
 				
@@ -148,15 +162,18 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 				// remove the tmp image file
 
-				System.out.println("ImageMaster-> doing mirror stuff");
+				debug("doing mirror stuff");
 				filenode.setValue("status",3);
 				filenode.commit();
 				break;
 			case 2:  // Onderweg
-				System.out.println("ImageMaster-> Mirror Onderweg");
+				debug("mirror Onderweg");
 				break;
 			case 3:  // Gedaan
-				System.out.println("ImageMaster-> Mirror Done");
+				debug("mirror Done");
+				break;
+			default:
+				debug("ljjljkljkjol error");
 				break;
 		}
 		return(true);
@@ -166,35 +183,44 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	public boolean handleMain(MMObjectNode filenode,int status,String ctype) {
 		switch(status) {
 			case 1:  // Verzoek
-				System.out.println("ImageMaster-> main verzoek");
+				debug("handleMain: verzoek");
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
-				System.out.println("ImageMaster-> doing main stuff");
+				debug("doing main stuff");
 				doMainRequest(filenode);
 				filenode.setValue("status",3);
 				filenode.commit();
 				break;
 			case 2:  // Onderweg
-				System.out.println("ImageMaster-> main Onderweg");
+				debug("handleMain: Onderweg");
 				break;
 			case 3:  // Gedaan
-				System.out.println("ImageMaster-> main Done");
+				debug("handleMain: Done");
+				break;
+			default:
+				debug("aslfaslfasfasljk error");
 				break;
 		}
 		return(true);
 	}
 
 	public boolean doMainRequest(MMObjectNode filenode) {
+		debug("doMainRequest for "+filenode.getIntValue("number")+" "+filenode.getStringValue("filename"));
 		// so this file has changed probably, check if the file is ready on
 		// disk and set the mirrors to dirty/request.
 		String filename = filenode.getStringValue("filename");
+		String service = filenode.getStringValue("service");
 		
 		// find and change all the mirror node so they get resend
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
-		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='images' AND subservice='mirror'");
+		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='mirror'");
+		if (!e.hasMoreElements()) {
+			debug("doMainRequest: No mirror nodes found for : "+filenode.toString()+" !!");
+		}
 		while (e.hasMoreElements()) {
 			MMObjectNode mirrornode=(MMObjectNode)e.nextElement();
+			debug("doMainRequest sending change for "+mirrornode.getIntValue("number"));
 			mirrornode.setValue("status",1);
 			mirrornode.commit();
 		}
@@ -205,14 +231,15 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
 		if (e.hasMoreElements()) {
+			debug("handleMainCheck: existing file");
 			MMObjectNode mainnode=(MMObjectNode)e.nextElement();
-			// hier moet een check komen of hij al niet onderweg is !!!
 			int currentstatus=mainnode.getIntValue("status");
-			if (currentstatus>1) {
+			if (currentstatus>2) { // check only the ones that are done
 				mainnode.setValue("status",1);
 				mainnode.commit();
 			}
 		} else {
+			debug("handleMainCheck: new file");
 			MMObjectNode mainnode=bul.getNewNode("system");
 			mainnode.setValue("filename",filename);
 			mainnode.setValue("mmserver","test1");
@@ -250,7 +277,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 
 	public boolean saveImageAsisFile(String path,String filename,byte[] value) {
-		System.out.println("SAVE TO DISK="+path+filename);
+		debug("SAVE TO DISK="+path+filename);
 
 		String header="Status: 200 OK";
 		header+="\r\nContent-type: image/jpeg";
@@ -276,7 +303,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		String ckey=tok.nextToken();
 
 		// check if its a number if not check for name and even oalias
-		System.out.println("CKEY="+ckey);
+		debug("CKEY="+ckey);
 		try {
 			int numint=Integer.parseInt(ckey);
 		} catch(Exception e) {
