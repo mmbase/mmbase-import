@@ -20,12 +20,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: DocumentConverter.java,v 1.1 2002-04-05 11:47:06 eduard Exp $
+ * @version $Id: DocumentConverter.java,v 1.2 2002-04-09 12:39:37 eduard Exp $
  */
 public  class DocumentConverter {
     private static Logger log = Logging.getLoggerInstance(DocumentConverter.class.getName());
     
-    public DocumentConverter(String requiredDocType) {
+    public static DocumentConverter getDocumentConverter(String requiredDocType) {
+        return new DocumentConverter();
     }
     
     public Document convert(Document doc, Cloud cloud) {

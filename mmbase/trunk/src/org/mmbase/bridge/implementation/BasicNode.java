@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.56 2002-04-05 12:55:23 eduard Exp $
+ * @version $Id: BasicNode.java,v 1.57 2002-04-09 12:39:37 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -353,7 +353,7 @@ public class BasicNode implements Node {
 
     public void setXMLValue(String fieldName, Document value) {
         // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        org.mmbase.bridge.util.xml.DocumentConverter dc = new org.mmbase.bridge.util.xml.DocumentConverter(noderef.parent.getField(fieldName).getDBDocType());
+        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(noderef.parent.getField(fieldName).getDBDocType());
         setValue(fieldName, dc.convert(value, cloud));
     }
 
