@@ -6,7 +6,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.9 2002-06-28 21:22:57 michiel Exp $
+  @version $Id: base.xsl,v 1.10 2002-07-02 09:54:58 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -28,6 +28,7 @@
   <xsl:param name="sessionid"></xsl:param>
   <xsl:param name="referrer"></xsl:param>
   <xsl:param name="sessionkey">editwizard</xsl:param>
+  <xsl:param name="cloudkey">cloud_mmbase</xsl:param><!-- name of variable in session in which is the cloud -->
   <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" /></xsl:param>
 
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
