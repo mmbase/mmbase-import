@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.21 2004-09-28 12:12:38 michiel Exp $
+ * @version $Id: Attribute.java,v 1.22 2004-12-10 19:03:44 michiel Exp $
  * @since   MMBase-1.7
  */
 
@@ -176,8 +176,8 @@ public class Attribute {
     protected void parse() throws JspTagException {
         String attr = (String) attribute;
         // search all occurences of $
-        int foundpos     = attr.indexOf('$');
-        if (foundpos == -1) {
+        int foundPos     = attr.indexOf('$');
+        if (foundPos == -1) {
             containsVars = false;
             return; // if none, return imediately.
         } else {
@@ -186,46 +186,50 @@ public class Attribute {
         }
 
         int pos          = 0;
-        while (foundpos >= 0) { // we found a variable!
-            String npart = attr.substring(pos,foundpos);
+        while (foundPos >= 0) { // we found a variable!
+            String npart = attr.substring(pos, foundPos);
             if (npart.length() > 0) {
                 attributeParts.add(new StringPart(npart));
             }
             // piece of string until now is ready.
-            foundpos ++;
-            if (foundpos >= attr.length()) { // end of string
+            foundPos ++;
+            if (foundPos >= attr.length()) { // end of string
                 // could not happen :-)
                 break;
             }
-
-            if (attr.charAt(foundpos) == '{') { // using parentheses
+            char c = attr.charAt(foundPos);
+            if (c == '{' || c == '[') { // using parentheses
+                char close = (c == '{' ? '}' : ']');
                 // find matching closing parenthes
-                pos = ++foundpos;
+                pos = ++foundPos;
                 int opened = 1;
                 while (opened > 0) {
-                    int posclose = attr.indexOf('}', pos);
-                    int posopen  = attr.indexOf('{', pos);
-                    if (posclose == -1) {
+                    int posClose = attr.indexOf(close, pos);
+                    if (posClose == -1) {
                         log.error("Unbalanced parentheses in '" + this + "'");
                         throw new AttributeException("Unbalanced parentheses in '" + this + "'");
                     }
-                    if (posopen > -1 && posopen < posclose) { // another one was opened!
+                    int posOpen1  = attr.indexOf('{', pos);
+                    int posOpen2  = attr.indexOf('[', pos);
+                    int posOpen   = (posOpen1 < posOpen2 && posOpen1 >= 0) ? posOpen1 : posOpen2;
+
+                    if (posOpen > -1 && posOpen < posClose) { // another one was opened!
                         opened++;
-                        pos = posopen + 1;
+                        pos = posOpen + 1;
                     } else {
                         opened--;
-                        pos = posclose + 1;
+                        pos = posClose + 1;
                     }
                 }
-                if (attr.charAt(foundpos) != '+') {
-                    Attribute var = getAttribute(attr.substring(foundpos, pos - 1));
+                if (attr.charAt(foundPos) != '+') {
+                    Attribute var = getAttribute(attr.substring(foundPos, pos - 1));
                     attributeParts.add(new VariablePart(var));
                 } else {
-                    Attribute var = getAttribute(attr.substring(foundpos + 1, pos - 1));
+                    Attribute var = getAttribute(attr.substring(foundPos + 1, pos - 1));
                     attributeParts.add(new ExpressionPart(var));
                 }
             } else { // not using parentheses.
-                char c = attr.charAt(pos = foundpos);
+                pos = foundPos;
                 if (c == '$') { // make escaping of $ possible
                     attributeParts.add(new StringPart("$"));
                     pos++;
@@ -242,7 +246,7 @@ public class Attribute {
                 }
             }
             // ready with this $, search next occasion;
-            foundpos = attr.indexOf('$', pos);
+            foundPos = attr.indexOf('$', pos);
         }
         // no more $'es, add rest of string
         String rest = attr.substring(pos);
