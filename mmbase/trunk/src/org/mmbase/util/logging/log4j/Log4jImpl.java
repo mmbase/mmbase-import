@@ -179,6 +179,16 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
             forcedLog(classname, Log4jLevel.TRACE, message, null);
     }
 
+    public final void trace(Object message, Throwable t) {
+        // disable is defined in Category
+        if (repository.isDisabled(Log4jLevel.TRACE_INT)) {
+            return;
+        }
+        if (Log4jLevel.TRACE.isGreaterOrEqual(this.getEffectiveLevel()))
+            //callAppenders(new LoggingEvent(classname, this, Log4jLevel.TRACE, message, null));
+            forcedLog(classname, Log4jLevel.TRACE, message, t);
+    }
+
     /**
      *  A new logging method that takes the SERVICE priority.
      */
@@ -190,6 +200,16 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
         if (Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel()))
             //callAppenders(new LoggingEvent(classname, this, Log4jLevel.SERVICE, message, null));
             forcedLog(classname, Log4jLevel.SERVICE, message, null);
+    }
+
+    public final void service(Object message, Throwable t) {
+        // disable is defined in Category
+        if (repository.isDisabled(Log4jLevel.SERVICE_INT)) {
+            return;
+        }
+        if (Log4jLevel.SERVICE.isGreaterOrEqual(this.getEffectiveLevel()))
+            //callAppenders(new LoggingEvent(classname, this, Log4jLevel.SERVICE, message, null));
+            forcedLog(classname, Log4jLevel.SERVICE, message, t);
     }
 
     public final boolean isServiceEnabled() {

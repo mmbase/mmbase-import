@@ -42,14 +42,37 @@ abstract public class AbstractSimpleImpl  {
         log(s);
     }
 
+    /**
+     * @since MMBase-1.8
+     */
+    protected void log (String s, Throwable t) {
+        log(s + "\n"  + Logging.stackTrace(t));
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    protected void log(String s, Level level, Throwable t) {
+        log(s, t);
+    }
+
     public void trace (Object m) {
         if (level <= Level.TRACE_INT) {
             log("TRACE " + m,  Level.TRACE);
         }
     }
+    public void trace (Object m, Throwable t) {
+        if (level <= Level.TRACE_INT) {
+            log("TRACE " + m,  Level.TRACE, t);
+        }
+    }
     public void debug (Object m) {
         if (level <= Level.DEBUG_INT) {
             log("DEBUG " + m, Level.DEBUG);
+        }
+    }
+    public void debug (Object m, Throwable t) {
+        if (level <= Level.DEBUG_INT) {
+            log("DEBUG " + m, Level.DEBUG, t);
         }
     }
 
@@ -58,9 +81,19 @@ abstract public class AbstractSimpleImpl  {
             log("SERVICE " + m, Level.SERVICE);
         }
     }
+    public void service (Object m, Throwable t) {
+        if (level <= Level.SERVICE_INT) {
+            log("SERVICE " + m, Level.SERVICE, t);
+        }
+    }
     public void info    (Object m) {
         if (level <= Level.INFO_INT) {
             log("INFO " + m, Level.INFO);
+        }
+    }
+    public void info    (Object m, Throwable t) {
+        if (level <= Level.INFO_INT) {
+            log("INFO " + m, Level.INFO, t);
         }
     }
     public void warn    (Object m) {
@@ -68,14 +101,29 @@ abstract public class AbstractSimpleImpl  {
             log("WARN " + m, Level.WARN);
         }
     }
+    public void warn    (Object m, Throwable t) {
+        if (level <= Level.WARN_INT) {
+            log("WARN " + m, Level.WARN, t);
+        }
+    }
     public void error   (Object m) {
         if (level <= Level.ERROR_INT) {
             log("ERROR " + m, Level.ERROR);
         }
     }
+    public void error   (Object m, Throwable t) {
+        if (level <= Level.ERROR_INT) {
+            log("ERROR " + m, Level.ERROR, t);
+        }
+    }
     public void fatal   (Object m) {
         if (level <= Level.FATAL_INT) {
             log("FATAL " + m, Level.FATAL);
+        }
+    }
+    public void fatal   (Object m, Throwable t) {
+        if (level <= Level.FATAL_INT) {
+            log("FATAL " + m, Level.FATAL, t);
         }
     }
 

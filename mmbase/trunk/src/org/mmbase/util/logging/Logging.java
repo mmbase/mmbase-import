@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.29 2004-05-06 12:34:48 keesj Exp $
+ * @version $Id: Logging.java,v 1.30 2004-07-26 08:25:03 michiel Exp $
  */
 
 
@@ -188,7 +188,7 @@ public class Logging {
             Method conf = logClass.getMethod("configure", new Class[] { String.class } ); 
             conf.invoke(null, new String[] { configuration } );    
         } catch (NoSuchMethodException e) {
-            //System.err.println("Could not find configure method in " + logClass.getName());
+            log.debug("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
         } catch (java.lang.reflect.InvocationTargetException e) {
             System.err.println("Invocation Exception while configuration class. " + e.getMessage());

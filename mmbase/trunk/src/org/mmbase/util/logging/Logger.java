@@ -57,7 +57,13 @@ public interface Logger {
      * Logs the message m with trace priority. For detailled debugging. 
      * @see #debug
      */
-    public void trace   (Object m);
+    void trace(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+
+    void trace(Object m, Throwable t);
     
     /**
      * Logs the message m with debug priority. Everything a
@@ -66,7 +72,14 @@ public interface Logger {
      * so it is important that you well protect them with
      * `isDebugEnabled's, to minimize overhead.  
      */
-    public void debug   (Object m);
+    void debug(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+
+    void debug(Object m, Throwable t);
+
 
     /**
      * Logs the message m with service priority. An interested system
@@ -75,8 +88,15 @@ public interface Logger {
      * priority. Or if a image is calculated, that could be logged as
      * a `service'. One would get a fairly good idea what MMBase is
      * doing if `service' is switched on.  
-	 */
-    public void service (Object m);
+     */
+    void service(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+
+    void service(Object m, Throwable t);
+
 
     /**
      * Logs the message m with info priority. As `service', but
@@ -85,20 +105,38 @@ public interface Logger {
      * the database could be logged, such that one can see in the logs
      * what happened.
      */
-    public void info    (Object m);
+    void info(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+    void info(Object m, Throwable t);
+
 
     /**
      * Logs the message m with warn priority. Something strange
      * happened, but it is not necessarily an error.  
      */
-    public void warn    (Object m);
+    void warn(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+    void warn(Object m, Throwable t);
+
 
     /**
      * Logs the message m with error priority. Something is definitely
      * wrong. An inconsistency was detected. It might be unpredictable
      * what will happen.
      */
-    public void error   (Object m);
+    void error(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+    void error(Object m, Throwable t);
+
 
     /**
      * Logs the message m with fatal priority. The progam could not
@@ -108,7 +146,13 @@ public interface Logger {
      * fatal priority, but nevertheless it's better to always catch
      * all exceptions in a more regulated way. 
      */
-    public void fatal   (Object m);
+    void fatal(Object m);
+
+    /**
+     * @since MMBase-1.8
+     */
+    void fatal(Object m, Throwable t);
+
 
     /**
      * Returns true if for this category (Logger), a call to debug (or
