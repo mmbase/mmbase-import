@@ -94,7 +94,7 @@
 		<%-- When there is an alias, create that one 2 --%> 
 		<mm:present referid="alias_name">
 			<mm:node id="new_alias" referid="new_node" >
-				<mm:createalias name="${alias_name}" />
+				<mm:createalias name="$alias_name" />
 			</mm:node>
 		</mm:present>
 	

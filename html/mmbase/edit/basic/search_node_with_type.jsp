@@ -240,10 +240,10 @@
   </tr>
 </table>
 </mm:maycreate>
-<mm:maycreate type="${node_type}" inverse="true">
+<mm:maycreate type="$node_type" inverse="true">
   <table width="100%">
     <tr>
-      <td class="data"><%= m.getString("search_node.maynotcreate")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
+      <td class="data"><%= m.getString("search_node.maynotcreate")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />)</td>
       <td class="navigate">&nbsp;</td>        
     </tr>
   </table> 

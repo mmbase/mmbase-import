@@ -22,7 +22,7 @@
 </mm:present>
 <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
 <tr><th colspan="2"><%=m.getString("create_node.new")%> <mm:write referid="node_type" /></th></tr>
-    <mm:fieldlist id="my_form" type="edit" nodetype="${node_type}" >
+    <mm:fieldlist id="my_form" type="edit" nodetype="$node_type" >
        <tr>
          <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
          <td class="listdata"><mm:fieldinfo type="input" /></td>
