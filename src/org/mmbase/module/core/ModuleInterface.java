@@ -26,13 +26,13 @@ public interface ModuleInterface {
     public CloudContextInterface getCloudContext();
 
  	/**
-	 * Retrieve the name of the nodetype
+	 * Retrieve the Graphical User Interface name of the module
 	 * @param language the language in which you want the name
 	 */
-	public String getName(String language);
+	public String getGuiName(String language);
 
 	/**
-     * Retrieve the name of the nodetype (in the default language defined in mmbaseroot.xml)
+     * Retrieve the System name of the module
      */
     public String getName();
 
