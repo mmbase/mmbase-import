@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard list.xsl 
 
-  @version   $Id: list.xsl,v 1.8 2004-02-27 14:03:22 gerard Exp $
+  @version   $Id: list.xsl,v 1.9 2004-03-19 11:10:58 nico Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -11,11 +11,11 @@
   <xsl:import href="ew:xsl/list.xsl"/>
 
   <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/color/list.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/color/list.css" />
   </xsl:template>
 
   <xsl:template name="extrastyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/extra/list.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/extra/list.css" />
   </xsl:template>
 
   <xsl:variable name="searchagetype">edit</xsl:variable>

@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating adding a CSS
 
-  @version   $Id: base.xsl,v 1.3 2004-01-21 16:51:02 nico Exp $
+  @version   $Id: base.xsl,v 1.4 2004-03-19 11:10:57 nico Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -11,7 +11,7 @@
   <xsl:import href="ew:xsl/base.xsl" /> <!-- extend from standard  editwizard xslt -->
   
   <xsl:template name="colorstyle">
-    <link rel="stylesheet" type="text/css" href="{$referrerdir}/style/color/base.css" />
+    <link rel="stylesheet" type="text/css" href="{$templatedir}/style/color/base.css" />
   </xsl:template>
 
 </xsl:stylesheet>
