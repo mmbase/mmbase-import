@@ -73,6 +73,66 @@
 </TR>
 
 
+<TR>
+	<TD>
+	&nbsp;
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache requests</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-NODECACHEREQUESTS^</B></FONT>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache hits</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-NODECACHEHITS^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache misses</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-NODECACHEMISSES^</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="2">
+	<FONT COLOR="000000">
+	<B>Node cache performance</B>
+	</TD>
+	<TD BGCOLOR="00445B" COLSPAN="2">
+	<FONT COLOR="#FFFFFF"><B>&nbsp;$MOD-MMADMIN-NODECACHEPERFORMANCE^%</B></FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="../../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="42BDAD" COLSPAN="4">
+	<FONT COLOR="000000">
+	<CENTER>
+	<B><A HREF="shownodelru.shtml">Show first 100 entry's of the LRU</A></B>
+	</TD>
+</TR>
+
 </TABLE>
 </BODY>
 </HTML>
