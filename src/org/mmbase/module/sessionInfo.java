@@ -55,7 +55,7 @@ public class sessionInfo {
 	}
 
 	/**
-	* add a value to a set if its not made yet create it
+	* adds a value to a set, no duplicates are allowed.
 	*/
 	public void addSetValue(String key,String value) {
 
@@ -79,7 +79,7 @@ public class sessionInfo {
 
 
 	/**
-	* add a value to a set if its not made yet create it
+	* add a value to a set, duplicates are allowed.
 	*/
 	public void putSetValue(String key,String value) {
 
@@ -100,7 +100,7 @@ public class sessionInfo {
 
 
 	/**
-	* add a value to a set if its not made yet create it
+	* deletes a value from the SESSION set.
 	*/
 	public void delSetValue(String key,String value) {
 		Vector v=(Vector)setvalues.get(key);
@@ -128,7 +128,7 @@ public class sessionInfo {
 
 
 	/**
-	* does this set contain the value ?
+	* delete the values belonging to the key
 	*/
 	public String clearSet(String key) {
 		//debug("sessionset="+key);	
@@ -143,7 +143,8 @@ public class sessionInfo {
 
 
 	/**
-	* return the String of a set
+	* returns the session variable values comma separaterd
+	* @param key the name of the session variable 
 	*/
 	public String getSetString(String key) {
 
@@ -169,7 +170,7 @@ public class sessionInfo {
 	}
 
 	/**
-	* return the Count of a set
+	* return the number of values contained by a session variable
 	*/
 	public String getSetCount(String key) {
 
@@ -183,7 +184,7 @@ public class sessionInfo {
 
 
 	/**
-	* return the String of a set
+	* return the average of a set of numbers
 	*/
 	public String getAvgSet(String key) {
 		Vector v=(Vector)setvalues.get(key);
@@ -206,6 +207,9 @@ public class sessionInfo {
 		}
 	}
 
+	/**	
+	 * returns the hostname of a user
+	 */
 	public String getHostName() {
 		return(hostname);
 	}
