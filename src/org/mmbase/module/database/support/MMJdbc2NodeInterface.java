@@ -23,7 +23,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.22 2003-03-07 08:50:19 pierre Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.23 2003-03-19 15:00:46 kees Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**
@@ -52,11 +52,11 @@ public interface MMJdbc2NodeInterface extends SearchQueryHandler {
         throws StorageException;
 
     /**
-     * @javadoc
+     * @javadoc please
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
     /**
-     * @javadoc
+     * @javadoc please
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
 
