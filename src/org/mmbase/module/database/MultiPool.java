@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.22 2003-01-07 10:57:00 kees Exp $
+ * @version $Id: MultiPool.java,v 1.23 2003-01-20 13:50:46 robmaris Exp $
  */
 public class MultiPool {
     
@@ -223,14 +223,14 @@ public class MultiPool {
      * putback the used connection in the pool
      */
     public void putBack(MultiConnection con) {
-		//reset time connection is busy
-        con.release();
         if (! busyPool.contains(con)) {
             log.warn("Put back connection was not in busyPool!!");
         }
 
     	//see comment in method checkTime()
     	synchronized (semaphore) {
+
+         con.release(); //Resets time connection is busy.
     		MultiConnection oldcon = con;
         
 	        if (DORECONNECT && (con.getUsage() > maxQuerys)) {
