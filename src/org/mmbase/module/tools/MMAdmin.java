@@ -57,7 +57,7 @@ public class MMAdmin extends ProcessorModule {
             kioskmode=true;
             log.info("*** Server started in kiosk mode ***");
         }
-	mmb=(MMBase)getModule("MMBASEROOT");
+    	mmb=(MMBase)getModule("MMBASEROOT");
         htmlbase=(HtmlBase)getModule("MMBASE");
         probe = new MMAdminProbe(this);
     }
@@ -275,15 +275,30 @@ public class MMAdmin extends ProcessorModule {
             } else if (cmd.equals("MODULECLASSFILE")) {
                 return ""+getModuleClass(tok.nextToken());
             } else if (cmd.equals("MULTILEVELCACHEHITS")) {
-                return(""+htmlbase.getMultilevelCacheHandler().getHits());
+                if (htmlbase==null)
+                    return "N.A.";
+                else
+                    return(""+htmlbase.getMultilevelCacheHandler().getHits());
             } else if (cmd.equals("MULTILEVELCACHEMISSES")) {
-                return(""+htmlbase.getMultilevelCacheHandler().getMisses());
+                if (htmlbase==null)
+                    return "N.A.";
+                else
+                    return(""+htmlbase.getMultilevelCacheHandler().getMisses());
             } else if (cmd.equals("MULTILEVELCACHEREQUESTS")) {
-                return(""+(htmlbase.getMultilevelCacheHandler().getHits()+htmlbase.getMultilevelCacheHandler().getMisses()));
+                if (htmlbase==null)
+                    return "N.A.";
+                else
+                    return(""+(htmlbase.getMultilevelCacheHandler().getHits()+htmlbase.getMultilevelCacheHandler().getMisses()));
             } else if (cmd.equals("MULTILEVELCACHEPERFORMANCE")) {
-                return(""+(htmlbase.getMultilevelCacheHandler().getRatio()*100));
+                if (htmlbase==null)
+                    return "N.A.";
+                else
+                    return(""+(htmlbase.getMultilevelCacheHandler().getRatio()*100));
             } else if (cmd.equals("MULTILEVELCACHESIZE")) {
-                return(""+(htmlbase.getMultilevelCacheHandler().getSize()));
+                if (htmlbase==null)
+                    return "N.A.";
+                else
+                    return(""+(htmlbase.getMultilevelCacheHandler().getSize()));
             } else if (cmd.equals("NODECACHEHITS")) {
                 return(""+MMObjectBuilder.nodeCache.getHits());
             } else if (cmd.equals("NODECACHEMISSES")) {
@@ -1638,40 +1653,41 @@ public class MMAdmin extends ProcessorModule {
     }
 
     public Vector  getMultilevelCacheEntries() {
-	Vector results=new Vector();
-	Enumeration res=htmlbase.getMultilevelCacheHandler().getOrderedElements();
-	while (res.hasMoreElements()) {
-		MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
-		StringTagger tagger=en.getTagger();
-		Vector type=tagger.Values("TYPE");
-		Vector where=tagger.Values("WHERE");
-		Vector dbsort=tagger.Values("DBSORT");
-		Vector dbdir=tagger.Values("DBDIR");
-		Vector fields=tagger.Values("FIELDS");
-		results.addElement(""+en.getKey());
-		results.addElement(""+type);
-		results.addElement(""+fields);
-		if (where!=null) {
-			results.addElement(where.toString());
-		} else {
-			results.addElement("");
-		}
-		if (dbsort!=null) {
-			results.addElement(dbsort.toString());
-		} else {
-			results.addElement("");
-		}
-		if (dbdir!=null) {
-			results.addElement(dbdir.toString());
-		} else {
-			results.addElement("");
-		}
-		results.addElement(tagger.ValuesString("ALL"));
-		results.addElement(""+htmlbase.getMultilevelCacheHandler().getCount(en.getKey()));
-	}
-	return(results);
+        Vector results=new Vector();
+        if (htmlbase!=null) {
+            Enumeration res=htmlbase.getMultilevelCacheHandler().getOrderedElements();
+            while (res.hasMoreElements()) {
+                MultilevelCacheEntry en=(MultilevelCacheEntry)res.nextElement();
+	        	StringTagger tagger=en.getTagger();
+    		    Vector type=tagger.Values("TYPE");
+    	    	Vector where=tagger.Values("WHERE");
+	    	    Vector dbsort=tagger.Values("DBSORT");
+    	    	Vector dbdir=tagger.Values("DBDIR");
+	    	    Vector fields=tagger.Values("FIELDS");
+    		    results.addElement(""+en.getKey());
+        		results.addElement(""+type);
+	    	    results.addElement(""+fields);
+		        if (where!=null) {
+    			    results.addElement(where.toString());
+    	    	} else {
+	    	    	results.addElement("");
+    	    	}
+	    	    if (dbsort!=null) {
+		    	    results.addElement(dbsort.toString());
+        		} else {
+	    	    	results.addElement("");
+	        	}
+    		    if (dbdir!=null) {
+	    		    results.addElement(dbdir.toString());
+    		    } else {
+	    		    results.addElement("");
+    	    	}
+	    	    results.addElement(tagger.ValuesString("ALL"));
+    		    results.addElement(""+htmlbase.getMultilevelCacheHandler().getCount(en.getKey()));
+            }		
+        }
+        return(results);
     }
-
 
     public Vector  getNodeCacheEntries() {
 	Vector results=new Vector();
