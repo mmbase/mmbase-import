@@ -16,13 +16,13 @@
    String value=mmAdmin.getInfo("GETMODULEPROPERTY-"+module+"-"+property,request,response);
 %>
 <table summary="module property data" width="93%" cellspacing="1" cellpadding="3">
+
+<form action="<mm:url page="actions.jsp"/>" method="POST">
 <tr align="left">
   <th class="header">Property</th>
   <th class="header">Value</th>
   <th class="header">Change</th>
 </tr>
-
-<form action="actions.jsp" method="POST">
 <tr>
   <td class="data"><%=property%></td>
  <td class="data">
@@ -40,7 +40,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="actions.jsp?module=<%=module%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">&nbsp;</td>
 </tr>
 </table>

@@ -32,7 +32,6 @@
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-databases-"+database);
 %>
-<form action="../config/details.jsp" method="POST" target="_xml">
 <tr align="left">
 <th class="header">Action</th>
   <th class="header" colspan="3">Status</th>
@@ -42,6 +41,7 @@
  <td class="data">XML-check</td>
  <td class="data" colspan="3"><%=check%></td>
  <td class="linkdata" >
+  <form action="<mm:url page="../config/details.jsp" />" method="POST" target="_xml">
 <%    if (check.equals("Checked ok")) { %>
         <input type="hidden" name="todo" value="show" />
 <%  } else { %>
@@ -50,16 +50,16 @@
     <input type="hidden" name="config" value="databases" />
     <input type="hidden" name="target" value="<%=database%>" />
     <input type="submit" value="YES" />
+  </form>
  </td>
 </tr>
-</form>
 
 <tr><td>&nbsp;</td></tr>
 
 <% } %>
 
 <tr>
-<td class="navigate"><a href="../databases.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="../databases.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Database Overview</td>
 </tr>
 </table>

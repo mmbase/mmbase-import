@@ -19,7 +19,8 @@
         mmAdmin.process(cmd,server,null,request,response);
         msg="<p>"+mmAdmin.getInfo("LASTMSG",request,response)+"</p>";
     } catch (Exception e ) {
-        msg="<p> Error: "+e.getMessage()+"</p>";
+        e.printStackTrace();
+        msg="<p> Error: "+e+"</p>";
     }
 %>
 
@@ -36,7 +37,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="actions.jsp?server=<%=server%>"><img src="../../images/back.gif" alt="next" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?server="+server%>" />"><img src="../../images/back.gif" alt="next" border="0" align="left" /></td>
 <td class="data">Return to Server Administration</td>
 </tr>
 

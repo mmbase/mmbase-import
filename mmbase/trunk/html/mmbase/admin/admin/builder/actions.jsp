@@ -90,7 +90,7 @@
  <td class="data"><%=field.getStringValue("item3")%></td>
  <td class="data"><%=field.getStringValue("item4")%></td>
  <td class="navigate">
-    <a href="field.jsp?builder=<%=builder%>&field=<%=field.getStringValue("item2")%>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
+    <a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>"/>"><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
 </td>
 </tr>
 
@@ -101,13 +101,13 @@
  <td class="data">&nbsp;</td>
  <td class="data">&nbsp;</td>
  <td class="navigate">
-    <a href="newfield.jsp?builder=<%=builder%>"><img src="../../images/next.gif" alt="add new" border="0" align="right" /></a>
+    <a href="<mm:url page="<%="newfield.jsp?builder="+builder%>" />"><img src="../../images/next.gif" alt="add new" border="0" align="right" /></a>
 </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
-<form action="result.jsp" method="POST">
+<form action="<mm:url page="result.jsp" />" method="POST">
 <tr align="left">
 <th class="header">Action</th>
   <th class="header" colspan="2">Path</th>
@@ -115,7 +115,7 @@
 </tr>
 <tr>
  <td class="data">Save</td>
- <td class="data" colspan="2"><input name="path" value="/tmp/<%=builder%>.xml" /></td>
+ <td class="data" colspan="2"><input name="path" value="/tmp/<%=builder%>.xml" size="80" /></td>
  <td class="linkdata" colspan="2">
    <input type="hidden" name="builder" value="<%=builder%>" />
    <input type="hidden" name="cmd" value="BUILDERSAVE" />
@@ -131,7 +131,6 @@
     if (mmconfig!=null) {
         String check=mmconfig.getInfo("CHECK-builders-"+builder);
 %>
-<form action="../config/details.jsp" method="POST" target="_xml">
 <tr align="left">
 <th class="header">Action</th>
   <th class="header" colspan="2">Status</th>
@@ -141,6 +140,7 @@
  <td class="data">XML-check</td>
  <td class="data" colspan="2"><%=check%></td>
  <td class="linkdata" colspan="2">
+<form action="<mm:url page="../config/details.jsp"/>" method="POST" target="_xml">
 <%    if (check.equals("Checked ok")) { %>
         <input type="hidden" name="todo" value="show" />
 <%  } else { %>
@@ -149,9 +149,9 @@
     <input type="hidden" name="config" value="builders" />
     <input type="hidden" name="target" value="<%=builder%>" />
     <input type="submit" value="YES" />
+</form>
  </td>
 </tr>
-</form>
 
 <tr><td>&nbsp;</td></tr>
 

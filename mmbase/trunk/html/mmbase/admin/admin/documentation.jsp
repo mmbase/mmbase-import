@@ -11,41 +11,36 @@
 </head>
 <body class="basic" >
 <table summary="documentation" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
-	<th class="header">Documentation source</th>
-	<th class="header">Description</th>
-</tr>
-<tr>
-	<td class="data">
-	    <a target="_blank" href="http://www.mmbase.org">MMBase Home</a>
-	</td>
-	<td class="data">
-			 <p>Here you'll find all the documentation you'll need.</p>
-	</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr align="left">
-	<th class="header">Topic</th>
-	<th class="header">Description</th>
-</tr>
-<tr>
-	<td class="data">
-	    <a target="_blank" href="<mm:url page="/mmdocs/config/builders.html" />">Builder configuration</a>
-	</td>
-	<td class="data">
-			<p>Documentation on the builders.xml layout.</p>
-	</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
-<td class="data">Return to home page</td>
-</tr>
-
+  <tr align="left">
+    <th class="header">Documentation source</th>
+    <th class="header">Description</th>
+  </tr>
+  <tr>
+    <td class="data">
+      <a target="_blank" href="http://www.mmbase.org">MMBase Home</a>
+    </td>
+    <td class="data">
+      <p>Here you'll find all the documentation you'll need.</p>
+    </td>
+  </tr>
+  <tr><td>&nbsp;</td></tr>
+  <tr align="left">
+    <th class="header">Topic</th>
+    <th class="header">Description</th>
+  </tr>
+  <tr>
+    <td class="data">
+      <a target="_blank" href="<mm:url page="/mmdocs/config/builders.html" />">Builder configuration</a>
+    </td>
+    <td class="data">
+      <p>Documentation on the builders.xml layout.</p>
+    </td>
+  </tr>
+  <tr><td>&nbsp;</td></tr>
+  <tr>
+    <td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+    <td class="data">Return to home page</td>
+  </tr>
 </table>
 </body></html>
 </mm:cloud>

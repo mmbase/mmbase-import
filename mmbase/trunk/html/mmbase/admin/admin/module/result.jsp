@@ -38,7 +38,7 @@
 </tr>
 <tr><td>&nbsp;</td></tr>
 <tr>
-<td class="navigate"><a href="actions.jsp?module=<%=module%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?module="+module%>"/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Module Administration</td>
 </tr>
 
