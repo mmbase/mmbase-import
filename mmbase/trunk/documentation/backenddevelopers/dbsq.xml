@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
+<article>
+  <title>SearchQuery introduction</title>
+
+  <articleinfo>
+    <date>oct 23rd 2002</date>
+
+    <author>
+      <firstname>Rob</firstname>
+
+      <surname>van Maris</surname>
+
+      <affiliation>
+        <orgname>Finalist IT Group</orgname>
+      </affiliation>
+    </author>
+  </articleinfo>
+
+  <sect1>
+    <title>background</title>
+
+    <para>The database search queries project addresses the following needs:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>deliver search queries inside MMBase in a uniform and
+        device-independent manner</para>
+      </listitem>
+
+      <listitem>
+        <para>provide mechanisms to process these queries in a device-specific
+        way that ensures optimal performance</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The plan of action for the project defines three stages:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Create a SearchQuery object to represent all possible search
+        queries supported by standard relational databases.</para>
+      </listitem>
+
+      <listitem>
+        <para>Create an extension mechanism to enable use of additional,
+        vendor specific, database functionality.</para>
+      </listitem>
+
+      <listitem>
+        <para>Integrate of the SearchQuery into existing MMBase code.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>The current state of the project is that stage 1 has been completed.
+    This article introduces the resulting SearchQuery design and
+    implementation.</para>
+  </sect1>
+
+  <sect1>
+    <title>resources</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Sourcecode is available from CVS module speeltuin\dbsq\src.</para>
+      </listitem>
+
+      <listitem>
+        <para>JUnit tests sourcecode is available from CVS module
+        speeltuin\dbsq\test\src.</para>
+      </listitem>
+
+      <listitem>
+        <para>UML diagrams including javadoc are available from the project
+        website at mmbase.org.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para></para>
+  </sect1>
+
+  <sect1>
+    <title>package descriptions</title>
+
+    <para></para>
+
+    <sect2>
+      <title>org.mmbase.storage.search</title>
+
+      <para>Defines the SearchQuery interface along with all collaborating
+      interfaces. </para>
+
+      <para>SearchQuery objects are essentially container objects that hold
+      data describing query requests. The storage layer needs to retreive this
+      data from the objects in order to process the query. </para>
+
+      <para>The package contains the exact interfaces available to retrieve
+      this data from the query objects. </para>
+
+      <para>Note that these interfaces don&#39;t specify how query objects are
+      constructed, see next section.</para>
+    </sect2>
+
+    <sect2>
+      <title>org.mmbase.storage.search.implementation</title>
+
+      <para>Contains classes implementing the interfaces mentioned above.</para>
+    </sect2>
+  </sect1>
+</article>
