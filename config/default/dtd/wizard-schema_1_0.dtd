@@ -23,10 +23,12 @@
 <!ATTLIST field name NMTOKEN #IMPLIED >
 <!ATTLIST field rows NMTOKEN #IMPLIED >
 
+<!ELEMENT fieldset ( field+, prompt ) >
+
 <!ELEMENT form-schema ( field | list | subtitle | title )* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
 
-<!ELEMENT item ( title | field )* >
+<!ELEMENT item ( title | field | fieldset )* >
 <!ATTLIST item displaytype NMTOKEN #REQUIRED >
 
 <!ELEMENT list ( title | action | command | item | title )* >
@@ -57,7 +59,7 @@
 
 <!ELEMENT prompt ( #PCDATA ) >
 
-<!ELEMENT relation ( field? ) >
+<!ELEMENT relation ( field? | object? ) >
 <!ATTLIST relation destination NMTOKEN #IMPLIED >
 <!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST relation role NMTOKEN #REQUIRED >
