@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.5 2005-01-19 08:57:08 pierre Exp $
+ * @version $Id: Lucene.java,v 1.6 2005-03-22 08:48:54 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -51,6 +51,7 @@ public class Lucene extends Module implements MMBaseObserver {
     private String defaultIndex = null;
     private Map indexerMap = new HashMap();
     private Map searcherMap = new HashMap();
+    private boolean readOnly = false;
 
     /**
      * This function starts a full Index of Lucene.
@@ -65,7 +66,7 @@ public class Lucene extends Module implements MMBaseObserver {
     };
 
     /**
-     * This function starts a search fro a given string.
+     * This function starts a search for a given string.
      * This function can be called through the function framework.
      */
      protected Function searchFunction = new AbstractFunction("search",
@@ -116,16 +117,19 @@ public class Lucene extends Module implements MMBaseObserver {
         super.init();
         mmbase = MMBase.getMMBase();
         String fullIndexPath = MMBaseContext.getServletContext().getRealPath(luceneIndexPath);
+        readOnly = !"true".equals(getInitParameter("readonly"));
         readConfiguration(fullIndexPath);
-        addFunction(fullIndexFunction);
         addFunction(searchFunction);
         addFunction(searchSizeFunction);
-        scheduler = new Scheduler();
-        log.info("Module Lucene started");
-        // full index ??
-        String fias = getInitParameter("fullindexatstartup");
-        if ("true".equals(fias)) {
-            scheduler.fullIndex();
+        if (!readOnly) {
+            addFunction(fullIndexFunction);
+            scheduler = new Scheduler();
+            log.info("Module Lucene started");
+            // full index ??
+            String fias = getInitParameter("fullindexatstartup");
+            if ("true".equals(fias)) {
+                scheduler.fullIndex();
+            }
         }
     }
 
@@ -206,8 +210,10 @@ public class Lucene extends Module implements MMBaseObserver {
                                     Map builderProperties = new HashMap();
                                     builderProperties.put("fieldset",builderSet);
                                     buildersToIndex.put(builderName, builderProperties);
-                                    builder.addLocalObserver(this);
-                                    builder.addRemoteObserver(this);
+                                    if (!readOnly) {
+                                        builder.addLocalObserver(this);
+                                        builder.addRemoteObserver(this);
+                                    }
                                     if (log.isDebugEnabled()) {
                                          log.debug("Configured builder "+builderName+" with field set:" + builderSet);
                                     }
@@ -262,14 +268,16 @@ public class Lucene extends Module implements MMBaseObserver {
     }
 
     public boolean nodeChanged(String machine, String number, String builder, String ctype) {
-       // if this concerns a change or new node, update the index with that node
-       if (ctype.equals("c") || ctype.equals("n")) {
-           scheduler.updateIndex(number);
-       // if this concerns removing a node, remove the index of that node
-       } else if (ctype.equals("d")) {
-           scheduler.deleteIndex(number);
-       }
-       return true;
+        if (!readOnly) {
+            // if this concerns a change or new node, update the index with that node
+            if (ctype.equals("c") || ctype.equals("n")) {
+                scheduler.updateIndex(number);
+            // if this concerns removing a node, remove the index of that node
+            } else if (ctype.equals("d")) {
+                scheduler.deleteIndex(number);
+            }
+        }
+        return true;
     }
 
     class Scheduler extends Thread {
