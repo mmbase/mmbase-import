@@ -29,28 +29,26 @@
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="mediafragments"  to="videofragments"  type="parent" />
+    <relation from="videofragments"  to="videofragments"  type="parent" />
     <relation from="audiofragments"  to="audiofragments"  type="parent" />
 
     <relation from="videofragments"  to="videofragments"  type="posrel" />
     <relation from="audiofragments"  to="audiofragments"  type="posrel" />
 
     <relation from="mediafragments"  to="publishtimes"    type="related" />
-    <relation from="mediafragments"  to="mediafragments"  type="previous" />
+    <relation from="mediafragments"  to="mediafragments"  type="previous" /> <!-- for introduction -->
 
-    <relation from="pools"           to="pools"           type="parent"  />
+    <relation from="pools"           to="pools"           type="parent"  />  <!-- grouping -->
  
+    <relation from="videofragments"  to="videosources"    type="related" />
+    <relation from="audiofragments"  to="audiosources"    type="related" />
 
-    <relation from="mediafragments"  to="mediasources"    type="related" />
     <relation from="mediasources"    to="mediaproviders"  type="related" />
-
 
     <relation from="pools"           to="mediafragments"  type="related" />
 
     <relation from="mediafragments"  to="templates"    type="related" />
    
-
-    <!-- needed to let relatenodes types="mediaframents" work -->
     <relation from="pools"           to="mediafragments"  type="related" />
 
   </allowedrelationlist>

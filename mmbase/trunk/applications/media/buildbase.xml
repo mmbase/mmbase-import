@@ -39,7 +39,8 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="project.name" value="a-mmbase-project" />
-  <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" /><!-- specify mmbase classes to appear in the jar too -->
+  <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
+  <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
 
   <property name="test.class"   value="org.mmbase.Version" />
   <property name="test.arg"     value="" />
@@ -157,7 +158,7 @@ Build-compiler: ${build.compiler}
   </target>
 
 
-  <target name="test" depends="jar">   
+  <target name="test">   
     <java classname="${test.class}"
       classpathref="run.classpath"
       fork="true"
