@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.181 2002-11-13 18:14:35 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.182 2002-11-20 12:52:04 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -395,22 +395,21 @@ public class MMObjectBuilder extends MMTable {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-	try {
+        try {
             int n;
             n=mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
             if (alias!=null) createAlias(n,alias);	// add alias, if provided
             return n;
-	}
-	catch(RuntimeException e) {
-	    // do we really wanna catch our exceptions here?
-	    // the only purpose now to catch them here, is to log
-	    // failures of inserts..
-	    String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
-	    log.error(msg);
+        } catch(RuntimeException e) {
+            // do we really wanna catch our exceptions here?
+            // the only purpose now to catch them here, is to log
+            // failures of inserts..
+	        String msg = "Failure(" + e + ") inserting node:\n" + node + "\n" + Logging.stackTrace(e);
+            log.error(msg);
             throw e;
-	}
+        }
     }
 
     /**
@@ -791,31 +790,29 @@ public class MMObjectBuilder extends MMTable {
      *       <code>MMObjectNode</code> containing the contents of the requested node.
      */
     public MMObjectNode getNode(String key, boolean usecache) {
-        int nr;
         if( key == null ) {
             log.error("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
             return null;
         }
-
-	// first look if we have a number...
+        int nr =-1;
+        // first look if we have a number...
         try {
-	    nr = Integer.parseInt(key);
-        } catch (Exception e) {
+            nr = Integer.parseInt(key);
+        } catch (Exception e) {}
+        if (nr!=-1) {
+            // key passed was a number.
+            // return node with this number
+            return getNode(nr,usecache);
+        } else {
+            // key passed was an alias
+            // return node with this alias
             log.debug("Getting node by alias");
-            nr = -1;
+            if (mmb.getOAlias() != null) {
+                return mmb.getOAlias().getAliasedNode(key);
+            } else {
+                return null;
+            }
         }
-        // it is/was not a number,..
-	// try top obtain the number from the alias builder(when it is active)
-        if (nr < 0 && mmb.getOAlias() != null) {
-            nr = mmb.getOAlias().getNumber(key);
-        }
-        // we now should have a node number,...
-	// if it is an invalid node number, return null
-	if(nr < 0) {
-	    return null;
-	}
-	// return the node...
-        return getNode(nr,usecache);
     }
 
     /**
