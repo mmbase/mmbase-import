@@ -159,23 +159,25 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
         if (log.isDebugEnabled()) log.debug("value of " + fieldName + ": " + value);
         helper.setValue(value);
-        helper.setJspvar(pageContext);
+        helper.setPageContext(pageContext);
+        helper.setJspvar();
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-
+        log.debug("end of doStartTag");
         return EVAL_BODY_BUFFERED;
     }
 
     /**
      * write the value of the field.
      **/
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
+        log.debug("doEndTag van FieldTag");
         helper.setBodyContent(bodyContent);
-        if ((! "".equals(bodyContent.getString()) && getReferid() != null)) {
+        if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
-        }
+        }       
 
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 }

@@ -70,8 +70,8 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
     /**
      * write the value of the field.
      **/
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 }

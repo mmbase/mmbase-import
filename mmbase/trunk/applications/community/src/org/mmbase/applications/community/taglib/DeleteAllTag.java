@@ -33,6 +33,6 @@ public class DeleteAllTag extends NodeTag {
         Module community=getCloudContext().getModule("communityprc");
         Node node=getNodeVar();
         community.getInfo("CHANNEL-"+node.getNumber()+"-DELALLMESSAGES",pageContext.getRequest(),pageContext.getResponse());
-        return super.doAfterBody();
+        return super.doEndTag();
     }
 }

@@ -54,7 +54,7 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     public int doStartTag() throws JspTagException {
         Node node = getNode();
         if (node.getNodeManager().getField("handle") == null) {
-            throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be an image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
+            throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
 
@@ -79,9 +79,9 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         helper.setBodyContent(bodyContent);
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 
 }

@@ -123,8 +123,8 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         helper.setValue(getUrl());
     }
 
-    public int doAfterBody() throws JspTagException {
-        bodyContent.clearBody(); // don't show the body.
+    public int doEndTag() throws JspTagException {
+        if (bodyContent != null) bodyContent.clearBody(); // don't show the body.
         helper.setBodyContent(bodyContent);
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
@@ -137,7 +137,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        return helper.doAfterBody();
+        return helper.doEndTag();
     }
 
 }

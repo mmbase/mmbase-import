@@ -34,6 +34,12 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         setFieldVar(name);
         return EVAL_BODY_BUFFERED;
     }
+
+
+    public int doEndTag() throws JspTagException {
+        return EVAL_PAGE;
+    }
+
     /**
      * Set the value of the field.
      */
@@ -44,16 +50,13 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         if ((field != null) && (field.getType() == Field.TYPE_BYTE)) {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
             getNodeVar().setByteValue(fieldName, org.mmbase.util.Encode.decodeBytes("BASE64", bodyContent.getString()));
-    } else {
+        } else {
             String newValue = convert(bodyContent.getString());
             getNodeVar().setValue(fieldName, newValue);
             if (getId() != null) {
                 getContextTag().register(getId(), newValue);
             }
-
         }
-
-
         findNodeProvider().setModified();
 
         return SKIP_BODY;
