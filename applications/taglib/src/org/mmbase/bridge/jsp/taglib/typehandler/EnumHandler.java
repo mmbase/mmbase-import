@@ -17,6 +17,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 import java.util.*;
 
+import org.mmbase.util.SortedBundle;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,16 +26,65 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.18 2004-06-28 21:39:08 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.19 2004-08-05 14:14:16 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     private static final Logger log = Logging.getLoggerInstance(EnumHandler.class);
-    private ResourceBundle bundle;
+    private SortedMap bundle;
     private boolean available;
     /**
      * @param tag
+     * @since MMBase-1.8
+     */
+    public EnumHandler(FieldInfoTag tag,  Field field) throws JspTagException {
+        super(tag);
+        String enumType = field.getGUIType();
+        try {
+            Class.forName(enumType);
+        } catch (Exception ee) {
+            try {
+                String resource;            
+                if (enumType.indexOf('.') == -1 ) {
+                    resource = "org.mmbase.bridge.jsp.taglib.typehandler.resources." + enumType;
+                } else {
+                    resource = enumType;
+                    
+                }
+                Class type;
+                switch(field.getType()) {
+                case Field.TYPE_STRING:  type = String.class; break;
+                case Field.TYPE_INTEGER: type = Integer.class; break;
+                case Field.TYPE_LONG:    type = Long.class; break;
+
+                    // I wonder if enums for the following types could make any sense, but well:
+                case Field.TYPE_FLOAT:   type = Float.class; break;
+                case Field.TYPE_DOUBLE:  type = Double.class; break;
+                case Field.TYPE_BYTE:    type = byte[].class; break;
+                case Field.TYPE_XML:     type = String.class; break; // Document.class ?
+                case Field.TYPE_NODE:    type = Node.class; break;
+                    /*
+                case Field.TYPE_DATETIME:  type = Date.class; break; 
+                case Field.TYPE_BOOLEAN:   type = Boolean.class; break; 
+                case Field.TYPE_LIST:     //  type = Boolean.class; break; 
+                    */
+                default: type = String.class;
+                }
+
+
+                bundle    = SortedBundle.getResource(resource, tag.getLocale(), getClass().getClassLoader(), 
+                                                        SortedBundle.NO_CONSTANTSPROVIDER, type, SortedBundle.NO_COMPARATOR);
+                available = true;
+            } catch (java.util.MissingResourceException e) {
+                log.warn(e.toString());
+                available = false;
+            }
+        }
+    }
+    /**
+     * @param tag
+     * @deprecated Use {@link #EnumHandler(FieldInfoTag, Field)}
      */
     public EnumHandler(FieldInfoTag tag,  String enumType) throws JspTagException {
         super(tag);
@@ -49,7 +99,14 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                     resource = enumType;
                     
                 }
-                bundle    = ResourceBundle.getBundle(resource, tag.getLocale(), getClass().getClassLoader());
+                bundle    = new TreeMap();
+                
+                ResourceBundle b = ResourceBundle.getBundle(resource, tag.getCloudVar().getLocale(), getClass().getClassLoader());
+                Enumeration e= b.getKeys();
+                while (e.hasMoreElements()) {
+                    String propertyKey = (String) e.nextElement();
+                    bundle.put(propertyKey, b.getString(propertyKey));
+                }
                 available = true;
             } catch (java.util.MissingResourceException e) {
                 log.warn(e.toString());
@@ -58,6 +115,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
         }
     }
 
+
     public boolean isAvailable() {
         return available;
     }
@@ -65,26 +123,20 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
         StringBuffer buffer = new StringBuffer();
-        Map enumValues = new TreeMap(); 
-        Enumeration e = bundle.getKeys();
-        while (e.hasMoreElements()) {
-            String propertyKey = (String) e.nextElement();
-            enumValues.put(propertyKey, bundle.getString(propertyKey));
-        }
-
         buffer.append("<select name=\"");
         buffer.append(prefix(field.getName()));
         buffer.append("\" ");
         addExtraAttributes(buffer);
         buffer.append(">\n");
-        String value = "";
+        Object value = null;
         if (node != null) {
-            value = node.getStringValue(field.getName());
+            value = node.getValue(field.getName());
         }
 
-        for(Iterator i = enumValues.keySet().iterator(); i.hasNext(); ) { 
-            String key = (String) i.next();
+        for(Iterator i = bundle.entrySet().iterator(); i.hasNext(); ) { 
+            Map.Entry entry = (Map.Entry) i.next();
             buffer.append("<option value=\"");
+            Object key = entry.getKey();
             buffer.append(key);
             buffer.append("\"");
             if ((node != null) && (key.equals(value))) {
@@ -96,7 +148,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                 }
             }
             buffer.append(">");
-            buffer.append(enumValues.get(key));
+            buffer.append(entry.getValue());
             buffer.append("</option>\n");
         }
         buffer.append("</select>");
