@@ -19,9 +19,9 @@ import org.mmbase.util.logging.Logging;
  * and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.14 2003-07-14 21:47:47 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.15 2003-08-27 19:30:38 michiel Exp $
  */
-public class MMBaseCop extends java.lang.SecurityManager  {
+public class MMBaseCop extends SecurityManager  {
     private static Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
     /** 
@@ -44,7 +44,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      * @param configPath Path to the security configuration file (security.xml)
      *	  
      */
-    public MMBaseCop(String configPath) throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
+    public MMBaseCop(String configPath) throws java.io.IOException, NoSuchMethodException, SecurityException {
         super();
 
         configFile = new File(configPath);
@@ -71,16 +71,15 @@ public class MMBaseCop extends java.lang.SecurityManager  {
      *	with their config files, as specied in the xml from configUrl
      *	@throws  java.io.IOException When reading the file failed
      *	@throws  java.lang.NoSuchMethodException When a tag was not specified
-     *	@throws  org.mmbase.security.SecurityException When the class could not
-     *	    be loaded
+     *	@throws  org.mmbase.security.SecurityException When the class could not  be loaded
      */
-    public void reload() throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
+    public void reload() throws java.io.IOException, NoSuchMethodException, SecurityException {
         log.debug("Retrieving a new security configuration...");
         MMBaseCopConfig newConfig = new MMBaseCopConfig(this, configFile);
 
         log.debug("Changing the security configration now");
         synchronized(this) {
-            // first stop watching the config file change-es
+            // first stop watching the config file changes
             config.stopWatching();
             // replace the old with the new one..
             config = newConfig;
