@@ -1,48 +1,332 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE languageguiset PUBLIC "//MMBase - languageguiset //" "http://www.mmbase.org/dtd/languageguiset_1_0.dtd">
 <languageguiset>
-	<keyword name="Members">
-		<translation language="nl" value="Leden" />
-		<translation language="df" value="Members" />
-	</keyword>
-	<keyword name="Messages">
-		<translation language="nl" value="Berichten" />
-		<translation language="df" value="Messages" />
-	</keyword>
-	<keyword name="Topics">
-		<translation language="nl" value="Onderwerpen" />
-		<translation language="df" value="Topics" />
+	<keyword name="Location">
+		<translation language="nl" value="Lokatie" />
+		<translation language="df" value="Location" />
 	</keyword>
 	<keyword name="on_the">
 		<translation language="nl" value="op het" />
 		<translation language="df" value="on the" />
 	</keyword>
-	<keyword name="forum">
-		<translation language="nl" value="forum" />
-		<translation language="df" value="forum" />
+	<keyword name="forgot_your_password">
+		<translation language="nl" value="Wachtwoord vergeten? Klik hier." />
+		<translation language="df" value="Forgot your password? Click here." />
 	</keyword>
-	<keyword name="member_since">
-		<translation language="nl" value="Lid geworden op" />
-		<translation language="df" value="Member since" />
+	<keyword name="you_have">
+		<translation language="nl" value="u heeft" />
+		<translation language="df" value="you have" />
 	</keyword>
-	<keyword name="Views">
-		<translation language="nl" value="Bekeken" />
-		<translation language="df" value="Views" />
+	<keyword name="members">
+		<translation language="nl" value="leden" />
+		<translation language="df" value="members" />
+	</keyword>
+	<keyword name="unread">
+		<translation language="nl" value="ongelezen" />
+		<translation language="df" value="unread" />
+	</keyword>
+	<keyword name="no_messages">
+		<translation language="nl" value="geen berichten" />
+		<translation language="df" value="no messages" />
+	</keyword>
+	<keyword name="pinned_topic">
+		<translation language="nl" value="Vastgezet onderwerp" />
+		<translation language="df" value="Pinned topic" />
+	</keyword>
+	<keyword name="Topics">
+		<translation language="nl" value="Onderwerpen" />
+		<translation language="df" value="Topics" />
+	</keyword>
+	<keyword name="add_new_area">
+		<translation language="nl" value="Nieuw gebied toevoegen" />
+		<translation language="df" value="Add a new area" />
+	</keyword>
+	<keyword name="topics">
+		<translation language="nl" value="onderwerpen" />
+		<translation language="df" value="topics" />
+	</keyword>
+	<keyword name="MMBob_system_error">
+		<translation language="nl" value="MMBob systeemfout" />
+		<translation language="df" value="MMBob system error" />
 	</keyword>
 	<keyword name="number_of_messages">
 		<translation language="nl" value="Aantal berichten" />
 		<translation language="df" value="Number of messages" />
 	</keyword>
+	<keyword name="Anonymous">
+		<translation language="nl" value="Anoniem" />
+		<translation language="df" value="Anonymous" />
+	</keyword>
+	<keyword name="Members_online">
+		<translation language="nl" value="Leden online" />
+		<translation language="df" value="Members online" />
+	</keyword>
+	<keyword name="remove_area">
+		<translation language="nl" value="gebied verwijderen" />
+		<translation language="df" value="remove area" />
+	</keyword>
+	<keyword name="The_moderator_team">
+		<translation language="nl" value="Het moderator team" />
+		<translation language="df" value="The moderator team" />
+	</keyword>
+	<keyword name="member_since">
+		<translation language="nl" value="Lid geworden op" />
+		<translation language="df" value="Member since" />
+	</keyword>
 	<keyword name="Areas">
 		<translation language="nl" value="Gebieden" />
 		<translation language="df" value="Areas" />
+	</keyword>
+	<keyword name="private_messages">
+		<translation language="nl" value="prive berichten" />
+		<translation language="df" value="private messages" />
+	</keyword>
+	<keyword name="remove_moderator">
+		<translation language="nl" value="moderator verwijderen" />
+		<translation language="df" value="remove moderator" />
+	</keyword>
+	<keyword name="author">
+		<translation language="nl" value="auteur" />
+		<translation language="df" value="author" />
+	</keyword>
+	<keyword name="Pages">
+		<translation language="nl" value="Pagina's" />
+		<translation language="df" value="Pages" />
+	</keyword>
+	<keyword name="Nam">
+	</keyword>
+	<keyword name="account">
+		<translation language="nl" value="account" />
+		<translation language="df" value="account" />
+	</keyword>
+	<keyword name="private_message">
+		<translation language="nl" value="prive bericht" />
+		<translation language="df" value="private message" />
+	</keyword>
+	<keyword name="ERROR">
+		<translation language="nl" value="FOUT" />
+		<translation language="df" value="ERROR" />
+	</keyword>
+	<keyword name="add_moderator">
+		<translation language="nl" value="moderator toevoegen" />
+		<translation language="df" value="add moderator" />
+	</keyword>
+	<keyword name="change_area">
+		<translation language="nl" value="gebied wijzigen" />
+		<translation language="df" value="change area" />
+	</keyword>
+	<keyword name="Moderators">
+		<translation language="nl" value="Moderators" />
+		<translation language="df" value="Moderators" />
+	</keyword>
+	<keyword name="last_time_logged_in">
+		<translation language="nl" value="Laatste keer hier geweest" />
+		<translation language="df" value="Last time logged in" />
+	</keyword>
+	<keyword name="views">
+		<translation language="nl" value="bekeken" />
+		<translation language="df" value="views" />
+	</keyword>
+	<keyword name="Views">
+		<translation language="nl" value="Bekeken" />
+		<translation language="df" value="Views" />
+	</keyword>
+	<keyword name="messages">
+		<translation language="nl" value="berichten" />
+		<translation language="df" value="messages" />
+	</keyword>
+	<keyword name="Member_since">
+		<translation language="nl" value="Lid sinds" />
+		<translation language="df" value="Member since" />
+	</keyword>
+	<keyword name="by">
+		<translation language="nl" value="door" />
+		<translation language="df" value="by" />
+	</keyword>
+	<keyword name="open_topic">
+		<translation language="nl" value="Open onderwerp" />
+		<translation language="df" value="Open topic" />
+	</keyword>
+	<keyword name="open_topic_popular_unread">
+		<translation language="nl" value="Open populair onderwerp met ongelezen reacties" />
+		<translation language="df" value="Open pupular topic with unread replies" />
+	</keyword>
+	<keyword name="topic_to_which_you_have_contributed">
+		<translation language="nl" value="Onderwerp waaraan u hebt bijgedragen" />
+		<translation language="df" value="Topic to which you have contributed" />
+	</keyword>
+	<keyword name="Reply">
+		<translation language="nl" value="Reactie" />
+		<translation language="df" value="Reply" />
+	</keyword>
+	<keyword name="Logout">
+		<translation language="nl" value="Uitloggen" />
+		<translation language="df" value="Logout" />
+	</keyword>
+	<keyword name="Messages">
+		<translation language="nl" value="Berichten" />
+		<translation language="df" value="Messages" />
+	</keyword>
+	<keyword name="new">
+		<translation language="nl" value="nieuw(e)" />
+		<translation language="df" value="new" />
+	</keyword>
+	<keyword name="New">
+		<translation language="nl" value="Nieuw" />
+		<translation language="df" value="New" />
+	</keyword>
+	<keyword name="Area_name">
+		<translation language="nl" value="Gebied" />
+		<translation language="df" value="Area name" />
+	</keyword>
+	<keyword name="area_name">
+		<translation language="nl" value="gebied" />
+		<translation language="df" value="area name" />
+	</keyword>
+	<keyword name="forum">
+		<translation language="nl" value="forum" />
+		<translation language="df" value="forum" />
+	</keyword>
+	<keyword name="moderator">
+		<translation language="nl" value="moderator" />
+		<translation language="df" value="moderator" />
+	</keyword>
+	<keyword name="Forum">
+		<translation language="nl" value="Forum" />
+		<translation language="df" value="Forum" />
+	</keyword>
+	<keyword name="and">
+		<translation language="nl" value="en" />
+		<translation language="df" value="and" />
+	</keyword>
+	<keyword name="last_posting">
+		<translation language="nl" value="laatste bijdrage" />
+		<translation language="df" value="last posting" />
+	</keyword>
+	<keyword name="last_time_edited">
+		<translation language="nl" value="Laatste keer aangepast op " />
+		<translation language="df" value="Last time edited on" />
+	</keyword>
+	<keyword name="Add_forum">
+		<translation language="nl" value="Forum toevoegen" />
+		<translation language="df" value="Add forum" />
+	</keyword>
+	<keyword name="Remove_forum">
+		<translation language="nl" value="Forum verwijderen" />
+		<translation language="df" value="Remove forum" />
+	</keyword>
+	<keyword name="Post_reply">
+		<translation language="nl" value="Plaats reactie" />
+		<translation language="df" value="Post reply" />
+	</keyword>
+	<keyword name="open_topic_popular">
+		<translation language="nl" value="Open populair onderwerp" />
+		<translation language="df" value="Open popular topic" />
+	</keyword>
+	<keyword name="Level">
+		<translation language="nl" value="Niveau" />
+		<translation language="df" value="Level" />
+	</keyword>
+	<keyword name="At_the_moment">
+		<translation language="nl" value="Momenteel" />
+		<translation language="df" value="At the moment" />
+	</keyword>
+	<keyword name="open_topic_unread">
+		<translation language="nl" value="Open onderwerp met ongelezen reacties" />
+		<translation language="df" value="Open topic with unread replies" />
+	</keyword>
+	<keyword name="login">
+		<translation language="nl" value="login" />
+		<translation language="df" value="login" />
+	</keyword>
+	<keyword name="Online">
+		<translation language="nl" value="Online" />
+		<translation language="df" value="Online" />
+	</keyword>
+	<keyword name="Members">
+		<translation language="nl" value="Leden" />
+		<translation language="df" value="Members" />
+	</keyword>
+	<keyword name="Member">
+		<translation language="nl" value="Lid" />
+		<translation language="df" value="Member" />
+	</keyword>
+	<keyword name="online">
+		<translation language="nl" value="online" />
+		<translation language="df" value="online" />
 	</keyword>
 	<keyword name="Welcome">
 		<translation language="nl" value="Welkom" />
 		<translation language="df" value="Welcome" />
 	</keyword>
-	<keyword name="last_time_logged_in">
-		<translation language="nl" value="Laatste keer hier geweest" />
-		<translation language="df" value="Last time logged in" />
+	<keyword name="Last_visit">
+		<translation language="nl" value="Laatste bezoek" />
+		<translation language="df" value="Last visit" />
+	</keyword>
+	<keyword name="member">
+		<translation language="nl" value="lid" />
+		<translation language="df" value="member" />
+	</keyword>
+	<keyword name="Fast_reply">
+		<translation language="nl" value="Snelle reactie" />
+		<translation language="df" value="Fast reply" />
+	</keyword>
+	<keyword name="All_members">
+		<translation language="nl" value="Alle leden" />
+		<translation language="df" value="All members" />
+	</keyword>
+	<keyword name="Name">
+		<translation language="nl" value="Naam" />
+		<translation language="df" value="Name" />
+	</keyword>
+	<keyword name="Posts">
+		<translation language="nl" value="Berichten" />
+		<translation language="df" value="Posts" />
+	</keyword>
+	<keyword name="login_failed">
+		<translation language="nl" value="** Verkeerde inlognaam of wachtwoord **" />
+		<translation language="df" value="** Wrong accountname or password **" />
+	</keyword>
+	<keyword name="password">
+		<translation language="nl" value="wachtwoord" />
+		<translation language="df" value="password" />
+	</keyword>
+	<keyword name="replies">
+		<translation language="nl" value="reacties" />
+		<translation language="df" value="replies" />
+	</keyword>
+	<keyword name="Gender">
+		<translation language="nl" value="Geslacht" />
+		<translation language="df" value="Gender" />
+	</keyword>
+	<keyword name="you have">
+	</keyword>
+	<keyword name="Admin_tasks">
+		<translation language="nl" value="Beheer taken" />
+		<translation language="df" value="Administrator tasks" />
+	</keyword>
+	<keyword name="Last_posting">
+		<translation language="nl" value="Laatste bijdrage" />
+		<translation language="df" value="Last posting" />
+	</keyword>
+	<keyword name="change_forum">
+		<translation language="nl" value="Forum wijzigen" />
+		<translation language="df" value="Change forum" />
+	</keyword>
+	<keyword name="topic">
+		<translation language="nl" value="onderwerp" />
+		<translation language="df" value="topic" />
+	</keyword>
+	<keyword name="closed_topic">
+		<translation language="nl" value="Gesloten onderwerp" />
+		<translation language="df" value="Closed topic" />
+	</keyword>
+	<keyword name="posted_by">
+		<translation language="nl" value="aangemaakt door" />
+		<translation language="df" value="created by" />
+	</keyword>
+	<keyword name="Topic">
+		<translation language="nl" value="Onderwerp" />
+		<translation language="df" value="Topic" />
 	</keyword>
 </languageguiset>
