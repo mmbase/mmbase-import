@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.39 2004-01-13 14:35:50 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.40 2004-01-30 13:26:05 pierre Exp $
  */
 public class MultiPool {
 
@@ -70,7 +70,7 @@ public class MultiPool {
             logStack = false; // don't log that mess a second time
             log.info("Retrying now");
         }
-     
+
         semaphore = new DijkstraSemaphore(pool.size());
     }
 
@@ -87,7 +87,7 @@ public class MultiPool {
         for (int i = 0; i < conMax ; i++) {
             try {
                 pool.add(getMultiConnection());
-            } catch (SQLException se) {               
+            } catch (SQLException se) {
                 errors++;
                 if (log.isDebugEnabled()) {
                     log.debug("i: " + "error " + errors + ": " + se.getMessage());
@@ -95,7 +95,7 @@ public class MultiPool {
                 if (firstError == null) firstError = se;
             }
         }
-        if (errors > 0) { 
+        if (errors > 0) {
             log.error("Could not get all connections (" + errors + " failures). First error: " + firstError.getMessage() + (logStack ? Logging.stackTrace(firstError) : ""));
             log.info("Multipools size is now " + pool.size() + " rather then " + conMax);
             if (pool.size() < 1) { // that is fatal.
@@ -105,7 +105,7 @@ public class MultiPool {
         }
 
         return true;
-     
+
 
     }
 
@@ -215,7 +215,7 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newcon = null;
-                    log.warn("WILL KILL SQL " + con.lastSql + " after " + diff + " seconds, because it took too long");
+                    log.warn("WILL KILL SQL after " + diff + " seconds, because it took too long. ID="+con.hashCode()+" SQL: " + con.lastSql);
                     try {
                         // get a new connection to replace this one
                         newcon = getMultiConnection();
@@ -227,7 +227,7 @@ public class MultiPool {
                         releasecount++;
                     }
                     i.remove();
-                    // we close connections in a seperate thread, for those broken JDBC drivers out there                    
+                    // we close connections in a seperate thread, for those broken JDBC drivers out there
                     con.markedClosed = true;
                     new ConnectionCloser(con);
                 }
@@ -415,13 +415,13 @@ public class MultiPool {
          * Close the database connection.
          */
         public void run() {
-            log.warn("Closing " + connection);
+            log.warn("Closing connection with ID " + connection.hashCode());
             try {
                 connection.realclose();
             } catch(Exception re) {
-                log.error("Can't close a connection !!!" + re);
+                log.error("Can't close connection with ID " + connection.hashCode()+", cause: " + re);
             }
-            log.warn("Closed  " + connection);
+            log.warn("Closed connection with ID " + connection.hashCode());
         }
     }
 }
