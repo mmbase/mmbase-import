@@ -3,7 +3,7 @@
  *
  * Date: dec. 1st. 2001
  *
- * Copyright notice: 
+ * Copyright notice:
  * This software is OSI Certified Open Source Software.
  * OSI Certified is a certification mark of the Open Source Initiative.
  *
@@ -25,16 +25,16 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * A TmpObject represents a temporary object in a transaction. 
+ * A TmpObject represents a temporary object in a transaction.
  * TmpObject instances can only be created by methods of Transaction, and have
- * no meaning outside the context of the transaction in which they are created. 
+ * no meaning outside the context of the transaction in which they are created.
  *
  * @author Rob van Maris: Finalist IT Group
  *
  * @version 1.0
  */
 public class TmpObject {
-    
+
     // Node field names.
     final static String NUMBER   = "number";
     final static String RNUMBER   = "rnumber";
@@ -44,31 +44,31 @@ public class TmpObject {
     final static String _DNUMBER  = "_dnumber";
 
     /** Logger instance. */
-    private static Logger log 
+    private static Logger log
         = Logging.getLoggerInstance(TmpObject.class.getName());
-    
+
     /** The mmbase module. */
     private static MMBase mmbase;
-    
+
     /** The temporary node manager. */
     private static TemporaryNodeManagerInterface tmpNodeManager;
-    
+
     /** All user-related data. */
     private UserTransactionInfo uti;
-    
+
     /** User specified id. */
     private String id;
-    
+
     /** The MMObjectNode in the temporary cloud. */
     private MMObjectNode node;
-    
+
     /** Relation flag, true if this a relation object, false otherwise. */
     private boolean relationFlag;
-    
+
     /** Flag, true if this object is to be dropped when it has
      * no relations on commit, false otherwise. */
     private boolean disposeWhenNotReferenced = false;
-    
+
     /**
      * Gets reference to the MMBase module.
      * @return The MMBase module.
@@ -79,7 +79,7 @@ public class TmpObject {
         }
         return mmbase;
     }
-    
+
     /**
      * Gets reference to TemporaryNodeManager module.
      * @return the TemporaryNodeManager module.
@@ -90,7 +90,7 @@ public class TmpObject {
         }
         return tmpNodeManager;
     }
-    
+
     /**
      * Creates new import TmpObject.
      * @param uti transaction info for current user.
@@ -110,7 +110,7 @@ public class TmpObject {
         this.relationFlag = relationFlag;
         this.disposeWhenNotReferenced = disposeWhenNotReferenced;
     }
-    
+
     /**
      * Creates new access TmpObject.
      * @param uti transaction info for current user.
@@ -126,7 +126,7 @@ public class TmpObject {
         this.node = getTmpNodeManager().getNode(uti.user.getName(), objectId);
         this.relationFlag = (node.parent instanceof InsRel);
     }
-    
+
     /**
      * Gets field of the temporary node.
      * @param name The field.
@@ -135,7 +135,7 @@ public class TmpObject {
     public Object getField(String name) {
         return node.getValue(name);
     }
-    
+
     /**
      * Sets field of the temporary node represented by this TmpObject instance.
      * @param name The field name.
@@ -144,12 +144,12 @@ public class TmpObject {
     public void setField(String name, Object value) {
         node.setValue(name, value);
     }
-    
+
     /**
      * Gets the relations of this object in the persistent cloud.
-     * Note that the relations returned are always of builder type 'InsRel', 
+     * Note that the relations returned are always of builder type 'InsRel',
      * even if they are really from a derived builder such as AuthRel.
-     * @return All relations in the persistent cloud of the object in the 
+     * @return All relations in the persistent cloud of the object in the
      * persistent cloud represented by this TmpObject instance.
      */
     public Vector getRelationsInPersistentCloud() {
@@ -176,7 +176,7 @@ public class TmpObject {
     public MMObjectNode getNode() {
         return node;
     }
-        
+
     /**
      * Key accessor.
      * @return The key used internally by TemporaryNodeManager and
@@ -186,7 +186,7 @@ public class TmpObject {
        // This reproduces the key used by the TemporaryNodeManager.
         return uti.user.getName() + "_" + id;
     }
-    
+
     /**
      * Id accessor.
      * @return The id specified by the user.
@@ -194,9 +194,9 @@ public class TmpObject {
     public String getId() {
         return id;
     }
-    
+
     /**
-     * Tests if this object is an accessed object 
+     * Tests if this object is an accessed object
      * (e.g. representing an object that already exists
      * in the persistent cloud) or an input object.
      * @return true if this is an access object, false otherwise.
@@ -204,7 +204,7 @@ public class TmpObject {
     public boolean isAccessObject() {
         return getMMBaseId() != -1;
     }
-    
+
     /**
      * MMBaseId accessor (for access objects).
      * @return The MMBase id, null if this is not an access object.
@@ -212,7 +212,7 @@ public class TmpObject {
     public int getMMBaseId() {
         return node.getIntValue(NUMBER);
     }
-    
+
     /**
      * Tests if this object is a relation.
      * @return true if this is a relation, false otherwise.
@@ -220,16 +220,16 @@ public class TmpObject {
     public boolean isRelation() {
         return relationFlag;
     }
-    
+
     /**
      * DisposeWhenNotReferenced accessor.
-     * @return disposeWhenNotReferenced flag: true if this object is 
+     * @return disposeWhenNotReferenced flag: true if this object is
      *  to be dropped when it has no relations on commit, false otherwise.
      */
     public boolean getDisposeWhenNotReferenced() {
         return disposeWhenNotReferenced;
     }
-    
+
     /**
      * Tests if this node is the source node of a relation.
      * @param tempRel Temporary relation node.
@@ -249,7 +249,7 @@ public class TmpObject {
         }
         return false;
     }
-    
+
     /**
      * Tests if this node is the destination node of a relation.
      * @param tempRel Temporary relation node.
@@ -278,7 +278,7 @@ public class TmpObject {
         setField(_SNUMBER, tmpObj.getKey());
         setField(SNUMBER, Integer.toString(tmpObj.getMMBaseId()));
     }
-    
+
     /**
      * Sets destination for relation in temporary cloud.
      * Requires this object to be a relation.
@@ -287,7 +287,25 @@ public class TmpObject {
         setField(_DNUMBER, tmpObj.getKey());
         setField(DNUMBER, Integer.toString(tmpObj.getMMBaseId()));
     }
-    
+
+    /**
+     * Copies source of relation in temporary cloud to this object.
+     * Requires this object to be a relation.
+     * @param tmpObj The temporary object to copy the source of. */
+    public void copySourceOf(TmpObject tmpObj) {
+        setField(_SNUMBER, tmpObj.getField(_SNUMBER));
+        setField(SNUMBER, tmpObj.getField(SNUMBER));
+    }
+
+    /**
+     * Copies destination of relation in temporary cloud to this object.
+     * Requires this object to be a relation.
+     * @param tmpObj The temporary object to copy the destination of. */
+    public void copyDestinationOf(TmpObject tmpObj) {
+        setField(_DNUMBER, tmpObj.getField(_DNUMBER));
+        setField(DNUMBER, tmpObj.getField(DNUMBER));
+    }
+
     /**
      * Compares value of specified field of this and another object.
      * @param tmpObj The other object.
@@ -303,19 +321,19 @@ public class TmpObject {
             return tmpObj.getField(name) == null;
         }
     }
-    
+
     /**
      * ToString() method, displays most important fields.
      * @return String representation of this object.
      */
     public String toString() {
         return "TmpObject(id=\"" + id + "\", user=\"" + uti.user.getName()
-        + "\", key=\"" + getKey() + "\", node={" + node 
+        + "\", key=\"" + getKey() + "\", node={" + node
         + "}, disposeWhenNotReferenced=" + disposeWhenNotReferenced + ")";
     }
-    
+
     /**
-     * Displays XML representation of this object, e.g. the XML code 
+     * Displays XML representation of this object, e.g. the XML code
      * necessary to create this object in a transaction.
      * @return XML representation of this object.
      */
@@ -323,12 +341,12 @@ public class TmpObject {
         StringBuffer sb = new StringBuffer();
         if (isAccessObject()) {
             sb.append("<accessObject id=\"" + getId()
-                + "\" mmbaseId=\"" + getMMBaseId() 
+                + "\" mmbaseId=\"" + getMMBaseId()
                 + "\">\n");
         } else {
-            sb.append("<createObject id=\"" + getId() 
+            sb.append("<createObject id=\"" + getId()
                 + "\" type=\"" + getNode().getName()
-                + "\" disposeWhenNotReferenced=\"" + disposeWhenNotReferenced 
+                + "\" disposeWhenNotReferenced=\"" + disposeWhenNotReferenced
                 + "\">\n");
         }
         Iterator i = node.getValues().entrySet().iterator();
@@ -347,7 +365,7 @@ public class TmpObject {
         } else {
             sb.append("</createObject>\n");
         }
-        
+
         return sb.toString();
     }
 
