@@ -1,4 +1,4 @@
-<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="true">
+<application name="BasicAuth" maintainer="mmbase.org" version="1" auto-deploy="false">
 
 	<neededbuilderlist>
 	  <builder maintainer="mmbase.org" version="2">people</builder>
