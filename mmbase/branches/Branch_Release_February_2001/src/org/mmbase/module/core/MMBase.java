@@ -106,9 +106,6 @@ public class MMBase extends ProcessorModule  {
 
 	/** Unused
     */
-	int delay;
-	/** Unused
-    */
 	boolean	nodecachesdone=false;
 	
     /**
