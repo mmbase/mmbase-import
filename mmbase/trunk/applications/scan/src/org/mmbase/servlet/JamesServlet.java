@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.7 2000-05-01 14:21:06 wwwtech Exp $
+$Id: JamesServlet.java,v 1.8 2000-05-04 10:01:34 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/05/01 14:21:06  wwwtech
+davzev: Changed implementation of method getCookie. It now returns a cookie with name: MMBase_Ident instead of James_Ident. Any James_Ident cookies that were stored in the Properties table will get a new value: MMBase_Ident/cur-time-in-millis. New cookies either get an implicit domain (from httpheader) or an explicit domain depending on the COOKIEDOMAIN value in the configfile MMBASEROOT.properties.
+
 */
 package org.mmbase.servlet;
 
@@ -29,7 +32,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.7 2000-05-01 14:21:06 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.8 2000-05-04 10:01:34 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -194,7 +197,7 @@ public class JamesServlet extends HttpServlet {
 				Properties propBuilder = null;
 				propBuilder = (Properties) mmbase.getMMObject("properties");
 				if (propBuilder==null) {
-					System.out.println("JamesServlet:"+methodName+": ERROR: propBuilder="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary.");
+					System.out.println("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
 				}
 				StringTokenizer st = new StringTokenizer(cookies, ";");
 				while (st.hasMoreTokens()) {
