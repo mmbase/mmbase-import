@@ -10,10 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
 
+import java.util.*;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 
 /**
  * @javadoc
@@ -21,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.8 2003-08-01 14:13:23 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.9 2003-08-04 20:19:08 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -36,6 +38,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         this.context = context;
     }
 
+
+
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
@@ -45,7 +49,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else if (search) {
-            String searchParam = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(field.getName()), false);
+            String searchParam = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(field.getName()));
             show.append((searchParam == null ? "" : searchParam));
         }
         show.append("\" />");
@@ -57,7 +61,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
+        String fieldValue = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
 
         } else {
@@ -66,36 +70,55 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return "";
     }
 
+
+
     /**
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
-        if (search == null || "".equals(search)) {
-            return null;
-        }
-        return "( [" + fieldName + "] =" + search + ")";
+        return "( [" + field.getName() + "] =" + findString(field) + ")";
     }
 
+    /**
+     * @since MMBase-1.7
+     */
     protected int getOperator() {
         return FieldCompareConstraint.EQUAL;
     }
+    /**
+     * @since MMBase-1.7
+     */
+    protected String getSearchValue(String string) {
+        return string;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    protected String findString(Field field) throws JspTagException {
+        String fieldName = field.getName();
+        String search = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
+        if (search == null || "".equals(search)) {
+            return null;
+        }
+        return getSearchValue(search);
+    }
+
+
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+        handler.addParameter(prefix(field.getName()), findString(field));
+    }
+
 
     /**
      * Adds search constraint to Query object.
      * @return null if nothing to be searched, "" if constraint added
      */
 
-    public String whereHtmlInput(Field field, Query query) throws JspTagException {
-        String fieldName = field.getName();
-        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName), false);
-        if (search == null || "".equals(search)) {
-            return null;
-        }
-        NodeListConstraintTag.addConstraint(query, fieldName, getOperator(), search);
-        return "";
+    public void whereHtmlInput(Field field, Query query) throws JspTagException {
+         NodeListConstraintTag.addConstraint(query, field.getName(), getOperator(), findString(field));
     }
+
     /**
      * Puts a prefix before a name. This is used in htmlInput and
      * useHtmlInput, they need it to get a reasonably unique value for
@@ -106,9 +129,9 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         String id = context.findFieldProvider().getId();
         if (id == null) id = "";
         if (id.equals("") ) {
-            return "__" + s;
+            return s;
         } else {
-            return "__" + id + "_" + s;
+            return id + "_" + s;
         }
     }
 
