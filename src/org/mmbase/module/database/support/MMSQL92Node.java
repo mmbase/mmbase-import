@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.37 2000-11-07 14:28:55 vpro Exp $
+$Id: MMSQL92Node.java,v 1.38 2000-11-07 14:32:27 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.37  2000/11/07 14:28:55  vpro
+Rico: removed TYPE_TEXT
+
 Revision 1.36  2000/10/18 16:39:40  gerard
 gerard: added support for keys/primary keys, not completly checked.
 You can try it by setting keysSupported to true in this file
@@ -153,7 +156,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.37 $ $Date: 2000-11-07 14:28:55 $
+* @$Revision: 1.38 $ $Date: 2000-11-07 14:32:27 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -650,7 +653,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 		if (values.length()>0) {
 			values="update "+mmb.baseName+"_"+bul.tableName+" set"+values+" WHERE number="+node.getValue("number");
-			debug("update statement : "+values);
 			try {
 				MultiConnection con=mmb.getConnection();
 				PreparedStatement stmt=con.prepareStatement(values);
@@ -658,7 +660,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				for (Enumeration e=node.getChanged().elements();e.hasMoreElements();) {
 						key=(String)e.nextElement();
 						type=node.getDBType(key);
-						debug("field : "+key+" : "+type);
 						if (type==FieldDefs.TYPE_INTEGER) {
 							stmt.setInt(i,node.getIntValue(key));
 						} else if (type==FieldDefs.TYPE_FLOAT) {
