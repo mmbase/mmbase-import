@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.87 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: BasicNodeManager.java,v 1.88 2005-03-01 14:25:03 michiel Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -180,7 +180,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
 
         // set the owner to the owner field as indicated by the user
-        node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
+        node.setValue("owner", cloud.getUser().getOwnerField());
 
         if (getMMObjectBuilder() instanceof TypeDef) {
             return new BasicNodeManager(node, getCloud(), id);
