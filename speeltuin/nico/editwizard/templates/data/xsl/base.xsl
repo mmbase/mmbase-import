@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.1 2003-11-30 19:53:27 nico Exp $
+    @version $Id: base.xsl,v 1.2 2003-12-01 09:30:45 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -299,14 +299,14 @@
     <xsl:param name="nodes" />
     <xsl:choose>
       <xsl:when test="$nodes[lang($language)]">
-        <xsl:value-of select="$nodes[lang($language)]" />
+        <xsl:value-of select="$nodes[lang($language)]" disable-output-escaping="yes" />
       </xsl:when>
       <!-- default to english -->
       <xsl:when test="$nodes[lang(&apos;en&apos;)]">
-        <xsl:value-of select="$nodes[lang(&apos;en&apos;)]" />
+        <xsl:value-of select="$nodes[lang(&apos;en&apos;)]" disable-output-escaping="yes" />
       </xsl:when>
       <xsl:otherwise>
-        <xsl:value-of select="$nodes[1]" />
+        <xsl:value-of select="$nodes[1]" disable-output-escaping="yes" />
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
