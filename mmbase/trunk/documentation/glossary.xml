@@ -172,14 +172,21 @@
       </glossentry>
 
       <glossentry id="nodemanager">
-        <glossterm>nodemanager</glossterm>
+        <glossterm>node manager</glossterm>
 
         <glossdef>
 					<orderedlist>
 						<listitem>
 							<para>
-								Java class that contains the functionality of a node.
-								</para>
+								This bridge concept represents the object which describes meta information (which
+								fields are availabe and so on) about node types, and serves to create new nodes and
+								so on.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								A synonym for 'builder'.
+							</para>
 						</listitem>
 						<listitem>
 							<para>...</para>
@@ -194,6 +201,7 @@
 					<remark>The term nodemanager is used in when one speaks about the functionality of the bridge.</remark>
 					<glossseealso otherterm="builder" />
 					<glossseealso otherterm="object type" />
+					<glossseealso otherterm="bridge" />
 				</glossdef>
       </glossentry>
 
@@ -257,10 +265,63 @@
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="typerel">
         <glossterm>typerel</glossterm>
         <glossdef>
-					<para />
+					<para>
+						Typerel is the MMBase builder which defines the allowed relations. If for example you
+						want to create a certain relation from news node to an url node, then a corresponding
+						typerel record, which allows that must exist.					
+					</para>
+					<para>
+						Inheritance is taken into consideration, so if you allow from object to object (with a
+						certain role), then every kind of relation (with that certain role) should be allowed
+						(because all node types extends object).
+					</para>
+					<glossseealso otherterm="inheritance" />
+					<glossseealso otherterm="relation" />
+				</glossdef>
+      </glossentry>
+
+
+
+      <glossentry id="relation">
+        <glossterm>relation</glossterm>
+        <glossdef>
+					<orderedlist>
+						<listitem>
+							<para>
+								An MMBase Node defining a link between to other MMBase Nodes. A relation can contain
+								other data. A relation instance.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								An allowed relation. Sometimes also 'typerel' entries are referred to as simply
+								'relations'. It would perhaps be clearer to call these 'allowed relations'
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								A relation definition or reldef instance. 
+							</para>
+						</listitem>
+					</orderedlist>
+					<glossseealso otherterm="insrel" />
+					<glossseealso otherterm="reldef" />
+					<glossseealso otherterm="typerel" />
+				</glossdef>
+      </glossentry>
+
+
+      <glossentry id="typedef">
+        <glossterm>typedef</glossterm>
+        <glossdef>
+					<para>
+						In MMBase object types are objects too. These nodes are stored in the 'typedef'
+						builder. It generates a small chicken/egg problem because the typedef type itself is
+						also present a a node of itself. (Normally the typedef node will have to have number 1)
+					</para>
 				</glossdef>
       </glossentry>
 
@@ -288,16 +349,30 @@
 				</glossdef>
       </glossentry>
 
+
+      <glossentry id="inheritance">
+        <glossterm>inheritance</glossterm>
+        <glossdef>					
+					<para>
+						MMBase supports inheritance. This means that every 'news' node is also an 'object'
+						node. You can also extend your 'mynews' builder form the 'news' builder. All fields from
+						news are then inherited to mynews, and mynews nodes can be treated as (because they are)
+						news nodes.
+					</para>
+				</glossdef>
+      </glossentry>
+
       <glossentry id="node">
         <glossterm>node</glossterm>
         <glossdef>
 					<para>
-						MMBase objects are generally referred to as 'node'. A normal MMBase node corresponds to
-						one record in the database (in the table(s) associated with the builder). We recognize
-						also 'cluster nodes' and 'virtual nodes'.
+						MMBase objects are generally referred to as 'node', especially in the bridge. A normal
+						MMBase node corresponds to one record in the database (in the table(s) associated with
+						the builder). We recognize also 'cluster nodes' and 'virtual nodes'.
 					</para>
 					<glossseealso otherterm="clusternode" />
 					<glossseealso otherterm="virtualnode" />
+					<glossseealso otherterm="bridge" />
 				</glossdef>
       </glossentry>
 
@@ -345,9 +420,6 @@
 							</para>
 						</listitem>
 					</orderedlist>
-					<para>
-
-					</para>					
 					<glossseealso otherterm="node" />
 				</glossdef>
       </glossentry>
@@ -356,7 +428,10 @@
         <glossterm>MMBase</glossterm>
         <glossdef>
 					<para>
-					</para>					
+						Very object oriented open source content managment system based (a.o) on java servlet
+						technology. 
+					</para>				
+					<glossseealso>Everywhere else</glossseealso>
 				</glossdef>
       </glossentry>
 
@@ -376,6 +451,35 @@
 					</para>
 					<glossseealso otherterm="rmmci" />
 					<glossseealso otherterm="mmci" />
+					<glossseealso otherterm="core" />
+				</glossdef>				
+      </glossentry>
+
+
+      <glossentry id="core">
+        <glossterm>core</glossterm>
+        <glossdef>
+					<orderedlist>
+						<listitem>
+							<para>
+								The java classes of MMBase which are 'under' the bridge, and should be invisible for
+								casual users. They provide the data persistency and other basic MMBase concepts like
+								relations. The MMBase core is not protected by MMBase security.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								All java classes from the 'src' CVS module which are present in mmbase.jar, so
+								everything which is not an MMBase application, is MMBase 'core'.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								MMObjectBuilder/MMObjectNode vs NodeManager/Node
+							</para>
+						</listitem>
+					</orderedlist>
+					<glossseealso otherterm="bridge" />
 				</glossdef>				
       </glossentry>
 
@@ -426,9 +530,33 @@
         <acronym>TCP</acronym>
         <glossdef>
 					<para>
-						An XML way to add content to an MMBase cloud.
+						An XML way to add content to an MMBase cloud. It is hardly used anymore.
           </para>
 					<glossseealso otherterm="xmlimporter" />
+					<glossseealso otherterm="scan" />
+				</glossdef>
+      </glossentry>
+
+
+      <glossentry id="scan">
+        <glossterm>SCAN</glossterm>
+        <glossdef>
+					<para>
+						The original MMBase template language. An interpreted language charactarized by several
+						parse stages of the source. Commands, parameters and variables are recognized by
+						$-symbols. SCAN HTML pages use to be mapped to '.shtml'.
+          </para>
+					<para>
+						Use of SCAN is nowadays discouraged in favour of more modern and standardized scripting
+						manner like JSP and (MMBase) taglib.
+					</para>
+					<para>
+						Because the long history of SCAN, SCAN-specific legacy code can still be found on a lot
+						of place in the MMBase core code. Even the bridge way to handle with 'MMBase modules' is
+						influenced by SCAN.
+					</para>						
+					<glossseealso otherterm="mmbasetaglib" />
+					<glossseealso otherterm="core" />
 				</glossdef>
       </glossentry>
 
@@ -449,7 +577,7 @@
 					<orderedlist>
 						<listitem>
 							<para>
-								In several security implementation the concept 'security context' is stored in
+								In several security implementations the concept 'security context' is stored in
 								the owner field, to attribute rights to objects.
 							</para>
 						</listitem>
@@ -470,6 +598,50 @@
 				</glossdef>
 
 
+      </glossentry>
+
+
+      <glossentry id="module">
+        <glossterm>module</glossterm>
+        <glossdef>
+					<orderedlist>
+						<listitem>
+							<para>
+								An piece of (MMBase) functionality which is configured by a XML file in
+								&lt;config&gt;/modules/. MMBase itself can be seen as a group of such modules.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								When talking about CVS, a 'module' is a kind of main entry of the repository. The
+								MMBase CVS repository currently has the following modules: src (core java classes),
+								documentation (docbook sources), html (general content for the mmbase distro),
+								config (example configuration) and applications (components supported by the
+								community).								
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								An independent piece of software which
+								forms part of one or more larger programs.  Different
+								languages have different concepts of a module but there are
+								several common ideas.
+							</para>
+							<para>
+								Modules are usually compiled seperately (in compiled
+								languages) and provide an abstraction or information hiding
+								mechanism so that a module's implementation can be changed
+								without requiring any change to other modules.  In this
+								respect they are similar to objects in an object-oriented
+								language, though a module may contain many procedures
+								and/or functions which would correspond to many objects.
+							</para>
+							<remark>
+								Definition copied from The Free On-line Dictionary of Computing (09 FEB 02) [foldoc]
+							</remark>
+						</listitem>
+					</orderedlist>
+				</glossdef>
       </glossentry>
 
       <glossentry id="unidir">
