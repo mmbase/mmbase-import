@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.44 2004-07-19 15:29:27 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.45 2004-10-05 21:39:19 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -134,13 +134,13 @@ public class ImportTag extends ContextReferrerTag {
             }
         }
         if (found) {
-            helper.setValue(value, WriterHelper.NOIMPLICITLIST);
+            setValue(value, WriterHelper.NOIMPLICITLIST);
             if (useId != null) {
-                getContextProvider().getContextContainer().reregister(useId, getValue());
+                getContextProvider().getContextContainer().reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
         } else {
-            helper.setValue(null);
+            setValue(null);
             return EVAL_BODY_BUFFERED;
         }
 
@@ -148,16 +148,24 @@ public class ImportTag extends ContextReferrerTag {
 
     /**
      * Retrieves the value from the writer-helper, but escapes if necessary (using 'escape' attribute)
-     * @since MMBase-1.7
+     * @since MMBase-1.7.2
      */
-    protected Object getValue() throws JspTagException {
-        Object value = helper.getValue();
+    protected void setValue(Object value, boolean noImplicitList) throws JspTagException {
         if (helper.getEscape() != null) {
             CharTransformer escaper  = ContentTag.getCharTransformer(helper.getEscape());
-            value = escaper.transform((String) value);
+            if (escaper != null) {
+                value = escaper.transform((String) value);
+            }
         }
-        return value;
+        helper.setValue(value, noImplicitList);
     }
+    /**
+     * @since MMBase-1.7.2
+     */
+    protected void setValue(Object value) throws JspTagException {
+        setValue(value, WriterHelper.IMPLICITLIST);
+    }
+
 
     public int doEndTag() throws JspTagException {
         if (log.isDebugEnabled()) {
@@ -172,22 +180,22 @@ public class ImportTag extends ContextReferrerTag {
                     if (log.isDebugEnabled()) {
                         log.debug("Found a default in the body (" + body + ")");
                     }
-                    helper.setValue(body);
-                    getContextProvider().getContextContainer().reregister(useId, getValue());
+                    setValue(body);
+                    getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                 }  else {
                     //  might be vartype="list" or so, still need to set
-                    helper.setValue(null);
-                    getContextProvider().getContextContainer().reregister(useId, getValue());
+                    setValue(null);
+                    getContextProvider().getContextContainer().reregister(useId, helper.getValue());
                 }
             }
         } else { // get value from the body of the tag.
-            helper.setValue(bodyContent != null ? bodyContent.getString() : "");
+            setValue(bodyContent != null ? bodyContent.getString() : "");
             if (useId != null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Setting " + useId + " to " + helper.getValue());
                 }
                 boolean res = reset.getBoolean(this, false); // should this be more general? Also in other contextwriters?
-                getContextProvider().getContextContainer().register(useId, getValue(), !res);
+                getContextProvider().getContextContainer().register(useId, helper.getValue(), !res);
             } else {
                 if (helper.getJspvar() == null) {
                     found = false; // for use next time
