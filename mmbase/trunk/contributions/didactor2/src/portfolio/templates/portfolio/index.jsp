@@ -6,7 +6,7 @@
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
 <%-- expires is set so renaming a folder does not show the old name --%>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
 <fmt:bundle basename="nl.didactor.component.workspace.WorkspaceMessageBundle">
 <mm:treeinclude page="/cockpit/cockpit_header.jsp" objectlist="$includePath" referids="$referids">
@@ -43,14 +43,19 @@
 </mm:compare>
 
 <mm:import id="mayeditentries">false</mm:import>
+
+<mm:isgreaterthan referid="user" value="0">
 <di:hasrole role="teacher">
     <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
         <mm:import id="mayeditentries" reset="true">true</mm:import>
     </mm:list>
 </di:hasrole>
+
 <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
     <mm:import id="mayeditentries" reset="true">true</mm:import>
 </mm:list>
+</mm:isgreaterthan>
+
 
 <mm:import id="mayeditfolders">false</mm:import>
 <mm:compare referid="user" value="$myuser">
@@ -376,16 +381,20 @@
                 <mm:relatednodes type="portfoliopermissions" max="1">
                     <mm:field name="readrights">
                         <mm:compare value="2">
+                         <mm:isgreaterthan referid="user" value="0">
                             <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
                                 <mm:import id="mayread" reset="true">true</mm:import>
                             </mm:list>
+                        </mm:isgreaterthan>
                         </mm:compare>
                          <mm:compare value="3">
+                         <mm:isgreaterthan referid="user" value="0">
                             <di:hasrole role="teacher">
                                 <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
                                     <mm:import id="mayread" reset="true">true</mm:import>
                                 </mm:list>
                             </di:hasrole>
+                        </mm:isgreaterthan>
                         </mm:compare>
                         <mm:compare value="3">
                             <mm:import id="mayread" reset="true">true</mm:import>
@@ -395,9 +404,11 @@
                         </mm:compare>
                     </mm:field>
                </mm:relatednodes>
+               <mm:isgreaterthan referid="user" value="0">
                <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
                   <mm:import id="mayread" reset="true">true</mm:import>
                </mm:list> 
+               </mm:isgreaterthan>
             <mm:compare referid="mayread" value="true">
 
             <mm:field name="number" id="itemnumber">

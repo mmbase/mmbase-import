@@ -1,6 +1,6 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud jspvar="cloud" method="asis">
 <%@include file="/shared/setImports.jsp" %>
     <div class="applicationMenubar" style="white-space: nowrap">
     	<div class="menuItemApplicationMenubar">
