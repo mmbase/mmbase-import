@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.19 $ $Date: 2000-06-02 11:39:43 $
+ * @$Revision: 1.20 $ $Date: 2000-06-05 13:08:03 $
  */
 public class INFO extends ProcessorModule {
 
@@ -34,8 +34,6 @@ public class INFO extends ProcessorModule {
 	String documentroot;
 	Hashtable DirCache=new Hashtable();
 
-	TimeZone tz = TimeZone.getTimeZone("ECT"); //Rob
-	GregorianCalendar calendar = new GregorianCalendar(tz); //Rob
 
 	public void init() {
 		documentroot=System.getProperty("mmbase.htmlroot");
@@ -360,11 +358,14 @@ public class INFO extends ProcessorModule {
 			String cmd=tok.nextToken(),rtn="";
 			
 			Date d=new Date(System.currentTimeMillis());
+			TimeZone tz = TimeZone.getTimeZone("ECT"); //Rob
+			GregorianCalendar calendar = new GregorianCalendar(tz); //Rob
 			// extra hack to check if the first param is a number
 			// so we can have given times instead of epoch
 			try {
 				int i=Integer.parseInt(cmd);
 				d=new Date(((long)i)*1000);
+				calendar.setTime(d);
 				cmd=tok.nextToken();
 			} catch(Exception e) {
 				// no problem it was probably not a number
