@@ -4,7 +4,7 @@
 
    Author: Nico Klasens
    Created: 25-07-2003
-   Version: $Revision: 1.3 $
+   Version: $Revision: 1.4 $
 -->
 <xsl:stylesheet 
   version="1.0"
@@ -27,7 +27,7 @@
   </xsl:template>
 
   <xsl:template name="extrajavascript">
-    <script language="javascript" src="{$referrerdir}/{$javascriptdir}override.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$referrerdir}/javascript/override.js"><xsl:comment>help IE</xsl:comment></script>
   </xsl:template>
 
   <xsl:template name="buttons">

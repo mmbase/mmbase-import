@@ -1,9 +1,9 @@
 /**
   Editwizard cascading style sheet.
 
-  @version  $Id: wizard.css,v 1.1 2003-12-19 11:10:08 nico Exp $
+  @version  $Id: wizard.css,v 1.2 2004-02-26 14:35:03 nico Exp $
 */
-div.buttonscontent  {         
+div.buttonscontent  {
         text-align: right;
 } 
 
@@ -28,4 +28,9 @@ td.listsearch  {
 tr.itemline  {
         width: 100%;
         height: 1px;
+}
+
+td.stepcurrent,
+td.stepother {
+    white-space: nowrap;
 }

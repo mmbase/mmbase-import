@@ -1,4 +1,11 @@
 var preloadimages = new Array();
+
+// Preloading only works when the browser is not set to check for newer versions
+// of stored pages for every visit to the page. In mozilla you don;t see
+// any side-effect, but IE starts loading into eternity when the page after a
+// wizard is closed, is loaded. Eg. listpages will have a loading bar all the time
+// The issue is caused by the inactive button images. They are sometimes loaded
+// after the wizard page is unloaded and the next page is loading.
 function preLoadButtons() {
    a = 0;
    for (i = 0; i < document.images.length; i++) { 
@@ -22,47 +29,38 @@ function setButtonsInactive() {
 }
 
 function updateButtons(allvalid) {
-   var savebut = document.getElementById("bottombutton-save");
-   var saveonlybut = document.getElementById("bottombutton-saveonly");
-    
    if (allvalid) {
       setSaveInactive("false");
-
-      if(savebut!= null) {
-         savebut.src = savebut.getAttribute("enabledsrc");
-         savebut.className = "bottombutton";
-         savebut.disabled = false;
-         var usetext = getToolTipValue(savebut,"titlesave", "Stores all changes (and quit)");
-         savebut.title = usetext;
-      }
-      if(saveonlybut!= null) {
-         saveonlybut.src = saveonlybut.getAttribute("enabledsrc");
-         saveonlybut.className = "bottombutton";
-         saveonlybut.disabled = false;
-         var usetext = getToolTipValue(saveonlybut,"titlesave", "Store all changes (but continue editing).");
-         saveonlybut.title = usetext;
-      }
+      enableImgButton(document.getElementById("bottombutton-save"), "titlesave", "Stores all changes (and quit)");
+      enableImgButton(document.getElementById("bottombutton-saveonly"), "titlesave", "Store all changes (but continue editing).");
    } else {
       setSaveInactive("true");
-      if(savebut!= null) {
-         savebut.src = savebut.getAttribute("disabledsrc");
-         savebut.className = "bottombutton-disabled";
-         savebut.disabled = true;
-         var usetext = getToolTipValue(savebut,"titlenosave", "The changes cannot be saved, since some data is not filled in correctly.");
-         savebut.title = usetext;
-      }
-      if(saveonlybut!= null) {
-         saveonlybut.src = saveonlybut.getAttribute("disabledsrc");
-         saveonlybut.className = "bottombutton-disabled";
-         saveonlybut.disabled = true;
-         var usetext = getToolTipValue(saveonlybut,"titlenosave", "The changes cannot be saved, since some data is not filled in correctly.");
-         saveonlybut.title = usetext;
-      }
+      disableImgButton(document.getElementById("bottombutton-save"),"titlenosave", "The changes cannot be saved, since some data is not filled in correctly.");
+      disableImgButton(document.getElementById("bottombutton-saveonly"),"titlenosave", "The changes cannot be saved, since some data is not filled in correctly.");
    }
 }
 
+function enableImgButton(button, textAttr, textDefault) {
+   if (button != null) {
+      button.src = button.getAttribute("enabledsrc");
+      button.className = "bottombutton";
+      button.disabled = false;
+      var usetext = getToolTipValue(button,textAttr, textDefault);
+      button.title = usetext;
+   }
+}
 
-function setFacusOnFirstInput() {
+function disableImgButton(button, textAttr, textDefault) {
+   if (button != null) {
+      button.src = button.getAttribute("disabledsrc");
+      button.className = "bottombutton-disabled";
+      button.disabled = true;
+      var usetext = getToolTipValue(button,textAttr, textDefault);
+      button.title = usetext;
+   }
+}
+
+function setFocusOnFirstInput() {
     var form = document.forms["form"];
     for (var i=0; i < form.elements.length; i++) {
         var elem = form.elements[i];
