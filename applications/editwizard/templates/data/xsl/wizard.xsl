@@ -10,7 +10,7 @@
     @author Nico Klasens
     @author Martijn Houtman
     @author Robin van Meteren
-    @version $Id: wizard.xsl,v 1.139 2004-11-23 14:32:23 pierre Exp $
+    @version $Id: wizard.xsl,v 1.140 2004-12-03 14:50:23 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1082,8 +1082,11 @@
     <xsl:attribute name="{$attributeName}"><xsl:value-of select="."/></xsl:attribute>
   </xsl:template>
 
-  <!-- but not the name-attribute? -->
+  <!-- but not the name-attribute -->
   <xsl:template match="@name"/>
+
+  <!-- nor the type attribute -->
+  <xsl:template match="@type" />
 
   <!--
     What to do with 'lists'.
