@@ -24,7 +24,7 @@
     // create wizard object so that delete/create actions are correctly loaded. No need to store. We'll create another wizard automatically if a button in the list is pressed.
     String username = (String)session.getAttribute("editwizard.username");
     String password = (String)session.getAttribute("editwizard.password");
-    Wizard wiz = new Wizard(settings_basedir, wizard, null, cloud);
+    Wizard wiz = new Wizard(settings_context, settings_basedir, wizard, null, cloud);
 
     Node deleteaction = Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']");
 
