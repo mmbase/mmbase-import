@@ -8,8 +8,8 @@
 	SCAN only supports iso-8859-1.
 	<h1>In-page text</h1>
 	<p>Café tweeëntwintig</p>
-	<h1>$MOD-MMBASE-FIELD-codings-title^</h1>
-	<h2>$MOD-MMBASE-FIELD-codings-subtitle^</h2>
+	<h2>$MOD-MMBASE-FIELD-codings-title^</h2>
+	<h3>$MOD-MMBASE-FIELD-codings-uppercase(subtitle)^</h3>
 	<p>
 	  $MOD-MMBASE-FIELD-codings-intro^
 	</p>
