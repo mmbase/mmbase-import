@@ -54,7 +54,6 @@
       <% } catch (Exception e) { %> 
       <p>Did not work (<%=e.toString()%>)</p>
       <% } %>   
-
       <p><em>With &lt;%@:include (utf-8 page)</em></p>
       <%@include file="atincluded.jsp" %>
 
@@ -62,10 +61,9 @@
       <%@include file="atincluded1.jsp" %>
 
       <hr />
-      <a href="<mm:url page="." />">back</a><br />
-      <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
+      <a href="<mm:url page=".." />">back</a><br />
+      <a href="<mm:url page="../../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
     </mm:node>
-    
        
   </body>
 </html>

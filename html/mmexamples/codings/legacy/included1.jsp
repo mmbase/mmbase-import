@@ -1,6 +1,5 @@
 <%@page session="false"
-  language="java"  
-  pageEncoding="ISO-8859-1"
+  language="java"
   contentType="text/html;charset=ISO-8859-1" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %>
