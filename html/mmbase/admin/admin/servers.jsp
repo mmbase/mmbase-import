@@ -28,7 +28,7 @@
 	<th class="header">OS</th>
 	<th class="header">&nbsp;</th>
 </tr>
-<mm:list type="mmservers" fields="name,showstate,showatime,host,os,jdk,uptime">
+<mm:listnodes type="mmservers" fields="name,showstate,showatime,host,os,jdk,uptime">
 <tr>
 	<td class="data">
 	<mm:field name="name" />
@@ -52,7 +52,7 @@
 		<a href="server/actions.jsp?server=<%=name%>"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
 	</td>
 </tr>
-</mm:list>
+</mm:listnodes>
 <tr><td>&nbsp;</td></tr>
 
 <tr>
