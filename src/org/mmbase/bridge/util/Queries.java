@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.42 2004-09-17 09:28:25 pierre Exp $
+ * @version $Id: Queries.java,v 1.43 2004-09-17 10:02:16 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -380,40 +380,50 @@ abstract public  class Queries {
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
 
-        if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) { // numeric compare
-            if (value instanceof Number) {
-                return value;
-            } else {
-                return getNumberValue(Casting.toString(value));
-            }
-        } else {
-            if (operator == OPERATOR_IN) {
-                SortedSet set;
-                if (value instanceof SortedSet) {
-                    set = (SortedSet)value;
-                } else if (value instanceof NodeList) {
-                    set = new TreeSet();
-                    NodeIterator i = ((NodeList)value).nodeIterator();
-                    while (i.hasNext()) {
-                        Node node = i.nextNode();
-                        set.add(new Integer(node.getNumber()));
-                    }
-                } else if (value instanceof Collection) {
-                    set = new TreeSet();
-                    Iterator i = ((Collection)value).iterator();
-                    while (i.hasNext()) {
-                        Object o = i.next();
-                        set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
-                    }
-                } else {
-                    set = new TreeSet();
-                    if (!(value == null || value.equals(""))) {
-                        set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
-                    }
+        if (operator == OPERATOR_IN) {
+            SortedSet set;
+            if (value instanceof SortedSet) {
+                set = (SortedSet)value;
+            } else if (value instanceof NodeList) {
+                set = new TreeSet();
+                NodeIterator i = ((NodeList)value).nodeIterator();
+                while (i.hasNext()) {
+                    Node node = i.nextNode();
+                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, new Integer(node.getNumber())));
                 }
-                value = set;
+            } else if (value instanceof Collection) {
+                set = new TreeSet();
+                Iterator i = ((Collection)value).iterator();
+                while (i.hasNext()) {
+                    Object o = i.next();
+                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
+                }
+            } else {
+                set = new TreeSet();
+                if (!(value == null || value.equals(""))) {
+                    set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
+                }
             }
-            return value;
+            return set;
+        }  else {
+            switch(fieldType) {
+            case Field.TYPE_INTEGER:
+            case Field.TYPE_FLOAT:
+            case Field.TYPE_LONG:
+            case Field.TYPE_DOUBLE:
+            case Field.TYPE_NODE:
+                if (value instanceof Number) {
+                    return value;
+                } else {
+                    return getNumberValue(Casting.toString(value));
+                }
+            case Field.TYPE_DATETIME:
+                return Casting.toDate(value);
+            case Field.TYPE_BOOLEAN:
+                return Casting.toBoolean(value) ? Boolean.TRUE : Boolean.FALSE;
+            default:
+                return value;
+            }
         }
     }
 
@@ -472,15 +482,15 @@ abstract public  class Queries {
                 newConstraint = query.createConstraint(stepField, operator, compareValue);
             } else {
                 switch (operator) {
-                    case OPERATOR_BETWEEN :
-                        Object compareValue2 = getCompareValue(fieldType, operator, value2);
-                        newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
-                        break;
-                    case OPERATOR_IN :
-                        newConstraint = query.createConstraint(stepField, (SortedSet)compareValue);
-                        break;
-                    default :
-                        throw new RuntimeException("Unknown value for operation " + operator);
+                case OPERATOR_BETWEEN :
+                    Object compareValue2 = getCompareValue(fieldType, operator, value2);
+                    newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
+                    break;
+                case OPERATOR_IN :
+                    newConstraint = query.createConstraint(stepField, (SortedSet)compareValue);
+                    break;
+                default :
+                    throw new RuntimeException("Unknown value for operation " + operator);
                 }
             }
         }
@@ -568,6 +578,9 @@ abstract public  class Queries {
                 case Field.TYPE_FLOAT:
                 case Field.TYPE_DOUBLE:
                     value = new Double((String) value);
+                    break;
+                case Field.TYPE_DATETIME:
+                    value = new Date((long) 1000 * Integer.parseInt("" + value));
                     break;
                 }
                 set.add(value);
