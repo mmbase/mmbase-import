@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.List;
-import java.util.Iterator;
+import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.UriParser;
@@ -26,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.39 2004-08-25 14:25:03 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.40 2004-08-26 12:10:38 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -104,6 +103,7 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     protected MMObjectNode getCachedNode(String ckey) {
+        log.debug("Getting cached noded for " + ckey);        
         List nodes;
         try {
             NodeSearchQuery query = new NodeSearchQuery(this);
@@ -156,7 +156,9 @@ public class ImageCaches extends AbstractImages {
         log.debug("getting ckey node with " + ckey);
         if(handleCache.contains(ckey)) {
             // found the node in the cache..
-            return (ByteFieldContainer) handleCache.get(ckey);
+            log.debug("Found in handleCache!");            
+            ByteFieldContainer result = (ByteFieldContainer) handleCache.get(ckey);
+            log.debug("Found number " + result.number);            
         }
         log.debug("not found in handle cache, getting it from database.");
         MMObjectNode node = getCachedNode(ckey);
@@ -249,6 +251,18 @@ public class ImageCaches extends AbstractImages {
         super.removeNode(node);
 
     }
+
+    public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+        if (log.isDebugEnabled()) {            
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
+        }        
+        if (ctype.equals("d")) {            
+            handleCache.removeCacheNumber(Integer.parseInt(number));
+        }
+        return super.nodeLocalChanged(machine, number, builder, ctype);        
+    }
+
+
 
     /**
      * Returns the image format.
