@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: mmbase.css,v 1.2 2004-01-08 23:02:30 johannes Exp $;
+ @version $Id: mmbase.css,v 1.3 2004-01-09 19:48:37 michiel Exp $;
 */
 
 
@@ -102,5 +102,9 @@ a:hover { // color: red;
 }
 
 .link a img { 
+  border: none;
+}
+
+.navigate img { 
   border: none;
 }

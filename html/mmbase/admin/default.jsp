@@ -5,6 +5,8 @@
   <head>
     <title>MMBase Administration</title>
     <link rel="stylesheet" href="<mm:url page="/mmbase/style/css/mmbase.css" />" type="text/css">
+    <link rel="icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
+    <link rel="shortcut icon" href="<mm:url page="/mmbase/style/images/favicon.ico" />" type="image/x-icon" />
   </head>
   <mm:import externid="category" />
   <mm:import externid="subcategory" />
@@ -23,7 +25,7 @@
         <frame src="<mm:url page="nav.jsp?category=${category}" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
       </mm:present>
       <mm:compare referid="category" value="examples">
-        <mm:import id="url">/mmexamples/index.jsp</mm:import>
+        <mm:import id="url">/mmexamples/</mm:import>
       </mm:compare>
       <mm:compare referid="category" value="documentation">
         <mm:import id="url">/mmdocs/</mm:import>
@@ -66,7 +68,7 @@
   <th class="header">Demos</td>
 </tr>
 <tr>
-  <td class="data"><a href="<mm:url page="/mmexamples/index.jsp" />">Demos</a></td>
+  <td class="data"><a href="<mm:url page="/mmexamples/" />">Demos</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -75,7 +77,8 @@
   <th class="header">Editors</td>
 </tr>
 <tr>
-  <td class="data"><a href="<mm:url page="editors/basic.jsp" />">Basic</a></td>
+  <td class="data"><a href="<mm:url page="editors/basic.jsp" />">Generic</a></td>
+  <td class="data"><a href="<mm:url page="editors/specific.jsp" />">Specific</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
