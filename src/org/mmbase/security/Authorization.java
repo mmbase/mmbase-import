@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.21 2004-03-10 14:08:13 michiel Exp $
+ * @version $Id: Authorization.java,v 1.22 2004-07-29 15:12:45 michiel Exp $
  */
 public abstract class Authorization extends Configurable {
     private static final Logger log = Logging.getLoggerInstance(Authorization.class);
@@ -235,6 +235,14 @@ public abstract class Authorization extends Configurable {
          */
         public Constraint getConstraint() {
             return constraint;
+        }
+        /**
+         * {@inheritDoc}
+         * Used for debugging.
+         * @since MMBase-1.8
+         */
+        public String toString() {
+            return (check ? "CHECKED: " : "NOT CHECKED: ") + constraint;
         }
 
 
