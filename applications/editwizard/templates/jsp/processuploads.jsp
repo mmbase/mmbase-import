@@ -1,5 +1,5 @@
 <%@ include file="settings.jsp"
-%><%@ page language="java" import="com.jspsmart.upload.*"
+%><%@ page import="com.jspsmart.upload.*"
 %><jsp:useBean id="mySmartUpload" scope="page" class="com.jspsmart.upload.SmartUpload"
 /><%@ page import="java.io.ByteArrayOutputStream"
 %><%@ page import="org.mmbase.applications.editwizard.*" %>
@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.6 2002-06-28 12:48:22 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.7 2002-07-24 08:17:53 mark Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
