@@ -77,8 +77,8 @@ public class RemoteGenerator{
         sb.append("\n");
         
         sb.append("/**\n");
-        sb.append(" * " +className + " in a generated interface based on "+ xmlClass.getName() +"<BR>\n");
-        sb.append(" * This <EM>NEW</EM> interface has the same methods names as the "+ xmlClass.getName() + " interface.\n");
+        sb.append(" * " +className + " is a generated interface based on "+ xmlClass.getName() +"<BR>\n");
+        sb.append(" * This interface has almoost the same methods names as the "+ xmlClass.getName() + " interface.\n");
         sb.append(" * The interface is created in such way that it can implement java.rmi.Remote.\n");
         sb.append(" * Where needed other return values or parameters are used.\n");
         sb.append(" * @Author Kees Jongenburger <keesj@framfab.nl>\n");
