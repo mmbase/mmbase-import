@@ -5,6 +5,10 @@
  </head>
   <body>
     <h1></h1>
+<p>
+Try e.g to make a fragment /tv/vpro/noorderlicht/laatste.rm (type: rm) and the following will show links:
+(correct also test.ram.jsp to you situation (should be fixed).
+</p>
 <mm:cloud>
  <mm:listnodes id="fragment" type="mediafragments">
   <mm:field name="title" />:<br />
