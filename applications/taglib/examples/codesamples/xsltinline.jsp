@@ -1,4 +1,4 @@
-<mm:formatter>
+<mm:formatter escape="none">
   <mm:node />
   <mm:xslt>
     <xsl:import href="file:xslt/2xhtml.xslt" />

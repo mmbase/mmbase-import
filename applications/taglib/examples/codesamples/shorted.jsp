@@ -1,4 +1,4 @@
-<mm:formatter>
+<mm:formatter escape="none">
 <mm:field name="title" />
 <mm:xslt>
   <xsl:template match="field" >

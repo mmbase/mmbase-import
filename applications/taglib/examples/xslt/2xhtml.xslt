@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.8 2002-06-25 20:39:30 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.9 2004-02-11 20:02:04 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -51,12 +51,20 @@
       </p>
   </xsl:template>
 
-   <xsl:template match = "section" >
-     <xsl:if test="count(ancestor::section)=0"><h3><font color="red"><a><xsl:attribute name="id"><xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" /></xsl:attribute><xsl:value-of select="@title" /></a></font></h3></xsl:if>
-     <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="@title" /></b></p></xsl:if>
-     <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="@title" /></p></xsl:if>
-     <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="@title" /><br /></xsl:if>
- 	 <xsl:apply-templates select = "section|p" />
+   <xsl:template match = "h" >
+     <xsl:if test="count(ancestor::section)=1">
+       <h3 style="color:red;">
+         <a>
+           <xsl:attribute name="id">
+             <xsl:value-of select="$formatter_counter" /><xsl:value-of select="generate-id(.)" />
+           </xsl:attribute>
+           <xsl:value-of select="." />
+         </a>
+       </h3>
+     </xsl:if>
+     <xsl:if test="count(ancestor::section)=2"><p><strong><xsl:value-of select="." /></strong></p></xsl:if>
+     <xsl:if test="count(ancestor::section)=3"><p><xsl:value-of select="." /></p></xsl:if>
+     <xsl:if test="count(ancestor::section)>3"><xsl:value-of select="." /><br /></xsl:if>
    </xsl:template>
-
+     
 </xsl:stylesheet>
