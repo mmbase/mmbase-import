@@ -88,7 +88,6 @@ several MMBase-checkouts.
   <property name="source-src.dir"       location="${source.dir}/src"/>
   <property name="generated-source-src.dir"       location="${build.dir}/src"/>
   <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
-  <property name="source-community.xml" value="org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
   <property name="xml2tld"              value="org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
   <property name="xml2html"             value="org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
   <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
@@ -394,7 +393,7 @@ builddate=${builddate}
 
 
   <target name="build"   description="Compile and generate tld's"
-     depends="taglib.tld,community.tld,compile" >
+     depends="taglib.tld,compile" >
   </target>
 
 
@@ -468,6 +467,7 @@ builddate=${builddate}
            classpathref="compile.classpath"
            debug="${debug}"
            optimize="${optimize}"
+           source="1.4"
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/JMSendMail.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
@@ -563,7 +563,6 @@ builddate=${builddate}
           depends="jar.check" unless="jar.uptodate">
     <antcall target="compile" />
     <antcall target="taglib.tld" />
-    <antcall target="community.tld" />
     <antcall target="resources" />
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
@@ -588,7 +587,6 @@ Main-Class: org.mmbase.Version
        update="false"
        manifest="${build.dir}/manifest.mf" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
-        <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
 
     <delete file="${build.dir}/manifest.mf" />
@@ -596,7 +594,6 @@ Main-Class: org.mmbase.Version
     <!-- don't delete these, because multiple tld's inside a jar, -->
     <!-- can cause problems on certain servlet-engines -->
     <!--<delete file="${web.dir}/mmbase-taglib.tld" />-->
-    <!--<delete file="${web.dir}/mmcommunity-taglib.tld" />-->
     
     <!-- still copy mmbase.jar to relase dir for backward compatibility-->
     <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
@@ -815,7 +812,7 @@ Build-compiler: ${build.compiler}
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear in the web-servers html directory"
-         depends="init.compile,taglib.tld,community.tld,documentation">
+         depends="init.compile,taglib.tld,documentation">
     <mkdir  dir="${web.dir}/config/builders/applications" />
     <chmod  file="${web.dir}/config/builders/applications" perm="ugo+xrw" type="dir" />
 
@@ -898,64 +895,6 @@ Build-compiler: ${build.compiler}
       </fileset>
     </copy>
   </target>
-
-  <target name="community.tld.check">
-    <uptodate property="community.tld.uptodate" targetfile="${web.dir}/mmcommunity-taglib.tld" >
-      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2tld}" />
-    </uptodate>
-  </target>
-
-  <target name="community.tld" description="Make the MMBase community taglib tld"
-          depends="init.compile,community.tld.check" unless="community.tld.uptodate">
-    <mkdir dir="${web.dir}" />
-    <!-- create the mmcommunity tld: -->
-    <java classname="org.apache.xalan.xslt.Process"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="yes">
-      <arg value="-Q"/>
-      <arg value="-DIAG"/>
-      <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/${source-community.xml}"/>
-      <arg value="-OUT"/>
-      <arg value="${web.dir}/mmcommunity-taglib.tld"/>
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/${xml2tld}" />
-    </java>
-  </target>
-
-
-  <target name="community.doc.check">
-    <uptodate property="community.doc.uptodate" targetfile="${reference.dir}/mmcommunity-taglib.html" >
-      <srcfiles dir="${source-src.dir}" includes="${source-community.xml},${xml2html}" />
-    </uptodate>
-  </target>
-
-
-  <target name="community.doc" description="Make the MMBase community taglib documentation"
-          depends="init.compile,community.doc.check" unless="community.doc.uptodate">
-    <mkdir dir="${reference.dir}/community-taglib"/>
-    <!-- and its documentation: -->
-    <java classname="org.apache.xalan.xslt.Process"
-          classpathref="compile.classpath"
-          fork="yes"
-          failonerror="yes">
-      <arg value="-DIAG"/>
-      <arg value="-IN"/>
-      <arg value="file:///${source-src.dir}/${source-community.xml}" />
-      <arg value="-PARAM"/>
-      <arg value="basedir"/>
-      <arg value="${reference.dir}"/>
-      <arg value="-PARAM"/>
-      <arg value="files"/>
-      <arg value="community-taglib" />
-      <arg value="-OUT"/>
-      <arg value="${reference.dir}/mmcommunity-taglib.html"/>
-      <arg value="-XSL"/>
-      <arg value="${source-src.dir}/${xml2html}" />
-    </java>
-  </target>
-
 
   <!-- =================================================================== -->
   <!-- Compile the AppTool                                                 -->
@@ -1116,9 +1055,9 @@ Build-compiler: ${build.compiler}
                file="${expand.dir}/${log4j.fullversion}"/>
 
     <!-- Docbook XSL -->
-    <property name="docbook-xsl.version" value="docbook-xsl-1.60.1"  />
+    <property name="docbook-xsl.version" value="docbook-xsl-1.61.0"  />
     <property name="docbook-xsl.file" value="${docbook-xsl.version}.tar.gz"  />
-    <property name="docbook-xsl.url" value="http://belnet.dl.sourceforge.net/sourceforge/docbook/${docbook-xsl.file}" />
+    <property name="docbook-xsl.url" value="http://heanet.dl.sourceforge.net/sourceforge/docbook/${docbook-xsl.file}" />
     <available property="docbook-xsl.present"  file="${download.dir}/${docbook-xsl.file}" />
     <available property="docbook-xsl.expanded"  file="${expand.dir}/${docbook-xsl.version}" />
 
@@ -1350,7 +1289,7 @@ Build-compiler: ${build.compiler}
 
 
   <target name="documentation"
-          depends="taglib.doc,community.doc,docbookumentation,documentation.builders,mmcidocs">
+          depends="taglib.doc,docbookumentation,documentation.builders,mmcidocs">
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-html.dir}/mmdocs" />
     </copy>
