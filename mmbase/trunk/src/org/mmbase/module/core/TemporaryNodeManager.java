@@ -10,14 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.util.*;
+import java.lang.Exception;
 
 import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
 /*
-	$Id: TemporaryNodeManager.java,v 1.13 2000-12-30 14:06:56 daniel Exp $
+	$Id: TemporaryNodeManager.java,v 1.14 2001-01-08 12:31:58 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2000/12/30 14:06:56  daniel
+	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
+	
 	Revision 1.12  2000/11/13 15:33:47  vpro
 	Rico: added relation support, note that this must be changed when the whole relation mess changes
 	
@@ -60,7 +64,7 @@ import org.mmbase.module.corebuilders.RelDef;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.13 2000-12-30 14:06:56 daniel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.14 2001-01-08 12:31:58 install Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -87,7 +91,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(key);
 	}
 
-	public String createTmpRelationNode(String type,String owner,String key, String source,String destination) {
+	public String createTmpRelationNode(String type,String owner,String key, String source,String destination) throws Exception {
 		String bulname="";
 		MMObjectNode node=null;
 		MMObjectBuilder builder=null;
@@ -97,6 +101,9 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		// decode type to a builder using reldef
 		reldef=(RelDef)mmbase.getMMObject("reldef");
 		rnumber=reldef.getGuessedByName(type);
+		if(rnumber==-1) {
+			throw new Exception("type "+type+" is not a proper relation");
+		}
 		builder=mmbase.getMMObject(type);
 		if (builder==null) builder=mmbase.getMMObject("insrel");
 		bulname=builder.getTableName();
