@@ -28,12 +28,12 @@ import org.mmbase.util.xml.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.73 2003-06-03 11:01:33 kees Exp $
+ * @version $Id: MMAdmin.java,v 1.74 2003-06-10 12:42:58 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
     // logging routines
-    private static Logger log = Logging.getLoggerInstance(MMAdmin.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMAdmin.class);
 
     // true: ready (probeCall was called)
     private boolean state = false;
@@ -417,7 +417,7 @@ public class MMAdmin extends ProcessorModule {
      */
     int getBuilderVersion(String appname) {
         String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        XMLBuilderReader app = new XMLBuilderReader(path + appname + ".xml", mmb);
+        BuilderReader app = new BuilderReader(path + appname + ".xml", mmb);
         if (app != null) {
             return app.getBuilderVersion();
         }
@@ -429,7 +429,7 @@ public class MMAdmin extends ProcessorModule {
      */
     String getBuilderClass(String bulname) {
         String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        XMLBuilderReader bul = new XMLBuilderReader(path + bulname + ".xml", mmb);
+        BuilderReader bul = new BuilderReader(path + bulname + ".xml", mmb);
         if (bul != null) {
             return bul.getClassFile();
         }
@@ -509,7 +509,7 @@ public class MMAdmin extends ProcessorModule {
      */
     String getBuilderDescription(String appname) {
         String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        XMLBuilderReader app = new XMLBuilderReader(path + appname + ".xml", mmb);
+        BuilderReader app = new BuilderReader(path + appname + ".xml", mmb);
         if (app != null) {
             Hashtable desc = app.getDescriptions();
             String english = (String)desc.get("en");
@@ -1063,9 +1063,7 @@ public class MMAdmin extends ProcessorModule {
                 org.w3c.dom.Document config = null;
                 try {
                     config =
-                        org.mmbase.util.XMLBasicReader.getDocumentBuilder(
-                            org.mmbase.util.XMLBuilderReader.class).parse(
-                            appFile);
+                        XMLBasicReader.getDocumentBuilder(BuilderReader.class).parse(appFile);
                 } catch (org.xml.sax.SAXException se) {
                     String msg = "builder '" + name + "':\n" + se.toString() + "\n" + Logging.stackTrace(se);
                     log.error(msg);
@@ -1385,7 +1383,7 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name = aname;
                     String sname = name.substring(0, name.length() - 4);
-                    XMLBuilderReader app = new XMLBuilderReader(configpath + subpath + aname, mmb);
+                    BuilderReader app = new BuilderReader(configpath + subpath + aname, mmb);
                     results.addElement(subpath + sname);
                     results.addElement("" + app.getBuilderVersion());
                     int installedversion = -1;
@@ -1434,7 +1432,7 @@ public class MMAdmin extends ProcessorModule {
     Vector getFields(String buildername) {
         Vector results = new Vector();
         String path = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
-        XMLBuilderReader bul = new XMLBuilderReader(path + buildername + ".xml", mmb);
+        BuilderReader bul = new BuilderReader(path + buildername + ".xml", mmb);
         if (bul != null) {
             Vector defs = bul.getFieldDefs();
             for (Enumeration h = defs.elements(); h.hasMoreElements();) {
