@@ -24,10 +24,15 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.31 2003-05-01 17:29:27 pierre Exp $
+ * @version $Id: Config.java,v 1.32 2003-05-26 11:25:59 pierre Exp $
  */
 
 public class Config {
+
+    /**
+     * Default maximum upload size for files (4 MB). 
+     */
+    public final static int DEFAULT_MAX_UPLOAD_SIZE = 4 * 1024 * 1024;
 
     // logging
     private static Logger log = Logging.getLoggerInstance(Config.class.getName());
@@ -37,20 +42,43 @@ public class Config {
 
     public String      sessionKey        = null;
     public URIResolver uriResolver       = null;
-    public int         maxupload = 4 * 1024 * 1024; // 1 MByte max uploadsize
+    public int         maxupload = DEFAULT_MAX_UPLOAD_SIZE;
     public Stack       subObjects = new Stack(); // stores the Lists and Wizards.
     public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String      backPage;
     public String      templates;
     public String      language;
 
-    static public abstract class SubConfig {
+    static public class SubConfig {
         public boolean debug = false;
         public String wizard;
         public String page;
         public Map   popups     = new HashMap(); // all popups now in use below this (key -> Config)
-        
         public Map    attributes = new HashMap();
+
+        /**
+         * Basic configuration. The configuration object passed is updated with information retrieved 
+         * from the request object with which the configurator was created. The following parameters are accepted:
+         *
+         * <ul>
+         *   <li>wizard</li>
+         *   <li>origin</li>
+         *   <li>debug</li>
+         * </ul>
+         *
+         * @since MMBase-1.6.4
+         * @param configurator the configurator containing request information
+         * @throws WizardException if expected parameters were not given or ad bad content
+         */
+        public void configure(Config.Configurator configurator) throws WizardException  {
+            wizard = configurator.getParam("wizard", wizard);
+            if (wizard != null && wizard.startsWith("/")) {
+                wizard = "file://" + configurator.getRequest().getRealPath(wizard);
+            }
+            setAttribute("origin",configurator.getParam("origin"));
+            // max upload size for files
+            debug = configurator.getParam("debug",  false);
+        }
 
         public void setAttribute(String name, String value) {
             if (value!=null) {
@@ -66,7 +94,28 @@ public class Config {
         public String parentFid;
         public String parentDid;
         public String popupId;
+        
+        /**
+         * Configure a wizard. The configuration object passed is updated with information retrieved 
+         * from the request object with which the configurator was created. The following parameters are accepted:
+         *
+         * <ul>
+         *   <li>popupid</li>
+         *   <li>objectnumber</li>
+         * </ul>
+         * Calls {@link #baseConfig()} to read common parameters.
+         *
+         * @since MMBase-1.6.4
+         * @param configurator the configurator containing request information
+         * @throws WizardException if expected parameters were not given 
+         */
+        public void configure(Config.Configurator configurator) throws WizardException {
+            super.configure(configurator);
+            popupId = configurator.getParam("popupid",  "");
+            objectNumber = configurator.getParam("objectnumber");
+        }
     }
+
     static public class ListConfig extends SubConfig {
         public String title;
         public File   template;
@@ -82,12 +131,133 @@ public class Config {
         public String searchValue="";
         public String searchType="like";
         public String baseConstraints;
+        public boolean forceSearch = false;
 
         public int    age = -1;
         public int    start = 0;
-        public boolean distinct;
+        public boolean distinct = false;
         public int pagelength   = 50;
         public int maxpagecount = 10;
+        
+        /**
+         * Configure a list page. The configuration object passed is updated with information retrieved 
+         * from the request object with which the configurator was created. The following parameters are accepted:
+         *
+         * <ul>
+         *   <li>title</li>
+         *   <li>pagelength</li>
+         *   <li>maxpagecount</li>
+         *   <li>startnodes</li>
+         *   <li>fields</li>
+         *   <li>age</li>
+         *   <li>start</li>
+         *   <li>searchtype</li>
+         *   <li>searchfields</li>
+         *   <li>searchvalue</li>
+         *   <li>searchdir</li>
+         *   <li>constraints</li>
+         *   <li>forcesearch</li>
+         *   <li>realsearchfield</li>
+         *   <li>searchdir</li>
+         *   <li>directions</li>
+         *   <li>orderby</li>
+         *   <li>distinct</li>
+         * </ul>
+         *
+         * @since MMBase-1.6.4
+         * @param configurator the configurator containing request information
+         */
+        public void configure(Config.Configurator configurator) throws WizardException {
+            super.configure(configurator);
+            title       = configurator.getParam("title", title);
+            pagelength   = configurator.getParam("pagelength", new Integer(pagelength)).intValue();
+            maxpagecount   = configurator.getParam("maxpagecount", new Integer(maxpagecount)).intValue();
+            startNodes  = configurator.getParam("startnodes", startNodes);
+            nodePath    = configurator.getParam("nodepath", nodePath);
+            if (nodePath == null) {
+                throw new WizardException("The parameter 'nodepath' is required but not given.");
+            }
+            fields      = configurator.getParam("fields", fields);
+            if (fields==null) {
+                throw new WizardException("The parameter 'fields' is required but not given."); 
+            }
+            age         = configurator.getParam("age", new Integer(age)).intValue();
+            start       = configurator.getParam("start", new Integer(start)).intValue();
+            searchType=configurator.getParam("searchtype", searchType);
+            searchFields=configurator.getParam("searchfields", searchFields);
+            searchValue=configurator.getParam("searchvalue", searchValue);
+            searchDir=configurator.getParam("searchdir",searchDir);
+            baseConstraints=configurator.getParam("constraints", baseConstraints);
+            forceSearch=configurator.getParam("forcesearch", forceSearch);
+            
+            if (searchFields==null) {
+                constraints = baseConstraints;
+            } else {
+                // search type: default
+                String sType=searchType;
+                // get the actual field to serach on.
+                // this can be 'owner' or 'number' instead of the original list of searchfields,
+                // in which case serachtype may change 
+                String sFields=configurator.getParam("realsearchfield", searchFields);
+                if (sFields.equals("owner") || sFields.endsWith(".owner")) {
+                    sType="string";
+                } else if (sFields.equals("number") || sFields.endsWith(".number")) {
+                    sType="equals";
+                }
+                String search=searchValue;
+                constraints=null;
+                if (sType.equals("like")) {
+                    // actually we should unquote search...
+                    search=" LIKE '%"+search.toLowerCase()+"%'";
+                } else if (sType.equals("string")) {
+                    search=" = '"+search+"'";
+                } else {
+                    if (search.equals("")) {
+                        search="0";
+                    }
+                    if (sType.equals("greaterthan")) {
+                        search=" > "+search;
+                    } else if (sType.equals("lessthan")) {
+                        search=" < "+search;
+                    } else if (sType.equals("notgreaterthan")) {
+                        search=" <= "+search;
+                    } else if (sType.equals("notlessthan")) {
+                        search=" >= "+search;
+                    } else if (sType.equals("notequals")) {
+                        search=" != "+search;
+                    } else { // equals
+                        search=" = "+search;
+                    }
+                }
+                StringTokenizer searchtokens= new StringTokenizer(sFields,",");
+                while (searchtokens.hasMoreTokens()) {
+                    String tok=searchtokens.nextToken();
+                    if (constraints!=null) {
+                        constraints+=" OR ";
+                    } else {
+                        constraints="";
+                    }
+                    if (sType.equals("like")) {
+                        constraints+="lower(["+tok+"])"+search;
+                    } else {
+                        constraints+="["+tok+"]"+search;
+                    }
+                }
+                if (baseConstraints!=null) {
+                    constraints="("+baseConstraints+") and ("+constraints+")";
+                }
+            }
+            searchDir  = configurator.getParam("searchdir", searchDir);
+            directions  = configurator.getParam("directions", directions);
+            orderBy     = configurator.getParam("orderby", orderBy);
+            distinct    = configurator.getParam("distinct", new Boolean(true)).booleanValue();
+            
+            if (template==null) { // only set if template was unset - don't switch templates between lists 
+                String templatePath = configurator.getParam("template","xsl/list.xsl");
+                template = configurator.resolveToFile(templatePath);
+            }
+        }
+        
     }
 
     /**
@@ -95,7 +265,7 @@ public class Config {
      * could extend it to change wich query parameters must be used,
      * and what are the defaults and so on.
      */
-    public abstract static class Configurator {
+    public static class Configurator {
         private static Logger log = Logging.getLoggerInstance(Config.class.getName());
 
         protected HttpServletRequest request;
@@ -106,15 +276,22 @@ public class Config {
             return request;
         }
 
+        public File resolveToFile(String templatePath) {
+            return config.uriResolver.resolveToFile(templatePath);
+        }
+        
         public Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
             request = req;
             response = res;
             config  = c;
+
             config.sessionId = res.encodeURL("test.jsp").substring(8);
             log.debug("Sessionid : " + config.sessionId);
 
+            
+
             if (config.language == null) {
-                config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
+                config.language = getParam("language", org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale().getLanguage());
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
@@ -202,8 +379,10 @@ public class Config {
 
                 extraDirs.add("ew:", basedir);
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
+                config.maxupload = getParam("maxsize", config.maxupload);
             }
         }
+        
         protected String getParam(String paramName) {
             if (request.getParameter(paramName) == null) return null;
             return request.getParameter(paramName);
@@ -216,6 +395,7 @@ public class Config {
             }
             return getParam(paramName);
         }
+        
         protected int  getParam(String paramName, int def) {
             String i = request.getParameter(paramName);
             if (i == null || i.equals("")) return def;
@@ -250,6 +430,7 @@ public class Config {
             l.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             return l;
         }
+        
         public Config.WizardConfig createWizard(Cloud cloud) throws SecurityException, WizardException {
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
@@ -263,8 +444,16 @@ public class Config {
             wizard.wiz.setTemplatesDir(config.templates);
             return wizard;
         }
-        public abstract void config(Config.ListConfig c);
-        public abstract void config(Config.WizardConfig c);
+
+        /**
+         * Configure a list or wizard. The configuration object passed is updated with information retrieved 
+         * from the request object with which the configurator was created.
+         * @since MMBase-1.6.4
+         * @param config the configuration object for the list or wizard.
+         */
+        public void config(Config.SubConfig c) throws WizardException {
+            c.configure(this);
+        }
 
     }
 
