@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.5 2002-06-25 15:42:27 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.6 2002-06-25 18:18:59 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -18,6 +18,8 @@
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
   <xsl:output method="xml" omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
     
+  <xsl:param name="subtitle_color">green</xsl:param>
+
   <xsl:template name="formatteddate">
 	<xsl:param name="year"     />
 	<xsl:param name="monthname" />
@@ -27,9 +29,9 @@
 
   <!-- how to present a news node -->
   <xsl:template match="object[@type=$newstype and not(unfilledField)]">
-	<xsl:apply-templates select="field[@name='title']"  />
+    <xsl:apply-templates select="field[@name='title']"  />
       <xsl:if test="not(field[@name='subtitle'] = '')">
-        <h2><font color="green"><xsl:apply-templates select="field[@name='subtitle']" /></font></h2>
+        <font color="{$subtitle_color}"><xsl:apply-templates select="field[@name='subtitle']" /></font>
       </xsl:if>
 	<xsl:apply-templates select="field[@name='body']" />
 	<p>

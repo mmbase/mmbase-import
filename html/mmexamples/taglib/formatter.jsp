@@ -82,7 +82,9 @@ Be aware that this examples assume that the body of your news builder is of type
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfieldascii.jsp" /></mm:formatter></pre></td>
   <td width="50%"><textarea wrap="soft"><%@include file="codesamples/userichfieldascii.jsp" %></textarea></td>
 </tr>                      
-<tr><td colspan="2">You can also format a whole node in this way.</td></tr>
+<tr><td colspan="2">You can also format a whole node in this way. We
+  also see the 'options' attribute applied here. The xslt/2xhtml.xslt
+  in this directory accepts a parameter 'subtitle_color'.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownode.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/shownode.jsp" %></td>
