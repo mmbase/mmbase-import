@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.43 2004-02-24 17:41:00 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.44 2004-03-03 10:51:58 michiel Exp $
  */
 public class MultiPool {
 
@@ -58,7 +58,7 @@ public class MultiPool {
         this.maxQueries      = maxQueries;
         if (this.maxQueries <= 0) doReconnect = false;
         this.databaseSupport = databaseSupport;
-        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, " + (doReconnect ? "which will be refreshed after " + maxQueries + " queries"  : "which will not be refreshed"));
+        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, " + (doReconnect ? "which will be refreshed after " + this.maxQueries + " queries"  : "which will not be refreshed"));
         createPool();
     }
 
@@ -219,6 +219,43 @@ public class MultiPool {
 
             for (Iterator i = busyPool.iterator(); i.hasNext();) {
                 MultiConnection con = (MultiConnection) i.next();
+
+                boolean isClosed = true;
+
+                try {
+                    isClosed = con.isClosed();
+                } catch (SQLException e) {
+                    log.warn("Could not check isClosed on connection, assuming it closed: " + e.getMessage());
+                }
+
+                
+
+                if (isClosed) {
+                    MultiConnection newcon = null;
+                    log.warn("WILL KILL SQL because connection was closed. ID=" + con.hashCode() + " SQL: " + con.lastSql);
+                    try {
+                        // get a new connection to replace this one
+                        newcon = getMultiConnection();
+                    } catch(SQLException e) {
+                        log.error("Can't add connection to pool (after close) " + e.toString());
+                    }
+                    if (newcon != null) { // successfully created new connection
+                        // we close connections in a seperate thread, for those broken JDBC drivers out there
+                        new ConnectionCloser(con);
+                    } else {
+                        // could not create new connection somewhy, but this one is **** up as well, what to do?
+                        // fail every future query:
+                        newcon = con; // simply put it back in the available pool, so everything will fail
+                    }
+                    pool.add(newcon);
+                    releasecount++;
+                    i.remove();
+
+                    con.markedClosed = true; // make sure it cannot be used any more.
+                    
+                    continue;
+                }
+
                 int diff = nowTime - con.getStartTime();
 
                 if (diff > 5) {
@@ -240,21 +277,23 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newcon = null;
-                    log.warn("WILL KILL SQL after " + diff + " seconds, because it took too long. ID="+con.hashCode()+" SQL: " + con.lastSql);
+                    log.warn("WILL KILL SQL after " + diff + " seconds, because it took too long. ID=" + con.hashCode() + " SQL: " + con.lastSql);
                     try {
                         // get a new connection to replace this one
                         newcon = getMultiConnection();
                     } catch(SQLException e) {
-                        log.error("ERROR Can't add connection to pool " + e.toString());
+                        log.error("Can't add connection to pool (after kill) " + e.toString());
                     }
-                    if (newcon != null) {
+                    if (newcon != null) { // successfully created new connection
                         pool.add(newcon);
                         releasecount++;
+                        i.remove();
+                        // we close connections in a seperate thread, for those broken JDBC drivers out there
+                        con.markedClosed = true; // make sure it cannot be used any more.
+                        new ConnectionCloser(con);
+                    } else {
+                        // could not create new connection somewhy, will be retried in the next cycle
                     }
-                    i.remove();
-                    // we close connections in a seperate thread, for those broken JDBC drivers out there
-                    con.markedClosed = true;
-                    new ConnectionCloser(con);
                 }
             }
 
@@ -290,7 +329,7 @@ public class MultiPool {
     }
 
     /**
-     * get a free connection from the pool
+     * Get a free connection from the pool
      */
     public MultiConnection getFree() {
 
@@ -349,25 +388,25 @@ public class MultiPool {
                 log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
             }
 
-            con.release(); //Resets time connection is busy.
+            con.release(); //Only resets time connection is busy.
             MultiConnection oldcon = con;
 
             if (doReconnect && (con.getUsage() > maxQueries)) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Re-Opening connection");
-                }
-                try {
-                    oldcon.realclose();
-                } catch(SQLException re) {
-                    log.error("Can't close a connection !!!");
-                }
+                log.debug("Re-oppening connection");
 
+                boolean gotNew = false;
                 try {
                     con = getMultiConnection();
+                    gotNew = true;
                 } catch(SQLException re) {
-                    log.error("Can't add connection to pool " + re.toString());
+                    log.error("Can't add connection to pool (during reconnect) " + re.toString());
+                }
+
+                if (gotNew) { // a new conection has successfully created, the old one can be closed
+                    new ConnectionCloser(oldcon);
                 }
             }
+
             pool.add(con);
             busyPool.remove(oldcon);
             log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
@@ -450,13 +489,13 @@ public class MultiPool {
          * Close the database connection.
          */
         public void run() {
-            log.warn("Closing connection with ID " + connection.hashCode());
+            log.debug("Closing connection with ID " + connection.hashCode());
             try {
                 connection.realclose();
             } catch(Exception re) {
-                log.error("Can't close connection with ID " + connection.hashCode()+", cause: " + re);
+                log.error("Can't close connection with ID " + connection.hashCode() + ", cause: " + re);
             }
-            log.warn("Closed connection with ID " + connection.hashCode());
+            log.service("Closed connection with ID " + connection.hashCode());
         }
     }
 }
