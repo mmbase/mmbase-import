@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.10.4.1 2002-05-09 23:12:29 gerard Exp $
+ * @version $Id: MultiPool.java,v 1.10.4.2 2002-09-13 10:10:51 vpro Exp $
  */
 public class MultiPool {
 
@@ -38,6 +38,7 @@ public class MultiPool {
     String password;
     String dbm;
     Object synobj=new Object();
+	Object synobj_getfree=new Object();
     DatabaseSupport databasesupport;
 
     boolean doReconnect=true;
@@ -164,22 +165,24 @@ public class MultiPool {
     public MultiConnection getFree() {
         MultiConnection con=null;
         totalConnections++;
-        while (pool.size()==0) {
-            try{
-                Thread.sleep(10000);
-            } catch(InterruptedException e){
-                log.warn("getFree sleep INT");
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("sleep on "+this);
-            }
-        }
-        synchronized(synobj) {
-            con=(MultiConnection)pool.elementAt(0);
-            con.claim();
-            pool.removeElementAt(0);
-            busypool.addElement(con);
-        }
+		synchronized(synobj_getfree) {
+	        while (pool.size()==0) {
+	            try{
+	                Thread.sleep(10000);
+	            } catch(InterruptedException e){
+	                log.warn("getFree sleep INT");
+	            }
+	            if (log.isDebugEnabled()) {
+	                log.debug("sleep on "+this);
+	            }
+	        }
+	        synchronized(synobj) {
+	            con=(MultiConnection)pool.elementAt(0);
+	            con.claim();
+	            pool.removeElementAt(0);
+	            busypool.addElement(con);
+	        }
+		}
         return(con);
     }
 
