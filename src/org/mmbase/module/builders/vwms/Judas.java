@@ -25,7 +25,6 @@ import org.mmbase.module.builders.Properties;
  */
 
 public class Judas extends Vwm implements MMBaseObserver {
-	protected Vector urls=new Vector();
 	private JudasURLpusher pusher=null;
 	private boolean firstProbeCall = true;
 
@@ -315,31 +314,31 @@ public class Judas extends Vwm implements MMBaseObserver {
 				addURL(url);
 			} else {
 				String url="/data/"+prog+"/aflevering.shtml?"+episode;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/aflevering-txt.shtml?"+episode;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/aflevering_txt.shtml?"+episode;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 
 				url="/data/"+prog+"/archief.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/archief-txt.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/archief_txt.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 
 				url="/data/"+prog+"/gasten.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/gasten-txt.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/gasten_txt.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/program.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/program-txt.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 				url="/data/"+prog+"/program_txt.shtml?"+prog;
-				addURL(url);
+				addURL(url,PriorityURL.MIN_PRIORITY);
 			}
 		}
 	}
@@ -571,11 +570,11 @@ public class Judas extends Vwm implements MMBaseObserver {
 			map=node.getIntValue("maps.number");
 			program=node.getIntValue("programs.number");
 			episode=node.getIntValue("episodes.number");
-			addURL("/3voor12/shows/episodes.shtml?"+portal+"+"+map+"+"+program+"+"+episode);
-			addURL("/3voor12/shows/programs.shtml?"+portal+"+"+map+"+"+program);
+			addURL("/3voor12/shows/episodes.shtml?"+portal+"+"+map+"+"+program+"+"+episode,PriorityURL.MIN_PRIORITY);
+			addURL("/3voor12/shows/programs.shtml?"+portal+"+"+map+"+"+program,PriorityURL.MIN_PRIORITY);
 		}
 		if (vec.size()>0) {
-			addURL("/3voor12/shows/shows.shtml?2534202");
+			addURL("/3voor12/shows/shows.shtml?2534202",PriorityURL.MIN_PRIORITY);
 		}
 
 	}
@@ -716,13 +715,13 @@ public class Judas extends Vwm implements MMBaseObserver {
 			themonth=getMonthNumber(audiopart);
 			switch(theclass) {
 				case 1: // Track
-					addURL("/3voor12/tracks/tracks_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
+					addURL("/3voor12/tracks/tracks_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth,PriorityURL.MIN_PRIORITY);
 					break;
 				case 2: // StudioSession
 					// No pages ?
 					break;
 				case 3: // Live Recording
-					addURL("/3voor12/concerts/concerts_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
+					addURL("/3voor12/concerts/concerts_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth,PriorityURL.MIN_PRIORITY);
 
 					break;
 				case 4: // DJ Set
@@ -796,15 +795,15 @@ public class Judas extends Vwm implements MMBaseObserver {
 			theyearmonth=themonth-(themonth%12);
 			switch(theclass) {
 				case 1: // Track
-					addURL("/3voor12/tracks/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie);
-					addURL("/3voor12/tracks/tracks_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie);
+					addURL("/3voor12/tracks/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie,PriorityURL.MIN_PRIORITY);
+					addURL("/3voor12/tracks/tracks_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie,PriorityURL.MIN_PRIORITY);
 					break;
 				case 2: // StudioSession
 					// No pages ?
 					break;
 				case 3: // Live Recording
-					addURL("/3voor12/concerts/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie);
-					addURL("/3voor12/concerts/concerts_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie);
+					addURL("/3voor12/concerts/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie,PriorityURL.MIN_PRIORITY);
+					addURL("/3voor12/concerts/concerts_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie,PriorityURL.MIN_PRIORITY);
 
 					break;
 				case 4: // DJ Set
@@ -861,7 +860,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 			debug("result "+vec);
 			if (vec.size()>0) {
 				doAdd=true;
-				addURL("/3voor12/shows/shows.shtml?2534202");
+				addURL("/3voor12/shows/shows.shtml?2534202",PriorityURL.MAX_PRIORITY);
 			}
 		}
 
@@ -916,7 +915,7 @@ public class Judas extends Vwm implements MMBaseObserver {
 		}
 
 		if (doAdd) {
-			addURL("/3voor12/zapcentral.shtml?");
+			addURL("/3voor12/zapcentral.shtml?",PriorityURL.MAX_PRIORITY);
 //			addURL("/3voor12/navigatie/dollarmod.flashvar?");
 		}
 	}
@@ -969,9 +968,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			themonth=getMonthNumber(group);
 			theyearmonth=themonth-(themonth%12);
 			addURL("/3voor12/artists/artist.shtml?"+portal+"+"+map+"+"+program+"+"+group);
-			addURL("/3voor12/artists/artists_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie);
-			addURL("/3voor12/artists/artists_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
-			addURL("/3voor12/artists/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie);
+			addURL("/3voor12/artists/artists_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie,PriorityURL.MIN_PRIORITY);
+			addURL("/3voor12/artists/artists_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth,PriorityURL.MIN_PRIORITY);
+			addURL("/3voor12/artists/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie,PriorityURL.MIN_PRIORITY);
 			daymark=daymarks.getDayCountByObject(group);
 			curdaymark=daymarks.getDayCount();
 			if ((curdaymark-daymark)<60) {
@@ -1028,9 +1027,9 @@ public class Judas extends Vwm implements MMBaseObserver {
 			themonth=getMonthNumber(news);
 			theyearmonth=themonth-(themonth%12);
 			addURL("/3voor12/journalism/nieuws.shtml?"+portal+"+"+map+"+"+program+"+"+news);
-			addURL("/3voor12/journalism/journalism_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+newstype);
-			addURL("/3voor12/journalism/journalism_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
-			addURL("/3voor12/journalism/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+newstype);
+			addURL("/3voor12/journalism/journalism_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+newstype,PriorityURL.MIN_PRIORITY);
+			addURL("/3voor12/journalism/journalism_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth,PriorityURL.MIN_PRIORITY);
+			addURL("/3voor12/journalism/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+newstype,PriorityURL.MIN_PRIORITY);
 			daymark=daymarks.getDayCountByObject(news);
 			curdaymark=daymarks.getDayCount();
 			if ((curdaymark-daymark)<60) {
@@ -1051,7 +1050,11 @@ public class Judas extends Vwm implements MMBaseObserver {
 	 * @param url A String containing the url.
 	 */
 	public void addURL(String url) {
-		urls.addElement(url);
+		pusher.addURL(url,PriorityURL.DEF_PRIORITY);
+	}
+
+	public void addURL(String url,int priority) {
+		pusher.addURL(url,priority);
 	}
 
 	public boolean pushReload(String url) {
