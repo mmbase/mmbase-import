@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.44 2000-11-25 12:43:07 daniel Exp $
+$Id: MMSQL92Node.java,v 1.45 2000-12-28 22:22:20 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.44  2000/11/25 12:43:07  daniel
+number mapping support : added calls for Number, implemented the methods
+
 Revision 1.43  2000/11/20 14:18:33  install
 Rob removed ugly code line
 
@@ -174,7 +177,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.44 $ $Date: 2000-11-25 12:43:07 $
+* @$Revision: 1.45 $ $Date: 2000-12-28 22:22:20 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -472,6 +475,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	* @return The DBKey number for this node, or -1 if an error occurs.
 	*/
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
+		return(insert_real(bul,owner,node,bul.getTableName()));
+	}
+
+	public int insert_real(MMObjectBuilder bul,String owner, MMObjectNode node,String tableName) {
 		int number=node.getIntValue("number");
 		// did the user supply a number allready, ifnot try to obtain one
 		if (number==-1) number=getDBKey();
@@ -507,9 +514,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		PreparedStatement stmt=null;
 		try {
             // Prepare the statement using the amount of fields found.
-            if (debug) debug("Insert: Preparing statement "+mmb.baseName+"_"+bul.tableName+" using fieldamount String: "+fieldAmounts);
+            if (debug) debug("Insert: Preparing statement "+mmb.baseName+"_"+tableName+" using fieldamount String: "+fieldAmounts);
 			con=bul.mmb.getConnection();
-			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+fieldAmounts+")");
+			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values("+fieldAmounts+")");
 		} catch(Exception t) {
 			t.printStackTrace();
 		}
@@ -552,7 +559,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			return(-1);
 		}
 
-		if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
+		if (node.parent!=null && (node.parent instanceof InsRel) && !tableName.equals("insrel")) {
 			try {
 				con=mmb.getConnection();
 				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?)");
@@ -589,10 +596,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 
 
-		//bul.signalNewObject(bul.tableName,number);
+		//bul.signalNewObject(tableName,number);
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
-				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
+				bul.mmb.mmc.changedNode(node.getIntValue("number"),tableName,"n");
 				// figure out tables to send the changed relations
 				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
 				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
@@ -601,7 +608,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			} else {
-				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
+				mmb.mmc.changedNode(node.getIntValue("number"),tableName,"n");
 			}
 		}
 		node.setValue("number",number);
@@ -943,10 +950,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 	}
 
+	public boolean create(MMObjectBuilder bul) {
+		return(create_real(bul,bul.getTableName()));
+	}
+
 	/**
 	* will be removed once the xml setup system is done
 	*/
-	public boolean create(MMObjectBuilder bul) {
+	public boolean create_real(MMObjectBuilder bul,String tableName) {
 	
 		if (!bul.isXMLConfig()) return(false);
 	
@@ -971,9 +982,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 		if (keySupported) {
-			result=getMatchCREATE(bul.getTableName())+"( "+getNumberString()+" integer not null, "+parser.getPrimaryKeyScheme()+" ( "+getNumberString()+" ), "+result+" );";
+			result=getMatchCREATE(tableName)+"( "+getNumberString()+" integer not null, "+parser.getPrimaryKeyScheme()+" ( "+getNumberString()+" ), "+result+" );";
 		} else {
-			result=getMatchCREATE(bul.getTableName())+"( "+getNumberString()+" integer not null, "+result+" );";
+			result=getMatchCREATE(tableName)+"( "+getNumberString()+" integer not null, "+result+" );";
 		}
 
 		try {
@@ -983,13 +994,83 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+bul.getTableName());
+			System.out.println("can't create table "+tableName);
 			 System.out.println("XMLCREATE="+result);
 			e.printStackTrace();
 			return(false);
 		}
 		return(true);
 	}
+
+
+	public boolean drop(MMObjectBuilder bul) {
+		return(drop_real(bul,bul.getTableName()));
+	}
+
+	/**
+	* will be removed once the xml setup system is done
+	*/
+	public boolean drop_real(MMObjectBuilder bul,String tableName) {
+
+		int size=bul.size();
+		if (size>0) {
+			System.out.println("table not dropped, not empty : "+tableName);
+			return(false);
+		}
+
+		String result="drop table "+mmb.baseName+"_"+tableName;
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			stmt.executeUpdate(result);
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("can't create table "+tableName);
+			 System.out.println("XMLCREATE="+result);
+			e.printStackTrace();
+			return(false);
+		}
+		return(true);
+	}
+
+	public boolean updateTable(MMObjectBuilder bul) {
+		System.out.println("Starting a updateTable on : "+bul.getTableName());
+
+		String tableName=bul.getTableName();
+		
+		if (create_real(bul,tableName+"_tmp")) {
+			System.out.println("created tmp  table : "+tableName+"_tmp");
+			/*
+			Enumeration e=bul.search("");
+			while (e.hasMoreElements()) {
+				MMObjectNode node=(MMObjectNode)e.nextElement();
+				insert_real(bul,node.get
+				System.out.println("node="+node);
+			}
+			*/
+		} else {
+		}
+
+		if (drop(bul)) {
+			System.out.println("drop of old table done : "+bul.getTableName());
+			if (create(bul)) {
+				System.out.println("create of new table done : "+bul.getTableName());
+				if (drop_real(bul,tableName+"_tmp")) {
+					System.out.println("dropping tmp  table : "+tableName+"_tmp");
+				} 
+
+				return(true);
+			} else {
+				System.out.println("create of new table failed : "+bul.getTableName());
+				return(false);
+			}
+		}  else {
+			System.out.println("drop of old table failed : "+bul.getTableName());
+			return(false);
+		}
+	}
+
 
 
 	public boolean createObjectTable(String baseName) {
