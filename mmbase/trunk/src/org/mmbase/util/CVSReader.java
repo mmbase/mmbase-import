@@ -82,6 +82,7 @@ public class CVSReader {
             String line=mtok.nextToken();
             Vector results2=new Vector();
             StringTokenizer tok=new StringTokenizer(line,",\"\n\r",true);
+            String prebar=",";
             while (tok.hasMoreTokens()) {
                 String bar=tok.nextToken();
                 //log.debug("BAR="+bar);
@@ -96,6 +97,12 @@ public class CVSReader {
                     results2.addElement(part2);
                 } else {
                     if (bar.equals(",")) {
+                        if (prebar.equals(",") || !tok.hasMoreTokens()) {
+                            results2.addElement("");
+                        }
+                        if (!tok.hasMoreTokens()) {
+                            results2.addElement("");
+                        }
                     //    String part=tok.nextToken();
                     //    log.debug("P2="+part);
                     //    results.addElement(part);
@@ -104,7 +111,7 @@ public class CVSReader {
                         results2.addElement(bar);
                     }
                 }
-
+                prebar=bar;
             }
             results.addElement(results2);
         }
