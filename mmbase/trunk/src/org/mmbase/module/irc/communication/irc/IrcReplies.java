@@ -27,6 +27,9 @@ package org.mmbase.module.irc.communication.irc;
 import java.util.Hashtable;
 import org.mmbase.util.logging.*;
 
+/**
+ * @obsolete
+ **/
 public class IrcReplies
 {
     private static Logger log = Logging.getLoggerInstance(IrcReplies.class.getName());

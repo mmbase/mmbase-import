@@ -18,8 +18,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Class TcpipImplementation
- * 
- * @javadoc
+ * @obsolete
  */
 
 public	class TcpipImplementation implements CommunicationUserInterface {

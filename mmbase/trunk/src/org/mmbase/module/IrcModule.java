@@ -19,9 +19,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
+ * @obsolete
  * @author vpro
- * @version $Id: IrcModule.java,v 1.15 2002-03-04 14:07:45 pierre Exp $
+ * @version $Id: IrcModule.java,v 1.16 2003-01-07 11:49:30 kees Exp $
  */
 
 public class IrcModule extends ProcessorModule implements CommunicationUserInterface, Runnable {

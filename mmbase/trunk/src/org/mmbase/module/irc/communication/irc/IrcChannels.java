@@ -14,6 +14,9 @@ import java.util.Hashtable;
 import java.util.Enumeration;
 import org.mmbase.util.logging.*;
 
+/**
+ * @obsolete
+ **/
 public class IrcChannels
 {
     private static Logger log = Logging.getLoggerInstance(IrcChannels.class.getName());

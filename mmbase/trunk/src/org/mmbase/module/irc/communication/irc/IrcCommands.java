@@ -10,6 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.irc.communication.irc;
 
+/**
+ * @obsolete
+ **/
 public class IrcCommands {
 
 	public static IrcMessage pass( String server, String from, String password ) {
