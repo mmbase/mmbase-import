@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.18 2000-04-03 09:03:38 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.19 2000-04-14 12:12:15 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.18  2000/04/03 09:03:38  wwwtech
+	Rico: added tag for multilevel "MEMCACHE=NO" to bypass memory cache
+	
 	Revision 1.17  2000/03/31 13:21:28  wwwtech
 	Wilbert: Introduction of ParseException for method getList
 	
@@ -83,7 +86,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.18 2000-04-03 09:03:38 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.19 2000-04-14 12:12:15 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -227,7 +230,6 @@ public class HtmlBase extends ProcessorModule {
 		String dbsort=tagger.Value("DBSORT");
 		String where=tagger.Value("WHERE");
 
-
 		long begin=(long)System.currentTimeMillis();
 
 		MMObjectBuilder bul=null;
@@ -279,10 +281,11 @@ public class HtmlBase extends ProcessorModule {
 			}
 			tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
 		} catch(Exception g) {
+			String error = "doRelations("+sp.getUrl()+"): ERROR: node("+snode+"), type("+type+"), where("+where+"):";
 			if (bul==null) {
-				debug("doRelations(): ERROR: asking relations on a unkown builder : "+type);
+				debug( error + " unkown builder("+type+"): ERROR: " + g);
 			} else {
-				debug("doRelations(): ERROR: url("+sp.getUrl()+") : "+g);
+				debug( error + " Exception: "+g);
 				g.printStackTrace();
 			}
 		}
@@ -829,7 +832,6 @@ public class HtmlBase extends ProcessorModule {
 		String distinct=tagger.Value("DISTINCT");
 
 		tagger.setValue("ITEMS",""+fields.size());				
-		if (debug) debug("after taggers");
 
 		hash=calcHashMultiLevel(tagger);
 		results=(Vector)multilevel_cache.get(hash);
@@ -855,9 +857,7 @@ public class HtmlBase extends ProcessorModule {
 				dbdir=new Vector();
 				dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
 			}
-			if (debug) debug("Before search");
 			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir);
-			if (debug) debug("After search");
 			results=new Vector();
 			for (e=nodes.elements();e.hasMoreElements();) {
 				node=(MMObjectNode)e.nextElement();
