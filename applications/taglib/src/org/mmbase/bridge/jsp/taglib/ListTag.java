@@ -32,6 +32,18 @@ public class ListTag extends AbstractNodeListTag {
     protected String distinctString=null;
     protected String searchString=null;
 
+
+    protected String fields = null;
+
+    /** 
+     * @param fields a comma separated list of fields of the nodes.
+     **/
+    public void setFields(String fields) throws JspTagException {
+        this.fields = getAttributeValue(fields);
+    }
+    
+
+
     /**
      * Sets the nodes to start the search with.
      * The value '-1' interpreted as <code>null</code>, whcih indicates no
