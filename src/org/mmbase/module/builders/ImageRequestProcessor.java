@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ImageRequestProcessor.java,v 1.4 2000-10-19 14:44:14 vpro Exp $
+	$Id: ImageRequestProcessor.java,v 1.5 2000-10-19 14:52:14 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/10/19 14:44:14  vpro
+	Rico: return empty array instead of null
+	
 	Revision 1.3  2000/06/08 18:00:11  wwwtech
 	Rico: reduced/switched-off debug
 	
@@ -30,7 +33,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.4 2000-10-19 14:44:14 vpro Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.5 2000-10-19 14:52:14 vpro Exp $
  */
 public class ImageRequestProcessor implements Runnable {
 	private String classname = getClass().getName();
@@ -88,20 +91,25 @@ public class ImageRequestProcessor implements Runnable {
 		ckey=req.getKey();
 		id=req.getId();
 
-		picture=convert.ConvertImage(inputpicture,params);
-		if (picture!=null) {
-			MMObjectNode newnode=images.getNewNode("imagesmodule");
-			newnode.setValue("ckey",ckey);
-			newnode.setValue("id",id);
-			newnode.setValue("handle",picture);
-			newnode.setValue("filesize",picture.length);
-			int i=newnode.insert("imagesmodule");
-			if (i<0) {
-				debug("processRequest: Can't insert cache entry id="+id+" key="+ckey);
-			}
-		} else {
-			debug("processRequest(): Convert problem params : "+params);
+		if (inputpicture==null || inputpicture.length==0) {
+			debug("processRequest : input is empty : "+id);
 			picture=new byte[0];
+		} else {
+			picture=convert.ConvertImage(inputpicture,params);
+			if (picture!=null) {
+				MMObjectNode newnode=images.getNewNode("imagesmodule");
+				newnode.setValue("ckey",ckey);
+				newnode.setValue("id",id);
+				newnode.setValue("handle",picture);
+				newnode.setValue("filesize",picture.length);
+				int i=newnode.insert("imagesmodule");
+				if (i<0) {
+					debug("processRequest: Can't insert cache entry id="+id+" key="+ckey);
+				}
+			} else {
+				debug("processRequest(): Convert problem params : "+params);
+				picture=new byte[0];
+			}
 		}
 		req.setOutput(picture);
 		table.remove(ckey);
