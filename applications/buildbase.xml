@@ -227,22 +227,24 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <zipfileset dir="${project.jar.dir}"    includes="*.jar"     prefix="${zip.prefix}/web-app/WEB-INF/lib" />
     <zipfileset dir="${project.source.dir}" includes="config/**" prefix="${zip.prefix}/web-app/WEB-INF" />
     <zipfileset dir="${project.build.dir}"  includes="api/**"    prefix="${zip.prefix}/documentation" />
-    <zipfileset dir="${project.build.dir}"  includes="documentation/**" />
+    <zipfileset dir="${project.build.dir}"
+    includes="documentation/**" prefix="${zip.prefix}/documentation" />
     <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}/src">
       <include name="documentation/**"/>
       <exclude name="documentation/**.html" />
     </zipfileset>
-    <fileset dir="${project.build.dir}"     includes="README-PACKAGE.txt"/>
-    <fileset dir="${project.source.dir}">
+    <zipfileset dir="${project.build.dir}"
+                includes="README-PACKAGE.txt" prefix="${zip.prefix}" />
+    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}">
       <patternset id="readmes">
         <include name="README*"/>
       </patternset>
-    </fileset>
-    <fileset dir="${project.source.dir}">
+    </zipfileset>
+    <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}">
       <patternset id="root.package.files" >
         <include name="src/**"/>
       </patternset>
-    </fileset>
+    </zipfileset>
     <!-- the rest are templates -->
     <zipfileset dir="${project.source.dir}" prefix="${zip.prefix}/web-app">
       <patternset id="web-app.package.files" >
