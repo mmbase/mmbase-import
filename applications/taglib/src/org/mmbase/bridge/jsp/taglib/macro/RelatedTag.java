@@ -14,7 +14,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.ListTag;
-import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.20 2003-04-09 14:26:22 pierre Exp $
+ * @version $Id: RelatedTag.java,v 1.21 2003-05-13 12:10:11 kees Exp $
  */
 public class RelatedTag extends ListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
