@@ -7,5 +7,4 @@
         <functionset name="thememanager" file="sets/thememanager_functionset.xml" />
         <functionset name="mmpm" file="sets/mmpm_functionset.xml" />
         <functionset name="mmpb" file="sets/mmpb_functionset.xml" />
-        <functionset name="mmfunctions" file="sets/mmfunctions_functionset.xml" />
 </functionsets>
