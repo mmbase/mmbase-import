@@ -59,6 +59,7 @@ General New Features:
 --------------------------
 Documentation New Features:
 --------------------------
+[1.6.1]
 - Added first draft of a taglib tutorial.
 
 
@@ -138,6 +139,7 @@ General Bug Fixes:
 ---------------------
 Application bug fixes:
 ---------------------
+[1.6.1]
 - Using comments in application files results in errors in the log:
   #4952 
 
