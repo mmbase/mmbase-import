@@ -1,3 +1,6 @@
+<!-- Include file for the editwizard refernce docbook: 
+     'action type="create"' tag
+-->
 <section id="action-create">
 	<title>action type="create"</title>
 	<formalpara>
