@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.1 2004-01-14 22:06:15 michiel Exp $ 
+ * @version $Id: NodeListHelper.java,v 1.2 2004-01-19 17:22:08 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -76,15 +76,15 @@ public class NodeListHelper implements ListProvider {
     private   ContextCollector  collector;
 
     /**
-     * Determines whether a field in {@link #orderby} changed
+     * Determines whether a field in {@link AbstractNodeListTag#orderby} changed
      * during iteration.
      */
     protected boolean changed = true;
 
     /**
      * Data member to hold an iteration of the values to return.
-     * This variable is set in {@link #setReturnValues(NodeList)}, which
-     * should be called from {@link #doStartTag}, and will be used to
+     * This variable is set in {@link #setReturnValues(NodeList, boolean)}, which
+     * should be called from {@link AbstractNodeListTag#doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
     protected NodeIterator nodeIterator;
@@ -114,7 +114,7 @@ public class NodeListHelper implements ListProvider {
     }
     /**
      * Set the list maximum
-     * @param max the max number of values returned
+     * @param m the max number of values returned
      */
     public void setMax(String m) throws JspTagException {
         max = thisTag.getAttribute(m);
@@ -126,7 +126,7 @@ public class NodeListHelper implements ListProvider {
 
     /**
      * Set the list offset
-     * @param max the max number of values returned
+     * @param o The offset for the List.
      */
     public void setOffset(String o) throws JspTagException {
         offset = thisTag.getAttribute(o);

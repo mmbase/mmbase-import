@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.21 2004-01-07 15:29:09 pierre Exp $
+ * @version $Id: Channel.java,v 1.22 2004-01-19 17:27:09 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -305,7 +305,7 @@ public class Channel extends MMObjectBuilder {
     /**
      * Returns if a channel is open, closed or readonly.
      *
-     * @param The channel of which the open state is asked.
+     * @param channel The channel of which the open state is asked.
      * @return the state of the channel, described as a <code>String</code>
      */
     public String isOpen(MMObjectNode channel) {
@@ -321,7 +321,7 @@ public class Channel extends MMObjectBuilder {
     }
 
     /**
-     * @param The channel that has to give out a new sequence number.
+     * @param channel The channel that has to give out a new sequence number.
      * @return A new sequence number for a message that's want to get postend in this channel.
      */
     public int getNewSequence(MMObjectNode channel) {
@@ -349,7 +349,7 @@ public class Channel extends MMObjectBuilder {
      * Removes all messages posted in the channel.
      * XXX: does not work for chats.
      *
-     * @param The channel whose messages have to be removed.
+     * @param channel The channel whose messages have to be removed.
      */
     public void removeAllMessages(MMObjectNode channel) {
         /* This function will call the removeNode of the message builder with
@@ -377,7 +377,7 @@ public class Channel extends MMObjectBuilder {
     /**
      * Start the recording session of a channel.
      * @param channel the channel to record
-     * @param out a Writer to record to.
+     * @param recorder a Writer to record to.
      * @return the Writer that will record the messages
      */
     public Writer startRecorder(int channel, Writer recorder) {
@@ -399,7 +399,7 @@ public class Channel extends MMObjectBuilder {
     /**
      * Start the recording session of a channel, using a file to stream the output to.
      * @param channel the channel to record
-     * @param file the file to record to.
+     * @param filepath the file to record to.
      * @return the Writer that will record the messages
      */
     public Writer startRecorder(int channel, String filepath) {
@@ -673,7 +673,7 @@ public class Channel extends MMObjectBuilder {
     /**
      * Returns to which community a channel belongs.
      *
-     * @param The channel node
+     * @param channel The channel node
      * @return The community of the channel, or <code>null</code> if the
      *  channel is not associated with a community.
      */
@@ -768,7 +768,7 @@ public class Channel extends MMObjectBuilder {
      * <li>channelnumber-STILLACTIVE-usernumber - resets the time-out before the user is
      *      automatically disconnected from the channel. </li>
      * </ul>
-     * @param scanpage the current page context
+     * @param sp  the current scanpage context
      * @param tok the tokenized command
      * @return the result of the command as a String
      */

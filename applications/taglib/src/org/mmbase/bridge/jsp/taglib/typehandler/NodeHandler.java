@@ -31,7 +31,7 @@ import org.mmbase.util.Encode;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.25 2003-12-21 13:31:25 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.26 2004-01-19 17:22:10 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -40,7 +40,7 @@ public class NodeHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for NodeHandler.
-     * @param context
+     * @param tag
      */
     public NodeHandler(FieldInfoTag tag) {
         super(tag);

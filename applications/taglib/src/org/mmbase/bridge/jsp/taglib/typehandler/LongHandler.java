@@ -22,7 +22,7 @@ import org.mmbase.storage.search.Constraint;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.6 2003-12-18 09:03:49 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.7 2004-01-19 17:22:10 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -31,7 +31,7 @@ public class LongHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for LongHandler.
-     * @param context
+     * @param tag
      */
     public LongHandler(FieldInfoTag tag) {
         super(tag);

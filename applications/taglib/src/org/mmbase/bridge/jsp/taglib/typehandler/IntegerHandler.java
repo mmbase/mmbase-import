@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.20 2003-12-18 09:03:49 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.21 2004-01-19 17:22:09 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -38,7 +38,7 @@ public class IntegerHandler extends AbstractTypeHandler {
 
     /**
      * Constructor for IntegerHandler.
-     * @param context
+     * @param tag
      */
     public IntegerHandler(FieldInfoTag tag) {
         super(tag);
