@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.189 2003-08-12 17:10:20 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.190 2003-08-15 11:17:43 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3499,6 +3499,13 @@ like the parameter list or the session (where ever it is available) --&gt;
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>Only list the relations which are of this role.</info>
+    </attribute>
+    <attribute>
+      <name>searchdir</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>Only list the relations in this direction.</info>
+      <since>MMBase-1.7</since>
     </attribute>
     <example>
 &lt;mm:listnodes type="news"&gt;

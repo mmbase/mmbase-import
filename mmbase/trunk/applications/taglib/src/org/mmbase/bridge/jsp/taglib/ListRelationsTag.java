@@ -13,8 +13,8 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.RelationList;
+import org.mmbase.bridge.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,14 +23,15 @@ import org.mmbase.util.logging.Logging;
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.6 2003-06-06 10:03:08 pierre Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.7 2003-08-15 11:17:43 michiel Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
-    private static Logger log = Logging.getLoggerInstance(ListRelationsTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ListRelationsTag.class);
 
     private Attribute type = Attribute.NULL;
     private Attribute role = Attribute.NULL;
+    private Attribute searchDir = Attribute.NULL;
 
     
     Node getRelatedfromNode() {
@@ -50,26 +51,27 @@ public class ListRelationsTag extends AbstractNodeListTag {
         role  = getAttribute(r);
     }
 
+    public void setSearchdir(String s) throws JspTagException {
+        searchDir = getAttribute(s);
+    }
+
     public int doStartTag() throws JspTagException{
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
         // obtain a reference to the node through a parent tag
-        Node relatedfromNode = getNode();
-        if (relatedfromNode == null) {
+        Node relatedFromNode = getNode();
+        if (relatedFromNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
 
-        RelationList nodes;
-        if (type == Attribute.NULL && role == Attribute.NULL) {
-            nodes = relatedfromNode.getRelations();
-        } else if (type == Attribute.NULL) {
-            nodes = relatedfromNode.getRelations(role.getString(this));
-        } else {
-            nodes = relatedfromNode.getRelations(role.getString(this), type.getString(this));
+        NodeManager nm = null;
+        if (type != Attribute.NULL) {
+            nm = getCloud().getNodeManager(type.getString(this));
         }
-        nodes.setProperty("relatedFromNode", relatedfromNode);
+        RelationList nodes = relatedFromNode.getRelations((String) role.getValue(this), nm, (String) searchDir.getValue(this));
+        nodes.setProperty("relatedFromNode", relatedFromNode);
         return setReturnValues(nodes, true);
     }
 
