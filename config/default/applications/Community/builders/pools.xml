@@ -36,8 +36,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Name of the pool</description>
+          <description xml:lang="nl">Naam van de poel</description>
         </descriptions>
       <!-- gui related -->
       <gui>
@@ -71,8 +71,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Description of the pool</description>
+          <description xml:lang="nl">Omschrijving van de poel</description>
         </descriptions>
       <!-- gui related -->
       <gui>
