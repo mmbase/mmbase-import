@@ -13,8 +13,6 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 
-import org.mmbase.bridge.jsp.taglib.*;
-
 /**
 * The GetInfo tag can optionally export one jsp variable.
 *

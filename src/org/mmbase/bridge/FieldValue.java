@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import org.mmbase.module.core.*;
 
 /**
  * This interface represents a value stored in a node.
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.4 2002-09-27 13:24:48 pierre Exp $
+ * @version $Id: FieldValue.java,v 1.5 2003-03-04 13:44:42 nico Exp $
  */
 public interface FieldValue {
 

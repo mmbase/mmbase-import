@@ -10,13 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.List;
-
 /**
  * A list of field types
  *
  * @author Pierre van Rooden
- * @version $Id: FieldList.java,v 1.4 2002-09-23 14:31:02 pierre Exp $
+ * @version $Id: FieldList.java,v 1.5 2003-03-04 13:44:40 nico Exp $
  */
 public interface FieldList extends BridgeList {
 

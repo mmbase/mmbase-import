@@ -9,16 +9,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.File;
-import java.util.StringTokenizer;
-import java.util.Stack;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

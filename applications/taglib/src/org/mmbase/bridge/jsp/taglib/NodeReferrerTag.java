@@ -8,11 +8,9 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
+
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
-
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.mmbase.bridge.Node;
 

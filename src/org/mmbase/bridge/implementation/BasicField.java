@@ -9,15 +9,15 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+
 import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.11 2002-10-24 12:56:07 pierre Exp $
+ * @version $Id: BasicField.java,v 1.12 2003-03-04 13:44:36 nico Exp $
  */
 public class BasicField implements Field, Comparable {
 

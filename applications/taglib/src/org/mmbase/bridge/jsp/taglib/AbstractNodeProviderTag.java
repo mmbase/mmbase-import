@@ -11,10 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.jsp.JspTagException;
 
-import java.util.Vector; 
-import java.util.Enumeration;
-import java.util.StringTokenizer;
-
 import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;

@@ -11,7 +11,6 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Cloud;
-import org.mmbase.bridge.Node;
 
 /**
 *

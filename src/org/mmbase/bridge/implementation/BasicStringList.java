@@ -11,17 +11,15 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
 import org.mmbase.bridge.StringList;
 import org.mmbase.bridge.StringIterator;
-import org.mmbase.bridge.BridgeException;
 import org.mmbase.util.logging.*;
 
 /**
  * A list of Clouds
  *
  * @author Pierre van Rooden
- * @version $Id: BasicStringList.java,v 1.6 2003-03-04 09:19:07 pierre Exp $
+ * @version $Id: BasicStringList.java,v 1.7 2003-03-04 13:44:37 nico Exp $
  */
 public class BasicStringList extends BasicList implements StringList {
     private static Logger log = Logging.getLoggerInstance(BasicStringList.class.getName());

@@ -12,7 +12,6 @@ package org.mmbase.bridge.jsp.taglib;
 import java.util.*;
 import java.text.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.jsp.taglib.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -22,7 +21,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.19 2003-02-24 20:41:56 kees Exp $
+ * @version $Id: TimeTag.java,v 1.20 2003-03-04 13:44:34 nico Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     

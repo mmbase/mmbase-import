@@ -17,9 +17,6 @@ import org.mmbase.bridge.ContextProvider;
 
 import javax.servlet.jsp.JspTagException;
 
-import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

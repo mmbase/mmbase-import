@@ -10,13 +10,11 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Collection;
-
 /**
  * A list of Relations
  *
  * @author Pierre van Rooden
- * @version $Id: RelationList.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
+ * @version $Id: RelationList.java,v 1.4 2003-03-04 13:44:40 nico Exp $
  */
 public interface RelationList extends NodeList {
 

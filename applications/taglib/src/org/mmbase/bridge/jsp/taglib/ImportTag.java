@@ -9,16 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
-
-
-import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
-
 
 /**
 * The importtag puts things in the context. It can find them from the

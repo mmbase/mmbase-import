@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.*;
 import javax.servlet.jsp.PageContext;
 
-import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;

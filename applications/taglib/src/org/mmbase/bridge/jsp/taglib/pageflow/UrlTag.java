@@ -13,9 +13,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.io.IOException;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
 
 import org.mmbase.bridge.jsp.taglib.Writer;
 import org.mmbase.bridge.jsp.taglib.WriterHelper;

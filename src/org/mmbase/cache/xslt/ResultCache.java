@@ -15,9 +15,7 @@ import javax.xml.transform.*;
 import java.util.*;
 import org.w3c.dom.Document;
 
-import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
-
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.5 2002-10-30 00:05:03 michiel Exp $
+ * @version $Id: ResultCache.java,v 1.6 2003-03-04 13:49:16 nico Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {
