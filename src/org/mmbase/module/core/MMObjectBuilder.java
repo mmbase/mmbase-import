@@ -1207,7 +1207,7 @@ public class MMObjectBuilder extends MMTable {
     * getList all for frontend code
     */
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
-        throw new ParseException(classname +"should override the getList method (you've probably made a type");
+        throw new ParseException(classname +" should override the getList method (you've probably made a typo)");
     }
 
 
