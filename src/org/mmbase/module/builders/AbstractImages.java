@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.6 2002-04-12 11:21:25 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.7 2002-06-27 16:02:52 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends MMObjectBuilder {
@@ -33,45 +33,7 @@ public abstract class AbstractImages extends MMObjectBuilder {
      */
     private static String imageServletPath = null;
 
-    /**
-     * Static Image servlet path
-     * @param rootPath the path that serves as the servlet's root
-     */
-    public static String getImageServletPath(String rootPath) {
-        if (imageServletPath==null) {
-            List ls=MMBaseServlet.getServletMappingsByAssociation("image-processing");
-            if (ls!=null) {
-                String value=(String)ls.get(0);
-                // remove mask
-                int pos=value.lastIndexOf("*");
-                if (pos>0) {
-                    value=value.substring(0,pos);
-                }
-                pos=value.indexOf("*");
-                if (pos==0) {
-                    value=value.substring(pos+1);
-                }
-                // remove first slash
-                if (value.startsWith("/")) value=value.substring(1);
-                // add '?' if it wasn't already there (only needed if not terminated with /)
-                if (!value.endsWith("/")) value=value+"?";
-                imageServletPath= value;
-            } else {
-                imageServletPath="img.db?";
-            }
-            log.service("Images are served on: "+imageServletPath);
-        }
-        if (rootPath==null) {
-            return imageServletPath;
-        } else {
-            if (rootPath.endsWith("/")) {
-                return rootPath+imageServletPath;
-            } else {
-                return rootPath+"/"+imageServletPath;
-            }
-        }
-    }
-
+ 
     /**
      * clear Static Image servlet path
      */
@@ -83,8 +45,10 @@ public abstract class AbstractImages extends MMObjectBuilder {
      * Returns the path to the image serlvet.
      */
     protected String getServlet() {
-        // odd, have to remove slash... bit weird?
-       return  AbstractImages.getImageServletPath(MMBaseContext.getHtmlRootUrlPath());
+        if (imageServletPath == null) {
+            imageServletPath = MMBaseServlet.getServletPath(MMBaseContext.getHtmlRootUrlPath(), "images",  "img.db");
+        }
+       return  imageServletPath;
     }
 
     /**
