@@ -35,7 +35,7 @@
           <td></td>
           <td>
             <a name="toc"/>
-            <xsl:apply-templates select="tag" mode="toc" ><xsl:sort /></xsl:apply-templates>
+            <xsl:apply-templates select="tag" mode="toc" ><xsl:sort select="name"/></xsl:apply-templates>
             <a href="#info">info about the syntax of this document</a>
           </td>
           <td></td>
@@ -43,7 +43,7 @@
         <tr>
           <td></td>
           <td>
-            <xsl:apply-templates select="tag" mode="full" ><xsl:sort /></xsl:apply-templates>
+            <xsl:apply-templates select="tag" mode="full" ><xsl:sort select="name" /></xsl:apply-templates>
           </td>
           <td></td>
         </tr>
