@@ -13,7 +13,7 @@ package org.mmbase.cache;
  * A cache for MMObjectNodes. 
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeCache.java,v 1.3 2003-07-10 16:32:09 michiel Exp $
+ * @version $Id: NodeCache.java,v 1.4 2003-07-14 21:02:02 michiel Exp $
  */
 public class NodeCache extends Cache {
     private static final int CACHE_SIZE = 4 * 1024;
@@ -33,7 +33,7 @@ public class NodeCache extends Cache {
         return "Nodes";
     }
     public String getDescription() {
-        return "MMBase Nodes";
+        return "Node number -> MMObjectNodes";
     }
 
     /**
@@ -41,5 +41,10 @@ public class NodeCache extends Cache {
      */
     private NodeCache() {
         super(CACHE_SIZE);
+    }
+
+    public Object remove(Object key) {
+        RelatedNodesCache.getCache().removeNode((Integer) key);
+        return super.remove(key);
     }
 }
