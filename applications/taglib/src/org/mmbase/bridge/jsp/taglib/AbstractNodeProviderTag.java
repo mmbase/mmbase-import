@@ -78,13 +78,16 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     abstract public void doInitBody() throws JspTagException;
     
     /**
-     * Fill the jsp vars.
+     * Fill the jsp and context vars
      *
      */
 
     protected void fillVars() throws JspTagException {    
         if (jspvar != null) {
             pageContext.setAttribute(jspvar, node);
+        }
+        if (id != null) {
+            getContextTag().registerNode(id, node);
         }
     }
                
@@ -109,8 +112,12 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         modified = true;
     }
     /**
-    * Does everything needed on the afterbody tag of every NodeProvider.
-    * Normally this function will be overrided with one that has to call super.doAfterBody().
+    * Does everything needed on the afterbody tag of every
+    * NodeProvider.  Normally this function would be overrided with
+    * one that has to call super.doAfterBody().  But not all servlet
+    * engines to call this function if there is no body. So, in that
+    * case it should be called from doEndTag, if the tag can do
+    * something without a body.
     **/
     public int doAfterBody() throws JspTagException {
         if (modified) {
