@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-0.8" prefix="mm" %>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@ taglib uri="http://www.mmbase.org/mmcommunity-taglib-1.0" prefix="mmcommunity" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd"><mm:cloud name="mmbase">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -11,23 +11,23 @@
 
 <mm:context id="actions">
  <mm:import externid="community" />
- <mm:import externid="action" />
- <mm:import externid="log" />
- <mm:import externid="channel" />
+ <mm:import externid="action"    />
+ <mm:import externid="log"       />
+ <mm:import externid="channel"   />
  <mm:present referid="community">
-    <mmcommunity:community community="${community}" action="${action}" />
+    <mmcommunity:community community="$community" action="$action" />
  </mm:present>
  <mm:present referid="channel">
     <mm:present referid="action">
-        <mmcommunity:channel channel="${channel}" action="${action}" />
+        <mmcommunity:channel channel="$channel" action="$action" />
      </mm:present>
     <mm:present referid="log">
-        <mmcommunity:log channel="${channel}" action="${log}" />
+        <mmcommunity:log channel="$channel" action="$log" />
      </mm:present>
  </mm:present>
 </mm:context>
 
-<mm:listnodes type="community" id="community" fields="kind">
+<mm:listnodes type="community" id="community"><mm:context>
 <tr align="left">
   <th class="header" colspan="2"><mm:field name="title" /></th>
   <th class="linkdata"><a href="<mm:url page="community.jsp?action=open" referids="community" />">Open all channels</a></th>
@@ -36,9 +36,10 @@
 <tr>
   <td class="multidata" colspan="4">
    <ul>
-    <mm:relatednodes type="channel" fields="open" id="channel">
+    <mm:relatednodes type="channel" id="channel">
      <li>
-      <% if(kind.equals("FORUM")) { %>
+      <mm:field node="community" name="kind">
+      <mm:compare value="FORUM">
         <mmcommunity:testchannel condition="open">
             <a href="<mm:url page="forum/forum.jsp" referids="channel" />"><strong><mm:field name="html(title)" /></strong></a> is open<br />
             Security : <mm:field name="gui(state)" /><br />
@@ -60,7 +61,8 @@
             <a href="<mm:url page="community.jsp?action=open" referids="channel" />">Open channel</a><br />
             <a href="<mm:url page="community.jsp?action=readonly" referids="channel" />">Make channel read only</a><br />
         </mmcommunity:testchannel>
-      <% } else { %>
+      </mm:compare>
+      <mm:compare value="CHATBOX">
         <mmcommunity:testchannel condition="open">
             <a href="<mm:url page="chats/chats.jsp" referids="channel" />"><strong><mm:field name="html(title)" /></strong></a> is open<br />
             Security : <mm:field name="gui(state)" /><br />
@@ -75,13 +77,14 @@
             Maximum users : <mm:field name="gui(maxusers)" /><br />
             <a href="<mm:url page="community.jsp?action=open" referids="channel" />">Open channel</a><br />
         </mmcommunity:testchannel>
-      <% } %>
+      </mm:compare>
+      </mm:field>
         &nbsp;
      </li>
     </mm:relatednodes>
   </ul>
 </td></tr>
-
+</mm:context>
 </mm:listnodes>
 </table>
 </body></html>
