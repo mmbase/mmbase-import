@@ -145,7 +145,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
             authentication = (Authentication) o;
-            // authentication.load(this, configUrl);
+            authentication.load(this, configUrl);
       	}
       	catch(java.lang.ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
@@ -168,7 +168,7 @@ public class MMBaseCop extends java.lang.SecurityManager  {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
             authorization = (Authorization) o;
-            // authorization.load(this, configUrl);
+            authorization.load(this, configUrl);
       	}
       	catch(java.lang.ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
