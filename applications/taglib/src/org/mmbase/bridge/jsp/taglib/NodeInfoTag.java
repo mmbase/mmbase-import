@@ -96,9 +96,21 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         case TYPE_GUINODEMANAGER:
             show = nodeManager.getGUIName();
             break;
-        case TYPE_GUI:
-            show = getNode().getFunctionValue("sgui", null).toString();
+        case TYPE_GUI: {
+            String sessionName = "";
+            CloudTag ct = null;
+            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
+            if (ct != null) {
+                sessionName = ct.getSessionName();
+            }
+
+            java.util.List args = new java.util.Vector();
+            args.add("");
+            args.add(sessionName);
+            args.add(getCloud().getLocale().getLanguage());
+            show = getNode().getFunctionValue("gui", args).toString();
             break;
+        }
         default:
         }
 
