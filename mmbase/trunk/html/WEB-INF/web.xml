@@ -56,6 +56,22 @@
 
 
 
+  <!-- 
+      Charset-remover filter 
+      If you want to serve application/smil and other realmedia-types by JSP
+      on Tomcat, you may want to use this filter.  It can be configured with
+      WEB-INF/config/charsetremover.properties It arranges that no 'charset=' part is present in
+      the Content-Type response-headers of the configured Content-Types. It is actually more
+      correct to include charset, but real-player does not understand it.  
+  -->
+  <!--
+  <filter>
+    <filter-name>charsetremover</filter-name>
+    <filter-class>org.mmbase.servlet.CharsetRemoverFilter</filter-class>
+  </filter>
+  -->
+
+
   <!-- Filter for jumpers
    Uncomment this code if you want to activate the jumpers filter.
    You need to install the jumpers builder first
@@ -67,12 +83,7 @@
     <description>Filter used for jumpers</description>
     <filter-class>org.mmbase.servlet.JumpersFilter</filter-class>
   </filter>
-
-  <filter-mapping>
-    <filter-name>Jumpers Filter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
--->
+  -->
 
 	<!-- Overrides config/module/mmbaseroot.xml#encoding -->
   <!-- Filter Character Encoding
@@ -84,6 +95,23 @@
       <param-value>UTF-8</param-value>
     </init-param>
   </filter>
+  -->
+
+
+<!-- 
+  Filter mappings.
+
+  <filter-mapping>
+    <filter-name>charsetremover</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <filter-mapping>
+    <filter-name>Jumpers Filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
 
   <filter-mapping>
     <filter-name>Set Character Encoding</filter-name>
