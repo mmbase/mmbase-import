@@ -463,24 +463,21 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * Remove the relations of a node.
+    * This method can cause inconsistencies with other databases then Informix
     * @param node The node whose relations to remove.
     */
     public void removeRelations(MMObjectNode node) {
         int number=node.getIntValue("number");
         if (number!=-1) {
-            removeRelations(number);
-        }
-    }
-
-    /**
-    * Remove the relations of a node
-    * @param number The number of the node whose relations to remove.
-    */
-    public void removeRelations(int number) {
-        Vector relvector=getRelations_main(number);
-        for (Iterator rels=relvector.iterator(); rels.hasNext(); ) {
-                MMObjectNode node=(MMObjectNode)rels.next();
-                removeNode(node);
+            try {
+                MultiConnection con=mmb.getConnection();
+                Statement stmt=con.createStatement();
+                stmt.executeUpdate("delete from "+mmb.baseName+"_insrel where snumber="+number+" or dnumber="+number);
+                stmt.close();
+                con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
