@@ -20,7 +20,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.16 2002-03-21 10:02:36 pierre Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.17 2002-04-08 12:13:20 pierre Exp $
  */
 public interface MMJdbc2NodeInterface {
     /**
@@ -46,7 +46,7 @@ public interface MMJdbc2NodeInterface {
      * @throws UnsupportedDatabaseOperationException when the databse layer does not allow extension of this builder
      */
     public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
-        throws UnsupportedDatabaseOperationException;
+        throws StorageException;
 
     /**
      * @javadoc

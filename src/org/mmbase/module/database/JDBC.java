@@ -7,65 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
  */
-/*
-$Id: JDBC.java,v 1.23 2001-10-18 14:52:52 pierre Exp $
-
-$Log: not supported by cvs2svn $
-Revision 1.22  2001/10/04 08:25:07  pierre
-pierre: connection information is not an error
-
-Revision 1.21  2001/10/02 14:13:33  vpro
-marcel: added extra line for proper registration of McKoi's database
-
-Revision 1.20  2001/07/02 15:09:48  pierre
-pierre: fixed javadoc @link/@see references
-
-Revision 1.19  2001/06/05 13:55:53  pierre
-pierre: changed JDBC admin routines so username/password info is stripped from a database poolname
-
-Revision 1.18  2001/06/03 22:22:30  daniel
-reinstalled support for jdbc admin tool as it was in james
-
-Revision 1.17  2001/03/27 11:13:30  vpro
-Implemented log4j
-
-Revision 1.15  2000/12/30 14:00:59  daniel
-added switch for debug
-
-Revision 1.14  2000/12/28 11:37:54  pierre
-pierre: added some debug code
-
-Revision 1.13  2000/07/22 10:52:59  daniel
-Removed some debug
-
-Revision 1.12  2000/06/25 13:09:15  wwwtech
-Daniel.. changed/added method for getConnection per database driver
-
-Revision 1.11  2000/04/30 15:31:48  wwwtech
-Rico: robustified the JDBC.makeUrl code
-
-Revision 1.10  2000/04/25 21:30:47  wwwtech
-daniel: fixed a bug that forgot to return sets with 1 value
-
-Revision 1.9  2000/03/31 13:33:18  wwwtech
-Wilbert: Introduction of ParseException for method getList
-
-Revision 1.8  2000/03/30 13:11:44  wwwtech
-Rico: added license
-
-Revision 1.7  2000/03/29 10:45:02  wwwtech
-Rob: Licenses changed
-
-Revision 1.6  2000/03/06 22:47:25  wwwtech
-Rico: fixed shim reference
-
-Revision 1.5  2000/03/01 16:28:46  wwwtech
-Rico: fixed bug forgetting to init databasesupport
-
-Revision 1.4  2000/02/25 14:06:37  wwwtech
-Rico: added database specific connection init support
-
- */
 package org.mmbase.module.database;
 
 import java.util.*;
@@ -80,10 +21,12 @@ import org.mmbase.module.*;
 import org.mmbase.util.logging.*;
 
 /**
- * JDBC Module the module that provides you access to the loaded JDBC interfaces
- * we use this as the base to get multiplexes/pooled JDBC connects.
+ * JDBC Module.
+ * The module that provides you access to the loaded JDBC interfaces.
+ * We use this as the base to get multiplexes/pooled JDBC connects.
  *
- * @version $Id: JDBC.java,v 1.23 2001-10-18 14:52:52 pierre Exp $
+ * @author vpro
+ * @version $Id: JDBC.java,v 1.24 2002-04-08 12:13:19 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -164,8 +107,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         } catch (Exception e) {
             log.fatal("getDriver(): JDBC driver not found: "+JDBCdriver+": " + e);
         }
-	
-	log.debug("makeUrl(): " + makeUrl());
+
+    log.debug("makeUrl(): " + makeUrl());
 
         /* Also get the instance to unload it later */
         for (Enumeration e=DriverManager.getDrivers();e.hasMoreElements();) {
@@ -177,7 +120,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
             }
         }
         if (driver==null) {
-		
+
             log.fatal("getDriver(): Can't get JDBC driver from DriverManager");
         }
     }
@@ -311,24 +254,39 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(end);
     }
 
+    /**
+     * @javadoc
+     */
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
         return(poolHandler.getConnection(url,name,password));
     }
 
+    /**
+     * @javadoc
+     */
     public MultiConnection getConnection(String url) throws SQLException {
         return(poolHandler.getConnection(url,defaultname,defaultpassword));
     }
 
+    /**
+     * @javadoc
+     */
     public Connection getDirectConnection(String url,String name,String password) throws SQLException {
 
         return(DriverManager.getConnection(url,name,password));
     }
 
+    /**
+     * @javadoc
+     */
     public Connection getDirectConnection(String url) throws SQLException {
 
         return(DriverManager.getConnection(url,defaultname,defaultpassword));
     }
 
+    /**
+     * @javadoc
+     */
     public synchronized void checkTime() {
         try {
             if (poolHandler!=null) poolHandler.checkTime();
@@ -338,10 +296,10 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         }
     }
 
-    /*
+    /**
      * User interface stuff
+     * @javadoc
      */
-
     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
@@ -368,6 +326,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         }
     }
 
+    /**
+     * @javadoc
+     */
     public Vector listPools(StringTagger tagger) {
         Vector results=new Vector();
         for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
@@ -381,7 +342,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(results);
     }
 
-
+    /**
+     * @javadoc
+     */
     public Vector listConnections(StringTagger tagger) {
         Vector results=new Vector();
         for (Enumeration e=poolHandler.keys();e.hasMoreElements();) {
@@ -408,14 +371,23 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         return(results);
     }
 
+    /**
+     * @javadoc
+     */
     public String getUser() {
         return(defaultname);
     }
 
+    /**
+     * @javadoc
+     */
     public String getPassword() {
         return(defaultpassword);
     }
 
+    /**
+     * @javadoc
+     */
     public String getDatabaseName() {
         return(getInitParameter("database"));
     }
