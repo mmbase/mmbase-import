@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.27 2003-05-07 12:18:00 pierre Exp $
+  @version $Id: list.xsl,v 1.28 2003-05-12 08:26:43 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -76,8 +76,8 @@
 									<span class="header">
 										<xsl:value-of select="$title"/> :</span>
 									<br/>
-									<a href="/editwizard/jsp/wizard.jsp?referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new">
-										<img src="/editwizard/media/new.gif" width="20" height="20" hspace="2" align="absmiddle" alt="" border="0"/>
+									<a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new">
+										<img src="{$mediadir}new.gif" width="20" height="20" hspace="2" align="absmiddle" alt="" border="0"/>
 									</a>
 								</td>
 							</xsl:if>
@@ -136,8 +136,8 @@
 									<input type="hidden" name="sessionkey" value="{$sessionkey}" />
 									<input type="hidden" name="language" value="${language}" />
 									<input type="text" name="searchvalue" value="{$searchvalue}" class="input" style="width:200px;"/>
-									<input type="image" src="/editwizard/media/search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
-									<br/><span class="subscript"> (<xsl:call-template name="prompt_age" />)<img src="/editwizard/media/nix.gif" width="145" height="1" alt="" border="0"/>(<xsl:call-template name="prompt_search_term" />)</span>
+                                    <input type="image" src="{$mediadir}search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
+                                    <br/><span class="subscript"> (<xsl:call-template name="prompt_age" />)(<xsl:call-template name="prompt_search_term" />)</span>
 									<br/>
 								</form>
 							</td>
