@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Johannes Verelst
- * @version $Id: SendMail.java,v 1.14 2004-07-08 10:06:02 marcel Exp $
+ * @version $Id: SendMail.java,v 1.15 2004-07-09 10:09:22 marcel Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
@@ -165,7 +165,7 @@ public class SendMail extends AbstractSendMail {
             data = headerString + data;
         }
 
-        log.service("SendMail: sending mail from("+from+"), to("+to+"), subject("+subject+")");
+        log.service("sending mail from("+from+"), to("+to+"), subject("+subject+")");
 
         String answer="";
 
