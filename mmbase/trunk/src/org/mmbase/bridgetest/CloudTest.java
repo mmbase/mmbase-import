@@ -39,7 +39,9 @@ public class CloudTest extends TestCase {
         bbNode.commit();
         RelationManager relationManager;
         relationManager = cloud.getRelationManager("aa", "bb", "related");
-        relationManager.createRelation(aaNode2, bbNode);
+        Relation relation;
+        relation = relationManager.createRelation(aaNode2, bbNode);
+        relation.commit();
         bbNodes = new Node[11];
         nrOfBBNodes = 0;
         for (int i = -5; i < 6; i++) {
@@ -54,7 +56,8 @@ public class CloudTest extends TestCase {
             node.setStringValue("stringfield", s);
             node.commit();
             bbNodes[nrOfBBNodes] = node;
-            relationManager.createRelation(aaNode1, node);
+            relation = relationManager.createRelation(aaNode1, node);
+            relation.commit();
             nrOfBBNodes++;
         }
     }
