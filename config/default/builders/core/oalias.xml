@@ -13,13 +13,13 @@
   >-->
   <names>
     <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Object Alias</singular>
     <singular xml:lang="nl">Object Alias</singular>
-    <singular xml:lang="en">OAlias</singular>
     <singular xml:lang="eo">Objektkromnomo</singular>
     <singular xml:lang="fr">Alias de objet</singular>
     <!-- multiple per language as defined by ISO 639 -->
-    <plural xml:lang="nl">Object Aliases</plural>
-    <plural xml:lang="en">OAlias</plural>
+    <plural xml:lang="en">Object Aliases</plural>
+    <plural xml:lang="nl">Object Aliassen</plural>
     <plural xml:lang="eo">Objektkromnomoj</plural>
     <plural xml:lang="fr">Alias de objet</plural>
   </names>
@@ -29,8 +29,8 @@
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="nl">Object Aliases naam substitutie voor objecten</description>
     <description xml:lang="en">Object Aliases name substitution for objects</description>
+    <description xml:lang="nl">Object Aliassen naam substitutie voor objecten</description>
     <description xml:lang="eo">Per objektkromnomoj eble doni nomojn al objektoj</description>
   </descriptions>
 
@@ -44,8 +44,8 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
-        <guiname xml:lang="us">Name</guiname>
         <guiname xml:lang="eo">Nomo</guiname>
         <guitype>string</guitype>
       </gui>
@@ -73,8 +73,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
         <guitype>field</guitype>
       </gui>
@@ -102,8 +102,8 @@
     <field>
       <!-- gui related -->
       <gui>
-        <guiname xml:lang="nl">Bestemming</guiname>
         <guiname xml:lang="en">Target</guiname>
+        <guiname xml:lang="nl">Bestemming</guiname>
         <guiname xml:lang="eo">Celo</guiname>
         <guitype>integer</guitype>
       </gui>

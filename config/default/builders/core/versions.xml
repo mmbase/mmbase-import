@@ -7,24 +7,19 @@
 
   <names>
      <!-- singles per language as defined by ISO 639 -->
-     <singular xml:lang="nl">VersieBeheer</singular>
-     <singular xml:lang="en">VersionControl</singular>
-     <singular xml:lang="us">VersionControl</singular>
+     <singular xml:lang="en">Version Control</singular>
+     <singular xml:lang="nl">Versiebeheer</singular>
      <singular xml:lang="eo">Versiestrilo</singular>
-     <singular xml:lang="fr">Version</singular>
      <!-- multiple per language as defined by ISO 639 -->
-     <plural xml:lang="nl">VersieBeheer</plural>
-     <plural xml:lang="en">VersionControl</plural>
-     <plural xml:lang="us">VersionControl</plural>
+     <plural xml:lang="en">Version Control</plural>
+     <plural xml:lang="nl">Versiebeheer</plural>
      <plural xml:lang="eo">Versiestrilo</plural>
-     <plural xml:lang="fr">Versions</plural>
   </names>
 
   <descriptions>
      <!-- descriptions per language as defined by ISO 639  -->
-     <description xml:lang="nl">Houd bij van applicaties/builders welke versie actief is</description>
      <description xml:lang="en">Keeps track of what versions of apps/builders etc etc are installed</description>
-     <description xml:lang="us">Keeps track of what versions of apps/builders etc etc are installed</description>
+     <description xml:lang="nl">Houd bij van applicaties/builders welke versie actief is</description>
      <description xml:lang="eo">Administras la aktivajn versiojn de aplikaĵoj kaj konstruantoj</description>
   </descriptions>
 
@@ -33,9 +28,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Naam</guiname>
           <guiname xml:lang="en">Name</guiname>
-          <guiname xml:lang="us">Name</guiname>
+          <guiname xml:lang="nl">Naam</guiname>
           <guiname xml:lang="eo">Nomo</guiname>
           <guitype>string</guitype>
         </gui>
@@ -63,9 +57,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Type</guiname>
           <guiname xml:lang="en">Type</guiname>
-          <guiname xml:lang="us">Type</guiname>
+          <guiname xml:lang="nl">Type</guiname>
           <guiname xml:lang="eo">Tipo</guiname>
           <guitype>string</guitype>
         </gui>
@@ -93,9 +86,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Versie</guiname>
           <guiname xml:lang="en">Version</guiname>
-          <guiname xml:lang="us">Version</guiname>
+          <guiname xml:lang="nl">Versie</guiname>
           <guiname xml:lang="eo">Versio</guiname>
           <guitype>integer</guitype>
         </gui>
@@ -123,9 +115,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Beheerder</guiname>
           <guiname xml:lang="en">Maintainer</guiname>
-          <guiname xml:lang="us">Maintainer</guiname>
+          <guiname xml:lang="nl">Beheerder</guiname>
           <guiname xml:lang="eo">Estro</guiname>
           <guitype>string</guitype>
         </gui>

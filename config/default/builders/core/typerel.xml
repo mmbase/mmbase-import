@@ -12,12 +12,12 @@
   >-->
   <names>
      <!-- singles per language as defined by ISO 639 -->
-     <singular xml:lang="nl">RelatieType</singular>
-     <singular xml:lang="en">TypeRel</singular>
+     <singular xml:lang="en">Type Relation</singular>
+     <singular xml:lang="nl">Type Relatie</singular>
      <singular xml:lang="eo">Rilatotipo</singular>
      <!-- multiple per language as defined by ISO 639 -->
-     <plural xml:lang="nl">RelatieTypes</plural>
-     <plural xml:lang="en">TypeRels</plural>
+     <plural xml:lang="en">Type Relations</plural>
+     <plural xml:lang="nl">Type Relaties</plural>
      <plural xml:lang="eo">Rilatotipoj</plural>
   </names>
 
@@ -26,8 +26,8 @@
   -->
   <descriptions>
      <!-- descriptions per language as defined by ISO 639  -->
-     <description xml:lang="nl">Defineert de mogelijke relaties tussen object typen</description>
      <description xml:lang="en">Defines the allowed relations between object types</description>
+     <description xml:lang="nl">Defineert de mogelijke relaties tussen objekt typen</description>
      <description xml:lang="eo">Difinas la permesitajn rilatojn inter objekttipoj</description>
   </descriptions>
 
@@ -54,8 +54,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Bron</guiname>
           <guiname xml:lang="en">Source</guiname>
+          <guiname xml:lang="nl">Bron</guiname>
           <guiname xml:lang="eo">Fonto</guiname>
           <guitype>types</guitype>
         </gui>
@@ -83,8 +83,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Doel</guiname>
           <guiname xml:lang="en">Destination</guiname>
+          <guiname xml:lang="nl">Doel</guiname>
           <guiname xml:lang="eo">Celo</guiname>
           <guitype>types</guitype>
         </gui>
@@ -112,8 +112,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="nl">Relatie</guiname>
           <guiname xml:lang="en">Relation</guiname>
+          <guiname xml:lang="nl">Relatie</guiname>
           <guiname xml:lang="eo">Rilato</guiname>
           <guitype>reldefs</guitype>
         </gui>
@@ -141,8 +141,8 @@
      <field>
         <!-- gui related -->
         <gui>
-          <guiname xml:lang="en">MaximumRelations</guiname>
-          <guiname xml:lang="nl">MaxRelaties</guiname>
+          <guiname xml:lang="en">Maximum Relations</guiname>
+          <guiname xml:lang="nl">Max Relaties</guiname>
           <guiname xml:lang="eo">Plejnombro</guiname>
           <guitype>integer</guitype>
         </gui>

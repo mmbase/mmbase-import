@@ -11,50 +11,43 @@
     <searchage>1000</searchage>
 
     <!-- <names>
-    names defines the different names used in user visible parts, singular for
-    for talking about 1 object (Url,Person) and plurar for talking about multiple
-    <Urls, people).
+        names defines the different names used in user visible parts, singular for
+        for talking about 1 object (Url,Person) and plurar for talking about multiple
+        <Urls, people).
     >-->
     <names>
         <!-- singles per language as defined by ISO 639 -->
-        <singular xml:lang="nl">MMServer</singular>
-        <singular xml:lang="en">MMServer</singular>
-        <singular xml:lang="eo">MMServilo</singular>
+        <singular xml:lang="en">MMBase Server</singular>
+        <singular xml:lang="nl">MMBase Server</singular>
+        <singular xml:lang="eo">MMBase Servilo</singular>
         <!-- multiple per language as defined by ISO 639 -->
-        <plural xml:lang="nl">MMServers</plural>
-        <plural xml:lang="en">MMServers</plural>
-        <plural xml:lang="eo">MMServiloj</plural>
+        <plural xml:lang="en">MMBase Servers</plural>
+        <plural xml:lang="nl">MMBase Servers</plural>
+        <plural xml:lang="eo">MMBase Serviloj</plural>
     </names>
 
     <!-- <descriptions>
-    small description of the builder for human reading
+         small description of the builder for human reading
     -->
     <descriptions>
         <!-- descriptions per language as defined by ISO 639  -->
-        <description xml:lang="nl">MMServers bepaalt de node binnen een mmbase cluster</description>
-        <description xml:lang="en">MMServers defines node of a mmbase within this system</description>
+        <description xml:lang="en">MMBase Servers defines node of a MMBase within this system</description>
+        <description xml:lang="nl">MMMBase Servers bepaalt de node binnen een MMBase cluster</description>
         <description xml:lang="eo">Tipo MMServilo difinas la nodon en MMBase-aro</description>
     </descriptions>
 
-    <!-- <properties>
-    you can define properties to be used by the classfile (if used) it uses
-    a key/value system. Its a optional tag.
-    -->
-    <properties>
-    </properties>
-
     <!-- <fieldlist>
-    defines the different fields in this object, be carefull the order is important
-    once defined keep them in the same order.
-    If you use number and owner (the 2 default fields, please check the docs for this)
+        defines the different fields in this object, be carefull the order is important
+        once defined keep them in the same order.
+        If you use number and owner (the 2 default fields, please check the docs for this)
     -->
     <fieldlist>
         <!-- POS 3 : <field> 'name'  -->
         <field>
             <!-- gui related -->
-      <gui>
-                <guiname xml:lang="nl">Server</guiname>
+            <gui>
                 <guiname xml:lang="en">Server</guiname>
+                <guiname xml:lang="nl">Server</guiname>
                 <guiname xml:lang="us">Server</guiname>
                 <guiname xml:lang="eo">Servilo</guiname>
                 <guitype>string</guitype>
@@ -83,8 +76,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Status</guiname>
                 <guiname xml:lang="en">State</guiname>
+                <guiname xml:lang="nl">Status</guiname>
                 <guiname xml:lang="eo">Stato</guiname>
                 <guitype>integer</guitype>
             </gui>
@@ -112,9 +105,9 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Laatst.Gezien</guiname>
-                <guiname xml:lang="en">Last.Seen</guiname>
-                <guiname xml:lang="eo">Laste.vidita</guiname>
+                <guiname xml:lang="en">Last Seen</guiname>
+                <guiname xml:lang="nl">Laatst Gezien</guiname>
+                <guiname xml:lang="eo">Laste vidita</guiname>
                 <guitype>eventtime</guitype>
             </gui>
             <!-- editor related  -->
@@ -141,8 +134,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">Host</guiname>
                 <guiname xml:lang="en">Host</guiname>
+                <guiname xml:lang="nl">Host</guiname>
                 <guiname xml:lang="eo">Ĉefkomputilo</guiname>
                 <guitype>string</guitype>
             </gui>
@@ -170,8 +163,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">OS</guiname>
                 <guiname xml:lang="en">OS</guiname>
+                <guiname xml:lang="nl">OS</guiname>
                 <guiname xml:lang="eo">Operaciumo</guiname>
                 <guitype>string</guitype>
             </gui>
@@ -199,8 +192,8 @@
         <field>
             <!-- gui related -->
             <gui>
-                <guiname xml:lang="nl">JDK</guiname>
                 <guiname xml:lang="en">JDK</guiname>
+                <guiname xml:lang="nl">JDK</guiname>
                 <guiname xml:lang="eo">JDK</guiname>
                 <guitype>string</guitype>
             </gui>

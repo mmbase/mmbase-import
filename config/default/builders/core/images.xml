@@ -12,14 +12,14 @@
   >-->
   <names>
     <!-- singles per language as defined by ISO 639 -->
+    <singular xml:lang="en">Image</singular>
     <singular xml:lang="fr">Image</singular>
     <singular xml:lang="nl">Afbeelding</singular>
-    <singular xml:lang="en">Image</singular>
     <singular xml:lang="eo">Bildo</singular>
     <!-- multiple per language as defined by ISO 639 -->
+    <plural xml:lang="en">Images</plural>
     <plural xml:lang="fr">Images</plural>
     <plural xml:lang="nl">Afbeeldingen</plural>
-    <plural xml:lang="en">Images</plural>
     <plural xml:lang="eo">Bildoj</plural>
   </names>
 
@@ -28,9 +28,9 @@
   -->
   <descriptions>
     <!-- descriptions per language as defined by ISO 639  -->
+    <description xml:lang="en">Images</description>
     <description xml:lang="fr">Images</description>
     <description xml:lang="nl">Afbeeldingen</description>
-    <description xml:lang="en">Images</description>
     <description xml:lang="eo">Bildoj</description>
   </descriptions>
 
@@ -62,9 +62,9 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">Title</guiname>
         <guiname xml:lang="fr">Titre</guiname>
         <guiname xml:lang="nl">Titel</guiname>
-        <guiname xml:lang="en">Title</guiname>
         <guiname xml:lang="eo">Titolo</guiname>
         <guitype>string</guitype>
       </gui>
@@ -92,9 +92,9 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="fr">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
-        <guiname xml:lang="en">Description</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
         <guitype>field</guitype>
       </gui>
@@ -122,9 +122,9 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">Image</guiname>
         <guiname xml:lang="fr">Image</guiname>
         <guiname xml:lang="nl">Plaatje</guiname>
-        <guiname xml:lang="en">Image</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
         <guitype>newimage</guitype>
       </gui>
@@ -152,9 +152,9 @@
     <field>
       <!-- gui related -->
       <gui>
+        <guiname xml:lang="en">ImageType</guiname>
         <guiname xml:lang="fr">ImageTapent</guiname>
         <guiname xml:lang="nl">PlaatjesType</guiname>
-        <guiname xml:lang="en">ImageType</guiname>
         <guiname xml:lang="eo">Bildotipo</guiname>
         <guitype>string</guitype>
       </gui>
