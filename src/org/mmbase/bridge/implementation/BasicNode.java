@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.63 2002-07-25 13:30:33 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.64 2002-07-25 13:51:38 pierre Exp $
  */
 public class BasicNode implements Node {
 
@@ -482,6 +482,13 @@ public class BasicNode implements Node {
             while (e.hasMoreElements()) {
                 MMObjectNode node = (MMObjectNode)e.nextElement();
                 cloud.assert(Operation.DELETE,node.getNumber());
+            }
+            // obtain again
+            // bit ugly but I don't really know how this would work better...
+            if (type==-1) {
+                e = getNode().getAllRelations();
+            } else {
+                e = getNode().getRelations();
             }
             while (e.hasMoreElements()) {
                 MMObjectNode node = (MMObjectNode)e.nextElement();
