@@ -9,18 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.*;
-import java.sql.*;
+import java.util.List;
+import java.util.Enumeration;
 
-import org.mmbase.module.database.*;
+import java.sql.*;  // sql
+import org.mmbase.module.database.*;  // sql
+
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
+ * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.16 2002-03-25 15:56:19 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.17 2002-04-12 08:53:00 pierre Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -34,22 +37,21 @@ public class ImageCaches extends AbstractImages {
      * @since MMBase-1.6
      **/
     private MMObjectNode originalImage(MMObjectNode node) {
-        return getNode(node.getIntValue("id"));        
+        return getNode(node.getIntValue("id"));
     }
-    
+
     /**
      * The GUI indicator of an image can have an alt-text.
      *
      * @since MMBase-1.6
      **/
-
     protected String getGUIIndicatorWithAlt(MMObjectNode node, String title) {
 
-        String servlet    = getServlet(); 
-        MMObjectNode origNode = originalImage(node);     
+        String servlet    = getServlet();
+        MMObjectNode origNode = originalImage(node);
         String imageThumb = (origNode != null ? servlet + origNode.getIntValue("cache(s(100x60))") : "");
         String image      = servlet + node.getNumber();
-        return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>");
+        return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
     public String getGUIIndicator(MMObjectNode node) {
@@ -61,19 +63,19 @@ public class ImageCaches extends AbstractImages {
      * Given a certain ckey, return the cached image node number, if there is one, otherwise return -1.
      * This functions always does a query. The caching must be done somewhere else.
      * This is done because caching on ckey is not necesarry when caching templates.
-     *
+     * @sql
      * @since MMBase-1.6
      **/
     int getCachedNodeNumber(String ckey) {
         int number = -1;
         try {
             MultiConnection con= mmb.getConnection();
-            Statement stmt     = con.createStatement();                                
-            
-            ResultSet rs = stmt.executeQuery("SELECT " + mmb.getDatabase().getAllowedField("number")+" FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
+            Statement stmt     = con.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT " + mmb.getDatabase().getNumberString()+" FROM "+mmb.baseName+"_icaches WHERE ckey='"+ckey+"'");
             if (rs.next()) {
                 number = rs.getInt(1);
-            } 
+            }
             stmt.close();
             con.close();
         } catch (java.sql.SQLException e) {
@@ -83,28 +85,26 @@ public class ImageCaches extends AbstractImages {
         return number;
     }
 
-
     /**
-     * Gets the handle bytes from a node. 
+     * Gets the handle bytes from a node.
      * @param n The node to receive the bytes from. It might be null, then null is returned.
      */
-
     private  synchronized byte[] getImageBytes(MMObjectNode n) {
-        if (n == null) { 
+        if (n == null) {
             log.debug("node was not found");
             return null;
         } else {
             if (log.isDebugEnabled()) log.debug("node was found " + n.getNumber());
-            byte[] bytes = n.getByteValue("handle");           
-            if (bytes == null) {                 
+            byte[] bytes = n.getByteValue("handle");
+            if (bytes == null) {
                 log.debug("handle was null!");
-                return null;                
+                return null;
             }
             if (log.isDebugEnabled()) log.debug("found " + bytes.length + " bytes");
             return bytes;
         }
     }
-    
+
     private  synchronized byte[] getImageBytes(int number) {
         return getImageBytes(getNode(number));
     }
@@ -113,7 +113,7 @@ public class ImageCaches extends AbstractImages {
         return getImageBytes(getNode(number));
     }
     /**
-     * Returns the bytes of a cached image. It accepts a vector, just
+     * Returns the bytes of a cached image. It accepts a list, just
      * because it is also like this in Images.java. But of course a
      * cached image only uses the first element (number of the node).
      * It also works if the the node is a real image in stead of a
@@ -122,14 +122,13 @@ public class ImageCaches extends AbstractImages {
      *
      * If the node does not exists, it returns empty byte array
      */
-    public synchronized byte[] getImageBytes(Vector params) {        
+    public synchronized byte[] getImageBytes(List params) {
         return getImageBytes("" + params.get(0));
     }
 
     /**
      * Return the bytes for the cached image with a certain ckey, or null, if not cached.
-     **/
-
+     */
     public synchronized byte[] getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
         byte[] rtn = (byte []) handlecache.get(ckey);
@@ -137,29 +136,29 @@ public class ImageCaches extends AbstractImages {
             log.debug("found in handle cache");
         } else {
             log.debug("not found in handle cache, getting it from database.");
-            int number = getCachedNodeNumber(ckey);                
+            int number = getCachedNodeNumber(ckey);
             if (number == -1) {
-                
+
             }
             rtn = getImageBytes(number);
-            if (rtn == null) { 
-                // if it didn't work, also cache this result, to avoid concluding that again..               
+            if (rtn == null) {
+                // if it didn't work, also cache this result, to avoid concluding that again..
                 // handlecache.put(ckey, new byte[0]);
                 // this should be done differenty.
             } else {
                 // only cache small images.
                 if (rtn.length< (100*1024)) handlecache.put(ckey, rtn);
             }
-        }  
+        }
         if (rtn == null && log.isDebugEnabled()) {
             log.debug("getCkeyNode: empty array returned for ckey " + ckey);
         }
         return rtn;
     }
+
     /**
      * @javadoc
-     **/
-
+     */
     private String toHexString(String str) {
         StringBuffer b=new StringBuffer();
         char[] chb;
@@ -168,7 +167,7 @@ public class ImageCaches extends AbstractImages {
             b.append(Integer.toString((int)chb[i],16)+",");
         }
         return b.toString();
-    }	
+    }
 
     /**
      * Invalidate the Image Cache for a specific Node
@@ -177,18 +176,18 @@ public class ImageCaches extends AbstractImages {
      * @param node The image node, which is the original of the cached modifications
      */
     void invalidate(MMObjectNode node) {
-    	log.debug("gonna invalidate the node, where the original node # " + node.getNumber());
-    	// first get all the nodes, which are currently invalid....
-	// this means all nodes from icache where the field 'ID' == node it's number
-    	Enumeration invalidNodes = search("WHERE id=" + node.getNumber());
-	while(invalidNodes.hasMoreElements()) {
-    	    // delete the icache node
-	    MMObjectNode invalidNode = (MMObjectNode) invalidNodes.nextElement();
-	    removeNode(invalidNode);
-    	    log.debug("deleted node with id#" + node.getNumber());	    
-	}		
+        log.debug("gonna invalidate the node, where the original node # " + node.getNumber());
+        // first get all the nodes, which are currently invalid....
+        // this means all nodes from icache where the field 'ID' == node it's number
+        Enumeration invalidNodes = search("WHERE id=" + node.getNumber());
+        while(invalidNodes.hasMoreElements()) {
+            // delete the icache node
+            MMObjectNode invalidNode = (MMObjectNode) invalidNodes.nextElement();
+            removeNode(invalidNode);
+            log.debug("deleted node with id#" + node.getNumber());
+        }
     }
-    
+
     /**
      * Override the MMObjectBuilder removeNode, to invalidate the LRU ImageCache, when a node gets deleted.
      * Remove a node from the cloud.
@@ -196,11 +195,11 @@ public class ImageCaches extends AbstractImages {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-    	String ckey = node.getStringValue("ckey");
+        String ckey = node.getStringValue("ckey");
         log.service("Icaches: removing node " + node.getNumber() + " " + ckey);
         super.removeNode(node);
-	// also delete from LRU Cache
-    	handlecache.remove(ckey);
+        // also delete from LRU Cache
+        handlecache.remove(ckey);
         ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache();
     }
 
@@ -208,10 +207,7 @@ public class ImageCaches extends AbstractImages {
      * Determine the MIME type of this Icache node. If the node is not
      * an icache node, but e.g. an images node, then it will return
      * the default mime format, which is 'jpg'. This should be done
-     * better, since there is a field itype in the images table, isn't
-     * it.?
-     *
-     *
+     * better, since there is a field itype in the images table.
      *
      * @since MMBase-1.6
      */
@@ -221,24 +217,24 @@ public class ImageCaches extends AbstractImages {
         if (node != null) {
             String ckey    = node.getStringValue("ckey");
             // stupid method, I think the format must be a field of iaches table.
-            int fi = ckey.indexOf("f("); 
-            if (fi > -1) {            
+            int fi = ckey.indexOf("f(");
+            if (fi > -1) {
                 int fi2 = ckey.indexOf(")", fi);
-                format = ckey.substring(fi + 2, fi2);           
+                format = ckey.substring(fi + 2, fi2);
             }
         }
-        if (log.isDebugEnabled()) log.debug("using format " + format);        
+        if (log.isDebugEnabled()) log.debug("using format " + format);
         return mmb.getMimeType(format);
 
     }
-    /**    
+
+    /**
      * Returns the Mime type of this cached image.
      *
      * @since MMBase-1.6
      */
-    public String getImageMimeType(Vector params) {
+    public String getImageMimeType(List params) {
         return getImageMimeType(getNode("" + params.get(0)));
     }
 
-        
 }
