@@ -10,7 +10,7 @@
         name="header" 
         src ="header.html" 
         scrolling="no" frameborder="0" border="0"  framespacing="0">
-        <frameset  cols="360,*">
+        <frameset  cols="331,*"><!-- 2 x 2 margin + 32 + 35 td's + 1 * 260 td -->
           <frame 
              name="player" 
              src="placeholder.jsp" 
