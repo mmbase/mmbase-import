@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.4 2002-04-16 11:18:44 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.5 2002-04-16 15:38:54 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -160,15 +160,13 @@ public class TimeTag extends ContextReferrerTag implements Writer {
         DateFormat dateFormat = null;
         if (format != null) {            
             Locale locale = Locale.getDefault();
-            
-            /*
+                       
             LocaleTag localeTag = (LocaleTag) findParentTag("org.mmbase.bridge.jsp.taglib.LocaleTag", null, false);
             if (localeTag != null) {
                 locale = localeTag.getLocale();
             } else {
                 locale = Locale.getDefault();
-            }
-            */
+            }           
 
             if (format.charAt(0) == ':') {
                 log.debug("found symbolic format");
