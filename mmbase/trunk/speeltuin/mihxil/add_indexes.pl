@@ -3,15 +3,15 @@
 use strict;
 
 my $mysql    = "mysql";
-my $database = "test_db";
+my $database = "zappnet";
 my @reltypes = ("typerel", "insrel", "posrel");
 
-my %tasks = ( 'primary_keys' => 0,
-			  'not_nulls'   =>  0,
-              'rel_index'   =>  0,
-              'oalias'      =>  0,
+my %tasks = ( 'primary_keys' => 1,
+			  'not_nulls'   =>  1,
+              'rel_index'   =>  1,
+              'oalias'      =>  1,
               'reldef'      =>  1,
-			  'icaches'     =>  0 );
+			  'icaches'     =>  1 );
 
 sub mysql {
     my $query = $_[0];
