@@ -126,7 +126,15 @@ public class MediaSourceFilter implements MediaFilter {
         Iterator i = filters.iterator();
         while (i.hasNext()) {
             MediaFilter filter = (MediaFilter) i.next();
+            if (log.isDebugEnabled()) {
+                log.debug("Using filter " + filter);
+                log.debug("before: " + urls);
+            }
+            
             urls = filter.filter(urls);
+            if (log.isDebugEnabled()) {
+                log.debug("after: " + urls);
+            }
         }
         return urls;
     }
