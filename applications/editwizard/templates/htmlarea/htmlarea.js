@@ -8,7 +8,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //	     http://students.infoiasi.ro/~mishoo
 //
-// $Id: htmlarea.js,v 1.1 2003-12-09 15:56:57 jaco Exp $
+// $Id: htmlarea.js,v 1.2 2004-01-02 15:21:18 nico Exp $
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -504,7 +504,8 @@ HTMLArea.prototype._createToolbar = function () {
 		var group = this.config.toolbar[i];
 		for (var j in group) {
 			var code = group[j];
-			if (/^([IT])\[(.*?)\]/.test(code)) {
+			var re = new RegExp("/^([IT])\[(.*?)\]/");
+			if (re.test(code)) {
 				// special case, create text label
 				var l7ed = RegExp.$1 == "I"; // localized?
 				var label = RegExp.$2;
@@ -830,7 +831,8 @@ HTMLArea.prototype.updateToolbar = function(noStatus) {
 			inContext = false;
 			var context = btn.context;
 			var attrs = [];
-			if (/(.*)\[(.*?)\]/.test(context)) {
+			var re = new RegExp("/(.*)\[(.*?)\]/");
+			if (re.test(context)) {
 				context = RegExp.$1;
 				attrs = RegExp.$2.split(",");
 			}
@@ -1344,6 +1346,16 @@ HTMLArea.is_mac_ie = (HTMLArea.is_ie && HTMLArea.is_mac);
 HTMLArea.is_win_ie = (HTMLArea.is_ie && !HTMLArea.is_mac);
 HTMLArea.is_gecko  = (navigator.product == "Gecko");
 
+// *** BROWSER VERSION *** 
+// Note: On IE5, these return 4. 
+HTMLArea.is_major = parseInt(navigator.appVersion); 
+HTMLArea.is_minor = parseFloat(navigator.appVersion);
+
+HTMLArea.is_ie3  = (HTMLArea.is_ie && (HTMLArea.is_major < 4)); 
+HTMLArea.is_ie4  = (HTMLArea.is_ie && (HTMLArea.is_major == 4) && (HTMLArea.agt.indexOf("msie 4")!=-1) ); 
+HTMLArea.is_ie5  = (HTMLArea.is_ie && (HTMLArea.is_major == 4) && (HTMLArea.agt.indexOf("msie 5.0")!=-1) ); 
+HTMLArea.is_ie55up  = (HTMLArea.is_ie  && !HTMLArea.is_ie3 && !HTMLArea.is_ie4 && !HTMLArea.is_ie5);
+
 // variable used to pass the object to the popup editor window.
 HTMLArea._object = null;
 
@@ -1360,7 +1372,7 @@ HTMLArea.checkSupportedBrowser = function() {
 			      "I'll try, though, but it might not work.");
 		}
 	}
-	return HTMLArea.is_gecko || HTMLArea.is_ie;
+	return HTMLArea.is_gecko || (HTMLArea.is_ie55up && !HTMLArea.is_mac);
 };
 
 // selection & ranges
