@@ -14,6 +14,8 @@
 
         madetestscore
         requiredscore
+        goodanswers
+        badanswers
         
 <%@include file="/shared/setImports.jsp" %>
 <%@include file="/education/tests/definitions.jsp" %>
@@ -63,9 +65,18 @@
 gekregen: <mm:write referid="madetestscore"/><br/>
 vereist: <mm:write referid="requiredscore"/><br/>
 --%>
+
+              <% int good =0;
+                 int bad = 0; %>
+                <mm:related path="givenanswers" constraints="givenanswers.score<= 0"><% bad++; %></mm:related>
+                <mm:related path="givenanswers" constraints="givenanswers.score > 0"><% good++; %></mm:related>
+              <mm:import id="goodanswers"><%= good %></mm:import>
+              <mm:import id="falseanswers"><%= bad %></mm:import>
+
+
          </mm:relatednodes>
        </mm:relatednodescontainer>
-
+       
        <mm:compare referid="done" value="false">
          <mm:import id="teststatus" reset="true">incomplete</mm:import>
        </mm:compare>

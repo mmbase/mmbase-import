@@ -37,6 +37,7 @@
       <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
         <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>
+        <mm:field id="feedback" name="feedbackpage" write="false"/>
  
 <%--        <mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><mm:treeinclude page="/progress/teststatus.jsp" objectlist="$includePath" referids="$referids"><mm:param name="copybookNo"><mm:write referid="copybookNo"/></mm:param><mm:param name="testNo"><mm:field name="number"/></mm:param></mm:treeinclude></mm:import>
          <%
@@ -57,13 +58,20 @@
                      <td class="td_test_tbs">?</td>
                  </di:hasrole>
              </mm:compare>
-         
+            
              <mm:compare referid="teststatus" value="passed">
-       	             <td class="td_test_tbs">S <mm:write referid="madetestscore"/>/<mm:write referid="requiredscore"/></td>
-             </mm:compare> 
+       	             <td class="td_test_tbs">
+                        <mm:compare referid="feedback" value="0">S</mm:compare>
+                        <mm:write referid="goodanswers"/>/<mm:write referid="falseanswers"/>
+                    </td>
+             </mm:compare>
+             
              <mm:compare referid="teststatus" value="failed">
-       	             <td class="td_test_failed">F <mm:write referid="madetestscore"/>/<mm:write referid="requiredscore"/></td>
+       	             <td class="td_test_failed">
+                         <mm:compare referid="feedback" value="0">F</mm:compare>
+                         <mm:write referid="goodanswers"/>/<mm:write referid="falseanswers"/></td>
        	     </mm:compare>
+            
         </mm:compare>
          <mm:compare referid="teststatus" value="incomplete" >
            <td class="td_test_not_done">-</td>

@@ -45,6 +45,7 @@
         <h1><mm:field name="name"/></h1>
         <mm:field id="maychange" name="maychange" write="false"/>
         <mm:field id="mayview" name="mayview" write="false"/>
+        <mm:field id="feedback" name="feedbackpage" write="false"/>
 
         <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS">
 	  De toets is reeds gemaakt. De antwoorden moeten nog worden nagekeken.<p/>
@@ -52,9 +53,23 @@
         <mm:compare referid="madetestscore" referid2="TESTSCORE_TBS" inverse="true">
           <%-- if madestestscore larger or equal than requiredscore --%>
           <mm:field id="requiredscore" name="requiredscore" write="false"/>
+          
+         <mm:islessthan referid="feedback" value="1">
           <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
             De toets is reeds gemaakt en behaald.<p/>
-            <mm:compare referid="mayview" value="1">
+          </mm:islessthan>
+          
+          <mm:islessthan referid="madetestscore" referid2="requiredscore">
+            De toets is reeds gemaakt en niet behaald.<p/>
+          </mm:islessthan>
+         </mm:islessthan>
+
+          <mm:compare referid="feedback" value="1">
+            Deze oefentoets is reeds gemaakt.<p/>
+          </mm:compare>
+
+         
+         <mm:compare referid="mayview" value="1">  
               <table><tr>
                  <td><div class="button1">
                    <a href="<mm:treefile page="/education/tests/viewanswersframe.jsp" objectlist="$includePath" referids="$referids">
@@ -63,28 +78,17 @@
                    <mm:param name="userNo"><mm:write referid="user"/></mm:param>
                    </mm:treefile>"><di:translate id="view">Inzien</di:translate></a>
                </div></td>
+            </mm:compare>
+            <mm:compare referid="maychange" value="1">
                <td><div class="button1">
                     <a href="<mm:treefile page="/education/tests/buildtest.jsp" objectlist="$includePath" referids="$referids">
                  <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
-                </mm:treefile>"><di:translate id="again">Opnieuw maken</di:translate></a>
+                </mm:treefile>"><mm:compare referid="feedback" value="1"><di:translate id="again">Opnieuw maken</di:translate></mm:compare><mm:compare referid="feedback" value="0"><di:translate id="retry">Herkans</di:translate></a></mm:compare></a>
                </div></td>
                </tr></table>
+               </mm:compare>
             </mm:compare>
-          </mm:islessthan>
-          <mm:islessthan referid="madetestscore" referid2="requiredscore">
-            De toets is reeds gemaakt en niet behaald.<p/>
-<%--
-score: <mm:write referid="madetestscore"/>&lt;<mm:write referid="requiredscore"/>
---%>
-            <mm:compare referid="maychange" value="1">
-              <table><tr><td><div class="button1">
-                    <a href="<mm:treefile page="/education/tests/buildtest.jsp" objectlist="$includePath" referids="$referids">
-                 <mm:param name="learnobject"><mm:write referid="testNo"/></mm:param>
-                </mm:treefile>"><di:translate id="retry">Herkans</di:translate></a>
-               </div></td></tr></table>
-            </mm:compare>
-          </mm:islessthan>
-        </mm:compare>
+          
       </body>
     </html>
   </mm:present>
