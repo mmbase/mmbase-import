@@ -55,8 +55,6 @@
 
 	<!--
             shared secret:
-                This is now used to check if a another system is also trustable.
-                used in remoteBuilders
-	 -->
+				This shared secret is a private key that is used by systems to authenticate each other. MMBase needs this key to be able to communicate with remote builders. While installing remote builders, change this shared secret and make sure that you put the new shared secret in the configuration files of the remote builders. In this way we prevent other MMBase systems to fool around with your remote builders. -->
   	<sharedsecret>appelmoes</sharedsecret>
 </security>
