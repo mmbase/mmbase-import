@@ -10,10 +10,13 @@ See http://www.MMBase.org/license
 
 package org.mmbase.module.irc.communication.irc.tcpip;
 
-public 	abstract class TcpipThread 
-		extends Thread
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+public 	abstract class TcpipThread extends Thread
 {
-	private String 			classname 	= getClass().getName();	
+
+    private static Logger log = Logging.getLoggerInstance(TcpipThread.class.getName());
 	private boolean			doit		= false;
 	private	boolean			started		= false;
 	public TcpipConnection	tcpipcon;
@@ -59,10 +62,5 @@ public 	abstract class TcpipThread
 		{
 			performAction();
 		}
-	}
-
-	private void debug( String msg )
-	{
-		System.out.println( classname +":"+ msg );
 	}
 }
