@@ -48,7 +48,6 @@
             <gui>
                 <guiname xml:lang="en">Server</guiname>
                 <guiname xml:lang="nl">Server</guiname>
-                <guiname xml:lang="us">Server</guiname>
                 <guiname xml:lang="eo">Servilo</guiname>
                 <guitype>string</guitype>
             </gui>
