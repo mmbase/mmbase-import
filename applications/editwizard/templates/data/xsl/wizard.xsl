@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.83 2002-12-18 19:48:06 michiel Exp $
+  @version $Id: wizard.xsl,v 1.84 2003-03-28 18:22:57 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -242,6 +242,7 @@
 
   <!-- On default.  All attributes must be copied -->
   <xsl:template match="@*">
+    <!-- THIS GOES WRONG IN RESIN -->
     <xsl:copy><xsl:value-of select="." /></xsl:copy>
   </xsl:template>
 
