@@ -6,7 +6,7 @@
 <title>Forum Demo</title>
 </head>
 <body>
-<mm:cloud>
+<mm:cloud jspvar="cloud">
 <%
     Module community= LocalContext.getCloudContext().getModule("communityprc");
     Node channelNode = cloud.getNodeByAlias("Forum");
