@@ -22,9 +22,7 @@ import org.mmbase.util.logging.*;
  * Provides ErrorHandler methods for checking xml files by Config module
  *
  * @author cjr@dds.nl
- * @version $id$
-
- * $log$
+ * @version $Id: XMLCheckErrorHandler.java,v 1.3 2002-12-03 21:32:21 michiel Exp $
  */
 
 public class XMLCheckErrorHandler implements ErrorHandler {
@@ -34,7 +32,7 @@ public class XMLCheckErrorHandler implements ErrorHandler {
     private List warninglist,errorlist,fatallist,resultlist;
 
     public XMLCheckErrorHandler() {
-        log.service("New xmlcheckerrorhandler");
+        log.debug("New xmlcheckerrorhandler");
         warninglist = new Vector();
         errorlist   = new Vector();
         fatallist   = new Vector();
