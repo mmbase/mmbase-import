@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.17 2001-04-19 09:08:03 rico Exp $
+ * @version $Id: TransactionManager.java,v 1.18 2001-07-04 10:54:52 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -32,7 +32,7 @@ public class TransactionManager implements TransactionManagerInterface {
     public static final int I_EXISTS_NOLONGER=2;
 
     private TemporaryNodeManagerInterface tmpNodeManager;
-    private Authorization authorization=null;
+    private MMBaseCop  mmbaseCop = null;
     private MMBase mmbase;
     protected Hashtable transactions=new Hashtable();
     protected TransactionResolver transactionResolver;
@@ -41,11 +41,9 @@ public class TransactionManager implements TransactionManagerInterface {
         this.mmbase=mmbase;
         this.tmpNodeManager=tmpn;
         transactionResolver=new TransactionResolver(mmbase);
-		try {
-			authorization=mmbase.getMMBaseCop().getAuthorization();
-		} catch (Exception e) {
-			throw new org.mmbase.security.SecurityException(e.getMessage());
-		}
+
+        mmbaseCop = mmbase.getMMBaseCop();
+
     }
 
     public String create(Object user,String transactionname) 
@@ -298,9 +296,9 @@ public class TransactionManager implements TransactionManagerInterface {
                         if (!debug) {
                             // no return information
                             node.parent.removeNode(node);
-							if (user instanceof UserContext) {
-								authorization.remove((UserContext)user,node.getNumber());
-							}
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().remove((UserContext)user, node.getNumber());
+                            }
                             res=true;
                         } else {
                             res=true;
@@ -338,9 +336,9 @@ public class TransactionManager implements TransactionManagerInterface {
                         if (!debug) {
                             // no return information
                             node.parent.removeNode(node);
-							if (user instanceof UserContext) {
-								authorization.remove((UserContext)user,node.getNumber());
-							}
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().remove((UserContext)user,node.getNumber());
+                            }
                             res=true;
                         } else {
                             res=true;
@@ -370,9 +368,9 @@ public class TransactionManager implements TransactionManagerInterface {
                     case I_EXISTS_YES:
                         if (!debug) {
                             res=node.commit();
-							if (user instanceof UserContext) {
-								authorization.update((UserContext)user,node.getNumber());
-							}
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
+                            }
                         } else {
                             res=true;
                         }
@@ -390,9 +388,9 @@ public class TransactionManager implements TransactionManagerInterface {
                             } else {
                                 res=node.insert(node.getStringValue("owner"))!=-1;
                             }
-							if (user instanceof UserContext) {
-								authorization.create((UserContext)user,node.getNumber());
-							}
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
+                            }
                         } else {
                             res=true;
                         }
@@ -424,9 +422,9 @@ public class TransactionManager implements TransactionManagerInterface {
                     case I_EXISTS_YES:
                         if (!debug) {
                             res=node.commit();
-							if (user instanceof UserContext) {
-								authorization.update((UserContext)user,node.getNumber());
-							}
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().update((UserContext)user,node.getNumber());
+                            }
                         } else {
                             res=true;
                         }
@@ -444,9 +442,9 @@ public class TransactionManager implements TransactionManagerInterface {
                             } else {
                                 res=node.insert(node.getStringValue("owner"))!=-1;
                             }
-							if (user instanceof UserContext) {
-								authorization.create((UserContext)user,node.getNumber());
-							}
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
+                            }
                         } else {
                             res=true;
                         }
