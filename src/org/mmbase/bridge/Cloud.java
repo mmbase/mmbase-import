@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.44 2004-03-05 15:19:17 michiel Exp $
+ * @version $Id: Cloud.java,v 1.45 2004-06-08 08:45:16 michiel Exp $
  */
 public interface Cloud {
 
@@ -142,7 +142,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @since  MMBase-1.6
      */
-    public boolean mayRead(int nodenumber);
+    public boolean mayRead(int number);
 
     /**
      * Determines whether a node with the specified number is accessible for the user - that is,
@@ -155,7 +155,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @since  MMBase-1.6
      */
-    public boolean mayRead(String nodenumber);
+    public boolean mayRead(String number);
 
     /**
      * Returns all node managers available in this cloud.
@@ -195,7 +195,7 @@ public interface Cloud {
     /**
      * Returns the specified relation manager.
      *
-     * @param nodeManagerId       Unique ID of the RelationManager to retrieve
+     * @param relationManagerId       Unique ID of the RelationManager to retrieve
      * @return                    the requested relation manager
      * @throws NotFoundException  if the specified relation manager could not be found
      * @since  MMBase-1.6
@@ -242,7 +242,7 @@ public interface Cloud {
     /**
      * Returns whether the specified relation manager exists.
      *
-     * @param sourceManage          name of the node manager of the source node
+     * @param sourceManager         name of the node manager of the source node
      * @param destinationManager    name of the node manager of the destination node
      * @param roleName              name of the role
      * @return                      <code>true</code> if the specified relation manager could be found
@@ -289,14 +289,13 @@ public interface Cloud {
      * Returns all relation managers available in this cloud that follow the specified filter.
      *
      * @param sourceManagerName the name of the manager for the source of the relation
-     * @param destinationManagerMame the name of the manager for the destination of the relation
+     * @param destinationManagerName the name of the manager for the destination of the relation
      * @param roleName the rolename
      * @return  a <code>RelationManagerList</code> containing all relation
      *          managers that follwo thsi filter
      * @throws NotFoundException     if one of the specified relation managers or the rolename could not be found
      */
-    public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,
-                String roleName) throws NotFoundException;
+    public RelationManagerList getRelationManagers(String sourceManagerName, String destinationManagerName,  String roleName) throws NotFoundException;
 
     /**
      * Returns all relation managers available in this cloud that follow the specified filter.

@@ -19,7 +19,7 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.12 2003-08-27 10:21:42 pierre Exp $
+ * @version $Id: Module.java,v 1.13 2004-06-08 08:45:16 michiel Exp $
  */
 public interface Module {
 
@@ -56,17 +56,17 @@ public interface Module {
     /**
      * Runs the command with the given parameter(s).
      * @param command the command to run, i.e. "MESSAGE-UPDATE".
-         * @param parameters the main parameter for the command. Depends on the command issued. Not all
-         *      commands make use of this parameter.
+     * @param parameter the main parameter for the command. Depends on the command issued. Not all
+     *      commands make use of this parameter.
      */
     public void process(String command, Object parameter);
 
     /**
      * Runs the command with the given parameter(s).
      * @param command the command to run, i.e. "MESSAGE-UPDATE".
-         * @param parameters the main parameter for the command. Depends on the command issued. Not all
-         *      commands make use of this parameter.
-         * @param auxparameters additional parameters for this command.
+     * @param parameters the main parameter for the command. Depends on the command issued. Not all
+     *      commands make use of this parameter.
+     * @param auxparameters additional parameters for this command.
      */
     public void process(String command, Object parameter, Map auxparameters);
 
@@ -102,10 +102,6 @@ public interface Module {
      * Similar to the LIST command in SCAN.
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
-     * @param fields The names for the fields to retrieve. This allows a user to set it's own names for the fields (i.e.
-     *      when calling the COLORS List command of the info module, this could be "RGB,name".
-     *      If the number of names do not match the number of items returns, any additional items are numbered according to their position,
-     *      given names such as "item1".
      * @param parameters a hashtable containing the named parameters of the list.
      */
     public NodeList getList(String command, Map parameters);
@@ -116,10 +112,6 @@ public interface Module {
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
      * @param parameters a hashtable containing the named parameters of the list.
-     * @param fields The names for the fields to retrieve. This allows a user to set it's own names for the fields (i.e.
-     *      when calling the COLORS List command of the info module, this could be "RGB,name".
-     *      If the number of names do not match the number of items returns, any additional items are numbered according to their position,
-     *      given names such as "item1".
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
      */

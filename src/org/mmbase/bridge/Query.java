@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.23 2004-02-17 09:43:41 michiel Exp $
+ * @version $Id: Query.java,v 1.24 2004-06-08 08:45:17 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -201,6 +201,7 @@ public interface Query extends SearchQuery, Cloneable {
      *
      * If the first constraint is a composite constraint (with the same logical operator), then the
      * second one will simply be added.
+     * @return a Composite constraint (might not be a new one)
      */
     CompositeConstraint         createConstraint(Constraint c1, int op, Constraint c2);
 

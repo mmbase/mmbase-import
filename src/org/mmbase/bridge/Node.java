@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.46 2003-12-23 20:00:31 michiel Exp $
+ * @version $Id: Node.java,v 1.47 2004-06-08 08:45:16 michiel Exp $
  */
 public interface Node {
 
@@ -619,7 +619,7 @@ public interface Node {
      * @return             the number of related nodes that have a specific node
      *                     manager
      */
-    public int countRelatedNodes(String type);
+    public int countRelatedNodes(String nodeManager);
 
 
     /**
@@ -705,7 +705,7 @@ public interface Node {
 
     public boolean mayDelete();
 
-
+ 
     /**
      * Check context-change rights on this node.
      *
