@@ -1,6 +1,6 @@
+@import url(../../../style/css/mmbase.css);
 @import url(base.css);
 @import url(buttons_mmbase.css);
-@import url(../../../style/css/mmbase.css);
 
 body.basic { 
   background-color: white;

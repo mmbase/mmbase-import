@@ -28,7 +28,7 @@ span.change {
 }
 
 span.change:before {
-  content: url(../../../style/images/trans.gif); /* makes it work in Mozilla */
+  content: url(../../../style/images/next.gif); /* makes it work in Mozilla */
   background: white;
 }
 
@@ -39,7 +39,7 @@ span.delete {
 }
 
 span.delete:before {
-  content: url(../../../style/images/trans.gif); /* makes it work in Mozilla */
+  content: url(../../../style/images/delete.gif); /* makes it work in Mozilla */
   background: white;
 }
 
