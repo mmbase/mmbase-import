@@ -298,16 +298,20 @@ public class ContextTag extends ContextReferrerTag {
         switch (from) {
         case LOCATION_COOKIE:
             javax.servlet.http.Cookie[] cookies = getHttpRequest().getCookies();
-            for (int i=0; i< cookies.length; i++) {
-                if (cookies[i].getName().equals(referid)) {
-                    // simply return the first value found.
-                    // this is probably a little to simple...
-                    // since a cookie can e.g. also have another path.
-                    result = cookies[i].getValue();
-                    // touch cookie
-                    cookies[i].setMaxAge(WriteTag.MAX_COOKIE_AGE);
-                    ((HttpServletResponse) (pageContext.getResponse())).addCookie(cookies[i]);
-                    break;
+            if (cookies == null) {
+                log.error("Cannot use cookies");
+            } else {
+                for (int i=0; i< cookies.length; i++) {
+                    if (cookies[i].getName().equals(referid)) {
+                        // simply return the first value found.
+                        // this is probably a little to simple...
+                        // since a cookie can e.g. also have another path.
+                        result = cookies[i].getValue();
+                        // touch cookie
+                        cookies[i].setMaxAge(WriteTag.MAX_COOKIE_AGE);
+                        ((HttpServletResponse) (pageContext.getResponse())).addCookie(cookies[i]);
+                        break;
+                    }
                 }
             }
             break;
