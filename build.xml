@@ -728,7 +728,6 @@ Build-compiler: ${build.compiler}
         </fileset>
       </classpath>
       <!-- mmbase custom tags -->
-      <!--
       <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
       <tag name="rename" description="Warning: Will be renamed to:" />
       <tag name="move" description="Warning: Will be moved to:" />
@@ -736,13 +735,11 @@ Build-compiler: ${build.compiler}
       <tag name="core" description="Core Class" scope="types" />
       <tag name="application"  description="Class for Application :" scope="types" />
       <tag name="todo" description="To Do:" />
-      -->
       <!-- mmbase tags to ignore (development cleaning warnings only) -->
-      <!--
       <tag name="javadoc" description="Warning: No Java Documentation Available." enabled="${javadoc.cleaning}" />
       <tag name="bad-constant" description="Warning: Bad Constant" enabled="${javadoc.cleaning}" />
       <tag name="bad-literal" description="Warning: Uses Bad Literal" enabled="${javadoc.cleaning}" />
-      <tag name="code-conventions" description="Warning: Code Conventions Breach" scope="types" enabled="${javadoc.cleaning}"/>
+      <tag name="code-conventions" description="Warning: Code Conventions Breach" enabled="${javadoc.cleaning}"/>
       <tag name="language" description="Warning: Contains Language-dependent Text Values" enabled="${javadoc.cleaning}"/>
       <tag name="vpro" description="Warning: Contains VPRO Legacy Code" enabled="${javadoc.cleaning}"/>
       <tag name="performance" description="Warning: Performance Issues" enabled="${javadoc.cleaning}"/>
@@ -750,7 +747,6 @@ Build-compiler: ${build.compiler}
       <tag name="sql" description="Warning: Contains Database Legacy Code" enabled="${javadoc.cleaning}"/>
       <tag name="duplicate" description="Warning: Contains Duplicate Code (present in other classes)" enabled="${javadoc.cleaning}"/>
       <tag name="deprecation-used" description="Warning: Calls Deprecated Code" enabled="${javadoc.cleaning}"/>
-      -->
     </javadoc>
     <property name="did.javadocs" value="true" />
   </target>
