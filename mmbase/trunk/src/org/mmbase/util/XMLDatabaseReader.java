@@ -34,16 +34,21 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     private static final String PUBLIC_ID_DATABASE_1_0_FAULT = "-//MMBase/DTD database config 1.0//EN";
     /** Public ID of the Database DTD version 1.1 */
     public static final String PUBLIC_ID_DATABASE_1_1 = "-//MMBase//DTD database config 1.1//EN";
+    private static final String PUBLIC_ID_DATABASE_1_1_FAULT = "-//MMBase/DTD database config 1.1//EN";
+    /** Public ID of the Database DTD version 1.2 */
+    public static final String PUBLIC_ID_DATABASE_1_2 = "-//MMBase//DTD database config 1.2//EN";
 
     /** DTD resource filename of the Database DTD version 1.0 */
     public static final String DTD_DATABASE_1_0 = "database_1_0.dtd";
     /** DTD resource filename of the Database DTD version 1.1 */
     public static final String DTD_DATABASE_1_1 = "database_1_1.dtd";
+    /** DTD resource filename of the Database DTD version 1.2 */
+    public static final String DTD_DATABASE_1_2 = "database_1_2.dtd";
 
     /** Public ID of the most recent Database DTD */
-    public static final String PUBLIC_ID_DATABASE = PUBLIC_ID_DATABASE_1_1;
+    public static final String PUBLIC_ID_DATABASE = PUBLIC_ID_DATABASE_1_2;
     /** DTD resource filename of the most Database DTD */
-    public static final String DTD_DATABASE = DTD_DATABASE_1_1;
+    public static final String DTD_DATABASE = DTD_DATABASE_1_2;
 
     /**
      * Register the Public Ids for DTDs used by XMLDatabaseReader
@@ -53,9 +58,11 @@ public class XMLDatabaseReader extends XMLBasicReader  {
         // various builder dtd versions
         XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_0, DTD_DATABASE_1_0, XMLDatabaseReader.class);
         XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_1, DTD_DATABASE_1_1, XMLDatabaseReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_2, DTD_DATABASE_1_2, XMLDatabaseReader.class);
 
         // legacy public IDs (wrong, don't use these)
         XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_0_FAULT, DTD_DATABASE_1_0, XMLDatabaseReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_1_1_FAULT, DTD_DATABASE_1_1, XMLDatabaseReader.class);
     }
 
     /**
