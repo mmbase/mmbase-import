@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Properties.java,v 1.6 2000-11-14 14:52:11 gerard Exp $
+	$Id: Properties.java,v 1.7 2000-12-10 15:48:27 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/11/14 14:52:11  gerard
+	gerard: removed empty method public String getGUIIndicator(String field,MMObjectNode node)
+	and changed name into key in the method getGuiIndicator(MMObjectNode node)
+	
 	Revision 1.5  2000/03/30 13:11:33  wwwtech
 	Rico: added license
 	
@@ -35,12 +39,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Id: Properties.java,v 1.6 2000-11-14 14:52:11 gerard Exp $
+ * @version $Id: Properties.java,v 1.7 2000-12-10 15:48:27 daniel Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("key");
