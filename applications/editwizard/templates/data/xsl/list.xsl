@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.18 2002-07-18 13:52:10 michiel Exp $
+  @version $Id: list.xsl,v 1.19 2002-07-18 14:48:08 michiel Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -200,8 +200,7 @@
           <xsl:for-each select="object[1]/field">
             <td class="tableheader">
               <xsl:value-of select="@name" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-            </td><td>
-          </td>
+            </td>
           </xsl:for-each>
         </tr>
       </xsl:if>
@@ -221,22 +220,14 @@
     </html>
   </xsl:template>
 
-  <xsl:template name="lastfield">
-    <xsl:if test="position()=last()">
-      <xsl:attribute name="width">100%</xsl:attribute>
-    </xsl:if>
-  </xsl:template>
-
   <xsl:template match="field">
     <xsl:if test="position()>1">
       <td>
-        <xsl:call-template name="lastfield" />
         <nobr><xsl:value-of disable-output-escaping="yes" select="." /></nobr>
       </td>
     </xsl:if>
     <xsl:if test="position()=1">
       <td>
-        <xsl:call-template name="lastfield" />
         <xsl:value-of select="." /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
       </td>
       </xsl:if>
