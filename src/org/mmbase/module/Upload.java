@@ -34,7 +34,6 @@ public class Upload extends ProcessorModule {
 	private String fileUploadDirectory = null;
 
 	public void init() {
-    	log.info("Module Upload started");
 		fileUploadDirectory=getInitParameter("fileUploadDirectory");
     	log.debug("Upload module, fileUploadDirectory = "+fileUploadDirectory);
 	}
