@@ -1,4 +1,6 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -26,23 +28,31 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language  as defined by RFC xxx -->
-	<singular xml:lang="us">Jumper</singular>
-	<singular xml:lang="en">Jumper</singular>
+	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">Jumper</singular>
-	<!-- multiple per language  as defined by RFC xxx -->
-	<plural xml:lang="us">Jumpers</plural>
-	<plural xml:lang="en">Jumpers</plural>
+	<singular xml:lang="en">Jumper</singular>
+	<singular xml:lang="us">Jumper</singular>
+	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="nl">Jumpers</plural>
+	<plural xml:lang="en">Jumpers</plural>
+	<plural xml:lang="us">Jumpers</plural>
 </names>
 
 <!-- <descriptions>
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
+<!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="us">url jumpers, allows you to create jumpers in the form of www.vpro.nl/jumper</description>
 </descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+<property name="JumperNotFoundURL">/index.html</property>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -54,10 +64,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<name xml:lang="en">Object</name>
-			<name xml:lang="nl">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="nl">Object</guiname>
+			<guiname xml:lang="en">Object</guiname>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -75,7 +85,7 @@
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true" key="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -83,10 +93,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Owner</name>
-			<name xml:lang="en">Owner</name>
-			<name xml:lang="nl">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="nl">Eigenaar</guiname>
+			<guiname xml:lang="en">Owner</guiname>
+			<guiname xml:lang="us">Owner</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -104,7 +114,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="12" notnull="false">VARCHAR</type>
+			<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -112,10 +122,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Name</name>
-			<name xml:lang="en">Name</name>
-			<name xml:lang="nl">Naam</name>
-			<type>string</type>
+			<guiname xml:lang="nl">Naam</guiname>
+			<guiname xml:lang="en">Name</guiname>
+			<guiname xml:lang="us">Name</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -133,7 +143,7 @@
 			<!-- name of the field in the database -->
 			<name>name</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="64" notnull="false">VARCHAR</type>
+			<type state="persistent" size="64" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -141,10 +151,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">ID</name>
-			<name xml:lang="en">ID</name>
-			<name xml:lang="nl">ID</name>
-			<type>integer</type>
+			<guiname xml:lang="nl">ID</guiname>
+			<guiname xml:lang="en">ID</guiname>
+			<guiname xml:lang="us">ID</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -162,7 +172,7 @@
 			<!-- name of the field in the database -->
 			<name>id</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -170,10 +180,10 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Url</name>
-			<name xml:lang="en">Url</name>
-			<name xml:lang="nl">Url</name>
-			<type>string</type>
+			<guiname xml:lang="nl">Url</guiname>
+			<guiname xml:lang="en">Url</guiname>
+			<guiname xml:lang="us">Url</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -191,7 +201,7 @@
 			<!-- name of the field in the database -->
 			<name>url</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="255" notnull="false">VARCHAR</type>
+			<type state="persistent" size="255" notnull="true" key="false">STRING</type>
 		</db>
 	</field>
 
