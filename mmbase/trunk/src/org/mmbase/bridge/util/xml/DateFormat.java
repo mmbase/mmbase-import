@@ -34,42 +34,43 @@ import org.mmbase.util.logging.Logging;
  * </pre>
  *
  * @author Nico Klasens
- * @version $Id: DateFormat.java,v 1.3 2004-01-19 17:45:15 pierre Exp $
+ * @version $Id: DateFormat.java,v 1.4 2004-01-21 12:50:42 michiel Exp $
+ * @since   MMBase-1.7
  */
 public class DateFormat {
 
-    /** MMBase logging system */
-    private static Logger log = Logging.getLoggerInstance(DateFormat.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(DateFormat.class);
+
 
     /**
      * Formats a node's field value with the date pattern
      * @param node the number or alias of the node containing the field
-     * @param fieldname the name of the field to format
+     * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
      * @return the formatted string
      */
-    public static String format(String node, String fieldname, String pattern) {
+    public static String format(String node, String fieldName, String pattern) {
         if (log.isDebugEnabled()) {
-            log.debug("calling with string '" + node + "' fieldname: " + fieldname + "' pattern: " + pattern);
+            log.debug("calling with string '" + node + "' fieldname: " + fieldName + "' pattern: " + pattern);
         }
-        return format("mmbase", node, fieldname, pattern);
+        return format("mmbase", node, fieldName, pattern);
     }
 
     /**
      * Formats a node's field value with the date pattern
      * @param cloudName the name of the cloud in which to find the node
      * @param number the number or alias of the node containing the field
-     * @param fieldname the name of the field to format
+     * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
      * @return the formatted string
      */
-    public static String format(String cloudName, String number, String fieldname, String pattern) {
+    public static String format(String cloudName, String number, String fieldName, String pattern) {
         log.debug("calling base");
         try {
             Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);
-            return format(cloud, number, fieldname, pattern);
+            return format(cloud, number, fieldName, pattern);
         } catch (BridgeException e) {
-            return "could not find '" + fieldname + "' on node '" + number + "' (" + e.toString() + ")";
+            return "could not find '" + fieldName + "' on node '" + number + "' (" + e.toString() + ")";
         }
     }
 
@@ -77,38 +78,44 @@ public class DateFormat {
      * Formats a node's field value with the date pattern
      * @param cloudName the cloud in which to find the node
      * @param number the number or alias of the node containing the field
-     * @param fieldname the name of the field to format
+     * @param fieldName the name of the field to format
      * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
      * @return the formatted string
      */
-    public static String format(Cloud cloud, String number, String fieldname, String pattern) {
+    public static String format(Cloud cloud, String number, String fieldName, String pattern) {
         log.debug("calling base");
         try {
             Node node = cloud.getNode(number);
-            String fieldvalue = node.getStringValue(fieldname);
-            return format(fieldvalue, pattern);
+            String fieldValue = node.getStringValue(fieldName);
+            return format(fieldValue, pattern);
         } catch (BridgeException e) {
             if (log.isDebugEnabled()) {
-                log.debug("could not find '" + fieldname + "' on node '" + number + "'");
+                log.debug("could not find '" + fieldName + "' on node '" + number + "'");
                 log.trace(Logging.stackTrace(e));
             }
-            return "could not find " + fieldname + " on node " + number + "(" + e.toString() + ")";
+            return "could not find " + fieldName + " on node " + number + "(" + e.toString() + ")";
         }
     }
 
-    /**
-     * Formats a value with a date pattern
-     * @param fieldvalue A string containing the unformmatted date value (in nr of seconds since 1/1/1970)
-     * @param pattern the date pattern (i.e. 'dd-MM-yyyy')
+    
+    public static String format(String fieldValue, String pattern) {
+        return format(fieldValue, pattern, 1000);
+    }
+
+    /** Formats the fieldvalue to a date pattern
+     * 
+     * @param fieldvalue  time-stamp
+     * @param pattern   the date pattern (i.e. 'dd-MM-yyyy')
+     * @param factor    Factor to multiply fieldvalue to make milliseconds. Should be 1000 normally (so field in seconds)
      * @return the formatted string
      */
-    public static String format(String fieldvalue, String pattern) {
+    public static String format(String fieldValue, String pattern, int factor) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        if (fieldvalue == null || "".equals(fieldvalue)) {
+        if (fieldValue == null || "".equals(fieldValue)) {
            return "";
         }
-        long seconds = Long.valueOf(fieldvalue).longValue();
-        return sdf.format(new Date(seconds * 1000));
+        long seconds = Long.valueOf(fieldValue).longValue();
+        return sdf.format(new Date(seconds * factor));
     }
 
     /**
@@ -123,11 +130,11 @@ public class DateFormat {
      * @return the formatted string
      * @throws javax.xml.transform.TransformerException if something went wrong while searching the DOM Node
      */
-    public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldname, String pattern) throws javax.xml.transform.TransformerException {
+    public static String format(Cloud cloud, org.w3c.dom.Node node, String fieldName, String pattern) throws javax.xml.transform.TransformerException {
         log.debug("calling with dom node");
         // bit of a waste to use an xpath here?
         String number = XPathAPI.eval(node, "./field[@name='number']").toString();
-        return format(cloud, number, fieldname, pattern);
+        return format(cloud, number, fieldName, pattern);
     }
 
 }
