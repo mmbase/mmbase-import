@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {
@@ -38,13 +38,15 @@ public class BasicFieldValueInConstraint extends BasicFieldConstraint implements
      * Adds value.
      *
      * @param value The value.
+     * @return This <code>BasicFieldValueInConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void addValue(Object value) {
+    public BasicFieldValueInConstraint addValue(Object value) {
         // Add value as string. This facilitates comparison of
         // numerical values of different type.
         BasicStepField.testValue(value, getField());
         values.add(value.toString());
+        return this;
     }
     
     // javadoc is inherited

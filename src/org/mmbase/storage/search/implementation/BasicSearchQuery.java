@@ -18,7 +18,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery {
@@ -67,37 +67,43 @@ public class BasicSearchQuery implements SearchQuery {
      * Sets distinct.
      *
      * @param distinct The distinct value.
+     * @return This <code>BasicSearchQuery</code> instance.
      */
-    public void setDistinct(boolean distinct) {
+    public BasicSearchQuery setDistinct(boolean distinct) {
         this.distinct = distinct;
+        return this;
     }
     
     /**
      * Sets maxNumber.
      *
      * @param maxNumber The maxNumber value.
+     * @return This <code>BasicSearchQuery</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setMaxNumber(int maxNumber) {
+    public BasicSearchQuery setMaxNumber(int maxNumber) {
         if (maxNumber < -1) {
             throw new IllegalArgumentException(
             "Invalid maxNumber value: " + maxNumber);
         }
         this.maxNumber = maxNumber;
+        return this;
     }
     
     /**
      * Sets offset.
      *
      * @param offset The offset value.
+     * @return This <code>BasicSearchQuery</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setOffset(int offset) {
+    public BasicSearchQuery setOffset(int offset) {
         if (offset < 0) {
             throw new IllegalArgumentException(
             "Invalid offset value: " + offset);
         }
         this.offset = offset;
+        return this;
     }
     
     /**

@@ -16,7 +16,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicCompositeConstraint extends BasicConstraint
@@ -50,9 +50,10 @@ implements CompositeConstraint {
      * Adds new child constraint.
      *
      * @param child The child constraint.
+     * @return This <code>BasicCompositeConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void addChild(Constraint child) {
+    public BasicCompositeConstraint addChild(Constraint child) {
         if (child == null) {
             throw new IllegalArgumentException(
             "Invalid child argument: " + child);
@@ -63,6 +64,7 @@ implements CompositeConstraint {
             "Trying to add constraint as child to itself: " + child);
         }
         childs.add(child);
+        return this;
     }
     
     // javadoc is inherited

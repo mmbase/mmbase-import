@@ -10,7 +10,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicStepTest extends TestCase {
     
@@ -74,10 +74,11 @@ public class BasicStepTest extends TestCase {
             fail("Null value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance.setAlias(TEST_ALIAS);
+        BasicStep result = instance.setAlias(TEST_ALIAS);
         String alias = instance.getAlias();
         assertTrue(alias != null);
         assertTrue(alias.equals(TEST_ALIAS));
+        assertTrue(result == instance);
     }
     
     /** Test of getAlias method, of class org.mmbase.storage.search.implementation.BasicStep. */
@@ -105,7 +106,7 @@ public class BasicStepTest extends TestCase {
         assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
         assertTrue(!iNodes.hasNext());
         int nodeNumber1 = 2345;
-        instance.addNode(nodeNumber1);
+        BasicStep result = instance.addNode(nodeNumber1);
         nodes = instance.getNodes();
         assertTrue(nodes.size() == 2);
         iNodes = nodes.iterator();
@@ -114,6 +115,7 @@ public class BasicStepTest extends TestCase {
         assertTrue(iNodes.hasNext());
         assertTrue(iNodes.next().equals(new Integer(nodeNumber0)));
         assertTrue(!iNodes.hasNext());
+        assertTrue(result == instance);
     }
     
     /** Test of getNodes method, of class org.mmbase.storage.search.implementation.BasicStep. */
@@ -161,8 +163,8 @@ public class BasicStepTest extends TestCase {
         + instance.getNodes() + ")"));
          
         // With nodes.
-        instance.addNode(123);
-        instance.addNode(3456);
+        instance.addNode(123)
+            .addNode(3456);
         assertTrue(instance.toString(), 
         instance.toString().equals("Step(tablename:" + instance.getTableName() 
         + ", alias:" + instance.getAlias() + ", nodes:" 

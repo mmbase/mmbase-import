@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSortOrderTest extends TestCase {
     
@@ -59,8 +59,10 @@ public class BasicSortOrderTest extends TestCase {
             fail("Invalid value, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance.setDirection(SortOrder.ORDER_DESCENDING);
+        BasicSortOrder result 
+            = instance.setDirection(SortOrder.ORDER_DESCENDING);
         assertTrue(instance.getDirection() == SortOrder.ORDER_DESCENDING);
+        assertTrue(result == instance);
     }
     
     /** Test of getField method, of class org.mmbase.storage.search.implementation.BasicSortOrder. */

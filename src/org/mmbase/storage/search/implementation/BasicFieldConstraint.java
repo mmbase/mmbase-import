@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The caseSensitive property defaults to <code>true</code>.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicFieldConstraint extends BasicConstraint implements FieldConstraint {
@@ -49,10 +49,12 @@ public class BasicFieldConstraint extends BasicConstraint implements FieldConstr
      * Sets caseSensitive property.
      * This has only effect when the associated field is of string type.
      *
+     * @return This <code>BasicFieldConstraint</code> instance.
      * @param caseSensitive The caseSensitive property value.
      */
-    public void setCaseSensitive(boolean caseSensitive) {
+    public BasicFieldConstraint setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
+        return this;
     }
     
     // javadoc is inherited

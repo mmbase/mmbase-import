@@ -10,7 +10,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class ModifiableQueryTest extends TestCase {
     
@@ -78,8 +78,9 @@ public class ModifiableQueryTest extends TestCase {
         assertTrue(instance.getMaxNumber() == MAX_NUMBER1);
         instance.setMaxNumber(MAX_NUMBER2);
         assertTrue(instance.getMaxNumber() == MAX_NUMBER2);
-        instance.setMaxNumber(-1);
+        ModifiableQuery result = instance.setMaxNumber(-1);
         assertTrue(instance.getMaxNumber() == MAX_NUMBER1);
+        assertTrue(result == instance);
     }
     
     /** Test of setOffset method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
@@ -88,8 +89,9 @@ public class ModifiableQueryTest extends TestCase {
         assertTrue(instance.getOffset() == OFFSET1);
         instance.setOffset(OFFSET2);
         assertTrue(instance.getOffset() == OFFSET2);
-        instance.setOffset(-1);
+        ModifiableQuery result = instance.setOffset(-1);
         assertTrue(instance.getOffset() == OFFSET1);        
+        assertTrue(result == instance);
     }
     
     /** Test of getMaxNumber method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
@@ -104,20 +106,27 @@ public class ModifiableQueryTest extends TestCase {
         testSetOffset();
     }
     
-    /** Test of getConstraint method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testGetConstraint() {
+    /** Test of setConstraint method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testSetConstraint() {
         Constraint c1 = new BasicFieldNullConstraint(field1);
         Constraint c2 = new BasicFieldValueConstraint(field1, "jjfkljfd");
         query.setConstraint(c1);
         assertTrue(instance.getConstraint().equals(c1));
         instance.setConstraint(c2);
         assertTrue(instance.getConstraint().equals(c2));
-        instance.setConstraint(null);
+        ModifiableQuery result = instance.setConstraint(null);
         assertTrue(instance.getConstraint().equals(c1));
+        assertTrue(result == instance);
     }
     
-    /** Test of getFields method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testGetFields() {
+    /** Test of getConstraint method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testGetConstraint() {
+        // Same as:
+        testSetConstraint();
+    }
+    
+    /** Test of setFields method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testSetFields() {
         StepField field2 = new BasicStepField(step1, imagesDescription);
         List fields1 = new ArrayList();
         fields1.add(field1);
@@ -127,30 +136,44 @@ public class ModifiableQueryTest extends TestCase {
         assertTrue(instance.getFields().equals(fields1));
         instance.setFields(fields2);
         assertTrue(instance.getFields().equals(fields2));
-        instance.setFields(null);
+        ModifiableQuery result = instance.setFields(null);
         assertTrue(instance.getFields().equals(fields1));
+        assertTrue(result == instance);
     }
     
-    /** Test of getSortOrders method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testGetSortOrders() {
-        BasicSortOrder so1 = query.addSortOrder(field1);
-        so1.setDirection(SortOrder.ORDER_ASCENDING);
+    /** Test of getFields method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testGetFields() {
+        // Same as:
+        testSetFields();
+    }
+    
+    /** Test of setSortOrders method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testSetSortOrders() {
+        BasicSortOrder so1 = query.addSortOrder(field1)
+            .setDirection(SortOrder.ORDER_ASCENDING);
         List sortOrders1 = new ArrayList();
         sortOrders1.add(so1);
-        BasicSortOrder so2 = new BasicSortOrder(field1);
-        so2.setDirection(SortOrder.ORDER_DESCENDING);
+        BasicSortOrder so2 = new BasicSortOrder(field1)
+            .setDirection(SortOrder.ORDER_DESCENDING);
         List sortOrders2 = new ArrayList();
         sortOrders2.add(so2);
         
         assertTrue(instance.getSortOrders().equals(sortOrders1));
         instance.setSortOrders(sortOrders2);
         assertTrue(instance.getSortOrders().equals(sortOrders2));
-        instance.setSortOrders(null);
+        ModifiableQuery result = instance.setSortOrders(null);
         assertTrue(instance.getSortOrders().equals(sortOrders1));
+        assertTrue(result == instance);
     }
     
-    /** Test of getSteps method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testGetSteps() {
+    /** Test of getSortOrders method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testGetSortOrders() {
+        // Same as:
+        testSetSortOrders();
+    }
+    
+    /** Test of setSteps method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testSetSteps() {
         Step step2 = query.addStep(pools);
         List steps1 = new ArrayList();
         steps1.add(step1);
@@ -161,47 +184,31 @@ public class ModifiableQueryTest extends TestCase {
         assertTrue(instance.getSteps().equals(steps1));
         instance.setSteps(steps2);
         assertTrue(instance.getSteps().equals(steps2));
-        instance.setSteps(null);
+        ModifiableQuery result = instance.setSteps(null);
         assertTrue(instance.getSteps().equals(steps1));
+        assertTrue(result == instance);
     }
     
-    /** Test of isDistinct method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testIsDistinct() {
-        assertTrue(!instance.isDistinct());
-        instance.setDistinct(Boolean.TRUE);
-        assertTrue(instance.isDistinct());
-        instance.setDistinct(null);
-        assertTrue(!instance.isDistinct());
-    }
-    
-    /** Test of setConstraint method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testSetConstraint() {
+    /** Test of getSteps method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testGetSteps() {
         // Same as:
-        testGetConstraint();
-    }
-    
-    /** Test of setFields method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testSetFields() {
-        // Same as:
-        testGetFields();
-    }
-    
-    /** Test of setSortOrders method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testSetSortOrders() {
-        // Same as:
-        testGetSortOrders();
-    }
-    
-    /** Test of setSteps method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
-    public void testSetSteps() {
-        // Same as:
-        testGetSteps();
+        testSetSteps();
     }
     
     /** Test of setDistinct method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
     public void testSetDistinct() {
+        assertTrue(!instance.isDistinct());
+        instance.setDistinct(Boolean.TRUE);
+        assertTrue(instance.isDistinct());
+        ModifiableQuery result = instance.setDistinct(null);
+        assertTrue(!instance.isDistinct());
+        assertTrue(result == instance);
+    }
+    
+    /** Test of isDistinct method, of class org.mmbase.storage.search.implementation.ModifiableQuery. */
+    public void testIsDistinct() {
         //  Same as:
-        testIsDistinct();
+        testSetDistinct();
     }
     
     public static Test suite() {
