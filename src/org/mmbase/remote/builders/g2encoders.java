@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.12 2001-03-14 16:42:02 vpro Exp $
+$Id: g2encoders.java,v 1.13 2001-03-15 16:15:58 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2001/03/14 16:42:02  vpro
+Davzev: Added setValue to print what remotebuilder is doing when busy working.
+
 Revision 1.11  2001/03/07 14:19:32  vpro
 Davzev: Changed debug when state is busy in method nodeChanged
 
@@ -37,7 +40,7 @@ import org.mmbase.service.interfaces.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.12 $ $Date: 2001-03-14 16:42:02 $
+ * @version $Revision: 1.13 $ $Date: 2001-03-15 16:15:58 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;
@@ -153,7 +156,6 @@ public class g2encoders extends RemoteBuilder {
 	private void doVersion() {
 		if (debug) debug("doVersion: Setting state to busy and get the version info.");
 		setValue("state","busy");
-		setValue("info","Busy performing doVersion");	
 		commit();
 	
 		// set the version we got from the encoder	
@@ -178,7 +180,6 @@ public class g2encoders extends RemoteBuilder {
 	private void doEncode() {
 		if (debug) debug("doEncode: Setting state to busy and start encoding.");
 		setValue("state","busy");
-		setValue("info","Busy performing doEncode");	
 		commit();
 	
 		// set the version we got from the encoder	
