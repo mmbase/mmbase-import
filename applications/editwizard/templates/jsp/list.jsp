@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.4 2002-05-07 13:37:56 michiel Exp $
+     * @version  $Id: list.jsp,v 1.5 2002-05-07 14:40:50 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -126,11 +126,11 @@ if (ewconfig.wizard != null) {
     log.trace("Create wizard object so that delete/create actions are correctly loaded. No need to store. We'll create another wizard automatically if a button in the list is pressed.");
     Wizard wiz = null;
     wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, ewconfig.wizard, null, cloud);
-    deletable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='delete']")!=null);
-    creatable = (Utils.selectSingleNode(wiz.schema, "/*/action[@type='create']")!=null);
-    deletedescription = Utils.selectSingleNodeText(wiz.schema, "/*/action[@type='delete']/description", null);
-    deleteprompt      = Utils.selectSingleNodeText(wiz.schema, "/*/action[@type='delete']/prompt", null);
-    title             = Utils.selectSingleNodeText(wiz.schema, "/wizard-schema/title", null);
+    deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
+    creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
+    deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null);
+    deleteprompt      = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null);
+    title             = Utils.selectSingleNodeText(wiz.getSchema(), "/wizard-schema/title", null);
     
 }
 
