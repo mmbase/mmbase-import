@@ -814,7 +814,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
-      <info>The name of the cloud.</info>
+      <info>The name of the cloud. On default it is 'mmbase'.</info>
       <examplevalue>
         <value>mmbase</value>
       </examplevalue>
@@ -950,9 +950,15 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>info</name>
+	<extends>writer</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.InfoTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>This tag can be used to call getInfo from Module (can also be done with mod) and NodeManager.</info>
+    <info>
+	  This tag can be used to call getInfo from Module and
+	  NodeManager. The result of 'getInfo' is a string which on
+	  default is written to the page.
+	</info>
     <attribute>
         <name>nodemanager</name>
         <required>false</required>
@@ -961,12 +967,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>module</name>
         <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
+        <rtexprvalue>true</rtexprvalue>       
     </attribute>
     <attribute>
-        <name>id</name>
-        <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
+        <name>command</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	    <info>The command which is given</info>
     </attribute>
   </tag>
   <tag>
@@ -2158,5 +2165,19 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	  </info>
     </attribute>
 	<extends>contextreferrer</extends>   
+   </tag>
+  <tag>   
+    <name>formatter</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
+    <info>
+    </info>
+    <attribute>
+      <name>xslt</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		Experimental tag.
+	  </info>
+    </attribute>
    </tag>
 </taglib>
