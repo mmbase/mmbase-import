@@ -25,7 +25,7 @@
         </mm:node>
 
         <mm:listnodes type="mmbasegroups">
-         <option value="<mm:field name="number" />" <mm:field name="number"><mm:compare referid2="mayall">selected="selected" </mm:compare></mm:field> ><mm:nodeinfo type="gui" /></option>
+         <option value="<mm:field name="number" />" <mm:present referid="mayall"><mm:field name="number"><mm:compare referid2="mayall">selected="selected" </mm:compare></mm:field></mm:present> ><mm:nodeinfo type="gui" /></option>
         </mm:listnodes>
       </select>
      </td>
