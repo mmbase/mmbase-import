@@ -29,7 +29,7 @@ import java.net.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.10 2003-02-25 10:18:28 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.11 2003-03-18 10:06:24 pierre Exp $
  * @since MMBase-1.7
  * @see   Config
  */
@@ -44,7 +44,7 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     protected StringBuffer  getURLBuffer() {
         List servlets = MMBaseServlet.getServletMappings("media-" + format);
         String servlet;
-        if (servlets.size() == 0) {
+        if (servlets == null || servlets.size() == 0) {
             log.error("No mapping found to media-" + format + " servlet. Change this in your web.xml");
             servlet = Config.templatesDir + "mediafragment." + format + ".jsp";
         } else {
