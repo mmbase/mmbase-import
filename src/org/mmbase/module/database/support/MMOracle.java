@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.5.4.2 2002-11-07 23:33:54 robmaris Exp $
+$Id: MMOracle.java,v 1.5.4.3 2002-11-12 22:09:49 robmaris Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5.4.2  2002/11/07 23:33:54  robmaris
+RvM: resolved #3770. That "temp fix" has been there long enough.
+
 Revision 1.5.4.1  2002/11/06 22:43:08  robmaris
 RvM: fixed #3661. Removed removeNode(), the superclass method is fine and there was no reason to overwrite it in the first place.
 
@@ -196,7 +199,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.5.4.2 $ $Date: 2002-11-07 23:33:54 $
+* @$Revision: 1.5.4.3 $ $Date: 2002-11-12 22:09:49 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -254,8 +257,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
          case FieldDefs.TYPE_STRING:
             String tmp;
             ResultSetMetaData metaData = rs.getMetaData();
-            if (metaData.getColumnType(i) == Types.BLOB) {
-               // Retreive from BLOB.
+            if (metaData.getColumnType(i) == Types.CLOB) {
+               // Retreive from CLOB.
                tmp = getDBText(rs, i);
             } else {
                // Retreive from textfield.
