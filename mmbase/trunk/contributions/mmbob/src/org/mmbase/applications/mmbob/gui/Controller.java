@@ -274,6 +274,87 @@ public class Controller {
     }
 
     /**
+     * Get a specific posting, for use in remove post where the posting
+     * to be deleted is displayed.
+     *
+     * @param forumid MMBase node number of the forum
+     * @param postareaid MMBase node number of the postarea
+     * @param postthreadid  MMBase node number of the postthread
+     * @param activeid MMBase node number of current Poster (on the page)
+     * @param page Page number of the threads we want
+     * @param pagesize The number of postings per page
+     * @param imagecontext The context where to find the images (eg smilies)
+     * @return List of (virtual) MMObjectNodes representing the postings within the given postthread
+     */
+    public MMObjectNode getPosting(String forumid, String postareaid, String postthreadid, String postingid, int activeid, String imagecontext) {
+        List list = new ArrayList();
+        long start = System.currentTimeMillis();
+
+        VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+        MMObjectNode virtual = builder.getNewNode("admin");
+        Forum f = ForumManager.getForum(forumid);
+        if (f != null) {
+            PostArea a = f.getPostArea(postareaid);
+            if (a != null) {
+                PostThread t = a.getPostThread(postthreadid);
+                if (t != null) {
+                    Posting p = t.getPosting(Integer.parseInt(postingid));
+                    virtual.setValue("subject", p.getSubject());
+                    virtual.setValue("body", p.getBody(imagecontext));
+                    virtual.setValue("edittime", p.getEditTime());
+                    Poster po = f.getPoster(p.getPoster());
+                    if (po != null) {
+                        virtual.setValue("poster", p.getPoster());
+                        addPosterInfo(virtual, po);
+                    } else {
+                        virtual.setValue("poster", p.getPoster());
+                        virtual.setValue("guest", "true");
+                    }
+                    virtual.setValue("posttime", p.getPostTime());
+                    virtual.setValue("id", p.getId());
+                    virtual.setValue("threadpos", p.getThreadPos());
+		    //very weird way need to figure this out
+                    if (p.getThreadPos()%2==0) {
+                        virtual.setValue("tdvar", "listpaging");
+                    } else {
+                        virtual.setValue("tdvar", "");
+                    }
+                    // should be moved out of the loop
+                    if (activeid != -1) {
+                        Poster ap = f.getPoster(activeid);
+                        ap.signalSeen();
+                        ap.seenThread(t);
+                        addActiveInfo(virtual, ap);
+                        if (po != null && po.getAccount().equals(ap.getAccount())) {
+                            virtual.setValue("isowner", "true");
+                        } else {
+                            virtual.setValue("isowner", "false");
+                        }
+                        if (ap != null && a.isModerator(ap.getAccount())) {
+                            virtual.setValue("ismoderator", "true");
+                        } else {
+                            virtual.setValue("ismoderator", "false");
+                        }
+                    }
+                }
+            }
+        }
+        long end = System.currentTimeMillis();
+        //log.info("getPosting "+(end-start)+"ms");
+
+        return virtual;
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
      * Get the moderators of this postarea / forum
      *
      * @param forumid MMBase node number of the forum
