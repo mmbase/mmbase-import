@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.25 2004-01-20 18:24:36 michiel Exp $
+    @version $Id: base.xsl,v 1.26 2004-01-20 18:37:56 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -19,10 +19,11 @@
 		
     The xsl:output will generate
 		<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+      btw, output method "xml" which looks nicer (<br />) breaks empty text-area's
 	-->
   <xsl:output
-    method="xml"
-    version="1.0"
+    method="html"
     encoding="utf-8"
     omit-xml-declaration="yes"
     standalone="yes"
