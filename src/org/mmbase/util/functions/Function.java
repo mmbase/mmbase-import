@@ -14,12 +14,12 @@ package org.mmbase.util.functions;
 
 
 /**
- * An abstract representation of a piece of functionality (a 'function'). A function as a name, a
- * return type, and an parameter-definition (a Parameter array).
+ * An abstract representation of a piece of functionality (a 'function'). A function has a name, a
+ * return type, and a parameter-definition (which is a Parameter array).
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: Function.java,v 1.1 2003-12-18 23:12:20 michiel Exp $
+ * @version $Id: Function.java,v 1.2 2004-03-05 12:34:46 michiel Exp $
  * @since MMBase-1.7
  * @see Parameter
  * @see Parameters
