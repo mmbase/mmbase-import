@@ -19,7 +19,7 @@ import java.util.*;
  * java -Dmmbase.config=myconfigpath org.mmbase.config.Test
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: JVMOptionsReport.java,v 1.3 2003-03-10 11:50:11 pierre Exp $
+ * @version $Id: JVMOptionsReport.java,v 1.4 2003-05-01 08:21:43 kees Exp $
  */
 public class JVMOptionsReport extends AbstractReport {
     
@@ -62,33 +62,4 @@ public class JVMOptionsReport extends AbstractReport {
 ;
 	return res;
     }
-
-    // --- private methods ---------------------------------------
-    private boolean checkServletAPILoadable() {
-	try {
-	    Class c = Class.forName("java.util.Vector");
-	    return true;
-	} catch (Exception e) {
-	    return false;
-	}
-    }
-    
-    private boolean checkXercesLoadable() {
-	try {
-	    Class c = Class.forName("org.apache.xerces.parsers.DOMParser");
-	    return true;
-	} catch (Exception e) {
-	    return false;
-	}
-    }
-
-    private boolean checkXalanLoadable() {
-	try {
-	    Class c = Class.forName("org.apache.xalan.xslt.XSLTProcessor");
-	    return true;
-	} catch (Exception e) {
-	    return false;
-	}
-    }
-
 }
