@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.32.2.7 2004-07-23 19:34:45 michiel Exp $
+ * @version $Id: Queries.java,v 1.32.2.8 2004-10-14 08:22:03 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -461,6 +461,26 @@ abstract public  class Queries {
                     } else {
                         value = new Integer(-1);
                     }
+                } else if (value instanceof Collection) {  // or even more aliases!
+                    Iterator i = ((Collection) value).iterator();
+                    value = new ArrayList();
+                    List list = (List) value;
+                    while (i.hasNext()) {
+                        Object v = i.next();
+                        if (v instanceof Number) {
+                            list.add(v);
+                        } else {
+                            String s = Casting.toString(v);
+                            if (cloud.hasNode(s)) {
+                                Node node = cloud.getNode(s);
+                                list.add(new Integer(node.getNumber()));
+                            } else {
+                                list.add(new Integer(-1));
+                            }
+                            
+                        }
+                    }
+                    
                 }
             }
 
