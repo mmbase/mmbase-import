@@ -23,8 +23,8 @@ import org.mmbase.bridge.*;
  **/
 public class MMList extends MMTaglib
     implements BodyTag{
-    
-    
+
+
     private String nodesString=null;
     private String typeString=null;
     private String fieldsString=null;
@@ -33,6 +33,7 @@ public class MMList extends MMTaglib
     private String directionString=null;
     private String distinctString=null;
     private String maxString=null;
+    private String searchString=null;
     private int    offset   =0;
 
     /**
@@ -40,9 +41,9 @@ public class MMList extends MMTaglib
      * exported from the parent tag and the on expored from this tag
      **/
     private String prefixString=null;
-    
+
     public static boolean debug = true;
-    
+
     //simple method to dump debug data into System.err
     public void debug(String debugdata){
 	System.err.println("MMList:" + debugdata);
@@ -61,18 +62,18 @@ public class MMList extends MMTaglib
      * for each iteration but wil still whant to know
      * in the loop if we are talking about the first/last node
      * currentItemIndex is updated by fillVars
-     * listSize is set in 
+     * listSize is set in
      * used by getSize() isFirst() and isLast()
      **/
     private int listSize = 0;
     private int currentItemIndex= -1;
 
 
-    
+
     /**
      * implementation of TagExtraInfo return values declared here
-     * should be filled at one point, currently fillVars is responsible for 
-     * that ant gets called before every 
+     * should be filled at one point, currently fillVars is responsible for
+     * that ant gets called before every
      **/
     public VariableInfo[] getVariableInfo(TagData data){
 	VariableInfo[] variableInfo =    null;
@@ -82,7 +83,7 @@ public class MMList extends MMTaglib
 	//in effect we have to parse the data twice
 	//once here and onces specific attributes are set
 	//maybe this can be done better I do not know
-	
+
 	// prefix is used when nesting tags to be able to make a difference
 	// between the variable declared in the root tag ant this tag
 	String prefix = "";
@@ -97,7 +98,7 @@ public class MMList extends MMTaglib
 	// <%= fieldName %> or <%= node.getValue("fieldName") %>
 	if (data.getAttribute("fields")!= null){
 	    Vector fields  = StringSplitter(data.getAttribute("fields").toString(),",");
-		
+
 	    //size +1 since we return every variable + one hashTable
 	    //for every iteration
 	    //variableInfo =    new VariableInfo[fields.size() + 1];
@@ -108,14 +109,14 @@ public class MMList extends MMTaglib
 		//it would be nice to return Integer is a field is of that type
 		variableInfo[j++] = new VariableInfo(prefix + getSimpleReturnValueName(field),"java.lang.String",true,VariableInfo.NESTED);
 		variableInfo[j++] = new VariableInfo(prefix + "item"+(i+1),"java.lang.String",true,VariableInfo.NESTED);
-		    
+
 	    }
 	    variableInfo[j++] = new VariableInfo(prefix + "node","org.mmbase.bridge.Node",true,VariableInfo.NESTED);
-	} 
+	}
 	return variableInfo;
     }
-    
-    
+
+
     public void setPrefix(String prefix){
         this.prefixString = prefix;
     }
@@ -130,7 +131,7 @@ public class MMList extends MMTaglib
         return prefixString;
     }
 
-    
+
     /**
      * @param nodes a node or  acomma separated list of nodes
      * to fit history if the value is -1 this is defined as null
@@ -140,7 +141,7 @@ public class MMList extends MMTaglib
      **/
     public void setNodes(String nodes){
 	// parse/map the nodes they can be params, sessions or aliases
-	// instead of just numbers 
+	// instead of just numbers
 	nodesString=parseNodes(nodes);
     }
 
@@ -171,7 +172,16 @@ public class MMList extends MMTaglib
     }
 
     /**
-     * @param sorted A comma separated list of fields on witch the returned 
+     * @param search The search parameter, determines how directionality affects the search.
+     *               possible values are <code>"both"</code>, <code>"destination"</code>,
+     *                      <code>"source"</code>, and <code>"all"</code>
+     **/
+    public void setSearch(String search){
+	this.searchString = search;
+    }
+
+    /**
+     * @param sorted A comma separated list of fields on witch the returned
      * nodes should be sorted
      **/
     public void setSorted(String sorted){
@@ -200,13 +210,13 @@ public class MMList extends MMTaglib
 	this.maxString = max;
     }
 
-    /** 
+    /**
      * @param offset
      **/
     public void setOffset(int o) {
 	offset = o;
     }
-    
+
     /**
      *
      **/
@@ -223,6 +233,7 @@ public class MMList extends MMTaglib
 	String searchWhere= whereString;
 	String searchSorted= sortedString;
 	String searchDirection= directionString;
+	String searchSearch= searchString;
 	boolean searchDistinct= (distinctString != null);
 
 	String action= "none";
@@ -230,7 +241,7 @@ public class MMList extends MMTaglib
 	    boolean multilevel = (StringSplitter(typeString,",").size() > 1);
 	    if (multilevel){
 		action = "multilevel search";
-		nodes = getDefaultCloud().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct);
+		nodes = getDefaultCloud().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchSearch,searchDistinct);
 	    } else {
 		boolean hasSearch = (searchWhere != null);
 		boolean hasNode = (nodesString != null);
@@ -254,15 +265,15 @@ public class MMList extends MMTaglib
 		    try {
 			Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
 			nodes= node.getRelatedNodes(typeString);
-			// but now the sort-criteria are ignored!
-			
-			
+			// but now the sort-criteria and search-parameter are ignored!
+
+
 		    } catch(Exception e) {
 			Node node  = getDefaultCloud().getNodeByAlias(searchNodes);
 			debug("NODES="+node.getRelatedNodes(typeString));
 			nodes= node.getRelatedNodes(typeString);
 		    }
-		} else { 
+		} else {
 		    action = "list all objects of type("+ typeString + ")";
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 //		    boolean direction = ("UP".equals(searchDirection))? true: false;
@@ -271,14 +282,14 @@ public class MMList extends MMTaglib
 		}
 	    }
 	} catch (NullPointerException npe){
-	    showListError(npe, nodesSearchString, nodeManagers, searchNodes, searchFields, searchWhere, searchSorted,searchDirection,searchDistinct,maxString,action);
+	    showListError(npe, nodesSearchString, nodeManagers, searchNodes, searchFields, searchWhere, searchSorted,searchDirection,searchSearch,searchDistinct,maxString,action);
 	}
-	
-	
+
+
 	if (maxString != null || offset > 0) { // for the moment max can only be here because
 				//there is no other way to tell the MMCI that a list sould be shorter
 	    try {
-		int max = (maxString == null ? nodes.size() - 1 : Integer.parseInt(maxString));                
+		int max = (maxString == null ? nodes.size() - 1 : Integer.parseInt(maxString));
                 int to = max + offset;
 
                 listSize = nodes.size();
@@ -302,18 +313,18 @@ public class MMList extends MMTaglib
 	    listSize = nodes.size();
 	    returnValues = nodes.nodeIterator();
 	}
-	// if we get a result from the query 
+	// if we get a result from the query
 	// evaluate the body , else skip the body
 	if (returnValues.hasNext())
 	    return EVAL_BODY_TAG;
 	return SKIP_BODY;
     }
 
-    
+
     public void doInitBody() throws JspException {
 	fillVars();
     }
-    
+
     public int doAfterBody() throws JspException {
 	try {
 	    if (returnValues.hasNext()){
@@ -334,7 +345,7 @@ public class MMList extends MMTaglib
 	    Node node = returnValues.nextNode();
 	    String prefix = getPrefix();
 	    Enumeration returnFieldEnum = StringSplitter(fieldsString,",").elements();
-	    int j=1;	
+	    int j=1;
 	    while (returnFieldEnum.hasMoreElements()){
 		String field = (String)returnFieldEnum.nextElement();
 	    	pageContext.setAttribute(getPrefix() + getSimpleReturnValueName(field) ,"" + node.getValue(field));
@@ -343,13 +354,13 @@ public class MMList extends MMTaglib
     	    pageContext.setAttribute(getPrefix() + "node" ,node);
 	}
     }
-    
+
 
     /**
      * simple util method to split comma separated values
      * to a vector
      * @param string the string to split
-     * @param delimiter 
+     * @param delimiter
      * @return a Vector containing the elements, the elements are also trimed
      **/
     private Vector StringSplitter(String string,String delimiter){
@@ -387,7 +398,7 @@ public class MMList extends MMTaglib
 	return (! returnValues.hasNext());
     }
 
-    private void showListError(Exception npe,String nodesSearchString,String nodeManagers,String searchNodes,String searchFields,String searchWhere, String searchSorted,String searchDirection, boolean searchDistinct,String maxString,String action) throws JspException { 
+    private void showListError(Exception npe,String nodesSearchString,String nodeManagers,String searchNodes,String searchFields,String searchWhere, String searchSorted,String searchDirection, String searchSearch, boolean searchDistinct,String maxString,String action) throws JspException {
 	StringBuffer sb = new StringBuffer();
 	sb.append("nodes=" + nodesSearchString);
 	sb.append("\n");
@@ -405,6 +416,8 @@ public class MMList extends MMTaglib
 	sb.append("\n");
 	sb.append("searchDistinct=" + searchDistinct);
 	sb.append("\n");
+	sb.append("searchSearch=" + searchSearch);
+	sb.append("\n");
 	sb.append("max=" + maxString);
 	sb.append("\n");
 	sb.append("Base on the input the taglib did");
@@ -412,7 +425,7 @@ public class MMList extends MMTaglib
 	sb.append(action);
 	sb.append("\n");
 	// now do some basic stuff to find the error
-		
+
 	//go to each node in the nodes string and look if they exist
 	if (nodesString != null){
 	    Enumeration nodeList = StringSplitter(nodesString,",").elements();
