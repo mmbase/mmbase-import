@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.7 2002-04-17 13:17:36 pierre Exp $
+ * @version $Id: Field.java,v 1.8 2002-07-24 10:59:46 pierre Exp $
  */
 public interface Field {
 
@@ -68,7 +68,7 @@ public interface Field {
     /**
      * Returns the identifier for the data type this field contains.
      *
-     * @return  an <code>int</code> wich identifies the type of data this field
+     * @return  an <code>int</code> which identifies the type of data this field
      *          contains
      */
     public int getType();
@@ -76,9 +76,20 @@ public interface Field {
     /**
      * Returns this field's state identifier.
      *
-     * @return  an <code>int</code> wich identifies the state of this field
+     * @return  an <code>int</code> which identifies the state of this field
      */
     public int getState();
+
+    /**
+     * Returns whether this field is required (should have content).
+     * Note that MMBase does not generally enforce required fields to be filled -
+     * If not provided, a default value (generally an empty string or the integer value -1)
+     * is filled in by the system.
+     * As such, isRequired will mostly be used as an indicator for (generic) editors.
+     *
+     * @return  <code>true</code> if the field is required
+     */
+    public boolean isRequired();
 
     /**
      * Returns the maximum length of data this field can contain.

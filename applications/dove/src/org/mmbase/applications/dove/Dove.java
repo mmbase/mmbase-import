@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.20 2002-07-17 13:17:50 pierre Exp $
+ * @version $Id: Dove.java,v 1.21 2002-07-24 10:59:46 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -590,16 +590,11 @@ public class Dove extends AbstractDove {
                             addContentElement(MAXLENGTH,""+maxLength,field);
                         }
 
-                        // required XXX: not supported by MMCI
-                        // always returns false for the moment
-                        /*
-                        if (fielddef.getRequired()) {
+                        if (fielddef.isRequired()) {
                             addContentElement(REQUIRED,IS_TRUE,field);
                         } else {
                             addContentElement(REQUIRED,IS_FALSE,field);
                         }
-                        */
-                        addContentElement(REQUIRED,IS_FALSE,field);
                     }
                 }
                 // relations
