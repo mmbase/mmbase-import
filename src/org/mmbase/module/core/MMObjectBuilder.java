@@ -1733,8 +1733,15 @@ public class MMObjectBuilder extends MMTable {
 	 * by using this method properties will not be saved!
 	 * @param properties the properties to set
 	 */
-	public void setInitParameters(Hashtable properties) {
+	void setInitParameters(Hashtable properties) {
 		this.properties=properties;
+	}
+
+	/**
+	 * get all builder properties
+	 */
+	protected Hashtable getInitParameters() {
+		return(properties);
 	}
 
 	/**
@@ -1742,7 +1749,7 @@ public class MMObjectBuilder extends MMTable {
 	 * by using this method the propertie will not be saved!
 	 * @param name name of the property
 	 * @param value value of the property
-	public void setInitParamete(String name, String Value) {
+	public void setInitParameter(String name, String Value) {
 		properties.put(name,value);
 	}
 
