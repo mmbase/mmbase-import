@@ -1,0 +1,49 @@
+<!--
+Display list of xml files in configuration category
+-->
+<PROCESSOR Config>
+<SECURE>
+<html>
+<head><title>MMConfig</title></head>
+<BODY BACKGROUND="../beeld/bgmmbaselogo.jpg" TEXT="#000000" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="../beeld/mmbaselogosmall.gif" ALIGN="right"> 
+
+<table border=1>
+<tr>
+    <td align=center bgcolor="#DDDDFF">builders</td>
+    <td align=center><a href="databaseslist.shtml?databases">databases</a></td>
+    <td align=center><a href="moduleslist.shtml?modules">modules</a></td>
+  </tr>
+  <tr>
+    <td colspan=3 align=left>
+<table>
+<tr>
+  <td><b>builder</b></td>
+  <td colspan=2><b>status</b></td>
+</tr>
+<LIST SHOW category="builders">
+<tr>
+<LIF $ITEM2=Etrue>
+  <td><a href="configdetail.shtml?show+builders+$ITEM1">$ITEM1</a></td>
+<ELSE>
+  <td><a href="configdetail.shtml?annotate+builders+$ITEM1">$ITEM1</a></td>
+</IF>
+<LIF $ITEM3=Etrue>
+  <td bgcolor="#63DE31"><font color="#63DE31">#</font></td>
+<ELSE>
+  <td bgcolor="#FF0000"><font color="#FF0000">#</font></td>
+</IF>
+<LIF $ITEM2=Etrue>
+  <td></td>
+<ELSE>
+  <td>xml error!</td>
+</IF>
+</tr>
+</LIST>
+</table>
+</td>
+</tr>
+</table>
+
+</body>
+</html>

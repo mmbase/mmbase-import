@@ -1,0 +1,44 @@
+<!--
+Display list of xml files in configuration category
+-->
+<PROCESSOR Config>
+<SECURE>
+<html>
+<head><title>MMConfig: modules</title></head>
+
+<BODY BACKGROUND="../beeld/bgmmbaselogo.jpg" TEXT="#000000" BGCOLOR="#FFFFFE" LINK="#555555" ALINK="#555555" VLINK="#555555"><CENTER>
+<IMG SRC="../beeld/mmbaselogosmall.gif" ALIGN="right"> 
+
+<table border=1>
+<tr>
+    <td align=center><a href="builderlist.shtml">builders</a></td>
+    <td align=center><a href="databaseslist.shtml?databases">databases</a></td>
+    <td align=center bgcolor="#DDDDFF">modules</td>
+  </tr>
+  <tr>
+    <td colspan=3 align=left>
+<table>
+<tr>
+  <td><b>Module</b></td>
+  <td colspan=2><b>Status</b></td>
+</tr>
+<LIST SHOW category=$PARAM1>
+<tr>
+<LIF $ITEM2=Etrue>
+  <td><a href="configdetail.shtml?show+$PARAM1+$ITEM1">$ITEM1</a></td>
+  <td bgcolor="#63DE31"><font color="#63DE31">#</font></td>
+<ELSE>
+  <td><a href="configdetail.shtml?annotate+$PARAM1+$ITEM1">$ITEM1</a></td>
+  <td bgcolor="#FF0000"><font color="#FF0000">#</font></td>
+</IF>
+  <td></td>
+</tr>
+</LIST>
+</table>
+</td>
+</tr>
+</table>
+</center>
+
+</body>
+</html>
