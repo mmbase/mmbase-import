@@ -22,12 +22,12 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.18 2003-09-10 11:16:08 michiel Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.19 2004-03-23 21:44:43 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
 
-    private static final Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ListConditionTag.class);
 
     private Attribute  value        = Attribute.NULL;
     private Attribute  parentListId = Attribute.NULL;
@@ -68,33 +68,54 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
         return inverse.getBoolean(this, false);
     }
 
+
+
     public int doStartTag() throws JspTagException{
         // find the parent list:
         ListProvider list = getList();
 
         boolean i = getInverse();
-        boolean result;
-        switch(getValue()) {
-        case CONDITION_FIRST: result = (list.getIndex() == 0 ) != i;              break;
-        case CONDITION_LAST:  result = (list.getIndex() == list.size()-1 )  != i; break;
-        case CONDITION_EVEN:  result = ((list.getIndex() + 1) % 2 == 0) != i;     break;
-        case CONDITION_ODD:   result = ((list.getIndex() + 1) % 2 != 0) != i;     break;
-        case CONDITION_CHANGED:  result = list.isChanged() != i;                  break;
-        default: throw new JspTagException("Don't know what to do (" + getValue() + ")");
-        }    
-        return result ? EVAL_BODY_BUFFERED : SKIP_BODY;
+        boolean result = false;
+        int j = getValue();
+
+        
+
+        //
+        // One would expect a switch, but for some odd reason, that does not work in my resin 3.0.6
+        //
+        if (j == CONDITION_LAST) {
+            result = (list.getIndex() == list.size() - 1 )  != i;
+        } else if (j == CONDITION_FIRST) {
+            result = (list.getIndex() == 0 ) != i;
+        } else if (j == CONDITION_EVEN) {
+            result = ((list.getIndex() + 1) % 2 == 0) != i;
+        } else if (j == CONDITION_ODD) {
+            result = ((list.getIndex() + 1) % 2 != 0) != i;
+        } else if (j == CONDITION_CHANGED) {
+            result = list.isChanged() != i; 
+        } else {            
+            throw new JspTagException("Don't know what to do (" + getValue() + ")");
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("result " + (result ? "EVAL BODY" : "SKIP BODY"));
+        }
+        return (result ? EVAL_BODY : SKIP_BODY);
     }
 
+
     /**
-    *
-    **/
+     *
+     **/
     public int doAfterBody() throws JspTagException {
-        try{
-            if(bodyContent != null) {
-                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) { // not needed if EVAL_BODY_INCLUDE
+            try{
+                if(bodyContent != null) { 
+                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                }
+            } catch(java.io.IOException e){
+                throw new TaglibException(e);
             }
-        } catch(java.io.IOException e){
-            throw new TaglibException(e);
+            
         }
         return EVAL_PAGE;
     }
