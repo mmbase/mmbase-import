@@ -20,6 +20,9 @@ public final class Operation {
     /** int value for the remove Operation */    
     public final static int REMOVE_INT = 4;
 
+    /** int value for the remove Operation */    
+    public final static int CHANGECONTEXT_INT = 6;
+
     /** Identifier for read operation, which is used for reading information*/    
     public final static Operation READ = new Operation(READ_INT, "read");
     
@@ -41,6 +44,8 @@ public final class Operation {
     /** Identifier for remove operation, which is used when removing a node */                    
     public final static Operation REMOVE = new Operation(REMOVE_INT, "remove");
 
+    /** Identifier for change context operation, which is used when changing the context of a node */                    
+    public final static Operation CHANGECONTEXT = new Operation(CHANGECONTEXT_INT, "change context");
 
     /**
      *	Private constructor, to prevent creation of new Operations

@@ -1,6 +1,6 @@
 package org.mmbase.security;
 
-import org.mmbase.module.core.MMObjectNode;
+import java.io.File;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -9,14 +9,14 @@ import org.mmbase.util.logging.Logging;
  *  return that operations are valid. To make your own implementation of
  *  authorization, you have to extend this class.
  */
-public class Authorization {
+public abstract class Authorization {
     private static Logger log=Logging.getLoggerInstance(Authorization.class.getName()); 
     
     /** The SecurityManager, who created this instance */
     protected MMBaseCop manager;
 
-    /** The url where the configfile is located */    
-    protected String configPath;
+    /** The absolute file which is the config file */
+    protected File configFile;
     
     /** 
      *	The method which sets the settings of this class. This method is 
@@ -28,10 +28,10 @@ public class Authorization {
      *	    the authorization.
      */        
     public final void load(MMBaseCop manager, String configPath) {
-    	log.debug("Calling load() with configPath:" + configPath);    
-    	this.manager = manager;
-    	this.configPath = configPath;
-    	load();
+    	log.debug("Calling load() with as config file:" + configPath);
+     	this.manager = manager;
+	if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
+	load();
     }
 
     /** 
@@ -39,8 +39,7 @@ public class Authorization {
      *	It should set the settings for this class, and when needed 
      *	retrieve them from the file at location configPath.
      */        
-    protected void load() {
-    }
+    protected abstract void load();
     
     /** 
      *	This method could be overrided by an extending class. 
@@ -53,8 +52,7 @@ public class Authorization {
      *	@param nodeid The id of the MMObjectNode, which has just been added to
      *	    the MMBase cloud.
      */        
-    public void create(UserContext user, int nodeid) {
-    }
+    public abstract void create(UserContext user, int nodeid);
     
     /** 
      *	This method could be overrided by an extending class. 
@@ -66,8 +64,7 @@ public class Authorization {
      *	@param nodeid The id of the MMObjectNode, which has just been changed
      *	    in the cloud.
      */        
-    public void update(UserContext user, int nodeid) {
-    }
+    public abstract void update(UserContext user, int nodeid);
     
     /** 
      *	This method could be overrided by an extending class. 
@@ -81,8 +78,7 @@ public class Authorization {
      *	@param nodeid The id of the MMObjectNode, which has just been removed
      *	    in the cloud.
      */        
-    public void remove(UserContext user, int nodeid) {
-    }
+    public abstract void remove(UserContext user, int nodeid);
     
     /** 
      *	This method could be overrided by an extending class.     
@@ -95,9 +91,7 @@ public class Authorization {
      *	@return <code>true</code> if the operation is permitted,
      *	    	<code>false</code> if the operation is not permitted,     
      */        
-    public boolean check(UserContext user, int nodeid, Operation operation) {
-    	return true;
-    }
+    public abstract boolean check(UserContext user, int nodeid, Operation operation);
     
     /** 
      *	This method could be overrided by an extending class.     
@@ -110,8 +104,41 @@ public class Authorization {
      *	@exception org.mmbase.SecurityException 
      *	    If the assertion fails
      */        
-    public void assert(UserContext user, int nodeid, Operation operation)
-    	throws org.mmbase.security.SecurityException 
-    {
-    }
+    public abstract void assert(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException;
+
+    /** 
+     *	This method could be overrided by an extending class.     
+     *	This method returns the context of a specific node.
+     *	@param  user 	The UserContext, containing the information about the user.
+     *	@param  nodeid  The id of the MMObjectNode, which has to be asserted.
+     *	@return the context setting of the node.
+     *	@exception org.mmbase.SecurityException If operation is not allowed(needs read rights)
+     */        
+    public abstract String setContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException;
+
+    /** 
+     *	This method could be overrided by an extending class.     
+     *	This method changes the rights on a node, by telling 
+     *	the authorization that it should use the context which 
+     *	is defined.
+     *	@param user The UserContext, containing the information about the user.
+     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
+     *	@param context The context which rights the node will get
+     *	@exception org.mmbase.SecurityException If operation is not allowed
+     *	@exception org.mmbase.SecurityException If context is not known
+     */        
+    public abstract void setContext(UserContext user, int nodeid, String context) throws org.mmbase.security.SecurityException;
+    
+    /** 
+     *	This method could be overrided by an extending class.     
+     *	This method returns a list of contexts which can be
+     *	used to change the node.
+     *	@param user The UserContext, containing the information 
+     *	    about the user.
+     *	@param nodeid The id of the MMObjectNode, which has to be asserted.
+     *	@return a <code>java.util.HashSet</code> of <code>String</code>s which
+     *	    	represent a context in readable form..
+     *	@exception org.mmbase.SecurityException maybe
+     */        
+    public abstract java.util.HashSet getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException ;
 }

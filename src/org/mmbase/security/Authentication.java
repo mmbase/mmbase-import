@@ -5,19 +5,20 @@ import java.io.File;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 /**
  *  This class is a empty implementation of the Authentication, it will only 
  *  return that the authentication succeeded. 
  *  To make your own implementation of
  *  authorization, you have to extend this class.
  */
-public class Authentication {
+public abstract class Authentication {
     private static Logger log=Logging.getLoggerInstance(Authentication.class.getName()); 
 
     /** The SecurityManager, who created this instance */
     protected MMBaseCop manager;
     
-    /** The url where the configfile is located */      
+    /** The absolute file which is the config file */
     protected File configFile;
 
     /** 
@@ -30,9 +31,9 @@ public class Authentication {
      *	    the authorization.
      */        
     public final void load(MMBaseCop manager, String configPath) {
-    	log.debug("Calling load() with configPath:" + configPath);
+    	log.debug("Calling load() with as config file:" + configPath);
      	this.manager = manager;
-	this.configFile = new File(configPath);
+	if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
 	load();
     }
 
@@ -41,9 +42,7 @@ public class Authentication {
      *	It should set the settings for this class, and when needed 
      *	retrieve them from the file at location configPath.
      */        
-    protected void load() {
-    }
-
+    protected abstract void load();
 
     /** 
      *	The method which sets the settings of this class. This method is 
@@ -58,9 +57,5 @@ public class Authentication {
      *	    	a (maybe new) UserContext When valid
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */        
-    public UserContext login(String application, HashMap loginInfo, Object[] parameters) 
-    	throws org.mmbase.security.SecurityException 
-    {
-    	return new UserContext();
-    }
+    public abstract UserContext login(String application, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
 }
