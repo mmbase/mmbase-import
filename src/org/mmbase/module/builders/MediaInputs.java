@@ -15,6 +15,7 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
@@ -22,6 +23,7 @@ import org.mmbase.util.*;
  */
 public class MediaInputs extends MMObjectBuilder {
 
+    private static Logger log = Logging.getLoggerInstance(MediaInputs.class.getName());
 	public static final int TV=1;
 	public static final int Radio=2;
 	public static final int Web=3;
@@ -49,7 +51,7 @@ public class MediaInputs extends MMObjectBuilder {
 				con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error("Error on : "+number+" "+owner+" fake");
 			return(-1);
 		}
 		signalNewObject(tableName,number);
@@ -108,7 +110,7 @@ public class MediaInputs extends MMObjectBuilder {
 		tablestring=multirel.getTableString(tables);
 		relstring=multirel.getRelationString(tables);
 		query="SELECT DISTINCT "+selectstring+" FROM "+tablestring+" WHERE "+relstring;
-		System.out.println("MediaInputs : query "+query);
+		log.debug("MediaInputs : query "+query);
 		conn=mmb.getConnection();
 		mediums=new Vector();
 		channels=new Vector();
@@ -124,14 +126,14 @@ public class MediaInputs extends MMObjectBuilder {
 			stmt.close();
 			conn.close();
 		} catch (Exception e) {
-			System.out.println("MediaInputs -> Can't update table");
+			log.error("MediaInputs -> Can't update table");
 			e.printStackTrace();
 		}
 		Integer medium,channel;
 		for (int i=0;i<channels.size();i++) {
 			medium=(Integer)mediums.elementAt(i);
 			channel=(Integer)channels.elementAt(i);
-			System.out.println("MediaInputs : checking "+medium+" , "+channel);
+			log.debug("MediaInputs : checking "+medium+" , "+channel);
 			checkCombo(medium.intValue(),channel.intValue());
 		}
 	}
@@ -155,16 +157,16 @@ public class MediaInputs extends MMObjectBuilder {
 			stmt.close();
 			conn.close();
 			if (exi) {
-				System.out.println("MediaInputs -> combo exists ("+medium+","+channel+")");
+				log.debug("MediaInputs -> combo exists ("+medium+","+channel+")");
 			} else {
-				System.out.println("MediaInputs -> creating combo ("+medium+","+channel+")");
+				log.debug("MediaInputs -> creating combo ("+medium+","+channel+")");
 				node=getNewNode("system");
 				node.setValue("medium",medium);
 				node.setValue("channel",channel);
 				insert("system",node);
 			}
 		} catch(Exception e) {
-			System.out.println("MediaInputs -> Can't check combo");
+			log.error("MediaInputs -> Can't check combo");
 			e.printStackTrace();
 		}
 

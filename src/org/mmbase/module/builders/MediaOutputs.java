@@ -15,22 +15,25 @@ import java.sql.*;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
  * @version 28 Oct 1998
  */
 public class MediaOutputs extends MMObjectBuilder {
-public static final int ZILCH=0;
-public static final int LWA=1; // Live Web Audio
-public static final int LWV=2; // Live Web Video
-public static final int AWA=3; // Archief Web Audio
-public static final int AWV=4; // Archief Web Video
-private MultiRelations multirel=null;
-private Vector MTtables=new Vector();
-private Vector MTfields=new Vector();
-private String MTselectstring,MTtablestring,MTrelstring;
-private String MTquery,MTmo,MTmi;
+
+    private static Logger log = Logging.getLoggerInstance(MediaOutputs.class.getName());
+	public static final int ZILCH=0;
+	public static final int LWA=1; // Live Web Audio
+	public static final int LWV=2; // Live Web Video
+	public static final int AWA=3; // Archief Web Audio
+	public static final int AWV=4; // Archief Web Video
+	private MultiRelations multirel=null;
+	private Vector MTtables=new Vector();
+	private Vector MTfields=new Vector();
+	private String MTselectstring,MTtablestring,MTrelstring;
+	private String MTquery,MTmo,MTmi;
 
 
 	/**
@@ -61,7 +64,7 @@ private String MTquery,MTmo,MTmi;
 				con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error("Error on : "+number+" "+owner+" fake");
 			return(-1);
 		}
 		signalNewObject(tableName,number);
@@ -114,7 +117,7 @@ private String MTquery,MTmo,MTmi;
 		mwhere=MTmi+".medium="+medium;
 		cwhere=MTmi+".channel="+channel;
 		query=MTquery+" AND "+twhere+" AND "+mwhere+" AND "+cwhere;
-		System.out.println("MediaOutputs -> query "+query);
+		log.debug("MediaOutputs -> query "+query);
 		conn=mmb.getConnection();
 		try {
 			MMObjectNode node;
@@ -129,13 +132,13 @@ private String MTquery,MTmo,MTmi;
 				if (node!=null) {
 					res.addElement(node);
 				} else {
-					System.out.println("MediaOutputs -> Node "+num+" not found");
+					log.warn("MediaOutputs -> Node "+num+" not found");
 				}
 			}
 			stmt.close();
 			conn.close();
 		} catch (Exception e) {
-			System.out.println("MediaOutputs -> Can't get MediaOutput");
+			log.error("MediaOutputs -> Can't get MediaOutput");
 			e.printStackTrace();
 			res=null;
 		}
@@ -145,9 +148,9 @@ private String MTquery,MTmo,MTmi;
 	private synchronized MultiRelations multiinit() {
 		MultiRelations multi;
 		multi=(MultiRelations)mmb.getMMObject("multirelations");
-		System.out.println("MultiInit -> "+multi);
+		log.debug("MultiInit -> "+multi);
 		if (multi==null) {
-			System.out.println("MediaOutputs -> Didn't get MultiRelations");
+			log.warn("MediaOutputs -> Didn't get MultiRelations");
 		} else {
 			// This doesn't change so only in init
 			MTtables.addElement("mediain");
@@ -161,7 +164,7 @@ private String MTquery,MTmo,MTmi;
 			MTmo=""+multi.idx2char(MTtables.indexOf("mediaout"));
 			MTmi=""+multi.idx2char(MTtables.indexOf("mediain"));
 		}
-		System.out.println("MultiInit -> done");
+		log.debug("MultiInit -> done");
 		return(multi);
 	}
 }
