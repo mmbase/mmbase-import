@@ -18,7 +18,7 @@
   <form name="search" method="post" action='<mm:url referids="node,node_type,role_name,direction" />'>
       <table class="search" align="center" width="100%" border="0" cellspacing="1">
         <%-- search table --%>
-        <mm:fieldlist id="search_form" nodetype="${node_type}" type="search">
+        <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
             <tr align="left">
              <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
              <td width="100%"><mm:fieldinfo type="searchinput" /></td>

@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud sessionname="${SESSION}" jspvar="cloud">
+%><mm:cloud sessionname="$config.session" method="asis" jspvar="cloud">
 <mm:write referid="style" />
  <title>About generic mmbase taglib editors</title>
 </head>

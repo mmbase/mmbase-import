@@ -1,5 +1,5 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="http" sessionname="$SESSION" jspvar="cloud">
+%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:write referid="style" />
 <title><%= m.getString("change_node.change")%></title>
 </head>
@@ -26,7 +26,7 @@
 <form name="change" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" page="commit_node.jsp" ><mm:param name="node_type"><mm:nodeinfo type="nodemanager" /></mm:param></mm:url>'>
   <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
   <tr><th colspan="3">
-  <mm:field name="sgui($SESSION,)" />:
+  <mm:field name="sgui($config.session,)" />:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
   </th></tr>
