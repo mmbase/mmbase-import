@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: QueryTypeConstraintTag.java,v 1.1 2004-07-19 15:20:15 michiel Exp $
+ * @version $Id: QueryTypeConstraintTag.java,v 1.2 2004-07-26 20:18:01 nico Exp $
  */
 public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -55,7 +55,7 @@ public class QueryTypeConstraintTag extends CloudReferrerTag implements QueryCon
 
 
     protected Integer getOType(String name) throws JspTagException {
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
         Node node = cloud.getNodeManager(name);
         return new Integer(node.getNumber());
     }

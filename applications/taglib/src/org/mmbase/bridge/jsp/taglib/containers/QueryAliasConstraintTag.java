@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.5 2004-07-20 08:37:31 michiel Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.6 2004-07-26 20:18:00 nico Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -55,7 +55,7 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
 
 
     protected Integer getAlias(String name) throws JspTagException {
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
         Node node = cloud.getNode(name);
         return new Integer(node.getNumber());
     }
