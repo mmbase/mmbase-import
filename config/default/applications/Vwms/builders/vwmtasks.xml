@@ -60,8 +60,8 @@
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Machine</guiname>
-            <guiname xml:lang="nl">Machine</guiname>
+		<guiname xml:lang="en">The server that creates the task</guiname>
+		<guiname xml:lang="nl">De server die de taak heeft aangemaakt</guiname>
             <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -88,8 +88,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">The name of the VWM that is going to handle the task</description>
+	  <description xml:lang="nl">De naam van de VWM die de taak gaat uitvoeren.</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -121,8 +121,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The state of the task</description>
+	  <description xml:lang="nl">De status van de taak</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -154,8 +154,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">The sever that handled the request</description>
+	  <description xml:lang="nl">De server die de opdracht heeft afgehandeld</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -187,8 +187,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">The time the task was created</description>
+	  <description xml:lang="nl">De creatietijd van de taak</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -220,8 +220,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Describes when the task is mutated for the last time</description>
+	  <description xml:lang="nl">Beschrijft wanneer de taak voor het laatst is aangepast</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -253,12 +253,12 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Describes the expiration time of the task</description>
+	  <description xml:lang="nl">Beschrijft wanneer de taak verlopen is.</description>
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Experiration Time</guiname>
+            <guiname xml:lang="en">Expiration Time</guiname>
             <guiname xml:lang="nl">Verlooptijd</guiname>
             <guitype>eventtime</guitype>
         </gui>
@@ -286,8 +286,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The name of the task</description>
+          <description xml:lang="nl">De naam van de opdracht</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -352,8 +352,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Additional information for handling the task</description>
+          <description xml:lang="nl">Extra informatie voor de taak</description>
         </descriptions>
         <!-- gui related -->
         <gui>
