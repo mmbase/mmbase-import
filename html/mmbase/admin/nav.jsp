@@ -40,8 +40,8 @@
     </a>
     <% } %>
     &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
-    ><span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
+    <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top">
+    <span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
         <hr />
         <% if("about".equals(category)) { %>
     &nbsp;&nbsp;
@@ -74,6 +74,9 @@
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=databases" />" target="_top"
     ><span class="<%=("databases".equals(subcategory)) ? "current" : ""%>menuitem">DATABASES</span></a>
+    &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=admin&subcategory=blobs" />" target="_top" >
+    <span class="<%=("blobs".equals(subcategory)) ? "current" : ""%>menuitem">BLOBS</span></a>
         <% } else if("documentation".equals(category)) { %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top"
@@ -83,8 +86,8 @@
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
     ><span class="<%=("cache".equals(subcategory)) ? "current" : ""%>menuitem">CACHE</span></a>
     &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top"
-    ><span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
+    <a href="<mm:url page="default.jsp?category=tools&subcategory=email" />" target="_top" >
+    <span class="<%=("email".equals(subcategory)) ? "current" : ""%>menuitem">EMAIL</span></a>
         <% } %>
 </td>
 </tr>
