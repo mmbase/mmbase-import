@@ -13,7 +13,7 @@
 
    &formats;
 
-	<form-schema id="basics">
+	<form-schema id="basicss">
 		<title>Source Editor</title>
     <list role="related" destination="mediaproviders" minoccurs="1">
     <title>Media provider</title>
@@ -27,7 +27,7 @@
         <field name="rootpath" ftype="data" />
       </fieldset>
     </item>
-    <command name="search" nodepath="mediaproviders" fields="host,name,info" orderby="name" age="-1" >
+    <command name="search" nodepath="mediaproviders" fields="host,name" orderby="name" age="-1" >
       <search-filter>
         <name>Name</name>
         <search-fields>name</search-fields>
@@ -52,5 +52,3 @@
     <field name="filesize" />
     &extrafields;
   </form-schema>
-
-  <!--   itemize; -->

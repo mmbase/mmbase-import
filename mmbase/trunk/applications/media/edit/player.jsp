@@ -14,8 +14,7 @@
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 </head>
 <mm:cloud>
-<mm:node number="$fragment">
-
+<mm:node number="$fragment" notfound="skip">
 <%-- determin which player to use --%>
 <mm:write referid="config.player">
   <mm:compare value="any">
@@ -106,7 +105,7 @@
 <tr>
     <td valign="top" width="32" height="43"><img src="images/movie_down_left.gif" alt="" width="32" height="43" border="0"></td>
 <mm:write referid="player">
-<mm:compare value="extrabuttsreal"><!-- use own controls for real -->
+<mm:compare value="nobuttonsreal"><!-- use own controls for real -->
     <td height="43" align="center" valign="bottom" background="images/movie_down.gif"><img src="images/movie_knoppen.gif" alt="" width="160" height="38" border="0" usemap="#nav">
 				<map name="nav">
 				<area alt="terug" shape="circle" coords="16,25,10"  href="javascript:setPosition(0);" />
@@ -124,12 +123,14 @@
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
+<!--
 preferred player: <mm:write referid="config.player" /><br />
 used source:      <mm:write referid="source" /> <br />
 used player:      <mm:write referid="player" /><br />
 mimetype:      <mm:field name="mimetype()" /><br />
 mimetype:      <mm:field name="contenttype()" /><br />
 format:      <mm:field name="format(ram,wmf)" /><br />
+-->
 <hr />
 <form name="force">
   <select name="forceplayer" onChange="document.forms['force'].submit()">
@@ -140,7 +141,11 @@ format:      <mm:field name="format(ram,wmf)" /><br />
   </select>
   <input type="hidden" name="fragment" value="<mm:field name="number" />" />
 </form>
+<mm:import id="foundnode" />
 </mm:node>
+<mm:notpresent referid="foundnode">
+<h1><%=m.getString("nostream")%></h1>
+</mm:notpresent>
 </mm:cloud>
 </body>
 </mm:locale>
