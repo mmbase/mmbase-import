@@ -1,0 +1,38 @@
+<filter database-config="postgresql">
+  <driver-name>PostgreSQL Native Driver</driver-name>
+  <driver-version>PostgreSQL 7.1.2 JDBC2</driver-version>
+  <driver-class>org.postgresql.</driver-class>
+  
+  <!-- major/minor versions, can be 'from', 'equals' and 'until' and has to be an integer value  -->
+  <driver-major-version condition="equals">7</driver-major-version>
+  <driver-minor-version condition="from">1</driver-minor-version>
+  <driver-minor-version condition="equals">1</driver-minor-version>
+  <driver-minor-version condition="until">2</driver-minor-version>
+  
+  <database-product-name>PostgreSQL</database-product-name>
+  <database-product-version>7.2.1</database-product-version>
+</filter>
+
+<!-- match for postgresql-jdbc-driver verion 71 (generic) -->
+<filter database-config="postgresql">
+  <driver-class>org.postgresql.</driver-class>
+  <driver-major-version condition="equals">7</driver-major-version>
+  <driver-minor-version condition="equals">1</driver-minor-version>
+</filter>
+
+<!-- match for postgresql-jdbc-driver verion 72 -->
+<filter database-config="postgresql">
+  <driver-class>org.postgresql.</driver-class>
+  <driver-major-version condition="equals">7</driver-major-version>
+  <driver-minor-version condition="equals">2</driver-minor-version>
+</filter>
+
+<filter database-config="postgresql">
+  <driver-class>org.postgresql.</driver-class>
+  <driver-major-version condition="equals">7</driver-major-version>
+</filter>
+
+<!-- matches all left over postgresql -->
+<filter database-config="postgresql">
+  <driver-class>org.postgresql.</driver-class>
+</filter>
