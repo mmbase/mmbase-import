@@ -24,9 +24,13 @@ import org.mmbase.util.logging.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: XMLBasicReader.java,v 1.7 2001-03-23 11:07:16 vpro Exp $
+ * @version $Id: XMLBasicReader.java,v 1.8 2001-05-18 11:46:14 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2001/03/23 11:07:16  vpro
+ * Enhanced error message
+ * CV: ----------------------------------------------------------------------
+ *
  * Revision 1.6  2000/12/20 00:24:53  daniel
  * changed xml parser to file:/// for new xerces/win98/win2000
  *
@@ -49,6 +53,7 @@ public class XMLBasicReader  {
 
     String languagecode;  // code for language, e.g. 'nl'
     Hashtable dictionary; // dictionary of mmbase term identifiers to translations in language
+    String loadedfile;
 
 
     public XMLBasicReader(String path) {
@@ -59,9 +64,10 @@ public class XMLBasicReader  {
             EntityResolver resolver = new XMLEntityResolver();
             parser.setEntityResolver(resolver);
 	    path="file:///"+path;
+	    loadedfile=path; // save for debug
             parser.parse(path);
             document = parser.getDocument();
-
+		
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -94,6 +100,7 @@ public class XMLBasicReader  {
                 // path should start with document root element
                 log.error("path ["+path+"] doesn't start with root element: incorrect xml file" +
                           "(Did you use new way to configure modules?)");
+		log.error("XML file with problem ="+loadedfile);
             } else {
                 while (st.hasMoreTokens()) {
                     String tag = st.nextToken();
