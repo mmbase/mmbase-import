@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.89 2003-05-09 09:11:25 pierre Exp $
+  @version $Id: wizard.xsl,v 1.90 2003-05-12 13:16:02 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -410,6 +410,7 @@
             <xsl:apply-templates select="@*" />
             <xsl:choose>
               <xsl:when test="optionlist/option[@selected='true']"></xsl:when>
+              <xsl:when test="@dtrequired='true'"></xsl:when>
               <xsl:otherwise>
                 <option value="-"><xsl:call-template name="prompt_select" /></option>
               </xsl:otherwise>
