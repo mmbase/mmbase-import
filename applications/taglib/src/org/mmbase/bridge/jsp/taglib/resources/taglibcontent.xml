@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.20 2004-03-20 00:03:22 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.21 2004-04-22 17:29:23 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -39,6 +39,13 @@
 
   <content
     type="text/vnd.rn-realtext"
+    defaultescaper="text/xml"
+    defaultpostprocessor="reducespace"
+    defaultencoding=""
+    />
+
+  <content
+    type="video/x-ms-wmp"
     defaultescaper="text/xml"
     defaultpostprocessor="reducespace"
     defaultencoding=""
