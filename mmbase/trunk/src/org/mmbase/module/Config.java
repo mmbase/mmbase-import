@@ -23,6 +23,7 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.config.*;
+import org.mmbase.module.core.*;
 
 
 /**
@@ -56,9 +57,12 @@ import org.mmbase.config.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.12 2001-03-06 16:17:35 pierre Exp $
+ * @version $Id: Config.java,v 1.13 2001-06-23 16:42:38 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.12  2001/03/06 16:17:35  pierre
+ * pierre: added logging
+ *
  * Revision 1.11  2000/09/11 20:19:21  case
  * cjr: Added processing of $MOD-Config-REPORT, which displays a report on
  *      the configuration, including error notifications, possibly with hints
@@ -233,9 +237,8 @@ public class Config extends ProcessorModule {
             }
             configpath=curdir+File.separator+"config";
         } else {
-            configpath=System.getProperty("mmbase.config");
+	    configpath=MMBaseContext.getConfigPath();
         }
-        //configpath = System.getProperty("mmbase.config");
         if (configpath.endsWith(File.separator)) {
             configpath = configpath.substring(0,configpath.length()-1);
         }
