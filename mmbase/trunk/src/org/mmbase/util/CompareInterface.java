@@ -9,7 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+/**
+ * Interface for comparing objects so trhey can get sorted.
+ * Used by SortedVector.
+ * @see SortedVector
+ */
+
 public interface CompareInterface
 {
-	public abstract int compare(Object thisone,Object other);
+    /**
+     * The compare function called by SortedVector to sort things
+     */
+    public abstract int compare(Object thisone,Object other);
 }
