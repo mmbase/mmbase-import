@@ -49,9 +49,11 @@
 	]]></description>
 
 	<install-notice>
-		<![CDATA[The example community forum is installed.
-You will need to turn the community module active and restart the server to use it.
-You can activate the Community module by looking for the file "communityprc.xml" in the modules directory of your MMBase configuration, and setting the content of the "status' tag to "active".
+		<![CDATA[
+The example community forum is installed.  The community module must be active and
+installed (perhaps it is already). If not, you can activate the Community module by looking for
+the file "communityprc.xml" in the modules directory of your MMBase configuration, place it if missing, and setting
+the content of the "status' tag to "active". A restart of MMBase is needed then.
 		]]></install-notice>
 
 </application>
