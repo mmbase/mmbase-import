@@ -28,13 +28,15 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.3 2003-05-23 16:13:53 michiel Exp $
+ * @version $Id: Users.java,v 1.4 2003-06-16 13:07:17 michiel Exp $
  * @since MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(Users.class.getName());
 
+
+    public final static String FIELD_STATE     = "state";
     public final static String STATES_RESOURCE = "org.mmbase.security.states";
 
     protected static Cache rankCache = new Cache(10) {
@@ -131,37 +133,40 @@ public class Users extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public MMObjectNode getUser(String s, String s1)   {
+    public MMObjectNode getUser(String userName, String password)   {
         if (log.isDebugEnabled()) {
-            log.debug("username: '" + s + "' password: '" + s1 + "'");
+            log.debug("username: '" + userName + "' password: '" + password + "'");
         }
-        Enumeration enumeration = searchWithWhere(" username = '" + s + "'"); 
+        Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
         while(enumeration.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode) enumeration.nextElement();
-            if (getField("status")!=null) {
-                if (node.getIntValue("status")==-1) {
-                    throw new SecurityException("account for '"+s+"' is blocked");
+            if (getField(FIELD_STATE) != null) {
+                if (node.getIntValue(FIELD_STATE) == -1) {
+                    throw new SecurityException("account for '" + userName + "' is blocked");
                 }
             }
-            if (s.equals("anonymous")) {
+            if (userName.equals("anonymous")) {
                 log.debug("an anonymous username");
                 return node;
             }
-            if (encode(s1).equals(node.getStringValue("password"))) {
+            if (encode(password).equals(node.getStringValue("password"))) {
                 if (log.isDebugEnabled()) {
-                    log.debug("username: '" + s + "' password: '" + s1 + "' found in node #" + node.getNumber());
+                    log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + node.getNumber());
                 }
                 return node;
+            } else {
+                log.debug("PASSWORD NOT CORRECT");
+                // return null // could return then, or do we really expect more users with same username?
             }
             if (log.isDebugEnabled()) {
-                log.debug("username: '" + s + "' found in node #" + node.getNumber() + " --> PASSWORDS NOT EQUAL");
+                log.debug("username: '" + userName + "' found in node #" + node.getNumber() + " --> PASSWORDS NOT EQUAL");
             }
         }
 
-        if(s.equals("anonymous")) {
+        if(userName.equals("anonymous")) {
             throw new SecurityException("no node for anonymous user"); // odd.
         } else {
-            log.debug("username: '" + s + "' --> USERNAME NOT CORRECT");
+            log.debug("username: '" + userName + "' --> USERNAME OR PASSWORD NOT CORRECT");
             return null;
         }
     }
@@ -190,14 +195,10 @@ public class Users extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public boolean isValid(MMObjectNode mmobjectnode)  {
+    public boolean isValid(MMObjectNode node)  {
         return true;
-        // this used to be impelmented like this, 
-        // but afaics this reduces to the above (or a NPE).
-
         /*
-        MMObjectNode mmobjectnode1 = getNode(mmobjectnode.getNumber());
-        if (mmobjectnode == null) { // if this is the case in the previous line you would have had a nullpointerexception.
+        if (node == null) { // if this is the case in the previous line you would have had a nullpointerexception.
             log.debug("node was null!");
             return false;
         }
