@@ -1,4 +1,5 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*"
+<%-- uncomment this, if your JSP-engine is JSP2.0 (see release-notes) --%><%--@page isELIgnored="true"  
+--%><%@page session="true" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack,org.mmbase.bridge.*"
 %><%!
 
 // stack stuff (for the bread-crumb). Might appear a tag for this sometime.
