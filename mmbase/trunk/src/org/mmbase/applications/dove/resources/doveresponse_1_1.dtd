@@ -4,6 +4,7 @@
 -->
 
 <!ENTITY % errortype "(server,parser,client)">
+<!ENTITY % boolean "(true,false)" >
 
 <!ELEMENT response (getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put)+ >
 
@@ -58,6 +59,8 @@
 <!ELEMENT object ((field|relation)*)>
 <!ATTLIST object number NMTOKEN #REQUIRED >
 <!ATTLIST object type NMTOKEN #REQUIRED >
+<!ATTLIST object maywrite %boolean #IMPLIED >
+<!ATTLIST object maydelete %boolean #IMPLIED >
 
 <!ELEMENT relation ((field|object)*)>
 <!ATTLIST relation type NMTOKEN #REQUIRED >
@@ -65,6 +68,8 @@
 <!ATTLIST relation role NMTOKEN #REQUIRED>
 <!ATTLIST relation source NMTOKEN #REQUIRED >
 <!ATTLIST relation destination NMTOKEN #REQUIRED >
+<!ATTLIST relation maywrite %boolean #IMPLIED >
+<!ATTLIST relation maydelete %boolean #IMPLIED >
 
 <!ELEMENT field (#PCDATA | (guiname,description,guitype,maxlength,required))>
 <!ATTLIST field name NMTOKEN #REQUIRED >
