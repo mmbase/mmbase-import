@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Architectural Overview</title>
     <date>20 March 2003</date>
-    <edition>$Id: architecture.xml,v 1.1 2003-04-08 09:30:58 pierre Exp $</edition>
+    <edition>$Id: architecture.xml,v 1.2 2003-04-08 09:55:44 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -30,7 +30,7 @@
     <note>
       <para>The main difference between a webserver like Apache and an application server is that an application server is capable of executing server-side functionality like programs written in Java. The application servers on which MMBase can be plugged in have to support Java and Java Server Pages.</para>
     </note>
-    <graphic fileref="../administrators/media/architecture.png"></graphic>
+    <graphic fileref="media/architecture.png"></graphic>
     <para>This document provides an overview of the MMBase architecture. Each component in the architecture is described. Suggestions for further reading are given. The MMBase architecture can be subdivided into the following layers.</para>
     <itemizedlist>
       <listitem>
