@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.242 2004-02-25 14:13:56 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.243 2004-02-25 14:21:43 pierre Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2384,11 +2384,15 @@ transaction was commited, following should result anything:
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				You can specify a comma separated list of fields you want to list too. If you specify this
-				together with the type attribute, these fields will be added (to the end) of the ones
-				defined in that way.
-				If a field does not exist, it is ignored if you postfix it with '?'. This makes
-				it possible to make more genetric editors, or add optional fields to a nodemanager.
+				<p>
+					You can specify a comma separated list of fields you want to list too. If you specify this
+					together with the type attribute, these fields will be added (to the end) of the ones
+					defined in that way.
+				</p>
+				<p>
+					If a field does not exist, it is ignored if you postfix it with '?'. This makes
+					it possible to make more genetric editors, or add optional fields to a nodemanager.
+				</p>
 			</info>
 		</attribute>
 		<attribute>
@@ -5298,15 +5302,9 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-				<p>
-					The maximum number of batches to be produces. For really huge result, even the number of
-					batches can be too large, so you want to limit it. You should also use it (max="1") if you
-					only want to implement a 'next page' button.
-				</p>
-				<p>
-					If a field does not exist, it is ignored if you postfix it with '?'. This makes
-					it possible to make more genetric editors, or add optional fields to a nodemanager.
-				</p>
+				The maximum number of batches to be produces. For really huge result, even the number of
+				batches can be too large, so you want to limit it. You should also use it (max="1") if you
+				only want to implement a 'next page' button.
 			</info>
 		</attribute>
 		<attribute>
