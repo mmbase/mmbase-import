@@ -12,18 +12,27 @@ package org.mmbase.util.functions;
 import java.util.*;
 
 /**
- * Description of the return type of certain function. This wraps a Class object but it has some extra 
- * members.
+ * Description of the return type of certain function. This wraps a Class object but it has some
+ * extra members. Can be used as a constructor argument of {@link Function} objects or as an
+ * argument of {@link Function#setReturnType}.
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.2 2004-02-11 20:43:21 keesj Exp $
+ * @version $Id: ReturnType.java,v 1.3 2004-11-02 18:35:32 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType {
 
+    /**
+     * Describing the return type of function that does not return a thing.
+     */
     public static final ReturnType VOID = new ReturnType(null, "Does not return anything");
+
+    /**
+     * Can be return by functions that don't want to return anything. (The function framework
+     * requires you to return <em>something</em>).
+     */
     public static final Object     VOID_VALUE = new Object();
 
     private Class type;
@@ -58,6 +67,9 @@ public class ReturnType {
         return (ReturnType) typeStruct.put(name, type); 
     }
 
+    /**
+     * @return Unmodifiable Map containing the 'subtypes' in case the type is Map. An empty Map otherwise.
+     */
     public Map getSubTypes() {
         return Collections.unmodifiableMap(typeStruct);
     }

@@ -22,9 +22,12 @@ import org.mmbase.util.logging.*;
  *
  * This List is modifiable but not resizeable. It is always the size of the definition array.
  *
+ * A Parameters object presents the actual parameters in a function call, and its most important
+ * use is in {@link Function#getFunctionValue(Parameters)}.
+ *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.8 2004-05-27 17:04:10 michiel Exp $
+ * @version $Id: Parameters.java,v 1.9 2004-11-02 18:35:32 michiel Exp $
  * @see Parameter
  * @see #Parameters(Parameter[])
  */

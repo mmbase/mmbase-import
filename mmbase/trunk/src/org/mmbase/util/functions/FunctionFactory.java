@@ -16,12 +16,26 @@ import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
- * A way to instantiate function objects. A hand full a 'getFunction' methods are
- * implemented. Principally other implementations could be plugged in by replacing the right classes
- * (putting them in WEB-INF/classes should do the trick).
+ * The FunctionFactory instanciates {@link Function} objects. There are 6 static getFunctions
+ * objects in this class, which correspond to 6 static getFunction methods in the following 6
+ * classes:
+ <ol>
+   <li>{@link org.mmbase.util.functions.SetFunction}</li>
+   <li>{@link org.mmbase.util.functions.NodeFunction}</li>
+   <li>{@link org.mmbase.util.functions.NodeManagerFunction}</li>
+   <li>{@link org.mmbase.util.functions.ModuleFunction}</li>
+   <li>{@link org.mmbase.util.functions.MethodFunction}</li>
+   <li>{@link org.mmbase.util.functions.BeanFunction}</li>
+ </ol>
+
+ <p> 
+   Those static function thus further factor the Function objects. Possibly, but nut necessarily,
+   those static methods make instances of their own class. That was the original idea - hence the
+   name - but of course it is no absolute rule
+ </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: FunctionFactory.java,v 1.3 2004-02-11 20:43:21 keesj Exp $
+ * @version $Id: FunctionFactory.java,v 1.4 2004-11-02 18:35:32 michiel Exp $
  * @since  MMBase-1.7
  */
 public class FunctionFactory {

@@ -14,19 +14,22 @@ import java.util.*;
 import org.mmbase.util.Casting;
 
 /**
- * Entry for Parameters. A (function) argument is specified by a name and type.
+ * Each (function) argument is specified by a Parameter object. So this is an abstract object,
+ * containing mainly a name and type (it does <em>not</em> contain a value). An array of this is returned by 
+ * {@link Function#getParameterDefinition}, and this same array is used to create new empty {@link Parameters} 
+ * object (by {@link Function#getNewParameters}), which can contain actual values for each Parameter.
  *
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.8 2004-06-28 21:35:24 michiel Exp $
+ * @version $Id: Parameter.java,v 1.9 2004-11-02 18:35:32 michiel Exp $
  * @see Parameters
  */
 
 public class Parameter {
 
     /**
-     * Parameter which might be needed in lots of Parameter definitions.
+     * Parameters which might be needed in lots of Parameter definition arrays.
      */
     public static final Parameter LANGUAGE = new Parameter("language", String.class);
     public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
@@ -226,9 +229,10 @@ public class Parameter {
     }
 
     /**
-     * A Parameter.Wrapper wraps one Parameter around a Parameter[]
-     * (then you can put it in a Parameter[]).  Parameters will
-     * recognize this.
+     * A Parameter.Wrapper wraps one Parameter around a Parameter[] (then you can put it in a
+     * Parameter[]).  Parameters will recognize this. This can be used when you 'extend'
+     * functionality, and add more parameters. The Parameter array can contain such a
+     * Parameter.Wrapper object containing the original Parameter array.w
      */
     public static class Wrapper extends Parameter {
         Parameter[] arguments;

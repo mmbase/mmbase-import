@@ -23,7 +23,7 @@ import org.mmbase.bridge.implementation.*;
 
 
 /**
- * The implementation of one set of functions.
+ * The implementation of one set ('namespace') of functions. Objects of this type are managed by {@link org.mmbase.util.functions.FunctionSets}.
  *
  * @javadoc
  * @author Daniel Ockeloen
@@ -39,7 +39,10 @@ public class FunctionSet {
      * String -> Function
      */
     private Map functions = new HashMap();
-    
+
+    /**
+     * With this set of Function a configuration file is associated
+     */
     private String fileName;
 
     public FunctionSet(String name, String version, String status, String description) {
@@ -50,14 +53,15 @@ public class FunctionSet {
     }  
     
     /** 
-     * @javadoc
+     * Adds a Function to this set.
+     * @param fun The to-be-added Function object
      */
     void addFunction(Function fun) {
         functions.put(fun.getName(), fun);    
     }
 
     /** 
-     * @javadoc
+     * Gets a Function from this set. Used by {@link FunctionSets} which manages all set-functions.
      */
     Function getFunction(String name) {
         Object o = functions.get(name);
@@ -110,13 +114,12 @@ public class FunctionSet {
         return true;
     }
 
-    /** 
-     * Enumeration??!! Using deprecated stuff to start with is not nice
-     * @javadoc
-     * @deprecated
+
+    /**
+     * @return An unmodifiable Map (String -> {@link Function}) containing all functions of this set.
      */
-    public Enumeration getFunctions() {
-        return Collections.enumeration(functions.keySet()); 
+    public Map getFunctions() {
+        return Collections.unmodifiableMap(functions);
     }
 
 
