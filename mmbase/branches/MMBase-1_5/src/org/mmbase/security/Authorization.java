@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.io.File;
-
+import java.util.Set;
 import org.mmbase.util.FileWatcher;
 
 import org.mmbase.util.logging.Logger;
@@ -187,9 +187,9 @@ public abstract class Authorization {
      *	@param user The UserContext, containing the information 
      *	    about the user.
      *	@param nodeid The id of the MMObjectNode, which has to be asserted.
-     *	@return a <code>java.util.HashSet</code> of <code>String</code>s which
+     *	@return a <code>Set</code> of <code>String</code>s which
      *	    	represent a context in readable form..
      *	@exception org.mmbase.SecurityException maybe
      */        
-    public abstract java.util.HashSet getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException ;
+    public abstract Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException ;
 }

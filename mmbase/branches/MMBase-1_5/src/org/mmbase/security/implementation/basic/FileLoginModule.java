@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.basic;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.io.File;
 
 import org.mmbase.util.ExtendedProperties;
@@ -25,7 +25,7 @@ public class FileLoginModule implements LoginModule {
     private static Logger log=Logging.getLoggerInstance(FileLoginModule.class.getName());
     private File configFile = null;
 
-    public void load(HashMap properties) {
+    public void load(Map properties) {
         String passwordFile = (String)properties.get("file");
 
         if (passwordFile == null || passwordFile.equals("")) {
@@ -59,7 +59,7 @@ public class FileLoginModule implements LoginModule {
         log.debug("file login loaded");
     }
 
-    public boolean login(NameContext user, HashMap loginInfo,  Object[] parameters) {
+    public boolean login(NameContext user, Map loginInfo,  Object[] parameters) {
     	if(!loginInfo.containsKey("username")) throw new org.mmbase.security.SecurityException("key 'username' not found  in login information");
     	if(!loginInfo.containsKey("password")) throw new org.mmbase.security.SecurityException("key 'password' not found  in login information");	
         ExtendedProperties reader = new ExtendedProperties();

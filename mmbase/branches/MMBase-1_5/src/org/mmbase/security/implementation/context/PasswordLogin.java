@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.security.implementation.context;
 
 import org.mmbase.security.Rank;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 public class PasswordLogin extends ContextLoginModule {
     private static Logger log=Logging.getLoggerInstance(PasswordLogin.class.getName());
     
-    public ContextUserContext login(HashMap userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
+    public ContextUserContext login(Map userLoginInfo, Object[] userParameters) throws org.mmbase.security.SecurityException {
 
 	// get username
 	String username = (String)userLoginInfo.get("username");    		
