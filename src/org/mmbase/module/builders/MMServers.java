@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMServers.java,v 1.9 2000-03-30 13:11:32 wwwtech Exp $
+$Id: MMServers.java,v 1.10 2000-04-15 21:35:40 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/03/30 13:11:32  wwwtech
+Rico: added license
+
 Revision 1.8  2000/03/29 10:59:23  wwwtech
 Rob: Licenses changed
 
@@ -49,12 +52,12 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.9 $ $Date: 2000-03-30 13:11:32 $
+ * @version $Revision: 1.10 $ $Date: 2000-04-15 21:35:40 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
 	private String  classname = getClass().getName();
-	private boolean debug	  = true;
+	private boolean debug	  = false;
 	// private void	debug(String msg){System.out.println(classname+":"+msg);}
 
 	private int serviceTimeout=60*15; // 15 minutes
