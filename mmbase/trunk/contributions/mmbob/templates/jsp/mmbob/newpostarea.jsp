@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="forumid" />
 
 <!-- action check -->
@@ -19,6 +14,20 @@
 </mm:present>
 <!-- end action check -->
 
+<!-- login part -->
+  <%@ include file="getposterid.jsp" %>
+<!-- end login part -->
+                                                                                                                    
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
+
 <div class="header">
     <%@ include file="header.jsp" %>
 </div>
@@ -26,21 +35,21 @@
 <div class="bodypart">
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
-  <tr><th colspan="3">Nieuw gebied aanmaken</th></tr>
+  <tr><th colspan="3"><mm:write referid="mlg_Add_new_postarea" /></th></tr>
 
   <form action="<mm:url page="index.jsp">
 					<mm:param name="forumid" value="$forumid" />
 				</mm:url>" method="post">
-	<tr><th>Naam</th><td colspan="2">
+	<tr><th><mm:write referid="mlg_Name" /></th><td colspan="2">
 	<input name="name" size="70" value="" style="width: 100%">
 	</td></tr>
-	<tr><th>Omschrijving</th><td colspan="2">
+	<tr><th><mm:write referid="mlg_Description" /></th><td colspan="2">
 	<textarea name="description" rows="5" style="width: 100%"></textarea>
 	</td></tr>
 	<input type="hidden" name="admincheck" value="true">
 	<input type="hidden" name="action" value="newpostarea">
 	<tr><th>&nbsp;</th><td align="middle" >
-	<input type="submit" value="Aanmaken">
+	<input type="submit" value="<mm:write referid="mlg_Add" />">
   	</form>
 	</td>
 	<td>
@@ -50,7 +59,7 @@
  	method="post">
 	<p />
 	<center>
-	<input type="submit" value="Laat maar">
+	<input type="submit" value="<mm:write referid="mlg_Cancel" />">
   	</form>
 	</td>
 	</tr>
@@ -64,6 +73,8 @@
                                                                                               
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
 

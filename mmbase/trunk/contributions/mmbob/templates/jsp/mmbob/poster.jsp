@@ -4,12 +4,7 @@
 <mm:cloud>
 <mm:content type="text/html" encoding="UTF-8" escaper="entities" expires="0">
 <%@ include file="thememanager/loadvars.jsp" %>
-<html>
-<head>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBob</title>
-</head>
-<body>
+
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="pathtype">poster_index</mm:import>
@@ -20,12 +15,22 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
+
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
  <mm:include page="actions.jsp" />
 </mm:present>
 <!-- end action check -->
+
+<html>
+<head>
+   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+   <title>MMBob</title>
+</head>
+<body>
 
 <div class="header">
     <%@ include file="header.jsp" %>
@@ -39,27 +44,27 @@
 <mm:param name="postareaid" value="$postareaid" />
 <mm:param name="posterid" value="$posterid" />
 <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-</mm:url>">persoonlijk</a> - 
+</mm:url>"><mm:write referid="mlg_personal" /></a> - 
 <a href="<mm:url page="avatar.jsp">
 <mm:param name="forumid" value="$forumid" />
 <mm:param name="postareaid" value="$postareaid" />
 <mm:param name="posterid" value="$posterid" />
 <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
-</mm:url>">avatar</a>
+</mm:url>"><mm:write referid="mlg_avatar" /></a>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
 <mm:compare referid="profileid" referid2="posterid" inverse="true">
 <mm:node number="$profileid">
-		<tr><th width="150" >Account</th><td><mm:field name="account" /></td></tr>
-		<tr><th>Voornaam</th><td><mm:field name="firstname" /></td></tr>
-		<tr><th>Achternaam</th><td><mm:field name="lastname" /></td></tr>
-		<tr><th>Email</th><td><mm:field name="email" /></td></tr>
-		<tr><th>Level</th><td><mm:field name="level" /></td></tr>
-		<tr><th>Geslacht</th><td><mm:field name="gender" /></td></tr>
-		<tr><th>Aantal berichten</th><td><mm:field name="postcount" /></td></tr>
-		<tr><th>Lokatie</th><td><mm:field name="location" /></td></tr>
+		<tr><th width="150" ><mm:write referid="mlg_Account" /></th><td><mm:field name="account" /></td></tr>
+		<tr><th><mm:write referid="mlg_Firstname" /></th><td><mm:field name="firstname" /></td></tr>
+		<tr><th><mm:write referid="mlg_Lastname" /></th><td><mm:field name="lastname" /></td></tr>
+		<tr><th><mm:write referid="mlg_Email" /></th><td><mm:field name="email" /></td></tr>
+		<tr><th><mm:write referid="mlg_Level" /></th><td><mm:field name="level" /></td></tr>
+		<tr><th><mm:write referid="mlg_Gender" /></th><td><mm:field name="gender" /></td></tr>
+		<tr><th><mm:write referid="mlg_Messages" /></th><td><mm:field name="postcount" /></td></tr>
+		<tr><th><mm:write referid="mlg_Location" /></th><td><mm:field name="location" /></td></tr>
 
-		<tr><th>Lid sinds</th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
-		<tr><th>Laatste bezoek op</th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg_Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg_Last_visit" /></th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
 </mm:node>
 </mm:compare>
 <mm:compare referid="profileid" referid2="posterid">
@@ -70,41 +75,41 @@
 <mm:present referid="type"><mm:param name="type" value="$type" /></mm:present>
 </mm:url>" method="post">
 <mm:node number="$profileid">
-		<tr><th width="150" >Account</th><td><mm:field name="account" /></td></tr>
-		<tr><th>Voornaam</th><td>
+		<tr><th width="150" ><mm:write referid="mlg_Account" /></th><td><mm:field name="account" /></td></tr>
+		<tr><th><mm:write referid="mlg_Firstname" /></th><td>
 			<input name="newfirstname" value="<mm:field name="firstname" />" style="width: 100%" />
 			</td></tr>
-		<tr><th>Achternaam</th><td>
+		<tr><th><mm:write referid="mlg_Lastname" /></th><td>
 			<input name="newlastname" value="<mm:field name="lastname" />" style="width: 100%" />
 			</td></tr>
-		<tr><th>Email</th><td>
+		<tr><th><mm:write referid="mlg_Email" /></th><td>
 			<input name="newemail" value="<mm:field name="email" />" style="width: 100%" />
 			</td></tr>
-		<tr><th>Lokatie</th><td>
+		<tr><th><mm:write referid="mlg_Location" /></th><td>
 			<input name="newlocation" value="<mm:field name="location" />" style="width: 100%" />
 			</td></tr>
-		<tr><th>Geslacht</th><td>
+		<tr><th><mm:write referid="mlg_Gender" /></th><td>
 			<mm:field name="gender">
 			<select name="newgender">
 			<mm:compare value="male">
-			<option value="male">Man
-			<option value="female">Vrouw
+			<option value="male"><mm:write referid="mlg_Male" />
+			<option value="female"><mm:write referid="mlg_Female" />
 			</mm:compare>
 			<mm:compare value="male" inverse="true">
-			<option value="female">Vrouw
-			<option value="male">Man
+			<option value="female"><mm:write referid="mlg_Male" />
+			<option value="male"><mm:write referid="mlg_Female" />
 			</mm:compare>
 			</select>
 			</mm:field>
 		</td></tr>
-		<tr><th>Level</th><td><mm:field name="level" /></td></tr>
-		<tr><th>Aantal berichten</th><td><mm:field name="postcount" /></td></tr
-		<tr><th>Lid sinds</th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
-		<tr><th>Laatste bezoek op</th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg_Level" /></th><td><mm:field name="level" /></td></tr>
+		<tr><th><mm:write referid="mlg_Messages" /></th><td><mm:field name="postcount" /></td></tr
+		<tr><th><mm:write referid="mlg_Member_since" /></th><td><mm:field name="firstlogin"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
+		<tr><th><mm:write referid="mlg_Last_seen" /></th><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
 </mm:node>
 <tr><th colspan="2">
 <input type="hidden" name="action" value="editposter">
-<center><input type="submit" value="Bewaren">
+<center><input type="submit" value="<mm:write referid="mlg_Save" />">
 </form>
 </th></tr>
 </mm:compare>
@@ -118,5 +123,7 @@
                                                                                               
 </body>
 </html>
+
+</mm:locale>
 </mm:content>
 </mm:cloud>
