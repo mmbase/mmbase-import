@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.13 2003-08-13 10:39:18 michiel Exp $
+ * @version $Id: Users.java,v 1.14 2003-08-19 21:14:55 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -93,12 +93,12 @@ public class Users extends MMObjectBuilder {
     }
 
 
-    public Rank getRank(MMObjectNode node) {
-        Rank rank = (Rank) rankCache.get(node);
+    public Rank getRank(MMObjectNode userNode) {
+        Rank rank = (Rank) rankCache.get(userNode);
         if (rank == null) {
-            List ranks =  node.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
+            List ranks =  userNode.getRelatedNodes("mmbaseranks", ClusterBuilder.SEARCH_DESTINATION);
             if (ranks.size() > 1) {
-                throw new SecurityException("More then one rank related to mmbase-user " + node.getNumber() + " (but " + ranks.size() + ")");
+                throw new SecurityException("More then one rank related to mmbase-user " + userNode.getNumber() + " (but " + ranks.size() + ")");
             }
             if (ranks.size() == 0) {
                 log.debug("No ranks related to this user");
@@ -107,7 +107,7 @@ public class Users extends MMObjectBuilder {
                 Ranks rankBuilder = Ranks.getBuilder();
                 rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
             }
-            rankCache.put(node, rank);
+            rankCache.put(userNode, rank);
         } 
         return rank;
     }        
@@ -178,16 +178,17 @@ public class Users extends MMObjectBuilder {
             return null;
         } 
 
-        if (getField(FIELD_STATUS) != null) {
-            if (user.getIntValue(FIELD_STATUS) == -1) {
-                throw new SecurityException("account for '" + userName + "' is blocked");
-            }
-        }
 
         if (encode(password).equals(user.getStringValue("password"))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
+            if (getField(FIELD_STATUS) != null && getRank(user).getInt() < Rank.ADMIN.getInt()) {
+                if (user.getIntValue(FIELD_STATUS) == -1) {
+                    throw new SecurityException("account for '" + userName + "' is blocked");
+                }
+            }
+
             return user;
         } else {
             if (log.isDebugEnabled()) {
