@@ -43,7 +43,7 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         return node;
     }
     
-    protected void setNodeVar(Node node) {
+    protected void setNodeVar(Node node) {        
         this.node = node;
     }
     
@@ -57,7 +57,7 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
     
     abstract public void doInitBody() throws JspTagException;
     
-    protected void fillVars(){    
+    protected void fillVars() throws JspTagException {    
         Enumeration returnFieldEnum = stringSplitter(fields,",").elements();
         int j=1;
         while (returnFieldEnum.hasMoreElements()){
@@ -72,6 +72,7 @@ abstract public class AbstractNodeProviderTag extends CloudReferrerTag implement
         }
         String id = getId();
         if (id != null && id != "") {
+            findCloudProvider().registerNode(id, node);
             pageContext.setAttribute(id, node);
         }
     }
