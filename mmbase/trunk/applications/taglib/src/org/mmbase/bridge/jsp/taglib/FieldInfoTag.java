@@ -22,18 +22,19 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* The FieldTag can be used as a child of a 'NodeProvider' tag.   
-* 
-* @author Michiel Meeuwissen
-*/
+ * The FieldTag can be used as a child of a 'NodeProvider' tag.   
+ * 
+ * @author Michiel Meeuwissen
+ * @author Jaco de Groot
+ */
 public class FieldInfoTag extends NodeReferrerTag {
     
     private static Logger log = Logging.getLoggerInstance(FieldInfoTag.class.getName()); 
     
-    private String name;   
+    private String type;   
        
-    public void setName(String n) {
-        name = n;
+    public void setType(String type) {
+        this.type = type;
     }
     
     
@@ -82,29 +83,48 @@ public class FieldInfoTag extends NodeReferrerTag {
         // found the node now. Now we can decide what must be shown:
         String show = "";
         
-        if ("name".equals(name)) {
+        if ("name".equals(type)) {
             show = field.getName();
-        } else if ("guiname".equals(name)) {
+        } else if ("guiname".equals(type)) {
             show = field.getGUIName();
-        } else if ("value".equals(name)) {
+        } else if ("value".equals(type)) {
             Node node = fieldTag.findNodeProvider().getNodeVar();
             show = node.getStringValue(field.getName());
-        } else if ("input".equals(name)) {
+        } else if ("input".equals(type)) {
             // not yet complete...
-            Node node = fieldTag.findNodeProvider().getNodeVar();
+//            Node node = fieldTag.findNodeProvider().getNodeVar();
+
+            NodeProvider nodeProvider = null;
+            try {
+                 nodeProvider = fieldTag.findNodeProvider();
+            } catch (JspTagException e) {
+            }
+            Node node = null;
+            if (nodeProvider != null) {
+                node = nodeProvider.getNodeVar();
+            }
+
             int type = field.getType();
             switch(type) {
             case Field.TYPE_STRING:
                 if(field.getMaxLength() > 2048)  {
-                    show = "<textarea wrap=\"on\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"" + prefix(field.getName()) + "\">" + 
-                        node.getStringValue(field.getName()) +
-                        "</textarea>";
-                    
+                    show = "<textarea wrap=\"on\" rows=\"10\" cols=\"80\""
+                           + " class=\"big\"  name=\"" + prefix(field.getName())
+                           + "\">";
+                    if (node != null) {
+                        show += node.getStringValue(field.getName());
+                    }
+                    show += "</textarea>";
                     break;                    
                 }
                 if(field.getMaxLength() > 255 )  {                
-                    show = "<textarea wrap=\"on\" rows=\"5\" cols=\"80\" class=\"small\"  name=\"" + prefix(field.getName()) + "\">" + 
-                        node.getStringValue(field.getName()) + "</textarea>";
+                    show = "<textarea wrap=\"on\" rows=\"5\" cols=\"80\""
+                           + " class=\"small\"  name=\""
+                           + prefix(field.getName()) + "\">";
+                    if (node != null) {
+                        show += node.getStringValue(field.getName());
+                    }
+                    show += "</textarea>";
                     break;
                 }
             case Field.TYPE_BYTE:
@@ -112,14 +132,19 @@ public class FieldInfoTag extends NodeReferrerTag {
             case Field.TYPE_FLOAT:
             case Field.TYPE_DOUBLE:
             case Field.TYPE_LONG:
-                show =  "<input type =\"text\" size=\"80\" name=\"" + prefix(field.getName()) + "\" " + 
-                                         "value=\"" + node.getStringValue(field.getName()) + "\" />";
+                show =  "<input type =\"text\" size=\"80\" name=\""
+                        + prefix(field.getName()) + "\" value=\"";
+                if (node != null) {
+                    show += node.getStringValue(field.getName());
+                }
+                show += "\" />";
                 break;
             }
-        } else if ("useinput".equals(name)) {
+        } else if ("useinput".equals(type)) {
             
         } else {
-            throw new JspTagException("Unknown value for name  attribute " + name);
+            throw new JspTagException("Unknown value for type attribute: "
+                                      + type);
         }
                
         try {         
