@@ -20,12 +20,27 @@
 		  </p>
 		  <mm:field name="html(body)" />
 		  <mm:import id="articlefound" />
-		  <hr />
+		  <h1>Image</h1>
 		  <mm:listnodes type="images" orderby="number" directions="down" max="1">
              <mm:field node="cod" name="subtitle">
              <img src="<mm:image template="s(600x80!)+f(png)+modulate(200,0)+font(mm:fonts/Arial.ttf)+fill(ff0000)+pointsize(20)+text(20,50,'$_')" />" alt="<mm:field name="title" />" />: <mm:field name="description" />
            </mm:field>
            </mm:listnodes>
+
+    <h1>Included pages</h1>
+    <p><em>With mm:include (utf-8 page):</em></p>
+    <% try { %>
+    <mm:include page="included.jsp?node=$node" />
+    <% } catch (Exception e) { %> 
+      <p>Did not work (<%=e.toString()%>)</p>
+    <% } %>
+    <p><em>With mm:include (iso-8859-1 page):</em></p>
+    <% try { %>
+    <mm:include page="included1.jsp?node=$node" />
+    <% } catch (Exception e) { %> 
+      <p>Did not work (<%=e.toString()%>)</p>
+    <% } %>
+
 
           <hr />
           <a href="<mm:url page="index.shtml" />">SCAN version of this page</a><br />
