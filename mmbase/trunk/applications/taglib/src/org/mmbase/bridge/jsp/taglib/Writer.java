@@ -21,6 +21,7 @@ import javax.servlet.jsp.JspTagException;
  * @author Michiel Meeuwissen 
  **/
 
+
 public interface Writer {
 
     /**
@@ -51,6 +52,8 @@ public interface Writer {
      *  To be used by child tags. If they are present, they say to the
      *  writer tag that it has body, which it can use to determine a
      *  default for the write property.
+     *
+     * @since MMBase-1.6
      */
     public void haveBody();
 
