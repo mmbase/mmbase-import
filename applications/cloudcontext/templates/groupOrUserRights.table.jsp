@@ -1,5 +1,5 @@
 
-   <mm:import id="operations" vartype="list">create,read,write,delete,change context</mm:import>
+   <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
    <table class="rights">
     <tr><th>Contexts</th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
     <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">

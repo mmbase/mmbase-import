@@ -1,7 +1,8 @@
+<mm:context>
 <div class="group">
 <div class="environment">
  <p class="current">
-    <%=m.getString("current_context")%>: <mm:nodeinfo type="gui" />
+    <%=m.getString("current_context")%>: <mm:nodeinfo type="gui" /> (<mm:field name="number" />)
  </p>
 
 <div class="rights">
@@ -17,7 +18,7 @@
       </mm:maywrite>
     </mm:fieldlist>
    </table>
-    <mm:import id="operations" vartype="list">create,read,write,delete,change context</mm:import>
+    <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
    <table class="rights">
     <tr><th>Groups</th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
     <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
@@ -47,8 +48,8 @@
         </mm:stringlist>
       </tr>
     </mm:listnodes>
-    </mm:functioncontainer> 
-    <tr><td class="text"><input type="submit"  name="submit" value="submit" /></td></tr>
+    </mm:functioncontainer>
+    <tr><td class="text"><input type="submit"  name="submit" value="<%=m.getString("submit")%>" /></td></tr>
     <tr><td class="text"><a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>">back</a></td></tr>
    </table>
    </form>
@@ -56,3 +57,4 @@
 
 
 </div>
+</mm:context>
