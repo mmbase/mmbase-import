@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.127 2004-09-20 11:59:41 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.128 2004-09-20 16:42:08 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -337,8 +337,18 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public Set getPossibleContexts(UserContext user) {
         if (getNumber() < 0) {
-            // that's very hard, try it on a similar node, hoping that it is the same. This is a hack.
-            // The point is that SEcurity should not request node-numbers, but nodes.
+            // a new node has yet no context (except the default).
+            // instead of searching the database for data, return a
+            // standard set of values existing of the current context
+            // and the contexts "system" and "admin".
+            // A better way involves rewriting the security layer to accept
+            // MMObjectNodes instead of node numbers
+            Set contexts = new HashSet();
+            contexts.add(getContext(user));
+            contexts.add("admin");
+            contexts.add("system");
+            return contexts;
+/*
             NodeSearchQuery query = new NodeSearchQuery(parent);
             FieldDefs fieldDefs = parent.getField("owner");
             StepField field = query.getField(fieldDefs);
@@ -353,10 +363,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 log.error(sqe.toString());
             }
             return new HashSet();
+*/
         }
         return parent.getMMBase().getMMBaseCop().getAuthorization().getPossibleContexts(user, getNumber());
-
-
     }
 
     /**
@@ -990,13 +999,27 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
+     * Get a value of a certain field.
+     * The value is returned as a Date value. Values of numeric fields are converted as if they were
+     * time in seconds since 1/1/1970.
+     * String fields are parsed to a date, if possible.
+     * All remaining field values return -1.
      * @since MMBase-1.8
+     * @param fieldName the name of the field who's data to return
+     * @return the field's value as a <code>Date</code>
      */
     public Date getDateValue(String fieldName) {
         return Casting.toDate(getValue(fieldName));
     }
+
     /**
+     * Get a value of a certain field.
+     * The value is returned as a List value.
+     * Strings are treated as comma-seperated value lists, and split into their component parts.
+     * Values of other fields are returned as Lists of one object.
      * @since MMBase-1.8
+     * @param fieldName the name of the field who's data to return
+     * @return the field's value as a <code>List</code>
      */
     public List getListValue(String fieldName) {
         return Casting.toList(getValue(fieldName));
