@@ -28,22 +28,62 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
- * @version $Id: SendMail.java,v 1.1.2.2 2004-04-23 13:00:10 pierre Exp $
+ * @version $Id: SendMail.java,v 1.1.2.3 2004-06-01 13:44:20 michiel Exp $
  */
-public class SendMail extends AbstractSendMail {
-    private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
+public class SendMail extends org.mmbase.module.AbstractSendMail implements SendMailInterface {
+    private static final Logger log = Logging.getLoggerInstance(SendMail.class);
 
     public static final String DEFAULT_MAIL_ENCODING="ISO-8859-1";
 
     public static String mailEncoding = DEFAULT_MAIL_ENCODING;
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean sendMultiPartMail(String from, String to, Map headers, MimeMultipart mmpart) {
+        try {
+
+            MimeMessage msg = constructMessage(from, to, headers);
+
+        msg.setContent(mmpart);
+
+            Transport.send(msg);
+            log.debug("JMimeSendMail done.");
+            return true;
+        } catch (javax.mail.MessagingException e) {
+            log.error("JMimeSendMail failure: " + e.getMessage());
+            log.debug(Logging.stackTrace(e));
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    public String getModuleInfo() {
+        return("Sends mail through J2EE/JavaMail, supporting MultiPart");
+    }
+
+
+    /**
+     * =========================================================================================================
+     * BELOW THIS IS COPIED . DONT CHANGE ANYTHING HERE WITHOUT DOING IT IN JMSENDMAIL AS WELL
+     * from JMSendMail 1.7.1. overriden to be compitable with mmbase 1.7.0, can be removed later (and then _extend_ from JMSendMail)
+     */
 
     private Session session;
 
+    /**
+     * {@inheritDoc}
+     */
     public void reload() {
         init();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void init() {
         try {
             String encoding = getInitParameter("encoding");
@@ -66,7 +106,7 @@ public class SendMail extends AbstractSendMail {
                 Context initCtx = new InitialContext();
                 Context envCtx = (Context) initCtx.lookup(context);
                 session = (Session) envCtx.lookup(datasource);
-                log.info("Module SendMail started (datasource = " + datasource +  ")");
+                log.info("Module JMSendMail started (datasource = " + datasource +  ")");
             } else {
                 if (context != null) {
                     log.error("It does not make sense to have both properties 'context' and 'mailhost' in email module");
@@ -89,13 +129,45 @@ public class SendMail extends AbstractSendMail {
                 Properties prop = System.getProperties();
                 prop.put("mail.smtp.host", smtphost);
                 session = Session.getInstance(prop, null);
-                log.info("Module JMimeSendMail started (smtphost = " + smtphost +  ")");
+                log.info("Module JMSendMail started (smtphost = " + smtphost +  ")");
             }
 
         } catch (javax.naming.NamingException e) {
-            log.fatal("JMimeSendMail failure: " + e.getMessage());
+            log.fatal("JMSendMail failure: " + e.getMessage());
             log.debug(Logging.stackTrace(e));
         }
+    }
+
+    /**
+     * Utility method to do the generic job of creating a MimeMessage object and setting its recipients and 'from'.
+     */
+
+    protected MimeMessage constructMessage(String from, String to, Map headers) throws MessagingException {
+        if (log.isServiceEnabled()) {
+            log.service("JMSendMail sending mail to " + to);
+        }
+        // construct a message
+        MimeMessage msg = new MimeMessage(session);
+        if (from != null && ! from.equals("")) {
+            msg.addFrom(InternetAddress.parse(from));
+        }
+
+        msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+
+        if (headers.get("CC") != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("CC")));
+        }
+        if (headers.get("BCC") != null) {
+            msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("BCC")));
+        }
+
+        if (headers.get("Reply-To") != null) {
+            msg.setReplyTo(InternetAddress.parse((String) headers.get("Reply-To")));
+        }
+
+        msg.setSubject((String) headers.get("Subject"));
+
+        return msg;
     }
 
     /**
@@ -103,77 +175,21 @@ public class SendMail extends AbstractSendMail {
      */
     public boolean sendMail(String from, String to, String data, Map headers) {
         try {
+            MimeMessage msg = constructMessage(from, to, headers);
 
-            if (log.isServiceEnabled()) log.service("JMimeSendMail sending mail to " + to);
-            // construct a message
-            MimeMessage msg = new MimeMessage(session);
-            if (from != null && ! from.equals("")) {
-                msg.setFrom(new InternetAddress(from));
-            }
-
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-            if (headers.get("CC") != null) {
-                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("CC")));
-            }
-            if (headers.get("BCC") != null) {
-                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("BCC")));
-            }
-            msg.setSubject((String) headers.get("Subject"));
-            msg.setText(data, mailEncoding);
+            msg.setText(data,mailEncoding);
             Transport.send(msg);
-            log.debug("JMimeSendMail done.");
+            log.debug("JMSendMail done.");
             return true;
-        } catch (javax.mail.MessagingException e) {
-            log.error("JMimeSendMail failure: " + e.getMessage());
+        } catch (MessagingException e) {
+            log.error("JMSendMail failure: " + e.getMessage());
             log.debug(Logging.stackTrace(e));
         }
         return false;
     }
 
 
-    /**
-     * Send mail with headers
-     */
-    public boolean sendMultiPartMail(String from, String to, Map headers,MimeMultipart mmpart) {
-        try {
-
-            if (log.isServiceEnabled()) log.service("JMimeSendMail sending mail to " + to);
-            // construct a message
-            MimeMessage msg = new MimeMessage(session);
-            if (from != null && ! from.equals("")) {
-                msg.setFrom(new InternetAddress(from));
-            }
-
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-
-            if (headers.get("CC") != null) {
-                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("CC")));
-            }
-            if (headers.get("BCC") != null) {
-                msg.addRecipient(Message.RecipientType.CC,new InternetAddress((String) headers.get("BCC")));
-            }
-            msg.setSubject((String) headers.get("Subject"));
-
-            //msg.setText(data);
-        msg.setContent(mmpart);
-
-            Transport.send(msg);
-            log.debug("JMimeSendMail done.");
-            return true;
-        } catch (javax.mail.MessagingException e) {
-            log.error("JMimeSendMail failure: " + e.getMessage());
-            log.debug(Logging.stackTrace(e));
-        }
-        return false;
-    }
-
-    public String getModuleInfo() {
-        return("Sends mail through J2EE/JavaMail");
-    }
 
 
-    public boolean sendMultiPartMail(Mail mail,MimeMultipart parts) {
-        return sendMultiPartMail(mail.from, mail.to, mail.headers,parts);
-    }
+
 }
