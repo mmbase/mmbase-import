@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.15 2003-04-18 15:02:07 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.16 2003-06-05 09:31:44 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -96,10 +96,10 @@ public class XSLTransformer {
      * @since MMBase-1.6
      **/
 
-    public void transform(DOMSource xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(Source xml, File xslFile, Result result, Map params) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
         transform(xml, xslFile, result, params, true);
     }
-    public void transform(DOMSource xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
+    public void transform(Source xml, File xslFile, Result result, Map params, boolean considerDir) throws TransformerException, ParserConfigurationException, java.io.IOException, org.xml.sax.SAXException {
 
         if (log.isDebugEnabled()) {
             Runtime rt = Runtime.getRuntime();
