@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.87 2004-02-09 13:50:39 pierre Exp $
+ * @version $Id: Images.java,v 1.88 2004-02-11 14:43:19 gerard Exp $
  */
 public class Images extends AbstractImages {
 
@@ -730,9 +730,9 @@ public class Images extends AbstractImages {
      * @param node The node to remove.
      */
     public void removeNode(MMObjectNode node) {
-        super.removeNode(node);
         invalidateImageCache(node);
         templateCacheNumberCache.remove(node.getNumber());
+        super.removeNode(node);
     }
 
     /**
