@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Locale;
+import org.mmbase.storage.search.SearchQuery;
 
 /**
  * A Cloud is a collection of Nodes (and relations that are also nodes).
@@ -18,7 +19,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.33 2003-03-07 11:49:10 pierre Exp $
+ * @version $Id: Cloud.java,v 1.34 2003-04-29 20:07:43 michiel Exp $
  */
 public interface Cloud {
 
@@ -469,6 +470,15 @@ public interface Cloud {
     public NodeList getList(String startNodes, String nodePath, String fields,
             String constraints, String orderby, String directions,
             String searchDir, boolean distinct);
+
+    /**
+     * Executed a query and returns the result as a NodeList.
+     * 
+     * @see org.mmbase.storage.search.SearchQuery
+     * @since MMBase-1.7
+     */
+    public NodeList getList(SearchQuery query);
+
 
     /**
      * Sets a locale for this Cloud instance.
