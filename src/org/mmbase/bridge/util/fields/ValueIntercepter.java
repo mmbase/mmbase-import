@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.7 2004-02-18 17:14:29 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.8 2004-02-26 22:09:28 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -66,7 +66,7 @@ public class ValueIntercepter {
         {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
         {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
         {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=mode */
+        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
     };
     private static final Map[][] setProcessor = { // maps with guiType -> Processor
         {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
@@ -78,7 +78,7 @@ public class ValueIntercepter {
         {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
         {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
         {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=mode */
+        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
     };
 
     private static final Processor[][] defaultGetProcessor = {
@@ -92,7 +92,7 @@ public class ValueIntercepter {
         {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
         {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
         {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=mode */
+        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
     };
     private static final Map[][] getProcessor = { // maps with guiType -> Processor
         {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
@@ -104,7 +104,7 @@ public class ValueIntercepter {
         {null, null, null, null, null, null, null, null, null, null}, /* 6=double */
         {null, null, null, null, null, null, null, null, null, null}, /* 7=long */
         {null, null, null, null, null, null, null, null, null, null}, /* 8=xml */
-        {null, null, null, null, null, null, null, null, null, null}  /* 9=mode */
+        {null, null, null, null, null, null, null, null, null, null}  /* 9=node */
     };
 
     static {
