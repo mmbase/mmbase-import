@@ -16,7 +16,7 @@
      <relation destinationtype="categorytypes" role="posrel" searchdir="destination"/>
   </action>
 
-  <form-schema extends="tasks/categorytypes/schema.xml" id="basics" >
+  <form-schema extends="tasks/meta/categorytypes/schema.xml" id="basics" >
 
     <list role="related" destination="templates">
       <title xml:lang="en">Possible templates</title>

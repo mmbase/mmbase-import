@@ -32,98 +32,43 @@
       <mm:isempty referid="nodenumber">
         <p>
         <mm:node number="category_main">
-          <h1><mm:field name="title" />:
-            <mm:maywrite>
-              <a href="<mm:url referids="referrer,language" page="${jsps}wizard.jsp">
-              <mm:param name="wizard">tasks/categories/overview</mm:param>
-              <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
-              </mm:url>">Edit Structure</a>
-            </mm:maywrite>
-          </h1>
           <mm:relatednodescontainer type="categories" role="posrel" searchdirs="destination">
             <mm:sortorder field="posrel.pos" />
             <mm:relatednodes id="mainlist">
-              <h2><mm:field name="title" />:
+              <h1><mm:field name="title" />:
                 <mm:maywrite>
                   <a href="<mm:url referids="referrer,language" page="${jsps}wizard.jsp">
-                  <mm:param name="wizard">tasks/categories/overview</mm:param>
+                  <mm:param name="wizard">tasks/structure/category</mm:param>
                   <mm:param name="objectnumber"><mm:field name="number" /></mm:param>
                   </mm:url>">Edit Structure</a>
                 </mm:maywrite>
-              </h2>
-              <mm:context>
-                <mm:import id="level">topic</mm:import>
-                <mm:import id="origin"><mm:field name="number" /></mm:import>
-                <mm:relatednodescontainer type="categories" role="posrel" searchdirs="destination">
-                  <mm:sortorder field="posrel.pos" />
-                  <mm:relatednodes>
-                    <mm:first>
-                      <ul>
-                    </mm:first>
-                    <mm:context>
-                      <mm:field name="title">
-                        <mm:compare value="TV"><mm:import id="tri">true</mm:import></mm:compare>
-                        <mm:compare value="Radio"><mm:import id="tri">true</mm:import></mm:compare>
-                        <mm:compare value="Internet"><mm:import id="tri">true</mm:import></mm:compare>
-                      </mm:field>
-                      <mm:import id="topic"><mm:field name="number" /></mm:import>
-                      <%@include file="struct.li.jsp" %>
-                      <mm:import id="level">subtopic</mm:import>
-                      <mm:import id="origin"><mm:field name="number" /></mm:import>
-                      <mm:relatednodescontainer type="categories" role="posrel" searchdirs="destination">
-                        <mm:sortorder field="posrel.pos" />
-                        <mm:relatednodes>
-                          <mm:first>
-                            <ul>
-                          </mm:first>
-                          <mm:import id="subtopic" reset="true"><mm:field name="number" /></mm:import>
-                          <%@include file="struct.li.jsp" %>
-                          <mm:notpresent referid="tri">
-                            <mm:context>
-                              <mm:import id="level">detail</mm:import>
-                              <mm:import id="origin"><mm:field name="number" /></mm:import>
-                              <mm:relatednodescontainer type="categories" role="posrel" searchdirs="destination">
-                                <mm:sortorder field="posrel.pos" />
-                                <mm:relatednodes>
-                                  <mm:first>
-                                    <ul>
-                                  </mm:first>
-                                  <mm:import id="detail"><mm:field name="number" /></mm:import>
-                                  <%@include file="struct.li.jsp" %>
-                                  <mm:last>
-                                    </ul>
-                                  </mm:last>
-                                </mm:relatednodes>
-                              </mm:relatednodescontainer>
-                            </mm:context>
-                          </mm:notpresent>
-                          <mm:last>
-                            </ul>
-                          </mm:last>
-                        </mm:relatednodes>
-                      </mm:relatednodescontainer>
-                      <mm:present referid="tri">
-                        <mm:relatednodescontainer type="programs" role="related" searchdirs="destination">
-                          <mm:sortorder field="programs.title" />
-                          <mm:relatednodes>
-                            <mm:first>
-                              <ul>
-                            </mm:first>
-                            <mm:import id="subtopic" reset="true"><mm:field name="number" /></mm:import>
-                            <%@include file="struct.li.jsp" %>
-                            <mm:last>
-                              </ul>
-                            </mm:last>
-                          </mm:relatednodes>
-                        </mm:relatednodescontainer>
-                      </mm:present>
-                    </mm:context>
-                    <mm:last>
-                      </ul>
-                    </mm:last>
-                  </mm:relatednodes>
-                </mm:relatednodescontainer>
-              </mm:context>
+              </h1>
+              <mm:import id="level" reset="true">maintopic</mm:import>
+              <mm:tree type="categories" role="posrel" orderby="posrel.pos" searchdir="destination">
+                <mm:first inverse="true">
+                  <mm:grow>
+                    <ul>
+                    <mm:onshrink></ul></mm:onshrink>
+                  </mm:grow>
+                  <mm:depth>
+                    <mm:compare value="3">
+                      <mm:import id="level" reset="true">maintopic</mm:import>
+                      <mm:remove referid="subtopic"/>
+                      <mm:remove referid="detail"/>
+                    </mm:compare>
+                    <mm:compare value="4">
+                      <mm:import id="level" reset="true">subtopic</mm:import>
+                      <mm:remove referid="detail"/>
+                    </mm:compare>
+                    <mm:isgreaterthan value="4">
+                      <mm:import id="level" reset="true">detail</mm:import>
+                    </mm:isgreaterthan>
+                  </mm:depth>
+                  <mm:import id="$level" reset="true"><mm:field name="number" /></mm:import>
+                  <%@include file="struct.li.jsp" %>
+                  <mm:shrink />
+                </mm:first>
+              </mm:tree>
             </mm:relatednodes>
           </mm:relatednodescontainer>
         </mm:node>

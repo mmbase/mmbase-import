@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase//DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd">
-<wizard-schema id="topic">
-  <title xml:lang="en">Topics</title>
-  <title xml:lang="nl">Topics</title>
+<wizard-schema id="category">
+  <title xml:lang="en">Structure elements</title>
+  <title xml:lang="nl">Structuurelementen</title>
 
   <action type="load">
     <relation destination="categories" role="posrel" searchdir="destination" />
@@ -16,31 +16,31 @@
 
   <lists include="tasks/sitestatlists.xml" />
 
-  <form-schema extends="tasks/categories/schema.xml" id="basics" >
+  <form-schema extends="tasks/structure/schema.xml" id="basics" >
 
-    <list include="tasks/categorytypes/list.xml" />
+    <list include="tasks/meta/categorytypes/list.xml" />
 
-    <list include="tasks/templates/list.xml" />
+    <list include="tasks/meta/templates/list.xml" />
 
-    <list include="tasks/templates/list_posrel.xml" />
+    <list include="tasks/meta/templates/list_posrel.xml" />
   </form-schema>
 
   <form-schema id="categories">
-    <title xml:lang="en">Subtopics</title>
-    <title xml:lang="nl">Subtopics</title>
+    <title xml:lang="en">Structure elements</title>
+    <title xml:lang="nl">Structuurelementen</title>
 
     <list role="posrel" destination="categories" ordertype="number" orderby="field[@name='pos']">
-      <title xml:lang="en">Subtopics</title>
-      <title xml:lang="nl">Subtopics</title>
+      <title xml:lang="en">Sub-elements</title>
+      <title xml:lang="nl">Sub-elementen</title>
 
       <item>
         <field ftype="data" name="title" />
-        <field ftype="startwizard" wizardname="tasks/categories/subtopic" inline="true" />
+        <field ftype="startwizard" wizardname="tasks/structure/categories" inline="true" />
       </item>
 
       <command name="search" nodepath="categories" fields="title" orderby="title" age="-1">
-        <prompt xml:lang="en">Search a subtopic</prompt>
-        <prompt xml:lang="nl">Zoek een subtopic</prompt>
+        <prompt xml:lang="en">Search a element</prompt>
+        <prompt xml:lang="nl">Zoek een element</prompt>
         <search-filter>
           <name xml:lang="en">Contains</name>
           <name xml:lang="nl">Bevat</name>
@@ -48,9 +48,9 @@
         </search-filter>
       </command>
 
-      <command name="startwizard" inline="true" wizardname="tasks/categories/subtopic_create" objectnumber="new" >
-        <prompt xml:lang="en">New subtopic</prompt>
-        <prompt xml:lang="nl">Nieuw subtopic</prompt>
+      <command name="startwizard" inline="true" wizardname="tasks/structure/categories_create" objectnumber="new" >
+        <prompt xml:lang="en">New element</prompt>
+        <prompt xml:lang="nl">Nieuw element</prompt>
       </command>
 
       <action type="add">
