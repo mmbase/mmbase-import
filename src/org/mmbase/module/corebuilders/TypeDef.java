@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * object types (builders)
  *
  * @author Daniel Ockeloen
- * @version $Id: TypeDef.java,v 1.32 2003-03-10 11:50:36 pierre Exp $
+ * @version $Id: TypeDef.java,v 1.33 2003-03-12 20:12:50 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -167,7 +167,7 @@ public class TypeDef extends MMObjectBuilder {
     public String getValue(int type) {
         String result = (String) getNumberToNameCache().get(new Integer(type));
         if (result == null) {
-            log.error("Could not find builder name for typdef number " + type);
+            log.error("Could not find builder name for typedef number " + type);
         }
         return result;
     }
@@ -379,7 +379,7 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        log.debug("executefunction of typdef");
+        log.debug("executefunction of typedef");
         if (function.equals("info")) {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
