@@ -17,7 +17,7 @@ Taglibs</a> (version 1.0), created by
 <a href="http://www.mmbase.org/mmbasenew/index3.shtml?about+541+3649+documentation" target="_new">Mozilla License 1.0</a>
 </p>
 <p>
-  version of the editors: 2001-11-14
+  version of the editors: 2002-03-28
 </p>
 <p>
   These editors were tested with application servers orion 1.5.2 and tomcat 4.0.
