@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * (Note that is would be possible to make a Writer that stores data in a node
  * or a builder, but this has not been implemented yet).
  * XXX: Currently, recorder info is NOT stored in the channel. A recorder has to
-g * be activated manually (using $MOD-channelnr-RECORD-FILE-filname).
+ * be activated manually (using $MOD-channelnr-RECORD-FILE-filname).
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
@@ -123,7 +123,7 @@ public class Channel extends MMObjectBuilder {
     private String defaultrecordfile = "chat.log";
     // The default suer type used in searches
     private String defaultUserType = null;
-
+    
     /**
      * Constructor
      */
@@ -155,26 +155,31 @@ public class Channel extends MMObjectBuilder {
         messageBuilder = (Message)mmb.getMMObject("message");
         // get community object type
         communityBuilder = (Community)mmb.getMMObject("community");
-        // obtain releation definitions (roles) used by the community
-        RelDef reldef = mmb.getRelDef();
-
         // obtain temporary node manager
         tmpNodeManager = new TemporaryNodeManager(mmb);
-
         // create relation breaker for maintaining temporary relations
         chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
+        
+        // Open all channels 
+        // Comment it out to speed up start of server
+        openChannels();
 
-        /* Lookup all channels in the cloud of who the field open is set to (want)open and try to open all these channels.
-         */
-        log.debug("init(): try to open all channels who are set open in the database");
+        return result;
+    }
+    
+    /**
+     *  Lookup all channels in the cloud of who the field open is set to
+     *  (want)open and try to open all these channels.
+     */
 
+    private void openChannels() {
+        log.debug("Try to open all channels who are set open in the database");
         String where="WHERE "+mmb.getDatabase().getAllowedField(F_OPEN)+"=" + OPEN +
                      " OR "+mmb.getDatabase().getAllowedField(F_OPEN)+"=" + WANT_OPEN;
         Enumeration openChannels = search(where);
         while (openChannels.hasMoreElements()) {
             open((MMObjectNode)openChannels.nextElement());
         }
-        return result;
     }
 
     /**
@@ -616,7 +621,7 @@ public class Channel extends MMObjectBuilder {
         }
         return relatedUsers;
     }
-
+    
     /**
      * Returns to which community a channel belongs.
      *
@@ -625,14 +630,14 @@ public class Channel extends MMObjectBuilder {
      *  channel is not associated with a community.
      */
     public MMObjectNode communityParent(MMObjectNode channel) {
-        // During call to Channel.init(), communityBuilder.oType is still 0
+        // During call to Channel.init(), communityBuilder.oType can still be 0
         // So need to check it before using it
+        // When openChannels is removed from init this can be removed
         int oType = communityBuilder.oType;
         if (oType==0) oType = mmb.TypeDef.getIntValue("community");
-        
         Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
         if (relatedCommunity.hasMoreElements())
-            return (MMObjectNode)relatedCommunity.nextElement();
+           return (MMObjectNode)relatedCommunity.nextElement();
         return null;
     }
                
@@ -718,6 +723,7 @@ public class Channel extends MMObjectBuilder {
             log.error("replace(): channel number expected after $MOD-BUILDER-channel-.");
             return "";
         }
+        
         MMObjectNode channel = getNode(tok.nextToken());
 
         if (tok.hasMoreElements()) {
