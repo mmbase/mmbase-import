@@ -196,6 +196,17 @@
 
     </form>
 
+    <mm:node number="$provider">
+      <mm:relatedcontainer path="settingrel,components">
+        <mm:constraint field="components.name" value="portfolio"/>
+        <mm:related>
+          <table class="font">
+            <tr><td><a href="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath" referids="$referids,contact"></mm:treefile>">portfolio</a></td></tr>
+          </table>
+        </mm:related>
+      </mm:relatedcontainer>
+    </mm:node>
+
   </div>
 </div>
 </div>

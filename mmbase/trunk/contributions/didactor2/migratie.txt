@@ -1,6 +1,26 @@
 
 Migratie issues
 
+2004-12-01
+
+De portfolio component is verder uitgebreid en af gemaakt. Gebruikers hebben nu
+de mogelijkheid om een beschrijving van zichzelf te geven. Hiervoor moet een
+desription veld aan de people tabel worden toegevoegd. Verder worden er nu
+standaard per gebruiker 3 typen portfolio's aangemaakt.
+
+- Stop de applicatie en draai de volgende SQL:
+
+    alter table mmb_people add column description blob;
+
+- Start de applicatie met de nieuwe war file zodat de Portfolio applicatie
+  gedeployed wordt.
+- Herstart de applicatie zodat de wijzigingen van de Portfolio applicatie actief
+  worden.
+- Vraag de volgende jsp op (meerder keren draaien geeft geen problemen):
+
+    migratie-2004-12-01.jsp
+
+
 2004-11-26
 
   bugfix: het was mogelijk om meerdere people objecten aan te maken met dezelfde
