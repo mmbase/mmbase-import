@@ -29,8 +29,8 @@
     <type-mapping mmbase-type="NODE">INTEGER</type-mapping>
     <type-mapping mmbase-type="STRING">TEXT</type-mapping>
     <type-mapping mmbase-type="XML">TEXT</type-mapping>
-    <!-- <type-mapping mmbase-type="BYTE">OID</type-mapping> -->
-    <type-mapping mmbase-type="BYTE">bytea</type-mapping>
+    <type-mapping mmbase-type="BYTE">OID</type-mapping> <!-- This works with postgresql 7.3.2 (driver 1.7.1). bytea didn't -->
+    <!-- type-mapping mmbase-type="BYTE">bytea</type-mapping-->
   </mapping>
   &extra;
 </database>
