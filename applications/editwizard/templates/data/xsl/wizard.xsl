@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.125.2.1 2004-04-15 11:12:41 pierre Exp $
+    @version $Id: wizard.xsl,v 1.125.2.2 2004-04-17 15:29:36 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -1075,8 +1075,11 @@
     truncate size
   -->
   <xsl:template match="value" mode="line">
+  	<xsl:param name="val" select="."/>
     <span>
-      <xsl:call-template name="writeCurrentField"/>
+      <xsl:call-template name="writeCurrentField">
+        <xsl:with-param name="val" select="$val"/>
+      </xsl:call-template>
     </span>
   </xsl:template>
 

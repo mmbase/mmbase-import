@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.28 2004-04-07 12:36:00 pierre Exp $
+    @version $Id: base.xsl,v 1.28.2.1 2004-04-17 15:29:37 nico Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -263,19 +263,19 @@
     This template truncates fields that are too long.
   -->
   <xsl:template name="writeCurrentField">
-
+	<xsl:param name="val" select="."/>
     <!-- Disabled at the moment, because fields with html in it
       screw up the full page when truncated.
       This will work if we can filter the html out of the text before
       truncating. -->
 
     <!--xsl:choose>
-      <xsl:when test="string-length(.) > $MAX_LENGTH">
-        <xsl:value-of select="substring(normalize-space(.), 0, $MAX_LENGTH)" disable-output-escaping="yes" />
+      <xsl:when test="string-length($val) > $MAX_LENGTH">
+        <xsl:value-of select="substring(normalize-space($val), 0, $MAX_LENGTH)" disable-output-escaping="yes" />
         ...
       </xsl:when>
       <xsl:otherwise-->
-        <xsl:value-of select="." disable-output-escaping="yes" />
+        <xsl:value-of select="$val" disable-output-escaping="yes" />
       <!--/xsl:otherwise>
     </xsl:choose-->
   </xsl:template>
