@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.1.2.3 2002-03-18 16:53:15 pierre Exp $
+ * @version $Id: Dove.java,v 1.1.2.4 2002-06-28 10:36:09 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -501,7 +501,7 @@ public class Dove extends AbstractDove {
                         field.setAttribute(ELM_NAME,fname);
                         fields.appendChild(field);
                         // guiname (XXX:language is ignored)
-                        elm=addContentElement(GUINAME,fielddef.getGUIName(),out);
+                        elm=addContentElement(GUINAME,fielddef.getGUIName(),field);
                         if (lang!=null) elm.setAttribute(ELM_LANG,lang);
                         // guitype
                         String guitype=fielddef.getGUIType();
