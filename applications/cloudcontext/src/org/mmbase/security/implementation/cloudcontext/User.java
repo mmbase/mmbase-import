@@ -24,7 +24,7 @@ import org.mmbase.security.SecurityException;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.14 2005-03-01 14:28:30 michiel Exp $
+ * @version $Id: User.java,v 1.15 2005-03-15 09:08:58 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users
  */
 public class User extends BasicUser implements MMBaseObserver {
@@ -80,7 +80,7 @@ public class User extends BasicUser implements MMBaseObserver {
     /**
      * @javadoc
      */
-    public boolean isValid() {
+    boolean isValidNode() {
         return (node == null) || Users.getBuilder().isValid(node);
     }
 
