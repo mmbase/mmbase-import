@@ -3,8 +3,8 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="MMBase media project" default="jar" basedir=".">
-  <property name="project.name"   value="mmmedia" />
+<project name="MMBase editwizard project" default="jar" basedir=".">
+  <property name="project.name"   value="editwizard" />
   &base;
 </project>
 
