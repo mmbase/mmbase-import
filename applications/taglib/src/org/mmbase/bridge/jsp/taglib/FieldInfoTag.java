@@ -408,6 +408,9 @@ public class FieldInfoTag extends NodeReferrerTag {
             break;
         case TYPE_GUIVALUE:
             show = node.getStringValue("gui("+field.getName()+")");
+            if (show.trim().equals("")) {
+                show = node.getStringValue(field.getName());
+            }
             break;
         case TYPE_INPUT:
             show = htmlInput(node, field);
