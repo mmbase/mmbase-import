@@ -14,7 +14,7 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.5 2003-08-29 09:36:54 pierre Exp $
+ * @version $Id: StorageException.java,v 1.6 2003-11-18 14:58:33 michiel Exp $
  */
 public class StorageException extends Exception {
 
@@ -30,12 +30,12 @@ public class StorageException extends Exception {
 
     //javadoc is inherited
     public StorageException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     //javadoc is inherited
     public StorageException(String message, Throwable cause) {
-        super(message,cause);
+        super(message, cause);
     }
 
 }

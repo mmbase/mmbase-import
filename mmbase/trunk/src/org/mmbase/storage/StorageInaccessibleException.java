@@ -14,7 +14,7 @@ package org.mmbase.storage;
  * or user rights on the storage were insufficient to allow access.
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageInaccessibleException.java,v 1.2 2003-08-29 09:36:54 pierre Exp $
+ * @version $Id: StorageInaccessibleException.java,v 1.3 2003-11-18 14:58:33 michiel Exp $
  */
 public class StorageInaccessibleException extends StorageException {
 
@@ -30,12 +30,12 @@ public class StorageInaccessibleException extends StorageException {
 
     //javadoc is inherited
     public StorageInaccessibleException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     //javadoc is inherited
     public StorageInaccessibleException(String message, Throwable cause) {
-        super(message,cause);
+        super(message, cause);
     }
 
 }

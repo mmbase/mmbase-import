@@ -16,7 +16,7 @@ package org.mmbase.storage;
  * are missing.
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageConfigurationException.java,v 1.2 2003-08-29 09:36:54 pierre Exp $
+ * @version $Id: StorageConfigurationException.java,v 1.3 2003-11-18 14:58:33 michiel Exp $
  */
 public class StorageConfigurationException extends StorageException {
 
@@ -32,7 +32,7 @@ public class StorageConfigurationException extends StorageException {
 
     //javadoc is inherited
     public StorageConfigurationException(Throwable cause) {
-        super(cause);
+        super(cause.getMessage(), cause);
     }
 
     //javadoc is inherited
