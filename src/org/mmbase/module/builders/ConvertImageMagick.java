@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.54 2003-11-19 17:03:26 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.55 2003-11-25 18:50:01 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);
@@ -474,120 +474,120 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * @return      The result of the conversion (a picture).
      *
      */
-	private byte[] convertImage(
-		byte[] pict,
-		List cmd,
-		String format,
-		File cwd) {
+    private byte[] convertImage(
+                                byte[] pict,
+                                List cmd,
+                                String format,
+                                File cwd) {
 
-		if (pict != null && pict.length > 0) {
-			cmd.add(0, "-");
-			cmd.add(0, converterPath);
-			cmd.add(format + ":-");
+        if (pict != null && pict.length > 0) {
+            cmd.add(0, "-");
+            cmd.add(0, converterPath);
+            cmd.add(format + ":-");
 
-			String command = cmd.toString(); // only for debugging.
-			log.debug(
-				"Converting image(#"
-					+ pict.length
-					+ " bytes)  to '"
-					+ format
-					+ "' ('"
-					+ command
-					+ "')");
+            String command = cmd.toString(); // only for debugging.
+            log.debug(
+                      "Converting image(#"
+                      + pict.length
+                      + " bytes)  to '"
+                      + format
+                      + "' ('"
+                      + command
+                      + "')");
 
-			CommandLauncher launcher = new CommandLauncher("ConvertImage");
-			ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
-			ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-			ByteArrayInputStream originalStream = new ByteArrayInputStream(pict);
+            CommandLauncher launcher = new CommandLauncher("ConvertImage");
+            ByteArrayOutputStream imageStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+            ByteArrayInputStream originalStream = new ByteArrayInputStream(pict);
 
-			try {
-				if (cwd != null) {
-					// using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
-					String[] env = new String[1];
-					env[0] = "MAGICK_HOME=" + cwd.toString();
-					if (log.isDebugEnabled()) {
-						log.debug("MAGICK_HOME " + env[0]);
-					}
-					launcher.execute((String[]) cmd.toArray(new String[0]), env);
-				}
-				else {
-					launcher.execute((String[]) cmd.toArray(new String[0]));
-				}
-				launcher.waitAndWrite(originalStream, imageStream, errorStream);
+            try {
+                if (cwd != null) {
+                    // using MAGICK_HOME for mmbase config/fonts if 'font' option used (can put type.mgk)
+                    String[] env = new String[1];
+                    env[0] = "MAGICK_HOME=" + cwd.toString();
+                    if (log.isDebugEnabled()) {
+                        log.debug("MAGICK_HOME " + env[0]);
+                    }
+                    launcher.execute((String[]) cmd.toArray(new String[0]), env);
+                }
+                else {
+                    launcher.execute((String[]) cmd.toArray(new String[0]));
+                }
+                launcher.waitAndWrite(originalStream, imageStream, errorStream);
 
-				log.debug("retrieved all information");
-				byte[] image = imageStream.toByteArray();
+                log.debug("retrieved all information");
+                byte[] image = imageStream.toByteArray();
 
-				if (image.length < 1) {
-					// No bytes in the image -
-					// ImageMagick failed to create a proper image.
-					// return null so this image is not by accident stored in the database
-					log.error(
-						"Imagemagick conversion did not succeed. Returning null.");
-					String errorMessage = errorStream.toString();
+                if (image.length < 1) {
+                    // No bytes in the image -
+                    // ImageMagick failed to create a proper image.
+                    // return null so this image is not by accident stored in the database
+                    log.error(
+                              "Imagemagick conversion did not succeed. Returning null.");
+                    String errorMessage = errorStream.toString();
 
-					if (errorMessage.length() > 0) {
-                                            log.error(
-                                                      "From stderr with command '"
-                                                      + command
-                                                      + "' in '"
-                                                      + new File("").getAbsolutePath()
-                                                      + "'  --> '"
-								+ errorMessage
-                                                      + "'");
-					}
-					else {
-						log.debug("No information on stderr found");
-					}
-					return null;
-				}
-				else {
-					// print some info and return....
-					if (log.isServiceEnabled()) {
-						log.service(
-							"converted image(#"
-								+ pict.length
-								+ " bytes)  to '"
-								+ format
-								+ "'-image(#"
-								+ image.length
-								+ " bytes)('"
-								+ command
-								+ "')");
-					}
-					return image;
-				}
-			}
-			catch (ProcessException e) {
-				log.error(
-					"converting image with command: '"
-						+ command
-						+ "' failed  with reason: '"
-						+ e.getMessage()
-						+ "'");
-				log.error(Logging.stackTrace(e));
-			}
-			finally {
-				try {
-					if (originalStream != null) {
-						originalStream.close();
-					}
-				}
-				catch (IOException ioe) {
-				}
-				try {
-					if (imageStream != null) {
-						imageStream.close();
-					}
-				}
-				catch (IOException ioe) {
-				}
-			}
-		}
-		else {
-			log.error("Converting an empty image does not make sense.");
-		}
+                    if (errorMessage.length() > 0) {
+                        log.error(
+                                  "From stderr with command '"
+                                  + command
+                                  + "' in '"
+                                  + new File("").getAbsolutePath()
+                                  + "'  --> '"
+                                  + errorMessage
+                                  + "'");
+                    }
+                    else {
+                        log.debug("No information on stderr found");
+                    }
+                    return null;
+                }
+                else {
+                    // print some info and return....
+                    if (log.isServiceEnabled()) {
+                        log.service(
+                                    "converted image(#"
+                                    + pict.length
+                                    + " bytes)  to '"
+                                    + format
+                                    + "'-image(#"
+                                    + image.length
+                                    + " bytes)('"
+                                    + command
+                                    + "')");
+                    }
+                    return image;
+                }
+            }
+            catch (ProcessException e) {
+                log.error(
+                          "converting image with command: '"
+                          + command
+                          + "' failed  with reason: '"
+                          + e.getMessage()
+                          + "'");
+                log.error(Logging.stackTrace(e));
+            }
+            finally {
+                try {
+                    if (originalStream != null) {
+                        originalStream.close();
+                    }
+                }
+                catch (IOException ioe) {
+                }
+                try {
+                    if (imageStream != null) {
+                        imageStream.close();
+                    }
+                }
+                catch (IOException ioe) {
+                }
+            }
+        }
+        else {
+            log.error("Converting an empty image does not make sense.");
+        }
 
-		return null;
-	}
+        return null;
+    }
 }
