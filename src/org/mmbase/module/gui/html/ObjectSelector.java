@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.13 2003-03-07 11:49:17 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.14 2003-05-22 15:13:03 kees Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -87,8 +87,8 @@ public class ObjectSelector implements CommandHandlerInterface {
             FieldDefs def;
             String DBName,val;
             Object o;
-            for (Enumeration h=obj.getSortedFields().elements();h.hasMoreElements();) 			{
-                def=(FieldDefs)h.nextElement();
+            for (Iterator i=obj.getFields(FieldDefs.ORDER_EDIT).iterator();i.hasNext();) 			{
+                def=(FieldDefs)i.next();
                 DBName=def.getDBName();
                 if (!DBName.equals("owner") && !DBName.equals("number") && !DBName.equals("otype")) {
                     val=obj.getGUIIndicator(DBName,node);
