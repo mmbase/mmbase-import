@@ -13,6 +13,7 @@ import java.io.*;
 
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.Module;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -29,7 +30,7 @@ import org.apache.tomcat.core.*;
 
  */
 
-public class jumpersInterceptor extends JamesServlet implements RequestInterceptor { 
+public class jumpersInterceptor extends BaseInterceptor { 
 
 
     static MMBase mmbase = null;
@@ -39,29 +40,37 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
 
                
     public jumpersInterceptor() {
-	mmbase=(MMBase)getModule("MMBASEROOT");
+        mmbase=(MMBase)getModule("MMBASEROOT");
     }
  
     public void setContextManager( ContextManager cm ) {
-	this.cm=cm;
+        this.cm=cm;
     }
    
+	/*
+	* get the needed module so we can return it
+	*/
+	protected final Object getModule(String name) {
+		return(Module.getModule(name));
+	}
 
+
+    /* 
+     * Doesn't work with Tomcat 3.2, but keep it here for backwards comp.
+     */
     public int preService(Request req, Response res) {
-	if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
-	incRefCount(req.getFacade());
-	try {
-		String url=null;
-		String tmpr=req.getRequestURI().substring(1);
-		if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
-		if (url!=null) {
-		    res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-		    res.setContentType("text/html");
-		    res.setHeader("Location",url);
-		    return OK;
-		}
+        if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
+        try {
+            String url=null;
+            String tmpr=req.getRequestURI().substring(1);
+            if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
+            if (url!=null) {
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                res.setContentType("text/html");
+                res.setHeader("Location",url);
+                return OK;
+            }
 	    } finally { 
-			decRefCount(req.getFacade()); 
 	    }
 	    return OK;
     }
@@ -71,20 +80,16 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
         String url=null;
 		Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
 		if (bul!=null) {
-			if (key.indexOf('-')==-1) {
-				if (key.endsWith("/")) {
-					url=bul.getJump(key.substring(0,key.length()-1));
-				} else {
-					url=bul.getJump(key);
-				}
-			}
+			if (key.endsWith("/")) {
+                url=bul.getJump(key.substring(0,key.length()-1));
+            } else {
+                url=bul.getJump(key);
+            }
 			if (url!=null) return(url);
 		} else {
 			System.out.println("servjumpers -> can't access mmbase/jumpers");
 		}
-	
 		return(null);
-
 	}
 
 
@@ -92,8 +97,8 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
 		return 0;
     }
 
-    public int contextMap( Request rrequest ) {
-		return 0;
+    public int contextMap( Request req ) {
+        return 0;
     }
 
     public int authenticate(Request request, Response response) {
@@ -112,8 +117,21 @@ public class jumpersInterceptor extends JamesServlet implements RequestIntercept
 		return 0;
 	}
 
-    public int beforeBody( Request rrequest, Response response ) {
-		return 0;
+    public int beforeBody( Request req, Response res ) {
+        if (mmbase==null) mmbase=(MMBase)getModule("MMBASEROOT");
+        try {
+            String url=null;
+            String tmpr=req.getRequestURI().substring(1);
+            if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
+            if (url!=null) {
+                res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                res.setContentType("text/html");
+                res.setHeader("Location",url);
+                return OK;
+            }
+	    } finally {
+	    }
+	    return OK;
     }
 
     public int beforeCommit( Request request, Response response) {
