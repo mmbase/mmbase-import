@@ -1,5 +1,5 @@
 /*
-$Id: FieldDefs.java,v 1.2 2000-03-17 14:53:42 wwwtech Exp $
+$Id: FieldDefs.java,v 1.3 2000-03-20 14:23:27 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/03/17 14:53:42  wwwtech
+davzev: Added DBSTATE constants
+
 */
 package org.mmbase.module.corebuilders;
 
@@ -20,11 +23,12 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.2 $ $Date: 2000-03-17 14:53:42 $
+ * @$Revision: 1.3 $ $Date: 2000-03-20 14:23:27 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
 	public final static int DBSTATE_PERSISTENT = 2;
+	public final static int DBSTATE_SYSTEM = 3;
 
 	public String GUIName; 
 	public String GUIType; 
