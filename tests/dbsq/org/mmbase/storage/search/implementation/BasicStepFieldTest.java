@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicStepFieldTest extends TestCase {
     
@@ -177,7 +177,7 @@ public class BasicStepFieldTest extends TestCase {
         try {
             // String value for NODE field, should throw IllegalArgumentException.
             BasicStepField.testValue("123", instance);
-            fail("String value for NODE field, should throw IllegalArgumentException.");
+            fail("KNOWN - introduced BasicStepField r1.8 (pierre) - String value for NODE field, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
 
         // BYTE type field.
