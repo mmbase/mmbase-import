@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.2 2003-12-23 21:47:48 nico Exp $
+  @version  $Id: wizard.css,v 1.3 2004-01-12 22:06:14 nico Exp $
 */
 @import url("base.css"); cm,
 
@@ -13,7 +13,7 @@ td.stepcurrent {
 
 td.stepother {
   background-color: #CCC;
-  border-color: #000000;
+  border-color: #F0F0F0;
 }
 
 td.stepcurrent a.valid:link,
