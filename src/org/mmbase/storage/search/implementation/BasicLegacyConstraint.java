@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Basic implementation.
@@ -19,12 +20,16 @@ import org.mmbase.storage.search.*;
  * eventually be phased out.</em>
  *
  * @author  Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicLegacyConstraint extends BasicConstraint 
 implements LegacyConstraint {
     
+    /** Logger instance. */
+    private static Logger log 
+        = Logging.getLoggerInstance(BasicLegacyConstraint.class.getName());
+
     /** The constraint. */
     private String constraint = null;
     
@@ -47,6 +52,9 @@ implements LegacyConstraint {
      * @throws IllegalArgumentException When an invalid argument is supplied.
      */
     public void setConstraint(String constraint) {
+        if (log.isDebugEnabled()) {
+            log.debug("Legacy constraint: " + constraint);
+        }
         // Test constraint is not null.
         if (constraint == null) {
             throw new IllegalArgumentException(
