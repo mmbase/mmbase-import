@@ -763,5 +763,12 @@ public class Target {
         return false;
     }
 
+    public String getId() {
+        String id = getPackageName() + "@" + getMaintainer() + "_" + getType();
+        id = id.replace(' ', '_');
+        id = id.replace('/', '_');
+	return id;
+    }
+
 }
 
