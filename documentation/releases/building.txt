@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.0 - Building
+                     MMBase 1.6.0 - Building
 ===================================================================  
   
 This is the source distribution of the MMBase project. It includes the
@@ -58,6 +58,9 @@ In order build MMBase into your own webapplication, you must do the following:
 4. Ant will now download all needed packages, unpacks them and will
    start building mmbase. All the output from the build proces
    (downloaded packages, compiled classes, jars, etc) can be found in
-   <mmbase-src/build>. 
+   <mmbase-src/build>.
+   
+   You can avoid downloading by putting mmbase-downloads.zip next to
+   build.xml. 
 
 5. Now you can install MMBase using the installation.txt

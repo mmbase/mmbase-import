@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @rename MultiLevelCache
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCacheHandler.java,v 1.10 2002-11-26 22:23:58 kees Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.9.2.1 2002-11-26 22:39:39 kees Exp $
  */
 public class MultilevelCacheHandler extends Cache {
 
@@ -72,8 +72,8 @@ public class MultilevelCacheHandler extends Cache {
 	
         MultilevelCacheEntry n =  (MultilevelCacheEntry)super.get(hash);
 	if (n == null) {
-		n = new MultilevelCacheEntry(this, hash, o, tagger);
-        	addListeners(types, n);
+	    n = new MultilevelCacheEntry(this, hash, o, tagger);
+	    addListeners(types, n);
 	}
         return put(hash,n);
     }

@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.30 2002-11-25 11:47:38 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.29.2.1 2002-11-25 11:45:56 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 

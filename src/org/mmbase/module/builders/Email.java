@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * It allows for emailing on time, repeat mail, stats
  * and using urls as input for subject and body.
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.20 2002-11-21 13:39:43 pierre Exp $
+ * @version $Id: Email.java,v 1.19.2.1 2002-11-21 13:42:01 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.19 2002-11-18 12:24:18 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.18.2.1 2002-11-18 12:28:30 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());

@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.0 - Release Notes
+                     MMBase 1.6.0 - Release Notes
 ===================================================================  
   
 ============
@@ -7,7 +7,7 @@ INTRODUCTION:
 ============
   
 This document describes the changes that have been made in the final
-release of MMBase 1.7.0, relative to the previous release of MMBase (1.6).
+release of MMBase 1.6.0, relative to the previous release of MMBase (1.5).
   
 Bug reports should be entered at the bug reporting system for MMBase
 at:
@@ -23,17 +23,32 @@ NEW FEATURES:
 General New Features:
 --------------------
 
-- Query-object
+
+- Introduction of `MMBaseServlet' with specialisations like ImageServlet and
+  AttachmentServlet.
+   - No need for servdb anymore. Note that ImageServlet does not accept a
+     'transformation'-template like the 'servdb' servlet of previous MMBase
+     versions did. This functionality can be accessed by the imagetag or the 'cache'
+      function of an image node.
+
+- Editwizards. A way to define `task oriented' editors in XML.
 
 
 ---------------------
 MMCI New Features:
 ---------------------
-[1.7.0]
+[1.6.0]
   
 -------------------
 Taglib New Features:
 -------------------
+
+ - 'Richtext' features, mm:formatter, mm:xslt (experimental)
+ - Attachment-tag (= image tag)
+ - Time-tag
+ - Locale-tag
+ - ?
+
     
 ==========================
 BUG FIXES AND IMPROVEMENTS:
@@ -42,27 +57,27 @@ BUG FIXES AND IMPROVEMENTS:
 -----------------
 Taglib Bug Fixes:
 -----------------
-[1.7.0] 
+[1.6.0] 
 
 ------------------
 Generic Bug Fixes:
 ------------------
-[1.7.0] 
+[1.6.0] 
 
 ------------------
 Security Bug Fixes:
 ------------------ 
-[1.7.0] 
+[1.6.0] 
 
 ----------------
 Taglib Bug Fixes:
 ----------------
-[1.7.0] 
+[1.6.0] 
 
 ----------------- 
 Example Bug Fixes:
 -----------------
-[1.7.0] 
+[1.6.0] 
 
 
 ========================

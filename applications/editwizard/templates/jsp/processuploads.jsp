@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.9 2002-11-27 14:56:22 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.8.2.1 2002-11-27 14:54:14 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen

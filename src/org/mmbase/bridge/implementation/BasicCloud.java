@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.79 2002-11-28 10:30:34 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.76.2.3 2002-11-28 10:26:30 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -695,7 +695,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         Integer hash = null; // result hash for cache
         Vector resultlist=null; // result vector
         // check multilevel cache if needed
-        if (multilevelCache.isActive()) {
+       if (multilevelCache.isActive()) {
             hash = multilevelCache.calcHashMultiLevel(tagger);
             resultlist = (Vector) multilevelCache.get(hash);
         }

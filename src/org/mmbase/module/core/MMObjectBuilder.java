@@ -27,8 +27,6 @@ import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.module.gui.html.EditState;  // argh
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.util.logging.*;
 
@@ -51,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.187 2002-11-28 14:11:51 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.2 2002-11-27 10:01:58 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -145,7 +143,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Detemines whether the cache need be refreshed?
      * Seems useless, as this value is never changed (always true)
-     * @see #processSearchResults
+     * @see #processSearchResults(List)
      */
     public boolean REPLACE_CACHE=true;
 
@@ -1060,44 +1058,6 @@ public class MMObjectBuilder extends MMTable {
         }
         return nodecount;
     }
-    
-    /**
-     * Counts number of nodes matching a specified constraint. 
-     * The constraint is specified by a query that selects nodes of
-     * a specified type, which must be the nodetype corresponding 
-     * to this builder.
-     *
-     * @param query The query.
-     * @return The number of nodes.
-     * @throws IllegalArgumentException When the nodetype specified
-     *         by the query is not the nodetype corresponding to this builder.
-     * @since MMBase-1.7
-     */
-    public int count(NodeSearchQuery query) throws SearchQueryException {
-        // Test if nodetype corresponds to builder.
-        if (query.getBuilder() != this) {
-            throw new IllegalArgumentException(
-            "Wrong builder for query on '" + query.getBuilder().getTableName()
-            + "'-table: " + this.getTableName());
-        }
-        
-        // Wrap in modifiable query, replace fields by one count field.
-        ModifiableQuery modifiedQuery = new ModifiableQuery(query);
-        Step step = (Step) query.getSteps().get(0);
-        FieldDefs numberFieldDefs = getField("number");
-        AggregatedField field = new BasicAggregatedField(
-            step, numberFieldDefs, AggregatedField.AGGREGATION_TYPE_COUNT);
-        List newFields = new ArrayList(1);
-        newFields.add(field);
-        modifiedQuery.setFields(newFields);
-        
-        // Execute query, return result.
-        List results = mmb.getDatabase().getNodes(modifiedQuery, 
-            new ResultBuilder(mmb, modifiedQuery));
-        ResultNode result = (ResultNode) results.get(0);
-        return result.getIntValue("number");
-    }
-
 
     /**
      * Enumerate all the objects that match the searchkeys
@@ -1207,38 +1167,6 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Returns nodes matching a specified constraint. 
-     * The constraint is specified by a query that selects nodes of
-     * a specified type, which must be the nodetype corresponding 
-     * to this builder.
-     *
-     * @param query The query.
-     * @return The nodes.
-     * @throws IllegalArgumentException When the nodetype specified
-     *         by the query is not the nodetype corresponding to this builder.
-     * @since MMBase-1.7
-     */
-    public List getNodes(NodeSearchQuery query) 
-    throws SearchQueryException {
-        // Test if nodetype corresponds to builder.
-        if (query.getBuilder() != this) {
-            throw new IllegalArgumentException(
-            "Wrong builder for query on '" + query.getBuilder().getTableName()
-            + "'-table: " + this.getTableName());
-        }
-        
-        // TODO (later): implement maximum set by maxNodesFromQuery?
-        
-        // Execute query.
-        List results = mmb.getDatabase().getNodes(query, this);
-        
-        // Perform necessary postprocessing.
-        processSearchResults(results);
-
-        return results;
-    }
-    
-     /**
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
@@ -1601,7 +1529,7 @@ public class MMObjectBuilder extends MMTable {
      * @param results The nodes. After returning, partially retrieved nodes 
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
-    protected void processSearchResults(List results) {
+    private void processSearchResults(List results) {
         Map convert = new HashMap();
         int convertCount = 0;
         int convertedCount = 0;
@@ -1717,7 +1645,6 @@ public class MMObjectBuilder extends MMTable {
                 if(numbers != null) {
                     if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
                     // now query the correct builder  for the missing nodes...
-                    // TODO RvM: use getNodes(NodeSearchQuery) instead.
                     Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
                     while(enum.hasMoreElements()) {
                         MMObjectNode current = (MMObjectNode)enum.nextElement();
@@ -2000,14 +1927,9 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-     * Gets the field definitions for the editor, sorted according 
-     * to the specified order, and excluding the fields that have
-     * not been assigned a valid position (valid is >= 0).
+     * Get the field definitions for the editor, sorted according to the specified order.
      * This method makes an explicit sort (it does not use a cached list).
-     *
-     * @param sortorder One of the sortorders defined in 
-     *        {@link org.mmbase.module.corebuilders.FieldDefs FieldDefs}
-     * @return The ordered list of field definitions.
+     * @return a vector with ordered FieldDefs
      */
     public List getFields(int sortorder) {
         List orderedFields = (List)sortedFieldLists.get(new Integer(sortorder));
@@ -2749,30 +2671,11 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Converts an MMNODE expression to an SQL expression. Returns the 
-     * result as an SQL where-clause (including the leading "WHERE ").
-     * <p>
-     * The syntax of an MMNODE expression is defined as follows:
-     * <ul>
-     * <li><em>MMNODE expression</em>: "MMNODE fieldexpressions"
-     * <li><em>fieldexpressions</em> is one field expression, or several
-     *     field expressions combined with logical operators
-     * <li><em>field expression</em>: "fieldXXvalue"
-     * <li><em>field</em> is a fieldname (may be prefixed as in 
-           "prefix.fieldname")
-     * <li><em>XX</em> is a 2 letter comparison operator: "==" (equal), 
-     *     "=E" (equal), "=N" (not equal), "=G" (greater than),
-     *     "=g" (greater than or equal), "=S" (smaller than),
-     *     "=s" (smaller than or equal).
-     * <li><em>value</em> is a value. The form "*value*" is used to
-     *     represent any string containing "value" when comparing for equality.
-     * <li><em>logical operator</em> is "+" (AND) or "-" (AND NOT).
-     * </ul>
+     * Converts an MMNODE expression to SQL.
      * MMNODE expressions are resolved by the database support classes.
      * This means that some database-specific expressions can easier be converted.
-     *
      * @param where the MMNODE expression
-     * @return The SQL expression.
+     * @return the SQL clause as a <code>String</code>
      */
     public String convertMMNode2SQL(String where) {
         log.debug("convertMMNode2SQL(): "+where);

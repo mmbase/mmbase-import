@@ -16,7 +16,6 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.database.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
 
 import org.mmbase.util.logging.Logger;
@@ -37,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.20 2002-11-27 13:03:38 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18 2002-10-23 08:13:48 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -442,7 +441,7 @@ public class ClusterBuilder extends VirtualBuilder {
                     for (int i=1;i<=rd.getColumnCount();i++) {
                         prefix=selectTypes.elementAt(i-1)+".";
                         fieldname=rd.getColumnName(i);
-                        mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        database.decodeDBnodeField(node,fieldname,rs,i,prefix);
                     }
                     node.initializing=false;
                     results.addElement(node);
@@ -460,24 +459,6 @@ public class ClusterBuilder extends VirtualBuilder {
         }
     }
 
-    /**
-     * Executes query, returns results as {@link ClusterNode clusternodes}.
-     *
-     * @param query The query.
-     * @return The clusternodes.
-     * @throws org.mmbase.storage.search.SearchQueryException 
-     *         When an exception occurred while retrieving the results.
-     * @since MMBase-1.7
-     * @see org.mmbase.storage.search.SearchQueryHandler#getNodes
-     */
-    public List getClusterNodes(SearchQuery query) throws SearchQueryException {
-        
-        // TODO (later): implement maximum set by maxNodesFromQuery?
-        
-        // Execute query, return results.
-        return mmb.getDatabase().getNodes(query, this);
-    }
-    
     /**
      * Stores the tables/builder names used in the request for each field to return.
      * @param fields the list of requested fields

@@ -6,7 +6,7 @@
   can store a reference to a tag id in it.
 
   @since   MMBase-1.6
-  @version $Id: idrel.xml,v 1.2 2002-11-25 14:32:48 pierre Exp $
+  @version $Id: idrel.xml,v 1.1.2.1 2002-11-25 14:35:34 pierre Exp $
 -->
 
   <status>active</status>

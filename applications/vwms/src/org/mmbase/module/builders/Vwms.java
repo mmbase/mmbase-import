@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.17 2002-11-21 13:39:43 pierre Exp $
+ * @version $Id: Vwms.java,v 1.16.2.1 2002-11-21 13:42:02 pierre Exp $
  */
 
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {

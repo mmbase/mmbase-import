@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * MMBase will run without this builder, but most applications use aliases.
  *
  * @author Rico Jansen
- * @version $Id: OAlias.java,v 1.12 2002-11-26 10:02:21 pierre Exp $
+ * @version $Id: OAlias.java,v 1.10.2.2 2002-11-26 10:00:33 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -42,6 +42,11 @@ public class OAlias extends MMObjectBuilder {
         numberCache.putCache();
     }
 
+    /**
+     * Initialize this builder. Adds a temporary virtual field "_destination",
+     * used for storing a temporary reference value for the destination NODE field.
+     * @return <code>true</code> if initialization was succesful
+     */
     public boolean init() {
         boolean res=super.init();
         if (res) checkAddTmpField("_destination");

@@ -75,9 +75,10 @@ NetComponents can be found at:
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
-  <property name="distro"      value="MMBase 1.7.0"/>
+  <property name="distro"      value="MMBase 1.6.0"/>
   <property name="documentation.builders.language" value="en" />
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
+  <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="source-html.dir"           location="${source.dir}/html"/>
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
@@ -216,6 +217,8 @@ version=1.6.0-rc1
     </copy>
     <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
           tofile="${build.dir}/mmbase/LICENSE"/>
+
+
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip">
      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}" 
@@ -1614,7 +1617,7 @@ Version: MMBase build ${version}
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
-      <arg value="${source.dir}/config/default/builders" />
+      <arg value="${source-config-builders.dir}" />
     </java>
 
     <!-- convert this file into docbook -->
