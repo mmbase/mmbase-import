@@ -3,7 +3,7 @@
 	<articleinfo>
 		<title>Dove 1.1 XML API</title>
 		<date>20 july 2002</date>
-		<edition>$Id: dovexmlapi.xml,v 1.2 2002-12-04 16:12:17 pierre Exp $</edition>
+		<edition>$Id: dovexmlapi.xml,v 1.3 2002-12-05 13:14:14 kees Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -28,7 +28,7 @@
 		<sidebar>
 			<title>A Note On XML Validation</title>
 			<para>The XML you pass to the Dove is an already parsed tree, to support varying methods of obtaining the XML. This means that XML validation need be done by the calling code.</para>
-			<para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forgo this kind of 'validation', so assuming this behavior is discouraged, and is not a part of the API specification.</para>
+			<para>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forego this kind of 'validation', so assuming this behavior is discouraged, and is not a part of the API specification.</para>
 			<note>
 				<para>Specific behavior of the default Dove implementation are included in this document as a note (like this).</para>
 			</note>
@@ -116,7 +116,7 @@
 		</section>
 		<section>
 			<title>Errors</title>
-			<para>hen the Dove fails to execute a command it returns an error tag. An error tag contains a type attribute that details the type of the error.</para>
+			<para>When the Dove fails to execute a command it returns an error tag. An error tag contains a type attribute that details the type of the error.</para>
 			<itemizedlist>
 				<listitem>
 					<para>parser</para>
@@ -600,7 +600,7 @@ All additonal fields of the relation are returned. </para>
 <!ATTLIST getconstraints TYPE NMTOKEN #REQUIRED>
 <!ATTLIST getconstraints xml:lang NMTOKEN "us">
 ]]></programlisting>
-		<para>The response contains various tags contianing basic information about the object type, the fields of the type, and any allowed relations.</para>
+		<para>The response contains various tags containing basic information about the object type, the fields of the type, and any allowed relations.</para>
 		<para>Tags supported in API 1.0 are singularname, pluralname, and description.</para>
 		<para>The fields tag lists all editable fields of an object. Each field has its own tag, with a name attribute and a number of subtags : guiname, guitype, maxlength and required.</para>
 		<para>The guitype of a field has a mime-type like format of the form datatype/presentationtype.</para>
