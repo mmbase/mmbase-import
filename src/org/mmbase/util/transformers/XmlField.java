@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.13 2003-06-24 13:40:35 michiel Exp $
+ * @version $Id: XmlField.java,v 1.14 2003-07-10 07:23:27 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -330,6 +330,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         handleEmph(obj);
     }
 
+    private static void handleNewlines(StringObject obj) {
+        obj.replace("\n", "<br />\r");  // handle new remaining newlines.
+    }
+
     /**
      * Defines a kind of 'rich' text format. This is a way to easily
      * type structured text in XML.  The XML tags which can be
@@ -360,7 +364,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public static String richToXML(String data, boolean format) {
         StringObject obj = prepareDate(data);
         handleRich(obj, true);
-        obj.replace("\n", "<br />\r");  // handle new remaining newlines.
+        handleNewlines(obj);
         handleFormat(obj, format);
         return obj.toString();
     }
@@ -383,28 +387,29 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         return poorToXML(data, false);
     }
     /**
-     * So poor, that it actually generates pieces of HTML 1.1 blocks (so, no use of sections).
+     * So poor, that it actually generates pieces of XHTML 1.1 blocks (so, no use of sections).
      * 
      * @see #richToXML
      * @since MMBase-1.7
      */
 
-    public static String poorToHTMLBlock(String data) {
+    public static String richToHTMLBlock(String data) {
         StringObject obj = prepareDate(data);
         handleRich(obj, false);   // no <section> tags
-        handleFormat(obj, false); // don't add newlines.
+        handleNewlines(obj);
+        handleFormat(obj, false); 
         return obj.toString();
     }
 
     /**
-     * So poor, that it actually generates pieces of HTML 1.1 blocks (so, no use of sections).
+     * So poor, that it actually generates pieces of XHTML 1.1 inlines (so, no use of section, br, p).
      * 
      * @since MMBase-1.7
      */
     public static String poorToHTMLInline(String data) {
         StringObject obj = prepareDate(data);
-        handleEmph(obj);
-        handleFormat(obj, false); // don't add newlines.
+        // don't add newlines.
+        handleFormat(obj, false);
         return obj.toString();
     }
 
@@ -548,7 +553,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "Like MMXF_RICH, but returns decodes without mmxf tags"));
         h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "Like MMXF_POOR, but returns decoded without mmxf tags"));
         h.put("MMXF_HTML_INLINE", new Config(XmlField.class, HTML_INLINE, "Decodes only escaping and with <em>"));
-        h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p> and <ul>"));
+        h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p>, <br /> and <ul>"));
         h.put("MMXF_XHTML", new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
         h.put("MMXF_MMXF",  new Config(XmlField.class, XML,   "Only validates the XML with the DTD (when decoding)"));
         return h;
@@ -606,7 +611,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 validate(XML_HEADER + result);
                 break;
             case HTML_BLOCK:
-                result = poorToHTMLBlock(r);
+                result = richToHTMLBlock(r);
                 break;
             case HTML_INLINE:
                 result = poorToHTMLInline(r);
