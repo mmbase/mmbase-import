@@ -1,0 +1,34 @@
+
+
+body { 
+  background: white;
+  color:      black;
+}
+
+div#you { 
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: gray;
+  color: white;
+  padding: 1ex;
+}
+
+div#you p { 
+  display: inline;
+  margin: 0;
+  margin-right: 3ex;
+}
+
+table {
+  width: 100%;
+  background-color: #ccc;
+} 
+
+td { 
+  background-color: #ddd;
+}
+
+tr.even td { 
+  background-color: #eee;
+}
