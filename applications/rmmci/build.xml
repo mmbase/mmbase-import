@@ -1,7 +1,12 @@
 <project name="MMBase" default="rmmci" basedir=".">
 
   <property name="project.jar.dir"    value="build" />
+  <property name="project.zip.dir" value="${project.jar.dir}" />
+  <property name="project.zip" value="${project.zip.dir}/mmbase-rmmci.zip"/>
+
   <property name="build.dir"          value="../../build" />
+
+
 
   <target name="init">
 	  <mkdir dir="build/classes"/>
@@ -19,6 +24,22 @@
       <srcfiles dir="build/classes" includes="**/*"/>
     </uptodate>
   </target>
+
+  <target name="package" depends="rmmci">
+    <zip zipfile="${project.zip}">
+       <fileset dir="${project.jar.dir}" includes="*.jar"/>
+       <fileset dir=".">
+         <patternset id="package.files" >
+           <include name="**"/>
+           <exclude name="*.xml" />
+           <exclude name="build/**" />
+           <exclude name="src/**" />
+         </patternset>
+       </fileset>
+    </zip>          
+  </target>
+
+
   <!-- =================================================================== -->
   <!-- (Step 1 for remote) Compile the remote generator classes            -->
   <!-- =================================================================== -->

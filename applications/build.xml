@@ -24,13 +24,13 @@ Applications build file
   <property name="applications.build.dir" location="./build" />
 
   <!-- override projects jar dir -->
-  <property name="project.jar.dir"        value="${applications.build.dir}" />
+  <property name="project.zip.dir"        value="${applications.build.dir}" />
 
   <target name="init">
     <mkdir dir="${applications.build.dir}" />
   </target>
 
-  <target name="all" depends="init,editwizard,media,rmmci,cloudcontext" />
+  <target name="all" depends="init,editwizard,media,rmmci,cloudcontext,bugtracker" />
 
   <target name="mmbase">
     <ant dir="${source.dir}" target="jar" />
@@ -39,28 +39,37 @@ Applications build file
   </target>
 
   <target name="media" depends="mmbase,editwizard">
-     <ant dir="media"      target="jar" />
+     <ant dir="media"      target="package" />
+  </target>
+
+  <target name="bugtracker">
+     <ant dir="bugtracker"      target="package" />
   </target>
 
   <target name="rmmci" depends="mmbase">
-     <ant dir="rmmci"  />
+     <ant dir="rmmci" target="package"  />
   </target>
 
   <target name="editwizard" depends="mmbase">
-     <ant dir="editwizard" target="jar" />
-     <ant dir="editwizard" target="jspsmartupload" />
+     <ant dir="editwizard" target="dependent.package" />
   </target>
 
   <target name="cloudcontext" depends="mmbase">
-     <ant dir="cloudcontext"  />
+     <ant dir="cloudcontext"  target="package" />
   </target>
 
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
      <ant dir="rmmci"      target="clean" />
-     <ant dir="cloudcontext"      target="clean" />
+     <ant dir="cloudcontext"    target="clean" />
+     <ant dir="bugtracker"      target="clean" />
     <delete dir="${applications.build.dir}" />
+  </target>
+
+
+  <target name="test">
+     <ant dir="cloudcontext"  target="test" />
   </target>
 
 </project>
