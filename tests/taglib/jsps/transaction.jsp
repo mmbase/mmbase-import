@@ -44,14 +44,18 @@ transaction was commited, following should result anything:
 <h3>Creating relations in transaction</h3>
 <mm:transaction name="mytranc">
   <mm:node id="node1" number="$nodenumber" />
-  Creating an URL node<br />
-  <mm:createnode id="node2" type="urls">
+  Creating an URL node
+  <mm:createnode id="node2" type="urls" jspvar="node">
      <mm:setfield name="description">Test node2, created in transaction, made relation to it</mm:setfield>
 	   <mm:setfield name="url">http://<mm:write referid="curtime" /></mm:setfield>
+     (using jspvar <%= node.getStringValue("url") %>)
+     <br />
   </mm:createnode>
-  Creating news-node ---posrel(pos=10)---> URL-node<br />
-  <mm:createrelation source="node1" destination="node2" role="posrel">
+  Creating news-node ---posrel(pos=10)---> URL-node
+  <mm:createrelation source="node1" destination="node2" role="posrel" jspvar="relation">
    <mm:setfield name="pos">10</mm:setfield>
+   (using jspvar: <%= relation.getStringValue("pos") %>)
+   <br />
   </mm:createrelation>
   Creating news-node ---sorted(pos=100)---> URL-node<br />
   <mm:createrelation source="node1" destination="node2" role="sorted">
