@@ -265,6 +265,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 		}
 	    }
 	}
+        //if all fields are inherited the field list can be empty
+        if (fieldList == null){
+                fieldList="";
+        }
 	// create the sql statement...
 	String sql = "CREATE TABLE " + mmb.baseName+"_"+bul.getTableName() + "(" + fieldList + ") INHERITS ( " + mmb.baseName+"_"+getInheritTableName(bul)+" ) ;";	
 	log.info("gonna create a new table with statement: " + sql);
