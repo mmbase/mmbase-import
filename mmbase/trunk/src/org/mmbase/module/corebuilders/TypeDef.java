@@ -293,10 +293,6 @@ public class TypeDef extends MMObjectBuilder {
             String cmd=tok.nextToken();
 
             if (cmd.equals("builders")) {
-				Enumeration e = activeBuilders().elements();
-				while (e.hasMoreElements()) {
-					System.out.println("activeBuilder -> "+e.nextElement());	
-				}
 				return typedefsLoaded;
             }
         }
