@@ -145,9 +145,8 @@ public class ContextTag extends ContextReferrerTag {
     }
 
     String getDefaultCharacterEncoding() {
-        return "UTF-8";
-        //if(cloudContext == null) return "UTF-8";
-        //return cloudContext.getDefaultCharacterEncoding();
+        if(cloudContext == null) return "UTF-8";
+        return cloudContext.getDefaultCharacterEncoding();
     }
 
     /** 
