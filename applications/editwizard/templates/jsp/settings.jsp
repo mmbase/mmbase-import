@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.34 2003-05-26 11:36:19 pierre Exp $
+ * @version  $Id: settings.jsp,v 1.35 2003-05-27 12:49:09 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -112,7 +112,7 @@ if (request.getParameter("logout") != null) {
     return;
 }
 ewconfig.sessionKey = sessionKey;
-configurator = new Config.Configurator(request, response, ewconfig);
+configurator = new Config.Configurator(pageContext, ewconfig);
 
 // removing top page from the session
 if (request.getParameter("remove") != null) {
