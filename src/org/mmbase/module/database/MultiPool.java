@@ -20,16 +20,16 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.40 2004-01-30 13:26:05 pierre Exp $
+ * @version $Id: MultiPool.java,v 1.41 2004-02-02 18:27:48 michiel Exp $
  */
 public class MultiPool {
 
     private static final Logger log = Logging.getLoggerInstance(MultiPool.class);
 
-    private List              pool     = new ArrayList();
+    private List              pool     = null;
     private List              busyPool = new ArrayList();
     private int               conMax   = 4;
-    private DijkstraSemaphore semaphore;
+    private DijkstraSemaphore semaphore = null;
     private int      totalConnections = 0;
     private int      maxQueries = 500;
     private String   name;
@@ -59,19 +59,33 @@ public class MultiPool {
         this.maxQueries      = maxQueries;
         this.databaseSupport = databaseSupport;
 
+        createPool();
+    }
+
+    /**
+     * Creates and fills the connection pool
+     * @since MMBase-1.7
+    */
+    protected void createPool() {
+        pool = new ArrayList();
+        org.mmbase.module.core.MMBase mmb = org.mmbase.module.core.MMBase.getMMBase();
         boolean logStack = true;
-        while (!fillPool(logStack)) {
-            log.error("Cannot run with no connections, retrying after 10 seconds.");
-            try {
+        try {
+            while (!fillPool(logStack)) {
+                log.error("Cannot run with no connections, retrying after 10 seconds.");
                 Thread.sleep(10000);
-            } catch (InterruptedException ie) {
-                log.error(ie.getMessage());
+                logStack = false; // don't log that mess a second time
+                log.info("Retrying now for " + mmb + " " + (mmb.isShutdown() ? "(shutdown)" : ""));
+                if (mmb.isShutdown()) {
+                    log.info("MMBase has been shutted down");
+                    return;
+                }
             }
-            logStack = false; // don't log that mess a second time
-            log.info("Retrying now");
+            semaphore = new DijkstraSemaphore(pool.size());
+        } catch (InterruptedException ie) {
+            log.info("Interrupted: " + ie.getMessage());
         }
 
-        semaphore = new DijkstraSemaphore(pool.size());
     }
 
 
@@ -92,11 +106,23 @@ public class MultiPool {
                 if (log.isDebugEnabled()) {
                     log.debug("i: " + "error " + errors + ": " + se.getMessage());
                 }
-                if (firstError == null) firstError = se;
+                if (firstError == null) {
+                    firstError = se;
+                }
             }
         }
         if (errors > 0) {
-            log.error("Could not get all connections (" + errors + " failures). First error: " + firstError.getMessage() + (logStack ? Logging.stackTrace(firstError) : ""));
+            String message = firstError.getMessage();
+            if (logStack) {
+                message = message + Logging.stackTrace(firstError);
+            }  else {
+                int nl = message.indexOf('\n'); // some stupid drivers (postgresql) add stacktrace to message
+                if (nl > 0) {
+                    message = message.substring(0, nl) + "..."; // take most of it away again.
+                }
+            }
+
+            log.error("Could not get all connections (" + errors + " failures). First error: " + message);
             log.info("Multipools size is now " + pool.size() + " rather then " + conMax);
             if (pool.size() < 1) { // that is fatal.
                 return false;
@@ -115,14 +141,14 @@ public class MultiPool {
      * @since MMBase-1.7
      */
     protected MultiConnection getMultiConnection() throws SQLException {
-       Connection con;
-       if (name.equals("url") && password.equals("url")) {
-           con = DriverManager.getConnection(url);
-       } else {
-           con = DriverManager.getConnection(url, name, password);
-       }
-       databaseSupport.initConnection(con);
-       return new MultiConnection(this, con);
+        Connection con;
+        if (name.equals("url") && password.equals("url")) {
+            con = DriverManager.getConnection(url);
+        } else {
+            con = DriverManager.getConnection(url, name, password);
+        }
+        databaseSupport.initConnection(con);
+        return new MultiConnection(this, con);
     }
 
     protected void finalize() {
@@ -150,6 +176,7 @@ public class MultiPool {
                 log.error(e);
             }
         }
+        semaphore = null;
     }
 
     /**
@@ -268,8 +295,18 @@ public class MultiPool {
      * get a free connection from the pool
      */
     public MultiConnection getFree() {
+
+        if (semaphore == null) { // could happen during shut down of MMBase
+            try {
+                return getMultiConnection(); // hm....
+            } catch (SQLException sqe) {
+                return null; // will probably cause NPE's but well
+            }
+        }
+
         MultiConnection con = null;
         try {
+
             totalConnections++;
             //see comment in method checkTime()
             semaphore.acquire();
