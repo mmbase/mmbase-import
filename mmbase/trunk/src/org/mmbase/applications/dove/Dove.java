@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.45 2003-11-27 12:51:14 pierre Exp $
+ * @version $Id: Dove.java,v 1.46 2003-12-02 21:20:59 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -145,7 +145,7 @@ public class Dove extends AbstractDove {
             while (field!=null) { // select all child tags, should be 'field'
                 String fname=(String)field.getAttribute(ELM_NAME);
                 if ((fname==null) || (fname.equals(""))) {
-                    Element err=addContentElement(ERROR,"name required for field",out);
+                    Element err = addContentElement(ERROR,"name required for field",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
                 } else if (isDataField(nd,fname)) {
                     String val="";
@@ -155,7 +155,7 @@ public class Dove extends AbstractDove {
                     Element fel=addContentElement(FIELD,val,out);
                     fel.setAttribute(ELM_NAME,fname);
                 } else {
-                    Element err=addContentElement(ERROR,"field with name "+fname+" does not exist",out);
+                    Element err = addContentElement(ERROR,"field with name "+fname+" does not exist",out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
                 }
                 field=getNextElement(field,FIELD);
@@ -195,7 +195,7 @@ public class Dove extends AbstractDove {
             org.mmbase.bridge.Node nd = cloud.getNode(alias);
             getDataNode(in,out,nd);
         } catch (RuntimeException e) {
-            Element err=addContentElement(ERROR,"node not found",out);
+            Element err = addContentElement(ERROR,"node not found",out);
             err.setAttribute(ELM_TYPE, IS_SERVER);
         }
     }
@@ -266,7 +266,7 @@ public class Dove extends AbstractDove {
                 }
             }
         } catch (RuntimeException e) {
-            Element err=addContentElement(ERROR,"role or nodetype for relation invalid ("+e.getMessage()+")",out);
+            Element err = addContentElement(ERROR,"role or nodetype for relation invalid ("+e.getMessage()+")",out);
             err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
     }
@@ -317,7 +317,7 @@ public class Dove extends AbstractDove {
                }
             }
         } catch (RuntimeException e) {
-            Element err=addContentElement(ERROR,"node not found",out);
+            Element err = addContentElement(ERROR,"node not found",out);
             err.setAttribute(ELM_TYPE, IS_SERVER);
         }
     }
@@ -344,7 +344,7 @@ public class Dove extends AbstractDove {
             if (node.getTagName().equals(OBJECT)) {
                 String number = node.getAttribute(ELM_NUMBER); // check id;
                 if (number.equals("")) {
-                    Element err=addContentElement(ERROR,"number required for node",out);
+                    Element err = addContentElement(ERROR,"number required for node",out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else {
                     Element data=doc.createElement(OBJECT);
@@ -353,7 +353,7 @@ public class Dove extends AbstractDove {
                     getDataNode(node,data,cloud);
                 }
             } else {
-                Element err=addContentElement(ERROR,"Unknown subtag in getdata: "+node.getTagName(),out);
+                Element err = addContentElement(ERROR,"Unknown subtag in getdata: "+node.getTagName(),out);
                 err.setAttribute(ELM_TYPE, IS_PARSER);
             }
             node=getNextElement(node);
@@ -375,7 +375,7 @@ public class Dove extends AbstractDove {
     public void getNew(Element in, Element out, Cloud cloud) {
         String nodemanagername = in.getAttribute(ELM_TYPE); // check type;
         if (nodemanagername.equals("")) {
-            Element err=addContentElement(ERROR,"type required for getnew",out);
+            Element err = addContentElement(ERROR,"type required for getnew",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
             try {
@@ -392,7 +392,7 @@ public class Dove extends AbstractDove {
                     n.cancel();  // have to cancel node ! It will only be really made in the putNewNode function
                 }
             } catch (RuntimeException e) {
-                Element err=addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
+                Element err = addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
                 log.warn(Logging.stackTrace(e));
                 err.setAttribute(ELM_TYPE, IS_CLIENT);
             }
@@ -421,7 +421,7 @@ public class Dove extends AbstractDove {
         int createDir = ClusterBuilder.getSearchDir(in.getAttribute(ELM_CREATEDIR));
 
         if (rolename.equals("")) {
-            Element err=addContentElement(ERROR,"role required for getrelations",out);
+            Element err = addContentElement(ERROR,"role required for getrelations",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
             try {
@@ -457,10 +457,10 @@ public class Dove extends AbstractDove {
                 }
             } catch (RuntimeException e) {
                 if (destinationType.equals("") || sourceType.equals("") ) {
-                    Element err=addContentElement(ERROR,"role ("+rolename+") does not exist",out);
+                    Element err = addContentElement(ERROR,"role ("+rolename+") does not exist",out);
                     err.setAttribute(ELM_TYPE, IS_CLIENT);
                 } else {
-                    Element err=addContentElement(ERROR,"relation ("+sourceType+"-"+rolename+"->"+destinationType+") constraint does not exist",out);
+                    Element err = addContentElement(ERROR,"relation ("+sourceType+"-"+rolename+"->"+destinationType+") constraint does not exist",out);
                     err.setAttribute(ELM_TYPE, IS_CLIENT);
                 }
             }
@@ -526,7 +526,7 @@ public class Dove extends AbstractDove {
     public void getConstraints(Element in, Element out, Cloud cloud) {
         String nodeManagerName = in.getAttribute(ELM_TYPE); // check type;
         if (nodeManagerName.equals("")) {
-            Element err=addContentElement(ERROR,"type required for getconstraints",out);
+            Element err = addContentElement(ERROR,"type required for getconstraints",out);
             err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
             try {
@@ -586,9 +586,9 @@ public class Dove extends AbstractDove {
                         field.setAttribute(ELM_NAME,fname);
                         fields.appendChild(field);
                         // guiname (XXX:language is ignored)
-                        elm=addContentElement(GUINAME,fielddef.getGUIName(locale),field);
-                        elm=addContentElement(DESCRIPTION,fielddef.getDescription(locale),field);
-                        if (lang!=null) elm.setAttribute(ELM_LANG,lang);
+                        elm = addContentElement(GUINAME, fielddef.getGUIName(locale),field);
+                        elm = addContentElement(DESCRIPTION, fielddef.getDescription(locale),field);
+                        if (lang != null) elm.setAttribute(ELM_LANG, lang);
                         // guitype
                         String guiType = fielddef.getGUIType();
                         if (guiType.indexOf("/")==-1) {
@@ -603,7 +603,7 @@ public class Dove extends AbstractDove {
                             } else if (guiType.equals("newfile")) {
                                 guiType = "binary/file";
                             } else {
-                                String dttype = "string";
+                                String dttype;
                                 int itype = fielddef.getType();
                                 switch(itype) {
                                 case Field.TYPE_INTEGER:
@@ -622,12 +622,15 @@ public class Dove extends AbstractDove {
                                 case Field.TYPE_BYTE:
                                     dttype="binary";
                                     break;
+                                default:                                    
+                                    dttype = "string";
                                 }
                                 guiType = dttype + "/" + guiType;
                             }
                         }
-
+                        log.info("Setting guiType: " + guiType + " to " + getSerializedXML(field));
                         addContentElement(GUITYPE, guiType, field);
+                        log.info("Sett : " + guiType + " to " + getSerializedXML(field));
 
                         int maxLength = fielddef.getMaxLength();
                         if (maxLength>0) {
@@ -681,7 +684,7 @@ public class Dove extends AbstractDove {
                 String directions = query.getAttribute(ELM_DIRECTIONS); // get directions;
                 if ("".equals(directions)) directions=null;
                 if (xpath.equals("")) {
-                    Element err=addContentElement(ERROR,"xpath required for query",out);
+                    Element err = addContentElement(ERROR,"xpath required for query",out);
                     err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else {
                     Element querydata=doc.createElement(QUERY);
@@ -700,7 +703,7 @@ public class Dove extends AbstractDove {
                     Element node=getFirstElement(query);
 
                     if (xpath.indexOf("/*@")!=0) {
-                        Element err=addContentElement(ERROR,"invalid xpath",out);
+                        Element err = addContentElement(ERROR,"invalid xpath",out);
                         err.setAttribute(ELM_TYPE, IS_CLIENT);
                     } else {
                         //get node data, bit stupid
@@ -714,14 +717,14 @@ public class Dove extends AbstractDove {
                                 getDataNode(node,data,n);
                             }
                         } catch(RuntimeException e) {
-                            Element err=addContentElement(ERROR,"node type " + xpath.substring(3) + " does not exist(" + e.toString() + ")",out);
+                            Element err = addContentElement(ERROR,"node type " + xpath.substring(3) + " does not exist(" + e.toString() + ")",out);
                             log.warn(Logging.stackTrace(e));
                             err.setAttribute(ELM_TYPE, IS_CLIENT);
                         }
                     }
                 }
             } else {
-                Element err=addContentElement(ERROR,"Unknown subtag in getlist: "+query.getTagName(),out);
+                Element err = addContentElement(ERROR,"Unknown subtag in getlist: "+query.getTagName(),out);
                 err.setAttribute(ELM_TYPE, IS_PARSER);
             }
             query=getNextElement(query);
@@ -854,7 +857,7 @@ public class Dove extends AbstractDove {
                         re.setAttribute(ELM_DESTINATION, n.getStringValue("dnumber"));
                     }
                 } catch (RuntimeException e) {
-                    Element err=addContentElement(ERROR, "Transaction failed : " + e.getMessage(), out);
+                    Element err = addContentElement(ERROR, "Transaction failed : " + e.getMessage(), out);
                     log.error(Logging.stackTrace(e));
                     err.setAttribute(ELM_TYPE, IS_SERVER);
                 }
@@ -987,7 +990,7 @@ public class Dove extends AbstractDove {
                 return true;
             } catch (RuntimeException e) {
                 // give error
-                Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")",out);
+                Element err = addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch (BridgeException e) {
@@ -1043,12 +1046,12 @@ public class Dove extends AbstractDove {
                 return true;
             } catch (RuntimeException e) {
                 // give error
-                Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : " + alias + "(" + e.toString() + ")",out);
+                Element err = addContentElement(ERROR,"Cloud can not insert this object, alias number : " + alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Error. Does the cloud support role :" + role + "?:" + e.getMessage(), out);
+            Element err = addContentElement(ERROR,"Error. Does the cloud support role :" + role + "?:" + e.getMessage(), out);
             err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;
@@ -1084,12 +1087,12 @@ public class Dove extends AbstractDove {
                 }
             } catch(RuntimeException e) {
                 // give error node not found
-                Element err=addContentElement(ERROR,"Node not in the cloud (anymore?), node number : "+alias + "(" + e.toString() + ")",out);
+                Element err = addContentElement(ERROR,"Node not in the cloud (anymore?), node number : "+alias + "(" + e.toString() + ")",out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch(RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support type : "+type + "(" + e.toString() + ")",out);
+            Element err = addContentElement(ERROR,"Cloud does not support type : "+type + "(" + e.toString() + ")",out);
             err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;
@@ -1116,16 +1119,16 @@ public class Dove extends AbstractDove {
                     mmbaseNode.delete(true);
                     return true;
                 } else {
-                    Element err=addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+relman.getName()+")",out);
+                    Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+relman.getName()+")",out);
                     err.setAttribute(ELM_TYPE, IS_SERVER);
                 }
             } catch (RuntimeException e) {
-                Element err=addContentElement(ERROR,"Relation not in the cloud (anymore?), relation number : "+alias,out);
+                Element err = addContentElement(ERROR,"Relation not in the cloud (anymore?), relation number : "+alias,out);
                 err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR,"Cloud does not support role : "+role, out);
+            Element err = addContentElement(ERROR,"Cloud does not support role : "+role, out);
             err.setAttribute(ELM_TYPE, IS_SERVER);
         }
         return false;
@@ -1180,7 +1183,7 @@ public class Dove extends AbstractDove {
             }
         } catch(RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR, "Cloud does not support type : " + type + "(" + e.toString() + ")", out);
+            Element err = addContentElement(ERROR, "Cloud does not support type : " + type + "(" + e.toString() + ")", out);
             err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;
@@ -1340,7 +1343,7 @@ public class Dove extends AbstractDove {
             } else if (cmd.equals(PUT)) {
                 put(command, data, cloud, repository);
             } else {
-                Element err=addContentElement(ERROR, "Unknown command: " + cmd, data);
+                Element err = addContentElement(ERROR, "Unknown command: " + cmd, data);
                 err.setAttribute(ELM_TYPE, IS_PARSER);
             }
             command = getNextElement(command);
@@ -1373,7 +1376,7 @@ public class Dove extends AbstractDove {
             } catch (RuntimeException e) {
                 // most likely security failed...
                 log.warn("Authentication error : " + e.getMessage());
-                Element err=addContentElement(ERROR, "Authentication error : " + e.getMessage(), data);
+                Element err = addContentElement(ERROR, "Authentication error : " + e.getMessage(), data);
                 err.setAttribute(ELM_TYPE, IS_CLIENT);
             }
         } else {
