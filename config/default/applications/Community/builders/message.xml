@@ -62,8 +62,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Message subject line</description>
+          <description xml:lang="nl">Onderwerp van het bericht</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -96,8 +96,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Message body text</description>
+          <description xml:lang="nl">Hoofdtekst van het bericht</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -134,8 +134,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Time the message was posted</description>
+          <description xml:lang="nl">Tijd waarop het bericht was geplaatst</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -167,8 +167,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Reference to the first message in this thread</description>
+          <description xml:lang="nl">Refereerd naar het hoofdbericht van deze discussie</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -200,13 +200,13 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Order number of the message in the thread</description>
+          <description xml:lang="nl">Volgordenummer van het bericht in de discussie</description>
         </descriptions>
         <!-- gui related -->
         <gui>
-            <guiname xml:lang="en">Volgordenr</guiname>
-            <guiname xml:lang="nl">Ordernr</guiname>
+            <guiname xml:lang="en">Ordernr</guiname>
+            <guiname xml:lang="nl">Volgordenr</guiname>
             <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
@@ -233,8 +233,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">List of additional information, specified in name = value pairs</description>
+          <description xml:lang="nl">Lijst van naam = waarde paren met extra informatie</description>
         </descriptions>
         <!-- gui related -->
         <gui>

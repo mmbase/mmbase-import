@@ -3,7 +3,7 @@
 	<node number="666" owner="admin">
 		<body></body>
 		<subtitle></subtitle>
-		<name>Demo Forum Community</name>
+		<title>Demo Forum Community</title>
 		<kind>FORUM</kind>
 		<intro></intro>
 	</node>
@@ -11,7 +11,7 @@
 	<node number="696" owner="admin">
 		<body></body>
 		<subtitle></subtitle>
-		<name>Demo Chat Community</name>
+		<title>Demo Chat Community</title>
 		<kind>chatbox</kind>
 		<intro></intro>
 	</node>
