@@ -306,6 +306,26 @@
 		</return> 
 	</function>
 
+
+	<function name="changeForumsConfig">
+		<description>Update forum information</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>changeForumsConfig</method>
+		<param name="loginmodetype" type="String" description="New name for this forum" />
+		<param name="logoutmodetype" type="String" description="New language of this forum" />
+		<param name="guestreadmodetype" type="String" description="New description of this forum" />
+		<param name="guestwritemodetype" type="String" description="New description of this forum" />
+		<param name="avatarsuploadenabled" type="String" description="New description of this forum" />
+		<param name="avatarsgalleryenabled" type="String" description="New description of this forum" />
+		<param name="contactinfoenabled" type="String" description="New description of this forum" />
+		<param name="smileysenabled" type="String" description="New description of this forum" />
+		<param name="privatemessagesenabled" type="String" description="New description of this forum" />
+		<param name="postingsperpage" type="String" description="New description of this forum" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="getForums">
 		<description>List all the.mmbob.in this MMBase (all are 100% seperated including their own user managent)</description>
 		<type>class</type>
