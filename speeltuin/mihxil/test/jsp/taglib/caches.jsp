@@ -15,7 +15,7 @@
 <% Iterator i = org.mmbase.cache.Cache.getCaches().iterator();
    while (i.hasNext()) {     
       Cache cache = Cache.getCache((String) i.next());
-      out.println("<tr><td>" + cache.getDescription() + "</td><td align=\"right\">" + cache.getSize() + " </td><td align=\"right\">" + cache.getHits() + " </td><td align=\"right\">" + cache.getMisses() + " </td>");
+      out.println("<tr><td>" + cache.getDescription() + " (" + cache.getName() + ")</td><td align=\"right\">" + cache.getSize() + " </td><td align=\"right\">" + cache.getHits() + " </td><td align=\"right\">" + cache.getMisses() + " </td>");
 %>
 <td align="center"><a href="<mm:url><mm:param name="cache"><%= cache.getName() %></mm:param></mm:url>">show</a></td></tr>
 <%
