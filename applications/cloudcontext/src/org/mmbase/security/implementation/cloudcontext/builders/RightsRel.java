@@ -9,11 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
-import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.*;
-import java.util.*;
-import org.mmbase.cache.Cache;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.11 2004-03-08 17:43:56 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.12 2004-07-30 17:12:08 michiel Exp $
  */
 public class RightsRel extends InsRel {
 

@@ -16,7 +16,6 @@ import org.mmbase.bridge.util.Queries;
 import org.w3c.dom.*;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
 
 import org.xml.sax.*;
 import java.io.*;
@@ -28,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * A tool to convert between 'cloud' context security and 'xml' context security. Used in /mmbase/security/admin/
  *
  * @author Michiel Meeuwissen
- * @version $Id: ConvertTool.java,v 1.1 2004-02-24 21:02:49 michiel Exp $
+ * @version $Id: ConvertTool.java,v 1.2 2004-07-30 17:14:31 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  * @since MMBase-1.7
  */
