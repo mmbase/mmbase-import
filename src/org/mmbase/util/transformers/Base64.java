@@ -29,7 +29,7 @@ public class Base64 extends AbstractTransformer implements ByteToCharTransformer
 
     public HashMap transformers() {
         HashMap h = new HashMap();
-        h.put("base_64".toUpperCase(), new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
+        h.put("base64".toUpperCase(), new Config(Base64.class, BASE_64, "Base 64 encoding base on sun.misc.BASE64* classes"));
         return h;
     }
 
