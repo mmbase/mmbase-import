@@ -16,7 +16,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
   <tag>
     <name>list</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeListTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.NodeListTag</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>The list tag provides a syntax to list objects managed by MMBase.</info>
     <attribute>
@@ -113,7 +113,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
   <tag>
     <name>related</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.RelatedTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.macro.RelatedTag</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
         The list tag provides a syntax to list objects managed by MMBase
@@ -298,7 +298,7 @@ java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
   <tag>
     <name>node</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.NodeTag</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag to make a node available. Normally it will enclose
       some field tags.

@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import java.util.Vector; 
 import java.util.Enumeration;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 * @author Kees Jongenburger
 **/
-abstract public class AbstractNodeProviderTag extends BaseTag implements NodeProvider{
+abstract public class AbstractNodeProviderTag extends CloudReferrerTag implements NodeProvider{
 	
 	private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class.getName());
 	
