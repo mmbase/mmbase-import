@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.90 2003-07-11 13:08:49 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.91 2003-07-21 15:24:49 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -603,10 +603,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     // javadoc inherited
     public NodeList getList(SearchQuery query) {
 
-        List resultList = null; // result with all Cluster - MMObjectNodes (without security)
+        List resultList; // result with all Cluster - MMObjectNodes (without security)
 
-        { // fill resultList with core objects
-
+        
+        {
             ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
             // check multilevel cache if needed
             resultList = (List)multilevelCache.get(query);
@@ -865,6 +865,11 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                 return check(Operation.READ, node.getNumber()); // check read access
             }
         }
+    }
+
+    // javadoc inherited
+    public Query createQuery() {
+        return new BasicQuery();
     }
 
     /**
