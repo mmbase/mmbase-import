@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.15 2004-04-07 14:46:39 keesj Exp $
+ * @version $Id: HandleServlet.java,v 1.16 2004-09-30 14:54:56 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -41,7 +41,7 @@ public class HandleServlet extends BridgeServlet {
         Map a = super.getAssociations();
         // Can do the following:
         a.put("attachments", new Integer(0));
-        a.put("downloads",   new Integer(20)); // good at this (because it does not determin the mime-type)
+        a.put("downloads",   new Integer(20)); // good at this (because it does not determine the mime-type)
         a.put("images",      new Integer(-10)); // bad in images (no mime-type, no awareness of icaches)
         return a;
     }

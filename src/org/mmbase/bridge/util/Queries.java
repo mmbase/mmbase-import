@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.43 2004-09-17 10:02:16 michiel Exp $
+ * @version $Id: Queries.java,v 1.44 2004-09-30 14:54:55 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -334,7 +334,7 @@ abstract public  class Queries {
      */
     public static int getOperator(String s) {
         String op = s.toUpperCase();
-        // first: determin operator:
+        // first: determine operator:
         if (op.equals("<") || op.equals("LESS")) {
             return FieldCompareConstraint.LESS;
         } else if (op.equals("<=") || op.equals("LESS_EQUAL")) {
