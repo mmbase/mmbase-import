@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib.security;
-
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 
@@ -22,19 +22,22 @@ import javax.servlet.jsp.JspTagException;
  */
 public class MayCreateTag extends CloudReferrerTag implements Condition {
 
-    protected boolean inverse = false;
-    protected String type = null;
+    protected Attribute  type = Attribute.NULL;
+    protected Attribute inverse = Attribute.NULL;
 
-    public void setInverse(Boolean b) {
-        inverse = b.booleanValue();
+    public void setInverse(String b) throws JspTagException {
+        inverse = getAttribute(b);
+    }
+    protected boolean getInverse() throws JspTagException {
+        return inverse.getBoolean(this, false);
     }
 
     public void setType(String t) throws JspTagException {
-        type = getAttributeValue(t);
+        type = getAttribute(t);
     }
 
     public int doStartTag() throws JspTagException {
-        if ((getCloud().getNodeManager(type).mayCreateNode()) != inverse) {
+        if ((getCloud().getNodeManager(type.getString(this)).mayCreateNode()) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -48,10 +49,10 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     protected NodeProvider nodeProvider;
     protected Field  field;
     protected String fieldName;
-    protected   String name;
+    protected Attribute name = Attribute.NULL;
 
     public void setName(String n) throws JspTagException {
-        name = getAttributeValue(n);
+        name = getAttribute(n);
     }
 
     // NodeProvider Implementation
@@ -99,7 +100,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
     }
     protected void setFieldVar() throws JspTagException {
-        setFieldVar(name);
+        setFieldVar(name.getString(this));
     }
 
     /**
@@ -115,7 +116,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     public int doStartTag() throws JspTagException {
         log.debug("Field.doStartTag()" );
         node= null;
-        fieldName = name;
+        fieldName = name.getString(this);
         setFieldVar(fieldName); // set field and node
 
         // found the node now. Now we can decide what must be shown:

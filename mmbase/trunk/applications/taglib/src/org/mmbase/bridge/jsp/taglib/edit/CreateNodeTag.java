@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.edit;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyTag;
@@ -31,23 +32,23 @@ public class CreateNodeTag extends NodeTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class.getName());
 
-    private String nodemanager = null;
+    private Attribute nodeManager = Attribute.NULL;
 
     public void setType(String t) throws JspTagException {
-        nodemanager = getAttributeValue(t);
+        nodeManager = getAttribute(t);
     }
 
 
     public int doStartTag() throws JspTagException{
         Node node;
         NodeManager nm;
-        nm = getCloud().getNodeManager(nodemanager);
+        nm = getCloud().getNodeManager(nodeManager.getString(this));
         if (nm == null) {
-            throw new JspTagException("Could not find nodemanager " + nodemanager);
+            throw new JspTagException("Could not find nodemanager " + nodeManager.getString(this));
         }
         node = nm.createNode();
         if (node == null) {
-            throw new JspTagException("Could not create node of type " + nodemanager);
+            throw new JspTagException("Could not create node of type " + nm.getName());
         }
         setNodeVar(node);
         setModified();

@@ -15,8 +15,7 @@ import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 *  shortcut for listContdition first<BR>
 */
 public class ListFirstTag extends ListConditionTag {
-    public int doStartTag() throws JspTagException {
-        setValue("first");
-        return super.doStartTag();
+    protected int getValue() throws JspTagException {
+        return CONDITION_FIRST;
     }
 }

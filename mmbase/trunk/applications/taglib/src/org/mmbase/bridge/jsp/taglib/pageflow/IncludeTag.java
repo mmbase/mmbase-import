@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.*;
@@ -46,15 +47,19 @@ public class IncludeTag extends UrlTag {
     static {
     }
     
-    protected int debugtype = DEBUG_NONE;
+    protected Attribute debugType = Attribute.NULL;
     
-    private boolean cite = false;
+    private Attribute cite = Attribute.NULL;
 
     /**
      * Test whether or not the 'cite' parameter is set
      */
     public void setCite(String c) throws JspTagException {
-        cite = ("true".equalsIgnoreCase(getAttributeValue(c)));
+        cite = getAttribute(c);
+    }
+
+    protected boolean getCite() throws JspTagException {
+        return cite.getBoolean(this, false);
     }
 
     public int doStartTag() throws JspTagException {
@@ -335,7 +340,7 @@ public class IncludeTag extends UrlTag {
                 request.setAttribute("includeTagURI",includeURI);
                 log.debug("Next Include: Level="+includeLevel+" URI="+includeURI);
 
-                if (cite) {
+                if (getCite()) {
                     cite(bodyContent, urlString, request); 
                 } else {
                     if (invalidIncludingAppServerRequestClasses.contains(request.getClass().getName())) {
@@ -349,7 +354,7 @@ public class IncludeTag extends UrlTag {
                 request.setAttribute("includeTagLevel",new Integer(includeLevel));
                 request.setAttribute("includeTagURI",previncludeURI);
             } else { // really absolute
-                if (cite) {
+                if (getCite()) {
                     cite(bodyContent, gotUrl, request); 
                 } else {
                     external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
@@ -370,16 +375,23 @@ public class IncludeTag extends UrlTag {
      * the included page.
      */
     public void setDebug(String p) throws JspTagException {
-        String dtype = getAttributeValue(p); 
-        if (dtype.toLowerCase().equals("none")) { 
-            debugtype = DEBUG_NONE; // also implement the default, then people can use a variable
-                                    // to select this property in their jsp pages.
-        } else if (dtype.toLowerCase().equals("html")) {
-            debugtype = DEBUG_HTML;
-        } else if (dtype.toLowerCase().equals("css")) {
-            debugtype = DEBUG_CSS;
+        debugType = getAttribute(p);
+    }
+
+    protected int getDebug() throws JspTagException {
+
+        if (debugType == Attribute.NULL) return DEBUG_NONE;
+
+        String dtype = debugType.getString(this).toLowerCase();
+        if (dtype.equals("none")) { 
+            return  DEBUG_NONE; // also implement the default, then people can use a variable
+                               // to select this property in their jsp pages.
+        } else if (dtype.equals("html")) {
+            return DEBUG_HTML;
+        } else if (dtype.equals("css")) {
+            return DEBUG_CSS;
         } else {
-            throw new JspTagException("Unknow value for debug attribute " + dtype + " (" + p + ")");
+            throw new JspTagException("Unknow value for debug attribute " + dtype);
         }
     }
 
@@ -394,8 +406,8 @@ public class IncludeTag extends UrlTag {
     /**
      * Write the comment that is just above the include page.
      */
-    private String debugStart(String url) {
-        switch(debugtype) {
+    private String debugStart(String url) throws JspTagException {
+        switch(getDebug()) {
         case DEBUG_NONE: return ""; 
         case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
@@ -406,8 +418,8 @@ public class IncludeTag extends UrlTag {
     /**
      * Write the comment that is just below the include page.
      */
-    private String debugEnd(String url) {
-        switch(debugtype) {
+    private String debugEnd(String url) throws JspTagException {
+        switch(getDebug()) {
         case DEBUG_NONE: return "";
         case DEBUG_HTML: return "\n<!-- END " + getThisName() + " page = '" + url + "' -->\n";
         case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";

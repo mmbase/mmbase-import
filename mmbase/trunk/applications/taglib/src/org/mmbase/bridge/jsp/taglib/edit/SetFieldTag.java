@@ -30,7 +30,7 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
 
     public int doStartTag() throws JspTagException {
         node= null;
-        setFieldVar(name);
+        setFieldVar(name.getString(this));
         return EVAL_BODY_BUFFERED;
     }
 

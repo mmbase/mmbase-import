@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
@@ -37,10 +38,10 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     private Field         currentField;
     private int           currentItemIndex= -1;
 
-    private String nodeManagerString = null;
+    private Attribute   nodeManagerAtt = Attribute.NULL;
     private NodeProvider nodeProvider = null;
 
-    private int type = NodeManager.ORDER_NONE;
+    private  Attribute type = Attribute.NULL;
 
     public int size(){
         return returnList.size();
@@ -62,29 +63,37 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
     public void setNodetype(String t) throws JspTagException {
-        nodeManagerString = getAttributeValue(t);
+        nodeManagerAtt = getAttribute(t);
     }
 
     public void setType(String t) throws JspTagException {
+        type = getAttribute(t);
+    }
+    protected int getType() throws JspTagException {
+        if (type == Attribute.NULL) return NodeManager.ORDER_NONE;
+        String t = type.getString(this).toLowerCase();
         if("create".equals(t)) {
-            type = NodeManager.ORDER_CREATE;
+           return NodeManager.ORDER_CREATE;
         } else if ("edit".equals(t)) {
-            type = NodeManager.ORDER_EDIT;
+            return  NodeManager.ORDER_EDIT;
         } else if ("list".equals(t)) {
-            type = NodeManager.ORDER_LIST;
+            return NodeManager.ORDER_LIST;
         } else if ("search".equals(t)) {
-            type = NodeManager.ORDER_SEARCH;
+            return NodeManager.ORDER_SEARCH;
         } else if ("all".equals(t)) {
-            type = NodeManager.ORDER_NONE;
+            return  NodeManager.ORDER_NONE;
         } else {
             throw new JspTagException("Unknown field order type " + t);
         }
     }
 
-    private java.util.List fields = null;
+    private Attribute fields = Attribute.NULL;
 
     public void setFields(String f) throws JspTagException {
-        fields = org.mmbase.bridge.jsp.taglib.util.StringSplitter.split(getAttributeValue(f));
+        fields = getAttribute(f);
+    }
+    protected java.util.List getFields() throws JspTagException {
+        return  org.mmbase.bridge.jsp.taglib.util.StringSplitter.split(getAttributeValue(fields.getString(this)));
     }
 
     public NodeProvider getNodeProvider() {
@@ -114,7 +123,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     **/
     public int doStartTag() throws JspTagException{
         if (getReferid() != null) {
-            if (nodeManagerString != null || type != NodeManager.ORDER_NONE) {
+            if (nodeManagerAtt != Attribute.NULL || type != Attribute.NULL) {
                 throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
             }
             Object o =  getObject(getReferid());
@@ -125,23 +134,23 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
         } else {
             NodeManager nodeManager;
 
-            if (nodeManagerString == null) { // living as NodeReferrer
+            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
                 nodeManager = getNodeVar().getNodeManager();
             } else {
-                nodeManager = getCloud().getNodeManager(nodeManagerString);
+                nodeManager = getCloud().getNodeManager(nodeManagerAtt.getString(this));
             }
 
-            if (type != NodeManager.ORDER_NONE) {
-                returnList = nodeManager.getFields(type);
-                if (fields != null) {
+            if (type != Attribute.NULL) {
+                returnList = nodeManager.getFields(getType());
+                if (fields != Attribute.NULL) {
                     throw new JspTagException ("Cannot specify fields and type attribute both at the same time. Fields = " + fields + " type = " + type);
                 }
 
             } else {
                 returnList = nodeManager.getFields();
-                if (fields != null) {
+                if (fields != Attribute.NULL) {
                     returnList.clear();
-                    java.util.Iterator i = fields.iterator();
+                    java.util.Iterator i = getFields().iterator();
                     while (i.hasNext()) {
                         returnList.add(nodeManager.getField((String) i.next()));
                     }
