@@ -63,7 +63,7 @@ import java.io.File;
 public class Logging {
 
 	private static Class   logclass   = SimpleImpl.class; // default Logger Implementation
-	private static String  configuration = null;          // stores configuration string (a filename)
+	private static String  configuration = null;      // stores configuration string (a filename, 'stdout' or 'stderr' for SimpleImpl.)
 
 	private static File    configuration_file = null;     // Loging is configured with a configuration file. The path of this file can be requested later.
 
@@ -130,16 +130,17 @@ public class Logging {
 					//System.out.println("classloader1: " + ClassLoader.getSystemClassLoader().getClass().getName());
 					//System.out.println("classloader2: " + Logging.class.getClassLoader().getClass().getName());
 
-					logclass = Logging.class.getClassLoader().loadClass(classtouse);
+					//logclass = Logging.class.getClassLoader().loadClass(classtouse);
 					//logclass = Class.forName(classtouse, true, ClassLoader.getSystemClassLoader());  
-					//logclass = Thread.currentThread().getContextClassLoader().loadClass(classtouse);
+					//logclass = Class.forName(classtouse);
+					logclass = Thread.currentThread().getContextClassLoader().loadClass(classtouse);
 
 					// It's a little tricky to find the right classloader, but as it is now, it works for me.
 
 				} catch (ClassNotFoundException e) {
 					System.err.println("Could not find class " + classtouse);
 					System.err.println(e.toString());
-					logclass = classname;
+					logclass = classname;				
 				} 
 			} catch (Exception e) {
 				System.err.println("Exception during parsing: " + e);
@@ -168,7 +169,6 @@ public class Logging {
 	public static File getConfigurationFile() {
 		return configuration_file;
 	}
-
 	/**
 	 * After configuring the logging system, you can get Logger instances to log with. 
 	 *
@@ -206,5 +206,21 @@ public class Logging {
 		}
 
 	}
+
+	/**
+	 * Returns the stacktrace of an exception as a string, which can
+	 * be logged handy.  Doing simply e.printStackTrace() would dump
+	 * the stack trace to standard error, which with the log4j
+	 * implementation will appear in the log file too, but this is a
+	 * little nicer. 
+	 *
+	 * @param e the Throwable from which the stack trace must be stringified.
+	 *
+	 **/
+	public static String stackTrace(Throwable e) {
+		java.io.ByteArrayOutputStream stream =  new java.io.ByteArrayOutputStream();
+		e.printStackTrace(new java.io.PrintStream(stream));
+		return stream.toString();
+	} 
 
 }
