@@ -580,6 +580,8 @@ public class MMBase extends ProcessorModule  {
 				bul.setDutchSName(dutchsname);
 				bul.setSingularNames(parser.getSingularNames());
 				bul.setPluralNames(parser.getPluralNames());
+				bul.setVersion(parser.getBuilderVersion());
+				bul.setMaintainer(parser.getBuilderMaintainer());
 				bul.setClassName(classname);
 				bul.setSearchAge(""+searchage);
 				bul.setInitParameters(properties);
