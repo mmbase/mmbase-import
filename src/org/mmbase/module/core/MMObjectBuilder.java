@@ -364,8 +364,7 @@ public class MMObjectBuilder extends MMTable {
 				String fieldname;String fieldtype;
 				for (int i=1;i<=rd.getColumnCount();i++) {
 					fieldname=rd.getColumnName(i);	
-					fieldtype=rd.getColumnTypeName(i);	
-					node=database.decodeDBnodeField(node,fieldtype,fieldname,rs,i);
+					node=database.decodeDBnodeField(node,fieldname,rs,i);
 				}
 				nodeCache.put(new Integer(number),node);
 				stmt.close();
@@ -422,6 +421,7 @@ public class MMObjectBuilder extends MMTable {
 	}
 
 	private Vector basicSearch(String query) {
+		System.out.println(query);
 		// test with counting
 		statCount("search");
 	
@@ -628,8 +628,8 @@ public class MMObjectBuilder extends MMTable {
 				String fieldname;String fieldtype;
 				for (int i=1;i<=rd.getColumnCount();i++) {
 					fieldname=rd.getColumnName(i);	
-					fieldtype=rd.getColumnTypeName(i);	
-					node=database.decodeDBnodeField(node,fieldtype,fieldname,rs,i);
+					//fieldtype=rd.getColumnTypeName(i);	
+					node=database.decodeDBnodeField(node,fieldname,rs,i);
 				}
 				// clear the changed signal
 				node.clearChanged(); // huh ?
@@ -663,9 +663,9 @@ public class MMObjectBuilder extends MMTable {
 			while(rs.next()) {
 				node = new MMObjectNode(this);
 				for (int index = 1; index <= numberOfColumns; index++) {
-					String type=rsmd.getColumnTypeName(index);	
+					//String type=rsmd.getColumnTypeName(index);	
 					String fieldname=rsmd.getColumnName(index);
-					node=database.decodeDBnodeField(node,type,fieldname,rs,index);
+					node=database.decodeDBnodeField(node,fieldname,rs,index);
 				}
 				sv.addUniqueSorted(node);
 			}	
@@ -741,12 +741,12 @@ public class MMObjectBuilder extends MMTable {
 	/**
 	* return the database type of the objecttype
 	*/
-	public String getDBType(String fieldName) {
+	public int getDBType(String fieldName) {
 		if (fields==null) debug("getDBType(): fielddefs are null on object : "+tableName);
 		FieldDefs node=(FieldDefs)fields.get(fieldName);
 		if (node==null) {
 			if (debug) debug("getDBType(): PROBLEM Can't find fielddef on : "+fieldName+" builder="+tableName);
-			return(null);
+			return(-1);
 		}
 		return(node.getDBType());
 	}
@@ -774,22 +774,6 @@ public class MMObjectBuilder extends MMTable {
 		
 		if (sortedDBLayout.size()>0) {
 			String fname=(String)sortedDBLayout.elementAt(2);
-			/*
-			WH: Quoted original code talks about db type "var". Assumed to be a slip of the tongue.
-			If it was intended to be "char" please add it to the string types recognized 
-			by MMObjectNode.getValueAsString()
-			Original code:
-
-			String type=(String)getDBType(fname);
-			String str=GUIIndicator;
-			if (type.equals("var") || type.equals("varchar") || type.equals("text") || type.equals("varchar_ex")) {
-        		str=node.getStringValue(fname);
-			} else if (type.equals("int") || type.equals("integer")) {
-        		str=""+node.getIntValue(fname);
-			}
-
-			New code:
-			*/
 			String str = node.getValueAsString( fname );
         	if (str.length()>15) {
            	 return(str.substring(0,12)+"...");
@@ -1478,11 +1462,11 @@ public class MMObjectBuilder extends MMTable {
 		if (state==0) {
 		}
 			// convert the field to a string
-			String type=getDBType(fieldname);
+			int type=getDBType(fieldname);
 			String value="";
-			if (type.equals("int")) {
+			if (type==FieldDefs.TYPE_INTEGER) {
 				value=""+node.getIntValue(fieldname);
-			} else if (type.equals("varchar")) {
+			} else if (type==FieldDefs.TYPE_STRING) {
 				value=node.getStringValue(fieldname);
 			} else {
 				// should be mapped to the builder
@@ -1507,12 +1491,12 @@ public class MMObjectBuilder extends MMTable {
 		body+="<number>"+node.getIntValue("number")+"</number>\n";
 		for (Enumeration e=sortedDBLayout.elements();e.hasMoreElements();) {
 			String key=(String)e.nextElement();	
-			String type=node.getDBType(key);
-			if (type.equals("int") || type.equals("integer")) {
+			int type=node.getDBType(key);
+			if (type==FieldDefs.TYPE_INTEGER) {
 				body+="<"+key+">"+node.getIntValue(key)+"</"+key+">\n";
-			} else if (type.equals("text") || type.equals("clob")) {
+			} else if (type==FieldDefs.TYPE_TEXT) {
 				body+="<"+key+">"+node.getStringValue(key)+"</"+key+">\n";
-			} else if (type.equals("byte")) {
+			} else if (type==FieldDefs.TYPE_BYTE) {
 				body+="<"+key+">"+node.getByteValue(key)+"</"+key+">\n";
 			} else {
 				body+="<"+key+">"+node.getStringValue(key)+"</"+key+">\n";
@@ -1711,13 +1695,8 @@ public class MMObjectBuilder extends MMTable {
 			fields.put(name,def);
 		}
 
-		// default ones
-		//FieldDefs def=new FieldDefs("Nummer","integer",-1,-1,"number","int",-1,3);
-		//fields.put("number",def);	
-		FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype","int",-1,3);
+		FieldDefs def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,3);
 		fields.put("otype",def);	
-		//def=new FieldDefs("Eigenaar","string",-1,-1,"owner","varchar",-1,3);
-		//fields.put("owner",def);	
 		setDBLayout_xml(fields);
 	}
 

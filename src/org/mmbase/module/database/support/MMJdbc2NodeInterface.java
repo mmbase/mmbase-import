@@ -27,8 +27,10 @@ import org.xml.sax.*;
 * it is used to abstact the query's needed for mmbase for each database.
 */
 public interface MMJdbc2NodeInterface {
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i);
-	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix);
+	//public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i);
+	//public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix);
+	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
+	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
 	public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul);
 	public String getShortedText(String tableName,String fieldname,int number);
 	public byte[] getShortedByte(String tableName,String fieldname,int number);

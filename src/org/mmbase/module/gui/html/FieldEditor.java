@@ -133,7 +133,7 @@ public class FieldEditor implements CommandHandlerInterface {
 	boolean setEditField(EditState ed, String fieldname,Hashtable cmds) {
 		MMObjectBuilder obj=ed.getBuilder();
 		FieldDefs def=obj.getField(fieldname);
-		String type=def.getDBType();
+		int type=def.getDBType();
 		String value=(String)cmds.get("EDIT-SETFIELDVALUE-"+fieldname);
 		MMObjectNode node=ed.getEditNode();
 		if (node!=null) node.setValue( fieldname, type, value );
@@ -145,7 +145,7 @@ public class FieldEditor implements CommandHandlerInterface {
 	String setEditField(EditState ed, String fieldname,String value) {
 		MMObjectBuilder obj=ed.getBuilder();
 		FieldDefs def=obj.getField(fieldname);
-		String type=def.getDBType();
+		int type=def.getDBType();
 		MMObjectNode node=ed.getEditNode();
 		if (node!=null) node.setValue( fieldname, type, value );
 		return("");
@@ -243,7 +243,6 @@ public class FieldEditor implements CommandHandlerInterface {
 	boolean setEditIMGField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
 		MMObjectBuilder obj=ed.getBuilder();
 		FieldDefs def=obj.getField(fieldname);
-		String type=def.getDBType();
 		try {
 		MMObjectNode node=ed.getEditNode();
 		if (node!=null) {
@@ -260,7 +259,6 @@ public class FieldEditor implements CommandHandlerInterface {
 	boolean setEditDISKField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
 		MMObjectBuilder obj=ed.getBuilder();
 		FieldDefs def=obj.getField(fieldname);
-		String type=def.getDBType();
 		try {
 		MMObjectNode node=ed.getEditNode();
 		if (node!=null) {

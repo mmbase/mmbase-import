@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.10 2000-03-30 13:11:32 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.11 2000-07-15 10:14:42 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2000/03/30 13:11:32  wwwtech
+	Rico: added license
+	
 	Revision 1.9  2000/03/29 10:59:23  wwwtech
 	Rob: Licenses changed
 	
@@ -49,11 +52,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.10 2000-03-30 13:11:32 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.11 2000-07-15 10:14:42 daniel Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
-	final static boolean debug=false;
+	final static boolean debug=true;
 
 	public MultiRelations(MMBase m) {
 		this.mmb=m;
@@ -96,7 +99,7 @@ public class MultiRelations extends MMObjectBuilder {
 	}
 
 
-	public String getDBType(String fieldName) {
+	public int getDBType(String fieldName) {
 		// oke oke we expect a '.' in the name
 		int pos=fieldName.indexOf('.');
 		if (pos!=-1) {
@@ -104,11 +107,10 @@ public class MultiRelations extends MMObjectBuilder {
 			if (getTableNumber(bulname)>=0) bulname=bulname.substring(0,bulname.length()-1);
 			MMObjectBuilder bul=mmb.getMMObject(bulname);
 			String tmp=fieldName.substring(pos+1);
-			String tmp2=bul.getDBType(tmp);
-			if (tmp2!=null) return(tmp2);
-			return(null);
+			int tmp2=bul.getDBType(tmp);
+			return(tmp2);
 		}
-		return(null);
+		return(-1);
 	}
 
 	private Vector getSelectTypes(Vector rfields) {
@@ -129,6 +131,7 @@ public class MultiRelations extends MMObjectBuilder {
 
 
 	public Object getValue(MMObjectNode node,String fieldName) {
+		System.out.println("WWWW7");
 		// oke oke we expect a '.' in the name
 		int pos=fieldName.indexOf('.');
 		if (pos!=-1) {
@@ -251,8 +254,9 @@ public class MultiRelations extends MMObjectBuilder {
 				for (int i=1;i<=rd.getColumnCount();i++) {
 					prefix=selectTypes.elementAt(i-1)+".";
 					fieldname=rd.getColumnName(i);	
-					fieldtype=rd.getColumnTypeName(i);	
-					node=database.decodeDBnodeField(node,fieldtype,fieldname,rs,i,prefix);
+					//fieldtype=rd.getColumnTypeName(i);	
+					System.out.println("WWWW30="+fieldname);
+					node=database.decodeDBnodeField(node,fieldname,rs,i,prefix);
 					if (debug) debug("Node="+node);
 				}
 				// clear the changed signal

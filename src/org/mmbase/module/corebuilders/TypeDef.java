@@ -29,7 +29,7 @@ public class TypeDef extends MMObjectBuilder {
 	Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
 	Hashtable descriptionCache; 				// object number -> typedef description
 	public boolean broadcastChanges=false;
-	private Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
+	public Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
 
 	public TypeDef() {
 	}
@@ -128,11 +128,12 @@ public class TypeDef extends MMObjectBuilder {
 	}
 
 	public String getDutchSName(String name) {
+		if (name==null) return("ERROR");
 		MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(name);
 		if (bul!=null) {
 			return(bul.getDutchSName());
 		} else {
-			return("inactive ("+name+".xml) !");
+			return("probleem!");
 		}
 	}
 
@@ -145,7 +146,7 @@ public class TypeDef extends MMObjectBuilder {
 				return(bul.tableName);
 			}
 		} 
-		return("inactive ("+dutchname+".xml) !");
+		return("probleem");
 	}
 
 	public boolean isRelationTable(String name) {
@@ -153,6 +154,7 @@ public class TypeDef extends MMObjectBuilder {
 	}
 
 	public Object getValue(MMObjectNode node,String field) {
+		System.out.println("WWWWWWWWW="+node+" "+field);
 		if (field.equals("state")) {
 			int val=node.getIntValue("state");
 
@@ -166,6 +168,7 @@ public class TypeDef extends MMObjectBuilder {
 			return(""+val);
 		} else if (field.equals("dutchs(name)")) {
 			String name=node.getStringValue("name");
+			System.out.println("WWWWWWWWW40="+name);
 			return(getDutchSName(name));
 		}
 		return(null);
@@ -256,13 +259,13 @@ public class TypeDef extends MMObjectBuilder {
 	/**
 	* return the database type of the objecttype
 	*/
-	public String getDBType(String fieldName) {
-		if (fieldName.equals("owner")) return("varchar");
-		if (fieldName.equals("otype")) return("int");
-		if (fieldName.equals("number")) return("int");
-		if (fieldName.equals("name")) return("varchar");
-		if (fieldName.equals("description")) return("varchar");
-		return(null);
+	public int getDBType(String fieldName) {
+		if (fieldName.equals("owner")) return(FieldDefs.TYPE_STRING);
+		if (fieldName.equals("otype")) return(FieldDefs.TYPE_INTEGER);
+		if (fieldName.equals("number")) return(FieldDefs.TYPE_INTEGER);
+		if (fieldName.equals("name")) return(FieldDefs.TYPE_STRING);
+		if (fieldName.equals("description")) return(FieldDefs.TYPE_STRING);
+		return(-1);
 	}
 
 	public void loadTypeDef(String name) {
@@ -281,20 +284,16 @@ public class TypeDef extends MMObjectBuilder {
 		}
 	}
 
-	/** 
-	 * gives all active Builders.
-	 */
-	public Vector activeBuilders() {
-		return typedefsLoaded;
-	}
-
-	public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+	public Vector  getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+		System.out.println("Tataaaaa");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
+            //debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
 
             if (cmd.equals("builders")) {
 				return typedefsLoaded;
             }
+            //System.out.println("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
         }
 		return null;
     }

@@ -136,7 +136,7 @@ public class MMObjectNode {
 			Enumeration e=values.keys();
 			while (e.hasMoreElements()) {
 				String key=(String)e.nextElement();
-				String dbtype=getDBType(key);
+				int dbtype=getDBType(key);
 				String value=""+values.get(key);
 				if (result.equals("")) {
 					result=key+"="+dbtype+":'"+value+"'";
@@ -168,23 +168,11 @@ public class MMObjectNode {
 	* (remark someone has to look at this caching thing, i think its lagecy, daniel)
 	*/
 	public boolean setValue(String fieldname,Object fieldvalue) {
+		System.out.println("WWWWWW2="+fieldname);
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && !fieldname.equals("CacheCount") && state==2) {
-			changed.addElement(fieldname);
-		}
-	
-		// is it a memory only field ? then send a fieldchange
-		// a small test begin for transient fields
-		if (state==0) sendFieldChangeSignal(fieldname);
-
+		setUpdate(fieldname);
 		return(true);
 	}
 
@@ -198,18 +186,7 @@ public class MMObjectNode {
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && state==2) {
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		setUpdate(fieldname);
 		return(true);
 	}
 
@@ -221,7 +198,11 @@ public class MMObjectNode {
 		values.put(fieldname,new Integer(fieldvalue));
 
 		if (parent!=null) parent.setValue(this,fieldname);
+		setUpdate(fieldname);
+		return(true);
+	}	
 
+	private void setUpdate(String fieldname) {
 		// obtain the type of field this is 
 		int state=getDBState(fieldname);
 
@@ -233,54 +214,35 @@ public class MMObjectNode {
 
 		// is it a memory only field ? then send a fieldchange
 		if (state==0) sendFieldChangeSignal(fieldname);
-		return(true);
 	}
 
 
 	/** 
 	*  sets a key, value pair in the main values of this node where value int
 	*/
-	/*
 	public boolean setValue(String fieldname,double fieldvalue) {
+		System.out.println("WWWWWW3="+fieldname);
 		// put the key/value in the value hashtable
 		values.put(fieldname,new Double(fieldvalue));
 
 		if (parent!=null) parent.setValue(this,fieldname);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && !fieldname.equals("CacheCount") && state==2) { 
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		setUpdate(fieldname);
 		return(true);
 	}
-	*/
+
+
 
 	/** 
 	*  sets a key, value pair in the main values of this node where value Integer
 	*/
 	public boolean setValue(String fieldname,Integer fieldvalue) {
+		System.out.println("WWWWWW4="+fieldname);
 
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && state==2) {
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		setUpdate(fieldname);
 		return(true);
 	}
 
@@ -288,26 +250,14 @@ public class MMObjectNode {
 	/** 
 	*  sets a key, value pair in the main values of this node where value Integer
 	*/
-	/*
 	public boolean setValue(String fieldname,Double fieldvalue) {
 
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && state==2) {
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		setUpdate(fieldname);
 		return(true);
 	}
-	*/
 
 
 	/** 
@@ -318,17 +268,7 @@ public class MMObjectNode {
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && state==2) {
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		setUpdate(fieldname);
 		return(true);
 	}
 
@@ -341,24 +281,14 @@ public class MMObjectNode {
 		// put the key/value in the value hashtable
 		values.put(fieldname,fieldvalue);
 
-		// obtain the type of field this is 
-		int state=getDBState(fieldname);
-
-		// add it to the changed vector so we know that we have to update it
-		// on the next commit
-		if (!changed.contains(fieldname) && state==2) {
-			changed.addElement(fieldname);
-		}
-
-		// is it a memory only field ? then send a fieldchange
-		if (state==0) sendFieldChangeSignal(fieldname);
+		setUpdate(fieldname);
 		return(true);
 	}
 
 	/** 
 	*  sets a key, value pair in the main values of this node for ints and strings
 	*/
-	public boolean setValue(String fieldName, String fieldType, String value)
+	public boolean setValue(String fieldName, int type, String value)
 	// WH: This one will be moved/replaced soon...
 	// Testing of db types will be moved to the DB specific classes
 	// Called by
@@ -366,22 +296,45 @@ public class MMObjectNode {
 	// MMBaseMultiCast.mergeXMLNode
 	// MMImport.parseOneXML
 	{
-		if (fieldType==null) {
+		if (type==-1) {
 			System.out.println("MMObjectNode.setValue(): unsupported fieldtype null for field "+fieldName);
 			return true;
 		}
-		if (fieldType.equals("text") || fieldType.equals("varchar")
-			|| fieldType.equals("varchar_ex") || fieldType.equals("clob"))
-			setValue( fieldName, value);
-		else if (fieldType.equals("int") || fieldType.equals("integer"))
-		{
-			int i;
-			try { i = Integer.parseInt(value); } 
-			catch (NumberFormatException e)
-			{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
-			setValue( fieldName, i );
+		switch (type) {
+			case FieldDefs.TYPE_STRING:
+				setValue( fieldName, value);
+				break;
+			case FieldDefs.TYPE_INTEGER:
+				Integer i;
+				try { i = new Integer(value); } 
+				catch (NumberFormatException e)
+				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				setValue( fieldName, i );
+				break;
+			case FieldDefs.TYPE_FLOAT:
+				Float f;
+				try { f = new Float(value); } 
+				catch (NumberFormatException e)
+				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				setValue( fieldName, f );
+				break;
+			case FieldDefs.TYPE_LONG:
+				Long l;
+				try { l = new Long(value); } 
+				catch (NumberFormatException e)
+				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				setValue( fieldName, l );
+				break;
+			case FieldDefs.TYPE_DOUBLE:
+				Double d;
+				try { d = new Double(value); } 
+				catch (NumberFormatException e)
+				{ System.out.println( e.toString() ); e.printStackTrace(); return true; }
+				setValue( fieldName, d );
+				break;
+			default:
+				System.out.println("MMObjectNode.setValue(): unsupported fieldtype: "+type+" for field "+fieldName);
 		}
-		else System.out.println("MMObjectNode.setValue(): unsupported fieldtype: "+fieldType+" for field "+fieldName);
 		return true;
 	}
 
@@ -390,6 +343,7 @@ public class MMObjectNode {
 	*/
 	public Object getValue(String fieldname) {
 
+		System.out.println("WWWWWW1="+fieldname);
 		// get the value from the values table
 		Object o=values.get(fieldname);
 
@@ -397,7 +351,6 @@ public class MMObjectNode {
 		// this are used for functions for example
 		// its implemented per builder so lets give this
 		// request to our builder
-
 
 		if (o==null) { 
 			// well maybe its a propertie lets automap that
@@ -441,12 +394,11 @@ public class MMObjectNode {
 			// obtain the database type so we can check if what
 			// kind of object it is. this have be changed for
 			// multiple database support.
-			String type=getDBType(fieldname);
+			int type=getDBType(fieldname);
 
 			if (debug) debug("getStringValue(): fieldname "+fieldname+" has type "+type);
 			// check if for known mapped types
-			if (type.equals("text") || type.equals("blob")
-			|| type.equals("varchar") || type.equals("clob")) {
+			if (type==FieldDefs.TYPE_STRING) {
 				MMObjectBuilder bul;
 				String tmptable="";
 
@@ -555,12 +507,12 @@ public class MMObjectNode {
 	/** 
 	* get a value by its given key, will be returned must be Long
 	*/
-	public Long getLongValue(String fieldname) {
+	public long getLongValue(String fieldname) {
 		Long i=(Long)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i);
+			return(i.longValue());
 		} else {
-			return(new Long(-1));
+			return(-1);
 		}
 	}
 
@@ -568,12 +520,12 @@ public class MMObjectNode {
 	/** 
 	* get a value by its given key, will be returned must be Float
 	*/
-	public Float getFloatValue(String fieldname) {
+	public float getFloatValue(String fieldname) {
 		Float i=(Float)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i);
+			return(i.floatValue());
 		} else {
-			return(new Float(-1));
+			return(-1);
 		}
 	}
 
@@ -581,22 +533,20 @@ public class MMObjectNode {
 	/** 
 	* get a value by its given key, will be returned must be Float
 	*/
-	/*
-	public Double getDoubleValue(String fieldname) {
+	public double getDoubleValue(String fieldname) {
 		Double i=(Double)values.get(prefix+fieldname);
 		if (i!=null) {
-			return(i);
+			return(i.doubleValue());
 		} else {
-			return(new Double(-1));
+			return(-1);
 		}
 	}
-	*/
 
 
 
 
 	/** 
-	* Get a string or int value as String by its given fieldname
+	* Get a value as String by its given fieldname
 	*/
 	public String getValueAsString(String fieldName)
 	// WH Will remove/replace this one soon
@@ -611,23 +561,20 @@ public class MMObjectNode {
 	// Teasers.doTSearch
 
 	{
-		String result = null;
-		String dbType = getDBType(fieldName);
-		if (dbType==null) result = "" + getValue(fieldName);
-		//else if ( dbType.equals("varchar") || dbType.equals("varchar_ex") || dbType.equals("clob") || dbType.equals("text") || dbType.equals("blob") )
-		else if ( dbType.equals("varchar") || dbType.equals("varchar_ex") || dbType.equals("clob") || dbType.equals("text") || dbType.equals("blab") )
-				result = getStringValue(fieldName);
-		else if (dbType.equals("int") || dbType.equals("integer"))
-				result = "" + getIntValue(fieldName);
-		if ((result==null) || result.equals("null")) result = "";
-		return result;
+		Object o=getValue(fieldName);
+		if (o!=null) {
+			return(""+getValue(fieldName));
+		} else {
+			return("");
+		}
 	}
 
 
 	/** 
 	* returns the DBType (as defined in JDBC mostly, needs some work)
 	*/
-	public String getDBType(String fieldname) {
+	public int getDBType(String fieldname) {
+		System.out.println("PREFIX="+prefix);
 		if (prefix!=null && prefix.length()>0) {
 			// If the prefix is set use the builder contained therein
 			int pos=prefix.indexOf('.');
@@ -859,20 +806,16 @@ public class MMObjectNode {
 	* return a the related nodes of this node
 	*/	
 	public int getRelationCount(String wantedtype) {
-//		System.out.println("MMObjectNode-> wanted type : "+wantedtype);
 		int otype=parent.mmb.TypeDef.getIntValue(wantedtype);
 		if (otype==0) {
 			return(0);
 		}
-//		System.out.println("MMObjectNode-> wanted otype : "+otype);
 		if (relations==null) {	
 			Vector re=parent.getRelations_main(this.getIntValue("number"));
-//			System.out.println("MMObjectNode-> vector : "+re);
 			if (re!=null) {
 				relations=re;
 			}
 		} 
-//		System.out.println("MMObjectNode-> vector : "+relations);
 		if (relations==null) return(0);
 		Vector result=new Vector();
 		Enumeration e=relations.elements();
