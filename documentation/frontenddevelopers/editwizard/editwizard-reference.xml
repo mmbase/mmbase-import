@@ -18,7 +18,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.14 2003-12-10 10:54:47 vpro Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.15 2003-12-10 13:08:33 vpro Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -235,16 +235,16 @@
 					<listitem>
 						<para>The actual field on which to search. Normally, searches are done on the fields mentioned in the searchfields parameter (used to create the search box in  a list page). Sometimes, you want to search on a field other than those listed in searchfield (such as 'number' or 'owner'). In that case, use this parameter to specify the field.
 						</para>
-						<note><para>This parameter is set by the system when a user submits a search- you will hardly ever use it yourself. If you want to add additional constraints, use the 'constraints' parameter. If you specify a constraints parameter, that constraint is combined in further searches with the search parameters given by a user. If you use realsearchfield to specify a constraint, that information is only valid for the first seraph - it will be replaced when a user submits his search.</para></note>
+						<note><para>This parameter is set by the system when a user submits a search- you will hardly ever use it yourself. If you want to add additional constraints, use the 'constraints' parameter. If you specify a constraints parameter, that constraint is combined in further searches with the search parameters given by a user. If you use realsearchfield to specify a constraint, that information is only valid for the first search - it will be replaced when a user submits his search.</para></note>
 						<note><para>Available from MMBase 1.6.4 and up</para></note>
-						<programlisting format="linespecific">searchfields=news.title,news.subtitle</programlisting>
+						<programlisting format="linespecific">realsearchfield=news.title,news.subtitle</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>searchvalue</term>
 					<listitem>
 						<para>The term or value to search for. This is only valid if you also specify the searchfields parameter.</para>
-						<programlisting format="linespecific">search=Brasil</programlisting>
+						<programlisting format="linespecific">searchvalue=Brasil</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
