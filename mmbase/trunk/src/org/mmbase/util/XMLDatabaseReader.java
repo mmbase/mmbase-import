@@ -20,9 +20,14 @@ import org.w3c.dom.traversal.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
 */
 public class XMLDatabaseReader  {
+
+    private static Logger log = Logging.getLoggerInstance(XMLDatabaseReader.class.getName());
 
     Document document;
     DOMParser parser;
@@ -35,25 +40,25 @@ public class XMLDatabaseReader  {
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             //Errors errors = new Errors();
             //parser.setErrorHandler(errors);
-		File file = new File(filename);
-        	if(!file.exists()) {
-  				System.out.println("ERROR -> Database file "+filename+" does not exist (check <DATABASE> tag in mmbaseroot.xml)");
-           	}
-		filename="file:///"+filename;
+            File file = new File(filename);
+            if(!file.exists()) {
+                log.error("Database file "+filename+" does not exist (check <DATABASE> tag in mmbaseroot.xml)");
+            }
+            filename="file:///"+filename;
             parser.parse(filename);
             document = parser.getDocument();
 
 	    /*
-	    System.out.println("*** START XML CONFIG READER FOR : "+filename);	
-	    System.out.println("database name="+getName());	
-	    System.out.println("database type-mapping="+getTypeMapping());	
-	    System.out.println("database create="+getCreateScheme());	
-	    System.out.println("database not-null="+getNotNullScheme());	
-	    System.out.println("database disallowed fields="+getDisallowedFields());	
-	    System.out.println("*** END XML CONFIG READER FOR : "+filename);	
+	    log.debug("*** START XML CONFIG READER FOR : "+filename);	
+	    log.debug("database name="+getName());	
+	    log.debug("database type-mapping="+getTypeMapping());	
+	    log.debug("database create="+getCreateScheme());	
+	    log.debug("database not-null="+getNotNullScheme());	
+	    log.debug("database disallowed fields="+getDisallowedFields());	
+	    log.debug("*** END XML CONFIG READER FOR : "+filename);	
 	    */
 	} catch(Exception e) {
-	    e.printStackTrace();
+	    log.error(Logging.stackTrace(e));
 	}
     }
 
@@ -161,7 +166,7 @@ public class XMLDatabaseReader  {
 							String name=n5.getNodeValue();
 							Node n6=nm.getNamedItem("replacement");
 							String replacement=n6.getNodeValue();
-							//System.out.println("DIS="+name+" replacement="+replacement);
+							//log.debug("DIS="+name+" replacement="+replacement);
 							results.put(name,replacement);
 						}
 					}
