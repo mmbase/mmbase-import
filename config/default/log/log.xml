@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j SYSTEM "../dtd/logging.dtd">
+<!DOCTYPE logging SYSTEM "../dtd/logging.dtd">
 
 <logging>
   <!-- example: SimpleImpl -->
