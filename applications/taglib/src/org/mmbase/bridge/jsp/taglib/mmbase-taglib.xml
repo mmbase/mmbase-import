@@ -1896,21 +1896,42 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <info>
-	  <p>
-		Does an include. This tag is rather similar to mm:url, but in
-		stead of returing the url, it returns the page itself. In that
-		respect it is also very similar to jsp:include. The advantage
-		above jsp:include is that this tag is aware of the context
-		parameters and knows the 'param' sub tag.
-	  </p>
-	  <p>
-		You can also consider using the jsp &lt;%@include file=""
-		%&gt;. This will include the code of that page in place and
-		compile it together with your page. So in that aspect it is
-		much different from this tag, which "includes" a stand-alone
-		page.
-	  </p>
+      <p>
+	Does an include. This tag is rather similar to mm:url, but in
+	stead of returing the url, it returns the page itself. In that
+	respect it is also very similar to jsp:include. The advantage
+	above jsp:include is that this tag is aware of the context
+	parameters and knows the 'param' sub tag.
+      </p>
+      <p>
+	You can also consider using the jsp &lt;%@include file=""
+	%&gt;. This will include the code of that page in place and
+	compile it together with your page. So in that aspect it is
+	much different from this tag, which "includes" a stand-alone
+	page.
+      </p>
     </info>
+    <attribute>
+      <name>debug</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+	For debugging you can print the used URL in the page as comments..
+      </info>
+      <possiblevalue>
+	<value>none</value>
+	<info>No debugging on the page (default)</info>
+      </possiblevalue>
+      <possiblevalue>
+	<value>html</value>
+	<info>Use html comments</info>
+      </possiblevalue>
+      <possiblevalue>
+	<value>css</value>
+	<info>Use css comments</info>
+      </possiblevalue>
+    </attribute>
     <see>param</see>
     <see>url</see>
   </tag>
