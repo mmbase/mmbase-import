@@ -11,7 +11,6 @@ package org.mmbase.util;
 
 import java.util.*;
 import java.text.*;
-import java.lang.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,14 +22,19 @@ public class RFC1123 {
     //logger
     static Logger log = Logging.getLoggerInstance(RFC1123.class.getName());
 
+
+    private static DateFormat formatter; 
+
+    static {
+        formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
+    }
+
     /**
      * Abbreviated names of week days
+     * @deprecated
      */
-    static String days[]={ "Sun, ","Mon, ","Tue, ","Wed, ","Thu, ","Fri, ","Sat, ","Sun, " };
-    /**
-     * Abbreviated names of months
-     */
-    static String months[]={ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" };
+    private static String days[]={ "Sun, ","Mon, ","Tue, ","Wed, ","Thu, ","Fri, ","Sat, ","Sun, " };
 
     /**
      * Create a date string in GMT format.
@@ -40,22 +44,21 @@ public class RFC1123 {
     public static String makeDateV1(Date d) {
         return days[d.getDay()]+d.toGMTString();
     }
+    /**
+     * Create a date string in GMT format.
+     * @deprecated use {@link #makeDate} instead
+     */
+    public static String makeDateV2(Date d) {
+        return makeDate(d);
+    }
 
     /**
      * Create a date string in GMT format.
      */
     public static String makeDate(Date d) {
-        return makeDateV2(d);
-    }
-
-    /**
-     * Create a date string in GMT format.
-     */
-    public static String makeDateV2(Date d) {
-        DateFormat formatter=new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
         return formatter.format(d);
     }
+
 
     /**
      * Method to call this class from the commandline for testing.
