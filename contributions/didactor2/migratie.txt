@@ -1,17 +1,47 @@
 
 Migratie issues
 
+
 2004-11-03
 
 De directory education/files in de root van de web applicatie is nu bestemd voor uploads. 
 Deze moet dus niet geleegd worden bij deployment van een nieuwe war en moet schrijfbaar 
 zijn voor de web applicatie.
 
+ ** 
+ 
+    2004-11-10 Dit is nu aanpasbaar via de web.xml:
+    
+    <param-name>filemanagementBaseUrl</param-name>
+    
+    geeft de url van de upload directory (zodat de bestanden weer te downloaden zijn)
+
+    <param-name>filemanagementBaseDirectory</param-name>
+    
+    geeft het directory pad waar de bestanden naartoe worden ge-upload.
+    deze moet schrijfbaar zijn voor de web applicatie en niet worden geleegd tijdens
+    updates.
+
+
+    Voor developers: deze waardes worden overgenomen uit de configure.properties
+    filemanagement.data.directory en filemanagement.data.url
+    als je een eigen propertyfile hebt moet je ant altijd aanroepen met
+    ant -propertyfile propertyfilenaam - de web.xml wordt altijd opniew
+    aangemaakt.
+
+    voorbeeld van configure.properies setting:
+
+    filemanagement.data.directory=/home/joost/lib/tomcat/webapps/didactor/education/files
+    filemanagement.data.url=/education/files
+    
+ ** 
+
 Er is een maximum upload van 50 Mb in de upload pagina. Waarschijnlijk moet ook de
 configuratie van de webserver aangepast worden om dat soort grote uploads toe te staan.
 
-Bovenstaande is de verantwoordelijkheid van de hosting provider.
 
+
+Bovenstaande is de verantwoordelijkheid van de hosting provider.
 
 File-uploads zijn bereikbaar voor gebruikers met toegang tot de content-management en
 de nieuwe rol "filemanager". Deze rol moet dus aangemaakt worden.

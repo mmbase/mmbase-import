@@ -13,9 +13,8 @@
 	    <tr>
 		<td class="listItem"><fmt:message key="CONTACT" /></td>
 		<td class="listItem">
-		<a href="<mm:treefile page="/address/updatecontact.jsp" objectlist="$includePath" referids="$referids">
-		    <mm:param name="addressbook"><mm:field name="addressbooks.number"/></mm:param>
-		    <mm:param name="contact"><mm:field name="contacts.number"/></mm:param>
+		<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+		    <mm:param name="to"><mm:field name="contacts.email"/></mm:param>
 		</mm:treefile>">
 		<mm:field name="contacts.firstname"/> <mm:field name="contacts.lastname"/>
 		</a>
@@ -24,35 +23,18 @@
 	    </mm:list>
 
     <%-- search classes --%>
-	    <mm:list nodes="$user" path="people1,classes,people2" constraints="<%= "(" + searchConstraints("CONCAT(people2.firstname,people2.lastname, people2.email)", request) + " ) AND people1.number != people2.number" %>">
+	    <mm:list nodes="$user" path="people1,classes,people2" constraints="<%= "(" + searchConstraints("CONCAT(people2.firstname,people2.lastname, people2.email)", request) + " ) AND people1.number != people2.number" %>" fields="people2.number" distinct="true">
 	    <tr>
 		<td class="listItem"><fmt:message key="CONTACT" /></td>
 		<td class="listItem">
-		<a href="<mm:treefile page="/address/updatecontact.jsp" objectlist="$includePath" referids="$referids">
-		    <mm:param name="addressbook"><mm:field name="addressbooks.number"/></mm:param>
-		    <mm:param name="contact"><mm:field name="people2.number"/></mm:param>
+		<a href="<mm:treefile page="/email/write/write.jsp" objectlist="$includePath" referids="$referids">
+                <mm:param name="to"><mm:field name="people2.email"/></mm:param>
 		</mm:treefile>">
 		<mm:field name="people2.firstname"/> <mm:field name="people2.lastname"/>
 		</a>
 		</td>
 	    </tr>
 	    </mm:list>
-
-    <%-- search workgroups --%>
-	    <mm:list nodes="$user" path="people1,workgroups,people2" constraints="<%= "(" + searchConstraints("CONCAT(people2.firstname,people2.lastname, people2.email)", request) + " ) AND people1.number != people2.number" %>">
-	    <tr>
-		<td class="listItem"><fmt:message key="CONTACT" /></td>
-		<td class="listItem">
-		<a href="<mm:treefile page="/address/updatecontact.jsp" objectlist="$includePath" referids="$referids">
-		    <mm:param name="addressbook"><mm:field name="addressbooks.number"/></mm:param>
-		    <mm:param name="contact"><mm:field name="people2.number"/></mm:param>
-		</mm:treefile>">
-		<mm:field name="people2.firstname"/> <mm:field name="people2.lastname"/>
-		</a>
-		</td>
-	    </tr>
-	    </mm:list>
-
 
 	    
 <% } %>

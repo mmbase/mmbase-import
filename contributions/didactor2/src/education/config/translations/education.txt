@@ -167,3 +167,7 @@ deleteno=nee
 deletethisfolderyesno=Wilt u deze map inclusief de inhoud echt verwijderen?
 deletefolderitemsyesno=Wilt u de geselecteerde mapitems echt verwijderen?
 deletefolderitems=Verwijder mapitems
+createNewRoles=Maak nieuwe rol
+createNewMetadefinition=Maak nieuwe metadatadefinitie
+createNewMetadatastandard=Maak nieuwe metadatastandaard
+
