@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: Images.java,v 1.2 2000-02-24 14:03:27 wwwtech Exp $
+	$Id: Images.java,v 1.3 2000-03-08 11:04:47 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/02/24 14:03:27  wwwtech
+	Rico: fixed serveral debug messages plus added some
+	
 */
 package org.mmbase.module.builders;
 
@@ -29,7 +32,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen
- * @version $Id: Images.java,v 1.2 2000-02-24 14:03:27 wwwtech Exp $
+ * @version $Id: Images.java,v 1.3 2000-03-08 11:04:47 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 
@@ -64,7 +67,7 @@ public class Images extends MMObjectBuilder {
 		return getImageBytes5(null,params);
 	}
 
-	public byte[] getImageBytes5(scanpage sp,Vector params) {
+	public synchronized byte[] getImageBytes5(scanpage sp,Vector params) {
 		int pos,pos2;
 		String key;
 		String type;
