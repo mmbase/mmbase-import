@@ -287,9 +287,10 @@ public class Casting {
      * All remaining field values return -1.
      * @param fieldName the name of the field who's data to return
      * @return the field's value as a <code>long</code>
+     * @since MMBase-1.7
      */
-    static public long toLong(Object i) {
-        long res =-1;
+    static public long toLong(Object i, long def) {
+        long res = def;
         if (i instanceof Boolean) {
             res=((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
@@ -309,6 +310,9 @@ public class Casting {
         return res;
     }
 
+    static public long toLong(Object i) {
+        return toLong(i, -1);
+    }
 
     /**
      * Get a value of a certain field.
