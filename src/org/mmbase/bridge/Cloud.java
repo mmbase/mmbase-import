@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.31 2002-10-18 11:28:15 pierre Exp $
+ * @version $Id: Cloud.java,v 1.32 2002-12-02 09:49:21 pierre Exp $
  */
 public interface Cloud {
 
@@ -85,12 +85,12 @@ public interface Cloud {
     public Relation getRelation(String number) throws NotFoundException;
 
     /**
-     * Determines whether a node with the specified number is available from this cloud.
-     * The node returns true if a Node exists and if the user has sufficent right to access
-     * the node.
+     * Determines whether a node with the specified number exists in this cloud.
+     * Note that this method does not determien whether you may actually access (read) this node,
+     * use {@link #mayRead(int)} to determine this.
      *
      * @param number    the number of the node
-     * @return          true if the node is available
+     * @return          true if the node exists
      * @since  MMBase-1.6
      */
     public boolean hasNode(int number);
@@ -98,22 +98,23 @@ public interface Cloud {
     /**
      * Determines whether a node with the specified number is available from this cloud.
      * If the string passed is not a number, the string is assumed to be an alias.
-     * The node returns true if a Node exists and if the user has sufficent right to access
-     * the node.
+     * Note that this method does not determien whether you may actually access (read) this node,
+     * use {@link #mayRead(int)} to determine this.
      *
      * @param number a string containing the number or alias of the requested node
-     * @return          true if the node is available
+     * @return          true if the node exists
      * @since  MMBase-1.6
      */
     public boolean hasNode(String number);
 
     /**
-     * Determines whether a relation with the specified number is available from this cloud.
-     * The node returns true if a Node exists, the user has sufficent right to access it, and
-     * the node is a relation.
+     * Determines whether a relation with the specified number exists in this cloud.
+     * The node returns true if a Node exists and is a relation.
+     * Note that this method does not determien whether you may actually access (read) this node,
+     * use {@link #mayRead(int)} to determine this.
      *
      * @param number    the number of the node
-     * @return          true if the node is available
+     * @return          true if the relation exists
      * @since  MMBase-1.6
      */
     public boolean hasRelation(int number);
@@ -121,14 +122,40 @@ public interface Cloud {
     /**
      * Determines whether a relation with the specified number is available from this cloud.
      * If the string passed is not a number, the string is assumed to be an alias.
-     * The node returns true if a Node exists, the user has sufficent right to access it, and
-     * the node is a relation.
+     * The node returns true if a Node exists and is a relation.
+     * Note that this method does not determien whether you may actually access (read) this node,
+     * use {@link #mayRead(int)} to determine this.
      *
      * @param number a string containing the number or alias of the requested node
-     * @return          true if the node is available
+     * @return          true if the relation exists
      * @since  MMBase-1.6
      */
     public boolean hasRelation(String number);
+
+    /**
+     * Determines whether a node with the specified number is accessible for the user - that is,
+     * the user has sufficient rights to read the node.
+     * The node must exist - the method throws an exception if it doesn't.
+     *
+     * @param number  the number of the requested node
+     * @return          true if the node is accessible
+     * @throws NotFoundException  if the specified node could not be found
+     * @since  MMBase-1.6
+     */
+    public boolean mayRead(int nodenumber);
+
+    /**
+     * Determines whether a node with the specified number is accessible for the user - that is,
+     * the user has sufficient rights to read the node.
+     * If the string passed is not a number, the string is assumed to be an alias.
+     * The node must exist - the method throws an exception if it doesn't.
+     *
+     * @param number a string containing the number or alias of the requested node
+     * @return          true if the node is accessible
+     * @throws NotFoundException  if the specified node could not be found
+     * @since  MMBase-1.6
+     */
+    public boolean mayRead(String nodenumber);
 
     /**
      * Returns all node managers available in this cloud.

@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.79 2002-11-28 10:30:34 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.80 2002-12-02 09:49:22 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -217,7 +217,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     }
 
     // check if anode exists.
-    // if isrelation is true, the method returns false if the node is not a realtion
+    // if isrelation is true, the method returns false if the node is not a relation
     private boolean hasNode(String nodenumber, boolean isrelation) {
         MMObjectNode node;
         try {
@@ -231,12 +231,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             if (isrelation && !(node.parent instanceof InsRel)) {
                 return false;
             }
-            int nodenr=node.getNumber();
-            if (nodenr==-1) {
-               return true;  // temporary node
-            } else {
-               return check(Operation.READ,node.getNumber()); // check read access
-            }
+            return true;
         }
     }
 
@@ -695,7 +690,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         Integer hash = null; // result hash for cache
         Vector resultlist=null; // result vector
         // check multilevel cache if needed
-        if (multilevelCache.isActive()) {
+       if (multilevelCache.isActive()) {
             hash = multilevelCache.calcHashMultiLevel(tagger);
             resultlist = (Vector) multilevelCache.get(hash);
         }
@@ -842,6 +837,29 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 	    }
         }
         return true;
+    }
+
+    public boolean mayRead(int nodenumber) {
+        return mayRead(nodenumber+"");
+    }
+
+    public boolean mayRead(String nodenumber) {
+        MMObjectNode node;
+        try {
+            node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
+        } catch (RuntimeException e) {
+             throw new NotFoundException("Something went wrong while getting node with number " + nodenumber);
+        }
+        if (node==null) {
+            throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
+       } else {
+            int nodenr=node.getNumber();
+            if (nodenr==-1) {
+               return true;  // temporary node
+            } else {
+               return check(Operation.READ,node.getNumber()); // check read access
+            }
+        }
     }
 
     /**
