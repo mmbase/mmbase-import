@@ -9,28 +9,27 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.8 2004-01-20 17:59:31 michiel Exp $
+  @version $Id: prompts.xsl,v 1.8.2.1 2004-05-02 15:03:13 nico Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
 <!-- prompts for starting a editwizard -->
-<xsl:variable name="tooltip_edit_wizard">Ŝanĝi...</xsl:variable>
+<xsl:variable name="tooltip_edit_wizard">Ŝan�?i...</xsl:variable>
 <xsl:variable name="tooltip_add_wizard">Nova</xsl:variable>
 <!-- prompts for datefields -->
-<xsl:template name="optionlist_months">
-  <option value="1">januaro</option>
-  <option value="2">februaro</option>
-  <option value="3">marto</option>
-  <option value="4">aprilo</option>
-  <option value="5">majo</option>
-  <option value="6">junio</option>
-  <option value="7">julio</option>
-  <option value="8">aŭgusto</option>
-  <option value="9">septembro</option>
-  <option value="10">oktobro</option>
-  <option value="11">novembro</option>
-  <option value="12">decembro</option>
-</xsl:template>
+<xsl:variable name="date_january">januaro</xsl:variable>
+<xsl:variable name="date_february">februaro</xsl:variable>
+<xsl:variable name="date_march">marto</xsl:variable>
+<xsl:variable name="date_april">aprilo</xsl:variable>
+<xsl:variable name="date_may">majo</xsl:variable>
+<xsl:variable name="date_june">junio</xsl:variable>
+<xsl:variable name="date_july">julio</xsl:variable>
+<xsl:variable name="date_august">aŭgusto</xsl:variable>
+<xsl:variable name="date_september">septembro</xsl:variable>
+<xsl:variable name="date_october">oktobro</xsl:variable>
+<xsl:variable name="date_november">novembro</xsl:variable>
+<xsl:variable name="date_december">decembro</xsl:variable>
+
 <xsl:variable name="time_daymonth">-a de</xsl:variable>
 <xsl:variable name="time_at">je</xsl:variable>
 <!-- prompts for a binary field (upload/download) -->
@@ -61,24 +60,24 @@
 <!-- save button prompts and tooltips -->
 <xsl:template name="prompt_save">Konservu &amp; eliru</xsl:template>
 <xsl:template name="prompt_save_only">Konservu</xsl:template>
-<xsl:variable name="tooltip_save">Konservu ĉiujn ŝanĝojn.</xsl:variable>
-<xsl:variable name="tooltip_no_save">Ne eblas konservi la ŝanĝojn, kelkaj informeroj ne estas korekte plenumitaj.</xsl:variable>
+<xsl:variable name="tooltip_save">Konservu ĉiujn �?an�?ojn.</xsl:variable>
+<xsl:variable name="tooltip_no_save">Ne eblas konservi la �?an�?ojn, kelkaj informeroj ne estas korekte plenumitaj.</xsl:variable>
 <!-- cancel button prompts and tooltips -->
 <xsl:template name="prompt_cancel">Nefaru</xsl:template>
-<xsl:variable name="tooltip_cancel">Nefaru ĉi tiun taskon, ŝanĝoj ne estos konservitaj.</xsl:variable>
+<xsl:variable name="tooltip_cancel">Nefaru ĉi tiun taskon, �?an�?oj ne estos konservitaj.</xsl:variable>
 <xsl:variable name="tooltip_no_cancel">Ne eblas nefari ĉi tiun taskon.</xsl:variable>
 <!-- step (form) button prompts and tooltips -->
-<xsl:template name="prompt_step">Paŝo <xsl:value-of select="position()" /></xsl:template>
+<xsl:template name="prompt_step">Pa�?o <xsl:value-of select="position()" /></xsl:template>
 <xsl:variable name="tooltip_step_not_valid" > ne estas korekta. Klaku jene por korekti.</xsl:variable>
 <xsl:variable name="tooltip_valid" >Jena formularo estas korekta.</xsl:variable>
-<xsl:variable name="tooltip_not_valid" >Jena formula ne estas korekta. Korektu la ruĝe markitajn kampojn.</xsl:variable>
+<xsl:variable name="tooltip_not_valid" >Jena formula ne estas korekta. Korektu la ru�?e markitajn kampojn.</xsl:variable>
 <!-- step forward and backward prompts and tooltips -->
 <xsl:template name="prompt_previous" > &lt;&lt; </xsl:template>
 <xsl:variable name="tooltip_previous" >Reen al </xsl:variable>
-<xsl:variable name="tooltip_no_previous" >Mankas antaŭa paŝo</xsl:variable>
+<xsl:variable name="tooltip_no_previous" >Mankas antaŭa pa�?o</xsl:variable>
 <xsl:template name="prompt_next" > &gt;&gt; </xsl:template>
 <xsl:variable name="tooltip_next" >Pluen al </xsl:variable>
-<xsl:variable name="tooltip_no_next" >Mankas sekva paŝo</xsl:variable>
+<xsl:variable name="tooltip_no_next" >Mankas sekva pa�?o</xsl:variable>
 <xsl:variable name="tooltip_goto" >Iru al </xsl:variable>
 <!-- audio / video buttons prompts -->
 <xsl:template name="prompt_audio" ><img src="{$mediadir}audio.gif" border="0" alt="Aŭdo" /></xsl:template>
@@ -107,16 +106,16 @@
 <xsl:template name="prompt_edit_list" >
   <xsl:value-of select="$title" disable-output-escaping="yes"  />(<xsl:value-of select="/list/@count" /> da eroj)
 </xsl:template>
-<xsl:variable name="tooltip_edit_list" >Jen la ŝanĝeblaj eroj.</xsl:variable>
+<xsl:variable name="tooltip_edit_list" >Jen la �?an�?eblaj eroj.</xsl:variable>
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Elektu unu aŭ pli da eroj el la listo</xsl:variable>
-<xsl:template name="prompt_no_results" >Neniu ero troviĝis</xsl:template>
-<xsl:template name="prompt_more_results" >(troviĝis pli da eroj...)</xsl:template>
+<xsl:template name="prompt_no_results" >Neniu ero trovi�?is</xsl:template>
+<xsl:template name="prompt_more_results" >(trovi�?is pli da eroj...)</xsl:template>
 <xsl:template name="prompt_result_count" >(<xsl:value-of select="/list/@count" /> da eroj trovitaj)</xsl:template>
 <xsl:variable name="tooltip_cancel_search" >Nefaru</xsl:variable>
 <xsl:variable name="tooltip_end_search" >Aldoni</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
-<xsl:variable name="message_pattern" >La valoro {0} ne estas ĝustaforma</xsl:variable>
+<xsl:variable name="message_pattern" >La valoro {0} ne estas �?ustaforma</xsl:variable>
 <xsl:variable name="message_minlength" >Valoro longu minimume {0} signojn</xsl:variable>
 <xsl:variable name="message_maxlength" >Valoru longu maksimume {0} signojn</xsl:variable>
 <xsl:variable name="message_min" >Valoru pli grandu ol aŭ samu al {0}</xsl:variable>
@@ -124,7 +123,7 @@
 <xsl:variable name="message_mindate" >Dato pli grandu ol aŭ samu al {0}</xsl:variable>
 <xsl:variable name="message_maxdate" >Dato malpli grandu ol aŭ samu al {0}</xsl:variable>
 <xsl:variable name="message_required" >Valoro estas devigita; elektu ion</xsl:variable>
-<xsl:variable name="message_dateformat" >Dato aŭ tempo malĝusteformas</xsl:variable>
+<xsl:variable name="message_dateformat" >Dato aŭ tempo mal�?usteformas</xsl:variable>
 <xsl:variable name="message_thisnotvalid" >Ĉi tiu kampo estas malkorekta</xsl:variable>
 <xsl:variable name="message_notvalid" >{0} estas malkorekta</xsl:variable>
 

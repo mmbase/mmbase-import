@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.31 2004-02-04 15:28:07 pierre Exp $
+ * @version  $Id: validator.js,v 1.31.2.1 2004-05-02 15:03:12 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -384,6 +384,11 @@ function validateDatetime(el, form, v) {
             if (date.getDate() != day) {
                 errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
             } else {
+        	  // Validation on min and max values in milliseconds from the epoch (1 january 1970) could
+        	  // lead to invalid fields on the client when they are valid on the server or the other way around.
+        	  // The server could be in a different timezone and have a different milliseconds from the epoch with
+        	  // the same day, month, year values. For example a dutch client will have a difference of 3600000 
+        	  // or 7200000 from a UTC server.
                 minvalue = el.getAttribute("dtmin");
                 // checks min/max. note: should use different way to determine outputformat (month)
                 if ((ftype != "time") && (ftype != "duration") && (!isEmpty(minvalue)) && (ms < 1000*minvalue)) {
@@ -405,14 +410,6 @@ function validateDatetime(el, form, v) {
                 }
             }
         }
-
-    /** VERY UGLY TO USE THE VALIDATOR TO CHANGE AN ELEMENT VALUE, BUT I HAVE NO IDEA HOW TO SOLVE IT.
-     * THIS IS THE ONLY PLACE IN THE VALIDATOR WHERE AN ELEMENT VALUE IS CHANGED.
-     */
-    if (errormsg.length == 0) {
-        form.elements[id].value = getDateSeconds(ms);
-        //alert(form.elements[id].value + " = " + day + " " + month + " " + year + " " + hours + ":" + minutes);
-    }
     return errormsg;
 }
 
