@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.3 2003-02-04 12:40:40 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.4 2003-02-05 15:05:27 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -204,26 +204,6 @@ public class MediaFragments extends MMObjectBuilder {
         return super.getGUIIndicator(field, node);
     }
 
-    
-    /**
-     * Retrieves the url with URI information of the mediasource that matches best.
-     * (e.g. pnm://www.mmbase.org/test/test.ra?start+10:10.2&title=Ikeol
-     *
-     * @param mediaFragment the media fragment
-     * @param info extra information (i.e. request, wanted bitrate, etc.)
-     * @return the url of the audio file
-     */
-    /*
-    protected String getLongURL(MMObjectNode mediaFragment, Map info) {
-        log.debug("Getting longurl");
-        MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
-        if(mediaSource==null) {
-            log.error("Cannot determine longurl");
-            return "";
-        }
-        return mediaSourceBuilder.getLongUrl(mediaFragment, mediaSource, info);
-    }
-    */
 
     /** 
      * Returns a List of all possible (unfiltered) URLComposer's for this Fragment.
@@ -297,24 +277,6 @@ public class MediaFragments extends MMObjectBuilder {
         MMObjectNode mediaSource = (MMObjectNode) urls.get(0);
         return mediaSource;
     }   
-    */
-    /**
-     * returns the content type of the mediasource that matches best.
-     *
-     * @param mediaFragment the media fragment
-     * @param info extra information (i.e. request, wanted bitrate, etc.)
-     * @return the content type
-     */
-    /*
-    private String getContentType(MMObjectNode mediaFragment, Hashtable info) {
-        log.debug("Getting content type");
-        MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);        
-        if(mediaSource==null) {
-            log.error("Cannot determine content type");
-            return "";
-        }
-        return mediaSourceBuilder.getMimeType(mediaSource);
-    }
     */
     
     /**
