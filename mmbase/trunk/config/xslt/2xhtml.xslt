@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.1.1.1 2003-02-25 06:59:47 kees Exp $
+  @version: $Id: 2xhtml.xslt,v 1.2 2003-03-28 17:07:45 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1"
@@ -61,7 +61,8 @@
   <xsl:template match="object" mode="concise">
     <xsl:choose>
       <xsl:when test="@type='images'">
-        <img src="{node:function(., 'servletpath(,cache(s(100x100)))')}" alt="{./field[@name='description']}" align="right" />
+        <img src="{node:function(string(./field[@name='number'] ), 'servletpath(,cache(s(100x100)))')}" alt="{./field[@name='description']}" align="right" />
+          <!-- Resin's xslt-impl, does not pass 'Nodes', so we limit ourselves to strings. :-( -->
       </xsl:when>
       <xsl:when test="@type='urls'">
         <a href="{field[@name='url']}"><xsl:value-of select="field[@name='description']" /></a><br />
