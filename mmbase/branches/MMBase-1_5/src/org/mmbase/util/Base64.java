@@ -40,34 +40,34 @@ public class Base64 {
     };
 
     /**
-     * decodes the base64 string.
+     * Decodes the base64 string. The length of this string must be a 
+     * multiple of 4, all trailing characters are ignored.
      *
      * @param mimel the string to decode
      */
     public static String decode(String mimel) {
         int i,a,b,c,d;
         String decodeline=mimel;
-        String decodedline="";
+        StringBuffer decodedline = new StringBuffer();
         String temp,name;
 
-        while (decodeline.length()>3) {
-            a=pem_array[decodeline.charAt(0)];
-            b=pem_array[decodeline.charAt(1)];
-            c=pem_array[decodeline.charAt(2)];
-            d=pem_array[decodeline.charAt(3)];
+        for (i = 0; (i+3) < decodeline.length(); i+=4) {
+            a=pem_array[decodeline.charAt(i)];
+            b=pem_array[decodeline.charAt(i+1)];
+            c=pem_array[decodeline.charAt(i+2)];
+            d=pem_array[decodeline.charAt(i+3)];
             if (c!=64 && d!=64) {
-                decodedline+=(char)((a<<2)+((b&48)>>4));
-                decodedline+=(char)(((b&15)<<4)+((c&60)>>2));
-                decodedline+=(char)(((c&3)<<6)+(d&63));
+                decodedline.append((char)((a<<2)+((b&48)>>4)));
+                decodedline.append((char)(((b&15)<<4)+((c&60)>>2)));
+                decodedline.append((char)(((c&3)<<6)+(d&63)));
             } else if (c==64) {
-                decodedline+=(char)((a<<2)+((b&48)>>4));
+                decodedline.append((char)((a<<2)+((b&48)>>4)));
             } else {
-                decodedline+=(char)((a<<2)+((b&48)>>4));
-                decodedline+=(char)(((b&15)<<4)+((c&60)>>2));
+                decodedline.append((char)((a<<2)+((b&48)>>4)));
+                decodedline.append((char)(((b&15)<<4)+((c&60)>>2)));
             }
-            decodeline=decodeline.substring(4);
         }
-        return decodedline;
+        return decodedline.toString();
     }
 
     /**
