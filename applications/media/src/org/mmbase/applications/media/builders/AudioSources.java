@@ -16,15 +16,15 @@ import org.mmbase.module.core.MMObjectNode;
 
 /**
  *
- * The MediaSource builder describes a specific type of media that can be retrieved (real/mp3/etc). Information about
- * format, quality, and status will be maintained in this object. A MediaSource belongs
- * to a MediaFragement that describes the piece of media, the MediaSource is the
- * real audio/video itself. A MediaSource is connected to provider objects that indicate
- * where the real audio/video files can be found.
+ * The AudioSource builder describes a specific type of audio that can be retrieved (real/mp3/etc). Information about
+ * format, quality, and status will be maintained in this object. An AudioSource belongs
+ * to a MediaFragement that describes the piece of media, the AudioSource is the
+ * actually audio itself. An AudioSource is connected to provider objects that indicate
+ * where the audio files can be found.
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: AudioSources.java,v 1.2 2003-02-05 15:39:34 rob Exp $
+ * @version $Id: AudioSources.java,v 1.3 2003-02-05 15:44:09 rob Exp $
  * @since MMBase-1.7
  */
 public class AudioSources extends MediaSources {    
