@@ -29,7 +29,7 @@ public interface MMJdbc2NodeInterface {
 	public byte[] getDBByte(ResultSet rs,int idx);
 	public String getDBText(ResultSet rs,int idx);
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node);
-	public boolean create(String tableName);
+	public boolean create(MMObjectBuilder bul,String tableName);
 	public boolean commit(MMObjectBuilder bul,MMObjectNode node);
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node);
 	public int getDBKey();

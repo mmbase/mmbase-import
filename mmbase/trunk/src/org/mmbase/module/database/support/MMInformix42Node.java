@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMInformix42Node.java,v 1.7 2000-03-31 16:01:31 wwwtech Exp $
+$Id: MMInformix42Node.java,v 1.8 2000-04-12 11:34:56 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/31 16:01:31  wwwtech
+Davzev: Fixed insert() for when node builder is typedef
+
 Revision 1.6  2000/03/31 15:15:07  wwwtech
 Davzev: Changend insert() debug code for DBState checking
 
@@ -42,7 +45,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.7 $ $Date: 2000-03-31 16:01:31 $
+* @$Revision: 1.8 $ $Date: 2000-04-12 11:34:56 $
 */
 public class MMInformix42Node implements MMJdbc2NodeInterface {
 
@@ -62,7 +65,9 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 		this.mmb=mmb;
 	}
 
-	public boolean create(String tableName) {
+	public boolean create(MMObjectBuilder builder,String tableName) {
+		// Note that builder is null when tableName='object'
+
 			// get us a propertie reader	
 			ExtendedProperties Reader=new ExtendedProperties();
 
@@ -82,7 +87,9 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				try {
 					MultiConnection con=mmb.getConnection();
 					Statement stmt=con.createStatement();
-					if (tableName.equals("authrel")) {
+					if (tableName.equals("object")) {
+						stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t "+createtype);
+					} else if (builder instanceof InsRel && !tableName.equals("insrel")) {
 						stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t "+createtype+" under "+mmb.baseName+"_insrel_t");
 					} else {
 						stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t "+createtype+" under "+mmb.baseName+"_object_t");
@@ -105,9 +112,14 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				try {
 					MultiConnection con=mmb.getConnection();
 					Statement stmt=con.createStatement();
-					stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t "+createtable+" under "+mmb.baseName+"_object");
+					if (tableName.equals("object")) {
+						stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t "+createtable);
+					} else if (builder instanceof InsRel && !tableName.equals("insrel")) {
+						stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t "+createtable+" under "+mmb.baseName+"_insrel");
+					} else {
+						stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t "+createtable+" under "+mmb.baseName+"_object");
+					}
 					debug("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
-					//stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" "+createtable+";");
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {

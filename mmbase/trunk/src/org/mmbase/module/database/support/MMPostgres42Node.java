@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.6 2000-03-31 16:02:08 wwwtech Exp $
+$Id: MMPostgres42Node.java,v 1.7 2000-04-12 11:34:57 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/03/31 16:02:08  wwwtech
+Davzev: Fixed insert() for when node builder is typedef
+
 Revision 1.5  2000/03/31 15:15:42  wwwtech
 Davzev: Changend insert() debug code for DBState checking
 
@@ -43,7 +46,7 @@ import org.mmbase.util.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.6 $ $Date: 2000-03-31 16:02:08 $
+* @$Revision: 1.7 $ $Date: 2000-04-12 11:34:57 $
 */
 public class MMPostgres42Node implements MMJdbc2NodeInterface {
 
@@ -59,7 +62,8 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 		this.mmb=mmb;
 	}
 
-	public boolean create(String tableName) {
+	public boolean create(MMObjectBuilder bul,String tableName) {
+		// Note that builder is null when tableName='object'
 			// get us a propertie reader	
 			ExtendedProperties Reader=new ExtendedProperties();
 
