@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorCore" maintainer="didactor.nl" version="2" auto-deploy="true">
+<application name="DidactorCore" maintainer="didactor.nl" version="3" auto-deploy="true">
     <requirements>
         <requires name="Resources" maintainer="didactor.nl" version="2" />
     </requirements>  
@@ -16,7 +16,7 @@
         <builder maintainer="didactor.nl" version="2">educations</builder>
         <builder maintainer="didactor.nl" version="2">classes</builder>
 
-        <builder maintainer="didactor.nl" version="2">people</builder>
+        <builder maintainer="didactor.nl" version="3">people</builder>
         <builder maintainer="didactor.nl" version="2">fields</builder>
         <builder maintainer="didactor.nl" version="2">roles</builder>
 

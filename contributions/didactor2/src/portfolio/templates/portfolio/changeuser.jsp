@@ -12,7 +12,7 @@
 
 <mm:present referid="change">
 <mm:node number="$user" id="my_user">
-  <mm:fieldlist fields="initials,firstname,lastname,address,zipcode,city,telephone,description"><mm:fieldinfo type="useinput" /></mm:fieldlist>
+  <mm:fieldlist fields="initials,firstname,lastname,address,zipcode,city,telephone,description,remarks"><mm:fieldinfo type="useinput" /></mm:fieldlist>
 
 <mm:import externid="_handle_size">0</mm:import>
 

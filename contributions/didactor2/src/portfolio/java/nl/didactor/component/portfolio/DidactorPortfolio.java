@@ -115,83 +115,13 @@ public class DidactorPortfolio extends Component {
         insrel.insert(username, relation);
 
         MMObjectNode folder = folders.getNewNode(username);
-        folder.setValue("name", "OER PTA");
+        folder.setValue("name", "Assessment");
         folders.insert(username, folder);
         relation = posrelBuilder.getNewNode(username);
         relation.setValue("snumber", assessment);
         relation.setValue("dnumber", folder.getNumber());
         relation.setValue("rnumber", posrel);
         relation.setValue("pos", 0);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "EVC");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 1);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "Studiewijzers");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 2);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "Cijferlijst");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 3);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "Bijlagen");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 4);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "Beroepshouding");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 5);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "BPV");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 6);
-        posrelBuilder.insert(username, relation);
-
-        folder = folders.getNewNode(username);
-        folder.setValue("name", "Intake");
-        folders.insert(username, folder);
-        relation = posrelBuilder.getNewNode(username);
-        relation.setValue("snumber", assessment);
-        relation.setValue("dnumber", folder.getNumber());
-        relation.setValue("rnumber", posrel);
-        relation.setValue("pos", 7);
         posrelBuilder.insert(username, relation);
 
         return true;
