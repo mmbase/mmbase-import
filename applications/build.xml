@@ -63,11 +63,11 @@ Applications build file
   </target>
 
 
-  <target name="bugtracker">
+  <target name="bugtracker" depends="init">
      <ant dir="bugtracker"      target="package" />
   </target>
 
-  <target name="email">
+  <target name="email" depends="mmbase">
      <ant dir="email"      target="package" />
   </target>
 
