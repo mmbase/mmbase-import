@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.18 2002-07-19 20:14:48 michiel Exp $
+ * @version $Id: Config.java,v 1.19 2002-07-25 15:15:16 michiel Exp $
  */
 
 public class Config {
@@ -42,6 +42,7 @@ public class Config {
     public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String      backPage;
     public String      templates;
+    public String      language;
 
     static public abstract class SubConfig {
         public String wizard;
@@ -99,6 +100,10 @@ public class Config {
             response = res;
             config  = c;
             config.sessionId = res.encodeURL("");
+
+            if (config.backPage == null) {
+                config.language = getParam("language", "");
+            }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
             // 'Referer' http header is tried.
