@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.105 2003-10-20 11:34:28 pierre Exp $
+ * @version $Id: Wizard.java,v 1.106 2003-10-24 12:17:26 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -820,8 +820,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             // element are taken from the object by performing the xpaths on the object,
             // that are given by the list definition.
             NodeList items = Utils.selectNodeList(queryresult, "*");
-            String idPath = Utils.getAttribute(list, "optionid");
-            String contentPath = Utils.getAttribute(list, "optioncontent");
+            String idPath = Utils.getAttribute(list, "optionid", "@number");
+            String contentPath = Utils.getAttribute(list, "optioncontent", "field");
 
             for (int itemindex = 0; itemindex < items.getLength();
                   itemindex++) {
