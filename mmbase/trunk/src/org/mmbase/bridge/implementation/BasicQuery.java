@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.41 2004-07-13 13:28:00 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.42 2004-07-23 14:39:23 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -40,7 +40,7 @@ public class BasicQuery implements Query  {
 
     protected Authorization.QueryCheck secureConstraint = null;
 
-    private   HashMap  aliasSequences = new HashMap();
+    private   HashMap  aliasSequences = new HashMap(); // must be HashMap because cloneable
     // to make unique table aliases. This is similar impl. as  in core. Why should it be at all....
 
     protected BasicSearchQuery query;
@@ -147,16 +147,30 @@ public class BasicQuery implements Query  {
         return clone;
     }
 
-
+    /**
+     * Creates a unique alias for this Query based on a given base String
+     */
     protected String createAlias(String  name) {
         if (used) throw new BridgeException("Query was used already");
         Integer seq = (Integer) aliasSequences.get(name);
         if (seq == null) {
-            aliasSequences.put(name, new Integer(1));
-            return name;
+            seq = new Integer(0);
         } else {
-            aliasSequences.put(name, new Integer(seq.intValue() + 1));
-            return name + seq;
+            seq = new Integer(seq.intValue() + 1);
+        }
+        aliasSequences.put(name, seq);
+        return glueAlias(name, seq);
+    }
+    /**
+     * Glues a string and integer together to a new string.
+     */
+    protected String glueAlias(String aliasBase, Integer seq) {
+        if (seq == null) return aliasBase;
+        int s = seq.intValue();
+        if (s == 0) {
+            return aliasBase;
+        } else {
+            return aliasBase + s;
         }
     }
 
@@ -176,8 +190,22 @@ public class BasicQuery implements Query  {
     }
 
     public void setAlias(Step step, String alias) {
+        String currentAlias = step.getAlias();
+        String aliasBase    = step.getTableName();
+
+        // check if it was the lastely 'automaticly' create alias, in which case we free the sequence number again
+        // (also to fix #6547)
+        
+        Integer currentSeq  = (Integer) aliasSequences.get(aliasBase);
+        if (currentSeq != null && glueAlias(aliasBase, currentSeq).equals(currentAlias)) {
+            if (currentSeq.intValue() == 0) {
+                aliasSequences.put(aliasBase, null);
+            } else {
+                aliasSequences.put(aliasBase, new Integer(currentSeq.intValue() - 1));
+            }
+        }
         if ("".equals(alias)) {
-            alias = createAlias(step.getTableName());
+            alias = createAlias(aliasBase);
         }
 
         BasicStep basicStep = (BasicStep) step;
