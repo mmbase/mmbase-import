@@ -59,14 +59,17 @@ You can return to this installation script any time.<br />
 </tr>
 <mm:import externid="installstep" jspvar="installstep" vartype="Integer">-1</mm:import>
         <%
-           String[] steps= new String[7];
-           steps[0]="Resources";
-           steps[1]="MyNews";
-           steps[2]="MyCompany";
-           steps[3]="MyUsers";
-           steps[4]="MyYahoo";
-           steps[5]="Community";
-           steps[6]="BugTracker";
+           String[] steps= { 
+            "Resources", 
+            "MyNews", 
+            "MyCompany",
+            "MyUsers", 
+            "MyYahoo",
+            "Community",
+            "BugTracker", 
+            "Codings", 
+            "RichText"
+          };
            boolean first=true;
            boolean installed=false;
            NodeManager versions=cloud.getNodeManager("versions");
