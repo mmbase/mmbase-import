@@ -153,8 +153,11 @@ public class Casting {
         if (i instanceof MMObjectNode) {
             res = (MMObjectNode)i;
         } else if (i instanceof Number) {
-            res = parent.getNode(((Number)i).intValue());
-        } else if (i!=null) {
+            int nodenumber = ((Number)i).intValue();
+            if (nodenumber != -1) {
+                res = parent.getNode(nodenumber);
+            }
+        } else if (i!=null && !i.equals("")) {
             res = parent.getNode(i.toString());
         }
         return res;
@@ -173,7 +176,7 @@ public class Casting {
     static public int toInt(Object i) {
         return toInt(i, -1);
     }
-    
+
     /**
      * as toInt, but with configurable fallback-value
      * @since MMBase-1.7
