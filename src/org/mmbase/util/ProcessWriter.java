@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * Useful for building execution pipes.
  *
  * @author Kees Jongenburger
- * @version $Id: ProcessWriter.java,v 1.4 2002-01-23 20:31:00 eduard Exp $
+ * @version $Id: ProcessWriter.java,v 1.5 2002-01-24 09:13:42 eduard Exp $
  */
 public class ProcessWriter implements Runnable{
 
@@ -67,11 +67,10 @@ public class ProcessWriter implements Runnable{
      * Starts the piping process by creating the thread and running it.
      */
     public void start() {
-//        if (runner==null) {
-//            runner=new Thread(this);
-//            runner.start();
-//        }
-        run();
+        if (runner==null) {
+            runner=new Thread(this);
+            runner.start();
+        }
     }
 
     /**
