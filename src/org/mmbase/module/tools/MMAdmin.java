@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.90 2004-11-11 17:12:05 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.91 2004-11-26 16:15:19 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1166,7 +1166,6 @@ public class MMAdmin extends ProcessorModule {
                 ResourceLoader thisAppLoader = appLoader.getChildResourceLoader(ResourceLoader.getName(applicationRoot));
                 ResourceLoader builderLoader = thisAppLoader.getChildResourceLoader("builders");
 
-
                 // attempt to open the builder file.
                 org.w3c.dom.Document config;
                 try {
@@ -1190,18 +1189,18 @@ public class MMAdmin extends ProcessorModule {
 
                 
                 // check the presence of typedef (if not present, fail)
-                MMObjectBuilder objectTypes = mmb.getTypeDef();
-                if (objectTypes == null) {
+                MMObjectBuilder typeDef = mmb.getTypeDef();
+                if (typeDef == null) {
                     return result.error("Could not find the typedef builder.");
                 }
                 // try to add a node to typedef, same as adding a builder...
-                MMObjectNode type = objectTypes.getNewNode("system");
+                MMObjectNode type = typeDef.getNewNode("system");
                 // fill the name....
                 type.setValue("name", name);
 
                 type.setValue("config", config);
                 // insert into mmbase
-                objectTypes.insert("system", type);
+                typeDef.insert("system", type);
                 // we now made the builder active.. look for other builders...
             }
         }
@@ -1434,7 +1433,7 @@ public class MMAdmin extends ProcessorModule {
         Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
         while (i.hasNext()) {
             String appResource = (String) i.next();
-            log.info("module " + appResource);
+            log.debug("module " + appResource);
             XMLApplicationReader app;
             try {
                 app = new XMLApplicationReader(applicationLoader.getInputSource(appResource));
