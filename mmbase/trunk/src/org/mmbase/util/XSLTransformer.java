@@ -9,24 +9,27 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
+import java.io.File;
+import java.io.StringWriter;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.xslt.*;
-import org.apache.xalan.xpath.xml.*;
-import org.apache.xalan.xpath.xdom.*;
-
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Make XSL Transformations
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.6 2001-04-19 15:32:26 pierre Exp $
+ * @version $Id: XSLTransformer.java,v 1.7 2001-05-23 14:03:49 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2001/04/19 15:32:26  pierre
+ * pierre: added logging
+ *
  * Revision 1.5  2000/10/31 14:52:28  vpro
  * Rico: removed import
  *
@@ -52,7 +55,7 @@ public class XSLTransformer {
     // logger
     private static Logger log = Logging.getLoggerInstance(XSLTransformer.class.getName());
 
-    private XSLTProcessor processor;
+    //private XSLTProcessor processor;
     /**
      * Empty constructor
      */
@@ -81,6 +84,9 @@ public class XSLTransformer {
     public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
 
+            /* 
+               //xalan 1.2 implementation:
+              
 	    XMLParserLiaison liaison = (XMLParserLiaison)(new XercesLiaison());
             EntityResolver resolver = new XMLEntityResolver();
             liaison.setEntityResolver(resolver);
@@ -97,6 +103,23 @@ public class XSLTransformer {
             // Perform the transformation.
             processor.process(xmlSource, xslSheet, xmlResult);
 
+            */
+
+            // xalan 2.0 implementation
+            TransformerFactory tFactory = TransformerFactory.newInstance();
+	
+            // Use the TransformerFactory to instantiate a Transformer that will work with  
+            // the stylesheet you specify. This method call also processes the stylesheet
+            // into a compiled Templates object.
+            Transformer transformer = tFactory.newTransformer(new StreamSource(new File(xslPath)));
+
+            StringWriter res = new StringWriter();
+           
+            // Use the Transformer to apply the associated Templates object to an XML document
+            // (foo.xml) and write the output to a file (foo.out).
+            transformer.transform(new StreamSource(new File(xmlPath)),
+                                  new StreamResult(res));
+	        
             //return res.toString();
 	    String s = res.toString();
 	    int n = s.indexOf("\n");
@@ -105,10 +128,10 @@ public class XSLTransformer {
 	    }
 	    return s;
 
-        } catch (SAXException e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
 	    log.error(Logging.stackTrace(e));
-            return "Fout bij XSLT tranformatie: "+e.getMessage();
+            return "Error during XSLT tranformation: "+e.getMessage();
         }
     }
 
@@ -117,6 +140,7 @@ public class XSLTransformer {
      */
     public static void main(String[] argv) {
         XSLTransformer T = new XSLTransformer();
-        log.info(T.transform("/opt2/mmbase/org/mmbase/config/default/applications/MyYahoo.xml","/opt2/mmbase/org/mmbase/config/default/xslt/appview.xsl"));
+        //log.info(T.transform("/opt2/mmbase/org/mmbase/config/default/applications/MyYahoo.xml","/opt2/mmbase/org/mmbase/config/default/xslt/appview.xsl"));
+        log.info(T.transform("/bigdisk/dev/config/mmbase/test/applications/MyYahoo.xml","/bigdisk/dev/config/mmbase/test/xslt/appview.xsl"));
     }
 }
