@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.25 2002-08-21 16:40:56 michiel Exp $
+ * @version $Id: Config.java,v 1.26 2002-08-21 17:22:04 michiel Exp $
  */
 
 public class Config {
@@ -106,7 +106,7 @@ public class Config {
             config.sessionId = res.encodeURL("");
 
             if (config.language == null) {
-                  config.language = getParam("language", "");
+                config.language = getParam("language", org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale().getLanguage());
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
@@ -253,7 +253,6 @@ public class Config {
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
             wizard.wiz.setTemplatesDir(config.templates);
-            wizard.wiz.setLanguage(config.language);
             return wizard;
         }
         public abstract void config(Config.ListConfig c);

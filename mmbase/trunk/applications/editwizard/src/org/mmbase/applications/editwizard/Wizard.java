@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.66 2002-08-21 16:39:35 michiel Exp $
+ * @version $Id: Wizard.java,v 1.67 2002-08-21 17:22:04 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -69,7 +69,6 @@ public class Wizard implements org.mmbase.util.Sizeable {
     private String sessionId;
     private String sessionKey="editwizard";
     private String referrer="";
-    private String language = "en";
     private String templatesDir = null;
 
     /**
@@ -206,9 +205,6 @@ public class Wizard implements org.mmbase.util.Sizeable {
 
     public void setReferrer(String s) {
         referrer = s;
-    }
-    public void setLanguage(String l) {
-        language = l;
     }
 
     public void setTemplatesDir(String f) {
@@ -398,7 +394,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
         params.put("sessionid",  sessionId);
         params.put("sessionkey", sessionKey);
         params.put("referrer",   referrer);
-        params.put("language",   language);
+        params.put("language",   cloud.getLocale().getLanguage());
         params.put("popupid",    popupId);
         params.put("cloud",      cloud);
         params.put("debug",      "" + debug);
