@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.7 2004-06-29 09:19:49 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.8 2004-07-13 16:36:21 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -71,10 +71,32 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         return "UTF-8";
     }
 
+    /** 
+     * Takes the value of a Content-Type header, and tries to find the encoding from it.
+     * @since MMBase-1.7.1
+     */
+    public static String getEncoding(String contentType) {
+        String contentTypeLowerCase = contentType.toLowerCase();
+        int cs = contentTypeLowerCase.indexOf(";charset=");
+        String charset;
+        if (cs > 0) {
+            charset = contentType.substring(cs + 9);
+        } else {
+            if (contentTypeLowerCase.startsWith("text/xml")) { 
+                charset = XML_DEFAULT_CHARSET;
+            } else {
+                charset = DEFAULT_CHARSET;   // default for most content-types;
+            }
+        }
+        return charset;
 
-    private static String DEFAULT_CHARSET = "utf-8";
+        
+    }
+
+
+    private static String DEFAULT_CHARSET = "iso-8859-1";
     private static String XML_DEFAULT_CHARSET = "utf-8";
-    private static String DEFAULT_CONTENTTYPE = "text/html;charset=" + DEFAULT_CHARSET;
+    private static String DEFAULT_CONTENTTYPE = "text/html";
 
     private PrintWriter         writer; 
     private StringWriter        string; // wrapped by writer
@@ -137,6 +159,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         }
     }
 
+
     /**
      * Return the OutputStream. This is a 'MyServletOutputStream'.
      */
@@ -178,17 +201,8 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         } else {
             contentType = ct;
         }
-        int i = contentType.indexOf("charset=");
-        if (i >= 0) {
-            characterEncoding = contentType.substring(i + 8);
-        } else {
-            if (contentType.equals("text/xml")) {
-                // now it get's really interesting, the encoding is present on the _first line of the body_.
-                characterEncoding = XML_DEFAULT_CHARSET; // toString is UTF-8, but it is an inidcation that it could be considered later
-            } else {
-                characterEncoding = DEFAULT_CHARSET;
-            }
-        }
+        characterEncoding = getEncoding(ct);
+
         if (log.isDebugEnabled()) {
             log.debug("set contenttype of include page to: '" +  contentType + "' (and character encoding to '" + characterEncoding +  "')");
         }
