@@ -2,13 +2,13 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <!--
     prompts.xls
-    
+
     @since  MMBase-1.6
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: prompts.xsl,v 1.22 2004-09-15 13:04:51 jaco Exp $
-    
-    prompts used in this editwizard. 
+    @version $Id: prompts.xsl,v 1.23 2004-11-18 11:57:30 pierre Exp $
+
+    prompts used in this editwizard.
     Override these prompts to change the view in your own versions.
   -->
 
@@ -25,17 +25,17 @@
         </xsl:otherwise>
       </xsl:choose>
     </img-->
-		<xsl:choose>
-			<xsl:when test="prompt"><xsl:value-of select="prompt" /></xsl:when>
-			<xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
-		</xsl:choose>
+    <xsl:choose>
+      <xsl:when test="prompt"><xsl:call-template name="prompt"/></xsl:when>
+      <xsl:otherwise><xsl:value-of select="$tooltip_edit_wizard" /></xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
-  
-  <xsl:variable name="tooltip_add_wizard">Nieuw</xsl:variable>
+
+  <xsl:variable name="tooltip_add_wizard">New</xsl:variable>
   <xsl:template name="prompt_add_wizard">
-		<xsl:if test="prompt">
-			<xsl:value-of select="prompt"/>
-		</xsl:if>
+    <xsl:if test="prompt">
+      <xsl:call-template name="prompt"/>
+    </xsl:if>
     <img src="{$mediadir}new.gif" class="imgbutton">
       <xsl:choose>
         <xsl:when test="prompt">
@@ -48,18 +48,18 @@
     </img>
   </xsl:template>
 
-	<xsl:variable name="date_january">january</xsl:variable>
-	<xsl:variable name="date_february">february</xsl:variable>
-	<xsl:variable name="date_march">march</xsl:variable>
-	<xsl:variable name="date_april">april</xsl:variable>
-	<xsl:variable name="date_may">may</xsl:variable>
-	<xsl:variable name="date_june">june</xsl:variable>
-	<xsl:variable name="date_july">july</xsl:variable>
-	<xsl:variable name="date_august">august</xsl:variable>
-	<xsl:variable name="date_september">september</xsl:variable>
-	<xsl:variable name="date_october">october</xsl:variable>
-	<xsl:variable name="date_november">november</xsl:variable>
-	<xsl:variable name="date_december">december</xsl:variable>
+  <xsl:variable name="date_january">january</xsl:variable>
+  <xsl:variable name="date_february">february</xsl:variable>
+  <xsl:variable name="date_march">march</xsl:variable>
+  <xsl:variable name="date_april">april</xsl:variable>
+  <xsl:variable name="date_may">may</xsl:variable>
+  <xsl:variable name="date_june">june</xsl:variable>
+  <xsl:variable name="date_july">july</xsl:variable>
+  <xsl:variable name="date_august">august</xsl:variable>
+  <xsl:variable name="date_september">september</xsl:variable>
+  <xsl:variable name="date_october">october</xsl:variable>
+  <xsl:variable name="date_november">november</xsl:variable>
+  <xsl:variable name="date_december">december</xsl:variable>
 
   <xsl:variable name="time_daymonth" />
   <!-- Between day and month. Sadly, order cannot yet be adjusted -->
@@ -218,7 +218,7 @@
   <xsl:variable name="message_notvalid">{0} is not valid</xsl:variable>
   <xsl:variable name="message_listtooshort">List {0} has too few entries</xsl:variable>
 
-	<!-- prompt for debug link -->
+  <!-- prompt for debug link -->
   <xsl:template name="prompt_debug">[debug]</xsl:template>
 
 </xsl:stylesheet>
