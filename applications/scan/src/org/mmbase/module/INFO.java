@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.9 $ $Date: 2000-05-18 15:00:08 $
+ * @$Revision: 1.10 $ $Date: 2000-05-18 15:47:54 $
  */
 public class INFO extends ProcessorModule {
 
@@ -357,6 +357,7 @@ public class INFO extends ProcessorModule {
 				whichname=INFO.Dutch;
 				if (tok.hasMoreTokens()) cmd=tok.nextToken();
 			} else if (cmd.equals("NUMBER")) {
+				System.out.println("number detected");
 				whichname=INFO.Not;
 				if (tok.hasMoreTokens()) cmd=tok.nextToken();
 			} else {
@@ -377,7 +378,14 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("MIN")) return(""+d.getMinutes());
 			if (cmd.equals("SEC")) return(""+d.getSeconds());
 			if (cmd.equals("YEAR")) return(""+(1900+d.getYear())); // year 2000 bug! 
-			if (cmd.equals("SHORTYEAR")) return(""+d.getYear());
+			if (cmd.equals("SHORTYEAR")) {
+				int getyear = d.getYear()%100;
+				if(getyear<10) {
+					return "0"+getyear;
+				} else {
+					return ""+getyear;
+				}
+			} 
 			if (cmd.equals("MONTH")) {
 				switch(whichname) {
 					case INFO.Not:
