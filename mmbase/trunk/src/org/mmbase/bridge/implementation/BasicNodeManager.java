@@ -73,8 +73,10 @@ public class BasicNodeManager implements NodeManager, Comparable {
             ((BasicTransaction)cloud).add(currentObjectContext);
         }
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
-        // set the owner to userName instead of account
-        node.setValue("owner",cloud.getUser().getIdentifier());
+
+        // set the owner to the owner field as indicated by the user
+        node.setValue("owner",((BasicUser)cloud.getUser()).getUserContext().getOwnerField());
+
         //node.setValue("owner","bridge");
         if (builder instanceof InsRel) {
             return new BasicRelation(node, (RelationManager)this, id);
@@ -233,8 +235,8 @@ public class BasicNodeManager implements NodeManager, Comparable {
      * @param o the object to compare with
      */
     public int compareTo(Object o) {
-	if (! (o instanceof NodeManager)) { return -1; }
-	return getGUIName().compareToIgnoreCase(((NodeManager)o).getGUIName());
+    if (! (o instanceof NodeManager)) { return -1; }
+    return getGUIName().compareToIgnoreCase(((NodeManager)o).getGUIName());
     }
 
     /**

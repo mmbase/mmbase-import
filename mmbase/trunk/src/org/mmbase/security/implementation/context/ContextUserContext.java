@@ -1,8 +1,6 @@
 package org.mmbase.security.implementation.context;
 
-import org.mmbase.security.Rank;
-import org.mmbase.security.UserContext;
-import org.mmbase.security.SecurityException;
+import org.mmbase.security.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -18,23 +16,30 @@ public class ContextUserContext extends UserContext {
     private String  username;
     private Rank    rank;
     private long    key;
+    /** The SecurityManager, who (eventually) created this instance */
+    protected MMBaseCop manager;
 
-    public ContextUserContext(String username, Rank rank, long key) {
-    	this.rank = rank;
-	this.username = username;
-	this.key = key;
+    public ContextUserContext(String username, Rank rank, long key, MMBaseCop manager) {
+        this.rank = rank;
+        this.username = username;
+        this.key = key;
+        this.manager=manager;
     }
 
     public String getIdentifier() {
-    	return username;
+        return username;
+    }
+
+    public String getOwnerField() {
+        return ((ContextAuthorization)manager.getAuthorization()).getDefaultContext(this);
     }
 
     public Rank getRank() {
-    	return rank;
+        return rank;
     }
-    
+
     long getKey() {
-    	return key;
+        return key;
     }
-    
+
 }
