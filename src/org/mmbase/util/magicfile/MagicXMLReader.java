@@ -47,8 +47,7 @@ public class MagicXMLReader
          String configPath = null;
          try {
             configPath = MMBaseContext.getConfigPath();
-         }
-         catch (Exception e) {
+         } catch (RuntimeException e) {
             return null;
          }
          File magicxml = new File(configPath, MAGICXMLFILE);
@@ -93,7 +92,7 @@ public class MagicXMLReader
       return getElementValue(e);
    }
 
-   /** 
+   /**
     * Returns all 'Detectors'.
     */
    public List getDetectors() {
