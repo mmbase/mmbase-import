@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cloudmodel PUBLIC "-//MMBase/DTD cloudmodel config 1.0//EN" "http://www.mmbase.org/dtd/cloudmodel_1_0.dtd">
+<cloudmodel>
+  <neededbuilderlist>
+    <builder maintainer="Submarine" version="1">forummessagebox</builder>
+    <builder maintainer="Submarine" version="1">forumprivatemessage</builder>
+    <builder maintainer="Submarine" version="1">posters</builder>
+    <builder maintainer="Submarine" version="1">postings</builder>
+    <builder maintainer="Submarine" version="1">postareas</builder>
+    <builder maintainer="Submarine" version="1">postthreads</builder>
+    <builder maintainer="Submarine" version="1">forums</builder>
+    <builder maintainer="mmbase.org" version="1">posrel</builder>
+    <builder maintainer="mmbase.org" version="1">insrel</builder>
+    <builder maintainer="mmbase.org" version="1">rolerel</builder>
+  </neededbuilderlist>
+
+  <neededreldeflist>
+    <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
+    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
+    <reldef source="rolerel" target="rolerel" direction="bidirectional" guisourcename="RoleRel" guitargetname="RoleRel" builder="rolerel" />
+  </neededreldeflist>
+
+  <allowedrelationlist>
+    <relation from="forummessagebox" to="forumprivatemessage" type="related" />
+    <relation from="posters" to="forummessagebox" type="posrel" />
+    <relation from="forums" to="posters" type="rolerel" />
+    <relation from="forums" to="posters" type="related" />
+    <relation from="postareas" to="posters" type="rolerel" />
+    <relation from="images" to="posters" type="rolerel" />
+    <relation from="forums" to="postareas" type="related" />
+    <relation from="postthreads" to="postings" type="related" />
+    <relation from="postareas" to="postthreads" type="related" />
+  </allowedrelationlist>
+</cloudmodel>
