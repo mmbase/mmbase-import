@@ -53,6 +53,14 @@
 	   <IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
         </td>
       </tr> 
+        <tr><th>Delete this target</th>
+         <td>
+           <A HREF="<mm:url page="index.jsp" referids="main,sub,name,package">
+	    <mm:param name="mode" value="deleteview" />
+	   </mm:url>">
+	   <IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
+        </td>
+      </tr> 
       <mm:compare referid="havelog" value="true">  
     		<tr><th>View log</th>
 		<td>
@@ -102,6 +110,23 @@
 </mm:nodefunction>
 </table>
 </mm:compare>
+
+<mm:compare value="deleteview">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="30%">  
+<tr>    
+<form action="<mm:url page="index.jsp" referids="main,name,package"><mm:param name="sub" value="project" /></mm:url>" method="post">
+        <th colspan="2">Delete this target </th>
+	<input type="hidden" name="action" value="deltarget" />
+<tr><td height="30"><center><input type="submit" value="Yes, delete"></center></td>
+	</form>
+	<form action="<mm:url page="index.jsp" referids="main,sub,name,target,package"><mm:param name="mode" value="none" /></mm:url>" method="post">
+	<td <center><input type="submit" value="no, Oops"></center></td>
+	</form>
+	</tr>
+</td>
+</table>
+</mm:compare>
+
 <mm:compare value="log">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
 <tr>
