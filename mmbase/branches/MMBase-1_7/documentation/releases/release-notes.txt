@@ -150,6 +150,7 @@ Generic Improvement:
 Generic Bug Fixes:
 ------------------
 [1.7.1]
+- #6566 CKeyNumberCache not invalidated on 'remote' servers. 
 - #6548 'blob converting' tool is not synchronized, can run more than once.   	
 - #6525 org.mmbase.module.SendMail: tries to send mail before it is properly initialized 
 - #6524 mm:relatednodes constraint requires explicit qualification of field number  	
