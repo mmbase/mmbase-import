@@ -29,9 +29,9 @@ import org.mmbase.util.logging.*;
  * delegates to a static method in this class).
  *
  * @author Michiel Meeuwissen
- * @version $Id: BeanFunction.java,v 1.2 2004-11-03 19:12:01 michiel Exp $
- * @see org.mmbase.util.function.MethodFunction
- * @see org.mmbase.util.function.FunctionFactory
+ * @version $Id: BeanFunction.java,v 1.3 2004-11-11 17:06:58 michiel Exp $
+ * @see org.mmbase.util.functions.MethodFunction
+ * @see org.mmbase.util.functions.FunctionFactory
  * @since MMBase-1.8
  */
 public class BeanFunction extends Function {
