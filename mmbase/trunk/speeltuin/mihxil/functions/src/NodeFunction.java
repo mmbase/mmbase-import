@@ -16,7 +16,7 @@ import org.mmbase.bridge.*;
  * Describing a function on a bridge Node, giving access to the underlying executeFunction of the MMObjectBuilder.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MMFunction.java
+ * @version $Id: NodeFunction.java,v 1.5 2003-11-28 15:11:23 michiel Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @since MMBase-1.7
