@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.22 2001-10-18 11:10:21 pierre Exp $
+$Id: MMBaseContext.java,v 1.23 2002-03-02 14:47:35 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.22  2001/10/18 11:10:21  pierre
+pierre: added isInitialized() method so you can check whether the mmbase context has been configured
+
 Revision 1.21  2001/10/08 08:23:57  michiel
 michiel: of course the parameter itself should stay mmbase.htmlroot rather then mmbase.htmlRoot
 
@@ -97,11 +100,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version 23 December 1999
+ * @version $Id: MMBaseContext.java,v 1.23 2002-03-02 14:47:35 michiel Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.22 $ $Date: 2001-10-18 11:10:21 $
+ * @$Revision: 1.23 $ $Date: 2002-03-02 14:47:35 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -490,7 +493,7 @@ public class MMBaseContext {
      * @deprecated  should not be needed, and this information should be requested from the ServletRequest
      */
     public synchronized static String getHtmlRootUrlPath() {
-        if (!htmlRootUrlPathInitialized) {
+        if (! htmlRootUrlPathInitialized) {            
             if (! initialized) {
                 String message = "The init method should be called first.";
                 System.err.println(message);
@@ -500,30 +503,33 @@ public class MMBaseContext {
                 htmlRootUrlPathInitialized = true; 
                 return htmlRootUrlPath;
             }
-            // init the htmlRootUrlPath
-            // fetch resource path for the current serletcontext root...
-            String contextUrl = convertResourceUrl(sx, "/");
-            
-            // fetch resource path for the root serletcontext root...
-            ServletContext rootContext = sx.getContext("/");
-            String rootContextUrl = convertResourceUrl(rootContext, "/");
-            
-            if(contextUrl != null && rootContextUrl != null) {
-                // the beginning of contextUrl is the same as the string rootContextUrl, 
-                // the left part is the current urlPath on the server...
-                if(contextUrl.startsWith(rootContextUrl)) {
-                    // htmlUrl is gonna be filled
-                    htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
-                }
-                else {
-                    log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
+            htmlRootUrlPath = sx.getInitParameter("mmbase.htmlrooturlpath");
+            if (htmlRootUrlPath == null) {
+                // init the htmlRootUrlPath
+                // fetch resource path for the current serletcontext root...
+                String contextUrl = convertResourceUrl(sx, "/");
+                
+                // fetch resource path for the root serletcontext root...
+                ServletContext rootContext = sx.getContext("/");
+                String rootContextUrl = convertResourceUrl(rootContext, "/");
+                
+                if(contextUrl != null && rootContextUrl != null) {
+                    // the beginning of contextUrl is the same as the string rootContextUrl, 
+                    // the left part is the current urlPath on the server...
+                    if(contextUrl.startsWith(rootContextUrl)) {
+                        // htmlUrl is gonna be filled
+                        htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
+                    }
+                    else {
+                        log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
+                    }
                 }
             }
 	    htmlRootUrlPathInitialized = true;                      
         } 
         return htmlRootUrlPath;
     }
-
+    
     /**
      * Returns whether this class has been initialized.
      * This can be used to determine whether MMBase specific configuration data is accessible.
