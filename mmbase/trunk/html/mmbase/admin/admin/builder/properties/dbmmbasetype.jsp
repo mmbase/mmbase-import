@@ -9,4 +9,6 @@
 <option>FLOAT</option>
 <option>DOUBLE</option>
 <option>BYTE</option>
+<option>DATETIME</option>
+<option>BOOLEAN</option>
 </select>
