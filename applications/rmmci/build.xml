@@ -18,9 +18,11 @@
     </available>
   </target>
   <target name="jar.uptodatecheck">
+<!-- BLAME ANT AND XML .. IT JUST DOES NOT WORK
     <uptodate property="jar.uptodate" targetfile="${project.jar.dir}/mmbase-rmmci-server.jar">
       <srcfiles dir="build/classes" includes="**/*"/>
     </uptodate>
+	 -->
   </target>
   <target name="package" depends="rmmci">
     <zip zipfile="${project.zip}">
@@ -35,32 +37,27 @@
       </fileset>
     </zip>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- (Step 1 for remote) Compile the remote generator classes            -->
-  <!-- =================================================================== -->
+<!-- =================================================================== -->
+<!-- (Step 1 for remote) Compile the remote generator classes            -->
+<!-- =================================================================== -->
   <target name="compile.remote.generator" description="Compile the remote generator classes" depends="init">
     <javac srcdir="src" destdir="build/classes" classpathref="classpath" debug="yes" optimize="yes">
       <include name="org/mmbase/bridge/remote/generator/*.java"/>
       <include name="org/mmbase/servlet/rmi/*.java"/>
     </javac>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- check if MMCI.xml is present                                        -->
-  <!-- =================================================================== -->
+<!-- =================================================================== -->
+<!-- check if MMCI.xml is present                                        -->
+<!-- =================================================================== -->
   <target name="check.mmci.xml.present" description="check if MMCI.xml is present" depends="init">
     <available property="mmci.xml.present" file="build/src/MMCI.xml"/>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- (Step 2 for remote) Generate the source for the remote classes      -->
-  <!-- =================================================================== -->
-  <target name="generate.remote" 
-          description="Generate the source for the remote classes" 
-          depends="init,compile.remote.generator,check.mmci.xml.present" unless="mmci.xml.present">
+<!-- =================================================================== -->
+<!-- (Step 2 for remote) Generate the source for the remote classes      -->
+<!-- =================================================================== -->
+  <target name="generate.remote" description="Generate the source for the remote classes" depends="init,compile.remote.generator,check.mmci.xml.present" unless="mmci.xml.present">
     <mkdir dir="build/src/org/mmbase/bridge/remote"/>
-    <!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
+<!-- fork="true" is needed because MMBase uses some xerces classes directly but ant is
        using the sun jaxp implementation. By forking we do not use the ant classloader -->
     <java classname="org.mmbase.bridge.remote.generator.MMCI" fork="true" classpathref="classpath">
       <arg value="build/src/MMCI.xml"/>
@@ -68,7 +65,7 @@
         <pathelement location="build/classes"/>
       </classpath>
     </java>
-    <!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
+<!-- fork="true" is also needed for the RemoteGenerator so we do not use the ant classloader -->
     <java classname="org.mmbase.bridge.remote.generator.RemoteGenerator" classpathref="classpath" fork="true">
       <arg value="build/src"/>
       <arg value="build/src/MMCI.xml"/>
@@ -77,10 +74,9 @@
       </classpath>
     </java>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- (Step 3 for remote) Compile the remote classes                      -->
-  <!-- =================================================================== -->
+<!-- =================================================================== -->
+<!-- (Step 3 for remote) Compile the remote classes                      -->
+<!-- =================================================================== -->
   <target name="compile.remote" description="Compile the remote classes" depends="init,generate.remote">
     <javac destdir="build/classes" classpathref="classpath" debug="yes" optimize="yes">
       <src path="build/src"/>
@@ -102,11 +98,10 @@
       <include name="org/mmbase/module/RemoteMMCI.java"/>
     </javac>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- Create mmbase-rmmci.jar                                             -->
-  <!-- =================================================================== -->
-  <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
+<!-- =================================================================== -->
+<!-- Create mmbase-rmmci.jar                                             -->
+<!-- =================================================================== -->
+  <target name="rmmci" depends="compile.remote">
     <mkdir dir="build/rmmcitmp"/>
     <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
     <unjar src="${build.dir}/lib/xml-apis.jar" dest="build/rmmcitmp"/>
@@ -127,7 +122,7 @@ Build-compiler: ${build.compiler}
       </fileset>
     </jar>
     <unjar src="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" dest="build/rmmcitmp"/>
-    <jar jarfile="${project.jar.dir}/rmmci.jar" manifest="build/rmmcitmp/manifest.mf">
+    <jar jarfile="${project.jar.dir}/mmbase-rmmci.jar" manifest="build/rmmcitmp/manifest.mf">
       <fileset dir="build/classes">
         <include name="org/mmbase/bridge/remote/*"/>
         <include name="org/mmbase/bridge/remote/rmi/*"/>
@@ -149,12 +144,16 @@ Build-compiler: ${build.compiler}
     </jar>
     <delete dir="build/rmmcitmp"/>
   </target>
-
-  <!-- =================================================================== -->
-  <!-- Clean the remote-classes                                            -->
-  <!-- =================================================================== -->
+<!-- =================================================================== -->
+<!-- Clean the remote-classes                                            -->
+<!-- =================================================================== -->
   <target name="clean">
     <delete failonerror="false" dir="build/src"/>
     <delete failonerror="false" dir="build/classes"/>
+  </target>
+  <target name="install" depends="rmmci">
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" file="${project.jar.dir}/mmbase-rmmci.jar"/>
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" file="${project.jar.dir}/mmbase-rmmci-server.jar"/>
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" file="config/modules/rmmci.xml"/>
   </target>
 </project>
