@@ -41,8 +41,8 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-    <description xml:lang="en">A netfile server is the object that handles netfiles for a service/subservice type</description>
-    <description xml:lang="nl">Voert een taak/subtaak uit voor netwerk bestanden.</description>
+    <description xml:lang="en">A netfile server indicates which (sub) sevice can be handled.</description>
+    <description xml:lang="nl">Een netfilesrv geeft aan welke taak/subtaak uitgevoerd kan worden.</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -55,8 +55,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Describes the service that can be handled (images/pages/audio)</description>
+	  <description xml:lang="nl">Beschrijft de taak die verwerkt kan worden (images/pages/audio)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -88,8 +88,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">Describes the subservice that can be handles (main/mirror/tmp/upload)</description>
+	  <description xml:lang="nl">Beschrijft de subtaak die verwerkt kan worden (main/mirror/tmp/upload)</description>
         </descriptions>
         <!-- gui related -->
         <gui>
@@ -121,8 +121,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+	  <description xml:lang="en">This field is not used.</description>
+          <description xml:lang="nl">Dit veld wordt niet gebruikt.</description>
         </descriptions>
         <!-- gui related -->
         <gui>
