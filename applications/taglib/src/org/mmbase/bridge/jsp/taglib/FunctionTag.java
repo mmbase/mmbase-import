@@ -26,91 +26,26 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: FunctionTag.java,v 1.4 2003-07-25 08:37:02 michiel Exp $
+ * @version $Id: FunctionTag.java,v 1.5 2003-08-11 15:26:35 michiel Exp $
  */
-public class FunctionTag extends NodeReferrerTag implements Writer, ParamHandler, FunctionContainerReferrer {
+public class FunctionTag extends AbstractFunctionTag implements Writer, FunctionContainerReferrer {
 
     private static Logger log = Logging.getLoggerInstance(FunctionTag.class);
 
-    protected Attribute container = Attribute.NULL;
-    protected Attribute name      = Attribute.NULL;
 
-    protected FunctionContainer functionContainer = null;
-    protected List      parameters;
-
-    public void setName(String n) throws JspTagException {
-        name = getAttribute(n);
-    }
-
-    public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c); // not yet implemented
-    }
-
-    /**
-     * Returns the parameter list 
-     */
-    protected List getParameters() { // not yet implemented
-        return parameters;
-    }
-
-
-    public void addParameter(String key, Object value) throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.debug("adding parameter " + key + "/" + value);
-        }
-        if (parameters instanceof Arguments) { // not yet implemented
-            ((Arguments) parameters).set(key, value);
-        } else {
-            parameters.add(value); // order is important!
-        }
-    }
-
-    protected Object getFunctionValue() throws JspTagException {
-        if (name == Attribute.NULL) {
-            //List params = getParameters();            
-            //            functionName = (String) ((Map) params.get(params.size() - 1)).get("functionname");
-            throw new JspTagException("not implemented");
-        }
-        Object value = getNode().getFunctionValue(name.getString(this), getParameters());
-        helper.setValue(value);
-        if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
-        }
-        return value;
-    }
-
-    public int doStartTag() throws JspTagException {        
-        if (name == Attribute.NULL) { // 'referid' was used.
-            if (getReferid() != null) { // referid
-                parameters = (List) getObject(getReferid());
-            } else {
-                throw new JspTagException("No function name specified");
-            }
-        } else {        
-            functionContainer = (FunctionContainer) findParentTag(FunctionContainer.class, (String) container.getValue(this), false);
-            if (functionContainer != null) {
-                helper.overrideWrite(false);
-                parameters = functionContainer.getParameters();
-            } else {
-                // need some way to instantiate as Arguments...
-                parameters = new ArrayList();
-            }
-            
-        }
+    public int doStartTag() throws JspTagException {     
         helper.setTag(this);
-        log.debug("end of doStartTag");
+        helper.setValue(getFunctionValue());
         return EVAL_BODY_BUFFERED;
     }
 
 
     public int doAfterBody() throws JspException {
-        helper.setBodyContent(getBodyContent());
-        return super.doAfterBody();
+        return helper.doAfterBody();
     }
        
     public int doEndTag() throws JspTagException {
-        Object value = getFunctionValue();
-        if (functionContainer != null) functionContainer.setResult(value);
         return helper.doEndTag();
     }
+
 }

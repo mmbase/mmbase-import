@@ -20,28 +20,10 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.1 2003-07-23 17:46:57 michiel Exp $
+ * @version $Id: FunctionContainer.java,v 1.2 2003-08-11 15:26:36 michiel Exp $
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier {
 
-    /**
-     * Defines the possible arguments of the function.
-     * 
-     * @throws JspTagException If the definition was set already, or if already (wrong) parameters were set.
-     */
-    void setDefinition(Argument[] args) throws JspTagException;
-
-    /**
-     * Gets the function result.
-     * @throws JspTagException if the function result is not yet available
-     */
-    Object getResult() throws JspTagException;
-
-    /**
-     * Sets the function result (to be used by sub-tags).
-     * @throws JspTagException if the function result was set already
-     */
-    void   setResult(Object result) throws JspTagException;
 
     /**
      * Gets the parameters (provided by param sub-tags).
@@ -50,4 +32,6 @@ public interface FunctionContainer extends ParamHandler, TagIdentifier {
      * @return Arguments (if there was a definition set)
      */
     List    getParameters();
+
+    String  getName();
 }
