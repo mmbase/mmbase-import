@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.13 2004-01-07 15:29:09 pierre Exp $
+ * @version $Id: Community.java,v 1.14 2004-01-07 16:05:42 pierre Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -89,7 +89,7 @@ public class Community extends MMObjectBuilder {
         fields.add("community.number");
         fields.add("channel.number");
         Vector allchannels=cluster.searchMultiLevelVector(null,fields,"YES",builders,
-               "channel.open = "+channelBuilder.OPEN+" OR channel.open = "+channelBuilder.WANT_OPEN,
+               "WHERE channel.open = "+channelBuilder.OPEN+" OR channel.open = "+channelBuilder.WANT_OPEN,
                null,null,ClusterBuilder.SEARCH_EITHER);
         if (allchannels!=null) {
             for (Iterator channels=allchannels.iterator(); channels.hasNext(); ) {
