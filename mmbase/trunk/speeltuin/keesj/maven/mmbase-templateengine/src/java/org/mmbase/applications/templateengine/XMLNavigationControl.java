@@ -12,33 +12,53 @@ package org.mmbase.applications.templateengine;
 import java.io.*;
 import java.util.*;
 
-import simplexml.*;
-
+import org.mmbase.applications.templateengine.jsp.JSPTemplate;
+import org.mmbase.applications.templateengine.util.*;
+import org.mmbase.bridge.Node;
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.*;
-import org.mmbase.applications.templateengine.jsp.*;
-import org.mmbase.applications.templateengine.util.*;
+
+import simplexml.*;
 /**
+ * XMLNavigationControl loads a navigation.xml defining what navigation(urls) are possible. the TemplateEngine asks this
+ * class to either create a url for a list of objects (Nodes,Strings,{soon Dates}) or when used the other way around returns a Template object
+ * belongin to an URL  
  * @author Kees Jongenburger
  */
 public class XMLNavigationControl extends NavigationControl {
+
     private static Logger log = Logging.getLoggerInstance(XMLNavigationControl.class);
     Navigation navigation;
+    private Paths _paths = new Paths();
 
     public XMLNavigationControl() {
+        //read the naviagtion.xml file
         XMLElement xmle = new XMLElement();
         try {
-            xmle.parseFromReader(new InputStreamReader( new FileInputStream(new File(MMBaseContext.getConfigPath() + "/te","navigation.xml"))));
+            File file = new File(MMBaseContext.getConfigPath() + "/templateengine", "navigation.xml");
+            if (!file.exists()) {
+                log.warn("file " + file.getPath() + " does not exist . impossible to load the navigation");
+                return;
+            }
+            xmle.parseFromReader(new InputStreamReader(new FileInputStream(file)));
         } catch (XMLParseException e) {
-            log.error(Logging.stackTrace(e));
+            log.error("failed to parse the navigation.xml" + e.getMessage());
         } catch (IOException e) {
             log.error(Logging.stackTrace(e));
         }
+        //aks the navigation loader to convert the xml to Navigation objects
         navigation = NavigationLoader.parseXML(xmle.toString());
-
+        //every navigation object has a controler. and if the navigation has no controler the navigation asks the parent navigation
+        //to return the controler. the "master" controler is this  
         navigation.setNavigationControl(this);
         initPaths(xmle);
+        if (log.isDebugEnabled()) {
+            Paths paths = getPaths();
+            for (int x = 0; x < paths.size(); x++) {
+                Path path = paths.getPath(x);
+                log.debug("navigation contains path:" + path);
+            }
+        }
     }
 
     public Navigation getNavigation() {
@@ -47,7 +67,6 @@ public class XMLNavigationControl extends NavigationControl {
 
     public Template getTemplate(Navigation navigation) {
         NavigationControl control = navigation.getNavigationControl();
-
         if (navigation.getProperty("template") != null) {
             JSPTemplate t = new JSPTemplate(navigation.getProperty("template"), null);
             t.setMapRenderRelativeToRender(true);
@@ -60,8 +79,6 @@ public class XMLNavigationControl extends NavigationControl {
             return control.getTemplate(navigation);
         }
     }
-
-    private Paths _paths = new Paths();
 
     public Paths getPaths() {
         return _paths;
@@ -83,12 +100,13 @@ public class XMLNavigationControl extends NavigationControl {
 
         StringBuffer rules = new StringBuffer();
         while (!stack.empty()) {
-            XMLElement x = (XMLElement) stack.pop();
+            XMLElement x = (XMLElement)stack.pop();
             String tagName = x.getTagName();
             //skip entry points
             if (tagName.equals("entrypoint")) {
                 continue;
             }
+            
             //navigation is static
             if (tagName.equals("navigation")) {
                 if ("false".equals(x.getProperty("visible"))) {
@@ -108,7 +126,7 @@ public class XMLNavigationControl extends NavigationControl {
         boolean hasPropertyChild = false;
         Enumeration enum = xmle.enumerateChildren();
         while (enum.hasMoreElements()) {
-            XMLElement child = (XMLElement) enum.nextElement();
+            XMLElement child = (XMLElement)enum.nextElement();
             if (child.getTagName().equals("property")) {
                 hasPropertyChild = true;
             }
@@ -139,12 +157,12 @@ public class XMLNavigationControl extends NavigationControl {
         for (int x = 0; x < params.size(); x++) {
             Object o = params.get(x);
             if (o instanceof Node) {
-                Node node = (Node) params.get(x);
+                Node node = (Node)params.get(x);
                 String type = node.getNodeManager().getName();
                 //find a navigation with this type
                 Iterator iter = p.iterator();
                 while (iter.hasNext()) {
-                    Path path = (Path) iter.next();
+                    Path path = (Path)iter.next();
                     String fullpath = path.fullPath;
                     if (fullpath.indexOf("${" + type) == -1) {
                         iter.remove();
@@ -160,9 +178,9 @@ public class XMLNavigationControl extends NavigationControl {
             } else if (o instanceof String) {
                 Iterator iter = p.iterator();
                 while (iter.hasNext()) {
-                    Path path = (Path) iter.next();
+                    Path path = (Path)iter.next();
                     String fullpath = path.fullPath;
-                    if (fullpath.indexOf((String) o) == -1) {
+                    if (fullpath.indexOf((String)o) == -1) {
                         iter.remove();
                     }
                 }
@@ -177,7 +195,7 @@ public class XMLNavigationControl extends NavigationControl {
         do {
             //log.debug(e);
             if (e instanceof NavigationParam) {
-                NavigationParam par = (NavigationParam) e;
+                NavigationParam par = (NavigationParam)e;
                 if (hash.get(par.getType()) == null) {
                     hash.put(par.getType(), par);
                 }
@@ -202,12 +220,12 @@ public class XMLNavigationControl extends NavigationControl {
                     Object o = hash.get(type);
                     if (o != null) {
                         if (o instanceof NavigationParam) {
-                            NavigationParam param = (NavigationParam) o;
+                            NavigationParam param = (NavigationParam)o;
                             //log.debug("adding param " + param.getURLString());
                             sb.append(param.getURLString());
                             sb.append("/");
                         } else if (o instanceof Node) {
-                            Node node = (Node) o;
+                            Node node = (Node)o;
                             //log.debug("adding node " + node.getStringValue(field));
                             sb.append(URLConverter.toURL(node.getStringValue(field)));
                             sb.append("/");
