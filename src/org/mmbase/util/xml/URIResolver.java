@@ -28,18 +28,18 @@ import org.mmbase.util.logging.Logging;
 
  <ol>
    <li> Current working directory (prefix: none or 'file:')</li>
-   <li> MMBase configuration direcotry (prefix: 'mm:') </li>
+   <li> MMBase configuration directory (prefix: 'mm:') </li>
  </ol>
  
  * Optionially you can add other dirs  between these two.
  *
  * When you start searching in the current working dir, and the URI
- * does not point to an existing file, it start searching downwards in
+ * does not point to an existing file, it starts searching downwards in
  * this list, until it finds a file that does exist.
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.5 2002-04-15 15:18:20 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.6 2002-06-14 19:47:52 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver {
@@ -273,6 +273,7 @@ public class URIResolver implements javax.xml.transform.URIResolver {
         /**
          * Adds an prefix/dir entry to the List. 
          * @return The list again, so you can easily 'chain' a few.
+         * @throws IllegalArgumentException if d is not a directory.
          */
         public EntryList add(String p, File d) {
             add(new Entry(p, d));
