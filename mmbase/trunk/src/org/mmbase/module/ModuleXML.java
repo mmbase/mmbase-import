@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.12 $ $Date: 2000-09-12 20:04:03 $
+ * @version $Revision: 1.13 $ $Date: 2000-10-15 22:49:49 $
  */
 public abstract class ModuleXML extends Module {
     private static boolean debug = false;
@@ -86,6 +86,8 @@ public abstract class ModuleXML extends Module {
             mmbaseconfig=curdir+"/config";
         } else {
             mmbaseconfig=System.getProperty("mmbase.config");
+            if (mmbaseconfig==null) 
+                debug("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
         }
 
         MMBaseContext.setConfigPath(mmbaseconfig);
