@@ -38,14 +38,11 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.18 2004-06-15 21:25:42 robmaris Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.19 2004-09-17 09:37:19 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
-    /**
-     * Logging instance
-     */
-    private static Logger log = Logging.getLoggerInstance(AbstractDatabaseStorage.class);
+    private static final Logger log = Logging.getLoggerInstance(AbstractDatabaseStorage.class);
 
     // maps with type mappings (MMBase type to database type)
     private Map typeMap;
@@ -114,7 +111,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
             if (! dir.isAbsolute()) {
                 //"file:///..."
                 String parent = new File(reader.getFileName().substring(7)).getParent();
-                if (log.isDebugEnabled()) {
+                if (log.isServiceEnabled()) {
                     log.service("Blobdatadir not specified absolutely, determining it relative to " + parent);
                 }
 
@@ -1038,11 +1035,11 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         boolean result=false;
         DatabaseTransaction trans=null;
         try {
-            trans=createDatabaseTransaction();
-            result=commit(node,trans);
+            trans = createDatabaseTransaction();
+            result = commit(node,trans);
             trans.commit();
         } catch (StorageException e) {
-            if (trans!=null) trans.rollback();
+            if (trans != null) trans.rollback();
             log.error(e.getMessage());
         }
         return result;
