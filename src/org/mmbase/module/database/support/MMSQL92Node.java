@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.76 2002-11-21 09:50:03 robmaris Exp $
+ * @version $Id: MMSQL92Node.java,v 1.77 2002-11-24 15:10:22 daniel Exp $
  */
 public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
 
@@ -1154,8 +1154,8 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             stmt.close();
             con.close();
         } catch (SQLException e) {
-            log.error("can't create table "+tableName);
-            log.error("XMLCREATE="+result);
+            log.error("can't drop table "+tableName);
+            log.error("XMLDROP="+result);
             log.error(Logging.stackTrace(e));
             return false;
         }
@@ -1170,9 +1170,13 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             log.service("Cannot add field to " + bul.getTableName() + " because of tableSizeProtection");
             return false;
         }
-
         log.info("Starting a addField : "+bul.getTableName()+" field="+fieldname);
         String tableName=bul.getTableName();
+
+	if (created(mmb.baseName+"_"+tableName+"_tmp")) {
+        	drop_real(bul,tableName+"_tmp");
+	}
+
         if (create_real(bul,tableName+"_tmp")) {
             log.info("created tmp  table : "+tableName+"_tmp");
             copyJDBCTable(tableName,tableName+"_tmp",bul);
@@ -1702,7 +1706,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             StringBuffer fieldAmounts = new StringBuffer();
 
             Vector newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
-            for (int i=1;i<newfields.size();i++) {
+            for (int i=0;i<newfields.size();i++) {
                 fieldAmounts.append(",?");
             }
 
