@@ -73,7 +73,7 @@ import org.mmbase.util.logging.*;
  * instead be used "as-is".
  *
  * @author  Rob van Maris
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -209,8 +209,7 @@ public class ConstraintParser {
             "Unknown field (of builder " + builder.getTableName()
             + "): \"" + fieldName + "\"");
         }
-        BasicStepField field = new BasicStepField(step, fieldDefs)
-            .setAlias(token);
+        BasicStepField field = new BasicStepField(step, fieldDefs);
         return field;
     }
     
