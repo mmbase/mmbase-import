@@ -28,7 +28,7 @@
       </xsl:for-each>
       <hr />
       <p><a href="http://www.mmbase.org">MMBase</a></p>
-      <p><a href="/">home</a></p>
+      <p><a href="{$root}index.html">home</a></p>
     </div>
   </xsl:template>
   
