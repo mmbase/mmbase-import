@@ -95,7 +95,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.8 2004-10-12 21:19:58 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.9 2004-10-13 11:22:31 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -126,8 +126,7 @@ public class ResourceLoader extends ClassLoader {
         try {
             return new URL("http", "localhost", "/node/");
         } catch (MalformedURLException mfue) {
-            // should not happen
-            log.error(mfue);
+            assert false : mfue;
             return null;
         }
     }
@@ -238,10 +237,12 @@ public class ResourceLoader extends ClassLoader {
             resourceRoots.add(RESOURCE_ROOT);
         }
 
+        /**
         if (fileRoots.size() == 0) {
             File [] roots = File.listRoots();
             fileRoots.addAll(Arrays.asList(roots));
         }
+        */
 
         classLoaderRoots.add(CLASSLOADER_ROOT);
 
@@ -462,6 +463,7 @@ public class ResourceLoader extends ClassLoader {
             File f = (File) i.next();
             if (f.isDirectory()) { // should always be true
                 File [] files = f.listFiles(filter);
+                if (files == null) continue;
                 for (int j = 0; j < files.length; j++) {
                     if (recursive != null && files[j].isDirectory()) {
                         getFileResourcePaths(filter, recursive + files[j].getName() + "/", results);
@@ -850,7 +852,7 @@ public class ResourceLoader extends ClassLoader {
                             return u;
                         }
                     } catch (MalformedURLException mfue) {
-                        // should not happen
+                        assert false : mfue;
                     }
                 }
             }
@@ -882,7 +884,7 @@ public class ResourceLoader extends ClassLoader {
             try {
                 return new URL(NODE_URL_CONTEXT, "" + node.getNumber());
             } catch (MalformedURLException mfue) {
-                // should not happen.
+                assert false : mfue;
                 return null;
             }
         }
@@ -910,7 +912,7 @@ public class ResourceLoader extends ClassLoader {
                         try {
                             return file.toURL(); // f is shadowed!
                         } catch (MalformedURLException mfue) {
-                            // should not happen.
+                            assert false : mfue;
                         }
                     }
                 }
