@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.83 2003-05-28 11:20:36 pierre Exp $
+ * @version $Id: Wizard.java,v 1.84 2003-06-02 12:59:56 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -162,7 +162,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param dataid the objectnumber
      * @param cloud the Cloud to use
      */
-    public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
+    public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)  throws WizardException {
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
         wizardConfig.objectNumber = dataid;
         wizardConfig.wizard = wizardname;
@@ -177,11 +177,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      * @param cloud the Cloud to use
      */
-    public Wizard(String context, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException, SecurityException {
+    public Wizard(String context, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException {
         initialize(context, uri, wizardConfig, cloud);
     }
 
-    private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException, SecurityException {
+    private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException {
 
         context = c;
         uriResolver = uri;
@@ -267,6 +267,45 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
+     * Returns true if the specified operation is valid for the node with the specified objectnumber.
+     * The  operation is valid if the node has the given property set to true.
+     * To maintain backwards compatible, if the property is not given, the default value is true.
+     * @param objectNumber teh number of teh ndoe to check
+     * @param operation a valid operation, i.e. maywrite or maydelete
+     * @throws WizardException if the object cannot be retrieved
+     */
+    protected boolean checkNode(String objectNumber, String operation) throws WizardException {    
+        Node node;
+        NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
+        if (nodes != null && nodes.getLength()>0) {
+            node = nodes.item(0);
+        } else {
+            // node is from outside the datacloud... 
+            // get it through dove... should we add it, and if so where?
+            node = databaseConnector.getDataNode(null,objectNumber,null);
+        }
+        return (node!=null) && Utils.getAttribute(node, operation, "true").equals("true");
+    }
+    
+    /**
+     * Returns true if the node with the specified objectnumber can be edited
+     * @param objectNumber number of the object to check
+     * @throws WizardException if the object cannot be retrieved
+     */
+    protected boolean mayEditNode(String objectNumber) throws WizardException {
+        return checkNode(objectNumber,"maywrite");
+    }
+    
+    /**
+     * Returns true if the node with the specified objectnumber can be deleted
+     * @param objectNumber number of the object to check
+     * @throws WizardException if the object cannot be retrieved
+     */
+    protected boolean mayDeleteNode(String objectNumber) throws WizardException {    
+        return checkNode(objectNumber,"maydelete");
+    }
+    
+    /**
      * Returns the subwizard start command
      */
     public WizardCommand getStartWizardCommand() {
@@ -289,7 +328,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      */
-    protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException, SecurityException {
+    protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException {
         if (wizardConfig.wizard == null) throw new WizardException("Wizardname may not be null");
         wizardName  = wizardConfig.wizard;
         popupId     = wizardConfig.popupId;
@@ -346,10 +385,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                     }
                     // store original data, so that the put routines will know what to save/change/add/delete
                     originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
-                } catch (org.mmbase.security.SecurityException secure){
-                    log.warn("Wizard failed to login: " + secure.getMessage());
-                    throw secure;
-                } catch (Exception e){
+                } catch (WizardException e){
                     throw new WizardException("Wizard could not be initialized. (" + e.toString() + ")");
                 }
             }
@@ -366,7 +402,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param req the ServletRequest contains the name-value pairs received through the http connection
      */
-    public void processRequest(ServletRequest req) throws WizardException, SecurityException {
+    public void processRequest(ServletRequest req) throws WizardException {
         String curform = req.getParameter("curform");
         if (curform != null && !curform.equals("")) currentFormId = curform;
 
@@ -692,58 +728,57 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 form.appendChild(newfieldset);
                 createPreHtmlForm(newfieldset, field, data);
             } else {
-
-            String xpath = Utils.getAttribute(field, "fdatapath", null);
-
-            Node fieldDataNode = null;
-            NodeList fieldinstances = null;
-            if (xpath == null) {
-                String ftype = Utils.getAttribute(field, "ftype", null);
-                if (! ("startwizard".equals(ftype) || "wizard".equals(ftype))) {
-                    throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
-                }
-            } else {
-                // xpath is found. Let's see howmany 'hits' we have
-                fieldinstances = Utils.selectNodeList(data, xpath);
-                if (fieldinstances==null) {
-                    throw new WizardException("The xpath: " + xpath + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
-                }
-                if (fieldinstances.getLength() > 0) fieldDataNode = fieldinstances.item(0);
-            }
-            // A normal field.
-            if (nodeName.equals("field")) {
-                if (fieldDataNode != null) {
-                    // create normal formfield.
-                    mergeConstraints(field, fieldDataNode);
-                    createFormField(form, field, fieldDataNode);
+    
+                String xpath = Utils.getAttribute(field, "fdatapath", null);
+    
+                Node fieldDataNode = null;
+                NodeList fieldinstances = null;
+                if (xpath == null) {
+                    String ftype = Utils.getAttribute(field, "ftype", null);
+                    if (! ("startwizard".equals(ftype) || "wizard".equals(ftype))) {
+                        throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
+                    }
                 } else {
-                    String ftype = Utils.getAttribute(field, "ftype");
-                    if("function".equals(ftype)) {
-                        log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
-                        //set number attribute in field
-                        Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
+                    // xpath is found. Let's see howmany 'hits' we have
+                    fieldinstances = Utils.selectNodeList(data, xpath);
+                    if (fieldinstances==null) {
+                        throw new WizardException("The xpath: " + xpath + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
+                    }
+                    if (fieldinstances.getLength() > 0) fieldDataNode = fieldinstances.item(0);
+                }
+                // A normal field.
+                if (nodeName.equals("field")) {
+                    if (fieldDataNode != null) {
+                        // create normal formfield.
+                        mergeConstraints(field, fieldDataNode);
                         createFormField(form, field, fieldDataNode);
-                    } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
-                        log.debug("A startwizard!");
-                        // create the formfield using the current data node
-                        createFormField(form, field, data);
                     } else {
-                        // throw an exception, but ONLY if the datapath was created from a 'name' attribute
-                        // (only in that case can we be sure that the path is faulty - in otehr cases
-                        // the path can be valid but point to a related object that is not present)
-                        String fname = Utils.getAttribute(field, "name", null);
-                        if (fname!=null) {
-                            throw new WizardException("The field with name '" + fname + "' does not exist.");
+                        String ftype = Utils.getAttribute(field, "ftype");
+                        if("function".equals(ftype)) {
+                            log.debug("Not an data node, setting number attribute, because it cannot be found with fdatapath");
+                            //set number attribute in field ???
+                            Utils.setAttribute(field, "number",  Utils.selectSingleNodeText(data, "object/@number", null));
+                            // create the formfield (should be using the current data node ???)
+                            createFormField(form, field, fieldDataNode);
+                        } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
+                            log.debug("A startwizard!");
+                            // create the formfield using the current data node
+                            createFormField(form, field, data);
+                        } else {
+                            // throw an exception, but ONLY if the datapath was created from a 'name' attribute
+                            // (only in that case can we be sure that the path is faulty - in otehr cases
+                            // the path can be valid but point to a related object that is not present)
+                            String fname = Utils.getAttribute(field, "name", null);
+                            if (fname!=null) {
+                                throw new WizardException("The field with name '" + fname + "' does not exist.");
+                            }
                         }
                     }
                 }
-
-            }
-            // A list "field". Needs special processing.
-            if (nodeName.equals("list")) {
-                createFormList(form, field, fieldinstances, data);
-            }
-
+                // A list "field". Needs special processing.
+                if (nodeName.equals("list")) {
+                    createFormList(form, field, fieldinstances, data);
+                }
             }
         }
     }
@@ -1210,6 +1245,24 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
             // evaluate object number
             wizardObjectNumber = Utils.transformAttribute(dataNode, wizardObjectNumber);
+
+            boolean mayEdit = true;
+            if ("new".equals(wizardObjectNumber)) {
+                // test whether this number may be created
+                // we can't do this now, as we cannot determine the type of node
+                // unless we load the wizard.
+                // This may be added in a later stage, when loading of wizard templates is 
+                // moved to a seperate module
+                mayEdit = true;
+            } else {
+                // test whether this number may be edited
+                mayEdit = mayEditNode(wizardObjectNumber);
+            }
+            if (!mayEdit) {
+                // remove this field from the form
+                form.removeChild(newField);
+            }
+            
             Utils.setAttribute(newField, "objectnumber", wizardObjectNumber);
             String wizardOrigin = Utils.getAttribute(newField, "origin", null);
             if (wizardOrigin == null) {
@@ -1218,6 +1271,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 wizardOrigin = Utils.transformAttribute(dataNode, wizardOrigin);
             }
             Utils.setAttribute(newField, "origin", wizardOrigin);
+        } else if (!ftype.equals("function")) {
+            // check rights - if you can't edit, set ftype to data
+            if (!mayEditNode(Utils.getAttribute(newField, "number"))) {
+                ftype="data";
+                Utils.getAttribute(newField, "ftype",ftype);
+            }
         }
 
         // binary type needs special processing
@@ -1370,7 +1429,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      * @param req The ServletRequest where the commands (name/value pairs) reside.
      */
-    private void processCommands(ServletRequest req) throws WizardException, SecurityException  {
+    private void processCommands(ServletRequest req) throws WizardException  {
 
         log.debug("processing commands");
         mayBeClosed = false;
@@ -1431,7 +1490,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param cmd The command to be processed
      *
      */
-    public void processCommand(WizardCommand cmd) throws WizardException, SecurityException {
+    public void processCommand(WizardCommand cmd) throws WizardException {
         // processes the given command
         switch (cmd.getType()) {
         case WizardCommand.DELETE_ITEM : {
@@ -1663,7 +1722,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @param createorder ordernr under which this item is added ()i.e. when adding more than one item to a
      *                    list using one add-item command). The first ordernr in a list is 1
      */
-    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate, int createorder) throws WizardException, SecurityException {
+    private Node addListItem(String listId, String dataId, String destinationId, boolean isCreate, int createorder) throws WizardException {
 
         log.debug("Adding list item");
         // Determine which list issued the add-item command, so we can get the create code from there.
