@@ -128,6 +128,7 @@ public class ContextTag extends ContextReferrerTag {
     public void release() {
         // release is not called in Orion 1.5.2!!
         log.debug("releasing");
+        container = null;
         //myHashMap = null;
         //poster = null;
         //cleanVars();
@@ -224,8 +225,8 @@ public class ContextTag extends ContextReferrerTag {
 
     // avoid casting
     private HttpServletRequest getHttpRequest() {
-        if (httpRequest == null) {
-            httpRequest = (HttpServletRequest)pageContext.getRequest();
+        if (httpRequest == null) {            
+            httpRequest = (HttpServletRequest) pageContext.getRequest();
             if (log.isDebugEnabled()) {
                 Enumeration e = httpRequest.getParameterNames();
                 String params = "";
@@ -359,9 +360,10 @@ public class ContextTag extends ContextReferrerTag {
             }
             String[] resultvec = getHttpRequest().getParameterValues(referid);
             if (resultvec != null) {
+                if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
                     Vector rresult = new Vector(resultvec.length);
-                    for (int i=0; i < resultvec.length; i++) {
+                    for (int i = 0; i < resultvec.length; i++) {
                         rresult.add(resultvec[i]);
                     }
                     result  = rresult;
@@ -374,8 +376,7 @@ public class ContextTag extends ContextReferrerTag {
                         if (formEncoding == null) {
                             // The form encoding was not known, so probably the local was used or ISO-8859-1
                             // lets make sure it is right:
-                            result = new String(resultvec[0].getBytes(),
-                                                getDefaultCharacterEncoding());
+                            result = new String(resultvec[0].getBytes(), getDefaultCharacterEncoding());
                         } else { // the request encoding was knows, so, I think we can suppose that the Parameter value was interpreted correctly.
                             result = resultvec[0];
                         }
@@ -485,17 +486,18 @@ public class ContextTag extends ContextReferrerTag {
                 valid = false;
             }
         }
-
         if (! valid) throw new JspTagException ("'" + newid + "' is not a valid Context identifier");
 
+        log.debug("Valid");
         //pageContext.setAttribute(id, n);
         if (check && isRegistered(newid)) {
             String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
             log.error(mes);
             throw new JspTagException(mes);
         }
-
-
+        if (log.isDebugEnabled()) {
+            log.debug("putting '" + newid + "'/'" + n + "' in " + container);
+        }
         container.put(newid, n);
     }
 
@@ -552,6 +554,9 @@ public class ContextTag extends ContextReferrerTag {
     public Object getContainerObject(String key) throws JspTagException {
         if (! isRegisteredSomewhere(key)) {
             throw new JspTagException("Object '" + key + "' is not registered. Registered are " + container.keySet());
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Getting '" + key + "' from container " + container);
         }
         return container.get(key);
     }
