@@ -146,7 +146,7 @@ public class MMObjectBuilder extends MMTable {
     public boolean replaceCache=true;
 
     /**
-    * Determines whether changes to this builkder need be broadcasted to other known mmbase servers.
+    * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
     * This setting also governs whether the cache for relation builders is emptied when a relation changes.
     * Actual broadcasting (and cache emptying) is initiated in the 'database' object, when
     * changes are commited to the database.
@@ -357,6 +357,7 @@ public class MMObjectBuilder extends MMTable {
     * Use onyl to commit changes - for adding node, use {@link #insert}.
     * @param node The node to be committed
     * @return The committed node.
+	* @deprecated Use {@link #commit(java.lang.String)} in {@org.mmbase.module.core.MMObjectNode} instead.
     */
     public boolean commit(MMObjectNode node) {
         return database.commit(this,node);
@@ -1401,6 +1402,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
     * return the age in days of the node
+ 	* @deprecated Use {@link #getAge(java.lang.String)} in MMObjectNode instead.
     */
     public int getAge(MMObjectNode node) {
         return(((DayMarkers)mmb.getMMObject("daymarks")).getAge(node));
