@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.105 $ $Date: 2001-07-02 15:09:45 $
+ * @version $Revision: 1.105.2.1 $ $Date: 2001-09-03 15:39:11 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -63,29 +63,29 @@ public class MMObjectBuilder extends MMTable {
     public final static int TEMPNODE_DEFAULT_SIZE=1024;
 
     /**
-    * The cache that contains the last X types of all requested objects
-    * X is currently set to 20000.
-    * The hashtable is created using the init_obj2type() method, which
-    * seems strange - as other caches are instantiated during variable declaration.
-    */
+     * The cache that contains the last X types of all requested objects
+     * X is currently set to 20000.
+     * The hashtable is created using the init_obj2type() method, which
+     * seems strange - as other caches are instantiated during variable declaration.
+     */
     public static LRUHashtable obj2type;
 
     /**
-    * The cache that contains the X last requested nodes
-    * X is currently set to 4096
-    */
+     * The cache that contains the X last requested nodes
+     * X is currently set to 4096
+     */
     public static LRUHashtable nodeCache = new LRUHashtable(NODE_MAX_SIZE);
 
     /**
-    * Collection for temporary nodes,
-    * Used by the Temporarynodemanager when working with transactions
-    * The default size is 1024.
-    */
+     * Collection for temporary nodes,
+     * Used by the Temporarynodemanager when working with transactions
+     * The default size is 1024.
+     */
     public static Hashtable TemporaryNodes=new Hashtable(TEMPNODE_DEFAULT_SIZE);
 
     /**
-    * The class used to store and retrieve data in the database that is currently in use.
-    */
+     * The class used to store and retrieve data in the database that is currently in use.
+     */
     public static MMJdbc2NodeInterface database = null;
 
     // unused. hitlisted ???
@@ -93,116 +93,116 @@ public class MMObjectBuilder extends MMTable {
     private static Hashtable fieldDefCache=new Hashtable(40);
     // unused
 
-        /**
-        * Logger routine
-        */
-        private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
+    /**
+     * Logger routine
+     */
+    private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
 
     /**
-    * If true, debug messages are send to the MMBase log
-    * @deprecated : use Logger routines instead
-    */
-    public boolean debug=false;
+     * If true, debug messages are send to the MMBase log
+     * @deprecated : use Logger routines instead
+     */
+   public boolean debug=false;
 
     /**
-    * Sets debugging on or off
-    * @deprecated : use Logger routines instead
-    */
+     * Sets debugging on or off
+     * @deprecated : use Logger routines instead
+     */
     public void setDebug(boolean state) { debug=state; }
 
     /**
-    * The current builder's object type
-    * Retrieved from the TypeDef builder.
-    */
+     * The current builder's object type
+     * Retrieved from the TypeDef builder.
+     */
     public int oType=0;
 
     /**
-    * Description of the builder in the currently selected language
-    * Not that the first time the builder is created, this value is what is stored in the TypeDef table.
-    */
+     * Description of the builder in the currently selected language
+     * Not that the first time the builder is created, this value is what is stored in the TypeDef table.
+     */
     public String description="Base Object";
 
     /**
-    * Descriptions of the builder per language
-    * Can be set with the &lt;descriptions&gt; tag in the xml builder file.
-    */
+     * Descriptions of the builder per language
+     * Can be set with the &lt;descriptions&gt; tag in the xml builder file.
+     */
     public Hashtable descriptions;
 
     /**
-    * Contains the list of fieldnames as they used in the database.
-    * The list (which is based on input from the xml builder file)
-    * should be sorted on the order of fields as they are defined in the tabel.
-    * The first two fields are 'otype' and 'owner'.
-    * The field 'number' (the actual first field of a database table record) is not included in this collection.
-    */
+     * Contains the list of fieldnames as they used in the database.
+     * The list (which is based on input from the xml builder file)
+     * should be sorted on the order of fields as they are defined in the tabel.
+     * The first two fields are 'otype' and 'owner'.
+     * The field 'number' (the actual first field of a database table record) is not included in this collection.
+     */
     public Vector sortedDBLayout = null;
 
     /**
-    * The default search age for this builder.
-    * Used for intializing editor search forms (see HtmlBase)
-    * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
-    */
+     * The default search age for this builder.
+     * Used for intializing editor search forms (see HtmlBase)
+     * Default value is 31. Can be changed with the &lt;searchage&gt; tag in the xml builder file.
+     */
     public String searchAge="31";
 
     /**
-    * The classname as specified in the builder xml file
-    * mainly for use in export
-    */
+     * The classname as specified in the builder xml file
+     * mainly for use in export
+     */
     public String className="onbekend";
     /**
-    * Detemines whether the cache need be refreshed?
-    * Seems useless, as this value is never changed (always true)
-    * @see #readSearchResults
-    */
+     * Detemines whether the cache need be refreshed?
+     * Seems useless, as this value is never changed (always true)
+     * @see #readSearchResults
+     */
     public boolean replaceCache=true;
 
     /**
-    * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
-    * This setting also governs whether the cache for relation builders is emptied when a relation changes.
-    * Actual broadcasting (and cache emptying) is initiated in the 'database' object, when
-    * changes are commited to the database.
-    * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
-    */
+     * Determines whether changes to this builder need be broadcasted to other known mmbase servers.
+     * This setting also governs whether the cache for relation builders is emptied when a relation changes.
+     * Actual broadcasting (and cache emptying) is initiated in the 'database' object, when
+     * changes are commited to the database.
+     * By default, all builders broadcast their changes, with the exception of the TypeDef builder.
+     */
     public boolean broadcastChanges=true;
 
     /**
-    * Contains builder fields in order of appearance in search forms
-    */
+     * Contains builder fields in order of appearance in search forms
+     */
     Vector sortedEditFields = null;
     /**
-    * Contains builder fields in order of appearance in list forms
-    */
+     * Contains builder fields in order of appearance in list forms
+     */
     Vector sortedListFields = null;
     /**
-    * Contains builder fields in order of appearance in input forms
-    */
+     * Contains builder fields in order of appearance in input forms
+     */
     Vector sortedFields = null;
 
     /**
-    *  Maintainer information for builder registration
-    *  Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
-    */
+     *  Maintainer information for builder registration
+     *  Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
+     */
     String maintainer="mmbase.org";
 
     /**
-    * Default output when no data is available to determine a node's GUI description
-    */
+     * Default output when no data is available to determine a node's GUI description
+     */
     String GUIIndicator="no info";
 
     /** Collections of (GUI) names (singular) for the builder's objects, divided by language
-    */
+     */
     Hashtable singularNames;
 
     /** Collections of (GUI) names (plural) for the builder's objects, divided by language
-    */
+     */
     Hashtable pluralNames;
 
     /** List of remote observers, which are notified when a node of this type changes
-    */
+     */
     Vector remoteObservers = new Vector();
 
     /** List of local observers, which are notified when a node of this type changes
-    */
+     */
     Vector localObservers = new Vector();
 
     // Unused
@@ -233,13 +233,13 @@ public class MMObjectBuilder extends MMTable {
     private Vector qlist=new Vector();
 
     /**
-    * determines whether builders are created using xml, accessible through {@link #getXMLConfig}
-    */
+     * determines whether builders are created using xml, accessible through {@link #getXMLConfig}
+     */
     private boolean isXmlConfig=false;
 
     /**
-    * Determines whether a builder is virtual (data is not stored in a database).
-    */
+     * Determines whether a builder is virtual (data is not stored in a database).
+     */
     protected boolean virtual=false;
 
     // Properties of a specific Builder.
@@ -248,19 +248,19 @@ public class MMObjectBuilder extends MMTable {
     private Hashtable properties = null;
 
     /**
-    * Constructor.
-    * Derived builders should provide their own constructors, rather than use this one.
-    */
+     * Constructor.
+     * Derived builders should provide their own constructors, rather than use this one.
+     */
     public MMObjectBuilder() {}
 
     /**
-    * Initializes this builder
-    * The property 'mmb' needs to be set for the builder before this method can be called.
-    * The method retrieves data from the TypeDef builder, or adds data to thet builder if the
-    * current builder si not yet registrered.
-    * @return Always true.
-    * @see #create
-    */
+     * Initializes this builder
+     * The property 'mmb' needs to be set for the builder before this method can be called.
+     * The method retrieves data from the TypeDef builder, or adds data to thet builder if the
+     * current builder si not yet registrered.
+     * @return Always true.
+     * @see #create
+     */
     public boolean init() {
         database=mmb.getDatabase();
 
@@ -295,40 +295,40 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Creates a new builder table in the current database.
-    */
+     * Creates a new builder table in the current database.
+     */
     public boolean create() {
         return database.create(this);
     }
 
-    /*
-    * Tests whether the data in a node is valid (throws an exception if this is not the case).
-    * @param node The node whose data to check
-    * @throws org.mmbase.module.core.InvalidDataException
-    *   If the data was unrecoverably invalid (the references did not point to existing objects)
-    */
-        public void testValidData(MMObjectNode node) throws InvalidDataException {
-          return;
-        };
+    /**
+     * Tests whether the data in a node is valid (throws an exception if this is not the case).
+     * @param node The node whose data to check
+     * @throws org.mmbase.module.core.InvalidDataException
+     *   If the data was unrecoverably invalid (the references did not point to existing objects)
+     */
+    public void testValidData(MMObjectNode node) throws InvalidDataException {
+        return;
+    };
 
     /**
-    * Insert a new, empty, object of a certain type.
-    * @param oType The type of object to create
-    * @param owner The administrator creating the node
-    * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
-    *		The basic routine does not create any nodes this way and always fails.
-    */
+     * Insert a new, empty, object of a certain type.
+     * @param oType The type of object to create
+     * @param owner The administrator creating the node
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+     *		The basic routine does not create any nodes this way and always fails.
+     */
     public int insert(int oType,String owner) {
         return -1;
     }
 
     /**
-    * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
-    * This method indirectly calls {@link #preCommit}.
-    * @param owner The administrator creating the node
-    * @param node The object to insert. The object need be of the same type as the current builder.
-    * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
-    */
+     * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
+     * This method indirectly calls {@link #preCommit}.
+     * @param owner The administrator creating the node
+     * @param node The object to insert. The object need be of the same type as the current builder.
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+     */
     public int insert(String owner, MMObjectNode node) {
         // test with counting
         statCount("insert");
@@ -342,67 +342,67 @@ public class MMObjectBuilder extends MMTable {
             return n;
         } catch(Exception e) {
             log.error("ERROR INSERT PROBLEM ! Error node="+node);
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
             return -1;
         }
     }
 
     /**
-    * Once a insert is done in the editor this method is called.
-    * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-    *		'settings' and 'parameters' - value pairs that have been the during the edit process.
-    * @param node The node thatw as inserted
-    * @return An <code>int</code> value. It's meaning is undefined.
-    *		The basic routine returns -1.
-    * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-    *	endangering the separation between content and layout, and has an undefined return value.
-    */
+     * Once a insert is done in the editor this method is called.
+     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
+     *		'settings' and 'parameters' - value pairs that have been the during the edit process.
+     * @param node The node thatw as inserted
+     * @return An <code>int</code> value. It's meaning is undefined.
+     *		The basic routine returns -1.
+     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
+     *	endangering the separation between content and layout, and has an undefined return value.
+     */
     public int insertDone(EditState ed, MMObjectNode node) {
         return -1;
     }
 
     /**
-    * Check and make last changes before calling {@link #commit} or {@link #insert}.
-    * This method is called by the editor. This differs from {@link #preCommit}, which is called by the database system
-    * <em>during</em> the call to commit or insert.
-    * @param ed Contains the current edit state (editor info). The main function of this object is to pass
-    *		'settings' and 'parameters' - value pairs that have been the during the edit process.
-    * @param node The node that was inserted
-    * @return An <code>int</code> value. It's meaning is undefined.
-    *		The basic routine returns -1.
-    * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
-    *	endangering the separation between content and layout. It also has an undefined return value.
-    */
+     * Check and make last changes before calling {@link #commit} or {@link #insert}.
+     * This method is called by the editor. This differs from {@link #preCommit}, which is called by the database system
+     * <em>during</em> the call to commit or insert.
+     * @param ed Contains the current edit state (editor info). The main function of this object is to pass
+     *		'settings' and 'parameters' - value pairs that have been the during the edit process.
+     * @param node The node that was inserted
+     * @return An <code>int</code> value. It's meaning is undefined.
+     *		The basic routine returns -1.
+     * @deprecated This method doesn't seem to fit here, as it references a gui/html object ({@link org.mmbase.module.gui.html.EditState}),
+     *	endangering the separation between content and layout. It also has an undefined return value.
+     */
     public int preEdit(EditState ed, MMObjectNode node) {
         return -1;
     }
 
     /**
-    * This method is called before an actual write to the database is performed.
-    * It is called from within the database routines, unlike {@link #preEdit}, which is called by the editor.
-    * That is, preCommit is enforced, while preEdit is not (depending on the editor used).
-    * @param node The node to be committed.
-    * @return the node to be committed (possibly after changes have been made).
-    */
+     * This method is called before an actual write to the database is performed.
+     * It is called from within the database routines, unlike {@link #preEdit}, which is called by the editor.
+     * That is, preCommit is enforced, while preEdit is not (depending on the editor used).
+     * @param node The node to be committed.
+     * @return the node to be committed (possibly after changes have been made).
+     */
     public MMObjectNode preCommit(MMObjectNode node) {
         return node;
     }
 
     /**
-    * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
-    * Use only to commit changes - for adding node, use {@link #insert}.
-    * @param node The node to be committed
-    * @return The committed node.
-    */
+     * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
+     * Use only to commit changes - for adding node, use {@link #insert}.
+     * @param node The node to be committed
+     * @return The committed node.
+     */
     public boolean commit(MMObjectNode node) {
         return database.commit(this,node);
     }
 
     /**
-    *  Creates an alias for a node, provided the OAlias builder is loaded.
-    *  @param number the to-be-aliased node's unique number
-    *  @param alias the aliasname to associate with the object
-    */
+     *  Creates an alias for a node, provided the OAlias builder is loaded.
+     *  @param number the to-be-aliased node's unique number
+     *  @param alias the aliasname to associate with the object
+     */
     public void createAlias(int number,String alias) {
         if (mmb.getOAlias()!=null) {
                 MMObjectNode node=mmb.getOAlias().getNewNode("system");
@@ -413,10 +413,10 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Creates a cache for storing types and objects.
-    * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
-    * Note that this should possibly be moved to the variable declaration part (like nodecache)?
-    */
+     * Creates a cache for storing types and objects.
+     * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
+     * Note that this should possibly be moved to the variable declaration part (like nodecache)?
+     */
     public synchronized void init_obj2type() {
 
         if (obj2type!=null) return;
@@ -436,18 +436,18 @@ public class MMObjectBuilder extends MMTable {
                 con.close();
 
             } catch (SQLException e) {
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
             }
         }
         return;
     }
 
     /**
-    * Get a new node, using this builder as its parent. The new node is not a part of the cloud yet, and thus has
-    * the value -1 as a number. (Call {@link #insert} to add the node to the cloud).
-    * @param owner The administrator creating the new node.
-    * @return A newly initialized <code>MMObjectNode</code>.
-    */
+     * Get a new node, using this builder as its parent. The new node is not a part of the cloud yet, and thus has
+     * the value -1 as a number. (Call {@link #insert} to add the node to the cloud).
+     * @param owner The administrator creating the new node.
+     * @return A newly initialized <code>MMObjectNode</code>.
+     */
     public MMObjectNode getNewNode(String owner) {
         MMObjectNode node=new MMObjectNode(this);
         node.setValue("number",-1);
@@ -458,32 +458,32 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Sets defaults for a node. Fields "number", "owner" and "otype" are not set by this method.
-    * @param node The node to set the defaults of.
-    */
+     * Sets defaults for a node. Fields "number", "owner" and "otype" are not set by this method.
+     * @param node The node to set the defaults of.
+     */
     public void setDefaults(MMObjectNode node) {
     }
 
     /**
-    * Remove a node from the cloud.
-    * @param node The node to remove.
-    */
+     * Remove a node from the cloud.
+     * @param node The node to remove.
+     */
     public void removeNode(MMObjectNode node) {
         /*
-                        // check if node.name in nameCache, remove that also.
-                        // --------------------------------------------------
-                        String name = node.getStringValue("name");
-                        if( name != null && !name.equals("")) {
-                                String sNumber = (String)nameCache.get(name);
-                                try {
-                                        int number = Integer.parseInt( sNumber );
-                                        if( number == node.getNumber()) {
-                                                nameCache.remove( name );
-                                        }
-                                } catch( NumberFormatException e ) {
-                                        log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
-                                }
-                        }
+        // check if node.name in nameCache, remove that also.
+        // --------------------------------------------------
+        String name = node.getStringValue("name");
+        if( name != null && !name.equals("")) {
+            String sNumber = (String)nameCache.get(name);
+            try {
+                int number = Integer.parseInt( sNumber );
+                if( number == node.getNumber()) {
+                    nameCache.remove( name );
+                }
+            } catch( NumberFormatException e ) {
+                log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
+            }
+        }
         */
 
         // removes the node FROM THIS BUILDER
@@ -494,9 +494,9 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Remove the relations of a node.
-    * @param node The node whose relations to remove.
-    */
+     * Remove the relations of a node.
+     * @param node The node whose relations to remove.
+     */
     public void removeRelations(MMObjectNode node) {
         Vector relsv=getRelations_main(node.getNumber());
         if (relsv!=null) {
@@ -515,31 +515,30 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Is this node cached at this moment?
-    * @param number The number of the node to check.
-    * @return <code>true</code> if the node is in the cache, <code>false</code> otherwise.
-    */
+     * Is this node cached at this moment?
+     * @param number The number of the node to check.
+     * @return <code>true</code> if the node is in the cache, <code>false</code> otherwise.
+     */
     public boolean isNodeCached(int number) {
         return nodeCache.containsKey(new Integer(number));
     }
 
     /**
-    * Is this byuilder virtual?
-    * A virtual builder represents nodes that are not stored or retrieved directly
-    * from the database, but are created as needed.
-    * @return <code>true</code> if the builder is virtual.
-    */
+     * Is this byuilder virtual?
+     * A virtual builder represents nodes that are not stored or retrieved directly
+     * from the database, but are created as needed.
+     * @return <code>true</code> if the builder is virtual.
+     */
     public boolean isVirtual() {
         return virtual;
     }
 
     /**
-    * Retrieves an object's type. If necessary, the type is added to the cache.
-    * @param number The number of the node to search for
-    * @return an <code>int</code> value which is the object type (otype) of the node.
-    */
-    public int getNodeType(int number)
-    {
+     * Retrieves an object's type. If necessary, the type is added to the cache.
+     * @param number The number of the node to search for
+     * @return an <code>int</code> value which is the object type (otype) of the node.
+     */
+    public int getNodeType(int number) {
       int otype=-1;
       try {
         // first try our mega cache for the convert
@@ -564,33 +563,33 @@ public class MMObjectBuilder extends MMTable {
         }
       } catch (SQLException e) {
             // something went wrong print it to the logs
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
             return -1;
       };
       return otype;
    }
 
     /**
-    * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
-    * or the string-form of an integer value (the number field of an object node).
-    * @param key The value to search for
-    * @return <code>null</code> if the node does not exist or the key is invalid, or a
-    *       <code>MMObjectNode</code> containing the contents of the requested node.
-    * @deprecated Use {@link #getNode(java.lang.String)} instead.
-    */
+     * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
+     * or the string-form of an integer value (the number field of an object node).
+     * @param key The value to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *       <code>MMObjectNode</code> containing the contents of the requested node.
+     * @deprecated Use {@link #getNode(java.lang.String)} instead.
+     */
     public MMObjectNode getAliasedNode(String key) {
         return getNode(key);
     }
 
     /**
-    * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
-    * or the string-form of an integer value (the number field of an object node).
-    * Note that the OAlias builder needs to be active for the alias to be used
-    * (otherwise using an alias is concidered invalid).
-    * @param key The value to search for
-    * @return <code>null</code> if the node does not exist or the key is invalid, or a
-    *       <code>MMObjectNode</code> containing the contents of the requested node.
-    */
+     * Retrieves a node based on a unique key. The key is either an entry from the OAlias table
+     * or the string-form of an integer value (the number field of an object node).
+     * Note that the OAlias builder needs to be active for the alias to be used
+     * (otherwise using an alias is concidered invalid).
+     * @param key The value to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *       <code>MMObjectNode</code> containing the contents of the requested node.
+     */
     public MMObjectNode getNode(String key) {
         int nr;
         MMObjectNode node = null;
@@ -618,34 +617,31 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Retrieves a node based on it's number (a unique key).
-    * @param number The numbe rof the node to search for
-    * @return <code>null</code> if the node does not exist or the key is invalid, or a
-    *       <code>MMObjectNode</code> containign the contents of the requested node.
-    */
+     * Retrieves a node based on it's number (a unique key).
+     * @param number The numbe rof the node to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *       <code>MMObjectNode</code> containign the contents of the requested node.
+     */
     public synchronized MMObjectNode getNode(int number) {
-
         // test with counting
         statCount("getnode");
         if (number==-1) {
             log.warn(" ("+tableName+") nodenumber == -1");
             return null;
         }
-
         // cache setup
         Integer integerNumber=new Integer(number);
         MMObjectNode node=(MMObjectNode)nodeCache.get(integerNumber);
         if (node!=null) {
-                        // added debug for testing cache problems.
-                        //log.info("NODE "+number+" IN CACHE, node:"+node);
-
+            // added debug for testing cache problems.
+            //log.info("NODE "+number+" IN CACHE, node:"+node);
             // lets add a extra asked counter to make a smart cache
             int c=node.getIntValue("CacheCount");
             c++;
             node.setValue("CacheCount",c);
             return node;
         } // else
-                        //log.info("NODE "+number+" NOT IN CACHE");
+            //log.info("NODE "+number+" NOT IN CACHE");
 
         // do the query on the database
         try {
@@ -697,142 +693,145 @@ public class MMObjectBuilder extends MMTable {
             return node;
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
             return null;
         }
     }
 
-        /**
-         * Retrieves a node from database directly (not using nodeCache!) based on it's number (a unique key).
-         * Implementation is the same as getNode, except not using the nodeCache.
-         * @param number The number of the node to search for
-         * @return <code>null</code> if the node does not exist or the key is invalid, or a
-         *       <code>MMObjectNode</code> containign the contents of the requested node.
-         */
+    /**
+     * Retrieves a node from database directly (not using nodeCache!) based on it's number (a unique key).
+     * Implementation is the same as getNode, except not using the nodeCache.
+     * @param number The number of the node to search for
+     * @return <code>null</code> if the node does not exist or the key is invalid, or a
+     *  <code>MMObjectNode</code> containign the contents of the requested node.
+     */
     public synchronized MMObjectNode getHardNode(int number) {
-                // test with counting
-                statCount("getnode");
-                if (number==-1) {
-                        log.warn(" ("+tableName+") nodenumber == -1");
+        // test with counting
+        statCount("getnode");
+        if (number==-1) {
+            log.warn(" ("+tableName+") nodenumber == -1");
+            return null;
+        }
+        // do the query on the database
+        try {
+            MMObjectNode node =null;
+            String bul="typedef";
+
+            // retrieve node's objecttype
+            int bi=getNodeType(number);
+            if (bi!=0)
+                bul=mmb.getTypeDef().getValue(bi);
+            if (bul==null) {
+                log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
+                return null;
+            }
+            MultiConnection con =null;
+            Statement stmt = null;
+            try {
+                con=mmb.getConnection();
+                stmt=con.createStatement();
+                ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
+                if (rs.next()) {
+                    // create a new object and add it to the result vector
+                    MMObjectBuilder bu=mmb.getMMObject(bul);
+                    if (bu==null) {
+                        log.error("getMMObject did not return builder on : "+bul);
                         return null;
+                    }
+                    node=new MMObjectNode(bu);
+                    ResultSetMetaData rd=rs.getMetaData();
+                    String fieldname;
+                    String fieldtype;
+                    for (int i=1;i<=rd.getColumnCount();i++) {
+                        fieldname=rd.getColumnName(i);
+                        node=database.decodeDBnodeField(node,fieldname,rs,i);
+                    }
+                    // clear the changed signal
+                    node.clearChanged();
+                } else {
+                    log.warn("getNode(): Node not found "+number);
+                    return null; // not found
                 }
-
-                // do the query on the database
-                try {
-                        MMObjectNode node =null;
-                        String bul="typedef";
-
-                        // retrieve node's objecttype
-                        int bi=getNodeType(number);
-                        if (bi!=0)
-                                bul=mmb.getTypeDef().getValue(bi);
-                        if (bul==null) {
-                                log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
-                                return null;
-                        }
-
-                        MultiConnection con =null;
-                        Statement stmt = null;
-                        try {
-                                con=mmb.getConnection();
-                                stmt=con.createStatement();
-                                ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+bul+" WHERE "+mmb.getDatabase().getNumberString()+"="+number);
-                                if (rs.next()) {
-                                        // create a new object and add it to the result vector
-                                        MMObjectBuilder bu=mmb.getMMObject(bul);
-                                        if (bu==null) {
-                                                log.error("getMMObject did not return builder on : "+bul);
-                                                return null;
-                                        }
-                                        node=new MMObjectNode(bu);
-                                        ResultSetMetaData rd=rs.getMetaData();
-                                        String fieldname;
-                                        String fieldtype;
-                                        for (int i=1;i<=rd.getColumnCount();i++) {
-                                                fieldname=rd.getColumnName(i);
-                                                node=database.decodeDBnodeField(node,fieldname,rs,i);
-                                        }
-                                        // clear the changed signal
-                                        node.clearChanged();
-                                } else {
-                                        log.warn("getNode(): Node not found "+number);
-                                        return null; // not found
-                                }
-                        } finally {
-                                mmb.closeConnection(con,stmt);
-                        }
-                        // return the results
-                        return node;
-                } catch (SQLException e) {
-                        // something went wrong print it to the logs
-                        e.printStackTrace();
-                        return null;
-                }
+            } finally {
+                mmb.closeConnection(con,stmt);
+            }
+            // return the results
+            return node;
+        } catch (SQLException e) {
+            // something went wrong print it to the logs
+            log.error(Logging.stackTrace(e));
+            return null;
         }
-
-        /**
-         * Create a new temporary node and put it in the temporary _exist
-         * node space
-         */
-        public MMObjectNode getNewTmpNode(String owner,String key) {
-                MMObjectNode node=null;
-                node=getNewNode(owner);
-                checkAddTmpField("_number");
-                node.setValue("_number",key);
-                TemporaryNodes.put(key,node);
-                return node;
-        }
+    }
 
     /**
-    * Put a Node in the temporary node list
-    * @param key  The (temporary) key under which to store the node
-    * @param node The node to store
-    */
-        public void putTmpNode(String key, MMObjectNode node) {
-                checkAddTmpField("_number");
-                node.setValue("_number",key);
-                TemporaryNodes.put(key,node);
-        }
-
-        public boolean checkAddTmpField(String field) {
-                boolean rtn=false;
-                if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
-                        FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
-                        log.debug("checkAddTmpField(): adding tmp field "+field);
-                        addField(fd);
-                        rtn=true;
-                }
-                return(false);
-        }
+     * Create a new temporary node and put it in the temporary _exist
+     * node space
+     */
+    public MMObjectNode getNewTmpNode(String owner,String key) {
+        MMObjectNode node=null;
+        node=getNewNode(owner);
+        checkAddTmpField("_number");
+        node.setValue("_number",key);
+        TemporaryNodes.put(key,node);
+        return node;
+    }
 
     /**
-    * Get nodes from the temporary node space
-    * @param key  The (temporary) key to use under which the node is stored
-    */
-        public MMObjectNode getTmpNode(String key) {
-                MMObjectNode node=null;
-                node=(MMObjectNode)TemporaryNodes.get(key);
-                if (node==null) {
-                        log.debug("getTmpNode(): node not found "+key);
-                }
-                return node;
-        }
+     * Put a Node in the temporary node list
+     * @param key  The (temporary) key under which to store the node
+     * @param node The node to store
+     */
+    public void putTmpNode(String key, MMObjectNode node) {
+        checkAddTmpField("_number");
+        node.setValue("_number",key);
+        TemporaryNodes.put(key,node);
+    }
 
     /**
-    * Remove a node from the temporary node space
-    * @param key  The (temporary) key under which the node is stored
-    */
-        public void removeTmpNode(String key) {
-                MMObjectNode node;
-                node=(MMObjectNode)TemporaryNodes.remove(key);
-                if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
+     * Defines a virtual field to use for temporary nodes
+     * @param field the anme of the temporary field
+     * @return true if the field was added, false if it already existed.
+     */
+    public boolean checkAddTmpField(String field) {
+        boolean rtn=false;
+        if (getDBState(field)==FieldDefs.DBSTATE_UNKNOWN) {
+            FieldDefs fd=new FieldDefs(field,"string",-1,-1,field,FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_VIRTUAL);
+            log.debug("checkAddTmpField(): adding tmp field "+field);
+            addField(fd);
+            rtn=true;
         }
+        return rtn;
+    }
 
     /**
-    * Count all the objects that match the searchkeys
-    * @param where scan expression that the objects need to fulfill
-    * @return the number of an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Get nodes from the temporary node space
+     * @param key  The (temporary) key to use under which the node is stored
+     */
+    public MMObjectNode getTmpNode(String key) {
+        MMObjectNode node=null;
+        node=(MMObjectNode)TemporaryNodes.get(key);
+        if (node==null) {
+            log.debug("getTmpNode(): node not found "+key);
+        }
+        return node;
+    }
+
+    /**
+     * Remove a node from the temporary node space
+     * @param key  The (temporary) key under which the node is stored
+     */
+    public void removeTmpNode(String key) {
+        MMObjectNode node;
+        node=(MMObjectNode)TemporaryNodes.remove(key);
+        if (node==null) log.warn("removeTmpNode): node with "+key+" didn't exists");
+    }
+
+    /**
+     * Count all the objects that match the searchkeys
+     * @param where scan expression that the objects need to fulfill
+     * @return the number of an <code>Enumeration</code> containing all the objects that apply.
+     */
     public int count(String where) {
         if (where==null) where="";
         if (where.indexOf("MMNODE")!=-1) {
@@ -845,12 +844,12 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Executes a search (sql query) on the current database
-    * and returns the nodes that result from the search as a Vector.
-    * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
-    * @param query The SQL query
-    * @return A Vector which contains all nodes that were found
-    */
+     * Executes a search (sql query) on the current database
+     * and returns the nodes that result from the search as a Vector.
+     * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
+     * @param query The SQL query
+     * @return A Vector which contains all nodes that were found
+     */
     private int basicCount(String query) {
         statCount("count");
         int nodecount=-1;
@@ -875,20 +874,20 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Enumerate all the objects that match the searchkeys
-    * @param where scan expression that the objects need to fulfill
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the searchkeys
+     * @param where scan expression that the objects need to fulfill
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration search(String where) {
         return searchVector(where).elements();
     }
 
     /**
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param where scan expression that the objects need to fulfill
-    * @return a vector containing all the objects that apply.
-    * @deprecated Use search() instead
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where scan expression that the objects need to fulfill
+     * @return a vector containing all the objects that apply.
+     * @deprecated Use search() instead
+     */
     public Vector searchVector(String where) {
         // do the query on the database
         if (where==null) where="";
@@ -903,25 +902,25 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param in either a set of object numbers (in comma-separated string format), or a sub query
-    *		returning a set of object numbers.
-    * @return a vector containing all the objects that apply.
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param in either a set of object numbers (in comma-separated string format), or a sub query
+     *		returning a set of object numbers.
+     * @return a vector containing all the objects that apply.
+     */
     public Vector searchVectorIn(String in) {
         // do the query on the database
-        if (in==null || in.equals("")) return(new Vector());
+        if (in==null || in.equals("")) return new Vector();
         String query="SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
         return basicSearch(query);
     }
 
     /**
-    * Executes a search (sql query) on the current database
-    * and returns the nodes that result from the search as a Vector.
-    * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
-    * @param query The SQL query
-    * @return A Vector which contains all nodes that were found
-    */
+     * Executes a search (sql query) on the current database
+     * and returns the nodes that result from the search as a Vector.
+     * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
+     * @param query The SQL query
+     * @return A Vector which contains all nodes that were found
+     */
     private Vector basicSearch(String query) {
         // test with counting
         statCount("search");
@@ -943,14 +942,14 @@ public class MMObjectBuilder extends MMTable {
             mmb.closeConnection(con,stmt);
         }
 
-        return (new Vector()); // Return an empty Vector
+        return new Vector(); // Return an empty Vector
     }
 
     /**
-    * Rewturns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
-    * @param where scan expression that the objects need to fulfill
-    * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
-    */
+     * Rewturns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
+     * @param where scan expression that the objects need to fulfill
+     * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
+     */
     public Vector searchNumbers(String where) {
         // do the query on the database
         try {
@@ -968,78 +967,78 @@ public class MMObjectBuilder extends MMTable {
             return results;
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
             return null;
         }
     }
 
     /**
-    * Enumerate all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration search(String where,String sort) {
-        return(searchVector(where,sort).elements());
+        return searchVector(where,sort).elements();
     }
 
 
     /**
-    * Enumerate all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @param in lost of node numbers to filter on
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param in lost of node numbers to filter on
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration searchIn(String where,String sort,String in) {
-        return(searchVectorIn(where,sort,in).elements());
+        return searchVectorIn(where,sort,in).elements();
     }
 
 
     /**
-    * Enumerate all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param in lost of node numbers to filter on
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param in lost of node numbers to filter on
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration searchIn(String where,String in) {
-        return(searchVectorIn(where,in).elements());
+        return searchVectorIn(where,in).elements();
     }
 
 
     /**
-    * Enumerate all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-    *		Only applies if a sorted order is given.
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration search(String where,String sort,boolean direction) {
-        return(searchVector(where,sort,direction).elements());
+        return searchVector(where,sort,direction).elements();
     }
 
 
     /**
-    * Enumerate all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @param in lost of node numbers to filter on
-    * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-    *		Only applies if a sorted order is given.
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param in lost of node numbers to filter on
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration searchIn(String where,String sort,boolean direction,String in) {
-        return(searchVectorIn(where,sort,direction,in).elements());
+        return searchVectorIn(where,sort,direction,in).elements();
     }
 
 
     /**
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @return a vector containing all the objects that apply.
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @return a vector containing all the objects that apply.
+     */
     public Vector searchVector(String where,String sorted) {
         // do the query on the database
         if (where==null) {
@@ -1054,50 +1053,49 @@ public class MMObjectBuilder extends MMTable {
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
 
     /**
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @param in either a set of object numbers (in comma-separated string format), or a sub query
-    *		returning a set of object numbers.
-    * @return a vector containing all the objects that apply.
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param in either a set of object numbers (in comma-separated string format), or a sub query
+     *		returning a set of object numbers.
+     * @return a vector containing all the objects that apply.
+     */
     public Vector searchVectorIn(String where,String sorted,String in) {
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
-        if (in!=null && in.equals("")) return(new Vector());
+        if (in!=null && in.equals("")) return new Vector();
         String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
     /*
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param in either a set of object numbers (in comma-separated string format), or a sub query
-    *		returning a set of object numbers.
-    * @return a vector containing all the objects that apply.
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param in either a set of object numbers (in comma-separated string format), or a sub query
+     *		returning a set of object numbers.
+     * @return a vector containing all the objects that apply.
+     */
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
-        if (in==null || in.equals("")) return(new Vector());
+        if (in==null || in.equals("")) return new Vector();
         String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
-
     /**
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-    *		Only applies if a sorted order is given.
-    * @return a vector containing all the objects that apply.
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return a vector containing all the objects that apply.
+     */
     public Vector searchVector(String where,String sorted,boolean direction) {
         // do the query on the database
         if (where==null) {
@@ -1112,10 +1110,10 @@ public class MMObjectBuilder extends MMTable {
         sorted=mmb.getDatabase().getAllowedField(sorted);
         if (direction) {
             String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" ASC";
-            return(basicSearch(query));
+            return basicSearch(query);
         } else {
             String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted+" DESC";
-            return(basicSearch(query));
+            return basicSearch(query);
         }
     }
 
@@ -1181,40 +1179,40 @@ public class MMObjectBuilder extends MMTable {
         }
         String query = "SELECT * FROM " + getFullTableName() + " " + where
                        + " ORDER BY " + orderBy;
-        return(basicSearch(query));
+        return basicSearch(query);
     }
 
     /**
-    * Returns a vector containing all the objects that match the searchkeys
-    * @param where where clause that the objects need to fulfill
-    * @param sorted order in which to return the objects
-    * @param in either a set of object numbers (in comma-separated string format), or a sub query
-    *		returning a set of object numbers.
-    * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-    *		Only applies if a sorted order is given.
-    * @return a vector containing all the objects that apply.
-    */
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param in either a set of object numbers (in comma-separated string format), or a sub query
+     *		returning a set of object numbers.
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return a vector containing all the objects that apply.
+     */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
         // temp mapper hack only works in single order fields
         sorted=mmb.getDatabase().getAllowedField(sorted);
         // do the query on the database
-        if (in==null || in.equals("")) return(new Vector());
+        if (in==null || in.equals("")) return new Vector();
         if (direction) {
             String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
-            return(basicSearch(query));
+            return basicSearch(query);
         } else {
             String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,database)+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
-            return(basicSearch(query));
+            return basicSearch(query);
         }
     }
 
     /**
-    * Enumerate all the objects that match the where clause
-    * This method is slightly faster than search(), since it does not try to 'parse'
-    * the where clause.
-    * @param where where clause (SQL-syntax) that the objects need to fulfill
-    * @return an <code>Enumeration</code> containing all the objects that apply.
-    */
+     * Enumerate all the objects that match the where clause
+     * This method is slightly faster than search(), since it does not try to 'parse'
+     * the where clause.
+     * @param where where clause (SQL-syntax) that the objects need to fulfill
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
     public Enumeration searchWithWhere(String where) {
         // do the query on the database
         String query="SELECT * FROM "+getFullTableName()+" where "+where;
@@ -1228,11 +1226,11 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Store the nodes in the resultset, obtained from a builder, in a vector.
-    * The nodes retrieved are added to the cache.
-    * @param rs The resultset containing the nodes
-    * @return The vector which is to hold the data
-    */
+     * Store the nodes in the resultset, obtained from a builder, in a vector.
+     * The nodes retrieved are added to the cache.
+     * @param rs The resultset containing the nodes
+     * @return The vector which is to hold the data
+     */
     private Vector readSearchResults(ResultSet rs) {
         MMObjectNode node=null;
         Vector results=new Vector();
@@ -1265,19 +1263,19 @@ public class MMObjectBuilder extends MMTable {
                 }
             }
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
         return results;
     }
 
 
     /**
-    * Store the nodes in the resultset, obtained from a builder, in a sorted vector.
-    * (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult ?)
-    * The nodes retrieved are added to the cache.
-    * @param rs The resultset containing the nodes
-    * @return The SortedVector which holds the data
-    */
+     * Store the nodes in the resultset, obtained from a builder, in a sorted vector.
+     * (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult ?)
+     * The nodes retrieved are added to the cache.
+     * @param rs The resultset containing the nodes
+     * @return The SortedVector which holds the data
+     */
     public SortedVector readSearchResults(ResultSet rs, SortedVector sv) {
         try {
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -1294,21 +1292,21 @@ public class MMObjectBuilder extends MMTable {
                 sv.addUniqueSorted(node);
             }
 
-            return (sv);
+            return sv;
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            e.printStackTrace();
+            log.error(Logging.stackTrace(e));
         }
-        return (null);
+        return null;
     }
 
 
     /**
-    * Build a set command string from a set nodes ( should be moved )
-    * @parame nodes Vector containg the nodes to put in the set
-    * @param fieldName fieldname whsoe values should be put in the set
-    * @return a comma-seperated list of values, as a <code>String</code>
-    */
+     * Build a set command string from a set nodes ( should be moved )
+     * @parame nodes Vector containg the nodes to put in the set
+     * @param fieldName fieldname whsoe values should be put in the set
+     * @return a comma-seperated list of values, as a <code>String</code>
+     */
     public String buildSet(Vector nodes, String fieldName) {
         String result = "(";
         Enumeration enum = nodes.elements();
@@ -1325,13 +1323,13 @@ public class MMObjectBuilder extends MMTable {
 
         }
         result += ")";
-        return (result);
+        return result;
     }
 
     /**
-    * Return a list of field definitions of this table.
-    * @return a <code>Vector</code> with the tables fields (FieldDefs)
-    */
+     * Return a list of field definitions of this table.
+     * @return a <code>Vector</code> with the tables fields (FieldDefs)
+     */
     public Vector getFields() {
         Vector	results=new Vector();
         FieldDefs node;
@@ -1344,9 +1342,9 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Return a list of field names of this table.
-    * @return a <code>Vector</code> with the tables field anmes (String)
-    */
+     * Return a list of field names of this table.
+     * @return a <code>Vector</code> with the tables field anmes (String)
+     */
     public Vector getFieldNames() {
         Vector	results=new Vector();
         FieldDefs node;
@@ -1358,10 +1356,10 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Return a field's definition
-    * @param the requested field's name
-    * @return a <code>FieldDefs</code> belonging with the indicated field
-    */
+     * Return a field's definition
+     * @param the requested field's name
+     * @return a <code>FieldDefs</code> belonging with the indicated field
+     */
     public FieldDefs getField(String fieldName) {
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         return node;
@@ -1369,10 +1367,10 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Add a field to this builder.
-    * This does not affect the builder config file, nor the table used.
-    * @param def the field definiton to add
-    */
+     * Add a field to this builder.
+     * This does not affect the builder config file, nor the table used.
+     * @param def the field definiton to add
+     */
     public void addField(FieldDefs def) {
             fields.put(def.getDBName(),def);
         sortedEditFields = null;
@@ -1384,10 +1382,10 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Remove a field from this builder.
-    * This does not affect the builder config file, nor the table used.
-    * @param fieldname the name of the field to remove
-    */
+     * Remove a field from this builder.
+     * This does not affect the builder config file, nor the table used.
+     * @param fieldname the name of the field to remove
+     */
     public void removeField(String fieldname) {
         FieldDefs def=getField(fieldname);
         int dbpos=def.getDBPos();
@@ -1409,18 +1407,18 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Return a field's database type. The returned value is one of the following values
-    * declared in FieldDefs:
-    * TYPE_STRING,
-    * TYPE_INTEGER,
-    * TYPE_BYTE,
-    * TYPE_FLOAT,
-    * TYPE_DOUBLE,
-    * TYPE_LONG,
-    * TYPE_UNKNOWN
-    * @param the requested field's name
-    * @return the field's type.
-    */
+     * Return a field's database type. The returned value is one of the following values
+     * declared in FieldDefs:
+     * TYPE_STRING,
+     * TYPE_INTEGER,
+     * TYPE_BYTE,
+     * TYPE_FLOAT,
+     * TYPE_DOUBLE,
+     * TYPE_LONG,
+     * TYPE_UNKNOWN
+     * @param the requested field's name
+     * @return the field's type.
+     */
     public int getDBType(String fieldName) {
         if (fields==null) {
             log.error("getDBType(): fielddefs are null on object : "+tableName);
@@ -1436,29 +1434,29 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Return a field's database state. The returned value is one of the following values
-    * declared in FieldDefs:
-    * DBSTATE_VIRTUAL,
-    * DBSTATE_PERSISTENT,
-    * DBSTATE_SYSTEM,
-    * DBSTATE_UNKNOWN
-    * @param the requested field's name
-    * @return the field's type.
-    */
+     * Return a field's database state. The returned value is one of the following values
+     * declared in FieldDefs:
+     * DBSTATE_VIRTUAL,
+     * DBSTATE_PERSISTENT,
+     * DBSTATE_SYSTEM,
+     * DBSTATE_UNKNOWN
+     * @param the requested field's name
+     * @return the field's type.
+     */
     public int getDBState(String fieldName) {
         if (fields==null) return FieldDefs.DBSTATE_PERSISTENT;
         FieldDefs node=(FieldDefs)fields.get(fieldName);
         if (node==null) return FieldDefs.DBSTATE_UNKNOWN;
-        return(node.getDBState());
+        return node.getDBState();
     }
 
     /**
-    * What should a GUI display for this node.
-    * Default is the first non system field (first field after owner).
-    * Override this to display your own choice (see Images.java).
-    * @param node The node to display
-    * @return the display of the node as a <code>String</code>
-    */
+     * What should a GUI display for this node.
+     * Default is the first non system field (first field after owner).
+     * Override this to display your own choice (see Images.java).
+     * @param node The node to display
+     * @return the display of the node as a <code>String</code>
+     */
     public String getGUIIndicator(MMObjectNode node) {
 
         // do the best we can because this method was not implemeted
@@ -1469,7 +1467,7 @@ public class MMObjectBuilder extends MMTable {
             String fname=(String)sortedDBLayout.elementAt(2);
             String str = node.getStringValue( fname );
             if (str.length()>128) {
-                return(str.substring(0,128)+"...");
+                return str.substring(0,128)+"...";
             }
             return str;
         } else {
@@ -1478,22 +1476,22 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * What should a GUI display for this node/field combo.
-    * Default is null (indicating to display the field as is)
-    * Override this to display your own choice.
-    * @param node The node to display
-    * @param field the name field of the field to display
-    * @return the display of the node's field as a <code>String</code>, null if not specified
-    */
+     * What should a GUI display for this node/field combo.
+     * Default is null (indicating to display the field as is)
+     * Override this to display your own choice.
+     * @param node The node to display
+     * @param field the name field of the field to display
+     * @return the display of the node's field as a <code>String</code>, null if not specified
+     */
     public String getGUIIndicator(String field,MMObjectNode node) {
         return null;
     }
 
     /**
-    * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
-    * Used for creating search-forms.
-    * @return a vector with FieldDefs
-    */
+     * Get the field definitions for the editor, sorted according to it's GUISearch property (as set in the builder xml file).
+     * Used for creating search-forms.
+     * @return a vector with FieldDefs
+     */
     public Vector getEditFields() {
         // hack hack
         if (sortedEditFields == null) {
@@ -1506,14 +1504,14 @@ public class MMObjectBuilder extends MMTable {
                 }
             }
         }
-        return (sortedEditFields);
+        return sortedEditFields;
     }
 
     /**
-    * Get the field definitions for the editor, sorted accoring to it's GUIList property (as set in the builder xml file).
-    * Used for creating list-forms (tables).
-    * @return a vector with FieldDefs
-    */
+     * Get the field definitions for the editor, sorted accoring to it's GUIList property (as set in the builder xml file).
+     * Used for creating list-forms (tables).
+     * @return a vector with FieldDefs
+     */
     public Vector getSortedListFields() {
         // hack hack
         if (sortedListFields == null) {
@@ -1531,10 +1529,10 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Get the field definitions for the editor, sorted according to it's GUIPos property (as set in the builder xml file).
-    * Used for creating edit-forms.
-    * @return a vector with FieldDefs
-    */
+     * Get the field definitions for the editor, sorted according to it's GUIPos property (as set in the builder xml file).
+     * Used for creating edit-forms.
+     * @return a vector with FieldDefs
+     */
     public Vector getSortedFields() {
         // hack hack
         if (sortedFields == null) {
@@ -1547,53 +1545,53 @@ public class MMObjectBuilder extends MMTable {
                 }
             }
         }
-        return (sortedFields);
+        return sortedFields;
     }
 
     /**
-    * Returns the next field as defined by its sortorder, according to it's GUIPos property (as set in the builder xml file).
-    * Used for moving between fields in an edit-form.
-    */
+     * Returns the next field as defined by its sortorder, according to it's GUIPos property (as set in the builder xml file).
+     * Used for moving between fields in an edit-form.
+     */
     public FieldDefs getNextField(String currentfield) {
         FieldDefs cdef=getField(currentfield);
         int pos=sortedFields.indexOf(cdef);
         if (pos!=-1  && (pos+1)<sortedFields.size()) {
-            return((FieldDefs)sortedFields.elementAt(pos+1));
+            return (FieldDefs)sortedFields.elementAt(pos+1);
         }
         return null;
     }
 
     /**
-    * Retrieve the table name (without the clouds' base name)
-    * @return a <code>String</code> containing the table name
-    */
+     * Retrieve the table name (without the clouds' base name)
+     * @return a <code>String</code> containing the table name
+     */
     public String getTableName() {
         return tableName;
     }
 
     /**
-    * Retrieve the full table name (including the clouds' base name)
-    * @return a <code>String</code> containing the full table name
-    */
+     * Retrieve the full table name (including the clouds' base name)
+     * @return a <code>String</code> containing the full table name
+     */
     public String getFullTableName() {
-        return(mmb.baseName+"_"+tableName);
+        return mmb.baseName+"_"+tableName;
     }
 
     /**
-    * Provides additional functionality when obtaining field values.
-    * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
-    * (generally when a fieldname is supplied that doesn't exist).
-    * It allows the system to add 'functions' to be included with a field name, such as 'html(body)' or 'time(lastmodified)'.
-    * This method will parse the fieldname, determining functions and calling the {@link #executeFunction} method to handle it.
-    * Functions in fieldnames can be given in the format 'functionname(fieldname)'. An old format allows 'functionname_fieldname' instead,
-    * though this only applies to the text functions 'short', 'html', and 'wap'.
-    * Functions can be nested, i.e. 'html(shorted(body))'.
-    * Derived builders should override this method only if they want to provide virtual fieldnames. To provide addiitonal functions,
-    * override {@link #executeFunction} instead.
-    * @param node the node whos efields are queries
-    * @param field the fieldname that is requested
-    * @return the result of the 'function', or null if no valid functions could be determined.
-    */
+     * Provides additional functionality when obtaining field values.
+     * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
+     * (generally when a fieldname is supplied that doesn't exist).
+     * It allows the system to add 'functions' to be included with a field name, such as 'html(body)' or 'time(lastmodified)'.
+     * This method will parse the fieldname, determining functions and calling the {@link #executeFunction} method to handle it.
+     * Functions in fieldnames can be given in the format 'functionname(fieldname)'. An old format allows 'functionname_fieldname' instead,
+     * though this only applies to the text functions 'short', 'html', and 'wap'.
+     * Functions can be nested, i.e. 'html(shorted(body))'.
+     * Derived builders should override this method only if they want to provide virtual fieldnames. To provide addiitonal functions,
+     * override {@link #executeFunction} instead.
+     * @param node the node whos efields are queries
+     * @param field the fieldname that is requested
+     * @return the result of the 'function', or null if no valid functions could be determined.
+     */
     public Object getValue(MMObjectNode node,String field) {
         Object rtn=null;
         int pos2,pos1=field.indexOf('(');
@@ -1652,20 +1650,20 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Executes a function on the field of a node, and returns the result.
-    * This method is called by the builder's {@link #getValue} method.
-    * Derived builders should override this method to provide additional functions.
-        *
-        * current functions are:<br />
-        * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
-        * on text:  wap, html, shorted, uppercase, lowercase <br />
-        * on node:  age() <br />
-        * on numbers: wrap_&lt;int&gt;, currency_euro <br />
-        *
-    * @param node the node whos efields are queries
-    * @param field the fieldname that is requested
-    * @return the result of the 'function', or null if no valid functions could be determined.
-    */
+     * Executes a function on the field of a node, and returns the result.
+     * This method is called by the builder's {@link #getValue} method.
+     * Derived builders should override this method to provide additional functions.
+     *
+     * current functions are:<br />
+     * on dates: date, time, timesec, longmonth, month, monthnumber, weekday, shortday, day, yearhort year<br />
+     * on text:  wap, html, shorted, uppercase, lowercase <br />
+     * on node:  age() <br />
+     * on numbers: wrap_&lt;int&gt;, currency_euro <br />
+     *
+     * @param node the node whos efields are queries
+     * @param field the fieldname that is requested
+     * @return the result of the 'function', or null if no valid functions could be determined.
+     */
     protected Object executeFunction(MMObjectNode node,String function,String field) {
         Object rtn=null;
         // time functions
@@ -1788,65 +1786,65 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Returns all relations of a node.
-    * This returns the relation objects, not the objects related to.
-    * Note that the relations returned are always of builder type 'InsRel', even if they are really from a derived builser such as AuthRel.
-    * @param src the number of the node to obtain the relations from
-    * @return a <code>Vector</code> with InsRel nodes
-    */
+     * Returns all relations of a node.
+     * This returns the relation objects, not the objects related to.
+     * Note that the relations returned are always of builder type 'InsRel', even if they are really from a derived builser such as AuthRel.
+     * @param src the number of the node to obtain the relations from
+     * @return a <code>Vector</code> with InsRel nodes
+     */
     public Vector getRelations_main(int src) {
         InsRel bul=mmb.getInsRel();
         if (bul==null) {
             log.error("getMMObject(): InsRel not yet loaded");
             return null;
         }
-        return(bul.getRelationsVector(src));
+        return bul.getRelationsVector(src);
     }
 
     /**
-    * Return the default url of this object.
-    * The basic value returned is <code>null</code>.
-    * @param src the number of the node to obtain the url from
-    * @return the basic url as a <code>String</code>, or <code>null</code> if unknown.
-    */
+     * Return the default url of this object.
+     * The basic value returned is <code>null</code>.
+     * @param src the number of the node to obtain the url from
+     * @return the basic url as a <code>String</code>, or <code>null</code> if unknown.
+     */
     public String getDefaultUrl(int src) {
         return null;
     }
 
-        /**
-        * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
-        * The system searches in a provided base path for a filename that matches the supplied number/alias of
-        * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
-        * @param documentRoot the root of the path to search
-        * @param path the subpath of the path to search
-        * @param nodeNumber the numbve ror alias of the node to filter on
-        * @param version the version number (or <code>null</code> if not applicable) to filter on
-        * @return the found path as a <code>String</code>, or <code>null</code> if not found
-        * @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
-        * this method should be moved to the {@link org.mmbase.module.gui.html.scanparser} class.
-        */
-        public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
-                File dir = new File(documentRoot+path);
-                if (version!=null) nodeNumber+="."+version;
-                String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
-                if ((matches == null) || (matches.length <= 0))
-                        return null;
-                return path + matches[0] + File.separator;
-        }
+    /**
+     * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
+     * The system searches in a provided base path for a filename that matches the supplied number/alias of
+     * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
+     * @param documentRoot the root of the path to search
+     * @param path the subpath of the path to search
+     * @param nodeNumber the numbve ror alias of the node to filter on
+     * @param version the version number (or <code>null</code> if not applicable) to filter on
+     * @return the found path as a <code>String</code>, or <code>null</code> if not found
+     * @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
+     * this method should be moved to the {@link org.mmbase.module.gui.html.scanparser} class.
+     */
+    public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
+        File dir = new File(documentRoot+path);
+        if (version!=null) nodeNumber+="."+version;
+        String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
+        if ((matches == null) || (matches.length <= 0))
+            return null;
+        return path + matches[0] + File.separator;
+    }
 
     /**
-    * Gets the number of nodes currently in the cache.
-    * @return the number of nodes in the cache
-    */
+     * Gets the number of nodes currently in the cache.
+     * @return the number of nodes in the cache
+     */
     public int getCacheSize() {
         return nodeCache.size();
     }
 
     /**
-    * Return the number of nodes in the cache of one objecttype.
-    * @param type the object type to count
-    * @return the number of nodes of that type in the cache
-    */
+     * Return the number of nodes in the cache of one objecttype.
+     * @param type the object type to count
+     * @return the number of nodes of that type in the cache
+     */
     public int getCacheSize(String type) {
         int i=mmb.getTypeDef().getIntValue(type);
         int j=0;
@@ -1859,8 +1857,8 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Get the numbers of the nodes cached (will be removed).
-    */
+     * Get the numbers of the nodes cached (will be removed).
+     */
     public String getCacheNumbers() {
         String results="";
         for (Enumeration e=nodeCache.elements();e.hasMoreElements();) {
@@ -1878,24 +1876,24 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Delete the nodes cache.
-    */
+     * Delete the nodes cache.
+     */
     public void deleteNodeCache() {
         nodeCache.clear();
     }
 
     /**
-    * Get the next database key (unique index for an object).
-    * @return an <code>int</code> value that is the next available key for an object.
-    */
+     * Get the next database key (unique index for an object).
+     * @return an <code>int</code> value that is the next available key for an object.
+     */
     public int getDBKey() {
         return mmb.getDBKey();
     }
 
 
     /**
-    * set text array in database
-    */
+     * set text array in database
+     */
     /*
     public void setDBText(int i, PreparedStatement stmt,String body) {
         byte[] isochars=null;
@@ -1903,7 +1901,7 @@ public class MMObjectBuilder extends MMTable {
                 isochars=body.getBytes("ISO-8859-1");
         } catch (Exception e) {
                 log.debug("setDBText(): String contains odd chars");
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
         }
         try {
                 ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
@@ -1911,7 +1909,7 @@ public class MMObjectBuilder extends MMTable {
                 stream.close();
         } catch (Exception e) {
                 log.error("setDBText(): Can't set ascii stream");
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
         }
 }
     */
@@ -1928,37 +1926,37 @@ public class MMObjectBuilder extends MMTable {
                 stream.close();
         } catch (Exception e) {
                 log.error("setDBByte(): Can't set byte stream");
-                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
         }
 }
     */
 
     /**
-    * Return the age of the node, determined using the daymarks builder.
-    * @param node The node whose age to determine
-    * @return the age in days, or 0 if unknown (daymarks builder not present)
-    */
+     * Return the age of the node, determined using the daymarks builder.
+     * @param node The node whose age to determine
+     * @return the age in days, or 0 if unknown (daymarks builder not present)
+     */
     public int getAge(MMObjectNode node) {
-        return(((DayMarkers)mmb.getMMObject("daymarks")).getAge(node));
+        return ((DayMarkers)mmb.getMMObject("daymarks")).getAge(node);
     }
 
     /**
-    * Get the name of this mmserver from the MMBase Root
-    * @return a <code>String</code> which is the server's name
-    */
+     * Get the name of this mmserver from the MMBase Root
+     * @return a <code>String</code> which is the server's name
+     */
     public String getMachineName() {
         return mmb.getMachineName();
     }
 
     /**
-    * Called when a remote node is changed.
-    * Should be called by subclasses if they override it.
-    * @param machine Name of the machine that changed the node.
-    * @param number Number of the changed node as a <code>String</code>
-    + @param builder type of the changed node
-    + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-    * @return always <code>true</code>
-    */
+     * Called when a remote node is changed.
+     * Should be called by subclasses if they override it.
+     * @param machine Name of the machine that changed the node.
+     * @param number Number of the changed node as a <code>String</code>
+     * @param builder type of the changed node
+     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+     * @return always <code>true</code>
+     */
     public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
@@ -1971,7 +1969,7 @@ public class MMObjectBuilder extends MMTable {
                 }
             } catch (Exception e) {
                 log.error("Not a number");
-                                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
             }
         } else if (ctype.equals("r")) {
             try {
@@ -1981,9 +1979,8 @@ public class MMObjectBuilder extends MMTable {
                     node.delRelationsCache();
                 }
             } catch (Exception e) {
-                                e.printStackTrace();
-                        }
-
+                log.error(Logging.stackTrace(e));
+            }
         }
 
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
@@ -1995,14 +1992,14 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Called when a local node is changed.
-    * Should be called by subclasses if they override it.
-    * @param machine Name of the machine that changed the node.
-    * @param number Number of the changed node as a <code>String</code>
-    + @param builder type of the changed node
-    + @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-    * @return always <code>true</code>
-    */
+     * Called when a local node is changed.
+     * Should be called by subclasses if they override it.
+     * @param machine Name of the machine that changed the node.
+     * @param number Number of the changed node as a <code>String</code>
+     * @param builder type of the changed node
+     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+     * @return always <code>true</code>
+     */
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
@@ -2015,7 +2012,7 @@ public class MMObjectBuilder extends MMTable {
                 }
             } catch (Exception e) {
                 log.error("Not a number");
-                                e.printStackTrace();
+                log.error(Logging.stackTrace(e));
             }
         } else
         if (ctype.equals("r")) {
@@ -2026,8 +2023,8 @@ public class MMObjectBuilder extends MMTable {
                     node.delRelationsCache();
                 }
             } catch (Exception e) {
-                                e.printStackTrace();
-                        }
+                log.error(Logging.stackTrace(e));
+            }
 
         }
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
@@ -2040,23 +2037,23 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Called when a local field is changed.
-    * @param number Number of the changed node as a <code>String</code>
-    + @param builder type of the changed node
-    + @param field name of the changed field
-    + @param value value it changed to
-    * @return always <code>true</code>
-    */
+     * Called when a local field is changed.
+     * @param number Number of the changed node as a <code>String</code>
+     * @param builder type of the changed node
+     * @param field name of the changed field
+     * @param value value it changed to
+     * @return always <code>true</code>
+     */
     public boolean fieldLocalChanged(String number,String builder,String field,String value) {
         log.debug("FLC="+number+" BUL="+builder+" FIELD="+field+" value="+value);
         return true;
     }
 
     /**
-    * Adds a remote observer to this builder.
-    * The observer is notified whenever an object of this builder is changed, added, or removed.
-    * @return always <code>true</code>
-    */
+     * Adds a remote observer to this builder.
+     * The observer is notified whenever an object of this builder is changed, added, or removed.
+     * @return always <code>true</code>
+     */
     public boolean addRemoteObserver(MMBaseObserver obs) {
         if (!remoteObservers.contains(obs)) {
             remoteObservers.addElement(obs);
@@ -2065,10 +2062,10 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Adds a local observer to this builder.
-    * The observer is notified whenever an object of this builder is changed, added, or removed.
-    * @return always <code>true</code>
-    */
+     * Adds a local observer to this builder.
+     * The observer is notified whenever an object of this builder is changed, added, or removed.
+     * @return always <code>true</code>
+     */
     public boolean addLocalObserver(MMBaseObserver obs) {
         if (!localObservers.contains(obs)) {
             localObservers.addElement(obs);
@@ -2077,70 +2074,70 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    *  Used to create a default teaser by any builder
-    *  @deprecated Will be removed?
-    */
+     *  Used to create a default teaser by any builder
+     *  @deprecated Will be removed?
+     */
     public MMObjectNode getDefaultTeaser(MMObjectNode node,MMObjectNode tnode) {
         log.warn("getDefaultTeaser(): Generate Teaser,Should be overridden");
         return tnode;
     }
 
     /**
-    * Waits until a node is changed (multicast).
-    * @param node the node to wait for
-    */
+     * Waits until a node is changed (multicast).
+     * @param node the node to wait for
+     */
     public boolean waitUntilNodeChanged(MMObjectNode node) {
-        return(mmb.mmc.waitUntilNodeChanged(node));
+        return mmb.mmc.waitUntilNodeChanged(node);
     }
 
     /**
-    * Obtains a list of string values by performing the provided command and parameters.
-    * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
-    * @param sp The scanpage (containing http and user info) that calls the function
-    * @param tagger a Hashtable of parameters (name-value pairs) for the command
-    * @param tok a list of strings that describe the (sub)command to execute
-    * @return a <code>Vector</code> containing the result values as a <code>String</code>
-    */
+     * Obtains a list of string values by performing the provided command and parameters.
+     * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
+     * @param sp The scanpage (containing http and user info) that calls the function
+     * @param tagger a Hashtable of parameters (name-value pairs) for the command
+     * @param tok a list of strings that describe the (sub)command to execute
+     * @return a <code>Vector</code> containing the result values as a <code>String</code>
+     */
     public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
         throw new ParseException(classname +" should override the getList method (you've probably made a typo)");
     }
 
 
     /**
-    * Obtains a string value by performing the provided command.
-    * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
-    * @param sp The scanpage (containing http and user info) that calls the function
-    * @param tok a list of strings that describe the (sub)command to execute
-    * @return the result value as a <code>String</code>
-    */
+     * Obtains a string value by performing the provided command.
+     * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
+     * @param sp The scanpage (containing http and user info) that calls the function
+     * @param tok a list of strings that describe the (sub)command to execute
+     * @return the result value as a <code>String</code>
+     */
     public String replace(scanpage sp, StringTokenizer tok) {
         log.warn("replace(): replace called should be overridden");
         return "";
     }
 
     /**
-    * The hook that passes all form related pages to the correct handler.
-    * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
-    * The methood is currentkly called by the MMEDIT module, whenever a 'PRC-CMD-BUILDER-...' command
-    * is encountered in the list of commands to be processed.
-    * @param sp The scanpage (containing http and user info) that calls the function
-    * @param command a list of strings that describe the (sub)command to execute (the portion after ' PRC-CMD-BUILDER')
-    * @param cmds the commands (PRC-CMD) that are iurrently being processed, including the current command.
-    * @param vars variables (PRC-VAR) thatw ere set to be used during processing. the variable 'EDITSTATE' accesses the
-    *       {@link org.mmbase.module.gui.html.EditState} object (if applicable).
-    * @return the result value as a <code>String</code>
-    */
+     * The hook that passes all form related pages to the correct handler.
+     * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
+     * The methood is currentkly called by the MMEDIT module, whenever a 'PRC-CMD-BUILDER-...' command
+     * is encountered in the list of commands to be processed.
+     * @param sp The scanpage (containing http and user info) that calls the function
+     * @param command a list of strings that describe the (sub)command to execute (the portion after ' PRC-CMD-BUILDER')
+     * @param cmds the commands (PRC-CMD) that are iurrently being processed, including the current command.
+     * @param vars variables (PRC-VAR) thatw ere set to be used during processing. the variable 'EDITSTATE' accesses the
+     *       {@link org.mmbase.module.gui.html.EditState} object (if applicable).
+     * @return the result value as a <code>String</code>
+     */
     public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 
     /**
-    * Converts an MMNODE expression to SQL.
-    * MMNODE expressions are resolved by the database support classes.
-    * This means that some database-specific expressions can easier be converted.
-    * @param where the MMNODE expression
-    * @return the SQL clause as a <code>String</code>
-    */
+     * Converts an MMNODE expression to SQL.
+     * MMNODE expressions are resolved by the database support classes.
+     * This means that some database-specific expressions can easier be converted.
+     * @param where the MMNODE expression
+     * @return the SQL clause as a <code>String</code>
+     */
     public String convertMMNode2SQL(String where) {
         log.debug("convertMMNode2SQL(): "+where);
         String result="WHERE "+database.getMMNodeSearch2SQL(where,this);
@@ -2149,18 +2146,18 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Set the MMBase object.
-    * @param m the MMBase object to set as owner of this builder
-    */
+     * Set the MMBase object.
+     * @param m the MMBase object to set as owner of this builder
+     */
     public void setMMBase(MMBase m) {
         this.mmb=m;
     }
 
     /**
-    * Stores the fieldnames of a table in a vector, based on the current fields definition.
-    * The fields 'otype' and 'owner' become the first and second fieldnames.
-    * @param vec A vector with builder-creation commands, in the form 'dbname,guiname,guitype,guipos,guilist,guisearch,dbstate,dbname'
-    */
+     * Stores the fieldnames of a table in a vector, based on the current fields definition.
+     * The fields 'otype' and 'owner' become the first and second fieldnames.
+     * @param vec A vector with builder-creation commands, in the form 'dbname,guiname,guitype,guipos,guilist,guisearch,dbstate,dbname'
+     */
     public void setDBLayout(Vector vec) {
         sortedDBLayout=new Vector();
         sortedDBLayout.addElement("otype");
@@ -2207,10 +2204,10 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Stores the fieldnames of a table in a vector, based on the current fields definition.
-    * The fields 'otype' and 'owner' become the first and second fieldnames.
-    * @param fields A list of the builder's FieldDefs
-    */
+     * Stores the fieldnames of a table in a vector, based on the current fields definition.
+     * The fields 'otype' and 'owner' become the first and second fieldnames.
+     * @param fields A list of the builder's FieldDefs
+     */
     public void setDBLayout_xml(Hashtable fields) {
         sortedDBLayout=new Vector();
         sortedDBLayout.addElement("otype");
@@ -2231,81 +2228,81 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Set tablename of the builder. Should be used to initialize a MMTable object before calling init().
-    * @param the name of the table
-    */
+     * Set tablename of the builder. Should be used to initialize a MMTable object before calling init().
+     * @param the name of the table
+     */
     public void setTableName(String tableName) {
         this.tableName=tableName;
     }
 
     /**
-    * Set description of the builder
-    * @param the description text
-    */
+     * Set description of the builder
+     * @param the description text
+     */
     public void setDescription(String e) {
         this.description=e;
     }
 
     /**
-    * Set descriptions of the builder
-    * @param a <code>Hashtable</code> containing the descriptions
-    */
+     * Set descriptions of the builder
+     * @param a <code>Hashtable</code> containing the descriptions
+     */
     public void setDescriptions(Hashtable e) {
         this.descriptions=e;
     }
 
 
     /**
-    * Get description of the builder
-    * @return the description text
-    */
+     * Get description of the builder
+     * @return the description text
+     */
     public String getDescription() {
         return description;
     }
 
 
     /**
-    * Get descriptions of the builder
-    * @return  a <code>Hashtable</code> containing the descriptions
-    */
+     * Get descriptions of the builder
+     * @return  a <code>Hashtable</code> containing the descriptions
+     */
     public Hashtable getDescriptions() {
         return descriptions;
     }
 
     /**
-    * Sets Dutch Short name.
-    * @see #getDutchSName
-    * @deprecated Will be removed soon
-    */
+     * Sets Dutch Short name.
+     * @see #getDutchSName
+     * @deprecated Will be removed soon
+     */
     public void setDutchSName(String d) {
         this.dutchSName=d;
     }
 
 
     /**
-    * Sets search Age.
-    * @param age the search age as a <code>String</code>
-    */
+     * Sets search Age.
+     * @param age the search age as a <code>String</code>
+     */
     public void setSearchAge(String age) {
         this.searchAge=age;
     }
 
 
     /**
-    * Gets search Age
-    * @return the search age as a <code>String</code>
-    */
+     * Gets search Age
+     * @return the search age as a <code>String</code>
+     */
     public String getSearchAge() {
         return searchAge;
     }
 
     /**
-    * Gets Dutch Short name.
-    * Actually returns the builders short name in wither the 'current langauge', or default langauge 'us', whichever is available.
-    * If this fails, the value set with {@link #setDutchSName} is used instead.
-    * @returns the 'dutch' short name
-    * @deprecated use {@link #getSingularName} instead.
-    */
+     * Gets Dutch Short name.
+     * Actually returns the builders short name in wither the 'current langauge', or default langauge 'us', whichever is available.
+     * If this fails, the value set with {@link #setDutchSName} is used instead.
+     * @returns the 'dutch' short name
+     * @deprecated use {@link #getSingularName} instead.
+     */
     public String getDutchSName() {
         if (singularNames!=null) {
             String tmp=(String)singularNames.get(mmb.getLanguage());
@@ -2362,25 +2359,25 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Set classname of the builder
-    */
+     * Set classname of the builder
+     */
     public void setClassName(String d) {
         this.className=d;
     }
 
     /**
-    * Returns the classname of this builder
-    */
+     * Returns the classname of this builder
+     */
     public String getClassName() {
         return className;
     }
 
     /**
-    * Send a signal to other servers that a field was changed.
-    * @param node the node the field was changed in
-    * @param fieldname the name of the field that was changed
-    * @return always <code>true</code>
-    */
+     * Send a signal to other servers that a field was changed.
+     * @param node the node the field was changed in
+     * @param fieldname the name of the field that was changed
+     * @return always <code>true</code>
+     */
     public boolean	sendFieldChangeSignal(MMObjectNode node,String fieldname) {
         // we need to find out what the DBState is of this field so we know
         // who to notify of this change
@@ -2407,11 +2404,11 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Send a signal to other servers that a new node was created.
-    * @param tableName the table in which a node was edited (?)
-    * @param number the number of the new node
-    * @return always <code>true</code>
-    */
+     * Send a signal to other servers that a new node was created.
+     * @param tableName the table in which a node was edited (?)
+     * @param number the number of the new node
+     * @return always <code>true</code>
+     */
     public boolean signalNewObject(String tableName,int number) {
         if (mmb.mmc!=null) {
             mmb.mmc.changedNode(number,tableName,"n");
@@ -2421,11 +2418,11 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Converts a node to XML.
-    * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
-    * @param node the node to convert
-    * @return the XML <code>String</code>
-    */
+     * Converts a node to XML.
+     * This routine does not take into account invalid charaters (such as &ft;, &lt;, &amp;) in a datafield.
+     * @param node the node to convert
+     * @return the XML <code>String</code>
+     */
     public String toXML(MMObjectNode node) {
         String body="<?xml version=\""+version+"\"?>\n";
         body+="<!DOCTYPE mmnode."+tableName+" SYSTEM \""+mmb.getDTDBase()+"/mmnode/"+tableName+".dtd\">\n";
@@ -2449,78 +2446,78 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Sets a list of singular names (language - value pairs)
-    */
+     * Sets a list of singular names (language - value pairs)
+     */
     public void setSingularNames(Hashtable names) {
         singularNames=names;
     }
 
     /**
-    * Gets a list of singular names (language - value pairs)
-    */
+     * Gets a list of singular names (language - value pairs)
+     */
     public Hashtable getSingularNames() {
         return singularNames;
     }
 
     /**
-    * Sets a list of plural names (language - value pairs)
-    */
+     * Sets a list of plural names (language - value pairs)
+     */
     public void setPluralNames(Hashtable names) {
         pluralNames=names;
     }
 
     /**
-    * Gets a list of plural names (language - value pairs)
-    */
+     * Gets a list of plural names (language - value pairs)
+     */
     public Hashtable getPluralNames() {
         return pluralNames;
     }
 
     /**
-    * Get text from a blob field. the text is cut if it is to long.
-    * @param fieldname name of the field
-    * @param number number of the object in the table
-    * @return a <code>String</code> containing the contents of a field as text
-    */
+     * Get text from a blob field. the text is cut if it is to long.
+     * @param fieldname name of the field
+     * @param number number of the object in the table
+     * @return a <code>String</code> containing the contents of a field as text
+     */
     public String getShortedText(String fieldname,int number) {
-        return(database.getShortedText(tableName,fieldname,number));
+        return database.getShortedText(tableName,fieldname,number);
     }
 
     /**
-    * Get binary data of a database blob field. the data is cut if it is to long.
-    * @param fieldname name of the field
-    * @param number number of the object in the table
-    * @return an array of <code>byte</code> containing the contents of a field as text
-    */
+     * Get binary data of a database blob field. the data is cut if it is to long.
+     * @param fieldname name of the field
+     * @param number number of the object in the table
+     * @return an array of <code>byte</code> containing the contents of a field as text
+     */
     public byte[] getShortedByte(String fieldname,int number) {
-        return(database.getShortedByte(tableName,fieldname,number));
+        return database.getShortedByte(tableName,fieldname,number);
     }
 
     /**
-    * Get binary data of a database blob field.
-    * @param fieldname name of the field
-    * @param number number of the object in the table
-    * @return an array of <code>byte</code> containing the contents of a field as text
-    */
+     * Get binary data of a database blob field.
+     * @param fieldname name of the field
+     * @param number number of the object in the table
+     * @return an array of <code>byte</code> containing the contents of a field as text
+     */
     public byte[] getDBByte(ResultSet rs,int idx) {
-        return(database.getDBByte(rs,idx));
+        return database.getDBByte(rs,idx);
     }
 
     /**
-    * Get text from a blob field.
-    * @param fieldname name of the field
-    * @param number number of the object in the table
-    * @return a <code>String</code> containing the contents of a field as text
-    */
+     * Get text from a blob field.
+     * @param fieldname name of the field
+     * @param number number of the object in the table
+     * @return a <code>String</code> containing the contents of a field as text
+     */
     public String getDBText(ResultSet rs,int idx) {
-        return(database.getDBText(rs,idx));
+        return database.getDBText(rs,idx);
     }
 
 
     /**
-    * Maintains statistics. Doesn't work. Needs the statistics builder.
-    * @param type the name of the type of action to keep the stats for.
-    */
+     * Maintains statistics. Doesn't work. Needs the statistics builder.
+     * @param type the name of the type of action to keep the stats for.
+     */
     private void statCount(String type) {
         if (1==1) return; // problems with shadow nodes
 
@@ -2549,24 +2546,24 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Tests whether a builder table is created.
-    * XXX Should be moved to MMTable.
-    * @return <code>true</code> if the table exists, <code>false</code> otherwise
-    */
+     * Tests whether a builder table is created.
+     * XXX Should be moved to MMTable.
+     * @return <code>true</code> if the table exists, <code>false</code> otherwise
+     */
     public boolean created() {
         if (database!=null) {
-            return(database.created(getFullTableName()));
+            return database.created(getFullTableName());
         } else {
-            return(super.created());
+            return super.created();
         }
     }
 
     /**
-    * Returns the number of the node with the specified name.
-    * Tests whether a builder table is created.
-    * Should be moved to MMTable.
-    * @return <code>true</code> if the table exists, <code>false</code> otherwise
-    */
+     * Returns the number of the node with the specified name.
+     * Tests whether a builder table is created.
+      * Should be moved to MMTable.
+     * @return <code>true</code> if the table exists, <code>false</code> otherwise
+     */
     public String getNumberFromName(String name) {
         String number = null;
 
@@ -2587,46 +2584,46 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
-    * Provides additional functionality when setting field values.
-    * This method is called whenever a Node of the builder's type tries to change a value.
-    * It allows the system to add functionality such as checking valid data.
-    * Derived builders should override this method if they want to add functionality.
-    * @param node the node whose fields are changed
-    * @param field the fieldname that is changed
-    * @return <code>true</code> if the call was handled.
-    */
+     * Provides additional functionality when setting field values.
+     * This method is called whenever a Node of the builder's type tries to change a value.
+     * It allows the system to add functionality such as checking valid data.
+     * Derived builders should override this method if they want to add functionality.
+     * @param node the node whose fields are changed
+     * @param field the fieldname that is changed
+     * @return <code>true</code> if the call was handled.
+     */
     public boolean setValue(MMObjectNode node,String fieldname) {
         return true;
     }
 
 
     /**
-    * Provides a way to simulate xml files as configuration.
-    * @deprecated will be removed
-    */
+     * Provides a way to simulate xml files as configuration.
+     * @deprecated will be removed
+     */
     public Hashtable getXMLSetup() {
         return null;
     }
 
     /**
-    * Returns a HTML-version of a string.
-    * This replaces a number of tokens with HTML sequences.
-    * The default output does not match well with the new xhtml standards (ugly html), nor does it replace all tokens.
-    *
-    * Default replacements can be overridden by setting the builder properties in your <builder>.xml:
-    *
-    * html.alinea
-    * html.endofline
-    *
-    * Example:
-    * <properties>
-    *   <property name="html.alinea"> &lt;br /&gt; &lt;br /&gt;</property>
-    *   <property name="html.endofline"> &lt;br /&gt; </property>
-    * </properties>
-    *
-    * @param body text to convert
-    * @return the convert text
-    */
+     * Returns a HTML-version of a string.
+     * This replaces a number of tokens with HTML sequences.
+     * The default output does not match well with the new xhtml standards (ugly html), nor does it replace all tokens.
+     *
+     * Default replacements can be overridden by setting the builder properties in your <builder>.xml:
+     *
+     * html.alinea
+     * html.endofline
+     *
+     * Example:
+     * <properties>
+     *   <property name="html.alinea"> &lt;br /&gt; &lt;br /&gt;</property>
+     *   <property name="html.endofline"> &lt;br /&gt; </property>
+     * </properties>
+     *
+     * @param body text to convert
+     * @return the convert text
+     */
     protected String getHTML(String body) {
         String rtn="";
         if (body!=null) {
@@ -2660,11 +2657,11 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Returns a WAP-version of a string.
-    * This replaces a number of tokens with WAP sequences.
-    * @param body text to convert
-    * @return the convert text
-    */
+     * Returns a WAP-version of a string.
+     * This replaces a number of tokens with WAP sequences.
+     * @param body text to convert
+     * @return the convert text
+     */
     protected String getWAP( String body ) {
         String result = "";
         if( body != null ) {
@@ -2681,7 +2678,7 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Returns a URLEncoded-version (MIME x-www-form-urlencoded) of a string.
-         * This version uses the java.net.URLEncoder class to encode it.
+     * This version uses the java.net.URLEncoder class to encode it.
      * @param body text to convert
      * @return the URLEncoded text
      */
@@ -2695,28 +2692,28 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Support routine to return shorter strings.
-    * Cuts a string to a amximum length if it exceeds the length specified.
-    * @param str the string to shorten
-    @ param len the maximum length
-    @ return the (possibly shortened) string
-    */
+     * Support routine to return shorter strings.
+     * Cuts a string to a amximum length if it exceeds the length specified.
+     * @param str the string to shorten
+     * @param len the maximum length
+     * @return the (possibly shortened) string
+     */
     public String getShort(String str,int len) {
         if (str.length()>len) {
-            return(str.substring(0,(len-3))+"...");
+            return str.substring(0,(len-3))+"...";
         } else {
             return str;
         }
     }
 
     /**
-    * Stores fields information of this table.
-    * Asside from the fields supplied by the caller, a field 'otype' is added.
-    * This method calls {@link #setDBLayout_xml} to create a fieldnames list.
-    * @param xmlfields A Vector with fields as they appear in the current table.
-    *		This data is retrieved from an outside source (such as an xml file), and thus
-    *		may be incorrect.
-    */
+     * Stores fields information of this table.
+     * Asside from the fields supplied by the caller, a field 'otype' is added.
+     * This method calls {@link #setDBLayout_xml} to create a fieldnames list.
+     * @param xmlfields A Vector with fields as they appear in the current table.
+     *		This data is retrieved from an outside source (such as an xml file), and thus
+     *		may be incorrect.
+     */
     public void setXMLValues(Vector xmlfields) {
         //sortedEditFields = null;
         //sortedListFields = null;
@@ -2738,110 +2735,114 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-    * Sets whether configuration is based on xml files.
-    * @deprecated will be removed
-    */
+     * Sets whether configuration is based on xml files.
+     * @deprecated will be removed
+     */
     public void setXmlConfig(boolean state) {
         isXmlConfig=state;
     }
 
     /**
-    * Retrieves whether configuration is based on xml files.
-    * @deprecated will be removed
-    */
+     * Retrieves whether configuration is based on xml files.
+     * @deprecated will be removed
+     */
     public boolean isXMLConfig() {
         return isXmlConfig;
     }
 
     /**
-    * Sets the subpath of the builder's xml configuration file.
-    */
+     * Sets the subpath of the builder's xml configuration file.
+     */
     public void setXMLPath(String m) {
          xmlPath = m;
     }
 
     /**
-    * Retrieves the subpath of the builder's xml configuration file.
-    * Needed for builders that reside in subdirectories in the builder configuration file directory.
-    */
+     * Retrieves the subpath of the builder's xml configuration file.
+     * Needed for builders that reside in subdirectories in the builder configuration file directory.
+     */
     public String getXMLPath() {
          return xmlPath;
     }
 
     /**
-    * Set all builder properties
-    * Changed properties will not be saved.
-    * @param properties the properties to set
-    */
+     * Set all builder properties
+     * Changed properties will not be saved.
+     * @param properties the properties to set
+     */
     void setInitParameters(Hashtable properties) {
         this.properties=properties;
     }
 
     /**
-    * Get all builder properties
-    * @return a <code>Hashtable</code> containing the current properties
-    */
+     * Get all builder properties
+     * @return a <code>Hashtable</code> containing the current properties
+     */
     public Hashtable getInitParameters() {
         return properties;
     }
 
     /**
-    * Set a single builder property
-    * The propertie will not be saved.
-    * @param name name of the property
-    * @param value value of the property
-    */
+     * Set a single builder property
+     * The propertie will not be saved.
+     * @param name name of the property
+     * @param value value of the property
+     */
     public void setInitParameter(String name, String value) {
+        if (properties==null) properties=new Hashtable();
         properties.put(name,value);
     }
 
     /**
-    * Retrieve a specific property.
-    * @param name the name of the property to get
-    * @return the value of the property as a <code>String</code>
-    */
+     * Retrieve a specific property.
+     * @param name the name of the property to get
+     * @return the value of the property as a <code>String</code>
+     */
     public String getInitParameter(String name) {
-        return (String)properties.get(name);
+        if (properties==null)
+            return null;
+        else
+            return (String)properties.get(name);
     }
 
     /**
-    * Sets the version of this builder
-    * @param i the version number
-    */
+     * Sets the version of this builder
+     * @param i the version number
+     */
     public void setVersion(int i) {
         version=i;
     }
 
     /**
-    * Retrieves the version of this builder
-    * @return the version number
-    */
+     * Retrieves the version of this builder
+     * @return the version number
+     */
     public int getVersion() {
         return version;
     }
 
     /**
-    * Debugging routine,sends message to log
-    * @param msg the message to log
-    * @deprecated, use new logging system instead
-    */
+     * Debugging routine,sends message to log
+     * @param msg the message to log
+     * @deprecated, use new logging system instead
+     */
     protected void debug( String msg )
     {
         log.debug( classname +":"+ msg );
     }
 
     /**
-    * Retrieves the maintainer of this builder
-    * @return the name of the maintainer
-    */
+     * Retrieves the maintainer of this builder
+     * @return the name of the maintainer
+     */
     public String getMaintainer() {
         return maintainer;
     }
 
     /**
-    * Sets the maintainer of this builder
-    * @param m the name of the maintainer
-    */
+     * Sets the maintainer of this builder
+     * @param m the name of the maintainer
+     */
     public void setMaintainer(String m) {
         maintainer=m;
     }
@@ -2859,65 +2860,73 @@ public class MMObjectBuilder extends MMTable {
         if (pos!=-1) {
                 url=url.substring(0,pos);
         }
-        return(url);
+        return url;
     }
 
     /**
-    * Wraps a string.
-    * Inserts newlines (\n) into a string at periodic intervals, to simulate wrapping.
-    * This also removes whitespace to the start of a line.
-    * @param text the text to wrap
-    * @param width the maximum width to wrap at
-    * @return the wrapped tekst
-    */
+     * Wraps a string.
+     * Inserts newlines (\n) into a string at periodic intervals, to simulate wrapping.
+     * This also removes whitespace to the start of a line.
+     * @param text the text to wrap
+     * @param width the maximum width to wrap at
+     * @return the wrapped tekst
+     */
     public String wrap(String text,int width) {
-                StringTokenizer tok;
-                String word;
-                StringBuffer dst=new StringBuffer();
-                int pos;
+        StringTokenizer tok;
+        String word;
+        StringBuffer dst=new StringBuffer();
+        int pos;
 
-                tok=new StringTokenizer(text," \n\r",true);
+        tok=new StringTokenizer(text," \n\r",true);
+        pos=0;
+        while(tok.hasMoreTokens()) {
+            word=tok.nextToken();
+            if (word.equals("\n")) {
                 pos=0;
-                while(tok.hasMoreTokens()) {
-                        word=tok.nextToken();
-                        if (word.equals("\n")) {
-                                pos=0;
-                        } else if (word.equals(" ")) {
-                            if (pos==0) {
-                        word="";
-                            } else {
-                                pos++;
-                                if (pos>=width) {
-                                    word="\n";
-                                        pos=0;
-                                }
-                        }
-                        } else {
-                                pos+=word.length();
-                                if (pos>=width) {
-                                        dst.append("\n");
-                                        pos=word.length();
-                                }
-                        }
-                        dst.append(word);
-                }
-                return(dst.toString());
-        }
-
-        private String substring(String value,int len,String filler) {
-                if (filler==null) {
-                        if (value.length()>len) {
-                                return(value.substring(0,len));
-                        } else {
-                                return(value);
-                        }
+            } else if (word.equals(" ")) {
+                if (pos==0) {
+                    word="";
                 } else {
-                        int len2=filler.length();
-                        if ((value.length()+len2)>len) {
-                                return(value.substring(0,(len-len2))+filler);
-                        } else {
-                                return(value);
-                        }
+                    pos++;
+                    if (pos>=width) {
+                        word="\n";
+                        pos=0;
+                    }
                 }
+            } else {
+                pos+=word.length();
+                if (pos>=width) {
+                    dst.append("\n");
+                    pos=word.length();
+                }
+            }
+            dst.append(word);
         }
+        return dst.toString();
+    }
+
+    /**
+     * Gets a substring.
+     * @param value the string to get a substring of
+     * @param len the length of the substring
+     * @param filler if not null, this field is used as a trailing tekst
+     * of the created substring.
+     * @return the substring
+     */
+    private String substring(String value,int len,String filler) {
+        if (filler==null) {
+            if (value.length()>len) {
+                return value.substring(0,len);
+            } else {
+                return value;
+            }
+        } else {
+            int len2=filler.length();
+            if ((value.length()+len2)>len) {
+                return value.substring(0,(len-len2))+filler;
+            } else {
+                return value;
+            }
+        }
+    }
 }
