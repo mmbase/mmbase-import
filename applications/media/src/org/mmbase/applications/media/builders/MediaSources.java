@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.26 2004-02-24 09:28:07 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.26.2.1 2004-05-12 14:41:46 rob Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -130,7 +130,7 @@ public class MediaSources extends MMObjectBuilder {
         MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
         insrel.setValue("snumber", source.getIntValue("number"));
         insrel.setValue("dnumber", mediafragment.getIntValue("number"));
-        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        insrel.setValue("rnumber", mmb.getRelDef().getNumberByName("related"));
         int ret = insrel.insert(owner);
         if(ret<0) {
             log.error("Cannot create relation between mediafragment and mediasource "+insrel);
@@ -442,7 +442,7 @@ public class MediaSources extends MMObjectBuilder {
         MMObjectNode insrel = mmb.getInsRel().getNewNode(owner);
         insrel.setValue("snumber", source.getValue("number"));
         insrel.setValue("dnumber", providernumber);
-        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        insrel.setValue("rnumber", mmb.getRelDef().getNumberByName("related"));
         
         int ret = insrel.insert(owner);
         if(ret<0) {
