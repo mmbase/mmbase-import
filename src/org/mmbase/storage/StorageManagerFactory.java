@@ -32,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.4 2003-09-19 09:59:42 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.5 2003-11-18 14:59:35 michiel Exp $
  */
 public abstract class StorageManagerFactory {
 
     // logger
-    private static Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
+    private static final Logger log = Logging.getLoggerInstance(StorageManagerFactory.class);
 
     /**
      * A reference to the MMBase module
@@ -147,7 +147,7 @@ public abstract class StorageManagerFactory {
             load();
         } catch (StorageException se) {
             // pass exceptions as a StorageError to signal a serious (unrecoverable) error condition
-            log.fatal(Logging.stackTrace(se));
+            log.fatal(se.getMessage() + Logging.stackTrace(se));
             throw new StorageError(se);
         }
     }
