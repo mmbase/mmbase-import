@@ -23,7 +23,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: MMJdbc2NodeInterface.java,v 1.24 2003-08-27 17:44:32 michiel Exp $
+ * @version $Id: MMJdbc2NodeInterface.java,v 1.25 2003-09-01 13:29:45 pierre Exp $
  */
 public interface MMJdbc2NodeInterface extends SearchQueryHandler {
     /**
@@ -63,7 +63,7 @@ public interface MMJdbc2NodeInterface extends SearchQueryHandler {
 
 
     /**
-     * @see decodeDBnodeField(MMObjectNode, String, ResultSet, int)
+     * @see #decodeDBnodeField(MMObjectNode, String, ResultSet, int)
      * @param prefix When using cluster nodes, the key of the value map of the node must be prefixed (e.g. with 'news.')
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node, String fieldName, ResultSet resultSet, int i, String prefix);

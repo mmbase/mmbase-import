@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.4 2003-08-26 08:05:49 pierre Exp $
+ * @version $Id: Attributes.java,v 1.5 2003-09-01 13:29:46 pierre Exp $
  */
 public final class Attributes {
 
@@ -32,8 +32,8 @@ public final class Attributes {
      * When true, the database supports inheritance (you can extend tables). This option influences what fields
      * MMBase will add to a newly created table.
      * Note that you should specify this attribute if you have set up the schemes
-     * {@link Schemes.CREATE_ROW_TYPE_SCHEME} and/or
-     * {@link Schemes.CREATE_TABLE_SCHEME} to create tables that support inheritance.
+     * {@link Schemes#CREATE_ROW_TYPE} and/or
+     * {@link Schemes#CREATE_TABLE} to create tables that support inheritance.
      * The default is <code>false</code>
      */
     public static final String SUPPORTS_INHERITANCE = "database-supports-inheritance";
@@ -63,7 +63,7 @@ public final class Attributes {
     /**
      * Option: <code>database-force-encode-text</code>.
      * If true, the database layer will explicitly decode/encode strings using the MMBase encoding when
-     * storing and retrieving text from the database. 
+     * storing and retrieving text from the database.
      * The default is <code>false</code>
      */
     public static final String FORCE_ENCODE_TEXT = "database-force-encode-text";
@@ -96,7 +96,7 @@ public final class Attributes {
      * If true, only data manipulation (INSERT, UPDATE) can be done within a transaction.
      * This option should be used to properly close connections before a data definiton query is run.
      * The default is determined from the database metadata.
-     * @todo: not used at the moment
+     * @todo not used at the moment
      */
     public static final String SUPPORTS_DATA_MANIPULATION_TRANSACTIONS_ONLY = "database-supports-data-manipulation-transactions-only";
 

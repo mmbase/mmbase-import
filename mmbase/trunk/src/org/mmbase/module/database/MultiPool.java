@@ -1,11 +1,11 @@
  /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.database;
 
@@ -20,12 +20,12 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.32 2003-06-05 09:14:16 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.33 2003-09-01 13:29:44 pierre Exp $
  */
 public class MultiPool {
-    
+
     private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
-    
+
     private List              pool     = new ArrayList();
     private List              busyPool = new ArrayList();
     private int               conMax   = 4;
@@ -37,21 +37,21 @@ public class MultiPool {
     private String   password;
     private String   dbm;
     private DatabaseSupport databaseSupport;
-    
+
     private static final boolean DORECONNECT  = true;
-    
+
     /**
      * @javadoc
      */
     MultiPool(DatabaseSupport databaseSupport, String url, String name, String password,int conMax) throws SQLException {
         this(databaseSupport,url,name,password,conMax,500);
-        
+
     }
     /**
      * Establish connection to the JDBC Pool(s)
      */
     MultiPool(DatabaseSupport databaseSupport,String url, String name, String password, int conMax,int maxQueries) throws SQLException {
-        
+
         log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries");
         this.conMax=conMax;
         this.url=url;
@@ -59,14 +59,14 @@ public class MultiPool {
         this.password=password;
         this.maxQueries=maxQueries;
         this.databaseSupport=databaseSupport;
-        
+
         // put connections on the pool
         for (int i = 0; i < conMax ; i++) {
             pool.add(getMultiConnection());
         }
-        
+
         semaphore = new DijkstraSemaphore(pool.size());
-        
+
         dbm = getDBMfromURL(url);
     }
 
@@ -89,7 +89,7 @@ public class MultiPool {
     protected void finalize() {
         shutdown();
     }
-    
+
     /**
      * 'realcloses' all connections.
      * @since MMBase-1.6.2
@@ -112,7 +112,7 @@ public class MultiPool {
             }
         }
     }
-    
+
     /**
      * Check the connections
      * @bad-constant  Max life-time of a query must be configurable
@@ -122,10 +122,10 @@ public class MultiPool {
         if (log.isDebugEnabled()) {
             log.debug("JDBC -> Starting the pool check (" + this + ") : busy=" + busyPool.size() + " free=" + pool.size());
         }
-        
+
         synchronized (semaphore) {
             //lock semaphore, so during the checks, no connections can be acquired or put back
-            
+
             //// (because the methods of semaphore are synchronized)
             //// commented out above commentline, because this is not true.
             //// The synchronized in java works on instnaces of a class.
@@ -149,22 +149,22 @@ public class MultiPool {
 
             // Michiel: but the getFree and putBack actions on the two pools are also synchronized on semaphore.
             //          so nothing can edit them without having acquired the lock on sempahore.
-            
-            
+
+
             int nowTime = (int) (System.currentTimeMillis() / 1000);
-            
+
             for (Iterator i = busyPool.iterator(); i.hasNext();) {
                 MultiConnection con = (MultiConnection) i.next();
                 int diff = nowTime - con.getStartTime();
-                
+
                 if (diff > 5) {
                     if (log.isDebugEnabled()) {
                         log.debug("Checking a busy connection "+con +" time = "+ diff + " seconds");
                     }
                 }
-                
+
                 if (diff < 30) {
-                    
+
                 } else if (diff < 120) {
                     // between 30 and 120 we putback 'zero' connections
                     if (con.lastSql==null || con.lastSql.length()==0) {
@@ -194,7 +194,7 @@ public class MultiPool {
                     new ConnectionCloser(con);
                 }
             }
-            
+
             if ((busyPool.size() + pool.size()) != conMax) {
                 // cannot happen, I hope...
                 log.error("Number of connections is not correct: "+ (busyPool.size()+pool.size()) + " != " + conMax);
@@ -209,7 +209,7 @@ public class MultiPool {
                         pool.remove(j);
                     }
                 }
-                
+
                 while(((busyPool.size() + pool.size()) > conMax) && pool.size()>2) {
                     // Remove too much ones.
                     MultiConnection con = (MultiConnection) pool.remove(0);
@@ -217,7 +217,7 @@ public class MultiPool {
                         log.debug("removing connection "+con);
                     }
                 }
-                
+
             }
             semaphore.release(releasecount);
         } // synchronized(semaphore)
@@ -225,7 +225,7 @@ public class MultiPool {
             log.debug("finished  checkTime()");
         }
     }
-    
+
     /**
      * get a free connection from the pool
      */
@@ -245,7 +245,7 @@ public class MultiPool {
         }
         return con;
     }
-    
+
     /**
      * putback the used connection in the pool
      */
@@ -261,10 +261,10 @@ public class MultiPool {
             if (! busyPool.contains(con)) {
                 log.warn("Put back connection was not in busyPool!!");
             }
-            
+
             con.release(); //Resets time connection is busy.
             MultiConnection oldcon = con;
-            
+
             if (DORECONNECT && (con.getUsage() > maxQueries)) {
                 if (log.isDebugEnabled()) {
                     log.debug("Re-Opening connection");
@@ -274,7 +274,7 @@ public class MultiPool {
                 } catch(SQLException re) {
                     log.error("Can't close a connection !!!");
                 }
-                
+
                 try {
                     con = getMultiConnection();
                 } catch(SQLException re) {
@@ -286,14 +286,14 @@ public class MultiPool {
             semaphore.release();
         }
     }
-    
+
     /**
      * get the pool size
      */
     public int getSize() {
         return pool.size();
     }
-    
+
     /**
      * get the number of statements performed
      */
@@ -305,41 +305,41 @@ public class MultiPool {
      * For reporting purposes the connections in pool can be listed.
      * An Iterator on a copy of the Pool is returned.
      *
-     * @see JDBC.listConnections
+     * @see JDBC#listConnections
      */
     public Iterator getPool() {
         synchronized(semaphore) {
             return new ArrayList(pool).iterator();
         }
     }
-    
-    
+
+
     /**
      * For reporting purposes the connections in busypool can be listed.
      * An Iterator on a copy of the BusyPool is returned.
-     * @see JDBC.listConnections
+     * @see JDBC#listConnections
      */
-    
+
     public Iterator getBusyPool() {
         synchronized(semaphore) {
             return new ArrayList(busyPool).iterator();
         }
     }
-    
+
     /**
      * @javadoc
      */
     public String toString() {
         return "dbm=" + dbm + ",name=" + name + ",conmax=" + conMax;
     }
-    
+
     /**
      * @javadoc
      */
     private String getDBMfromURL(String url) {
         return url;
     }
-    
+
     /**
      * @javadoc
      */
@@ -358,22 +358,22 @@ public class MultiPool {
         }
         return(rtn);
     }
-    
-    
+
+
     /**
      * Support class to close connections in a seperate thread, as some JDBC drivers
      * have a tendency to hang themselves on a runing sql close.
      */
     class ConnectionCloser implements Runnable {
         private MultiConnection connection;
-        
+
         private Thread kicker = null;
-        
+
         public ConnectionCloser(MultiConnection con) {
             connection=con;
             start();
         }
-        
+
         /**
          * Starts the Thread.
          */
@@ -385,7 +385,7 @@ public class MultiPool {
                 kicker.start();
             }
         }
-      
+
         /**
          * Close the database connection.
          */
