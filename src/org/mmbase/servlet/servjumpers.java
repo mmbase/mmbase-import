@@ -24,20 +24,17 @@ import org.mmbase.util.logging.*;
  * If a jumper is found, it will redirect the jumper to the designation url.
  *
  * @rename Servjumpers
-  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.17 2003-03-10 11:50:42 pierre Exp $
+ * @author Daniel Ockeloen
+ * @version $Id: servjumpers.java,v 1.18 2004-03-03 15:18:32 michiel Exp $
+ * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
-    private static Logger log;
-    // reference to the MMBase cloud
-    static MMBase mmbase;
+    private static final Logger  log = Logging.getLoggerInstance(servjumpers.class);
 
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(servjumpers.class.getName());
         log.info("Init of servlet " + getServletConfig().getServletName() + ".");
-        mmbase=(MMBase)getModule("MMBASEROOT");
     }
 
     /**
@@ -54,17 +51,19 @@ public class servjumpers extends JamesServlet {
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
         incRefCount(req);  // increase reference count
         try {
-            String url=null;
-            String tmpr=req.getRequestURI().substring(1);
-            if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
-            if (url!=null) {
+            String url = null;
+            String tmpr = req.getRequestURI().substring(1);
+            if (tmpr.indexOf('.') == -1 && (!tmpr.endsWith("/"))) url = getUrl(tmpr);
+            if (url != null) {
                 res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY); // 301
                 res.setContentType("text/html");
-                res.setHeader("Location",url);
-                return; // ??
+                res.setHeader("Location", url);
+                return; 
             }
         }
-        finally { decRefCount(req); } // decrease reference count
+        finally {  // decrease reference count always
+            decRefCount(req); 
+        } 
     }
 
     /**
@@ -72,16 +71,19 @@ public class servjumpers extends JamesServlet {
      * @param key the jumper key (original url specified)
      * @return the alternate yurl, or <code>null</code> if no url was found.
      */
-    String getUrl(String key) {
-        String url=null;
-        Jumpers bul=(Jumpers)mmbase.getMMObject("jumpers");
-        if (bul!=null) {
+    protected String getUrl(String key) {
+        String url = null;
+        Jumpers bul = null;
+        if (mmbase != null) {
+            bul = (Jumpers) mmbase.getMMObject("jumpers");
+        }
+        if (bul != null) {
             if (key.endsWith("/")) {
-                url=bul.getJump(key.substring(0,key.length()-1));
+                url = bul.getJump(key.substring(0, key.length() - 1));
             } else {
-                url=bul.getJump(key);
+                url = bul.getJump(key);
             }
-            if (url!=null) return url;
+            if (url != null) return url;
         } else {
             log.error("servjumpers -> can't access NodeManager jumpers (check jumpers.xml)");
         }
