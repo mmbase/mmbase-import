@@ -26,18 +26,39 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.2 2003-08-05 11:14:41 pierre Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.3 2003-08-05 14:28:48 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {  
 
     // the logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageLookup.class);
 
+    // the logger
+    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH = "/org/mmbase/storage/database/lookup.xml";
+
+    /** Public ID of the Storage DTD version 1.0 */
+    public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0 = "-//MMBase//DTD storage config 1.0//EN";
+    /** DTD resource filename of the Database DTD version 1.0 */
+    public static final String DTD_DATABASE_STORAGE_LOOKUP_1_0 = "storage_1_0.dtd";
+
+    /** Public ID of the most recent Database DTD */
+    public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP = PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0;
+    /** DTD resource filename of the most Database DTD */
+    public static final String DTD_DATABASE_STORAGE_LOOKUP = DTD_DATABASE_STORAGE_LOOKUP_1_0;
+
+    /**
+     * Register the Public Ids for DTDs used by StorageReader
+     * This method is called by XMLEntityResolver.
+     */
+    public static void registerPublicIDs() {
+        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0, DTD_DATABASE_STORAGE_LOOKUP_1_0, DatabaseStorageLookup.class);
+    }
+    
     /**
      * Constructor, accesses the storage lookup xml resource
      */
     public DatabaseStorageLookup() {
-        super(new InputSource(DatabaseStorageLookup.class.getResourceAsStream("resources.lookup")),
+        super(new InputSource(DatabaseStorageLookup.class.getResourceAsStream(DATABASE_STORAGE_LOOKUP_RESOURCE_PATH)),
               DocumentReader.validate(), DatabaseStorageLookup.class);
     }
 
@@ -73,7 +94,7 @@ public class DatabaseStorageLookup extends DocumentReader {
         for (int i = 0; match && i < conditionList.getLength(); i++) {
             Element condition = (Element)conditionList.item(i);
             String conditionName = condition.getTagName();
-            if (conditionName == null || conditionName.equals("driver-class")) {
+            if (conditionName.equals("driver-class")) {
                 match = startMatch(condition, dmd.getConnection().getClass().getName());
             } else if(conditionName.equals("driver-name")) {
                 match = match(condition, dmd.getDriverName());
