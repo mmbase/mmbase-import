@@ -40,11 +40,11 @@ public class NodeHandler extends IntegerHandler {
         if(context.getCloud().getNodeManagers().contains(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select name=\"" + prefix(field.getName()) + "\">\n");                
+            buffer.append("<select name=\"" + prefix(field.getName()) + "\">\n");
             // list all our nodes of the specified builder here...
             int value = 0;
             if (node != null) value = node.getIntValue(field.getName());
-            org.mmbase.bridge.NodeIterator nodes = context.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();                
+            org.mmbase.bridge.NodeIterator nodes = context.getCloud().getNodeManager(field.getGUIType()).getList(null, null, null).nodeIterator();
             while(nodes.hasNext()) {
                 org.mmbase.bridge.Node tmp = nodes.nextNode();
                 // we have a match on the number!
@@ -54,7 +54,7 @@ public class NodeHandler extends IntegerHandler {
                     buffer.append("selected=\"selected\"");
                 }
                 buffer.append("value=\""+tmp.getNumber()+"\">");
-                
+
                 java.util.List args = new java.util.Vector();
                 args.add("");
                 args.add(context.getCloud().getLocale().getLanguage());
@@ -86,6 +86,12 @@ public class NodeHandler extends IntegerHandler {
             String id = prefix(fieldName + "_search");
             if (context.getContextTag().findAndRegister(id, id) == null) {
                 return null;
+            } else {
+                String search = context.getContextTag().findAndRegisterString(prefix(fieldName));
+                if (search == null || "".equals(search)) {
+                    return null;
+                }
+                return "(" + fieldName + "=" + search + ")";
             }
         }
         return super.whereHtmlInput(field);
