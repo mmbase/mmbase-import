@@ -55,6 +55,18 @@ public class MMList extends MMTaglib
      **/
     private NodeIterator returnValues;
 
+    /**
+     * please help we use a NodeIterator to keep the Nodes used
+     * for each iteration but wil still whant to know
+     * in the loop if we are talking about the first/last node
+     * currentItemIndex is updated by fillVars
+     * listSize is set in 
+     * used by getSize() isFirst() and isLast()
+     **/
+    private int listSize = 0;
+    private int currentItemIndex= -1;
+
+
     
     /**
      * implementation of TagExtraInfo return values declared here
@@ -255,14 +267,17 @@ public class MMList extends MMTaglib
 		int max = Integer.parseInt(maxString);
 		if (max < nodes.size()){
 		    nodes=nodes.subNodeList(0,max);
+	 	    listSize = nodes.size();
 		    returnValues = nodes.nodeIterator();
 		}else {
+	 	    listSize = nodes.size();
 		    returnValues = nodes.nodeIterator();
 		}
 	    } catch (NumberFormatException e){
 		throw new JspException ("MAX Field in tag is no a number");
 	    }
 	} else {
+	    listSize = nodes.size();
 	    returnValues = nodes.nodeIterator();
 	}
 	// if we get a result from the query 
@@ -293,6 +308,7 @@ public class MMList extends MMTaglib
 
     private void fillVars(){
 	if (returnValues.hasNext()){
+	    currentItemIndex ++;
 	    Node node = returnValues.nextNode();
 	    String prefix = getPrefix();
 	    Enumeration returnFieldEnum = StringSplitter(fieldsString,",").elements();
@@ -338,6 +354,16 @@ public class MMList extends MMTaglib
 	return(nodes);
     }
 
+    public boolean isFirst(){
+	return (currentItemIndex == 0);
+    }
+    public int size(){
+	return listSize;
+    }
+
+    public boolean isLast(){
+	return (! returnValues.hasNext());
+    }
 
     private void showListError(Exception npe,String nodesSearchString,String nodeManagers,String searchNodes,String searchFields,String searchWhere, String searchSorted,String searchDirection, boolean searchDistinct,String maxString,String action) throws JspException { 
 	StringBuffer sb = new StringBuffer();
