@@ -1,23 +1,16 @@
-/*
- * DocletFieldConfiguration.java
- *
- * Created on June 13, 2002, 12:59 PM
- **/
+package org.mmbase.applications.config;
 
-package org.mmbase.applications.mmbasedoclet;
-
-import org.mmbase.applications.config.*;
 /**
  *
- * @author  mmbase
+ * @author Kees Jongenburger
  */
-public class DocletFieldConfiguration implements FieldConfiguration{
+public class BasicFieldConfiguration implements FieldConfiguration{
     String name;
     String type;
     String size;
     
-    /** Creates a new instance of DocletFieldConfiguration */
-    public DocletFieldConfiguration(String name,String type , String size) {
+    /** Creates a new instance of BasicFieldConfiguration */
+    public BasicFieldConfiguration(String name,String type , String size) {
         this.name = name;
         this.type = type;
         this.size = size;
