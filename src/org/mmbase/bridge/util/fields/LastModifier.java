@@ -17,17 +17,23 @@ import org.mmbase.bridge.*;
  * thrown (in other words, the field is read only).
  *
  * @author Michiel Meeuwissen
- * @version $Id: LastModifier.java,v 1.1 2004-09-17 09:29:25 michiel Exp $
+ * @version $Id: LastModifier.java,v 1.2 2004-10-05 18:08:40 michiel Exp $
  * @since MMBase-1.8
+ * @see   LastModifier
  */
+
 
 public class LastModifier implements CommitProcessor, Processor {
 
+    /**
+     * You can plug this in on every set-action besides 'object' which will make this
+     * field unmodifiable, except for set(Object) itself (which is never used from editors).
+     */
     public Object process(Node node, Field field, Object value) {
         throw new BridgeException("You cannot change the field " + field.getName());
     }        
   
     public void commit(Node node, Field field) {
-        node.getFieldValue(field).setString(node.getCloud().getUser().getIdentifier());
+        node.getFieldValue(field).set(node.getCloud().getUser().getIdentifier());
     }        
 }
