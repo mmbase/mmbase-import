@@ -14,6 +14,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 import javax.servlet.http.*;
+import java.text.SimpleDateFormat;
 
 import org.mmbase.util.*;
 
@@ -24,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.22 $ $Date: 2000-07-22 22:00:33 $
+ * @$Revision: 1.23 $ $Date: 2000-11-06 12:51:17 $
  */
 public class INFO extends ProcessorModule {
 
@@ -112,10 +113,86 @@ public class INFO extends ProcessorModule {
 			if (cmd.equals("EXISTS")) return(doExists(sp,tok));
 			if (cmd.equals("RELTIME")) return(doRelTime(tok));
 			if (cmd.equals("MEMORY")) return(doMemory(tok));
+			if (cmd.equals("TIMEFORMAT")) return(doTimeFormat(tok, false));
+			if (cmd.equals("TIMEFORMATSEC")) return(doTimeFormat(tok, true));
+			if (cmd.equals("STRING")) return(doString(tok));
 		}
 		return("No command defined");
 	}
 	
+	String doTimeFormat(StringTokenizer tok, boolean inSec)
+	{ /* PRE: The next tokens have to be of the syntax: [time in miliseconds (optional)]-["format"]
+	   */	
+		String result = null;
+		while (tok.hasMoreTokens())
+		{	String tmp = tok.nextToken();
+			String format;
+			long timeInMs;
+			if ((tmp.charAt(0) >= '0') && (tmp.charAt(0) <= '9'))
+			{	if (inSec)
+					timeInMs = (Long.decode(tmp + "000")).longValue();
+				else
+					timeInMs = (Long.decode(tmp)).longValue();
+				if (tok.hasMoreTokens()) format = tok.nextToken(); else format = "";				
+			}
+			else
+			{	// Time parameter is skipped, use current time.
+				timeInMs = System.currentTimeMillis();
+				format = tmp;
+			}
+			// If there are more tokens add them to the format because in that case the format contains '-'.
+			while (tok.hasMoreTokens()) format += "-" + tok.nextToken();
+			//debug("STRINGFORMAT: time=" + timeInMs + " format=" + format);		
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format.replace('_', ' '));
+			result = simpleDateFormat.format(new Date(timeInMs));
+		}
+		return result;
+	}
+
+
+	/**	
+	 * Used to perform tests on strings.
+	 * $MOD-INFO-STRING-EQUALS-val-compareVal
+	 * $MOD-INFO-STRING-STARTSWITH-val-compareVal(-toffset) or LEFTSTRING
+	 * $MOD-INFO-STRING-ENDSWITH-val-compareVal or RIGHTSTRING
+	 * $MOD-INFO-STRING-INDEXOF-val-compareVal or CONTAINS
+	 * @param tok StringTokenizer with the rest of the cmd.
+	 * @return a String containing cmd result.
+	 */
+	String doString(StringTokenizer tok) {
+		if (tok.hasMoreTokens()) {
+			String cmd=tok.nextToken();
+			if (tok.hasMoreTokens()) {
+				String val = (String)tok.nextToken();
+				if ((tok.hasMoreTokens())||(!val.equals(""))) {
+					String compareVal = (String)tok.nextToken();
+					if (cmd.equals("STARTSWITH")||cmd.equals("LEFTSTRING")) {
+						if (tok.hasMoreTokens()) {
+							int toffset = 0;
+							try { toffset = Integer.parseInt(tok.nextToken());
+							} catch (NumberFormatException nfe) {
+								debug(""+nfe);
+								return("Error in "+cmd+" offset arg");
+							} 
+							return ""+val.startsWith(compareVal,toffset); 
+						}
+						return ""+val.startsWith(compareVal); 
+					} else if (cmd.equals("ENDSWITH")||cmd.equals("RIGHTSTRING")) { 
+						return ""+val.endsWith(compareVal); 
+					} else if (cmd.equals("EQUALS")) { 
+						return ""+val.equals(compareVal); 
+					} else if (cmd.equals("INDEXOF")||cmd.equals("CONTAINS")) { 
+						if (val.indexOf(compareVal)!=-1) return ""+true; 
+						else return ""+false; 
+					} else { return ("Unknown String cmd "+cmd);
+					}
+				} else { return ("Syntax error, $MOD-INFO-"+cmd+"-"+val);
+				}
+			} else { return("Syntax error, $MOD-INFO-"+cmd+"-");
+			}
+		} else { return("Syntax error, $MOD-INFO-");
+		}
+	}
 
 	String doEscape(scanpage sp, StringTokenizer tok) {
 		String result=null;
