@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<idrel exportsource="mmbase://localhost/mmbase/new" timestamp="20021109010126">
+<idrel exportsource="mmbase://localhost/mmbase/richtext" timestamp="20021109010126">
 	<node number="6375" owner="system" snumber="5673" dnumber="272" rtype="idrel" dir="bidirectional">
 		<id>lang</id>
 	</node>
