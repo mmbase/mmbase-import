@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  **/
 
-public class WriteTag extends ContextReferrerWriter implements Writer {
+public class WriteTag extends ContextReferrerTag implements Writer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     public static String COOKIE_PATH    = "/";
