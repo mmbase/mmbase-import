@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.24 2002-05-23 12:22:23 michiel Exp $
+ * @version $Id: Wizard.java,v 1.25 2002-05-23 12:47:56 michiel Exp $
  *
  */
 public class Wizard {
@@ -880,7 +880,12 @@ public class Wizard {
 
             // Create the form item which has the same display mode as this datanode.
             Node item = Utils.selectSingleNode(fieldlist, "item[@displaymode='" + displaymode + "']");
-            if (item == null){item = Utils.selectSingleNode(fieldlist, "item");}
+            if (item == null) {
+                item = Utils.selectSingleNode(fieldlist, "item");
+                if (item == null) {
+                    throw new WizardException ("Could not find item");
+                }
+            }
             Node newitem = item.cloneNode(false);
             newitem = form.getOwnerDocument().importNode(newitem, false);
             newlist.appendChild(newitem);
