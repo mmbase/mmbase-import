@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.3 2002-03-30 16:32:43 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.4 2002-05-15 16:44:42 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -106,10 +106,16 @@ public class TemplateCache extends Cache {
         throw new RuntimeException("wrong types in cache");
     }
     public Object put(Source src, Templates value) {
+        if (! isActive()) {
+            if (log.isDebugEnabled()) {
+                log.debug("XSLT Cache is not active");
+            }
+            return null;
+        }
         String key = getKey(src);
         if (key == null) return null;
-        log.service("Put xslt in cache with key " + key);
-        Object res = super.put(key, value);
+        Object res = super.put(key, value);        
+        log.service("Put xslt in cache with key " + key.substring(0, 20) + "...");
         if (key.startsWith("file:////")) { // this Source is a File, watch it, because it it changes, the cache entry must be invalidated.
             try {
                 java.io.File  f  = new java.io.File(new java.net.URL(key).getFile());
