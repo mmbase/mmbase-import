@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.32 2004-08-05 14:14:17 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.33 2004-08-18 10:46:06 rob Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -98,7 +98,7 @@ public class StringHandler extends AbstractTypeHandler {
                             buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
                         }
                         buffer.append("</textarea>");
-                    } else if(field.getMaxLength() > 255 )  {
+                    } else {
                         buffer.append("<textarea wrap=\"soft\" rows=\"5\" cols=\"80\" class=\"small\" ");
                         addExtraAttributes(buffer);
                         buffer.append(" name=\"");
