@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.54 2002-11-10 19:06:14 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.54.2.1 2002-11-25 08:46:42 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1706,7 +1706,10 @@ public class MMAdmin extends ProcessorModule {
         String builder=(String)vars.get("BUILDER");
         MMObjectBuilder bul=getMMObject(builder);
         if (bul!=null) {
-            int pos=bul.getFields().size()+1;
+            // Determine position of new field.
+            // This should be the number of the last field as denied in the builder xml,
+            // as the DBPos field is incremented for each field in that file.
+            int pos=bul.getFields(FieldDefs.ORDER_CREATE).size()+1;
 
             FieldDefs def=new FieldDefs();
             def.setDBPos(pos);
