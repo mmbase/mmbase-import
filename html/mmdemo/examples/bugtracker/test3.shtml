@@ -1,0 +1,22 @@
+<PART login/updateUser.shtml>
+<HTML>
+<HEAD>
+   <TITLE>MMADMIN tools</TITLE>
+</HEAD>
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+
+<transactions>
+	<create>
+		<createObject type="messages">
+			<setField name="mailtype">1</setField>
+			<setField name="to">daniel@submarine.nl</setField>
+			<setField name="from">bugs@mmbase.org</setField>
+			<setField name="subject">Auto mail/html test van mmbase</setField>
+			<setField name="url">/mmdemo/license.shtml</setField>
+			<setField name="body">This is a email msg !</setField>
+		</createObject>
+	</create>
+</transactions>
+
+</BODY>
+</HTML>
