@@ -12,11 +12,12 @@ package org.mmbase.applications.templateengine.jsp;
 import java.io.*;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequestWrapper;
 
 import org.mmbase.util.logging.*;
 
 import org.mmbase.applications.templateengine.*;
-import org.mmbase.applications.templateengine.util.*;
+import org.mmbase.util.*;
 
 /**
  * @author Kees Jongenburger
@@ -41,17 +42,17 @@ public class JSPComponent extends AbstractContainer implements Component {
 
             wb.getHttpServletRequest().setAttribute("component", this);
 
-            //RequestWrapper req = new RequestWrapper(wb.getHttpServletRequest());
+            HttpServletRequestWrapper req = new HttpServletRequestWrapper(wb.getHttpServletRequest());
             //ResponseWrapper resp = new ResponseWrapper(wb.getHttpServletResponse(), writer);
             GenericResponseWrapper respw = new GenericResponseWrapper(wb.getHttpServletResponse());
             RequestDispatcher requestDispatcher = wb.getHttpServletRequest().getRequestDispatcher(path);
-            requestDispatcher.include(wb.getHttpServletRequest(), respw);
+            requestDispatcher.include(req, respw);
 
             if (writer == null) {
                 writer = wb.getHttpServletResponse().getWriter();
             }
             
-            writer.print(new String(respw.getData(), respw.getCharacterEncoding()));
+            writer.print(respw.toString());
             
             //help gc
             respw = null;
