@@ -566,6 +566,7 @@ Distribution: ${distro}
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
 
+    <delete file="${build.dir}/manifest.mf" />
     <delete file="${web.dir}/taglib.tld" />
     <!-- don't delete these, because multiple tld's inside a jar, -->
     <!-- can cause problems on certain servlet-engines -->
@@ -641,8 +642,10 @@ Distribution: ${distro}
         -->
     </target>
 
-    <target name="clean.war.webroot">
-      <delete dir="${webroot.build.dir}"/>
+    <target name="clean.war">
+      <delete dir="${webroot.build.dir}" />
+      <delete dir="${config.build.dir}" />
+      <delete file="${build.dir}/mmbase/mmbase.war" />
     </target>
 
     <!-- =================================================================== -->
@@ -1311,7 +1314,7 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target 
     name="clean"
-    depends="clean.documentation,clean.compile,clean.remote,clean.expand,clean.srcdist,clean.bindist,clean.lib,clean.junit,clean.apptool,clean.war.webroot" 
+    depends="clean.documentation,clean.compile,clean.remote,clean.expand,clean.srcdist,clean.bindist,clean.lib,clean.junit,clean.apptool,clean.war" 
     description="Clean everything (except for downloading)" />
 
 </project>
