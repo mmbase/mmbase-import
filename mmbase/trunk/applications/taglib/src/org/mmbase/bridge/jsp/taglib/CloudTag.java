@@ -188,7 +188,7 @@ public class CloudTag extends BodyTagSupport {
                     log.debug("cloud is not anonymous, throwing it away");
                     cloud = null;
                     logon = null;
-                    session.setAttribute("cloud_" + cloudName, null);
+                    session.removeAttribute("cloud_" + cloudName);
                 }
             } else if (logon == null && method != null) { 
                 // authorisation was requested, but not indicated for whom 
@@ -196,7 +196,7 @@ public class CloudTag extends BodyTagSupport {
                 if (cloud.getUser().getRank() == Rank.ANONYMOUS) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
-                    session.setAttribute("cloud_" + cloudName, null);
+                    session.removeAttribute("cloud_" + cloudName);
                 }
             } else  if (logon != null) { 
                 log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
@@ -204,7 +204,7 @@ public class CloudTag extends BodyTagSupport {
                 if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
                     log.debug("logged on, but as wrong user. log out first.");
                     cloud = null;
-                    session.setAttribute("cloud_" + cloudName, null);
+                    session.removeAttribute("cloud_" + cloudName);
                 } else {
                     log.debug("Cloud is ok already");
                 }
