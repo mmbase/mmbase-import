@@ -1,8 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@page language="java" contentType="text/html; charset=UTF-8"
-%><mm:content postprocessor="reducespace">
-<%@include file="import.jsp" %>
+%><%@include file="import.jsp" %>
 <%@include file="settings.jsp" %>
+<mm:content language="$language"  postprocessor="reducespace">
 <mm:import id="url">index_groups.jsp</mm:import>
 
 <mm:import externid="offset">0</mm:import>
@@ -10,7 +10,8 @@
 <mm:import externid="group" vartype="list" />
 <mm:import id="nodetype">mmbasegroups</mm:import>
 <mm:import id="fields">name,description,owner</mm:import>
- <%@include file="you.div.jsp" %>
+
+<mm:import externid="search" />
  <mm:import id="current">groups</mm:import>
  <%@include file="navigate.div.jsp" %>
  <%@include file="you.div.jsp" %>

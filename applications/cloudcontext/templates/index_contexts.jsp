@@ -1,12 +1,14 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
 %><%@page language="java" contentType="text/html; charset=UTF-8"
-%><mm:content postprocessor="reducespace">
-<%@include file="import.jsp" %><%@include file="settings.jsp" %>
+%><%@include file="import.jsp" %><%@include file="settings.jsp" %>
+<mm:content postprocessor="reducespace" language="$language">
+
 <mm:import id="url">index_contexts.jsp</mm:import>
 
 <mm:import externid="offset">0</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:import externid="context" vartype="list" />
+<mm:import externid="search" />
 <mm:import id="nodetype">mmbasecontexts</mm:import>
 <mm:import id="fields">name,description,owner</mm:import>
 <body>

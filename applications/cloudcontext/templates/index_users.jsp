@@ -2,7 +2,7 @@
 %><%@page language="java" contentType="text/html; charset=UTF-8"
 %><%@include file="import.jsp" %><%@include file="settings.jsp" %>
 <mm:content language="$language" postprocessor="reducespace">
-<mm:import id="url">index_users</mm:import>
+<mm:import id="url">index_users.jsp</mm:import>
 
 <mm:import externid="orderby">username</mm:import>
 <mm:import externid="directions">UP</mm:import>
