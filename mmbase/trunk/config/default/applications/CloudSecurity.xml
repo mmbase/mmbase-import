@@ -22,7 +22,8 @@
   </contextsourcelist>
   
   <description>
-    Installs the admin account
+    Installs the admin account for using mmbaseusers security, see
+    &lt;mmdocs/security&gt; for more information.
   </description>
   
   <install-notice>
