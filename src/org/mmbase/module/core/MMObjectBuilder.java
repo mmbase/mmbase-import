@@ -36,8 +36,8 @@ import org.mmbase.module.database.MultiConnection;
  * @version 14 Sept 1997
  */
 public class MMObjectBuilder extends MMTable {
-
 	private String classname = getClass().getName();
+	public boolean debug=false;
 
 	public static LRUHashtable obj2type;
 	public static LRUHashtable nodeCache = new LRUHashtable(1024*4);
@@ -61,7 +61,6 @@ public class MMObjectBuilder extends MMTable {
 	public boolean broadcastChanges=true;
 	Vector remoteObservers = new Vector();
 	Vector localObservers = new Vector();
-	public boolean debug=false;
 	Statistics statbul;
 	private Vector qlist=new Vector();
 	Hashtable nameCache=new Hashtable();
@@ -969,6 +968,7 @@ public class MMObjectBuilder extends MMTable {
 	* should be overriden if you want to define derived fields in a object
 	*/	
 	public Object getValue(MMObjectNode node,String field) {
+//		if (debug) debug("getValue() "+node+" --- "+field);
 		Object rtn=null;
 		int pos2,pos1=field.indexOf('(');
 		String name,function,val;

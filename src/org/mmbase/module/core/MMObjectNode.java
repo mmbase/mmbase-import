@@ -27,6 +27,9 @@ import org.mmbase.module.gui.html.*;
  * @author Daniel Ockeloen
  */
 public class MMObjectNode {
+	private String classname = getClass().getName();
+	private boolean debug=true;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	// values holds the name, value fields in this node
 	public Hashtable values=new Hashtable();
@@ -129,17 +132,18 @@ public class MMObjectNode {
 	public String toString() {
 		String result="";
 		try {
-		Enumeration e=values.keys();
-		while (e.hasMoreElements()) {
-			String key=(String)e.nextElement();
-			String dbtype=getDBType(key);
-			String value=""+values.get(key);
-			if (result.equals("")) {
-				result=key+"="+dbtype+":'"+value+"'";
-			} else {
-				result+=","+key+"="+dbtype+":'"+value+"'";
-			}
-		}	
+			result="prefix='"+prefix+"'";
+			Enumeration e=values.keys();
+			while (e.hasMoreElements()) {
+				String key=(String)e.nextElement();
+				String dbtype=getDBType(key);
+				String value=""+values.get(key);
+				if (result.equals("")) {
+					result=key+"="+dbtype+":'"+value+"'";
+				} else {
+					result+=","+key+"="+dbtype+":'"+value+"'";
+				}
+			}	
 		} catch(Exception e) {}	
 		return(result);
 	}
@@ -322,29 +326,38 @@ public class MMObjectNode {
 		// database
 		if (tmp!=null && tmp.indexOf("$SHORTED")==0) {
 
+			if (debug) debug("getStringValue(): node="+this+" -- fieldname "+fieldname);
 			// obtain the database type so we can check if what
 			// kind of object it is. this have be changed for
 			// multiple database support.
 			String type=getDBType(fieldname);
 
+			if (debug) debug("getStringValue(): fieldname "+fieldname+" has type "+type);
 			// check if for known mapped types
 			if (type.equals("text") || type.equals("blob")
 			|| type.equals("varchar") || type.equals("clob")) {
+				MMObjectBuilder bul;
+				String tmptable="";
 
 				int number=getIntValue("number");
 				// check if its in a multilevel node (than we have no node number and
-				// we need to guess it by xxx.number
-				int pos=fieldname.indexOf('.');
-				if (pos!=-1) {
-					String tmptable=fieldname.substring(0,pos);
-					number=this.getIntValue(tmptable+".number");
+				if (prefix!=null && prefix.length()>0) {
+					int pos=prefix.indexOf('.');
+					if (pos!=-1) {
+						tmptable=prefix.substring(0,pos);
+					} else {
+						tmptable=prefix;
+					}
+//					number=getIntValue("number");
+					bul=parent.mmb.getMMObject(tmptable);
+					if (debug) debug("getStringValue(): "+tmptable+":"+number+":"+prefix+":"+fieldname);
+				} else {
+					bul=parent;
 				}
-
-
 
 				// call our builder with the convert request this will probably
 				// map it to the database we are running.
-				String tmp2=parent.getShortedText(fieldname,number);
+				String tmp2=bul.getShortedText(fieldname,number);
 	
 				// did we get a result then store it in the values for next use
 				// and return it.
@@ -460,7 +473,15 @@ public class MMObjectNode {
 	* returns the DBType (as defined in JDBC mostly, needs some work)
 	*/
 	public String getDBType(String fieldname) {
-		return(parent.getDBType(fieldname));
+		if (prefix!=null && prefix.length()>0) {
+			// If the prefix is set use the builder contained therein
+			int pos=prefix.indexOf('.');
+			if (pos==-1) pos=prefix.length();
+			MMObjectBuilder bul=parent.mmb.getMMObject(prefix.substring(0,pos));
+			return(bul.getDBType(fieldname));
+		} else {
+			return(parent.getDBType(fieldname));
+		}
 	}
 
 
