@@ -44,7 +44,7 @@ public class TransformingWriter extends PipedWriter {
     private static final Logger log = Logging.getLoggerInstance(TransformingWriter.class);
 
     private Writer out;
-    private Runnable link;
+    private CharTransformerLink link;
 
 
     public TransformingWriter(Writer out, CharTransformer charTransformer)  {
@@ -54,7 +54,7 @@ public class TransformingWriter extends PipedWriter {
         PipedReader r = new PipedReader();
         try {            
             connect(r);
-            link = new ChainedCharTransformer.TransformerLink(charTransformer, r, out, false);
+            link = new CharTransformerLink(charTransformer, r, out, false);
             ChainedCharTransformer.executor.execute(link);
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
@@ -66,9 +66,16 @@ public class TransformingWriter extends PipedWriter {
      * {@inheritDoc}
      * ALso closes the wrapped Writer.
      */
-    public void close() throws IOException {   
-        super.close();
-        synchronized(link) {
+    public void close() throws IOException {
+        super.close(); // accept no more input
+        try {
+            while (! link.ready()) {                
+                synchronized(link) { // make sure we have the lock
+                    link.wait();
+                }
+            }
+        } catch (InterruptedException ie) {
+            log.warn("" + ie);
         }
         out.close();
     }
@@ -76,20 +83,19 @@ public class TransformingWriter extends PipedWriter {
   
     // main for testing purposes
     public static void main(String[] args) throws IOException {
-        Writer end = new StringWriter();
+        Writer out = new OutputStreamWriter(System.out);
         ChainedCharTransformer t = new ChainedCharTransformer();
         t.add(new UpperCaser());
         t.add(new SpaceReducer());
-        TransformingWriter writer = new TransformingWriter(end, t);
+        t.add(new Trimmer());
+        TransformingWriter writer = new TransformingWriter(out, t);
         String testString = "use argument to change this string";
         if (args.length > 0) {
             testString = args[0];
         }
         try {
-            System.out.println("Transforming '" + testString + "'");
             writer.write(testString);
             writer.close();
-            System.out.println(end.toString());
         } catch(Exception e) {
             log.error("" + e + Logging.stackTrace(e));
         }
