@@ -176,15 +176,18 @@ public class ImportTag extends WriteTag {
                 }                
             }
         } else { // get value from the body of the tag.
-            if (id == null) {
-                throw new JspTagException("Attributes referid and id cannot be both missing");
-            }
             value = getFromBodyContent();
             helper.setValue(value);
-            if (log.isDebugEnabled()) {
-                log.debug("Setting " + id + " to " + value);
+            if (id != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Setting " + id + " to " + value);
+                }
+                getContextTag().register(id, value);                        
+            } else {
+                if (helper.getJspvar() == null) {
+                    throw new JspTagException("Attributes externid, id and jspvar cannot be all missing");
+                }
             }
-            getContextTag().register(id, value);                        
         }
         found = false; // for use next time
         return SKIP_BODY;
