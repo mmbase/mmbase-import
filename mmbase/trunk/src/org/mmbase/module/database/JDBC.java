@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: JDBC.java,v 1.8 2000-03-30 13:11:44 wwwtech Exp $
+	$Id: JDBC.java,v 1.9 2000-03-31 13:33:18 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/03/30 13:11:44  wwwtech
+	Rico: added license
+	
 	Revision 1.7  2000/03/29 10:45:02  wwwtech
 	Rob: Licenses changed
 	
@@ -40,7 +43,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.8 2000-03-30 13:11:44 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.9 2000-03-31 13:33:18 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -276,7 +279,7 @@ private String defaultpassword;
 	 * User interface stuff
 	 */
 
-	public Vector getList(HttpServletRequest requestInfo,StringTagger tagger, String value) {
+	public Vector getList(HttpServletRequest requestInfo,StringTagger tagger, String value) throws ParseException {
     	String line = Strip.DoubleQuote(value,Strip.BOTH);
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
 		if (tok.hasMoreTokens()) {

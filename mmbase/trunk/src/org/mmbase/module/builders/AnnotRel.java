@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AnnotRel.java,v 1.7 2000-03-30 13:11:29 wwwtech Exp $
+$Id: AnnotRel.java,v 1.8 2000-03-31 13:27:48 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/30 13:11:29  wwwtech
+Rico: added license
+
 Revision 1.6  2000/03/29 10:59:20  wwwtech
 Rob: Licenses changed
 
@@ -38,7 +41,7 @@ import org.mmbase.util.RelativeTime;
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999 
- * @$Revision: 1.7 $ $Date: 2000-03-30 13:11:29 $
+ * @$Revision: 1.8 $ $Date: 2000-03-31 13:27:48 $
  */
 public class AnnotRel extends InsRel {
 
@@ -122,14 +125,6 @@ public class AnnotRel extends InsRel {
             }
             */
         }
-        return(null);
-    }
-
-	/**
-    * getList all for frontend code
-    */
-    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
-        System.out.println("AnnotRel::getList This method isn't implemented yet.");
         return(null);
     }
 

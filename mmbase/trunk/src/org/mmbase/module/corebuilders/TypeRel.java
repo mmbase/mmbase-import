@@ -14,6 +14,7 @@ import java.sql.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
+import org.mmbase.module.ParseException;
 
 /**
  * TypeRel, one of the meta stucture nodes it is used to define the
@@ -171,7 +172,7 @@ public class TypeRel extends MMObjectBuilder {
 	}
 
 
-    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
          if (tok.hasMoreTokens()) {
               String cmd=tok.nextToken();	//Retrieving command.
               if (cmd.equals("ALLOWEDRELATIONSNAMES")) {

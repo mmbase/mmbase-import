@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: Teasers.java,v 1.7 2000-03-30 13:11:34 wwwtech Exp $
+$Id: Teasers.java,v 1.8 2000-03-31 13:27:52 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/30 13:11:34  wwwtech
+Rico: added license
+
 Revision 1.6  2000/03/30 12:58:13  wwwtech
 Rico: added license file
 
@@ -42,7 +45,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.7 $ $Date: 2000-03-30 13:11:34 $ 
+ * @version $Revision: 1.8 $ $Date: 2000-03-31 13:27:52 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -138,7 +141,7 @@ public class Teasers extends MMObjectBuilder {
 	/**
 	* Generate a list of values from a command to the processor
 	*/
-	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+	public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
 		Vector results=new Vector();
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
