@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.45 2003-12-15 10:24:07 michiel Exp $
+     * @version  $Id: list.jsp,v 1.46 2003-12-21 16:15:08 nico Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -117,14 +117,13 @@ int start = listConfig.start;
 int len   = listConfig.pagelength;
 int resultsSize;
 
-Query query = null;
-
 //// do not list anything if search is forced and no searchvalue given
 if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != null && "".equals(listConfig.searchValue)) {
     results = cloud.getCloudContext().createNodeList();
+    resultsSize = 0;
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
-    query = cloud.createQuery();
+    Query query = cloud.createQuery();
 
     Queries.addPath(query, listConfig.nodePath, listConfig.searchDir); // also possible to specify more than one searchDir
     Queries.addSortOrders(query, listConfig.orderBy, listConfig.directions);
@@ -132,7 +131,12 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != n
     Queries.addStartNodes(query, listConfig.startNodes);
     Queries.addConstraints(query, listConfig.constraints);
     query.setDistinct(listConfig.distinct);
+    
+    query.setMaxNumber(len);
+    query.setOffset(start );
 
+    results = cloud.getList(query);
+    resultsSize = Queries.count(query);
 } else {
     log.trace("This is not a multilevel. Getting nodes from type " + listConfig.nodePath);
     NodeManager mgr = cloud.getNodeManager(listConfig.nodePath);
@@ -142,18 +146,14 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields != n
     NodeQuery q = mgr.createQuery();
     Queries.addConstraints(q, listConfig.constraints);
     Queries.addSortOrders(q, listConfig.orderBy, listConfig.directions);
-    query = q;
+
+    q.setMaxNumber(len);
+    q.setOffset(start );
+
+  	results = mgr.getList(q);
+    resultsSize = Queries.count(q);
 }
 
-
-
-if (query != null) {
-  query.setMaxNumber(len);
-  query.setOffset(start );
-  results = cloud.getList(query);
-}
-
-resultsSize = Queries.count(query);
 
 if (log.isDebugEnabled()) {
 log.trace("Got " + results.size() + " results");
