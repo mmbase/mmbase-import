@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database query). It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.4 2003-07-21 23:38:09 michiel Exp $
+ * @version $Id: Query.java,v 1.5 2003-07-22 10:55:40 michiel Exp $
  * @todo Not sure this interface needed, perhaps everything should be done with a query-converter
  * @since MMBase-1.7
  */
@@ -30,10 +30,6 @@ public interface Query extends SearchQuery, Cloneable {
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
     Step addStep(NodeManager nodeManager);
-    /**
-     * Adds a NodeManager to this Query, and specifies an 'alias' for the step.
-     */
-    Step addStep(NodeManager nodeManager, String alias);
     
     
     /**

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.5 2003-07-21 23:38:10 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.6 2003-07-22 10:55:41 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQuery implements Query  {
@@ -30,8 +30,9 @@ public class BasicQuery implements Query  {
     private static Logger log = Logging.getLoggerInstance(BasicQuery.class);
 
     private boolean used = false;
+    private int     aliasSequence = 0;
 
-    BasicSearchQuery query;
+    private BasicSearchQuery query;
 
     // SearchQuery impl:
 
@@ -81,12 +82,9 @@ public class BasicQuery implements Query  {
     // bridge.Query impl.:
 
     public Step addStep(NodeManager nm) {
-        return addStep(nm, nm.getName());
-    }
-    public Step addStep(NodeManager nm, String alias) {
         if (used) throw new BridgeException("Query was used already");
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
-        step.setAlias(alias); 
+        step.setAlias(step.getTableName() + aliasSequence++); 
         return step;
     }
 
@@ -100,7 +98,9 @@ public class BasicQuery implements Query  {
         MMObjectBuilder otherBuilder = ((BasicNodeManager) rm.getDestinationManager()).builder;        
         BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
         relationStep.setDirectionality(dir); 
-        ((BasicStep) relationStep.getNext()).setAlias(rm.getDestinationManager().getName());
+        relationStep.setAlias(relationStep.getTableName() + aliasSequence++); 
+        BasicStep next = (BasicStep) relationStep.getNext();
+        next.setAlias(next.getTableName() + aliasSequence++); 
 
         /*
           optimize query 
