@@ -1,7 +1,7 @@
 <div class="group">
 <div class="environment">
  <p class="current">
-    Current context: <mm:nodeinfo type="gui" />
+    <%=m.getString("current_context")%>: <mm:nodeinfo type="gui" />
  </p>
 
 <div class="rights">

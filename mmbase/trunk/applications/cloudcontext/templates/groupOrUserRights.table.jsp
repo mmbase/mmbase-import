@@ -30,5 +30,5 @@
     </mm:listnodes>
     </mm:functioncontainer> 
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
-    <tr><td class="text"><a href="<mm:url referids="back@url,parameters,$parameters" />">back</a></td></tr>
+    <tr><td class="text"><a href="<mm:url referids="back@url,parameters,$parameters" />"><%=m.getString("back")%></a></td></tr>
    </table>

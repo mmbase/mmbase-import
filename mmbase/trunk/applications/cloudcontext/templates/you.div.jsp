@@ -1,5 +1,5 @@
  <div id="you">
-   <p>you: <%=cloud.getUser().getIdentifier()%></p>
-   <p>your rank: <%=cloud.getUser().getRank()%></p>
-   <p><a href="<mm:url page="login.jsp?logout=" />">logout</a></p>
+   <p><%=m.getString("you")%>: <%=cloud.getUser().getIdentifier()%></p>
+   <p><%=m.getString("your_rank")%>: <%=cloud.getUser().getRank()%></p>
+   <p><a href="<mm:url page="login.jsp?logout=" />"><%=m.getString("logout")%></a></p>
  </div>
