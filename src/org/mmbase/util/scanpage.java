@@ -24,6 +24,7 @@ import org.mmbase.module.sessionsInterface;
 import org.mmbase.servlet.JamesServlet;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 /**
  * The scanpage is a container class.
  * It holds all information that is needed to identify a user, including
@@ -32,9 +33,10 @@ import org.mmbase.util.logging.Logging;
  * hold all request related information, because we want to extend the model
  * of offline page generation.
  *
+ * @application SCAN, this class will be troubelsoem to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.24 2003-09-01 13:29:47 pierre Exp $
+ * @version $Id: scanpage.java,v 1.25 2004-09-30 16:08:39 pierre Exp $
  */
 public class scanpage {
     // logger

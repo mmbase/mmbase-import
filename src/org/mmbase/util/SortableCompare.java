@@ -16,9 +16,9 @@ package org.mmbase.util;
  * @see org.mmbase.util.SortedVector
  * @see org.mmbase.util.CompareInterface
  *
- * @author Rico Jansen
- * @version $Id: SortableCompare.java,v 1.6 2004-05-03 12:02:36 michiel Exp $
  * @deprecated Use java.util.Comparator
+ * @author Rico Jansen
+ * @version $Id: SortableCompare.java,v 1.7 2004-09-30 16:08:39 pierre Exp $
  */
 public class SortableCompare implements CompareInterface {
 

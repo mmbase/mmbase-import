@@ -19,14 +19,12 @@ import org.mmbase.util.logging.*;
  * @see org.mmbase.util.Sortable
  * @see org.mmbase.util.CompareInterface
  *
- * @author Rico Jansen
- * @version $Id: SortedVector.java,v 1.9 2004-05-03 10:57:26 michiel Exp $
  *
  * Todo: Remove duplicate code for the binary search
  * @deprecated You can use java.util.SortedSet (implementations of that), or Collections.sort(), if duplicate entries are essential (but how should they be sorted then?)
- *             
+ * @author Rico Jansen
+ * @version $Id: SortedVector.java,v 1.10 2004-09-30 16:08:39 pierre Exp $
  */
-
 public class SortedVector extends java.util.Vector {
 
     // logger
@@ -167,7 +165,6 @@ public class SortedVector extends java.util.Vector {
      * This should be contains(Object) but that one is final.
      * @see java.util.Vector
      */
- 
     public boolean has(Object newObject) {
         return find(newObject)>=0;
     }
