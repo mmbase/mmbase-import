@@ -23,7 +23,8 @@ Applications build file
   <property name="download.zip" value="mmbase-downloads.zip"  />
   <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
 
-  <property name="applications.build.dir" location="./build" />
+  <property name="applications.dir"       location="." />
+  <property name="applications.build.dir" value="${applications.dir}/build" />
 
   <!-- override projects jar dir -->
   <property name="project.zip.dir"        value="${applications.build.dir}" />
@@ -35,7 +36,7 @@ Applications build file
   <target name="all16" depends="init,media,bugtracker,email" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci,aselect" />
+  <target name="all" depends="init,all16,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,aselect" />
 
 
   <target name="jars" depends="all">
@@ -72,8 +73,13 @@ Applications build file
      <ant dir="rmmci" target="package"  />
   </target>
 
-  <target name="editwizard" depends="mmbase">
+  <target name="editwizard" depends="dove,mmbase">
      <ant dir="editwizard" target="dependent.package" />
+  </target>
+
+
+  <target name="dove" depends="mmbase">
+     <ant dir="dove" target="package" />
   </target>
 
   <target name="cloudcontext" depends="mmbase">
@@ -84,22 +90,30 @@ Applications build file
      <ant dir="community"  target="dependent.package" />
   </target>
 
+  <target name="xmlimporter" depends="mmbase">
+     <ant dir="xmlimporter"  target="package" />
+  </target>
+
   <target name="install">
     <ant dir="editwizard"    target="dependent.install" />
     <ant dir="email"         target="install" />
     <ant dir="community"     target="install" />
-    <!-- ant dir="cloudcontext"  target="install" /-->
+    <ant dir="dove"          target="install" />
+    <ant dir="xmlimporter"   target="install" />
+    <ant dir="cloudcontext"  target="install" />
     <!-- ant dir="rmmci"         target="install" /--><!-- does not work yet -->
   </target>
 
   <target name="clean">
      <ant dir="media"      target="clean" />
      <ant dir="editwizard" target="clean" />
+     <ant dir="dove"      target="clean" />
      <ant dir="rmmci"      target="clean" />
      <ant dir="cloudcontext"    target="clean" />
      <ant dir="bugtracker"      target="clean" />
      <ant dir="community"      target="clean" />
      <ant dir="email"      target="clean" />
+     <ant dir="xmlimporter"   target="clean" />
      <!-- <ant dir="aselect"      target="clean" /> -->
     <delete dir="${applications.build.dir}" />
   </target>
