@@ -26,12 +26,12 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.13 $ $Date: 2000-07-03 14:38:07 $
+* @$Revision: 1.14 $ $Date: 2000-07-03 14:53:09 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug( String msg ) { System.out.println( classname +": "+ msg ); }
 
 	private int currentdbkey=-1;
@@ -208,7 +208,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			int DBState = node.getDBState(key);
 			if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 			|| (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-				debug("Insert: DBState = "+DBState+", adding key: "+key);
+				if (debug) debug("Insert: DBState = "+DBState+", adding key: "+key);
 				fieldAmounts+=",?";
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
 				if (debug) debug("Insert: DBState = "+DBState+", skipping key: "+key);
