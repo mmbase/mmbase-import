@@ -17,7 +17,7 @@ import java.util.Map;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: CloudContext.java,v 1.20 2003-11-10 16:47:14 michiel Exp $
+ * @version $Id: CloudContext.java,v 1.21 2004-10-09 09:40:11 nico Exp $
  */
 public interface CloudContext {
 
@@ -50,7 +50,7 @@ public interface CloudContext {
      *
      * @param name                     the name of the cloud to be returned
      * @return                         the requested cloud
-     * @throws CloudNotFoundException  if the specified cloud could not be found
+     * @throws NotFoundException  if the specified cloud could not be found
      * @throws SecurityException       if no anonymous user can be created
      */
     public Cloud getCloud(String name);

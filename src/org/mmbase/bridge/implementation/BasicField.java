@@ -18,7 +18,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.14 2003-11-20 16:22:00 pierre Exp $
+ * @version $Id: BasicField.java,v 1.15 2004-10-09 09:37:33 nico Exp $
  */
 public class BasicField implements Field, Comparable {
 
@@ -93,6 +93,8 @@ public class BasicField implements Field, Comparable {
      * and (if needed) on their NodeManagers.
      *
      * @param o the object to compare it with
+     * @return 0 if they are equal, -1 if the object passed is a Field and larger than this field,
+     * and +1 if the object passed is a Field and smaller than this field.
      */
     public int compareTo(Object o) {
         Field f= (Field)o;
@@ -112,6 +114,7 @@ public class BasicField implements Field, Comparable {
     /**
      * Compares this field to the passed object, and returns true if they are equal.
      * @param o the object to compare it with
+     * @return true if they are equal
      */
     public boolean equals(Object o) {
         return (o instanceof Field) &&

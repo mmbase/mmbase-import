@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.34 2004-06-08 08:45:16 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.35 2004-10-09 09:39:31 nico Exp $
  */
 public interface NodeManager extends Node {
 
@@ -254,16 +254,18 @@ public interface NodeManager extends Node {
      * byte array) fields are added.  The query can be used  by getList of Cloud.
      *
      * You can not add steps to this NodeQuery.
+     * @return query for this NodeNanager
      *
      * @since MMBase-1.7
-     * @see #getList
+     * @see #getList(NodeQuery)
      * @see Cloud#createNodeQuery
      */
-
     public NodeQuery createQuery();
 
     /**
      * Executes a query and returns the result as nodes of this NodeManager (or of extensions)
+     * @param query query to execute
+     * @return list of nodes
      * 
      * @since MMBase-1.7
      */
@@ -274,6 +276,7 @@ public interface NodeManager extends Node {
      * Retrieve info from a node manager based on a command string.
      * Similar to the $MOD command in SCAN.
      * @param command the info to obtain, i.e. "USER-OS".
+     * @return info from a node manager
      */
     public String getInfo(String command);
 
@@ -283,6 +286,7 @@ public interface NodeManager extends Node {
      * @param command the info to obtain, i.e. "USER-OS".
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
+     * @return info from a node manager
      */
     public String getInfo(String command, ServletRequest req,  ServletResponse resp);
 
@@ -321,6 +325,7 @@ public interface NodeManager extends Node {
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
      * @param parameters a hashtable containing the named parameters of the list.
+     * @return info from a node manager (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters);
 
@@ -332,6 +337,7 @@ public interface NodeManager extends Node {
      * @param parameters a hashtable containing the named parameters of the list.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
+     * @return info from a node manager (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  * A list of Modules
  *
  * @author Pierre van Rooden
- * @version $Id: BasicModuleList.java,v 1.10 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicModuleList.java,v 1.11 2004-10-09 09:37:33 nico Exp $
  */
 public class BasicModuleList extends BasicList implements ModuleList {
     private static Logger log = Logging.getLoggerInstance(BasicModuleList.class.getName());
@@ -27,9 +27,6 @@ public class BasicModuleList extends BasicList implements ModuleList {
         super();
     }
 
-    /**
-     * ...
-     */
     BasicModuleList(Collection c) {
         super(c);
     }
@@ -38,16 +35,10 @@ public class BasicModuleList extends BasicList implements ModuleList {
         return (Module)o;
     }
 
-    /**
-     *
-     */
     public Module getModule(int index) {
         return (Module)get(index);
     }
 
-    /**
-     *
-     */
     public ModuleIterator moduleIterator() {
         return new BasicModuleIterator();
     };

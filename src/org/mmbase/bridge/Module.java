@@ -19,22 +19,25 @@ import javax.servlet.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Module.java,v 1.13 2004-06-08 08:45:16 michiel Exp $
+ * @version $Id: Module.java,v 1.14 2004-10-09 09:40:09 nico Exp $
  */
 public interface Module {
 
     /**
      * Retrieves the CloudContext to which this module belongs
+     * @return CloudContext
      */
     public CloudContext getCloudContext();
 
     /**
      * Retrieve the name of the module (in the default language defined in mmbaseroot.xml).
+     * @return name of the module
      */
     public String getName();
 
     /**
      * Retrieve the description of the module.
+     * @return description of the module
      */
     public String getDescription();
 
@@ -64,7 +67,7 @@ public interface Module {
     /**
      * Runs the command with the given parameter(s).
      * @param command the command to run, i.e. "MESSAGE-UPDATE".
-     * @param parameters the main parameter for the command. Depends on the command issued. Not all
+     * @param parameter the main parameter for the command. Depends on the command issued. Not all
      *      commands make use of this parameter.
      * @param auxparameters additional parameters for this command.
      */
@@ -73,7 +76,7 @@ public interface Module {
     /**
      * Runs the command with the given parameter(s).
      * @param command the command to run, i.e. "MESSAGE-UPDATE".
-         * @param parameters the main parameter for the command. Depends on the command issued. Not all
+         * @param parameter the main parameter for the command. Depends on the command issued. Not all
          *      commands make use of this parameter.
          * @param auxparameters additional parameters for this command.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
@@ -85,6 +88,7 @@ public interface Module {
      * Retrieve info from a module based on a command string.
      * Similar to the $MOD command in SCAN.
      * @param command the info to obtain, i.e. "USER-OS".
+     * @return info from a module
      */
     public String getInfo(String command);
 
@@ -94,6 +98,7 @@ public interface Module {
      * @param command the info to obtain, i.e. "USER-OS".
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
+     * @return info from a module
      */
     public String getInfo(String command, ServletRequest req, ServletResponse resp);
 
@@ -103,6 +108,7 @@ public interface Module {
      * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
      * @param command the info to obtain, i.e. "USER-OS".
      * @param parameters a hashtable containing the named parameters of the list.
+     * @return info from a module (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters);
 
@@ -114,6 +120,7 @@ public interface Module {
      * @param parameters a hashtable containing the named parameters of the list.
      * @param req the Request item to use for obtaining user information. For backward compatibility.
      * @param resp the Response item to use for redirecting users. For backward compatibility.
+     * @return info from a module (as a list of virtual nodes)
      */
     public NodeList getList(String command, Map parameters, ServletRequest req, ServletResponse resp);
 
