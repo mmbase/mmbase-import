@@ -24,7 +24,6 @@ import org.mmbase.cache.NodeListCache;
 import org.mmbase.cache.AggregatedResultCache;
 import org.mmbase.cache.QueryResultCache;
 
-import org.mmbase.module.ParseException;
 import org.mmbase.module.builders.DayMarkers;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.InsRel;
@@ -63,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.272 2004-10-09 13:54:15 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.273 2004-10-11 11:08:49 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3272,13 +3271,13 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Obtains a list of string values by performing the provided command and parameters.
      * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
-     * @param sp The scanpage (containing http and user info) that calls the function
+     * @param sp The PageContext (containing http and user info) that calls the function
      * @param tagger a Hashtable of parameters (name-value pairs) for the command
      * @param tok a list of strings that describe the (sub)command to execute
      * @return a <code>Vector</code> containing the result values as a <code>String</code>
      */
-    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws ParseException {
-        throw new ParseException(getClass().getName() +" should override the getList method (you've probably made a typo)");
+    public Vector getList(PageContext sp, StringTagger tagger, StringTokenizer tok) {
+        throw new UnsupportedOperationException(getClass().getName() +" should override the getList method (you've probably made a typo)");
     }
 
 
@@ -3290,11 +3289,11 @@ public class MMObjectBuilder extends MMTable {
      *   <li>in jsp : cloud.getNodeManager(buildername).getInfo(command);</li>
      * </lu>
      * This method is SCAN related and some commands may fail if called outside the context of the SCAN servlet.
-     * @param sp The scanpage (containing http and user info) that calls the function
+     * @param sp The PageContext (containing http and user info) that calls the function
      * @param tok a list of strings that describe the (sub)command to execute
      * @return the result value as a <code>String</code>
      */
-    public String replace(scanpage sp, StringTokenizer tok) {
+    public String replace(PageContext sp, StringTokenizer tok) {
         log.warn("replace(): replace called should be overridden");
         return "";
     }
@@ -3304,13 +3303,13 @@ public class MMObjectBuilder extends MMTable {
      * This method is SCAN related and may fail if called outside the context of the SCAN servlet.
      * The methood is currentkly called by the MMEDIT module, whenever a 'PRC-CMD-BUILDER-...' command
      * is encountered in the list of commands to be processed.
-     * @param sp The scanpage (containing http and user info) that calls the function
+     * @param sp The PageContext (containing http and user info) that calls the function
      * @param command a list of strings that describe the (sub)command to execute (the portion after ' PRC-CMD-BUILDER')
      * @param cmds the commands (PRC-CMD) that are iurrently being processed, including the current command.
      * @param vars variables (PRC-VAR) thatw ere set to be used during processing.
      * @return the result value as a <code>String</code>
      */
-    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageContext sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
         return false;
     }
 

@@ -13,6 +13,7 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 
 import javax.servlet.*;
+import javax.servlet.http.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
@@ -20,6 +21,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.Operation;
+import org.mmbase.util.PageContext;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
@@ -36,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.79 2004-09-17 09:25:08 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.80 2004-10-11 11:08:42 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -125,7 +127,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 FieldDefs f = (FieldDefs) i.next();
                 Field ft = new BasicField(f, this);
                 if (f.getDBPos() > 0) {
-                    fieldTypes.put(ft.getName(),ft);     
+                    fieldTypes.put(ft.getName(),ft);
                 }
             }
         }
@@ -377,7 +379,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
         MMObjectBuilder builder=getMMObjectBuilder();
         StringTokenizer tokens= new StringTokenizer(command,"-");
-        return builder.replace(BasicCloudContext.getScanPage(req, resp),tokens);
+        return builder.replace(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),tokens);
     }
 
     public NodeList getList(String command, Map parameters){
@@ -401,7 +403,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            Vector v=builder.getList(BasicCloudContext.getScanPage(req, resp),params,tokens);
+            Vector v=builder.getList(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),params,tokens);
             if (v==null) { v=new Vector(); }
             int items=1;
             try {

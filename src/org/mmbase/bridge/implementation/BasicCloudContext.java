@@ -22,7 +22,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.35 2004-10-09 09:37:32 nico Exp $
+ * @version $Id: BasicCloudContext.java,v 1.36 2004-10-11 11:08:42 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static final Logger log = Logging.getLoggerInstance(BasicCloudContext.class);
@@ -56,34 +56,34 @@ public class BasicCloudContext implements CloudContext {
         Iterator i = org.mmbase.module.Module.getModules();
         // check if MMBase is already running
         if (i == null) {
-        	// build the error message, since it has very less overhead (only entered once incase of startup)
-        	String message = "MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no propery mmbase.config found)"; 
-        	// MMBase may only be started from the bridge when the property mmbase.config was provided
-        	if (java.lang.System.getProperty("mmbase.config") == null) {
-        		// when mmbase.config is empty fill it with current working dir + /config
-        		// this way there is no need to provide the info on the commandline
-        		// java.lang.System.setProperty("mmbase.config", java.lang.System.getProperty("user.dir") + java.io.File.separatorChar + "config");
-        		log.error(message);
-        		throw new BridgeException(message); 
-        	} 
-        	// when MMBase is not running, try to start it!
-        	try {
-        		// init the MMBaseContext,... 
-        		org.mmbase.module.core.MMBaseContext.init();
-        		// try to start MMBase now,...
-        		org.mmbase.module.core.MMBase.getMMBase();
-        		// now re-assign the values agina
-        		i = org.mmbase.module.Module.getModules();
-        	}
-        	catch(java.lang.Exception ex) {
-        		log.error("Error while trying to start MMBase from the bridge:" + Logging.stackTrace(ex));
-        	}
-        	// if still null,.. give error!
-        	if(i == null) {
-        		log.error(message);
-        		throw new BridgeException(message);
-        	}
-        } 
+            // build the error message, since it has very less overhead (only entered once incase of startup)
+            String message = "MMBase has not been started, and cannot be started by this Class. (" + getClass().getName() + " : no propery mmbase.config found)";
+            // MMBase may only be started from the bridge when the property mmbase.config was provided
+            if (java.lang.System.getProperty("mmbase.config") == null) {
+                // when mmbase.config is empty fill it with current working dir + /config
+                // this way there is no need to provide the info on the commandline
+                // java.lang.System.setProperty("mmbase.config", java.lang.System.getProperty("user.dir") + java.io.File.separatorChar + "config");
+                log.error(message);
+                throw new BridgeException(message);
+            }
+            // when MMBase is not running, try to start it!
+            try {
+                // init the MMBaseContext,...
+                org.mmbase.module.core.MMBaseContext.init();
+                // try to start MMBase now,...
+                org.mmbase.module.core.MMBase.getMMBase();
+                // now re-assign the values agina
+                i = org.mmbase.module.Module.getModules();
+            }
+            catch(java.lang.Exception ex) {
+                log.error("Error while trying to start MMBase from the bridge:" + Logging.stackTrace(ex));
+            }
+            // if still null,.. give error!
+            if(i == null) {
+                log.error(message);
+                throw new BridgeException(message);
+            }
+        }
         // get the core module!
         mmb = org.mmbase.module.core.MMBase.getMMBase();
         // create transaction manager and temporary node manager
@@ -91,11 +91,11 @@ public class BasicCloudContext implements CloudContext {
         transactionManager = new TransactionManager(mmb,tmpObjectManager);
         // create module list
         while(i.hasNext()) {
-        	Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);
-        	localModules.put(mod.getName(),mod);
+            Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);
+            localModules.put(mod.getName(),mod);
         }
         // set all the names of all accessable clouds..
-        localClouds.add("mmbase");        
+        localClouds.add("mmbase");
     }
 
     public ModuleList getModules() {
@@ -131,29 +131,9 @@ public class BasicCloudContext implements CloudContext {
     }
 
     /**
-     * Create a temporary scanpage object.
-     * @param rq ServletRequest
-     * @param resp ServletResponse
-     * @return temporary scanpage
-     */
-    static scanpage getScanPage(ServletRequest rq, ServletResponse resp) {
-        scanpage sp = new scanpage();
-        if (rq instanceof HttpServletRequest) {
-            HttpServletRequest req=(HttpServletRequest)rq;
-            sp.setReq(req);
-            sp.setRes((HttpServletResponse)resp);
-            if (req!=null) {
-                sp.req_line=req.getRequestURI();
-                sp.querystring=req.getQueryString();
-            }
-        }
-        return sp;
-    }
-    /**
      * @return String describing the encoding.
      * @since MMBase-1.6
      */
-
     public String getDefaultCharacterEncoding() {
         return mmb.getEncoding();
     }

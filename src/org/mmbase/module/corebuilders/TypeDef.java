@@ -11,9 +11,8 @@ package org.mmbase.module.corebuilders;
 
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.scanpage;
+import org.mmbase.util.PageContext;
 import org.mmbase.util.StringTagger;
-import org.mmbase.module.ParseException;
 import org.mmbase.util.logging.*;
 
 /**
@@ -22,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.38 2003-12-17 21:09:03 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.39 2004-10-11 11:08:49 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -367,7 +366,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * @javadoc
      */
-    public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+    public Vector getList(PageContext sp,StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("builders")) {
