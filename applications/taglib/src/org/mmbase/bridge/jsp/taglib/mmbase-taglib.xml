@@ -2558,8 +2558,14 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
     <info>
-      Checks if parent writer is not empty.
-    </info>
+      Checks if parent writer, or contextvar, is not empty.
+    </info>    
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="compare" attribute="referid" />
+    </attribute>
     <example>
           &lt;mm:field name="title"&gt;
             &lt;mm:isempty&gt;
@@ -2567,7 +2573,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
             &lt;/mm:isempty&gt;
             &lt;mm:isnotempty&gt;
               &lt;mm:write /&gt;
-            &lt;/mm:isnotempy&gt;
+            &lt;/mm:isnotempty&gt;
           &lt;/mm:field&gt;
      </example>
   </tag>
@@ -2580,6 +2586,12 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       Checks if parent writer is empty.
     </info>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="compare" attribute="referid" />
+    </attribute>
     <example>
           &lt;mm:field name="title"&gt;
             &lt;mm:isempty&gt;
@@ -2587,7 +2599,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
             &lt;/mm:isempty&gt;
             &lt;mm:isnotempty&gt;
               &lt;mm:write /&gt;
-            &lt;/mm:isnotempy&gt;
+            &lt;/mm:isnotempty&gt;
           &lt;/mm:field&gt;
      </example>
     <example>
