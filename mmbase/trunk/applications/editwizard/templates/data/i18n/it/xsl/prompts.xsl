@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0"  xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform">
+
+  <xsl:import href="ew:xsl/prompts.xsl" />
+
 <!--
   prompts.xls
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.1 2002-09-11 08:02:29 michiel Exp $
+  @version $Id: prompts.xsl,v 1.2 2003-12-03 10:10:07 michiel Exp $
 -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
