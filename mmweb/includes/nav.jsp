@@ -127,7 +127,7 @@ while((depth>0||subPageFound)&&depth<10) {
 <% // had to use the following loop because mm:countrelations has no searchdir: MM: aaarchch it has in 1.7 %>
         <% int numberOfSubPages=0; %>
 	<mm:node element="pages2"><mm:relatednodes type="pages" role="posrel" searchdir="destination"><% numberOfSubPages++; %></mm:relatednodes></mm:node>
-      Menu<%= pageTree %> = new Array("<mm:field name="pages2.title" />","/index.jsp?portal=<mm:write value="$portal" />&page=<%= pages2_number %>","",<%= numberOfSubPages %>,26,142);
+      Menu<%= pageTree %> = new Array("<mm:field name="pages2.title" />","<mm:url escapeamps="false" page="/index.jsp?portal=$portal"><mm:param name="page"><%= pages2_number %></mm:param></mm:url>","",<%= numberOfSubPages %>,26,142);
 	     <mm:compare referid="page" value="<%= pages2_number %>">
 	      <% int c=0;
 		 while(c<d) {
