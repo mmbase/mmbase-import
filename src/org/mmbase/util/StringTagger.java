@@ -24,6 +24,8 @@ public class StringTagger {
 	private char TagSeperator;
 	private char FieldSeperator;
 	private char QuoteChar;
+	private char FunctionOpen;
+	private char FunctionClose;
 	private String startline="";
 
 	/**
@@ -34,26 +36,31 @@ public class StringTagger {
 	* @param TagSeperator : Seperator inside the Tag (between name and value)
 	* @param FieldSeperator : Seperator inside the value 
 	* @param QuoteChar : Char used if a quoted value
+	* @param FunctionOpen char used to open a function parameter list
+	* @param FunctionClose char used to close a function parameter list
 	*
 	* Example : StringTagger("cmd=lookup names='Daniel Ockeloen, Rico Jansen'",' ','=',','\'')
 	*/
-	public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar) {
+	public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar,
+	                                 char FunctionOpen, char FunctionClose) {
 		this.TagStart=TagStart;
 		this.startline=line;
 		this.TagSeperator=TagSeperator;
 		this.FieldSeperator=FieldSeperator;
 		this.QuoteChar=QuoteChar;
+		this.FunctionOpen=FunctionOpen;
+		this.FunctionClose=FunctionClose;
 		tokens = new Hashtable();
 		multitokens = new Hashtable();
 		createTagger(line);
 	}
 
-	/**
-	* creates a default tagger, with ' ','=',',','"'
-	* as inputs.
-	*/
+	public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar) {
+		this(line, TagStart, TagSeperator,FieldSeperator, QuoteChar,'(',')');
+	}
+
 	public StringTagger(String line) {
-		this(line,' ','=',',','"');
+		this(line,' ','=',',','"','(',')');
 	}
 
 	void createTagger(String line) {
@@ -70,13 +77,13 @@ public class StringTagger {
 		while(tok2.hasMoreTokens()) {
 			tok=tok2.nextToken();
 //			System.out.println("tagger tok ("+isTag+","+isPart+","+isQuoted+") |"+tok+"|"+prevtok+"|");
-			if (tok.equals("=")) {
+			if (tok.equals(""+TagSeperator)) {
 				if (isTag) {
 					tag=prevtok;
 					isTag=false;
 				} else {
 					if (!isQuoted) {
-						splitTag(tag+"="+part);
+						splitTag(tag+TagSeperator+part);
 						isTag=true;
 						isPart=false;
 						part="";
@@ -84,13 +91,13 @@ public class StringTagger {
 						part+=tok;
 					}
 				}
-			} else if (tok.equals(" ")) {
+			} else if (tok.equals(""+TagStart)) {
 				if (isPart) {
 					if (isQuoted) {
 						part+=tok;
 					} else {
-						if (!prevtok.equals(" ")) {
-							splitTag(tag+"="+part);
+						if (!prevtok.equals(""+TagStart)) {
+							splitTag(tag+TagSeperator+part);
 							isTag=true;
 							isPart=false;
 							part="";
@@ -135,13 +142,34 @@ public class StringTagger {
 		}
 		tokens.put(name,result);
 		
-		StringTokenizer tok = new StringTokenizer(result,""+FieldSeperator);
-		Vector Multi = new Vector();
+		StringTokenizer toks = new StringTokenizer(result,""+FieldSeperator+FunctionOpen+FunctionClose, true);
 		// If quoted, strip the " " from beginning and end ?
-		while (tok.hasMoreTokens()) {
-			Multi.addElement(tok.nextToken());
+		Vector Multi = new Vector();
+    	if(toks.hasMoreTokens()) {
+			String tokvalue="";
+	    	int nesting = 0;
+		    while (toks.hasMoreTokens()) {
+	    		String tok=toks.nextToken();
+		    	if (tok.equals(""+FieldSeperator)) {
+			        if (nesting==0) {
+			            Multi.addElement(tokvalue);
+			            tokvalue="";
+    			    } else {
+	    		        tokvalue+=tok;
+		    	    }
+			    } else if (tok.equals(""+FunctionOpen)) {
+			        nesting++;
+    			    tokvalue+=tok;
+	    		} else if (tok.equals(""+FunctionClose)) {
+		    	    nesting--;
+			        tokvalue+=tok;
+    			}
+	    		else {
+		    	    tokvalue+=tok;
+			    }
+		    }
+		    Multi.addElement(tokvalue);
 		}
-
 		multitokens.put(name,Multi);
 	}
 
