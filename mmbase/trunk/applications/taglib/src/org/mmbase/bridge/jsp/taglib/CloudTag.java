@@ -166,11 +166,34 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         return SKIP_BODY; 
     }
     
+    private void setAnonymousCloud(String name) {
+        log.debug("using a anonymous cloud");
+        cloud = (Cloud) anonymousClouds.get(cloudName);
+        if (cloud == null) {
+            log.debug("couldn't find one");
+            cloud = getDefaultCloudContext().getCloud(cloudName);
+            anonymousClouds.put(cloudName, cloud);
+            log.debug("put in hashMap");
+        }
+        pageContext.setAttribute("cloud", cloud);        
+    }
+
     
     /**
     *  Check name and retrieve cloud
     */
     public int doStartTag() throws JspTagException{
+
+        // first check if we need an anonymous cloud,
+        // in which case we don't want to use the session. Pages get
+        // better chachable then.
+        if ( (method == null && logon == null) || 
+             "anonymous".equals(method)) { // anonymous cloud:
+            log.debug("Implicitely requested anonymous cloud. Not using session");
+            setAnonymousCloud(cloudName);
+            return EVAL_BODY_TAG;
+        }
+        
         session  = (HttpSession)pageContext.getSession();
         request  = (HttpServletRequest)pageContext.getRequest();
         response = (HttpServletResponse)pageContext.getResponse();
@@ -192,10 +215,10 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
             // we have a cloud, check if it is a desired one
             // otherwise make it null.
             log.debug("found cloud in session m: " + method + " l: " + logon);
-            
+            /*
             if ("anonymous".equals(method)) { 
                 // explicity anonymous. 'logon' will be ignored
-                log.debug("explicityly requested anonymous cloud");
+                log.debug("explicityly requested anonymous cloud");             
                 // an anonymous cloud was requested, check if it is.
                 if (cloud.getUser().getRank() != Rank.ANONYMOUS) { 
                     log.debug("cloud is not anonymous, throwing it away");
@@ -203,7 +226,9 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                     logon = null;
                     session.removeAttribute("cloud_" + cloudName);
                 }
-            } else if (logon == null && method != null) { 
+            } else 
+            */
+            if (logon == null && method != null) { 
                 // authorisation was requested, but not indicated for whom 
                 log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());                
                 if (cloud.getUser().getRank() == Rank.ANONYMOUS) { // so it simply may not be anonymous
@@ -285,9 +310,10 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                     }
                 }
             } else { 
+                // I think this part is unreachable now.
                 log.debug("no login given, creating anonymous cloud");
                 // no logon, create an anonymous cloud.
-                cloud = getDefaultCloudContext().getCloud(cloudName);
+                setAnonymousCloud(cloudName);
             }
             
             if (cloud == null) { // stil null, give it up then...
