@@ -17,13 +17,17 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Document;
+
 /**
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.45 2002-01-31 16:36:01 jaco Exp $
+ * @version $Id: BasicNode.java,v 1.46 2002-02-20 10:34:54 michiel Exp $
  */
 public class BasicNode implements Node {
+
     public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
     public static final int ACTION_DELETE = 3;   // delete node
@@ -123,7 +127,7 @@ public class BasicNode implements Node {
     public Cloud getCloud() {
         return nodeManager.getCloud();
     }
-
+    
     public NodeManager getNodeManager() {
         return nodeManager;
     }
@@ -162,7 +166,7 @@ public class BasicNode implements Node {
         } else if (account != cloud.getAccount()) {
             String message;
             message = "User context changed. Cannot proceed to edit this "
-                      + "node .";
+                + "node .";
             log.error(message);
             throw new BridgeException(message);
         }
@@ -194,7 +198,7 @@ public class BasicNode implements Node {
             if (action == ACTION_CREATE) {
                 String message;
                 message = "This node cannot be added. It was not correctly "
-                          + "instantiated (internal error).";
+                    + "instantiated (internal error).";
                 log.error(message);
                 throw new BridgeException(message);
             }
@@ -334,24 +338,12 @@ public class BasicNode implements Node {
         return noderef.getStringValue(attribute);
     }
 
+
     public void commit() {
         if (isnew) {
-            if (this instanceof BasicRelation) {
-                BasicRelation relation = (BasicRelation)this;
-                cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), relation.snum, relation.dnum);
-                relation.relationChanged = false;
-            } else {
-                cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
-            }
-        } else {
-            if (this instanceof BasicRelation) {
-                BasicRelation relation = (BasicRelation)this;
-                if (relation.relationChanged) {
-                    cloud.assert(Operation.CHANGE_RELATION, mmb.getTypeDef().getIntValue(getNodeManager().getName()), relation.snum, relation.dnum);
-                    relation.relationChanged = false;
-                }
-            }
+            cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
         }
+
         edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
@@ -391,7 +383,7 @@ public class BasicNode implements Node {
             }
             temporaryNodeId=-1;
         }
-    changed = false;
+        changed = false;
     }
 
     public void delete() {
@@ -454,7 +446,7 @@ public class BasicNode implements Node {
             return "*deleted node*";
         }
         return noderef.toString();
-    };
+    }
 
     /**
      * Removes all relations of a certain type.
@@ -486,7 +478,7 @@ public class BasicNode implements Node {
                 }
             }
         }
-    };
+    }
 
     public void deleteRelations() {
         deleteRelations(-1);
@@ -503,18 +495,18 @@ public class BasicNode implements Node {
         } else {
             deleteRelations(rType);
         }
-    };
+    }
 
     public RelationList getRelations() {
         return getRelations(-1,-1);
-    };
+    }
 
     /**
      * @javadoc
      */
     private RelationList getRelations(int role) {
         return getRelations(role,-1);
-    };
+    }
 
     /**
      * @javadoc
@@ -540,7 +532,7 @@ public class BasicNode implements Node {
             }
         }
         return new BasicRelationList(relvector,cloud,cloud.getNodeManager(relbuilder.getTableName()));
-    };
+    }
 
     public RelationList getRelations(String role) {
         int rolenr=mmb.getRelDef().getNumberByName(role);
@@ -644,7 +636,7 @@ public class BasicNode implements Node {
         } else if (isnew) {
             String message;
             message = "Cannot add alias to a new node that has not been "
-                      + "committed.";
+                + "committed.";
             log.error(message);
             throw new BridgeException(message);
         } else {
@@ -760,7 +752,9 @@ public class BasicNode implements Node {
     }
 
     public boolean mayLink() {
-        throw new java.lang.UnsupportedOperationException("Node.mayLink() is deprecated.");
+        String message = "Node.mayLink() is deprecated.";
+        log.warn(message);
+        throw new java.lang.UnsupportedOperationException(message);
     }
 
     public boolean mayChangeContext() {
@@ -771,24 +765,25 @@ public class BasicNode implements Node {
      * Reverse the buffers, when changed and not stored...
      */
     protected void finalize() throws BridgeException {
-        // When not committed or cancelled, and the buffer has changed, the changes must be reversed.
-        // when not done it results in node-lists with changes which are not performed on the database...
-        // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
-        // my opinion is that this should happen, as soon as edit-ting starts,..........
-        // when still has modifications.....
-        if(changed) {
-            if(!(cloud instanceof Transaction)) {
-                // cancel the modifications...
-                cancel();
-                // The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the
-                // proper way.
-                // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
-                // This since it is not defined when the finalize method is called
-                // To bad only that nobody will ever see this exceptions :(
-                String msg = "after modifications to the node, either the method commit or cancel must be called";
-                log.error(msg);
-                throw new BridgeException(msg);
-            }
-        }
-    }
+    	// When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
+	// when not done it results in node-lists with changes which are not performed on the database...
+	// This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
+	// my opinion is that this should happen, as soon as edit-ting starts,..........	
+    	// when still has modifications.....
+    	if(changed) {
+    	    if(!(cloud instanceof Transaction)) {
+	    	// cancel the modifications...
+	    	cancel();
+		// The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the 
+		// proper way. 
+		// Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.		
+		// This since it is not defined when the finalize method is called
+		// To bad only that nobody will ever see this exceptions :(
+		String msg = "after modifications to the node, either the method commit or cancel must be called";
+		log.error(msg);
+    	    	throw new BridgeException(msg);
+	    }
+	}
+    }    
+
 }
