@@ -25,40 +25,44 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- *
  */
 public class ForumMMBaseSyncer implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class); 
+    static private Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class);
 
     // thread
     Thread kicker = null;
-
     int sleeptime;
-
     int delaytime;
-
     int maxqueue;
 
-    private Vector dirtyNodes=new Vector();
+    /**
+     * The vector dirtyNodes is also referred to as "syncQueue"
+     * it contains the nodes that needs to be synchronized
+     */
+    private Vector dirtyNodes = new Vector();
 
     /**
-    */
-    public ForumMMBaseSyncer(int sleeptime,int maxqueue,int startdelay) {
-        this.sleeptime=sleeptime;
-        this.maxqueue=maxqueue;
-        this.delaytime=startdelay;
+     * Contructor
+     *
+     * @param sleeptime  time to sleep
+     * @param maxqueue   maximum number of nodes in the syncQueue (not implemented?)
+     * @param startdelay delay (not implemented?)
+     */
+    public ForumMMBaseSyncer(int sleeptime, int maxqueue, int startdelay) {
+        this.sleeptime = sleeptime;
+        this.maxqueue = maxqueue;
+        this.delaytime = startdelay;
         init();
     }
 
     /**
-    * init()
-    */
+     * init()
+     */
     public void init() {
-        this.start();    
+        this.start();
     }
-
 
     /**
      * Starts the main Thread.
@@ -66,11 +70,11 @@ public class ForumMMBaseSyncer implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this,"forummmbasesyncer");
+            kicker = new Thread(this, "forummmbasesyncer");
             kicker.start();
         }
     }
-    
+
     /**
      * Stops the main Thread.
      */
@@ -82,12 +86,12 @@ public class ForumMMBaseSyncer implements Runnable {
     /**
      * Main loop, exception protected
      */
-    public void run () {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
-        while (kicker!=null) {
+    public void run() {
+        kicker.setPriority(Thread.MIN_PRIORITY + 1);
+        while (kicker != null) {
             try {
                 doWork();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 log.error("run(): ERROR: Exception in forummmbasesyncer thread!");
                 log.error(Logging.stackTrace(e));
             }
@@ -96,35 +100,46 @@ public class ForumMMBaseSyncer implements Runnable {
 
     /**
      * Main work loop
+     * Commit the nodes in the syncQueue to the database
      */
     public void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
+        kicker.setPriority(Thread.MIN_PRIORITY + 1);
 
-        while (kicker!=null) {
-		try {
-		while (dirtyNodes.size()>0) {
-			Node node=(Node)dirtyNodes.elementAt(0);
-			dirtyNodes.removeElementAt(0);
-			node.commit();
-			//log.info("synced node="+node.getNumber());
-            		Thread.sleep(delaytime);
-		}
-            	Thread.sleep(sleeptime);
-		} catch (InterruptedException f2){}
+        while (kicker != null) {
+            try {
+                while (dirtyNodes.size() > 0) {
+                    Node node = (Node) dirtyNodes.elementAt(0);
+                    dirtyNodes.removeElementAt(0);
+                    node.commit();
+                    //log.info("synced node="+node.getNumber());
+                    Thread.sleep(delaytime);
+                }
+                Thread.sleep(sleeptime);
+            } catch (InterruptedException f2) {
+            }
         }
     }
 
+    /**
+     * remove the given node from the syncQueue
+     *
+     * @param node node that has to be removed from the syncQueue
+     */
     public void nodeDeleted(Node node) {
-	dirtyNodes.remove(node);
+        dirtyNodes.remove(node);
     }
 
+    /**
+     * add the given node to the syncQueue, to be synchronized at synchronization-time
+     *
+     * @param node the node that must added to the syncQueue
+     */
     public void syncNode(Node node) {
-	if (!dirtyNodes.contains(node)) {
-		dirtyNodes.addElement(node);
-		//log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
-	} else {
-		//log.info("refused node="+node.getNumber()+" allready in sync queue "+sleeptime);
-	}
+        if (!dirtyNodes.contains(node)) {
+            dirtyNodes.addElement(node);
+            //log.info("added node="+node.getNumber()+" to sync queue "+sleeptime);
+        } else {
+            //log.info("refused node="+node.getNumber()+" allready in sync queue "+sleeptime);
+        }
     }
-
 }
