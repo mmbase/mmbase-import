@@ -33,7 +33,7 @@ import org.mmbase.util.functions.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.20 2003-12-17 21:03:47 michiel Exp $
+ * @version $Id: Users.java,v 1.21 2003-12-18 13:41:57 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -232,6 +232,7 @@ public class Users extends MMObjectBuilder {
             StepField sf        = nsq.getField(getField("username"));
             Constraint cons = new BasicFieldValueConstraint(sf, userName);
             nsq.setConstraint(cons);
+            nsq.addSortOrder(nsq.getField(getField("number")));
             try {
                 Iterator i = getNodes(nsq).iterator();
                 if(i.hasNext()) {
