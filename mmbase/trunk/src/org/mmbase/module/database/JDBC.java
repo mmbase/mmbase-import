@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: JDBC.java,v 1.10 2000-04-25 21:30:47 wwwtech Exp $
+	$Id: JDBC.java,v 1.11 2000-04-30 15:31:48 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.10  2000/04/25 21:30:47  wwwtech
+	daniel: fixed a bug that forgot to return sets with 1 value
+	
 	Revision 1.9  2000/03/31 13:33:18  wwwtech
 	Wilbert: Introduction of ParseException for method getList
 	
@@ -46,7 +49,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.10 2000-04-25 21:30:47 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.11 2000-04-30 15:31:48 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -75,7 +78,6 @@ private String defaultpassword;
 		getdriver();
 		loadsupport();
 		poolHandler=new MultiPoolHandler(databasesupport,maxConnections,maxQuerys);
-		//System.out.println("JDBC -> Created pool "+poolHandler);
 	}
 
 	/*
@@ -229,24 +231,29 @@ private String defaultpassword;
 	public String makeUrl(String host,int port,String dbm) {
 		String pre,post;
 		int pos;
-		String end;
+		String end=new String(JDBCurl);
 		// $HOST $DBM $PORT
 
-		pos=JDBCurl.indexOf("$DBM");
-		pre=JDBCurl.substring(0,pos);
-		post=JDBCurl.substring(pos+4);
-		end=pre+dbm+post;
+		pos=end.indexOf("$DBM");
+		if (pos!=-1) {
+			pre=end.substring(0,pos);
+			post=end.substring(pos+4);
+			end=pre+dbm+post;
+		} else {
+			debug("Warning: database name is static, can't select other databases within this databaseserver");
+		}
 		pos=end.indexOf("$HOST");
-		pre=end.substring(0,pos);
-		post=end.substring(pos+5);
-		end=pre+host+post;
+		if (pos!=-1) {
+			pre=end.substring(0,pos);
+			post=end.substring(pos+5);
+			end=pre+host+post;
+		}
 		pos=end.indexOf("$PORT");
 		if (pos!=-1) {
 			pre=end.substring(0,pos);
 			post=end.substring(pos+5);
 			end=pre+port+post;
 		}
-		//System.out.println("JDBC URL=\""+end+"\"");
 		return(end);
 	}
 
