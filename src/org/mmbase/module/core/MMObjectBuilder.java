@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.171 2002-10-16 14:14:26 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.172 2002-10-17 09:43:31 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1491,7 +1491,7 @@ public class MMObjectBuilder extends MMTable {
 		    // to much nodes found...
 		    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
 		    log.warn(msg);
-		    continue;
+		    break;
 		}
 
 		// create the node from the record-set
