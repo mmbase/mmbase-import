@@ -1,3 +1,13 @@
+/**
+ * tools.jsp
+ * Routines for reading and writing cookies
+ *
+ * @since    MMBase-1.6
+ * @version  $Id: tools.js,v 1.3 2002-05-27 09:50:47 pierre Exp $
+ * @author   Kars Veling
+ * @author   Pierre van Rooden
+ */
+
 //function for reading a cookie
 function readCookie_general(theName, theDefault) {
     try {
@@ -7,13 +17,13 @@ function readCookie_general(theName, theDefault) {
         theCookie = theCookie.substring(p, theCookie.indexOf(";", p)) + "|";
         var pos = theCookie.indexOf(theName + ":");
         if (pos == -1) return theDefault;
-//alert("theCookie = " + theCookie);
+        //alert("theCookie = " + theCookie);
         theValue = unescape(theCookie.substring(pos+theName.length+1, theCookie.indexOf("|", pos)));
-//alert(theValue);
+        //alert(theValue);
         if (theValue == "") return theDefault;
         else return theValue;
     } catch (e) {
-//alert("Error in readCookie_general('" + theName + "', '" + theDefault + "'): " + e.description);
+        //alert("Error in readCookie_general('" + theName + "', '" + theDefault + "'): " + e.description);
         return theDefault;
     }
 }
