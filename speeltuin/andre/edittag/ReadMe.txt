@@ -5,11 +5,11 @@ André van Toly
 andre@toly.nl
 24 december 2004
 
-The EditTag is a simple MMBase JSP tag that can be used to make the data which
-is displayed with field tags accessible. It builds on the principle that the
-data in MMBase nodes is stored in fields and in every case you will need a field
-tag of some kind to display it. Whether you use the simple <mm:node> tag, or
-more complicated <mm:list>, <mm:relatednodes> or <mm:tree> tags, you will always
+The EditTag is a simple MMBase JSP tag that can be used to make data being
+displayed by <mm:field> tags accessible. It builds on the principle that data 
+in MMBase nodes is stored in fields and in every case you will need to get it
+with a field tag. Whether you use the simple <mm:node> tag, or more 
+complicated <mm:list>, <mm:relatednodes> or <mm:tree> tags, you will always
 use <mm:field>.
 
 A most simple example of the EditTag is as follows, presuming the MMBase MyNews
@@ -24,8 +24,9 @@ example is installed:
   </mm:edit>
 </mm:cloud>
 
-In which case you will find to a link below the title of the example MyNews
-magazine to a generic JSP editor YAMMeditor.
+This example prints the title of the MyNews magazine example and below it a link
+to a generic editor. In the editor you can edit the nodes and fields that are
+in the body of <mm:edit>. 
 
 Installation
 ------------
