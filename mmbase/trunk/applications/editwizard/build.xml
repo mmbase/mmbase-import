@@ -12,6 +12,9 @@
     <available property="jspsmartupload.expanded" file="${jspsmartupload.jar}" />
   </target>
 
+
+  <target name="dependent.package" depends="jspsmartupload,package" />
+
   <target name="jspsmartupload" depends="expand.jspsmartupload">
     <copy todir="${project.jar.dir}" file="${expand.dir}/jspsmartupload/jspsmartupload.jar">
     </copy>
