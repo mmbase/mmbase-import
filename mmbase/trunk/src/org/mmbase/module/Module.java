@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.56 2004-11-18 21:45:08 keesj Exp $
+ * @version $Id: Module.java,v 1.57 2004-11-19 21:03:52 michiel Exp $
  */
 public abstract class Module {
     private static final Logger log = Logging.getLoggerInstance(Module.class);
@@ -367,9 +367,9 @@ public abstract class Module {
         Hashtable results = new Hashtable();
 
         ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
-        Collection ms = rl.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
-        log.info("Searching for modules in " + rl + " " + ms);
-        Iterator i = ms.iterator();
+        Collection modules = rl.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
+        log.info("In " + rl + " the following module XML's were found " + modules);
+        Iterator i = modules.iterator();
         while (i.hasNext()) {
             String file = (String) i.next();
             String fileName = ResourceLoader.getName(file);
