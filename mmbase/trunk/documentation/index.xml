@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.48 2004-04-23 14:53:34 pierre Exp $</edition>
+    <edition>$Id: index.xml,v 1.49 2004-07-08 14:29:29 michiel Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -18,7 +18,7 @@
     </legalnotice>
   </articleinfo>
 
-  <section>
+  <section id="introduction">
     <title>Introduction</title>
 
     <itemizedlist>
@@ -40,7 +40,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="overview">
     <title>General Documentation</title>
 
     <itemizedlist>
@@ -52,7 +52,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="administrators">
     <title>Administrators</title>
 
     <subtitle>Installation and Configuration</subtitle>
@@ -125,7 +125,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="informationanalysts">
     <title>Information analysts</title>
 
     <itemizedlist>
@@ -150,7 +150,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="backenddevelopers">
     <title>Backend Developers</title>
 
     <itemizedlist>
@@ -187,7 +187,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="frontenddevelopers">
     <title>Frontend developers</title>
 
     <itemizedlist>
@@ -279,7 +279,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="managers">
     <title>Managers</title>
 
     <itemizedlist>
@@ -291,7 +291,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="modules">
     <title>Modules</title>
 
     <itemizedlist>
@@ -315,7 +315,7 @@
     </itemizedlist>
   </section>
 
-  <section>
+  <section id="mmbase.org">
     <title>MMBase.org</title>
 
     <itemizedlist>
