@@ -1,0 +1,1307 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+ 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ 
+  <meta name="Generator"
+ content="KWord HTML Export Filter Version = 2.35.2.1 ">
+  <title>context-security.html</title>
+  
+  <style type="text/css">
+BODY { background-color: #FFFFFF }
+  </style>
+</head>
+   <body>
+ 
+<p
+ style="text-align: center; font-family: helvetica; font-style: normal; font-weight: bold; font-size: 24pt; color: rgb(0,0,0); text-decoration: none;">Context
+Security Configuratie</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Inleiding</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Security
+opzet binnen MMBase</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Binnen
+MMBase is een security frame work, waarin verschillende security implementaties
+kunnen worden gebruikt. Dit is op zo'n manier opgezet dat het mogelijk is
+om MMBase te gebruiken met wensen en eisen die gesteld worden door de omgeving
+waarin MMBase draaid.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Security
+implementatie met Contexten</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Binnen
+de NOS is ervoor gekozen om een implementatie te maken waar bij gebruik word
+gemaakt van Contexten. Contexten zijn definities van rechten, dit wil zeggen
+dat elk object binnen MMBase een specifieke context heeft. Deze opzet heeft
+de volgende belangrijke onderdelen:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Gebruikers
+(users)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Groepen
+(users)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Contexten
+(contexs)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Gebruikers</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">De
+gebruikers van MMBase kunnen verschillende nivo's hebben. Er is 1 belangrijk
+onderscheid:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Anonieme
+gebruikers (deze worden via de 'anonymous' module geladen, en zijn de 'normale'
+pagina bezoekers)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Ingelogde
+gebruikers (deze worden via de 'user/password' module geladen, en zijn de
+gebruikers die wijzigingen op de data aanbrengen)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Ingelogde
+gebruikers kunnen verder nog een Rang (rank) krijgen, welke kan worden gebruikt
+om te kijken hoe 'gewichtig' een gebruiker is. Een anonymous gebruiker zal
+altijd de rang van ANONYMOUS hebben.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Groepen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">De
+groepen van MMBase bestaan uit gebruikers en/of groepen. Op deze manier is
+het mogelijk om zo een afspiegeling te maken van bijvoorbeeld de bedrijfsstructuur,
+en zo ook de rechten te verdelen. Tevens is het mogelijk dat meerdere groepen
+dezelfde gebruiker bevatten.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Contexten</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Elke
+object binnen MMBase heeft een context, dit is de naar van het veld 'owner'
+in een willekeurig object dat gematched word op een naam van een context.
+De context definieerd welke groepen de volgende rechten hebben:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Lezen
+(read)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Schrijven
+(write)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Referentie
+naar maken (link)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Verwijderen
+(delete)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Creeeren
+(create, geld alleen voor de objecten die een object type representeren (typedef
+of ook wel 'editors'))</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Veranderen
+van rechten (change context)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Verder
+is er ook gedefinieerd naar welke andere contexten de context mag worden
+gezet (dus naar welke andere rechten de rechten mogen worden gezet)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Technieken</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">XML</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">XML
+staat voor "EXtensible Markup Language"</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">XML
+is een markup language</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">XML
+beschrijft data</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">XML
+gebruikt een DTD(Document Type Definition) voor de beschrijving van de datastructuur
+binnnen het document</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">XML
+met een DTD is ontwikkeld zodat het zelfbeschrijvend is.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;">XML
+Layout</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">A
+very simple XML could be the following:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;?xml
+version="1.0" encoding="utf-8"?&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!DOCTYPE
+root SYSTEM "definition.dtd"&gt;</span></p>
+ 
+<p
+ style="font-family: adobe-courier; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;root&gt;</span></p>
+ 
+<p
+ style="font-family: adobe-courier; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;/root&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Deze
+XML heeft een encoding van "utf-8" verder zal de dtd 'definition.dtd' gebruikt
+worden om te controleren of de dtd correct is.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;">DTD
+Layout</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">In
+hoofdstuk 2.2 werd er een simpel XML document beschreven, een DTD hiervoor
+zou kunnen zijn:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+root #PCDATA)&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Dit
+zou inhouden dat alleen de &lt;root&gt; tags zijn toegestaan. Tussen deze
+tags mag vrije tekst worden ingevoerd.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;">XPath</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Met
+behulp van XPath kan een specifieke locatie aangeduid worden binnen de xml.
+Dit kan een locatie zijn tussen ingesloten door een element, of een veld
+van een element. Voor XPath geld in het kort:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/
+is de root van het document</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+de elementen van elkaar te scheiden moet daartussen een '/' geplaatst worden</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een veld binnen een element aan te duiden gebruikt met de volgende notatie:
+'element[@veldnaam]'</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"> </p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;">Verdere
+informatie</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">XML
+is een W3C standaard, en er is een basiscurses aanwezig op de volgende url:
+http://www.w3schools.com/xml/</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Een
+uitleg van XPath kan gevonden worden op de locatie http://www.zvon.org/xxl/XPathTutorial/General/examples.html</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"> </p>
+ 
+<p
+ style="font-family: adobe-courier; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"> </p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Configureren
+van security-framework</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Algemeen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Het
+security framework zorgt ervoor dat er verschillende implemenaties van security
+kunnen worden gebruikt binnen MMBase. De implemenatie die geladen word, is
+afhankelijk van het configuratie bestand dat zich bevind op de locatie %configdir%/security/security.xml.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Voorbeeld
+XML</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">De
+standaard opgeleverde %confgidir%/security/security.xml zal er ongeveer zo
+uitzien:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;?xml
+version="1.0" encoding="UTF-8" ?&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!DOCTYPE
+security PUBLIC "//MMBase - security//" "http://www.mmbase.org/dtd/security.dtd"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;security
+active="true"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;authentication
+class="org.mmbase.security.implementation.context.ContextAuthentication"
+url="context/config.xml" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;authorization
+class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml"
+/&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;sharedsecret&gt;appelmoes&lt;/sharedsecret&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;/security&gt;</span></p>
+ 
+<p
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: helvetica; font-style: normal; font-weight: normal; text-decoration: none;">(De
+commentaar regels zijn hier weggelaten)</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Binnnen
+deze XML kunnen we de volgende waardes worden veranderd:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security[@active]
+: Valide waardes zijn 'true' en 'false'. Wanneer 'true' dan zal de security
+die in het document aangeduid word, worden geladen.  Tevens zal het document
+van tijd tot tijd worden gecontroleerd op wijzigingen en wanneer dit het
+geval is opnieuw worden ingeladen. Wanneer de waarde 'false' is, zal er geen
+security gebruikt worden en zal het bestand niet gecontroleerd worden op
+wijzigingen.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authentication[@class]
+:  De implementatie die gebruikt moet worden om het inloggen te controleren.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authentication[@url]
+:  Hier is de mogelijkheid om extra informatie door te spelen aan de authenticatie
+implementatie(zoals de locatie van een additionele configuratie)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authorization[@class]
+:  De implementatie die gebruikt moet worden om te controleren of operaties
+toegestaan zijn.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authorization[@url]
+:  Hier is de mogelijkheid om extra informatie door te spelen aan de autorizatie
+implementatie(zoals de locatie van een additionele configuratie)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/sharedsecret
+: Een string die gebruikt word tussen verschillende instanties om met elkaar
+te kunnen communiceren. Dit is alleen vantoepassing wanneer er meer dan 1
+instantie van MMBase draaid op dezelfde datasource.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Framework
+XML voor Context Security</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Wanneer
+de volgende XML word gebruikt, word de context security geladen:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;?xml
+version="1.0" encoding="utf-8" ?&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!DOCTYPE
+security PUBLIC "//MMBase - security//" "http://www.mmbase.org/dtd/security.dtd"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;security
+active="true"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;authentication
+class="org.mmbase.security.implementation.context.ContextAuthentication"
+url="context/config.xml" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;authorization
+class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml"
+/&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;sharedsecret&gt;&lt;/sharedsecret&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;/security&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security[@active='true']
+: De security zal actief zijn</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authentication[@class='<span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">org.mmbase.security.implementation.context.ContextAuthentication</span>']
+: Dit is de implementatie die de login voor de context security regelt.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authentication[@url='<span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">context/config.xml</span>']
+: De locatie waar de configuratie van de context security zich bevind.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authorization[@class='<span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">org.mmbase.security.implementation.context.ContextAuthorization</span>']
+:  Dit is de implementatie voor de controle op operaties op de objecten binnen
+MMBase.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/authorization[@url='<span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">context/config.xml</span>']
+: De locatie waar de configuratie van de context security zich bevind.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/security/sharedsecret/
+= "" : Er hoeft geen shared secret gedefinieerd te zijn, sinds MMBase niet
+behoeft te communiceren met andere instanties van MMBase, welke op dezelfde
+database source.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Framework
+DTD voor security</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Voor
+de volledigheid van het document word hier de DTD van de XML die boven is
+vermeld gegeven:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ATTLIST
+security active (true|false) #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+security ( authentication, authorization, sharedsecret ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+authentication EMPTY &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ATTLIST
+authentication class NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ATTLIST
+authentication url CDATA #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+authorization EMPTY &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ATTLIST
+authorization class NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ATTLIST
+authorization url CDATA #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+sharedsecret ( #PCDATA ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Werking
+Context Security</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Referentie
+veld</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Binnen
+MMBase heeft elk object een veld dat als naam heeft 'owner'. Dit veld word
+gebruikt door de context security om rechten aan een object toe te voegen
+en word gematched aan een context met dezelfde naam binnen dezelfde context.
+Wanneer dit niet bestaat, zal de default worden gebruikt en een waarschuwing
+in de logs worden gemeld.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Contexts</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Een
+context definieert welke rechten groepen hebben op een bepaald object. Tevens
+is binnen de context ook gedefineerd naar welke andere contexten het object
+met de huidige context mag worden veranderd. Op het moment dat het ownerfield
+naar deze context is veranderd, dan zijn de rechten in de rechten van de
+betreffende context veranderd.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Groepen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Een
+groep is een manier om een verzameling gebruikers en/of groepen te definieren.
+Een groep kan bestaan uit een andere groepen, gebruikers, of een combinatie
+van beiden.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Gebruikers</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;">Anonieme
+gebruikers</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-style: normal; font-weight: normal; font-size: 8pt; text-decoration: none;">Deze
+worden via de 'anonymous' module geladen, en zijn de 'normale' pagina bezoekers</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Een
+anonymous gebruiker zal altijd de rang van ANONYMOUS hebben.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 12pt; color: rgb(0,0,0); text-decoration: none;">Ingelogde
+gebruikers</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Dze
+worden via de 'user/password' module geladen, en zijn de gebruikers die wijzigingen
+op de data aanbrengen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Ingelogde
+gebruikers hebben een Rang (rank) krijgen, welke kan worden gebruikt om te
+kijken hoe 'gewichtig' een gebruiker is. </p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Totaal
+plaatje</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-style: normal; font-weight: normal; text-decoration: none;"><img
+ src="plaatje.gif" alt="object model" width="325" height="435">
+<br>
+</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Operaties</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Lezen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een object te mogen lezen moet een gebruiker 'read' rechten hebben.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Schrijven</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+binnen object dingen te mogen wijzigen heeft een gebruiker 'write' rechten
+nodig.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Verwijderen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een object te mogen verwijderen heeft de gebruiker 'delete' rechten nodig.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Referentie
+naar maken</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">De
+'link' geeft aan dat een gebruiker relatie mag aan maken naar het specifieke
+object</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"> </p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Creeeren</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">De
+'create' word alleen gebruikt voor builders, om te kijken of een specifiek
+soort object mag worden aangemaakt door een gebruiker. Binnen de builder
+'typedef' of ook wel 'editors' bevind.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"> </p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Veranderen
+van rechten</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">De
+'change context' geeft aan een gebruiker de rechten om de huidige rechten
+te wijzigen in andere rechten.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">Handelingen</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Creeeren
+nieuw object</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een object te mogen creeeren, moet de gebruiker 'create' rechten hebben op
+de node die het node-type representeerd binnen MMBase (typedef tabel)</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Creeeren
+nieuwe relatie</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een relatie mogen creeeren, moet de gebruiker 'create' rechten hebben op
+de node die het node-type representeerd binnen MMBase (typedef tabel), dit
+zal meestal de tabel 'insrel' zijn. Verder moet de gebruiker 'link' rechten
+hebben op beide objecten waartussen de relatie totstandkomen.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Wijzigen
+object</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een object te mogen wijzigen zijn er 'change' rechten nodig op een specifiek
+object.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Wijzigen
+rechten object</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+de rechten op een object te mogen wijzigen zijn er 'change context' rechten
+nodig op een specifiek object.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Verwijderen
+object</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Om
+een object te mogen verwijderen heeft de gebruiker 'delete' rechten nodig.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 20pt; color: rgb(0,0,0); text-decoration: none;">De
+XML</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Voorbeeld
+XML</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Aan
+de hand van de volgende XML zal een uitlegworden gegeven over de opzet van
+het context security configuratie bestand.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;?xml
+version="1.0" encoding="utf-8"?&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!DOCTYPE
+contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig.dtd"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;contextconfig&gt;
+   </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;loginmodules&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 			&lt;module name="anonymous" class="org.mmbase.security.implementation.context.AnonymousLogin"
+/&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">			&lt;module
+name="name/password" class="org.mmbase.security.implementation.context.PasswordLogin"
+/&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+  		&lt;/loginmodules&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;accounts&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 			&lt;user name="anonymous" context="default" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">			&lt;user
+name="admin" context="admin"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">				&lt;identify
+type="name/password" rank="administrator"&gt;admin2k&lt;/identify&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   			&lt;/user&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       		&lt;user name="foo" context="default" &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;identify type="name/password" rank="basic user"&gt;bar&lt;/identify&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       		&lt;/user&gt;    </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   		&lt;/accounts&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;groups&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">			&lt;group
+name="everyone"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">				&lt;contains
+type="group" named="users" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 		      		&lt;contains type="user" named="anonymous" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	
+       	&lt;/group&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+	 	      	&lt;group name="users"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 	 	     		&lt;contains type="user" named="foo" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+    		   		&lt;contains type="group" named="administrators" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+      		 	&lt;/group&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       		&lt;group name="administrators"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;contains type="user" named="admin" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	
+       	&lt;/group&gt;    </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   		&lt;/groups&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+		&lt;contexts default="default"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		
+       &lt;context name="default"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 			      	&lt;operation type="create"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		
+       	    	&lt;grant group="users" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 			      	&lt;/operation&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;operation type="read"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       	    			&lt;grant group="everyone" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;/operation&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;operation type="write"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       	    			&lt;grant group="users" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;/operation&gt;	</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;operation type="link"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       	    			&lt;grant group="users" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;/operation&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;operation type="delete"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       	    			&lt;grant group="users" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;/operation&gt;				</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;operation type="change context"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       	    			&lt;grant group="administrators" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       			&lt;/operation&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">				&lt;possible
+context="default"  /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       		&lt;/context&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   		&lt;/contexts&gt;  </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;/contextconfig&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Opbouw
+XML</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/contextconfig/loginmodules
+: Dit zijn de modules die zorgdragen voor het inloggen binnen MMBase. Het
+wijzigen van deze instellingen zal niet nodig zijn, tenzij het explicit word
+vermeld, en zal daarom buiten de beschouwing van dit document worden gelaten.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/contextconfig/accounts
+: Dit zijn de accounts van gebruikers die mogen inloggen binnen MMBase. Binnnen
+deze /context/accounts is het verstandig om altijd een 'anonymous' gebruiker
+te hebben, omdat ander deze niet bestaat. Verder kunnen er een nieuwe gebruikers
+worden toegevoegd door onder deze entry de volgende xml in te voeren:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	<span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">&lt;user
+name="%name%" context="%defaultcontext%" &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+		&lt;identify type="name/password" rank="%rank%"&gt;%password%&lt;/identify&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+  	&lt;/user&gt;</span></p>
+ 
+<p
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; color: rgb(0,0,0); text-decoration: none;">	<span
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; text-decoration: none;">Hiebij
+kunnen de volgende waarden worden ingesteld:</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	user[@name]
+: De naam van de gebruiker.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	user[@context]
+: De context die objecten krijgen die aangemaakt worden door de gebruiker</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	user/identify[type]
+: Het type login (refereert naar een module uit /contextconfig/loginmodules/module[@name]
+), deze zal altijd "name/password" zijn.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	user/identify[rank]
+: De rang die de gebruiker krijgt na een login. Dit zal altijd "basic user"
+zijn, tenzij het een administrator is, dan zal het "admin" zijn.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	user/identify
+: De waarde ingesloten door de 2 tag's is het password voor de desbetreffende
+gebruiker.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/contextconfig/groups
+: Dit zijn de groepen die bekend zijn binnen MMBase. Een groep heeft de volgende
+structuur:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;group
+name="%name%"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+		&lt;contains type="user" named="%username%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+		&lt;contains type="user" named="%username%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+		&lt;contains type="group" named="%groupname%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+		&lt;contains type="group" named="%groupname%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;/group&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	Hierbij
+kunnen de volgende waarden worden ingesteld:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	group[@name]
+: De naam van groep</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	group/contains[@type]
+: Het type dat deze groep beval. Validate waardes zijn: 'user' en 'group'</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	group/contains[@named]
+: De groep of gebruiker die in deze groep zit. Op het moment dat group/contains[@type='user']
+dan zal er naar een gebruiker 		worden gezocht binnen /contextconfig/accounts/user[@name='%username'].
+Wanneer de waarde van group/contains[@type='group'] dan zal er naar een 		naar
+een groep worden gezocht binnen /contextconfig/groups/group[@name='%groupname%']</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">/contextconfig/contexts
+: Dit zijn de contexten die gebruikt kunnen worden binnen het context security
+systeem.</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	/contextconfig/contexts[@default]
+:  dit veld refereerd naar een context die gebruikt moet worden op het moment
+dat een context wel in het ownerfield staat 		binnen MMBase, maar niet gevonden
+kan worden. Het veld dat hier staat moet een element zijn uit /contextconfig/contexts/context[@name].</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	Binnen
+deze /contextconfig/contexts kunnen nieuwe contexten worden aangemaakt op
+de volgende manier:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       &lt;context name="%contextname%"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	
+     	&lt;operation type="%operation%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	
+     	&lt;operation type="%operation%"&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">			&lt;grant
+group="%groupname%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">			&lt;grant
+group="%groupname%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 	      	&lt;/operation&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;possible
+context="%contextname%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">		&lt;possible
+context="%contextname%" /&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;/context&gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	context[@name]
+: De naam van de context</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	context/operation[@type]
+: Het type operatie waar rechten aan worden toegekend. Validate waardes zijn:
+'read', 'write', 'link', 'delete', 'change context'</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	context/operation/grant[@group]
+: De groep die de betreffende rechten voor een operatie op de context krijgt.
+Deze waarde moet refereren naar een waarde 		uit /contextconfig/groups/group[@name='%groupname%'].</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">	context/possible[@context]
+: Wanneer de rechten van dit object veranderd mogen worden in andere rechten,
+staat hier vermeld in welke andere rechten 		deze dan kan veranderen. De
+waarde die hier gespecificeerd is refereerd naar een waarde uit /contextconfig/contexts/context[@name=%contextname%].</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"> </p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">De
+DTD</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Voor
+de volledigheid van het document is hier de dtd ook gegeven:</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+contextconfig ( loginmodules, accounts, groups, contexts ) &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+	&lt;!ELEMENT loginmodules ( module+ ) &gt;     </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT module ( property* ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST module class NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST module name CDATA #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 	&lt;!ELEMENT property ( #PCDATA ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+  	&lt;!ATTLIST property name NMTOKEN #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+  	&lt;!ELEMENT accounts ( user+ ) &gt;     </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT user ( identify* ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST user context NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST user name NMTOKEN #REQUIRED &gt;    </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT identify ( #PCDATA ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST identify rank (administrator | basic user) #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ATTLIST
+identify type CDATA #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+groups ( group+ ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT group ( contains+ ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+       &lt;!ATTLIST group name NMTOKEN #REQUIRED &gt;     </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+	&lt;!ELEMENT contains EMPTY &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+ 	&lt;!ATTLIST contains named NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+  	&lt;!ATTLIST contains type NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT contexts ( context+ ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST contexts default NMTOKEN #REQUIRED &gt;			</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT context ( operation*, possible* ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST context name NMTOKEN #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT operation ( grant* ) &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST operation type (read | write | link | delete | change context)
+ #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ELEMENT grant EMPTY &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+   	&lt;!ATTLIST grant group NMTOKEN #REQUIRED &gt; </span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">	&lt;!ELEMENT
+possible EMPTY &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;"><span
+ style="font-family: courier; font-style: normal; font-weight: normal; font-size: 6pt; text-decoration: none;">
+	&lt;!ATTLIST possible context NMTOKEN #REQUIRED &gt;</span></p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: bold; font-size: 16pt; color: rgb(0,0,0); text-decoration: none;">Aanvullende
+informatie</p>
+ 
+<p
+ style="font-family: helvetica; font-style: normal; font-weight: normal; font-size: 8pt; color: rgb(0,0,0); text-decoration: none;">Wanneer
+het bestand %configdir%/security/security.xml of wel %configdir%/security/context/config.xml
+gewijzigd is, dan zal deze binnen een minuut worden herladen. Wanneer er
+zich fouten in de configuratie bevinden, dan zal dit vermeld worden in de
+log file. De oude configuratie blijft dan actief.</p>
+ <br>
+</body>
+</html>
