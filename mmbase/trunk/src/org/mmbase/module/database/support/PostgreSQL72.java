@@ -9,16 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database.support;
 
-import java.util.*;
-import java.net.*;
 import java.sql.*;
-
-import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
-import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -44,7 +39,7 @@ import org.mmbase.util.logging.*;
  *
  * Postgresql driver for MMBase
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL72.java,v 1.1 2002-10-11 13:03:13 eduard Exp $
+ * @version $Id: PostgreSQL72.java,v 1.2 2003-03-04 14:39:57 nico Exp $
  */
 //public class PostgreSQL72 extends PostgresSQL71 implements MMJdbc2NodeInterface  {
 public class PostgreSQL72 extends  PostgreSQL71 {

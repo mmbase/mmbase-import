@@ -15,17 +15,11 @@ import java.util.*;
 import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-
-import org.mmbase.util.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-/**
-*/
+
 public class XMLDynamicFlashReader {
 
     private static Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class.getName()); 

@@ -13,16 +13,9 @@ import java.io.*;
 import java.util.*;
 import java.awt.*;
 
-import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
 
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.*;
-
-/**
-*/
 public class XMLAppToolReader  {
 
     Document document;

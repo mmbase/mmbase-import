@@ -9,13 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.database;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
-import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -24,7 +17,7 @@ import org.mmbase.util.logging.Logging;
  * remove bad connections works using a callback into JDBC.
  *
  *
- * @version $Id: JDBCProbe.java,v 1.6 2003-01-07 15:20:19 kees Exp $
+ * @version $Id: JDBCProbe.java,v 1.7 2003-03-04 14:40:03 nico Exp $
  * @author Daniel Ockeloen
 
 */
