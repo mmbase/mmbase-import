@@ -10,34 +10,19 @@
   <table width="100%">
     <tr>
       <td rowspan=2 width="60%" class="projectIntro">
-        <mm:field name="intro" />
+        <mm:field name="body" />
         <p>
         
       </td>
       <td class="projectMembers">
-        Project members:
-        <mm:relatednodes type="persons">
-          <mm:first>
-            <ul>
-          </mm:first>
-          <li><a href="/development/people/person.jsp?person=<mm:field name="number" />"><mm:field name="firstname" />&nbsp;<mm:field name="lastname" /></a> </li>
-          <mm:last>
-            </ul>
-          </mm:last>
-        </mm:relatednodes>
+	  <%@include file="/includes/persons.jsp" %>
       </td>
     </tr>
     <tr>
       <td class="projectDownloads">
-        <mm:relatednodes type="attachments">
-          <mm:first>Related downloads:
-            <ul>
-          </mm:first>
-          <li><a href="<mm:attachment />"><mm:field name="title" /></a></li>
-          <mm:last>
-            </ul>
-          </mm:last>
-        </mm:relatednodes>
+	  <%@include file="/includes/attachment.jsp" %>
+	  <%@include file="/includes/urls.jsp" %>
+	  <%@include file="/includes/documentation.jsp" %>
       </td>
     </tr>
   </table>

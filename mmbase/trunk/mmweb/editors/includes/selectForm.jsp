@@ -73,7 +73,7 @@ function openListNodes(el,fullField1,minField1,fullField2,minField2,fullPath,min
 </head>
 <body bgcolor="#EFEFEF" text="#000000" link="#000000" alink="#000000" vlink="#CC0000" topmargin="2" rightmargin="3" leftmargin="3">
 
-<mm:list path="mmbaseusers,groups,editwizards" fields="editwizards.title,editwizards.description,editwizards.url" constraints="<%= userconstraint %>" max="1">
+<mm:list path="mmbaseusers,groups,editwizards" max="1" constraints="<%= "editwizards.number='" + editwizardsId + "'" %>">
 <mm:field name="editwizards.url" jspvar="editwizards_url" vartype="String" write="false">
 
 <% // get the fields for use in the form
@@ -141,7 +141,7 @@ minField2 = fullField2.substring(fullField2.indexOf(".")+1);
 		</div>
 	</td></tr>
 	<tr><td valign="top">
-	<form action="<mm:url referids="referrer" page="/mmapps/editwizard/jsp/list.jsp"> 
+	<form action="<mm:url referids="referrer" page="/mmbase/editwizard/jsp/list.jsp"> 
            			<mm:param name="wizard"><%= getParam(editwizards_url,"wizard=","&") %></mm:param> 
  	   	   		<mm:param name="directions"><%= getParam(editwizards_url,"directions=","&") %></mm:param>
 		   	</mm:url>"
@@ -166,16 +166,16 @@ minField2 = fullField2.substring(fullField2.indexOf(".")+1);
 	</tr>
 	<tr>
 	<td>
-	<a target="wizard" href="<mm:url referids="referrer" page="/mmapps/editwizard/jsp/wizard.jsp">
+	<a target="wizard" href="<mm:url referids="referrer" page="/mmbase/editwizard/jsp/wizard.jsp">
             <mm:param name="wizard"><%= getParam(editwizards_url,"wizard=","&") %></mm:param>
             <mm:param name="objectnumber">new</mm:param>
-            </mm:url>"><img title="Nieuw" height="20" width="20" border="0" src="/mmapps/editwizard/media/new.gif"></a></td>
+            </mm:url>"><img title="Nieuw" height="20" width="20" border="0" src="/mmbase/editwizard/media/new.gif"></a></td>
 	<td class="right">
 	<a href="<mm:url referids="referrer" page="/mmapps/editwizard/jsp/list.jsp"> 
            <mm:param name="wizard"><%= getParam(editwizards_url,"wizard=","&") %></mm:param> 
  	   	   <mm:param name="directions"><%= getParam(editwizards_url,"directions=","&") %></mm:param>
 		   </mm:url>" onClick="return openListNodes(this,'<%= fullField1 %>','<%= minField1 %>','<%= fullField2 %>','<%= minField2 %>','<%= fullPath %>','<%= minPath %>', '<%= fullConstraints %>', '<%= minConstraints %>');">     
-           <img title="Zoek" height="20" width="20" border="0" src="/mmapps/editwizard/media/search.gif"></a></td>
+           <img title="Zoek" height="20" width="20" border="0" src="/mmbase/editwizard/media/search.gif"></a></td>
 	</tr>
 	</table>
 	</form>

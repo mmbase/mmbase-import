@@ -28,7 +28,7 @@
 		<list include="wizards/articles/add_articles_posrel.xml" />
 		<list include="wizards/templates/add_templates.xml" />
 		<list include="wizards/pages/add_subpages_posrel.xml" />
-		<list include="wizards/images/add_images_urls_posrel.xml" />
+		<list include="wizards/organisation/add_organisation_posrel_pos.xml" />
 	</form-schema>
 
 </wizard-schema>

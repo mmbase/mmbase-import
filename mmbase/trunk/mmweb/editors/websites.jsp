@@ -5,9 +5,8 @@
 
 <mm:import externid="website"></mm:import>
 
-<mm:compare referid="website" value="" inverse="true"
-	><mm:transaction id="post_site" name="trans_addsite" commitonclose="true"
-		><mm:createnode type="websites" id="this_site"
+<mm:compare referid="website" value="" inverse="true">
+  <mm:transaction id="post_site" name="trans_addsite" commitonclose="true"><mm:createnode type="websites" id="this_site"
 			><mm:setfield name="name"><mm:write referid="website" /></mm:setfield
 			><mm:setfield name="menuname">Natuurherstelproject</mm:setfield
 		></mm:createnode
