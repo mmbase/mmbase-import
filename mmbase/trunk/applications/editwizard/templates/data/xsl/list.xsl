@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.12 2002-07-11 08:25:24 michiel Exp $
+  @version $Id: list.xsl,v 1.13 2002-07-11 12:08:36 pierre Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -60,7 +60,7 @@
           <div title="{$tooltip_edit_list}" class="subhead">
             <nobr><xsl:value-of select="$title" />(<xsl:value-of select="@count" /> items)</nobr>
           </div>
-          <br />                       
+          <br />
             <xsl:call-template name="dolist" />
             <xsl:if test="$creatable='true'">
               <br />
@@ -78,13 +78,13 @@
                 </div>
               </td>
           </tr>
-          
+
           <tr class="itemrow" ><td colspan="2" align="center" >
             <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}"><xsl:call-template name="prompt_index"/></a>
             -
             <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}"><xsl:call-template name="prompt_logout"/></a>
           </td></tr>
-        </table>    
+        </table>
   </xsl:template>
 
 
@@ -93,15 +93,15 @@
     <script language="javascript">
       <xsl:text disable-output-escaping="yes"><![CDATA[<!--
    var cancelClick = false;
-   
+
    function objMouseOver(el) {
    el.className="itemrow-hover";
    }
-   
+
    function objMouseOut(el) {
    el.className="itemrow";
    }
-   
+
    function objClick(el) {
    if (cancelClick) {
    cancelClick=false;
@@ -111,7 +111,7 @@
    if (href.length<10) return;
    document.location=href;
    }
-   
+
    function doDelete(prompt) {
    var conf;
    if (prompt && prompt!="") {
@@ -120,9 +120,9 @@
    cancelClick=true;
    return conf;
    }
-   -->       
+   -->
 ]]></xsl:text>
-      </script>    
+      </script>
   </xsl:template>
 
   <!-- ================================================================================
@@ -218,7 +218,7 @@
   </xsl:template>
 
   <xsl:template match="field">
-    <xsl:if test="position()>1"><td valign="top"><nobr><xsl:value-of select="." /></nobr></td></xsl:if>
+    <xsl:if test="position()>1"><td valign="top"><nobr><xsl:value-of disable-output-escaping="yes" select="." /></nobr></td></xsl:if>
     <xsl:if test="position()=1"><td valign="top" width="99%"><xsl:value-of select="." /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td></xsl:if>
     <td><img src="{$mediadir}nix.gif" width="4" height="1" /></td>
   </xsl:template>
