@@ -26,7 +26,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.67 2005-03-16 15:35:02 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.68 2005-03-16 16:49:13 michiel Exp $
  * @see ContextTag
  */
 
@@ -49,7 +49,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
-    private ContextTag pageContextTag = null;
+    protected ContextTag pageContextTag = null;
 
     protected  Attribute  contextId = Attribute.NULL; // context to which this tagg is referring to.
     protected  Attribute  referid   = Attribute.NULL;
@@ -101,7 +101,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 // register also the tag itself under __context.
                 // _must_ set __context before calling setPageContext otherwise in infinite loop.
                 pageContextTag.createContainer(null);
-                // pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
+                pageContextTag.pageContextTag = pageContextTag; // the 'parent' of pageContextTag is itself..
                 pageContext.setAttribute(ContextTag.CONTEXTTAG_KEY, pageContextTag);
                 
                 // there is one implicit ContextTag in every page.
@@ -207,8 +207,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     }
 
     public int doEndTag() throws JspTagException {
-        pageContextTag = null;
         helper.release();
+        pageContextTag = null;
         return EVAL_PAGE;
     }
 
@@ -224,6 +224,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
+        pageContextTag = null;
         /*
         id = null;
         referid   = Attribute.NULL;
