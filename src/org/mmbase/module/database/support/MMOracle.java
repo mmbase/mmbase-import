@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOracle.java,v 1.4 2001-03-03 23:11:32 daniel Exp $
+$Id: MMOracle.java,v 1.5 2001-03-09 09:12:04 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2001/03/03 23:11:32  daniel
+updated for table changes
+
 Revision 1.3  2001/01/21 20:37:07  daniel
 95% done, small problems with BYTE, but ill leave that upto the real oracle cracks
 
@@ -176,11 +179,7 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.*;
-
-
-//XercesParser
-import org.apache.xerces.parsers.*;
-import org.xml.sax.*;
+import org.mmbase.util.logging.*;
 
 /**
 * MMSQL92Node implements the MMJdbc2NodeInterface for
@@ -188,21 +187,24 @@ import org.xml.sax.*;
 * needed for mmbase for each database.
 *
 * @author Daniel Ockeloen
-* @version 12 Mar 1997
-* @$Revision: 1.4 $ $Date: 2001-03-03 23:11:32 $
+* @author Pierre van Rooden
+* @version 09 Mar 2001
+* @$Revision: 1.5 $ $Date: 2001-03-09 09:12:04 $
 */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-	//does the database support keys?
-	private boolean keySupported=false;
+    /**
+    * Logging instance
+    */
+	private static Logger log = Logging.getLoggerInstance(MMOracle.class.getName());
+	
 	public String name="oracle";
 	XMLDatabaseReader parser;
 	Hashtable typeMapping = new Hashtable();
 	Hashtable disallowed2allowed;
 	Hashtable allowed2disallowed;
+	//does the database support keys?
+	private boolean keySupported=false;
 	private String numberString;
 	private String otypeString;
 	private String ownerString;
@@ -278,8 +280,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 			return (node);
 		} catch(SQLException e) {
-			System.out.println("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
-			e.printStackTrace();	
+			log.error("MMSQL92Node mmObject->"+fieldname+" node="+node.getIntValue("number"));
+			log.error(Logging.stackTrace(e));
 		}
 		return(node);
 	}
@@ -295,20 +297,20 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			if (parser.hasMoreTokens()) {
 				cmd=parser.nextToken();
 			} 
-			//System.out.println("CMD="+cmd+" PART="+part);
+			// if (log.isDebugEnabled()) log.trace("CMD="+cmd+" PART="+part);
 			// do we have a type prefix (example episodes.title==) ?
 			int pos=part.indexOf('.');
 			if (pos!=-1) {
 				part=part.substring(pos+1);
 			}
-			//System.out.println("PART="+part);
+			// if (log.isDebugEnabled()) log.trace("PART="+part);
 			
 			// remove fieldname  (example title==) ?
 			pos=part.indexOf('=');
 			if (pos!=-1) {
 				String fieldname=part.substring(0,pos);
 				int dbtype=bul.getDBType(fieldname);
-				//System.out.println("TYPE="+dbtype);
+				//if (log.isDebugEnabled()) log.trace("TYPE="+dbtype);
 				result+=parseFieldPart(fieldname,dbtype,part.substring(pos+1));
 				if (cmd!=null) {
 					if (cmd.equals("+")) {
@@ -395,8 +397,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : trying to load text");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : trying to load text");
+			log.error(Logging.stackTrace(e));
 		}
 		return(null);
 	}
@@ -418,8 +420,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			con.close();
 			return(result);
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : trying to load bytes");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : trying to load bytes");
+			log.error(Logging.stackTrace(e));
 		}
 		return(null);
 	}
@@ -443,8 +445,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			input.readFully(bytes);
 			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> MMMysql byte  exception "+e);
-			e.printStackTrace();
+			log.error("MMObjectBuilder -> MMMysql byte  exception "+e);
+			log.error(Logging.stackTrace(e));
 		}
 		return(bytes);
 	}
@@ -463,11 +465,11 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			Clob c=rs.getClob(idx);
 			inp=c.getAsciiStream();
 			if (inp==null) {
-				System.out.println("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
+				log.warn("MMObjectBuilder -> MMysql42Node DBtext no ascii "+inp);
 				 return("");
 			}
 			if (rs.wasNull()) {
-				System.out.println("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
+				log.warn("MMObjectBuilder -> MMysql42Node DBtext wasNull "+inp);
 				return("");
 			}
 			//siz=inp.available(); // DIRTY
@@ -480,8 +482,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			str=new String(isochars,"ISO-8859-1");
 			input.close(); // this also closes the underlying stream
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> MMMysql text  exception "+e);
-			e.printStackTrace();
+			log.error("MMObjectBuilder -> MMMysql text  exception "+e);
+			log.error(Logging.stackTrace(e));
 			return("");
 		}
 		return(str);
@@ -505,7 +507,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		int number=node.getIntValue("number");
 		// did the user supply a number allready, ifnot try to obtain one
 		if (number==-1) number=getDBKey();
-		// did it fail ? ifso exit 
+		// did it fail ? ifso exit
 		if (number == -1) return(-1);
 
 
@@ -519,16 +521,16 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			int DBState = node.getDBState(key);
 			if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 			  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-				if (debug) debug("Insert: DBState = "+DBState+", adding key: "+key);
+				if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", adding key: "+key);
 				fieldAmounts+=",?";
 			} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-				if (debug) debug("Insert: DBState = "+DBState+", skipping key: "+key);
+				if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", skipping key: "+key);
 			} else {
 
                	if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 					fieldAmounts+=",?";
 				} else {
-					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
+					log.warn("Insert: DBState = "+DBState+" unknown!, skipping key: "+key+" of builder:"+node.getName());
                	}
 			}
 		}
@@ -537,11 +539,11 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		PreparedStatement stmt=null;
 		try {
             // Prepare the statement using the amount of fields found.
-            if (debug) debug("Insert: Preparing statement "+mmb.baseName+"_"+tableName+" using fieldamount String: "+fieldAmounts);
+            if (log.isDebugEnabled()) log.trace("Insert: Preparing statement "+mmb.baseName+"_"+tableName+" using fieldamount String: "+fieldAmounts);
 			con=bul.mmb.getConnection();
 			stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+tableName+" values("+fieldAmounts+")");
-		} catch(Exception t) {
-			t.printStackTrace();
+		} catch(Exception e) {
+			log.error(Logging.stackTrace(e));
 		}
 		try {
 			stmt.setEscapeProcessing(false);
@@ -554,17 +556,17 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				int DBState = node.getDBState(key);
 				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)
 				  || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
-					if (debug) debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
+					if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
 					setValuePreparedStatement( stmt, node, key, j );
 					j++;
 				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-					if (debug) debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+					if (log.isDebugEnabled()) log.trace("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
 				} else {
 				    if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
 						setValuePreparedStatement( stmt, node, key, j );
 						j++;
 				    } else {
-						debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
+						log.warn("Insert: DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
 				    }
 				}
 			}
@@ -573,8 +575,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("Error on : "+number+" "+owner+" fake "+tableName+" NODE="+node);
-			e.printStackTrace();
+			log.error("Error on : "+number+" "+owner+" fake "+tableName+" NODE="+node);
+			log.error(Logging.stackTrace(e));
 			try {
 			stmt.close();
 			con.close();
@@ -585,19 +587,30 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		if (node.parent!=null && (node.parent instanceof InsRel) && !tableName.equals("insrel")) {
 			try {
 				con=mmb.getConnection();
-				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?)");
-				stmt.setInt(1,number);
-				stmt.setInt(2,node.getIntValue("otype"));
-				stmt.setString(3,node.getStringValue("owner"));
-				stmt.setInt(4,node.getIntValue("snumber"));
-				stmt.setInt(5,node.getIntValue("dnumber"));
-				stmt.setInt(6,node.getIntValue("rnumber"));
+				if (InsRel.usesdir) {
+    				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?,?)");
+    				stmt.setInt(1,number);
+	    			stmt.setInt(2,node.getIntValue("otype"));
+		    		stmt.setString(3,node.getStringValue("owner"));
+			    	stmt.setInt(4,node.getIntValue("snumber"));
+				    stmt.setInt(5,node.getIntValue("dnumber"));
+    				stmt.setInt(6,node.getIntValue("rnumber"));
+    				stmt.setInt(7,node.getIntValue("dir"));
+                } else {
+    				stmt=con.prepareStatement("insert into "+mmb.baseName+"_insrel values(?,?,?,?,?,?)");
+    				stmt.setInt(1,number);
+	    			stmt.setInt(2,node.getIntValue("otype"));
+		    		stmt.setString(3,node.getStringValue("owner"));
+			    	stmt.setInt(4,node.getIntValue("snumber"));
+				    stmt.setInt(5,node.getIntValue("dnumber"));
+    				stmt.setInt(6,node.getIntValue("rnumber"));
+                }
 				stmt.executeUpdate();
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("Error on : "+number+" "+owner+" fake");
+				log.error("Error on : "+number+" "+owner+" fake");
+				log.error(Logging.stackTrace(e));
 				return(-1);
 			}
 		}
@@ -613,8 +626,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
+			log.error("Error on : "+number+" "+owner+" fake");
+			log.error(Logging.stackTrace(e));
 			return(-1);
 		}
 
@@ -636,7 +649,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 		node.setValue("number",number);
 		node.clearChanged();
-		//System.out.println("INSERTED="+node);
+		//if (log.isDebugEnabled()) log.trace("INSERTED="+node);
 		return(number);	
 	}
 
@@ -650,17 +663,18 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		try {
 			isochars=body.getBytes("ISO-8859-1");
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder -> String contains odd chars");
-			System.out.println(body);
-			e.printStackTrace();
+			log.error("MMObjectBuilder -> String contains odd chars");
+			log.error(body);
+			log.error(Logging.stackTrace(e));
+			return;
 		}
 		try {
 			ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
 			stmt.setAsciiStream(i,stream,isochars.length);
 			stream.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : Can't set ascii stream");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : Can't set ascii stream");
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -674,8 +688,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.setBinaryStream(i,stream,bytes.length);
 			stream.close();
 		} catch (Exception e) {
-			System.out.println("MMObjectBuilder : Can't set byte stream");
-			e.printStackTrace();
+			log.error("MMObjectBuilder : Can't set byte stream");
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -737,7 +751,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				log.error(Logging.stackTrace(e));
 				return(false);
 			}
 		}
@@ -764,13 +778,13 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 	*/
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		int number=node.getIntValue("number");
-		if(debug) {
-			System.out.println("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
-			System.out.println("SAVECOPY "+node.toString());
+		if(log.isDebugEnabled()) {
+			log.trace("MMObjectBuilder -> delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+			log.trace("SAVECOPY "+node.toString());
 		}
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {
-			System.out.println("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
+			log.error("MMObjectBuilder ->PROBLEM! still relations attachched : delete from "+mmb.baseName+"_"+bul.tableName+" where "+getNumberString()+"="+number);
 		} else {
 		if (number!=-1) {
 			try {
@@ -780,7 +794,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				log.error(Logging.stackTrace(e));
 			}
 			if (node.parent!=null && (node.parent instanceof InsRel) && !bul.tableName.equals("insrel")) {
 				try {
@@ -790,7 +804,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 					stmt.close();
 					con.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.error(Logging.stackTrace(e));
 				}
 			}
 
@@ -801,7 +815,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				log.error(Logging.stackTrace(e));
 			}
 		}
 		}
@@ -823,14 +837,14 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 	 * And inserts the DBKey retrieve by getDBKeyOld
 	 */
 	private void checkNumberTable() {
-		if (debug) System.out.println("MMSQL92NODE -> checks if table numberTable exists.");
+		if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> checks if table numberTable exists.");
 		if(!created(mmb.baseName+"_numbertable")) {
 			// We want the current number of object, not next number (that's the -1)
 			int number = getDBKeyOld()-1;
 
-	 	 	if (debug) System.out.println("MMSQL92NODE -> Creating table numbertable and inserting row with number "+number);
+	 	 	if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> Creating table numbertable and inserting row with number "+number);
 			String createStatement = getMatchCREATE("numbertable")+"( "+getNumberString()+" int not null)";
-			System.out.println("create="+createStatement);
+			if (log.isDebugEnabled()) log.trace("create="+createStatement);
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
@@ -839,16 +853,16 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 				stmt.close();
 				con.close();
 			} catch (SQLException e) {
-				System.out.println("MMSQL92NODE -> ERROR, Wasn't able to create numbertable table.");
-				e.printStackTrace();
+				log.error("MMSQL92NODE -> Wasn't able to create numbertable table.");
+				log.error(Logging.stackTrace(e));
 			}
 		}
 	}
 
 	/**
-	 * gives an unique number 
+	 * gives an unique number
 	 * this method will work with multiple mmbases
-	 * @return unique number 
+	 * @return unique number
 	 */
 	public synchronized int getDBKey() {
 		int number =-1;
@@ -867,11 +881,11 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
+			log.error(Logging.stackTrace(e));
+			log.error("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
 		}
-		if (debug) System.out.println("MMSQL92NODE -> retrieving number "+number+" from the database");
-		return (number); 
+		if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> retrieving number "+number+" from the database");
+		return (number);
 	}
 
 	public synchronized int getDBKeyOld() {
@@ -889,7 +903,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			if (debug) System.out.println("MMBase -> Error getting a new key number");
+			log.error("MMBase -> while getting a new key number");
 			return(1);
 		}
 		return(number);
@@ -965,7 +979,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		} else if (type==FieldDefs.TYPE_BYTE) {	
 				setDBByte(i, stmt, node.getByteValue(key));
-		} else { 
+		} else {
 			String tmp=node.getStringValue(key);
 			if (tmp!=null) {
 				stmt.setString(i, tmp);
@@ -1021,9 +1035,9 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			 System.out.println("XMLCREATE="+result);
-			e.printStackTrace();
+			log.error("can't create table "+tableName);
+			log.error("XMLCREATE="+result);
+			log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);
@@ -1041,7 +1055,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 		int size=bul.size();
 		if (size>0) {
-			System.out.println("table not dropped, not empty : "+tableName);
+			log.error("table not dropped, not empty : "+tableName);
 			return(false);
 		}
 
@@ -1053,47 +1067,46 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			 System.out.println("XMLCREATE="+result);
-			e.printStackTrace();
+			log.error("can't create table "+tableName);
+			log.error("XMLCREATE="+result);
+			log.error(Logging.stackTrace(e));
 			return(false);
 		}
 		return(true);
 	}
 
 	public boolean updateTable(MMObjectBuilder bul) {
-		System.out.println("Starting a updateTable on : "+bul.getTableName());
+		log.info("Starting a updateTable on : "+bul.getTableName());
 
 		String tableName=bul.getTableName();
 		
 		if (create_real(bul,tableName+"_tmp")) {
-			System.out.println("created tmp  table : "+tableName+"_tmp");
+			log.info("created tmp  table : "+tableName+"_tmp");
 			/*
 			Enumeration e=bul.search("");
 			while (e.hasMoreElements()) {
 				MMObjectNode node=(MMObjectNode)e.nextElement();
 				insert_real(bul,node.get
-				System.out.println("node="+node);
+				if (log.isDebugEnabled()) log.trace("node="+node);
 			}
 			*/
 		} else {
 		}
 
 		if (drop(bul)) {
-			System.out.println("drop of old table done : "+bul.getTableName());
+			log.info("drop of old table done : "+bul.getTableName());
 			if (create(bul)) {
-				System.out.println("create of new table done : "+bul.getTableName());
+				log.info("create of new table done : "+bul.getTableName());
 				if (drop_real(bul,tableName+"_tmp")) {
-					System.out.println("dropping tmp  table : "+tableName+"_tmp");
-				} 
-
+					log.info("dropping tmp  table : "+tableName+"_tmp");
+				}
 				return(true);
 			} else {
-				System.out.println("create of new table failed : "+bul.getTableName());
+				log.error("create of new table failed : "+bul.getTableName());
 				return(false);
 			}
 		}  else {
-			System.out.println("drop of old table failed : "+bul.getTableName());
+			log.error("drop of old table failed : "+bul.getTableName());
 			return(false);
 		}
 	}
@@ -1112,8 +1125,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+baseName+"_object");
-			e.printStackTrace();
+			log.error("can't create table "+baseName+"_object");
+			log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
@@ -1134,7 +1147,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 		//get the wanted key
 		boolean iskey=def.isKey();
 
-		if (name.equals("otype")) { 
+		if (name.equals("otype")) {
 			return("otype int "+parser.getNotNullScheme());
 		} else {
 			if (disallowed2allowed.containsKey(name)) {
@@ -1144,7 +1157,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			if (notnull) result+=" "+parser.getNotNullScheme();
 			if (keySupported) {
 				if (iskey) result+=" "+parser.getNotNullScheme()+" ,"+parser.getKeyScheme()+ "("+name+")";
-			} 
+			}
 
 			return(result);
 		}
@@ -1158,7 +1171,7 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 			if (typs!=null) {
 				for (Enumeration e=typs.maps.elements();e.hasMoreElements();) {
 					 dTypeInfo typ = (dTypeInfo)e.nextElement();
-					 //System.out.println("WWW="+size+" "+typ.minSize+" "+typ.maxSize+typ.dbType+" "+typs.maps.size());
+					 //if (log.isDebugEnabled()) log.trace("WWW="+size+" "+typ.minSize+" "+typ.maxSize+typ.dbType+" "+typs.maps.size());
 					// needs smart mapping code
 					if (size==-1) {
 						result=typ.dbType;

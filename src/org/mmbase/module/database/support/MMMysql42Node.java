@@ -17,8 +17,8 @@ import java.sql.*;
 
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -28,11 +28,14 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.18 $ $Date: 2000-11-21 09:59:51 $
+* @$Revision: 1.19 $ $Date: 2001-03-09 09:12:04 $
 */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
-	static boolean debug = false;
-
+    /**
+    * Logging instance
+    */
+	private static Logger log = Logging.getLoggerInstance(MMMysql42Node.class.getName());
+	
 	/**
      * gives an unique number
      * this method will work with multiple mmbases
@@ -53,10 +56,10 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
             stmt.close();
             con.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
+            log.error("MMSQL92NODE -> SERIOUS ERROR, Problem with retrieving DBNumber from databse");
+            log.error(Logging.stackTrace(e));
         }
-        if (debug) System.out.println("MMSQL92NODE -> retrieving number "+number+" from the database");
+        if (log.isDebugEnabled()) log.trace("MMSQL92NODE -> retrieving number "+number+" from the database");
         return (number);
     }
 }
