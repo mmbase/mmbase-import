@@ -69,7 +69,7 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
         extraParameters = new HashMap();
         if (page == null) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            page = req.getRequestURI();
+            page = req.getContextPath() + req.getRequestURI();
         }
         return EVAL_BODY_TAG;
     }
