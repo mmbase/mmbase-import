@@ -20,22 +20,12 @@ import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
 /**
  * Shortcut for List where the start node is the parent node.
  */
 public class RelatedTag extends ListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
-
-    private String parentNodeId = null;
     private String relatedPathString=null;
-
-    /**
-     * Override original ListTag method.
-     */
-    public void setNode(String node) {
-        parentNodeId=node;
-    }
 
     /**
      * Override original ListTag method.
