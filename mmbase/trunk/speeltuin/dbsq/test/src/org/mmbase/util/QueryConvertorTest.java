@@ -14,7 +14,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class QueryConvertorTest extends TestCase {
     
@@ -52,92 +52,6 @@ public class QueryConvertorTest extends TestCase {
      */
     public void tearDown() throws Exception {}
     
-    /** Test of altaVista2SearchQuery method, of class org.mmbase.util.QueryConvertor. */
-    public void testAltaVista2SearchQuery() {
-        NodeSearchQuery query1 = new NodeSearchQuery(images);
-        NodeSearchQuery query2 = QueryConvertor.altaVista2SearchQuery(
-            "", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-
-        BasicFieldValueConstraint constraint1 
-            = (BasicFieldValueConstraint)
-            new BasicFieldValueConstraint(query1.getField(imagesTitle), "t_st%")
-                .setOperator(FieldValueConstraint.LIKE)
-                .setCaseSensitive(false);
-        query1.setConstraint(constraint1);
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-
-        BasicCompositeConstraint composite1 = new BasicCompositeConstraint(
-            CompositeConstraint.LOGICAL_AND);
-        query1.setConstraint(composite1);
-        composite1.addChild(constraint1);
-        BasicFieldValueConstraint constraint2 
-            = (BasicFieldValueConstraint)
-            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("1.11"))
-                .setOperator(FieldValueConstraint.LESS_EQUAL);
-        composite1.addChild(constraint2);
-        query1.getField(imagesNumber).setAlias("images.number");
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'+images.number=s1.11", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-        
-        constraint2.setInverse(true);
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'-images.number=s1.11", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-        
-        BasicFieldValueConstraint constraint3 
-            = (BasicFieldValueConstraint)
-            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("100"))
-                .setOperator(FieldValueConstraint.NOT_EQUAL);
-        composite1.addChild(constraint3);
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'-images.number=s1.11+number=N100", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-        
-        BasicCompositeConstraint composite2 = new BasicCompositeConstraint(
-            CompositeConstraint.LOGICAL_OR);
-        composite2.addChild(composite1);
-        query1.setConstraint(composite2);
-        BasicFieldValueConstraint constraint4
-            = (BasicFieldValueConstraint)
-            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("200"))
-                .setOperator(FieldValueConstraint.EQUAL);
-        composite2.addChild(constraint4);
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'-images.number=s1.11+number=N100|number=E200", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-        
-        BasicCompositeConstraint composite3 = new BasicCompositeConstraint(
-            CompositeConstraint.LOGICAL_AND);
-        composite3.addChild(composite2);
-        query1.setConstraint(composite3);
-        BasicFieldValueConstraint constraint5
-            = (BasicFieldValueConstraint)
-            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("0"))
-                .setOperator(FieldValueConstraint.GREATER)
-                .setInverse(true);
-        composite3.addChild(constraint5);
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'-images.number=s1.11+number=N100|number=E200-number=G0", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-
-        constraint5.setInverse(false);
-        query2 = QueryConvertor.altaVista2SearchQuery(
-            "title=E't?st*'-images.number=s1.11+number=N100|number=E200+number=G0", images);
-        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
-            query1.equals(query2));
-    }
-    
     /** Test of setConstraint() method, of class org.mmbase.util.QueryConvertor. */
     public void testSetConstraint() {
         List tables = Arrays.asList(
@@ -148,6 +62,7 @@ public class QueryConvertorTest extends TestCase {
             empty, empty, ClusterBuilder.SEARCH_ALL);
         
         // Altavista format.
+        altaVistaSearchQueryTests();
         QueryConvertor.setConstraint(query, 
             "pools.name=E'test1'+related.number=E10+images.number=E10+pools0.name=E'test2'");
         CompositeConstraint composite 
@@ -280,6 +195,105 @@ public class QueryConvertorTest extends TestCase {
             !constraint3.isCaseSensitive());
         assertTrue(constraint3.toString(), 
             constraint3.getValue().equals("test2"));
+    }
+    
+    /** 
+     * Tests setConstraint() method, of class org.mmbase.util.QueryConvertor,
+     * specifically for constraints in altavista format, with search queries
+     * involving a single step. 
+     */
+    private void altaVistaSearchQueryTests() {
+        NodeSearchQuery query1 = new NodeSearchQuery(images);
+        NodeSearchQuery query2 = new NodeSearchQuery(images);
+        
+        // Empty constraint.
+        QueryConvertor.setConstraint(query2, "");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+
+        // Single constraint on textfield with wildcards.
+        BasicFieldValueConstraint constraint1 
+            = (BasicFieldValueConstraint)
+            new BasicFieldValueConstraint(query1.getField(imagesTitle), "t_st%")
+                .setOperator(FieldValueConstraint.LIKE)
+                .setCaseSensitive(false);
+        query1.setConstraint(constraint1);
+        QueryConvertor.setConstraint(query2, "title=E't?st*'");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+
+        // Combined constraints (using AND), field prefixed by step alias.
+        BasicCompositeConstraint composite1 = new BasicCompositeConstraint(
+            CompositeConstraint.LOGICAL_AND);
+        query1.setConstraint(composite1);
+        composite1.addChild(constraint1);
+        BasicFieldValueConstraint constraint2 
+            = (BasicFieldValueConstraint)
+            new BasicFieldValueConstraint(
+                    query1.getField(imagesNumber), new Double("1.11"))
+                .setOperator(FieldValueConstraint.LESS_EQUAL);
+        composite1.addChild(constraint2);
+        query1.getField(imagesNumber).setAlias("images.number");
+        QueryConvertor.setConstraint(query2, 
+            "title=E't?st*'+images.number=s1.11");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+        
+        // Using AND NOT.
+        constraint2.setInverse(true);
+        QueryConvertor.setConstraint(query2, 
+            "title=E't?st*'-images.number=s1.11");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+        
+        // Additional subconstraint.
+        BasicFieldValueConstraint constraint3 
+            = (BasicFieldValueConstraint)
+            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("100"))
+                .setOperator(FieldValueConstraint.NOT_EQUAL);
+        composite1.addChild(constraint3);
+        QueryConvertor.setConstraint(query2,
+            "title=E't?st*'-images.number=s1.11+number=N100");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+        
+        // Additional subconstraint (using OR).
+        BasicCompositeConstraint composite2 = new BasicCompositeConstraint(
+            CompositeConstraint.LOGICAL_OR);
+        composite2.addChild(composite1);
+        query1.setConstraint(composite2);
+        BasicFieldValueConstraint constraint4
+            = (BasicFieldValueConstraint)
+            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("200"))
+                .setOperator(FieldValueConstraint.EQUAL);
+        composite2.addChild(constraint4);
+        QueryConvertor.setConstraint(query2,
+            "title=E't?st*'-images.number=s1.11+number=N100|number=E200");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+        
+        // Additional subconstraint.
+        BasicCompositeConstraint composite3 = new BasicCompositeConstraint(
+            CompositeConstraint.LOGICAL_AND);
+        composite3.addChild(composite2);
+        query1.setConstraint(composite3);
+        BasicFieldValueConstraint constraint5
+            = (BasicFieldValueConstraint)
+            new BasicFieldValueConstraint(query1.getField(imagesNumber), new Double("0"))
+                .setOperator(FieldValueConstraint.GREATER)
+                .setInverse(true);
+        composite3.addChild(constraint5);
+        QueryConvertor.setConstraint(query2,
+            "title=E't?st*'-images.number=s1.11+number=N100|number=E200-number=G0");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
+            
+        // Inverse subconstraint.
+        constraint5.setInverse(false);
+        QueryConvertor.setConstraint(query2,
+            "title=E't?st*'-images.number=s1.11+number=N100|number=E200+number=G0");
+        assertTrue("\n1:" + query1.toString() + "\n2:" + query2.toString(), 
+            query1.equals(query2));
     }
     
     public static Test suite() {
