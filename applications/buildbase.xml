@@ -371,6 +371,27 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${project.extra.path}" />
         <pathelement path="${project.extra.path2}" />
       </classpath>
+      <!-- mmbase custom tags -->
+      <tag name="deprecated-now" description="Warning: Deprecated now (removed in the next release):" />
+      <tag name="license" description="Warning: License conflict:" />
+      <tag name="rename" description="Warning: Will be renamed to:" />
+      <tag name="move" description="Warning: Will be moved to:" />
+      <tag name="scope" description="Warning: Scope will be changed to:" />
+      <tag name="core" description="Core Class" scope="types" />
+      <tag name="application"  description="Class for Application :" scope="types" />
+      <tag name="todo" description="To Do:" />
+      <!-- mmbase tags to ignore (development cleaning warnings only) -->
+      <tag name="javadoc" description="Warning: No Java Documentation Available." enabled="${javadoc.cleaning}" />
+      <tag name="bad-constant" description="Warning: Bad Constant" enabled="${javadoc.cleaning}" />
+      <tag name="bad-literal" description="Warning: Uses Bad Literal" enabled="${javadoc.cleaning}" />
+      <tag name="code-conventions" description="Warning: Code Conventions Breach" enabled="${javadoc.cleaning}"/>
+      <tag name="language" description="Warning: Contains Language-dependent Text Values" enabled="${javadoc.cleaning}"/>
+      <tag name="vpro" description="Warning: Contains VPRO Legacy Code" enabled="${javadoc.cleaning}"/>
+      <tag name="performance" description="Warning: Performance Issues" enabled="${javadoc.cleaning}"/>
+      <tag name="dependency" description="Warning: Contains Dependency Found" enabled="${javadoc.cleaning}"/>
+      <tag name="sql" description="Warning: Contains Database Legacy Code" enabled="${javadoc.cleaning}"/>
+      <tag name="duplicate" description="Warning: Contains Duplicate Code (present in other classes)" enabled="${javadoc.cleaning}"/>
+      <tag name="deprecation-used" description="Warning: Calls Deprecated Code" enabled="${javadoc.cleaning}"/>
     </javadoc>
   </target>
 
