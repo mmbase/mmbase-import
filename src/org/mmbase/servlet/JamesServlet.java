@@ -28,23 +28,38 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.30 2001-09-05 09:12:26 eduard Exp $
+* @version $Id: JamesServlet.java,v 1.31 2001-10-29 12:05:41 vpro Exp $
 */
 
 
 public class JamesServlet extends HttpServlet {
-    static Logger log;
-    private static int servletCount;
-    private static Object servletCountLock = new Object();
-    private static Hashtable runningServlets = new Hashtable();
-    private static int printCount;
-
-    /**
-     * Debug method for logging. obsolete
-     */
-    protected void debug( String msg ) { 
+	static Logger log;
+	
+	/**
+	* To keep track of the currently running servlets
+	* switch the following boolean to true.
+	*/
+	private static final boolean logServlets = false;
+	private static int servletCount; // Number of running servlets
+	/**
+	*  Lock to sync add and remove of threads
+	*/
+	private static Object servletCountLock = new Object();
+	/**
+	* Hashtable containing currently running servlets
+	*/
+	private static Hashtable runningServlets = new Hashtable();
+	/**
+	* Toggle to print running servlets to log
+	*/
+	private static int printCount;
+	
+	/**
+	* Debug method for logging. obsolete
+	*/
+	protected void debug( String msg ) { 
 	//	log.debug(msg + " <deprecated call>"); }
-    }
+	}
 
     /**
      * Initializes the servlet.
@@ -331,56 +346,55 @@ public class JamesServlet extends HttpServlet {
         return result;
     }
 
-    /**
-     * Decrease the reference count of the servlet (for debugging)
-     * @param req The HttpServletRequest.
-     */
-    public void decRefCount(HttpServletRequest req) {
-	/*
-        String URL = getRequestURL(req);
-        URL += " " + req.getMethod();
-        synchronized (servletCountLock) {
-            servletCount--;
-            DebugServlet s = (DebugServlet) runningServlets.get(this);
-            if (s!=null) {
-                if (s.refCount==0) runningServlets.remove(this);
-                else {
-                    s.refCount--;
-                    int i = s.URIs.indexOf(URL);
-                    if (i>=0) s.URIs.removeElementAt(i);
-                }
-            }
-        }//sync
+	/**
+	* Decrease the reference count of the servlet
+	* @param req The HttpServletRequest.
 	*/
-    }
+	public void decRefCount(HttpServletRequest req) {
+		if (logServlets) {
+			String URL = getRequestURL(req);
+			URL += " " + req.getMethod();
+			synchronized (servletCountLock) {
+				servletCount--;
+				DebugServlet s = (DebugServlet) runningServlets.get(this);
+				if (s!=null) {
+					if (s.refCount==0) runningServlets.remove(this);
+					else {
+						s.refCount--;
+						int i = s.URIs.indexOf(URL);
+						if (i>=0) s.URIs.removeElementAt(i);
+					}
+				}// s!=null
+			}//sync
+		}// if (logServlets)
+	}
 
-    /**
-     * Increase the reference count of the servlet (for debugging)
-     * @param req The HttpServletRequest.
-     */
-    public void incRefCount(HttpServletRequest req) {
-	/*
-        String URL = getRequestURL(req);
-        URL += " " + req.getMethod();
-        int curCount;
-	System.out.println("WANT LOCK");
-        synchronized (servletCountLock)    {
-            servletCount++; curCount=servletCount; printCount++;
-            DebugServlet s = (DebugServlet) runningServlets.get(this);
-            if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
-            else { s.refCount++; s.URIs.addElement(URL); }
-        }// sync
-	System.out.println("GOT LOCK");
-        
-        if ((printCount & 31)==0) {
-			if (curCount>0) {
-	            //log.info("Running servlets: "+curCount);
-	            for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
-	                //log.info(e.nextElement());
-				}
-			}
-        }
+	/**
+	* Increase the reference count of the servlet (for debugging)
+	* and send running servlets to log once evry 32 requests
+	* @param req The HttpServletRequest.
 	*/
+	public void incRefCount(HttpServletRequest req) {
+		if (logServlets) {
+			String URL = getRequestURL(req);
+			URL += " " + req.getMethod();
+			int curCount;
+			synchronized (servletCountLock) {
+				servletCount++; curCount=servletCount; printCount++;
+				DebugServlet s = (DebugServlet) runningServlets.get(this);
+				if (s==null) runningServlets.put(this, new DebugServlet(this, URL, 0));
+				else { s.refCount++; s.URIs.addElement(URL); }
+			}// sync
+        
+			if ((printCount & 31)==0) {
+				if (curCount>0) {
+					log.info("Running servlets: "+curCount);
+					for(Enumeration e=runningServlets.elements(); e.hasMoreElements();) {
+						log.info(e.nextElement());
+					}
+				}// curCount>0
+			}
+		}
     }
 
     /**
@@ -542,40 +556,32 @@ public class JamesServlet extends HttpServlet {
  * It contains a reference count, as well as a list of URI's being handled by the servlet.
  */
 class DebugServlet {
+	/**
+	* The servlet do debug
+	*/
+	JamesServlet servlet;
+	/**
+	* List of URIs that call the servlet
+	*/
+	Vector URIs = new Vector();
+	/**
+	* Nr. of references
+	*/
+	int refCount;
 
-    // logger
-    static Logger log = Logging.getLoggerInstance(DebugServlet.class.getName());
-    // XXX: can be made static. use in logger call...
-    public String classname = getClass().getName();
+	/**
+	* Craete a new DebugServlet using teh jamesServlet
+	*/
+	DebugServlet( JamesServlet servlet, String URI, int refCount) {
+		this.servlet = servlet;
+		URIs.addElement(URI);
+		this.refCount = refCount;
+	}
 
-    /**
-     * The servlet do debug
-     */
-    JamesServlet servlet;
-    /**
-     * List of URIs that call the servlet
-     */
-    Vector URIs = new Vector();
-    /**
-     * Nr. of references
-     */
-    int refCount;
-
-    /**
-     * Craete a new DebugServlet using teh jamesServlet
-     */
-    DebugServlet( JamesServlet servlet, String URI, int refCount) {
-        this.servlet = servlet;
-        URIs.addElement(URI);
-        this.refCount = refCount;
-	System.out.println("DEB="+toString());
-    }
-
-    /**
-     * Returns a sdescripto containing servlet info and URI's
-     */
-    public String toString() {
-        return classname +" servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")";
-    }
-
+	/**
+	* Return a description containing servlet info and URI's
+	*/
+	public String toString() {
+		return "servlet("+servlet+"), refcount("+(refCount+1)+"), uri's("+URIs+")";
+	}
 }
