@@ -16,7 +16,7 @@ import java.util.List;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.3 2002-01-31 10:05:08 pierre Exp $
+ * @version $Id: NodeList.java,v 1.4 2002-02-22 14:44:02 michiel Exp $
  */
 public interface NodeList extends List {
 
@@ -32,9 +32,19 @@ public interface NodeList extends List {
     public NodeIterator nodeIterator();
 
     /**
+     * Writes this nodelist to a DOM document
+     *
+     * @param tree the DOM document.
+     * @since MMBase-1.6
+     */
+    
+    public void toXML(org.w3c.dom.Document tree);
+
+    /**
      * Returns a sublist of this list.
      * @param fromIndex the position in the current list where the sublist starts (inclusive)
      * @param toIndex the position in the current list where the sublist ends (exclusive)
      */
     public NodeList subNodeList(int fromIndex, int toIndex);
+    
 }
