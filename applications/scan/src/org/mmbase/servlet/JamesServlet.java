@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.29 2001-08-16 12:47:31 install Exp $
+* @version $Id: JamesServlet.java,v 1.30 2001-09-05 09:12:26 eduard Exp $
 */
 
 
@@ -56,6 +56,7 @@ public class JamesServlet extends HttpServlet {
         ServletConfig sc = getServletConfig();
         ServletContext sx = sc.getServletContext();
         MMBaseContext.init(sx);
+        MMBaseContext.initHtmlRoot();	
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(JamesServlet.class.getName());
     }
