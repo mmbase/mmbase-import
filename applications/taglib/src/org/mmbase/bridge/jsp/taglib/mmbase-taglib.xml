@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.223 2003-12-19 12:55:08 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.224 2003-12-24 00:31:36 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5261,6 +5261,19 @@ The 0 is just counter, which starts at 0 on every page.
 		<since>MMBase-1.7</since>
 	</tag>
 
+
+	<tag>
+		<name>break</name>
+		<type>mmbase.list</type>
+		<extends>listreferrer</extends>
+		<extends>contextreader</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.BreakTag</tagclass>
+		<info>
+      Stops iterating the current list-tag.
+		</info>
+		<since>MMBase-1.7</since>
+	</tag>
+
 	<tag>
     <name>tree</name>
 		<type>mmbase.tree.list</type>
@@ -5300,85 +5313,44 @@ The 0 is just counter, which starts at 0 on every page.
 
 
 	<tag>
-    <name>didgrow</name>
+    <name>grow</name>
 		<type>mmbase.tree.list</type>
 		<extends>treereferrer</extends>
 		<extends>contextreader</extends>
-		<tagclass>org.mmbase.bridge.jsp.taglib.tree.DidGrowTag</tagclass>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.GrowTag</tagclass>
 		<info>
-      Did the tree 'grow', and how much (for normal trees, this is 0 or one, so 'didgrow' acts as a 'condition' tag.
+      Iterates from previous depth to (not inclusive) current depth. On the first iteration of mm:tree this will iterators one time. 
+      Currently there are not upside down trees implemented, which means that this tag now always iterates one or zero times.
 		</info>
 		<since>MMBase-1.7</since>		
-    <attribute>
-			<name>inverse</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-      <info>
-        
-      </info>
-		</attribute>
 	</tag>
 
 	<tag>
-    <name>willgrow</name>
+    <name>onshrink</name>
 		<type>mmbase.tree.list</type>
 		<extends>treereferrer</extends>
 		<extends>contextreader</extends>
-		<tagclass>org.mmbase.bridge.jsp.taglib.tree.WillGrowTag</tagclass>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.OnShrinkTag</tagclass>
 		<info>
-      Did the tree 'grow', and how much (for normal trees, this is 0 or one, so 'didgrow' acts as a 'condition' tag.
-		</info>
+      The body of the tag is remembered for use by the shrink tag, used when shrinking to current depth. See depth-tag 
+      for what 'current depth' means.
+      This tag iteras from previous dpeth to curren current depth (like grow), but the body is remembered, not executed.
+    </info>
+    <see tag="depth" />
 		<since>MMBase-1.7</since>		
-    <attribute>
-			<name>inverse</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-      <info>
-        
-      </info>
-		</attribute>
 	</tag>
 
 	<tag>
-    <name>didshrink</name>
+    <name>shrink</name>
 		<type>mmbase.tree.list</type>
 		<extends>treereferrer</extends>
 		<extends>contextreader</extends>
-		<tagclass>org.mmbase.bridge.jsp.taglib.tree.DidShrinkTag</tagclass>
+		<extends>writer</extends>
+		<tagclass>org.mmbase.bridge.jsp.taglib.tree.ShrinkTag</tagclass>
 		<info>
-      Did the tree 'grow', and how much (for normal trees, this is 0 or one, so 'didgrow' acts as a 'condition' tag.
+      Iterates from previous depth to (inclusibe) current depth. For each depth it provides (as a writer) what was defined with 'onshrink'.
 		</info>
 		<since>MMBase-1.7</since>		
-    <attribute>
-			<name>inverse</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-      <info>
-        
-      </info>
-		</attribute>
-	</tag>
-
-
-	<tag>
-    <name>willshrink</name>
-		<type>mmbase.tree.list</type>
-		<extends>treereferrer</extends>
-		<extends>contextreader</extends>
-    <extends>list</extends>
-		<tagclass>org.mmbase.bridge.jsp.taglib.tree.WillShrinkTag</tagclass>
-		<info>
-      Wille the tree shrink.
-		</info>
-		<since>MMBase-1.7</since>		
-    <attribute>
-			<name>inverse</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-      <info>
-        Wheter it grows to this depth.
-      </info>
-		</attribute>
 	</tag>
 
 
@@ -5391,7 +5363,8 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>writer</extends>
 		<tagclass>org.mmbase.bridge.jsp.taglib.tree.DepthTag</tagclass>
 		<info>
-      Did the tree 'grow'?
+      Provides the current depth of the tree. The current depth is defined by the surrounding 'grow'
+      or 'shrink' tag (if present) or the 'tree' tag itself otherwise.
 		</info>
 		<since>MMBase-1.7</since>
 	</tag>
