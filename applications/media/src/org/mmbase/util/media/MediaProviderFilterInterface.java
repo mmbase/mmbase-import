@@ -34,6 +34,6 @@ public interface MediaProviderFilterInterface {
      * @param wantedchannels
      * @return A new set of filtered mediaproviders.
      */
-    public Vector filterMediaProvider(MMObjectNode mediasource, Vector mediaproviders, HttpServletRequest request, int wantedspeed, int wantedchannels);
+    public Vector filterMediaProvider(Vector mediaproviders, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels);
 }
 
