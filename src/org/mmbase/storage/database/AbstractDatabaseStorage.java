@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.7 2003-03-04 15:38:42 nico Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.8 2003-05-02 14:21:59 michiel Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -451,7 +451,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
     /**
      * Returns the SQL command to use for creating a specified table
-     * @param tableName the name of the table to create
+     * @param tableName the _full_ name of the table to create
      * @param fields the definitions of the fields
      * @return the sql query
      */
@@ -463,7 +463,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * Returns the SQL command to use for creating a specified table, optionally
      * extending another supplied table.
      * Implement this method to add a database-specific syntax or optimalization.
-     * @param tableName the name of the table to create
+     * @param tableName the _full_  name of the table to create
      * @param fields the definitions of the fields
      * @param parentTableName the name of the parent table. this value is null if
      *                  the table to be created has no parent table. The table is assumed to exist.
@@ -475,7 +475,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     /**
      * Returns the SQL command to use for inserting an object in a table.
      * Implement this method to add a database-specific syntax or optimalization.
-     * @param tableName the name of the table where to insert
+     * @param tableName the _full_ name of the table where to insert
      * @param fieldNames the names of the fields to insert
      * @param fieldValues the values (generally '?' tokens that will be replaced) of the fields to insert
      * @return the sql query
@@ -558,23 +558,23 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
     protected String constructFieldDefinition(MMObjectBuilder builder, FieldDefs field) {
 
         // determine mmbase type
-        int type=field.getDBType();
+        int type = field.getDBType();
         // determine field name
-        String name=field.getDBName();
+        String name = field.getDBName();
         // determine size
-        int size=field.getDBSize();
+        int size = field.getDBSize();
         // determine key type
         int keyType= KEY_NONE;
         if (name.equals("number")) {
-            keyType=KEY_PRIMARY;
+            keyType = KEY_PRIMARY;
         } else if (field.isKey()) {
-            keyType=KEY_SECONDARY;
+            keyType = KEY_SECONDARY;
         } else if (type==FieldDefs.TYPE_NODE) {
-            keyType=KEY_FOREIGN;
+            keyType = KEY_FOREIGN;
         } else if (field.getDBNotNull()) {
             keyType=KEY_NOTNULL;
         }
-        return constructFieldDefinition(builder.getTableName(),name,type,size,keyType);
+        return constructFieldDefinition(builder.getTableName(), name, type, size, keyType);
     }
 
     /**
@@ -623,24 +623,23 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
      * @return the create definition
      */
     protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType) {
-        String name=mapToTableFieldName(fieldname);
-        String result=matchType(type,size);
+        String name = mapToTableFieldName(fieldname);
+        String result = matchType(type,size);
         // cannot determine database type. log the error, but continue -
         // but note that the sql will likely fail!
-        if (result==null) {
-            log.error("Cannot determine database type for : "+
-                        FieldDefs.getDBTypeDescription(type)+"("+size+")");
+        if (result == null) {
+            log.error("Cannot determine database type for : " + FieldDefs.getDBTypeDescription(type)+"(" + size + ")");
         }
-        if (keyType==KEY_PRIMARY) {
-            result=applyPrimaryKeyScheme(name,result);
+        if (keyType == KEY_PRIMARY) {
+            result = applyPrimaryKeyScheme(name,result);
         } else if (keyType==KEY_SECONDARY) {
-            result=applyKeyScheme(name,result,name);
+            result = applyKeyScheme(name,result,name);
         } else if (keyType==KEY_FOREIGN) {
             result=applyForeignKeyScheme(name,result,getFullTableName("object"));
         } else if (keyType==KEY_NOTNULL) {
             result=applyNotNullScheme(name,result);
         } else {
-            result=name+" "+result;
+            result = name + " " + result;
         }
         return result;
     }
@@ -810,12 +809,29 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         }
     }
 
+
+    /**
+     * Get a String form the resultset
+     */
+    public String getDBText(ResultSet rs,int idx) {
+        try {
+            return rs.getString(idx);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     /**
      * Set text array in database
      * @javadoc
      */
-    abstract public void setDBText(int i, PreparedStatement stmt,String body);
-
+    public void setDBText(int i, PreparedStatement stmt,String body) {
+        try {
+            stmt.setString(i, body);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
 
     /**
      * Set byte array in database
@@ -1005,11 +1021,11 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
         boolean result=false;
         DatabaseTransaction trans=null;
         try {
-            trans=createDatabaseTransaction();
-            result=create(builder,trans);
+            trans = createDatabaseTransaction();
+            result = create(builder, trans);
             trans.commit();
         } catch (StorageException e) {
-            if (trans!=null) trans.rollback();
+            if (trans != null) trans.rollback();
             log.error(e.getMessage());
         }
         return result;
