@@ -30,6 +30,8 @@ General New Features:
 - Some 'applications' (like editwizards) have been split up to seperate jars. This will allow for
   easiers partial upgrades of installations.
 
+- Added functionality to the jsp editors: better paging mechanism.
+
 
 --------------------------
 MMCI (bridge) New Features:
@@ -84,15 +86,13 @@ Taglib New Features:
 BUG FIXES AND IMPROVEMENTS:
 ==========================
   
------------------
-Taglib Bug Fixes:
------------------
-[1.7.0] 
- - Working with resin now
+-------------------
+Generic Improvement:
+-------------------
 
- - Lots of small attributes-related things, like emulating complete absence of the the attribute
-   when its value is empty. Some attributes (like the 'id' attribute) did not yet accept taglib
-   variables ($-variables), which also has been fixed on several places.
+[1.7.0] 
+- Several tags in builder xmls are no longer mandatory, and sensible defaults will be used in stead
+  (for example in the editor section)
 
 ------------------
 Generic Bug Fixes:
@@ -116,12 +116,23 @@ Security Bug Fixes:
 [1.7.0] 
 - It is for a security implementation possible to define new ranks now.
 
-----------------
+- Queries are checked by all 'official' security implementations. If there are read-restrictions on
+  defined on your installation, you need to create an index on the owner fields.
+
+
+-----------------
 Taglib Bug Fixes:
-----------------
+-----------------
 [1.7.0] 
-- Not working in Resin.
-- ..
+ - Working with resin now
+
+ - Lots of small attributes-related things, like emulating complete absence of the the attribute
+   when its value is empty. Some attributes (like the 'id' attribute) did not yet accept taglib
+   variables ($-variables), which also has been fixed on several places.
+
+ - URL-tag not a Writer any more.
+
+
 
 ----------------- 
 Example Bug Fixes:
@@ -132,10 +143,28 @@ Example Bug Fixes:
 Upgrade:
 ========
 [1.7.0]
-- Replace mmbase.jar with the new jars. Replace all jsp's too.
+- Replace mmbase.jar with the new jars. 
+  - if you used editwizards, place mmbase-editwizard.jar (from mmbase-editwizard.zip)
+
+  - if you used community, place mmbase-community.jar (from mmbase-community.zip)
+    You can remove mmcommunity-taglib.tld too and place this in web.xml in stead:
+    <taglib>
+      <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
+      <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
+    </taglib>
+
+-  Replace all shipped jsps too (e.g. mmeditors, mmexamples, mmadmin)
+   - The editwizard jsp and xsls are in mmbase-editwizard.zip now. 
+
+- remove WEB-INF/mmbase-taglib.tld and write in web.xml in stead:
+  <taglib>
+    <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
+    <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
+  </taglib>
+
 - Clean the working directory of your app-server (to recompile jsp's)
 
-
+ 
 ========================
 Know Issues and Problems:
 ========================
