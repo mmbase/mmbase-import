@@ -18,7 +18,7 @@ public final class Operation {
     public final static int LINK_INT = 3;
        
     /** int value for the remove Operation */    
-    public final static int REMOVE_INT = 4;
+    public final static int DELETE_INT = 4;
 
     /** int value for the remove Operation */    
     public final static int CHANGECONTEXT_INT = 6;
@@ -41,8 +41,8 @@ public final class Operation {
      */                
     public final static Operation LINK = new Operation(LINK_INT, "link");
     
-    /** Identifier for remove operation, which is used when removing a node */                    
-    public final static Operation REMOVE = new Operation(REMOVE_INT, "remove");
+    /** Identifier for remove operation, which is used when removing a node */
+    public final static Operation DELETE = new Operation(DELETE_INT, "delete");
 
     /** Identifier for change context operation, which is used when changing the context of a node */                    
     public final static Operation CHANGECONTEXT = new Operation(CHANGECONTEXT_INT, "change context");
