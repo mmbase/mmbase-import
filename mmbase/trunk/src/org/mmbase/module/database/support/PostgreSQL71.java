@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.7 2002-03-21 10:02:37 pierre Exp $
+ * @version $Id: PostgreSQL71.java,v 1.8 2002-03-22 15:49:50 eduard Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -144,34 +144,13 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
     public boolean createObjectTable(String notUsed) {
         // first create the auto update thingie...
-        //  CREATE SEQUENCE autoincrement INCREMENT 1
+        if(!createSequence()) return false;
+
         MultiConnection con = null;
         Statement stmt = null;
-        String sql =  "CREATE SEQUENCE "+sequenceTableName()+" INCREMENT 1 START 1";
-        try {
-            log.debug("gonna execute the following sql statement: " + sql);
-            con = mmb.getConnection();
-            stmt=con.createStatement();
-            stmt.executeUpdate(sql);
-            stmt.close();
-            con.close();
-        } catch (SQLException sqle) {
-            log.error("error, could autoincrement sequence.."+sql);
-            for(SQLException e = sqle;e != null; e = e.getNextException()){
-                log.error("\tSQLState : " + e.getSQLState());
-                log.error("\tErrorCode : " + e.getErrorCode());
-                log.error("\tMessage : " + e.getMessage());
-            }
-            try {
-                if(stmt!=null) stmt.close();
-                // con.rollback();
-                con.close();
-            } catch(Exception other) {}
-            return false;
-        }
-
+        
         // now update create the object table, with the auto update thignie
-        sql = "CREATE TABLE "+objectTableName()+" (";
+        String sql = "CREATE TABLE "+objectTableName()+" (";
         // primary key will mean that and unique and not null...
         // TODO : create this one also in a generic way !
         sql += getNumberString()+" INTEGER PRIMARY KEY, \t-- the unique identifier for objects\n";
@@ -201,6 +180,35 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             } catch(Exception other) {}
             return false;
         }
+    }
+    
+    private boolean createSequence() {
+        //  CREATE SEQUENCE autoincrement INCREMENT 1
+        MultiConnection con = null;
+        Statement stmt = null;
+        String sql =  "CREATE SEQUENCE "+sequenceTableName()+" INCREMENT 1 START 1";
+        try {
+            log.debug("gonna execute the following sql statement: " + sql);
+            con = mmb.getConnection();
+            stmt=con.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+            con.close();
+        } catch (SQLException sqle) {
+            log.error("error, could autoincrement sequence.."+sql);
+            for(SQLException e = sqle;e != null; e = e.getNextException()){
+                log.error("\tSQLState : " + e.getSQLState());
+                log.error("\tErrorCode : " + e.getErrorCode());
+                log.error("\tMessage : " + e.getMessage());
+            }
+            try {
+                if(stmt!=null) stmt.close();
+                // con.rollback();
+                con.close();
+            } catch(Exception other) {}
+            return false;
+        }
+        return true;    
     }
 
     public String getDisallowedField(String allowedfield) {
@@ -242,13 +250,21 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     public boolean create(MMObjectBuilder bul) {
         log.debug("create");
 
-        String fieldList=null;
-        Vector sfields=bul.sortedDBLayout;
+        
+        Vector sfields = bul.sortedDBLayout;
         if(sfields == null) {
             log.error("sfield was null for builder with name :" + bul);
             return false;
         }
+        // make copy, so changes on the var will not affect the builder        
+        sfields = new Vector(sfields);
 
+        // when not a number field, add it... strange that it sometimes happens
+        if(!sfields.contains(getNumberString())) {
+            sfields.add(getNumberString());
+        }
+
+        String fieldList=null;
         // process all the fields..
         for (Enumeration e=sfields.elements();e.hasMoreElements();) {
             String name=(String)e.nextElement();
@@ -264,14 +280,27 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                         fieldList+=", " + part;
                     }
                 }
+                else {
+                    log.trace("field: '" + name + "' from builder: '" + bul.getTableName() + "' is inherited field");
+                }
             }
         }
         //if all fields are inherited the field list can be empty
         if (fieldList == null){
             fieldList="";
         }
+
+        String sql = "CREATE TABLE " + mmb.baseName+"_"+bul.getTableName() + "(" + fieldList + ")";
+        
         // create the sql statement...
-        String sql = "CREATE TABLE " + mmb.baseName+"_"+bul.getTableName() + "(" + fieldList + ") INHERITS ( " + mmb.baseName+"_"+getInheritTableName(bul)+" ) ;";
+        if(getInheritTableName(bul) != null) {        
+            sql += " INHERITS ( " + mmb.baseName+"_"+getInheritTableName(bul)+" ) ;";
+        }
+        else {
+            // this one doesnt inherit anything, thus must be the object table?? :p
+            if(!createSequence()) return false;
+            sql += ";";                        
+        }
         log.debug("gonna create a new table with statement: " + sql);
 
         MultiConnection con=null;
@@ -301,12 +330,37 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
     /** get the table that we inherit from */
     private String getInheritTableName(MMObjectBuilder bul) {
-        if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) return "insrel";
+        // object table _must_ always be the top builder....
+        if(bul.getTableName().equals("object")) return null;
+        
+        // builder extends something,... return it....
+        if(bul.getParentBuilder() != null) {
+            return bul.getParentBuilder().getTableName();
+        }               
+        
+        // fallback to the old code...
+        log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use extend attribute in %builder%.xml");
+                
+        if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) return "insrel";        
+        
         return "object";
     }
 
     /** check if it is a field of this builder, or that it is inherited */
     private boolean isInheritedField(MMObjectBuilder bul, String fieldname) {
+        if(getInheritTableName(bul) == null) {
+            // our top table, all fields must be created
+            return false;
+        }
+        
+        if(bul.getParentBuilder() != null) {
+            // if parent builder has the field, it is inherited..
+            return bul.getParentBuilder().getField(fieldname) != null;
+        }
+        
+        // old fallback code...
+        log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use extend attribute in %builder%.xml");
+                
         // normally we inherited from object..
         if(fieldname.equals("number")) return true;
         if(fieldname.equals("owner")) return true;
@@ -356,6 +410,11 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         // would be something like : fieldname FIELDTYPE NOT NULL KEY "
         // first get our thingies...
         String  fieldName = getAllowedField(def.getDBName());
+        
+        // again an hack for number field thing...
+        if(getNumberString().equals(fieldName)) {
+            return getNumberString()+" INTEGER PRIMARY KEY \t-- the unique identifier for objects\n";     
+        }
         boolean fieldRequired = def.getDBNotNull();
         boolean fieldUnique = def.isKey();
         boolean fieldIsReferer = isReferenceField(def, bul);
@@ -469,8 +528,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
                 n1.delRelationsCache();
                 n2.delRelationsCache();
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+                mmb.mmc.changedNode(n1.getIntValue("number"),n1.parent.getTableName(),"r");
+                mmb.mmc.changedNode(n2.getIntValue("number"),n2.parent.getTableName(),"r");
             } else {
                 mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
             }
@@ -808,8 +867,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                 // figure out tables to send the changed relations
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+                mmb.mmc.changedNode(n1.getIntValue("number"),n1.parent.getTableName(),"r");
+                mmb.mmc.changedNode(n2.getIntValue("number"),n2.parent.getTableName(),"r");
             } else {
                 mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
             }
@@ -864,8 +923,8 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             if (bul instanceof InsRel) {
                 MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
-                mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-                mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+                mmb.mmc.changedNode(n1.getIntValue("number"),n1.parent.getTableName(),"r");
+                mmb.mmc.changedNode(n2.getIntValue("number"),n2.parent.getTableName(),"r");
             }
         }
     }
