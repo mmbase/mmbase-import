@@ -147,7 +147,7 @@
       <gui>
         <guiname xml:lang="nl">Online op</guiname>
         <guiname xml:lang="en">Online on</guiname>
-        <guitype>eventtime</guitype>
+        <guitype>datetime</guitype>
       </gui>
       <editor>
         <positions>
@@ -158,14 +158,14 @@
       </editor>
       <db>
         <name>begin</name>
-        <type key="false" notnull="false" state="persistent">LONG</type>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
       </db>
     </field>
     <field>
       <gui>
         <guiname xml:lang="nl">Offline op</guiname>
         <guiname xml:lang="en">Offline on</guiname>
-        <guitype>eventtime</guitype>
+        <guitype>datetime</guitype>
       </gui>
       <editor>
         <positions>
@@ -176,7 +176,7 @@
       </editor>
       <db>
         <name>end</name>
-        <type key="false" notnull="false" state="persistent">LONG</type>
+        <type key="false" notnull="false" state="persistent">DATETIME</type>
       </db>
     </field>
     <field>
