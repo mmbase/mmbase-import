@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 /**
  * Just a Comparator but it adds two functions:
  * - compareResonseInfo for easy overriding without Casting
- * - configure can be overridden to add configuration for this Comparator to the mediasources.xml
+ * - configure can be overridden to add configuration for this Comparator to the mediasourcefilter.xml
  *
  * @author  Michiel Meeuwissen
  */

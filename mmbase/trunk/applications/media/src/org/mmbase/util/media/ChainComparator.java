@@ -16,23 +16,32 @@ import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 
 /**
- * Groups some comparators
+ * Chains some comparators
  * @author  Michiel Meeuwissen
- * @version $Id: GroupComparator.java,v 1.3 2003-01-08 14:48:40 michiel Exp $
+ * @version $Id: ChainComparator.java,v 1.1 2003-01-08 22:20:24 michiel Exp $
  */
-public class GroupComparator extends  ResponseInfoComparator {
+public class ChainComparator extends  ResponseInfoComparator {
 
     private List comparators;
-    public  GroupComparator() {
+    public  ChainComparator() {
         comparators = new ArrayList();
     }
+    /**
+     * Empties the chain
+     */
     public void clear() {
         comparators.clear();
     }
+    /**
+     * Add one filter to the chain
+     */
     public void add(ResponseInfoComparator ri) {
         comparators.add(ri);
     }
     
+    /**
+     * Configure. Configures all elements on default.
+     */
     protected void configure(XMLBasicReader reader, Element e) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
