@@ -29,12 +29,13 @@ import org.mmbase.util.logging.Logging;
  * designers and gfx designers. It is provided as an option but not demanded, you can
  * also use JSP for a more traditional parser system.
  *
+ * @application SCAN
  * @rename Servscan
- * @version $Id: servscan.java,v 1.36 2003-05-08 06:09:22 kees Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
  * @author Rob Vermeulen
+ * @version $Id: servscan.java,v 1.37 2004-09-29 10:34:59 pierre Exp $
  */
 public class servscan extends JamesServlet {
     private static Logger log;
@@ -157,14 +158,14 @@ public class servscan extends JamesServlet {
                                 res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
                                 res.setContentType(addCharSet(sp.mimetype));
                             } else {
-                            	// last-modification date and expire will be set to default
+                                // last-modification date and expire will be set to default
                                 setHeaders(sp, res, sp.body.length(),0,0);
                                 out.print(sp.body);
                             }
                         }
                     } else {
                         sp.body = "<TITLE>Servscan</TITLE>handle_line returned null<BR>";
-                    	// last-modification date and expire will be set to default
+                        // last-modification date and expire will be set to default
                         setHeaders(sp, res, sp.body.length(),0,0);
                         out.print(sp.body);
                     }
@@ -200,42 +201,42 @@ public class servscan extends JamesServlet {
      */
     private final void setHeaders(scanpage sp, HttpServletResponse res, int len, long lastModDate, long expireDate) {
         res.setContentType(addCharSet(sp.mimetype));
-        
+
         // Guess this will be set by the app server if we don't set it.
         // res.setContentLength(len);
 
-    	Date lastmod = null;
-		if (lastModDate > 0) {
-			lastmod = new Date(lastModDate);
-		}
-		else {
-			lastmod = new Date(); //current time
-		}
-    	Date expire = null;
-        if (expireDate > 0) {
-        	expire = new Date(expireDate);
+        Date lastmod = null;
+        if (lastModDate > 0) {
+            lastmod = new Date(lastModDate);
         }
         else {
-        	// 2 hours back in time. So it will expire at once?
-        	expire = new Date(System.currentTimeMillis() - 7200000); 
+            lastmod = new Date(); //current time
+        }
+        Date expire = null;
+        if (expireDate > 0) {
+            expire = new Date(expireDate);
+        }
+        else {
+            // 2 hours back in time. So it will expire at once?
+            expire = new Date(System.currentTimeMillis() - 7200000);
         }
 
 //    	String dateStr = RFC1123.makeDate(new Date());
         String lastmodStr = RFC1123.makeDate(lastmod);
         String expireStr = RFC1123.makeDate(expire);
 
-		log.debug("Set headers for URL: " + sp.req_line + "\nExpires: " + expireStr + "\nLast-Modified: " + lastmodStr );
-            
+        log.debug("Set headers for URL: " + sp.req_line + "\nExpires: " + expireStr + "\nLast-Modified: " + lastmodStr );
+
         res.setHeader("Expires", expireStr);
         res.setHeader("Last-Modified", lastmodStr);
 //        res.setHeader("Date", dateStr);
 
-		// You dhoulfn't set the no-cache headers 
-		// when you want the browser and proxies to cache the page until it is expired
-		// otherwise it will go through the proxies to MMBase.
+        // You dhoulfn't set the no-cache headers
+        // when you want the browser and proxies to cache the page until it is expired
+        // otherwise it will go through the proxies to MMBase.
 
-		//      res.setHeader("Cache-Control"," no-cache");
-		//      res.setHeader("Pragma", "no-cache");
+        //      res.setHeader("Cache-Control"," no-cache");
+        //      res.setHeader("Pragma", "no-cache");
     }
 
     public String getServletInfo() {
@@ -343,21 +344,21 @@ public class servscan extends JamesServlet {
             // Which Internet Explorer does not send.
 
             if (sp.body != null) {
-            	
+
                 int start = sp.body.indexOf("<CACHE HENK");
                 if (start >= 0) {
                     start += 11;
                     int end = sp.body.indexOf(">", start);
                     sp.wantCache  ="HENK";
-                    
+
                     String rst = parser.scancache.get(sp.wantCache, req_line, sp.body.substring(start, end + 1), sp);
                     if (log.isDebugEnabled()) {
                         log.debug("handleCache: sp.reload: " + sp.reload);
                     }
 
                     if (rst != null && !sp.reload) {
-                    	long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
-                    	long expireDate = parser.scancache.getExpireDate(sp.wantCache, req_line, sp.body.substring(start, end).trim());
+                        long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
+                        long expireDate = parser.scancache.getExpireDate(sp.wantCache, req_line, sp.body.substring(start, end).trim());
 
                         setHeaders(sp, res,rst.length(),lastModDate, expireDate);
                         // org.mmbase res.writeHeaders();
@@ -375,30 +376,30 @@ public class servscan extends JamesServlet {
                     }
                 }
 
-            	if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
+                if (sp.body.indexOf("<CACHE PAGE>") !=- 1) {
 
-	                sp.wantCache="PAGE";
-                	String rst=parser.scancache.get(sp.wantCache, req_line, sp);
-                
-        	        if (log.isDebugEnabled()) {
-    	                log.debug("handleCache: sp.reload: " + sp.reload);
-	                }
-	                if (rst != null && !sp.reload) {
-	                	long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
+                    sp.wantCache="PAGE";
+                    String rst=parser.scancache.get(sp.wantCache, req_line, sp);
 
-            	    	setHeaders(sp, res,rst.length(),lastModDate,0);
-        	            // org.mmbase res.writeHeaders();
-    	                out.print(rst);
-	                    out.flush();
-                    	out.close();
-                	    if (log.isDebugEnabled()) {
-            	            log.debug("handleCache(): cache.hit(" + req_line + ")");
-        	            }
-    	                return(true);
-	                } else {
-                    	log.debug("handleCache(): cache.miss(" + req_line + ")");
-                	}
-            	}
+                    if (log.isDebugEnabled()) {
+                        log.debug("handleCache: sp.reload: " + sp.reload);
+                    }
+                    if (rst != null && !sp.reload) {
+                        long lastModDate = parser.scancache.getLastModDate(sp.wantCache, req_line);
+
+                        setHeaders(sp, res,rst.length(),lastModDate,0);
+                        // org.mmbase res.writeHeaders();
+                        out.print(rst);
+                        out.flush();
+                        out.close();
+                        if (log.isDebugEnabled()) {
+                            log.debug("handleCache(): cache.hit(" + req_line + ")");
+                        }
+                        return(true);
+                    } else {
+                        log.debug("handleCache(): cache.miss(" + req_line + ")");
+                    }
+                }
             }
 
             return (false);
