@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
@@ -26,8 +28,8 @@ import org.mmbase.util.logging.Logging;
 public class ListRelationsTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListRelationsTag.class.getName());
 
-    private String type = null;
-    private String role = null;
+    private Attribute type = Attribute.NULL;
+    private Attribute role = Attribute.NULL;
 
     
     Node getRelatedfromNode() {
@@ -38,13 +40,13 @@ public class ListRelationsTag extends AbstractNodeListTag {
      * @param type a nodeManager
      */
     public void setType(String t) throws JspTagException {
-        type  = getAttributeValue(t);
+        type  = getAttribute(t);
     }
     /**
      * @param role a role
      */
     public void setRole(String r) throws JspTagException {
-        role  = getAttributeValue(r);
+        role  = getAttribute(r);
     }
 
     public int doStartTag() throws JspTagException{
@@ -59,12 +61,12 @@ public class ListRelationsTag extends AbstractNodeListTag {
         }
 
         RelationList nodes;
-        if (type == null && role == null) {
+        if (type == Attribute.NULL && role == Attribute.NULL) {
             nodes = relatedfromNode.getRelations();
-        } else if (type == null) {
-            nodes = relatedfromNode.getRelations(role);
+        } else if (type == Attribute.NULL) {
+            nodes = relatedfromNode.getRelations(role.getString(this));
         } else {
-            nodes = relatedfromNode.getRelations(role, type);
+            nodes = relatedfromNode.getRelations(role.getString(this), type.getString(this));
         }
         nodes.setProperty("relatedFromNode", relatedfromNode);
         return setReturnValues(nodes, true);
