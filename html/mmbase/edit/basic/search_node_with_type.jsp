@@ -207,6 +207,9 @@
               <span class="delete"></span><span class="alt">[delete]</span>
             </a>
           </mm:hasrelations>
+          <mm:hasrelations>
+            <mm:countrelations />
+          </mm:hasrelations>
         </mm:maydelete>
         &nbsp;
      </td>    
