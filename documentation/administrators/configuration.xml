@@ -3,25 +3,25 @@
 [
 ]>
   <article>
-	<articleinfo>
-		<title>MMBase Internationalisation and Localisation</title>
-		<date>4 december 2002</date>
-		<edition>$Id: configuration.xml,v 1.13 2002-12-04 21:56:18 michiel Exp $</edition>
-		<authorgroup>
-			<author>
-				<firstname>Michiel</firstname>
-				<surname>Meeuwissen</surname>
-				<affiliation>
-					<orgname>Publieke Omroep</orgname>
-				</affiliation>
-			</author>
-		</authorgroup>
-		<legalnotice>
-			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
-			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
-			</para>
-		</legalnotice>
-	</articleinfo>
+    <articleinfo>
+    <title>MMBase Configuration documentation</title>
+    <date>4 december 2002</date>
+    <edition>$Id: configuration.xml,v 1.14 2002-12-05 21:14:54 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
   <section>
     <title>Introduction</title>
     <para>
@@ -55,7 +55,7 @@
       <title>Servlets</title>
       <para>
         For MMBase to start up, at least one `MMBaseServlet' must be
-	turned on in your web.xml. The following of those servlets are available.
+  turned on in your web.xml. The following of those servlets are available.
         <variablelist>
           <varlistentry>
             <term><classname>org.mmbase.servlet.MMBaseServlet</classname></term>
