@@ -11,7 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.media;
 
 import org.mmbase.module.core.MMObjectNode;
-import java.net.URL;
 import java.util.Map;
 
 /**
@@ -26,7 +25,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: ResponseInfo.java,v 1.3 2003-01-14 20:36:20 michiel Exp $
+ * @version $Id: ResponseInfo.java,v 1.4 2003-01-21 17:46:24 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
