@@ -73,6 +73,9 @@
 		<!-- Oracle
 		<property name="url">jdbc:oracle:oci8:@$DBM</property>
 		-->
+        <!-- Informix
+        jdbc:informix-sqli://$HOST:$PORT/$DBM:informixserver=[DBSERVERNAME]
+        -->
 		<property name="url">jdbc:hsqldb:$DBM</property>
 
 		<!--
@@ -89,6 +92,9 @@
 		name="supportclass"
 		The jdbc module will use this class to do database specific things to a connection (ie for informix it sets the lockmode)
 		-->
+        <!-- Informix
+        <property name="supportclass">org.mmbase.module.database.DatabaseSupportInformix</property>
+        -->
 		<property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
 
 		<!--
@@ -126,6 +132,7 @@
 		Hypersonic:     org.hsql.jdbcDriver     (http://hsqldb.sourceforge.net/)
 		HsqlDB:         org.hsqldb.jdbcDriver   (http://hsqldb.sourceforge.net/)
 		Oracle:			oracle.jdbc.driver.OracleDriver
+        Informix        com.informix.jdbc.IfxDriver
 		-->
 		<property name="driver">org.hsqldb.jdbcDriver</property>
 
@@ -136,6 +143,7 @@
 
 		MySQL:          3306
 		PostgreSQL      5432
+        Informix        1527
 		-->
 		<property name="port">0</property>
 
