@@ -153,6 +153,7 @@ a:hover {
 /* wizard */
 
 a.bottombutton:link {
+	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -160,6 +161,7 @@ a.bottombutton:link {
  	text-decoration: none;
 }
 a.bottombutton:active {
+	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -200,6 +202,7 @@ a.bottombutton-cancel:active {
  	text-decoration: none;
 }
 a.bottombutton-cancel:visited {
+	font-family : Verdana;
 	font-size : 10px;
 	color: #1C5BA2;
  	border:  none;
@@ -207,6 +210,7 @@ a.bottombutton-cancel:visited {
  	text-decoration: none;
 }
 a.bottombutton-cancel:hover {
+	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
