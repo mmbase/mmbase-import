@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.14 2003-08-05 20:24:54 michiel Exp $
+ * @version $Id: Query.java,v 1.15 2003-08-06 19:39:51 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -43,30 +43,17 @@ public interface Query extends SearchQuery, Cloneable {
     
 
     /**
-     * Adds new RelationManager to the query.  Adds the next Step (containing the Destination
-     * Manager) as well, it can be retrieved by calling <code> {@link
-     * org.mmbase.storage.search.RelationStep#getNext getNext()} </code> on the relationstep, and
-     * cast to {@link Step Step}.
+     * Adds new Relation step to the query.  Adds the next step as well, it can be retrieved by
+     * calling <code> {@link org.mmbase.storage.search.RelationStep#getNext getNext()} </code> on
+     * the relationstep, and cast to {@link Step Step}.
      *
-     * @param RelationManager the relation type associated with the step
-     * @return The new relationstep.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      * @throws IllegalStateException when there is no previous step.
      */
-    RelationStep addRelationStep(RelationManager relationManager);
-
-    /**
-     * Also explicitely state the direction of the relation. This can be needed if the
-     * RelationManager has two equals sides.
-     * @param RelationManager the relation type associated with the step
-     * @return The new relationstep.
-     * @throws IllegalArgumentException when an invalid argument is supplied.
-     * @throws IllegalStateException when there is no previous step.
-     */
-    RelationStep addRelationStep(RelationManager relationManager, int searchDir);
+    RelationStep addRelationStep(NodeManager nodeManager, String role, int searchDir);
 
     /*
-     * If you need to add a 'related' NodeManager without specifying an actual RelationManager, then
+     * If you need to add a 'related' NodeManager without specifying a role/searchDir
      * simply use these addRelationStep.
      */
 
@@ -204,6 +191,12 @@ public interface Query extends SearchQuery, Cloneable {
      * @see #getSortOrders
      */
     SortOrder addSortOrder(StepField f, int direction);
+
+
+    /** 
+     * Adds a node to a step.
+     */
+    void      addNode(Step s, Node node);
 
     /**
      * Whether this query was used or not. If is was used, then you cannot modify it anymore (would
