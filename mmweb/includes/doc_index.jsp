@@ -13,7 +13,7 @@
         <br/>
         <mm:field name="html(articles.body)"/>
     </mm:list>
-    <mm:list path="pages,documentation" nodes="$page">
+    <mm:list path="pages,documentation" nodes="$page" orderby="documentation.title" directions="down" >
         <li><a href="/index.jsp?portal=199&page=25011&docnr=<mm:field name="documentation.number"/>"><mm:field name="documentation.title"/></a>
     </mm:list>
 </mm:present>
