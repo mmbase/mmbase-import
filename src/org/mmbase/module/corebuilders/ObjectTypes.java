@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.11 2002-05-28 16:31:39 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.12 2002-05-29 14:41:42 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -319,13 +319,16 @@ public class ObjectTypes extends TypeDef {
      */
     protected  MMObjectBuilder loadBuilder(MMObjectNode node) {
         log.debug("[load builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")]");
-        
         String path = getBuilderPath(node);
         // remove everything till last 'config/builders/' 
         // TODO: find a better way for whole file location stuff
-        String search = "config/builders/";
+        String search = "config" + java.io.File.separator + "builders";
         int pos = path.indexOf(search);
-        if(pos == -1) throw new RuntimeException("could not retrieve the path to store the file..");
+        if(pos == -1) {
+            String msg = "could not retrieve the path to store the file..(path: " + path + " search: " + search + ")";
+            log.fatal(msg);
+            throw new RuntimeException(msg);
+        }       
         path = path.substring(pos + search.length());
         MMObjectBuilder builder = mmb.loadBuilderFromXML(node.getStringValue("name"), path);
         if(builder == null) {
