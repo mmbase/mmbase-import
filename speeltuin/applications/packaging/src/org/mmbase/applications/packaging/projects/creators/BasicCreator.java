@@ -846,5 +846,14 @@ public class BasicCreator implements CreatorInterface {
    public void setDefaults(Target target) {
    }
 
+   public String getBuildPath() {
+	String path=MMBaseContext.getConfigPath()+File.separator+"packaging"+File.separator+"build"+File.separator;
+	File dir=new File(path);
+	if (!dir.exists()) {
+		dir.mkdir();
+	}
+	return path;
+   }
+
 
 }

@@ -66,7 +66,7 @@ public class DataApps1Creator extends BasicCreator implements CreatorInterface {
         step=getNextPackageStep();
         step.setUserFeedBack("used datadir : "+datadir);
 
-        String newfilename=MMBaseContext.getConfigPath()+"/packaging/build/"+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_data_apps1_"+newversion;
+        String newfilename=getBuildPath()+getName(target).replace(' ','_')+"@"+getMaintainer(target)+"_data_apps1_"+newversion;
 	try {
   		JarOutputStream jarfile = new JarOutputStream(new FileOutputStream(newfilename+".tmp"),new Manifest());
 
