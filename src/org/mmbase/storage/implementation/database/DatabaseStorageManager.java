@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.52 2004-02-16 12:13:09 keesj Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.53 2004-02-17 09:50:46 keesj Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1227,7 +1227,6 @@ public class DatabaseStorageManager implements StorageManager {
                 FieldDefs field = (FieldDefs)f.next();
                 if (field.getDBType() == FieldDefs.TYPE_NODE &&  ! field.getDBName().equals("number")) {
                     String query = createIndex.format(new Object[] { this, builder, field.getDBName()});
-                    log.service(query);
                     try {
                         getActiveConnection();
                         Statement s = activeConnection.createStatement();
