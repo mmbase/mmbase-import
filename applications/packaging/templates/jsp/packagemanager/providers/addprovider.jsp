@@ -7,7 +7,7 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
 <tr>
 <td>
-<table cellpadding="0" cellspacing="0" class="list" style="margin-left : 100px;" border="1">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-left : 100px;" border="1" width="80%">
 <form action="<mm:url page="index.jsp" referids="main,sub" />" method="post">
 <tr>
 	<th COLSPAN="2">
@@ -38,7 +38,7 @@
 
 <tr>
 <td>
-<table cellpadding="0" cellspacing="0" class="list" style="margin-left: 100px;margin-top: 20px;">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-left: 100px;margin-top: 20px;" width="80%">
 <form action="<mm:url page="index.jsp" referids="main,sub" />" method="post">
 <tr>
 	<th colspan="2">
@@ -67,6 +67,38 @@
   </th>
   <td>
 	<input type="hidden" name="action" value="adddiskprovider">
+	<center><input type="submit" value="Add Provider"></center>
+  </td>
+</tr>
+</form>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table cellpadding="0" cellspacing="0" class="list" style="margin-left : 100px;margin-top: 20px;" border="1" width="80%">
+<form action="<mm:url page="index.jsp" referids="main,sub" />" method="post">
+<tr>
+	<th COLSPAN="2">
+	Method 3 (http) : Some well known mmbase partner servers
+	</th>
+</tr>
+<tr>
+  <th width="100">
+	subscribe url
+  </th>
+  <td>
+	<select name="url">
+		<option value="http://packages.submarine.nl">Submarine Package Server
+		<option value="http://packages.mmbase.org">MMBase.org Package Server
+	</select>
+  </td>
+</tr>
+<tr>
+  <th width="100">
+  </th>
+  <td>
+	<input type="hidden" name="action" value="addsubscribeprovider">
 	<center><input type="submit" value="Add Provider"></center>
   </td>
 </tr>
