@@ -122,7 +122,7 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
     public static void main(String[] args) {
         ChainedCharTransformer t = new ChainedCharTransformer();
         t.add(new SpaceReducer());
-        t.add(new CopyCharTransformer());
+        t.add(new UpperCaser());
         System.out.println("Starting transform");
         t.transform(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
         //StringWriter w = new StringWriter();

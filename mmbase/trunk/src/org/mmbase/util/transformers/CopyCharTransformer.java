@@ -36,6 +36,7 @@ public class CopyCharTransformer extends AbstractCharTransformer implements Char
                 w.write(c);
             }
         } catch (java.io.IOException e) {
+            System.out.println("c " + e.toString());
         }
         return w;        
     } 
