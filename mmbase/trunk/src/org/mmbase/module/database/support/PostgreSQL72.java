@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  *
  * Postgresql driver for MMBase
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL72.java,v 1.3 2003-03-07 08:50:22 pierre Exp $
+ * @version $Id: PostgreSQL72.java,v 1.4 2003-03-25 19:55:09 robmaris Exp $
  */
 //public class PostgreSQL72 extends PostgresSQL71 implements MMJdbc2NodeInterface  {
 public class PostgreSQL72 extends  PostgreSQL71 {
@@ -98,15 +98,18 @@ public class PostgreSQL72 extends  PostgreSQL71 {
 
             String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
             log.debug("gonna excute the followin query: " + sql);
+            byte[] data=null;
             ResultSet rs = stmt.executeQuery(sql);
-            if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
+            try {
+                if(rs == null) throw new RuntimeException("Error retrieving the result set for query:"+sql);
 
-           byte[] data=null;
-            if(rs.next()) {
-                data = rs.getBytes(1);
-                log.debug("data was read from the database(#"+data.length+" bytes)");
+                if(rs.next()) {
+                    data = rs.getBytes(1);
+                    log.debug("data was read from the database(#"+data.length+" bytes)");
+                }
+            } finally {
+                rs.close();
             }
-            rs.close();
             stmt.close();
 
             con.close();
