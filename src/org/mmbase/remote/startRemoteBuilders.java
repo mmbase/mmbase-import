@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: startRemoteBuilders.java,v 1.8 2000-12-20 16:31:45 vpro Exp $
+$Id: startRemoteBuilders.java,v 1.9 2000-12-22 13:57:19 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/12/20 16:31:45  vpro
+Davzev: added changed some debug stuff
+
 Revision 1.7  2000/12/19 17:16:56  vpro
 Davzev: Added cvs comments
 
@@ -30,12 +33,12 @@ import java.util.*;
  * example : java org.mmbase.startRemoteBuilders /tmp/cdrom1.cfg
  * </PRE>
  *
- * @version $Revision: 1.8 $ $Date: 2000-12-20 16:31:45 $
+ * @version $Revision: 1.9 $ $Date: 2000-12-22 13:57:19 $
  * @author Daniel Ockeloen
  */
 public class startRemoteBuilders {
 
-	private static String classname;
+	private static String classname = startRemoteBuilders.class.getName();
 	private static boolean debug = true;
 	private static void debug(String msg) {System.out.println(classname +":"+ msg );}
 
@@ -45,12 +48,6 @@ public class startRemoteBuilders {
     * Main() called from OS with parameters defined above.
     */
     public static void main(String args[]) {
-		/**
-		 * Created to get the classname for debug() 
-		 */
-		startRemoteBuilders srb = new startRemoteBuilders();	
-		classname = srb.getClass().getName();	
-
 	   /**
 		* misc vars.
 		*/
