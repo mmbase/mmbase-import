@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.22 2003-12-17 20:59:37 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.23 2004-02-13 15:32:02 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
@@ -135,6 +135,7 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             return super.executeFunction(node, function, args);
         }
     }
+
 
 }
 
