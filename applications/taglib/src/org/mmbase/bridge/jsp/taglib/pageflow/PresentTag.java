@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
-import org.mmbase.bridge.jsp.taglib.CloudProvider;
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -21,7 +21,7 @@ import javax.servlet.jsp.JspTagException;
 * 
 * @author Michiel Meeuwissen
 */
-public class PresentTag extends CloudReferrerTag {
+public class PresentTag extends ContextReferrerTag {
            
     private String key;
 
@@ -30,7 +30,7 @@ public class PresentTag extends CloudReferrerTag {
     }
 
     protected String getKey() throws JspTagException {
-        CloudProvider cp = findCloudProvider();        
+        ContextTag cp = findContext();        
         String param = (String) cp.getObject(key);
         if (param == null) {
             param = pageContext.getRequest().getParameter(key); 

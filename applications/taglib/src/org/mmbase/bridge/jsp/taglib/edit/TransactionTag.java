@@ -16,7 +16,8 @@ import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Transaction;
 import org.mmbase.bridge.Node;
 
-import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.CloudProvider;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 *
 **/
-public class TransactionTag extends ContextTag  {
+public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;     
@@ -72,7 +73,7 @@ public class TransactionTag extends ContextTag  {
             transaction = findCloudProvider().getCloudVar().getTransaction(name);
             if (getId() != null) { // put it in context
                 log.debug("putting transaction in context");
-                register(getId(), transaction);
+                findContext().register(getId(), transaction);
             }
         }
         pageContext.setAttribute(jspvar, transaction);
@@ -84,7 +85,7 @@ public class TransactionTag extends ContextTag  {
         if (commit) {
             ((Transaction) getCloudVar()).commit();
             if (getId() != null) {
-                unRegister(getId());
+                findContext().unRegister(getId());
             }
         }
         try {
