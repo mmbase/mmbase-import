@@ -23,13 +23,34 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.17 2002-04-12 08:53:00 pierre Exp $
+ * @version $Id: ImageCaches.java,v 1.18 2002-05-15 18:48:14 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
-    private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
-    private LRUHashtable handlecache = new LRUHashtable(128); // a few images are in memory cache.
+    private class HandleCache extends org.mmbase.cache.Cache {
 
+        HandleCache(int size) {
+            super(size);
+        }
+        public String getName() {
+            return "ImageHandles";
+        }
+        public String getDescription() {
+            return "Handles of Images";
+        }
+        void putCache() {
+            putCache(this);
+        }
+
+    }
+
+    private static Logger log = Logging.getLoggerInstance(ImageCaches.class.getName());
+    private HandleCache handleCache = new HandleCache(128); // a few images are in memory cache.
+
+
+    public ImageCaches() {
+        handleCache.putCache();
+    }
 
     /**
      * Returns the original images, for which this node is a cached image.
@@ -58,6 +79,15 @@ public class ImageCaches extends AbstractImages {
         MMObjectNode origNode = originalImage(node);
         return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""));
     }
+
+    /*
+    public String getTitle(MMObjecNode node) {
+        return originalImage(node).getStringValue("title");
+    }
+    public String getDescription(MMObjectNode node) {
+        return originalImage(node);
+    }
+    */
 
     /**
      * Given a certain ckey, return the cached image node number, if there is one, otherwise return -1.
@@ -131,7 +161,7 @@ public class ImageCaches extends AbstractImages {
      */
     public synchronized byte[] getCkeyNode(String ckey) {
         log.debug("getting ckey node with " + ckey);
-        byte[] rtn = (byte []) handlecache.get(ckey);
+        byte[] rtn = (byte []) handleCache.get(ckey);
         if (rtn != null) {
             log.debug("found in handle cache");
         } else {
@@ -143,11 +173,11 @@ public class ImageCaches extends AbstractImages {
             rtn = getImageBytes(number);
             if (rtn == null) {
                 // if it didn't work, also cache this result, to avoid concluding that again..
-                // handlecache.put(ckey, new byte[0]);
+                // handleCache.put(ckey, new byte[0]);
                 // this should be done differenty.
             } else {
                 // only cache small images.
-                if (rtn.length< (100*1024)) handlecache.put(ckey, rtn);
+                if (rtn.length< (100*1024)) handleCache.put(ckey, rtn);
             }
         }
         if (rtn == null && log.isDebugEnabled()) {
@@ -199,7 +229,7 @@ public class ImageCaches extends AbstractImages {
         log.service("Icaches: removing node " + node.getNumber() + " " + ckey);
         super.removeNode(node);
         // also delete from LRU Cache
-        handlecache.remove(ckey);
+        handleCache.remove(ckey);
         ((Images) mmb.getMMObject("images")).invalidateTemplateCacheNumberCache();
     }
 
@@ -238,3 +268,4 @@ public class ImageCaches extends AbstractImages {
     }
 
 }
+ 
