@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.57 2004-03-16 10:32:50 rob Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.58 2004-03-16 12:30:24 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -37,7 +37,7 @@ public class DatabaseStorageManager implements StorageManager {
     // sequenceLock is used to synchronize access to the createKey() and createSequence()
     // methods, so that at least within a JVM no conflicts can occur when obtaining a new key;
     // Since it is only used for synchronizing on class level, it does not itself contain data.
-    protected static final Object sequenceLock = new Object();
+    protected static final List sequenceKeys = new LinkedList();
 
     /**
      * Whether the warning about blob on legacy location was given.
@@ -221,8 +221,11 @@ public class DatabaseStorageManager implements StorageManager {
     }
 
     public int createKey() throws StorageException {
-        synchronized (sequenceLock) {
-            try {
+        synchronized (sequenceKeys) {
+            // if sequenceKeys conatins (buffered) keys, return this
+            if (sequenceKeys.size() > 0) {
+                return ((Integer)sequenceKeys.remove(0)).intValue();
+            } else try {
                 getActiveConnection();
                 Statement s;
                 String query;
@@ -241,6 +244,10 @@ public class DatabaseStorageManager implements StorageManager {
                 ResultSet result = s.executeQuery(query);
                 if (result.next()) {
                     int keynr = result.getInt(1);
+                    // add remaining keys to sequenceKeys
+                    while (result.next()) {
+                        sequenceKeys.add(new Integer(result.getInt(1)));
+                    }
                     result.close();
                     s.close();
                     return keynr;
@@ -950,7 +957,7 @@ public class DatabaseStorageManager implements StorageManager {
                         } else {
                             log.debug("Deleted '" + binaryFile + "'");
                         }
-                    } 
+                    }
                 }
             }
         } catch (SQLException se) {
@@ -1413,7 +1420,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when the sequence can not be created
      */
     protected void createSequence() throws StorageException {
-        synchronized (sequenceLock) {
+        synchronized (sequenceKeys) {
             try {
                 getActiveConnection();
                 // create the type mapping to search for
