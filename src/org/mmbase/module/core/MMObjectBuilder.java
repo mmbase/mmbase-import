@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.207 2003-02-14 09:07:15 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.208 2003-02-17 10:42:22 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3925,6 +3925,34 @@ public class MMObjectBuilder extends MMTable {
                 return value;
             }
         }
+    }
+
+
+ /**
+     * This method returns all fields of the builder that have a FieldDefs.DBSTATE_PERSISTENT or a FieldDefs.DBSTATE_SYSTEM DBState ecluding fields  that have a DBType FieldDefs.TYPE_BYTE
+     * @param builderName the name of the builder
+     * @return a String containing the fields in the database separated by a comma
+     * @since  MMBase-1.6
+     * 
+     **/
+    private String getNonByteArrayFields(String builderName){
+        StringBuffer sb = new StringBuffer();
+        Iterator fieldIter = mmb.getBuilder(builderName).getFields(FieldDefs.ORDER_CREATE).iterator();
+        
+        boolean first = true;
+        
+        while(fieldIter.hasNext()){
+            FieldDefs def = (FieldDefs)fieldIter.next();
+            if (def.getDBType() != FieldDefs.TYPE_BYTE && (def.getDBState() == FieldDefs.DBSTATE_PERSISTENT || def.getDBState() == FieldDefs.DBSTATE_SYSTEM)){
+                if (! first) {
+                    sb.append(",");
+                }
+                
+                sb.append(database.getAllowedField(def.getDBName()));
+                first = false;
+            }
+        }
+        return sb.toString();
     }
 
     /**
