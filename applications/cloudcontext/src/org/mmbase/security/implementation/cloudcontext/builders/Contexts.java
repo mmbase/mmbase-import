@@ -13,6 +13,7 @@ import org.mmbase.security.implementation.cloudcontext.*;
 import org.mmbase.security.SecurityException;
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.security.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,11 +27,17 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.1 2003-05-22 17:14:03 michiel Exp $
+ * @version $Id: Contexts.java,v 1.2 2003-05-23 12:05:13 michiel Exp $
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class.getName());
     private boolean readall = true;
+
+    protected static Cache contextCache = new Cache(30) {
+            public String getName()        { return "ContextCache"; }
+            public String getDescription() { return "Links owner field to Contexts MMObjectNodes"; }
+        };
+
 
     /**
      * @javadoc
@@ -43,6 +50,12 @@ public class Contexts extends MMObjectBuilder {
     public boolean init() {
         String s = (String) getInitParameters().get("readall");
         readall = "true".equals(s);
+
+        contextCache.putCache();
+        CacheInvalidator.getInstance().addCache(contextCache);
+        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
+        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
+
         return super.init();
     }
 
@@ -120,18 +133,24 @@ public class Contexts extends MMObjectBuilder {
      */
     private final MMObjectNode getContextNode(MMObjectNode node)  {
         String s = node.getStringValue("owner");
-        //log.debug("node #" + mmobjectnode.getNumber() + " has a context with name: '" + s + "'");
-        Object obj = null;
-        Enumeration enumeration = searchWithWhere(" name = '" + s + "' ");
-        if (enumeration.hasMoreElements()) {
-            return (MMObjectNode) enumeration.nextElement();
+        
+        MMObjectNode context = (MMObjectNode) contextCache.get(s);
+        if (context == null) {
+
+            Enumeration enumeration = searchWithWhere(" name = '" + s + "' ");
+            if (enumeration.hasMoreElements()) {
+                context =  (MMObjectNode) enumeration.nextElement();
+            } else {
+                // log.warn("context with name '" + s + "' not found, using default: '" + "admin" + "'");
+                enumeration = searchWithWhere(" name = 'admin' ");
+                if (!enumeration.hasMoreElements()) {
+                    throw new SecurityException("no context with name 'admin' defined! This one is needed as default");
+                }
+                context = (MMObjectNode) enumeration.nextElement();
+            }
+            contextCache.put(s, context);
         }
-        // log.warn("context with name '" + s + "' not found, using default: '" + "admin" + "'");
-        enumeration = searchWithWhere(" name = 'admin' ");
-        if (!enumeration.hasMoreElements()) {
-            throw new SecurityException("no context with name 'admin' defined! This one is needed as default");
-        }
-        return (MMObjectNode) enumeration.nextElement();
+        return context;
     }
 
     /**

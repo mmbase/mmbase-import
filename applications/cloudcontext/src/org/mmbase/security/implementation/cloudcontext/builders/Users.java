@@ -14,6 +14,7 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
+import org.mmbase.cache.Cache;
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.1 2003-05-22 17:14:04 michiel Exp $
+ * @version $Id: Users.java,v 1.2 2003-05-23 12:05:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -35,14 +36,40 @@ public class Users extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Users.class.getName());
 
     public final static String STATES_RESOURCE = "org.mmbase.security.states";
-    public final static String RANKS_RESOURCE  = "org.mmbase.security.ranks";
+
+    protected static Cache rankCache = new Cache(10) {
+            public String getName()        { return "RankCache"; }
+            public String getDescription() { return "Caches the rank of users"; }
+        };
+
+
+    // javadoc inherited
+    public boolean init() {
+        rankCache.putCache();
+        CacheInvalidator.getInstance().addCache(rankCache);
+        mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
+        mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
+
+        String s = (String)getInitParameters().get("encoding");
+        if (s == null) {
+            log.warn("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
+            encoder = new Encode("MD5");
+        } else {
+            encoder = new Encode(s);
+        }
+        log.info("Using " + encoder.getEncoding() + " as our encoding for password");
+
+        return super.init();
+    }
+
+
 
     /**
-     * @javadoc
+     * The user with rank administrator
      */
     static final String ADMIN_USERNAME = "admin";
     /**
-     * @javadoc
+     * The user with rank anonymous
      */
     static final String ANONYMOUS_USERNAME = "anonymous";
 
@@ -55,39 +82,22 @@ public class Users extends MMObjectBuilder {
         return (Users) MMBase.getMMBase().getBuilder("mmbaseusers");
     }
 
-    /**
-     * @javadoc
-     */
-    public Users() {
-        encoder = null;
-    }
-
 
     public Rank getRank(MMObjectNode node) {
-        List ranks =  node.getRelatedNodes("mmbaseranks");
-        if (ranks.size() != 1) {
-            throw new SecurityException("Not excactly one rank related to mmbase-user " + node.getNumber() + " (but " + ranks.size() + ")");
-        }
+        Rank rank = (Rank) rankCache.get(node);
+        if (rank == null) {
+            List ranks =  node.getRelatedNodes("mmbaseranks");
+            if (ranks.size() != 1) {
+                throw new SecurityException("Not excactly one rank related to mmbase-user " + node.getNumber() + " (but " + ranks.size() + ")");
+            }
         
-        Ranks rankBuilder = Ranks.getBuilder();
-        return rankBuilder.getRank((MMObjectNode) ranks.get(0));
+            Ranks rankBuilder = Ranks.getBuilder();
+            rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
+            rankCache.put(node, rank);
+        } 
+        return rank;
     }        
 
-    /**
-     * @javadoc
-     */
-    public boolean init() {
-        String s = (String)getInitParameters().get("encoding");
-        if (s == null) {
-            log.warn("no property 'encoding' defined in '" + getTableName() + ".xml' using default encoding");
-            encoder = new Encode("MD5");
-        } else {
-            encoder = new Encode(s);
-        }
-        log.info("Using " + encoder.getEncoding() + " as our encoding for password");
-
-        return super.init();
-    }
 
     //javadoc inherited
     public boolean setValue(MMObjectNode node, String field, Object originalValue) {
@@ -125,9 +135,9 @@ public class Users extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("username: '" + s + "' password: '" + s1 + "'");
         }
-        MMObjectNode node;
-        for (Enumeration enumeration = searchWithWhere(" username = '" + s + "'"); enumeration.hasMoreElements(); log.debug("username: '" + s + "' found in node #" + node.getNumber() + " --> PASSWORDS NOT EQUAL"))  {
-            node = (MMObjectNode)enumeration.nextElement();
+        Enumeration enumeration = searchWithWhere(" username = '" + s + "'"); 
+        while(enumeration.hasMoreElements()) {
+            MMObjectNode node = (MMObjectNode) enumeration.nextElement();
             if (getField("status")!=null) {
                 if (node.getIntValue("status")==-1) {
                     throw new SecurityException("account for '"+s+"' is blocked");
@@ -143,10 +153,13 @@ public class Users extends MMObjectBuilder {
                 }
                 return node;
             }
+            if (log.isDebugEnabled()) {
+                log.debug("username: '" + s + "' found in node #" + node.getNumber() + " --> PASSWORDS NOT EQUAL");
+            }
         }
 
         if(s.equals("anonymous")) {
-            throw new SecurityException("no node for anonymous user");
+            throw new SecurityException("no node for anonymous user"); // odd.
         } else {
             log.debug("username: '" + s + "' --> USERNAME NOT CORRECT");
             return null;
@@ -242,5 +255,10 @@ public class Users extends MMObjectBuilder {
         return super.executeFunction(node, function, args);
 
     }
+
+    public boolean equals(MMObjectNode o1, MMObjectNode o2) {
+        return o1.getNumber() == o2.getNumber();
+    }
+
 
 }
