@@ -35,7 +35,7 @@ Here's a simple list of typedefs to see if the MMBase taglib is working:
    <mm:odd>(odd)</mm:odd>
    <mm:even>(even)</mm:even>
    <mm:changed>(changed)</mm:changed>
- </il>
+ </li>
  <mm:last></ul></mm:last>
 </mm:listnodes>
 
