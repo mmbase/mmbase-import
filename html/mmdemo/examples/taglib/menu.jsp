@@ -1,6 +1,8 @@
 <p>
   <a href="index.jsp">home</a>
   |
+  <a href="cloud.jsp">cloud</a>
+  |
   <a href="listdelete.jsp">list &amp; delete</a>
   |
   <a href="create.jsp">create</a>

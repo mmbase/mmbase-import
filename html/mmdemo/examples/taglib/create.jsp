@@ -18,8 +18,8 @@
 
 <mm:present referid="nodemanager">
   <mm:present referid="create">
-    <mm:createnode type='${nodemanager}'>
-      <mm:fieldlist type='${nodemanager}' type="edit">
+    <mm:createnode type="${nodemanager}">
+      <mm:fieldlist type="edit">
 		<mm:fieldinfo type="useinput"/>
       </mm:fieldlist>
     </mm:createnode>
@@ -29,8 +29,8 @@
 <table>
   <tr>
     <td valign="top">
-      <mm:listnodes type="typedef" fields="name,description">
-        <a href="create.jsp?nodemanager=<%=name%>"><%=name%></a><br>
+      <mm:listnodes type="typedef">
+        <a href="create.jsp?nodemanager=<mm:field name="name" />"><mm:field name="name" /></a><br>
       </mm:listnodes>
     </td>
     <td valign="top">
@@ -39,7 +39,7 @@
           <input type="hidden" name="nodemanager" value='<mm:write referid="nodemanager"/>'>
           <input type="hidden" name="create" value="true">
           <table>
-            <mm:fieldlist nodetype='${nodemanager}' type="edit">
+            <mm:fieldlist nodetype="${nodemanager}" type="edit">
               <tr>
                 <td valign="top">
                   <mm:fieldinfo type="name"/>

@@ -26,7 +26,7 @@ This page should work after building Tomcat or Orion from the build file.
 Here's a simple list of typedefs to see if the MMBase taglib is working:
 </p>
 
-<mm:listnodes type="typedef" fields="name,description">
+<mm:listnodes type="typedef">
  <mm:first><ul></mm:first>
  <li>
    <mm:field name="name"/> is: <mm:field name="description"/>

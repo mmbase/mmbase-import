@@ -4,17 +4,17 @@
 
 <mm:cloud name="mmbase">
 
-<mm:import externid="number" jspvar="number"/>
-<mm:import externid="nodes" jspvar="nodes"/>
-<mm:import externid="path" jspvar="path"/>
-<mm:import externid="fields" jspvar="fields"/>
-<mm:import externid="constraints" jspvar="constraints"/>
-<mm:import externid="orderby" jspvar="orderby"/>
-<mm:import externid="directions" jspvar="directions"/>
-<mm:import externid="distinct" jspvar="distinct"/>
-<mm:import externid="max" jspvar="max"/>
-<mm:import externid="offset" jspvar="offset"/>
-<mm:import externid="searchdir" jspvar="searchdir"/>
+<mm:import externid="number"    />
+<mm:import externid="nodes"     />
+<mm:import externid="path" />
+<mm:import externid="fields" />
+<mm:import externid="constraints" />
+<mm:import externid="orderby" />
+<mm:import externid="directions" />
+<mm:import externid="distinct" />
+<mm:import externid="max" />
+<mm:import externid="offset" />
+<mm:import externid="searchdir" />
 
 <html>
 
@@ -60,14 +60,15 @@
 
 <mm:present referid="path">
   <table border="1">
-    <mm:node number="<%=number%>">
-      <mm:related nodes="<%=nodes%>" path="<%=path%>" fields="<%=fields%>"
-                  constraints="<%=constraints%>" orderby="<%=orderby%>"
-                  directions="<%=directions%>" distinct="<%=distinct%>"
-                  max="<%=max%>" offset="<%=offset%>"
-                  searchdir="<%=searchdir%>">
+    <mm:node number="${number}">
+      <mm:related nodes="${nodes}" path="${path}" fields="${fields}"
+                  constraints="${constraints}" orderby="${orderby}"
+                  directions="${directions}" distinct="${distinct}"
+                  max="${max}" offset="${offset}"
+                  searchdir="${searchdir}">
         <tr>
           <mm:compare referid="fields" value="">
+			<mm:write referid="path" jspvar="path" vartype="String">
             <% for (Enumeration e = convertToEnumeration(path); e.hasMoreElements();) { %>
               <mm:node element="<%=(String)e.nextElement()%>">
                  <mm:fieldlist type="list">
@@ -77,13 +78,16 @@
                  </mm:fieldlist>
               </mm:node>
             <% } %>
+            </mm:write>   
           </mm:compare>
           <mm:compare referid="fields" value="" inverse="true">
+            <mm:write referid="fields" jspvar="fields" vartype="String">
             <% for (Enumeration e = convertToEnumeration(fields); e.hasMoreElements();) { %>
               <td>
                 <mm:field name="<%=(String)e.nextElement()%>"/>
               </td>
             <% } %>
+            </mm:write>
           </mm:compare>
         </tr>
       </mm:related>
