@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: ContextAuthorization.java,v 1.32 2003-08-27 19:37:12 michiel Exp $
+ * @version $Id: ContextAuthorization.java,v 1.33 2004-03-08 17:42:31 michiel Exp $
  * @see    ContextAuthentication
  */
 public class ContextAuthorization extends Authorization {
@@ -147,7 +147,7 @@ public class ContextAuthorization extends Authorization {
         }
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-        verify(user, nodeNumber, Operation.CHANGECONTEXT);
+        verify(user, nodeNumber, Operation.CHANGE_CONTEXT);
 
         // well now really set it...
         node.setValue("owner", context);
@@ -194,7 +194,7 @@ public class ContextAuthorization extends Authorization {
         log.info("get possible context on node #"+nodeNumber+" by user: " +user);
 
         // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-        // TODO: research if we maybe better could use WRITE or CHANGECONTEXT as rights for this operation...
+        // TODO: research if we maybe better could use WRITE or CHANGE_CONTEXT as rights for this operation...
         verify(user, nodeNumber, Operation.READ);
 
         // retrieve the current context..
