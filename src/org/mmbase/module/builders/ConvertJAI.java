@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertJAI.java,v 1.2 2000-08-20 21:36:01 daniel Exp $
+	$Id: ConvertJAI.java,v 1.3 2000-10-21 22:03:52 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/08/20 21:36:01  daniel
+	making sure its in weird cvs
+	
 	
 */
 package org.mmbase.module.builders;
@@ -28,12 +31,12 @@ import org.mmbase.util.*;
  * Converts Images using image Java Advanced Imaging
  *
  * @author Daniel Ockeloen
- * @version $Id: ConvertJAI.java,v 1.2 2000-08-20 21:36:01 daniel Exp $
+ * @version $Id: ConvertJAI.java,v 1.3 2000-10-21 22:03:52 daniel Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug(String msg) { System.out.println(classname+":"+msg); }
 
 	public void init(Hashtable params) {
