@@ -24,7 +24,7 @@ package org.mmbase.bridge;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: RelationManager.java,v 1.5 2002-01-31 10:05:08 pierre Exp $
+ * @version $Id: RelationManager.java,v 1.6 2002-09-06 10:18:44 pierre Exp $
  */
 public interface RelationManager extends NodeManager {
     /**
@@ -48,6 +48,18 @@ public interface RelationManager extends NodeManager {
      * @return the role as a <code>String</code>
      */
     public String getReciprocalRole();
+
+    /**
+     * Retrieves the gui name (prompt) of the role from source to destination
+     * @return the name as a <code>String</code>
+     */
+    public String getForwardGUIName();
+
+    /**
+     * Retrieves the gui name (prompt) of the role from destination to source
+     * @return the name as a <code>String</code>
+     */
+    public String getReciprocalGUIName();
 
     /**
      * Retrieves the directionality for this type (the default assigned to a new relation).
