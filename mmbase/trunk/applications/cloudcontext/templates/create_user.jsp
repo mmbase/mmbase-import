@@ -19,8 +19,13 @@
      <td><%=getPrompt(m, "groups")%></td>
      <td>
       <select name="_groups" size="4" multiple="multiple">
+        <%-- if a group with alias 'mayreadallgroup" exists, this group is automiticly including this --%>
+        <mm:node  number="mayreadallgroup" notfound="skip">
+          <mm:field id="mayall" name="number" />
+        </mm:node>
+
         <mm:listnodes type="mmbasegroups">
-         <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
+         <option value="<mm:field name="number" />" <mm:field name="number"><mm:compare referid2="mayall">selected="selected" </mm:compare></mm:field> ><mm:nodeinfo type="gui" /></option>
         </mm:listnodes>
       </select>
      </td>
@@ -30,7 +35,7 @@
      <td>
       <select name="_rank" size="4">
         <mm:listnodes type="mmbaseranks">
-         <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
+         <option value="<mm:field name="number" />" <mm:field name="name"><mm:compare value="basic user">selected="selected"</mm:compare></mm:field>><mm:nodeinfo type="gui" /></option>
         </mm:listnodes>
       </select>
      </td>
