@@ -9,6 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.containers.NodeListContainer;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -20,16 +25,33 @@ import org.mmbase.util.logging.Logging;
  * The size of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.10 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: SizeTag.java,v 1.11 2003-07-25 20:45:43 michiel Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer {
 
-    private static Logger log = Logging.getLoggerInstance(SizeTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(SizeTag.class);
+
+    private Attribute container = Attribute.NULL;
 
     public int doStartTag() throws JspTagException{
+
         helper.setTag(this);
-        helper.setValue(new Integer(getList().size()));
+
+        NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this), false);
+
+        if (c != null) {
+            Cloud cloud = c.getCloud();
+            Query count = c.getQuery().aggregatedClone();
+            
+            Step step = (Step) (count.getSteps().get(0));
+            count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
+            
+            Node result = (Node) cloud.getList(count).get(0);
+            helper.setValue(new Integer(result.getIntValue(step.getTableName() + ".number"))); // TODO object.number does not make any sense!!
+        } else {
+            helper.setValue(new Integer(getList().size()));
+        }
 
         if (getId() != null) {
             getContextProvider().getContainer().register(getId(), helper.getValue());
