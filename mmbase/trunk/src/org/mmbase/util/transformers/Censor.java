@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Censor.java,v 1.2 2003-05-12 11:15:35 michiel Exp $
+ * @version $Id: Censor.java,v 1.3 2003-05-12 22:39:26 michiel Exp $
  */
 
 public class Censor extends ReaderTransformer implements CharTransformer {
@@ -60,7 +60,7 @@ public class Censor extends ReaderTransformer implements CharTransformer {
             while (true) {
                 int c = r.read();
                 if (c == -1) break;
-                if (Character.isWhitespace((char) c)) {
+                if (! Character.isLetter((char) c)) {
                     if (censor(word.toString(), w)) replaced++;
                     word.setLength(0);
                     w.write(c);
