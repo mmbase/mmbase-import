@@ -12,7 +12,7 @@
 
   <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>" method="post">
    <table>
-    <mm:createnode id="newnode" type="mmbasegroups" makeuniques="true">
+    <mm:createnode id="newnode" type="mmbasegroups">
       <mm:fieldlist type="edit">
         <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
       </mm:fieldlist>
