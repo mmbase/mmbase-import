@@ -31,7 +31,7 @@ public class Authorization extends org.mmbase.security.Authorization {
     public void create(UserContext user, int nodeNumber) {
         if(manager.getActive()) {
             MMObjectNode node = getMMNode(nodeNumber);
-            node.setValue("owner", user.get("username"));
+            node.setValue("owner", user.getIdentifier());
             node.commit();
         }
     }
@@ -39,7 +39,7 @@ public class Authorization extends org.mmbase.security.Authorization {
     public void update(UserContext user, int nodeNumber) {
         if(manager.getActive()) {
             MMObjectNode node = getMMNode(nodeNumber);
-            node.setValue("owner", user.get("username"));
+            node.setValue("owner", user.getIdentifier());
             node.commit();
         }
     }
@@ -48,7 +48,7 @@ public class Authorization extends org.mmbase.security.Authorization {
     }
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) {
-	log.debug("checking user: " + user.get("username") + " operation: " + operation.getInt() + " node: " + nodeNumber);
+	log.debug("checking user: " + user.getIdentifier() + " operation: " + operation.getInt() + " node: " + nodeNumber);
         boolean permitted = true;
         if(manager.getActive()) {
             switch(operation.getInt()) {
@@ -78,25 +78,30 @@ public class Authorization extends org.mmbase.security.Authorization {
                         permitted = true;
                     }
                     else {
-                        log.debug("owner of checking field is:'"+ownerName+"' and user is '"+user.get("username")+"'");
-                        permitted = (node.getStringValue("owner").compareTo(user.get("username")) == 0);
-                    }
-                    
+                        log.debug("Owner of checking field is:'" + ownerName +
+                                  "' and user is '" + user.getIdentifier() + "'");
+                        permitted = ownerName.equals(user.getIdentifier());
+                    }                    
                     break;
                 default:
                     throw new org.mmbase.security.SecurityException("Operation was NOT permitted...");
             }
         }
-        if(permitted) log.debug("operation was permitted");
-        else log.info(" user: " + user.get("username") + " operation: " + operation.getInt() + " node: " + nodeNumber  + "   operation was NOT permitted");
+        if (permitted) {
+            log.debug("operation was permitted");
+        } else {
+            log.info(" user: " + user.getIdentifier() + " operation: " + operation.getInt() + " node: " + nodeNumber  + "   operation was NOT permitted");
+        }
         return permitted;
     }
 
-    public void assert(UserContext user, int node, Operation operation) throws org.mmbase.security.SecurityException
-    {
+    public void assert(UserContext user, int node, Operation operation) 
+        throws org.mmbase.security.SecurityException {
         // hmm, we can use check :)
         if(manager.getActive()){
-            if (!check(user,node,operation)) throw new org.mmbase.security.SecurityException("Operation was NOT permitted...");
+            if (!check(user, node, operation)) {               
+                throw new org.mmbase.security.SecurityException("Operation was NOT permitted...");
+            }
         }
     }
 }
