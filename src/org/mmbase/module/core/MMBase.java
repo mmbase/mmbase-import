@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.108 2004-02-23 14:56:11 michiel Exp $
+ * @version $Id: MMBase.java,v 1.109 2004-02-24 11:53:18 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -395,9 +395,70 @@ public class MMBase extends ProcessorModule {
         loadBuilders();
 
         mmbaseState = STATE_INITIALIZE;
-        // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
-        Thread initThread = new Init();
-        initThread.start();
+
+        log.service("Initializing  storage:");
+        initializeStorage();
+        
+        log.service("Initializing  builders:");
+        initBuilders();
+        
+        log.debug("Checking MMBase");
+        
+        if (!checkMMBase()) {
+            // there is no base defined yet, create the core objects
+            createMMBase();
+        }
+        
+        
+        log.debug("Objects started");
+        
+        // weird place needs to rethink (daniel).
+        Vwms bul = (Vwms)getMMObject("vwms");
+        if (bul != null) {
+            bul.startVwms();
+        }
+        Vwmtasks bul2 = (Vwmtasks)getMMObject("vwmtasks");
+        if (bul2 != null) {
+            bul2.start();
+        }
+        
+        String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
+        if (writerpath != null && !writerpath.equals("")) {
+            Enumeration t = mmobjs.elements();
+            while (t.hasMoreElements()) {
+                MMObjectBuilder fbul = (MMObjectBuilder)t.nextElement();
+                if (!fbul.isVirtual()) {
+                    String name = fbul.getTableName();
+                    log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
+                    try {
+                        BuilderWriter builderOut = new BuilderWriter(fbul);
+                        builderOut.setIncludeComments(false);
+                        builderOut.setExpandBuilder(false);
+                        builderOut.writeToFile(writerpath + File.separator + fbul.getTableName() + ".xml");
+                    } catch (Exception ex) {
+                        log.error(Logging.stackTrace(ex));
+                    }
+                }
+            }
+        }
+        
+        // try to load security...
+        try {
+            mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
+        } catch (Exception e) {
+            log.fatal("error loading the mmbase cop: " + e.toString());
+            log.error(Logging.stackTrace(e));
+            log.error("MMBase will continue without security.");
+            log.error("All future security invocations will fail.");
+        }
+        
+        TypeRel.readCache();
+        
+        // signal that MMBase is up and running
+        mmbaseState = STATE_UP;
+        log.info("MMBase is up and running");
+        checkUserLevel();
+        
     }
 
 
@@ -524,7 +585,7 @@ public class MMBase extends ProcessorModule {
      * @return the active MMBase module
      */
     public static MMBase getMMBase() {
-        if (mmbaseroot == null) {
+        if (mmbaseroot == null) {            
             mmbaseroot = (MMBase) getModule("mmbaseroot", true);
         }
         return mmbaseroot;
@@ -1503,89 +1564,6 @@ public class MMBase extends ProcessorModule {
         return true;
     }
 
-    /**
-     * Seperate thread to init MMBase. This is because init() of this module must end quickly and init of
-     * MMBase may take indefinitely if e.g. the database is down.
-     *
-     * If init of module does not end quickly, init of MMBaseServlet does not end quickly and the
-     * complete app-server ends up waiting.
-     *
-     * @since MMBase-1.7
-     */
-    private class Init extends Thread {
-        Init() {
-            super();
-            setDaemon(false);
-        }
-        public void run() {
-
-            synchronized(MMBase.this) {
-
-                log.service("Initializing  storage:");
-                initializeStorage();
-
-                log.service("Initializing  builders:");
-                initBuilders();
-
-                log.debug("Checking MMBase");
-
-                if (!checkMMBase()) {
-                    // there is no base defined yet, create the core objects
-                    createMMBase();
-                }
-
-
-                log.debug("Objects started");
-
-                // weird place needs to rethink (daniel).
-                Vwms bul = (Vwms)getMMObject("vwms");
-                if (bul != null) {
-                    bul.startVwms();
-                }
-                Vwmtasks bul2 = (Vwmtasks)getMMObject("vwmtasks");
-                if (bul2 != null) {
-                    bul2.start();
-                }
-
-                String writerpath = getInitParameter("XMLBUILDERWRITERDIR");
-                if (writerpath != null && !writerpath.equals("")) {
-                    Enumeration t = mmobjs.elements();
-                    while (t.hasMoreElements()) {
-                        MMObjectBuilder fbul = (MMObjectBuilder)t.nextElement();
-                        if (!fbul.isVirtual()) {
-                            String name = fbul.getTableName();
-                            log.debug("WRITING BUILDER FILE =" + writerpath + File.separator + name);
-                            try {
-                                BuilderWriter builderOut = new BuilderWriter(fbul);
-                                builderOut.setIncludeComments(false);
-                                builderOut.setExpandBuilder(false);
-                                builderOut.writeToFile(writerpath + File.separator + fbul.getTableName() + ".xml");
-                            } catch (Exception ex) {
-                                log.error(Logging.stackTrace(ex));
-                            }
-                        }
-                    }
-                }
-
-                // try to load security...
-                try {
-                    mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
-                } catch (Exception e) {
-                    log.fatal("error loading the mmbase cop: " + e.toString());
-                    log.error(Logging.stackTrace(e));
-                    log.error("MMBase will continue without security.");
-                    log.error("All future security invocations will fail.");
-                }
-
-                TypeRel.readCache();
-
-                // signal that MMBase is up and running
-                mmbaseState = STATE_UP;
-                log.info("MMBase is up and running");
-                checkUserLevel();
-            }
-        }
-    }
 
 
 }
