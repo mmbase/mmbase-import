@@ -17,12 +17,11 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
 
 /**
- * Uses the XML functions from the bridge the construct DOM elements
- * representing MMBase data structures.
+ * Uses the XML functions from the bridge to construct a DOM document representing MMBase data structures.
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.20 2004-03-05 10:38:33 michiel Exp $
+ * @version $Id: Generator.java,v 1.21 2004-03-05 10:41:25 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
