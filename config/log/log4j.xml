@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.7 2003-12-24 15:51:46 michiel Exp $
+   @version $Id: log4j.xml,v 1.8 2004-01-11 17:00:58 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -101,7 +101,7 @@
 
   <!-- 'page logging' goes to a different appender -->
   <logger name="org.mmbase.PAGE" additivity="false">
-    <level class="&mmlevel;" value ="service" />
+    <level class="&mmlevel;" value ="info" />
     <appender-ref ref="pagedebug" />
   </logger>
 
@@ -114,10 +114,10 @@
    -->
 
   <!-- examples: different level for a few subtrees -->
-   <logger name="org.mmbase.bridge" >
-     <level class="&mmlevel;" value ="info" />
-   </logger>
-  
+  <logger name="org.mmbase.bridge" >
+    <level class="&mmlevel;" value ="info" />
+  </logger>
+
   <logger name="org.mmbase.security" >
     <level class="&mmlevel;" value ="warn" />
   </logger>
