@@ -17,7 +17,7 @@ package org.mmbase.util.functions;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: AutodefiningParameters.java,v 1.2.2.1 2004-06-01 12:26:56 michiel Exp $
+ * @version $Id: AutodefiningParameters.java,v 1.2.2.2 2004-11-15 10:52:36 michiel Exp $
  * @see Parameter
  */
 
@@ -36,7 +36,7 @@ public class AutodefiningParameters extends Parameters {
         for (int i = 0; i < definition.length; i++) {
             newDef[i] = definition[i];
         }
-        newDef[newDef.length - 1] = new Parameter(arg, value.getClass());
+        newDef[newDef.length - 1] = new Parameter(arg, value == null ? Object.class : value.getClass());
         definition = newDef;
         backing.put(arg, value);
         return this;
