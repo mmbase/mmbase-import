@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.40 2004-02-24 13:48:41 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.41 2004-10-08 14:54:03 keesj Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -482,7 +482,6 @@ public class MMBaseContext {
                     // the beginning of contextUrl is the same as the string rootContextUrl,
                     // the left part is the current urlPath on the server...
                     if(contextUrl.startsWith(rootContextUrl)) {
-                        // htmlUrl is gonna be filled
                         htmlRootUrlPath = "/" + contextUrl.substring(rootContextUrl.length(), contextUrl.length());
                     } else {
                         log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
