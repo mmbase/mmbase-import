@@ -17,7 +17,7 @@ import java.util.Hashtable;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: FragmentResponseInfo.java,v 1.1 2003-01-21 17:46:23 michiel Exp $
+ * @version $Id: FragmentResponseInfo.java,v 1.2 2003-01-21 23:03:59 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -31,8 +31,8 @@ abstract public class FragmentResponseInfo extends ResponseInfo  {
         if (this.info == null) this.info = new Hashtable();        
     }
 
-    protected StringBuffer getArgs(StringBuffer args) {                                   
-        if (fragment != null) {
+    protected StringBuffer getRMArgs(StringBuffer args) {                                   
+        if (fragment != null) { // can add this for RM-sources
             int start = fragment.getIntValue("start");
             int end   = fragment.getIntValue("stop");
             char sep = '?';
@@ -45,11 +45,9 @@ abstract public class FragmentResponseInfo extends ResponseInfo  {
                 sep = '&';
             }
             
-            if (getFormat().isReal()) { 
-                // real...
-                String title = fragment.getStringValue("title");
-                args.append(sep).append("title=").append(title);
-            }
+            // real...
+            String title = fragment.getStringValue("title");
+            args.append(sep).append("title=").append(title);
         }
         return args;
     }
@@ -61,7 +59,7 @@ abstract public class FragmentResponseInfo extends ResponseInfo  {
         } else {
             fragmentAvailable = Boolean.TRUE;
         }
-        boolean sourceAvailable    = (source.getIntValue("state") == 3); // todo: use symbolic constant
+        boolean sourceAvailable    = (source != null && source.getIntValue("state") == 3); // todo: use symbolic constant
         return fragmentAvailable.booleanValue() && sourceAvailable;
     }
 
@@ -72,7 +70,7 @@ abstract public class FragmentResponseInfo extends ResponseInfo  {
      * @param time the time in milliseconds
      * @return the time in real format
      */
-    protected static StringBuffer appendTime(int time, StringBuffer buf) {
+    public static StringBuffer appendTime(int time, StringBuffer buf) {
         time /= 10; // in centis
 
         int centis = -1;

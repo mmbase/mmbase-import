@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top for a client, so the 'ResponseInfo' is used.
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatComparator.java,v 1.2 2003-01-14 20:36:20 michiel Exp $
+ * @version $Id: ClientFormatComparator.java,v 1.3 2003-01-21 23:04:00 michiel Exp $
  */
 public class ClientFormatComparator extends  PreferenceComparator {
-    private static Logger log = Logging.getLoggerInstance(FormatComparator.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ClientFormatComparator.class.getName());
 
 
     public  ClientFormatComparator() {
@@ -32,7 +32,7 @@ public class ClientFormatComparator extends  PreferenceComparator {
     
     protected int getPreference(ResponseInfo ri) {
         Object format = ri.getInfo().get("format");        
-        if (log.isDebugEnabled()) { log.debug("Client's preference" + format); }
+        if (log.isDebugEnabled()) { log.debug("Client's preference " + format); }
         if (format == null) {                  
             return 0; // no client preference given
         } else {
@@ -41,6 +41,11 @@ public class ClientFormatComparator extends  PreferenceComparator {
                 if (format == ri.getFormat()) return 100;
             } else if (format instanceof String) {
                 if (Format.get((String) format) == ri.getFormat()) return 100;
+            } else if (format instanceof List) {
+                List formatList = (List) format;
+                int i = formatList.indexOf(ri.getFormat().toString());
+                return i == -1 ? -10000 : -i; // the higher in this list, the better, 0 is highest.
+
             } else {
                 log.error("Someting wrong in client's INFO, 'format' specified wrongly: " + format);
                 return 0;

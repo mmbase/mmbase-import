@@ -21,7 +21,7 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyURLComposers.java,v 1.4 2003-01-14 20:36:20 michiel Exp $
+ * @version $Id: MyURLComposers.java,v 1.5 2003-01-21 23:04:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class MyURLComposers extends MediaURLComposers {
@@ -46,29 +46,39 @@ public class MyURLComposers extends MediaURLComposers {
             return format;
         }
 
+        private int removePrefix(String url, StringBuffer args) {
+            int lastSlash = url.lastIndexOf('/');
+            String existingPrefix = url.substring(lastSlash + 1, lastSlash + 4);
+            if (existingPrefix.equals("sb.") || existingPrefix.equals("bb.")) { // remove existing prefix.
+                args.delete(lastSlash + 1, lastSlash + 4);
+            }
+            return lastSlash;
+        }
+
         public String getURL() {
             String url      = source.getStringValue("url");
             String rootpath = composer.getStringValue("rootpath");
             String host = provider.getStringValue("host");
+
+            StringBuffer args = new StringBuffer(source.getStringValue("url"));
+
             if (rootpath.startsWith("/cgi-bin")) {
                 host = "cgi.omroep.nl";
+                removePrefix(url, args);
             }
-                       
-            StringBuffer args = new StringBuffer(source.getStringValue("url"));
+                      
             
             
             if (rootpath.startsWith("%")) {
-                int lastSlash = url.lastIndexOf('/');
-                String existingPrefix = url.substring(lastSlash + 1, lastSlash + 4);
-                if (existingPrefix.equals("sb.") || existingPrefix.equals("bb.")) { // remove existing prefix.
-                    args.delete(lastSlash + 1, lastSlash + 4);
-                }
+                int lastSlash =  removePrefix(url, args);
                 String insert = rootpath.substring(1);
                 args.insert(lastSlash + 1, insert + ".");
             } else {
                 args.insert(0, rootpath);
             }
-            getArgs(args);            
+            if (getFormat() == Format.RM || host.equals("cgi.omroep.nl")) {
+                getRMArgs(args);
+            }
             return composer.getStringValue("protocol") + "://" + host + args.toString();
         }
     }

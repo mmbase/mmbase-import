@@ -42,7 +42,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.24 2003-01-21 17:46:24 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.25 2003-01-21 23:04:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -303,9 +303,9 @@ public class MediaSources extends MMObjectBuilder {
             } else {
                 throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");                
             }
-            return getURLs(node, fragment, null);
+            return getURLs(node, fragment, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_URL.equals(function)) {
-            return getURL(node, null);
+            return getURL(node, MediaFragments.translateURLArguments(args, null));
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             Iterator providers = getProviders(node).iterator();
             while (providers.hasNext()) {
