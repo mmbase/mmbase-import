@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.17 2000-06-25 00:39:14 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.18 2000-06-25 13:11:44 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.17  2000/06/25 00:39:14  wwwtech
+Daniel... removed some debug
+
 Revision 1.16  2000/06/24 23:19:29  wwwtech
 Daniel.. changed init call for XML parser
 
@@ -101,7 +104,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.17 $ $Date: 2000-06-25 00:39:14 $
+* @$Revision: 1.18 $ $Date: 2000-06-25 13:11:44 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -132,6 +135,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("TEXT",new Integer(TYPE_TEXT));
 		typesmap.put("BLOB",new Integer(TYPE_BLOB));
 		typesmap.put("BYTE",new Integer(TYPE_BLOB));
+		typesmap.put("BINARY",new Integer(TYPE_BLOB));
 	}
 
 	public void init(MMBase mmb,XMLDatabaseReader parser) {
@@ -149,7 +153,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
 		try {
-	
+
 		// is this fieldname disallowed ? ifso map it back
 		if (allowed2disallowed.containsKey(fieldname)) {
 			fieldname=(String)allowed2disallowed.get(fieldname);
@@ -1043,5 +1047,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			out.put(value,key);
 		}
 		return(out);	
+	}
+
+
+	public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
+		MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
+		return(con);
 	}
 }
