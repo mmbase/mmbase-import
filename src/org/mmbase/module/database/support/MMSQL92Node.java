@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.34 2000-07-25 21:02:53 daniel Exp $
+$Id: MMSQL92Node.java,v 1.35 2000-08-31 21:27:48 gerard Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.34  2000/07/25 21:02:53  daniel
+removed Fielddefs database code since well its not in the database anymore
+
 Revision 1.33  2000/07/25 20:47:53  daniel
 added a clearChanged when nodes are inserted
 
@@ -143,7 +146,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.34 $ $Date: 2000-07-25 21:02:53 $
+* @$Revision: 1.35 $ $Date: 2000-08-31 21:27:48 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -554,7 +557,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		//bul.signalNewObject(bul.tableName,number);
 		if (bul.broadcastChanges) {
 			if (bul instanceof InsRel) {
-				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+				bul.mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
 				// figure out tables to send the changed relations
 				MMObjectNode n1=bul.getNode(node.getIntValue("snumber"));
 				MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
@@ -563,7 +566,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 				mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
 			} else {
-				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
+				mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"n");
 			}
 		}
 		node.setValue("number",number);
