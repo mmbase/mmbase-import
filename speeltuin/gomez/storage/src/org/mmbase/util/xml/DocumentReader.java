@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: DocumentReader.java,v 1.1 2003-07-21 09:31:08 pierre Exp $
+ * @version $Id: DocumentReader.java,v 1.2 2003-07-23 11:19:47 pierre Exp $
  */
 public class DocumentReader  {
     private static Logger log = Logging.getLoggerInstance(DocumentReader.class);
@@ -228,6 +228,29 @@ public class DocumentReader  {
         } else {
             return createDocumentBuilder(validating, handler, resolver);
         }
+    }
+
+    /**
+     * Return the text value of a node.
+     * It includes the contents of all child textnodes and CDATA sections, but ignores 
+     * everything else (such as comments)
+     * The code trims excessive whitespace unless it is included in a CDATA section.
+     * 
+     * @param n the Node whose value to determine
+     * @return a String representing the node's textual value 
+     */
+    public String getNodeTextValue(Node n) {
+        NodeList nl = n.getChildNodes();
+        StringBuffer res = new StringBuffer();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node textnode = nl.item(i);
+            if (textnode.getNodeType() == Node.TEXT_NODE) {
+                res.append(textnode.getNodeValue().trim());
+            } else if (textnode.getNodeType() == Node.CDATA_SECTION_NODE) {
+                res.append(textnode.getNodeValue());
+            }
+        }
+        return res.toString();
     }
 
     /**

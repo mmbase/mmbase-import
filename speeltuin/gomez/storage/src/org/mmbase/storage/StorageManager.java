@@ -18,7 +18,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.1 2003-07-21 13:21:54 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.2 2003-07-23 11:19:46 pierre Exp $
  */
 public interface StorageManager {
 
@@ -35,7 +35,7 @@ public interface StorageManager {
      * @param factory the StorageManagerFactory instance that created this storage manager.
      * @throws StorageConfigurationException if the initialization failed
      */
-    public void init(StorageManagerFactory factory) throws StorageConfigurationException;
+    public void init(StorageManagerFactory factory) throws StorageException;
 
 }
 

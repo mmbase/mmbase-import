@@ -7,7 +7,7 @@
 
     <date>2003-07-16</date>
 
-    <edition>$Id: storage.xml,v 1.1 2003-07-21 09:31:59 pierre Exp $</edition>
+    <edition>$Id: storage.xml,v 1.2 2003-07-23 11:19:45 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -35,7 +35,7 @@
 		<para>The current setup, to be released in 1.7 (we hope), differs considerably from that first version. We now have a <interfacename>StorageManager</interfacename>, which grants access to the storage for one user, and a <interfacename>StorageManagerFactory</interfacename> interface, which provides a StorageManager instance for each user that requires access, and also gives access to the global storage configuration. There is also a <interfacename>Schemes</interfacename> interface, which holds comfigurale schemes (in general only useful for databases that allow variant SQL statements, i.e. for adding options during table generation).</para>
 		<note><para>StorageManager and StorageManagerFactory are at the moment suggestions for interface names. Possible other names for StorageManager are Connection, StorageSession, Transaction, or Access.  Possible other names for StorageManagerFactory are StorageContext, StorageFactory, StorageProvider, StorageConfiguration, or plain Storage. If these names change, some methods (mentioned later) in the interface may also change.</para></note>
 		<note><para>We briefly looked at JDO to see if this would be a suitbale interface, but found it far too complex and probably very hard to implement for MMBase. It is posisble, however, that future implementations may include a wrapper for using JDO-driven storages.</para></note>
-		
+
 		<section id="using">
 			<title>Using the Storage Layer</title>
 			<para>In order to get access to a storage (for querying, updating objects, or obtaining configuration data), you first obtain the  factory. Each MMBase instance only has one factory, which it obtains at startup by requesting it from a static method in the Storage class (a final class in the org.mmbase.storage package), by passing itself as a reference. In the MMBase class, this will look like:</para>
@@ -52,36 +52,39 @@
 		</section>
 
   </section>
-	
+
   <section id="interfaces">
     <title>Interfaces</title>
 		<para>...</para>
-		
+
 		<section id="StorageManagerFactory">
 			<title>StorageManagerFactory Interface</title>
-			<para>TODO: explain interface</para>
-
+			<para>Each instance of MMBase obtains access to the underlying storage by requesting an acces-providing class (a StorageManager) from a StorageManagerFacory. A StorageManager is often specific for a certain brand of Storage (such as an Informix database). The StorageManagerFactory determines what StorageManger class is needed in a given situation.</para>
+			<para>Using data from the mmbaseroot module, they retrieve the appropriate class, determine the location of configuration files, and open access to the storage.</para>
+			<para>Factories are more generic than the managers they erturn: a factory needs to be able to serve several types of managers. That is not to say that factories are always the same - specific types of storage require different forms of access. A factory for database-driven storages will need to provide its storagemanagers with a JDBC datasource, while a disk-storage needs a factory that can provide filepaths.</para>
 			<programlisting format="linespecific"><![CDATA[
 public interface StorageManagerFactory {
 
-	public init(MMBase mmbase);
+	public void init(MMBase mmbase) throws StorageException;
 
-	public StorageManager getStorageManager();
-	
+	public StorageManager getStorageManager() throws StorageException;
+
+	public StorageReader getDocumentReader() throws StorageException;
+
 	public Map getAttributes();
-	
+
 	public void setAttributes(Map attributes);
-	
+
 	public Object getAttribute(Object key);
-	
+
 	public void setAttribute(Object key, Object value);
 
 	public boolean hasOption(Object key);
-	
+
 	public void setOption(Object key, boolean value);
-	
+
 	public int getVersion();
-	
+
 }]]></programlisting>
 			<itemizedlist>
 				<title>StorageManagerFactory Methods:</title>
@@ -92,11 +95,11 @@ public interface StorageManagerFactory {
 			</itemizedlist>
 		</section>
   </section>
-		
+
   <section id="classes">
     <title>Classes</title>
 		<para>...</para>
-		
+
 		<section id="Storage">
 			<title>Storage Class</title>
 			<para>The Storage class is used to obtain a StorageManagerFactory.</para>
@@ -106,9 +109,9 @@ public interface StorageManagerFactory {
 			<programlisting format="linespecific"><![CDATA[
 public final class Storage {
 
-    static public StorageManagerFactory getStorageManagerFactory(MMBase mmbase);
+    static public StorageManagerFactory getStorageManagerFactory(MMBase mmbase) throws StorageException;
 
-    static public StorageManagerFactory getStorageManagerFactory();
+    static public StorageManagerFactory getStorageManagerFactory() throws StorageException;
 
 }]]></programlisting>
 			<itemizedlist>
@@ -116,6 +119,7 @@ public final class Storage {
 				<listitem>
 				  <formalpara><title>StorageManagerFactory getStorageManagerFactory(MMBase mmbase);</title><para /></formalpara>
 					<para>Creates an instance of the <classname>StorageManagerFactory</classname> class, using the passed MMBase instance to determine the class to load. The MMBase instance is also passed to the StorageManagerFactory's <methodname>init</methodname> method, allowing it to take more configuration data if needed.</para>
+					<para>If something goes wrong during the loading of the factory, the code throws an exception. This may mean a fault in the configuration, missing code, or a condition that makes the storage inaccessible (such as an offline database or insufficient access rights).</para>
 				</listitem>
 				<listitem>
 				  <formalpara><title>StorageManagerFactory getStorageManagerFactory();</title><para /></formalpara>
@@ -131,8 +135,7 @@ public final class Storage {
 			<programlisting format="linespecific"><![CDATA[
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
-	public File getBinaryFilePath();
-	public void setBinaryFilePath(File path);
+  public DataSource getDataSource();
 
 	public Map getTypeMap();
 	public void setTypeMap(Map typeMap);

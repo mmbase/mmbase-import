@@ -17,7 +17,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storage.java,v 1.1 2003-07-21 09:31:01 pierre Exp $
+ * @version $Id: Storage.java,v 1.2 2003-07-23 11:19:46 pierre Exp $
  */
 public final class Storage {
 
@@ -38,12 +38,11 @@ public final class Storage {
      * Obtain the StorageManagerFactory belonging to the indicated MMBase module.
      * @param mmbase The MMBase module for which to retrieve the storagefactory
      * @return The StorageManagerFactory
-     * @throws StorageFactoryException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
+     * @throws StorageException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
      *         or when something went wrong during configuration of the factory
-     * @throws StorageInaccessibleException when the storage cannot be accessed
      */
     static public StorageManagerFactory getStorageManagerFactory(MMBase mmbase)
-                  throws StorageFactoryException, StorageInaccessibleException {
+                  throws StorageException {
         // get the class name for the factory to instantiate
         String factoryClassName = mmbase.getInitParameter("storagemanagerfactory");
         if (factoryClassName == null) factoryClassName = DEFAULT_FACTORY_CLASS;
@@ -65,12 +64,11 @@ public final class Storage {
     /**
      * Obtain the storage manager factory belonging to the default MMBase module.
      * @return The StoragemanagerFactory
-     * @throws StorageFactoryException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
+     * @throws StorageException if the StorageManagerFactory class cannot be located, accessed, or instantiated,
      *         or when something went wrong during configuration of the factory
-     * @throws StorageInaccessibleException when the storage cannot be accessed
      */
     static public StorageManagerFactory getStorageManagerFactory()
-                  throws StorageFactoryException, StorageInaccessibleException {
+                  throws StorageException {
         // determine the default mmbase module.
         return getStorageManagerFactory(MMBase.getMMBase());
     }

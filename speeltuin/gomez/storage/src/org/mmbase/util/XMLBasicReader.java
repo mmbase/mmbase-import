@@ -43,7 +43,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: XMLBasicReader.java,v 1.1 2003-07-21 09:31:07 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.2 2003-07-23 11:19:47 pierre Exp $
  */
 public class XMLBasicReader extends DocumentReader {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class);
@@ -190,16 +190,7 @@ public class XMLBasicReader extends DocumentReader {
         if (e == null) {
             return "";
         } else {
-            NodeList nl = e.getChildNodes();
-            StringBuffer res = new StringBuffer();
-            for (int i=0;i<nl.getLength();i++) {
-                Node n = nl.item(i);
-                if ((n.getNodeType() == Node.TEXT_NODE) ||
-                    (n.getNodeType() == Node.CDATA_SECTION_NODE)) {
-                    res.append(n.getNodeValue().trim());
-                }
-            }
-            return res.toString();
+            return getNodeTextValue(e);
         }
     }
 
