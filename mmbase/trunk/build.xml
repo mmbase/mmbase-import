@@ -9,16 +9,14 @@ distribution:
 
 - A MMBase source distribution.
 - A MMBase binary distribution.
-- A customized mmbase.jar.
-- A test environment.
 
 The main properties are source.dir and build.dir. The source.dir is expected
-to have the following sub directory's:
+to have the following sub directory's (check out 'all'):
 
   config          (the MMBase CVS config module)
   html            (the MMBase CVS html module)
   documentation   (the MMBase CVS documentation module)
-  src/org/mmbase  (the MMBase CVS mmbase module)
+  src             (the MMBase CVS src module)
 
 The build.dir will have the following sub directory's:
 
@@ -39,10 +37,6 @@ Ant
 This build file is tested with Ant 1.4. See <http://jakarta.apache.org/> for
 more information about the Ant build tool.
 
-The optional.jar of ant is needed it you want to use the 'documentation' target, on which e.g. the
-war target is dependent.
-
-
 Automated downloads
 ===================
 
@@ -51,6 +45,9 @@ NetComponents and put the NetComponents.jar in your Ant lib directory.
 NetComponents can be found at:
 
   http://www.savarese.org/oro/downloads/index.html#NetComponents
+
+Use the property 'download.dir' if the download has to be shared by
+several MMBase-checkouts.
 
 ============================================================================ -->
 
@@ -349,7 +346,7 @@ version=1.7.0-dev
   <target name="check.dir.mmbase" depends="init.check.dir"
           unless="dir.mmbase.present">
     <property name="source.dir.invalid" value="mmbase"/>
-  </target>
+   </target>
 
   <target name="check.dir.all"
           depends="check.dir.config,check.dir.html,check.dir.src,check.dir.org,
