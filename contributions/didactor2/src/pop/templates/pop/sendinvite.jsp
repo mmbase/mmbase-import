@@ -6,15 +6,15 @@
   <mm:constraint field="people.number" value="$invitee" operator="EQUAL" />
   <mm:constraint field="popfeedback.status" value="0" />
   <mm:list nodes="$currentpop">
-      <mm:field name="popfeedback.number" jspvar="thisFeedback" vartype="String">
-        <mm:list nodes="$currentcomp" path="competencies,popfeedback"
-            constraints="<%= "popfeedback.number LIKE " + thisFeedback %>">
-          <% isEmpty = false; %>
-          <mm:node element="popfeedback" id="newfeedback">
-            <mm:setfield name="text"><mm:write referid="query"/></mm:setfield>
-          </mm:node>
-        </mm:list>
-      </mm:field>
+    <mm:field name="popfeedback.number" jspvar="thisFeedback" vartype="String">
+      <mm:list nodes="$currentcomp" path="competencies,popfeedback"
+          constraints="<%= "popfeedback.number LIKE " + thisFeedback %>">
+        <% isEmpty = false; %>
+        <mm:node element="popfeedback" id="newfeedback">
+          <mm:setfield name="text"><mm:write referid="query"/></mm:setfield>
+        </mm:node>
+      </mm:list>
+    </mm:field>
   </mm:list>
 </mm:listcontainer>
 <% if (isEmpty) { %>
