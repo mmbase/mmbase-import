@@ -48,6 +48,7 @@ public class CreateAliasTag extends NodeReferrerTag {
                 doJob(node, alias);
             }
         }
+        alias = null; // set back to null for tag-reusers..
         return EVAL_PAGE;
     }
 }
