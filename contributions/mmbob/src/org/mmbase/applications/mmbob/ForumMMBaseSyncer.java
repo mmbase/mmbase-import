@@ -31,6 +31,9 @@ public class ForumMMBaseSyncer implements Runnable {
     // logger
     static private Logger log = Logging.getLoggerInstance(ForumMMBaseSyncer.class);
 
+    // holds the fellow ForumMMBaseSyncers that are instantiated
+    static ArrayList brothers = new ArrayList();
+
     // thread
     Thread kicker = null;
     int sleeptime;
@@ -54,6 +57,7 @@ public class ForumMMBaseSyncer implements Runnable {
         this.sleeptime = sleeptime;
         this.maxqueue = maxqueue;
         this.delaytime = startdelay;
+
         init();
     }
 
@@ -61,6 +65,8 @@ public class ForumMMBaseSyncer implements Runnable {
      * init()
      */
     public void init() {
+        // add this syncer to the band of brothers
+        brothers.add(this);
         this.start();
     }
 
@@ -110,10 +116,13 @@ public class ForumMMBaseSyncer implements Runnable {
                 while (dirtyNodes.size() > 0) {
                     Node node = (Node) dirtyNodes.elementAt(0);
                     dirtyNodes.removeElementAt(0);
+
+                    //log.debug("removing node " + node.getNumber() +" from sync queue "+sleeptime);
                     node.commit();
-                    //log.info("synced node="+node.getNumber());
+                    removeFromBrothers(node);
                     Thread.sleep(delaytime);
                 }
+
                 Thread.sleep(sleeptime);
             } catch (InterruptedException f2) {
             }
@@ -127,6 +136,21 @@ public class ForumMMBaseSyncer implements Runnable {
      */
     public void nodeDeleted(Node node) {
         dirtyNodes.remove(node);
+    }
+
+    /**
+     * Remove the given node also from the brother syncers
+     * @param node
+     */
+    private void removeFromBrothers(Node node) {
+        for (int i = 0; i<brothers.size();i++) {
+            if (((ForumMMBaseSyncer)brothers.get(i)) != this) {
+                log.debug("removing node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime);
+                ((ForumMMBaseSyncer)brothers.get(i)).nodeDeleted(node);
+            } else {
+                //log.debug("won't remove node " + node.getNumber() +" from sync queue "+((ForumMMBaseSyncer)brothers.get(i)).sleeptime+" because i probably just did");
+            }
+        }
     }
 
     /**
