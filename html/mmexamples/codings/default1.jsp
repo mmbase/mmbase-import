@@ -87,6 +87,30 @@
 <pre>
 <mm:import id="ai8"><%@include file="included8.xml" %></mm:import><mm:write referid="ai8" escape="text/xml" />
 </pre>
+   <h2>Formatter-tag</h2>
+   <p><em>In-page XML, explicitely specifying encoding:</em></p>
+<pre>
+  <mm:formatter format="escapexmlpretty">
+    <?xml version="1.0" encoding="iso-8859-1"?>
+    <mmxf version="1" >
+      <p>Café tweeëntwintig</p>
+    </mmxf>
+
+  </mm:formatter>
+</pre>
+ <p><em>With &lt;%@include (iso-8859-1 xml):</em></p>
+<pre>
+  <mm:formatter format="escapexmlpretty">
+    <%@include file="included1.xml" %>
+  </mm:formatter>
+</pre>
+ <p><em>With &lt;%@include (UTF-8 xml):</em></p>
+<pre>
+  <mm:formatter format="escapexmlpretty">
+    <%@include file="included8.xml" %>
+  </mm:formatter>
+</pre>
+
 <hr />
       <a href="<mm:url page="." />">back</a><br />
       <a href="<mm:url page="../taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />

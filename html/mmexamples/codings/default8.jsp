@@ -109,11 +109,34 @@
 <pre>
 <mm:import id="ai1"><%@include file="included1.xml" %></mm:import><mm:write referid="ai1" escape="text/xml" />
 </pre>
-      <p><em>With &lt;@include (UTF-8 xml):</em></p>
+      <p><em>With &lt;%@include (UTF-8 xml):</em></p>
 <pre>
 <mm:import id="ai8"><%@include file="included8.xml" %></mm:import><mm:write referid="ai8" escape="text/xml" />
 </pre>
-      
+   <h2>Formatter-tag</h2>
+   <p><em>In-page XML, explicitely specifying encoding:</em></p>
+<pre>
+  <mm:formatter format="escapexmlpretty">
+    <?xml version="1.0" encoding="iso-8859-1"?>
+    <mmxf version="1" >
+      <p>Café tweeëntwintig</p>
+      <p>Ĉu vi ŝatas tion?</p> 
+    </mmxf>
+
+  </mm:formatter>
+</pre>
+ <p><em>With &lt;%@include (iso-8859-1 xml):</em></p>
+<pre>
+  <mm:formatter format="escapexmlpretty">
+    <%@include file="included1.xml" %>
+  </mm:formatter>
+</pre>
+ <p><em>With &lt;%@include (UTF-8 xml):</em></p>
+<pre>
+  <mm:formatter format="escapexmlpretty">
+    <%@include file="included8.xml" %>
+  </mm:formatter>
+</pre>      
       <hr />
       used node: <mm:write referid="node" /> (<mm:field name="number" />)<br />
       <a href="<mm:url page="." />">back</a><br />      
