@@ -205,8 +205,16 @@ public class Logging {
         }
 
         return null; // should not come here.
-
     }
+
+    /**
+     * Most Logger categories in MMBase are based on class name.
+     * @since MMBase-1.7
+     */
+    public static Logger getLoggerInstance(Class cl) {
+        return getLoggerInstance(cl.getName());
+    }
+
     /**
      * Returns a Set of String which indicates where your logging can
      * be (If this is implemented in the class).
