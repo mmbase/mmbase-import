@@ -12,11 +12,12 @@ package org.mmbase.storage;
 
 /**
  * This interface contains functionality for retrieving a storage identifier - a name or id
- * suitable for storing the object.
+ * suitable for storing the object. It also holds status information  (i.e. whether a field is in Storage
+ * or not) and storage-specific data.
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.4 2003-09-08 17:06:12 pierre Exp $
+ * @version $Id: Storable.java,v 1.5 2003-09-10 09:57:11 pierre Exp $
  */
 public interface Storable {
 
@@ -36,7 +37,7 @@ public interface Storable {
     public Object getStorageIdentifier() throws StorageException;
 
     /**
-     * Returns whether an object is defined in the storage.
+     * Returns whether an object is (or, for a new object, should be) defined in the storage.
      * Virtual fields or builders should return <code>false</code>.
      *
      * @return <code>true</code> if the object is kept in the storage
