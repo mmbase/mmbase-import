@@ -57,13 +57,13 @@ By default all packages containing needed jar files are downloaded and extracted
 if not available yet.
 
 If you don't like the download feature or if you don't want some of the optional
-jar files you can set the use-customized-lib property. When using this property
-you have to put the needed jar files for your target into:
+jar files you can set the use-customized-lib property (any value will do) and
+put the needed jar files for your target into:
 
   ${build.dir}/mmbase/lib
-  
+
 It is also possible to specify another lib directory to be used by the compile
-and javadocs targets by setting property lib.dir.  
+and javadocs targets by setting property lib.dir to this directory.
 
 
 Starting Tomcat
@@ -718,8 +718,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="junit"
           description="Build the JUnit test environment"
-          depends="init,jar,expand.junit,expand.tomcat,expand.hsql,
-                   expand.xalan,expand.jai,expand.log4j">
+          depends="init,lib,jar,expand.hsql">
     <mkdir dir="${build.dir}/junit"/>
     <mkdir dir="${build.dir}/junit/config"/>
     <mkdir dir="${build.dir}/junit/lib"/>
