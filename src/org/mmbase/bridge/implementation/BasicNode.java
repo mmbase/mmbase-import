@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.86 2003-03-25 19:04:30 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.87 2003-03-25 19:08:10 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -712,12 +712,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
         int    dir          = ClusterBuilder.getSearchDir(direction);
         List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
-        List   basicNodes   = new ArrayList();
 
         if (nodeManager != null) {
-            return new BasicNodeList(basicNodes, nodeManager);
+            return new BasicNodeList(mmnodes, nodeManager);
         } else {
-            return new BasicNodeList(basicNodes, cloud);
+            return new BasicNodeList(mmnodes, cloud);
         }
     }
     public NodeList getRelatedNodes(String type, String role, String direction) {
