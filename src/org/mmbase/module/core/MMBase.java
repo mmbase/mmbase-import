@@ -27,6 +27,7 @@ import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.search.SearchQueryException;
 
+import org.mmbase.storage.Storage;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -40,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.90 2003-06-27 11:31:25 pierre Exp $
+ * @version $Id: MMBase.java,v 1.91 2003-07-02 10:48:29 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -49,7 +50,7 @@ public class MMBase extends ProcessorModule {
      * @since MMBase-1.6
      */
     private static final int STATE_START_UP = -1;
-    /**
+   /**
      * State of MMBase before builders are loaded
      * @since MMBase-1.6
      */
@@ -66,7 +67,7 @@ public class MMBase extends ProcessorModule {
     private static final int STATE_UP = 2;
 
     // logging
-    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMBase.class);
 
     /**
      * Defines what 'channel' we are talking to when using multicast.
@@ -527,7 +528,7 @@ public class MMBase extends ProcessorModule {
         if (o == null) {
             log.trace("MMObject " + name + " could not be found"); // can happen...
         }
-        return (MMObjectBuilder)o;
+        return (MMObjectBuilder) o;
     }
 
     /**
@@ -1015,9 +1016,13 @@ public class MMBase extends ProcessorModule {
                 initBuilder(fbul);
             } catch (BuilderConfigurationException e) {
                 // something bad with this builder or its parents - remove it
-                log.error(
-                    "Removed builder " + fbul.getTableName() + " from the builderlist, as it cannot be initialized.");
+                log.error("Removed builder " + fbul.getTableName() + " from the builderlist, as it cannot be initialized.");
                 bi.remove();
+            } catch (Exception ex) {
+                log.error("Something went wrong while initializing builder " + fbul.getTableName());
+                log.error("Builder will be removed from active builder list");
+                log.error(Logging.stackTrace(ex));
+                bi.remove();                
             }
         }
 
@@ -1103,7 +1108,7 @@ public class MMBase extends ProcessorModule {
      * Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
      * Return the actual path.
      * @param builder name of the builder to find
-     * @param ipath the path to start searching. The path need be closed with a File.seperator character.
+     * @param path the path to start searching. The path need be closed with a File.seperator character.
      * @return the file path to the builder xml, or null if the builder could not be created (i.e. is inactive).
      * @throws BuilderConfigurationException if the builder config file does not exist
      */
@@ -1291,6 +1296,16 @@ public class MMBase extends ProcessorModule {
         }
         return database;
     }
+
+    
+    /**
+     * @since MMBase-1.7
+     */
+    /*
+    public Storage getStorage() {
+        return (Storage) getDatabase();
+    }
+    */
 
     /**
      * Loads a Node again, using its 'right' parent.
