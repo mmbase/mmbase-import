@@ -32,12 +32,14 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.44 2004-02-23 18:59:35 pierre Exp $
+ * @version $Id: ImageTag.java,v 1.45 2004-03-24 14:11:23 michiel Exp $
  */
 
 public class ImageTag extends FieldTag {
 
     private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
+
+    private static Boolean makeRelative = null;
     private Attribute template = Attribute.NULL;
 
     /**
@@ -95,11 +97,19 @@ public class ImageTag extends FieldTag {
             number = node.getFunctionValue("cache", new Parameters(Images.CACHE_PARAMETERS).set("template", t)).toString();
         }
 
+        if (makeRelative == null) {            
+            String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");            
+            makeRelative = "true".equals(setting) ? Boolean.TRUE : Boolean.FALSE;
+        }
+
         String servletPath;
         {
             Parameters args = new Parameters(AbstractServletBuilder.SERVLETPATH_PARAMETERS)
                 .set("session",  sessionName)
-                .set("context",  UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/"))
+                .set("context",  makeRelative.booleanValue() ? 
+                     UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/") :
+                     req.getContextPath()
+                     )
                 .set("argument", number)
                 ;
             servletPath = node.getFunctionValue("servletpath", args).toString();
