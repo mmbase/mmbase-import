@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.146 2002-06-30 19:22:18 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.147 2002-07-03 16:18:45 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -236,7 +236,7 @@ public class MMObjectBuilder extends MMTable {
             parentBuilder.init();
         }
         if (!created()) {
-            log.info("init(): Create "+tableName);
+            log.info("Creating table for builder " + tableName);
             create();
         }
         TypeDef typeDef=mmb.getTypeDef();
@@ -282,7 +282,7 @@ public class MMObjectBuilder extends MMTable {
      * Creates a new builder table in the current database.
      */
     public boolean create() {
-        log.info(tableName);
+        log.debug(tableName);
         return database.create(this);
     }
 
