@@ -28,6 +28,10 @@ import org.mmbase.module.database.*;
  */
 public class InsRel extends MMObjectBuilder {
 
+	public String classname = getClass().getName();
+	public boolean debug = true;
+	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
 	// cache system, holds the relations from the 25 
 	// most used relations
 	LRUHashtable relatedCache=new LRUHashtable(25);
@@ -47,19 +51,37 @@ public class InsRel extends MMObjectBuilder {
 	* Fix a reldef node
 	*/
 	public MMObjectNode alignRelNode(MMObjectNode node) {
-		MMObjectNode n1=getNode(node.getIntValue("snumber"));
-		MMObjectNode n2=getNode(node.getIntValue("dnumber"));
-		if (reldefCorrect(n1.getIntValue("otype"),n2.getIntValue("otype"),node.getIntValue("rnumber"))) {
-			//System.out.println("InsRel -> node was aligned");
-			return(node);
-		} else {
-			//System.out.println("InsRel -> node needs swap");
-			int s=node.getIntValue("snumber");
-			int d=node.getIntValue("dnumber");
-			node.setValue("snumber",d);
-			node.setValue("dnumber",s);
-			return(node);
-		}
+		MMObjectNode result = null;
+
+		if( node != null ) { 
+			MMObjectNode n1=getNode(node.getIntValue("snumber"));
+			if( n1 != null ) {
+				MMObjectNode n2=getNode(node.getIntValue("dnumber"));
+				if( n2 != null ) { 
+
+					int rnumber = node.getIntValue("rnumber");
+					if( rnumber != -1 ) { 
+						if (reldefCorrect(n1.getIntValue("otype"),n2.getIntValue("otype"),node.getIntValue("rnumber"))) {
+							//debug("InsRel -> node was aligned");
+							result = node;
+						} else {
+							//debug("InsRel -> node needs swap");
+							int s=node.getIntValue("snumber");
+							int d=node.getIntValue("dnumber");
+							node.setValue("snumber",d);
+							node.setValue("dnumber",s);
+							result = node;
+						}
+					} else 
+						debug("alignRelNode("+node+"): ERROR: HUGE ERROR: rnumber("+rnumber+") is -1! ");	
+				} else 
+					debug("alignRelNode("+node+"): ERROR: cant find node by this dnumber("+node.getIntValue("dnumber")+")! ");
+			} else 
+				debug("alignRelNode("+node+"): ERROR: cant find node by this snumber("+node.getIntValue("snumber")+")!");
+		} else 
+			debug("alignRelNode("+node+"): ERROR: parameter node is null!");
+
+		return result;
 	}
 
 
@@ -67,11 +89,29 @@ public class InsRel extends MMObjectBuilder {
 	* insert a new Instance Relation
 	*/
 	public int insert(String owner,int snumber,int dnumber, int rnumber) {
-		MMObjectNode node=getNewNode(owner);
-		node.setValue("snumber",snumber);
-		node.setValue("dnumber",dnumber);
-		node.setValue("rnumber",rnumber);
-		return(insert(owner,node));
+		int result = -1;
+		if( owner != null ) { 
+			if( snumber > 0 ) {
+				if( dnumber > 0 ) { 
+					if( rnumber > 0 ) { 
+						MMObjectNode node=getNewNode(owner);
+						if( node != null ) {
+							node.setValue("snumber",snumber);
+							node.setValue("dnumber",dnumber);
+							node.setValue("rnumber",rnumber);
+							result = insert(owner,node);
+						} else 
+							debug("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): ERROR: Cannot create new node("+node+")!");
+					} else
+						debug("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): ERROR: param4 rnumber not > 0!");
+				} else
+					debug("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): ERROR: param3 dnumber not > 0!");
+			} else
+				debug("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): ERROR:s param2 snumber not > 0!");
+		} else 
+			debug("insert("+owner+","+snumber+","+dnumber+","+rnumber+"): ERROR: param1 owner not set!");
+
+		return(result);
 	}
 
 
@@ -79,21 +119,40 @@ public class InsRel extends MMObjectBuilder {
 	* insert a new Instance Relation
 	*/
 	public int insert(String owner, MMObjectNode node) {
-		int snumber=node.getIntValue("snumber");
-		int dnumber=node.getIntValue("dnumber");
-		int rnumber=node.getIntValue("rnumber");
+		int result = -1;
+		if( owner != null ) { 
+			if( node != null ) { 
+				int snumber=node.getIntValue("snumber");
+				if( snumber > 0 ) {
+					int dnumber=node.getIntValue("dnumber");
+					if( dnumber > 0 ) { 
+						int rnumber=node.getIntValue("rnumber");
+						if( rnumber > 0 ) { 	
+							node=alignRelNode(node);
 
+							if( debug ) 
+								debug("insert("+owner+","+node+")");
 
-		node=alignRelNode(node);
-		int result=super.insert(owner,node);
-
-	    MMObjectNode n1=getNode(snumber);
-        MMObjectNode n2=getNode(dnumber);
-        // Gerard: temporary removed here, should be removed from databaselayer!!!!
-        /*
-		mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
-		mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
-        */
+							result=super.insert(owner,node);
+					
+						    MMObjectNode n1=getNode(snumber);
+							MMObjectNode n2=getNode(dnumber);
+				
+							// Gerard: temporary removed here, should be removed from databaselayer!!!!
+							/*
+							mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
+							mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+   					   		*/
+						} else 
+							debug("insert("+owner+","+node+"): ERROR: rnumber("+rnumber+") is not greater than 0! (something is seriously wrong)");
+					} else 
+						debug("insert("+owner+","+node+"): ERROR: dnumber("+dnumber+" is not greater than 0! (something is seriously wrong)");
+				} else 
+					debug("insert("+owner+","+node+"): ERROR: snumber("+snumber+") is not greater than 0! (something is seriously wrong)");
+			} else
+				debug("insert("+owner+","+node+"): ERROR: param2 node not set!");
+		} else 	
+			debug("insert("+owner+","+node+"): ERROR: param1 owner not set!");
 		return(result);
 	}
 
@@ -113,10 +172,10 @@ public class InsRel extends MMObjectBuilder {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-//			System.out.println("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
+//			debug("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
 			//ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" UNION SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE dnumber="+src+";");
 			ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
-//			System.out.println("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
+//			debug("SELECT * FROM "+mmb.baseName+"_"+tableName+" WHERE snumber="+src+" OR dnumber="+src+";");
 			MMObjectNode node;
 			Vector results=new Vector();
 			while(rs.next()) {
@@ -278,8 +337,15 @@ public class InsRel extends MMObjectBuilder {
 					relDefConnectCache.put(""+n1+" "+n2+" "+r,new Boolean(true));
 					rtn=true;
 				} else {
-					relDefConnectCache.put(""+n1+" "+n2+" "+r,new Boolean(false));
-					rtn=false;
+					stmt.close();
+					stmt=con.createStatement();
+					rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_typerel WHERE dnumber="+n1+" AND snumber="+n2+" AND rnumber="+r);
+					if (rs.next()) {
+						relDefConnectCache.put(""+n1+" "+n2+" "+r,new Boolean(false));
+						rtn=false;
+					} else {
+						debug("reldefCorrect("+n1+","+n2+","+r+"): ERROR: HUGE ERROR: does not exist in TypeRel!");
+					}
 				}
 				stmt.close();
 				con.close();
