@@ -241,7 +241,9 @@ public class IncludeTag extends UrlTag {
      */
     protected void includePage() throws JspTagException {
         try {
-            String gotUrl = getUrl(false);// false: don't write &amp; tags but real &.
+            String gotUrl = getUrl(false, false); // false, false: don't write &amp; tags but real & and don't urlEncode
+                                                           
+            
             if (pageLog.isServiceEnabled()) {
                 pageLog.service("Parsing mm:include JSP page: " + gotUrl);
             }
@@ -291,13 +293,14 @@ public class IncludeTag extends UrlTag {
                     cite(bodyContent, urlString, request); 
                 } else {
                     if (invalidIncludingAppServerRequestClasses.contains(request.getClass().getName())) {
-                        externalRelative(bodyContent, urlString, request, response);
+                        externalRelative(bodyContent, response.encodeURL(urlString), request, response);
                     } else {
                         internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
                     }
                 }
             } else { // really absolute
                 external(bodyContent, gotUrl, null, response); // null: no need to give cookies to external url
+                                                               // also no need to encode the URL.
             }
           
         } catch (java.io.IOException e) {
