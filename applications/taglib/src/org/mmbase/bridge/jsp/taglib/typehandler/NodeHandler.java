@@ -25,7 +25,7 @@ import org.mmbase.util.Encode;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.22 2003-08-29 12:12:28 keesj Exp $
+ * @version $Id: NodeHandler.java,v 1.23 2003-11-25 21:31:55 michiel Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {
@@ -70,7 +70,9 @@ public class NodeHandler extends AbstractTypeHandler {
         if(tag.getCloud().hasNodeManager(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
-            buffer.append("<select name=\"" + prefix(field.getName()) + "\">\n");
+            buffer.append("<select name=\"" + prefix(field.getName()) + "\"");
+            addExtraAttributes(buffer);
+            buffer.append(">\n");
             // list all our nodes of the specified builder here...
             String value = "0";
             if (node != null) value = node.getStringValue(field.getName());
