@@ -91,18 +91,62 @@ public class MMAdmin extends ProcessorModule {
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            if (cmd.equals("APPLICATIONS")) return getApplicationsList();
-            if (cmd.equals("BUILDERS")) return getBuildersList(tok);
-            if (cmd.equals("FIELDS")) return getFields(tok.nextToken());
-            if (cmd.equals("MODULEPROPERTIES")) return getModuleProperties(tok.nextToken());
-            if (cmd.equals("ISOGUINAMES")) return getISOGuiNames(tok.nextToken(),tok.nextToken());
-            if (cmd.equals("MODULES")) return getModulesList();
-            if (cmd.equals("DATABASES")) return getDatabasesList();
-            if (cmd.equals("MULTILEVELCACHEENTRIES")) return getMultilevelCacheEntries();
-            if (cmd.equals("NODECACHEENTRIES")) return getNodeCacheEntries();
-
+            if(!checkUserLoggedOn(sp,cmd,false)) return new Vector();
+            if (cmd.equals("APPLICATIONS")) {
+                tagger.setValue("ITEMS","5");
+                return getApplicationsList();
+            }
+            if (cmd.equals("BUILDERS")) {
+                tagger.setValue("ITEMS","4");
+                return getBuildersList(tok);
+            }
+            if (cmd.equals("FIELDS")) {
+                tagger.setValue("ITEMS","4");
+                return getFields(tok.nextToken());
+            }
+            if (cmd.equals("MODULEPROPERTIES")) {
+                tagger.setValue("ITEMS","2");
+                return getModuleProperties(tok.nextToken());
+            }
+            if (cmd.equals("ISOGUINAMES")) {
+                tagger.setValue("ITEMS","2");
+                return getISOGuiNames(tok.nextToken(),tok.nextToken());
+            }
+            if (cmd.equals("MODULES")) {
+                tagger.setValue("ITEMS","4");
+                return getModulesList();
+            }
+            if (cmd.equals("DATABASES")) {
+                tagger.setValue("ITEMS","4");
+                return getDatabasesList();
+            }
+            if (cmd.equals("MULTILEVELCACHEENTRIES")) {
+                tagger.setValue("ITEMS","8");
+                return getMultilevelCacheEntries();
+            }
+            if (cmd.equals("NODECACHEENTRIES")) {
+                tagger.setValue("ITEMS","4");
+                return getNodeCacheEntries();
+            }
         }
         return null;
+    }
+
+    private boolean checkAdmin(scanpage sp, String cmd) {
+        return checkUserLoggedOn(sp, cmd, true);
+    }
+
+    private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
+        String user = null;
+        try {
+            user=HttpAuth.getAuthorization(sp.req,sp.res,"www","Basic");
+        } catch (javax.servlet.ServletException e) { }
+        boolean authorized=(user!=null) && (!adminonly || "admin".equals(user));
+        if (!authorized) {
+            lastmsg="Unauthorized access : "+cmd+" by "+user;
+            log.info(lastmsg);
+        }
+        return authorized;
     }
 
     /**
@@ -113,6 +157,7 @@ public class MMAdmin extends ProcessorModule {
 
         for (Enumeration h = cmds.keys();h.hasMoreElements();) {
             cmdline=(String)h.nextElement();
+            if(!checkAdmin(sp,cmdline)) return false;
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
             token = tok.nextToken();
             if (token.equals("SERVERRESTART")) {
@@ -203,6 +248,7 @@ public class MMAdmin extends ProcessorModule {
     *    Handle a $MOD command
     */
     public String replace(scanpage sp, String cmds) {
+        if(!checkUserLoggedOn(sp,cmds,false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -1566,7 +1612,7 @@ public class MMAdmin extends ProcessorModule {
         String savepath=MMBaseContext.getConfigPath()+File.separator+"modules"+File.separator+modname+".xml";
         XMLModuleWriter.writeXMLFile(savepath,mod);
     }
-    
+
     public Vector  getMultilevelCacheEntries() {
 	Vector results=new Vector();
 	Enumeration res=htmlbase.getMultilevelCacheHandler().getOrderedElements();
@@ -1598,7 +1644,7 @@ public class MMAdmin extends ProcessorModule {
 		}
 		results.addElement(tagger.ValuesString("ALL"));
 		results.addElement(""+htmlbase.getMultilevelCacheHandler().getCount(en.getKey()));
-	}	
+	}
 	return(results);
     }
 
@@ -1612,7 +1658,7 @@ public class MMAdmin extends ProcessorModule {
 		results.addElement(""+node.getIntValue("number"));
 		results.addElement(node.getStringValue("owner"));
 		results.addElement(mmb.getTypeDef().getValue(node.getIntValue("otype")));
-	}	
+	}
 	return(results);
     }
 
