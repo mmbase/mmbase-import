@@ -13,6 +13,8 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+
 import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -30,7 +32,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.1 2002-09-16 15:07:37 pierre Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.2 2002-09-16 15:50:37 pierre Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
