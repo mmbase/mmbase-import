@@ -85,8 +85,9 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
     public Node getNodeVar() throws JspTagException {
         if (nodeManagerString != null) {
             return null;
-        }
-        return getNode();
+        }       
+        nodeProvider = findNodeProvider();
+        return nodeProvider.getNodeVar();
     }
 
 
