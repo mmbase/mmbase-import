@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.15 2003-07-03 14:29:32 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -397,7 +397,8 @@ public class ObjectSelector implements CommandHandlerInterface {
     }
 
     /**
-     * General replace/trigger pages coming from MMEdit.
+     * Handle a $MOD command.
+     * ObjectSelector does not offer any commands.
      */
     public String replace(scanpage sp, StringTokenizer cmds) {
         return "Command not defined (ObjectSelector)";
@@ -406,6 +407,7 @@ public class ObjectSelector implements CommandHandlerInterface {
 
     /**
      * Clears the search fields for the searchfields
+     * @deprecated-now removed per 1.7, does not do anything, and is never called
      */
     void clearSearchFields(String user) {
     }

@@ -19,7 +19,7 @@ import org.mmbase.module.builders.*;
 
 
 /**
- * The StateManager class maintains a list of EditStates for users logged on to MMbase through SCAN.
+ * The StateManager class maintains a list of EditStates for users logged on to MMBase through SCAN.
  * It provides the states so a user can browse the SCAN editors and edit objects, letting the server remember the change history.
  * Changes to the state are made either by calling a replace ($MOD) command, or by processing parameters passed to a SCAN page.
  * State info (such as the current editnode number) can be retrieved using $MOD.
@@ -27,7 +27,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.15 2003-07-03 14:29:32 pierre Exp $
+ * @version $Id: StateManager.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
@@ -84,13 +84,13 @@ public class StateManager implements CommandHandlerInterface {
      * This generally replaces the command in the SCAN page with the value returned by the command.<br />
      * Commands include:
      * <ul>
-     *  <li>SETBUILDER : ??? </li>
-     *  <li>GETBUILDER : ??? </li>
-     *  <li>DELBUILDER : ??? </li>
-     *  <li>CLEARBUILDERS : ??? </li>
-     *  <li>ADDRELATION : ??? </li>
-     *  <li>SETHTMLVALUE : ??? </li>
-     *  <li>GETHTMLVALUE : ??? </li>
+     *  <li>SETBUILDER-buildername[-joinnode]: Adds a new node of the specified builder type to the user's stack of working objects, and makes it current. If 'joinnode' is specified, the JOINNODE variable is set to this value</li>
+     *  <li>GETBUILDER : lists the type of the current working object.</li>
+     *  <li>DELBUILDER : drop the current working object. If the stack of working objects is not empty, the top object becomes current.</li>
+     *  <li>CLEARBUILDERS : drop all working objects</li>
+     *  <li>ADDRELATION : obsolete </li>
+     *  <li>SETHTMLVALUE-name-value : sets teh value fo teh variable 'name' to 'value'</li>
+     *  <li>GETHTMLVALUE-name : returns the value of the variable 'name' </li>
      *  <li>SETEDITNODE : ??? </li>
      *  <li>GETEDITNODE : ??? </li>
      *  <li>GETEDITSRCDUTCHNAME : ??? </li>
@@ -102,15 +102,13 @@ public class StateManager implements CommandHandlerInterface {
      *  <li>GETEDITSRCGUIINDICATOR : ??? </li>
      *  <li>GETEDITDSTGUIINDICATOR : ??? </li>
      *  <li>NEWNODE : ??? </li>
-     *  <li>NEWINSNODE : ??? </li>
+     *  <li>NEWINSNODE-sourcenr-destinationnr-role : Creates a relation object node using the specified parameters and makes it current</li>
      *  <li>REMOVENODE : ??? </li>
      *  <li>REMOVEEDITOR : ??? </li>
      *  <li>ISCHANGED : ??? </li>
      * </ul>
      */
     public String replace(scanpage sp, StringTokenizer commands) {
-        String token;
-        
         // Retrieve the username.
         // Or at least, that is the intention.
         // What this method REALLY does is authenticate the user (even if he was authenticated before).
@@ -122,7 +120,7 @@ public class StateManager implements CommandHandlerInterface {
         EditState state = getEditState(userName);
 
         if (commands.hasMoreTokens()) {
-            token = commands.nextToken();
+            String token = commands.nextToken();
             if (token.equals("SETBUILDER")) {
                 if (commands.hasMoreTokens()) {
                     state.setBuilder(commands.nextToken());
@@ -139,6 +137,7 @@ public class StateManager implements CommandHandlerInterface {
             } else if (token.equals("CLEARBUILDERS")) {
                     state.clear();
             } else if (token.equals("ADDRELATION")) {
+                    log.warn("ADDRELATION is deprecated in "+sp.getUrl()+"; use NEWINSNODE");
                     state.addRelation(userName);
             } else if (token.equals("SETHTMLVALUE")) {
                     state.setHtmlValue(commands.nextToken(),commands.nextToken());
@@ -192,11 +191,11 @@ public class StateManager implements CommandHandlerInterface {
      * @param ed Editstate in which to add the new node.
      * @param userName User who becomes owner of the new node
      * @param tok Tokens used to configure the node. The next three tokens should be:
-     *   <ul>
+     * <ul>
      *   <li> The number of the node to link FROM </li>
      *   <li> The number of the node to link TO</li>
      *   <li> The name of the builder to use or relation to add (determines type of node and/or relation)</li>
-     *       </ul>
+     * </ul>
      * @return Always true. If the addition was successful, a new node has been added to the EditState object.
      */
     boolean newInsNode(EditState ed,String userName,StringTokenizer tok) {
