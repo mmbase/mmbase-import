@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.169 2003-06-26 20:52:15 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.170 2003-06-27 13:33:22 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -551,16 +551,25 @@ See mmexamples/taglib for more elaborated examples.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>Override the default escape behaviour determined by the surrounding Content-tag.</info>
-      <examplevalue>
+      <see tag="content" />
+      <possiblevalue>
         <value>text/html</value>
-      </examplevalue>
-      <examplevalue>
+      </possiblevalue>
+      <possiblevalue>
         <value>text/xml</value>
-      </examplevalue>
-      <examplevalue>
+      </possiblevalue>
+      <possiblevalue>
         <value>text/plain</value>
         <info>This equals no escaping</info>
-      </examplevalue>
+      </possiblevalue>
+      <possiblevalue>
+        <value>p</value>
+        <info>Interpret as 'enriched' ASCII for 'block' HTML parts. It normally generates one or more p-tags.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>...</value>
+        <info>All possible values are defined in taglibcontent.xml</info>
+      </possiblevalue>
     </attribute>
   </taginterface>
   <tag>
@@ -3904,11 +3913,17 @@ The 0 is just counter, which starts at 0 on every page.
       <name>language</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The language in which this page is supposed to be written. This information is available to
+        sub-tags (like cloud-tag).
+      </info>
+      <see tag="locale" attribute="language" />
     </attribute>
     <attribute>
       <name>country</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <see tag="locale" attribute="country" />
     </attribute>
     <attribute>
       <name>jspvar</name>
@@ -3920,31 +3935,72 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
+        The Content-Type of this page.
       </info>
+      <examplevalue>
+        <value>text/html (default)</value>
+      </examplevalue>
+      <examplevalue>
+        <value>text/xml</value>
+      </examplevalue>
     </attribute>
     <attribute>
       <name>encoding</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
+        The output text encoding.
       </info>
+      <examplevalue>
+        <value>UTF-8</value>
+      </examplevalue>
     </attribute>
     <attribute>
       <name>postprocessor</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
+        If this attribute is set the complete body-result is piped through this.
       </info>
+      <possiblevalue>
+        <value>reducespace</value>
+        <info>
+          Replaces groups of one and more newlines by one new line, and one or more space by one
+          space. This spares bandwidth and makes the result better readable.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>perl</value>
+        <info>
+          Interpret the complete body as a perl program, and write the result.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>...</value>
+        <info>See your taglibcontext.xml (default available in jar)</info>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>escaper</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
+        The default value of the escape attribute of all writer tags in the body. The values are
+        defined in taglibcontent.xml.
       </info>
+      <possiblevalue>
+        <value>text/html</value>
+        <info>Escape for this content-type</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>inline</value>
+        <info>Interpret as 'enriched' ASCII for 'inline' HTML parts (so no blocks)</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>...</value>
+        <info>See your taglibcontext.xml (default available in jar)</info>
+      </possiblevalue>
+      <see tag="writer" attribute="escape" />
     </attribute>
-    <example>
-      <include base="examples.taglib" href="codesamples/timelocale.jsp" />
-    </example>
   </tag>
 </taglib>
