@@ -3,14 +3,14 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.4 2004-02-11 20:00:08 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.5 2004-03-02 17:09:08 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1"
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
   xmlns:mmxf="http://www.mmbase.org/mmxf"
-  exclude-result-prefixes="node"
+  exclude-result-prefixes="node mmxf"
 >
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
   <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
@@ -107,14 +107,7 @@
 
 
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="h">
-    <xsl:if test="count(ancestor::section)=1">
-       <xsl:if test="string(.)"><h3><xsl:value-of select="." /></h3></xsl:if>
-    </xsl:if>
-    <xsl:if test="count(ancestor::section)=2"><p><b><xsl:value-of select="." /></b></p></xsl:if>
-    <xsl:if test="count(ancestor::section)=3"><p><xsl:value-of select="." /></p></xsl:if>
-    <xsl:if test="count(ancestor::section)>3"><xsl:value-of select="." /><br /></xsl:if>
-
+  <xsl:template match="section">
     <xsl:copy>
 
       <!-- store the 'relation' nodes for convenience in $rels:-->
