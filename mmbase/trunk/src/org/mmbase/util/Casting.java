@@ -226,8 +226,15 @@ public class Casting {
             res=((Number)i).intValue();
         } else if (i!=null) {
             try {
-              res=Integer.parseInt(""+i);
-            } catch (NumberFormatException e) {}
+              res = Integer.parseInt(""+i);
+            } catch (NumberFormatException e) {
+                // not an integer? perhaps it is a float or double represented as String.
+                try {
+                    res = Double.valueOf("" + i).intValue();
+                } catch (NumberFormatException ex) {
+                    // give up, fall back to default.
+                }
+            }
         }
         return new Integer(res);
     }
@@ -250,7 +257,14 @@ public class Casting {
         } else if (i!=null) {
             try {
               res=Long.parseLong(""+i);
-            } catch (NumberFormatException e) {}
+            } catch (NumberFormatException e) {
+                // not an integer? perhaps it is a float or double represented as String.
+                try {
+                    res = Double.valueOf("" + i).longValue();
+                } catch (NumberFormatException ex) {
+                    // give up, fall back to default.
+                }
+            }
         }
         return res;
     }
