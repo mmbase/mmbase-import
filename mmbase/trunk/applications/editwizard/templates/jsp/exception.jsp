@@ -13,12 +13,15 @@
         String sessionKey = request.getParameter("sessionkey");
         if (sessionKey == null) sessionKey = "editwizard";
         Config ewConfig = (Config)session.getAttribute(sessionKey);
-        if (ewConfig!=null) {
-            params.put("backpage", ewConfig.backPage);
+        if (ewConfig != null) {
+            params.put("referrer", ewConfig.backPage);
         } else {
             ewConfig = new Config();
             Config.Configurator configurator = new Config.Configurator(pageContext, ewConfig);
         }
+        params.put("ew_context", request.getContextPath());
+        params.put("sessionid",  request.getSession().getId());
+        params.put("sessionkey", sessionKey);
         
         java.io.File template = ewConfig.uriResolver.resolveToFile("xsl/exception.xsl");
     
