@@ -13,6 +13,7 @@ import javax.servlet.jsp.JspTagException;
 import java.util.*;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -20,13 +21,14 @@ import org.mmbase.util.logging.*;
 
 /**
  *
+ * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListCompositeConstraintTag.java,v 1.1 2003-10-30 14:05:07 pierre Exp $
+ * @version $Id: NodeListCompositeConstraintTag.java,v 1.2 2003-12-09 20:12:58 michiel Exp $
  */
 public class NodeListCompositeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
-    private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
+    // private static final Logger log = Logging.getLoggerInstance(NodeListCompositeConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
 
@@ -75,7 +77,7 @@ public class NodeListCompositeConstraintTag extends CloudReferrerTag implements 
             if (cons != null) {
                 cons.addChildConstraint(newConstraint);
             } else {
-                newConstraint = NodeListConstraintTag.addConstraintToQuery(query, newConstraint);
+                newConstraint = Queries.addConstraint(query, newConstraint);
             }
         }
         return newConstraint;

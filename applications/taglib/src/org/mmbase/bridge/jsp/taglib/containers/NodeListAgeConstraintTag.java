@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.storage.search.*;
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListAgeConstraintTag.java,v 1.7 2003-10-30 14:05:06 pierre Exp $
+ * @version $Id: NodeListAgeConstraintTag.java,v 1.8 2003-12-09 20:12:58 michiel Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
@@ -134,7 +135,7 @@ public class NodeListAgeConstraintTag extends CloudReferrerTag implements NodeLi
             if (cons!=null) {
                 cons.addChildConstraint(newConstraint);
             } else {
-                newConstraint = NodeListConstraintTag.addConstraintToQuery(query, newConstraint);
+                newConstraint = Queries.addConstraint(query, newConstraint);
             }
         }
 
