@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.25 2002-10-25 12:57:24 pierre Exp $
+ * @version $Id: Dove.java,v 1.26 2002-10-31 08:23:19 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -415,6 +415,8 @@ public class Dove extends AbstractDove {
         String rolename = in.getAttribute(ELM_ROLE); // check role;
         String destination = in.getAttribute(ELM_DESTINATION); // check destination;
         String source = in.getAttribute(ELM_SOURCE); // check source;
+        String destinationType = in.getAttribute(ELM_DESTINATIONTYPE); // check destination type;
+        String sourceType = in.getAttribute(ELM_SOURCETYPE); // check source type;
         if (rolename.equals("")) {
             Element err=addContentElement(ERROR,"role required for getrelations",out);
             err.setAttribute(ELM_TYPE,IS_PARSER);
@@ -423,7 +425,13 @@ public class Dove extends AbstractDove {
                 out.setAttribute(ELM_ROLE,rolename);
                 out.setAttribute(ELM_DESTINATION, destination);
                 out.setAttribute(ELM_SOURCE, source);
-                RelationManager nm =cloud.getRelationManager(rolename);
+                // if both types are given, use these as a constraint for the Relationmanager
+                RelationManager nm;
+                if (destinationType.equals("") || sourceType.equals("") ) {
+                    nm =cloud.getRelationManager(rolename);
+                } else {
+                    nm =cloud.getRelationManager(sourceType,destinationType,rolename);
+                }
                 org.mmbase.bridge.Node n = nm.createNode();
                 try {
                     Element data=doc.createElement(RELATION);
@@ -438,8 +446,13 @@ public class Dove extends AbstractDove {
                     n.cancel();  // have to cancel node !
                 }
             } catch (RuntimeException e) {
-                Element err=addContentElement(ERROR,"role does not exist",out);
-                err.setAttribute(ELM_TYPE,IS_CLIENT);
+                if (destinationType.equals("") || sourceType.equals("") ) {
+                    Element err=addContentElement(ERROR,"role ("+rolename+") does not exist",out);
+                    err.setAttribute(ELM_TYPE,IS_CLIENT);
+                } else {
+                    Element err=addContentElement(ERROR,"relation ("+sourceType+"-"+rolename+"->"+destinationType+") constraint does not exist",out);
+                    err.setAttribute(ELM_TYPE,IS_CLIENT);
+                }
             }
         }
     }
