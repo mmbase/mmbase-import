@@ -488,9 +488,9 @@ public class ContextTag extends ContextReferrerTag {
             valid = false;
         } else {
             if (Character.isLetter(chars[0]) || chars[0] == '_') {
-                if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + chars);
+                if (log.isDebugEnabled()) log.debug("First character is valid, checking the rest of " + newid);
                 for (int i = 1; i < chars.length; ++i) {
-                    if (! isContextVarNameChar(chars[0])) {
+                    if (! isContextVarNameChar(chars[i])) {
                         valid = false;
                         break;
                     }
