@@ -18,6 +18,10 @@
       <gallery enable="true"/>
     </avatars>
 
+    <xslts>
+      <postings odd="xslt/posting2xhtmlDark.xslt" even="xslt/posting2xhtmlLight.xslt" />
+    </xslts>
+
     <contactinfo enable="true"/>
     <smileys enable="true"/>
     <privatemessages enable="true"/>
