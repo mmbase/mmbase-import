@@ -7,38 +7,21 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-	$Id: ImageRequestProcessor.java,v 1.5 2000-10-19 14:52:14 vpro Exp $
-
-	$Log: not supported by cvs2svn $
-	Revision 1.4  2000/10/19 14:44:14  vpro
-	Rico: return empty array instead of null
-	
-	Revision 1.3  2000/06/08 18:00:11  wwwtech
-	Rico: reduced/switched-off debug
-	
-	Revision 1.2  2000/06/06 21:31:58  wwwtech
-	Rico: fixed a serious bug in which incorrect icaches entries where created
-	
-	Revision 1.1  2000/06/05 14:42:15  wwwtech
-	Rico: image queuing built in plus parallel converters
-	
-*/
 package org.mmbase.module.builders;
 
 import java.util.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.5 2000-10-19 14:52:14 vpro Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.6 2001-03-26 09:44:30 install Exp $
  */
 public class ImageRequestProcessor implements Runnable {
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug(String msg) { System.out.println(classname+":"+msg);}
+
+    private static Logger log = Logging.getLoggerInstance(ImageRequestProcessor.class.getName());
 	Thread kicker=null;
 
 	MMObjectBuilder images;
@@ -92,7 +75,7 @@ public class ImageRequestProcessor implements Runnable {
 		id=req.getId();
 
 		if (inputpicture==null || inputpicture.length==0) {
-			debug("processRequest : input is empty : "+id);
+			log.debug("processRequest : input is empty : "+id);
 			picture=new byte[0];
 		} else {
 			picture=convert.ConvertImage(inputpicture,params);
@@ -104,10 +87,10 @@ public class ImageRequestProcessor implements Runnable {
 				newnode.setValue("filesize",picture.length);
 				int i=newnode.insert("imagesmodule");
 				if (i<0) {
-					debug("processRequest: Can't insert cache entry id="+id+" key="+ckey);
+					log.warn("processRequest: Can't insert cache entry id="+id+" key="+ckey);
 				}
 			} else {
-				debug("processRequest(): Convert problem params : "+params);
+				log.warn("processRequest(): Convert problem params : "+params);
 				picture=new byte[0];
 			}
 		}
