@@ -62,11 +62,23 @@ td.fieldprompt {
   color: #fff;
 }
 
-.tableheader		{ color: #f00; font-weight:900; }
-td.superhead { text-align: right; }
+table.body tr.subtitle th {
+  background-color: #aaa;
+}
 
-td.superhead:before { /* only works in newer browser (mozilla) */
-  content: "--- "; 
+
+table.body tr th span.title:before {
+  content: "-=-=- "; 
+}
+
+td.mysteps {
+  width: 20%;
+  vertical-align: top;
+  background-color: #aaa;
+}
+
+td.mybuttons {
+  background-color: white;
 }
 
 /* for searchlist */
