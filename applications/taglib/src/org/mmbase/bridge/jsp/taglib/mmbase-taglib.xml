@@ -2939,7 +2939,6 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
   <tag>
     <name>time</name>
     <extends>writer</extends>
-    <extends>contextwriter</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.TimeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
