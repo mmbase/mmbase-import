@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.39 2004-07-22 13:54:29 michiel Exp $
+ * @version $Id: Queries.java,v 1.40 2004-07-23 14:52:18 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -488,6 +488,121 @@ abstract public  class Queries {
     }
 
     /**
+     * Takes a Constraint of a query, and takes al constraints on 'sourceStep' of it, and copies
+     * those Constraints to the given step of the receiving query.
+     *
+     * Constraints on different steps then the given 'sourceStep' are ignored. CompositeConstraints
+     * cause recursion and would work too (but same limitation are valid for the childs).
+     *
+     * @param Constraint The constrain to be copied (for example the result of sourceQuery.getConstraint()).
+     * @param sourceStep The step in the 'source' query.
+     * @param query      The receiving query
+     * @param step       The step of the receiving query which must 'receive' the sort orders.
+     * @since MMBase-1.7.1
+     * @see   org.mmbase.storage.search.implementation.BasicSearchQuery#copyConstraint Functions are similar
+     * @throws IllegalArgumentException If the given constraint is not compatible with the given step.
+     * @throws UnsuporteOperationException If CompareFieldsConstraints or LegacyConstraints are encountered.
+     * @return The new constraint or null
+     */
+    public static Constraint copyConstraint(Constraint c, Step sourceStep, Query query, Step step) {
+
+        if (c == null) return null;
+
+        if (c instanceof CompositeConstraint) {
+            CompositeConstraint constraint = (CompositeConstraint) c;
+            List constraints = new ArrayList();
+            Iterator i = constraint.getChilds().iterator();
+            while (i.hasNext()) {
+                Constraint cons = copyConstraint((Constraint) i.next(), sourceStep, query, step);
+                if (cons != null) constraints.add(cons);
+            }
+            int size = constraints.size();
+            if (size == 0) return null;
+            if (size == 1) return (Constraint) constraints.get(0);
+            i = constraints.iterator();
+            int op = constraint.getLogicalOperator();
+            Constraint newConstraint    = query.createConstraint((Constraint) i.next(), op, (Constraint) i.next());
+            while (i.hasNext()) {
+                newConstraint = query.createConstraint(newConstraint, op, (Constraint) i.next());
+            }
+            query.setInverse(newConstraint, constraint.isInverse());
+            return newConstraint;
+        } else if (c instanceof CompareFieldsConstraint) { 
+            throw new UnsupportedOperationException("Cannot copy comparison between fields"); // at least not from different steps
+        } 
+
+
+        FieldConstraint fieldConstraint = (FieldConstraint) c;
+        if (! fieldConstraint.getField().getStep().equals(sourceStep)) return null; // constraint is not for the request step, so don't copy.
+
+        StepField field = query.createStepField(step, fieldConstraint.getField().getFieldName());
+
+        FieldConstraint newConstraint;
+        if (c instanceof FieldValueConstraint) {            
+            newConstraint = query.createConstraint(field, ((FieldValueConstraint) c).getOperator(), ((FieldValueConstraint) c).getValue());
+        } else if (c instanceof FieldNullConstraint) {
+            newConstraint = query.createConstraint(field);
+        } else if (c instanceof FieldValueBetweenConstraint) {
+            FieldValueBetweenConstraint constraint = (FieldValueBetweenConstraint) c;
+            try {
+                newConstraint = query.createConstraint(field, new Integer(constraint.getLowerLimit()), new Integer(constraint.getUpperLimit()));
+            } catch (NumberFormatException e) {
+                newConstraint = query.createConstraint(field, new Double(constraint.getLowerLimit()), new Double(constraint.getUpperLimit()));
+            }
+        } else if (c instanceof FieldValueInConstraint) {
+            FieldValueInConstraint constraint = (FieldValueInConstraint) c;
+
+            // sigh
+            SortedSet set = new TreeSet();
+            int type   =  field.getType();
+            Iterator k = constraint.getValues().iterator();
+            while (k.hasNext()) {
+                Object value = k.next();
+                switch(type) {
+                case Field.TYPE_INTEGER:
+                case Field.TYPE_LONG:
+                case Field.TYPE_NODE:
+                    value = new Long((String) value);
+                    break;
+                case Field.TYPE_FLOAT:
+                case Field.TYPE_DOUBLE:
+                    value = new Double((String) value);
+                    break;
+                }
+                set.add(value);
+            }
+            newConstraint = query.createConstraint(field, set);
+        } else if (c instanceof LegacyConstraint) {
+            throw new UnsupportedOperationException("Cannot copy legacy constraint to other step");
+        } else {
+            throw new RuntimeException("Could not copy constraint " + c);
+        }
+        query.setInverse(newConstraint, fieldConstraint.isInverse());            
+        query.setCaseSensitive(newConstraint, fieldConstraint.isCaseSensitive());
+        return newConstraint;
+
+    }
+    /**
+     * Copies SortOrders to a given step of another query. SortOrders which do not sort the given
+     * 'sourceStep' are ignored.
+     * @param sortOrders A list of SortOrders (for example the result of sourceQuery.getSortOrders()).
+     * @param sourceStep The step in the 'source' query.
+     * @param query      The receiving query
+     * @param step       The step of the receiving query which must 'receive' the sort orders.
+     * @since MMBase-1.7.1
+
+     */
+    public static void copySortOrders(List sortOrders, Step sourceStep,  Query query, Step step) {
+        Iterator i = sortOrders.iterator();
+        while (i.hasNext()) {
+            SortOrder sortOrder = (SortOrder) i.next();
+            StepField sourceField = sortOrder.getField();
+            if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
+            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());            
+        }
+    }
+
+    /**
      * Converts a String to a SortOrder constant
      * @since MMBase-1.7.1
      */
@@ -799,12 +914,19 @@ abstract public  class Queries {
         if (log.isDebugEnabled()) {
             log.info("Searching '" + stepAlias + "' in " + steps);
         }
+        // first try aliases
         Iterator i = steps.iterator();
         while (i.hasNext()) {
             Step step = (Step)i.next();
             if (stepAlias.equals(step.getAlias())) {
                 return step;
-            } else if (stepAlias.equals(step.getTableName())) {
+            } 
+        } 
+        // if no aliases found, try table names
+        i = steps.iterator();
+        while (i.hasNext()) {
+            Step step = (Step)i.next();
+            if (stepAlias.equals(step.getTableName())) {
                 return step;
             }
         }
