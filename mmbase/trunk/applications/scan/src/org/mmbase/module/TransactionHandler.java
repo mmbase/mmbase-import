@@ -505,29 +505,4 @@ public void handleTransaction(String template, sessionInfo session, scanpage sp)
 		public Hashtable knownObjectContexts = new Hashtable();
 	}
 	
-		/*
-		 * use to test parser without running MMbase
-		 * use to test parser without running MMbase
-		 * use to test parser without running MMbase
-		 * use to test parser without running MMbase
-		 * use to test parser without running MMbase
-		 */
-	public static void main(String[] args) {
-		
-		TransactionHandler pt = new TransactionHandler();
-		pt.init();
-		pt.setDymmyHandlers();
-		pt.onload();
-	
-		pt.parse("file:///java/xml/Transactions.xml", null);
-		System.out.println("END OF MAIN");
-		// if we don't exit the system doesn't ????
-		System.exit(0);
-	}
-	
-	private void setDymmyHandlers() {
-		user.transactionManager = new MyTransactionManager(mmbase);
-		user.tmpObjectManager = new MyTemporaryNodeManager(mmbase);
-	}
-	
 }
