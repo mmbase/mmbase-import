@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.11 2003-09-05 16:27:06 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.12 2003-09-10 11:11:20 pierre Exp $
  */
 public class ClusterNode extends VirtualNode {
 
@@ -47,12 +47,6 @@ public class ClusterNode extends VirtualNode {
     protected Hashtable nodes = null; // why is it synchronized?
 
     /**
-     * Determines whether the node is being loaded.
-     */
-    public boolean initializing = true;
-
-    
-    /**
      * Main contructor.
      * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
      */
@@ -60,6 +54,7 @@ public class ClusterNode extends VirtualNode {
         super(parent);
         nodes = new Hashtable();
     }
+
     /**
      * Main contructor.
      * @param parent the node's parent, generally an instance of the ClusterBuilder builder.
@@ -68,7 +63,6 @@ public class ClusterNode extends VirtualNode {
     public ClusterNode(MMObjectBuilder parent, int nrofnodes) {
         super(parent);
         nodes = new Hashtable(nrofnodes);
-
     }
 
     /**
@@ -120,7 +114,7 @@ public class ClusterNode extends VirtualNode {
         }
         return null;
     }
-    
+
     /**
      * Stores a value in the values hashtable.
      * If the value is not stored in the virtualnode,
@@ -198,7 +192,7 @@ public class ClusterNode extends VirtualNode {
         } else {
             return parent;
         }
-        
+
     }
 
     /**

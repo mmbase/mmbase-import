@@ -28,7 +28,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.13 2003-09-10 09:59:02 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.14 2003-09-10 11:11:21 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -156,7 +156,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         // Cluster nodes.
                         if (query instanceof NodeQuery) { // hmm
                             // makes no sense that this is a ClusterNode...
-                            node = new ClusterNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()), 1);
+                            node = new MMObjectNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()));
                         } else {
                             node = new ClusterNode(builder, steps.size());
                         }
@@ -167,6 +167,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         // Real nodes.
                         node = new MMObjectNode(builder);
                     }
+                    // start initializing a node
+                    node.start();
                     for (int i = 0; i < fields.length; i++) {
                         String fieldName;
                         String prefix;
@@ -201,10 +203,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         // reverse replacement of "disallowed" fieldnames.
                         database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
                     }
-                    if (builder instanceof ClusterBuilder) {
-                        // Finished initializing clusternode.
-                        ((ClusterNode) node).initializing = false;
-                    }
+                    // Finished initializing clusternode.
+                    node.finish();
                     results.add(node);
                 }
             } finally {
