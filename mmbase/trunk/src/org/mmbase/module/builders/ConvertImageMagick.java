@@ -14,6 +14,7 @@ import java.io.*;
 
 import org.mmbase.util.externalprocess.CommandLauncher;
 import org.mmbase.util.externalprocess.ProcessException;
+import org.mmbase.util.Encode;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
@@ -24,7 +25,8 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.57 2004-07-12 16:22:07 michiel Exp $
+ * @author Jaco de Groot
+ * @version $Id: ConvertImageMagick.java,v 1.58 2004-09-16 07:44:14 jaco Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);
@@ -328,7 +330,19 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     int firstcomma = cmd.indexOf(',');
                     int secondcomma = cmd.indexOf(',', firstcomma + 1);
                     type = "draw";
-                    cmd = "text " + cmd.substring(0, secondcomma) + " " + cmd.substring(secondcomma + 1);
+                    try {
+                        File tempFile = File.createTempFile("mmbase_image_text_", null);
+                        tempFile.deleteOnExit();
+                        Encode encoder = new Encode("ESCAPE_SINGLE_QUOTE");
+                        String text = cmd.substring(secondcomma + 1);
+                        FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                        tempFileOutputStream.write(encoder.decode(text.substring(1, text.length() - 1)).getBytes("UTF-8"));
+                        tempFileOutputStream.close();
+                        cmd = "text " + cmd.substring(0, secondcomma) + " '@" + tempFile.getPath() + "'";
+                    } catch (IOException e) {
+                        log.error("Could not create temporary file for text: " + e.toString());
+                        cmd = "text " + cmd.substring(0, secondcomma) + " 'Could not create temporary file for text.'";
+                    }
                 } else if (type.equals("draw")) {
                     //try {
                         //cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
