@@ -28,30 +28,42 @@ public class ExportTEI extends TagExtraInfo {
     }
 
     public VariableInfo[] getVariableInfo(TagData data) {
-        VariableInfo[] variableInfo =  new VariableInfo[1];
-        
-        String typeAttribute    = (String) data.getAttribute("type"); 
-        if (typeAttribute == null) typeAttribute = "Object";
 
-        String type = "java.lang.Object";
+        Object declare  = data.getAttribute("declare");
+        int number;
 
-        if ("Object".equalsIgnoreCase(typeAttribute)) {
-            type = "java.lang.Object";
-        } else if ("String".equalsIgnoreCase(typeAttribute)) {
-            type = "java.lang.String";
-        } else if ("Node".equalsIgnoreCase(typeAttribute)) {
-            type = "org.mmbase.bridge.Node";
+        if ("false".equals(declare)) {
+            number = 0;
         } else {
-            //type = "java.lang.Object"; 
-            throw new RuntimeException("Unknown type '" + typeAttribute + "'");
+            number = 1;
         }
-
-        String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
-
-        variableInfo[0] =  new VariableInfo(jspvarAttribute,
-                                            type,
-                                            true,
-                                            VariableInfo.AT_END);
+       
+        VariableInfo[] variableInfo =  new VariableInfo[number];
+        
+        if (number > 0) {
+            String typeAttribute    = (String) data.getAttribute("type"); 
+            if (typeAttribute == null) typeAttribute = "Object";
+            
+            String type = "java.lang.Object";
+            
+            if ("Object".equalsIgnoreCase(typeAttribute)) {
+                type = "java.lang.Object";
+            } else if ("String".equalsIgnoreCase(typeAttribute)) {
+                type = "java.lang.String";
+            } else if ("Node".equalsIgnoreCase(typeAttribute)) {
+                type = "org.mmbase.bridge.Node";
+            } else {
+                //type = "java.lang.Object"; 
+                throw new RuntimeException("Unknown type '" + typeAttribute + "'");
+            }
+            
+            String jspvarAttribute  = (String) data.getAttribute("jspvar"); 
+            
+            variableInfo[0] =  new VariableInfo(jspvarAttribute,
+                                                type,
+                                                true,
+                                                VariableInfo.AT_BEGIN);
+        }
         return variableInfo;
     }        
 }

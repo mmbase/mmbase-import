@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,6 +28,7 @@ public class ExportTag extends CloudReferrerTag {
 
     private String jspvar = null;
     private String key = null;
+    private boolean declare = true;
     
     public void setType(String t) {
         // nothing to do, the type property is only used in the TEI.
@@ -39,10 +41,19 @@ public class ExportTag extends CloudReferrerTag {
     public void setKey(String k) {
         key = k;
     }
+
+    public void setDeclare(boolean b) {
+        declare = b;
+    }
     
-    public int doStartTag() throws JspTagException{
+    public int doStartTag() throws JspTagException {
         log.debug("getting object " + key + "-> " + getObject(key));
-        pageContext.setAttribute(jspvar, getObject(key));
+
+        if (declare) {
+            pageContext.setAttribute(jspvar, getObject(key));
+        } else {
+            // no idea how to do this...
+        }
         return SKIP_BODY;
     }
 
