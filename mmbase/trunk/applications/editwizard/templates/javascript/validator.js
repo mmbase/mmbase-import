@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.8 2002-07-24 09:22:53 michiel Exp $
+ * @version  $Id: validator.js,v 1.9 2002-08-21 16:46:04 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -50,18 +50,23 @@ function getToolTipValue(el,attribname,defaultvalue,param) {
 
 function validateElement_validator(el, silent) {
     var form = document.forms[0];
+    var superId = el.getAttribute("super");
+    if (superId != null) {
+        el = form[superId];
+    }
     var id = el.name;
+    // form.elements["debug"].value = "validating: " + id + "\n" + form.elements["debug"].value;
     var v = getValue_validator(el);
     var err = "";
 
     if (el.dtpattern) {
         var re = new RegExp(el.dtpattern);
-        if (!v.match(re)) err += getToolTipValue(form,'message_pattern',
-                           "the value {0} does not match the required pattern", v);
+        if (!v.match(re)) err += getToolTipValue(form,'message_pattern', "the value {0} does not match the required pattern", v);
     }
 
     // determine datatype
     var dttype = el.getAttribute("dttype");
+    //form.elements["debug"].value = "dttype: " + dttype + "\n" + form.elements["debug"].value;
     switch (dttype) {
         case "string":
             minlength=el.getAttribute("dtminlength");
@@ -111,7 +116,9 @@ function validateElement_validator(el, silent) {
             }
 
             var ms = Date.parse(day + " " + month + " " + year + " " + hours + ":" + minutes);
-
+			
+            //form.elements["debug"].value = ms + "\n" + form.elements["debug"].value;;
+			
             if (!isNaN(ms)) {
                 var d = new Date();
                 d.setTime(ms);
@@ -164,7 +171,7 @@ function validateElement_validator(el, silent) {
         }
     }
 
-    return err.length==0; // true == valid, false == invalid
+    return err.length == 0; // true == valid, false == invalid
 }
 
 function doValidateForm() {

@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.68 2002-08-20 07:39:27 pierre Exp $
+  @version $Id: wizard.xsl,v 1.69 2002-08-21 16:46:04 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -217,6 +217,7 @@
       invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
       filter_required="{$filter_required}"
       >
+      <xsl:if test="$debug='true'">debug:<textarea class="debug" name="debug">javascript debugging</textarea></xsl:if>
       <input type="hidden" name="curform" value="{/wizard/curform}" />
       <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
       <xsl:call-template name="formcontent" />
@@ -418,13 +419,13 @@
             </input>
 
             <xsl:if test="(@ftype='datetime') or (@ftype='date')">
-              <select name="internal_{@fieldname}_day" onchange="validate_validator(event);" onblur="validate_validator(event);">
+              <select name="internal_{@fieldname}_day" super="{@fieldname}" onChange="validate_validator(event);">
                 <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
               </select><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <select name="internal_{@fieldname}_month" onchange="validate_validator(event);" onblur="validate_validator(event);">
+              <select name="internal_{@fieldname}_month" super="{@fieldname}" onchange="validate_validator(event);">
                 <xsl:call-template name="optionlist_months" />
               </select><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <input name="internal_{@fieldname}_year" type="text" value="" size="5" maxlength="4" onkeyup="validate_validator(event);" onblur="validate_validator(event);" />
+              <input name="internal_{@fieldname}_year" super="{@fieldname}" type="text" value="" size="5" maxlength="4"  onChange="validate_validator(event);" />
             </xsl:if>
 
             <xsl:if test="@ftype='datetime'">
@@ -432,11 +433,11 @@
             </xsl:if>
 
             <xsl:if test="(@ftype='datetime') or (@ftype='time')">
-              <select name="internal_{@fieldname}_hours" onchange="validate_validator(event);" onblur="validate_validator(event);">
+              <select name="internal_{@fieldname}_hours" super="{@fieldname}" onChange="validate_validator(event);" onblur="validate_validator(event);">
                 <option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option>
               </select>
               <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>:<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-              <select name="internal_{@fieldname}_minutes" onchange="validate_validator(event);" onblur="validate_validator(event);">
+              <select name="internal_{@fieldname}_minutes" super="{@fieldname}" onchange="validate_validator(event);" onblur="validate_validator(event);">
                 <option value="0">00</option><option value="1">01</option><option value="2">02</option><option value="3">03</option><option value="4">04</option><option value="5">05</option><option value="6">06</option><option value="7">07</option><option value="8">08</option><option value="9">09</option>
                 <option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option>
                 <option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option>
