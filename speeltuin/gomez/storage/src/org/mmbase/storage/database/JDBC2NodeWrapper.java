@@ -23,7 +23,7 @@ import org.mmbase.util.XMLDatabaseReader;
  * It is used to abstract the query's needed for mmbase for each database.
  * @author Vpro
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.1 2003-08-04 10:16:04 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.2 2003-08-04 10:57:35 pierre Exp $
  */
 public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     
@@ -83,7 +83,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     
     public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
         try {
-            return factory.getStorageManager().insert(node);
+            return factory.getStorageManager().create(node);
         } catch (StorageException se) {
             return -1;
         }
@@ -91,7 +91,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     
     public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
         try {
-            factory.getStorageManager().commit(node);
+            factory.getStorageManager().change(node);
             return true;
         } catch (StorageException se) {
             return false;
@@ -164,7 +164,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
     public boolean drop(MMObjectBuilder bul) {
         try {
-            factory.getStorageManager().drop(bul);
+            factory.getStorageManager().delete(bul);
             return true;
         } catch (StorageException se) {
             return false;
@@ -174,7 +174,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
     
     public boolean updateTable(MMObjectBuilder bul) {
         try {
-            factory.getStorageManager().updateStorage(bul);
+            factory.getStorageManager().change(bul);
             return true;
         } catch (StorageException se) {
             return false;
@@ -183,7 +183,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
     public boolean addField(MMObjectBuilder bul,String dbname) {
         try {
-            factory.getStorageManager().addField(bul, bul.getField(dbname));
+            factory.getStorageManager().create(bul.getField(dbname));
             return true;
         } catch (StorageException se) {
             return false;
@@ -192,7 +192,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
     public boolean removeField(MMObjectBuilder bul,String dbname) {
         try {
-            factory.getStorageManager().removeField(bul, bul.getField(dbname));
+            factory.getStorageManager().delete(bul.getField(dbname));
             return true;
         } catch (StorageException se) {
             return false;
@@ -201,7 +201,7 @@ public abstract class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
     public boolean changeField(MMObjectBuilder bul,String dbname) {
         try {
-            factory.getStorageManager().changeField(bul, bul.getField(dbname));
+            factory.getStorageManager().change(bul.getField(dbname));
             return true;
         } catch (StorageException se) {
             return false;

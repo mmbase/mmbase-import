@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.17 2003-08-04 10:16:04 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.18 2003-08-04 10:57:35 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -398,7 +398,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public int insert(MMObjectNode node) throws StorageException {
+    public int create(MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
         if (node.getNumber() == -1) {
             node.setValue("number", createKey());
@@ -407,7 +407,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
-        return insert(node,builder);
+        return create(node,builder);
     }
 
     /**
@@ -421,7 +421,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return The (new) number for this node
      * @throws StorageException if an error occurred during commit
      */
-    protected int insert(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    protected int create(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // Create a String that represents the fields and values to be used in the insert.
         StringBuffer fieldNames = null;
         StringBuffer fieldValues = null;
@@ -476,12 +476,12 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public void commit(MMObjectNode node) throws StorageException {
+    public void change(MMObjectNode node) throws StorageException {
         MMObjectBuilder builder = node.getBuilder();
         // precommit call, needed to convert or add things before a save
         // Should be done in MMObjectBuilder
         builder.preCommit(node);
-        commit(node,builder);
+        change(node,builder);
     }
 
     /**
@@ -494,7 +494,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @param builder the builder to store the node
      * @throws StorageException if an error occurred during commit
      */
-    protected void commit(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
+    protected void change(MMObjectNode node, MMObjectBuilder builder) throws StorageException {
         // Create a String that represents the fields to be used in the commit
         StringBuffer setFields = null;
         // obtain the node's changed fields
@@ -1089,13 +1089,49 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
+    public void change(MMObjectBuilder builder) throws StorageException {
+        // test if you can make changes 
+        // iterate through the fields,
+        // use metadata.getColumns(...)  to select fields  
+        //      (incl. name, datatype, size, null) 
+        // use metadata.getImportedKeys(...) to get foreign keys
+        // use metadata.getIndexInfo(...) to get composite and other indexes
+        // determine changes and run them
+        throw new StorageException("Operation not supported");
+    }
+
+    // javadoc is inherited
+    public void delete(MMObjectBuilder builder) throws StorageException {
+        int size = size(builder);
+        if (size != 0) {
+            throw new StorageException("Can not drop builder, it still contains "+size+" node(s)");
+        }
+        try {
+            getActiveConnection();
+            Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
+            String query = scheme.format(new Object[] { this, builder });
+            Statement s = activeConnection.createStatement();
+            s.executeUpdate(query);
+            scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
+            if (scheme!=null) {
+                query = scheme.format(new Object[] { this, builder });
+                s = activeConnection.createStatement();
+                s.executeUpdate(query);
+            }
+        } catch (Exception e) {
+            throw new StorageException(e.getMessage());
+        } finally {
+            releaseActiveConnection();
+        }
+    }
+
+    // javadoc is inherited
     public void create() throws StorageException {
         MMBase mmbase = factory.getMMBase();
         create(getRootBuilder()); 
         createSequence();
     }
 
-    
     /**
      * Creates a means for the database to pre-create keys with increasing numbers.
      * A sequence can be a databse routine, a number table, or anything else that can be used to create unique numbers.
@@ -1156,32 +1192,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public void drop(MMObjectBuilder builder) throws StorageException {
-        int size = size(builder);
-        if (size != 0) {
-            throw new StorageException("Can not drop builder, it still contains "+size+" node(s)");
-        }
-        try {
-            getActiveConnection();
-            Scheme scheme = factory.getScheme(Schemes.DROP_TABLE, Schemes.DROP_TABLE_DEFAULT);
-            String query = scheme.format(new Object[] { this, builder });
-            Statement s = activeConnection.createStatement();
-            s.executeUpdate(query);
-            scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
-            if (scheme!=null) {
-                query = scheme.format(new Object[] { this, builder });
-                s = activeConnection.createStatement();
-                s.executeUpdate(query);
-            }
-        } catch (Exception e) {
-            throw new StorageException(e.getMessage());
-        } finally {
-            releaseActiveConnection();
-        }
-    }
-
-    // javadoc is inherited
-    public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+    public void create(FieldDefs field) throws StorageException {
         // test if you can make changes 
         // test if this is a field to add (persistent/nobinary)
         // if the field is a key, remove the composite key : Scheme: DROP_INDEX
@@ -1193,7 +1204,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+    public void change(FieldDefs field) throws StorageException {
         // test if you can make changes 
         // test if this is a field to remove (persistent/nobinary)
         // if the field is a key, remove the composite key Scheme: DROP_INDEX
@@ -1205,25 +1216,13 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     // javadoc is inherited
-    public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
+    public void delete(FieldDefs field) throws StorageException {
         // test if you can make changes 
         // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
         // get the field
         // get the field index
         // change the field and its index  Scheme: CHANGE_FIELD
         // select all key fields and add the composite key  Scheme: ADD_INDEX
-        throw new StorageException("Operation not supported");
-    }
-
-    // javadoc is inherited
-    public void updateStorage(MMObjectBuilder builder) throws StorageException {
-        // test if you can make changes 
-        // iterate through the fields,
-        // use metadata.getColumns(...)  to select fields  
-        //      (incl. name, datatype, size, null) 
-        // use metadata.getImportedKeys(...) to get foreign keys
-        // use metadata.getIndexInfo(...) to get composite and other indexes
-        // determine changes and run them
         throw new StorageException("Operation not supported");
     }
 
