@@ -53,6 +53,8 @@ public class HttpAuth {
 
     /**
      * Authenticates a user, If the user cannot be authenticated a login-popup will appear
+     * @todo remove logging on using remoteAuthenticationHost - this should be moved to the security 
+     *       layer
      * @param server server-account. (for exameple 'film' or 'www')
      * @param level loginlevel. (for example 'Basic' or 'MD5')
      * @return username foan exception will be thrown.
