@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.75 2004-09-22 15:00:09 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.76 2004-09-22 15:18:34 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1123,7 +1123,9 @@ public class DatabaseStorageManager implements StorageManager {
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
-            node.storeValue(field.getDBName(),value);
+            if (node != null) {
+                node.storeValue(field.getDBName(),value);
+            }
         }
     }
 
