@@ -9,16 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-/*
-	$Id: ImageConvertInterface.java,v 1.1 2000-06-02 10:57:48 wwwtech Exp $
-
-	$Log: not supported by cvs2svn $
-*/
+/**
+ * Interface for classes that can convert images.
+ *
+ * @author Rico Jansen
+ */
 
 import java.util.*;
 
 public interface ImageConvertInterface {
-
-	public void init(Hashtable params);
-	public byte[] ConvertImage(byte[] input,Vector commands);
+    
+    public void init(Hashtable params);
+    /**
+     * @deprecated Use convertImage.
+     */
+    public byte[] ConvertImage(byte[] input,Vector commands);
+    public byte[] convertImage(byte[] input,Vector commands);
 }

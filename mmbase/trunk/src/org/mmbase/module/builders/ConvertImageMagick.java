@@ -9,26 +9,35 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders;
 
-import java.util.*;
-import java.io.*;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+import java.util.Enumeration;
 
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import java.io.File;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.mmbase.util.ProcessWriter;
+
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
 
 /**
- * Converts Images using image magick.
+ * Converts images using ImageMagick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.23 2002-02-12 18:35:44 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.24 2002-02-12 19:30:42 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
 
-    // Currenctly only ImageMagick works, this are the default value's
-
-    private static String ConverterRoot = "/usr/local/";
-    private static String ConverterCommand = "bin/convert";
-    private static int colorizeHexScale = 100;
+    // Currently only ImageMagick works, this are the default value's
+    private static String converterRoot    = "/usr/local/";
+    private static String converterCommand = "bin/convert";
+    private static int colorizeHexScale    = 100;
 
     /**
      * This function initalises this class
@@ -38,30 +47,30 @@ public class ConvertImageMagick implements ImageConvertInterface {
     public void init(Hashtable params) {
         String tmp;
         tmp=(String)params.get("ImageConvert.ConverterRoot");
-        if (tmp!=null) ConverterRoot = tmp;
+        if (tmp!=null) converterRoot = tmp;
 
-        // now check if the specified ImageConvert.ConverterRoot does exist and is a directory
-        File checkConvDir = new File(ConverterRoot);
+        // now check if the specified ImageConvert.converterRoot does exist and is a directory
+        File checkConvDir = new File(converterRoot);
         if(!checkConvDir.exists()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot("+ConverterRoot+") does not exist");
+            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot(" + converterRoot + ") does not exist");
         }
         if(!checkConvDir.isDirectory()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot("+ConverterRoot+") is not a directory");
+            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterRoot(" + converterRoot + ") is not a directory");
         }
         tmp=(String)params.get("ImageConvert.ConverterCommand");
-        if (tmp!=null) ConverterCommand=tmp;
+        if (tmp!=null) converterCommand=tmp;
 
         // now check if the specified ImageConvert.Command does exist and is a file..
-        String command = ConverterRoot + ConverterCommand;
+        String command = converterRoot + converterCommand;
         File checkConvCom = new File(command);
         if(!checkConvCom.exists()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand("+ConverterCommand+"), "+command+" does not exist");
+            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " does not exist");
         }
         if(!checkConvCom.isFile()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand("+ConverterCommand+"), "+command+" is not a file");
+            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " is not a file");
         }
         if(!checkConvCom.canRead()) {
-            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand("+ConverterCommand+"), "+command+" is not readable");
+            log.error("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand(" + converterCommand + "), " + command + " is not readable");
         }
 
         // do a test-run, maybe slow during startup, but when it is done this way, we can also output some additional info in the log about version..
@@ -69,7 +78,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
         // the builder... TODO: on error switch to jai????
         try {
             log.debug("Starting convert");
-            Process process=Runtime.getRuntime().exec(command);
+            Process process = Runtime.getRuntime().exec(command);
             InputStream in = null;
             in=process.getInputStream();
 
@@ -83,12 +92,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
             // make stringtokenizer, with nextline as new token..
             StringTokenizer tokenizer = new StringTokenizer(outputstream.toString(),"\n\r");
             if(tokenizer.hasMoreTokens()) {
-                log.info("Will use: "+command+", "+tokenizer.nextToken());
+                log.info("Will use: " + command+", " + tokenizer.nextToken());
             } else {
-                log.error("converter from location "+command+", gave strange result: "+ outputstream.toString()+ "conv.root='"+ConverterRoot+"' conv.command='"+ConverterCommand+"'");
+                log.error("converter from location " + command + ", gave strange result: " + outputstream.toString() + "conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
             }
         } catch (Exception e) {
-            log.error("images.xml(ConvertImageMagick): "+command+" could not be executed("+ e.toString() +")conv.root='"+ConverterRoot+"' conv.command='"+ConverterCommand+"'");
+            log.error("images.xml(ConvertImageMagick): " + command + " could not be executed("+ e.toString() +")conv.root='" + converterRoot + "' conv.command='" + converterCommand + "'");
         }
         // Cant do more checking then this, i think....
         tmp=(String)params.get("ImageConvert.ColorizeHexScale");
@@ -96,7 +105,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             try {
                 colorizeHexScale = Integer.parseInt(tmp);
             } catch (NumberFormatException e) {
-                log.error("Property ImageConvert.ColorizeHexScale should be an integer: "+e.toString()+ "conv.root='"+ConverterRoot+"' conv.command='"+ConverterCommand+"'");
+                log.error("Property ImageConvert.ColorizeHexScale should be an integer: "+e.toString()+ "conv.root='"+converterRoot+"' conv.command='"+converterCommand+"'");
             }
         }
     }
@@ -105,20 +114,29 @@ public class ConvertImageMagick implements ImageConvertInterface {
      * This functions converts an image by the given parameters
      * @param input an array of <code>byte</code> which represents the original image
      * @param commands a <code>Vector</code> of <code>String</code>s containing commands which are operations on the image which will be returned.
-     *                 ImageConvert.ConverterRoot and ImageConvert.ConverterCommand specifing the converter root....
+     *                 ImageConvert.converterRoot and ImageConvert.converterCommand specifing the converter root....
      * @return an array of <code>byte</code>s containing the new converted image.
+     *
      */
-    public byte[] ConvertImage(byte[] input,Vector commands) {
+    public byte[] convertImage(byte[] input,Vector commands) {
         String cmd,format;
         byte[] pict=null;
 
         if (commands!=null && input!=null) {
             cmd=getConvertCommands(commands);
             format=getConvertFormat(commands);
-            pict=ConvertImage(input,cmd,format);
+            pict = convertImage(input,cmd,format);
         }
         return pict;
     }
+
+    /**
+     * @deprecated Use convertImage
+     */
+    public byte[] ConvertImage(byte[] input,Vector commands) {
+        return convertImage(input, commands);
+    }
+
 
     /**
      * @javadoc
@@ -301,10 +319,11 @@ public class ConvertImageMagick implements ImageConvertInterface {
     }
 
     /**
-     * @javadoc
+     * Does the actual conversion.
+     *
      */
-    private byte[] ConvertImage(byte[] pict,String cmd, String format) {
-        String command=ConverterRoot+ConverterCommand+" - "+cmd+" "+format+":-";
+    private byte[] convertImage(byte[] pict, String cmd, String format) {
+        String command = converterRoot + converterCommand + " - " + cmd + " " + format + ":-";
         if (log.isDebugEnabled()) log.debug("command:" + command + " in " +   new File("").getAbsolutePath());
         try {            
             log.debug("starting program");
@@ -341,16 +360,19 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 }
                 byte[]  errorMessage = imagestream.toByteArray();
                 if(errorMessage.length > 0) {
-                    log.error("from stderr with command '" + command + "' --> '" + new String(errorMessage) + "'");
-                    log.error("working dir: '" + new File("").getAbsolutePath() + "'");
+                    log.error("From stderr with command '" + command + 
+                              "' in '" + 
+                              new File("").getAbsolutePath() + 
+                              "'  --> '" + 
+                              new String(errorMessage) + "'");
                 } else {
-                    log.debug("no information on stderr found");
+                    log.debug("No information on stderr found");
                 }
-                log.warn("should it return null here?, it wasnt this way, so i didnt change it...");
+                log.warn("Imagemagick conversion did not succeed. Returning byte array of " + image.length + " bytes.");
             }
             
             // print some info and return....            
-            log.service("converted image(#"+pict.length+" bytes) with options '"+cmd+"' to '"+format+"'-image(#"+image.length+" bytes)('"+command+"')");            
+            log.service("converted image(#" + pict.length + " bytes) with options '" + cmd + "' to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");            
             return image;
         } 
         catch (IOException e) {
