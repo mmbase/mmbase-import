@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.2 2003-08-21 12:52:54 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.3 2003-08-21 17:28:04 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -873,64 +873,6 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
-
-    // temporary 'object' builder
-    private MMObjectBuilder rootBuilder;
-
-    // instantiate a 'object' builder
-    // we only really need to know the field definitions and the
-    // object table name
-    // should be moved to MMBase.java, where it need be assigned to the root builder,
-    // (but not added to the MMObjects list)
-    private MMObjectBuilder getRootBuilder() {
-        if (rootBuilder == null) {
-            rootBuilder = factory.getMMBase().getRootBuilder();
-            if (rootBuilder == null) {
-                rootBuilder = new MMObjectBuilder();
-                rootBuilder.setMMBase(factory.getMMBase());
-                rootBuilder.setTableName("object");
-                Vector xmlfields = new Vector();
-                // number field  (note: state = 'system')
-                FieldDefs def=new FieldDefs("Object","integer",10,10,"number",FieldDefs.TYPE_INTEGER,1,FieldDefs.DBSTATE_SYSTEM);
-                def.setDBPos(1);
-                def.setDBNotNull(true);
-                xmlfields.add(def);
-                // otype field
-                def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,FieldDefs.DBSTATE_SYSTEM);
-                def.setDBPos(2);
-                def.setDBNotNull(true);
-                xmlfields.add(def);
-                // owner field
-                def=new FieldDefs("Owner","string",11,11,"owner",FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_SYSTEM);
-                def.setDBSize(12);
-                def.setDBPos(3);
-                def.setDBNotNull(true);
-                xmlfields.add(def);
-                rootBuilder.setXMLValues(xmlfields);
-            }
-        }
-        return rootBuilder;
-    }
-
-    /**
-     * Returns the parent builder of the specified builder.
-     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder
-     *       configuration files. It should be moved to MMObjectBuilder
-     * @param builder the builder to find the parent of
-     * @return the parent builder
-     */
-    protected MMObjectBuilder getParentBuilder(MMObjectBuilder builder) {
-        MMObjectBuilder parent = builder.getParentBuilder();
-        if (parent == null) {
-            if ((builder instanceof InsRel) && !builder.getTableName().equals("insrel")) {
-                parent = factory.getMMBase().getInsRel();
-            } else if (!builder.getTableName().equals("object")) {
-                return getRootBuilder();
-            }
-        }
-        return parent;
-    }
-
     // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
         if (log.isDebugEnabled()) {
@@ -939,7 +881,6 @@ public class DatabaseStorageManager implements StorageManager {
         // use the builder to get the fields and create a
         // valid create SQL string
         // for backward compatibility, fields are to be created in the order defined
-        // TODO: check whether otype is returned in the correct position!
         List fields = builder.getFields(FieldDefs.ORDER_CREATE);
         StringBuffer createFields = new StringBuffer();
         StringBuffer createIndices = new StringBuffer();
@@ -947,10 +888,7 @@ public class DatabaseStorageManager implements StorageManager {
         StringBuffer createCompositeIndices = new StringBuffer();
         List compositeIndices = new ArrayList();
         // obtain the parentBuilder
-        MMObjectBuilder parentBuilder = getParentBuilder(builder);
-        // XXX: should be:
-        // MMObjectBuilder parentBuilder = builder.getParentBuilder();
-
+        MMObjectBuilder parentBuilder = builder.getParentBuilder();
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
             // persistent field? ( use inStorage() )
@@ -1157,7 +1095,7 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public void create() throws StorageException {
         MMBase mmbase = factory.getMMBase();
-        create(getRootBuilder());
+        create(factory.getMMBase().getRootBuilder());
         createSequence();
     }
 
@@ -1237,7 +1175,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public boolean exists() throws StorageException {
-        return exists(getRootBuilder());
+        return exists(factory.getMMBase().getRootBuilder());
     }
 
     // javadoc is inherited
@@ -1258,7 +1196,7 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public int size() throws StorageException {
-        return size(getRootBuilder());
+        return size(factory.getMMBase().getRootBuilder());
     }
 
     // javadoc is inherited
