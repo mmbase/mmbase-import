@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.21.2.1 2004-06-02 14:43:09 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.21.2.2 2004-08-31 16:45:16 rob Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -639,14 +639,14 @@ public class ContextContainer extends HashMap {
         }
     }
 
-
-
     static String getDefaultCharacterEncoding(PageContext pageContext) {
-        String def = (String) pageContext.getAttribute(ContextTag.DEFAULTENCODING_KEY);
-        if (def == null) return "UTF-8";
-        return def;
+        String charEnc = pageContext.getResponse().getCharacterEncoding();
+        if(charEnc!=null) {
+            return charEnc;
+        }
+        log.error("page encoding not specified, using iso-8859-1");
+        return "iso-8859-1";
     }
-
 
     public String toString() {
         if (id == null) {
