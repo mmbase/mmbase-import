@@ -82,11 +82,14 @@
    boolean showNextLink = false;
    Iterator testIterator = tests.iterator();
    while (testIterator.hasNext()) {
-       if ( testCounter++ > startAt + 20) {
+       String testNum = (String) testIterator.next();
+       if ( testCounter++ < startAt ) {
+           continue;
+       }
+       if ( testCounter > startAt + 20) {
            showNextLink = true;
            break;
        }
-       String testNum = (String) testIterator.next();
         %>
        <mm:node number="<%= testNum %>">
         <mm:field name="name" jspvar="name" vartype="String">
