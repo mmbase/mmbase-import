@@ -6,7 +6,7 @@
     @since  MMBase-1.6
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: base.xsl,v 1.24 2004-01-20 16:07:44 michiel Exp $
+    @version $Id: base.xsl,v 1.25 2004-01-20 18:24:36 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -14,12 +14,15 @@
 		For the people who are wondering why we don't use an DOCTYPE.
 		The editwizards are using extra attributes to do validation and
 		other dynamic stuff. So the editwizards don't comply to the DOCTYPE standards
+
+    MM: It could comply, when using namespaces.
 		
     The xsl:output will generate
 		<META http-equiv="Content-Type" content="text/html; charset=utf-8">
 	-->
   <xsl:output
-    method="html"
+    method="xml"
+    version="1.0"
     encoding="utf-8"
     omit-xml-declaration="yes"
     standalone="yes"
@@ -97,10 +100,10 @@
 
   <xsl:variable name="wizardtitle">
     <xsl:call-template name="i18n">
-      <xsl:with-param name="nodes" select="//wizard/form[@id=/wizard/curform]/title"/>
+      <xsl:with-param name="nodes" select="/*/title" />
     </xsl:call-template>
-    <!-- We need this xsl:text, because some browsers don't understand <title/> -->
-    <xsl:text> </xsl:text>
+    <!-- We need this xsl:text, because some browsers don't understand <title/> (IE) -->
+    <xsl:text><!-- help IE --></xsl:text>
   </xsl:variable>
   <!-- No Clue why we need this. It throws an exception when it is not here -->
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
