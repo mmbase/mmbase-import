@@ -5,7 +5,7 @@
   <articleinfo>
     <title>How to contribute to the community</title>
     <date>2005-02-20</date>
-    <edition>$Id: contribute.xml,v 1.1 2005-02-20 18:47:37 nico Exp $</edition>
+    <edition>$Id: contribute.xml,v 1.2 2005-03-13 16:10:19 nico Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Nico</firstname>
@@ -39,6 +39,10 @@
         <simpara>Read the Architectural Overview document. This document can be found in the "Documentation" area of the website in the
         Documentation-&gt;general section. The architecture will give you a theoretical overview of MMBase's design.</simpara>
       </listitem>
+      <listitem>
+        <simpara>For discussions about technical issues, technical questions, or just to chat with MMBase developers. There is a IRC channel that you
+        can join: #mmbase, server irc.slashnet.org.</simpara>
+      </listitem>
     </itemizedlist>
     <para>There are many ways to join the project, either by writing code, or by testing and/or helping to manage the bug database. If you'd like to
     contribute, then look at:</para>
@@ -58,7 +62,7 @@
   </section>
   <section>
     <title>Directory layout</title>
-    <para>A rough guide to the source tree:</para>
+    <para>A rough guide to the source tree from the CVS 'all' module:</para>
     <programlisting format="linespecific">
    documentation/
       User and Developer documentation.
