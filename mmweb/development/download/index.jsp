@@ -4,7 +4,6 @@
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp" %>
 <div id="pagecontent">
-<div id="textcontent">
 
 <%@ include file="last_builds.jsp" %>
 
@@ -14,6 +13,7 @@
   </mm:related>
 </mm:node>
 
+<div id="textcontent">
 <%-- LAST RELEASE --%>
  <mm:list path="pages2,releases,mmevents"
  	fields="releases.number,mmevents.start" 
