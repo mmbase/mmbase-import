@@ -23,12 +23,12 @@ import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 
 /**
- * A JDBC implementation of a storage manager.
+ * A JDBC implementation of an object related storage manager.
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.56 2004-02-25 10:19:20 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.57 2004-03-16 10:32:50 rob Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 

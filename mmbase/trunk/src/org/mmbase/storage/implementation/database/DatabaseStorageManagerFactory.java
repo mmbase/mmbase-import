@@ -30,7 +30,7 @@ import org.xml.sax.InputSource;
  * This factory sets up a datasource for connecting to the database.
  * If you specify the datasource URI in the 'dataource' property in mmbaseroot.xml configuration file,
  * the factory attempts to obtain the datasource from the appplication server. If this fails, or no datasource URI is given,
- * It attempts to use the connectivity offered by the JDBC Module,w hcih si then warpped in a datasource.
+ * it attempts to use the connectivity offered by the JDBC Module, which is then wrapped in a datasource.
  * Note that if you provide a datasource you should make the JDBC Module inactive to prevent the module from
  * interfering with the storage layer.
  * @todo backward compatibility with the old supportclasses should be done by creating a separate Factory
@@ -38,7 +38,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.12 2004-03-05 14:52:14 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.13 2004-03-16 10:32:50 rob Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
