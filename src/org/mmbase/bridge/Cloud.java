@@ -126,6 +126,22 @@ public interface Cloud {
     public Transaction createTransaction(String name);
 
     /**
+     * Creates a transaction on this cloud with a specified name.
+     *
+     * @param name                                 an unique name to use for the
+     *                                             transaction
+     * @param overwrite                            if <code>true</code>, cancels and the  replaces
+     *                                             any existing transaction of this name
+     *                                             for the current user
+     * @return                                     a <code>Transaction</code> on
+     *                                             this cloud
+     * @throws TransactionAllreadyExistsException  if a transaction with the
+     *                                             specified name allready
+     *                                             exists and overwrite is <code>false</code>
+     */
+    public Transaction createTransaction(String name, boolean overwrite);
+
+    /**
      * Returnes the transaction with the specified name.
      * If no active transaction exists, a new transaction is craeted.
      *
