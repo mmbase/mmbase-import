@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.6 2003-12-11 13:05:27 michiel Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.7 2004-02-25 11:04:47 robmaris Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -75,9 +75,11 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
         return result;
     }
 
+    // javadoc inherited
     protected boolean useLower(FieldCompareConstraint constraint) {
-        return false;
+        return true; // necessary for the larger strings which are stored in blobs
     }
+    
     protected StringBuffer appendLikeOperator(StringBuffer sb, boolean caseSensitive) {
         if (caseSensitive) {
             sb.append(" LIKE BINARY ");
