@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.6 2004-01-12 12:46:03 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.7 2004-01-30 13:03:22 pierre Exp $
  */
 public class JumpersFilter implements Filter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -81,22 +81,27 @@ public class JumpersFilter implements Filter {
         /**
          * getContextPath()
          * Returns the portion of the request URI that indicates the context of the request.
-         *  The context path always comes first in a request URI. 
-         * The path starts with a "/" character but does not end with a "/" character. 
+         * The context path always comes first in a request URI.
+         * The path starts with a "/" character but does not end with a "/" character.
          * For servlets in the default (root) context, this method returns "". The container does not decode this string.
-         * 
-         * (+1 is to remove the /)
          */
-        String key = req.getRequestURI().substring(req.getContextPath().length() + 1);
+        int contextPart = req.getContextPath().length();
+        String reqURI = req.getRequestURI();
+        String key = "";
+        if (contextPart < reqURI.length()) {
+            // also remove the leading "/", unless it's an empty string.
+            key = req.getRequestURI().substring(req.getContextPath().length()+1);
+        }
+
         if (key.indexOf('.') == -1 && !key.endsWith("/")) {
             String url = bul.getJump(key);
             if (url != null) {
                 /*
-                 * Sends a temporary redirect response to the client using the specified redirect location URL. 
-                 * This method can accept relative URLs; the servlet container must convert the relative URL 
-                 * to an absolute URL before sending the response to the client. If the location is relative without a leading '/' the 
+                 * Sends a temporary redirect response to the client using the specified redirect location URL.
+                 * This method can accept relative URLs; the servlet container must convert the relative URL
+                 * to an absolute URL before sending the response to the client. If the location is relative without a leading '/' the
                  * container interprets it as relative to the current request URI. If the location is relative with a leading '/' the container
-                 *  interprets it as relative to the servlet container root. 
+                 *  interprets it as relative to the servlet container root.
                  * If the response has already been committed, this method throws an IllegalStateException.
                  *  After using this method, the response should be considered to be committed and should not be written to.
                  */
