@@ -12,8 +12,13 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 
+
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+
 
 /**
 * The importtag puts things in the context. It can find them from the
@@ -97,7 +102,7 @@ public class ImportTag extends WriteTag {
         case WriterHelper.TYPE_LIST:
             String bod = bodyContent.getString();
             if (! "".equals(bod)) {
-                res = stringSplitter(bod);
+                res = StringSplitter.split(bod);
             } else { res = ""; }
             break;
         default:
