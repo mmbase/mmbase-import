@@ -15,36 +15,21 @@ import org.xml.sax.*;
 import org.apache.xerces.parsers.*;
 
 import org.mmbase.module.core.MMBaseContext;
-
+import org.mmbase.util.logging.*;
 
 /**
  * Take the systemId and converts it into a local file
  *
  *
  * @author Gerard van Enk
- * @version $Revision: 1.6 $ $Date: 2000-10-19 23:17:19 $
- *
- * $Log: not supported by cvs2svn $
- * Revision 1.5  2000/09/11 20:09:52  case
- * cjr: Changed call to MMBaseContext.getConfigPath() to System.getProperty()
- *      to be able to call this *without* having to start mmbase
- *
- * Revision 1.4  2000/08/10 20:44:15  case
- * cjr: removed some debug, checked path for '//', removed a stupid method
- *      that I added earlier.
- *
- * Revision 1.3  2000/08/06 14:54:34  case
- * cjr: removed UNIX dependency from a path; added boolean for whether DTD is set
- *
+ * @version $Revision: 1.7 $ $Date: 2001-04-18 09:53:42 $
  */
 public class XMLEntityResolver implements EntityResolver {
 
-    private String classname = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(XMLEntityResolver.class.getName());
 
     String dtdpath;
     boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
-
-    private static boolean debug = false;
 
     /**
      * empty constructor
@@ -88,9 +73,7 @@ public class XMLEntityResolver implements EntityResolver {
                     separator = File.separator;
                 }
                 String dtdLocation = configpath+separator+"dtd"+File.separator+dtdName;
-                if (debug) {
-                    debug("dtdLocation = "+dtdLocation);
-                }
+                log.debug("dtdLocation = "+dtdLocation);
                 InputStreamReader dtdInputStreamReader =
                     new InputStreamReader(new FileInputStream(dtdLocation));
                 InputSource dtdInputSource = new InputSource();
@@ -112,9 +95,5 @@ public class XMLEntityResolver implements EntityResolver {
      */
     public String getDTDPath() {
         return this.dtdpath;
-    }
-
-    private void debug( String msg ) {
-        System.out.println( classname +":"+msg );
     }
 }
