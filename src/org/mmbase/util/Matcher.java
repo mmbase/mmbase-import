@@ -16,8 +16,11 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Class for matching two strings and returning an indicator (threshold) on how these compare.
- * The returned value of {@link #match} is 0 when no maytch is found, 1 if it is a perfect match.
+ * The returned value of {@link #match} is 0 when no match is found, 1 if it is a perfect match.
  * Values in between indicate the level of partial matchings.
+ * @deprecated-now: not used anywhere
+ * @author vpro
+ * @version $Id: Matcher.java,v 1.5 2004-09-30 08:52:16 pierre Exp $
  */
 public class Matcher {
 

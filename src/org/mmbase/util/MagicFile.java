@@ -16,11 +16,11 @@ import org.mmbase.util.logging.*;
 import org.mmbase.util.magicfile.*;
 
 /**
- * Tries to determin the mime-type of a byte array (or a file).
+ * Tries to determine the mime-type of a byte array (or a file).
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.13 2004-05-26 09:02:08 michiel Exp $
+ * @version $Id: MagicFile.java,v 1.14 2004-09-30 08:52:15 pierre Exp $
  */
 public class MagicFile {
     private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
@@ -36,6 +36,10 @@ public class MagicFile {
 
     protected DetectorProvider detectors;
 
+    /**
+     * Return the current instance of MagicFile. If no instance exists,
+     * one is created.
+     */
     public static MagicFile getInstance() {
         if (instance == null) {
             instance = new MagicFile();
@@ -43,8 +47,7 @@ public class MagicFile {
         return instance;
     }
 
-    /**
-     */
+    // obsolete
     private MagicFile(DetectorProvider d) {
         detectors = d;
     }
@@ -52,7 +55,7 @@ public class MagicFile {
     private MagicFile() {
         DetectorProvider d = MagicXMLReader.getInstance();
         // default, read from XML
-        if (d == null) {        	
+        if (d == null) {
             d = new MagicParser();
         }
         detectors = d;
@@ -118,9 +121,8 @@ public class MagicFile {
     }
 
     /**
-     *
+     * @javadoc
      */
-
     public String extensionToMimeType(String extension) {
         Iterator i = getDetectors().iterator();
         while (i.hasNext()) {
@@ -141,7 +143,6 @@ public class MagicFile {
      * @return An extension (without the dot), or an empty string if the mime-type is unknown.
      * @since MMBase-1.7.1
      */
-
     public String mimeTypeToExtension(String mimeType) {
         Iterator i = getDetectors().iterator();
         while (i.hasNext()) {
@@ -157,6 +158,9 @@ public class MagicFile {
         return "";
     }
 
+    /**
+     * @javadoc
+     */
     public String getMimeType(byte[] data, String extension) {
         String result;
         result = getMimeType(data);
@@ -168,6 +172,7 @@ public class MagicFile {
 
     /**
      * e.g.: java -Dmmbase.config=/home/mmbase/mmbase-app/WEB-INF/config org.mmbase.util.MagicFile test.doc
+     * @javadoc
      */
     public static void main(String[] argv) {
         MagicFile magicFile = MagicFile.getInstance();

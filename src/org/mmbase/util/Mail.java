@@ -15,8 +15,9 @@ import java.util.*;
  * This mail-object gives persons the functionality to create mail
  * and send it with the SendMail-module.
  *
+ * @application Mail
  * @author Rob Vermeulen
- * @version $Id: Mail.java,v 1.7 2003-03-10 11:51:08 pierre Exp $
+ * @version $Id: Mail.java,v 1.8 2004-09-30 08:52:16 pierre Exp $
  */
 public class Mail {
 

@@ -18,8 +18,9 @@ import org.mmbase.module.core.*;
  * At forhand you specify in which fields a specified nodes should be compared,
  * these fields may not have a null value.
  *
+ * @application Community (?)
  * @author Pierre van Rooden
- * @version $Id: NodeComparator.java,v 1.4 2004-05-03 12:16:53 michiel Exp $
+ * @version $Id: NodeComparator.java,v 1.5 2004-09-30 08:52:16 pierre Exp $
  */
 public class NodeComparator implements Comparator {
 

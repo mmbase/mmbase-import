@@ -18,18 +18,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @author David V van Zeventer
- * @version: 14 jan 1999
- */
-
-/**
  * Directories contains methods for retrieving all file entries starting from a given path.
  * It also goes down the directory tree in search for file entries.
  * A wildcard can be used in searching for file entries.
  * It also contains sort methods to sort file entries.
  * Used by a device buidlers (i.e. Cameras), and by SCAN
  * @application SCAN or Devices
- * @version $Id: DirectoryLister.java,v 1.12 2004-09-29 14:29:23 pierre Exp $
+ * @author David V van Zeventer
+ * @version $Id: DirectoryLister.java,v 1.13 2004-09-30 08:52:11 pierre Exp $
  */
 public class DirectoryLister {
 
