@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.130 2004-10-09 13:54:16 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.131 2004-10-12 10:55:20 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1404,7 +1404,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.debug("Getting related nodes of " + this + " of type " + type);
         }
 
-        if(parent.mmb.InsRel.usesdir) {
+        if(parent.mmb.getInsRel().usesdir) {
             return  getRelatedNodes(type, RelationStep.DIRECTIONS_BOTH);
         } else {
             //
@@ -1556,7 +1556,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             ootype  = otype;
         }
         // convert current node type.number and type.otype to number and otype
-        convert = new MMObjectNode(parent.mmb.getMMObject(parent.mmb.TypeDef.getValue(otype)));
+        convert = new MMObjectNode(parent.mmb.getMMObject(parent.mmb.getTypeDef().getValue(otype)));
         // parent needs to be set or else mmbase does nag nag nag on a setValue()
         convert.setValue("number", node.getValue(type + ".number"));
         convert.setValue("otype", otype);
@@ -1586,7 +1586,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     private List getRealNodesFromBuilder(List list, int otype) {
         List result = new ArrayList();
-        String name = parent.mmb.TypeDef.getValue(otype);
+        String name = parent.mmb.getTypeDef().getValue(otype);
         if(name != null) {
             MMObjectBuilder rparent = parent.mmb.getBuilder(name);
             if(rparent != null) {
