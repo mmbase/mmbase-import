@@ -28,13 +28,11 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
      * static Cloud context
      **/
     private static CloudContext cloudContext;
-    private static Cloud defaultCloud;
     public static String DEFAULT_CLOUD_NAME = "mmbase";
+    private Cloud pageCloud;
 
     
     public MMTaglib(){
-	cloudContext=LocalContext.getCloudContext();
-	defaultCloud=cloudContext.getCloud(DEFAULT_CLOUD_NAME);
     }
 
     /**
@@ -44,17 +42,38 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
     	if (cloudContext == null){
 	    cloudContext=LocalContext.getCloudContext();
         } 
-	return cloudContext;
+	    return cloudContext;
     }
+
     /**
      * @return the default cloud being the cloud with name equals to the DEFAULT_CLOUD_NAME
      * defined in this class
      **/
     public Cloud getDefaultCloud(){
-	if (defaultCloud == null){
-	    defaultCloud= getDefaultCloudContext().getCloud(DEFAULT_CLOUD_NAME);
-	} 
-	return defaultCloud;
+        return getPageCloud();
+    }
+
+    /**
+     * @return the page cloud being the cloud set with the <mm:cloud> tag
+     **/
+    public Cloud getPageCloud(){
+	    if (pageCloud == null){
+    	    pageCloud = (Cloud)pageContext.getAttribute("cloud");
+    	    // fallback if CLOUD tag was not used
+    	    if (pageCloud==null) {
+    	        pageCloud=cloudContext.getCloud(DEFAULT_CLOUD_NAME);
+    	        pageContext.setAttribute("cloud",pageCloud);
+    	    }
+    	}
+	    return pageCloud;
+    }
+
+    /**
+     * @return the page cloud being (used by the <mm:cloud> tag)
+     **/
+    public void setPageCloud(Cloud cloud){
+        pageCloud=cloud;
+        pageContext.setAttribute("cloud",cloud);
     }
 
     /**

@@ -8,11 +8,17 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.implementation;
+import org.mmbase.util.logging.*;
 
 /**
  * This exception gets thrown when something goes wronmg on the MMCI.
  */
 public class BridgeException extends RuntimeException {
+
+	/**
+	* Logger routine
+	*/
+	private static Logger log = Logging.getLoggerInstance(BridgeException.class.getName());
 
 	/**
 	 * Create the exception.
@@ -26,5 +32,6 @@ public class BridgeException extends RuntimeException {
  	 */
 	public BridgeException (String message) {
 		super(message);
+		log.error(message);
 	}
 }

@@ -42,7 +42,6 @@ public class BasicCloudContext implements CloudContext {
     // map of modules by name
     private static HashMap localModules = new HashMap();
 
-
     /**
      *  constructor to call from the MMBase class
      *  (protected, so cannot be reached from a script)
@@ -59,10 +58,11 @@ public class BasicCloudContext implements CloudContext {
 		
 		    // create module list
 		    while(i.hasNext()) {
-                Module mod = new BasicModule((org.mmbase.module.Module)i.next(), this);
+                Module mod = ModuleHandler.getModule((org.mmbase.module.Module)i.next(),this);
                 localModules.put(mod.getName(),mod);
             }
             Cloud cloud = new BasicCloud("mmbase",this);
+
             localClouds.put(cloud.getName(),cloud);
         } else {
             throw new BridgeException("MMBase has not been started, and cannot be started by this Class");
@@ -73,9 +73,9 @@ public class BasicCloudContext implements CloudContext {
 	 * Retrieves all the modules available in this context
 	 * @return a <code>List</code> of all available modules
 	 */
-	public List getModules() {
-        Vector v=new Vector(localModules.values());
-	    return v;
+	public ModuleList getModules() {
+        ModuleList ml=new BasicModuleList(localModules.values(),this);
+	    return ml;
 	}
 
 	
@@ -89,15 +89,15 @@ public class BasicCloudContext implements CloudContext {
 	}
 
 	/**
-	 * Retrieves the names of all clouds within this context
-	 * @return a <code>List</code> of all Cloudnames within this contextas a <code>String</code>
+	 * Retrieves all clouds within this context
+	 * @return a <code>List</code> of all Clouds within this context
 	 */
-	public List getClouds() {
+	public CloudList getClouds() {
         Vector v=new Vector();
         for (Iterator i=localClouds.values().iterator(); i.hasNext();) {
             v.add(((Cloud)i.next()).getName());
         }
-	    return v;
+	    return new BasicCloudList(v,this);
 	}
 
 	/**

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+// import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -53,6 +54,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     * @return a node of type <code>Relation</code>
     */
     public Node createNode() {
+//        cloud.assert(Operation.CREATE,typeRelNode.getIntValue("number"));
         // create object as a temporary node
         int id = cloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);
@@ -62,7 +64,8 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         }
         MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(cloud.getAccount(), ""+id);
         // set the owner to userName instead of account
-        node.setValue("owner",cloud.getUserName());
+//        node.setValue("owner",cloud.getUserName());
+        node.setValue("owner","bridge");
         return new BasicRelation(node, this, id);
     }
 
@@ -97,7 +100,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      */
     public NodeManager getSourceManager() {
 	    int nr=typeRelNode.getIntValue("snumber");
-	    return cloud.getNodeManagerById(nr);
+	    return cloud.getNodeManager(nr);
 	}
 
 	/**
@@ -106,7 +109,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      */
     public NodeManager getDestinationManager() {
 	    int nr=typeRelNode.getIntValue("dnumber");
-	    return cloud.getNodeManagerById(nr);
+	    return cloud.getNodeManager(nr);
 	}
 	
 	/**
@@ -115,9 +118,9 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
      * @param destinationNode the node to which you want to relate
 	 * @return the added relation
      */
-    public Relation addRelation(Node sourceNode, Node destinationNode) {
+    public Relation createRelation(Node sourceNode, Node destinationNode) {
         // check on insert : cannot craete relation is not committed
-	   Relation relation = (Relation)createNode();
+       Relation relation = (Relation)createNode();
        relation.setSource(sourceNode);
        relation.setDestination(destinationNode);
        relation.setIntValue("rnumber",roleID);

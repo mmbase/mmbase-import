@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
+// import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.module.builders.MultiRelations;
@@ -40,9 +41,6 @@ public class BasicCloud implements Cloud, Cloneable {
     // It is NOT used for authorisation!
     protected String account = null;
 
-    // user name of the current user
-    protected String userName = null;
-
     // language
     protected String language = null;
 
@@ -61,11 +59,12 @@ public class BasicCloud implements Cloud, Cloneable {
 
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud=null;
-    /**
-     *  basic constructor for descendant clouds (i.e. Transaction)
-     */
-    protected BasicCloud() {
-    }
+
+    // Authorizer
+//    private Authorizer securityManager = null;
+
+    // User context
+//    private UserContext userContext = null;
 
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
@@ -81,8 +80,9 @@ public class BasicCloud implements Cloud, Cloneable {
             name = cloud.name+"."+cloudName;
         }
         description = cloud.description;
+//        securityManager = cloud.securityManager;
+//        userContext = cloud.userContext;
         account= cloud.account;
-        userName=cloud.userName;
     }
 
     /**
@@ -93,6 +93,9 @@ public class BasicCloud implements Cloud, Cloneable {
         cloudContext=(BasicCloudContext)cloudcontext;
         typedef = cloudContext.mmb.getTypeDef();
         language = cloudContext.mmb.getLanguage();
+        // determine security manager for this cloud
+
+//        securityManager=SecurityHandler.getAuthorization();
 
         // normally, we want the cloud to read it's context from an xml file.
         // the current system does not support multiple clouds yet,
@@ -109,12 +112,11 @@ public class BasicCloud implements Cloud, Cloneable {
 	 * @return the requested node
 	 */
 	public Node getNode(int nodenumber) {
-
 	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
 	    if (node==null) {
-	        return null;
+	        throw new BridgeException("Node with number "+nodenumber+" does not exist.");
 	    } else {
-    	    // hack. should be done differently!
+//	        assert(Operation.READ,nodenumber);
 	        if (node.getIntValue("number")==-1) {
     	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), nodenumber);
     	    } else {
@@ -124,22 +126,38 @@ public class BasicCloud implements Cloud, Cloneable {
 	}
 
 	/**
+	 * Retrieve the node from the cloud.
+	 * Note : this also retrieves temporary (newly created) nodes
+	 * @param nodenumber the number of the node
+	 * @return the requested node
+	 */
+	public Node getNode(String nodenumber) {
+	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
+	    if (node==null) {
+	        throw new BridgeException("Node with number "+nodenumber+" does not exist.");
+	    } else {
+//	        assert(Operation.READ,node.getIntValue("number"));
+	        if (node.getIntValue("number")==-1) {
+    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(nodenumber));
+    	    } else {
+    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()));
+    	    }
+	    }
+	}
+	
+	/**
 	 * Retrieves the node with the given aliasname.
-	 * Note : this also retrieves temporary (newly created) nodes by id, but cannot use aliasses within a transaction
+	 * Note : this does not retrieve temporary (newly created) nodes
 	 * @param aliasname the aliasname of the node
 	 * @return the requested node
 	 */
 	public Node getNodeByAlias(String aliasname) {
 	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,aliasname);
-	    if (node==null) {
-	        return null;
+	    if ((node==null) || (node.getIntValue("number")==-1)) {
+	        throw new BridgeException("node with alias "+aliasname+" does not exist.");
 	    } else {
-    	    // hack. should be done differently!
-	        if (node.getIntValue("number")==-1) {
-    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()), Integer.parseInt(aliasname));
-    	    } else {
-    	        return new BasicNode(node, getNodeManager(node.parent.getTableName()));
-    	    }
+//	        assert(Operation.READ,node.getIntValue("number"));
+    	    return new BasicNode(node, getNodeManager(node.parent.getTableName()));
 	    }
 	}
 
@@ -147,20 +165,15 @@ public class BasicCloud implements Cloud, Cloneable {
      * Retrieves all node managers (aka builders) available in this cloud
      * @return an <code>Iterator</code> containing all node managers
      */
-    public List getNodeManagers() {
+    public NodeManagerList getNodeManagers() {
         Vector nodeManagers = new Vector();
         for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
             MMObjectBuilder bul=(MMObjectBuilder)builders.nextElement();
             if (!(bul instanceof org.mmbase.module.builders.MultiRelations)) {
-                NodeManager nodeManager=(NodeManager)nodeManagerCache.get(bul.getTableName());
-                if (nodeManager==null) {
-                    nodeManager=new BasicNodeManager(bul, this);
-                    nodeManagerCache.put(bul.getTableName(),nodeManager);
-                }
-                nodeManagers.add(nodeManager);
+                nodeManagers.add(bul.getTableName());
             }
         }
-       return nodeManagers;
+       return new BasicNodeManagerList(nodeManagers,this);
     }
 
 	/**
@@ -173,6 +186,8 @@ public class BasicCloud implements Cloud, Cloneable {
         NodeManager nodeManager=(NodeManager)nodeManagerCache.get(nodeManagerName);
         if (nodeManager==null) {
             MMObjectBuilder bul=cloudContext.mmb.getMMObject(nodeManagerName);
+            if (bul==null)
+    	        throw new BridgeException("Node manager with name "+nodeManagerName+" does not exist.");
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }
@@ -184,7 +199,7 @@ public class BasicCloud implements Cloud, Cloneable {
      * @param nodeManagerId ID of the NodeManager to retrieve
      * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
      */
-    NodeManager getNodeManagerById(int nodeManagerId) {
+    NodeManager getNodeManager(int nodeManagerId) {
         return getNodeManager(typedef.getValue(nodeManagerId));
     }
  	
@@ -213,6 +228,19 @@ public class BasicCloud implements Cloud, Cloneable {
 
 
  	/**
+     * Retrieves a list of RelationManagers
+     * @return the RelationManagers
+     */
+    public RelationManagerList getRelationManagers() {
+        Vector v= new Vector();
+        for(Enumeration e =cloudContext.mmb.getTypeRel().search("");e.hasMoreElements();) {
+            v.add((MMObjectNode)e.nextElement());
+        }
+        return new BasicRelationManagerList(v,this);
+    }
+
+ 	
+ 	/**
      * Retrieves a RelationManager
      * @param sourceManagerName name of the NodeManager of the source node
      * @param destinationManagerName name of the NodeManager of the destination node
@@ -222,25 +250,24 @@ public class BasicCloud implements Cloud, Cloneable {
     public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
         // uses getguesed number, maybe have to fix this later
         int r=cloudContext.mmb.getRelDef().getGuessedNumber(roleName);
-        int n1=typedef.getIntValue(sourceManagerName);
-        int n2=typedef.getIntValue(destinationManagerName);
-        return getRelationManager(n1,n2,r);
-    };
-
-	/**
-     * Creates a node using a specified NodeManager
-     * The returned node will not be visible in the cloud until the commit() method is called on this node.
-     * @param nodeManagerName name of the NodeManager defining the node structure
-     * @return the newly created (but not yet committed) node
-     */
-    public Node createNode(String nodeManagerName) {
-        NodeManager nodeManager = getNodeManager(nodeManagerName);
-	    if (nodeManager==null) {
-	        return null;
-	    } else {
-            return nodeManager.createNode();
+        if (r==-1) {
+            throw new BridgeException("Role "+roleName+" does not exist.");
         }
-    }
+        int n1=typedef.getIntValue(sourceManagerName);
+        if (n1==-1) {
+            throw new BridgeException("Source type "+sourceManagerName+" does not exist.");
+        }
+        int n2=typedef.getIntValue(destinationManagerName);
+        if (n2==-1) {
+            throw new BridgeException("Destination type "+destinationManagerName+" does not exist.");
+        }
+        RelationManager rm=getRelationManager(n1,n2,r);
+        if (rm==null) {
+            throw new BridgeException("Relation manager from "+sourceManagerName+" to "+destinationManagerName+" as "+roleName+" does not exist.");
+        } else {
+            return rm;
+        }
+    };
 
 	/**	
  	 * Create unique number
@@ -258,7 +285,7 @@ public class BasicCloud implements Cloud, Cloneable {
      * @return a <code>Transaction</code> on this cloud
      */
     public Transaction createTransaction() {
-        return createTransactionByName(null);
+        return createTransaction(null);
     }
 
     /**
@@ -266,7 +293,7 @@ public class BasicCloud implements Cloud, Cloneable {
      * @param name an unique name to use for the transaction
      * @return a <code>Transaction</code> on this cloud
      */
-    public Transaction createTransactionByName(String name){
+    public Transaction createTransaction(String name){
       if (name==null) {
         name="Tran"+uniqueId();
       } else if (transactions.get(name)!=null) {
@@ -320,59 +347,54 @@ public class BasicCloud implements Cloud, Cloneable {
         }
         return account;
     }
-
-  	/**
-     * Retrieves the current user name
-     * @return the user name
-     */
-    public String getUserName() {
-        if (userName==null) {
-            throw new SecurityException("User not logged on.");
-        }
-        return userName;
-    }
-
-    /**
-     * Retrieves the current selected language
-	 * @return return the language as a <code>String</code>
-     */
-    public String getLanguage() {
-        return language;
-    };
-
-    /**
-     * Sets the current selected language
-	 * @param language the language as a <code>String</code>
-     */
-    public void setLanguage(String language) {
-        this.language=language;
-    };
   	
   	/**
      * Logs on a user.
-     * This results in an environment (a cloud) in which the user is registered.
+                 * This results in an environment (a cloud) in which the user is registered.
 	 * @param authenticatorName name of the authentication method to sue
 	 * @param parameters parameters for the authentication
 	 * @return <code>true</code> if succesful (should throw exception?)
      */
     public boolean logon(String authenticatorName, Object[] parameters) {
-        if (account!=null) {
-	        throw new SecurityException("Unsupported authentication method");
-        } else {
-	        throw new BridgeException("Invalidly obtained cloud");
-        }
+//        Authenticator authenticator = SecurityHandler.getAuthentication(authenticatorName);
+//        userContext = authenticator.verify(parameters);
+//        return userContext.isValid();
+        return false;
     }
+
+    /**
+    * Checks access rights.
+    * @param operation the operation to check (READ, WRITE, CREATE, LINK, OWN)
+    * @param nodeID the node on which to check the operation
+    * @return <code>true</code> if acces sis granted, <code>false</code> otherwise
+    */
+//    boolean check(Operation operation, int nodeID) {
+//        return securityManager.check(userContext,operation,nodeID);
+//    }
   	
+    /**
+    * Asserts access rights. throws an exception if an operation is not allowed.
+    * @param operation the operation to check (READ, WRITE, CREATE, LINK, OWN)
+    * @param nodeID the node on which to check the operation
+    */
+//    void assert(Operation operation, int nodeID) {
+//        securityManager.assert(userContext,operation,nodeID);
+//    }
+  	
+    /**
+    * initializes access rights for a newly created node
+    * @param nodeID the node to init
+    */
+    void createSecurityInfo(int nodeID) {
+//        securityManager.create(userContext,nodeID);
+    }
+
   	/**
      * Logs off a user.
      * Resets the user's context to 'anonymous'
      */
     public void logoff() {
-        if (account!=null) {
-            userName="anonymous";
-        } else {
-	        throw new BridgeException("Invalidly obtained cloud");
-        }
+//        userContext.clear();
     }
 
     /**
@@ -381,7 +403,7 @@ public class BasicCloud implements Cloud, Cloneable {
     */
     BasicCloud getCopy() {
         BasicCloud cloud=new BasicCloud(null,this);
-        cloud.userName="anonymous";
+//        cloud.userContext=new UserContext();
         cloud.account="U"+uniqueId();
         return cloud;
     }  	
@@ -409,7 +431,7 @@ public class BasicCloud implements Cloud, Cloneable {
      * @param distinct <code>True> indicates the records returned need to be distinct. <code>False</code> indicates double values can be returned.
      * @return a <code>List</code> of found (virtual) nodes
      */
-    public List search(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct) {
+    public NodeList getList(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct) {
   		StringTagger tagger= new StringTagger(
   		                    "NODES='"+nodes+"' TYPES='"+nodeManagers+"' FIELDS='"+fields+
   		                  "' SORTED='"+sorted+"' DIR='"+direction+"'",
@@ -430,27 +452,32 @@ public class BasicCloud implements Cloud, Cloneable {
 	  		
   		MultiRelations multirel = (MultiRelations)cloudContext.mmb.getMMObject("multirelations");
   		int nrfields = sfields.size();
-  		Vector retval = new Vector();
-  		if (nrfields==0) { return retval; }
   		if (where!=null) {
   		    if (where.trim().equals("")) {
   		        where = null;
   		    } else {
   		        where="WHERE "+where;
   		    }
-  		}	
+  		}
   		Vector v = multirel.searchMultiLevelVector(snodes,sfields,sdistinct,tables,where,orderVec,sdirection);
   		if (v!=null) {
-  		    NodeManager tempNodeManager=null;
+  		    NodeManager tempNodeManager = null;
+  		    if (v.size()>0) {
+  		        tempNodeManager = new VirtualNodeManager((MMObjectNode)v.get(0),this);
+  		    }
+  		    return new BasicNodeList(v,this,tempNodeManager);
+/*  		    NodeManager tempNodeManager=null;
   		    for(Enumeration nodeEnum = v.elements(); nodeEnum.hasMoreElements(); ){
   		        MMObjectNode node = (MMObjectNode)nodeEnum.nextElement();
   		        if (tempNodeManager==null) {
   		            tempNodeManager = new VirtualNodeManager(node,this);
   		        }
-                retval.addElement(new BasicNode(node,tempNodeManager));
+  		        retval.addElement(new BasicNode(node,tempNodeManager));
   		    }
-		}
-  		return retval;
+*/
+		} else {
+      		throw new BridgeException("getList failed, parameters are invalid");
+        }
     }
 
 }

@@ -92,14 +92,14 @@ public class MMNode extends MMTaglib implements BodyTag {
 			if(action!=null) {
 				if(action.toLowerCase().equals("countrelations")) {
 					if(type==null) {
-						value = ""+node.countAllRelations();
+						value = ""+node.countRelations();
 					} else {
 						value = ""+node.countRelations(type);
 					}
 				}
 				if(action.toLowerCase().equals("countrelatednodes")) {
 					if(type==null) {
-						value = ""+node.getAllRelatedNodes().size();
+						value = ""+node.getRelatedNodes().size();
 					} else {
 						//keesj:should there be a specific call in the MMCI
 						value = ""+node.countRelatedNodes(type);

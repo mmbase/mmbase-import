@@ -53,7 +53,7 @@ public class MMList extends MMTaglib
      * the start tag, and will be used to fill de return variables
      * for every iteration.
      **/
-    private Enumeration returnValues;
+    private NodeIterator returnValues;
 
     
     /**
@@ -193,7 +193,7 @@ public class MMList extends MMTaglib
     public int doStartTag() throws JspException{
 	//this is where we do the seach
 
-	Vector nodes =  new Vector();//we hope at the end of this funtion
+	NodeList nodes = null;//we hope at the end of this funtion
 	//this Vector is filled with nodes after that we create an enumeration of it
 	//and use one for each iteration
 	String nodesSearchString= (nodesString == null)? "-1" : nodesString;
@@ -210,7 +210,7 @@ public class MMList extends MMTaglib
 	    boolean multilevel = (StringSplitter(typeString,",").size() > 1)? true : false;
 	    if (multilevel){
 		action = "multilevel search";
-		nodes.addAll(getDefaultCloud().search(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct));
+		nodes = getDefaultCloud().getList(nodesSearchString,nodeManagers,searchFields,searchWhere,searchSorted,searchDirection,searchDistinct);
 	    } else {
 		boolean hasSearch = (searchWhere == null)? false: true;
 		boolean hasNode = (nodesString == null)? false: true;
@@ -224,26 +224,22 @@ public class MMList extends MMTaglib
 		    action = "search relations with start node (" + nodesString + ") using a search";
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 		    boolean direction = ("UP".equals(searchDirection))? true: false;
-		    List list = nodeManager.search(searchWhere,null,direction);
-		    if (list != null){
-			nodes.addAll(list);
-		    }
+		    nodes= nodeManager.getList(searchWhere,null,direction);
 		} else if (hasNode){
 		    action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
 		    try {
-			Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
-			nodes.addAll(node.getRelatedNodes(typeString));
+			    Node node  = getDefaultCloud().getNode(Integer.parseInt(searchNodes));
+			    nodes= node.getRelatedNodes(typeString);
 		    } catch(Exception e) {
 			Node node  = getDefaultCloud().getNodeByAlias(searchNodes);
 			System.out.println("NODES="+node.getRelatedNodes(typeString));
-			nodes.addAll(node.getRelatedNodes(typeString));
+			nodes= node.getRelatedNodes(typeString);
 		    }
 		} else { 
 		    action = "list all objects of type("+ typeString + ")";
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
 		    boolean direction = ("UP".equals(searchDirection))? true: false;
-		    List list = nodeManager.search(null,null,direction);
-		    nodes.addAll(list);
+		    nodes= nodeManager.getList(null,null,direction);
 		}
 	    }
 	} catch (NullPointerException npe){
@@ -256,20 +252,19 @@ public class MMList extends MMTaglib
 	    try {
 		int max = Integer.parseInt(maxString);
 		if (max < nodes.size()){
-		    //very bag coding
-		    returnValues = new Vector(nodes.subList(0,max)).elements();
+		    returnValues = nodes.subList(0,max).iterator();
 		}else {
-		    returnValues = nodes.elements();
+		    returnValues = nodes.iterator();
 		}
 	    } catch (NumberFormatException e){
 		throw new JspException ("MAX Field in tag is no a number");
 	    }
 	} else {
-	    returnValues = nodes.elements();
+	    returnValues = nodes.iterator();
 	}
 	// if we get a result from the query 
 	// evaluate the body , else skip the body
-	if (returnValues.hasMoreElements())
+	if (returnValues.hasNext())
 	    return EVAL_BODY_TAG;
 	return SKIP_BODY;
     }
@@ -281,7 +276,7 @@ public class MMList extends MMTaglib
     
     public int doAfterBody() throws JspException {
 	try {
-	    if (returnValues.hasMoreElements()){
+	    if (returnValues.hasNext()){
 		fillVars();
 		return EVAL_BODY_TAG;
 	    } else {
@@ -294,8 +289,8 @@ public class MMList extends MMTaglib
     }
 
     private void fillVars(){
-	if (returnValues.hasMoreElements()){
-	    Node node = (Node)returnValues.nextElement();
+	if (returnValues.hasNext()){
+	    Node node = (Node)returnValues.next();
 	    String prefix = getPrefix();
 	    Enumeration returnFieldEnum = StringSplitter(fieldsString,",").elements();
 	    int j=1;	
