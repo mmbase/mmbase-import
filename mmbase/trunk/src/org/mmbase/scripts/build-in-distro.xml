@@ -273,6 +273,9 @@ about the Ant build tool.
     <chmod perm="+x" file="${dist.scripts}/createjar"/>
     <chmod perm="+x" file="${dist.scripts}/oriondoc"/>
     <chmod perm="+x" file="${dist.scripts}/startorion"/>
+    <chmod perm="+x" file="${dist.scripts}/tomcat_mmbase.sh"/>
+    <chmod perm="+x" file="${dist.scripts}/startup_tomcat_mmbase.sh"/>
+    <chmod perm="+x" file="${dist.scripts}/shutdown_tomcat_mmbase.sh"/>
 
     <!-- copy the javadocs -->
     <copydir src="${build.javadocs}" dest="${dist.docs}/api"/>
