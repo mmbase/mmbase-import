@@ -34,9 +34,11 @@ import org.mmbase.util.logging.Logging;
 public class TransactionTag extends ContextTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
-    private Transaction transaction;
-      
+    private Transaction transaction;     
     private static boolean commit = true;
+    
+    private String name = null;
+    
     public void setCommitOnClose(boolean c) {
         commit = c;
     }
@@ -44,6 +46,10 @@ public class TransactionTag extends ContextTag implements CloudProvider {
     public Cloud getCloudVar() throws JspTagException {
         return transaction;
     }  
+
+    public void setName(String s) {
+        name = s;
+    }
 
     /* if you don't extend from Sequence:
     public void  registerNode(String id, Node n) {
@@ -58,7 +64,8 @@ public class TransactionTag extends ContextTag implements CloudProvider {
     *  Creates the transaction.
     */
     public int doStartTag() throws JspTagException{
-        transaction = findCloudProvider().getCloudVar().getTransaction(getId());
+        transaction = findCloudProvider().getCloudVar().getTransaction(name);
+        pageContext.setAttribute(getId(), transaction);
         return EVAL_BODY_TAG;
     }
   
