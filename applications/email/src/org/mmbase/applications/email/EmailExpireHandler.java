@@ -10,17 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.email;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
+import java.util.Iterator;
 
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
@@ -31,10 +24,7 @@ import org.mmbase.util.logging.Logger;
 public class EmailExpireHandler implements Runnable {
 
     // logger
-    static private Logger log = Logging.getLoggerInstance(EmailExpireHandler.class.getName()); 
-
-    // thread
-    Thread kicker = null;
+    static private Logger log = Logging.getLoggerInstance(EmailExpireHandler.class);
 
     // sleeptime between expire runs in seconds
     int sleeptime;
@@ -45,83 +35,44 @@ public class EmailExpireHandler implements Runnable {
     // parent builder needed for callbacks
     EmailBuilder parent;
 
-
+    Thread kicker = null;
     /**
     *  create a handler with sleeptime and expiretime
     */
-    public EmailExpireHandler(EmailBuilder parent,int sleeptime,int expiretime) {
-	this.parent=parent;
-        this.sleeptime=sleeptime;
-        this.expiretime=expiretime;
-        init();
+    public EmailExpireHandler(EmailBuilder parent, int sleeptime, int expiretime) {
+        this.parent = parent;
+        this.sleeptime = sleeptime;
+        this.expiretime = expiretime;
+        kicker = new Thread(this, "emailexpireprobe");
+        kicker.setDaemon(true);
+        kicker.start();
     }
 
     /**
-    * init()
+    * Main loop, exception protected
     */
-    public void init() {
-        this.start();    
-    }
-
-
-    /**
-     * Starts the main Thread.
-     */
-    public void start() {
-        /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this,"emailexpireprobe");
-            kicker.start();
-        }
-    }
-    
-    /**
-     * Stops the main Thread.
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.setPriority(Thread.MIN_PRIORITY);  
-        kicker.suspend();
-        kicker.stop();
-        kicker = null;
-    }
-
-    /**
-     * Main loop, exception protected
-     */
-    public void run () {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
-        while (kicker!=null) {
-            try {
-                doWork();
-            } catch(Exception e) {
-                log.error("run(): ERROR: Exception in emailqueueprobe thread!");
-                log.error(Logging.stackTrace(e));
+    public void run() {
+        try {
+            while (kicker != null) {
+                // get the nodes we want to expire
+                for (Iterator i = parent.getDeliveredMailOlderThan(expiretime).iterator(); i.hasNext(); ) {
+                    // get next node
+                    MMObjectNode expirenode = (MMObjectNode)i.next();
+                    // remove all its relations
+                    expirenode.removeRelations();
+                    // remove the node itself, by asking its builder
+                    parent.removeNode(expirenode);
+                }
+                try {
+                    Thread.sleep(sleeptime * 1000);
+                } catch (InterruptedException f) {
+                    return;
+                }
             }
+        } catch (Exception e) {
+            log.error("run(): ERROR: Exception in emailqueueprobe thread!");
+            log.error(Logging.stackTrace(e));
+            return;
         }
     }
-
-    /**
-     * Main work loop
-     */
-    public void doWork() {
-        kicker.setPriority(Thread.MIN_PRIORITY+1);  
-
-        while (kicker!=null) {
-		// get the nodes we want to expire
-        	Enumeration e=parent.getMailedOlderThen(expiretime);
-   		while (e.hasMoreElements()) {
-			// get next node 
-			MMObjectNode expirenode=(MMObjectNode)e.nextElement();
-	
-			// remove all its relations
-			expirenode.removeRelations();
-
-			// remove the node itself, by asking its builder
-			parent.removeNode(expirenode);
-		}
-            	try {Thread.sleep(sleeptime*1000);} catch (InterruptedException f){}
-        }
-    }
-
 }
