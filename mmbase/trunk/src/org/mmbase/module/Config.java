@@ -21,6 +21,7 @@ import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.config.*;
 
 
@@ -55,9 +56,13 @@ import org.mmbase.config.*;
  *    which has no arguments.
  *
  *
- * @version $Id: Config.java,v 1.11 2000-09-11 20:19:21 case Exp $
+ * @version $Id: Config.java,v 1.12 2001-03-06 16:17:35 pierre Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.11  2000/09/11 20:19:21  case
+ * cjr: Added processing of $MOD-Config-REPORT, which displays a report on
+ *      the configuration, including error notifications, possibly with hints
+ *
  * Revision 1.10  2000/08/27 22:30:02  daniel
  * small change for mmdemo
  *
@@ -77,10 +82,11 @@ import org.mmbase.config.*;
  * - Add code for fault oriented results, rather than directory oriented results
  */
 public class Config extends ProcessorModule {
+	// debug routines
+	private static Logger log = Logging.getLoggerInstance(Config.class.getName());
     private String classname = getClass().getName();
     private String configpath;
 
-    private static boolean debug = false;
 
     class ParseResult {
 
@@ -127,9 +133,7 @@ public class Config extends ProcessorModule {
                 resultList = new Vector();
                 resultList.addElement(err);
 
-                if (debug) {
-                    debug("ParseResult error: "+e.getMessage());
-                }
+                log.warn("ParseResult error: "+e.getMessage());
             }
         }
 
@@ -178,11 +182,11 @@ public class Config extends ProcessorModule {
             parser.setFeature("http://xml.org/sax/features/validation",false);
             parser.setFeature("http://xml.org/sax/features/namespaces",false);
         } catch (SAXNotSupportedException ex) {
-            debug("Config::databaseIsActive: failed because parser doesn't support feature");
+            log.error("Config::databaseIsActive: failed because parser doesn't support feature");
             ex.printStackTrace();
         }
         catch (SAXNotRecognizedException ex) {
-            debug("Config::databaseIsActive(): failed because parser didn't recognize feature");
+            log.error("Config::databaseIsActive(): failed because parser didn't recognize feature");
             ex.printStackTrace();
         }
         // create new ContentHandler and let the parser use it
@@ -387,8 +391,8 @@ public class Config extends ProcessorModule {
      * Execute the commands provided in the form values
      */
     public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-        debug("CMDS="+cmds);
-        debug("VARS="+vars);
+        log.debug("CMDS="+cmds);
+        log.debug("VARS="+vars);
         return(false);
     }
 
@@ -436,7 +440,7 @@ public class Config extends ProcessorModule {
         try {
             builderList = listDirectory(configpath+File.separator+"builders");
         } catch (IOException e) {
-            debug("Error reading builder directory: "+e.getMessage());
+            log.error("Error reading builder directory: "+e.getMessage());
             builderList = new Vector();
         }
         String buildername, path;
@@ -489,11 +493,6 @@ public class Config extends ProcessorModule {
         return("Analysis of mmbase configuration, cjr@dds.nl");
     }
 
-
-    private void debug( String msg ) {
-        System.out.println( classname +":"+msg );
-    }
-
     /*
      * @param out PrintWriter to http result
      * @param path Path to the builder file
@@ -522,7 +521,7 @@ public class Config extends ProcessorModule {
     protected int checkXMLOk(String path) {
         ParseResult pr = new ParseResult(path);
         if (!pr.hasDTD()) {
-            //System.out.println("checkXMLOk[nodtd] - 0");
+            //log.debug("checkXMLOk[nodtd] - 0");
             return 0;
         } else {
             for (int i=0; i<pr.getResultList().size();i++) {
