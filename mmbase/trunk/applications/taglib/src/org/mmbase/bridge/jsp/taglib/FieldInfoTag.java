@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.containers.*;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -18,6 +19,7 @@ import java.util.Enumeration;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -39,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.63 2003-05-26 15:17:27 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.64 2003-07-28 20:01:18 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -86,6 +88,8 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
     public void setType(String t) throws JspTagException {
         type = getAttribute(t);
     }
+
+    protected Attribute container  = Attribute.NULL; // not implemented
 
 
     // Must be protected because otherwise tomcat does not work
@@ -270,9 +274,17 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_SEARCHINPUT:
             show = htmlInput(node, field, true);
             break;
-        case TYPE_USESEARCHINPUT:
-            show = whereHtmlInput(field);
+        case TYPE_USESEARCHINPUT: {
+            NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+            if (c == null) { // produce a String to use in a constraint attribute of a list (legacy)
+                show = whereHtmlInput(field);
+            } else {
+                Query query = c.getQuery();
+                show = whereHtmlInput(field, query);
+            }
+
             break;
+        }
         case TYPE_TYPE:
             show = "" + field.getType();
             break;
@@ -309,10 +321,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                     value = node.getStringValue(field.getName());
                 }
             }
-            if (log.isDebugEnabled()) {
-                log.debug("field " + field.getName() + " gui type: " + field.getGUIType() +
-                          "  value: " + value);
-            }
+            log.debug("field " + field.getName() + " gui type: " + field.getGUIType() + "  value: " + value);
         }
         return getTypeHandler(field.getType()).htmlInput(node, field, search);
     }
@@ -333,6 +342,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      */
     private String whereHtmlInput(Field field) throws JspTagException {
         return getTypeHandler(field.getType()).whereHtmlInput(field);
+    }
+
+
+    private String whereHtmlInput(Field field, Query query) throws JspTagException {
+        return getTypeHandler(field.getType()).whereHtmlInput(field, query);
     }
 
 
