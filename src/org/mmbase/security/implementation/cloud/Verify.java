@@ -172,7 +172,7 @@ public class Verify extends Authorization {
 	log.info("[node #"+nodeid+"] context set ["+user.getIdentifier()+"]");		
     }
 	
-    public java.util.HashSet getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public java.util.Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
 	// retrieve all the users....
 	org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
         builder =  (UserBuilder)mmb.getMMObject("mmbaseusers");		

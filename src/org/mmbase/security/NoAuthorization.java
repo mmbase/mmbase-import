@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.module.core.MMObjectNode;
-
+import java.util.Set;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 /**
@@ -89,7 +88,7 @@ public class NoAuthorization extends Authorization {
     /** 
      * This method does nothing, except from returning a dummy value
      */        
-    public java.util.HashSet getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
+    public Set getPossibleContexts(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
     	java.util.HashSet contexts = new java.util.HashSet();
 	contexts.add(EVERYBODY);
 	return contexts;
