@@ -20,27 +20,16 @@ import org.mmbase.util.logging.Logging;
 import javax.servlet.http.*;
 
 /**
- * The MediaFragment object specifies a piece of media. This can be audio, or video.
- * A mediafragment contains a title, description of the media and also information about
- * the source. A mediapart will have relations with mediasources which are the actual
+ * The MediaFragment builder describes a piece of media. This can be audio, or video.
+ * A media fragment contains a title, description, and more information about the media fragment.
+ * A media fragment will have relations with mediasources which are the actual
  * files in different formats (mp3, real, etc.)
  *
- * INFO:
- * The classification stuff is added for backwards compatibility for the VPRO. This is
- * already deprecated and will be removed in new versions.
- *
- * Caching will be handled in caching package, and will be implemented in the end.
- *
- * Add functionality for mediapart -> mediapart -> raws. This is done in the VPRO
- * audio/video builder by making a source EXCERPT, we will solve this with a relation
- * from one audiopart to another one.
- *
- * This builder is work in progress,
- * Please if you have more comments add them here.
+ * The classification, and replace methods are added for backwards compatibility.
  *
  * @author Rob Vermeulen (VPRO)
- * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.4 2003-02-05 15:05:27 michiel Exp $
+ * @author Michiel Meeuwissen (NOS)
+ * @version $Id: MediaFragments.java,v 1.5 2003-02-05 15:25:02 rob Exp $
  * @since MMBase-1.7
  */
 
@@ -259,8 +248,6 @@ public class MediaFragments extends MMObjectBuilder {
         }
     }
     
-
-
     /**
      * Find the most appropriate media source
      * @param mediafragment a media fragment
