@@ -18,7 +18,7 @@ import java.util.Iterator;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  */
-public abstract class NodeTest extends BridgeTest {
+public abstract class NodeTest extends org.mmbase.tests.BridgeTest {
     Node node;
     String[] fieldTypes = {"byte", "double", "float", "int", "long", "string"};
 
