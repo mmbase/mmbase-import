@@ -8,8 +8,11 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: ServiceBuilder.java,v 1.12 2001-02-15 14:59:46 vpro Exp $
+$Id: ServiceBuilder.java,v 1.13 2001-02-22 13:41:13 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.12  2001/02/15 14:59:46  vpro
+Davzev: Added debug and comments and changed doClaim() which now retrieves the selected tracknr from the SESSION variable name:serviceobj#TRACKNR.
+
 Revision 1.11  2000/12/20 16:33:00  vpro
 Davzev: added changed some debug
 
@@ -34,7 +37,7 @@ import org.mmbase.module.sessionInfo;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.12 $ $Date: 2001-02-15 14:59:46 $
+ * @version $Revision: 1.13 $ $Date: 2001-02-22 13:41:13 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -49,6 +52,8 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	private sessionsInterface sessions; 
 
 	public boolean init() {
+		// Initializing builder.
+		super.init();
 		MMServers bul=(MMServers)mmb.getMMObject("mmservers");
 		if (bul!=null) {
 			bul.setCheckService(getTableName());
@@ -56,6 +61,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 			if (debug) debug("setTableName("+tableName+"): ERROR: mmservers not found!");
 		}
 
+		// Used for retrieving selected cdtrack.
 		sessions = (sessionsInterface) org.mmbase.module.Module.getModule("SESSION");
 		return true;
 	}
