@@ -4,19 +4,23 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
  <xsl:output method="xml" omit-xml-declaration="yes"  />
-<!-- main entry point -->
+
+<!-- some configuration -->
 <xsl:variable name="extendscolor">blue</xsl:variable>
 <xsl:variable name="attrcolor">green</xsl:variable>
 <xsl:variable name="reqcolor">red</xsl:variable>
 
 
+<!-- main entry point -->
 <xsl:template match="taglib">
   <html>
     <head>
-      <title>MMBase taglib documentation</title>
+      <title>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</title>
       <xsl:if test="@author"><meta name="Author" value="{@author}"/></xsl:if>
     </head>
-<body marginwidth="0" marginheight="0" leftmargin="0" rightmargin="0" topmargin="0" bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+      <body marginwidth="0" marginheight="0" leftmargin="0" rightmargin="0" topmargin="0"
+        bgcolor="#FFFFFF" text="#336699" link="#336699" vlink="#336699" alink="#336699">
+        <h1>MMBase taglib <xsl:value-of select="tlibversion" /> documentation</h1>
       <table width="100%" cellpadding="5">
         <tr>
           <td width="30"></td>
@@ -69,19 +73,21 @@
           <td>
             <a name="docinfo"/>
             <p>
-            This document lists the current tags implemented for MMBase.
+            This document lists the current tags implemented for MMBase (version <xsl:value-of
+            select="/taglib/tlibversion" />)
 	    </p>
-            <p>Attributes in <font color="{$reqcolor}"><xsl:value-of select="$reqcolor" /></font> are
-            required.
+            <p>
+                Attributes in <font color="{$reqcolor}"><xsl:value-of select="$reqcolor" /></font> are
+                required.
 	    </p>
-	    <p>If an attribute can refer to the context, then any occurences of the format
-	        ${x}, where x is the name of a context atribute, will be replaced by
-	        the value of that attribute.
-	        If the attribute is not defined the tag will throw an exception.
-	    </p>	
+              <p>
+                <font color="{$extendscolor}"><xsl:value-of select="$extendscolor" /></font> entries
+                are no tags, but describe a group of tags. Tags can belong to several groups.
+              </p>
 	    <p>
-            If a tag definition contains a body section this means that the
-            tag might do something with the content of the body.</p>
+                If a tag definition contains a body section this means that the
+                tag might do something with the content of the body.
+              </p>
           </td>
           <td></td>
         </tr>
@@ -94,6 +100,13 @@
   <a href="#{name}">
    <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
+  </a>
+  <xsl:if test="position() != last()"> | </xsl:if>
+</xsl:template>
+
+<xsl:template match="see">
+  <a href="#{.}">
+      <xsl:value-of select="." />
   </a>
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
@@ -116,6 +129,14 @@
         </p>
       </td>
     </tr>
+    <xsl:if test="see">
+      <tr>
+        <td width="100" valign="top">see also</td>
+        <td>
+          <xsl:apply-templates select="see"  />
+        </td>
+      </tr>
+    </xsl:if>
     <xsl:if test="attribute">
       <tr>
         <td width="100" valign="top">attributes</td>
@@ -124,7 +145,7 @@
         </td>
       </tr>
     </xsl:if>
-	<xsl:apply-templates select="extends" />
+    <xsl:apply-templates select="extends" />
     <xsl:if test="xxbodycontent">
       <tr>
         <td width="100" valign="top">body</td>
@@ -137,7 +158,7 @@
     </xsl:if>       
 	<xsl:if test="name()='taginterface'">
 	<tr>
-    <td>Tags of this type</td><td>
+    <td>tags of this type</td><td>
       <xsl:variable name="n" select="name" />
       <xsl:apply-templates select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" mode="toc" ><xsl:sort select="name" /></xsl:apply-templates>
      </td>
