@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.8 2004-10-28 19:52:44 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.9 2004-10-29 13:45:29 michiel Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */
@@ -147,7 +147,7 @@ public abstract class ResourceWatcher implements MMBaseObserver {
                 }
             } else {
                 MMObjectNode node = ResourceLoader.resourceBuilder.getNode(number);
-                String name = node.getStringValue(Resources.RESOURCENAME_FIELD);
+                String name = node.getStringValue(Resources.RESOURCENAME_FIELD).substring(resourceLoader.getContext().getPath().length() - 1);
                 if (resources.contains(name)) {
                     if (ctype.equals("n")) {
                         log.service("Resource " + name + " changed (node added)");
