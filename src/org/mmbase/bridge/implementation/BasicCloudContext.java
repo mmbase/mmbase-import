@@ -24,7 +24,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.25 2002-09-23 10:44:53 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.26 2002-09-25 14:57:47 pierre Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -85,7 +85,7 @@ public class BasicCloudContext implements CloudContext {
     }
 
     public ModuleList getModules() {
-        ModuleList ml=new BasicModuleList(localModules.values(),this);
+        ModuleList ml=new BasicModuleList(localModules.values());
         return ml;
     }
 
@@ -143,9 +143,36 @@ public class BasicCloudContext implements CloudContext {
         return mmb.getEncoding();
     }
 
-
     public java.util.Locale getDefaultLocale() {
         return new java.util.Locale(mmb.getLanguage(), "");
+    }
+
+    public FieldList createFieldList() {
+        return new BasicFieldList();
+    }
+    
+    public NodeList createNodeList() {
+        return new BasicNodeList();
+    }
+    
+    public RelationList createRelationList() {
+        return new BasicRelationList();
+    }
+    
+    public NodeManagerList createNodeManagerList() {
+        return new BasicNodeManagerList();
+    }
+    
+    public RelationManagerList createRelationManagerList() {
+        return new BasicRelationManagerList();
+    }
+    
+    public ModuleList createModuleList() {
+        return new BasicModuleList();
+    }
+    
+    public StringList createStringList() {
+        return new BasicStringList();
     }
 
 }

@@ -21,16 +21,15 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.14 2002-09-23 14:31:03 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.15 2002-09-25 14:57:48 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
     protected Cloud cloud;
     protected NodeManager nodemanager = null;
     
-    BasicNodeList(Cloud cloud) {
+    BasicNodeList() {
         super();
-        this.cloud=cloud;
     }
 
     BasicNodeList(Collection c, Cloud cloud) {
