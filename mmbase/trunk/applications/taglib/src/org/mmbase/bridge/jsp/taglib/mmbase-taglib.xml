@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.182 2003-08-05 18:42:55 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.183 2003-08-06 19:43:06 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1645,6 +1645,7 @@ access the value of title:
     <info>
       Gets the function value of function `name' from node `node' (can also be list).
     </info>
+    <since>MMBase-1.7</since>
     <see tag="fieldinfo" />
     <see tag="fieldlist" />
     <see tag="node" />
@@ -1931,6 +1932,14 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
       <examplevalue>
         <value>people</value>
       </examplevalue>
+    </attribute>
+    <attribute>
+      <name>makeuniques</name>     
+      <required>false</required>
+      <info>
+        Whether the unique keys must be filled on creation.
+      </info>
+      <since>MMBase-1.7</since>
     </attribute>
     <example>
     &lt;mm:createnode type="news" id="new_news"&gt;
@@ -2971,6 +2980,7 @@ like the parameter list or the session (where ever it is available) --&gt;
           List of values. Compare is done with each, and total result if one of them evaluates true.
           The value to which you want to compare, this is always a String.
       </info>
+      <since>MMBase-1.7</since>
     </attribute>
     <attribute>
       <name>referid2</name>
@@ -3275,6 +3285,22 @@ like the parameter list or the session (where ever it is available) --&gt;
         If specified only the number of relations to the type of nodes
         specified by this attribute are returned.
       </info>
+    </attribute>
+    <attribute>
+      <name>searchdir</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+      </info>
+      <since>MMBase-1.7</since>
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+      </info>
+      <since>MMBase-1.7</since>
     </attribute>
     <example>
 &lt;mm:listnodes type="list"&gt;
@@ -3976,6 +4002,7 @@ The 0 is just counter, which starts at 0 on every page.
        The content tag is meant to put around your whole page, and set general properties, like
        language, taglib behaviour, content type.
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>language</name>
       <required>false</required>
@@ -4077,6 +4104,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Surrounds a function tag, provides a container for parameters and function results.
     </info>
+    <since>MMBase-1.7</since>
   </tag>
   <tag>
     <name>listnodescontainer</name>
@@ -4085,6 +4113,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Surrounds a listnodes tag and provides a query object.
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>type</name>
       <required>true</required>
@@ -4101,6 +4130,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Surrounds a list tag and  provides a query object.
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>path</name>
       <required>true</required>
@@ -4118,6 +4148,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Surrounds a (node) list tag, provides a query object, and can contain the result.
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>field</name>
       <required>true</required>
@@ -4149,6 +4180,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Surrounds a (node) list tag, provides a query object, and can contain the result.
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>field</name>
       <required>false</required>
@@ -4163,6 +4195,7 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
           Minimal age of the object in days.
       </info>
+    <since>MMBase-1.7</since>
     </attribute>
     <attribute>
       <name>maxage</name>
@@ -4181,6 +4214,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       Limits the node list number of iterations.
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>value</name>
       <required>true</required>
@@ -4199,6 +4233,7 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>value</name>
       <required>true</required>
@@ -4217,15 +4252,22 @@ The 0 is just counter, which starts at 0 on every page.
     <info>
       
     </info>
+    <since>MMBase-1.7</since>
   </tag>
 
 
   <tag>
     <name>stringlist</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.StringList</tagclass>
+    <type>mmbase.list</type>
+    <extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>listprovider</extends>
+    <extends>contextreader</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.StringListTag</tagclass>
     <info>
       
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>referid</name>
       <required>true</required>
@@ -4240,10 +4282,16 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>previousbatches</name>
+    <type>mmbase.list</type>
+    <extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>listprovider</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListPreviousBatchesTag</tagclass>
     <info>
       
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>max</name>
       <required>false</required>
@@ -4252,15 +4300,23 @@ The 0 is just counter, which starts at 0 on every page.
 
       </info>
     </attribute>
+
   </tag>
 
 
   <tag>
     <name>nextbatches</name>
+    <type>mmbase.list</type>
+    <extends>nodereferrer</extends>
+    <extends>writer</extends>
+    <extends>listprovider</extends>
+    <extends>contextreader</extends>
+
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListNextBatchesTag</tagclass>
     <info>
       
     </info>
+    <since>MMBase-1.7</since>
     <attribute>
       <name>max</name>
       <required>false</required>
