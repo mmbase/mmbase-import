@@ -113,8 +113,17 @@
 </pre>
  <p><em>With mm:include (UTF-8 xml<mm:compare referid="cite" value="true">, Cite</mm:compare>):</em></p>
 <pre>
-<mm:include page="included8.xml" escape="text/xml" cite="$cite" />
+<mm:include page="included8.xml"  escape="text/xml" cite="$cite" />
 </pre>
+ <p><em>With mm:include (iso-8859-1 xml.jsp<mm:compare referid="cite" value="true">, Cite</mm:compare>):</em></p>
+<pre>
+<mm:include page="included1.xml.jsp" escape="text/xml"  />
+</pre>
+ <p><em>With mm:include (UTF-8 xml.jsp<mm:compare referid="cite" value="true">, Cite</mm:compare>):</em></p>
+<pre>
+<mm:include page="included8.xml.jsp"  escape="text/xml" />
+</pre>
+
 <p><em>With mm:include ('external' iso-8859-1 xml): </em></p>
 <pre>
 <mm:include page="<%= thisDir + "included1.xml"%>" escape="text/xml" />
@@ -122,6 +131,14 @@
  <p><em>With mm:include ('external' UTF-8 xml):</em></p>
 <pre>
 <mm:include page="<%= thisDir + "included8.xml"%>" escape="text/xml" />
+</pre>
+<p><em>With mm:include ('external' iso-8859-1 xml.jsp): </em></p>
+<pre>
+<mm:include page="<%= thisDir + "included1.xml.jsp"%>" escape="text/xml" />
+</pre>
+ <p><em>With mm:include ('external' UTF-8 xml.jsp):</em></p>
+<pre>
+<mm:include page="<%= thisDir + "included8.xml.jsp"%>" escape="text/xml" />
 </pre>
 <mm:log>jsp:include-ing XML's</mm:log>
       <p><em>With jsp:include (iso-8859-1 xml):</em></p>
@@ -138,6 +155,24 @@
 <mm:log>i8</mm:log>
 <% try { %>
 <mm:import id="i8"><jsp:include page="included8.xml"  /></mm:import><mm:write referid="i8" escape="text/xml" />
+</pre>
+      <p><em>With jsp:include (iso-8859-1 xml.jsp):</em></p>
+<pre>
+<% } catch (Exception e) { %> 
+<p>Did not work (<%=e.toString()%>)</p>
+<% } %>
+<% try { %>
+<mm:import id="i1j"><jsp:include page="included1.xml.jsp"  /></mm:import><mm:write referid="i1j" escape="text/xml" />
+<% } catch (Exception e) { %> 
+<p>Did not work (<%=e.toString()%>)</p>
+<% } %>
+</pre>
+   
+  <p><em>With jsp:include (UTF-8 xml.jsp):</em></p>
+<pre>
+<mm:log>i8j</mm:log>
+<% try { %>
+<mm:import id="i8j"><jsp:include page="included8.xml.jsp"  /></mm:import><mm:write referid="i8j" escape="text/xml" />
 <% } catch (Exception e) { %> 
 <p>Did not work (<%=e.toString()%>)</p>
 <% } %>
