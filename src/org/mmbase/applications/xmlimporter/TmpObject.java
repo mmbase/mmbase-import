@@ -16,13 +16,10 @@ package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
 import org.mmbase.module.Module;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.TemporaryNodeManager;
-import org.mmbase.module.core.TemporaryNodeManagerInterface;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A TmpObject represents a temporary object in a transaction.
@@ -31,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.3 2002-02-27 16:54:26 pierre Exp $
+ * @version $Id: TmpObject.java,v 1.4 2003-01-09 17:48:02 robmaris Exp $
  */
 public class TmpObject {
 
@@ -138,11 +135,20 @@ public class TmpObject {
 
     /**
      * Sets field of the temporary node represented by this TmpObject instance.
+     * If the value is a <code>String</code> and the type of the field is 
+     * {@link org.mmbase.module.corebuilders.FieldDefs#TYPE_BYTE TYPE_BYTE},
+     * the string is decoded to bytes using Base64.
      * @param name The field name.
      * @param value The field value.
      */
     public void setField(String name, Object value) {
-        node.setValue(name, value);
+       // Decode string for binary field to byte-array using Base64.
+       if (node.getDBType(name) == FieldDefs.TYPE_BYTE 
+       && value instanceof String) {
+          String strValue = (String) value;
+          value = Base64.decodeToBytes(strValue);
+       }
+       node.setValue(name, value);
     }
 
     /**
