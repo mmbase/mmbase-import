@@ -65,9 +65,8 @@ public class Urls extends MMObjectBuilder {
 	}
 	
 	
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-        super.nodeLocalChanged(number,builder,ctype);
-		if (builder.equals(tableName)) {
+	private boolean nodeChanged(String number,String builder,String ctype) {
+        if (builder.equals(tableName)) {
 			int nr = Integer.parseInt(number);
 			debug("Removing "+number+" from jumper cache");
 			Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
@@ -75,6 +74,16 @@ public class Urls extends MMObjectBuilder {
 			else jumpers.delJumpCache(number);
 		}
 		return true;
+	}
+
+	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+        super.nodeLocalChanged(number,builder,ctype);
+		return nodeChanged( number, builder, ctype);
+	}
+
+	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
+        super.nodeRemoteChanged(number,builder,ctype);
+		return nodeChanged( number, builder, ctype);
 	}
 
 }
