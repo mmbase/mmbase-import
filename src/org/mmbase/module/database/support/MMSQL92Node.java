@@ -13,7 +13,6 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
-import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.82 2004-06-15 21:20:36 robmaris Exp $
+ * @version $Id: MMSQL92Node.java,v 1.83 2004-09-23 11:30:52 pierre Exp $
  */
 public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
 
@@ -138,12 +137,12 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
      * @since MMBase-1.6
      * @param parent the parent builder to register
      * @param child the builder to register as the parent's child
-     * @throws UnsupportedDatabaseOperationException when the databse layer does not allow extension of this builder
+     * @throws UnsupportedOperationException when the databse layer does not allow extension of this builder
      */
     public void registerParentBuilder(MMObjectBuilder parent, MMObjectBuilder child)
-        throws UnsupportedDatabaseOperationException {
+        throws UnsupportedOperationException {
         if (!isAllowedParentBuilder(parent)) {
-            throw new UnsupportedDatabaseOperationException("Cannot extend the builder with name "+parent.getTableName());
+            throw new UnsupportedOperationException("Cannot extend the builder with name "+parent.getTableName());
         }
     }
 
