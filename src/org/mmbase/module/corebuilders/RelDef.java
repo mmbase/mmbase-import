@@ -12,6 +12,8 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.module.core.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * RelDef ,one of the meta stucture nodes, is used to define the possible relation types.
@@ -43,10 +45,12 @@ import org.mmbase.module.core.*;
  */
 
 public class RelDef extends MMObjectBuilder {
-    
+
+    private static Logger log = Logging.getLoggerInstance(RelDef.class.getName());
+
     /** Value of "dir" field indicating unidirectional relations. */
     public final static int DIR_UNIDIRECTIONAL = 1;
-    
+
     /** Value of "dir" field indicating bidirectional relatios. */
     public final static int DIR_BIDIRECTIONAL = 2;
 
@@ -229,6 +233,14 @@ public class RelDef extends MMObjectBuilder {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
+        // check RelDef for duplicates
+        String sname=node.getStringValue("sname");
+        String dname=node.getStringValue("dname");
+        if (getNumberByName(sname+'/'+dname)!=-1) {
+            log.error("The reldef with sname="+sname+" and dname="+dname+" already exists");
+            throw new RuntimeException("The reldef with sname="+sname+" and dname="+dname+
+                                        " already exists");
+        }
         int number=super.insert(owner,node);
         if (number!=-1) {
             addToCache(node);
@@ -300,10 +312,10 @@ public class RelDef extends MMObjectBuilder {
                 switch (node.getIntValue("dir")) {
                     case DIR_BIDIRECTIONAL:
                         return "bidirectional";
-                        
+
                     case DIR_UNIDIRECTIONAL:
                         return "unidirectional";
-                        
+
                     default:
                         return "unknown";
                 }
