@@ -239,7 +239,9 @@ public class EditStateNode {
 	}
 
 	public void delRelationTable() {
-		debug("delRelationTable(): Del on relation table, here not implemented!");
+		if (debug) {
+			debug("delRelationTable(): Del on relation table, here not implemented!");
+		}
 	}
 
 	/**
