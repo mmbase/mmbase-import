@@ -32,9 +32,9 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.23 2003-09-23 13:38:30 michiel Exp $
- * @see    org.mmbase.security.implementation.cloudcontext.Verify;
- * @see    org.mmbase.security.Authorization;
+ * @version $Id: Contexts.java,v 1.24 2003-11-03 13:20:25 michiel Exp $
+ * @see    org.mmbase.security.implementation.cloudcontext.Verify
+ * @see    org.mmbase.security.Authorization
  */
 public class Contexts extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Contexts.class);
@@ -249,17 +249,16 @@ public class Contexts extends MMObjectBuilder {
         */
 
         // when it is our user node, and you are this user, you may do anything on it (change password)
-        if (builder instanceof Users) {
-            if (user.getNode().equals(node))
-                if ((operation == Operation.READ || operation == Operation.WRITE)) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("May always " + operation + " on own user node: " + nodeId);
-                    }
-                    return true;
+        if (isOwnNode(user, node)) {
+            if ((operation == Operation.READ || operation == Operation.WRITE)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("May always " + operation + " on own user node: " + nodeId);
                 }
+                return true;
+            }
             if (operation == Operation.DELETE || operation == Operation.CHANGECONTEXT) {
-                // may not delete/give away own user.
-                return false;
+                    // may not delete/give away own user.
+                    return false;
             }
         }
 
@@ -267,6 +266,15 @@ public class Contexts extends MMObjectBuilder {
         MMObjectNode contextNode = getContextNode(node); // the mmbasecontext node associated with this node
 
         return mayDo(user, contextNode, operation);
+    }
+
+    /**
+     * Returns wether the given node is an 'own' node. It should return true if the node is representing the mmbaseusers object which represents the current user.
+     * Extensions could e.g. also implement returning true for the associated people node.
+     */
+    protected boolean isOwnNode(User user, MMObjectNode node) {
+        MMObjectNode userNode = user.getNode();
+        return  (userNode.getBuilder() instanceof Users && userNode.equals(node));
     }
 
     /**
@@ -497,7 +505,8 @@ public class Contexts extends MMObjectBuilder {
                                 }
                                 found.add(destination);
                             } else {
-                                log.warn("source was not the same as out contextNode");
+                                log.warn("source of " + relation + " was not the same as contextNode " + contextNode + " but " + relation.getNodeValue("snumber"));
+                                log.warn(Logging.stackTrace());
                             }
                         }
                     }
@@ -722,6 +731,11 @@ public class Contexts extends MMObjectBuilder {
             }
             MMObjectNode newRight = rightsRel.getNewNode(ownerString, contextNode.getNumber(), groupOrUserNode.getNumber(), operation);
             boolean res = newRight.insert(ownerString) > 0;
+            if (! res) {
+                log.error("Failed to grant " + newRight);
+            } else {
+                log.service("Granted " + newRight);
+            }
             return res;
 
         } else {
