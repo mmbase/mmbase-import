@@ -63,7 +63,8 @@ public class CALC extends ProcessorModule {
 	String doCalc(String cmd) {
 		log.service("Calc module calculates "+cmd);
 		ExprCalc cl=new ExprCalc(cmd);
-		log.warn("Calc converts number Natural number");
+		// marcel: annoying, upgraded this log to debug
+		log.debug("Calc converts number Natural number");
 		return(""+(int)(cl.getResult()+0.5));
 	}
 
