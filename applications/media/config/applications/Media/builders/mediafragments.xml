@@ -97,7 +97,7 @@
       <gui>
         <guiname xml:lang="nl">Start</guiname>
         <guiname xml:lang="en">Start</guiname>
-        <guitype>string</guitype>
+	<guitype>relativetime</guitype>
       </gui>
       <editor>
         <positions>
@@ -115,7 +115,7 @@
       <gui>
         <guiname xml:lang="nl">Stop</guiname>
         <guiname xml:lang="en">Stop</guiname>
-        <guitype></guitype>
+        <guitype>relativetime</guitype>
       </gui>
       <editor>
         <positions>
