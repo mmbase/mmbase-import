@@ -50,6 +50,32 @@ p.current {
   background-color: #ffb;
 }
 
+.group div { 
+  width: 100%;
+  background-color: #eee;
+}
+
+.environment, .users { 
+  display: inline;
+  width: 50%;
+}
+
+.environment p {
+  background-color: #eee;
+  margin: 0px;
+}
+.environment .current { 
+  background-color: #ccc;
+  padding-left: 5ex;
+}
+
+.environment .parents { 
+  padding-left: 1ex;
+}
+.environment .childs { 
+  padding-left: 9ex;
+}
+
 table {
   width: 100%;
   background-color: #ccc;
@@ -66,6 +92,6 @@ tr.even td {
 table.rights  { 
 }
 
-table.rights td.yes { 
+table.rights td.parent { 
   background-color: #ffb;
 }

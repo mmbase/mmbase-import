@@ -1,19 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html; charset=UTF-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><html>
+%><mm:content postprocessor="reducespace"><html>
 <%@include file="settings.jsp" %>
 <head>
     <title>Cloud Context Users Administration</title>
     <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
 </head>
-<mm:import externid="offset">0</mm:import>
+
 <mm:import externid="orderby">username</mm:import>
 <mm:import externid="directions">UP</mm:import>
 
 <mm:import id="fields">username,defaultcontext,status,owner</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:import externid="search" />
+<mm:import id="nodetype">mmbaseusers</mm:import>
 <body>
  <h1>Administrate users</h1>
 
@@ -22,42 +23,28 @@
  <div id="navigate">
    <p class="current"><a href="<mm:url page="index.jsp" />">Users</a></p>
    <p><a href="<mm:url page="index_groups.jsp" />">Groups</a></p>
-<!--   <p><a href="<mm:url page="index_rights.jsp" />">Rights</a></p> -->
  </div>
  
- <div class="body">
+
    <p class="action">
      <a href="<mm:url page="create_user.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" title="create user"  /></a>
    </p>
-   <form action="<mm:url />" method="post">
-   <table summary="search user">
-     <mm:fieldlist nodetype="mmbaseusers" fields="$fields">
-       <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="searchinput" /></td</tr>
-      </mm:fieldlist>
-      <tr><td colspan="2"><input type="submit" value="search" name="search" /></td></tr>
-   </table>
-   </form>
 
+   <%@include file="search.form.jsp" %>
 
    <table summary="Users">
 
-   <mm:listnodescontainer type="mmbaseusers">
+   <mm:listnodescontainer type="$nodetype">
 
-    <mm:present referid="search">
-       <mm:fieldlist nodetype="mmbaseusers" fields="$fields">
-         <mm:fieldinfo type="usesearchinput" />
-       </mm:fieldlist>
-    </mm:present>
-
-    <mm:size id="totalsize" write="false" />
-
+    <mm:import externid="offset">0</mm:import>
     <mm:offset value="$offset" />
     <mm:maxnumber value="10" />
+    <%@include file="search.jsp" %>
 
      <tr>
        <th> </th>
        <th>Rang</th>
-       <mm:fieldlist nodetype="mmbaseusers"  fields="$fields">
+       <mm:fieldlist nodetype="$nodetype"  fields="$fields">
          <th>
            <a title="order" href='<mm:url referids="search" ><mm:param name="orderby"><mm:fieldinfo type="name" /></mm:param>
                <mm:fieldinfo type="name">
@@ -120,7 +107,7 @@
   </mm:listnodescontainer>
   </table>
 
-</div> 
  </body>
 </mm:cloud>
 </html>
+</mm:content>
