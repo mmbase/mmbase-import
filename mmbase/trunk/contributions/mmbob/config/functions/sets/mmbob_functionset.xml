@@ -290,7 +290,7 @@
 		<param name="posterid" type="int" description="MMBase node number of current Poster (on the page)" />
 		<param name="subject" type="String" description="New subject of the post" />
 		<param name="body" type="String" description="new body of the post" />
-		<return type="Node"> 
+		<return type="Boolean"> 
 		</return> 
 	</function>
 
