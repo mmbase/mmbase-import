@@ -192,8 +192,7 @@ public class PackageManager {
                     ((BasicPackage)newpackage).signalUpdate();
                     return newpackage;
                 } catch(Exception e) {
-                    log.error("Can't create packagehandler : "+classname);
-                    e.printStackTrace();
+                    log.error("Can't create packagehandler : "+classname,e);
                 }
             } else {
                 log.error("package type : "+type+" not supported (no handler)");
@@ -225,6 +224,7 @@ public class PackageManager {
                 return true;
             } 
         } catch(Exception e) {
+        	log.debug("error while checking if a version"+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p +" is installed:" + e.getMessage() , e);
             return false;
         }
         return false;
@@ -248,6 +248,7 @@ public class PackageManager {
             }
             return true;
         } catch(Exception e) {
+			log.debug("error while updating versions for version "+ ((p != null)?p.getVersion():"(p == null")+" of the package "+ p + ":" + e.getMessage() , e);
             return false;
         }
     }
@@ -263,6 +264,7 @@ public class PackageManager {
             versions.updateInstalledVersion(p.getId(),"package",p.getMaintainer(),0);
             return true;
         } catch(Exception e) {
+			log.debug("error while updating the installed status to 0 of the package "+ p + ":" + e.getMessage() , e);
             return false;
         }
     }
