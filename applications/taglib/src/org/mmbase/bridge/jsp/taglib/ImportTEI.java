@@ -15,11 +15,11 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 
 
 /**
- * TEI class for the ImportTag. Only differs from WriteTEI in scope and default.
+ * TEI class for the ImportTag. Only differs from WriterTEI in scope and default.
  *
  * @author Michiel Meeuwissen
  */
-public class ImportTEI extends WriteTEI {
+public class ImportTEI extends WriterTEI {
     
     public ImportTEI() { 
         super(); 
