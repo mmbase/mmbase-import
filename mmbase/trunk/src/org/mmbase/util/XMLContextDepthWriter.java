@@ -54,6 +54,7 @@ public class XMLContextDepthWriter  {
 
     static void writeDataSources(XMLApplicationReader app, Vector nodes, String targetpath,MMBase mmb,Vector resultmsgs) {
 	Enumeration res=app.getNeededBuilders().elements();
+	String subtargetpath=targetpath+"/"+app.getApplicationName()+"/";
 	while (res.hasMoreElements()) {
 		int nrofnodes=0;
 		Hashtable bset=(Hashtable)res.nextElement();
@@ -79,10 +80,7 @@ public class XMLContextDepthWriter  {
 				Enumeration nd=values.keys();
 				while (nd.hasMoreElements()) {
 					String key=(String)nd.nextElement();
-	
-					if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
-						body+="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
-					}
+					body+=writeXMLField(key,node,subtargetpath,mmb);
 				}
 	
 				// end the node
@@ -238,6 +236,19 @@ public class XMLContextDepthWriter  {
 		return(true);
 	}
 
+	static boolean saveFile(String filename,byte[] value) {
+		File sfile = new File(filename);
+		try {
+			DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+			scan.write(value);
+			scan.flush();
+			scan.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return(true);
+	}
+
     public static boolean writeContextXML(XMLContextDepthReader capp,String filename) {
 	String body="<contextdepth>\n";
 	body+="\t<startnode>\n";
@@ -249,4 +260,31 @@ public class XMLContextDepthWriter  {
 	saveFile(filename,body);
 	return(true);
     }
+
+
+    private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
+	if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
+		// this is a bad way of doing it imho
+		int type=node.getDBType(key);
+		String stype=mmb.getTypeDef().getValue(node.getIntValue("otype"));	
+		if (type==FieldDefs.TYPE_BYTE) {
+			String body="\t\t<"+key+" file=\""+stype+"/"+node.getIntValue("number")+"."+key+"\" />\n";
+			File file = new File(targetpath+stype);
+			try {
+				file.mkdirs();
+			} catch(Exception e) {
+				System.out.println("Can't create dir : "+targetpath+stype);
+			}
+			byte[] value=node.getByteValue(key);
+			saveFile(targetpath+stype+"/"+node.getIntValue("number")+"."+key,value);
+			return(body);
+		} else {
+			String body="\t\t<"+key+">"+node.getValue(key)+"</"+key+">\n";
+			return(body);
+		}
+
+	}
+	return("");
+  }
+
 }
