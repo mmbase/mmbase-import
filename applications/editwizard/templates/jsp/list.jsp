@@ -1,18 +1,18 @@
 <%@ page errorPage="exception.jsp" 
-%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@ page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException,org.mmbase.applications.editwizard.Config"
+%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.3 2002-05-01 20:10:22 michiel Exp $
+     * @version  $Id: list.jsp,v 1.4 2002-05-07 13:37:56 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
     log.trace("list.jsp");
 
-    Config.ListConfig listConfig;
+Config.ListConfig listConfig; // stores the configuration specific for this list.
 
 if ("true".equals(request.getParameter("popup"))) {
     log.trace("This is a popup list viewer. Don't  push on Stack.");
@@ -28,25 +28,24 @@ if ("true".equals(request.getParameter("popup"))) {
 }
 
 
-configurator.config(listConfig);
+configurator.config(listConfig); // configure the thing, that means, look to the parameters.
 
 // decide what kind of query: multilevel or single?
 boolean multilevel = listConfig.nodePath.indexOf(",") > -1;
 
-StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");
-
-List fieldList = new Vector();
+List fieldList     = new Vector();
 String numberField = null;
 
+StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");    
 while (stok.hasMoreTokens()) {
-		String token = stok.nextToken();
-		fieldList.add(token);
-		if (token.indexOf(".number")>-1) {
+    String token = stok.nextToken();
+    fieldList.add(token);
+    if (token.indexOf(".number") > -1) {
         numberField = token;
-		}
-		if (token.indexOf("number")>-1 && numberField==null) numberField=token;
-}
 
+    }
+    if (token.indexOf("number") > -1 && numberField == null) numberField=token;
+}
 
 int nodecount=0;
 
