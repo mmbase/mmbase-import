@@ -18,14 +18,14 @@
 
 <PRE>
 <H2>cause</H2>
-<% PrinwWriter pw = new PrintWriter(out);
+<% PrintWriter pw = new PrintWriter(out);
     exception.printStackTrace(pw) ;
 %>
 </PRE>
 <% if (exception instanceof BridgeException) { %>
 <H2>Root cause</H2>
 <PRE>
-<% PrinwWriter pw2 = new PrintWriter(out);
+<% PrintWriter pw2 = new PrintWriter(out);
     ((BridgeException)exception).getCause().printStackTrace(pw2) ;
 %>
 
