@@ -396,7 +396,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private int evalBody() throws JspTagException {
 
         if (getId() != null) { // write to context.
-            getContextTag().register(getId(), cloud);
+            getContextProvider().getContainer().register(getId(), cloud);
         }
 
         if (cloud == null)
@@ -429,7 +429,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 throw new JspTagException("The 'referid' attribute of cloud cannot be used together with 'method' or 'logon' attributes");
             }
             log.debug("found cloud with referid");
-            cloud = (Cloud)getContextTag().getObject(getReferid());
+            cloud = (Cloud)getContextProvider().getContainer().getObject(getReferid());
             return true;
         }
         return false;

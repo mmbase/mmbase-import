@@ -116,7 +116,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         helper.setTag(this);
         helper.setValue(show);
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  */
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
-    private static Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
 
     /**
      * Holds the list of fields to sort the list on.
@@ -192,7 +192,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
-                getContextTag().unRegister(getId());
+                getContextProvider().getContainer().unRegister(getId());
             }
             return setReturnValues((NodeList) o);
         }
@@ -266,7 +266,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
         if (getId() != null) {
-            getContextTag().unRegister(getId());
+            getContextProvider().getContainer().unRegister(getId());
         }
         if (returnValues.hasNext()){
             doInitBody();
@@ -285,7 +285,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
     public int doEndTag() throws JspTagException {
         if (getId() != null) {
-            getContextTag().register(getId(), returnList);
+            getContextProvider().getContainer().register(getId(), returnList);
         }
         javax.servlet.jsp.tagext.TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
         if (t != null) {

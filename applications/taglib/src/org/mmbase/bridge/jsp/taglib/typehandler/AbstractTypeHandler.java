@@ -40,7 +40,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (node != null) {
             show.append(node.getStringValue(field.getName()));
         } else if (search) {
-            String searchParam = context.getContextTag().findAndRegisterString(prefix(field.getName()));
+            String searchParam = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(field.getName()));
             show.append((searchParam == null ? "" : searchParam));
         }
         show.append("\" />");
@@ -52,7 +52,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         String fieldName = field.getName();
-        String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
+        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
         if (fieldValue == null) {
 
         } else {
@@ -66,7 +66,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        String search = context.getContextTag().findAndRegisterString(prefix(fieldName));
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
         if (search == null || "".equals(search)) {
             return null;
         }

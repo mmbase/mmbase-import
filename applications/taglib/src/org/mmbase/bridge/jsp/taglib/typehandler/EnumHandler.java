@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
 
-    private static Logger log = Logging.getLoggerInstance(EnumHandler.class.getName());
+    private static Logger log = Logging.getLoggerInstance(EnumHandler.class);
     private ResourceBundle bundle;
     private boolean available;
     /**
@@ -103,7 +103,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if (context.getContextTag().findAndRegister(id, id) == null) {
+        if (context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id, id) == null) {
             return "";
         } else {
             return super.whereHtmlInput(field);

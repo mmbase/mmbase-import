@@ -166,7 +166,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
         doAfterBodySetValue();
 
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContainer().register(getId(), helper.getValue());
         }
         bodyContent = null;
         return helper.doEndTag();

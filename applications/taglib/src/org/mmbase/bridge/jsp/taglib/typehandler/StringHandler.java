@@ -75,7 +75,7 @@ public class StringHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
-        String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
+        String fieldValue = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
         fieldValue = context.encode(fieldValue, field);
         if (fieldValue != null) {
             node.setValue(fieldName,  fieldValue);
@@ -88,7 +88,7 @@ public class StringHandler extends AbstractTypeHandler {
      */
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
-        String search = context.getContextTag().findAndRegisterString(prefix(fieldName));
+        String search = context.getContextProvider().getContainer().findAndRegisterString(context.getPageContext(), prefix(fieldName));
         if (search == null) {
             return null;
         }

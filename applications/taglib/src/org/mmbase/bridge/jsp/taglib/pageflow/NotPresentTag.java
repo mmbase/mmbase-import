@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
 public class NotPresentTag extends PresentTag {
 
     public int doStartTag() throws JspTagException {
-        if ((! getContextTag().isPresent(getReferid())) != getInverse()) {
+        if ((! getContextProvider().getContainer().isPresent(getReferid())) != getInverse()) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
