@@ -3,13 +3,18 @@
 <fieldtypedefinitions>
   
 <!-- 
+  WARNING: this file is experimental and must override the one in mmbase.jar.
+              The only way to do this is copy the whole file and add it to the mmbase-mmbob.jar
+              This may change in the near future.
+-->
+<!--
   version 0.1 (appearing in 1.7.0) of this file only adds the possibility of set- and get-processor. 
   Later version will define more, like a defining class for every field type itself.
 
   It could define default values, possible values, default sort orders etc etc.
 
   @author Michiel Meeuwissen
-  @version $Id: fieldtypedefinitions.xml,v 1.1 2004-09-03 12:46:28 gerard Exp $
+  @version $Id: fieldtypedefinitions.xml,v 1.2 2004-09-03 12:50:39 gerard Exp $
 -->
 
 <!--
