@@ -5,6 +5,9 @@
 	<node number="728" owner="admin" snumber="520" dnumber="468" rtype="grants" dir="bidirectional">
 		<operation>all</operation>
 	</node>
+	<node number="729" owner="admin" snumber="520" dnumber="470" rtype="grants" dir="bidirectional">
+		<operation>read</operation>
+	</node>
 
   <!-- system -->
 	<node number="718" owner="admin" snumber="518" dnumber="470" rtype="grants" dir="bidirectional">
