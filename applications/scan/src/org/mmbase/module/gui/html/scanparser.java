@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @application SCAN
  * @rename SCANParser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.67 2004-10-01 08:43:46 pierre Exp $
+ * @version $Id: scanparser.java,v 1.68 2004-10-12 13:11:29 michiel Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -776,7 +776,7 @@ public class scanparser extends ProcessorModule {
         MMObjectNode node = (MMObjectNode)nodes.nextElement();
         String nodeNumber;
         if (byALias) {
-            nodeNumber = ""+mmbase.OAlias.getAlias(node.getIntValue("number"));
+            nodeNumber = ""+mmbase.getOAlias().getAlias(node.getIntValue("number"));
         } else {
             nodeNumber = ""+node.getValue("number");
         }
