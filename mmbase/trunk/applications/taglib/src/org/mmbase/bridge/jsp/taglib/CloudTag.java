@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
@@ -87,7 +88,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private String authenticate = "name/password"; 
     
     private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
-    private String logon = null;  
+    private Vector logon = null;  
     private String pwd = null;
     private Rank   rank = null;
 
@@ -114,8 +115,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
     
     public void setLogon(String l) throws JspTagException {
-        logon = getAttributeValue(l);
-        if ("".equals(logon)) {
+        logon = stringSplitter(getAttributeValue(l));
+        if ("".equals(l)) {
             logon = null;   // that also means to ignore the logon name
         }
 
@@ -254,9 +255,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         log.debug("startTag " + cloud);
 
         if (method == METHOD_LOGOUT) {
-            log.debug("request to log out, put an anonymous cloud in the session");           
-            logout();
-            setAnonymousCloud(cloudName);
+            if (cloud != null && (! cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString()))) {
+                log.debug("request to log out, put an anonymous cloud in the session"); 
+                logout();
+                session.removeAttribute("cloud_" + cloudName);
+            } else {
+                log.debug("request to log out, but cloud is already anonymous. Doing nothing");
+            }
         }
 
         if (method == METHOD_ASIS) {
@@ -305,7 +310,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             } else  if (logon != null) { 
                 log.debug("explicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
                 // a logon name was given, check if logged on as the right one
-                if (! cloud.getUser().getIdentifier().equals(logon)) { // no!
+                if (! logon.contains(cloud.getUser().getIdentifier())) { // no!
                     log.debug("logged on, but as wrong user. log out first.");
                     cloud = null;
                     session.removeAttribute("cloud_" + cloudName);
@@ -359,9 +364,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 if (method == METHOD_HTTP) {
                     if (logon != null) { // if there was a username specified as well, it must be the same
                         log.debug("http with username");
-                        if (! logon.equals(username)) {
+                        if (! logon.contains(username)) {
                             log.debug("username not correct");
                             return deny("<h2>Wrong username</h2> must be " + logon + "");
+                        } else {
+                            logon = new Vector(); logon.add(username);
                         }
                     } else { // logon == null
                         log.debug("http without username");
@@ -369,7 +376,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                             log.debug("no username known");
                             return deny("<h2>No username given</h2>");
                         }
-                        logon = username;
+                        logon = new Vector(); logon.add(username);
                     }
                 }
                 pwd = password;
@@ -379,7 +386,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (logon != null) {
                 log.debug("Username found. logging in");
                 HashMap user = new HashMap();
-                user.put("username", logon);
+                user.put("username", logon.get(0));
                 user.put("password", pwd);
                 try {
                     cloud = getDefaultCloudContext().getCloud(cloudName, authenticate, user);
@@ -402,7 +409,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
                         return deny("<h2>This page requires authentication</h2>");                    
                      } else { // strange, no method given, password wrong (or missing), that's really wrong.
-                        throw new JspTagException("Logon of user " + logon + " failed." + 
+                        throw new JspTagException("Logon of user " + logon.get(0) + " failed." + 
                             (pwd == null ? " (no password given)" : " (wrong password)"));
                     }
                 }                 
