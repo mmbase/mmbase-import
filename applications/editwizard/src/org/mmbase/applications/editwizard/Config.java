@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.20 2002-07-26 17:14:20 michiel Exp $
+ * @version $Id: Config.java,v 1.21 2002-08-01 10:58:56 pierre Exp $
  */
 
 public class Config {
@@ -102,7 +102,7 @@ public class Config {
             config.sessionId = res.encodeURL("");
 
             if (config.language == null) {
-                config.language = getParam("language", "");
+                  config.language = getParam("language", "");
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
@@ -174,20 +174,17 @@ public class Config {
                  * and also for 'library' editors.
                  */
 
-
                 File jspFileDir = new File(request.getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
                 File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data"); // ew default data/xsls is in ../data then
-
 
                 if (! config.language.equals("")) {
                     File i18n = new File(basedir, "i18n" + File.separator + config.language);
                     if (i18n.isDirectory()) {
                         extraDirs.add("i18n:", i18n);
                     } else {
-                        log.warn("Tried to internatationlize the editwizard for language " + config.language + " for which support is lacking (" + i18n + " is not an existing directory)");
+                        log.warn("Tried to internationalize the editwizard for language " + config.language + " for which support is lacking (" + i18n + " is not an existing directory)");
                     }
                 }
-
 
                 extraDirs.add("ew:", basedir);
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
