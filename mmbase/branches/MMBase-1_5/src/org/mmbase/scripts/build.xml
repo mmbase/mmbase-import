@@ -1230,6 +1230,7 @@ Change directory to ${build.dir}/orion and run:
     <mkdir dir="${build.dir}/apptool/lib"/>
     <copy file="${mmbase.jar}" todir="${build.dir}/apptool/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/apptool/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/apptool/lib"/>
   </target>
 
 
