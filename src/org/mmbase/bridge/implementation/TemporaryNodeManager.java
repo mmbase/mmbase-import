@@ -15,18 +15,17 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * This interface represents a node's type information object - what used to be the 'builder'.
- * It contains all the field and attribuut information, as well as GUI data for editors and
- * some information on deribed and deriving types.
- * Since node types are normally maintained through use of config files (and not in the database),
- * as wel as for security issues, the data of a nodetype cannot be changed except through
- * the use of an administration module (whcih is why we do not include setXXX methods here).
+ * This class represents a temporary node type information object.
+ * It has the same functionality as BasicNodeType, but it's nodes are vitrtual - that is,
+ * constructed based on the results of a search over multiple node managers.
+ * As such, it is not possible to search on this node type, nor to create new nodes.
+ * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  */
-public class TemporaryNodeType extends BasicNodeType {
+public class TemporaryNodeManager extends BasicNodeManager {
 
-    TemporaryNodeType(MMObjectNode node, Cloud cloud) {
+    TemporaryNodeManager(MMObjectNode node, Cloud cloud) {
         this.cloud=cloud;
         this.builder=node.parent;
         // determine fields and field types
@@ -67,10 +66,8 @@ public class TemporaryNodeType extends BasicNodeType {
     }
 
 	/**
-     * search nodes of this type
-     * @param where the contraint
-     * @param order the field on which you want to sort
-     * @param direction true=UP false=DOWN
+     * Search nodes of this type.
+     * Throws an exception since this type is virtual, and searching is not allowed.
      */
     public List search(String where, String sorted, boolean direction) {
         throw new SecurityException("Cannot perform search on a temporary node type");

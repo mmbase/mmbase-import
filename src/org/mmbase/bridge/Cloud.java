@@ -35,47 +35,47 @@ public interface Cloud {
 	public Node getNode(String aliasname);
 
  	/**
-     * Retrieves all node types (aka builders) available in this cloud
-     * @return an <code>Iterator</code> containing all node types
+     * Retrieves all node managers (aka builders) available in this cloud
+     * @return an <code>Iterator</code> containing all node managers
      */
-    public List getNodeTypes();
+    public List getNodeManagers();
 
 	/**
-     * Retrieves a node type (aka builder)
-     * @param nodeTypeName name of the node type to retrieve
-     * @return the requested node type
+     * Retrieves a node manager (aka builder)
+     * @param nodeManagerName name of the NodeManager to retrieve
+     * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
      */
-    public NodeType getNodeType(String nodeTypeName);
+    public NodeManager getNodeManager(String nodeManagerName);
 
 	/**
-     * Retrieves a node type (aka builder)
-     * @param nodeTypeID number of the node type to retrieve
-     * @return the requested node type
+     * Retrieves a NodeManager (aka builder)
+     * @param nodeManagerID number of the NodeManager to retrieve
+     * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
      */
-    public NodeType getNodeType(int nodeTypeID);
+    public NodeManager getNodeManager(int nodeManagerID);
  	
  	/**
-     * Retrieves a relation type
-     * @param sourceTypeName name of the type of the source node
-     * @param destinationTypeName name of the type of the destination node
+     * Retrieves a RelationManager
+     * @param sourceManagerName name of the NodeManager of the source node
+     * @param destinationManagerName name of the NodeManager of the destination node
      * @param roleName name of the role
-     * @return the requested node type
+     * @return the requested RelationManager
      */
-    public RelationType getRelationType(String sourceTypeName, String destinationTypeName, String roleName);
+    public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
 
 	/**
-     * Creates a node of a specific type
-     * @param nodeTypeName name of the node type defining the node structure
+     * Creates a node using a specified NodeManager
+     * @param nodeManagerName name of the NodeManager defining the node structure
      * @return the newly created (but not yet committed) node
      */
-    public Node createNode(String nodeTypeName);
+    public Node createNode(String nodeManagerName);
 
 	/**
-     * Creates a node of a specific type
-     * @param nodeTypeID number of the node type defining the node structure
+     * Creates a node using a specified NodeManager
+     * @param nodeManagerID number of the NodeManager defining the node structure
      * @return the newly created (but not yet committed) node
      */
-    public Node createNode(int nodeTypeID);
+    public Node createNode(int nodeManagerID);
 	
 	/**
      * Retrieves the context for this cloud
@@ -111,25 +111,26 @@ public interface Cloud {
 
 	/**
      * Search nodes in a cloud accoridng to a specified filter.
-     * @param nodes The numbers of the nodes to start the search with. These have to be a member of the first node type
-     *      listed in the nodetypes parameter. The syntax is a comma-seperated lists of node ids.
+     * @param nodes The numbers of the nodes to start the search with. These have to be a member of the first NodeManager
+     *      listed in the nodeManagers parameter. The syntax is a comma-seperated lists of node ids.
      *      Example : '112' or '1,2,14'
-     * @param nodetypes The nodetype chain. The syntax is a comma-seperated lists of node type names.
-     *      The search is formed by following the relations between successive nodetypes in the list. It is possible to explicitly supply
-     *      a relation type by placing the name of the type between two nodetypes to search.
+     * @param nodeManagers The NodeManager chain. The syntax is a comma-seperated lists of NodeManager names.
+     *      The search is formed by following the relations between successive NodeManagers in the list. It is possible to explicitly supply
+     *      a RelationManager by placing the name of the manager between two NodeManagers to search.
      *      Example: 'company,people' or 'typedef,authrel,people'.
-     * @param fields The fieldnames to return (comma seperated). This can include the name of the nodetype in case of fieldnames that are used by more than one type (i.e number).
-     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with typeindication) as they are specified in this parameter.
+     * @param fields The fieldnames to return (comma seperated). This can include the name of the NodeManager in case of fieldnames that are used by
+     *      more than one manager (i.e number).
+     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
      *      Examples: 'people.lastname', 'typedef.number,authrel.creat,people.number'
-     * @param where The contraint. this is in essence a SQL where clause, using the type names from the typenodes as tablenames.
+     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
      *      Examples: "people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
      * @param order the fieldnames on which you want to sort. Identical in syntax to the fields parameter.
-     * @param direction A list of values containing, for each field in the order parameter, a value inidcating whether the sort is
+     * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
      *      The first value in the list is used for teh remainig fields. Default value is <code>'UP'</code>.
      *      Examples: 'UP,DOWN,DOWN'
      * @param distinct <code>True> indicates the records returned need to be distinct. <code>False</code> indicates double values can be returned.
-     * @return a <code>List</code> of found nodes
+     * @return a <code>List</code> of found (virtual) nodes
      */
-    public List search(String nodes, String nodeTypes, String fields, String where, String sorted, String direction, boolean distinct);
+    public List search(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct);
 }

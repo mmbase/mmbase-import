@@ -26,9 +26,9 @@ public interface Node {
     public Cloud getCloud();
 
 	/**
-     * Retrieves the type of this node
+     * Retrieves the NodeManager of this node
      */
-    public NodeType getNodeType();
+    public NodeManager getNodeManager();
 	
 	/**
      * Retrieves the node ID
@@ -144,6 +144,13 @@ public interface Node {
 	public void remove(); 
 
 	/**
+	 * Removes the Node.
+	 * @param removeRelations determines whether attached relations are autiomatically deleted. if <code>false</code>,
+	 *        the remove fails if any relations exist.
+	 */
+	public void remove(boolean removeRelations);
+	
+	/**
 	 * Converts the node to a string
 	 */
 	 public String toString();
@@ -166,7 +173,7 @@ public interface Node {
 	public List getRelations();
 
 	/**
-	 *gets all relations of a certain type
+	 * Gets all relations of a certain type
 	 * @param type of relation
 	 * @return a <code>List</code> of all relations of the Node of a certain type
 	 */
@@ -191,8 +198,8 @@ public interface Node {
 	public List getRelatedNodes();
 
 	/**
-	 * Retrieve all related nodes of a certain type
-	 * @return a <code>List</code> of all related nodes of a certain type
+	 * Retrieve all related nodes maintained by a given NodeManager
+	 * @return a <code>List</code> of all related nodes of the given manager
 	 */
 	public List getRelatedNodes(String type);
 
@@ -217,8 +224,8 @@ public interface Node {
     /**
      * Adds a relation to this node
      * @param destinationNode the node to which you want to relate this node
-	 * @param relationtype The type of relation you want to use
+	 * @param relationManager The relation manager you want to use
 	 * @return the added relation
      */
-    public Relation addRelation(Node destinationNode, RelationType relationtype);
+    public Relation addRelation(Node destinationNode, RelationManager relationManager);
 }

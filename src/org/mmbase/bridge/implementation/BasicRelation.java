@@ -21,7 +21,7 @@ import java.util.*;
  */
 public class BasicRelation extends BasicNode implements Relation {
 
-    private RelationType relationType = null;
+    private RelationManager relationManager = null;
     private int snum = 0;
     private int dnum = 0;
     private int rnum = 0;
@@ -38,16 +38,16 @@ public class BasicRelation extends BasicNode implements Relation {
   	                                                  ") OR (dnumber="+stypenum+" AND snumber="+dtypenum+
   	                                                  ")) AND rnumber="+rnum);
   	    if (e.hasMoreElements()) {
-  	        relationType=new BasicRelationType((MMObjectNode)e.nextElement(), cloud);
+  	        relationManager=new BasicRelationManager((MMObjectNode)e.nextElement(), cloud);
   	    } else {
-  	        relationType=null;
+  	        relationManager=null;
   	    }
   	}
 
-  	BasicRelation(MMObjectNode node, RelationType relationType) {
-        super(node,relationType.getCloud());
+  	BasicRelation(MMObjectNode node, RelationManager relationManager) {
+        super(node,relationManager.getCloud());
         isnew=true;
-   	    this.relationType=relationType;
+   	    this.relationManager=relationManager;
   	}
 
 	/**
@@ -55,7 +55,7 @@ public class BasicRelation extends BasicNode implements Relation {
 	 * @return the source node
 	 */
 	public Node getSource() {
-	    return nodeType.getCloud().getNode(snum);
+	    return nodeManager.getCloud().getNode(snum);
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class BasicRelation extends BasicNode implements Relation {
 	 * @return the destination node
 	 */
 	public Node getDestination() {
-	    return nodeType.getCloud().getNode(dnum);
+	    return nodeManager.getCloud().getNode(dnum);
 	}
 
 	/** 
@@ -71,6 +71,7 @@ public class BasicRelation extends BasicNode implements Relation {
 	 * @param the source node
 	 */
 	public void setSource(Node node) {
+        Edit(ACTION_EDIT);
 	    int source=node.getNodeID();
 	    this.node.setValue("snumber",source);
 	    snum=source;
@@ -81,17 +82,18 @@ public class BasicRelation extends BasicNode implements Relation {
 	 * @param the destination node
 	 */
 	public void setDestination(Node node) {
+        Edit(ACTION_EDIT);
 	    int dest=node.getNodeID();
 	    this.node.setValue("dnumber",dest);
 	    dnum=dest;
 	}
 
  	/**
-     * Retrieves the relation type used
-     * @return the relation type
+     * Retrieves the RelationManager used
+     * @return the RelationManager
      */
-    public RelationType getRelationType() {
-        return relationType;
+    public RelationManager getRelationManager() {
+        return relationManager;
     }
 }
 
