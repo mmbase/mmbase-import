@@ -15,7 +15,8 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.12 2003-05-12 14:53:01 michiel Exp $
+ * @version $Id: XmlField.java,v 1.13 2003-06-24 13:40:35 michiel Exp $
+ * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -23,12 +24,17 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     private static Logger log = Logging.getLoggerInstance(XmlField.class);
 
     // can be decoded:
-    public final static int RICH = 1;
-    public final static int POOR = 2;
-    public final static int BODY = 3;
-    public final static int XML  = 4;
+    public final static int RICH     = 1;
+    public final static int POOR     = 2;
+    public final static int BODY     = 3;
+    public final static int XML      = 4;
     public final static int POORBODY = 5;
     public final static int RICHBODY = 6;
+
+    // cannot yet be encoded even..
+    public final static int HTML_INLINE = 7;
+    public final static int HTML_BLOCK  = 8;
+    
 
     // cannot be decoded:
     public final static int ASCII = 10;
@@ -41,19 +47,19 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>" 
         + " \n<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
     private final static String XML_TAGSTART = "<mmxf>";
-    private final static String XML_TAGEND = "</mmxf>";
+    private final static String XML_TAGEND   = "</mmxf>";
 
     public final static boolean isXmlEncoded(String s) {
         return s.startsWith(XML_TAGSTART) && s.endsWith(XML_TAGEND);
     }
 
     /**
-     * Takes a string object, finds list structures and changes it to XLL
+     * Takes a string object, finds list structures and changes those to XML
      */
 
     private static void handleList(StringObject obj) {
         // handle lists
-        // make <ul> possible (not yet nested), with *-'s on the first char of line.
+        // make <ul> possible (not yet nested), with -'s on the first char of line.
         int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy
         int pos;
         if (obj.length() == 0)
@@ -138,7 +144,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 emph = true;
                 int pos1 = obj.indexOf("_", pos);
                 int pos2 = obj.indexOf("<", pos); // must be closed before next tag opens.
-                pos = pos1 < pos2 ? pos1 : pos2;
+                pos = ((pos1 < pos2) || (pos2 == -1)) ? pos1 : pos2;
             } else {
                 obj.insert(pos, "</em>");
                 pos += 4;
@@ -166,7 +172,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      *
      */
 
-    private static void handleHeaders(StringObject obj) {
+    private static void handleHeaders(StringObject obj) { 
         // handle headers
         int requested_level;
         char ch;
@@ -230,19 +236,25 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     }
 
+
     /**
      * Make <p> </p> tags.
+     * @param surroundingP (defaults to true) wether the surrounding &lt;p&gt; should be included too.
      */
-    private static void handleParagraphs(StringObject obj) {
+    private static void handleParagraphs(StringObject obj, boolean surroundingP) {
         // handle paragraphs:
         boolean inParagraph = true;
-        while (obj.length() > 0 && obj.charAt(0) == '\n')
+        while (obj.length() > 0 && obj.charAt(0) == '\n') {
             obj.delete(0, 1); // delete starting newlines
-        obj.insert(0, "<p>");
+        }
+        if (surroundingP) {
+            obj.insert(0, "<p>");
+        }
         int pos = obj.indexOf("\n\n", 3); // one or more empty lines.
         while (pos != -1) {
-            while (obj.length() > pos && obj.charAt(pos) == '\n')
+            while (obj.length() > pos && obj.charAt(pos) == '\n') {
                 obj.delete(pos, 1); // delete the new lines.
+            }
 
             if (inParagraph) { // close the previous paragraph.
                 obj.insert(pos, "</p>");
@@ -255,13 +267,21 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             inParagraph = true;
             pos = obj.indexOf("\n\n", pos); // search end of next paragraph
         }
-        if (inParagraph) {
+        if (inParagraph) { // in current impl. this is always true
+
             // read whole text, but stil in paragraph
             // if text ends with newline, take it away, because it then means </p> rather then <br />
-            if (obj.charAt(obj.length() - 1) == '\n')
+            if (obj.charAt(obj.length() - 1) == '\n') {
                 obj.delete(obj.length() - 1, 1);
-            obj.insert(obj.length(), "</p>");
+            }
+            if (surroundingP) {
+                obj.insert(obj.length(), "</p>");
+            }
         }
+    }
+
+    private static void handleParagraphs(StringObject obj) {
+        handleParagraphs(obj, true);
     }
 
     /**
@@ -271,17 +291,43 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         // remaining new lines have no meaning.
         obj.replace(">\n", ">"); // don't replace by space if it is just after a tag, it could have a meaning then.
         obj.replace("\n", " "); // replace by space, because people could use it as word boundary.
-        // remaing double spaces have no meaning as well:
+        // remaining double spaces have no meaning as well:
         int pos = obj.indexOf(" ", 0);
         while (pos != -1) {
             pos++;
-            while (obj.length() > pos && obj.charAt(pos) == ' ')
+            while (obj.length() > pos && obj.charAt(pos) == ' ') {
                 obj.delete(pos, 1);
+            }
             pos = obj.indexOf(" ", pos);
         }
         // we used \r for non significant newlines:
         obj.replace("\r", "");
 
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    private static void handleFormat(StringObject obj, boolean format) {
+        if (format) {
+            obj.replace("\r", "\n");
+        } else {
+            cleanupText(obj);
+        }
+    }
+    private static StringObject prepareDate(String data) {
+        StringObject obj = new StringObject(Xml.XMLEscape(data));
+        obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
+        return obj;
+    }
+    
+
+    private static void handleRich(StringObject obj, boolean sections) {
+        // the order _is_ important!
+        handleList(obj);
+        handleParagraphs(obj);
+        if (sections) handleHeaders(obj);
+        handleEmph(obj);
     }
 
     /**
@@ -312,23 +358,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
 
     public static String richToXML(String data, boolean format) {
-        StringObject obj = new StringObject(Xml.XMLEscape(data));
-
-        obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
-
-        handleList(obj);
-        handleParagraphs(obj);
-        handleHeaders(obj);
-        handleEmph(obj);
-
-        // handle new remaining newlines.
-        obj.replace("\n", "<br />\r");
-
-        if (format) {
-            obj.replace("\r", "\n");
-        } else {
-            cleanupText(obj);
-        }
+        StringObject obj = prepareDate(data);
+        handleRich(obj, true);
+        obj.replace("\n", "<br />\r");  // handle new remaining newlines.
+        handleFormat(obj, format);
         return obj.toString();
     }
     public static String richToXML(String data) {
@@ -336,39 +369,57 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
     /**
      * As richToXML but a little less rich. Which means that only one new line is non significant.
+     * @see #richToXML
      */
 
     public static String poorToXML(String data, boolean format) {
-        StringObject obj = new StringObject(Xml.XMLEscape(data));
-
-        obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
-
-        // the order _is_ important!
-        handleList(obj);
-        handleParagraphs(obj);
-        handleHeaders(obj);
-        handleEmph(obj);
-
-        if (format) {
-            obj.replace("\r", "\n");
-        } else {
-            cleanupText(obj);
-        }
+        StringObject obj = prepareDate(data);
+        handleRich(obj, true);
+        handleFormat(obj, format);
         return obj.toString();
     }
 
     public static String poorToXML(String data) {
         return poorToXML(data, false);
     }
+    /**
+     * So poor, that it actually generates pieces of HTML 1.1 blocks (so, no use of sections).
+     * 
+     * @see #richToXML
+     * @since MMBase-1.7
+     */
 
-    final static private String xmlBody(String s) {
-        // chop of the xml tagstart and tagend:
+    public static String poorToHTMLBlock(String data) {
+        StringObject obj = prepareDate(data);
+        handleRich(obj, false);   // no <section> tags
+        handleFormat(obj, false); // don't add newlines.
+        return obj.toString();
+    }
+
+    /**
+     * So poor, that it actually generates pieces of HTML 1.1 blocks (so, no use of sections).
+     * 
+     * @since MMBase-1.7
+     */
+    public static String poorToHTMLInline(String data) {
+        StringObject obj = prepareDate(data);
+        handleEmph(obj);
+        handleFormat(obj, false); // don't add newlines.
+        return obj.toString();
+    }
+
+
+    
+    /**
+     *  chop of the mmxf xml tagstart and tagend:
+     */
+
+    final static private String xmlBody(String s) {   
         return s.substring(XML_TAGSTART.length(), s.length() - XML_TAGEND.length());
     }
 
     /**
      * Base function for XSL conversions.
-     *
      */
 
     private static String XSLTransform(String xslfile, String data) {
@@ -394,8 +445,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
 
     static private void validate(String incoming) throws FormatException {
         try {
-
-            log.debug("Validating " + incoming);
+            if (log.isDebugEnabled()) {
+                log.debug("Validating " + incoming);
+            }
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
 
             // turn validating on..
@@ -488,15 +540,17 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     public Map transformers() {
-        HashMap h = new HashMap();
-        h.put("mmxf_rich".toUpperCase(), new Config(XmlField.class, RICH, "Converts to enriched ASCII"));
-        h.put("mmxf_poor".toUpperCase(), new Config(XmlField.class, POOR));
-        h.put("mmxf_ascii".toUpperCase(), new Config(XmlField.class, ASCII));
-        h.put("mmxf_body".toUpperCase(), new Config(XmlField.class, BODY));
-        h.put("mmxf_xhtml".toUpperCase(), new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
-        h.put(
-            "mmxf_mmxf".toUpperCase(),
-            new Config(XmlField.class, XML, "Only validates the XML with the DTD (when decoding)"));
+        Map h = new HashMap();
+        h.put("MMXF_RICH",  new Config(XmlField.class, RICH,  "Converts mmxf to enriched ASCII (can be reversed)"));
+        h.put("MMXF_POOR",  new Config(XmlField.class, POOR,  "Converts mmxf to enriched ASCII (inversal will not produce <br />'s"));
+        h.put("MMXF_ASCII", new Config(XmlField.class, ASCII, "Converts mmxf to ASCII (cannoted be reversed)"));
+        h.put("MMXF_BODY",  new Config(XmlField.class, BODY,  "Takes away the surrounding mmxf tags (returns XML)"));
+        h.put("MMXF_BODY_RICH", new Config(XmlField.class, RICHBODY, "Like MMXF_RICH, but returns decodes without mmxf tags"));
+        h.put("MMXF_BODY_POOR", new Config(XmlField.class, POORBODY, "Like MMXF_POOR, but returns decoded without mmxf tags"));
+        h.put("MMXF_HTML_INLINE", new Config(XmlField.class, HTML_INLINE, "Decodes only escaping and with <em>"));
+        h.put("MMXF_HTML_BLOCK", new Config(XmlField.class,  HTML_BLOCK, "Decodes only escaping and with <em>, <p> and <ul>"));
+        h.put("MMXF_XHTML", new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
+        h.put("MMXF_MMXF",  new Config(XmlField.class, XML,   "Only validates the XML with the DTD (when decoding)"));
         return h;
     }
 
@@ -516,6 +570,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 return xmlBody(data);
             case XML :
                 return data;
+            case HTML_BLOCK:
+            case HTML_INLINE:
+                throw new UnsupportedOperationException("Cannot transform");
             default :
                 throw new UnknownCodingException(getClass(), to);
         }
@@ -548,6 +605,12 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 result = r;
                 validate(XML_HEADER + result);
                 break;
+            case HTML_BLOCK:
+                result = poorToHTMLBlock(r);
+                break;
+            case HTML_INLINE:
+                result = poorToHTMLInline(r);
+                break;
             case ASCII :
                 throw new UnsupportedOperationException("Cannot transform");
             default :
@@ -567,9 +630,13 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             case POOR :
                 return "MMXF_POOR";
             case RICHBODY :
-                return "MMXFBODY_RICH";
+                return "MMXF_BODY_RICH";
             case POORBODY :
-                return "MMXFBODY_POOR";
+                return "MMXF_BODY_POOR";
+            case HTML_BLOCK :
+                return "MMXF_HTML_BLOCK";
+            case HTML_INLINE :
+                return "MMXF_HTML_INLINE";
             case ASCII :
                 return "MMXF_ASCII";
             case XHTML :
