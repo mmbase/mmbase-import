@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AnnotRel.java,v 1.9 2001-01-18 13:55:02 pierre Exp $
+$Id: AnnotRel.java,v 1.10 2001-02-19 11:47:03 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2001/01/18 13:55:02  pierre
+pierre:removed obsolete setDefault code (already present in InsRel)
+
 Revision 1.8  2000/03/31 13:27:48  wwwtech
 Wilbert: Introduction of ParseException for method getList
 
@@ -44,7 +47,7 @@ import org.mmbase.util.RelativeTime;
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999 
- * @$Revision: 1.9 $ $Date: 2001-01-18 13:55:02 $
+ * @$Revision: 1.10 $ $Date: 2001-02-19 11:47:03 $
  */
 public class AnnotRel extends InsRel {
 
@@ -154,8 +157,18 @@ public class AnnotRel extends InsRel {
 			int pos=node.getIntValue("pos");
 			int end=node.getIntValue("end");
 			int len=node.getIntValue("length");
-			if ((end-pos)!=len) node.setValue("end",pos+len);
 		}
 		return(true);
+	}
+
+
+	public Object getValue(MMObjectNode node,String field) {
+		if (field.equals("end")) {
+			int pos=node.getIntValue("pos");
+			int len=node.getIntValue("length");
+			int end=pos+len;
+			return(""+end);
+		}
+		return(null);
 	}
 }
