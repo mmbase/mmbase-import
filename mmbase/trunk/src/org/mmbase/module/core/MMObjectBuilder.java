@@ -1457,19 +1457,24 @@ public class MMObjectBuilder extends MMTable {
             rtn=DateStrings.longmonths[DateSupport.getMonthInt(v)];
         } else if (function.equals("month")) {			// month Sep
             int v=node.getIntValue(field);
-            rtn=DateStrings.months[DateSupport.getMonthInt(v)];
+            rtn=DateStrings.Dutch_months[DateSupport.getMonthInt(v)];
         } else if (function.equals("weekday")) {		// weekday Sunday
             int v=node.getIntValue(field);
-            rtn=DateStrings.longdays[DateSupport.getWeekDayInt(v)];
+            rtn=DateStrings.Dutch_longdays[DateSupport.getWeekDayInt(v)];
         } else if (function.equals("shortday")) {		// shortday Sun
             int v=node.getIntValue(field);
-            rtn=DateStrings.days[DateSupport.getWeekDayInt(v)];
+            rtn=DateStrings.Dutch_days[DateSupport.getWeekDayInt(v)];
         } else if (function.equals("day")) {			// day 4
             int v=node.getIntValue(field);
             rtn=""+DateSupport.getDayInt(v);
         } else if (function.equals("year")) {			// year 2001
             int v=node.getIntValue(field);
             rtn=DateSupport.getYear(v);
+        } else if (function.equals("thisdaycurtime")) {			// 
+            int curtime=node.getIntValue(field);
+    	    // gives us the next full day based on time (00:00)
+    	    int days=curtime/(3600*24);
+	    rtn=""+((days*(3600*24))-3600);
 
             // text convertion  functions
         }
@@ -1488,6 +1493,9 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("lowercase")) {
             String val=node.getStringValue(field);
             rtn=val.toLowerCase();
+        } else if (function.equals("hostname")) {
+            String val=node.getStringValue(field);
+            rtn=hostname_function(val);
         } else if (function.startsWith("wrap_")) {
             String val=node.getStringValue(field);
             try {
@@ -2459,6 +2467,22 @@ public class MMObjectBuilder extends MMTable {
     */
     public void setMaintainer(String m) {
         maintainer=m;
+    }
+
+
+    /**
+     * hostname, parses the hostname from a url, so http://www.somesite.com/index.html
+     * becomed www.somesite.com
+     */
+    public String hostname_function(String url) {
+	if (url.startsWith("http://")) {
+		url=url.substring(7);
+	}
+	int pos=url.indexOf("/");
+	if (pos!=-1) {
+		url=url.substring(0,pos);
+	}
+	return(url);
     }
 
     /**
