@@ -4,6 +4,7 @@
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp" %>
 <div id="pagecontent">
+<div id="textcontent">
 
 <%@ include file="last_builds.jsp" %>
 
@@ -36,7 +37,7 @@
 </mm:list>
 
 <h2>Latest builds from the stable branch (MMBase-1_7)</h2>
-<% Iterator j = getStableBuilds(5).iterator() ;%>
+<% Iterator j = getStableBuilds(9).iterator() ;%>
 <ul>
 <% while (j.hasNext()) { 
   BuildInfo info = (BuildInfo) j.next(); %>
@@ -45,7 +46,7 @@
 </ul>
 
 <h2>Latest builds from the HEAD branch that is to become the 1.8 release</h2> 
-<% Iterator k = getHeadBuilds(5).iterator() ;%>
+<% Iterator k = getHeadBuilds(9).iterator() ;%>
 <ul>
 <% while (k.hasNext()) {
   BuildInfo info = (BuildInfo) k.next(); %>
@@ -53,7 +54,7 @@
 <% } %>
 </ul>
 
-<h2>Latest occasional builds</h2> 
+<h2>Occasional builds</h2> 
 <% Iterator i = getOccasionalBuilds(5).iterator() ;%>
 <ul>
 <% while (i.hasNext()) {
@@ -63,6 +64,6 @@
 </ul>
 
 
-</div>
+</div></div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>

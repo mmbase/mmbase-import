@@ -4,6 +4,7 @@
 ><%@ include file="/includes/getids.jsp" 
 %><%@ include file="/includes/alterheader.jsp" %>
 <div id="pagecontent">
+<div id="textcontent">
 <%-- List all releases --%>
 <h2><mm:node number="$page"><mm:field name="title" /></mm:node></h2>
 <mm:node number="$page">
@@ -26,6 +27,7 @@
 		</mm:node>
 	</mm:related >
 </mm:node>
+</div>
 </div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
