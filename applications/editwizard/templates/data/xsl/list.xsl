@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.28 2003-05-12 08:26:43 michiel Exp $
+  @version $Id: list.xsl,v 1.29 2003-05-21 11:55:26 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -76,7 +76,7 @@
 									<span class="header">
 										<xsl:value-of select="$title"/> :</span>
 									<br/>
-									<a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new">
+									<a href="{$wizardpage}&amp;referrer={$referrer}&amp;wizard={$wizard}&amp;objectnumber=new&amp;origin={$origin}">
 										<img src="{$mediadir}new.gif" width="20" height="20" hspace="2" align="absmiddle" alt="" border="0"/>
 									</a>
 								</td>
