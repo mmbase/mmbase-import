@@ -16,9 +16,9 @@ import org.w3c.dom.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.database.support.dTypeInfo;
 import org.mmbase.module.database.support.dTypeInfos;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.xml.sax.InputSource;
 
 /**
  * @author Case Roole
@@ -36,7 +36,17 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     public XMLDatabaseReader(String path) {
         super(path, XMLDatabaseReader.class);
     }
-
+    
+    /**
+     * Constructor.
+     *
+     * @param Inputsource to the xml document.
+     * @since MMBase-1.7
+     */ 
+    public XMLDatabaseReader(InputSource source) {
+        super(source, XMLDatabaseReader.class);
+    }
+    
     /**
      * Returns the name of the database.
      * @return the name as a string
@@ -52,7 +62,37 @@ public class XMLDatabaseReader extends XMLBasicReader  {
     public String getMMBaseDatabaseDriver() {
         return getElementValue("database.mmbasedriver");
     }
-
+    
+    /**
+     * Returns the sql handler class to be used, this is a class implementing the 
+     * {@link org.mmbase.storage.search.implementation.database.SqlHandler
+     * SqlHandler} interface.
+     *
+     * @return The name of the class
+     * @since MMBase-1.7
+     */
+    public String getSqlHandler() {
+        return getElementValue("database.sqlhandler");
+    }
+    
+    /**
+     * Returns names of the chained handlers to use, these are classes extending
+     * {@link org.mmbase.storage.search.implementation.database.ChainedSqlHandler
+     * ChainedSqlHandler}.
+     *
+     * @return List of names of the classes.
+     * @since MMBase-1.7
+     */
+    public List getChainedSqlHandlers() {
+        List result = new ArrayList();
+        Enumeration eElements 
+            = getChildElements("database", "chainedsqlhandler");
+        while (eElements.hasMoreElements()) {
+            Element el = (Element) eElements.nextElement();
+            result.add(getElementValue(el));
+        }
+        return result;
+    }
 
     /**
      * Retrieves the file path where binary objects are to be stored.
