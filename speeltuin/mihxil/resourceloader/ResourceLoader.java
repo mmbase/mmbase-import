@@ -9,13 +9,22 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util;
 
+// general
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.net.*;
 
+// used for resolving in servlet-environment
 import javax.servlet.ServletContext;
 
+// used for resolving in MMBase database
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.*;
+
+// XML stuff
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import javax.xml.transform.*;
@@ -25,9 +34,6 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.storage.search.implementation.*;
 
 
 /**
@@ -83,7 +89,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.1 2004-09-29 00:47:11 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.2 2004-09-30 07:56:18 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -349,7 +355,7 @@ public class ResourceLoader extends ClassLoader {
     public URL findResource(final String name) {
         try {
             if (name.startsWith("/")) {
-                return newURL(name);
+                return newURL(PROTOCOL + ":" + name);
             } else {
                 return new URL(context, name);
             }
@@ -446,7 +452,28 @@ public class ResourceLoader extends ClassLoader {
 
     protected Set getNodeResourcePaths(final Pattern pattern, boolean recursive, Set results) {
         if (resourceBuilder != null) {
-            // TODO
+            try {
+                NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
+                BasicFieldValueConstraint constraint = 
+                    new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(URL_FIELD)), context.getPath().substring(1) + "%");
+                constraint.setOperator(FieldCompareConstraint.LIKE);
+                query.setConstraint(constraint);
+                Iterator i = resourceBuilder.getNodes(query).iterator();
+                while (i.hasNext()) {
+                    MMObjectNode node = (MMObjectNode) i.next();
+                    String url = node.getStringValue(URL_FIELD);
+                    String subUrl = url.substring(context.getPath().length());
+                    if (! recursive && subUrl.indexOf("/") >0) {
+                        continue;
+                    }
+                    if (pattern != null && ! pattern.matcher(subUrl).matches()) {
+                        continue;
+                    }
+                    results.add(url);
+                }
+            } catch (SearchQueryException sqe) {
+                log.warn(sqe);
+            }
         }
         return results;
     }
@@ -651,7 +678,7 @@ public class ResourceLoader extends ClassLoader {
             if (ResourceLoader.resourceBuilder != null) {
                 try {
                     NodeSearchQuery query = new NodeSearchQuery(resourceBuilder);
-                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(URL_FIELD)), url.getPath());
+                    BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(resourceBuilder.getField(URL_FIELD)), url.getPath().substring(1));
                     query.setConstraint(constraint);
                     Iterator i = resourceBuilder.getNodes(query).iterator();
                     if (i.hasNext()) {
@@ -780,7 +807,7 @@ public class ResourceLoader extends ClassLoader {
             {
                 MMObjectNode node = getResourceNode();
                 if (node != null) {
-                    return "http://yourhost/node/" + node.getNumber();
+                    return "http://localhost/node/" + node.getNumber();
                 }
             }
             {
@@ -815,7 +842,13 @@ public class ResourceLoader extends ClassLoader {
             return new OutputStream() {
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                     public void close() throws IOException {
-                        node.setValue(HANDLE_FIELD, bytes.toByteArray());
+                        byte[] b = bytes.toByteArray();
+                        node.setValue(HANDLE_FIELD, b);
+                        String type = guessContentTypeFromStream(new ByteArrayInputStream(b));
+                        if (type == null) {
+                            guessContentTypeFromName(url.getFile());
+                        }
+                        node.setValue("mimetype", type);
                         node.commit();
                     }                    
                     public void write(int b) {
@@ -870,7 +903,7 @@ public class ResourceLoader extends ClassLoader {
             // Could not create file, lets store it in the database then
             if (ResourceLoader.resourceBuilder != null) {
                 MMObjectNode node = ResourceLoader.resourceBuilder.getNewNode(DEFAULT_CONTEXT);
-                node.setValue(URL_FIELD, url.getPath());
+                node.setValue(URL_FIELD, url.getPath().substring(1)); // minus the starting /
                 node.insert(DEFAULT_CONTEXT);
                 return getOutputStream(node);
             }
