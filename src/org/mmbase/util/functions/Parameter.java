@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.6 2004-02-09 17:58:05 michiel Exp $
+ * @version $Id: Parameter.java,v 1.7 2004-05-03 14:57:19 michiel Exp $
  * @see Parameters
  */
 
@@ -214,6 +214,10 @@ public class Parameter {
             return a.key.equals(key) && a.type.equals(type);
         }
         return false;
+    }
+
+    public int hashCode() {
+        return key.hashCode() * 13 + type.hashCode();
     }
 
     public String toString() {
