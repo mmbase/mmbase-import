@@ -42,12 +42,9 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen 
 **/
 
-public abstract class NodeReferrerTag extends CloudReferrerTag {
-	
+public abstract class NodeReferrerTag extends CloudReferrerTag {	
     private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
-
     private String parentNodeId = null;
-
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
      * to make it possible to refer to another node than the direct
@@ -62,35 +59,11 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     * This method tries to find an ancestor object of type NodeProvider
     * @return the NodeProvider if found else an exception.
     *
-    */
-	
+    */	
     public NodeProvider findNodeProvider() throws JspTagException {
-
-        Class nodeProviderClass;
-        try {
-            nodeProviderClass = Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider");
-
-        } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find NodeProvider class");  
-        }
-
-        NodeProvider nodeProvider = (NodeProvider) findAncestorWithClass((Tag)this, nodeProviderClass); 
-        if (nodeProvider == null) {
-            throw new JspTagException ("Could not find parent nodeProvider");  
-        }
-
-        if ("".equals(parentNodeId)) parentNodeId = null;
-
-        if (parentNodeId != null) { // search further, if necessary
-            while (nodeProvider.getId() != parentNodeId) {
-                nodeProvider = (NodeProvider) findAncestorWithClass((Tag)nodeProvider, nodeProviderClass); 
-                if (nodeProvider == null) {
-                    throw new JspTagException ("Could not find parent with id " + parentNodeId);  
-                }
-            }
-            
-        }
-        return nodeProvider;
+        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
     }
+
+    
 
 }
