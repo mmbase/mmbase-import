@@ -8,8 +8,10 @@ See http://www.MMBase.org/license
   
 */
 
-package org.mmbase.applications.media.urlcomposers;
+package org.mmbase.applications.media.urlcomposers.omroep;
 import org.mmbase.applications.media.Format;
+import org.mmbase.applications.media.urlcomposers.RamURLComposer;
+import org.mmbase.applications.media.urlcomposers.RealURLComposer;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
@@ -21,24 +23,21 @@ import java.text.*;
  * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: OmroepcgiURLComposer.java,v 1.3 2003-02-11 23:16:11 michiel Exp $
+ * @version $Id: CgiURLComposer.java,v 1.1 2003-02-16 18:53:36 michiel Exp $
  * @since MMBase-1.7
  */
-public class OmroepcgiURLComposer extends RamURLComposer {
+public class CgiURLComposer extends RamURLComposer {
     
-    private static Logger log = Logging.getLoggerInstance(OmroepcgiURLComposer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(CgiURLComposer.class.getName());
 
-    public OmroepcgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+    public CgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
     }
     public Format getFormat() {
         Format format = super.getFormat();
-        if (provider.getStringValue("rootpath").startsWith("/cgi-bin")) {
-            if (format == Format.RM)  return Format.RAM;
-            if (format == Format.RA)  return Format.RAM;
-            if (format == Format.ASF) return Format.WMP;                
-        }
-        
+        if (format == Format.RM)  return Format.RAM;
+        if (format == Format.RA)  return Format.RAM;
+        if (format == Format.ASF) return Format.WMP;                
         return format;
     }
 
