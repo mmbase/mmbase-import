@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.52 2002-11-01 08:55:07 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.53 2002-11-03 20:51:05 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -87,24 +87,27 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      */
     protected void initManager() {
         if (builder == null) {
-	    if(noderef == null) {
-		String msg = "node reference was null, could not continue";
-		log.error(msg);
-		throw new BridgeException(msg);
-	    }
-	    // look which node we represent, and
-	    // what the builder is that this
-	    // node is representing
-	    TypeDef typedef = (TypeDef) noderef.getBuilder();
+            if(noderef == null) {
+                String msg = "node reference was null, could not continue";
+                log.error(msg);
+                throw new BridgeException(msg);
+            }
+            // look which node we represent, and
+            // what the builder is that this
+            // node is representing
+            TypeDef typedef = (TypeDef) noderef.getBuilder();
             builder = typedef.getBuilder(noderef);
-	    if(builder == null) {
-		String msg = "could not find nodemanager for node #" + noderef.getNumber() + "("+noderef.getStringValue("gui()")+")";
-		log.error(msg);
-		throw new BridgeException(msg);
-	    }
+            if(builder == null) {
+                // builder = null. this muist mean that this is an inactive builder
+                // log warning, then exit.
+                // This will mean the nodemanager can be used as a node, but will be treated as a
+                // non-committed builder.
+                log.warn ("could not find nodemanager for node #" + noderef.getNumber() + "("+noderef.getStringValue("gui()")+")");
+                return;
+            }
         }
-	// clear the list of fields..
-	// why is this needed?
+    // clear the list of fields..
+    // why is this needed?
         List fields = builder.getFields();
         if (fields != null) {
             fieldTypes.clear();
