@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.9 2001-06-23 16:13:46 daniel Exp $
+$Id: MMBaseContext.java,v 1.10 2001-06-23 18:07:27 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2001/06/23 16:13:46  daniel
+added support for servlet params
+
 Revision 1.8  2001/04/10 17:32:05  michiel
 michiel: new logging system
 
@@ -56,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.9 $ $Date: 2001-06-23 16:13:46 $
+ * @$Revision: 1.10 $ $Date: 2001-06-23 18:07:27 $
  */
 public class MMBaseContext {
 
@@ -83,6 +86,10 @@ public class MMBaseContext {
 	}
 
 	public static String getOutputFile() {
+		if (outputfile==null) {
+        		outputfile = System.getProperty("mmbase.outputfile");
+			setLogging();
+		}
 		return(outputfile);
 	}
 
@@ -93,6 +100,9 @@ public class MMBaseContext {
 	}
 
 	public static String getHtmlRoot() {
+		if (htmlroot==null) {
+        		htmlroot = System.getProperty("mmbase.htmlroot");
+		}
 		return(htmlroot);
 	}
 
@@ -126,6 +136,7 @@ public class MMBaseContext {
 	}
 
 	public static boolean setConfigPath(String c) {
+	System.out.println("PATH="+c);
         boolean returnValue=true;
         
         // the config dir has to contain the following files:
@@ -177,6 +188,9 @@ public class MMBaseContext {
     }
 
 	public static String getConfigPath() {
+		if (configpath==null) {
+        		configpath = System.getProperty("mmbase.config");
+		}
 		return(configpath);
 	} 
 
