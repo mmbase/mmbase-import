@@ -112,14 +112,14 @@
       <table class="Font">
     <%-- Show the form --%>
     <%-- 
-        ***
-        
-        DO NOT USE the referid="..." construct here - MMBase gets 
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+        DO NOT USE the referid="..." construct in the form's 
+        action="<treefile...>"  construct here. - MMBase gets 
         completely confused if it's more than a couple of bytes long and
         you're trying to post a multipart/form-data encoded form
 
         If you need to pass parameters use hidden fields, as below
-        **
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     --%>
     <form name="showitem" method="post" action="<mm:treefile page="/portfolio/showitem.jsp" objectlist="$includePath"/>" enctype="multipart/form-data">
     <mm:present referid="provider">
@@ -136,10 +136,25 @@
       <mm:node number="$currentitem">
         <mm:fieldlist fields="title?,name?,description?,url?,text?,filename?,handle?">
           <tr>
-          <td><mm:fieldinfo type="guiname"/></td>
+          <td valign="top"><mm:fieldinfo type="guiname"/></td>
           <td>
             <mm:compare referid="mayeditthis" value="true"><mm:fieldinfo type="input"/></mm:compare>
-            <mm:compare referid="mayeditthis" value="false"><mm:fieldinfo type="guivalue"/></mm:compare>
+            <mm:fieldinfo type="name">
+                <mm:compare value="handle">
+                  <mm:field name="mimetype" jspvar="mimetype" vartype="String">
+                    <% if (mimetype.startsWith("image/")) { %>
+                        <p>
+                          <img src="<mm:image/>"/>
+                        </p>
+                    <% } else { %>
+                        <mm:compare referid="mayeditthis" value="false"><mm:fieldinfo type="guivalue"/></mm:compare>
+                    <% } %>
+                  </mm:field>
+                </mm:compare>
+                <mm:compare value="handle" inverse="true">
+                    <mm:compare referid="mayeditthis" value="false"><mm:fieldinfo type="guivalue" escape="p"/></mm:compare>
+                </mm:compare>
+            </mm:fieldinfo>
           </td>
           </tr>
         </mm:fieldlist>
