@@ -64,11 +64,16 @@
 
 
     <steps>
-        <step form-schema="step1" />
-        <step form-schema="step2" />
-    </steps>
+        <step form-schema="page" />
+        <step form-schema="images" />
+        <step form-schema="attachments" />
+        <step form-schema="audiotapes" />
+        <step form-schema="videotapes" />
+        <step form-schema="urls" />
+        <step form-schema="metadata" />
+   </steps>
 
-        <form-schema id="step1">
+        <form-schema id="page">
         <title>Pagina invoeren</title>
         <field name="name" >
             <prompt>Naam</prompt>
@@ -85,19 +90,90 @@
             <optionlist select="imagelayout" />
         </field>
         
-        <list role="sizerel" extends="list/sizedimages.xml" />
-     <list role="related" extends="list/attachments.xml" />
-       <list role="related" extends="list/audiotapes.xml" />
-        <list role="related" extends="list/videotapes.xml" />
-        <list destination="urls" role="related" extends="list/urls.xml" />
+
         <list role="related" extends="list/online.xml" />
+        
     </form-schema>
-    <form-schema id="step2">
-        <title>Metadata invoeren</title>
+    <form-schema id="metadata">
+        <title>Metadata</title>
         <list extends="list/metadatalangstring.xml"/>
         <list extends="list/metadatadate.xml"/>
         <list extends="list/metadatavocabulary.xml"/>
     </form-schema>
+
+    <form-schema id="images">
+        <title>Afbeeldingen</title>
+       <list role="sizerel" extends="list/sizedimages.xml" />
+
+ 
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" role="sizerel">
+            <title>Zoeken op tekenreeks</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="sizerel" destinationtype="images"/>
+            </action>
+
+
+             <command name="search" nodepath="metalangstring,metadata,images" fields="images.title,metalangstring.value" age="7" orderby="images.number" directions="down" >
+                <prompt>Zoeken op metadata</prompt>
+                <search-filter>
+                    <name>Metadata tekenreeks bevat</name>
+                    <search-fields>metalangstring.value</search-fields>
+                </search-filter>
+           </command>           
+        </list>
+
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" role="sizerel">
+            <title>Zoeken op vocabulair</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="sizerel" destinationtype="images"/>
+            </action>
+
+
+             <command name="search" nodepath="metavocabulary,metadata,images" fields="images.title,metavocabulary.value" age="7" orderby="images.number" directions="down" >
+                <prompt>Zoeken op metadata</prompt>
+                <search-filter>
+                    <name>Metadata vocabulair bevat</name>
+                    <search-fields>metavocabulary.value</search-fields>
+                </search-filter>
+           </command>
+           
+        </list>
+
+        <!-- we need a new list because there can be only one search command per list -->
+        <list minoccurs="0" maxoccurs="*" ordertype="number" role="sizerel">
+            <title>Zoeken op datum (YYYY-MM-DD HH:MM:SS)</title>
+            <item displaytype="none"></item>
+ 
+            <action type="create">
+                <relation role="posrel" destinationtype="images"/>
+            </action>
+
+
+             <command name="search" nodepath="metadate,metadata,images" fields="images.title,metadate.value" age="7" orderby="images.number" directions="down" >
+                <prompt>Zoeken naar leerobjecten op metadata</prompt>
+                <search-filter>
+                    <name>Metadata datum bevat</name>
+                    <search-fields>FROM_UNIXTIME(metadate.value)</search-fields>
+                </search-filter>
+           </command>
+           
+        </list>
+
+       
+    </form-schema>
+
+ 
+    <form-schema id="attachments" include="schemas/attachments.xml"/>
+    <form-schema id="audiotapes" include="schemas/audiotapes.xml"/>
+   <form-schema id="videotapes" include="schemas/videotapes.xml"/>
+   <form-schema id="urls" include="schemas/urls.xml"/>
+  
 
 </wizard-schema>
 
