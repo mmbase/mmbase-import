@@ -418,8 +418,13 @@ public class ContextTag extends ContextReferrerTag {
             log.debug("searching to register object " + externid + " in context " + getId());
         }
         if (isRegistered(newid)) {
-            String mes = "Object with id " + newid + " was already registered in Context '" + getId() + "'";
-            log.error(mes);
+	    String mes;
+	    if(getId() == null) {
+		mes = "Object with id " + newid + " was already registered in the root context.";
+	    } else {
+		mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
+	    } 
+            log.debug(mes);
             throw new JspTagException(mes);
         }
         // if (findAndRegister(LOCATION_PAGE, referid, id)) return true;
@@ -450,7 +455,7 @@ public class ContextTag extends ContextReferrerTag {
     public static boolean isContextIdentifierChar(char c) {
         return isContextVarNameChar(c) || c == '.' || c =='/'; // / for forward compatibility?
     }
-
+    
     /**
      * Register an Object with a key in the context. If the Context is
      * a session context, then it will be put in the session, otherwise in the hashmap.
@@ -487,11 +492,13 @@ public class ContextTag extends ContextReferrerTag {
         log.debug("Valid");
         //pageContext.setAttribute(id, n);
         if (check && isRegistered(newid)) {
-            String mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
-	    if(getId() == null){
+            String mes;
+	    if(getId() == null) {
 		mes = "Object with id " + newid + " was already registered in the root context.";
-	    }	       
-            log.error(mes);
+	    } else {
+		mes = "Object with id " + newid + " was already registered in Context '" + getId()  + "'.";
+	    } 
+            log.debug(mes);
             throw new JspTagException(mes);
         }
         if (log.isDebugEnabled()) {
