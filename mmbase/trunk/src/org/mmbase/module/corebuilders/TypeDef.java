@@ -34,7 +34,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.46 2004-11-25 12:58:53 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.47 2004-11-25 13:53:45 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -356,9 +356,9 @@ public class TypeDef extends MMObjectBuilder {
             String path = getBuilderConfiguration(node);
             org.w3c.dom.Document doc;
             try {
-                doc = ResourceLoader.getConfigurationRoot().getDocument(path);
+                doc = mmb.getBuilderLoader().getDocument(path);
             } catch (Exception e) {
-                log.warn("Error reading resource with name: " + path + " " + e.getMessage());
+                log.warn("Error reading builder with name: " + path + " " + e.getMessage());
                 return null;
             }
             if (doc == null) {
