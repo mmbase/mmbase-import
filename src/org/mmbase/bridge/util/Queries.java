@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.31 2004-02-26 22:09:28 michiel Exp $
+ * @version $Id: Queries.java,v 1.32 2004-03-02 12:46:34 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -33,8 +33,9 @@ public class Queries {
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
 
     /**
-     * Translates a string to a search direction constant.
-     * @see ClusterBuilder#getSearchDir
+     * Translates a string to a search direction constant. If the string is <code>null</code> then
+     * 'BOTH' is returned.
+     * @see ClusterBuilder#getSearchDir The same function, only with another return value if String is <code>null</code>
      */
     public static int getRelationStepDirection(String search) {
         if (search == null) {
@@ -58,7 +59,7 @@ public class Queries {
 
     /**
      * Creates a Query object using arguments for {@link Cloud#getList} (this function is of course
-     * implemented using this utility). This is usefull to convert (legacy) code which uses
+     * implemented using this utility). This is useful to convert (legacy) code which uses
      * getList, but you want to use new Query features without rewriting the complete thing.
      *
      * It can also be simply handy to specify things as Strings.
@@ -665,8 +666,7 @@ public class Queries {
     }
 
     /**
-     * Takes the query, and does a count with the same constraints.
-     *
+     * Takes the query, and does a count with the same constraints (so ignoring 'offset' and 'max')
      */
     public static int count(Query query) {
         Cloud cloud = query.getCloud();
@@ -741,8 +741,10 @@ public class Queries {
     }
 
     /**
-     * Returns the NodeQuery returning  the given Node. This query itself is not very usefull, because you already have its result (the node), but it is useful as 
-     * a base query for many other goals.
+     * Returns the NodeQuery returning the given Node. This query itself is not very useful, because
+     * you already have its result (the node), but it is convenient as a base query for many other
+     * goals.
+     * @return A new NodeQuery object
      */
     public static NodeQuery createNodeQuery(Node node) {
         NodeManager nm = node.getNodeManager();
@@ -757,6 +759,7 @@ public class Queries {
 
     /**
      * Returns a query to find the nodes related to the given node.
+     * @return A new NodeQuery object
      */
     public static NodeQuery createRelatedNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
@@ -768,6 +771,7 @@ public class Queries {
 
     /**
      * Returns a query to find the relations nodes of the given node.
+     * @return A new NodeQuery object
      */
     public static NodeQuery createRelationNodesQuery(Node node, NodeManager otherNodeManager, String role, String direction) {
         NodeQuery query = createNodeQuery(node);
@@ -779,11 +783,14 @@ public class Queries {
 
 
     /**
-     * Add a sortorder (DOWN) on al the 'number' fields of the query. This ensures that the query
-     * result is ordered uniquely.
+     * Add a sortorder (DESCENDING) on al the'number' fields of the query, on which there is not yet a
+     * sortorder. This ensures that the query result is ordered uniquely.
+     * @return The changed Query
      */
     public static Query sortUniquely(Query q) {
         List steps = new ArrayList(q.getSteps());
+
+        // remove the ones which are already sorted
         Iterator i = q.getSortOrders().iterator();
         while (i.hasNext()) {
             SortOrder sortOrder = (SortOrder)i.next();
