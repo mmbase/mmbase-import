@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.18 2004-05-09 09:55:04 nico Exp $
+    @version $Id: searchlist.xsl,v 1.19 2004-09-15 13:04:51 jaco Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -169,6 +169,7 @@
             <xsl:if test="not(/list/@showing)">
               <xsl:text></xsl:text>
               <span class="pagenav">
+                <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                 <xsl:call-template name="prompt_result_count" />
               </span>
             </xsl:if>
@@ -225,16 +226,18 @@
 
   <xsl:template match="page">
     <a class="pagenav" title="{$tooltip_goto}{position()}" href="javascript:browseTo({@start});">
-      <xsl:value-of select="position()" />
+      <xsl:value-of select="@number" />
     </a>
+    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     <xsl:text />
   </xsl:template>
 
   <xsl:template match="page[@current=&apos;true&apos;]">
     <span class="pagenav-current">
-      <xsl:value-of select="position()" />
+      <xsl:value-of select="@number" />
       <xsl:text></xsl:text>
     </span>
+    <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
   </xsl:template>
 
 </xsl:stylesheet>

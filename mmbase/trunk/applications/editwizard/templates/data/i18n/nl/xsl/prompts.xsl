@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.12 2004-05-02 15:02:03 nico Exp $
+  @version $Id: prompts.xsl,v 1.13 2004-09-15 13:04:51 jaco Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -110,14 +110,14 @@
 <xsl:variable name="tooltip_logout" >Uitloggen en terug naar de startpagina</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
-  <xsl:value-of select="$title" disable-output-escaping="yes"  />(<xsl:value-of select="/list/@count" /> items)
+  <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Selecteer een of meer items uit de lijst</xsl:variable>
 <xsl:template name="prompt_no_results" >Geen items gevonden</xsl:template>
 <xsl:template name="prompt_more_results" >(Meer items gevonden...)</xsl:template>
-<xsl:template name="prompt_result_count" >(<xsl:value-of select="/list/@count" /> items gevonden)</xsl:template>
+<xsl:template name="prompt_result_count" >(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)</xsl:template>
 <xsl:variable name="tooltip_cancel_search" >Annuleer</xsl:variable>
 <xsl:variable name="tooltip_end_search" >Toevoegen</xsl:variable>
 <!-- searchlist error messages for forms validation  -->
