@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.64 2004-04-23 13:25:27 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.65 2004-05-27 13:13:56 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -741,6 +741,7 @@ public class DatabaseStorageManager implements StorageManager {
         }
     }
 
+
     /**
      * Store the value of a field in a prepared statement
      * @todo Note that this code contains some code that should really be implemented in FieldDefs.
@@ -754,47 +755,72 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setValue(PreparedStatement statement, int index, MMObjectNode node, FieldDefs field) throws StorageException, SQLException {
         String fieldName = field.getDBName();
+        Object value = node.getValue(fieldName); 
         switch (field.getDBType()) {
             // Store numeric values
-            case FieldDefs.TYPE_INTEGER :
-            case FieldDefs.TYPE_FLOAT :
-            case FieldDefs.TYPE_DOUBLE :
-            case FieldDefs.TYPE_LONG :
-                setNumericValue(statement, index, node.getValue(fieldName), field);
-                break;
-                // Store nodes
-            case FieldDefs.TYPE_NODE :
-                // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
-                setNodeValue(statement, index, node.getIntValue(fieldName), field);
-                break;
-                // Store strings
-            case FieldDefs.TYPE_STRING :
-                ;
-            case FieldDefs.TYPE_XML :
-                // note: do not use getStringValue, as this may attempt to
-                // retrieve a (old, or nonexistent) value from the storage
-                Object textValue = node.getValue(fieldName);
-                if (textValue instanceof String) {
-                    setStringValue(statement, index, (String)textValue, field);
-                } else {
-                    setStringValue(statement, index, Casting.toString(textValue), field);
-                }
-                break;
-                // Store binary data
-            case FieldDefs.TYPE_BYTE :
-                // note: do not use getByteValue, as this may attempt to
-                // retrieve a (old, or nonexistent) value from the storage
-                Object byteValue = node.getValue(fieldName);
-                if (byteValue instanceof byte[]) {
-                    setBinaryValue(statement, index, (byte[])byteValue, field);
-                } else {
-                    setBinaryValue(statement, index, null, field);
-                }
-                break;
-                // unknown field type - error
-            default :
-                throw new StorageException("unknown fieldtype");
+        case FieldDefs.TYPE_INTEGER :
+        case FieldDefs.TYPE_FLOAT :
+        case FieldDefs.TYPE_DOUBLE :
+        case FieldDefs.TYPE_LONG :
+            setNumericValue(statement, index, value, field);
+            break;           
+            // Store nodes
+        case FieldDefs.TYPE_NODE :
+            // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
+            setNodeValue(statement, index, value, field);            
+            break;
+            // Store strings
+        case FieldDefs.TYPE_XML : 
+            setXMLValue(statement, index, value, field);
+        case FieldDefs.TYPE_STRING :
+            // note: do not use getStringValue, as this may attempt to
+            // retrieve a (old, or nonexistent) value from the storage
+            setStringValue(statement, index, value, field);
+            break;
+            // Store binary data
+        case FieldDefs.TYPE_BYTE : {
+            // note: do not use getByteValue, as this may attempt to
+            // retrieve a (old, or nonexistent) value from the storage
+            setBinaryValue(statement, index, value, field);
+            break;
+            // unknown field type - error
         }
+        default :
+            throw new StorageException("unknown fieldtype");
+        }
+    }
+
+
+    /**
+     * Stores the 'null' value in the statement if appopriate (the value is null or unset, and the
+     * value may indeed be NULL, according to the configuration). If the value is null or unset,
+     * but the value may not be NULL, then -1 is stored.
+     * @param statement the prepared statement
+     * @param index the index of the field in the prepared statement
+     * @param value the numeric value to store, which will be checked for null.
+     * @param field the MMBase field, containing meta-information
+     * @param type  java.sql.Type constant
+     * @throws StorageException if the data is invalid or missing
+     * @throws SQLException if an error occurred while filling in the fields
+     * @return true if a null value was set, false otherwise
+     * @since MMBase-1.7.1
+     */
+    protected boolean setNullValue(PreparedStatement statement, int index, Object value, FieldDefs field, int type) throws StorageException, SQLException {
+        boolean mayBeNull = ! field.getDBNotNull();
+        if (value == null) { // value unset
+            if (mayBeNull) {
+                statement.setNull(index, type);
+                return true;
+            }
+        } else if (value == MMObjectNode.VALUE_NULL) { // value explicitely set to 'null'
+            if (mayBeNull) {
+                statement.setNull(index, type);
+                return true;
+            } else {
+                log.warn("Tried to set 'null' in field '" + field.getDBName() + "' but the field is 'NOT NULL', it will be casted.");
+            }
+        }
+        return false;
     }
 
     /**
@@ -811,41 +837,27 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setNumericValue(PreparedStatement statement, int index, Object value, FieldDefs field) throws StorageException, SQLException {
-        switch (field.getDBType()) {
-            // Store integers
-            case FieldDefs.TYPE_INTEGER :
-                if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
-                    statement.setNull(index, java.sql.Types.INTEGER);
-                } else {
-                    statement.setInt(index, Casting.toInt(value));
-                }
-                break;
-                // Store floats
-            case FieldDefs.TYPE_FLOAT :
-                if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
-                    statement.setNull(index, java.sql.Types.REAL);
-                } else {
-                    statement.setFloat(index, Casting.toFloat(value));
-                }
-                break;
-                // Store doubles
-            case FieldDefs.TYPE_DOUBLE :
-                if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
-                    statement.setNull(index, java.sql.Types.DOUBLE);
-                } else {
-                    statement.setDouble(index, Casting.toDouble(value));
-                }
-                break;
-                // Store longs
-            case FieldDefs.TYPE_LONG :
-                if (value == MMObjectNode.VALUE_NULL && !field.getDBNotNull()) {
-                    statement.setNull(index, java.sql.Types.BIGINT);
-                } else {
-                    statement.setLong(index, Casting.toLong(value));
-                }
-                break;
+        // Store integers, floats, doubles and longs
+        switch (field.getDBType()) { // it does this switch part twice now?
+        case FieldDefs.TYPE_INTEGER :
+            if (setNullValue(statement, index, value, field, java.sql.Types.INTEGER)) break;
+            statement.setInt(index, Casting.toInt(value));
+            break;
+        case FieldDefs.TYPE_FLOAT :
+            if (setNullValue(statement, index, value, field, java.sql.Types.REAL)) break;
+            statement.setFloat(index, Casting.toFloat(value));
+            break;
+        case FieldDefs.TYPE_DOUBLE :
+            if (setNullValue(statement, index, value, field, java.sql.Types.DOUBLE)) break;
+            statement.setDouble(index, Casting.toDouble(value));
+            break;
+        case FieldDefs.TYPE_LONG :
+            if (setNullValue(statement, index, value, field, java.sql.Types.BIGINT)) break;
+            statement.setLong(index, Casting.toLong(value));
+            break;
         }
     }
+
 
     /**
      * Store a node value of a field in a prepared statement
@@ -856,22 +868,21 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you want to override this behavior.
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param nodeNumber the number of the node to store
+     * @param node the node to store
      * @param field the MMBase field, containing meta-information
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setNodeValue(PreparedStatement statement, int index, int nodeNumber, FieldDefs field) throws StorageException, SQLException {
-        if (nodeNumber < 0) {
-            if (field.getDBNotNull()) {
-                throw new StorageException("The NODE field with name " + field.getDBName() + " can not be NULL.");
-            } else {
-                statement.setNull(index, java.sql.Types.INTEGER);
-            }
-        } else {
-            // retrieve node as a numeric value
-            statement.setInt(index, nodeNumber);
+    protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
+        if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
+        int nodeNumber = Casting.toInt(node);
+        
+        if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
+            throw new StorageException("The NODE field with name " + field.getDBName() + " can not be NULL.");
         }
+
+        // retrieve node as a numeric value
+        statement.setInt(index, nodeNumber);
     }
 
     /**
@@ -881,20 +892,15 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you use another way to store binaries (i.e. Blobs).
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param value the data (byte array) to store
+     * @param objectValue the data (byte array) to store
      * @param field the MMBase field, containing meta-information. This value can be null
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setBinaryValue(PreparedStatement statement, int index, byte[] value, FieldDefs field) throws StorageException, SQLException {
-        if (value == null) {
-            if (field == null || field.getDBNotNull()) {
-                value = new byte[] {};
-            } else {
-                statement.setNull(index, java.sql.Types.VARBINARY);
-                return;
-            }
-        }
+    protected void setBinaryValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARBINARY)) return;
+        byte[] value = Casting.toByte(objectValue);
+
         try {
             InputStream stream = new ByteArrayInputStream(value);
             statement.setBinaryStream(index, stream, value.length);
@@ -913,20 +919,15 @@ public class DatabaseStorageManager implements StorageManager {
      * Override this method if you use another way to store large texts (i.e. Clobs).
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
-     * @param value the text to store
+     * @param objectValue the text to store
      * @param field the MMBase field, containing meta-information
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setStringValue(PreparedStatement statement, int index, String value, FieldDefs field) throws StorageException, SQLException {
-        if (value == null) {
-            if (field.getDBNotNull()) {
-                value = "";
-            } else {
-                statement.setNull(index, java.sql.Types.VARCHAR);
-                return;
-            }
-        }
+    protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;        
+        String value = Casting.toString(objectValue);
+
         // Store data as a binary stream when the code is a clob or blob, or
         // when database-force-encode-text is true.
         if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
@@ -943,6 +944,16 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, value);
         }
     }
+    
+    /**
+     * This default implementation calls {@link #setStringValue}.
+     * Override this method if you want to override this behavior.
+     * @since MMBase-1.7.1
+     */
+    protected void setXMLValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
+        setStringValue(statement, index, objectValue, field);
+    }
+
 
     // javadoc is inherited
     public void delete(MMObjectNode node) throws StorageException {
