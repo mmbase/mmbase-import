@@ -43,24 +43,19 @@ public class TransformingWriter extends PipedWriter {
 
     private static final Logger log = Logging.getLoggerInstance(TransformingWriter.class);
 
-
-    private CharTransformer charTransformer;
     private Writer out;
-    private Thread thread;
+    private Runnable link;
 
 
-    public TransformingWriter(Writer out, CharTransformer ct)  {
+    public TransformingWriter(Writer out, CharTransformer charTransformer)  {
         super();
         this.out = out;
-        charTransformer = ct;
+
         PipedReader r = new PipedReader();
         try {            
             connect(r);
-            thread =  new ChainedCharTransformer.TransformerLink(charTransformer, r, out, false);
-            thread.setDaemon(false);
-            if (log.isDebugEnabled()) log.debug("instantiated new tread " + thread);
-            thread.start();
-          
+            link = new ChainedCharTransformer.TransformerLink(charTransformer, r, out, false);
+            ChainedCharTransformer.executor.execute(link);
         } catch (IOException ioe) {
             log.error(ioe.getMessage());
         }
@@ -72,13 +67,10 @@ public class TransformingWriter extends PipedWriter {
      * ALso closes the wrapped Writer.
      */
     public void close() throws IOException {   
-        try {
-            super.close();
-            thread.join();
-            out.close();
-        } catch (InterruptedException ie) {
-            log.error(ie.getMessage());
+        super.close();
+        synchronized(link) {
         }
+        out.close();
     }
    
   
