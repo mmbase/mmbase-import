@@ -18,7 +18,7 @@ import org.mmbase.applications.media.urlcomposers.URLComposer;
  *
  * @author  Michiel Meeuwissen
  */
-abstract public class PreferenceSorter extends SorterFilter {
+abstract public class PreferenceSorter extends Sorter {
     /**
      *  Implement a preference for this URLComposer
      */
