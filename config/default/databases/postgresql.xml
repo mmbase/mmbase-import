@@ -48,11 +48,13 @@
 
         <!-- integer 4 bytes Usual choice for fixed-precision -2147483648 to +2147483647 -->
             <type-mapping mmbase-type="INTEGER">INTEGER</type-mapping>
+            <type-mapping mmbase-type="NODE">INTEGER</type-mapping>
 
             <!-- text (4+n) bytes Most flexible Variable unlimited length
                 Note: Although the type text is not SQL-compliant, many other RDBMS packages have it as well.
                 -->
             <type-mapping mmbase-type="STRING">TEXT</type-mapping>
+            <type-mapping mmbase-type="XML">TEXT</type-mapping>
 
             <type-mapping mmbase-type="BYTE">OID</type-mapping>
     </mapping>

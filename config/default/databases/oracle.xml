@@ -38,6 +38,7 @@
           <type-mapping mmbase-type="LONG">long</type-mapping>
           <type-mapping mmbase-type="FLOAT">float</type-mapping>
           <type-mapping mmbase-type="INTEGER">int</type-mapping>
+          <type-mapping mmbase-type="NODE">int</type-mapping>
           <type-mapping mmbase-type="STRING" min-size="1" max-size="255">varchar(size)</type-mapping>
           <type-mapping mmbase-type="STRING" min-size="256" max-size="16777216">clob</type-mapping>
           <type-mapping mmbase-type="XML" min-size="1" max-size="255">varchar(size)</type-mapping>
