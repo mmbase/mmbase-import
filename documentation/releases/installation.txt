@@ -1,5 +1,5 @@
-b===================================================================
-                     MMBase 1.6.0 - Installation
+===================================================================
+                     MMBase 1.6 - Installation
 ===================================================================  
   
 MMBase is distributed as a webapplication, it's not packaged as a .war
@@ -15,20 +15,25 @@ MMBase running, you must do the following:
 3. Download and install ImageMagick. See note below if you're having
    problems with Imagemagick or don't want to use it.
 
-4. Copy (not in all cases symlinking would work) the subdir mmbase-webapp into the servlet-engine's
-   webapp dir. Most 'SCAN' applications would require this webapp to be the ROOT webapp (the SCAN
-   editors of this version also work in another contextes).
+4. Copy (not in all cases symlinking would work) the subdir
+   mmbase-webapp into the servlet-engine's
+   webapp dir. Most 'SCAN' applications would require this webapp to
+   be the ROOT webapp (the SCAN editors of this version also work in
+   another contextes).
 
-   Some details can't autodetect the context in which MMBase is running (like gui-functions of
-   images), so it adviced to explicitely inform MMBase with the mmbase.htmlrooturlpath context
+   Some details can't autodetect the context in which MMBase is
+   running (like gui-functions of images), so it adviced to
+   explicitely inform MMBase with the mmbase.htmlrooturlpath context
    parameter from web.xml.
 
-5. Edit <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml> for the
-   location of ImageMagick's convert tool. If it is your PATH it will perhaps also work with default
-   settings.  
+5. Edit
+   <mmbase-webapp/WEB-INF/config/applications/Resources/builders/images.xml>
+   for the location of ImageMagick's convert tool. If it is your PATH
+   it will perhaps also work with default settings.  
 
-6. The directory <mmbase-webapp/WEB-INF/config/builders/applications> must be writable for the
-   Servlet Engine if you want to auto-install builders. 
+6. The directory <mmbase-webapp/WEB-INF/config/builders/applications>
+   must be writable for the Servlet Engine if you want to auto-install
+   builders. 
 
 7. Start servlet-engine if you want to use the default MMBase-config
    (uses a hsqldb-database), or goto step 10 for changing default
@@ -47,8 +52,10 @@ MMBase running, you must do the following:
    database (see releasenotes for tested databases), or change other
    settings (servername, multicast, etc). 
    Other interesting settings can be found in
-   <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users, groups, and contextes),
-   and in <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration and so on)
+   <mmbase-webapp/WEB-INF/config/security/context/config.xml> (users,
+   groups, and contextes), and in
+   <mmbase-webapp/WEB-INF/config/log/log4j.xml> (logfile configuration
+   and so on)
 
 11. If you have any kind of problem goto:
    website: <http://www.mmbase.org/>
