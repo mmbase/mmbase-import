@@ -9,6 +9,9 @@
     <builder maintainer="Submarine" version="1">postareas</builder>
     <builder maintainer="Submarine" version="1">postthreads</builder>
     <builder maintainer="Submarine" version="1">forums</builder>
+    <builder maintainer="Submarine" version="1">imagesets</builder>
+    <builder maintainer="Submarine" version="1">avatarsets</builder>
+    <builder maintainer="mmbase.org" version="1">images</builder>
     <builder maintainer="mmbase.org" version="1">posrel</builder>
     <builder maintainer="mmbase.org" version="1">insrel</builder>
     <builder maintainer="mmbase.org" version="1">rolerel</builder>
@@ -30,5 +33,7 @@
     <relation from="forums" to="postareas" type="related" />
     <relation from="postthreads" to="postings" type="related" />
     <relation from="postareas" to="postthreads" type="related" />
+    <relation from="posters" to="avatarsets" type="related" />
+    <relation from="avatarsets" to="images" type="posrel" />
   </allowedrelationlist>
 </cloudmodel>
