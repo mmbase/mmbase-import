@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.159 2002-10-08 18:00:43 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.160 2002-10-08 18:10:00 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1453,7 +1453,7 @@ public class MMObjectBuilder extends MMTable {
                 }
 		if(node.getNumber() <= 0) {
 		    // never happend to me, and never should!
-		    throw new RuntimeException("invalid node found, node number was invalid:" + node.getNumber());
+		    log.error("invalid node found, node number was invalid:" + node.getNumber()+", database invalid?");
 		}
 
 		Integer number = new Integer(node.getNumber());
