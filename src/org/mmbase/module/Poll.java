@@ -196,7 +196,7 @@ public class Poll extends ProcessorModule  {
 		Vector	select		= tagger.Values ("SELECT");
 		String	questionId	= tok.nextToken ();
 		int		totalVotes	= getTotalVotes (questionId);
-		Vector	relations	= getRelations (questionId);
+		Vector	relations	= getRelations2 (questionId);
 		double  scale       = getScale (tagger.Value ("SCALE"));
 
 		for (Enumeration e1 = relations.elements (); e1.hasMoreElements (); ) {
@@ -230,7 +230,7 @@ public class Poll extends ProcessorModule  {
         Vector  select      = tagger.Values ("SELECT");
         String  questionId  = tok.nextToken ();
         int     totalVotes  = getTotalVotes (questionId);
-        Vector  relations   = getRelations (questionId);
+        Vector  relations   = getRelations2 (questionId);
         double  scale       = getScale (tagger.Value ("SCALE"));
 
 		String	sort		= tagger.Value("SORT");
@@ -509,7 +509,7 @@ public class Poll extends ProcessorModule  {
 	/*
 	 */
 	private int getTotalVotes (String questionId) {
-		Vector	relations	= getRelations (questionId);
+		Vector	relations	= getRelations2 (questionId);
 		int		total		= 0;
 
 		for (Enumeration e = relations.elements (); e.hasMoreElements (); ) {
@@ -540,30 +540,18 @@ public class Poll extends ProcessorModule  {
 
 	private Vector getRelations2(String questionId) {
 		MMObjectNode question,relnode;
-		Vector rtn=null;
+		Vector rtn=new Vector();
 		int otype=_mmbase.getTypeDef().getIntValue("posrel");
 		int snum,dnum,q;
-
+        if (_questions==null) _questions = (MMObjectBuilder)_mmbase.getMMObject("questions");
 		question=_questions.getNode(questionId);
-		q=Integer.parseInt("questionId");
+		q=Integer.parseInt(questionId);
 		if (question!=null) {
-			Enumeration e=question.getRelations();
+			Enumeration e=question.getRelations(otype);
 			while(e.hasMoreElements()) {
 				relnode=(MMObjectNode)e.nextElement();
-				if (relnode.getIntValue("otype")==otype) {
-					System.out.println("Poll -> "+questionId+" Node "+relnode);
-					snum=relnode.getIntValue("snumber");
-					dnum=relnode.getIntValue("dnumber");
-					if (snum==q) {
-						// check dnum for answer type
-					} else if (dnum==q) {
-						// check snum for answer type
-					} else {
-						System.out.println("Poll -> feeeeeeeeeeeeeeeeeeeeeeeep");
-					}
-				}
-			}
-		}
+                rtn.addElement(((Integer)relnode.getValue("number")).toString());
+            }
 		return(rtn);
 	}
 
@@ -583,7 +571,7 @@ public class Poll extends ProcessorModule  {
 			try {
 				Statement	stmt	= con.createStatement ();
 				// Only select question <-> answer combos
-				ResultSet rs =stmt.executeQuery("select b.* from vpro4_questions a ,  vpro4_posrel b , vpro4_answers c where a.number=b.snumber AND c.number=b.dnumber AND a.number="+questionId+" UNION select b.* from vpro4_questions a ,  vpro4_posrel b , vpro4_answers c where a.number=b.dnumber AND c.number=b.snumber AND a.number="+questionId); 
+				ResultSet rs =stmt.executeQuery("select b.* from install_questions a ,  install_posrel b , install_answers c where a.number=b.snumber AND c.number=b.dnumber AND a.number="+questionId+" UNION select b.* from install_questions a ,  install_posrel b , install_answers c where a.number=b.dnumber AND c.number=b.snumber AND a.number="+questionId); 
 
 				while (rs.next ()) {
 					res.addElement (rs.getString (1));
@@ -613,7 +601,7 @@ public class Poll extends ProcessorModule  {
 	private MMObjectNode getRelation (String questionId, String answerId) {
 		MMObjectNode	node	= null;
 		boolean			found	= false;
-		Vector			v 		= getRelations (questionId);
+		Vector			v 		= getRelations2 (questionId);
 
 		for (Enumeration e = v.elements (); e.hasMoreElements () && !found; ) {
 			String			relid	= (String)(e.nextElement ());
