@@ -14,7 +14,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-import org.mmbase.utils.logging.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Class for reading and parsing the contents of a CVS (comma value seperated) file.
