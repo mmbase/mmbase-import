@@ -9,22 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.*;
-
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-
-import java.util.*;
 import javax.servlet.jsp.JspTagException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import org.mmbase.bridge.Query;
+import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.10 2003-08-27 21:33:38 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.11 2003-08-29 12:12:24 keesj Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 

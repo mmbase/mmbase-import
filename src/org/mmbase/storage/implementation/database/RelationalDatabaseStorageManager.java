@@ -10,11 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.implementation.database;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.storage.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.storage.StorageException;
+import org.mmbase.util.logging.*;
 
 /**
  * A JDBC implementation of a storage manager for relational databases.
@@ -22,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.2 2003-08-21 17:28:04 pierre Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.3 2003-08-29 12:12:27 keesj Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
 

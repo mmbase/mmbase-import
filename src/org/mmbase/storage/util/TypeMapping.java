@@ -10,9 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.util;
 
 import java.text.MessageFormat;
-import org.mmbase.storage.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import org.mmbase.util.logging.*;
 
 /**
  * The TypeMapping class helps translating MMBase types to storage-specific type descriptions.
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * (using the minSize/maxSize properties).
  *
  * @author Pierre van Rooden
- * @version $Id: TypeMapping.java,v 1.1 2003-08-21 09:59:32 pierre Exp $
+ * @version $Id: TypeMapping.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
  */
 public class TypeMapping implements Comparable {
 

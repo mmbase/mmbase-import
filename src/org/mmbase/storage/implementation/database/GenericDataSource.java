@@ -9,14 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+
 import javax.sql.DataSource;
 
-import org.mmbase.storage.StorageInaccessibleException;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBCInterface;
+import org.mmbase.storage.StorageInaccessibleException;
 
 /**
  * This class functions as a Datasource wrapper around the JDBC Module.
@@ -28,7 +27,7 @@ import org.mmbase.module.database.JDBCInterface;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.1 2003-08-21 09:59:29 pierre Exp $
+ * @version $Id: GenericDataSource.java,v 1.2 2003-08-29 12:12:27 keesj Exp $
  */
 public final class GenericDataSource implements DataSource {
 

@@ -9,21 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.implementation.database;
 
-import java.util.*;
 import java.io.*;
 import java.sql.*;
+import java.util.*;
+
 import javax.sql.DataSource;
 
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.*;
-import org.mmbase.storage.util.Scheme;
-import org.mmbase.storage.util.TypeMapping;
-
+import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * A JDBC implementation of a storage manager.
@@ -31,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.6 2003-08-26 08:05:49 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.7 2003-08-29 12:12:27 keesj Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 

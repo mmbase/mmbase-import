@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
-import java.util.Map;
-
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * The StorageManager interface defines how to access a storage device.
@@ -21,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.1 2003-08-21 09:59:28 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.2 2003-08-29 12:12:30 keesj Exp $
  */
 public interface StorageManager {
 

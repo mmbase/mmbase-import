@@ -10,13 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
-import org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag;
-import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.util.Encode;
 import java.util.*;
+
+import javax.servlet.jsp.JspTagException;
+
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.storage.search.Constraint;
+import org.mmbase.util.Encode;
 
 /**
  * @javadoc
@@ -24,7 +25,7 @@ import java.util.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: NodeHandler.java,v 1.21 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: NodeHandler.java,v 1.22 2003-08-29 12:12:28 keesj Exp $
  */
 
 public class NodeHandler extends AbstractTypeHandler {

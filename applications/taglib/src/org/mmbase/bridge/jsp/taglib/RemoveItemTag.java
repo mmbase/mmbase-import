@@ -9,12 +9,9 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -22,7 +19,7 @@ import org.mmbase.util.logging.Logging;
  * more.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RemoveItemTag.java,v 1.2 2003-08-27 21:33:36 michiel Exp $ 
+ * @version $Id: RemoveItemTag.java,v 1.3 2003-08-29 12:12:25 keesj Exp $ 
  */
 
 public class RemoveItemTag extends ListReferrerTag {

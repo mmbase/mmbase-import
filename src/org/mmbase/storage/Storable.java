@@ -9,11 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
-import java.util.List;
-import java.util.Map;
-import org.mmbase.storage.util.StorageReader;
-import org.mmbase.storage.util.Scheme;
-import org.mmbase.module.core.MMBase;
 
 /**
  * This interface contains functionality for retrieving a storage identifier - a name or id
@@ -21,7 +16,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.1 2003-08-21 09:59:27 pierre Exp $
+ * @version $Id: Storable.java,v 1.2 2003-08-29 12:12:29 keesj Exp $
  */
 public interface Storable {
 

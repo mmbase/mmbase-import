@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import java.util.Locale;
-import org.mmbase.storage.search.SearchQuery;
 
 /**
  * A Cloud is a collection of Nodes (and relations that are also nodes).
@@ -19,7 +18,7 @@ import org.mmbase.storage.search.SearchQuery;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.40 2003-08-27 21:25:06 michiel Exp $
+ * @version $Id: Cloud.java,v 1.41 2003-08-29 12:12:29 keesj Exp $
  */
 public interface Cloud {
 

@@ -10,15 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.util;
 
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
 
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * This is a specialised version of the MessageFormat class, with some awareness of 
@@ -27,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.1 2003-08-21 09:59:32 pierre Exp $
+ * @version $Id: Scheme.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
  */
 public final class Scheme extends MessageFormat {
 

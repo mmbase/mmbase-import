@@ -10,23 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.implementation.database;
 
 import java.io.InputStream;
-import java.util.StringTokenizer;
 import java.sql.*;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.util.StringTokenizer;
+
+import javax.naming.*;
 import javax.sql.DataSource;
-import org.xml.sax.InputSource;
 
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.StorageReader;
-
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.DatabaseLookup;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
+import org.xml.sax.InputSource;
 
 /**
  * A storage manager factory for database storages.
@@ -41,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.4 2003-08-26 08:05:49 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.5 2003-08-29 12:12:27 keesj Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 

@@ -10,11 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.cache;
 
 import java.util.*;
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseObserver;
-import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Query result cache used for getRelatedNodes from MMObjectNodes. Entries are invalidated on the
@@ -22,7 +20,7 @@ import org.mmbase.storage.search.*;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.2 2003-07-17 17:01:17 michiel Exp $
+ * @version $Id: RelatedNodesCache.java,v 1.3 2003-08-29 12:12:27 keesj Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */

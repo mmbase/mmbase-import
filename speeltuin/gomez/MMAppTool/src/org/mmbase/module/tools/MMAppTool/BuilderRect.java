@@ -9,12 +9,11 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module.tools.MMAppTool;
 
-import java.util.*;
 import java.awt.*;
+import java.util.*;
 
-import org.mmbase.util.*;
+import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.xml.BuilderReader;
-import org.mmbase.module.corebuilders.*;
 
 public class BuilderRect extends Object {
     
