@@ -12,6 +12,7 @@ package org.mmbase.module.database;
 import java.sql.*;
 import java.util.Map;
 
+import org.mmbase.module.core.MMBase;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.35 2004-07-30 16:57:34 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.36 2004-08-25 09:38:41 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -143,7 +144,7 @@ public class MultiConnection implements Connection {
 
     /**
      * Tries to fix the this connection, if it proves to be broken. It is supposed to be broken if
-     * the query "SELECT 1" does yield an exception. 
+     * the query "SELECT 1 FROM <OBJECT TABLE>" does yield an exception. 
      * This method is meant to be called in the catch after trying to use the connection.
      * 
      * @return <code>true</code> if connection was broken and successfully repaired. <code>false</code> if connection was not broken.
@@ -156,7 +157,8 @@ public class MultiConnection implements Connection {
         try {
             // check wether connection is still functional 
             Statement s = createStatement();
-            s.executeQuery("SELECT 1"); // if this goes wrong too it can't be the query
+            s.executeQuery("SELECT 1 FROM " + MMBase.getMMBase().getBuilder("object").getFullTableName()); // if this goes wrong too it can't be the query
+            s.close();
         } catch (SQLException isqe) {
              // so, connection must be broken.
             log.service("Found broken connection, will try to fix it.");
