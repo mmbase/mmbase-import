@@ -1,67 +1,33 @@
-/*
- CSS for MMBase website
- @version $Id: mmbase.css,v 1.2 2003-03-28 10:44:39 michiel Exp $;
-*/
-
-body {  
-	background-color: white;
-	color: #42BDAD;
-	font-size:medium;
-}
-
-a:link { 
-	color: #42BDAD; 
-}
-
-a:visited { 
-	color: #AAAAAA; 
-}
-
-a:active { 
-	color: #AAAAAA; 
-}
-
-th {  
-	background-color: #44BDAD; 
-	color: #00425A; 
-	font-size:medium; 
-	font-weight:bold; 
-}
-
-th.main {
-	background-color: #44BDAD;
-        color: #00425A;
-        font-size:large;
-        font-weight:bold; 
-}
-
-td {  
-	background-color: #00425A;
-	color: #44BDAD;
-	font-size:medium;
+/**
+ * @version $Id: mmbase.css,v 1.3 2003-05-08 21:22:50 kees Exp $
+ **/
+body {
+	color:#3A5060; 
 	font-weight:normal; 
 }
 
-td.link {
-	background-color: #44BDAD; 
-	color: #00425A; 
-	font-size:medium; 
-	font-weight:normal;
-	width:14; 
+a {
+	color: #146395;
+	font-weight: bold;
+}
+a:hover {
+	color: #146395;
+	font-weight: bold;
+	text-decoration : none;
 }
 
-
-textarea {
-    height: 20em;
-    width: 100%;    
+table {
+	background-color: #EEEEEE;
 }
 
-
-textarea.huge {
-   height: 60em;
+td {  
+	color: #333333;
 }
 
-textarea.small {
-   height: 10em;
+p { 
+	color: #333333;
 }
 
+br { 
+	color: 333333 
+}
