@@ -158,9 +158,11 @@ public class MMUsers extends ProcessorModule {
 		sessionInfo info = sessions.getSession (sp, sp.sname);
 		sessions.setValue (info, "USERNUMBER", "" + id);
 		sessions.setValue (info, "PASSWD", pw);
+		sessions.setValue (info, "LID", ln);
 
 		storeValue ("" + id, "SID", sid);
 		storeValue ("" + id, "PASSWD", pw);
+		storeValue ("" + id, "LID", ln);
 
 		return id;
 	}
