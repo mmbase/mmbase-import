@@ -10,7 +10,7 @@
 </mm:field>
 <mm:field name="stop">
   <mm:compare value="" inverse="true">
-    <ENDTIME VALUE="<mm:field name="gui(end)" />"/> <!-- duration ?? -->
+    <ENDTIME VALUE="<mm:field name="gui(stop)" />"/> <!-- duration ?? -->
   </mm:compare>
 </mm:field>
 </entry>
