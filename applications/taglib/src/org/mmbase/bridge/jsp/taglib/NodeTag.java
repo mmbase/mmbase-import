@@ -12,7 +12,6 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
-
 import javax.servlet.jsp.tagext.BodyTag;
 
 import org.mmbase.bridge.*;
@@ -26,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.53 2004-03-23 21:42:46 michiel Exp $
+ * @version $Id: NodeTag.java,v 1.54 2004-06-30 17:51:54 michiel Exp $
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -215,8 +214,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     public int doEndTag() throws JspTagException {
         super.doAfterBody(); // if modified
-        super.doEndTag();
-        return EVAL_PAGE;
+        return super.doEndTag();
     }
 
 }

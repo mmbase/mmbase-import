@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.7 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: ListContainerTag.java,v 1.8 2004-06-30 17:51:55 michiel Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
 
@@ -78,6 +78,10 @@ public class ListContainerTag extends CloudReferrerTag implements QueryContainer
             } 
         }
         return SKIP_BODY;        
+    }
+    public int doEndTag() throws JspTagException {
+        query = null;
+        return super.doEndTag();
     }
 
 }

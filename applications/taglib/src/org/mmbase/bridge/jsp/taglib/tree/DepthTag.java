@@ -18,7 +18,7 @@ import org.mmbase.bridge.jsp.taglib.Writer;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: DepthTag.java,v 1.2 2003-12-24 00:31:38 michiel Exp $
+ * @version $Id: DepthTag.java,v 1.3 2004-06-30 17:51:57 michiel Exp $
  */
 public class DepthTag extends TreeReferrerTag implements Writer {
 
@@ -26,7 +26,7 @@ public class DepthTag extends TreeReferrerTag implements Writer {
         DepthProvider dp =  (DepthProvider) findParentTag(DepthProvider.class, (String) parentTreeId.getValue(this));
         helper.setValue(new Integer(dp.getDepth()));
         if (getId() != null) {
-            getContextTag().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
@@ -35,7 +35,7 @@ public class DepthTag extends TreeReferrerTag implements Writer {
         return helper.doAfterBody();
     }
 
-    public int doEndTag() throws JspTagException {
+    public int doEndTag() throws JspTagException {       
         return helper.doEndTag();
     }    
 

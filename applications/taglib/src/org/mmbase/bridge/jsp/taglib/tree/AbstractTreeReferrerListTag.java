@@ -16,7 +16,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: AbstractTreeReferrerListTag.java,v 1.3 2004-03-24 00:59:02 michiel Exp $
+ * @version $Id: AbstractTreeReferrerListTag.java,v 1.4 2004-06-30 17:51:57 michiel Exp $
  */
 abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements ListProvider, DepthProvider {
 
@@ -60,7 +60,11 @@ abstract class AbstractTreeReferrerListTag extends TreeReferrerTag implements Li
         index = 0;
     }
 
-
+    public int doEndTag() throws JspTagException  {
+        collector = null;
+        tree     = null;
+        return super.doEndTag();
+    }
 
 
 }

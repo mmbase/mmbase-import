@@ -12,8 +12,8 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.*;
+
 import javax.servlet.jsp.tagext.TagSupport;
 
 import org.w3c.dom.Document;
@@ -42,7 +42,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.39 2004-06-21 16:24:03 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.40 2004-06-30 17:51:53 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -393,6 +393,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         if (timerHandle != -1) {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false)).haltTimer(timerHandle);
         }
+        super.doEndTag();
+        xsltSource = null;
         return helper.doEndTag();
     } // doEndTag
 

@@ -11,7 +11,7 @@ package org.mmbase.bridge.jsp.taglib.containers;
 
 import java.util.List;
 
-import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
@@ -24,7 +24,7 @@ import org.mmbase.storage.search.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedNodesContainerTag.java,v 1.5 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: RelatedNodesContainerTag.java,v 1.6 2004-06-30 17:51:55 michiel Exp $
  */
 public class RelatedNodesContainerTag extends ListNodesContainerTag {
 

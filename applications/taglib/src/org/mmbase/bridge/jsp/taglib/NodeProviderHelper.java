@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.2 2004-01-16 20:19:43 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.3 2004-06-30 17:51:54 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -137,7 +137,8 @@ public class NodeProviderHelper implements NodeProvider {
     }
     
     public int doEndTag() throws JspTagException {
-        node = null;
+        // to enable gc:
+        node     = null;
         modified = false;
         return BodyTagSupport.EVAL_PAGE;
     }

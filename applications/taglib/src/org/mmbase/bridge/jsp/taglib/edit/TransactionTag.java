@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.edit;
 
 import javax.servlet.jsp.JspTagException;
+
 import java.io.IOException;
 
 import org.mmbase.bridge.Cloud;
@@ -27,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Creates a new Transaction.
  *
  * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.19 2003-08-27 21:33:40 michiel Exp $ 
+ * @version $Id: TransactionTag.java,v 1.20 2004-06-30 17:51:56 michiel Exp $ 
  */
 
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
@@ -91,7 +92,8 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
                 getContextProvider().getContextContainer().unRegister(getId());
             }
         }
-        return EVAL_PAGE;
+        transaction = null;
+        return super.doEndTag();
     }
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) {
