@@ -1002,7 +1002,7 @@ Build-compiler: ${build.compiler}
   <!-- Build the AppTool                                                   -->
   <!-- =================================================================== -->
   <target name="apptool" description="Build the AppTool"
-          depends="compile.apptool">
+          depends="jar,compile.apptool">
     <mkdir dir="${build.dir}/apptool/lib"/>
     <copy file="${mmbase.jar}" todir="${build.dir}/apptool/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/apptool/lib"/>
