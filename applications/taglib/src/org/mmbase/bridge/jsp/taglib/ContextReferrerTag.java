@@ -165,7 +165,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     public void setContext(String c) {
-        log.debug("setting contextid to " + c);
+        if (log.isDebugEnabled()) log.debug("setting contextid to '" + c + "'");
         contextId = c;
     }
 
