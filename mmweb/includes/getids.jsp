@@ -9,7 +9,7 @@
  ></mm:node
 ></mm:import>
 
-<%-- find node number (rather than alias). Why? Needed, because it is compare with a number somewhere --%>
+<%-- find node number (rather than alias). Why? Needed, because it is compared with a number somewhere --%>
 <mm:node number="$portal">
    <mm:remove referid="portal" />
    <mm:field id="portal" name="number" write="false" />
