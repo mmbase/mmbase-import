@@ -1,28 +1,29 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud logon="wwwuser" pwd="buggie90">
+ <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:cloud logon="foo" pwd="bar">
 
-        <mm:import externid="newaccount" />
-        <mm:import externid="newfirstname" />
-        <mm:import externid="newlastname" />
-        <mm:import externid="newemail" />
+  <mm:import externid="newaccount" />
+  <mm:import externid="newfirstname" />
+  <mm:import externid="newlastname" />
+  <mm:import externid="newemail" />
+
 	<mm:import id="noerror">ok</mm:import>
 
 	<!-- first check if all fields where entered -->
-	<mm:compare referid="newaccount" value=""><%response.sendRedirect("/bugtracker/jsp/newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
-	<mm:compare referid="newfirstname" value=""><%response.sendRedirect("/bugtracker/jsp/newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
-	<mm:compare referid="newlastname" value=""><%response.sendRedirect("/bugtracker/jsp/newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
-	<mm:compare referid="newemail" value=""><%response.sendRedirect("/bugtracker/jsp/newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
+	<mm:compare referid="newaccount" value=""><%response.sendRedirect("../newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
+	<mm:compare referid="newfirstname" value=""><%response.sendRedirect("../newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
+	<mm:compare referid="newlastname" value=""><%response.sendRedirect("../newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
+	<mm:compare referid="newemail" value=""><%response.sendRedirect("../newUser.jsp?error=info");%><mm:remove referid="noerror" /></mm:compare>
 	<!-- end checks for empty fields -->
 
 	<!-- check if email allready has a account and warn the user -->	
 	<mm:listnodes type="users" constraints="email='$newemail'" max="1">
-		<%response.sendRedirect("/bugtracker/jsp/newUser.jsp?error=email");%>
+		<%response.sendRedirect("../newUser.jsp?error=email");%>
 	</mm:listnodes>
 	<!-- end of email allready has a account check -->
 
 	<!-- check of the account name is allready in use -->
 	<mm:listnodes type="users" constraints="account='$newaccount'" max="1">
-		<%response.sendRedirect("/bugtracker/jsp/newUser.jsp?error=account");%>
+		<%response.sendRedirect("../newUser.jsp?error=account");%>
 		<mm:remove referid="noerror" />
 	</mm:listnodes>
 	<!-- end of check of the account name is allready in use -->
@@ -59,6 +60,8 @@
 	</mm:createnode>
 	<!-- end of sending the email -->
 
-	<%response.sendRedirect("/bugtracker/jsp/showMessage.jsp?message=newuser");%>
 	</mm:present>
 </mm:cloud>
+<% 
+   response.sendRedirect("../showMessage.jsp?message=newuser"); 
+%>
