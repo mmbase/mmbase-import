@@ -20,56 +20,14 @@ import org.mmbase.util.logging.Logging;
 /**
  *  This class is a empty implementation of the Authentication, it will only
  *  return that the authentication succeeded.
- *  To make your own implementation of
- *  authorization, you have to extend this class.
- * @javadoc
+ *
+ *  To make your own implementation of authorization, you have to extend this class.
+ *
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.16 2003-06-16 17:27:09 michiel Exp $
+ * @version $Id: Authentication.java,v 1.17 2003-07-09 07:25:05 michiel Exp $
  */
-public abstract class Authentication {
-    private static Logger log = Logging.getLoggerInstance(Authentication.class.getName());
-
-    /** The SecurityManager, who created this instance */
-    protected MMBaseCop manager;
-
-    /** The absolute file which is the config file */
-    protected File configFile;
-
-    /** The file watcher */
-    protected FileWatcher fileWatcher;
-
-    /**
-     *	The method which sets the settings of this class. This method is
-     *	shouldn't be overrided.
-     *	This class will set the member variables of this class and then
-     *	call the member function load();
-     *	@param manager The class that created this instance.
-     *	@param fileWatcher checks the files
-     *	@param configPath The url which contains the config information for the authorization (e.g. context/config.xml)
-     */
-    public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
-        if (log.isDebugEnabled()) {
-            log.debug("Calling load() with as config file:" + configPath);
-        }
-        this.manager = manager;
-        this.fileWatcher = fileWatcher;
-        if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
-
-        fileWatcher.setDelay(10 * 1000);
-
-        if (configFile != null) {
-            fileWatcher.add(configFile); // add the file.
-        }
-
-        load();
-    }
-
-    /**
-     *	This method could be overrided by an extending class.
-     *	It should set the settings for this class, and when needed
-     *	retrieve them from the file at location configPath.
-     */
-    protected abstract void load();
+public abstract class Authentication extends Configurable {
+    private static Logger log = Logging.getLoggerInstance(Authentication.class);
 
     /**
      *  This method will verify the login, and give a UserContext back if everything
@@ -78,8 +36,7 @@ public abstract class Authentication {
      *	@param configPath The url which contains the config information for.
      *	                  the authorization.
      *	@param parameters a list of optional parameters, may also be null
-     *	@return <code>null</code When not valid
-     *	    	a (maybe new) UserContext When valid
+     *	@return <code>null</code When not valid a (maybe new) UserContext when valid.
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
