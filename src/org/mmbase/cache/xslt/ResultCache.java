@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.2 2002-05-15 16:43:09 michiel Exp $
+ * @version $Id: ResultCache.java,v 1.3 2002-06-25 21:27:18 michiel Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {
@@ -86,7 +86,7 @@ public class ResultCache extends Cache {
         XMLSerializer xml = new XMLSerializer(result, null);
         try {
             xml.serialize(src);
-            return xsl.getSystemId() + "/" + (params != null ? params.toString() : "")  + "/" + (props != null ? props.toString() : "")+ "/" + result.toString();
+            return ""+(xsl.getSystemId() + "/" + (params != null ? params.toString() : "")  + "/" + (props != null ? props.toString() : "")+ "/" + result.toString()).hashCode();
         } catch (java.io.IOException e) {
             return "KEYCOULDNOTBEGENERATED";
         }
@@ -130,11 +130,13 @@ public class ResultCache extends Cache {
                 result = e.toString();
             }
             // if result is not too big, then it can be cached:
-            if (result.length() < maxResultSize) {
-                log.service("Put xslt Result in cache with key " + key.substring(0,10) + "...");
-                super.put(key, result);
-            } else {
-                log.debug("xslt Result of key " + key + " is too big to put in cache");
+            if (isActive()) {
+                if (result.length() < maxResultSize) {
+                    log.service("Put xslt Result in cache with key " + key);
+                    super.put(key, result);
+                } else {
+                    log.debug("xslt Result of key " + key + " is too big to put in cache");
+                }
             }
         }
             
