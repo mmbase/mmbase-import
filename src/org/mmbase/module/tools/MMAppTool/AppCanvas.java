@@ -16,7 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import org.mmbase.util.*;
 
-public class AppCanvas extends Canvas implements MouseMotionListener {
+public class AppCanvas extends Canvas implements MouseMotionListener,MouseListener {
 
 	private Display parent;
 	private Vector builders=new Vector();
@@ -32,10 +32,14 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 	private Color linecolor=new Color(0,0,0);
 	private Color textcolor=new Color(0,0,0);
 	private Color objectcolor=new Color(255,255,0);
+	private long lastclicked=-1;
+	private BuilderRect openbuilder;
+	private XMLApplicationReader app;
 
 	public AppCanvas(Display parent) {
 		this.parent=parent;
 		this.addMouseMotionListener(this);	
+		this.addMouseListener(this);	
 	}
 
 	public void actionPerformed(ActionEvent evt) {
@@ -68,23 +72,27 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 
 	public void paint(Graphics g) {
 		setBackground(getBackGroundColor());
-
-		// draw the Relations
-		for (Enumeration e=relations.elements();e.hasMoreElements();) {
-			RelationLine r=(RelationLine)e.nextElement();
-			r.paint(g);
-		}
-
-		// draw the BuilderOvals
-		for (Enumeration e=builders.elements();e.hasMoreElements();) {
-			BuilderOval b=(BuilderOval)e.nextElement();
-			b.paint(g);
-		}
+		if (openbuilder!=null) {
+			openbuilder.paint(g);
+		} else {
+			// draw the Relations
+			for (Enumeration e=relations.elements();e.hasMoreElements();) {
+				RelationLine r=(RelationLine)e.nextElement();
+				r.paint(g);
+			}
+	
+			// draw the BuilderOvals
+			for (Enumeration e=builders.elements();e.hasMoreElements();) {
+				BuilderOval b=(BuilderOval)e.nextElement();
+				b.paint(g);
+			}
+		} 
 	}
 
 	public void setApplication(XMLApplicationReader app) {
 		Random rnd=new Random();
-		
+	
+		this.app=app;	
 		// takes all the info out of a reader
 		// and sets up the display objects;
 		builders=new Vector();		
@@ -158,6 +166,38 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 
 	public void mouseMoved(MouseEvent e) {
 		checkMouseAreas(e.getX(),e.getY(),false);
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseClicked(MouseEvent e) {
+		long oldt=lastclicked;
+		long newt=System.currentTimeMillis();
+		if ((newt-oldt)<500) {
+			if (openbuilder==null) {
+				if (db!=null) {
+					String filename=app.getFileName();
+					filename=filename.substring(0,filename.length()-4)+"/builders/"+db.getName()+".xml";
+					XMLBuilderReader bulapp=new XMLBuilderReader(filename);
+					openbuilder=new BuilderRect(this,db.getName(),bulapp,15,25,50);
+				}
+			} else {
+				openbuilder=null;
+				repaint();	
+			}
+			repaint();
+		}
+		lastclicked=newt;
 	}
 
 	public BuilderOval getBuilderOval(String name) {
