@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.47 2001-03-03 23:11:02 daniel Exp $
+$Id: MMSQL92Node.java,v 1.48 2001-03-04 15:23:05 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.47  2001/03/03 23:11:02  daniel
+updated for table changes
+
 Revision 1.46  2001/01/29 14:29:02  daniel
 added optional blob to disk support
 
@@ -44,7 +47,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.47 $ $Date: 2001-03-03 23:11:02 $
+* @$Revision: 1.48 $ $Date: 2001-03-04 15:23:05 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -918,11 +921,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	*/
 	public boolean drop_real(MMObjectBuilder bul,String tableName) {
 
-		int size=bul.size();
-		if (size>0) {
-			System.out.println("table not dropped, not empty : "+tableName);
-			return(false);
-		}
+		if (tableSizeProtection(bul)) return(false);
 
 		String result="drop table "+mmb.baseName+"_"+tableName;
 		try {
@@ -941,6 +940,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 	public boolean addField(MMObjectBuilder bul,String fieldname) {
+		if (tableSizeProtection(bul)) return(false);
+
 		System.out.println("Starting a addField : "+bul.getTableName()+" field="+fieldname);
 		String tableName=bul.getTableName();
 		if (create_real(bul,tableName+"_tmp")) {
@@ -950,6 +951,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				System.out.println("checked tmp table passed");
 			} else {
 				System.out.println("ERROR: checked tmp table failed");
+				drop_real(bul,tableName+"_tmp");
 				return(false);
 			}
 		} else {
@@ -984,6 +986,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 	public boolean removeField(MMObjectBuilder bul,String fieldname) {
+		if (tableSizeProtection(bul)) return(false);
 
 		System.out.println("Starting a removefield : "+bul.getTableName()+" field="+fieldname);
 
@@ -995,6 +998,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				System.out.println("checked tmp table passed");
 			} else {
 				System.out.println("ERROR: checked tmp table failed");
+				drop_real(bul,tableName+"_tmp");
 				return(false);
 			}
 		} else {
@@ -1029,6 +1033,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 	public boolean changeField(MMObjectBuilder bul,String fieldname) {
+		if (tableSizeProtection(bul)) return(false);
 
 		System.out.println("Starting a changeField : "+bul.getTableName()+" field="+fieldname);
 		String tableName=bul.getTableName();
@@ -1039,6 +1044,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				System.out.println("checked tmp table passed");
 			} else {
 				System.out.println("ERROR: checked tmp table failed");
+				drop_real(bul,tableName+"_tmp");
 				return(false);
 			}
 		} else {
@@ -1448,7 +1454,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 				if (o==null) {
 					int type=def.getDBType();
-					System.out.println(" ETYPE="+type);
 					switch (type) {
 						case FieldDefs.TYPE_STRING:
 							stmt2.setString(dbpos,new String());
@@ -1459,10 +1464,15 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 						case FieldDefs.TYPE_DOUBLE:
 							stmt2.setDouble(dbpos,-1);
 							break;
+						case FieldDefs.TYPE_FLOAT:
+							stmt2.setFloat(dbpos,-1);
+							break;
+						case FieldDefs.TYPE_LONG:
+							stmt2.setLong(dbpos,-1);
+							break;
 					}
 				} else {
 					int type=def.getDBType();
-					System.out.println("TYPE="+type);
 					switch (type) {
 						case FieldDefs.TYPE_STRING:
 							stmt2.setString(dbpos,(String)o);
@@ -1472,6 +1482,12 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 							break;
 						case FieldDefs.TYPE_DOUBLE:
 							stmt2.setDouble(dbpos,((Double)o).doubleValue());
+							break;
+						case FieldDefs.TYPE_FLOAT:
+							stmt2.setFloat(dbpos,((Float)o).floatValue());
+							break;
+						case FieldDefs.TYPE_LONG:
+							stmt2.setLong(dbpos,((Long)o).longValue());
 							break;
 					}
 				}
@@ -1488,4 +1504,17 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 	return(true);
     }
+
+    public boolean tableSizeProtection(MMObjectBuilder bul) {
+		int size=bul.size();
+		if (size>parser.getMaxDropSize()) {
+			System.out.println("ERROR: Database table changed not allowed on : "+bul.getTableName());
+			System.out.println("ERROR: check <maxdropsize> in your database.xml");
+			System.out.println("ERROR: defined max is : "+parser.getMaxDropSize()+" table was : "+size);
+	
+
+			return(true);
+		}
+		return(false);
+     }
 }
