@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.35 2003-05-08 06:09:19 kees Exp $
+ * @version $Id: JDBC.java,v 1.36 2003-06-05 09:13:07 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -71,7 +71,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public void reload() {
         getProps();
 
-        /* This doesn't work, have to figure out why
+       /* This doesn't work, have to figure out why
         try {
         DriverManager.deregisterDriver(driver);
         } catch (SQLException e) {
@@ -243,33 +243,33 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * doesn't need to care about what database it talks to.
      * @see java.sql.DriverManager#getConnection(java.lang.String)
      */
-    public String makeUrl(String host,int port,String dbm) {
-        String pre,post;
+    public String makeUrl(String host, int port, String dbm) {
+        String pre, post;
         int pos;
-        String end=new String(jdbcURL);
+        String end = jdbcURL;
         // $HOST $DBM $PORT
 
-        pos=end.indexOf("$DBM");
-        if (pos!=-1) {
-            pre=end.substring(0,pos);
-            post=end.substring(pos+4);
-            end=pre+dbm+post;
+        pos = end.indexOf("$DBM");
+        if (pos != -1) {
+            pre  = end.substring(0,pos);
+            post = end.substring(pos + 4);
+            end = pre + dbm + post;
         } else {
             log.service("Database name is static, can't select other databases within this databaseserver");
         }
-        pos=end.indexOf("$HOST");
-        if (pos!=-1) {
-            pre=end.substring(0,pos);
-            post=end.substring(pos+5);
-            end=pre+host+post;
+        pos = end.indexOf("$HOST");
+        if (pos !=- 1) {
+            pre = end.substring(0,pos);
+            post = end.substring(pos+5);
+            end = pre + host + post;
         }
         pos=end.indexOf("$PORT");
-        if (pos!=-1) {
-            pre=end.substring(0,pos);
-            post=end.substring(pos+5);
-            end=pre+port+post;
+        if (pos != -1) {
+            pre = end.substring(0,pos);
+            post = end.substring(pos+5);
+            end = pre + port + post;
         }
-        return(end);
+        return end;
     }
 
     /**
@@ -298,7 +298,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * @javadoc
      */
     public Connection getDirectConnection(String url) throws SQLException {
-        return DriverManager.getConnection(url,defaultname,defaultpassword);
+        return DriverManager.getConnection(url, defaultname, defaultpassword);
     }
 
     /**
