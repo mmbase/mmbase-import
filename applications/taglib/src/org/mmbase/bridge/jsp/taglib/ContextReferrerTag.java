@@ -40,7 +40,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     protected ContextTag pageContextTag = null;
 
-    private   String     contextId = null; // context to which this tag is referring to.
+    protected String     contextId = null; // context to which this tag is referring to.
     protected String     referid = null;
 
     void setPageContextOnly(PageContext pc) {
