@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @$Revision: 1.19 $ $Date: 2002-01-11 12:27:49 $
+ * @$Revision: 1.20 $ $Date: 2002-02-22 12:17:07 $
  */
 public class FieldDefs  {
     public final static int DBSTATE_MINVALUE = 0;
@@ -33,14 +33,15 @@ public class FieldDefs  {
     public final static int DBSTATE_MAXVALUE = 3;
     public final static int DBSTATE_UNKNOWN = -1;
 
-    public final static int TYPE_MINVALUE = 1;
+    public final static int TYPE_MINVALUE = 1;   
     public final static int TYPE_STRING = 1;
     public final static int TYPE_INTEGER = 2;
     public final static int TYPE_BYTE = 4;
     public final static int TYPE_FLOAT = 5;
     public final static int TYPE_DOUBLE = 6;
     public final static int TYPE_LONG = 7;
-    public final static int TYPE_MAXVALUE = 7;
+    public final static int TYPE_XML = 8;
+    public final static int TYPE_MAXVALUE = 8;   
     public final static int TYPE_UNKNOWN = -1;
 
     // logger
@@ -50,7 +51,7 @@ public class FieldDefs  {
         { "UNKNOWN", "VIRTUAL", "UNKNOWN", "PERSISTENT", "SYSTEM" };
 
     private final static String[] DBTYPES =
-        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG" };
+        { "UNKNOWN", "STRING", "INTEGER", "UNKNOWN", "BYTE", "FLOAT", "DOUBLE", "LONG", "XML" };
 
     /**
      * @scope private
@@ -155,12 +156,13 @@ public class FieldDefs  {
         if (type == null) return DBSTATE_UNKNOWN;
         // XXX: deprecated VARCHAR
         if (type.equals("VARCHAR")) return TYPE_STRING;
-        if (type.equals("STRING")) return TYPE_STRING;
+        if (type.equals("STRING"))  return TYPE_STRING;
+        if (type.equals("XML"))     return TYPE_XML;
         if (type.equals("INTEGER")) return TYPE_INTEGER;
-        if (type.equals("BYTE")) return TYPE_BYTE;
-        if (type.equals("FLOAT")) return TYPE_FLOAT;
-        if (type.equals("DOUBLE")) return TYPE_DOUBLE;
-        if (type.equals("LONG")) return TYPE_LONG;
+        if (type.equals("BYTE"))    return TYPE_BYTE;
+        if (type.equals("FLOAT"))   return TYPE_FLOAT;
+        if (type.equals("DOUBLE"))  return TYPE_DOUBLE;
+        if (type.equals("LONG"))    return TYPE_LONG;
         return TYPE_UNKNOWN;
     }
 
