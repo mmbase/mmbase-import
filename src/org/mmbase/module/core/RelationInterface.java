@@ -15,7 +15,7 @@ import java.util.Enumeration;
  *
  * @author Rob Vermeulen
  */
-public interface NodeInterface {
+public interface RelationInterface {
 	NodeInterface getSource();
 	NodeInterface getDestination();
 	int getDirection();
