@@ -15,27 +15,31 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- *  This class is the main class of the security system. It loads the authentication
- *  and authorization classes if needed, and they can be requested from this manager.
+ * This class is the main class of the security system. It loads the authentication
+ * and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCop.java,v 1.13 2002-06-25 12:30:44 michiel Exp $
+ * @version $Id: MMBaseCop.java,v 1.14 2003-07-14 21:47:47 michiel Exp $
  */
 public class MMBaseCop extends java.lang.SecurityManager  {
-    private static Logger log = Logging.getLoggerInstance(MMBaseCop.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMBaseCop.class);
 
-    /** the configuration used by our system */
+    /** 
+     * The configuration used by our system 
+     */
     private MMBaseCopConfig config;
 
-    /** the file from which the config is loaded..*/
+    /** 
+     * The file from which the config is loaded..
+     */
     private File configFile;
 
     /**
-     *	The constructor, will load the classes for authorization and authentication
-     *	with their config files, as specied in the xml from configUrl
-     *	@exception  java.io.IOException When reading the file failed
-     *	@exception  java.lang.NoSuchMethodException When a tag was not specified
-     *	@exception  org.mmbase.security.SecurityException When the class could not  be loaded
+     * The constructor, will load the classes for authorization and authentication
+     * with their config files, as specied in the xml from configUrl
+     * @throws  java.io.IOException When reading the file failed
+     * @throws  java.lang.NoSuchMethodException When a tag was not specified
+     * @throws  org.mmbase.security.SecurityException When the class could not  be loaded
      *
      * @param configPath Path to the security configuration file (security.xml)
      *	  
@@ -65,16 +69,16 @@ public class MMBaseCop extends java.lang.SecurityManager  {
     /**
      *	reload, will load the classes for authorization and authentication
      *	with their config files, as specied in the xml from configUrl
-     *	@exception  java.io.IOException When reading the file failed
-     *	@exception  java.lang.NoSuchMethodException When a tag was not specified
-     *	@exception  org.mmbase.security.SecurityException When the class could not
+     *	@throws  java.io.IOException When reading the file failed
+     *	@throws  java.lang.NoSuchMethodException When a tag was not specified
+     *	@throws  org.mmbase.security.SecurityException When the class could not
      *	    be loaded
      */
     public void reload() throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
-        log.info("gonna retrieve a new security configuration...");
+        log.debug("Retrieving a new security configuration...");
         MMBaseCopConfig newConfig = new MMBaseCopConfig(this, configFile);
 
-        log.info("gonna change the security configration now");
+        log.debug("Changing the security configration now");
         synchronized(this) {
             // first stop watching the config file change-es
             config.stopWatching();
