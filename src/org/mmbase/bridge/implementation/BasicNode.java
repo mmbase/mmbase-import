@@ -397,6 +397,9 @@ public class BasicNode implements Node {
     }
 
     public String toString() {
+        if (noderef == null) {
+            return "*deleted node*";
+        }
         return noderef.toString();
     };
 
