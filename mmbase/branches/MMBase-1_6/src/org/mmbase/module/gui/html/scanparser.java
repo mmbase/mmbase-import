@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.58 $ $Date: 2002-07-05 12:13:06 $
+ * @$Revision: 1.58.2.1 $ $Date: 2003-02-04 13:24:15 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -1193,44 +1193,57 @@ public class scanparser extends ProcessorModule {
         return(part);
     }
 
-    /**
-     * Check request host against wanted host and optional backend host
-     * Handles <HOST [host[,backendhost]]> tag
-     * @return null and sp.rstatus unchanged if hosts match or in case of an unspecified host
-     *         returns url and sp.rstatus 1, if redir to wantedhost requested
-     */
-    private final String do_host(scanpage sp, String wantedHost)
-    {
-        if (wantedHost==null) return null;
-        wantedHost = wantedHost.trim();
-        String backendHost = "";
-        int i = wantedHost.indexOf(',');
-        if (i>=0) {
-            if (i<wantedHost.length()-1) backendHost = wantedHost.substring( i+1 ).trim();
-            wantedHost = wantedHost.substring(0, i).trim();
-        }
-        if (wantedHost.length() < 1) return null;
+	/**
+	 * Check request host against wanted host and optional backend host
+	 * Handles <HOST [host[,backendhost]]> tag
+	 * @return null and sp.rstatus unchanged if hosts match or in case of an unspecified host
+	 *         returns url and sp.rstatus 1, if redir to wantedhost requested
+	 */
+	private final String do_host(scanpage sp, String hosts)
+	{
+		String hostDelimiters = ",";
+		if (hosts==null) return null;
 
-        if (sp.req==null) return null;
-        String requestHost = sp.req.getHeader("Host");
-        if (requestHost==null) return null; // No such header
-        requestHost = requestHost.trim();
-        if (requestHost.length() < 1) return null;
-        // remove port
-        i = requestHost.indexOf(':');
-        if (i==0) return null; // First char :, no host only port....
-        if (i>0) requestHost = requestHost.substring(0, i);
+		//Get the requested host from the request
+		if (sp.req==null) return null;
+		String requestHost = sp.req.getHeader("Host");
+		if (requestHost==null) return null; // No such header
+		requestHost = requestHost.trim();
+		if (requestHost.length() < 1) return null;
 
-        if (log.isDebugEnabled()) log.debug("Request host: " + requestHost + ", wanted host: " + wantedHost + " backend host: " + backendHost);
-		if (requestHost.equalsIgnoreCase(wantedHost) || requestHost.equalsIgnoreCase(backendHost))
-            return null; // The page runs on the requested host or on the backend host
+		// remove port
+		int i = requestHost.indexOf(':');
+		if (i==0) return null; // First char :, no host only port....
+		if (i>0) requestHost = requestHost.substring(0, i);
 
-        // Rederict the request to the wanted host
-        sp.rstatus = 1;
-        String url = "http://" + wantedHost + sp.getUrl();
-        if (log.isDebugEnabled()) log.debug("Redirecting to "+url);
-        return url;
-    }
+		//try to match requested host with allowed host
+		StringTokenizer allowedHosts = new StringTokenizer(hosts.trim(),hostDelimiters);
+
+		//allowed to use this server? Take the first if no
+		while (allowedHosts.hasMoreTokens()) {
+			String aHost = allowedHosts.nextToken().trim();
+			if (aHost.equalsIgnoreCase(requestHost)) {
+				log.debug("requested host " + requestHost + " found in allowed host list");
+				return null;
+			}
+		}
+		String firstHost = null;
+		int delimitIndex = hosts.indexOf(hostDelimiters);
+		if (delimitIndex > -1) {
+			firstHost = hosts.substring(0,delimitIndex).trim();
+		}
+		else {
+			firstHost = hosts.trim();
+		}
+
+		if (log.isDebugEnabled()) log.debug("Request host: " + requestHost + "not found, first host: " + firstHost);
+
+		// Redirect the request to the wanted host
+		sp.rstatus = 1;
+		String url = "http://" + firstHost + sp.getUrl();
+		if (log.isDebugEnabled()) log.debug("Redirecting to "+url);
+		return url;
+	}
 
     /**
     *  try to acces a module (Must be a ProcessorInterface)
@@ -2183,9 +2196,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.58 2002-07-05 12:13:06 vpro Exp $
+$Id: scanparser.java,v 1.58.2.1 2003-02-04 13:24:15 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.58  2002/07/05 12:13:06  vpro
+Wilbert: fixed passing params to part
+
 Revision 1.57  2002/05/14 09:05:10  vpro
 Wilbert: Don't redirect when sp.req null (from calcPage)
 
