@@ -23,8 +23,8 @@ import org.xml.sax.*;
 /**
  * TransactionHandler Module
  *
- * @author  $Author: vpro $ 
- * @version $Revision: 1.4 $ $Date: 2000-10-20 15:28:09 $
+ * @author  $Author: daniel $ 
+ * @version $Revision: 1.5 $ $Date: 2000-10-22 09:57:29 $
  */
  
 public class TransactionHandler 
@@ -68,7 +68,7 @@ public class TransactionHandler
 	}
 	
 	private String	_classname = getClass().getName();
-	private boolean _debug=true;
+	private static boolean _debug=false;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	// hashtable used to cache per user for thread safety
