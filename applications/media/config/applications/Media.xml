@@ -1,5 +1,5 @@
 <!DOCTYPE application PUBLIC "//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
-<application name="Media" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="false">
+<application name="Media" maintainer="mediaproject.mmbase.org" version="1" auto-deploy="true">
   <neededbuilderlist>
     <builder maintainer="mediaproject.mmbase.org" version="1">mediafragments</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">audiofragments</builder>
