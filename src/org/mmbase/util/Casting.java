@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.39 2005-03-04 09:59:58 michiel Exp $
+ * @version $Id: Casting.java,v 1.40 2005-03-16 10:45:48 michiel Exp $
  */
 
 import java.util.*;
@@ -81,7 +81,7 @@ public class Casting {
                    (type.equals(Float.TYPE) && value instanceof Float) ||
                    (type.equals(Double.TYPE) && value instanceof Double);
         } else {
-            return type.isInstance(value);
+            return value == null || type.isInstance(value);
         }
     }
 
@@ -99,7 +99,7 @@ public class Casting {
             return value;
         } else {
             if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
-                return new Boolean(toBoolean(value));
+                return Boolean.valueOf(toBoolean(value));
             } else if (type.equals(Byte.TYPE) || type.equals(Byte.class)) {
                 return new Byte(toInteger(value).byteValue());
             } else if (type.equals(Character.TYPE) || type.equals(Character.class)) {
@@ -219,6 +219,7 @@ public class Casting {
             return escape(escaper, "" + ((MMObjectNode)o).getNumber());
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
+                    private static final int serialVersionUID = 1; // increase this if object chages.
                     public String toString() {
                         String r;
                         if (getTime()  != -1) { // datetime not set
