@@ -40,7 +40,7 @@ import org.mmbase.util.XMLEntityResolver;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.32 2003-06-10 10:11:46 pierre Exp $
+ * @version $Id: Utils.java,v 1.33 2003-06-12 09:47:19 pierre Exp $
  */
 public class Utils {
 
@@ -232,14 +232,22 @@ public class Utils {
      */
     public static String getText(Node node, String defaultvalue) {
         try {
+            // return the value of the node if that node is itself a text-holding node
             if ((node.getNodeType()==Node.TEXT_NODE) ||
+                (node.getNodeType()==Node.CDATA_SECTION_NODE) || 
                 (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
                 return node.getNodeValue();
             }
+            // otherwise return the text contained by the node's children
             Node childnode=node.getFirstChild();
-            if ((childnode!=null) &&(childnode.getNodeType()==Node.TEXT_NODE)) {
-                return childnode.getNodeValue();
+            String value="";
+            while (childnode!=null) {
+                if ((childnode.getNodeType()==Node.TEXT_NODE) || (childnode.getNodeType()==Node.CDATA_SECTION_NODE)) {
+                    value+=childnode.getNodeValue();
+                }
+                childnode=childnode.getNextSibling();
             }
+            if (!"".equals(value)) return value;
         } catch (Exception e) {
             log.warn(e.getMessage());
         }
@@ -313,16 +321,21 @@ public class Utils {
 
     /**
      * Same as above, but without the params.
+     * This method first removes all text/CDATA nodes. It then adds the parsed text as either a text ndoe or a CDATA node. 
      */
     public static void storeText(Node node, String text) {
         Node t = node.getFirstChild();
-        if (t!=null) {
-            if (t.getNodeType()==Node.TEXT_NODE) {
-                t.setNodeValue(text);
-                return;
+        while (t!=null) {
+            if ((t.getNodeType()==Node.TEXT_NODE) || (t.getNodeType()==Node.CDATA_SECTION_NODE)) {
+                node.removeChild(t);
             }
+            t=t.getNextSibling();
         }
-        t = node.getOwnerDocument().createTextNode(text);
+        if (text.indexOf("<")!=-1 || text.indexOf("&")!=-1 ) {
+            t=node.getOwnerDocument().createCDATASection(text);
+        } else {
+            t=node.getOwnerDocument().createTextNode(text);
+        }
         node.appendChild(t);
     }
 
