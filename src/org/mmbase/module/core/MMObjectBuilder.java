@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.119 $ $Date: 2002-03-19 20:47:38 $
+ * @version $Revision: 1.120 $ $Date: 2002-03-20 11:06:50 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1304,6 +1304,7 @@ public class MMObjectBuilder extends MMTable {
                 }
             }
         } catch(Exception e) {
+            // TODO : research if this should throw an exception
             log.error(Logging.stackTrace(e));
         }
         return results;

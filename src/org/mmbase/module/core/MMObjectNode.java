@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.64 $ $Date: 2002-03-19 20:47:38 $
+ * @version $Revision: 1.65 $ $Date: 2002-03-20 11:06:51 $
  */
 
 public class MMObjectNode {
@@ -1286,14 +1286,21 @@ public class MMObjectNode {
                 dfactory.setValidating(true);
             }
             javax.xml.parsers.DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-            documentBuilder.setErrorHandler(new org.mmbase.util.XMLErrorHandler());
+
+            // dont log errors, and try to process as much as possible...
+            org.mmbase.util.XMLErrorHandler errorHandler = new org.mmbase.util.XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+            documentBuilder.setErrorHandler(errorHandler);
             documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
             // ByteArrayInputStream?
             // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
             if (log.isDebugEnabled()) { 
                 log.debug("string -> xml:\n" + value);
-            }                                                
-            return documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding())));
+            }
+            Document doc = documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding())));
+            if(!errorHandler.foundNothing()) {
+                throw new RuntimeException("xml for field with name: '"+fieldName+"' invalid:\n"+errorHandler.getMessageBuffer()+"for xml:\n"+value);
+            }
+            return doc;
         }
         catch(javax.xml.parsers.ParserConfigurationException pce) {
 	    String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
