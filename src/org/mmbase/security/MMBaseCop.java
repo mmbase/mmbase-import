@@ -11,8 +11,6 @@ package org.mmbase.security;
 
 import java.io.File;
 
-import org.mmbase.util.XMLBasicReader;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
