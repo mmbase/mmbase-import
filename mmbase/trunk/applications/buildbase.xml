@@ -53,7 +53,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
-  <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" />
+  <property name="mmbase.classes" value="no_extra_classes" />
   <!-- specify mmbase classes to appear in the jar too, would like to use empty string on default, but this will result in copying everything in stead... -->
 
   <property name="tests.source.dir"   location="../../tests" />
