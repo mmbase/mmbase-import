@@ -352,7 +352,6 @@
 				</glossdef>
       </glossentry>
 
-
       <glossentry id="inheritance">
         <glossterm>inheritance</glossterm>
         <glossdef>					
@@ -654,8 +653,28 @@
 					<orderedlist>
 						<listitem>
 							<para>
-								In several security implementations the concept 'security context' is stored in
+								In several MMBase security implementations the concept 'security context' is stored in
 								the owner field, to attribute rights to objects.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								A 'User Context' is the MMBase security object which provides the essential identity
+								information for a user: an identifier, an 'owner' abstraction (sometimes also called
+								'context') and a rank. It is provided by the <emphasis>authentication</emphasis>
+								implementation and is used by the <emphasis>authorization</emphasis> implementation.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								A 'Cloud Context' is the bridge object which provides clouds, modules, and empty
+								lists.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								In MMBase taglib a 'context' is a container for Taglib variables. It is also
+								associated with every page, the 'context' tag, and (in MMBase >= 1.7) list tags.
 							</para>
 						</listitem>
 						<listitem>
@@ -663,18 +682,6 @@
 								In a J2EE environment the web-application is associated with a 'context', which is
 								basically the first part of the path. Often it will be '/', but this is not required
 								for MMBase.
-							</para>
-						</listitem>
-						<listitem>
-							<para>
-								In MMBase taglib a 'context' is a container for Taglib variables. It is also
-								associated with every page, the 'context' tag, and list tags.
-							</para>
-						</listitem>
-						<listitem>
-							<para>
-								A 'Cloud Context' is the bridge object which provides clouds, modules, and empty
-								lists.
 							</para>
 						</listitem>
 					</orderedlist>
