@@ -1505,8 +1505,16 @@ public class MMObjectBuilder extends MMTable {
 		singularNames=names;
 	}
 
+	public Hashtable getSingularNames() {
+		return(singularNames);
+	}
+
 	public void setPluralNames(Hashtable names) {
 		pluralNames=names;
+	}
+
+	public Hashtable getPluralNames() {
+		return(pluralNames);
 	}
 		
 	/**
