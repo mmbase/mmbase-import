@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.78 2002-11-11 22:37:44 michiel Exp $
+ * @version $Id: MMBase.java,v 1.79 2002-11-12 14:28:36 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1079,7 +1079,7 @@ public class MMBase extends ProcessorModule  {
                     }
                 }
             } else {
-                log.error("Cannot find modules in "+path);
+                log.error("Cannot find builders in "+path);
             }
         }
     }
