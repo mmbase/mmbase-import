@@ -17,23 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import java.util.*;
 
 import org.mmbase.cache.Cache;
 
@@ -48,33 +32,10 @@ import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.module.gui.html.EditState;  //argh 
 
 import org.mmbase.storage.StorageException;
-import org.mmbase.storage.search.AggregatedField;
-import org.mmbase.storage.search.CompositeConstraint;
-import org.mmbase.storage.search.FieldCompareConstraint;
-import org.mmbase.storage.search.FieldValueConstraint;
-import org.mmbase.storage.search.ResultBuilder;
-import org.mmbase.storage.search.ResultNode;
-import org.mmbase.storage.search.SearchQueryException;
-import org.mmbase.storage.search.SortOrder;
-import org.mmbase.storage.search.Step;
-import org.mmbase.storage.search.StepField;
-import org.mmbase.storage.search.implementation.BasicAggregatedField;
-import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
-import org.mmbase.storage.search.implementation.BasicConstraint;
-import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
-import org.mmbase.storage.search.implementation.BasicSortOrder;
-import org.mmbase.storage.search.implementation.BasicStep;
-import org.mmbase.storage.search.implementation.ModifiableQuery;
-import org.mmbase.storage.search.implementation.NodeSearchQuery;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 
-import org.mmbase.util.DateStrings;
-import org.mmbase.util.DateSupport;
-import org.mmbase.util.QueryConvertor;
-import org.mmbase.util.SPartFileFilter;
-import org.mmbase.util.SortedVector;
-import org.mmbase.util.StringObject;
-import org.mmbase.util.StringTagger;
-import org.mmbase.util.scanpage;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -98,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.210 2003-02-26 12:37:16 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.211 2003-02-26 13:52:20 johannes Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3983,7 +3944,7 @@ public class MMObjectBuilder extends MMTable {
                     sb.append(",");
                 }
                 
-                sb.append(database.getAllowedField(def.getDBName()));
+                sb.append(getFullTableName() + "." + database.getAllowedField(def.getDBName()));
                 first = false;
             }
         }
