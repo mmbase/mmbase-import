@@ -126,6 +126,10 @@ public class Target {
         isbundle = state;
     }
 
+    public String getState() {
+	return creator.getState();
+    }
+
 
     /**
      *  Gets the bundle attribute of the Target object
@@ -247,6 +251,10 @@ public class Target {
         return creator.getLastDate(this);
     }
 
+    public void createPackageThreaded(int version) {
+	creator.createPackageThreaded(this, version);
+	ProviderManager.resetSleepCounter();
+    }
 
     /**
      *  Description of the Method
@@ -814,6 +822,14 @@ public class Target {
     }
 
     public boolean publish(int version) {
+	// extra delay to test the background threader
+	/*
+	try {
+		Thread.sleep(10000);
+	} catch(Exception e) {
+		e.printStackTrace();
+	}
+	*/
 	if (isBundle()) {
 		BundleInterface b = BundleManager.getBundle(getId(),""+version);
 		while (b==null) {
@@ -856,6 +872,10 @@ public class Target {
 
     public Project getParent() {
 	return parent;
+    }
+
+    public void addRelatedTargetsCreate(Target t) {
+	creator.addRelatedTargetsCreate(t);
     }
 }
 

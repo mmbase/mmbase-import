@@ -202,6 +202,7 @@ public class Controller {
                 } else {
                     virtual.setValue("log", "false");
                 }
+		virtual.setValue("state",t.getState());
             }
             list.add(virtual);
         }
@@ -428,6 +429,7 @@ public class Controller {
 			}
 		}
 
+                Target t = p.getTarget(target);
 
 		if (!createnew.equals("")) {
 			StringTokenizer tok = new StringTokenizer(createnew,",\n\t");
@@ -435,6 +437,8 @@ public class Controller {
 				String tid = tok.nextToken();
 				Target t2 = p.getTarget(tid);
 				if (t2 != null) {
+					t.addRelatedTargetsCreate(t2);
+					/* idea to do the create when doing bundle
 					int nv=t2.getNextVersion();
             				t2.createPackage(nv);
 					PackageInterface pa = PackageManager.getPackage(t2.getId());
@@ -448,10 +452,10 @@ public class Controller {
 					if (pa!=null) {
     						setIncludedVersion(project,target,t2.getId(),""+nv);
 					}
+					*/
 				}
 			}
 		}
-            Target t = p.getTarget(target);
 
             // set publish changes
 	    t.setPublishProvider(publishprovider);
@@ -462,7 +466,7 @@ public class Controller {
 	    	t.setPublishState(false);
 	    }
 	    
-            t.createPackage(newversion);
+            t.createPackageThreaded(newversion);
         }
         return true;
     }
