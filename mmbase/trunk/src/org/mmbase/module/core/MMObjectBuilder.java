@@ -1003,15 +1003,37 @@ public class MMObjectBuilder extends MMTable {
 		Object rtn=null;
 
 //		System.out.println("Builder ("+tableName+") execute "+function+" on "+field);
-		if(function.equals("date")) {
+
+		// time functions 
+		if(function.equals("date")) {					// date
 			int v=node.getIntValue(field);
-			rtn=makedate(v);
-		} else if (function.equals("time")) {
+			rtn=DateSupport.date2string(v);
+		} else if (function.equals("time")) {			// time hh:mm
 			int v=node.getIntValue(field);
-			rtn=maketime(v);
-		} else if (function.equals("time_hhmm")) {
+			rtn=DateSupport.getTime(v);
+		} else if (function.equals("timesec")) {		// timesec hh:mm:ss
 			int v=node.getIntValue(field);
-			rtn=maketime_hhmm(v);
+			rtn=DateSupport.getTimeSec(v);
+		} else if (function.equals("longmonth")) {		// longmonth September
+			int v=node.getIntValue(field);
+			rtn=DateStrings.longmonths[DateSupport.getMonthInt(v)];
+		} else if (function.equals("month")) {			// month Sep
+			int v=node.getIntValue(field);
+			rtn=DateStrings.months[DateSupport.getMonthInt(v)];
+		} else if (function.equals("weekday")) {		// weekday Sunday
+			int v=node.getIntValue(field);
+			rtn=DateStrings.longdays[DateSupport.getWeekDayInt(v)];
+		} else if (function.equals("shortday")) {		// shortday Sun
+			int v=node.getIntValue(field);
+			rtn=DateStrings.days[DateSupport.getWeekDayInt(v)];
+		} else if (function.equals("day")) {			// day 4
+			int v=node.getIntValue(field);
+			rtn=""+DateSupport.getDayInt(v);
+		} else if (function.equals("year")) {			// year 2001
+			int v=node.getIntValue(field);
+			rtn=DateSupport.getYear(v);
+
+		// text functions
 		} else if (function.equals("wap")) {
 			String val=node.getStringValue(field);
 			rtn=getWAP(val);
@@ -1631,61 +1653,6 @@ public class MMObjectBuilder extends MMTable {
 	}
 
 	//************************************************************ 
-
-	/**
-	 * Global functions for getValue
-	 */
-	protected String makedate(int val) {
-		String rtn="";
-		int y,m,d;
-
-		java.util.Date da=new java.util.Date(1000*(long)val);
-		Calendar cal=Calendar.getInstance();
-		cal.setTime(da);
-		y=cal.get(Calendar.YEAR);
-		m=cal.get(Calendar.MONTH)+1;
-		d=cal.get(Calendar.DAY_OF_MONTH);
-		if (d<10) rtn+="0"+d;
-		else rtn+=""+d;
-		rtn+="-";
-		if (m<10) rtn+="0"+m;
-		else rtn+=""+m;
-		rtn+="-";
-		rtn+=""+y;
-		return(rtn);
-	}
-
-	protected String maketime(int val) {
-		String rtn="";
-		int h,m,s;
-
-		h=((val%86400)/3600);
-		m=((val%3600)/60);
-		s=(val%60);
-		if (h<10) rtn="0"+h;
-		else rtn=""+h;
-		rtn+=":";
-		if (m<10) rtn+="0"+m;
-		else rtn+=""+m;
-		rtn+=":";
-		if (s<10) rtn+="0"+s;
-		else rtn+=""+s;
-		return(rtn);
-	}
-
-	protected String maketime_hhmm(int val) {
-		String rtn="";
-		int h,m,s;
-
-		h=((val%86400)/3600);
-		m=((val%3600)/60);
-		if (h<10) rtn="0"+h;
-		else rtn=""+h;
-		rtn+=":";
-		if (m<10) rtn+="0"+m;
-		else rtn+=""+m;
-		return(rtn);
-	}
 
 	protected String getHTML(String body) {
 		String rtn="";
