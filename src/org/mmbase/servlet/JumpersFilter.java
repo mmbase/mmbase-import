@@ -19,10 +19,10 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.4 2004-01-08 11:59:17 keesj Exp $
+ * @version $Id: JumpersFilter.java,v 1.5 2004-01-11 16:45:55 michiel Exp $
  */
 public class JumpersFilter implements Filter {
-    private static Logger log = Logging.getLoggerInstance(JumpersFilter.class);
+    private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
     private static MMBase mmb;
     private static Jumpers bul;
     private static String name;
@@ -52,18 +52,15 @@ public class JumpersFilter implements Filter {
         name = filterConfig.getFilterName();
         MMBaseContext.init(filterConfig.getServletContext());
         MMBaseContext.initHtmlRoot();
-        mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT", true);
+        mmb = MMBase.getMMBase();
         if (mmb == null) {
-            String message = "Could not start MMBase.";
-            log.error(message);
-            throw new ServletException(message);
+            log.warn("Could not start MMBase.");
+            throw new ServletException("Could not start jumpers filter because MMBase not started");
         }
 
-        bul = (Jumpers)mmb.getMMObject("jumpers");
+        bul = (Jumpers)mmb.getBuilder("jumpers");
         if (bul == null) {
-            String message = "Could not find jumpers builder.";
-            log.error(message);
-            throw new ServletException(message);
+            log.warn("Could not find jumpers builder. Perhaps it will be installed later. If not, you could as well remove the Jumpers filter.");
         }
         log.info("Filter " + name + " initialized.");
     }
@@ -72,6 +69,13 @@ public class JumpersFilter implements Filter {
      * @javadoc
      */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
+        if (bul == null) {
+            bul = (Jumpers)mmb.getBuilder("jumpers");
+            if (bul == null) {
+                filterChain.doFilter(servletRequest, servletResponse);
+                return; // nothing to be done
+            }
+        }
         HttpServletRequest req = (HttpServletRequest)servletRequest;
         HttpServletResponse res = (HttpServletResponse)servletResponse;
         /**
@@ -96,7 +100,8 @@ public class JumpersFilter implements Filter {
                  * If the response has already been committed, this method throws an IllegalStateException.
                  *  After using this method, the response should be considered to be committed and should not be written to.
                  */
-                res.sendRedirect(url);
+                // res.sendRedirect(res.encodeRedirectURL(req.getContextPath() + url));
+                res.sentRedirect(url);
                 return;
             }
         }
