@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * is still busy or just finished.
  *
  * @author Rico Jansen?, Daniel?, David van Zeventer
- * @version $Revision: 1.23 $ $Date: 2001-10-09 14:20:21 $
+ * @version $Revision: 1.24 $ $Date: 2002-01-22 11:11:32 $
  */
 public class EncodeHandler implements Runnable {
 	private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -53,7 +53,7 @@ public class EncodeHandler implements Runnable {
 	String task;
 
 	// Hardcoded hostname where surestreams are stored, will move to prop/cfg file soon.
-	public final static String RAWAUDIO_URL_HOST1 = "streams.vpro.nl";
+	public final static String RAWAUDIO_URL_HOST1 = "streams.vpro.nl/pac01";
 
 	/**
 	 * Constructor initializes EncodeHandler task and related node.
