@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.40 2004-01-14 12:34:58 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.41 2004-01-16 13:11:35 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1486,8 +1486,10 @@ public class DatabaseStorageManager implements StorageManager {
                             // compare size
                             int size = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
                             int cursize = field.getDBSize();
-                            if (cursize != -1 && size != -1 && size != cursize) {
-                                if (size < cursize || cursize <= 255) {
+                            // ignore the size difference for large fields (generally blobs or memo texts)
+                            // since most databases do not return accurate sizes for these fields
+                            if (cursize != -1 && size != -1 && size != cursize && cursize <= 255) {
+                                if (size < cursize) {
                                     // only correct if storage is more restrictive
                                     field.setDBSize(size);
                                     log.warn(
@@ -1498,9 +1500,7 @@ public class DatabaseStorageManager implements StorageManager {
                                             + ", but in storage "
                                             + size
                                             + " (value corrected for this session)");
-                                } else if (cursize <= 255) {
-                                    // ignore the size difference for large fields (blobs or texts) if
-                                    // the storage size is larger than that defined for the builder
+                                } else {
                                     log.debug("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' mismatch : size defined as " + cursize + ", but in storage " + size);
                                 }
                             }
