@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.37 2004-06-15 21:09:10 robmaris Exp $
+ * @version $Id: MultiRelations.java,v 1.38 2004-09-17 09:28:25 pierre Exp $
  * @deprecated Use {@link org.mmbase.module.core.ClusterBuilder} instead.
  */
 public class MultiRelations extends MMObjectBuilder {
@@ -42,8 +42,7 @@ public class MultiRelations extends MMObjectBuilder {
      * When searching relations, return both relations from source to deastination and from destination to source,
      * provided directionality allows
      *
-     * @deprecated Use {@link RelationStep.DIRECTIONS_BOTH}
-     * instead.
+     * @deprecated Use {@link RelationStep#DIRECTIONS_BOTH} instead.
      */
     public static final int SEARCH_BOTH = RelationStep.DIRECTIONS_BOTH;
 
@@ -51,9 +50,7 @@ public class MultiRelations extends MMObjectBuilder {
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
      *
-     * @deprecated Use
-     * {@link RelationStep.DIRECTIONS_DESTINATION}
-     * instead.
+     * @deprecated Use {@link RelationStep#DIRECTIONS_DESTINATION} instead.
      */
     public static final int SEARCH_DESTINATION
         = RelationStep.DIRECTIONS_DESTINATION;
@@ -62,8 +59,7 @@ public class MultiRelations extends MMObjectBuilder {
      * Seach for sources.
      * When searching a multilevel, return only relations from destination to source, provided directionality allows
      *
-     * @deprecated Use {@link RelationStep.DIRECTIONS_SOURCE}
-     * instead.
+     * @deprecated Use {@link RelationStep#DIRECTIONS_SOURCE} instead.
      */
     public static final int SEARCH_SOURCE = RelationStep.DIRECTIONS_SOURCE;
 
@@ -72,8 +68,7 @@ public class MultiRelations extends MMObjectBuilder {
      * When searching a multilevel, return both relations from source to deastination and from destination to source.
      * Directionality is not checked - ALL relations are used.
      *
-     * @deprecated Use {@link RelationStep.DIRECTIONS_ALL}
-     * instead.
+     * @deprecated Use {@link RelationStep#DIRECTIONS_ALL} instead.
      */
     public static final int SEARCH_ALL = RelationStep.DIRECTIONS_ALL;
 
@@ -84,8 +79,7 @@ public class MultiRelations extends MMObjectBuilder {
      * system onyl returns source to destination relations.
      * This is the default value (for compatibility purposes).
      *
-     * @deprecated Use {@link RelationStep.DIRECTIONS_EITHER}
-     * instead.
+     * @deprecated Use {@link RelationStep#DIRECTIONS_EITHER} instead.
      */
     public static final int SEARCH_EITHER = RelationStep.DIRECTIONS_EITHER;
 

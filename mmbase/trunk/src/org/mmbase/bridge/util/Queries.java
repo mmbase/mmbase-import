@@ -21,12 +21,12 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * This class contains various utility methods for manipulating and creating query objecs. Most
- * essential methods are available on the Query object itself, but too specific or legacy-ish
+ * This class contains various utility methods for manipulating and creating query objecs.
+ * Most essential methods are available on the Query object itself, but too specific or legacy-ish
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.41 2004-07-29 17:17:35 michiel Exp $
+ * @version $Id: Queries.java,v 1.42 2004-09-17 09:28:25 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -279,8 +279,9 @@ abstract public  class Queries {
     }
 
     /**
-     * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
-     * by a string. Alreading existing constraints remain ('AND' is used)
+     * Adds a 'legacy' constraint to the query, such as constraint(s) represented
+     * by a string.
+     * Alreading existing constraints remain ('AND' is used)
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
@@ -303,7 +304,7 @@ abstract public  class Queries {
     }
 
     /**
-     * Adds a Constraint to the already present constraint (with AND). 
+     * Adds a Constraint to the already present constraint (with AND).
      * @return The new constraint.
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
@@ -527,9 +528,9 @@ abstract public  class Queries {
             }
             query.setInverse(newConstraint, constraint.isInverse());
             return newConstraint;
-        } else if (c instanceof CompareFieldsConstraint) { 
+        } else if (c instanceof CompareFieldsConstraint) {
             throw new UnsupportedOperationException("Cannot copy comparison between fields"); // at least not from different steps
-        } 
+        }
 
 
         FieldConstraint fieldConstraint = (FieldConstraint) c;
@@ -538,7 +539,7 @@ abstract public  class Queries {
         StepField field = query.createStepField(step, fieldConstraint.getField().getFieldName());
 
         FieldConstraint newConstraint;
-        if (c instanceof FieldValueConstraint) {            
+        if (c instanceof FieldValueConstraint) {
             newConstraint = query.createConstraint(field, ((FieldValueConstraint) c).getOperator(), ((FieldValueConstraint) c).getValue());
         } else if (c instanceof FieldNullConstraint) {
             newConstraint = query.createConstraint(field);
@@ -577,7 +578,7 @@ abstract public  class Queries {
         } else {
             throw new RuntimeException("Could not copy constraint " + c);
         }
-        query.setInverse(newConstraint, fieldConstraint.isInverse());            
+        query.setInverse(newConstraint, fieldConstraint.isInverse());
         query.setCaseSensitive(newConstraint, fieldConstraint.isCaseSensitive());
         return newConstraint;
 
@@ -598,7 +599,7 @@ abstract public  class Queries {
             SortOrder sortOrder = (SortOrder) i.next();
             StepField sourceField = sortOrder.getField();
             if (! sourceField.getStep().equals(sourceStep)) continue; // for another step
-            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());            
+            query.addSortOrder(query.createStepField(step, sourceField.getFieldName()), sortOrder.getDirection());
         }
     }
 
@@ -779,7 +780,7 @@ abstract public  class Queries {
      * another then this found step.
      *
      * Furthermore may the nodes by identified by their alias, if they have one.
-     * 
+     *
      * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery (this is essentially a 'bridge' version of the startnodes part)
      */
     public static void addStartNodes(Query query, String startNodes) {
@@ -805,7 +806,7 @@ abstract public  class Queries {
                 }
             }
 
-            if (firstStep == null) { // firstStep not yet determined, do that now. 
+            if (firstStep == null) { // firstStep not yet determined, do that now.
                 Node node;
                 try {
                     node = query.getCloud().getNode(nodeNumber);
@@ -817,13 +818,13 @@ abstract public  class Queries {
                 while (i.hasNext()) {
                     Step queryStep = (Step) i.next();
                     NodeManager queryNodeManager = query.getCloud().getNodeManager(queryStep.getTableName());
-                    if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) { 
+                    if (queryNodeManager.equals(nodeManager) || queryNodeManager.getDescendants().contains(nodeManager)) {
                         // considering inheritance. ClusterBuilder is not doing that, but I think it is a bug.
-                        firstStep = queryStep; 
+                        firstStep = queryStep;
                         break;
                     }
                 }
-                if (firstStep == null) { 
+                if (firstStep == null) {
                     // odd..
                     // See also org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery
                     // specified a node which is not of the type of one of the steps.
@@ -920,8 +921,8 @@ abstract public  class Queries {
             Step step = (Step)i.next();
             if (stepAlias.equals(step.getAlias())) {
                 return step;
-            } 
-        } 
+            }
+        }
         // if no aliases found, try table names
         i = steps.iterator();
         while (i.hasNext()) {
