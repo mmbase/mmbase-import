@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.31 2002-06-20 15:06:07 pierre Exp $
+ * @version $Id: Wizard.java,v 1.32 2002-06-24 12:33:19 pierre Exp $
  *
  */
 public class Wizard {
@@ -66,6 +66,7 @@ public class Wizard {
 
     private String sessionId;
     private String sessionKey="editwizard";
+    private String referrer="";
 
     /**
      * public xmldom's: the schema, the data and the originaldata is stored.
@@ -97,6 +98,17 @@ public class Wizard {
      * This boolean tells the jsp that the wizard may be closed, as far as he is concerned.
      */
     private boolean mayBeClosed = false;
+
+    /**
+     * This boolean tells the jsp that a new (sub) wizard should be started
+     */
+    private boolean startWizard=false;
+
+    /**
+     * The command to use dor starting a new (sub) wizard
+     * Only set when startwizard is true
+     */
+    private WizardCommand startWizardCmd=null;
 
     /**
      * This boolean tells the jsp that the wizard was committed, and changes may have been made
@@ -166,6 +178,10 @@ public class Wizard {
         sessionKey = s;
     }
 
+    public void setReferrer(String s) {
+        referrer = s;
+    }
+
     public String getObjectNumber() {
         return objectnumber;
     }
@@ -202,15 +218,29 @@ public class Wizard {
     /**
      * Returns whether the wizard may be closed
      */
+    public boolean committed() {
+        return committed;
+    }
+
+    /**
+     * Returns whether the wizard may be closed
+     */
     public boolean mayBeClosed() {
         return mayBeClosed;
     }
 
     /**
-     * Returns whether the wizard was committed, which means changes may have been made
+     * Returns whether a sub wizard should be started
      */
-    public boolean committed() {
-        return committed;
+    public boolean startWizard() {
+        return startWizard;
+    }
+
+    /**
+     * Returns the subwizard start command
+     */
+    public WizardCommand getStartWizardCommand() {
+        return startWizardCmd;
     }
 
     /**
@@ -321,6 +351,7 @@ public class Wizard {
         params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
         params.put("sessionkey", sessionKey);
+        params.put("referrer", referrer);
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
         } catch (javax.xml.transform.TransformerException e) {
@@ -1129,6 +1160,8 @@ public class Wizard {
      */
     public void processCommands(ServletRequest req) throws WizardException {
         mayBeClosed = false;
+        startWizard=false;
+        startWizardCmd=null;
 
         boolean found=false;
         String commandname="";
@@ -1154,7 +1187,7 @@ public class Wizard {
             }
         }
 
-        if (errors.size() > 0){
+        if (errors.size() > 0) {
             String errorMessage = "Errors during command processing:";
             for (int i=0; i<errors.size(); i++){
                 errorMessage = errorMessage + "\n" + ((Exception)errors.get(i)).toString();
@@ -1184,7 +1217,6 @@ public class Wizard {
             // The command parameters is the did of the node to delete.
             // note that a fid parameter is expected in the command syntax but ignored
             String did = cmd.getDid();
-
             Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
             if (datanode != null) {
                 // all child objects are added to a repository.
@@ -1294,8 +1326,14 @@ public class Wizard {
             }
             break;
         }
+        case WizardCommand.START_WIZARD: {
+            // this involves a redirect and is handled by the jsp pages
+            startWizard=true;
+            startWizardCmd=cmd;
+            break;
+        }
         case WizardCommand.GOTO_FORM: {
-            // The command parameters is the did of the node to delete.
+            // The command parameters is the did of the form to jump to.
             // note that a fid parameter is expected in the command syntax but ignored
             currentformid = cmd.getDid();
             break;
