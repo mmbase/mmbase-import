@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 /**
- * A TEI class for Writer Tags that produce Integer jsp vars.
+ * A TEI class for Writer Tags that (on default) produce String jsp vars.
  *
  *
  * @author Michiel Meeuwissen
