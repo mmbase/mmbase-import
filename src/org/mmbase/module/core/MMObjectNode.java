@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.78 $ $Date: 2002-07-06 13:20:42 $
+ * @version $Revision: 1.79 $ $Date: 2002-08-12 21:50:16 $
  */
 
 public class MMObjectNode {
@@ -87,7 +87,7 @@ public class MMObjectNode {
     public String prefix="";
 
     // Vector  with the related nodes to this node
-    Vector relations=null; // possibly filled with insRels
+    private Vector relations=null; // possibly filled with insRels
 
     /**
      * Determines whether this node is virtual.
