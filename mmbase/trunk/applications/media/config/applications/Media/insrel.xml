@@ -1,54 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
-	<node number="140" owner="michiel" snumber="96" dnumber="99" rtype="parent" dir="bidirectional">
+	<node number="140" owner="default" snumber="96" dnumber="99" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="138" owner="michiel" snumber="96" dnumber="94" rtype="parent" dir="bidirectional">
+	<node number="138" owner="default" snumber="96" dnumber="94" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="136" owner="admin" snumber="99" dnumber="124" rtype="related" dir="bidirectional">
+	<node number="136" owner="default" snumber="99" dnumber="124" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="177" owner="michiel" snumber="114" dnumber="178" rtype="related" dir="bidirectional">
+	<node number="216" owner="default" snumber="116" dnumber="217" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="216" owner="admin" snumber="116" dnumber="217" rtype="related" dir="bidirectional">
+	<node number="215" owner="default" snumber="217" dnumber="132" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="215" owner="admin" snumber="217" dnumber="132" rtype="related" dir="bidirectional">
+	<node number="162" owner="default" snumber="108" dnumber="126" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="162" owner="michiel" snumber="108" dnumber="126" rtype="related" dir="bidirectional">
+	<node number="160" owner="default" snumber="124" dnumber="130" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="160" owner="admin" snumber="124" dnumber="130" rtype="related" dir="bidirectional">
+	<node number="158" owner="default" snumber="130" dnumber="132" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="158" owner="admin" snumber="130" dnumber="132" rtype="related" dir="bidirectional">
+	<node number="156" owner="default" snumber="126" dnumber="132" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="156" owner="michiel" snumber="126" dnumber="132" rtype="related" dir="bidirectional">
+	<node number="154" owner="default" snumber="99" dnumber="108" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="154" owner="michiel" snumber="99" dnumber="108" rtype="related" dir="bidirectional">
+	<node number="152" owner="default" snumber="122" dnumber="124" rtype="parent" dir="bidirectional">
 	</node>
 
-	<node number="152" owner="admin" snumber="122" dnumber="124" rtype="parent" dir="bidirectional">
+	<node number="148" owner="default" snumber="99" dnumber="116" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="150" owner="michiel" snumber="102" dnumber="108" rtype="parent" dir="bidirectional">
+	<node number="146" owner="default" snumber="116" dnumber="128" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="148" owner="michiel" snumber="99" dnumber="116" rtype="related" dir="bidirectional">
+	<node number="144" owner="default" snumber="128" dnumber="134" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="146" owner="michiel" snumber="116" dnumber="128" rtype="related" dir="bidirectional">
-	</node>
-
-	<node number="144" owner="michiel" snumber="128" dnumber="134" rtype="related" dir="bidirectional">
-	</node>
-
-	<node number="142" owner="michiel" snumber="114" dnumber="116" rtype="parent" dir="bidirectional">
+	<node number="142" owner="default" snumber="114" dnumber="116" rtype="parent" dir="bidirectional">
 	</node>
 
 </insrel>

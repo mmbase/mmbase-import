@@ -6,6 +6,7 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">videofragments</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
+    <builder maintainer="mediaproject.mmbase.org" version="1">mediaurlcomposers</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">mediasources</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">audiosources</builder>
@@ -16,6 +17,9 @@
 
     <builder maintainer="mediaproject.mmbase.org" version="1">pools</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">publishtimes</builder>
+
+    <!-- example -->
+    <builder maintainer="mediaproject.mmbase.org" version="1">myurlcomposers</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
@@ -40,10 +44,12 @@
 
     <relation from="audiofragments"  to="audiosources"    type="related" />
     <relation from="videofragments"  to="videosources"    type="related" />
-
+   
 
     <relation from="audiosources"    to="mediaproviders"  type="related" />
     <relation from="videosources"    to="mediaproviders"  type="related" />
+
+    <relation from="mediaproviders"  to="mediaurlcomposers"     type="posrel" />
 
     <relation from="pools"           to="videofragments"  type="related" />
     <relation from="pools"           to="audiofragments"  type="related" />
@@ -52,6 +58,9 @@
     <!-- needed to let relatenodes types="mediaframents" work -->
     <relation from="pools"           to="mediafragments"  type="related" />
     <relation from="audiofragments"  to="mediasources"    type="related" />
+
+    <!-- example -->
+    <relation from="mediaproviders"  to="myurlcomposers"     type="posrel" />
 
   </allowedrelationlist>
 
@@ -67,6 +76,10 @@
 		<datasource builder="videosources"     path="Media/videosources.xml" />
 
 		<datasource builder="mediaproviders"   path="Media/mediaproviders.xml" />
+		<datasource builder="mediaproviders"   path="Media/mediaurlcomposers.xml" />
+
+    <!-- example -->
+		<datasource builder="mediaproviders"   path="Media/myurlcomposers.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
