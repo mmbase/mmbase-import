@@ -54,9 +54,7 @@
     <td valign="top" bgcolor="#717171">
           <mm:write referid="player">
           <mm:compare value="real">
-              <mm:field name="url(ram)" vartype="String" jspvar="url">
-                <mm:import id="source"><%=thisServer(request, url)%></mm:import>
-              </mm:field>
+              <mm:field id="source" name="url(ram)" jspvar="url" />
               <embed src="<mm:write referid="source" />"
                 width="260" 
                 height="300"   
