@@ -488,5 +488,7 @@ public interface CreatorInterface {
      * @param  target  The new defaults value
      */
     public void setDefaults(Target target);
+
+    public String getDefaultTargetName();
 }
 

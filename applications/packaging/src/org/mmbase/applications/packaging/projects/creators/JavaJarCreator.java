@@ -193,5 +193,9 @@ public class JavaJarCreator extends BasicCreator implements CreatorInterface {
         target.setItem("exclude", "/CVS/");
     }
 
+  public String getDefaultTargetName() {
+        return "jars";
+  }
+
 }
 

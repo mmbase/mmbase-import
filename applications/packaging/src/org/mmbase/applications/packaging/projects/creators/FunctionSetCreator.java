@@ -189,5 +189,9 @@ public class FunctionSetCreator extends BasicCreator implements CreatorInterface
         target.setItem("functionsetdir", "config/functions/sets/");
     }
 
+  public String getDefaultTargetName() {
+        return "functionsets";
+  }
+
 }
 
