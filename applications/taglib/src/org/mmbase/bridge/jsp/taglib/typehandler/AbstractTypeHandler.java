@@ -70,7 +70,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         if (search == null || "".equals(search)) {
             return null;
         }
-        return "(" + fieldName + "=" + search + ")";
+        return "( [" + fieldName + "] =" + search + ")";
     }
 
     /**
