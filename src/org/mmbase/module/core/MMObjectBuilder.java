@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.248 2003-09-16 20:18:48 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.249 2003-09-16 21:21:25 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2072,10 +2072,10 @@ public class MMObjectBuilder extends MMTable {
                     // could not find the builder that was in typedef..
                     // maybe it is not active?
                     // TODO: research: add incorrect node's to node cache?
-                    log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
+                    log.error("Could not find builder with name:" + typedefNode.getStringValue("name") + " refered by node #" + typedefNode.getNumber()+", is it active?");
                     continue;
                 }
-                Iterator converted = getNodes(nodes).iterator();
+                Iterator converted = builder.getNodes(nodes).iterator();
 
                 while(converted.hasNext()) {
                     MMObjectNode current = (MMObjectNode) converted.next();
