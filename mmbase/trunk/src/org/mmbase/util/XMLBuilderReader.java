@@ -209,6 +209,7 @@ public class XMLBuilderReader  {
 		String val=n2.getNodeValue();
 		if (val.equals("INTEGER")) val="int";
 		if (val.equals("VARCHAR")) val="varchar";
+		if (val.equals("BYTE")) val="byte";
 		def.DBType=val;
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
