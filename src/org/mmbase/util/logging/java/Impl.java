@@ -16,7 +16,6 @@ import org.mmbase.util.logging.Logging;
 
 import java.io.*;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
 
