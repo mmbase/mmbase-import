@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.36 2003-06-05 09:13:07 michiel Exp $
+ * @version $Id: JDBC.java,v 1.37 2004-03-25 09:47:38 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -59,8 +59,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * Initialize the properties and get the driver used
      */
     public void init() {
-        // old
-        getProps();
+        // This is now called in onload(), which is called before init()
+        // getProps();
         probe = new JDBCProbe(this, probeTime);
         log.info("Module JDBC started (" + this + ")");
     }
@@ -94,29 +94,29 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private void getDriver() {
         Driver d;
 
-        driver=null;
+        driver = null;
         try {
-            classdriver=Class.forName(jdbcDriver);
+            classdriver = Class.forName(jdbcDriver);
 
             // marmaa@vpro.nl:
             // This is how McKoi's JDBC drivers wants itself
-            // to be registered; should have no affect on other drivers
+            // to be registered; should have no effect on other drivers
             Class.forName(jdbcDriver).newInstance();
 
-            log.info("Loaded JDBC driver: "+jdbcDriver);
+            log.info("Loaded JDBC driver: " + jdbcDriver);
 
         } catch (Exception e) {
-            log.fatal("JDBC driver not found: "+jdbcDriver+"\n" + Logging.stackTrace(e));
+            log.fatal("JDBC driver not found: " + jdbcDriver + "\n" + Logging.stackTrace(e));
         }
 
         log.debug("makeUrl(): " + makeUrl());
 
         /* Also get the instance to unload it later */
-        for (Enumeration e=DriverManager.getDrivers();e.hasMoreElements();) {
-            d=(Driver)e.nextElement();
+        for (Enumeration e = DriverManager.getDrivers(); e.hasMoreElements();) {
+            d = (Driver)e.nextElement();
             log.debug("Driver " + d);
             if (classdriver == d.getClass()) {
-                driver=d;
+                driver = d;
                 break;
             }
         }
@@ -152,13 +152,15 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         defaultname=getInitParameter("user");
         defaultpassword=getInitParameter("password");
         databasesupportclass=getInitParameter("supportclass");
-        
-        
-        try {
-            probeTime = Integer.parseInt(getInitParameter("probetime"));
-        } catch (NumberFormatException e) {
-            probeTime = 30;
-            log.warn("probetime was not set or a invalid integer :" + e + "(using default " + probeTime  + " s)");
+
+        probeTime = 30;
+        String tmp = getInitParameter("probetime");
+        if (tmp != null) {
+            try {
+                probeTime = Integer.parseInt(tmp);
+            } catch (NumberFormatException e) {
+                log.warn("Specified probetime is not a invalid integer :" + e + "(using default " + probeTime  + " s)");
+            }
         }
 
         /*
@@ -195,7 +197,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         } catch (Exception f) {
             try {
                 maxQueries = Integer.parseInt(getInitParameter("querys")); //fall back backward compatible
-            } catch (Exception e) {            
+            } catch (Exception e) {
                 maxQueries = 500;
                 log.warn("querys was not set or a invalid integer :" + e + "(using default " + maxQueries + ")");
             }
