@@ -29,14 +29,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.15 2003-06-24 09:04:48 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.16 2003-07-04 17:23:41 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class MediaFragments extends MMObjectBuilder {
     
     // logging
-    private static Logger log = Logging.getLoggerInstance(MediaFragments.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaFragments.class);
 
     // let the compiler check for typo's:
     public static final String FUNCTION_URLS        = "urls";
