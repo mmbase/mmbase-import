@@ -22,9 +22,10 @@
     and this code won't work when we're in the wrong one)
     --%>
     
-    if (top.frames['text'].location.href == document.location.href && top.frames['code'].location.href.indexOf("code.jsp") >= 0) {
-	top.frames['code'].location.reload();
-    } 
+<%--    if (top.frames['text'].location.href == document.location.href && top.frames['code'].location.href.indexOf("code.jsp") >= 0) {
+	top.frames['code'].location.href=top.frames['code'].location.href;
+    } --%>
+    document.location.href='<mm:treefile page="/education/wizards/loaded.jsp" objectlist="$includePath" referids="$referids" />';
    </script>
    
    </body>
