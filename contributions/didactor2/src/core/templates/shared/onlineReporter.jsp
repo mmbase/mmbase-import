@@ -1,8 +1,9 @@
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:content postprocessor="reducespace" expires="0">
-<mm:cloud loginpage="/login.jsp" jspvar="cloud">
+<mm:cloud jspvar="cloud" method="asis">
 	<%@include file="/shared/setImports.jsp"%>
 
+<mm:isgreaterthan referid="user" value="0">
 		<mm:node number="$user">
                 <mm:field id="oldLastActivity" name="lastactivity" write="false"/>
                 <mm:islessthan referid="oldLastActivity" value="2">
@@ -47,5 +48,7 @@
 		    </mm:list>
 	        </mm:present>
 	</mm:present>
+
+</mm:isgreaterthan>
 </mm:cloud>
 </mm:content>
