@@ -1,7 +1,7 @@
 <%-- Used by player --%><%
     response.setHeader("Content-Type", "application/smil");
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%>
+%><%@ include file="readconfig.jsp" %>
 <mm:cloud>
 <mm:import externid="fragment"   required="true" />
 <mm:node number="$fragment">
@@ -17,7 +17,7 @@
   <body>    
      <par>
       <mm:field name="name">
-         <video  src="<mm:field name="url(rm)" />" region="video_region" regPoint="center" regAlign="center" />
+         <video  src="<mm:field name="url($config.format)" />" region="video_region" regPoint="center" regAlign="center" />
       </mm:field>
      </par>
   </body>

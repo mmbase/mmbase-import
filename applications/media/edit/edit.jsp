@@ -1,27 +1,19 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:import externid="language">nl</mm:import><mm:locale language="$language"><mm:cloud jspvar="cloud" loginpage="login.jsp"><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+%><%@include file="readconfig.jsp" %><mm:locale language="$config.lang"><mm:cloud jspvar="cloud" loginpage="login.jsp"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd">
 <html>
-<% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
-   java.util.Locale locale = null; %>
-<mm:write referid="language" jspvar="lang" vartype="string">
-<%
-  locale  =  new java.util.Locale(lang, "");
-  m = java.util.ResourceBundle.getBundle("org.mmbase.util.media.resources.mediaedit", locale);
-%>
-</mm:write>
-
+<mm:write id="language" referid="config.lang" write="false" />
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
    <!--
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: edit.jsp,v 1.1 2003-01-03 21:47:49 michiel Exp $
+    @version  $Id: edit.jsp,v 1.2 2003-01-14 20:31:48 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
-<script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;language=$language" />" language="javascript"><!--help IE--></script>
+<script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>
 <mm:import externid="origin">media.myfragments</mm:import>
 <mm:import id="startnodes"><mm:write referid="origin" /></mm:import>
@@ -148,18 +140,10 @@
 
   </table>
   <hr />
-  <p align="right">
-  <mm:context>
-  <mm:import id="langs" vartype="list">en,nl</mm:import>
-  <mm:aliaslist id="language" referid="langs">
-     <a href="<mm:url referids="language,origin" />" ><mm:locale language="$_" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></a><br />
-  </mm:aliaslist>
-  </mm:context>
-  </p>
-  <p align="right"><mm:context>
-   <mm:url id="referrer" write="false" referids="origin,language" page="entrancepage.jsp" />
+  <%--p align="right"><mm:context>
+   <mm:url id="referrer" write="false" referids="origin" page="entrancepage.jsp" />
    <a href="<mm:url referids="referrer" page="logout.jsp" />"><%=m.getString("logout")%></a>
-   (<%=cloud.getUser().getIdentifier()%>)</mm:context></p>
+   (<%=cloud.getUser().getIdentifier()%>)</mm:context></p --%>
   <p align="right">
     <a href="images/Media.jpg" target="new">Object model</a>
   </p>
