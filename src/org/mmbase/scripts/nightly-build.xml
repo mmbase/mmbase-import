@@ -4,7 +4,7 @@
 
    @author Eduard Witteveen
    @author Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.9 2002-09-23 21:48:44 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.10 2002-10-25 20:19:47 michiel Exp $
    
 -->
 <project name="project naam" default="full" basedir=".">
@@ -108,7 +108,9 @@ README.txt     This file
 mmbase-src.zip The source from which this build was made
 mmbase-lib.zip The libraries against which the source were compiled
 mmbase.jar     The mmbase.jar (containing all mmbase classes and the mmbase taglib descriptor (tld))
+
 mmbase.war     A web-application archive, configured for an hsql database, and complete with documentation and editors
+minimalistic-mmbase.war   A base for a production installation. Very clean
 dtd            The dtd's unpacked from the source directory
 api            API-documentation
 mmdocs         Other documentation (also in mmbase.war)
@@ -126,6 +128,12 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     <copy todir="${destination.dir}/dtd">
       <fileset dir="${base.cvs.config.dir}/config/default/dtd"/>
     </copy>
+
+    <copy todir="${destination.dir}/dtd" flatten="true">
+      <fileset dir="${base.cvs.src.dir}">
+        <include name="**/*.dtd"/>
+      </fileset>
+    </copy>    
 
     <copy tofile="${destination.dir}/nightly-build.xml" file="${ant.file}" />
     
