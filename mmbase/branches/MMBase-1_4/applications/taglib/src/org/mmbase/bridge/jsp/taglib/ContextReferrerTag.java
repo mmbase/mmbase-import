@@ -38,31 +38,50 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
 
-    private ContextTag pageContextTag = null;
+    protected ContextTag pageContextTag = null;
 
-    private String     contextId = null;
-    protected String   referid = null;
+    private   String     contextId = null; // context to which this tag is referring to.
+    protected String     referid = null;
 
-
-    public void setPageContext(PageContext pc) {
+    void setPageContextOnly(PageContext pc) {
         super.setPageContext(pc);
-        if (pageContextTag == null) {
-            pageContextTag=(ContextTag)pc.getAttribute("context");
-        }
-        if (pageContextTag == null) {
+        // the 'page' Context
+    }
+  
+    public void setPageContext(PageContext pc) {
+        log.debug("setting page context: " + this.getClass().getName());
+
+        setPageContextOnly(pc); // make pageContext availabe.
+
+        pageContextTag = (ContextTag) pageContext.getAttribute("__context");    
+
+        if (pageContextTag == null) { // not yet put 
+            log.debug("not found in pagecontext, creating one");
             log.debug("making the pageContextTag.");
             pageContextTag = new ContextTag();
-            pc.setAttribute("context",pageContextTag);
-            pageContextTag.setPageContext(pc);
             pageContextTag.setId("context");
+            pageContextTag.setPageContextOnly(pageContext);
+            pageContextTag.pageContextTag = pageContextTag;
+            pageContextTag.fillVars();
+            // register also the tag itself under __context.
+            // _must_ set __context before calling setPageContext otherwise in infinite loop.                        
+            pageContext.setAttribute("__context", pageContextTag);
+
+            try { // the startTag creates the hashmap in the pageContext.
+                pageContextTag.doStartTag();
+            } catch (JspTagException e) {
+                log.error("" + e);
+            }
+           
             // there is one implicit ContextTag in every page.
-            // it's id is 'context'.
+            // its id is 'context', it is registered in the pageContext as __context.
+            // 
             // it is called pageContext, because it is similar to the pageContext, but not the same.
-        }
+        }  
     }
 
     public void setReferid(String r) throws JspTagException {
-        referid = getReferIdValue(r);
+        referid = getReferIdValue(getAttributeValue(r));
     }
 
     protected String getReferid() throws JspTagException {
@@ -72,8 +91,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     /**
      * Release all allocated resources.
      */
-    public void release() {
+    public void release() {        
         super.release();
+        log.debug("releasing context-referrer " + this.getClass().getName());
         id = null;
         referid = null;
         contextId = null;
@@ -148,7 +168,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     final protected TagSupport findParentTag(String classname, String id, boolean exception) throws JspTagException {
-        log.debug("finding " + classname);
+        log.debug("Finding a tag " + classname);
         Class clazz ;
         try {
             clazz = Class.forName(classname);
@@ -192,10 +212,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     protected ContextTag getContextTag() throws JspTagException {
         return getContextTag(contextId);
     }
-
     protected ContextTag getContextTag(String contextid) throws JspTagException {
-        log.debug("searching in context " + contextid);
-        //if (contextTag == null) {
         log.debug("searching context " + contextid);
         ContextTag contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextid, false);
         if (contextTag == null) {
@@ -207,7 +224,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             }
         }
         log.debug("found a context with ID= " + contextTag.getId());
-        //}
         return contextTag;
     }
 
