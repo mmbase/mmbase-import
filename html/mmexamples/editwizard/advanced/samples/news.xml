@@ -34,7 +34,7 @@
 			<prompt>Body</prompt>
 		</field>
 
-		<list role="related" destination="people" minoccurs="0"  maxoccurs="*">
+		<list role="related" destination="people" minoccurs="0"  maxoccurs="3">
       <title>Authors</title>       
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
 				<prompt>People</prompt>
@@ -62,7 +62,6 @@
 				</relation>
 			</action>
 		</list>
-
 
     <list extends="lib/addimages.xml">
 			<action type="create">
@@ -96,10 +95,11 @@
       <!-- samples/urls: you'll not find a samples/urls.xml in this directory. Search in /mmapps/editwizard/data -->
 
       <item>
-        <field ftype="data" name="url" />
-        <field ftype="data" name="name" />
+        <field name="url" />
+        <field name="name" />
       </item>
 			
+      <command name="insert" />
 			<action type="create">
 				<relation destinationtype="urls" role="related" />
 			</action>
