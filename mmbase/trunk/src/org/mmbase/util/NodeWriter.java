@@ -16,9 +16,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- *
+ * Utility class for writing xml files for data- and relation sources, suppied by an application export class.
+ * Does not support or export dtd information.
  * @author Daniel Ockeleon
  * @author Jaco de Groot
+ * @author Pierre van Rooden
+ * @version 9-11-2000
  */
 public class NodeWriter{
     private static final boolean DEBUG = true;
@@ -32,16 +35,26 @@ public class NodeWriter{
     private int nrOfNodes;
 
     /**
+     * Constructor, opens the initial xml file and writes a header.
+     * The file opened for writing is [directory]/[buildername].xml.
+     *
+     * @param mmb NNBase object for retrieving type information
+     * @param resultsmsgs vector of strings fro reporting results.
      * @param directory  the directory to write the files to (including the
      *                   trailing slash).
-     */ 
+     * @param buildername name of the builder to export
+     * @param isRelationNode if <code>true</code>, the source to write is a relationsource.
+     *		Otherwise, a datasource is written.
+     */
     NodeWriter(MMBase mmb, Vector resultsmsgs, String directory,
                String builderName, boolean isRelationNode) {
+        // store parameters
         this.mmb = mmb;
         this.resultsmsgs = resultsmsgs;
         this.directory = directory;
         this.builderName = builderName;
         this.isRelationNode = isRelationNode;
+        // define and open the file to write
         file = new File(directory + builderName + ".xml");
         try {
             if (DEBUG) System.out.println("Opening " + file + " for writing.");
@@ -53,26 +66,43 @@ public class NodeWriter{
         write("<" + builderName + " "
               + "exportsource=\"mmbase://127.0.0.1/install/b1\" "
               + "timestamp=\"20000602143030\">\n");
+        // initialize the nr of nodes written
         nrOfNodes = 0;
     }
 
+    /**
+    *  Writes a node (object) to the datasource file.
+    *  Relationsources are stoired ina a slightly different format from data sources.
+    *  @param node The object to store.
+    */
     public void write(MMObjectNode node) {
+    	//
+    	// retrieve basic information of the node
         int number=node.getIntValue("number");
         String owner=node.getStringValue("owner");
-        // start the node
+        // start writing the node
         if (isRelationNode) {
-            String rtype = builderName;
-            if ("insrel".equals(builderName)) {
-                rtype = "related";
-            }
+        	// For a relationnode, the fields snumber, dnumber and rnumber are stored as
+            	// named references (as snumber, rnumber, and rtype).
+
+            	// determine the relation 'type' (use the value of sname in RelDef, or the
+            	// current buildername by default)
+		String rtype = builderName;
+        	int rnumber=node.getIntValue("rnumber");
+        	MMObjectNode reldefnode=mmb.getRelDef().getNode(rnumber);
+        	if (reldefnode!=null) {
+	        	rtype = reldefnode.getStringValue("sname");
+	        }
+	
             write("\t<node number=\""+number+"\" owner=\""+owner+"\" snumber=\""+ node.getIntValue("snumber") +"\" dnumber=\""+ node.getIntValue("dnumber") +"\" rtype=\""+ rtype +"\">\n");
         } else {
-            String tm=mmb.OAlias.getAlias(number);
-            if (tm==null) {
-                write("\t<node number=\""+number+"\" owner=\""+owner+"\">\n");
-            } else {
-                write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
-            }
+        	// For a data node, store the alias if at all possible.
+            	String tm=mmb.OAlias.getAlias(number);
+            	if (tm==null) {
+                	write("\t<node number=\""+number+"\" owner=\""+owner+"\">\n");
+            	} else {
+                	write("\t<node number=\""+number+"\" owner=\""+owner+"\" alias=\""+tm+"\">\n");
+            	}
         }
         // write the values of the node
         Hashtable values=node.getValues();	
@@ -80,6 +110,9 @@ public class NodeWriter{
         while (nd.hasMoreElements()) {
             String key=(String)nd.nextElement();
             if (isRelationNode) {
+            	// note that the routine below assumes
+            	// fields in a relation node cannot contain binary blobs
+            	//
                 if (!key.equals("number") && !key.equals("owner")
                         && !key.equals("otype") && !key.equals("CacheCount")
                         && !key.equals("snumber") && !key.equals("dnumber")
@@ -95,6 +128,9 @@ public class NodeWriter{
         nrOfNodes++;
     }
     
+    /**
+    *  Writes a footer to the xml file, and closes the file.
+    */
     public void done() {
         // write the footer	
         write("</"+ builderName + ">\n");
@@ -108,6 +144,10 @@ public class NodeWriter{
         }
     }
 
+    /**
+    *  Writes a string datasource file.
+    *  @param s The string to store.
+    */
     private void write(String s) {
         try {
             fw.write(s);
@@ -116,6 +156,16 @@ public class NodeWriter{
         }
     }
 
+    /**
+    *  Creates a description string of a field in a node for use in a datasource file.
+    *  Binary data (such as images) are stored as seperate binary files, the string then contains
+    *  a reference in lieu of the actual value.
+    *  @param key the fieldname to store
+    *  @param node The node wose field to store
+    *  @param targetpath the path where any binary files may be stored
+    *  @param mmb MMBase objhect for retrieving type info
+    *  @return A <code>String</code> descriving in xml-format the field's content (or a reference to that content)
+    */
     private static String writeXMLField(String key,MMObjectNode node, String targetpath,MMBase mmb) {
 	if (!key.equals("number") && !key.equals("owner") && !key.equals("otype") && !key.equals("CacheCount")) {
 		// this is a bad way of doing it imho
@@ -141,6 +191,12 @@ public class NodeWriter{
 	return("");
     }
 
+    /**
+    *  Stores binary data in a file
+    *  @param filename path of the file to store the data
+    *  @param value binary data to store (byte array)
+    *  @return <code>true</code> if the write was succesful, <code>false</code> if an exception occurred
+    */
 	static boolean saveFile(String filename,byte[] value) {
 		File sfile = new File(filename);
 		try {
@@ -150,6 +206,7 @@ public class NodeWriter{
 			scan.close();
 		} catch(Exception e) {
 			e.printStackTrace();
+			return(false);
 		}
 		return(true);
 	}
