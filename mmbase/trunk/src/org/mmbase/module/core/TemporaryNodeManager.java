@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.28 2002-04-17 13:17:42 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.29 2002-09-20 12:25:41 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -80,8 +80,6 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
         // Create node
         createTmpNode(bulname,owner,key);
-        builder.checkAddTmpField("_snumber");
-        builder.checkAddTmpField("_dnumber");
         setObjectField(owner,key,"_snumber",getTmpKey(owner,source));
         setObjectField(owner,key,"_dnumber",getTmpKey(owner,destination));
         setObjectField(owner,key,"rnumber",""+rnumber);
@@ -97,7 +95,6 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
         // Create alias node
         createTmpNode(bulname,owner,key);
-        builder.checkAddTmpField("_destination");
         setObjectField(owner,key,"_destination",getTmpKey(owner,destination));
         setObjectField(owner,key,"name",name);
         return key;
@@ -126,14 +123,6 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
             node=bul.getNode(key);
             if(node==null) throw new java.lang.RuntimeException("Node not found !! (key = '" + key + "')");
         }
-        node.parent.checkAddTmpField("_number");
-        if (node.parent instanceof InsRel) {
-            node.parent.checkAddTmpField("_snumber");
-            node.parent.checkAddTmpField("_dnumber");
-        }
-                if (node.parent instanceof OAlias) {
-                    node.parent.checkAddTmpField("_destination");
-                }
         return node;
     }
 
@@ -154,14 +143,6 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
             }
         }
         if (node != null) {
-            node.parent.checkAddTmpField("_number");
-            if (node.parent instanceof InsRel) {
-                node.parent.checkAddTmpField("_snumber");
-                node.parent.checkAddTmpField("_dnumber");
-            }
-            if (node.parent instanceof OAlias) {
-                node.parent.checkAddTmpField("_destination");
-            }
             return key;
         } else {
             return null;

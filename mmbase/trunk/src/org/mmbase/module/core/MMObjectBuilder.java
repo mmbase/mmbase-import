@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.151 2002-09-16 15:07:23 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.152 2002-09-20 12:25:41 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -303,6 +303,11 @@ public class MMObjectBuilder extends MMTable {
         }
         // should this be here??
         if (obj2type==null) init_obj2type();
+        
+        // add temporary fields
+        checkAddTmpField("_number");
+        checkAddTmpField("_exists");
+        
         return true;
     }
 
@@ -894,7 +899,6 @@ public class MMObjectBuilder extends MMTable {
     public MMObjectNode getNewTmpNode(String owner,String key) {
         MMObjectNode node=null;
         node=getNewNode(owner);
-        checkAddTmpField("_number");
         node.setValue("_number",key);
         TemporaryNodes.put(key,node);
         return node;
@@ -906,7 +910,6 @@ public class MMObjectBuilder extends MMTable {
      * @param node The node to store
      */
     public void putTmpNode(String key, MMObjectNode node) {
-        checkAddTmpField("_number");
         node.setValue("_number",key);
         TemporaryNodes.put(key,node);
     }

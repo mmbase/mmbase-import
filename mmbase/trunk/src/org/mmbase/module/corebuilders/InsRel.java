@@ -102,6 +102,8 @@ public class InsRel extends MMObjectBuilder {
             }
         }
         boolean res=super.init();
+        checkAddTmpField("_dnumber");
+        checkAddTmpField("_snumber");
         if (res && usesdir && (getField("dir")==null)) {
             log.warn("No dir field. Directionality support turned off.");
             usesdir = false;

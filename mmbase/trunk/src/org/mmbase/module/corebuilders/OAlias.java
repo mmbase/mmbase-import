@@ -37,8 +37,13 @@ public class OAlias extends MMObjectBuilder {
 		m.mmobjs.put(tableName,this);
 	}
 
+    public boolean init() {
+        boolean res=super.init();
+        if (res) checkAddTmpField("_destination");
+        return res;
+    }
 
-	public int getNumber(String name) {
+    public int getNumber(String name) {
 		int rtn=-1;
 		MMObjectNode node;
 
