@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TreeTag.java,v 1.10 2003-06-18 11:49:27 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.11 2003-06-18 12:34:38 michiel Exp $
  */
  
 public class TreeTag extends AbstractNodeListTag {
@@ -109,7 +109,8 @@ public class TreeTag extends AbstractNodeListTag {
         } else {
             fields = getFields(fieldList.getString(this));
         }
-        params.put("FIELDS", fields);
+        params.put("FIELDS", new Vector(fields));
+        // if you don't supply Vector but the ArrayList, then it goes terrible wrong (without clear message).
 
         try {
             Cloud cloud = getCloud();
