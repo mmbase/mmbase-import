@@ -35,10 +35,10 @@ public class InstallManager {
     private static Logger log = Logging.getLoggerInstance(InstallManager.class);
 
     // is the install manager active (for dependencies reasons)
-    private static boolean active=false;
+    private static boolean active = false;
 
     // signal if we are installing a bundle or a package
-    private static boolean bundle=false;
+    private static boolean bundle = false;
  
     // package we are installing
     private static PackageInterface pkg;
@@ -49,45 +49,45 @@ public class InstallManager {
 
     private static String state;
 
-    private static boolean running=false;
+    private static boolean running = false;
 
 
 
     public static synchronized void init() {
-		if (!PackageManager.isRunning()) PackageManager.init();
-		if (!BundleManager.isRunning()) BundleManager.init();
-		if (!ProviderManager.isRunning()) ProviderManager.init();
-		if (!ShareManager.isRunning()) ShareManager.init();
-		if (!ProjectManager.isRunning()) ProjectManager.init();
-		running=true;
+        if (!PackageManager.isRunning()) PackageManager.init();
+        if (!BundleManager.isRunning()) BundleManager.init();
+        if (!ProviderManager.isRunning()) ProviderManager.init();
+        if (!ShareManager.isRunning()) ShareManager.init();
+        if (!ProjectManager.isRunning()) ProjectManager.init();
+        running = true;
     }
 
     /**
     * install a package
     */
     public static synchronized boolean installPackage(PackageInterface p) {
-	if (!active) {
-		// turn the installManager to active
-		active=true;
-		
-		// signal we are a package only install
-		bundle=false;
+        if (!active) {
+            // turn the installManager to active
+            active = true;
+        
+            // signal we are a package only install
+            bundle = false;
 
-		// set the package
-		pkg=p;
+            // set the package
+            pkg = p;
 
-		state="installing";
+            state = "installing";
 
-		p.clearInstallSteps();
+            p.clearInstallSteps();
 
-		runner = new installThread();
-		
-		return true;
-	} else {
-		// returning false _allways_ means we where busy
-		// error feedback is provided by the processsteps
-		return false;	
-	}
+            runner = new installThread();
+        
+            return true;
+        } else {
+            // returning false _allways_ means we where busy
+            // error feedback is provided by the processsteps
+            return false;    
+        }
     }
 
 
@@ -95,77 +95,73 @@ public class InstallManager {
     * install a bundle
     */
     public static synchronized boolean installBundle(BundleInterface b) {
-	if (!active) {
-		// turn the installManager to active
-		active=true;
-		
-		// signal we are a bundle install
-		bundle=true;
+        if (!active) {
+            // turn the installManager to active
+            active = true;
+        
+            // signal we are a bundle install
+            bundle = true;
 
-		// set the bundle
-		bnd=b;
-
-		state="installing";
-
-		b.clearInstallSteps();
-
-		runner = new installThread();
-		
-		return true;
-	} else {
-		// returning false _allways_ means we where busy
-		// error feedback is provided by the processsteps
-		return false;	
-	}
+            // set the bundle
+            bnd = b;
+            state = "installing";
+            b.clearInstallSteps();
+            runner = new installThread();
+        
+            return true;
+        } else {
+            // returning false _allways_ means we where busy
+            // error feedback is provided by the processsteps
+            return false;    
+        }
     }
-
 
     /**
     * called by the install thread class, performs the real install in 
     * the background and keeps providing feedback using the steps interfaces
     */
     public static void performInstall() {
-	try {
-		if (bnd!=null) {
-			bnd.install();
-			state="waiting";
-			active=false;
-		} else if (pkg!=null) {
-			pkg.install();
-			state="waiting";
-			active=false;
-		}
-	} catch(Exception e) {
-		log.error("performInstall problem");
-	}
+        try {
+            if (bnd != null) {
+                bnd.install();
+                state = "waiting";
+                active = false;
+            } else if (pkg != null) {
+                pkg.install();
+                state = "waiting";
+                active = false;
+            }
+        } catch(Exception e) {
+            log.error("performInstall problem");
+        }
     }
 
     public void setState(String state) {
-	this.state=state;
+        this.state=state;
     }
     
     public String getState() {
-	return state;
+        return state;
     }
 
     public static boolean isActive() {
-	return active;
+        return active;
     }
 
     public static boolean isRunning() {
-	return running;
+        return running;
     }
 
     public static PackageInterface getInstallingPackage() {
-	return pkg;
+        return pkg;
     }
 
     public static BundleInterface getInstallingBundle() {
-	return bnd;
+        return bnd;
     }
 
     public static Enumeration getInstallSteps() {
-	return pkg.getInstallSteps();
+        return pkg.getInstallSteps();
     }
   
 }
