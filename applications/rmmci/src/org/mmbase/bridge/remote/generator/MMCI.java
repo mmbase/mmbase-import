@@ -22,14 +22,14 @@ import org.w3c.dom.*;
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class MMCI {
-    Hashtable classes;
-    Vector classesVector;
+    Map classes;
+    List classesList;
 
     private static MMCI STATIC_MMCI = null;
 
     public MMCI(){
-        classes = new Hashtable();
-        classesVector = new Vector();
+        classes = new HashMap();
+        classesList = new ArrayList();
     }
 
     public static MMCI getDefaultMMCI() throws Exception{
@@ -46,25 +46,26 @@ public class MMCI {
 
     public static MMCI fromXML(Document document) throws Exception{
         MMCI mmci =  new MMCI();
-        Element xmle=document.getDocumentElement();
-        NodeList nls=xmle.getChildNodes();
-        for(int i=0; i<nls.getLength(); i++) {
-            Node element=nls.item(i);
+        Element xmle = document.getDocumentElement();
+        NodeList nls = xmle.getChildNodes();
+        for(int i = 0; i < nls.getLength(); i++) {
+            Node element = nls.item(i);
             if (element instanceof Element) {
                 XMLClass myClass = XMLClass.fromXML((Element)element);
-                mmci.classes.put(myClass.getName(),myClass);
-                mmci.classesVector.addElement(myClass);
+                if (myClass == null) throw new Exception("Not found " + element);
+                mmci.classes.put(myClass.getName(), myClass);
+                mmci.classesList.add(myClass);
             }
         }
         return mmci;
     }
 
-    public Vector getClasses(){
-        return classesVector;
+    public List getClasses(){
+        return classesList;
     }
-    public XMLClass getClass(String name) throws NotInMMCIException{
-        if (classes.get(name) == null){
-            throw new NotInMMCIException("Class " + name + " is not known to the MMCI");
+    public XMLClass getClass(String name)  {
+        if (classes.get(name) == null) {
+            return null;
         }
         return (XMLClass)((XMLClass)classes.get(name)).clone(true);
     }
@@ -100,7 +101,6 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringIterator",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Query",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.NodeQuery",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.Constraint",doc));
@@ -117,14 +117,19 @@ public class MMCI {
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.LegacyConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
-                //why???
+
+        //Since you can use search query objects in the bridge, the important parts of the search query interfaces need to be remotely available as well.
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldCompareConstraint",doc));
         //xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldConstraint",doc));
 
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.DataType",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters",doc));
-        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.UserContext",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.Rank",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.security.AuthenticationData",doc));
+
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.DataType", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Parameters", doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.util.functions.Function", doc));
     }
 
     public static void main(String [] argv) throws Exception{
