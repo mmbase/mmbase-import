@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLConvert.java,v 1.8 2003-03-10 11:50:13 pierre Exp $
+ * @version $Id: XSLConvert.java,v 1.9 2004-05-03 13:07:54 michiel Exp $
  */
 public class XSLConvert extends ProcessorModule {
 
-    private static Logger log = Logging.getLoggerInstance(XSLConvert.class.getName()); 
+    private static final Logger log = Logging.getLoggerInstance(XSLConvert.class); 
 
     private String configpath;
 
@@ -38,29 +38,6 @@ public class XSLConvert extends ProcessorModule {
         configpath = MMBaseContext.getConfigPath();
     }
 
-
-
-    public void reload() {}
-
-
-
-
-    public void onload() {}
-
-
-
-
-    public void unload() {}
-
-
-
-
-    public void shutdown() {}
-
-
-    /**
-     * CALC, a support module for servscan.
-     */
     public XSLConvert() {}
 
     /**
@@ -76,7 +53,7 @@ public class XSLConvert extends ProcessorModule {
      * Execute the commands provided in the form values
      */
     public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-        return(false);
+        return false;
     }
 
     /**
@@ -127,12 +104,11 @@ public class XSLConvert extends ProcessorModule {
             log.debug("XML file = "+xmlPath);
             log.debug("XSL file = "+xslPath);
         }
-        XSLTransformer T = new XSLTransformer();
-        return T.transform(xmlPath,xslPath);
+        return XSLTransformer.transform(xmlPath,xslPath);
     }
 
     public String getModuleInfo() {
-        return("Support XSL transformations of XML files, cjr@dds.nl");
+        return "Support XSL transformations of XML files, cjr@dds.nl";
     }
 
 }
