@@ -33,7 +33,7 @@ public abstract class SimpleFormToMailServlet extends JamesServlet
 {
 	private boolean debug = false;
 
-	SendMailInterface sendmail;
+	protected SendMailInterface sendmail;
 	boolean first=true;
 
 	String entries[] = null;
