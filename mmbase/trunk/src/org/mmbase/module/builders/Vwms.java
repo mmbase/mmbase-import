@@ -194,14 +194,17 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      * @return <code>true</code> if the task was passed, <code>false</code> if the vwm did not exist.
      */
     public boolean putTask(String vwmname, MMObjectNode node) {
+        boolean result = false;
         Vwm vwm=(Vwm)vwm_cache.get(vwmname);
         if (vwm!=null) {
             vwm.putTask(node);
-            return true;
+            result = true;
         } else {
             log.error("Vwms : Could not find VWM : "+vwmname);
-            return false;
+            result = false;
         }
+        log.trace("vwmname("+vwmname+"), node("+node+"): result("+result+")");
+        return result;
     }
 
     /**
@@ -231,6 +234,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         // added a kinda weird check so it only checks settings when
         // needed, daniel.
 
+        boolean result = false;
         if (emailTo==null) {
             // get email config and check it
                emailFromDomain = getInitParameter("fromdomain");
@@ -266,11 +270,13 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         }
         if (mmb.getSendMail().sendMail(mail)==false) {
             log.error("vwms -> mail failed");
-            return false;
+            result = false;
         } else {
             log.info("vwms -> mail send");
-            return true;
+            result = true;
         }
+        log.trace("who("+who+"), to("+to+"), subject("+subject+"), msg.length("+msg.length()+")");
+        return result;
     }
 
     /**
@@ -292,7 +298,11 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      * @return always <code>true</code>
      */
     public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        // signal to parent class
         super.nodeRemoteChanged(machine,number,builder,ctype);
+
+        // always return true
+        boolean result = true; 
         if (ctype.equals("c")) {
             MMObjectNode node=getNode(number);
             if (node!=null) {
@@ -300,12 +310,17 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
                 if (name!=null) {
                     VwmInterface vwm=getVwm(name);
                     if (vwm!=null) {
+                        log.debug("Signalling vwm("+name+") that builder("+builder+") has a node("+number+") with ctype("+ctype+") from machine("+machine+")");
                         vwm.nodeRemoteChanged(machine,number,builder,ctype);
-                    }
-                }
-            }
+                    } else 
+                        log.debug("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): This vwm("+name+") is not locally installed, skipping..");
+                } else
+                    log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): Got a vwmtask with no vwmname("+name+")!");
+            } else 
+                log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): This nodenumber("+number+") is not found!");
         }
-        return true;
+        log.trace("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): result("+result+")");
+        return result;
     }
 
     /**
@@ -318,18 +333,26 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      */
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
         super.nodeLocalChanged(machine,number,builder,ctype);
+
+        // always return true
+        boolean result = true;
         if (ctype.equals("c")) {
             MMObjectNode node=getNode(number);
             if (node!=null) {
                 String name=node.getStringValue("name");
                 if (name!=null) {
+                    log.debug("Signalling vwm("+name+") that builder("+builder+") has a node("+number+") with ctype("+ctype+") from machine("+machine+")");
                     VwmInterface vwm=getVwm(name);
                     if (vwm!=null) {
                         vwm.nodeLocalChanged(machine,number,builder,ctype);
-                    }
-                }
-            }
+                    } else 
+                        log.debug("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): This vwm("+name+") is not locally installed, skipping..");
+                } else
+                    log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): Got a vwmtask with no vwmname("+name+")!");
+            } else 
+                log.error("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): number("+number+") is not found!");
         }
-        return true;
+        log.trace("machine("+machine+"), number("+number+"), builder("+builder+"), ctype("+ctype+"): result("+result+")");
+        return result;
     }
 }
