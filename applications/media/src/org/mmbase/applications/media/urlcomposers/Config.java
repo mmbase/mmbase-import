@@ -16,10 +16,10 @@ import java.util.ResourceBundle;
  * Some url-composers need to know where templates are. Put a properties file in classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Config.java,v 1.2 2003-02-18 17:08:58 michiel Exp $
+ * @version $Id: Config.java,v 1.3 2003-02-18 19:16:46 michiel Exp $
  */
 
-public static class Config  {
+public class Config  {
 
     // should perhaps be changed to XML, but this is easier for the moment. No time, no time!
 
