@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.21 $ $Date: 2001-05-04 13:54:56 $
+ * @version $Revision: 1.22 $ $Date: 2001-05-07 12:44:26 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -255,10 +255,10 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
 		// You can't signal new or delete changes because there's no 
 		// mmserver related when these changes occur.
-		if (!(ctype.equals("n") || ctype.equals("d")) )
-			log.debug("("+number+","+builder+","+ctype+"): Calling "
-			        +"sendToRemoteBuilder to send node change to remote side.");
+		if (!(ctype.equals("n") || ctype.equals("d")) ) {
+			log.debug("Calling sendToRemoteBuilder to send node change to remote side.");
 			sendToRemoteBuilder(number,builder,ctype);
+		}
 		return true;
 	}
 
