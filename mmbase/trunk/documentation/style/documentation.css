@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.6 2002-11-13 19:26:16 michiel Exp $;
+ @version $Id: documentation.css,v 1.7 2002-12-05 16:17:25 michiel Exp $;
 */
 
 
@@ -15,27 +15,27 @@ body {
 }
 
 
-table { 
-	 font-size: 9pt;
-	 border: none;
-	}
+table {
+         font-size: 9pt;
+         border: none;
+        }
 td {
      border-left: none;
-	 border-right: none;
+         border-right: none;
 }
 th {
     background-color: #ddd;
 }
 
-.title, 
-.subtitle { 
-   color: navy 
+.title,
+.subtitle {
+   color: navy
  }
 
 .programlisting,
 .programlistingco,
 .screen,
-.figure  { 
+.figure  {
    background-color: #ddd;
    padding: 5pt;
    margin: 5pt;
@@ -48,16 +48,16 @@ a {
 }
 
 a:link {
-  color: blue; 
+  color: blue;
 }
 
 a:visited {
-  color: purple; 
+  color: purple;
 }
 
 a:hover { // color: red;
-          // text-decoration: underline; 
-		  }
+          // text-decoration: underline;
+                  }
 
 
  .navfooter, .navheader { background-color: #EEDDFF; }
@@ -68,7 +68,7 @@ a:hover { // color: red;
                        margin-right: 10pt; }
 
 
-div.navigation {			
+div.navigation {
   display: none;
 }
 
@@ -79,6 +79,8 @@ div.navigation[class] {
   top: 2em;
   left: auto;
   width: 10%;
+  height:100%;
+  overflow:auto;
   right: 1em;
   font-size: smaller;
   text-align: right;
@@ -86,7 +88,7 @@ div.navigation[class] {
 
 
 div.navigation:before {
-  content: url(logo.png);
+//  content: url(logo.png);
 }
 
 
