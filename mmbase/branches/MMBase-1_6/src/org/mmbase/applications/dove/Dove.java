@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.26.2.2 2003-02-25 15:37:15 kees Exp $
+ * @version $Id: Dove.java,v 1.26.2.3 2003-02-25 22:34:45 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -72,7 +72,7 @@ public class Dove extends AbstractDove {
      * Data fields are persistent (non-virtual) fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, rnumber, and dir
      * are excluded; these fields should be handled through the attributes of Element.
-     * @param node  the MMBase node that owns the field
+     * @param node  the MMBase node that owns the field (or null)
      * @param f The field to check
      */
     private boolean isDataField(org.mmbase.bridge.Node node, Field f) {
@@ -81,7 +81,7 @@ public class Dove extends AbstractDove {
                (!"owner".equals(fname)) && // skip owner/otype/number fields!
                (!"otype".equals(fname)) &&
                (!"number".equals(fname)) &&
-               (!(node.isRelation()) ||
+               (!(node != null && node.isRelation()) ||
                 ((!"snumber".equals(fname)) &&
                  (!"dnumber".equals(fname)) &&
                  (!"rnumber".equals(fname)) &&
@@ -393,7 +393,8 @@ public class Dove extends AbstractDove {
                     n.cancel();  // have to cancel node ! It will only be really made in the putNewNode function
                 }
             } catch (RuntimeException e) {
-                Element err=addContentElement(ERROR,"node type does not exist",out);
+                Element err=addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
+                log.warn(Logging.stackTrace(e));
                 err.setAttribute(ELM_TYPE,IS_CLIENT);
             }
         }
@@ -619,7 +620,8 @@ public class Dove extends AbstractDove {
                 // XXX: getAllowedRelations is not yet supported by the MMCI
                 // This code commented out
             } catch (RuntimeException e) {
-                Element err=addContentElement(ERROR,"node type does not exist",out);
+                Element err=addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
+                log.warn(Logging.stackTrace(e));
                 err.setAttribute(ELM_TYPE,IS_CLIENT);
             }
         }
@@ -675,7 +677,8 @@ public class Dove extends AbstractDove {
                                 getDataNode(node,data,n);
                             }
                         } catch(RuntimeException e) {
-                            Element err=addContentElement(ERROR,"node type does not exist",out);
+                            Element err=addContentElement(ERROR,"node type " + xpath.substring(3) + " does not exist(" + e.toString() + ")",out);
+                            log.warn(Logging.stackTrace(e));
                             err.setAttribute(ELM_TYPE,IS_CLIENT);
                         }
                     }
