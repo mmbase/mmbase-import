@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.14 2003-11-12 17:32:47 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.15 2003-11-13 16:04:34 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -47,6 +47,7 @@ public class ContentTag extends LocaleTag  {
 
     private static Map defaultEscapers       = new HashMap(); // contenttype -> chartransformer id
     private static Map defaultPostProcessors = new HashMap(); // contenttype -> chartransformer id
+    private static Map defaultEncodings      = new HashMap(); // contenttype -> charset to be used in content-type header (defaults to UTF-8)
     private static Map charTransformers      = new HashMap(); // chartransformer id ->
                                                               // chartransformer instance.
 
@@ -174,6 +175,10 @@ public class ContentTag extends LocaleTag  {
                     log.warn("Default postprocessor '" + defaultPostprocessor + "' for type + '"+ type + "' is not known");
                 }
             }
+            String defaultEncoding = element.getAttribute("defaultencoding");
+            if (defaultEncoding != null) {
+                defaultEncodings.put(type, defaultEncoding);
+            }
         }
 
 
@@ -233,7 +238,12 @@ public class ContentTag extends LocaleTag  {
 
     public String getEncoding() throws JspTagException {
         if (encoding == Attribute.NULL) {
-            return "UTF-8"; // implicit
+            String defaultEncoding = (String) defaultEncodings.get(getType());
+            if (defaultEncoding == null) {
+                return "UTF-8"; // implicit
+            } else {
+                return defaultEncoding;
+            }
         } else {
             return encoding.getString(this);
         }
@@ -284,12 +294,12 @@ public class ContentTag extends LocaleTag  {
         super.doStartTag();
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
         response.setLocale(locale);
-        String enc = getEncoding();
+        String type = getType();
+        String enc  =getEncoding();
         if (enc.equals("")) {
-            // should encoding be configured as defaults for type?
             response.setContentType(getType());
         } else {
-            response.setContentType(getType() + "; charset=" + getEncoding());
+            response.setContentType(getType() + "; charset=" + enc);
         }
         if (getPostProcessor() == null) {
             log.debug("no postprocessor");
