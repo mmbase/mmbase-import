@@ -40,6 +40,7 @@ public
 //  -------------------------	
 	public static final int		MINSPEED			= 16000;
 	public static final int		MAXSPEED			= 96000;
+	public static final int		MINCHANNELS			= 1;
 //  -------------------------	
 	public int		number;
 	public int		otype;		// not nes, but anyway
