@@ -97,7 +97,7 @@
       <command name="startwizard" inline="false" wizardname="tasks/myurls" objectnumber="new" />
 
       <!-- an inline startwizard will replace the current wizard to create the new object and come back when ready -->
-      <command name="startwizard" inline="true" wizardname="tasks/urls" objectnumber="new" />
+      <command name="startwizard" inline="true" wizardname="tasks/myurls" objectnumber="new" />
 
       <!-- samples/urls: you'll not find a samples/urls.xml in this directory. Search in /mmapps/editwizard/data -->
 
