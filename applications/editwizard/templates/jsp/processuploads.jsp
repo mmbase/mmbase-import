@@ -26,57 +26,57 @@ if (ewconfig.subObjects.size() > 0) {
             wizardConfig.wiz.processRequest(request);
         }
     }
-} 
+}
 
-	int maxsize = ewconfig.maxupload;
-	try {
-		maxsize = Integer.parseInt(request.getParameter("maxsize"));
-	} catch (Exception e) {}
+    int maxsize = ewconfig.maxupload;
+    try {
+        maxsize = Integer.parseInt(request.getParameter("maxsize"));
+    } catch (Exception e) {}
 
-	// Initialization
-	mySmartUpload.initialize(pageContext);
+    // Initialization
+    mySmartUpload.initialize(pageContext);
 
-	mySmartUpload.setTotalMaxFileSize(maxsize);
+    mySmartUpload.setTotalMaxFileSize(maxsize);
 
-	// Upload	
-	mySmartUpload.upload();
+    // Upload
+    mySmartUpload.upload();
 
-	try {
-	
-		Files flist = mySmartUpload.getFiles();
+    try {
 
-		for (int i=0; i<flist.getCount(); i++) {
-			com.jspsmart.upload.File f = flist.getFile(i);
-			String fieldname = f.getFieldName();
-			if (!f.isMissing()) {
-				// is uploaded!
+        Files flist = mySmartUpload.getFiles();
 
-				ByteArrayOutputStream bos = new ByteArrayOutputStream(f.getSize());
-				for (int p=0; p<f.getSize(); p++) {
-					bos.write(f.getBinaryData(p));
-				}
+        for (int i=0; i<flist.getCount(); i++) {
+            com.jspsmart.upload.File f = flist.getFile(i);
+            String fieldname = f.getFieldName();
+            if (!f.isMissing()) {
+                // is uploaded!
 
-				byte[] buf = bos.toByteArray();
-				wizardConfig.wiz.setUpload(fieldname, buf, f.getFileName(), f.getFilePathName());
-			}
+                ByteArrayOutputStream bos = new ByteArrayOutputStream(f.getSize());
+                for (int p=0; p<f.getSize(); p++) {
+                    bos.write(f.getBinaryData(p));
+                }
 
-		}
-		out.println("Uploaded files:"+flist.getCount());
+                byte[] buf = bos.toByteArray();
+                wizardConfig.wiz.setUpload(fieldname, buf, f.getFileName(), f.getFilePathName());
+            }
 
-		%>
-			<script language="javascript">
-				try { // Mac IE doesn't always support window.opener.
-					window.opener.doRefresh();
-					window.close();
-				} catch (e) {}
-			</script>
-		<%
-	} catch (Exception e) { 
-		out.println(e.toString());
-	}
-	
-	
-	
+        }
+        out.println("Uploaded files:"+flist.getCount());
+
+        %>
+            <script language="javascript">
+                try { // Mac IE doesn't always support window.opener.
+                    window.opener.doRefresh();
+                    window.close();
+                } catch (e) {}
+            </script>
+        <%
+    } catch (Exception e) {
+        out.println(e.toString());
+    }
+
+
+
 %>
 </mm:log>
 </body>

@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.12 2002-05-16 12:14:55 pierre Exp $
+  @version $Id: wizard.xsl,v 1.13 2002-05-17 12:45:40 pierre Exp $
   -->
 
 
@@ -196,8 +196,14 @@
           </div>
         </xsl:when>
         <xsl:when test="@ftype='startwizard'">
+           <xsl:if test="@inline='true'">
+          <nobr><a href="{$popuppage}&amp;inline=true&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >(start new wizard)</a>
+          </nobr>
+          </xsl:if>
+           <xsl:if test="not(@inline='true')">
           <nobr><a href="{$popuppage}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank">(start new wizard)</a>
           </nobr>
+          </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='upload'">
           <xsl:choose>
@@ -455,7 +461,12 @@
           <tr>
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
-                <a href="{$popuppage}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
+           <xsl:if test="@inline='true'">
+                <a href="{$popuppage}&amp;inline=true&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" ><img src="{$mediadir}new.gif" border="0" /></a>
+          </xsl:if>
+           <xsl:if test="not(@inline='true')">
+                <a href="{$popuppage}&amp;inline=false&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
+          </xsl:if>
                 <img src="{$mediadir}nix.gif" width="5" height="1" hspace="0" vspace="0" border="0" alt="" />
               </nobr>
             </td>
