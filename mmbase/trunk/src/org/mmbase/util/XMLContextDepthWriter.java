@@ -34,6 +34,14 @@ public class XMLContextDepthWriter  {
 	Vector nodes=getSubNodes(startnode,0,depth,fb,new Vector(),mmb.getTypeDef());
 	System.out.println("Nodes size="+nodes.size());
 
+	// create the dir for the Data & resource files
+	File file = new File(targetpath+"/"+app.getApplicationName());
+	try {
+		file.mkdirs();
+	} catch(Exception e) {
+		System.out.println("Can't create dir : "+targetpath+"/"+app.getApplicationName());
+	}
+
 	// write DataSources
 	writeDataSources(app,nodes,targetpath,mmb);
 
