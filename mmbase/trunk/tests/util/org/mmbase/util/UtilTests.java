@@ -31,6 +31,7 @@ public class UtilTests {
         // Create the test suite
         TestSuite suite= new TestSuite("Util Tests");
         suite.addTestSuite(ResourceLoaderTest.class);
+        suite.addTestSuite(EncodeTest.class);
         return suite;
     }
 }
