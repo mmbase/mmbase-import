@@ -9,6 +9,11 @@
   <mmbasedriver>org.mmbase.storage.database.PostgreSqlStorage</mmbasedriver>
   <sqlhandler>org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler</sqlhandler>
   <chainedsqlhandler></chainedsqlhandler>
+	<!-- BLOB support is terrible to maintain for Postgresql.
+       I suggest that we use blobdatadir.
+	     Use something like this.
+  <blobdatadir>../../data</blobdatadir>
+       -->
   <scheme>
     <create>CREATE TABLE {0} ({1})</create>
     <create-extended>CREATE TABLE {0} ({1}) INHERITS ({2})</create-extended>
@@ -33,9 +38,9 @@
     <type-mapping mmbase-type="NODE">INTEGER</type-mapping>
     <type-mapping mmbase-type="STRING">TEXT</type-mapping>
     <type-mapping mmbase-type="XML">TEXT</type-mapping>
-    <type-mapping mmbase-type="BYTE">OID</type-mapping> 
-       <!-- This works with postgresql 7.3.2 (driver 1.7.1). bytea didn't -->
-    <!-- type-mapping mmbase-type="BYTE">bytea</type-mapping-->
+    <!--type-mapping mmbase-type="BYTE">OID</type-mapping--> 
+    <!-- This works with postgresql 7.3.2 (driver 1.7.1). bytea didn't -->
+    <type-mapping mmbase-type="BYTE">bytea</type-mapping>
   </mapping>
   &extra;
 </database>
