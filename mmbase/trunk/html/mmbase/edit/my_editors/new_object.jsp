@@ -1,6 +1,6 @@
 <% String title = "Create new node"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
 
 <mm:context id="createandrelate_node">
 

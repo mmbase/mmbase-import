@@ -1,6 +1,6 @@
 <% String title = "Home"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="$rank">
 <mm:import externid="ntype" jspvar="ntype" />
 <mm:import externid="nr" />
 <% String path1 = ntype;		// Eerst stukje van kruimelpad %>

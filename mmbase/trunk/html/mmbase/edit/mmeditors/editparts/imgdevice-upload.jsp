@@ -1,5 +1,5 @@
 <%@include file="../header.jsp" %>
-  <mm:cloud name="mmbase" method="http" jspvar="cloud">
+  <mm:cloud name="mmbase" method="http" jspvar="cloud" rank="$rank">
   <%  Stack states = (Stack)session.getValue("mmeditors_states");
       Properties state = (Properties)states.peek();
       String transactionID = state.getProperty("transaction");
