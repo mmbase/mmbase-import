@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.11 2003-06-06 10:19:01 kees Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.12 2003-06-30 11:17:38 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -40,14 +40,14 @@
       MMBase and the MMBase Cloud Interface is required. Lets try to do this
       in a few line. MMBase is a object / relation object management system.
       Object instances in MMBase are known as nodes. They Are much like other
-      (java)objects they have data members and behavior. Each nodes has a
-      type. The type or as mmbase calls it node manager defines what behavior
+      (java)objects they have data members and behaviour. Each nodes has a
+      type. The type or as mmbase calls it node manager defines what behaviour
       and data members a node may have. A node manager is a combination of a
       java class and an xml configuration. In java term the node manager with
       nodes is much like a container managed entity bean (but better). A
       strong aspect of MMBase is the way it handle relations. The difference
       between a java object and an MMBase node is that the nodes are
-      persistent. The combination of the object en node managers is called the
+      persistent. The combination of the object and node managers is called the
       cloud.</para>
 
       <para>The MMBase cloud is an abstract definition the of world that
@@ -209,7 +209,7 @@ for (x =0 ; x &#60; list.size() ; x++){
          database    file system
       </programlisting>
 
-      <para>RMMCI adds a network layer to the MMCI by reimplementing the MMCI
+      <para>RMMCI adds a network layer to the MMCI by re-implementing the MMCI
       and using the current MMCI implementation.</para>
     </section>
 
@@ -221,7 +221,7 @@ for (x =0 ; x &#60; list.size() ; x++){
       method in the class should throw RemoteException. Since we have an
       existing interface we decided to create a <emphasis>new</emphasis>
       interface based on the current one but that extended the java.rmi.Remote
-      interface and throwed RemoteExceptions. We also decided to generate the
+      interface and throws RemoteExceptions. We also decided to generate the
       <emphasis>new</emphasis> interface. The first step is to create a XML
       description of the current interface. this is done in a class found in
       org.mmbase.bridge.remote.generator.MMCI that class uses ClassToXML also
@@ -341,12 +341,12 @@ public class RemoteCloud_Impl implements Cloud  {
       the admin module).</para>
 
       <para>The communication between MMBase clouds and the RMMCI client is
-      not encrypted, serialized objects are sent over the network. There is
+      not encrypted, serialised objects are sent over the network. There is
       work in progress to use SSL.</para>
     </section>
 
     <section>
-      <title>Integration proccess</title>
+      <title>Integration process</title>
 
       <para>The classes currently using the MMCI call LocalContext directly
       therefore will not be able to access RMMCI. Support for multiple
@@ -362,7 +362,7 @@ public class RemoteCloud_Impl implements Cloud  {
     <section>
       <title>java compatibility</title>
 
-      <para>Sun has been very smart and decided that with java 1.4 it was a good idea to change the way objects are serialized.
+      <para>Sun has been very smart and decided that with java 1.4 it was a good idea to change the way objects are serialised.
 	      The result is that rmi will only work if the client and server run the same java version @#$%%^</para>
     </section>
     <section>

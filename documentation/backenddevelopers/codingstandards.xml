@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Summary of Coding Standards</title>
     <date>14 February 2003</date>
-    <edition>$Id: codingstandards.xml,v 1.2 2003-03-05 12:12:43 pierre Exp $</edition>
+    <edition>$Id: codingstandards.xml,v 1.3 2003-06-30 11:17:37 johannes Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -56,7 +56,7 @@
         </listitem>
         <listitem>
           <simpara>Use Single line documentation (// ...) for in-code documentation.</simpara>
-          <simpara>Single line comments should be on their own line, preceding the statement concerned. The excption is local variables declaration, where the line comment may follow directly behind the declaration.</simpara>
+          <simpara>Single line comments should be on their own line, preceding the statement concerned. The exception is local variables declaration, where the line comment may follow directly behind the declaration.</simpara>
         </listitem>
         <listitem>
           <simpara>Required javadoc tags:</simpara>
@@ -64,7 +64,7 @@
             <listitem>
               <simpara>For a class/interface:</simpara>
               <simpara><token>@author</token> (by alphabetical order)</simpara>
-              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.2 2003-03-05 12:12:43 pierre Exp $ , so that CVS can insert the correct version number.)</simpara>
+              <simpara><token>@version</token> (versions should be annotated with <token>@version</token> $Id: codingstandards.xml,v 1.3 2003-06-30 11:17:37 johannes Exp $ , so that CVS can insert the correct version number.)</simpara>
             </listitem>
             <listitem>
               <simpara>For a member function:</simpara>
@@ -77,10 +77,10 @@
               <simpara>The version to use during development will be defined by the MMC.</simpara>
             </listitem>
             <listitem>
-              <simpara>Deprecated member functions should be indiicated as such with <token>@deprecated</token>, and the reason should be given</simpara>
+              <simpara>Deprecated member functions should be indicated as such with <token>@deprecated</token>, and the reason should be given</simpara>
             </listitem>
             <listitem>
-              <simpara>Important member function or class depedencies should be documented with <token>@see</token></simpara>
+              <simpara>Important member function or class dependencies should be documented with <token>@see</token></simpara>
             </listitem>
             <listitem>
               <simpara>Special targeted javadoc tags are documented in the Cleaning Project Notification Plan (see the Cleaning project on the MMBase website for more information)</simpara>
@@ -106,10 +106,10 @@
               <simpara>Interface names may be :</simpara>
               <itemizedlist>
                 <listitem>
-                  <simpara>adjectives, i.e <token>Runnable</token>. These names should apply to interfaces that describe one specific property or behavior that applies to different classes but is not the 'main' task of these classes</simpara>
+                  <simpara>adjectives, i.e <token>Runnable</token>. These names should apply to interfaces that describe one specific property or behaviour that applies to different classes but is not the 'main' task of these classes</simpara>
                 </listitem>
                 <listitem>
-                  <simpara>&lt;basename&gt;Interface, i.e. <token>TransactionManagerInterface</token>. These names should describe complex behavior which is the main task of an implementing class.</simpara>
+                  <simpara>&lt;basename&gt;Interface, i.e. <token>TransactionManagerInterface</token>. These names should describe complex behaviour which is the main task of an implementing class.</simpara>
                 </listitem>
                 <listitem>
                   <simpara>Nouns, i.e. <token>Node</token>. Only a specific set of interfaces (such as the bridge and security) use nouns.</simpara>
@@ -120,7 +120,7 @@
               <simpara>The first word in a member function name should be an active verb</simpara>
             </listitem>
             <listitem>
-              <simpara>Member field names should not start with verbs. They may start with m_ to emphasize them as being member fields in the code.</simpara>
+              <simpara>Member field names should not start with verbs. They may start with m_ to emphasise them as being member fields in the code.</simpara>
             </listitem>
             <listitem>
               <simpara>Collections (lists, enumerations) should be given a plural name</simpara>
@@ -153,13 +153,13 @@ Note: Collections should use Iterator (preferred) or Enumeration for loops, not 
           <simpara>Case:</simpara>
           <itemizedlist>
             <listitem>
-              <simpara>Except for constants, Names should use mixed case: capitalize first letters of class, interface, and constructor names (other member functions or fields use lowercase), and capitalize the first letter of every non-initial word.</simpara>
+              <simpara>Except for constants, Names should use mixed case: capitalise first letters of class, interface, and constructor names (other member functions or fields use lowercase), and capitalise the first letter of every non-initial word.</simpara>
             </listitem>
             <listitem>
               <simpara>Constants are all upper case and should be defined as static final.</simpara>
             </listitem>
             <listitem>
-              <simpara>Do not fully capitalize acronym such as <token>SQL</token> or <token>XML</token> (but <token>sql/Sql</token> or <token>xml/Xml</token>)</simpara>
+              <simpara>Do not fully capitalise acronym such as <token>SQL</token> or <token>XML</token> (but <token>sql/Sql</token> or <token>xml/Xml</token>)</simpara>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -181,7 +181,7 @@ Note: Collections should use Iterator (preferred) or Enumeration for loops, not 
           <simpara>A method and it's parameter list should NOT be separated by a space.</simpara>
         </listitem>
         <listitem>
-          <simpara>A space should be inserted after a comma ina list, or a semicolon in a for-statement.</simpara>
+          <simpara>A space should be inserted after a comma in a list, or a semicolon in a for-statement.</simpara>
         </listitem>
         <listitem>
           <simpara>All binary operators should be separated by spaces.</simpara>
@@ -253,7 +253,7 @@ Note: Collections should use Iterator (preferred) or Enumeration for loops, not 
           <simpara>Each class should contain the Mozilla license text.</simpara>
         </listitem>
         <listitem>
-          <simpara>New java objects are made using member functions that start wth <token>create</token>, i,e <methodname>createAlias()</methodname>, <methodname>createObject()</methodname>. The prefixes <token>add</token> and <token>insert</token> are only used for Collections.</simpara>
+          <simpara>New java objects are made using member functions that start with <token>create</token>, i,e <methodname>createAlias()</methodname>, <methodname>createObject()</methodname>. The prefixes <token>add</token> and <token>insert</token> are only used for Collections.</simpara>
         </listitem>
         <listitem>
           <simpara>Remove java objects with member functions starting with <token>delete</token> (i.e. <methodname>deleteAlias</methodname>, <methodname>deleteRelations</methodname>).</simpara>

@@ -5,9 +5,9 @@
   <articleinfo>
     <title>The Storage Layer</title>
 
-    <date>6 july 2003</date>
+    <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.1 2003-06-27 14:43:34 pierre Exp $</edition>
+    <edition>$Id: storage.xml,v 1.2 2003-06-30 11:17:38 johannes Exp $</edition>
 
     <authorgroup>
       <author>
@@ -36,9 +36,9 @@
 		<section id="Transaction">
 			<title>Transaction Interface</title>
 			<para>The Transaction object is used as a means to maintain state information regarding a transaction.</para>
-			<para>A transaction comprises off all storage commands between creating (opening) a transaction object, and either closing or canceling the transaction. In databases implementations, a Transaction is equal to a database connection. In other storages, it could hold a reference to a temporary file, or a memory-based cache.</para>
+			<para>A transaction comprises off all storage commands between creating (opening) a transaction object, and either closing or cancelling the transaction. In databases implementations, a Transaction is equal to a database connection. In other storages, it could hold a reference to a temporary file, or a memory-based cache.</para>
 			<para>The intention of the Transaction object is to allow - for those implementations that can - to roll back changes when the transaction fails. To do this, you need to pass the Transaction object to each and every method called in the storage layer. Once all changes have been made, you can make the changes permanent by committing the transaction.</para>
-			<note><para>Using a Transaction by no means garantees rollback is possible, as not all implementations will allow for rollback. You can check whether rollback is supported by callign the <methodname>supportsRollback()</methodname> method.</para></note>
+			<note><para>Using a Transaction by no means guarantees rollback is possible, as not all implementations will allow for rollback. You can check whether rollback is supported by calling the <methodname>supportsRollback()</methodname> method.</para></note>
 			<programlisting format="linespecific"><![CDATA[
 public interface Transaction {
 
@@ -63,14 +63,14 @@ public interface Transaction {
 							<term><methodname>public boolean commit();</methodname></term>
 							<listitem>
 								<para>This method closes the transaction and commits all changes. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, committing or closing fails.</para>
-								<para>You should call this method only after all changes for this transaction have been made. The commit() actually closes the transaction (i.e. it closes the database connection), making it inaccessible after the call. Any further attempts to us ethe Transaction will throw a StorageException.</para>
+								<para>You should call this method only after all changes for this transaction have been made. The commit() actually closes the transaction (i.e. it closes the database connection), making it inaccessible after the call. Any further attempts to use the Transaction will throw a StorageException.</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
 							<term><methodname>public boolean rollback();</methodname></term>
 							<listitem>
-								<para>This method cancels the transaction. If the transaction supports rollback, all changes made to the storage through the transaction are undone. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, canceling fails.</para>
-								<para>You should call not use the transaction any more after this method is caleld, as, similar to commit, it closes the transaction and makes it inaccessible, soa ny further use will throw a StorageException.</para>
+								<para>This method cancels the transaction. If the transaction supports rollback, all changes made to the storage through the transaction are undone. The method returns <constant>true</constant> if all goes well, and <constant>false</constant> if, for some reason, cancelling fails.</para>
+								<para>You should call not use the transaction any more after this method is called, as, similar to commit, it closes the transaction and makes it inaccessible, so any further use will throw a StorageException.</para>
 							</listitem>
 						</varlistentry>
 					</variablelist></para>
@@ -148,7 +148,7 @@ public interface Storage extends SearchQueryHandler {
 						<varlistentry>
 							<term><methodname>boolean isAllowedParentBuilder(MMObjectBuilder builder);</methodname></term>
 							<listitem>
-								<para>Returns whether this storage layer allows for the specified builder to be a parent builder (that is, other builders can 'extend' this builder and its storage device). 'Object' and 'Insrel' should always be allowed parent buidlers. Wether other builders are allowed depends on the storage implementation (which may or may not implement means for builder tables to extend each other).</para>
+								<para>Returns whether this storage layer allows for the specified builder to be a parent builder (that is, other builders can 'extend' this builder and its storage device). 'Object' and 'Insrel' should always be allowed parent builders. Whether other builders are allowed depends on the storage implementation (which may or may not implement means for builder tables to extend each other).</para>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -169,7 +169,7 @@ public interface Storage extends SearchQueryHandler {
 						<varlistentry>
 							<term><methodname>String getText(MMObjectNode node,String fieldname);</methodname></term>
 							<listitem>
-								<para>Retrieve a large text for a specified object field. While this would normally be retrieved using getNode(), for purposes of performance and memory preservation, you migth not want to load large texts in memory until you actually uses this. If you want to preserve memory in your storage, you can implement this method to return texts on demand. Ina dditon, when you assemble a Node from storage, you will need to fill the text fields that you do NOT want to load directly with an indicator value (currently the text "$SHORTED").
+								<para>Retrieve a large text for a specified object field. While this would normally be retrieved using getNode(), for purposes of performance and memory preservation, you might not want to load large texts in memory until you actually uses this. If you want to preserve memory in your storage, you can implement this method to return texts on demand. In addition, when you assemble a Node from storage, you will need to fill the text fields that you do NOT want to load directly with an indicator value (currently the text "$SHORTED").
 								</para>
 								<note><para>It may be useful to define a specific Indicator object/value rather than a text. The Indicator object would need to be defined in the Storage Interface.</para></note>
 								<note><para>There should probably be a Transactional version of this method.</para></note>
@@ -206,7 +206,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>This method inserts a new object, and registers the change. Only fields with states of DBSTATE_PERSISTENT or DBSTATE_SYSTEM are stored. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns a new node number or -1 depending on success.</para>
 								<note><para>It is probably interesting to determine whether non-transactional methods should be included in the Interface. While it is useful as it simplifies calls to Storage, it also complicates the interface. It should be determined whether these methods are to be included in the Storage interface or not. Alternate solutions are to create a TransactionalStorage interface and move all transactional versions of methods there, or to simply drop the non-transactional methods from Storage and - for backward compatibility -include them in the Support2Storage class. This notice applies to all transactional methods, including <methodname>commit</methodname>, <methodname>delete</methodname>, <methodname>create</methodname>, <methodname>getNode</methodname>, <methodname>getNodeType</methodname>, and <methodname>createObjectStorage</methodname></para></note>
-								<note><para>It should be concidered to rename <methodname>insert()</methodname> to <methodname>createNode()</methodname></para></note>
+								<note><para>It should be considered to rename <methodname>insert()</methodname> to <methodname>createNode()</methodname></para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -220,7 +220,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>Commit this node to the specified builder. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
-								<note><para>It should be concidered to rename <methodname>commit()</methodname> to <methodname>commitNode()</methodname></para></note>
+								<note><para>It should be considered to rename <methodname>commit()</methodname> to <methodname>commitNode()</methodname></para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -234,7 +234,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>Delete a node. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred</para>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
-								<note><para>It should be concidered to rename <methodname>delete()</methodname> to <methodname>deleteNode()</methodname></para></note>
+								<note><para>It should be considered to rename <methodname>delete()</methodname> to <methodname>deleteNode()</methodname></para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -247,7 +247,7 @@ public interface Storage extends SearchQueryHandler {
 							<term><methodname>MMObjectNode getNode(MMObjectBuilder builder, int number);</methodname></term>
 							<listitem>
 								<para>Select a node from a specified builder. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred.</para>
-								<note><para>Changes in other transactons may - depending on implementation - not be visible when using this method.</para></note>
+								<note><para>Changes in other transactions may - depending on implementation - not be visible when using this method.</para></note>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
 							</listitem>
 						</varlistentry>
@@ -261,7 +261,7 @@ public interface Storage extends SearchQueryHandler {
 							<term><methodname>int getNodeType(int number);</methodname></term>
 							<listitem>
 								<para>Returns the nodetype for a specified node number. This method is non-transactional. Standard implementation creates a Transaction, calls the transactional version of this method, and returns true if successful, false if an error occurred.</para>
-								<note><para>Changes in other transactons may - depending on implementation - not be visible when using this method.</para></note>
+								<note><para>Changes in other transactions may - depending on implementation - not be visible when using this method.</para></note>
 								<note><para>See insert() for notes on non-transactional method.</para></note>
 							</listitem>
 						</varlistentry>
@@ -282,7 +282,7 @@ public interface Storage extends SearchQueryHandler {
 							<term><methodname>boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</methodname></term>
 							<listitem>
 								<para>Create a storage for the specified builder within a transaction.</para>
-								<note><para>It is probably wise to concider whether defining a storage (craeting, deleting, or altering it) should be done within a transaction (as it generally works on database tables). It may be useful to only define this method as non-transactional, so that calling this method assures the storage is there, so that when you use multiple servers you will not run into confict (or sugegs fucntionality that may not be there). This also counts for <methodname>createObjectStorage</methodname>, <methodname>addField</methodname>, <methodname>removeField</methodname>, <methodname>ChangeField</methodname>, and <methodname>updateStorage</methodname>.</para></note>
+								<note><para>It is probably wise to consider whether defining a storage (creating, deleting, or altering it) should be done within a transaction (as it generally works on database tables). It may be useful to only define this method as non-transactional, so that calling this method assures the storage is there, so that when you use multiple servers you will not run into conflict (or use functionality that may not be there). This also counts for <methodname>createObjectStorage</methodname>, <methodname>addField</methodname>, <methodname>removeField</methodname>, <methodname>ChangeField</methodname>, and <methodname>updateStorage</methodname>.</para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -290,7 +290,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>Create the object storage (the storage where to register all objects).</para>
 								<note><para>See insert() and create() for notes on non-transactional vs transactional method.</para></note>
-								<note><para>It should be concidered to rename <methodname>createObjectStorage()</methodname> to <methodname>createStorage()</methodname></para></note>
+								<note><para>It should be considered to rename <methodname>createObjectStorage()</methodname> to <methodname>createStorage()</methodname></para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
@@ -319,7 +319,7 @@ public interface Storage extends SearchQueryHandler {
 							<listitem>
 								<para>Drops the storage of this builder.</para>
 								<note><para>There is currently no non-transactional method for drop(). Whether there should be one is dependent on whether the transactional method for create() is dropped or not.</para></note>
-								<note><para>It should be concidered to rename <methodname>drop()</methodname> [database specific] to <methodname>delete()</methodname></para></note>
+								<note><para>It should be considered to rename <methodname>drop()</methodname> [database specific] to <methodname>delete()</methodname></para></note>
 							</listitem>
 						</varlistentry>
 						<varlistentry>
