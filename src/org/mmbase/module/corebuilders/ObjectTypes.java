@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
+import java.io.File;
 import java.util.Enumeration;
 
 import org.mmbase.module.core.*;
@@ -22,11 +23,11 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.27 2003-07-21 12:19:05 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.28 2003-12-17 21:09:03 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
-    private static Logger log = Logging.getLoggerInstance(ObjectTypes.class);
-    private java.io.File defaultDeploy = null;
+    private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
+    private File defaultDeploy = null;
     private boolean creationEnabled = true;
 
     /**
@@ -47,19 +48,19 @@ public class ObjectTypes extends TypeDef {
         if (getInitParameter(BUILDER_DEPLOY_PROPERTY) != null) {
             builderDeployDir = getInitParameter(BUILDER_DEPLOY_PROPERTY);
         } else {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("property: '" + BUILDER_DEPLOY_PROPERTY + "' was not set using default :" + builderDeployDir);
+            }
         }
-        defaultDeploy = new java.io.File(MMBaseContext.getConfigPath() + java.io.File.separator + "builders" + java.io.File.separator + builderDeployDir);
+        defaultDeploy = new File(MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + builderDeployDir);
         // create the dir, when it wasnt there...
         if (!defaultDeploy.exists()) {
             // try to create the directory for deployment....
             if (!defaultDeploy.mkdirs()) {
                 log.warn("Could not create directory: " + defaultDeploy + ", new node-types cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
-            }
-            // check if we may write in the specified dir
-            else if (!defaultDeploy.canWrite()) {
+            }   else if (!defaultDeploy.canWrite()) {
+                // check if we may write in the specified dir                
                 log.error("Could not write in directory: " + defaultDeploy + ", new node-typess cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }
@@ -101,7 +102,7 @@ public class ObjectTypes extends TypeDef {
                 log.debug("retrieving the document for node #" + node.getNumber());
             try {
                 // method node.getStringValue("name") should work, since getStringValue("path") checked it already...
-                java.io.File file = new java.io.File(getBuilderFilePath(node));
+                File file = new File(getBuilderFilePath(node));
                 // when the file doesnt exist, the value we return should be null...
                 if (!file.exists()) {
                     log.warn("file with name: " + file + " didnt exist, getValue will return null for builder config");
@@ -134,10 +135,11 @@ public class ObjectTypes extends TypeDef {
         }
 
         // look if we can store to file, if it aint there yet...
-        java.io.File file = new java.io.File(getBuilderFilePath(node));
+        File file = new File(getBuilderFilePath(node));
         if (!file.exists()) {
-            if (!creationEnabled)
+            if (!creationEnabled) {
                 throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
+            }
             // first store our config....
             storeBuilderFile(node);
         }
@@ -287,7 +289,7 @@ public class ObjectTypes extends TypeDef {
             log.error("field 'path' was empty.");
             return null;
         }
-        return path + java.io.File.separator + node.getStringValue("name") + ".xml";
+        return path + File.separator + node.getStringValue("name") + ".xml";
     }
 
     /**
@@ -297,8 +299,9 @@ public class ObjectTypes extends TypeDef {
      *          When the builder was not loaded.
      */
     protected String getBuilderPath(MMObjectNode node) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("retrieving the path for node #" + node.getNumber());
+        }
         // some basic checking
         if (node == null) {
             log.error("node was null");
@@ -318,17 +321,19 @@ public class ObjectTypes extends TypeDef {
         if (builder != null) {
             // return the file path,..
             String file = builder.getConfigFile().getAbsoluteFile().getParent();
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("builder file:" + file);
+            }
             return file;
         }
         // builder was inactive... try to get the correct path in some other way :(
         String pathInBuilderDir = mmb.getBuilderPath(node.getStringValue("name"), "");
         if (pathInBuilderDir != null) {
             // return the file path,..
-            String file = MMBaseContext.getConfigPath() + java.io.File.separator + "builders" + java.io.File.separator + pathInBuilderDir;
-            if (log.isDebugEnabled())
+            String file = MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator + pathInBuilderDir;
+            if (log.isDebugEnabled()) {
                 log.debug("builder file:" + file);
+            }
             return file;
         }
         // still null, make up a nice url for our builder!
@@ -341,19 +346,20 @@ public class ObjectTypes extends TypeDef {
     /**
      */
     protected MMObjectBuilder loadBuilder(MMObjectNode node) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Load builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
+        }
         String path = getBuilderPath(node);
         // remove everything till last '/builders/'
         // TODO: find a better way for whole file location stuff
-        String search = java.io.File.separator + "builders";
+        String search = File.separator + "builders";
         int pos = path.lastIndexOf(search);
         if (pos == -1) {
             String msg = "could not retrieve the path to store the file..(path: " + path + " search: " + search + ")";
             log.fatal(msg);
             throw new RuntimeException(msg);
         }
-        path = path.substring(pos + search.length()) + java.io.File.separator;
+        path = path.substring(pos + search.length()) + File.separator;
         MMObjectBuilder builder = mmb.loadBuilderFromXML(node.getStringValue("name"), path);
         if (builder == null) {
             // inactive builder?
@@ -366,15 +372,16 @@ public class ObjectTypes extends TypeDef {
 
     /**
      */
-    protected java.io.File storeBuilderFile(MMObjectNode node) {
-        if (log.isDebugEnabled())
+    protected File storeBuilderFile(MMObjectNode node) {
+        if (log.isDebugEnabled()) {
             log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
+        }
 
         org.w3c.dom.Document doc = node.getXMLValue("config");
         if (doc == null) {
             throw new RuntimeException("Field config was null! Could not save the file");
         }
-        java.io.File file = new java.io.File(getBuilderFilePath(node));
+        File file = new File(getBuilderFilePath(node));
         if (file == null) {
             throw new RuntimeException("file was null, could not continue");
         }
@@ -386,33 +393,37 @@ public class ObjectTypes extends TypeDef {
                 org.w3c.dom.Document original = org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.xml.BuilderReader.class).parse(file);
                 if (equals(doc, original)) {
                     // doc's were the same..
-                    if (log.isDebugEnabled())
+                    if (log.isDebugEnabled()) {
                         log.debug("document already there, with same data, xml will not be written to file:" + file);
+                    }
                     return file;
                 }
             } catch (org.xml.sax.SAXException se) {
                 // original document wasnt a xml document?
-                log.warn(
-                    "found an other file on location, which wasnt xml(can't compare), overwriting the file with current config.(error:"
-                        + se.toString()
-                        + ")");
+                log.warn("found an other file on location, which wasnt xml(can't compare), overwriting the file with current config.(error:" + se.toString() + ")");
             } catch (java.io.IOException ioe) {
                 // original document gave an io exception, strange...
                 throw new RuntimeException("failure opening old configuration for comparison, error: " + ioe.toString());
             }
         }
+        String message = "";
         try {
             javax.xml.transform.Transformer transformer = javax.xml.transform.TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.ENCODING, mmb.getEncoding());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
-            log.service("saving builderconfig to file:" + file);
+            log.service("Saving builderconfig to file:" + file);
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
         } catch (javax.xml.transform.TransformerException te) {
-            throw new RuntimeException(
-                "failure saving configuration to disk : " + te.toString() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement());
+            message = "Failure saving configuration to disk : " + te.getMessage() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement();
+            // throw new RuntimeException("
             // storing the builder failed!
+        }
+        if (! file.exists()) {
+            log.error("Failed to store file " + file + ": " + message);
+        } else {
+            log.service("Created file :" + file);
         }
         return file;
     }
@@ -455,7 +466,6 @@ public class ObjectTypes extends TypeDef {
         if (log.isDebugEnabled()) {
             log.debug("Unload builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
-
         // unload the builder,...
         MMObjectBuilder builder = getBuilder(node);
         if (builder != null) {
@@ -467,8 +477,9 @@ public class ObjectTypes extends TypeDef {
     /**
      */
     protected boolean deleteBuilderTable(MMObjectBuilder builder) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Delete table of builder '" + builder + "'");
+        }
 
         // well, since the whole thing doesnt exist anymore, now also drop the table, to clean the system a little bit...
         try {
@@ -482,10 +493,10 @@ public class ObjectTypes extends TypeDef {
     /**
      */
     protected boolean deleteBuilderFile(MMObjectNode node) {
-        if (log.isDebugEnabled())
+        if (log.isDebugEnabled()) {
             log.debug("Delete file of builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
-
-        java.io.File file = new java.io.File(getBuilderFilePath(node));
+        }
+        File file = new File(getBuilderFilePath(node));
         if (file.exists()) {
             if (!file.canWrite()) {
                 log.error("file: " + file + " had no write rights for me.");
@@ -493,8 +504,9 @@ public class ObjectTypes extends TypeDef {
             }
             // remove the file from the file system..
             file.delete();
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("file: " + file + " has been deleted");
+            }
         }
         return true;
     }
