@@ -29,6 +29,7 @@ public class LocaleTag extends ContextReferrerTag  {
     private String country = "";
 
     private Locale locale;
+    private String jspvar = null;
 
     // ------------------------------------------------------------
     // Attributes (documenation can be found in tld).
@@ -48,6 +49,10 @@ public class LocaleTag extends ContextReferrerTag  {
         if (log.isDebugEnabled()) log.debug("lang: " + locale.getLanguage() + " country: " + locale.getCountry());
         return locale;
     }
+
+    public void setJspvar(String j) {
+        jspvar = j;
+    }
     
     
     public int doStartTag() throws JspTagException {
@@ -55,6 +60,9 @@ public class LocaleTag extends ContextReferrerTag  {
             locale = new Locale(language, country);
         } else {
             locale = org.mmbase.bridge.LocalContext.getCloudContext().getDefaultLocale();
+        }
+        if (jspvar != null) {
+            pageContext.setAttribute(jspvar, locale);
         }
         return EVAL_BODY_BUFFERED;
     }
