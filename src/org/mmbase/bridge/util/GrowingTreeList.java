@@ -23,14 +23,15 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.4 2004-07-23 14:43:57 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.5 2004-07-29 17:19:12 michiel Exp $
  * @since   MMBase-1.7
  */
 
 public  class GrowingTreeList extends TreeList {
     private static final Logger log = Logging.getLoggerInstance(GrowingTreeList.class);
 
-    protected NodeQuery pathElementTemplate;
+    protected Constraint cleanConstraint;
+    protected NodeQuery  pathElementTemplate;
     protected int maxNumberOfSteps;
 
     /**
@@ -71,6 +72,7 @@ public  class GrowingTreeList extends TreeList {
     public void setMaxDepth(int maxDepth) {
         maxNumberOfSteps = 2 * maxDepth - 1; // dont consider relation steps.
 
+
         if (maxNumberOfSteps < numberOfSteps) {
             throw new IllegalArgumentException("Query is already deeper than maxdepth");
         }
@@ -108,8 +110,9 @@ public  class GrowingTreeList extends TreeList {
      */
     protected void addPathElement() {
         if (! pathElementTemplate.isUsed()) {
-            Queries.sortUniquely(pathElementTemplate);
+            //Queries.sortUniquely(pathElementTemplate);
             pathElementTemplate.markUsed();
+            cleanConstraint = pathElementTemplate.getCleanConstraint();
         }
         if (numberOfSteps + 2  > maxNumberOfSteps) {
             foundEnd = true;
@@ -143,15 +146,21 @@ public  class GrowingTreeList extends TreeList {
                 // add sortorder to the query
                 Step nextStep = newStep.getNext();
 
-                Constraint newStepConstraint         = Queries.copyConstraint(pathElementTemplate.getConstraint(), stepTemplate, newQuery, nextStep);
-                Constraint newRelationStepConstraint = Queries.copyConstraint(pathElementTemplate.getConstraint(), relationStepTemplate, newQuery, newStep);
-                Queries.addConstraint(newQuery, newStepConstraint);
-                Queries.addConstraint(newQuery, newRelationStepConstraint);
+                if (cleanConstraint != null) {
+                    Constraint newStepConstraint         = Queries.copyConstraint(cleanConstraint, stepTemplate, newQuery, nextStep);
+                    Constraint newRelationStepConstraint = Queries.copyConstraint(cleanConstraint, relationStepTemplate, newQuery, newStep);
+                    Queries.addConstraint(newQuery, newStepConstraint);
+                    Queries.addConstraint(newQuery, newRelationStepConstraint);
+                }
                 
 
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), stepTemplate, newQuery, nextStep);
                 Queries.copySortOrders(pathElementTemplate.getSortOrders(), relationStepTemplate, newQuery, newStep);
 
+                if (numberOfSteps + 2  > maxNumberOfSteps) {
+                    foundEnd = true;
+                    break;
+                }
             }
         }
     }
