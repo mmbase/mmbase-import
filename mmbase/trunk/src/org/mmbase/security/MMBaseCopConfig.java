@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.16 2004-04-02 10:38:33 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.17 2004-05-24 17:11:34 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
@@ -118,7 +118,7 @@ public class MMBaseCopConfig {
             log.debug("SecurityManager will NOT be active");
             active = false;
         } else {
-            throw new SecurityException("security attibute active must have the value 'true' or 'false'");
+            throw new SecurityException("security attribute 'active' must have the value 'true' or 'false'");
         }
 
         // load the sharedSecret
@@ -151,7 +151,7 @@ public class MMBaseCopConfig {
             if (! authUrl.equals("")) {
                 authFile = new File(authUrl);
             }
-            if (authFile != null  && (! authFile.isAbsolute())) { // so relative to currently
+            if (authFile != null  && (! authFile.isAbsolute())) { // so relative to current one
                 // being parsed file. make it absolute,
                 log.debug("authentication file was not absolutely given (" + authUrl + ")");
                 authFile = new File(configFile.getParent() + File.separator + authUrl);
