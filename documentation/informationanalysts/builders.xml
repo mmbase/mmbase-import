@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.3 2002-12-05 16:07:35 pierre Exp $</edition>
+		<edition>$Id: builders.xml,v 1.4 2002-12-06 13:03:17 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -112,6 +112,7 @@
 				 ]]></programlisting>
 				</example>
 			<section>
+				<anchor id="status" />
 				<title>&lt;status&gt;</title>
 				<para>The status tag determines whether a builder is active or not. Valid values are <constant>active</constant> and <constant>inactive</constant>.</para>
 				<para>You generally do not specify this tag unless you want to turn a builder off</para>
@@ -122,6 +123,7 @@
 				</example>
 			</section>
 			<section>
+				<anchor id="classfile" />
 				<title>&lt;classfile&gt;</title>
 				<para>The java class used by this buidler to administarte nodes of that builder type.</para>
 				<para>Specify this tag if you have custom behavuior defined for an object type.</para>
@@ -134,6 +136,7 @@
 				</example>
 			</section>
 			<section>
+				<anchor id="searchage" />
 				<title>&lt;searchage&gt;</title>
 				<para>The value given here is used be a number of generic editors, as a default value for the maximum age in days when searching for objects in MMBase.</para>
 				<para>Since this value is not available through the MMBase Bridge interface, this value is mostly used in older editors, that directly access the core system (such as SCAN).</para>
@@ -145,10 +148,12 @@
 				</example>
 			</section>
 			<section>
+				<anchor id="names" />
 				<title>&lt;names&gt;</title>
 				<para>This section is used to supply gui (graphical user interface) names for the builder. The information is generally used in generic editors, as well as the default value for use in the editwizards.</para>
 				<para>You can include gui names for different languages. the system picks the correct name depending on its currently specified locale.</para>
 				<section>
+					<anchor id="singular" />
 					<title>&lt;singular&gt;</title>
 					<para>A singular presentation of the builder object type, such as 'Person' or 'Company'.</para>
 					<variablelist>
@@ -159,6 +164,7 @@
 					</variablelist>
 				</section>
 				<section>
+					<anchor id="plural" />
 					<title>&lt;plural&gt;</title>
 					<para>A plural presentation of the builder object type, such as 'People' or 'Companies'.</para>
 					<variablelist>
@@ -168,22 +174,26 @@
 						</varlistentry>
 					</variablelist>
 				</section>
-				<example>
-				 <programlisting ><![CDATA[
+				<section>
+					<example>
+						<programlisting ><![CDATA[
 <names>
 	<singular xml:lang="en">Person</singular>
 	<singular xml:lang="nl">Persoon</singular>
 	<plural xml:lang="en">People</plural>
 	<plural xml:lang="nl">Personen</plural>
 </names>
-				 ]]></programlisting>
-				</example>
+						]]></programlisting>
+					</example>
+				</section>
 			</section>
 			<section>
+				<anchor id="descriptions" />
 				<title>&lt;descriptions&gt;</title>
 				<para>This section is used to supply a description or help text for the builder. It may include information on the type of objects, specific behavior,and how it should be used.</para>
 				<para>You can include descriptions for different languages. the system picks the correct description depending on its currently specified locale.</para>
 				<section>
+					<anchor id="description" />
 					<title>&lt;description&gt;</title>
 					<para>A description of the builder object type.</para>
 					<variablelist>
@@ -193,19 +203,23 @@
 						</varlistentry>
 					</variablelist>
 				</section>
-				<example>
-				 <programlisting ><![CDATA[
+				<section>
+					<example>
+						<programlisting ><![CDATA[
 <descriptions>
 	<description xml:lang="en">Name and address information regarding contacts of our company.</description>
 	<description xml:lang="nl">Naam and adres gegevns van contactpersonen van ons bedrijf.</description>
 </descriptions>
-				 ]]></programlisting>
-				</example>
+						]]></programlisting>
+					</example>
+				</section>
 			</section>
 			<section>
+				<anchor id="properties" />
 				<title>&lt;properties&gt;</title>
 				<para>A list of nam-value pairs, used by the java class specified in the <emphasis>classfile</emphasis> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</para>
 				<section>
+					<anchor id="property" />
 					<title>&lt;property&gt;</title>
 					<para>One single property name-value pair</para>
 					<variablelist>
@@ -215,25 +229,31 @@
 						</varlistentry>
 					</variablelist>
 				</section>
-				<example>
-				 <programlisting ><![CDATA[
+				<section>
+					<example>
+						<programlisting ><![CDATA[
 <properties>
 	<property name="employeedbname">mysql:employees</property>
 </properties>
-				 ]]></programlisting>
-				</example>
+						]]></programlisting>
+					</example>
+				</section>
 			</section>
 			<section>
+				<anchor id="fieldlist" />
 				<title>&lt;fieldlist&gt;</title>
 				<para></para>
 				<section>
+					<anchor id="field" />
 					<title>&lt;field&gt;</title>
 					<para></para>
 					<section>
+						<anchor id="field_descriptions" />
 						<title>&lt;descriptions&gt;</title>
 						<para>This tag is used to supply a description or help text for the field. It may include information on the type of objects, specific behavior,and how it should be used. This description is used (among other places) in the editwizards.</para>
 						<para>You can include descriptions for different languages. The system picks the correct description depending on its currently specified locale.</para>
 						<section>
+							<anchor id="field_description" />
 							<title>&lt;description&gt;</title>
 							<para>A description of the field.</para>
 							<variablelist>
@@ -243,21 +263,25 @@
 								</varlistentry>
 							</variablelist>
 						</section>
-						<example>
-						 <programlisting ><![CDATA[
+						<section>
+							<example>
+								<programlisting ><![CDATA[
 <descriptions>
 	<description xml:lang="en">First name or initials of our contact.</description>
 	<description xml:lang="nl">Voornaam of initialen van de contactpersoonen.</description>
 </descriptions>
-						 ]]></programlisting>
-						</example>
+								]]></programlisting>
+							</example>
+						</section>
 					</section>
 					<section>
+						<anchor id="field_gui" />
 						<title>&lt;gui&gt;</title>
 						<para>This section containsgui (graphical user interface) information for the field. The information is generally used in generic editors, as well as the default value for use in the editwizards.</para>
 						<para>This tag inlcudes gui names for different languages to represent a label for the field. The system picks the correct name depending on its currently specified locale.</para>
 						<para>It can also contain one guitype, which explains how the field should be rendered or edited.</para>
 						<section>
+							<anchor id="field_guiname" />
 							<title>&lt;guiname&gt;</title>
 							<para>A text to use as label for the field, such as 'First Name'.</para>
 							<variablelist>
@@ -268,6 +292,7 @@
 							</variablelist>
 						</section>
 						<section>
+							<anchor id="field_guitype" />
 							<title>&lt;guitype&gt;</title>
 							<para>An identifier used to determine how a field should be rendered or edited. There are a number of predefined values. You can also add your own values, but you will have to add your own code to handle these new types.</para>
 							<para>Possible values for this field are:</para>
@@ -278,7 +303,7 @@
 								</varlistentry>
 								<varlistentry>
 									<term>field</term>
-									<listitem><simpara>A text box, not generally limite din teh amount of text that can be edited.</simpara></listitem>
+									<listitem><simpara>A text box, not generally limited in the amount of text that can be edited.</simpara></listitem>
 								</varlistentry>
 								<varlistentry>
 									<term>integer</term>
@@ -306,37 +331,45 @@
 								</varlistentry>
 							</variablelist>
 						</section>
-						<example>
-						 <programlisting ><![CDATA[
+						<section>
+							<example>
+								<programlisting ><![CDATA[
 <gui>
 	<guiname xml:lang="en">First name</guiname>
 	<guiname xml:lang="nl">Voornaam</guiname>
 	<guitype>string</guitype>
 </gui>
-						 ]]></programlisting>
-						</example>
+								]]></programlisting>
+							</example>
+						</section>
 					</section>
 					<section>
+						<anchor id="field_editor" />
 						<title>&lt;editor&gt;</title>
 						<para>Determines settings for this field when used in a generic editor.</para>
 						<section>
+							<anchor id="field_positions" />
 							<title>&lt;positions&gt;</title>
 							<para>Lists the positions of a field in certain types of forms.</para>
 							<section>
+								<anchor id="field_edit" />
 								<title>&lt;edit&gt;</title>
 								<para>Position of the field in an edit screen. -1 means the field cannot be edited.</para>
 							</section>
 							<section>
+								<anchor id="field_list" />
 								<title>&lt;list&gt;</title>
 								<para>Position of the field in an object list. -1 means the field will not occur in a list.</para>
 							</section>
 							<section>
+								<anchor id="field_search" />
 								<title>&lt;search&gt;</title>
 								<para>Position of the field in a search form. -1 means the field cannot be searched on.</para>
 							</section>
 						</section>
-						<example>
-						 <programlisting ><![CDATA[
+						<section>
+							<example>
+								<programlisting ><![CDATA[
 <editor>
 	<positions>
 		<edit>4</edit>
@@ -344,34 +377,38 @@
 		<search>4</search>
 	</positions>
 </editor>
-						 ]]></programlisting>
-						</example>
+								]]></programlisting>
+							</example>
+						</section>
 					</section>
 					<section>
+						<anchor id="field_db" />
 						<title>&lt;db&gt;</title>
 						<para></para>
 						<section>
+							<anchor id="field_name" />
 							<title>&lt;name&gt;</title>
 							<para>The symbolic name of this field. The symbolic name is used to refer to the field in programming code or in a taglib or SCAN template. It is also used to map the field to a field in a database table.</para>
 						</section>
 						<section>
+							<anchor id="field_type" />
 							<title>&lt;type&gt;</title>
 							<para>the MMBASE type of the field. This determines, among other things, validation rules and the type of the field in the database.</para>
 							<para>Possible attributes are:</para>
 							<variablelist>
 								<varlistentry>
-									<term>state</term>
+									<term><anchor id="field_state" />state</term>
 									<listitem><simpara>Either <constant>persistent</constant>, <constant>system</constant> or <constant>virtual</constant>.</simpara>
 										<simpara>A <constant>persistent</constant> or <constant>system</constant> field is stored in the database, a <constant>virtual</constant> field is generated live and not stored.</simpara>
 										<simpara>A <constant>system</constant> field cannot be altered except by the MMBase system.</simpara>
 									</listitem>
 								</varlistentry>
 								<varlistentry>
-									<term>notnull</term>
+									<term><anchor id="field_notnull" />notnull</term>
 									<listitem><simpara>Value can be <constant>true</constant> or <constant>false</constant>. If <constant>true</constant>, this field cannot be empty. This is not currently enforced except by the editwizards.</simpara></listitem>
 								</varlistentry>
 								<varlistentry>
-									<term>key</term>
+									<term><anchor id="field_key" />key</term>
 									<listitem><simpara>Value can be <constant>true</constant> or <constant>false</constant>. If <constant>true</constant>, this field must be unique.</simpara></listitem>
 								</varlistentry>
 							</variablelist>
@@ -411,19 +448,22 @@
 								</varlistentry>
 							</variablelist>
 						</section>
-				<example>
-				 <programlisting ><![CDATA[
+						<section>
+							<example>
+								<programlisting ><![CDATA[
 <db>
 	<name>firstname</name>
 	<type state="persistent" size="255" key="false" notnull="false">STRING</type>
 </db>
-				 ]]></programlisting>
-				</example>
+								]]></programlisting>
+							</example>
+						</section>
 					</section>
 				</section>
-				<example>
-				 <para>A full field example:</para>
-				 <programlisting ><![CDATA[
+				<section>
+					<para>A full field example:</para>
+					<example>
+						<programlisting ><![CDATA[
 <fieldlist>
 	<field>
 		<descriptions>
@@ -448,8 +488,9 @@
 		</db>
 	</field>
 </fieldlist>
-				 ]]></programlisting>
-				</example>
+						]]></programlisting>
+					</example>
+				</section>
 			</section>
 		</section>
 	</section>
