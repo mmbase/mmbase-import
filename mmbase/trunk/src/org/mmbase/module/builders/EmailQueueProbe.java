@@ -19,79 +19,80 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.1 $ $Date: 2001-05-17 16:14:05 $ 
+ * @version0 $Revision: 1.2 $ $Date: 2001-05-21 11:27:23 $ 
  */
 public class EmailQueueProbe implements Runnable {
 
-	private String classname = getClass().getName();
-	private boolean debug = false;
-	private void debug( String msg ) { System.out.println( classname+":"+msg ); }
+    static private Logger log = Logging.getLoggerInstance(EmailQueueProbe.class.getName()); 
 
-	Thread kicker = null;
-	int sleeptime;
-	EmailSendProbe parent=null;
+    Thread kicker = null;
+    int sleeptime;
+    EmailSendProbe parent=null;
 
-	public EmailQueueProbe(EmailSendProbe parent,int sleeptime) {
-		this.parent=parent;
-		this.sleeptime=sleeptime;
-		init();
-	}
+    public EmailQueueProbe(EmailSendProbe parent,int sleeptime) {
+        this.parent=parent;
+        this.sleeptime=sleeptime;
+        init();
+    }
 
-	public void init() {
-		this.start();	
-	}
+    public void init() {
+        this.start();    
+    }
 
 
-	/**
-	 * Starts the main Thread.
-	 */
-	public void start() {
-		/* Start up the main thread */
-		if (kicker == null) {
-			kicker = new Thread(this,"emailqueueprobe");
-			kicker.start();
-		}
-	}
-	
-	/**
-	 * Stops the main Thread.
-	 */
-	public void stop() {
-		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
-		kicker = null;
-	}
+    /**
+     * Starts the main Thread.
+     */
+    public void start() {
+        /* Start up the main thread */
+        if (kicker == null) {
+            kicker = new Thread(this,"emailqueueprobe");
+            kicker.start();
+        }
+    }
+    
+    /**
+     * Stops the main Thread.
+     */
+    public void stop() {
+        /* Stop thread */
+        kicker.setPriority(Thread.MIN_PRIORITY);  
+        kicker.suspend();
+        kicker.stop();
+        kicker = null;
+    }
 
-	/**
-	 * Main loop, exception protected
-	 */
-	public void run () {
-		kicker.setPriority(Thread.MIN_PRIORITY+1);  
-		while (kicker!=null) {
-			try {
-				doWork();
-			} catch(Exception e) {
-				debug("run(): ERROR: Exception in emailqueueprobe thread!");
-				e.printStackTrace();
-			}
-		}
-	}
+    /**
+     * Main loop, exception protected
+     */
+    public void run () {
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
+        while (kicker!=null) {
+            try {
+                doWork();
+            } catch(Exception e) {
+                log.error("run(): ERROR: Exception in emailqueueprobe thread!");
+                log.error(Logging.stackTrace(e));
+            }
+        }
+    }
 
-	/**
-	 * Main work loop
-	 */
-	public void doWork() {
-		kicker.setPriority(Thread.MIN_PRIORITY+1);  
+    /**
+     * Main work loop
+     */
+    public void doWork() {
+        kicker.setPriority(Thread.MIN_PRIORITY+1);  
 
-		while (kicker!=null) {
-			parent.checkQueue();
-			try {Thread.sleep(sleeptime*1000);} catch (InterruptedException e){}
-		}
-	}
+        while (kicker!=null) {
+            parent.checkQueue();
+            try {Thread.sleep(sleeptime*1000);} catch (InterruptedException e){}
+        }
+    }
 
 
 }
