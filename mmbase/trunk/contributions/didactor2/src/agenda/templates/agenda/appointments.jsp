@@ -58,7 +58,7 @@
   <di:translate id="appointments">Afspraken</di:translate>
  </div>
 	<div class="contentSubHeader">    
-	<a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><di:translate id="viewcurrentagenda">Bekijk agenda van vandaag</di:translate></a>
+	<a href="<mm:treefile page="/agenda/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_vandaag.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="viewcurrentagenda">Bekijk agenda van vandaag</di:translate>" border="0"></a>
 	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
 
     </div>

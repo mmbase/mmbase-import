@@ -135,7 +135,7 @@
             <img src="<mm:treefile page="/agenda/gfx/icon_agenda_invitation.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="CREATEINVITATION" />"/></a>
         </mm:relatednodes>
       </mm:node>
-	    <a href="appointments.jsp"><di:translate id="listappointments">Bekijk afspraken</di:translate></a>
+	    <a href="<mm:treefile page="/agenda/appointments.jsp"  objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/agenda/gfx/bekijk_afspraken.gif" objectlist="$includePath" referids="$referids"/>" alt="<di:translate id="listappointments">Bekijk afspraken</di:translate>" border="0"></a>
     
 	    <input type="image" src="<mm:treefile page="/agenda/gfx/afspraak verwijderen.gif" objectlist="$includePath" referids="$referids"/>">
     </div>
