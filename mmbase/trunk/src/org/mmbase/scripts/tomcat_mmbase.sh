@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Id: tomcat_mmbase.sh,v 1.2 2000-10-06 22:42:53 gerard Exp $
+# $Id: tomcat_mmbase.sh,v 1.3 2000-10-08 21:48:58 gerard Exp $
 # 
 # Changed by GvE for starting MMBase
 # 
@@ -13,16 +13,19 @@
 # MMBase config
 #
 
+# change this to your MMBase-dir
+MMBASE_HOME=../
 # change this to your Tomcat directory
-TOMCAT_HOME=/usr/local/java/tomcat
+TOMCAT_HOME=/usr/local/tomcat
+
 # change this to your mmbase path where the classes are or to the mmbase.jar
-MMBASE_HOME=../lib/mmbase.jar
+MMBASE_JAR=$MMBASE_HOME/lib/mmbase.jar
 # change this to your mmbase-config dir
-MMBASE_CONFIG=../config/default
+MMBASE_CONFIG=$MMBASE_HOME/config/default
 # change this to the location of the mmbase-html's (must be under webapps in Tomcat)
-MMBASE_HTML=/webapps/ROOT
+MMBASE_HTML=webapps/ROOT
 # change this to the location where you'd like to see the mmbase.log
-MMBASE_LOG=../log/mmbase.log
+MMBASE_LOG=$MMBASE_HOME/log/mmbase.log
 # change this to your JDBC-driver
 JDBC_CLASSPATH=/usr/local/java/vpro/orion/lib/mysql_uncomp.jar
 
@@ -117,7 +120,7 @@ fi
 # Backdoor classpath setting for development purposes when all classes
 # are compiled into a /classes dir and are not yet jarred.
 if [ -d ${TOMCAT_HOME}/classes ]; then
-    CLASSPATH=${TOMCAT_HOME}/classes:${JDBC_CLASSPATH}:${MMBASE_HOME}:${CLASSPATH}
+    CLASSPATH=${TOMCAT_HOME}/classes:${JDBC_CLASSPATH}:${MMBASE_JAR}:${CLASSPATH}
 fi
 
 if [ "$oldCP" != "" ]; then
@@ -132,7 +135,7 @@ export CLASSPATH
 if [ "$1" = "start" ] ; then 
   shift 
   echo Using classpath: ${CLASSPATH}
-  $JAVACMD $TOMCAT_OPTS -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" &
+  $JAVACMD $TOMCAT_OPTS -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}/${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" &
 #   $JAVACMD org.apache.tomcat.shell.Startup "$@" &
 
 elif [ "$1" = "stop" ] ; then 
@@ -144,7 +147,7 @@ elif [ "$1" = "stop" ] ; then
 elif [ "$1" = "run" ] ; then 
   shift 
   echo Using classpath: ${CLASSPATH}
-  $JAVACMD $TOMCAT_OPTS -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" 
+  $JAVACMD $TOMCAT_OPTS -Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${MMBASE_CONFIG} -Dmmbase.htmlroot=${TOMCAT_HOME}/${MMBASE_HTML} -Dmmbase.outputfile=${MMBASE_LOG} org.apache.tomcat.startup.Tomcat "$@" 
 #  $JAVACMD org.apache.tomcat.shell.Startup "$@" 
   # no &
 
