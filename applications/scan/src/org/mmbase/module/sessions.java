@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.11 2000-06-21 14:28:19 wwwtech Exp $
+ $Id: sessions.java,v 1.12 2000-06-26 14:12:36 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.11  2000/06/21 14:28:19  wwwtech
+ rob
+
  Revision 1.10  2000/04/25 21:30:44  wwwtech
  daniel: fixed a bug that forgot to return sets with 1 value
 
@@ -54,7 +57,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.11 2000-06-21 14:28:19 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.12 2000-06-26 14:12:36 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -179,13 +182,13 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				sid=session.getCookie();
 				if (mmbase!=null) {
 					props=mmbase.getMMObject("properties");
-					Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
-					if( debug ) debug("loadProperties(): got SID("+sid+")"); // WHERE key='SID' AND value='"+sid+"'");
+					Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
+					if( debug ) debug("loadProperties(): got SID("+sid+")"); 
 					if (res.hasMoreElements()) {
 						MMObjectNode snode = (MMObjectNode)res.nextElement();
 						int id=snode.getIntValue("parent");
 						setValue(session,"USERNUMBER",""+id);
-						res=props.search("WHERE parent='"+id+"'");
+						res=props.search("parent=="+id);
 						while (res.hasMoreElements()) {
 							setValueFromNode( session, (MMObjectNode)res.nextElement() );
 						}
@@ -226,7 +229,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 					if (props==null || users==null) {
 						debug("Can't Save: One of the needed builders is not loaded either users or properties");
 					} else {
-						Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
+						Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
 						if (res.hasMoreElements()) {
 	
 							// yes, is it a user?
