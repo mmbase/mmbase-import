@@ -1,7 +1,12 @@
 <mm:import id="setname" reset="true">mmbob</mm:import>
-<mm:node referid="forumid">
-<mm:import id="lang" reset="true"><mm:field name="language" /></mm:import>
-</mm:node>
+<mm:compare referid="forumid" value="" inverse="true">
+  <mm:node referid="forumid">
+    <mm:import id="lang" reset="true"><mm:field name="language" /></mm:import>
+  </mm:node>
+</mm:compare>
+<mm:compare referid="forumid" value="">
+  <mm:import id="lang" reset="true">en</mm:import>
+</mm:compare>
 
 <mm:import id="keyword" reset="true">Welcome</mm:import><mm:import id="mlg_Welcome"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 <mm:import id="keyword" reset="true">on_the</mm:import><mm:import id="mlg_on_the"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
