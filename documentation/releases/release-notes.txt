@@ -151,16 +151,17 @@ Generic Bug Fixes:
   xerces/xalan/xml-apis when running under java 1.4 you can remove
   those files 
 
-- The HandleServlet now remove additional information left in jpeg
-  file by PhotoShop 7 This extra information crashes the image Thread
-  of Internet Exploder. While this was not a bug it is very convenient 
+- The HandleServlet now removes additional information left in jpeg
+  files by PhotoShop 7. This extra information crashes the image Thread
+  of Internet Exploder. While this was not a bug, this fix is very 
+  convenient.
 
-- caching of Query results is done better. It is possible to cache
-  everything. In 1.6 some queries accidentely where not cached. This
+- Caching of Query results is done better. It is possible to cache
+  everything. In 1.6 some queries accidentally where not cached. This
   fix is based on the new Query framework. 
 
-- when exporting builder xmls, the state propery of a field is now in
-  lowercase (as defined by the dtd)
+- When exporting builder xmls, the state property of a field is now in
+  lowercase (as defined by the dtd).
 
 - More robust in case Database not up yet if MMBase starts, or if
   database restart when MMBase remains up.
@@ -180,7 +181,7 @@ Security Bug Fixes:
 Taglib Bug Fixes:
 -----------------
 [1.7.0]
- - Working with resin now
+ - Working with resin now.
 
  - The fields parameter of the list tags (related, list, etc) now no
    longer accepts fields that do not exist. Note that this means that
@@ -209,7 +210,7 @@ Upgrade:
     mmbase-editwizard.zip) 
   - if you used community, place mmbase-community.jar (from
     mmbase-community.zip). You can remove mmcommunity-taglib.tld too
-    and place this in web.xml in stead:
+    and place this in web.xml instead of:
     <taglib>
       <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
       <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
@@ -247,7 +248,7 @@ Upgrade:
   advised to check your site's pages for this error. 
 
 - If needed, convert the data directory where mmbase stored binary
-  data 
+  data. 
 
 ========================
 Know Issues and Problems:
