@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -109,13 +109,13 @@ public class BasicQueryHandlerTest extends TestCase {
         // as is now the case).
         {
             query = new BasicSearchQuery();
-            BasicStep poolsStep = query.addStep(pools);
-            poolsStep.setAlias("pools1");
+            BasicStep poolsStep = query.addStep(pools)
+                .setAlias("pools1");
             FieldDefs poolsName = pools.getField("name");
-            BasicStepField poolsNameField = query.addField(poolsStep, poolsName);
-            poolsNameField.setAlias("a_name"); // should not affect result node fieldnames!
-            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField);
-            sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+            BasicStepField poolsNameField = query.addField(poolsStep, poolsName)
+                .setAlias("a_name"); // should not affect result node fieldnames!
+            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField)
+                .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs poolsDescription = pools.getField("description");
             query.addField(poolsStep, poolsDescription);
             FieldDefs otypeDescription = pools.getField("otype");
@@ -149,13 +149,13 @@ public class BasicQueryHandlerTest extends TestCase {
         // Test for clusternodes.
         {
             query = new BasicSearchQuery();
-            BasicStep poolsStep = query.addStep(pools);
-            poolsStep.setAlias("pools1");
+            BasicStep poolsStep = query.addStep(pools)
+                .setAlias("pools1");
             FieldDefs poolsName = pools.getField("name");
-            BasicStepField poolsNameField = query.addField(poolsStep, poolsName);
-            poolsNameField.setAlias("a_name"); // should not affect result node fieldnames!
-            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField);
-            sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+            BasicStepField poolsNameField = query.addField(poolsStep, poolsName)
+                .setAlias("a_name"); // should not affect result node fieldnames!
+            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField)
+                .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs poolsDescription = pools.getField("description");
             query.addField(poolsStep, poolsDescription);
             FieldDefs poolsOwner = pools.getField("owner");
@@ -188,13 +188,13 @@ public class BasicQueryHandlerTest extends TestCase {
         // Test for result nodes.
         {
             query = new BasicSearchQuery();
-            BasicStep poolsStep = query.addStep(pools);
-            poolsStep.setAlias("pools1");
+            BasicStep poolsStep = query.addStep(pools)
+                .setAlias("pools1");
             FieldDefs poolsName = pools.getField("name");
-            BasicStepField poolsNameField = query.addField(poolsStep, poolsName);
-            poolsNameField.setAlias("a_name");
-            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField);
-            sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+            BasicStepField poolsNameField = query.addField(poolsStep, poolsName)
+                .setAlias("a_name");
+            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField)
+                .setDirection(SortOrder.ORDER_ASCENDING);
             FieldDefs poolsDescription = pools.getField("description");
             query.addField(poolsStep, poolsDescription);
             FieldDefs poolsOwner = pools.getField("owner");
@@ -227,8 +227,8 @@ public class BasicQueryHandlerTest extends TestCase {
         // Test for result nodes with aggregated fields.
         {
             query = new BasicSearchQuery(true);
-            BasicStep poolsStep = query.addStep(pools);
-            poolsStep.setAlias("pools1");
+            BasicStep poolsStep = query.addStep(pools)
+                .setAlias("pools1");
             FieldDefs poolsName = pools.getField("name");
             query.addAggregatedField(
                 poolsStep, poolsName, AggregatedField.AGGREGATION_TYPE_MIN).
@@ -274,8 +274,8 @@ public class BasicQueryHandlerTest extends TestCase {
             fail("Query with maxNumber not supported, should throw SearchQueryException.");
         } catch (SearchQueryException e) {}
         
-        query.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER); // reset to default
-        query.setOffset(10);
+        query.setMaxNumber(SearchQuery.DEFAULT_MAX_NUMBER) // reset to default
+            .setOffset(10);
         // Query with offset not supported, should throw SearchQueryException.
         try {
             instance.getNodes(query, mmbase.getClusterBuilder());

@@ -11,7 +11,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicStringSearchConstraintTest extends TestCase {
     
@@ -134,9 +134,11 @@ public class BasicStringSearchConstraintTest extends TestCase {
         instance.setMatchType(StringSearchConstraint.MATCH_TYPE_FUZZY);
         assertTrue(
         instance.getMatchType() == StringSearchConstraint.MATCH_TYPE_FUZZY);
-        instance.setMatchType(StringSearchConstraint.MATCH_TYPE_SYNONYM);
+        BasicStringSearchConstraint result
+            = instance.setMatchType(StringSearchConstraint.MATCH_TYPE_SYNONYM);
         assertTrue(
         instance.getMatchType() == StringSearchConstraint.MATCH_TYPE_SYNONYM);
+        assertTrue(result == instance);
     }
     
     /** Test of setSearchType method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
@@ -154,14 +156,16 @@ public class BasicStringSearchConstraintTest extends TestCase {
         } catch (IllegalArgumentException e) {}
         
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
-        assertTrue( instance.getSearchType()
-        == StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
+        assertTrue(instance.getSearchType()
+            == StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED);
-        assertTrue( instance.getSearchType()
-        == StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED);
-        instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
-        assertTrue( instance.getSearchType()
+        assertTrue(instance.getSearchType()
+            == StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED);
+        BasicStringSearchConstraint result
+            = instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
+        assertTrue(instance.getSearchType()
         == StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
+        assertTrue(result == instance);
     }
     
     public void testSetParameter() {
@@ -243,16 +247,19 @@ public class BasicStringSearchConstraintTest extends TestCase {
         == null);
         
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED);
-        instance.setParameter(
-        StringSearchConstraint.PARAM_PROXIMITY_LIMIT, proximityLimit);
-        assertTrue(
-        instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT).
-        equals(proximityLimit));
+        BasicStringSearchConstraint result
+            = instance.setParameter(
+                StringSearchConstraint.PARAM_PROXIMITY_LIMIT, proximityLimit);
+        assertTrue(instance.getParameters()
+            .get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
+            .equals(proximityLimit));
+        assertTrue(result == instance);
         
         // changing searchtype should clear proximity limit parameter
         instance.setSearchType(StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED);
-        assertTrue(instance.getParameters().get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
-        == null);
+        assertTrue(instance.getParameters()
+                .get(StringSearchConstraint.PARAM_PROXIMITY_LIMIT)
+            == null);
     }
     
     /** Test of getMatchType method, of class org.mmbase.storage.search.implementation.BasicStringSearchConstraint. */
@@ -271,10 +278,11 @@ public class BasicStringSearchConstraintTest extends TestCase {
     public void testAddSearchTerm() {
         String newTerm = "skeukowkk";
         int nrTerms = instance.getSearchTerms().size();
-        instance.addSearchTerm(newTerm);
+        BasicStringSearchConstraint result = instance.addSearchTerm(newTerm);
         List searchTerms = instance.getSearchTerms();
         assertTrue(searchTerms.size() == (nrTerms + 1));
         assertTrue(searchTerms.get(nrTerms).equals(newTerm));
+        assertTrue(result == instance);
         
         try {
             // Empty searchterm, should throw IllegalArgumentException.
@@ -294,8 +302,10 @@ public class BasicStringSearchConstraintTest extends TestCase {
         searchTerms.add("kjeid");
         searchTerms.add("uerui");
         searchTerms.add("zcvvc");
-        instance.setSearchTerms(searchTerms);
+        BasicStringSearchConstraint result 
+            = instance.setSearchTerms(searchTerms);
         assertTrue(instance.getSearchTerms().equals(searchTerms));
+        assertTrue(result == instance);
         
         try {
             // Empty list of searchterms, should throw IllegalArgumentException.
@@ -316,12 +326,14 @@ public class BasicStringSearchConstraintTest extends TestCase {
         String searchTerm1 = "qwei";
         String searchTerm2 = "2838";
         String searchTerm3 = "i3wn";
-        instance.setSearchTerms("\n\t\r " + searchTerm1
-        + "\r" + searchTerm2 + "  " + searchTerm3 + " \n ");
+        BasicStringSearchConstraint result
+            = instance.setSearchTerms("\n\t\r " + searchTerm1
+                + "\r" + searchTerm2 + "  " + searchTerm3 + " \n ");
         assertTrue(instance.getSearchTerms().size() == 3);
         assertTrue(instance.getSearchTerms().get(0).equals(searchTerm1));
         assertTrue(instance.getSearchTerms().get(1).equals(searchTerm2));
         assertTrue(instance.getSearchTerms().get(2).equals(searchTerm3));
+        assertTrue(result == instance);
         
         try {
             // Empty searchterm string, should throw IllegalArgumentException.

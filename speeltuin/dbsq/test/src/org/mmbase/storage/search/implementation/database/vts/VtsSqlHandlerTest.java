@@ -21,7 +21,7 @@ import org.xml.sax.*;
  * on images.title and pools.name.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class VtsSqlHandlerTest extends TestCase {
     
@@ -67,8 +67,8 @@ public class VtsSqlHandlerTest extends TestCase {
         imagesTitle = images.getField("title");
         poolsName = pools.getField("name");
         query = new BasicSearchQuery();
-        query.setMaxNumber(100);
-        query.setOffset(1);
+        query.setMaxNumber(100)
+            .setOffset(1);
         imagesStep = query.addStep(images);
         poolsStep = query.addStep(pools);
         imagesDescriptionField = query.addField(imagesStep, imagesDescription);

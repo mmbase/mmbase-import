@@ -18,7 +18,7 @@ import org.mmbase.storage.search.StringSearchConstraint;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since MMBase-1.7
  */
 public class BasicStringSearchConstraint extends BasicFieldConstraint implements StringSearchConstraint {
@@ -98,10 +98,11 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      * Sets the match type. 
      *
      * @param matchType The matchtype.
+     * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentValue when an invalid argument is supplied.
      * @see #getMatchType
      */
-    public void setMatchType(int matchType) {
+    public BasicStringSearchConstraint setMatchType(int matchType) {
         if (matchType != StringSearchConstraint.MATCH_TYPE_LITERAL
         && matchType != StringSearchConstraint.MATCH_TYPE_FUZZY
         && matchType != StringSearchConstraint.MATCH_TYPE_SYNONYM) {
@@ -112,16 +113,18 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         if (matchType != StringSearchConstraint.MATCH_TYPE_FUZZY) {
             parameters.remove(StringSearchConstraint.PARAM_FUZZINESS);
         }
+        return this;
     }
     
     /**
      * Sets the search type.
      *
      * @param searchType The searchType.
+     * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentValue when an invalid argument is supplied.
      * @see #getSearchType
      */
-    public void setSearchType(int searchType) {
+    public BasicStringSearchConstraint setSearchType(int searchType) {
         if (searchType != StringSearchConstraint.SEARCH_TYPE_WORD_ORIENTED
         && searchType != StringSearchConstraint.SEARCH_TYPE_PHRASE_ORIENTED
         && searchType != StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED) {
@@ -132,29 +135,33 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
         if (searchType != StringSearchConstraint.SEARCH_TYPE_PROXIMITY_ORIENTED) {
             parameters.remove(StringSearchConstraint.PARAM_PROXIMITY_LIMIT);
         }
+        return this;
     }
     
     /**
      * Adds searchterm to list of searchterms.
      *
      * @param searchTerm the searchterms
+     * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void addSearchTerm(String searchTerm) {
+    public BasicStringSearchConstraint addSearchTerm(String searchTerm) {
         if (searchTerm.trim().length() == 0) {
             throw new IllegalArgumentException(
             "Invalid search term value: \"" + searchTerm + "\"");
         }
         searchTerms.add(searchTerm);
+        return this;
     }
     
     /**
      * Sets searchterms to elements in specified list.
      *
      * @param searchTerms the searchterms
+     * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setSearchTerms(List searchTerms) {
+    public BasicStringSearchConstraint setSearchTerms(List searchTerms) {
         if (searchTerms.size() == 0) {
             throw new IllegalArgumentException(
             "Invalid search terms value: " + searchTerms);
@@ -170,6 +177,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             newSearchTerms.add(searchTerm);
         }
         this.searchTerms = newSearchTerms;
+        return this;
     }
     
     /**
@@ -177,9 +185,10 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      *
      * @param searchTerms String containing searchterms as words separated 
      *        by white space.
+     * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setSearchTerms(String searchTerms) {
+    public BasicStringSearchConstraint setSearchTerms(String searchTerms) {
         if (searchTerms.trim().length() == 0) {
             throw new IllegalArgumentException(
             "Invalid search terms value: \"" + searchTerms + "\"");
@@ -190,6 +199,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             newSearchTerms.add(st.nextToken());
         }
         this.searchTerms = newSearchTerms;
+        return this;
     }
     
     /**
@@ -198,10 +208,11 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
      *
      * @param name The parameter name.
      * @param value The parameter value.
+     * @return This <code>BasicStringSearchConstraint</code> instance.
      * @throws IllegalArgumentValue when an invalid argument is supplied.
      * @see #getParameters
      */
-    public void setParameter(String name, Object value) {
+    public BasicStringSearchConstraint setParameter(String name, Object value) {
         if (name.equals(StringSearchConstraint.PARAM_FUZZINESS)
         && matchType == StringSearchConstraint.MATCH_TYPE_FUZZY) {
             if (!(value instanceof Float)) {
@@ -231,6 +242,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             "Invalid parameter name: \"" + name + "\"");
         }
         parameters.put(name, value);
+        return this;
     }
 
     // javadoc is inherited

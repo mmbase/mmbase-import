@@ -8,7 +8,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicConstraintTest extends TestCase {
     
@@ -45,8 +45,9 @@ public class BasicConstraintTest extends TestCase {
         // Default is false.
         assertTrue(!instance.isInverse());
         
-        instance.setInverse(true);
+        BasicConstraint result = instance.setInverse(true);
         assertTrue(instance.isInverse());
+        assertTrue(result == instance);
     }
     
     /** Test of isInverse method, of class org.mmbase.storage.search.implementation.BasicConstraint. */

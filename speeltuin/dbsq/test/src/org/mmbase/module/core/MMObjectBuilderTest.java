@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class MMObjectBuilderTest extends TestCase {
     
@@ -54,6 +54,7 @@ public class MMObjectBuilderTest extends TestCase {
     
     public static void main(java.lang.String[] args) {
         junit.textui.TestRunner.run(suite());
+        System.exit(0);
     }
     
     /**
@@ -130,9 +131,9 @@ public class MMObjectBuilderTest extends TestCase {
             = new BasicFieldValueConstraint(nameField, TEST_NAME + '%');
         constraint2.setOperator(FieldValueConstraint.LIKE);
         BasicCompositeConstraint constraint 
-            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        constraint.addChild(constraint1);
-        constraint.addChild(constraint2);
+            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND)
+                .addChild(constraint1)
+                .addChild(constraint2);
         query.setConstraint(constraint);
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             value = TEST_NAME + i;
@@ -162,17 +163,17 @@ public class MMObjectBuilderTest extends TestCase {
             = new BasicFieldValueConstraint(nameField, TEST_NAME + '%');
         constraint2.setOperator(FieldValueConstraint.LIKE);
         BasicCompositeConstraint constraint 
-            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
-        constraint.addChild(constraint1);
-        constraint.addChild(constraint2);
+            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND)
+                .addChild(constraint1)
+                .addChild(constraint2);
         query.setConstraint(constraint);
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             value = TEST_NAME + i;
             constraint1.setValue(value);
             assertTrue(instance.getNodes(query).size() == i);
         }
-        BasicSortOrder nameOrder = query.addSortOrder(nameField);
-        nameOrder.setDirection(SortOrder.ORDER_DESCENDING);
+        BasicSortOrder nameOrder = query.addSortOrder(nameField)
+            .setDirection(SortOrder.ORDER_DESCENDING);
         Iterator iResults = instance.getNodes(query).iterator();
         Iterator iTestNodes = testNodes.iterator();
         while (iTestNodes.hasNext()) {
@@ -192,6 +193,28 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
             results = instance.searchList("WHERE name<'" + value 
+                + "' AND name LIKE '" + TEST_NAME + "%' ORDER BY name DESC");
+            assertTrue(results.size() == i);
+        }
+        Iterator iResults = results.iterator();
+        Iterator iTestNodes = testNodes.iterator();
+        while (iTestNodes.hasNext()) {
+            MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+            MMObjectNode result = (MMObjectNode) iResults.next();
+            // In cache, so must be same instance.
+            assertTrue(areEqual(result, testNode));
+        }
+        assertTrue(!iResults.hasNext());
+    }
+    
+    /** Test of searchVector(String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearchVector() throws Exception {
+        assertTrue(instance.searchVector("").size() >= NR_TEST_NODES);
+  
+        List results = null;
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            String value = TEST_NAME + i;
+            results = instance.searchVector("WHERE name<'" + value 
                 + "' AND name LIKE '" + TEST_NAME + "%' ORDER BY name DESC");
             assertTrue(results.size() == i);
         }
@@ -314,6 +337,18 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(constraint1.getValue().equals("v"));
         assertTrue(!constraint1.isInverse());
         
+        // AltaVista format.
+        query = instance.getSearchQuery("name=N'te*?t'");
+        assertTrue(query.getBuilder() == instance);
+        FieldValueConstraint constraint1b
+            = (FieldValueConstraint) query.getConstraint();
+        assertTrue(constraint1b != null);
+        assertTrue(constraint1b.getField() == query.getField(poolsName));
+        assertTrue(constraint1b.getOperator() 
+            == FieldCompareConstraint.NOT_EQUAL);
+        assertTrue(constraint1b.getValue().equals("te%_t"));
+        assertTrue(!constraint1b.isInverse());
+        
         // Other
         query = instance.getSearchQuery("WHERE ldlf kjd kjidji");
         assertTrue(query.getBuilder() == instance);
@@ -322,6 +357,88 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(constraint2.getConstraint().equals("ldlf kjd kjidji"));
     }
 
+    /** Test of getSearchQuery(String,String,String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testGetSearchQuery2() throws Exception {
+        // Empty constraint (without sortorders).
+        NodeSearchQuery query = instance.getSearchQuery(null, "", "");
+        assertTrue(query.getBuilder() == instance);
+        assertTrue(query.getConstraint() == null);
+        
+        // MMNODE expression (without sortorders).
+        query = instance.getSearchQuery("MMNODE name=Nv", "", "");
+        assertTrue(query.getBuilder() == instance);
+        FieldValueConstraint constraint1 
+            = (FieldValueConstraint) query.getConstraint();
+        assertTrue(constraint1 != null);
+        assertTrue(constraint1.getField() == query.getField(poolsName));
+        assertTrue(constraint1.getOperator() == FieldCompareConstraint.NOT_EQUAL);
+        assertTrue(constraint1.getValue().equals("v"));
+        assertTrue(!constraint1.isInverse());
+        
+        // AltaVista format (without sortorders).
+        query = instance.getSearchQuery("name=N'te*?t'");
+        assertTrue(query.getBuilder() == instance);
+        FieldValueConstraint constraint1b
+            = (FieldValueConstraint) query.getConstraint();
+        assertTrue(constraint1b != null);
+        assertTrue(constraint1b.getField() == query.getField(poolsName));
+        assertTrue(constraint1b.getOperator() 
+            == FieldCompareConstraint.NOT_EQUAL);
+        assertTrue(constraint1b.getValue().equals("te%_t"));
+        assertTrue(!constraint1b.isInverse());
+        
+        // Other (without sortorders).
+        query = instance.getSearchQuery("WHERE ldlf kjd kjidji", "", "");
+        assertTrue(query.getBuilder() == instance);
+        LegacyConstraint constraint2 = (LegacyConstraint) query.getConstraint();
+        assertTrue(constraint2 != null);
+        assertTrue(constraint2.getConstraint().equals("ldlf kjd kjidji"));
+        
+        // Test sortorders.
+        List sortOrders;
+        SortOrder so;
+        
+        query = instance.getSearchQuery(null, "number, name", "");
+        sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 2);
+        so = (SortOrder) sortOrders.get(0);
+        assertTrue(so.getField() == query.getField(poolsNumber));
+        assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
+        so = (SortOrder) sortOrders.get(1);
+        assertTrue(so.getField() == query.getField(poolsName));
+        assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
+        
+        query = instance.getSearchQuery(null, "number, name", "UP");
+        sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 2);
+        so = (SortOrder) sortOrders.get(0);
+        assertTrue(so.getField() == query.getField(poolsNumber));
+        assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
+        so = (SortOrder) sortOrders.get(1);
+        assertTrue(so.getField() == query.getField(poolsName));
+        assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
+        
+        query = instance.getSearchQuery(null, "number, name", "DOWN");
+        sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 2);
+        so = (SortOrder) sortOrders.get(0);
+        assertTrue(so.getField() == query.getField(poolsNumber));
+        assertTrue(so.getDirection() == SortOrder.ORDER_DESCENDING);
+        so = (SortOrder) sortOrders.get(1);
+        assertTrue(so.getField() == query.getField(poolsName));
+        assertTrue(so.getDirection() == SortOrder.ORDER_DESCENDING);
+        
+        query = instance.getSearchQuery(null, "number, name", "UP, DOWN");
+        sortOrders = query.getSortOrders();
+        assertTrue(sortOrders.size() == 2);
+        so = (SortOrder) sortOrders.get(0);
+        assertTrue(so.getField() == query.getField(poolsNumber));
+        assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
+        so = (SortOrder) sortOrders.get(1);
+        assertTrue(so.getField() == query.getField(poolsName));
+        assertTrue(so.getDirection() == SortOrder.ORDER_DESCENDING);
+    }
+    
     /** Test of parseFieldPart method, of class org.mmbase.module.core.MMObjectBuilder. */
     public void testParseFieldPart() throws Exception {
         NodeSearchQuery query = new NodeSearchQuery(instance);
@@ -430,6 +547,184 @@ public class MMObjectBuilderTest extends TestCase {
         }
     }
     
+    /** Test of searchNumbers(String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearchNumbers() throws Exception {
+
+        assertTrue(instance.searchNumbers("").size() >= NR_TEST_NODES);
+        
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            // Numbers retrieved by the method.
+            String value = TEST_NAME + i;
+            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            
+            // Numbers retrieved by query.
+            NodeSearchQuery query = new NodeSearchQuery(instance);
+            StepField field = query.getField(poolsName);
+            BasicFieldValueConstraint constraint 
+                = new BasicFieldValueConstraint(field, value);
+            constraint.setOperator(FieldValueConstraint.LESS);
+            query.setConstraint(constraint);
+            Iterator iResultNodes = mmbase.getDatabase()
+                .getNodes(query, new ResultBuilder(mmbase, query)).iterator();
+            List resultNumbers = new ArrayList();
+            while (iResultNodes.hasNext()) {
+                ResultNode resultNode = (ResultNode) iResultNodes.next();
+                resultNumbers.add(resultNode.getIntegerValue("number"));
+            }
+            
+            // Should contain same elements.
+            assertTrue(new HashSet(resultNumbers).
+                equals(new HashSet(numbers)));
+        }
+    }
+    
+    /** Test of searchVectorIn(String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearchVectorIn() throws Exception {
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            // Numbers retrieved by query.
+            String value = TEST_NAME + i;
+            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            
+            // Numbers retrieved by method.
+            Vector resultNumbers = new Vector();
+            Iterator iNodes 
+                = instance.searchVectorIn(toCSV(numbers)).iterator();
+            while (iNodes.hasNext()) {
+                MMObjectNode node = (MMObjectNode) iNodes.next();
+                resultNumbers.add(node.getIntegerValue("number"));
+            }
+            
+            // Should be equal.
+            assertTrue(resultNumbers.equals(numbers));
+        }
+    }
+  
+    /** Test of searchVectorIn(String,String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearchVectorIn2() throws Exception {
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            // Numbers retrieved by query.
+            String value = TEST_NAME + i;
+            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            
+            // Numbers retrieved by method.
+            Vector resultNumbers = new Vector();
+            Iterator iNodes = instance.searchVectorIn(
+                "WHERE name < '" + value + "'", toCSV(numbers)).iterator();
+            while (iNodes.hasNext()) {
+                MMObjectNode node = (MMObjectNode) iNodes.next();
+                resultNumbers.add(node.getIntegerValue("number"));
+            }
+            
+            // Should be equal.
+            assertTrue(resultNumbers.equals(numbers));
+
+            List nodes = instance.searchVectorIn(
+                "WHERE name >= '" + value + "'", toCSV(numbers));
+            assertTrue(nodes.size() == 0);
+        }
+    }
+  
+    /** Test of searchVectorIn(String,String,String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearchVectorIn3() throws Exception {
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            String value = TEST_NAME + i;
+
+            // Numbers retrieved by query.
+            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            
+            // Numbers retrieved by method.
+            List nodes = instance.searchVectorIn(
+                "WHERE name < '" + value + "'", "number", toCSV(numbers));
+            ListIterator iNodes = nodes.listIterator();
+            int indexNumbers = 0;
+            while (iNodes.hasNext()) {
+                MMObjectNode node = (MMObjectNode) iNodes.next();
+                Integer resultNumber = node.getIntegerValue("number");
+                iNodes.set(resultNumber);
+            }
+            
+            // Must contain same numbers.
+            assertTrue(nodes.containsAll(numbers));
+            assertTrue(numbers.containsAll(nodes));
+            
+            nodes = instance.searchVectorIn(
+                "WHERE name >= '" + value + "'", "number", toCSV(numbers));
+            assertTrue(nodes.size() == 0);
+        }
+    }
+  
+    /** Test of searchVectorIn(String,String,boolean,String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearchVectorIn4() throws Exception {
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            // Numbers retrieved by query.
+            String value = TEST_NAME + i;
+            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            // Sort ascending.
+            Collections.sort(numbers);
+            
+            // Numbers retrieved by method.
+            Iterator iNodes;
+            iNodes = instance.searchVectorIn(
+                "WHERE name < '" + value + "'", "number", true, toCSV(numbers))
+                .iterator();
+            int indexNumbers = 0;
+            while (iNodes.hasNext()) {
+                MMObjectNode node = (MMObjectNode) iNodes.next();
+                Integer resultNumber = node.getIntegerValue("number");
+                assertTrue(resultNumber.equals(numbers.get(indexNumbers++)));
+            }
+            
+            iNodes = instance.searchVectorIn(
+                "WHERE name < '" + value + "'", "number", false, toCSV(numbers))
+                .iterator();
+            indexNumbers = numbers.size() - 1;
+            while (iNodes.hasNext()) {
+                MMObjectNode node = (MMObjectNode) iNodes.next();
+                Integer resultNumber = node.getIntegerValue("number");
+                assertTrue(resultNumber.equals(numbers.get(indexNumbers--)));
+            }
+            
+            List nodes = instance.searchVectorIn(
+                "WHERE name >= '" + value + "'", "number", true, toCSV(numbers));
+            assertTrue(nodes.size() == 0);
+        }
+    }
+  
+    /** Test of search(String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testSearch() throws Exception {
+        List results = toList(instance.search(""));
+        assertTrue(results.size() >= NR_TEST_NODES);
+  
+        for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
+            String value = TEST_NAME + i;
+            results = toList(instance.search("WHERE name<'" + value 
+                + "' AND name LIKE '" + TEST_NAME + "%' ORDER BY name DESC"));
+            assertTrue(results.size() == i);
+        }
+        Iterator iResults = results.iterator();
+        Iterator iTestNodes = testNodes.iterator();
+        while (iTestNodes.hasNext()) {
+            MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+            MMObjectNode result = (MMObjectNode) iResults.next();
+            // In cache, so must be same instance.
+            assertTrue(areEqual(result, testNode));
+        }
+        assertTrue(!iResults.hasNext());
+    }
+  
+    /** Test of addNodesToQuery(NodeSearchQuery,String) method, of class org.mmbase.module.core.MMObjectBuilder. */
+    public void testAddNodesToQuery() throws Exception {
+        NodeSearchQuery query = new NodeSearchQuery(instance);
+        Step step = (Step) query.getSteps().get(0);
+        SortedSet numbers = new TreeSet();
+        for (int i = 0; i < 10; i++) {
+            instance.addNodesToQuery(query, toCSV(numbers));
+            SortedSet nodeNumbers = step.getNodes();
+            assertTrue(nodeNumbers.equals(numbers));
+            numbers.add(new Integer(i));
+        }
+    }
+  
     /**
      * Compares two nodes for equality, by comparing their type and all 
      * their fields.
@@ -448,5 +743,32 @@ public class MMObjectBuilderTest extends TestCase {
             }
         }
         return true;
+    }
+    
+    /**
+     * Creates comma-separated list of number values in collection.
+     */
+    private String toCSV(Collection values) {
+        StringBuffer sb = new StringBuffer();
+        Iterator iValues = values.iterator();
+        while (iValues.hasNext()) {
+            Number value = (Number) iValues.next();
+            sb.append(value);
+            if (iValues.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Creates list based on enumeration.
+     */
+    private List toList(Enumeration e) {
+        List result = new ArrayList();
+        while (e.hasMoreElements()) {
+            result.add(e.nextElement());
+        }
+        return result;
     }
 }

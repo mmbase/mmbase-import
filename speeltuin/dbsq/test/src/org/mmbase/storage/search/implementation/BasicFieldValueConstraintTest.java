@@ -9,7 +9,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicFieldValueConstraintTest extends TestCase {
     
@@ -106,8 +106,9 @@ public class BasicFieldValueConstraintTest extends TestCase {
         instance1.setValue(STRING_VALUE2);
         assertTrue(instance1.getValue().equals(STRING_VALUE2));
         assertTrue(!INTEGER_VALUE1.equals(INTEGER_VALUE2)); // Different test values!
-        instance2.setValue(INTEGER_VALUE2);
+        BasicFieldValueConstraint result = instance2.setValue(INTEGER_VALUE2);
         assertTrue(instance2.getValue().equals(INTEGER_VALUE2));
+        assertTrue(result == instance2);
     }
     
     /** Test of getValue method, of class org.mmbase.storage.search.implementation.BasicFieldValueConstraint. */

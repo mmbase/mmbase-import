@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
@@ -64,8 +64,9 @@ public class BasicSearchQueryTest extends TestCase {
         // Default is false.
         assertTrue(!instance1.isDistinct());
         
-        instance1.setDistinct(true);
+        BasicSearchQuery result = instance1.setDistinct(true);
         assertTrue(instance1.isDistinct());
+        assertTrue(result == instance1);
     }
     
     /** Test of setMaxNumber method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
@@ -73,8 +74,9 @@ public class BasicSearchQueryTest extends TestCase {
         // Default is max integer value.
         assertTrue(instance1.getMaxNumber() == -1);
         
-        instance1.setMaxNumber(12345);
+        BasicSearchQuery result = instance1.setMaxNumber(12345);
         assertTrue(instance1.getMaxNumber() == 12345);
+        assertTrue(result == instance1);
         
         // Value less than -1, should throw IllegalArgumentException.
         try {
@@ -94,8 +96,9 @@ public class BasicSearchQueryTest extends TestCase {
             fail("Invalid offset, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
-        instance1.setOffset(123456);
+        BasicSearchQuery result = instance1.setOffset(123456);
         assertTrue(instance1.getOffset() == 123456);
+        assertTrue(result == instance1);
     }
     
     /** Test of addStep method, of class org.mmbase.storage.search.implementation.BasicSearchQuery. */
@@ -402,8 +405,8 @@ public class BasicSearchQueryTest extends TestCase {
         + ", max:" + instance1.getMaxNumber()
         + ", offset:" + instance1.getOffset() + ")"));
 
-        instance1.setMaxNumber(100);
-        instance1.setOffset(50);
+        instance1.setMaxNumber(100)
+            .setOffset(50);
         assertTrue(instance1.toString(),
         instance1.toString().equals(
         "SearchQuery(distinct:" + instance1.isDistinct()

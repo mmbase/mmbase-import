@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicRelationStep extends BasicStep implements RelationStep {
@@ -61,9 +61,10 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
      * @param directionality The directionality.
      * Must be one of the values defined in <code>
      * {@link org.mmbase.storage.search.RelationStep RelationStep}.</code>
+     * @return This <code>BasicRelationStep</code> instance.
      * @throws IllegalArgumentException when an invalid argument is supplied.
      */
-    public void setDirectionality(int directionality) {
+    public BasicRelationStep setDirectionality(int directionality) {
         if (directionality != RelationStep.DIRECTIONS_SOURCE
         && directionality != RelationStep.DIRECTIONS_DESTINATION
         && directionality != RelationStep.DIRECTIONS_BOTH) {
@@ -71,6 +72,7 @@ public class BasicRelationStep extends BasicStep implements RelationStep {
             "Invalid directionality value: " + directionality);
         }
         this.directionality = directionality;
+        return this;
     }
     
     // javadoc is inherited
