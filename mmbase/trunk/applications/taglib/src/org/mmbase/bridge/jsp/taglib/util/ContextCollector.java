@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.8 2004-09-14 17:53:28 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.9 2004-12-10 19:05:36 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
@@ -67,7 +67,7 @@ public class  ContextCollector  {
     }
 
 
-    private class Container extends ContextContainer {
+    private class Container extends StandaloneContextContainer {
         Container(ContextContainer parent) {
             super(null, parent);
         }
