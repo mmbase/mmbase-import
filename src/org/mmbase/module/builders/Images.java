@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.94 2004-03-10 18:19:58 michiel Exp $
+ * @version $Id: Images.java,v 1.95 2004-05-06 12:34:44 keesj Exp $
  */
 public class Images extends AbstractImages {
 
@@ -447,6 +447,7 @@ public class Images extends AbstractImages {
      *
      * @param params The name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer}
+     * @since MMBase-1.7
      */
     public ByteFieldContainer getImageContainer(List params) {
         ByteFieldContainer data = getCachedImageContainer(params);
@@ -504,6 +505,7 @@ public class Images extends AbstractImages {
      * representing the picture..
      * @param params a <code>List</code> of <code>String</code>s, containing the name/id of the picture, followed by operations, which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer} object
+     * @since MMBase-1.7
      */
     protected ByteFieldContainer getCachedImageContainer(List params) {
         // get a connection to the cache module
@@ -539,6 +541,7 @@ public class Images extends AbstractImages {
      *                containing the name/id of the picture, followed by operations,
      *                which can be performed on the picture..
      * @return null if something goes wrong, otherwise the picture in a @link{ ByteFieldContainer} object
+     * @since MMBase-1.7
      */
     protected ByteFieldContainer createCachedImageContainer(List params) {
         if (log.isServiceEnabled()) {

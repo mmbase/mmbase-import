@@ -33,6 +33,7 @@ public class XMLModuleReader extends XMLBasicReader {
     /**
      * Register the Public Ids for DTDs used by XMLModuleReader
      * This method is called by XMLEntityResolver.
+     * @since MMBase-1.7
      */
     public static void registerPublicIDs() {
         // various builder dtd versions
@@ -99,6 +100,7 @@ public class XMLModuleReader extends XMLBasicReader {
     /**
      * get the optional resource url for the module
      * @return the url of the resource or null if no url was defined
+     * @since MMBase-1.7
      **/
     public String getURLString(){
         Element e = getElementByPath("module.url");

@@ -17,9 +17,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: MultilevelCache.java,v 1.5 2003-08-29 12:12:27 keesj Exp $
+ * @version $Id: MultilevelCache.java,v 1.6 2004-05-06 12:34:45 keesj Exp $
  * @see   org.mmbase.bridge.implementation.BasicCloud#getList
  * @todo  It is odd that this one query cache is called in the bridge implementation and not in the core.
+ * @since MMBase-1.7
  */
 
 // This used to be implemented in MultilevelCacheHandler, MultilevelCacheEntry and

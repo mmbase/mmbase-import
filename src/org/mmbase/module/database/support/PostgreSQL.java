@@ -42,7 +42,8 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.5 2004-02-09 13:50:37 pierre Exp $
+ * @version $Id: PostgreSQL.java,v 1.6 2004-05-06 12:34:42 keesj Exp $
+ * @since MMBase-1.7
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL72.class.getName());

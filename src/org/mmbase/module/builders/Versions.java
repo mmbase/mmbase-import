@@ -20,7 +20,7 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.11 2004-04-13 13:50:28 keesj Exp $
+ * @version $Id: Versions.java,v 1.12 2004-05-06 12:34:45 keesj Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -42,6 +42,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      * @param type the type of tye component we want to get information about (application/builder)
      * @return the node that contains version information about "name", "type" or null if no version information is avaiable
      * @throws SearchQueryException
+     * @since MMBase-1.7
      */
     public MMObjectNode getVersionNode(String name, String type) throws SearchQueryException {
         MMObjectNode retval = null;

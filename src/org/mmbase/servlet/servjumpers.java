@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servjumpers
  * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.19 2004-05-04 09:43:24 keesj Exp $
+ * @version $Id: servjumpers.java,v 1.20 2004-05-06 12:34:39 keesj Exp $
  * @see    JumpersFilter
  */
 public class servjumpers extends JamesServlet {
@@ -69,6 +69,7 @@ public class servjumpers extends JamesServlet {
      * Retrieve an alternate url based on a jumper key.
      * @param key the jumper key (original url specified)
      * @return the alternate yurl, or <code>null</code> if no url was found.
+     * @since MMBase-1.7
      */
     protected String getUrl(String key) {
         String url = null;
