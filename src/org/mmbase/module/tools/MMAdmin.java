@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.87 2004-10-11 11:08:51 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.88 2004-10-25 08:08:39 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -119,7 +119,7 @@ public class MMAdmin extends ProcessorModule {
      * Generate a list of values from a command to the processor
      * @javadoc
      */
-    public Vector getList(PageContext sp, StringTagger tagger, String value) {
+    public Vector getList(PageInfo sp, StringTagger tagger, String value) {
         String line = Strip.DoubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
@@ -177,14 +177,14 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private boolean checkAdmin(PageContext sp, String cmd) {
+    private boolean checkAdmin(PageInfo sp, String cmd) {
         return checkUserLoggedOn(sp, cmd, true);
     }
 
     /**
      * @javadoc
      */
-    private boolean checkUserLoggedOn(PageContext sp, String cmd, boolean adminonly) {
+    private boolean checkUserLoggedOn(PageInfo sp, String cmd, boolean adminonly) {
 
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
         // there is some user with rank Administrator in the session...
@@ -212,7 +212,7 @@ public class MMAdmin extends ProcessorModule {
      * Execute the commands provided in the form values
      * @javadoc
      */
-    public boolean process(PageContext sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
         String cmdline, token;
 
         for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
@@ -338,7 +338,7 @@ public class MMAdmin extends ProcessorModule {
      * Handle a $MOD command
      * @javadoc
      */
-    public String replace(PageContext sp, String cmds) {
+    public String replace(PageInfo sp, String cmds) {
         if (!checkUserLoggedOn(sp, cmds, false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {

@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.security.Operation;
-import org.mmbase.util.PageContext;
+import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
@@ -38,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.81 2004-10-12 09:43:36 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.82 2004-10-25 08:08:35 pierre Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -395,7 +395,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
         MMObjectBuilder builder=getMMObjectBuilder();
         StringTokenizer tokens= new StringTokenizer(command,"-");
-        return builder.replace(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),tokens);
+        return builder.replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),tokens);
     }
 
     public NodeList getList(String command, Map parameters){
@@ -419,7 +419,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         }
         try {
             StringTokenizer tokens= new StringTokenizer(command,"-");
-            Vector v=builder.getList(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),params,tokens);
+            Vector v=builder.getList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),params,tokens);
             if (v==null) { v=new Vector(); }
             int items=1;
             try {

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.33 2004-10-11 11:08:47 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.34 2004-10-25 08:08:37 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -360,7 +360,7 @@ public class DayMarkers extends MMObjectBuilder {
      * COUNTNEXTDELTAMONTH-X-Y gets an object number of X+Y months after 1970
      * TIMETOOBJECTNUMBER gets an object number of X seconds after 1970
      **/
-    public String replace(PageContext sp, StringTokenizer command) {
+    public String replace(PageInfo sp, StringTokenizer command) {
         String rtn="";
         int ival;
         if (command.hasMoreTokens()) {

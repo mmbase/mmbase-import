@@ -32,7 +32,7 @@ public interface ProcessorInterface  {
     /**
      * Generate a list of values from a command to the processor.
      * The values are grouped into nodes.
-     * @param context the context of the page or calling application (currently, this should be a PageContext object)
+     * @param context the context of the page or calling application (currently, this should be a PageInfo object)
      * @param command the list command to execute.
      * @param params contains the attributes for the list
      * @return a <code>Vector</code> that contains the list values contained in MMObjectNode objects
@@ -45,7 +45,7 @@ public interface ProcessorInterface  {
      * @param tagger contains the attributes for the list
      * @param command the list command to execute.
      */
-    public Vector getList(PageContext context, StringTagger tagger, String value);
+    public Vector getList(PageInfo context, StringTagger tagger, String value);
 
     /**
      * Execute the commands provided in the form values.
@@ -53,27 +53,27 @@ public interface ProcessorInterface  {
      * @param cmds contains the list of commands to run
      * @param vars contains the attributes for the process
      */
-    public boolean process(PageContext context, Hashtable cmds, Hashtable vars);
+    public boolean process(PageInfo context, Hashtable cmds, Hashtable vars);
 
     /**
      * Replace a command by a string.
      * @param sp the page context
      * @param command the command to execute.
      */
-    public String replace (PageContext context, String command);
+    public String replace (PageInfo context, String command);
 
     /**
      * Replace a command by a string.
      * @param sp the page context
      * @param command the command to execute
      */
-    public String replace (PageContext context, StringTagger command);
+    public String replace (PageInfo context, StringTagger command);
 
     /**
      * Do a cache check (304) for this request.
      * @param sp the page context
      * @param command the command to execute.
      */
-    public boolean cacheCheck(PageContext context, String command);
+    public boolean cacheCheck(PageInfo context, String command);
 }
 

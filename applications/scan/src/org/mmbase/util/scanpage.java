@@ -36,9 +36,9 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN, this class will be troubelsome to move as it is used in MMObjectBuilder and ProcessorModule
  * @rename ScanPage
  * @author Daniel Ockeloen
- * @version $Id: scanpage.java,v 1.27 2004-10-11 11:17:06 pierre Exp $
+ * @version $Id: scanpage.java,v 1.28 2004-10-25 08:08:35 pierre Exp $
  */
-public class scanpage extends PageContext {
+public class scanpage extends PageInfo {
     // logger
     private static Logger log = Logging.getLoggerInstance(scanpage.class.getName());
 

@@ -52,9 +52,9 @@ public class ProcessorModule extends Module implements ProcessorInterface {
                 }
             }
         }
-        PageContext sp = null;
-        if (context instanceof PageContext) {
-            sp = (PageContext)context;
+        PageInfo sp = null;
+        if (context instanceof PageInfo) {
+            sp = (PageInfo)context;
         }
         Vector v = getList(sp,tagger,command);
         int items=1;
@@ -79,21 +79,21 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     /**
      * {@inheritDoc}
      **/
-    public Vector  getList(PageContext sp,StringTagger params, String command) {
+    public Vector  getList(PageInfo sp,StringTagger params, String command) {
         throw new UnsupportedOperationException("Module " + this.getClass().getName() + " does not implement LIST");
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean process(PageContext sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      **/
-    public String replace (PageContext sp, String command) {
+    public String replace (PageInfo sp, String command) {
         return "This module doesn't implement this processor call";
     }
 
@@ -101,14 +101,14 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * {@inheritDoc}
      * who the hell uses this (daniel)
      **/
-    public String replace (PageContext sp, StringTagger command) {
+    public String replace (PageInfo sp, StringTagger command) {
         return "This module doesn't implement this processor call";
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean cacheCheck(PageContext sp, String cmd) {
+    public boolean cacheCheck(PageInfo sp, String cmd) {
         return false;
     }
 
