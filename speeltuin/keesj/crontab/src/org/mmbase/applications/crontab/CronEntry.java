@@ -12,18 +12,18 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Defines one entry for JCronDaemon.
+ * Defines one entry for CronDaemon.
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.1 2004-05-04 09:00:03 keesj Exp $
+ * @version $Id: CronEntry.java,v 1.2 2004-05-04 09:32:49 keesj Exp $
  */
 
 public class CronEntry {
 
     private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
     
-    private Runnable jCronJob;
+    private Runnable cronJob;
 
     private Thread thread;
 
@@ -52,7 +52,7 @@ public class CronEntry {
             this.name = "";
         this.className = className;
         this.cronTime = cronTime;
-        jCronJob = (Runnable)Class.forName(className).newInstance();
+        cronJob = (Runnable)Class.forName(className).newInstance();
 
         second = new CronEntryField();
         minute = new CronEntryField();
@@ -64,14 +64,14 @@ public class CronEntry {
     }
 
     public void init() {
-        if (jCronJob instanceof CronJob) {
-            ((CronJob)jCronJob).init(this);
+        if (cronJob instanceof CronJob) {
+            ((CronJob)cronJob).init(this);
         }
     }
     
     public void stop() {
-        if (jCronJob instanceof CronJob) {
-            ((CronJob)jCronJob).stop();
+        if (cronJob instanceof CronJob) {
+            ((CronJob)cronJob).stop();
         }
     }
 
@@ -84,7 +84,7 @@ public class CronEntry {
             return false;
         } else {
             count++;
-            thread = new ExceptionLoggingThread(jCronJob, "JCronJob " + toString());
+            thread = new ExceptionLoggingThread(cronJob, "JCronJob " + toString());
             thread.setDaemon(true);
             thread.start();
             return true;
