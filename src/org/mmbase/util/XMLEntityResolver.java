@@ -34,7 +34,7 @@ import org.xml.sax.SAXException;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.41 2004-11-11 17:51:23 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.42 2005-01-20 17:03:47 michiel Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -63,7 +63,7 @@ public class XMLEntityResolver implements EntityResolver {
             return file;
         }
         InputStream getAsStream() {
-            if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + getResource() + " of " + clazz.getName());
+            if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + getResource() + " of " + clazz.getName());
             return clazz.getResourceAsStream(getResource());
         }
 
@@ -94,9 +94,9 @@ public class XMLEntityResolver implements EntityResolver {
         if (log.isDebugEnabled()) log.debug("publicIDtoResource: " + publicID + " " + dtd + c.getName());
     }
 
-    private String dtdpath;
+    private String definitionPath;
 
-    private boolean hasDTD; // tells whether or not a DTD is set - if not, no validition can take place
+    private boolean hasDefinition; // tells whether or not a DTD/XSD is set - if not, no validition can take place
 
     private boolean  validate;
     private Class    resolveBase;
@@ -115,14 +115,14 @@ public class XMLEntityResolver implements EntityResolver {
     }
 
     public XMLEntityResolver(boolean v, Class base) {
-        hasDTD      = false;
-        dtdpath     = null;
+        hasDefinition      = false;
+        definitionPath     = null;
         validate    = v;
         resolveBase = base;
     }
 
     /**
-     * takes the systemId and returns the local location of the dtd
+     * takes the systemId and returns the local location of the dtd/xsd
      */
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 
@@ -130,17 +130,22 @@ public class XMLEntityResolver implements EntityResolver {
             log.debug("resolving PUBLIC " + publicId + " SYSTEM " + systemId);
         }
 
-        InputStream dtdStream = null;
+        InputStream definitionStream = null;
         // first try with publicID
         if (publicId != null) {
             Resource res = (Resource) publicIDtoResource.get(publicId);
             if (res != null) {
-                dtdStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
-                if (dtdStream == null) dtdStream = res.getAsStream();
+                definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("dtd/" + res.getFileName());
+                if (definitionStream == null) { 
+                    definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream("xsd/" + res.getFileName());
+                }
+                if (definitionStream == null) { 
+                    definitionStream = res.getAsStream();
+                }
             }
         }
 
-        if (dtdStream == null) { // not succeeded with publicid, go trying with systemId
+        if (definitionStream == null) { // not succeeded with publicid, go trying with systemId
             //does systemId contain a mmbase-dtd
             if ((systemId == null) || (! systemId.startsWith("http://www.mmbase.org/"))) {
                 if (! validate) {
@@ -152,16 +157,16 @@ public class XMLEntityResolver implements EntityResolver {
             } else {
                 String mmResource = systemId.substring(22);
                 // first, try MMBase config directory (if initialized)
-                dtdStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
-                if (dtdStream == null) {
+                definitionStream = ResourceLoader.getConfigurationRoot().getResourceAsStream(mmResource);
+                if (definitionStream == null) {
                     Class base = resolveBase; // if resolveBase was specified, use that.
                     Resource res = null;
                     if (base != null) {
                         res = new Resource(base, mmResource.substring(4));
                     }
                     if (res != null) {
-                        dtdStream = res.getAsStream();
-                        if (dtdStream == null) {
+                        definitionStream = res.getAsStream();
+                        if (definitionStream == null) {
                             log.warn("Could not find " + res.getResource() + " in " + base.getName() + ", falling back to " + MMRESOURCES);
                             base = null; // try it in org.mmbase.resources too.
                         }
@@ -169,12 +174,12 @@ public class XMLEntityResolver implements EntityResolver {
 
                     if (base == null) {
                         String resource = MMRESOURCES + mmResource;
-                        if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource);
-                        dtdStream = getClass().getResourceAsStream(resource);
+                        if (log.isDebugEnabled()) log.debug("Getting document definition as resource " + resource);
+                        definitionStream = getClass().getResourceAsStream(resource);
                     }
                 }
-                if (dtdStream == null) {
-                    log.error("Could not find MMBase dtd '" + mmResource + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
+                if (definitionStream == null) {
+                    log.error("Could not find MMBase documention definition '" + mmResource + "' (did you make a typo?), returning null, system id will be used (needing a connection, or put in config dir)");
                     // not sure, probably should return 'null' after all, then it will be resolved with internet.
                     // but this can not happen, in fact...
                     //return new InputSource(new StringReader(""));
@@ -184,24 +189,24 @@ public class XMLEntityResolver implements EntityResolver {
             }
         }
 
-        hasDTD = true;
-        InputStreamReader dtdInputStreamReader = new InputStreamReader(dtdStream);
-        InputSource dtdInputSource = new InputSource();
-        dtdInputSource.setCharacterStream(dtdInputStreamReader);
-        return dtdInputSource;
+        hasDefinition = true;
+        InputStreamReader definitionInputStreamReader = new InputStreamReader(definitionStream);
+        InputSource definitionInputSource = new InputSource();
+        definitionInputSource.setCharacterStream(definitionInputStreamReader);
+        return definitionInputSource;
     }
 
     /**
      * @return whether the resolver has determiend a DTD
      */
     public boolean hasDTD() {
-        return hasDTD;
+        return hasDefinition;
     }
 
     /**
      * @return The actually used path to the DTD
      */
     public String getDTDPath() {
-        return this.dtdpath;
+        return definitionPath;
     }
 }
