@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.54 2004-06-24 12:59:01 mark Exp $
+ * @version  $Id: editwizard.jsp,v 1.55 2004-09-08 18:04:13 robmaris Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -33,7 +33,7 @@ function doOnLoad_ew() {
           var dttype = superElement.getAttribute("dttype");
           var ftype = superElement.getAttribute("ftype");
           var id = superElement.name;
-          
+
           if (dttype == "datetime") {
             if (superElement.getAttribute("new") == "true") {
               var d = new Date();
@@ -62,7 +62,7 @@ function doOnLoad_ew() {
             }
           }
         }
-        
+
         //handle complex data types
         var dttype = elem.getAttribute("dttype");
         var ftype = elem.getAttribute("ftype");
@@ -168,16 +168,16 @@ function doSearch(el, cmd, sessionkey) {
         if (fieldname.indexOf(".")==-1 && lastobject!="") fieldname = lastobject+"."+fieldname;
 
         if (searchtype=="string") {
-            constraints += fieldname+" = '%25"+searchterm+"%25'";
+            constraints += fieldname+" = '%"+searchterm+"%'";
         } else if (searchtype=="like") {
             var commaloc = fieldname.indexOf(',');
             while (commaloc > -1) {
                var tmpfield = fieldname.substring(0, commaloc);
                fieldname = fieldname.substring(commaloc + 1, fieldname.length);
-               constraints += "LOWER("+tmpfield+") LIKE '%25"+searchterm+"%25' OR ";
+               constraints += "LOWER("+tmpfield+") LIKE '%"+searchterm+"%' OR ";
                commaloc = fieldname.indexOf(',');
             }
-            constraints += "LOWER("+fieldname+") LIKE '%25"+searchterm+"%25'";
+            constraints += "LOWER("+fieldname+") LIKE '%"+searchterm+"%'";
         } else {
             if (searchterm=="") searchterm="0";
             if (searchtype=="greaterthan") {
@@ -206,7 +206,7 @@ function doSearch(el, cmd, sessionkey) {
     var url="<%= response.encodeURL("list.jsp")%>?proceed=true&popupid=search&replace=true&referrer=<%=java.net.URLEncoder.encode(request.getParameter("referrer"),"UTF-8")%>&template=xsl/searchlist.xsl&nodepath="+nodepath+"&fields="+fields+"&pagelength=10&language=<%=request.getParameter("language")%>&country=<%=request.getParameter("country")%>&timezone=<%=request.getParameter("timezone")%>";
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
-    url += setParam("constraints", constraints);
+    url += setParam("constraints", encodeURI(constraints));
     url += setParam("orderby", orderby);
     url += setParam("directions", directions);
     url += setParam("distinct", distinct);
