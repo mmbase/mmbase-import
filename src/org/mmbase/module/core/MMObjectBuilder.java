@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.116 $ $Date: 2002-02-21 09:58:21 $
+ * @version $Revision: 1.117 $ $Date: 2002-02-21 15:57:43 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -400,7 +400,7 @@ public class MMObjectBuilder extends MMTable {
      * Commit changes to this node to the database. This method indirectly calls {@link #preCommit}.
      * Use only to commit changes - for adding node, use {@link #insert}.
      * @param node The node to be committed
-     * @return The committed node.
+     * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
         return database.commit(this,node);
