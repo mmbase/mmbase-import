@@ -27,7 +27,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.7 2003-02-07 14:19:20 rob Exp $
+ * @version $Id: URLComposer.java,v 1.8 2003-02-11 23:16:12 michiel Exp $
  */
 
 public class URLComposer  {
@@ -63,7 +63,7 @@ public class URLComposer  {
 
     /**
      * Returns true. This can be overridden if the URLComposer not
-     * always can do it's job. It this returns false it is (can be?)
+     * always can do it's job. It then returns false if it is (can be?)
      * taken from consideration.
      */
     

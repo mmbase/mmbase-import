@@ -18,10 +18,10 @@ import java.text.*;
 
 
 /**
- * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
+ * An example. Produces an URL to the omroep cgi-scripts (for real and wm)
  *
  * @author Michiel Meeuwissen
- * @version $Id: OmroepcgiURLComposer.java,v 1.2 2003-02-05 15:05:27 michiel Exp $
+ * @version $Id: OmroepcgiURLComposer.java,v 1.3 2003-02-11 23:16:11 michiel Exp $
  * @since MMBase-1.7
  */
 public class OmroepcgiURLComposer extends RamURLComposer {
@@ -35,51 +35,42 @@ public class OmroepcgiURLComposer extends RamURLComposer {
         Format format = super.getFormat();
         if (provider.getStringValue("rootpath").startsWith("/cgi-bin")) {
             if (format == Format.RM)  return Format.RAM;
+            if (format == Format.RA)  return Format.RAM;
             if (format == Format.ASF) return Format.WMP;                
         }
         
         return format;
     }
 
+    /**
+     * Host must be cgi.omroep.nl
+     */
     public boolean canCompose() {
         return provider.getStringValue("host").equals("cgi.omroep.nl");
     }
 
-    private int removePrefix(String url, StringBuffer args) {
-        int lastSlash = url.lastIndexOf('/');
-        String existingPrefix = url.substring(lastSlash + 1, lastSlash + 4);
+
+    /**
+     * Add the url to the buffer, but first remove the sb. or bb. prefix if it is in it already.
+     */
+    static int addURL(StringBuffer buf, String url) {
+        int length    = buf.length();
+        buf.append(url);
+        int lastSlash = length + url.lastIndexOf('/');
+        String existingPrefix = buf.substring(lastSlash + 1, lastSlash + 4);
         if (existingPrefix.equals("sb.") || existingPrefix.equals("bb.")) { // remove existing prefix.
-            args.delete(lastSlash + 1, lastSlash + 4);
+            buf.delete(lastSlash, lastSlash + 3); 
         }
         return lastSlash;
     }
-    
+
     protected StringBuffer getURLBuffer() {
-        String url      = source.getStringValue("url");
-        String rootpath = provider.getStringValue("rootpath");
-        String host = provider.getStringValue("host");
-        
-        StringBuffer args = new StringBuffer(source.getStringValue("url"));
-        
-        if (rootpath.startsWith("/cgi-bin")) {
-            removePrefix(url, args);
-        }
-                      
-            
-            
-        if (rootpath.startsWith("%")) {
-            int lastSlash =  removePrefix(url, args);
-            String insert = rootpath.substring(1);
-            args.insert(lastSlash + 1, insert + ".");
-        } else {
-            args.insert(0, rootpath);
-        }
-        if (getFormat() == Format.RM || host.equals("cgi.omroep.nl")) {
-            RealURLComposer.getRMArgs(args, fragment);
-        }
-        args.insert(0,  provider.getStringValue("protocol") + "://" + host);
-        return args;
+        StringBuffer buff = new StringBuffer(provider.getStringValue("protocol") + "://cgi.omroep.nl" + provider.getStringValue("rootpath"));
+        addURL(buff, source.getStringValue("url"));
+        RealURLComposer.getRMArgs(buff, fragment); // append time, title, als
+        return buff;            
     }
+
 }
 
 

@@ -19,7 +19,7 @@ import java.util.Hashtable;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: FragmentURLComposer.java,v 1.5 2003-02-05 11:50:30 michiel Exp $
+ * @version $Id: FragmentURLComposer.java,v 1.6 2003-02-11 23:16:11 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -30,6 +30,8 @@ abstract public class FragmentURLComposer extends URLComposer  {
         super(provider, source, info);
         this.fragment = fragment;
     }
+
+    public MMObjectNode getFragment()   { return fragment; }
 
     public boolean      isAvailable() { 
         Boolean fragmentAvailable;
