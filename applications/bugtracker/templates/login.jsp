@@ -19,8 +19,8 @@
      <mm:constraint field="password" referid="cw"/>
      <mm:maxnumber value="1"/>
      <mm:listnodes >
-      <mm:field id="user" name="number" write="false" jspvar="user">
-         <% request.setAttribute("user",user); %>
+      <mm:field id="user" name="number" write="false" jspvar="userfield">
+         <% request.setAttribute("user",userfield); %>
       </mm:field>
     </mm:listnodes>
     </mm:listnodescontainer>
@@ -28,8 +28,8 @@
 </mm:present>
 <mm:present referid="user">
   <mm:list path="users,groups" nodes="$user" constraints="groups.name='BugTrackerCommitors'" max="1">
-    <mm:field id="commitor" write="false" name="users.number"  jspvar="commitor">
-         <% request.setAttribute("commitor",commitor); %>
+    <mm:field id="commitor" write="false" name="users.number"  jspvar="commitorfield">
+         <% request.setAttribute("commitor",commitorfield); %>
     </mm:field>
   </mm:list>
 </mm:present>
