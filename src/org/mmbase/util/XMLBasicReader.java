@@ -1,11 +1,11 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
 */
 package org.mmbase.util;
 
@@ -40,21 +40,23 @@ public class XMLBasicReader  {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+            EntityResolver resolver = new XMLEntityResolver();
+            parser.setEntityResolver(resolver);
             parser.parse(filename);
             document = parser.getDocument();
 
-	} catch(Exception e) {
-	    e.printStackTrace();
-	}
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
-    
+
     /**
      * @param path Dot-separated list of tags describing path from root element to requested element. 
      *             NB the path starts with the name of the root element.
      * @return Leaf element of the path
      */
     public Element getElementByPath(String path) {
-	return getElementByPath(document.getDocumentElement(),path);
+        return getElementByPath(document.getDocumentElement(),path);
     }
 
     /**
@@ -64,32 +66,32 @@ public class XMLBasicReader  {
      * @return Leaf element of the path
      */
     public Element getElementByPath(Element e,String path) {
-	StringTokenizer st = new StringTokenizer(path,".");
-	if (!st.hasMoreTokens()) {
-	    // faulty path
-	    System.err.println("no tokens in path");
-	} else {
-	    String root = st.nextToken();
-	    if (!e.getNodeName().equals(root)) {
-		// path should start with document root element
-		System.err.println("path ["+path+" doesn't start with root element");
-	    } else {
-		while (st.hasMoreTokens()) {
-		    String tag = st.nextToken();
-		    NodeList nl = e.getElementsByTagName(tag);
-		    if (nl.getLength()>0) {
-			e = (Element)nl.item(0);
-		    } else {
-			// Handle error!
-			System.err.println("No subelements found in "+e.getTagName());
-			return null;
-		    }
-		}
-	    }
-	    return e;
-	}
-	System.err.println("failed miserably");
-	return null;
+        StringTokenizer st = new StringTokenizer(path,".");
+        if (!st.hasMoreTokens()) {
+            // faulty path
+            System.err.println("no tokens in path");
+        } else {
+            String root = st.nextToken();
+            if (!e.getNodeName().equals(root)) {
+                // path should start with document root element
+                System.err.println("path ["+path+" doesn't start with root element");
+            } else {
+                while (st.hasMoreTokens()) {
+                    String tag = st.nextToken();
+                    NodeList nl = e.getElementsByTagName(tag);
+                    if (nl.getLength()>0) {
+                        e = (Element)nl.item(0);
+                    } else {
+                        // Handle error!
+                        //System.err.println("No subelements found in "+e.getTagName());
+                        return null;
+                    }
+                }
+            }
+            return e;
+        }
+        System.err.println("failed miserably");
+        return null;
     }
 
     /**
@@ -97,26 +99,26 @@ public class XMLBasicReader  {
      * @return Text value of element
      */
     public String getElementValue(Element e) {
-	if (e == null) {
-	    return "";
-	} else {
-	    NodeList nl = e.getChildNodes();
-	    for (int i=0;i<nl.getLength();i++) {
-		Node n = nl.item(i);
-		if (n.getNodeType() == n.TEXT_NODE) {
-		    return n.getNodeValue();
-		}
-	    }
-	    return "";
-	}
+        if (e == null) {
+            return "";
+        } else {
+            NodeList nl = e.getChildNodes();
+            for (int i=0;i<nl.getLength();i++) {
+                Node n = nl.item(i);
+                if (n.getNodeType() == n.TEXT_NODE) {
+                    return n.getNodeValue();
+                }
+            }
+            return "";
+        }
     }
-    
+
     /**
      * @param e Element
      * @return Tag name of the element
      */
     public String getElementName(Element e) {
-	return e.getTagName();
+        return e.getTagName();
     }
 
     /**
@@ -125,9 +127,9 @@ public class XMLBasicReader  {
      * @return Value of attribute
      */
     public String getElementAttributeValue(Element e, String attr) {
-	Node n = e.getAttributes().getNamedItem(attr);
-	// XXX Add errorchecking
-	return n.getNodeValue();
+        Node n = e.getAttributes().getNamedItem(attr);
+        // XXX Add errorchecking
+        return n.getNodeValue();
     }
 
     /**
@@ -135,17 +137,17 @@ public class XMLBasicReader  {
      * @return Enumeration of child elements
      */
     public Enumeration getChildElements(Element e) {
-	Vector v = new Vector();
-	NodeList nl = e.getChildNodes();
-	for (int i=0;i<nl.getLength();i++) {
-	    Node n = nl.item(i);
-	    if (n.getNodeType() == n.ELEMENT_NODE) {
-		v.addElement(n);
-	    }
-	}
-	return v.elements();
+        Vector v = new Vector();
+        NodeList nl = e.getChildNodes();
+        for (int i=0;i<nl.getLength();i++) {
+            Node n = nl.item(i);
+            if (n.getNodeType() == n.ELEMENT_NODE) {
+                v.addElement(n);
+            }
+        }
+        return v.elements();
     }
-    
+
 }
 
 
