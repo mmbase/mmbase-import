@@ -7,7 +7,7 @@
   the changes are persistent then)
 
   @since   MMBase-1.6
-  @version $Id: caches.xml,v 1.10 2005-02-07 16:03:47 keesj Exp $
+  @version $Id: caches.xml,v 1.11 2005-02-09 08:38:16 pierre Exp $
   @author  Michiel Meeuwissen
 
 -->
@@ -70,7 +70,7 @@
   -->
   <cache name="TypeCache">
     <status>active</status>
-    <size>100000</size>
+    <size>20000</size>
   </cache>
 
   <!-- ================================================================================
@@ -112,7 +112,7 @@
   <!-- Small image handles are caches as well -->
   <cache name="ImageHandles">
     <status>active</status>
-    <size>129</size>
+    <size>128</size>
   </cache>
 
   <!-- ================================================================================
