@@ -25,7 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
-# $Id: modules,v 1.20 2003-03-06 13:42:52 michiel Exp $
+# $Id: modules,v 1.21 2003-03-06 16:50:08 michiel Exp $
 
 
 # mmbase source only
@@ -40,7 +40,10 @@ config config
 # docbook documentation
 documentation documentation
 
-# testing, unofficial things
+# Testing
+tests tests
+
+# unofficial things
 speeltuin speeltuin
 
 
