@@ -9,6 +9,7 @@
 
 <mm:compare referid="context" value="new">
   <mm:remove referid="context" />
+  <mm:import id="wasnew" />
   <mm:createnode id="context" type="mmbasecontexts" />
 </mm:compare>
 
@@ -19,23 +20,63 @@
        <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
    </mm:maywrite>
-   <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
-   <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
-     <mm:listnodes id="thisgroup"  type="mmbasegroups">
-       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-       <mm:stringlist referid="operations">
-         <mm:param name="operation"><mm:write /></mm:param>
-         <mm:import id="right" externid="$_:$thisgroup" />
-         <mm:compare referid="right" value="on">
-            <mm:function write="false" node="currentcontext" name="grant" />
-         </mm:compare>
-         <mm:compare referid="right" value="on" inverse="true">
+   <mm:present referid="wasnew">
+     <mm:import externid="creategroup" /> 
+     <mm:present referid="creategroup">
+       <mm:import externid="groupname" /> 
+       <mm:createnode id="group" type="mmbasegroups">
+         <mm:setfield name="name"><mm:write referid="groupname" /></mm:setfield>
+       </mm:createnode>
+       <mm:node node="currentcontext">
+         <mm:functioncontainer>
+           <mm:param name="grouporuser" value="$group" />
+           <mm:param name="operation"   value="read" />
+           <mm:booleanfunction name="maygrant">
+             <mm:voidfunction name="grant" />
+           </mm:booleanfunction>
+           <mm:param name="operation"   value="write" />
+           <mm:booleanfunction name="maygrant">
+             <mm:voidfunction name="grant" />
+           </mm:booleanfunction>
+           <mm:param name="operation"   value="delete" />
+           <mm:booleanfunction name="maygrant">
+             <mm:voidfunction name="grant" />
+           </mm:booleanfunction>
+         </mm:functioncontainer>             
+       </mm:node>
+     </mm:present>
+     <!-- if a group with alias 'mayreadallgroup" exists, 'read' rights will be switched on automaticly -->
+     <mm:node id="allreadgroup" number="mayreadallgroup" notfound="skip">
+       <mm:node referid="context">
+         <mm:functioncontainer>
+           <mm:param name="grouporuser"><mm:field node="allreadgroup" name="number" /></mm:param>
+           <mm:param name="operation">read</mm:param>
+           <mm:booleanfunction name="maygrant">
+             <mm:voidfunction name="grant" />
+           </mm:booleanfunction>
+         </mm:functioncontainer>
+       </mm:node>
+     </mm:node>
+   </mm:present>
+   <mm:notpresent referid="wasnew">
+     <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
+     <mm:functioncontainer>
+       <mm:listnodes id="thisgroup"  type="mmbasegroups">
+         <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
+         <mm:stringlist referid="operations">
+           <mm:param name="operation"><mm:write /></mm:param>
+           <mm:import id="right" externid="$_:$thisgroup" />
+           <mm:compare referid="right" value="on">
+             <mm:function write="false" node="currentcontext" name="grant" />
+           </mm:compare>
+           <mm:compare referid="right" value="on" inverse="true">
              <mm:function write="false" node="currentcontext" name="revoke" />
-         </mm:compare>
-       </mm:stringlist>
-   </mm:listnodes>
-   </mm:functioncontainer>
-   </mm:context>
+           </mm:compare>
+         </mm:stringlist>
+       </mm:listnodes>
+     </mm:functioncontainer>
+   </mm:notpresent>
+ </mm:context>
 <mm:import id="current">contexts</mm:import>
 <%@include file="navigate.div.jsp" %>
 <%@include file="you.div.jsp" %>

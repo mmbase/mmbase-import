@@ -11,11 +11,10 @@
 
 <form action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_user.jsp</mm:param></mm:url>" method="post">
  <table>
-   <mm:createnode id="newnode" type="mmbaseusers">
-      <mm:fieldlist type="edit">
-        <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
-      </mm:fieldlist>
-    </mm:createnode>
+   <mm:fieldlist type="edit" nodetype="mmbaseusers">
+     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="input" /></td></tr>
+   </mm:fieldlist>
+   
    <tr>
      <td>Groups</td>
      <td>
@@ -37,8 +36,8 @@
      </td>
     </tr>
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
-    <mm:node referid="newnode">
-      <input type="hidden" name="user" value="<mm:field name="number" />" />
+    <input type="hidden" name="user" value="new" />
+
     </mm:node>
    </table>
    </form>

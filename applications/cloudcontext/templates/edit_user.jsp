@@ -6,7 +6,7 @@
 <mm:import id="url">edit_user.jsp</mm:import>
 <mm:import externid="user" required="true" />
 
-<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud">
 <mm:node referid="user">
 <mm:import id="current">users</mm:import>
 <%@include file="navigate.div.jsp" %>

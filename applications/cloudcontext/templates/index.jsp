@@ -18,12 +18,15 @@
   <body>
     <% try { %>
     <mm:notpresent referid="location">
-      <mm:include referids="parameters,$parameters" page="${location}${url}" />
+      <mm:include debug="html" referids="parameters,$parameters" page="${location}${url}" />
     </mm:notpresent>
     <mm:present referid="location">
-      <mm:include page="${location}${url}" />
+      <mm:include debug="html" page="${location}${url}" />
     </mm:present>
-    <% } catch(Throwable t) { if (t.getCause() != null) { throw t.getCause(); } else { throw t;} } %>
+    <% } catch(Throwable t) { 
+    out.println("ERROR" + t.getMessage());
+    if (t.getCause() != null) { throw t.getCause(); } else { throw t;} } 
+    %>
   </body>
 </html>
 </mm:content>

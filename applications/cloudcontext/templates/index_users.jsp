@@ -93,9 +93,7 @@
           <td><mm:fieldinfo type="guivalue" /></td>
         </mm:fieldlist>
         <td>
-          <mm:relatednodes type="mmbaseranks" role="rank">
-            <mm:nodeinfo type="gui" />
-          </mm:relatednodes>
+          <mm:function name="rank" />
         </td>
         <td class="commands">
           <mm:maywrite>
