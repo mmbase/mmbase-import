@@ -116,7 +116,7 @@ public class Authenticate extends Authentication {
             org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase) org.mmbase.module.Module.getModule("mmbaseroot");
             builder =  (UserBuilder) mmb.getMMObject("mmbaseusers");
             if(builder == null) {
-                String msg = "builder not found";
+                String msg = "builder mmbaseusers not found";
 		log.error(msg);
 	    	throw new org.mmbase.security.SecurityException(msg);
 	    }   // optional check if the user admin does exist...

@@ -190,7 +190,7 @@ public class Verify extends Authorization {
       	    org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("mmbaseroot");
             builder =  mmb.getMMObject("typedef");
             if(builder == null) {
-	        String msg = "builder not found";
+	        String msg = "builder typedef not found";
 		log.error(msg);
 	    	throw new org.mmbase.security.SecurityException(msg);
             }
