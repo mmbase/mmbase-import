@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.40 2003-04-02 19:07:28 michiel Exp $
+ * @version $Id: Node.java,v 1.41 2003-06-30 11:29:42 michiel Exp $
  */
 public interface Node {
 
@@ -494,6 +494,8 @@ public interface Node {
      */
     public RelationList getRelations(String role, NodeManager nodeManager);
 
+    //public RelationList getRelations(String role, NodeManager nodeManager, String searchDir);
+
     /**
      * Returns the number of relations this node has with other nodes.
      *
@@ -621,36 +623,34 @@ public interface Node {
                                    RelationManager relationManager);
 
     /**
-     * set the Context of the current Node
+     * Sets the security context of this Node (AKA the 'owner' field)
      *
-     * @param context	    	    The context to which the current node should belong,
-     * @throws BridgeException      Dunno?
-     * @throws SecurityException    When not the approperate rights (change context)
+     * @param context	    	   The security context to which this node should belong,
+     * @throws SecurityException   When appropriate rights to perform this are lacking (write / change context rights)
      */
     public void setContext(String context);
 
     /**
-     * get the Context of the current Node
+     * Get the security context of the current Node
      *
-     * @return the current context of the node
-     * @throws BridgeException      Dunno?
-     * @throws SecurityException    When not the approperate rights (read rights)
+     * @return the current context of the node (as a String)
+     * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
     public String getContext();
 
     /**
-     * get the Contextes which can be set to this specific node
+     * Contacts the security implementation to find out to which other possible contextes the
+     * context of this node may be set.
      *
-     * @return the contextes from which can be chosen
-     * @throws BridgeException      Dunno?
-     * @throws SecurityException    When not the approperate rights (read rights)
+     * @return A StringList containing the contextes which can be used in setContext on this node.
+     * @throws SecurityException   When appropriate rights to perform this are lacking (read rights)
      */
     public StringList getPossibleContexts();
 
     /**
      * Check write rights on this node.
      *
-     * @return                      whether the node may be changed by the current user
+     * @return                      Whether the node may be changed by the current user
      */
 
     public boolean mayWrite();
@@ -658,7 +658,7 @@ public interface Node {
     /**
      * Check delete rights on this node.
      *
-     * @return                      whether the node may be deleted by the current user
+     * @return                      Whether the node may be deleted by the current user
      */
 
     public boolean mayDelete();
@@ -667,7 +667,7 @@ public interface Node {
      * Check link rights on this node.
      *
      * @deprecated  As of 20020123, replaced by {@link RelationManager#mayCreateRelation(Node,Node)}
-     * @return                      whether the current user may link to this node
+     * @return                      Whether the current user may link to this node
      */
 
     public boolean mayLink();
@@ -676,7 +676,7 @@ public interface Node {
     /**
      * Check context-change rights on this node.
      *
-     * @return                      whether the current user may change the context of this node
+     * @return                      Whether the current user may change the context of this node
      */
     public boolean mayChangeContext();
 
