@@ -163,9 +163,9 @@ public abstract class NodeTest extends TestCase {
         }
     }
 
-    public void testAddAlias() {
+    public void testCreateAlias() {
         try {
-            node.addAlias("node_alias");       
+            node.createAlias("node_alias");       
             // look it up again
             boolean found = false;
             Iterator i = node.getAliases().iterator();
