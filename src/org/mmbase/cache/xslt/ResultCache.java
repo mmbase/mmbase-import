@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * entry). See TemplatesCache (which uses a FileWatcher).
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ResultCache.java,v 1.4 2002-10-29 23:55:06 michiel Exp $
+ * @version $Id: ResultCache.java,v 1.5 2002-10-30 00:05:03 michiel Exp $
  * @since   MMBase-1.6
  */
 public class ResultCache extends Cache {
@@ -139,9 +139,12 @@ public class ResultCache extends Cache {
                     log.service("Put xslt Result in cache with key " + key);
                     super.put(key, result);
                 } else {
-                    log.debug("xslt Result of key " + key + " is too big to put in cache");
+                    if (log.isDebugEnabled()) {
+                        log.debug("xslt Result of key " + key + " is too big to put in cache. " + result.length() + " >= " +  getMaxEntrySize());
+                    }
                 }
             }
+
         }
             
         return result;
