@@ -23,7 +23,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.25 2003-04-16 08:12:54 michiel Exp $
+ * @version $Id: TimeTag.java,v 1.26 2003-04-19 15:43:56 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer {
     
@@ -48,11 +48,11 @@ public class TimeTag extends ContextReferrerTag implements Writer {
     /**
      * Fast way to find the day number of a day
      */
-    static private Hashtable days = new Hashtable();
+    static private Map days = new HashMap();
     /**
      * Fast way to find the month number of a month
      */
-    static private Hashtable months = new Hashtable();
+    static private Map months = new HashMap();
     
     static {
         DateFormatSymbols dfs = new SimpleDateFormat("", Locale.ENGLISH).getDateFormatSymbols();
