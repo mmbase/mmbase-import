@@ -18,6 +18,7 @@ import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.module.database.support.*;
 
 /**
 */
