@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.38 2003-09-19 12:04:38 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.39 2003-12-17 21:09:03 michiel Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -50,7 +50,7 @@ public class FieldDefs implements Comparable, Storable {
     public final static int ORDER_LIST   = 2;
     public final static int ORDER_SEARCH = 3;
 
-    private static Logger log = Logging.getLoggerInstance(FieldDefs.class);
+    private static final Logger log = Logging.getLoggerInstance(FieldDefs.class);
 
     private final static String[] DBSTATES = {
         "unknown", "virtual", "unknown", "persistent", "system"

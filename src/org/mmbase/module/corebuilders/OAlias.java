@@ -29,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.15 2003-07-14 11:34:22 michiel Exp $
+ * @version $Id: OAlias.java,v 1.16 2003-12-17 21:09:03 michiel Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(OAlias.class);
+    private static final Logger log = Logging.getLoggerInstance(OAlias.class);
 
     // alias -> node-number (Integer) 
     private Cache numberCache = new Cache(128) {
