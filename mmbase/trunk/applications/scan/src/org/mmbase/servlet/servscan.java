@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  * 
  * @rename Servscan
- * @version $Id: servscan.java,v 1.29 2002-04-10 13:56:33 michiel Exp $
+ * @version $Id: servscan.java,v 1.30 2002-04-15 10:09:29 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -44,15 +44,7 @@ public class servscan extends JamesServlet {
     private static Logger log;
 
     // modules used in servscan
-    private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
-    // private static idInterface id=null;
-    // private static StatisticsInterface stats=null;
-
-    private static String htmlroot;
-
-    //int lastlistitem=0;
-    private static String  fileroot;
     private scanparser parser;
 
     // Davzev added on 27-10-1999: Defining constants    
