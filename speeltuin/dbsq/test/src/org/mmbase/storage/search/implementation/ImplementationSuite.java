@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class ImplementationSuite extends TestCase {
     
@@ -43,6 +43,7 @@ public class ImplementationSuite extends TestCase {
         suite.addTest(org.mmbase.storage.search.implementation.BasicFieldNullConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicFieldValueConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicFieldValueInConstraintTest.suite());
+        suite.addTest(org.mmbase.storage.search.implementation.BasicLegacyConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicRelationStepTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSearchQueryTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicSortOrderTest.suite());
@@ -51,6 +52,7 @@ public class ImplementationSuite extends TestCase {
         suite.addTest(org.mmbase.storage.search.implementation.BasicStringSearchConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.database.DatabaseSuite.suite());
         suite.addTest(org.mmbase.storage.search.implementation.ModifiableQueryTest.suite());
+        suite.addTest(org.mmbase.storage.search.implementation.NodeSearchQueryTest.suite());
         //:JUNIT--
         //This value MUST ALWAYS be returned from this function.
         return suite;

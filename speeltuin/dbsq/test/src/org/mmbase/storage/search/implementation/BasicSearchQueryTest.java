@@ -11,7 +11,7 @@ import org.mmbase.storage.search.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicSearchQueryTest extends TestCase {
     
@@ -21,7 +21,7 @@ public class BasicSearchQueryTest extends TestCase {
     /** Test instance (aggregating). */
     private BasicSearchQuery instance2;
     
-    /** MMBase instance1. */
+    /** MMBase instance. */
     private MMBase mmbase = null;
     
     /** Images builder, used as builder example. */
