@@ -69,6 +69,9 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.zip" value="${project.zip.dir}/${project.jar.name}.zip"/>
 
   <target name="init" depends="">
+    <available property="src.available" file="${project.source.dir}/src"/>
+
+  
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
     <property name="name" value="${project.name}"/>
@@ -84,9 +87,9 @@ Create a build.xml with a DOCTYPE like this:
   <!-- Create the project's jar file                                       -->
   <!-- =================================================================== -->
 
-  <target name="jar.uptodatecheck">
+  <target name="jar.uptodatecheck" depends="init" if="src.available">
     <uptodate property="jar.uptodate" targetfile="${project.jar}" >
-      <srcfiles dir="${project.source.dir}" includes="**/*" excludes="build/**,work/**" />
+      <srcfiles dir="${project.source.dir}" includes="src/**"  />
     </uptodate>
   </target>
 
@@ -95,7 +98,7 @@ Create a build.xml with a DOCTYPE like this:
   </target>
 
   <target name="jar" description="Create the MMBase project jar file" 
-    depends="jar.check" unless="jar.uptodate">
+    depends="jar.check" unless="jar.uptodate" if="src.available">
   
   <antcall target="compile" />
   <echo message="Copying ${mmbase.classes} to ${project.build.dir}/classes" />
@@ -168,7 +171,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="compile" description="Compile the source directory"
-          depends="init">
+          depends="init" if="src.available">
 
     <mkdir dir="${project.build.dir}/classes"/>
     <echo message="java version: ${ant.java.version}" />
