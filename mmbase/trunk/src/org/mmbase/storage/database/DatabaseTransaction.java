@@ -13,7 +13,7 @@ import java.sql.*;
 import java.util.*;
 
 import org.mmbase.module.database.JDBCInterface;
-        
+
 import org.mmbase.storage.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.1 2002-09-16 15:07:36 pierre Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.2 2002-11-08 10:20:17 pierre Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -150,6 +150,12 @@ public class DatabaseTransaction implements Transaction {
                     result=false;
                 }
             }
+            try {
+                con.close();
+            } catch (SQLException e) {
+                log.error(e.toString());
+                result=false;
+            }
             if (result) {
                 // register all changes...
                 for(Iterator i=changes.keySet().iterator(); i.hasNext(); ) {
@@ -157,12 +163,6 @@ public class DatabaseTransaction implements Transaction {
                     database.registerChanged(changedNode,(String)changes.get(changedNode));
                 }
                 changes.clear();
-            }
-            try {
-                con.close();
-            } catch (SQLException e) {
-                log.error(e.toString());
-                result=false;
             }
         }
         return result;
