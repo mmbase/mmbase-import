@@ -20,6 +20,7 @@
   <mm:import id="a">3</mm:import>
   <mm:import id="b">10</mm:import>
   <tr><td>Expr. with var</td><td>30</td><td><mm:write value="${+$a*$b}" /></td><td>&nbsp;</td></tr>
+  <tr><td>Expr. with var (explicit cast to integer)</td><td>30</td><td><mm:write value="${+$a*$b}" vartype="integer" /></td><td>&nbsp;</td></tr>
  </table>
   
 <hr />
