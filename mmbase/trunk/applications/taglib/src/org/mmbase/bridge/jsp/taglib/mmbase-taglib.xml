@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.191 2003-08-15 13:30:39 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.192 2003-08-15 19:36:41 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2311,8 +2311,9 @@ transaction was commited, following should result anything:
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        You can specify a comma separated list of fields you want to
-        list too. Use this attribute or the type attribute.
+        You can specify a comma separated list of fields you want to list too. If you specify this
+        together with the type attribute, these fields will be added (to the end) of the ones
+        defined in that way.
       </info>
     </attribute>
     <attribute>
