@@ -8,10 +8,14 @@ See http://www.MMBase.org/license
  
  */
 package org.mmbase.applications.media.builders;
+
 import org.mmbase.applications.media.filters.MainFilter;
 import org.mmbase.applications.media.urlcomposers.URLComposer;
+import org.mmbase.applications.media.cache.URLCache;
+
 import java.util.*;
 import java.net.URL;
+
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
@@ -29,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.16 2003-07-04 17:23:41 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.17 2003-07-10 08:48:20 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -58,8 +62,9 @@ public class MediaFragments extends MMObjectBuilder {
     // Is the mediafragment builder already initialised?
     // this class is used for several builders (mediafragments and descendants)
     private static boolean           initDone           = false;
-    
- 
+
+    private URLCache cache = URLCache.getCache();
+
     public boolean init() {
         if(initDone) {
 	    return super.init();
@@ -236,15 +241,27 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediaFragment the media fragment
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
-     */
-    protected  String getURL(MMObjectNode fragment, Map info)   {
+     */ 
+    protected  String getURL(MMObjectNode fragment, Map info) {
         log.debug("Getting url of a fragment.");        
+	String key = URLCache.toKey(fragment, info);
+        if(cache.containsKey(key)) {
+		log.debug("Cache hit, key = "+key);
+		return (String)cache.get(key);
+	} else {
+		log.debug("No cache hit, key = "+key);
+	}
+
         List urls = getFilteredURLs(fragment, info);
+	String result = "";
         if (urls.size() > 0) {
-            return ((URLComposer) urls.get(0)).getURL();
-        } else {
-            return ""; //no sources 
-        }
+            result = ((URLComposer) urls.get(0)).getURL();
+        } 
+	// put result in cache
+	// XXX also notify the cache with objects that invalidate the cache
+	log.debug("Add to cache, key="+key);
+	cache.put(key,result,null);
+	return result;
     }
 
     protected  String getFormat(MMObjectNode fragment, Map info)   {
@@ -270,7 +287,6 @@ public class MediaFragments extends MMObjectBuilder {
     /**
      * Adds a parent fragment to the Stack and returns true, or returns false.
      */
-
     protected boolean addParentFragment(Stack fragments) {
         MMObjectNode fragment = (MMObjectNode) fragments.peek();
         int role = mmb.getRelDef().getNumberByName("posrel");
@@ -407,6 +423,10 @@ public class MediaFragments extends MMObjectBuilder {
                 if (command.hasMoreTokens()) userChannels=new Integer(command.nextToken());
                 if (number!=null) {
 			MMObjectNode media = getNode(number.intValue());
+            if(!(media.parent).isExtensionOf(mmb.getBuilder("mediafragments"))) {
+                log.error("Number "+number+" is not a media/audio/video fragment "+media);
+                return "Number "+number+" is not a media/audio/video fragment "+media;
+            }
 			Map info = new HashMap();
 			if(userSpeed!=null) {
 				info.put("speed",""+userSpeed);
