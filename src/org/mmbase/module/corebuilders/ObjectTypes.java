@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.8 2002-05-08 09:29:30 eduard Exp $
+ * @version $Id: ObjectTypes.java,v 1.9 2002-05-13 09:40:17 eduard Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -128,10 +128,17 @@ public class ObjectTypes extends TypeDef {
         log.info("[insert of builder-node with name '" + node.getStringValue("name") + "' ]");
         
         // look if we can store to file...
-        if(!creationEnabled) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
+        if(!creationEnabled) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");        
         
         // first store our config....
         storeBuilderFile(node);
+           
+        // try if it still not here...HACK HACK
+        if(getIntValue(node.getStringValue("name")) > 0) {
+            // there was already a node for the builder with this name!
+            // can happen, when an other thread was here first in multi-threaded
+            return getIntValue(node.getStringValue("name"));
+        }
                 
         // now save our node...
         int result = super.insert(owner, node);
