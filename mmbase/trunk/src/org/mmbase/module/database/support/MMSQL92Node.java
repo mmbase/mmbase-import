@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.6 2000-06-20 08:20:14 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.7 2000-06-20 08:49:16 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/06/20 08:20:14  wwwtech
+changed create calls to xml
+
 Revision 1.5  2000/06/06 20:36:25  wwwtech
 added XML create and convert code
 
@@ -68,7 +71,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.6 $ $Date: 2000-06-20 08:20:14 $
+* @$Revision: 1.7 $ $Date: 2000-06-20 08:49:16 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -76,7 +79,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	String createString="CREATETABLE_SQL92";
-	String name="mysql";
+	public String name="sql92";
 	Hashtable typesmap = new Hashtable();
 	XMLDatabaseReader parser;
 	Hashtable typeMapping = new Hashtable();
@@ -98,17 +101,21 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("TEXT",new Integer(TYPE_TEXT));
 		typesmap.put("BLOB",new Integer(TYPE_BLOB));
 
+	}
+
+	public void init(MMBase mmb) {
+		this.mmb=mmb;
+
 		// start of new code for XML config support
 
 		String path=MMBaseContext.getConfigPath()+("/databases/");
 		if ((new File(path+name+".xml")).exists()) {
 			parser=new XMLDatabaseReader(path+name+".xml");
 			typeMapping=parser.getTypeMapping();
-		}
-	}
+		} else {
+			System.out.println("MMSQL92 -> Missing xml driver for database : "+name);
 
-	public void init(MMBase mmb) {
-		this.mmb=mmb;
+		}
 	}
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i) {

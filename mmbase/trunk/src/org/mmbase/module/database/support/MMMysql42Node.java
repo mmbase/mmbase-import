@@ -28,14 +28,15 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.13 $ $Date: 2000-06-20 08:20:46 $
+* @$Revision: 1.14 $ $Date: 2000-06-20 08:49:56 $
 */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
-	public MMMysql42Node() {
-		createString="CREATETABLE_MYSQL";
-	}
 
+	public MMMysql42Node() {
+		super();
+		name="mysql";
+	}
 
 
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
