@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.30 2000-11-19 00:17:51 daniel Exp $
+$Id: scanparser.java,v 1.31 2000-11-20 13:37:50 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.30  2000/11/19 00:17:51  daniel
+re fixed the constructor to work with mmdemo
+
 Revision 1.29  2000/11/06 13:32:37  vpro
 Rico: Added code from david to support relative parts
 
@@ -113,7 +116,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.30 $ $Date: 2000-11-19 00:17:51 $
+ * @$Revision: 1.31 $ $Date: 2000-11-20 13:37:50 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -467,11 +470,11 @@ public class scanparser extends ProcessorModule {
 		newbody=new StringBuffer();
 		postcmd=-1;
 
-		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
+		while ((precmd=body.indexOf("<transaction",postcmd))!=-1) {
 			newbody.append(body.substring(postcmd+1,precmd));
 			prepostcmd=precmd+12;
 			if ((postcmd=body.indexOf('>',precmd))!=-1) {
-				end_pos2=body.indexOf("</TRANSACTION>",prepostcmd);
+				end_pos2=body.indexOf("</transaction>",prepostcmd);
 				if (end_pos2!=-1) {
 					postcmd=end_pos2+14;
 					try {
