@@ -15,6 +15,7 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+
 /**
  * The linkChecker module detects broken urls in the urls builder and the jumpers builder.
  * If the linkchecker module is active it will at start up (5 minutes after the MMBase initialisation)
@@ -24,12 +25,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.10 2003-03-07 08:50:05 pierre Exp $
+ * @version $Id: LinkChecker.java,v 1.11 2003-03-20 10:30:30 kees Exp $
  **/
+
 public class LinkChecker extends ProcessorModule implements Runnable {
 
     private static Logger log = Logging.getLoggerInstance(LinkChecker.class.getName());
-    Thread kicker = null;
     MMBase mmbase;
     MMObjectBuilder urls;
     MMObjectBuilder jumpers;
@@ -42,7 +43,9 @@ public class LinkChecker extends ProcessorModule implements Runnable {
         jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
         sendmail=(SendMailInterface)getModule("sendmail");
         log.info("Module LinkChecker started");
-        start();
+        Thread  thread = new Thread(this,"LinkChecker");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
@@ -66,21 +69,9 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     public void maintainance() {
     }
 
-    /**
-     * start the Thread
-     * @deprecated start and stop methods of Thread should never be overwritten
-     **/
-    public void start() {
-        /* Start up the main thread */
-        if (kicker == null) {
-            kicker = new Thread(this,"LinkChecker");
-            kicker.setDaemon(true);
-            kicker.start();
-        }
-    }
 
     public void run () {
-        try { Thread.sleep(300000); } catch (Exception wait) { } //wait 5 minutes
+        try { Thread.sleep(300000); } catch (Exception wait) { return;} //wait 5 minutes
         log.service("LinkChecker starting to check all Jumpers and Urls");
 
         // init variables for mail.
