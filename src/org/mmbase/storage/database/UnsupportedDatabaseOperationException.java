@@ -7,7 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database;
+package org.mmbase.storage.database;
+
+import org.mmbase.storage.*;
 
 /**
  * Unsupported Database Operation exception.
@@ -16,7 +18,7 @@ package org.mmbase.module.database;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: UnsupportedDatabaseOperationException.java,v 1.2 2002-04-08 11:59:27 pierre Exp $
+ * @version $Id: UnsupportedDatabaseOperationException.java,v 1.1 2002-09-16 15:07:38 pierre Exp $
  */
 public class UnsupportedDatabaseOperationException extends StorageException {
 

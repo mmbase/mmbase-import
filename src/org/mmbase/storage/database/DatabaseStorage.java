@@ -7,13 +7,15 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database.support;
+package org.mmbase.storage.database;
 
 import java.util.*;
 import java.io.*;
 import java.sql.*;
 
-import org.mmbase.module.database.*;
+import org.mmbase.module.database.JDBCInterface;
+
+import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.XMLDatabaseReader;
@@ -29,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.2 2002-04-17 10:29:27 pierre Exp $
+ * @version $Id: DatabaseStorage.java,v 1.1 2002-09-16 15:07:35 pierre Exp $
  */
 public interface DatabaseStorage extends Storage  {
 
@@ -219,6 +221,7 @@ public interface DatabaseStorage extends Storage  {
 
     /**
      * Returns the JDBC module used by this class to connect to the database.
+     * Note that this interface may be up to change, so use with care. 
      * @return the JDBC Module.
      */
     public JDBCInterface getJDBC();

@@ -7,12 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database.support;
+package org.mmbase.storage.database;
 
 import java.io.*;
 import java.sql.*;
 
-import org.mmbase.module.database.*;
+import org.mmbase.storage.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: OODatabaseStorage.java,v 1.1 2002-04-09 15:40:31 pierre Exp $
+ * @version $Id: OODatabaseStorage.java,v 1.1 2002-09-16 15:07:36 pierre Exp $
  */
 public class OODatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage {
 

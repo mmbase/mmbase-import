@@ -13,6 +13,8 @@ import java.util.*;
 import java.net.*;
 import java.sql.*;
 
+import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
+
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.*;
@@ -22,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.15 2002-07-01 13:02:36 eduard Exp $
+ * @version $Id: PostgreSQL71.java,v 1.16 2002-09-16 15:07:30 pierre Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());

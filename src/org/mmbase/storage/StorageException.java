@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database;
+package org.mmbase.storage;
 
 /**
  * Storage exception.
@@ -16,7 +16,7 @@ package org.mmbase.module.database;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.1 2002-04-08 11:59:27 pierre Exp $
+ * @version $Id: StorageException.java,v 1.1 2002-09-16 15:07:32 pierre Exp $
  */
 public class StorageException extends Exception {
 
