@@ -19,7 +19,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.3 2003-07-23 11:19:46 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.4 2003-07-23 14:11:34 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -89,14 +89,14 @@ public interface StorageManagerFactory {
      * @param key the key of the option
      * @return <code>true</code> if the option was set
      */
-        public boolean hasOption(Object key);
+    public boolean hasOption(Object key);
 
     /**
      * Set an option to true or false.
      * @param key the key of the option
      * @param value the value of the option (true or false)
      */
-        public void setOption(Object key, boolean value);
+    public void setOption(Object key, boolean value);
 
     /**
      * Returns the version of this factory implementation.
@@ -104,6 +104,7 @@ public interface StorageManagerFactory {
      * that list version requirements.
      * @return the version as an integer
      */
-        public double getVersion();
+    public double getVersion();
+
 }
 

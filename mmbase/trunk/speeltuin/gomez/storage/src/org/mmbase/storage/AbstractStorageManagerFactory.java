@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import java.io.InputStream;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.*;
 import org.xml.sax.InputSource;
 
 import org.mmbase.storage.util.StorageReader;
@@ -23,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.3 2003-07-23 11:19:46 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.4 2003-07-23 14:11:34 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -44,7 +42,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
     private Map disallowedFields;
     
     // the map with type mapping data
-    private Map typeMaps;
+    private List typeMappings;
 
     /**
      * Stores the MMBase reference, and initializes the attribute map.
@@ -55,7 +53,7 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
         disallowedFields = Collections.synchronizedMap(new HashMap());
-        typeMaps = Collections.synchronizedMap(new HashMap());
+        typeMappings = Collections.synchronizedList(new ArrayList());
         load();
     }
 
@@ -72,9 +70,9 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
         setAttributes(reader.getAttributes());
         // get disallowed fields
         disallowedFields.putAll(reader.getDisallowedFields());
-        // get type map
-        
-        // ...
+        // get type mappings
+        typeMappings.addAll(reader.getTypeMappings());
+        Collections.sort(typeMappings);
     }
 
     /**
