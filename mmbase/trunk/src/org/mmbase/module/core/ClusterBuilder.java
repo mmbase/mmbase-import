@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.41 2003-07-01 15:09:16 keesj Exp $
+ * @version $Id: ClusterBuilder.java,v 1.42 2003-07-18 14:16:37 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -344,19 +344,16 @@ public class ClusterBuilder extends VirtualBuilder {
 
         // Try to handle using the SearchQuery framework.
         try {
-            SearchQuery query=
-                getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, orderVec, direction, searchdir);
+            SearchQuery query= getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, orderVec, direction, searchdir);
             List clusterNodes= getClusterNodes(query);
             return new Vector(clusterNodes);
 
             // If this fails, fall back to legacy code.
         } catch (Exception e) {
             if (log.isServiceEnabled()) {
-                log.service(
-                    "Failed to create SearchQuery for multilevel search, "
-                        + "exception:\n"
-                        + Logging.stackTrace(e)
-                        + "\nFalling back to legacy code in ClusterBuilder...");
+                log.service("Failed to create SearchQuery for multilevel search, " 
+                            + "exception:\n" + Logging.stackTrace(e)
+                            + "\nFalling back to legacy code in ClusterBuilder...");
             }
         }
 
@@ -389,8 +386,9 @@ public class ClusterBuilder extends VirtualBuilder {
         // yet an optimal sollution for the multilevel authorization problem
 
         select= getSelectString(alltables, tables, fields, !isdistinct);
-        if (select == null)
+        if (select == null) {
             return null;
+        }
 
         // Get the tables names corresponding to the fields (for the mapping)
         selectTypes= getSelectTypes(alltables, select);
@@ -477,23 +475,12 @@ public class ClusterBuilder extends VirtualBuilder {
                 con= mmb.getConnection();
                 stmt= con.createStatement();
                 if (basenodestring.length() + relstring.length() + where.length() > 1) {
-                    query=
-                        "select "
-                            + distinct
-                            + " "
-                            + select
-                            + " from "
-                            + stables
-                            + " where "
-                            + basenodestring
-                            + relstring
-                            + where
-                            + " "
-                            + order;
+                    query = "select " + distinct + " " + select + " from " + stables + " where " + basenodestring + relstring + where + " " + order;
                 } else {
-                    query= "select " + distinct + " " + select + " from " + stables + " " + order;
+                    query = "select " + distinct + " " + select + " from " + stables + " " + order;
                 }
                 log.debug("Query " + query);
+
 
                 ResultSet rs= stmt.executeQuery(query);
                 try {
@@ -542,8 +529,8 @@ public class ClusterBuilder extends VirtualBuilder {
     public List getClusterNodes(SearchQuery query) throws SearchQueryException {
 
         // TODO (later): implement maximum set by maxNodesFromQuery?
-
         // Execute query, return results.
+        
         return mmb.getDatabase().getNodes(query, this);
     }
 
@@ -1205,7 +1192,8 @@ public class ClusterBuilder extends VirtualBuilder {
         // Add fields.
         Iterator iFields= fields.iterator();
         while (iFields.hasNext()) {
-            addFields(query, (String)iFields.next(), stepsByAlias, fieldsByAlias);
+            String field = (String) iFields.next();
+            addFields(query, field, stepsByAlias, fieldsByAlias);
         }
 
         // Add sortorders.
@@ -1475,10 +1463,11 @@ public class ClusterBuilder extends VirtualBuilder {
             if (pos < 1 || pos == (expression.length() - 1)) {
                 throw new IllegalArgumentException("Invalid fieldname: \"" + expression + "\"");
             }
-            String stepAlias= expression.substring(0, pos);
-            String fieldName= expression.substring(pos + 1);
+            int bracketOffset = (expression.startsWith("[") && expression.endsWith("]")) ? 1 : 0;
+            String stepAlias= expression.substring(0 + bracketOffset, pos);
+            String fieldName= expression.substring(pos + 1 - bracketOffset);
 
-            BasicStep step= (BasicStep)stepsByAlias.get(stepAlias);
+            BasicStep step = (BasicStep)stepsByAlias.get(stepAlias);
             if (step == null) {
                 throw new IllegalArgumentException("Invalid step alias: \"" + stepAlias + "\"");
             }
@@ -1629,12 +1618,12 @@ public class ClusterBuilder extends VirtualBuilder {
     // package visibility!
     void addRelationDirections(BasicSearchQuery query, int searchdir, Map roles) {
 
-        Iterator iSteps= query.getSteps().iterator();
-        BasicStep sourceStep= (BasicStep)iSteps.next();
-        BasicStep destinationStep= null;
+        Iterator iSteps = query.getSteps().iterator();
+        BasicStep sourceStep = (BasicStep)iSteps.next();
+        BasicStep destinationStep = null;
         while (iSteps.hasNext()) {
             if (destinationStep != null) {
-                sourceStep= destinationStep;
+                sourceStep = destinationStep;
             }
             BasicRelationStep relationStep= (BasicRelationStep)iSteps.next();
             destinationStep= (BasicStep)iSteps.next();
@@ -1645,50 +1634,35 @@ public class ClusterBuilder extends VirtualBuilder {
             }
 
             // Determine in what direction(s) this relation can be followed:
-            boolean desttosrc= false; // From 'source' to 'destination'.
-            boolean srctodest= false; // From 'destination' to 'source'.
+            boolean destinationToSource = false;
+            boolean sourceToDestination = false;
 
             // Determine typedef number of the source-type.
-            int srcType= mmb.getTypeDef().getIntValue(getTableName(sourceStep.getAlias()));
+            int sourceType = sourceStep.getBuilder().getObjectType();
+
             // Determine reldef number of the role.
-            Integer role= (Integer)roles.get(relationStep.getAlias());
-            // Determine the typdef number of the destination-type.
-            int destType= mmb.getTypeDef().getIntValue(getTableName(destinationStep.getAlias()));
+            Integer role = (Integer) roles.get(relationStep.getAlias());
 
-            // check if  a definite rnumber was requested...
+            // Determine the typedef number of the destination-type.
+            int destinationType = destinationStep.getBuilder().getObjectType();
+
+            int roleInt;
             if (role != null) {
+                roleInt =  role.intValue();
                 relationStep.setRole(role);
-                srctodest=
-                    searchdir != SEARCH_SOURCE && mmb.getTypeRel().contains(srcType, destType, role.intValue());
-                desttosrc=
-                    searchdir != SEARCH_DESTINATION
-                        && mmb.getTypeRel().contains(destType, srcType, role.intValue());
             } else {
-                Enumeration e= mmb.getTypeRel().getAllowedRelations(srcType, destType);
-                while (e.hasMoreElements()) {
-                    // get the allowed relation definitions
-                    MMObjectNode typenode= (MMObjectNode)e.nextElement();
-                        desttosrc=
-                            (searchdir != SEARCH_DESTINATION)
-                                && (desttosrc || destType == mmb.getRootType() || // ignore root 'object' type
-    typenode.getIntValue("snumber") == destType);
+                roleInt = -1;
+            }
+            sourceToDestination = searchdir != SEARCH_SOURCE      && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+            destinationToSource = searchdir != SEARCH_DESTINATION && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
 
-                        srctodest=
-                            (searchdir != SEARCH_SOURCE)
-                                && (srctodest || srcType == mmb.getRootType() || // ignore root 'object' type
-    typenode.getIntValue("snumber") == srcType);
-                    if (desttosrc && srctodest)
-                        break;
-                }
+            if (destinationToSource && sourceToDestination && (searchdir == SEARCH_EITHER)) { // support old
+                destinationToSource= false;
             }
 
-            if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
-                desttosrc= false;
-            }
-
-            if (desttosrc) {
+            if (destinationToSource) {
                 // there is a typed relation from destination to src
-                if (srctodest) {
+                if (sourceToDestination) {
                     // there is ALSO a typed relation from src to destination - make a more complex query
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_BOTH);
                 } else {
@@ -1696,21 +1670,13 @@ public class ClusterBuilder extends VirtualBuilder {
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
                 }
             } else {
-                if (srctodest) {
+                if (sourceToDestination) {
                     // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
                 } else {
                     // no results possible...
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-                    log.warn(
-                        "No relation defined between "
-                            + sourceStep.getAlias()
-                            + " and "
-                            + destinationStep.getAlias()
-                            + " using "
-                            + relationStep
-                            + " with direction(s) "
-                            + getSearchDirString(searchdir));
+                    log.warn("No relation defined between " + sourceStep.getTableName() + " and " + destinationStep.getTableName() + " using " + relationStep + " with direction(s) " + getSearchDirString(searchdir) + ". Searching in 'destination' direction now, but perhaps the query should be fixed, because this should always result nothing.");
                 }
             }
         }
