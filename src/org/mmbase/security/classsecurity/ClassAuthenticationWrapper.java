@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.4 2004-05-10 15:44:27 michiel Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.5 2004-11-11 17:10:33 michiel Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
@@ -65,7 +65,7 @@ public class ClassAuthenticationWrapper extends Authentication {
      */
     protected void load() throws SecurityException {
         try {
-            InputSource in = new InputSource(new FileInputStream(configFile));
+            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             Document document = DocumentReader.getDocumentBuilder(
                true, // validate aggresively, because no further error-handling will be done
                new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
@@ -91,7 +91,7 @@ public class ClassAuthenticationWrapper extends Authentication {
                 log.debug("will use: " + authFile.getAbsolutePath());
             }
             wrappedAuthentication = getAuthenticationInstance(wrappedClass);
-            wrappedAuthentication.load(manager, fileWatcher, authFile.getAbsolutePath());
+            wrappedAuthentication.load(manager, configWatcher, wrappedUrl);
             ClassAuthentication.stopWatching();
             ClassAuthentication.load(configFile);
 

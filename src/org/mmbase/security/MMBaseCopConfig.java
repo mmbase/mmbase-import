@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.io.File;
-
 import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.ResourceLoader;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,16 +20,15 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.18 2004-08-04 14:46:32 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.19 2004-11-11 17:10:33 michiel Exp $
  */
 public class MMBaseCopConfig {
     private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
 
-    /** the file from which the config is loaded..*/
-    private File configFile;
+    public static final ResourceLoader securityLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("security");
 
     /** looks if the files have been changed */
-    private SecurityFileWatcher watcher;
+    private SecurityConfigWatcher watcher;
 
     /** our current authentication class */
     private Authentication authentication;
@@ -49,20 +47,18 @@ public class MMBaseCopConfig {
     private MMBaseCop cop;
 
     /** the class that watches if we have to reload...*/
-    private class SecurityFileWatcher extends org.mmbase.util.FileWatcher  { 
-        //    	private final static Logger log=Logging.getLoggerInstance(SecurityFileWatcher.class.getName());
+    private class SecurityConfigWatcher extends org.mmbase.util.ResourceWatcher  { 
         private MMBaseCop cop;
         
-        public SecurityFileWatcher(MMBaseCop cop) {
-            super(true); // true: continue after change
+        public SecurityConfigWatcher(MMBaseCop cop) {
+            super(securityLoader); 
             if(cop == null) throw new RuntimeException("MMBase cop was null");
             // log.debug("Starting the file watcher");
             this.cop = cop;
         }
         
-        public void onChange(File file) {
+        public void onChange(String s) {
             try {
-                log.debug("Going to reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
                 cop.reload();
             } catch(Exception e) {
                 log.error(e);
@@ -84,25 +80,28 @@ public class MMBaseCopConfig {
     }
     
     /**
-     *	The constructor, will load the classes for authorization and authentication
-     *	with their config files, as specied in the xml from configUrl
-     *	@exception  java.io.IOException When reading the file failed
-     *	@exception  java.lang.NoSuchMethodException When a tag was not specified
-     *	@exception  org.mmbase.security.SecurityException When the class could not  be loaded
+     * The constructor, will load the classes for authorization and authentication
+     * with their config files, as specied in the xml from configUrl
+     * @exception  java.io.IOException When reading the file failed
+     * @exception   .. When XML not validates.
+     * @exception  org.mmbase.security.SecurityException When the class could not  be loaded
      *	   
      *  @param mmbaseCop  The MMBaseCop for which this is a configurator
-     *  @param configFile Configuration file ('security.xml')
      */
-    public MMBaseCopConfig(MMBaseCop mmbaseCop, File configFile) throws java.io.IOException, NoSuchMethodException, SecurityException {
-        this.configFile = configFile;
-        log.info("using: '" + configFile.getAbsolutePath() + "' as configuration file for security");
+    MMBaseCopConfig(MMBaseCop mmbaseCop) throws java.io.IOException, NoSuchMethodException, SecurityException {
 
-        watcher = new SecurityFileWatcher(mmbaseCop);
+        java.net.URL config = securityLoader.findResource("security.xml");
+        log.info("using: '" + config + "' as configuration file for security");
+
+        watcher = new SecurityConfigWatcher(mmbaseCop);
+
+        watcher.add("security.xml");
+
+        watcher.start();
 
         cop = mmbaseCop;
 
-        String configPath = configFile.getAbsolutePath();
-        XMLBasicReader reader = new XMLBasicReader(configPath, this.getClass());
+        XMLBasicReader reader = new XMLBasicReader(securityLoader.getInputSource("security.xml"), this.getClass());
 
         // are we active ?
         String sActive = reader.getElementAttributeValue(reader.getElementByPath("security"),"active");
@@ -118,75 +117,22 @@ public class MMBaseCopConfig {
 
         // load the sharedSecret
         sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
-        if(sharedSecret == null) {
-            String msg = "sharedsecret could not be found in security("+configPath+")";
-            log.error(msg);
-            throw new java.util.NoSuchElementException(msg);
-        }
-        log.debug("Shared Secret retrieved");
 
         if(active) {
             // load our authentication...
             org.w3c.dom.Element entry = reader.getElementByPath("security.authentication");
-            if(entry == null) throw new java.util.NoSuchElementException("security/authentication");
             String authClass = reader.getElementAttributeValue(entry,"class");
-            if(authClass == null) {
-                String msg = "attribute class could not be found in authentication("+configPath+")";
-                log.error(msg);
-                throw new java.util.NoSuchElementException(msg);
-            }
             String authUrl = reader.getElementAttributeValue(entry, "url");
-            if(authUrl == null) {
-                String msg = "attribute url could not be found in authentication(" + configPath + ")";
-                log.error(msg);
-                throw new java.util.NoSuchElementException(msg);
-            }
-            // make the url absolute in case it isn't:
-            File authFile = null;
-            if (! authUrl.equals("")) {
-                authFile = new File(authUrl);
-            }
-            if (authFile != null  && (! authFile.isAbsolute())) { // so relative to current one
-                // being parsed file. make it absolute,
-                log.debug("authentication file was not absolutely given (" + authUrl + ")");
-                authFile = new File(configFile.getParent() + File.separator + authUrl);
-                log.debug("will use: " + authFile.getAbsolutePath());
-            }
-            authentication = getAuthentication(authClass, authFile != null ? authFile.getAbsolutePath() : null);
+            authentication = getAuthentication(authClass, authUrl);
             log.debug("Authentication retrieved");
 
             // load our authorization...
             entry = reader.getElementByPath("security.authorization");
-            if(entry == null) throw new java.util.NoSuchElementException("security.authorization");
             String auteClass = reader.getElementAttributeValue(entry,"class");
-            if(auteClass == null) {
-                String msg = "attribute class could not be found in auhotization("+configPath+")";
-                log.error(msg);
-                throw new java.util.NoSuchElementException(msg);
-            }
             String auteUrl = reader.getElementAttributeValue(entry,"url");
-            if(auteUrl == null) {
-                String msg ="attribute url could not be found in auhotization("+configPath+")";
-                log.error(msg);
-                throw new java.util.NoSuchElementException(msg);
-            }
-            // make the url absolute in case it isn't:
-            File auteFile = null;
 
-            if (! auteUrl.equals("")) {
-                auteFile = new File(auteUrl);
-            }
-            if (auteFile != null && (! auteFile.isAbsolute())) { // so relative to currently
-                // being parsed file. make it absolute,
-                log.debug("authorization file was not absolutely given (" + auteUrl + ")");
-                auteFile = new File(configFile.getParent() + File.separator + auteUrl);
-                log.debug("will use: " + auteFile.getAbsolutePath());
-            }
-            authorization = getAuthorization(auteClass, auteFile != null ? auteFile.getAbsolutePath() : null);
+            authorization = getAuthorization(auteClass, auteUrl);
             log.debug("Authorization retrieved");
-
-            // add our config file..
-            watcher.add(configFile);
         } else {
             // we dont use security...
             authentication = new NoAuthentication();
@@ -240,21 +186,6 @@ public class MMBaseCopConfig {
         return false;
     }
 
-
-    /**
-     * stops tracking changes on the files...
-     */
-    public void stopWatching() {
-        watcher.exit();
-    }
-
-
-    /**
-     * starts tracking changes on the files...
-     */
-    public void startWatching() {
-        watcher.start();
-    }
 
     /**
      * get the shared Secret
