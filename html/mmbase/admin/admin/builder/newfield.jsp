@@ -6,7 +6,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Builder <%=builder%>, New Field</title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -41,7 +41,7 @@
 <tr>
     <td class="data">Name</td>
     <td class="data"><input type="text" name="dbname" value="" /></td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -50,7 +50,7 @@
     <% String property="mmbasetype"; %>
 <%@include file="properties/dbmmbasetype.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -59,7 +59,7 @@
     <% property="guitype"; %>
 <%@include file="properties/guitype.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -68,7 +68,7 @@
     <% property="dbstate"; %>
 <%@include file="properties/dbstate.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -77,7 +77,7 @@
     <% property="dbnotnull"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -86,13 +86,13 @@
     <% property="dbkey"; %>
 <%@include file="properties/truefalse.jsp" %>
     </td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
     <td class="data">Size</td>
     <td class="data"><input type="text" name="dbsize" value="" /></td>
-    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+    <td class="navigate"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
 </tr>
 
 <tr>
@@ -109,7 +109,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>

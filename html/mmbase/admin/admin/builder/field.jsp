@@ -9,7 +9,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Builder <%=builder%>, Field <%=field%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -48,55 +48,55 @@
 <tr>
   <td class="data">Name</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbname",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" />" target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_name" />" target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbname&name=Name"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">Type</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbmmbasetype",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_type" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbmmbasetype&name=Type"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">State</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbstate",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_state" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbstate&name=State"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">Required</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbnotnull",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_notnull" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbnotnull&name=Required"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">Unique/Key</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbkey",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_key" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbkey&name=Unique/Key"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">Size</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-dbsize",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_size" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=dbsize&name=Size"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 
@@ -112,28 +112,28 @@
 <tr>
   <td class="data">Input</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorinput",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_input" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_input" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorinput&name=Input"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">List</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorlist",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_list" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_list" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorlist&name=List"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <tr>
   <td class="data">Search</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-editorsearch",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_search" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_search" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=editorsearch&name=Search"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 
@@ -148,10 +148,10 @@
 <tr>
   <td class="data">GUI&nbsp;Type</td>
   <td class="data"><%=mmAdmin.getInfo("GETBUILDERFIELD-"+builder+"-"+field+"-guitype",request,response)%>&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guitype" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=guitype&name=GUI&nbsp;Type"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 
@@ -166,10 +166,10 @@
 <tr>
   <td class="data">Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
   <td class="data"><%=name.getStringValue("item2")%></td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guiname" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guiname" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=guiname&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <% } %>
@@ -177,10 +177,10 @@
 <tr>
   <td class="data">New&nbsp;Field&nbsp;Name</td>
   <td class="data">&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guiname" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_guiname" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newguiname&name=New&nbsp;Field&nbsp;Name"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 
@@ -204,10 +204,10 @@
 <tr>
   <td class="data">Description&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%></td>
   <td class="data"><%=name.getStringValue("item2")%></td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_description" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_description" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=description&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;"+name.getStringValue("item1")+"&country="+name.getStringValue("item1")%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 <% } %>
@@ -215,10 +215,10 @@
 <tr>
   <td class="data">New&nbsp;Description</td>
   <td class="data">&nbsp;</td>
-  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_description" /> " target="_blank"><img src="../../images/search.gif" alt="explain" border="0" /></a></td>
+  <td class="linkdata"><a href="<mm:url page="/mmdocs/administrators/builders.html#field_description" /> " target="_blank"><img src="<mm:url page="/mmbase/style/images/search.gif" />" alt="explain" border="0" /></a></td>
   <td class="navigate">
     <a href="<mm:url page="<%="setfieldproperty.jsp?builder="+builder+"&field="+field+"&cmd=newdescription&name=New&nbsp;Field&nbsp;Name"%>" />"
-    ><img src="../../images/change.gif" alt="change" border="0" /></a>
+    ><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
   </td>
 </tr>
 
@@ -242,7 +242,7 @@
     <input type="hidden" name="builder" value="<%=builder%>" />
     <input type="hidden" name="field" value="<%=field%>" />
     <input type="hidden" name="cmd" value="BUILDER-REMOVEFIELD" />
-    <input type="image" src="../../images/delete.gif" alt="Remove Now" border="0"  />
+    <input type="image" src="<mm:url page="/mmbase/style/images/delete.gif" />" alt="Remove Now" border="0"  />
 </td>
 </tr>
 </form>
@@ -250,7 +250,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?builder="+builder%>" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>

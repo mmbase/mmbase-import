@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Builder <%=builder%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -90,7 +90,7 @@
  <td class="data"><%=field.getStringValue("item3")%></td>
  <td class="data"><%=field.getStringValue("item4")%></td>
  <td class="navigate">
-    <a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>"/>"><img src="../../images/change.gif" alt="change" border="0" /></a>
+    <a href="<mm:url page="<%="field.jsp?builder="+builder+"&field="+field.getStringValue("item2")%>"/>"><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
 </td>
 </tr>
 
@@ -101,7 +101,7 @@
  <td class="data">&nbsp;</td>
  <td class="data">&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="newfield.jsp?builder="+builder%>" />"><img src="../../images/create.gif" alt="add new" border="0" /></a>
+    <a href="<mm:url page="<%="newfield.jsp?builder="+builder%>" />"><img src="<mm:url page="/mmbase/style/images/create.gif" />" alt="add new" border="0" /></a>
 </td>
 </tr>
 
@@ -119,7 +119,7 @@
  <td class="linkdata" colspan="2">
    <input type="hidden" name="builder" value="<%=builder%>" />
    <input type="hidden" name="cmd" value="BUILDERSAVE" />
-   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+   <input type="image" src="<mm:url page="/mmbase/style/images/ok.gif" />" alt="OK" border="0"  />
  </td>
 </tr>
 </form>
@@ -148,7 +148,7 @@
 <%  } %>
     <input type="hidden" name="config" value="builders" />
     <input type="hidden" name="target" value="<%=builder%>" />
-    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
+    <input type="image" src="<mm:url page="/mmbase/style/images/search.gif" />" alt="view" border="0"  />
 </form>
  </td>
 </tr>
@@ -158,7 +158,7 @@
 <% } %>
 
 <tr class="footer">
-<td class="navigate"><a href="../builders.jsp"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="../builders.jsp"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Builder Overview</td>
 </tr>
 </table>
