@@ -26,7 +26,7 @@ import org.mmbase.storage.search.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.15 2004-07-30 17:09:20 michiel Exp $
+ * @version $Id: Groups.java,v 1.16 2005-01-25 12:45:18 pierre Exp $
  */
 public class Groups extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Groups.class);
@@ -93,16 +93,16 @@ public class Groups extends MMObjectBuilder {
             Step step = query.addStep(object);
             BasicStepField numberStepField = new BasicStepField(step, object. getField("number"));
             BasicFieldValueConstraint numberConstraint = new BasicFieldValueConstraint(numberStepField, new Integer(containedObject));
-            
+
             BasicRelationStep relationStep = query.addRelationStep(insrel, this);
             relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-            
-            query.setConstraint(numberConstraint);            
+
+            query.setConstraint(numberConstraint);
             query.addFields(relationStep.getNext());
 
             List resultList;
             try {
-                resultList = mmb.getDatabase().getNodes(query, this); // not cached, but no need, because total result is cached.
+                resultList = mmb.getSearchQueryHandler().getNodes(query, this); // not cached, but no need, because total result is cached.
                 processSearchResults(resultList);
             } catch (SearchQueryException sqe) {
                 log.error(sqe.getMessage());
@@ -115,7 +115,7 @@ public class Groups extends MMObjectBuilder {
             result = Boolean.FALSE;
             while (i.hasNext()) {
                 MMObjectNode group = (MMObjectNode) i.next();
-                
+
                 if (group.getNumber() == containingGroup) {
                     log.trace("yes!");
                     result = Boolean.TRUE;
@@ -132,10 +132,10 @@ public class Groups extends MMObjectBuilder {
                     }
                 }
             }
-            
+
             containsCache.put(key, result);
         }
-        
+
         return result.booleanValue();
     }
 

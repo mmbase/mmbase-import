@@ -55,7 +55,7 @@ import org.mmbase.storage.search.*;
  * of responsibility.
  *
  * @author  Rob van Maris
- * @version $Id: SqlHandler.java,v 1.5 2003-03-10 11:51:01 pierre Exp $
+ * @version $Id: SqlHandler.java,v 1.6 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public interface SqlHandler {
@@ -138,6 +138,7 @@ public interface SqlHandler {
     /**
      * Maps string to value that is allowed as table or field name.
      *
+     * @deprecated use {@link org.mmbase.storage.StorageManagerFactory#getStorageIdentifier}
      * @param The string value.
      * @return The mapped value.
      */

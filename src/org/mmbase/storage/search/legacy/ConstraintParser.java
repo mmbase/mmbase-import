@@ -110,17 +110,17 @@ import org.mmbase.bridge.NodeQuery;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.21 2004-07-09 14:03:17 michiel Exp $
+ * @version $Id: ConstraintParser.java,v 1.22 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
 
     /** Logger instance. */
-    private final static Logger log = 
+    private final static Logger log =
         Logging.getLoggerInstance(ConstraintParser.class);
-    
+
     /** Logger instance dedicated to logging fallback to legacy constraint. */
-    private final static Logger fallbackLog = 
+    private final static Logger fallbackLog =
         Logging.getLoggerInstance(ConstraintParser.class.getName() + ".fallback");
 
     private SearchQuery query = null;
@@ -155,7 +155,7 @@ public class ConstraintParser {
                 "Unexpected token (expected \"'\"): \""
                 + token + "\"");
              }
-            
+
             int fieldType = field.getType();
             if (fieldType == FieldDefs.TYPE_BYTE || fieldType == FieldDefs.TYPE_DOUBLE ||
                 fieldType == FieldDefs.TYPE_FLOAT || fieldType == FieldDefs.TYPE_INTEGER ||
@@ -276,7 +276,7 @@ public class ConstraintParser {
                     step = (BasicStep) ((NodeQuery) query).getNodeStep();
                     if (step == null) {
                         throw new IllegalArgumentException( "NodeQuery has no step; Fieldname not prefixed with table alias: \"" + token + "\"");
-                    } 
+                    }
                 } else {
                     throw new IllegalArgumentException( "Fieldname not prefixed with table alias: \"" + token + "\"");
                 }
@@ -293,12 +293,13 @@ public class ConstraintParser {
         } else {
             fieldName = token.substring(idx + 1, token.length() - bracketOffset);
         }
-        
+
         FieldDefs fieldDefs = builder.getField(fieldName);
         if (fieldDefs == null) {
             // maybe the fielddef was already escaped with getAllowedField
-            // otherwise it will definitly fail!
-            fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
+            // otherwise it will definitely fail!
+            // not supported, so skip for now...
+            // fieldDefs = builder.getField(builder.mmb.getDatabase().getDisallowedField(fieldName));
         }
         if (fieldDefs == null) {
             throw new IllegalArgumentException("Unknown field (of builder " + builder.getTableName()
@@ -360,7 +361,7 @@ public class ConstraintParser {
             if (fallbackLog.isServiceEnabled()) {
                 fallbackLog.service(
                     "Failed to parse Constraint from search condition string: "
-                    + "\n     sqlConstraint = " + sqlConstraint 
+                    + "\n     sqlConstraint = " + sqlConstraint
                     + "\n     exception: " + e + Logging.stackTrace(e)
                     + "\nFalling back to BasicLegacyConstraint...");
             }

@@ -20,7 +20,6 @@ import java.util.Hashtable;
 
 import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.xml.BuilderReader;
-import org.mmbase.util.xml.DatabaseReader;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.xml.sax.EntityResolver;
@@ -34,7 +33,7 @@ import org.xml.sax.SAXException;
  * @rename EntityResolver
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.42 2005-01-20 17:03:47 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.43 2005-01-25 12:45:19 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -75,7 +74,6 @@ public class XMLEntityResolver implements EntityResolver {
         org.mmbase.util.xml.DocumentReader.registerPublicIDs();
         BuilderReader.registerPublicIDs();
         XMLApplicationReader.registerPublicIDs();
-        DatabaseReader.registerPublicIDs();
         XMLModuleReader.registerPublicIDs();
         org.mmbase.util.xml.UtilReader.registerPublicIDs();
         org.mmbase.security.MMBaseCopConfig.registerPublicIDs();

@@ -10,35 +10,31 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.io.File;
-import java.sql.*;
 import java.util.*;
 
 import org.mmbase.module.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.change.MMBaseChangeDummy;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.*;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.security.MMBaseCop;
 import org.mmbase.storage.*;
-import org.mmbase.storage.implementation.database.JDBC2NodeWrapper;
 import org.mmbase.storage.search.SearchQueryException;
+import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.platform.setUser;
 import org.mmbase.util.xml.*;
 
 /**
- * The module which provides access to the MMBase database defined
+ * The module which provides access to the MMBase storage defined
  * by the provided name/setup.
  * It holds the overal object cloud made up of builders, objects and relations and
  * all the needed tools to use them.
- * @deprecation-used contains commented-out code
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.125 2004-12-07 10:09:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.126 2005-01-25 12:45:19 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -73,16 +69,10 @@ public class MMBase extends ProcessorModule {
     // logging
     private static final Logger log = Logging.getLoggerInstance(MMBase.class);
 
-   
-
     /**
      * Reference to the MMBase singleton. Used for quick reference by getMMBase();
      */
     private static MMBase mmbaseroot = null;
-
-
-
-
 
     /**
      * Time in seconds, when mmbase was started.
@@ -98,7 +88,7 @@ public class MMBase extends ProcessorModule {
     public MMBaseChangeInterface mmc;
 
     /**
-     * Base name for the database to be accessed using this instance of MMBase.
+     * Base name for the storage  to be accessed using this instance of MMBase.
      * Retrieved from the mmbaseroot module configuration setUser
      * If not specified the default is "def1"
      * Should be made private and accessed instead using getBaseName()
@@ -128,7 +118,7 @@ public class MMBase extends ProcessorModule {
     private TypeRel typeRel;
 
     /**
-     * The table that contains all loaded builders. Includes virtual builders such as "multirelations".
+     * The table that contains all loaded builders. Includes virtual builders.
      * Should be made private and accessed using getMMObjects()
      * @scope private
      */
@@ -158,28 +148,6 @@ public class MMBase extends ProcessorModule {
      * @scope private
      */
     MMBaseProbe probe;
-
-    /**
-     * A reference to the jdbc driver to use for the current database system.
-     * JDBC drivers differ by sytsem (various database systems provide their own drivers).
-     * The configuration for the jdbc class to use for your datanse system is set in the configuration files.
-     * @scope private
-     */
-    JDBCInterface jdbc;
-
-    /**
-     * MultiRelations virtual builder, used for performing multilevel searches.
-     * @scope private
-     * @deprecated Use the <code>ClusterBuilder</code> instance retrieved by
-     * {@link #getClusterBuilder() getClusterBuilder()} instead.
-     */
-    MultiRelations MultiRelations;
-
-    /**
-     * The database to use. Retrieve using getDatabase();
-     * @scope private
-     */
-    MMJdbc2NodeInterface database;
 
     /**
      * Name of the machine used in the mmbase cluster.
@@ -271,7 +239,6 @@ public class MMBase extends ProcessorModule {
      */
     private Set loading = new HashSet();
 
-
     /**
      * Constructor to create the MMBase root module.
      */
@@ -279,7 +246,6 @@ public class MMBase extends ProcessorModule {
         if (mmbaseroot != null) log.error("Tried to instantiate a second MMBase");
         log.debug("MMBase constructed");
     }
-
 
     /**
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
@@ -337,35 +303,18 @@ public class MMBase extends ProcessorModule {
         machineName = getInitParameter("MACHINENAME");
 
         log.debug("Starting JDBC module");
-        // retrieve JDBC module and start it
-        jdbc = (JDBCInterface) getModule("JDBC", true);
-        if (jdbc == null) {
-            log.fatal("Could not obtain JDBC module. MMBase cannot be started.");
-            return;
-        }
 
-        try {
-            MultiConnection con = jdbc.getConnection(jdbc.makeUrl());
-            if (con == null) {
-                log.info("Did get 'null' connection of JDBC module, probably MMBase is shut down. Aborting init.");
-                return;
-            }
-            con.close();
-        } catch (java.sql.SQLException sqe) {
-            log.error(sqe.getMessage() + "Aborting init");
-            return;
-        }
+        // start the JDBC module if present
+        getModule("JDBC", true);
 
         initializeSharedStorage(getInitParameter("SHAREDSTORAGE"));
 
-        {
-            String builderPath = getInitParameter("BUILDERFILE");
-            if (builderPath == null || builderPath.equals("")) {
-                builderPath = "builders";
-            }
-            log.debug("Builder path: " + builderPath);
-            builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderPath);
+        String builderPath = getInitParameter("BUILDERFILE");
+        if (builderPath == null || builderPath.equals("")) {
+            builderPath = "builders";
         }
+        log.debug("Builder path: " + builderPath);
+        builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader(builderPath);
 
         mmbaseState = STATE_LOAD;
 
@@ -378,15 +327,14 @@ public class MMBase extends ProcessorModule {
         log.service("Initializing  storage:");
         initializeStorage();
 
-        log.service("Initializing  builders:");
-        initBuilders();
-
         log.debug("Checking MMBase");
-
         if (!checkMMBase()) {
             // there is no base defined yet, create the core objects
             createMMBase();
         }
+
+        log.service("Initializing  builders:");
+        initBuilders();
 
         log.debug("Objects started");
 
@@ -429,7 +377,6 @@ public class MMBase extends ProcessorModule {
 
     }
 
-
     /**
      * @param sharedStorageClass
      * @since MMBase-1.7.2
@@ -465,7 +412,6 @@ public class MMBase extends ProcessorModule {
         return  mmbaseState == STATE_SHUT_DOWN;
     }
 
-
     /**
      * Started when the module is loaded.
      * @deprecated-now unused
@@ -478,15 +424,14 @@ public class MMBase extends ProcessorModule {
     public void unload() {}
 
     /**
-     * Checks whether the database to be used exists.
+     * Checks whether the storage to be used exists.
      * The system determines whether the object table exists
      * for the baseName provided in the configuration file.
-     * @return <code>true</code> if the database exists and is accessible, <code>false</code> otherwise.
+     * @return <code>true</code> if the storage exists and is accessible, <code>false</code> otherwise.
      */
     boolean checkMMBase() {
-        return getDatabase().created(baseName + "_object");
+        return getStorageManager().exists();
     }
-
 
     /**
      * Loads the object builder if object.xml could be found.
@@ -502,34 +447,24 @@ public class MMBase extends ProcessorModule {
             // builder is optional, so this is not an error
             rootBuilder = null;
         }
-
         return rootBuilder;
     }
 
     /**
-     * Create a new database.
-     * The database created is based on the baseName provided in the configuration file.
+     * Create a new MMBase persistent storage instance.
+     * The storage instance created is based on the baseName provided in the configuration file.
      * This call automatically creates an object table.
      * The fields in the table are either specified in an object builder xml,
      * or from a default setup existing of a number field and a owner field.
      * Note: If specified, the object builder is instantiated and its table created, but
      * the builder is not registered in the TypeDef builder, as this builder does not exist yet.
      * Registration happens when the other builders are registered.
-     * @return <code>true</code> if the database was succesfully created, otherwise a runtime exception is thrown
+     * @return <code>true</code> if the storage was succesfully created, otherwise a runtime exception is thrown
      *   (shouldn't it return <code>false</code> instead?)
      */
     boolean createMMBase() {
         log.debug(" creating new multimedia base : " + baseName);
-
-        getDatabase();
-
-        if (loadRootBuilder() != null) {
-            rootBuilder.init();
-        } else {
-            // if no rootbuilder defined (no object.xml)
-            database.createObjectTable(baseName);
-        }
-
+        getStorageManager().create();
         return true;
     }
 
@@ -716,32 +651,6 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Get the JDBC module used by this MMBase.
-     */
-    public JDBCInterface getJDBC() {
-        return jdbc;
-    }
-
-    /**
-     * Safely close a database connection and/or a database statement.
-     * @param con The connection to close. Can be <code>null</code>.
-     * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
-     */
-    public void closeConnection(MultiConnection con, Statement stmt) {
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (Exception g) {}
-        try {
-            if (con != null) {
-                con.close();
-            }
-        } catch (Exception g) {}
-    }
-
-
-    /**
      * Locks until init of mmbase is finished.
      * @since MMBase-1.7
      */
@@ -753,78 +662,8 @@ public class MMBase extends ProcessorModule {
         }
     }
 
-
     /**
-     * Get a database connection that is multiplexed and checked.
-     * @return a <code>MultiConnection</code>
-     */
-    public MultiConnection getConnection() {
-        assertUp();
-        MultiConnection con = null;
-        int timeout = 10; //seconds
-
-        int tries = 1;
-        // always return a connection, maybe database down,... so wait in that situation....
-        while (con == null) {
-            try {
-                con = database.getConnection(jdbc);
-            } catch (SQLException sqle) {
-                log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
-
-                if (tries == 1) {
-                    log.error(Logging.stackTrace(sqle));
-                } else {
-                    log.debug(Logging.stackTrace(sqle));
-                }
-                tries++;
-                try {
-                    wait(timeout * 1000);
-                } catch (InterruptedException ie) {
-                    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
-                    log.warn(msg);
-                    throw new RuntimeException(msg);
-                }
-            }
-        }
-        return con;
-    }
-
-    /**
-     * Get a direct database connection.
-     * Should only be used if you want to do database specific things that use non-jdbc
-     * interface calls. Use very sparingly.
-     */
-    public Connection getDirectConnection() {
-        Connection con = null;
-        int timeout = 10;
-
-        int tries = 1;
-        // always return a connection, maybe database down,... so wait in that situation....
-        while (con == null) {
-            try {
-                con = jdbc.getDirectConnection(jdbc.makeUrl());
-            } catch (SQLException sqle) {
-                log.fatal(
-                    "Could not get a connection, will try again after " + timeout + " seconds: " + sqle.getMessage());
-                if (tries == 1) {
-                    log.error(Logging.stackTrace(sqle));
-                } else {
-                    log.debug(Logging.stackTrace(sqle));
-                }
-                try {
-                    wait(timeout * 1000);
-                } catch (InterruptedException ie) {
-                    String msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
-                    log.warn(msg);
-                    throw new RuntimeException(msg);
-                }
-            }
-        }
-        return con;
-    }
-
-    /**
-     * Retrieves the database base name
+     * Retrieves the storage base name
      * @return the base name as a <code>String</code>
      */
     public String getBaseName() {
@@ -992,12 +831,13 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Retrieves an unique key to use for a new node's number.
-     * Calls the database to request the key. <code>Sychronized</code> so the same number cannot be dealt out to different nodes.
+     * Calls the storage to request the key. <code>Sychronized</code> so the same number cannot be dealt out to different nodes.
      * Does possibly not work well with multiple mmbase systems that work on the same database.
      * @return the new unique key as an <code>int</code> value
+     * @deprecated use getStorageManager().createKey()
      */
     public synchronized int getDBKey() {
-        return database.getDBKey();
+        return getStorageManager().createKey();
     }
 
     /**
@@ -1080,22 +920,18 @@ public class MMBase extends ProcessorModule {
             // builder is optional, so this is not an error
         }
 
-        
+
         Set builders = builderLoader.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
-        
+
         log.info("Loading builders: " + builders);
         Iterator i = builders.iterator();
         while (i.hasNext()) {
             String builderXml  = (String) i.next();
-            loadBuilderFromXML(ResourceLoader.getName(builderXml), ResourceLoader.getDirectory(builderXml) + "/");            
+            loadBuilderFromXML(ResourceLoader.getName(builderXml), ResourceLoader.getDirectory(builderXml) + "/");
         }
-
-        log.debug("Starting MultiRelations Builder");
-        MultiRelations = new MultiRelations(this);
 
         log.debug("Starting Cluster Builder");
         clusterBuilder = new ClusterBuilder(this);
-
     }
 
     /**
@@ -1346,70 +1182,24 @@ public class MMBase extends ProcessorModule {
     }
 
     /**
-     * Returns a reference to the database used.
-     * If needed, it loads the appropriate support class using the configuration parameters.
-     * @return a <code>MMJdbc2NodeInterface</code> which holds the appropriate database class
-     */
-    public MMJdbc2NodeInterface getDatabase() {
-        if (database == null) {
-            log.error("MMBase not initialized"  + Logging.stackTrace());
-            // initializeStorage();
-        }
-        return database;
-    }
-
-    /**
      * Loads either the storage manager factory or the appropriate support class using the configuration parameters.
      * @since MMBase-1.7
      */
     protected void initializeStorage() {
-        if (database != null) return; // initialized allready
+        if (storageManagerFactory != null) return; // initialized allready
         log.service("Initializing storage");
-        // check if there is a storagemanagerfactory specified
-        String databasename = getInitParameter("DATABASE");
-        if (databasename == null) {
-            try {
-                storageManagerFactory = StorageManagerFactory.newInstance(this);
-                // if so, instantiate the support class wrapper for the storage layer
-                database = new JDBC2NodeWrapper(storageManagerFactory);
-                // print information about our database connection..
-                log.info("Using class: '" + database.getClass().getName() + "'.");
-            } catch (StorageException se) {
-                log.error(se.getMessage());
-                throw new StorageError();
-            }
-        } else { // deprecated code for 'old' storage implementations:
-            File databaseConfig = null;
-            String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
-            // get our config...
-            XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
-            try {
-                Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
-                database = (MMJdbc2NodeInterface)newclass.newInstance();
-            } catch (ClassNotFoundException cnfe) {
-                String msg = "class not found:\n" + Logging.stackTrace(cnfe);
-                log.error(msg);
-                throw new RuntimeException(msg);
-            } catch (InstantiationException ie) {
-                String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
-                log.error(msg);
-                throw new RuntimeException(msg);
-            } catch (IllegalAccessException iae) {
-                String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
-                log.error(msg);
-                throw new RuntimeException(msg);
-            }
-            // print information about our database connection..
-            log.info("Using class: '" + database.getClass().getName() + "' with config: '" + databaseConfig + "'.");
-            // init the database..
-            database.init(this, dbdriver);
-        } // end deprecated code
+        try {
+            storageManagerFactory = StorageManagerFactory.newInstance(this);
+            // print information about storage
+            log.info("Using class: '" + storageManagerFactory.getClass().getName() + "'.");
+        } catch (StorageException se) {
+            log.error(se.getMessage());
+            throw new StorageError();
+        }
     }
 
     /**
      * Returns StorageManagerFactory class used to access the storage configuration.
-     * Note: in MMBase 1.7, this may return <code>null</code> if the system uses the old
-     * support classes to access the storage.
      * @since MMBase-1.7
      * @return a StorageManagerFactory class, or <code>null</code> if not configured
      */
@@ -1419,17 +1209,29 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Returns a StorageManager to access the storage.. Equal to getStorageManagerFactory().getStorageManager().
-     * Note: in MMBase 1.7, this will throw a {@link StorageException} if the system uses the old
-     * support classes to access the storage.
      * @since MMBase-1.7
      * @return a StorageManager class
-     * @throws StorageException if no storage manasger could be instantiated
+     * @throws StorageException if no storage manager could be instantiated
      */
     public StorageManager getStorageManager() throws StorageException {
         if (storageManagerFactory == null) {
             throw new StorageConfigurationException("Storage manager factory not configured.");
         } else {
             return storageManagerFactory.getStorageManager();
+        }
+    }
+
+    /**
+     * Returns a SearchQueryHandler to access the storage.. Equal to getStorageManagerFactory().getSearchQueryHandler().
+     * @since MMBase-1.8
+     * @return a StorageManager class
+     * @throws StorageException if no storage manager could be instantiated
+     */
+    public SearchQueryHandler getSearchQueryHandler() throws StorageException {
+        if (storageManagerFactory == null) {
+            throw new StorageConfigurationException("Storage manager factory not configured.");
+        } else {
+            return storageManagerFactory.getSearchQueryHandler();
         }
     }
 

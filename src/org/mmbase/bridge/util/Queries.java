@@ -14,7 +14,7 @@ import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.*;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.49 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id: Queries.java,v 1.50 2005-01-25 12:45:18 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -225,10 +225,7 @@ abstract public class Queries {
      * @return Converted constraint
      */
     private static String convertClausePartToDBS(String constraints) {
-        // obtain dbs for fieldname checks
-
-        //TODO: remove this code... classes under org.mmbase.bridge.util must not use the core
-        MMJdbc2NodeInterface dbs = MMBase.getMMBase().getDatabase();
+        StorageManagerFactory factory = MMBase.getMMBase().getStorageManagerFactory();
         StringBuffer result = new StringBuffer();
         int posa = constraints.indexOf('[');
         while (posa > -1) {
@@ -239,9 +236,9 @@ abstract public class Queries {
                 String fieldName = constraints.substring(posa + 1, posb);
                 int posc = fieldName.indexOf('.');
                 if (posc == -1) {
-                    fieldName = dbs.getAllowedField(fieldName);
+                    fieldName = (String)factory.getStorageIdentifier(fieldName);
                 } else {
-                    fieldName = fieldName.substring(0, posc + 1) + dbs.getAllowedField(fieldName.substring(posc + 1));
+                    fieldName = fieldName.substring(0, posc + 1) + factory.getStorageIdentifier(fieldName.substring(posc + 1));
                 }
                 result.append(constraints.substring(0, posa)).append(fieldName);
                 constraints = constraints.substring(posb + 1);

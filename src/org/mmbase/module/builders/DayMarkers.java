@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.36 2004-11-09 13:57:39 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.37 2005-01-25 12:45:18 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -128,7 +128,7 @@ public class DayMarkers extends MMObjectBuilder {
                 List newFields = new ArrayList(1);
                 newFields.add(field);
                 modifiedQuery.setFields(newFields);
-                List results = mmb.getDatabase().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
+                List results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
                 ResultNode result = (ResultNode) results.get(0);
                 int max = result.getIntValue(FIELD_NUMBER);
                 // add a new daymarker node
@@ -458,7 +458,7 @@ public class DayMarkers extends MMObjectBuilder {
         newFields.add(field);
         modifiedQuery.setFields(newFields);
         try {
-            List results = mmb.getDatabase().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
+            List results = mmb.getSearchQueryHandler().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
             ResultNode result = (ResultNode) results.get(0);
             return result.getIntValue(FIELD_DAYCOUNT);
         } catch (SearchQueryException e) {

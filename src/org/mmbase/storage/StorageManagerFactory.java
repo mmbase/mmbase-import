@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.9 2004-11-26 19:52:06 michiel Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.10 2005-01-25 12:45:19 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -63,7 +63,7 @@ public abstract class StorageManagerFactory {
      */
     protected ChangeManager changeManager;
 
-    /** 
+    /**
      * The map with disallowed fieldnames and (if given) alternates
      */
     protected SortedMap disallowedFields;

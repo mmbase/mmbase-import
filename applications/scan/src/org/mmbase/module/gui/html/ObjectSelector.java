@@ -26,7 +26,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.18 2004-10-01 08:43:46 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.19 2005-01-25 12:45:18 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -153,7 +153,7 @@ public class ObjectSelector implements CommandHandlerInterface {
         Vector allowed=null;
         if (stateMngr.mmBase.getAuthType().equals("basic")) {
             allowed=new Vector();
-            MultiRelations multirel=(MultiRelations)stateMngr.mmBase.getMMObject("multirelations");
+            ClusterBuilder clusterBuilder = stateMngr.mmBase.getClusterBuilder();
             Vector tables=new Vector();
             tables.addElement("typedef");
             // bug bug, daniel (9 aug) tables.addElement("authrel");
@@ -166,7 +166,7 @@ public class ObjectSelector implements CommandHandlerInterface {
             Vector dirvec=new Vector();
             dirvec.addElement("UP");
 
-            Vector vec=multirel.searchMultiLevelVector(-1,fields,"NO",tables,"people.account=E'"+user+"'",ordervec,dirvec);
+            Vector vec = clusterBuilder.searchMultiLevelVector(-1,fields,"NO",tables,"people.account=E'"+user+"'",ordervec,dirvec);
             for (Enumeration h=vec.elements();h.hasMoreElements();)	{
                 MMObjectNode node=(MMObjectNode)h.nextElement();
                 String builder=node.getStringValue("typedef.name");

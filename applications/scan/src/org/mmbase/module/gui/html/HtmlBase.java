@@ -16,8 +16,9 @@ import java.io.*;
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.Jumpers;
-import org.mmbase.module.builders.MultiRelations;
-import org.mmbase.storage.search.RelationStep;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
@@ -30,7 +31,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.50 2004-10-01 08:43:45 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.51 2005-01-25 12:45:18 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
     /**
@@ -132,6 +133,211 @@ public class HtmlBase extends ProcessorModule {
     }
 
     /**
+     * Creates a {@link org.mmbase.storage.search.FieldCompareConstraint
+     * FieldCompareConstraint}, based on parts of a field expression in a
+     * MMNODE expression.
+     *
+     * @param field The field
+     * @param comparison The second character of the comparison operator.
+     * @param strValue The value to compare with, represented as
+     *        <code>String<code>.
+     * @return The constraint.
+     * @since MMBase-1.7
+     */
+    private BasicFieldValueConstraint parseFieldPart(StepField field, char comparison, String strValue) {
+
+        Object value = strValue;
+
+        // For numberical fields, convert string representation to Double.
+        if (field.getType() != FieldDefs.TYPE_STRING &&
+            field.getType() != FieldDefs.TYPE_XML &&
+            field.getType() != FieldDefs.TYPE_UNKNOWN) {
+                // backwards comp fix. This is needed for the scan editors.
+                int length = strValue.length();
+                if (strValue.charAt(0) == '*' && strValue.charAt(length - 1) == '*') {
+                    strValue = strValue.substring(1, length - 1);
+                }
+                value = Double.valueOf(strValue);
+        }
+
+        BasicFieldValueConstraint constraint =
+            new BasicFieldValueConstraint(field, value);
+
+        switch (comparison) {
+            case '=':
+            case 'E':
+                // EQUAL (string field)
+                if (field.getType() == FieldDefs.TYPE_STRING ||
+                    field.getType() == FieldDefs.TYPE_XML) {
+                    // Strip first and last character of value, when
+                    // equal to '*'.
+                    String str = (String) value;
+                    int length = str.length();
+                    if (str.charAt(0) == '*' && str.charAt(length - 1) == '*') {
+                        value = str.substring(1, length - 1);
+                    }
+
+                    // Convert to LIKE comparison with wildchard characters
+                    // before and after (legacy).
+                    constraint.setValue('%' + (String) value + '%');
+                    constraint.setCaseSensitive(false);
+                    constraint.setOperator(FieldCompareConstraint.LIKE);
+
+                // EQUAL (numerical field)
+                } else {
+                    constraint.setOperator(FieldCompareConstraint.EQUAL);
+                }
+                break;
+
+            case 'N':
+                constraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
+                break;
+
+            case 'G':
+                constraint.setOperator(FieldCompareConstraint.GREATER);
+                break;
+
+            case 'g':
+                constraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+                break;
+
+            case 'S':
+                constraint.setOperator(FieldCompareConstraint.LESS);
+                break;
+
+            case 's':
+                constraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                    "Invalid comparison character: '" + comparison + "'");
+        }
+        return constraint;
+    }
+
+    /**
+     * Creates query based on an MMNODE expression.
+     *
+     * @param expr The MMNODE expression.
+     * @return The query.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @since MMBase-1.7
+     */
+    private NodeSearchQuery convertMMNodeSearch2Query(MMObjectBuilder builder, String expr) {
+        NodeSearchQuery query = new NodeSearchQuery(builder);
+        BasicCompositeConstraint constraints
+            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+        String logicalOperator = null;
+
+        // Strip leading string "MMNODE " from expression, parse
+        // fieldexpressions and logical operators.
+        // (legacy: eol characters '\n' and '\r' are interpreted as "AND NOT")
+        StringTokenizer tokenizer
+            = new StringTokenizer(expr.substring(7), "+-\n\r", true);
+        while (tokenizer.hasMoreTokens()) {
+            String fieldExpression = tokenizer.nextToken();
+
+            // Remove prefix if present (example episodes.title==).
+            int pos = fieldExpression.indexOf('.');
+            if (pos != -1) {
+                fieldExpression = fieldExpression.substring(pos + 1);
+            }
+
+            // Break up field expression in fieldname, comparison operator
+            // and value.
+            pos = fieldExpression.indexOf('=');
+            if (pos != -1 && fieldExpression.length() > pos + 2) {
+                String fieldName = fieldExpression.substring(0, pos);
+                char comparison = fieldExpression.charAt(pos + 1);
+                String value = fieldExpression.substring(pos + 2);
+
+                // Add corresponding constraint to constraints.
+                FieldDefs fieldDefs = builder.getField(fieldName);
+                if (fieldDefs == null) {
+                    throw new IllegalArgumentException(
+                        "Invalid MMNODE expression: " + expr);
+                }
+                StepField field = query.getField(fieldDefs);
+                BasicConstraint constraint
+                    = parseFieldPart(field, comparison, value);
+                constraints.addChild(constraint);
+
+                // Set to inverse if preceded by a logical operator that is
+                // not equal to "+".
+                if (logicalOperator != null && !logicalOperator.equals("+")) {
+                    constraint.setInverse(true);
+                }
+            } else {
+                // Invalid expression.
+                throw new IllegalArgumentException(
+                    "Invalid MMNODE expression: " + expr);
+            }
+
+            // Read next logical operator.
+            if (tokenizer.hasMoreTokens()) {
+                logicalOperator = tokenizer.nextToken();
+            }
+        }
+
+        List childs = constraints.getChilds();
+        if (childs.size() == 1) {
+            query.setConstraint((FieldValueConstraint) childs.get(0));
+        } else if (childs.size() > 1) {
+            query.setConstraint(constraints);
+        }
+        return query;
+    }
+
+    /**
+     * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
+     * @since MMBase-1.8
+     * @param where scan expression that the objects need to fulfill
+     * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
+     * @deprecated Use {@link #getNodes(NodeSearchQuery)
+     *             getNodes(NodeSearchQuery} to perform a node search.
+     */
+    private Vector searchNumbers(MMObjectBuilder builder, String where) {
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are caught.
+        // - The result is converted to a vector.
+        Vector results = new Vector();
+        NodeSearchQuery query;
+        if (where != null && where.startsWith("MMNODE ")) {
+            // MMNODE expression.
+            query = convertMMNodeSearch2Query(builder, where);
+        } else {
+            query = new NodeSearchQuery(builder);
+            QueryConvertor.setConstraint(query, where);
+        }
+
+        // Wrap in modifiable query, replace fields by just the "number"-field.
+        ModifiableQuery modifiedQuery = new ModifiableQuery(query);
+        Step step = (Step) query.getSteps().get(0);
+        FieldDefs numberFieldDefs = builder.getField(MMObjectBuilder.FIELD_NUMBER);
+        StepField field = query.getField(numberFieldDefs);
+        List newFields = new ArrayList(1);
+        newFields.add(field);
+        modifiedQuery.setFields(newFields);
+
+        try {
+            List resultNodes = mmb.getSearchQueryHandler().getNodes(modifiedQuery,
+                new ResultBuilder(mmb, modifiedQuery));
+
+            // Extract the numbers from the result.
+            Iterator iResultNodes = resultNodes.iterator();
+            while (iResultNodes.hasNext()) {
+                ResultNode resultNode = (ResultNode) iResultNodes.next();
+                results.add(resultNode.getIntegerValue(MMObjectBuilder.FIELD_NUMBER));
+            }
+        } catch (SearchQueryException e) {
+            log.error(e);
+            results = null;
+        }
+        return results;
+    }
+
+    /**
      * show Relations
      */
     public Vector doRelations(scanpage sp, StringTagger tagger) {
@@ -147,10 +353,10 @@ public class HtmlBase extends ProcessorModule {
         String where=tagger.Value("WHERE");
 
         try {
-            String tm=tagger.Value("NODE");
+            String tm = tagger.Value("NODE");
             MMObjectNode srcnode = mmb.getTypeDef().getNode(tm);
             snode = srcnode.getIntValue("number");
-            bul=srcnode.parent;
+            bul = srcnode.parent;
 
             if (type!=null) {
                 bul=mmb.getMMObject(type);
@@ -159,8 +365,8 @@ public class HtmlBase extends ProcessorModule {
                 }
                 otype=bul.oType;
             }
-            if ((where!=null) && (bul!=null)) {
-                wherevector=bul.searchNumbers(where);
+            if ((where != null) && (bul != null)) {
+                wherevector = searchNumbers(bul,where);
             }
             Iterator i = null;
             if (type==null) {
@@ -548,7 +754,7 @@ public class HtmlBase extends ProcessorModule {
                 String fieldname=tok.nextToken();
                 String result=null;
                 MMObjectBuilder bul=mmb.getMMObject("typedef");
-                MMObjectNode node=bul.getAliasedNode(nodeNr);
+                MMObjectNode node=bul.getNode(nodeNr);
                 sessionInfo pagesession=getPageSession(sp);
                 if (pagesession!=null) {
                     pagesession.addSetValue("PAGECACHENODES",""+nodeNr);
@@ -704,7 +910,7 @@ public class HtmlBase extends ProcessorModule {
             } else {
                 log.debug("doMultiLevel cache MISS "+hash);
             }
-            MultiRelations bul=(MultiRelations)mmb.getMMObject("multirelations");
+            ClusterBuilder clusterBuilder = mmb.getClusterBuilder();
             long begin=(long)System.currentTimeMillis(),len;
 
             // strip the fields of their function codes so we can query the needed
@@ -716,11 +922,11 @@ public class HtmlBase extends ProcessorModule {
                 dbdir=new Vector();
                 dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
             }
-            nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir,searchdir);
-            if(nodes==null) {
+            nodes = clusterBuilder.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir,searchdir);
+            if (nodes == null) {
                 nodes = new Vector();
             }
-            results=new Vector();
+            results = new Vector();
             for (e=nodes.elements();e.hasMoreElements();) {
                 node=(MMObjectNode)e.nextElement();
                 for (f=fields.elements();f.hasMoreElements();) {
@@ -870,7 +1076,7 @@ public class HtmlBase extends ProcessorModule {
             String nodeNr=tok.nextToken();
             String fieldname=tok.nextToken();
             MMObjectBuilder bul=mmb.getMMObject("fielddef");
-            MMObjectNode node=bul.getAliasedNode(nodeNr);
+            MMObjectNode node=bul.getNode(nodeNr);
             if (node!=null) {
                 result=node.getStringValue(fieldname);
             }

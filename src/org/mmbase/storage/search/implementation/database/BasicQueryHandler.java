@@ -1,5 +1,4 @@
 /*
-
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
 
@@ -9,14 +8,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import org.mmbase.module.core.*;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
-import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
 import java.util.*;
+import javax.sql.DataSource;
+
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.storage.*;
+import org.mmbase.storage.implementation.database.Attributes;
+import org.mmbase.storage.implementation.database.DatabaseStorageManager;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.logging.*;
 import org.mmbase.storage.search.implementation.ModifiableQuery;
 
 
@@ -29,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.30 2004-09-28 20:58:51 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.31 2005-01-25 12:45:19 pierre Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -59,10 +61,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
 
     // javadoc is inherited
-    public List getNodes(SearchQuery query, MMObjectBuilder builder)     throws SearchQueryException {
+    public List getNodes(SearchQuery query, MMObjectBuilder builder) throws SearchQueryException {
 
         List results;
-        MultiConnection con = null;
+        Connection con = null;
         Statement stmt = null;
 
         try {
@@ -84,9 +86,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
 
             String sqlString = createSqlString(query, mustSkipResults, sqlHandlerSupportsMaxNumber);
 
-            // Execute the SQL
-            MMJdbc2NodeInterface database = mmbase.getDatabase();
-            con = mmbase.getConnection();
+            // Execute the SQL... ARGH !!! Has to move!
+            // get connection...
+            DataSource dataSource = (DataSource) mmbase.getStorageManagerFactory().getAttribute(Attributes.DATA_SOURCE);
+            con = dataSource.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
 
@@ -127,12 +130,29 @@ public class BasicQueryHandler implements SearchQueryHandler {
             }
             throw new SearchQueryException("Query '" + query.toString() + "' failed: " + e.getClass().getName() + ": " + e.getMessage(), e);
         } finally {
-            mmbase.closeConnection(con, stmt);
+            closeConnection(con, stmt);
         }
 
         return results;
     }
 
+    /**
+     * Safely close a database connection and/or a database statement.
+     * @param con The connection to close. Can be <code>null</code>.
+     * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
+     */
+    protected void closeConnection(Connection con, Statement stmt) {
+        try {
+            if (stmt != null) {
+                stmt.close();
+            }
+        } catch (Exception g) {}
+        try {
+            if (con != null) {
+                con.close();
+            }
+        } catch (Exception g) {}
+    }
 
     /**
      * Makes a String of a query, taking into consideration if the database supports offset and
@@ -183,9 +203,9 @@ public class BasicQueryHandler implements SearchQueryHandler {
     /**
      * Read the result list and creates a List of ClusterNodes.
      */
-    private List readNodes(ClusterBuilder builder, StepField[] fields,   ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
+    private List readNodes(ClusterBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber, int numberOfSteps) throws SQLException {
         List results = new ArrayList();
-        MMJdbc2NodeInterface database = mmbase.getDatabase();
+        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         // Truncate results to provide weak support for maxnumber.
         while (rs.next() && (results.size()<maxNumber || maxNumber==-1)) {
@@ -199,9 +219,11 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     // Use tablename as alias when no alias is specified.
                     alias = step.getTableName();
                 }
-                String prefix = alias +  '.';
-                database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
+                FieldDefs field = builder.getField(alias +  '.' + fieldName);
+                Object value = storageManager.getValue(rs, i + 1, field);
+                node.setValue(alias +  '.' + fieldName, value);
             }
+            node.clearChanged();
             node.finish();
             results.add(node);
         }
@@ -213,11 +235,10 @@ public class BasicQueryHandler implements SearchQueryHandler {
      */
     private List readNodes(ResultBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
         List results = new ArrayList();
-        MMJdbc2NodeInterface database = mmbase.getDatabase();
+        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         // Truncate results to provide weak support for maxnumber.
         while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
-
             ResultNode node = new ResultNode((ResultBuilder) builder);
             node.start();
             for (int i = 0; i < fields.length; i++) {
@@ -225,8 +246,11 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 if (fieldName == null) {
                     fieldName = fields[i].getFieldName();
                 }
-                database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
+                FieldDefs field = builder.getField(fieldName);
+                Object value = storageManager.getValue(rs, i + 1, field);
+                node.setValue(fieldName, value);
             }
+            node.clearChanged();
             node.finish();
             results.add(node);
         }
@@ -238,7 +262,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
      */
     private List readNodes(MMObjectBuilder builder, StepField[] fields, ResultSet rs, boolean sqlHandlerSupportsMaxNumber, int maxNumber) throws SQLException {
         List results= new ArrayList();
-        MMJdbc2NodeInterface database = mmbase.getDatabase();
+        DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
         // Truncate results to provide weak support for maxnumber.
         while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
@@ -248,19 +272,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
             for (int i = 0; i < fields.length; i++) {
                 if (fields[i].getStep() != nodeStep) continue;
                 String fieldName =  fields[i].getFieldName();
-                database.decodeDBnodeField(node, fieldName, rs, i + 1, "");
-            }
-            node.finish();
-
-            // set byte fields to shorted
-            for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext();) {
-                FieldDefs field = (FieldDefs)i.next();
-                if (field.inStorage()) {
-                    if (field.getDBType() == FieldDefs.TYPE_BYTE) {
-                        node.setValue(field.getDBName(), "$SHORTED");
-                    }
+                FieldDefs field = builder.getField(fieldName);
+                if (field.getDBType() == FieldDefs.TYPE_BYTE) {
+                    node.setValue(fieldName, "$SHORTED");
+                } else {
+                    Object value = storageManager.getValue(rs, i + 1, field);
+                    node.setValue(fieldName, value);
                 }
             }
+            node.clearChanged();
+            node.finish();
             results.add(node);
         }
         return results;
@@ -286,7 +307,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 supportLevel = handlerSupport;
             }
             break;
-            
+
         default:
             supportLevel = sqlHandler.getSupportLevel(feature, query);
         }
