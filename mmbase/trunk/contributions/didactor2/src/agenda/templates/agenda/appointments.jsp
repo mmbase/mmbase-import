@@ -73,13 +73,25 @@
     </tr>
     <%
 	String yesterday = ""+((cal.getTimeInMillis() / 1000L)
-                    - 24*60*60);
+                    - 2*24*60*60); // show yesterdays too
 	String constraints = "eventrel.start > "+yesterday+" OR eventrel.stop > "+yesterday;
     %>
-    <mm:list nodes="$user" path="people,invitationrel,items,eventrel,agendas" constraints="<%= constraints %>" orderby="eventrel.start,eventrel.stop" fields="items.number,invitationrel.status" distinct="true">
+    <mm:list nodes="$user" path="people,invitationrel,items,eventrel,agendas" constraints="<%= constraints %>" orderby="eventrel.start,eventrel.stop" fields="items.number,invitationrel.status,eventrel.number" distinct="true">
  	<mm:import id="itemnumber"><mm:field name="items.number"/></mm:import>
 	<mm:import id="mystatus" reset="true"><mm:field name="invitationrel.status"/></mm:import>
-	<mm:import id="timestart"><mm:field name="eventrel.start"/></mm:import>
+        
+        <mm:import id="eventrel"><mm:field name="eventrel.number"/></mm:import>
+ 
+        <mm:node referid="eventrel">
+            <mm:fieldlist nodetype="eventrel" fields="start">
+	      <mm:import id="invday" reset="true"><mm:fieldinfo type="value"><mm:time format="dd"/></mm:fieldinfo></mm:import>
+              <mm:import id="invmonth" reset="true"><mm:fieldinfo type="value"><mm:time format="MM"/></mm:fieldinfo></mm:import>
+              <mm:import id="invyear" reset="true"><mm:fieldinfo type="value"><mm:time format="yyyy"/></mm:fieldinfo></mm:import>
+              
+	      </mm:fieldlist>
+        </mm:node>
+
+       
 	<mm:list nodes="$itemnumber" path="items,invitationrel,people" constraints="$user != people.number" fields="invitationrel.status">
 	   <mm:import id="hisstatus" reset="true"><mm:field name="invitationrel.status"/></mm:import>
 	<tr>
@@ -92,6 +104,10 @@
 	    <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
 		<mm:param name="currentitem"><mm:write referid="itemnumber"/></mm:param>
 		<mm:param name="callerpage"><%= request.getRequestURL().toString() %></mm:param>
+                <mm:param name="day"><mm:write referid="invday"/></mm:param>
+                <mm:param name="year"><mm:write referid="invyear"/></mm:param>
+               <mm:param name="month"><mm:write referid="invmonth"/></mm:param>
+               
 	    </mm:treefile>"><mm:field name="items.title"/></a>
 	    </td>
 	</tr>
@@ -108,8 +124,17 @@
 	    </td>
 	    <td class="listItem"><mm:field name="people.firstname"/> <mm:field name="people.lastname"/></td>
 	    
-	    <td class="listItem"><mm:write referid="timestart"><mm:time format="dd/MM/yyyy"/></mm:write>
-	    </td>
+            
+            <mm:node referid="eventrel">
+            <mm:fieldlist nodetype="eventrel" fields="start">
+
+	      <td class="listItem"><mm:fieldinfo type="value"><mm:time format="dd/MM/yyyy"/></mm:fieldinfo></td>
+	      </mm:fieldlist>
+              </mm:node>
+
+
+<%--	    <td class="listItem"><mm:write referid="timestart"><mm:time format="dd/MM/yyyy"/></mm:write>
+	    </td> --%>
 	    
 	    <td class="listItem">
 	    <a href="<mm:treefile page="/agenda/showagendaitem.jsp" objectlist="$includePath" referids="$referids">
