@@ -112,13 +112,19 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         return getUrl(true);
     }
 
+    protected void doAfterBodySetValue() throws JspTagException {
+        helper.setValue(getUrl());
+    }
+
     public int doAfterBody() throws JspTagException {
         bodyContent.clearBody(); // don't show the body.
         helper.setBodyContent(bodyContent);
         if (helper.getJspvar() == null) {
-            helper.overrideWrite(true); // because Url tag can have subtags (param), default writing even with body seems sensible
+            helper.overrideWrite(true); 
+            // because Url tag can have subtags (param), default writing even with body seems sensible
+            // unless jspvar is specified, because then, perhaps the user wants that..
         }
-        helper.setValue(getUrl());
+        doAfterBodySetValue();
         helper.setJspvar(pageContext);  
         
         if (getId() != null) {
