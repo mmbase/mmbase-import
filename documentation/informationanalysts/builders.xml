@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Builder Configuration</title>
 		<date>5 december 2002</date>
-		<edition>$Id: builders.xml,v 1.4 2002-12-06 13:03:17 pierre Exp $</edition>
+		<edition>$Id: builders.xml,v 1.5 2003-05-22 08:33:48 michiel Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Pierre</firstname>
@@ -372,7 +372,7 @@
 								<programlisting ><![CDATA[
 <editor>
 	<positions>
-		<edit>4</edit>
+		<input>4</input>
 		<list>-1</list>
 		<search>4</search>
 	</positions>
@@ -477,7 +477,7 @@
 		</gui>
 		<editor>
 			<positions>
-				<edit>4</edit>
+				<input>4</input>
 				<list>-1</list>
 				<search>4</search>
 			</positions>
