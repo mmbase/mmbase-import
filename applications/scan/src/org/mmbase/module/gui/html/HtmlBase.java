@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.26 2000-07-15 14:10:13 daniel Exp $
+	$Id: HtmlBase.java,v 1.27 2000-07-15 23:58:32 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.26  2000/07/15 14:10:13  daniel
+	Removed from debug
+	
 	Revision 1.25  2000/07/15 10:11:19  daniel
 	Changed getDBType to int
 	
@@ -107,7 +110,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.26 2000-07-15 14:10:13 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.27 2000-07-15 23:58:32 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -143,8 +146,12 @@ public class HtmlBase extends ProcessorModule {
 	Vector onlineVector=null;
 
 	String SyncNodes="NO";
+	boolean scancache=false;
 
 	public void init() {
+		scancache tmp=(scancache)getModule("SCANCACHE");		
+		if (tmp!=null && tmp.getStatus()) scancache=true;
+
 		mmb=(MMBase)getModule("MMBASEROOT");		
 		debug("init(): mmbase="+mmb);
 		// is there a basename defined in MMBASE.properties ?
@@ -840,7 +847,9 @@ public class HtmlBase extends ProcessorModule {
 		Integer hash;
 		Vector results=null,nodes,wherevector=null;
 		Enumeration e,f;
-		boolean reload=getReload(sp,tagger);
+		boolean reload=true;
+
+		if (scancache) getReload(sp,tagger);
 
 		Vector type=tagger.Values("TYPE");
 		if ((type==null) || (type.size()==0)) throw new MultiLevelParseException("No TYPE specified");
