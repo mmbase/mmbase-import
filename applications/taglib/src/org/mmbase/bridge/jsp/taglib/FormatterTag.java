@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.*;
@@ -28,8 +27,6 @@ import java.net.URL;
 import java.util.*;
 import javax.servlet.jsp.PageContext;
 
-
-
 import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -42,7 +39,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.43 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: FormatterTag.java,v 1.44 2005-02-05 13:24:12 andre Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -465,7 +462,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
             Iterator i = options.getList(this).iterator();
             while (i.hasNext()) {
                 String option = (String) i.next();
-                List   o = StringSplitter.split(option, "=");
+                // List   o = StringSplitter.split(option, "=");
+                List o = Arrays.asList(option.split("="));
                 if (o.size() != 2) {
                     throw  new JspTagException("Option '" + option + "' is not in the format key=value (required for XSL transformations)");
                     
