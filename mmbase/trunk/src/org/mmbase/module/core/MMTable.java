@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.9 2003-09-04 09:00:12 pierre Exp $
+ * @version $Id: MMTable.java,v 1.10 2003-09-05 10:52:12 pierre Exp $
  */
 public class MMTable {
 
@@ -48,6 +48,14 @@ public class MMTable {
      * Empty constructor.
      */
     public MMTable() {
+    }
+
+    /**
+     * Retrieve the full table name (including the clouds' base name)
+     * @return a <code>String</code> containing the full table name
+     */
+    public String getFullTableName() {
+        return mmb.baseName+"_"+tableName;
     }
 
     /**
@@ -99,7 +107,7 @@ public class MMTable {
                 return false;
             }
         } else {
-            return size() != -1;
+           return mmb.getDatabase().created(getFullTableName());
         }
     }
 

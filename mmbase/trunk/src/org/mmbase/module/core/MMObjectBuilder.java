@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.246 2003-09-04 11:05:33 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.247 2003-09-05 10:52:12 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2453,14 +2453,6 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Retrieve the full table name (including the clouds' base name)
-     * @return a <code>String</code> containing the full table name
-     */
-    public String getFullTableName() {
-        return mmb.baseName+"_"+tableName;
-    }
-
-    /**
      * Provides additional functionality when obtaining field values.
      * This method is called whenever a Node of the builder's type fails at evaluating a getValue() request
      * (generally when a fieldname is supplied that doesn't exist).
@@ -3678,19 +3670,6 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getDBText(ResultSet rs,int idx) {
         return mmb.getDatabase().getDBText(rs,idx);
-    }
-
-    /**
-     * Tests whether a builder table is created.
-     * XXX Should be moved to MMTable.
-     * @return <code>true</code> if the table exists, <code>false</code> otherwise
-     */
-    public boolean created() {
-        if (mmb.getDatabase()!=null) {
-            return mmb.getDatabase().created(getFullTableName());
-        } else {
-            return super.created();
-        }
     }
 
     /**
