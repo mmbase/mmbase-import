@@ -178,6 +178,7 @@ public class remoteXML extends JamesServlet {
 				try {
 					sbul.addService((String)values.get("name"),"cdplayerDummy",server.getNode(snumber));
 				} catch(Exception e) {
+					debug("commitXML addService failed "+buildername+" "+snumber);
 					e.printStackTrace();
 				}
 				number=bul.getNumberFromName(number);
