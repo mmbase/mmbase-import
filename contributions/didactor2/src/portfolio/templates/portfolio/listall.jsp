@@ -16,21 +16,22 @@
 </mm:treeinclude>
 
 <div class="rows">
-
 <div class="navigationbar">
 <div class="titlebar">
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
+      <fmt:message key="PORTFOLIO" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
+    <fmt:message key="PORTFOLIO" />
+</div>
+  <div class="folderBody">
+  </div>
 </div>
 
-<div class="folderBody">
-</div>
-
-</div>
 
 <div class="mainContent">
 

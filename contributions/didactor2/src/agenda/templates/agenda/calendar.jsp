@@ -70,7 +70,8 @@ this stylesheet can be overridden in the same manner as other parts of the site.
 
 <%--    <link rel=StyleSheet href="<mm:treefile page="/agenda/css/calendar.css" objectlist="$includePath" referids="$referids"/>" type="text/css">--%>
     <cal:calendar view="month" language="nl" country="NL" date="<%=format.format(calendar.getTime())%>">
-      <di:usercalwriter />
+     <di:usercalwriter /> 
+    
       <table width=130 class="cal" cellspacing=0>
         <tr>
           <td bgcolor="#DDDDDD" align="center" class="calMonth">

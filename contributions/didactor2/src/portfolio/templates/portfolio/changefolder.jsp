@@ -61,23 +61,20 @@
 <div class="rows">
 
 <div class="navigationbar">
-  <div class="titlebar">
-    <mm:compare referid="typeof" value="1">
-      <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
-      <fmt:message key="MYDOCUMENTS" />
-    </mm:compare>
-    <mm:compare referid="typeof" value="2">
-      <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />" />
-      <fmt:message key="SHAREDDOCUMENTS" />
-    </mm:compare>
-  </div>
+<div class="titlebar">
+<img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
+<fmt:message key="PORTFOLIO" />
+</div>
 </div>
 
 <div class="folders">
-  <div class="folderHeader">
-  </div>
-  <div class="folderBody">
-  </div>
+
+<div class="folderHeader">
+<fmt:message key="PORTFOLIO" />
+</div>
+<div class="folderBody"></div>
+</div>
+
 </div>
 
 <div class="mainContent">
