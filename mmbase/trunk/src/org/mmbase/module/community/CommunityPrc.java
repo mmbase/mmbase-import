@@ -59,6 +59,9 @@ public class CommunityPrc extends ProcessorModule {
     private Message messageBuilder;
     private Channel channelBuilder;
     private Community communityBuilder;
+
+    private VirtualBuilder treeBuilder;
+
     private MMBase mmb;
 
     /**
@@ -78,7 +81,23 @@ public class CommunityPrc extends ProcessorModule {
         messageBuilder = (Message)mmb.getMMObject("message");
         channelBuilder = (Channel)mmb.getMMObject("channel");
         communityBuilder = (Community)mmb.getMMObject("community");
+        initializeTreeBuilder();
     }
+
+    /**
+     * Creates a virtual builder for adding functionality to the nodes
+     * of the LIST TREE command.
+     * The returned buuilder is a virtual wrapper around the messagebuilder.
+     * It includes a number of additional, virtual, fields.
+     * These fields are currently not configurable.
+     */
+    private void initializeTreeBuilder() {
+        treeBuilder = new VirtualRefererBuilder(messageBuilder);
+        treeBuilder.addField(new FieldDefs("list head","string", -1,-1,"listhead",FieldDefs.TYPE_STRING));
+        treeBuilder.addField(new FieldDefs("list tail","string", -1,-1,"listtail",FieldDefs.TYPE_STRING));
+        treeBuilder.addField(new FieldDefs("depth","integer", -1,-1,"depth",FieldDefs.TYPE_INTEGER));
+        treeBuilder.addField(new FieldDefs("nr of replies","integer", -1,-1,"replycount",FieldDefs.TYPE_INTEGER));
+    };
 
     /**
      * Handle a $MOD command.
@@ -195,18 +214,52 @@ public class CommunityPrc extends ProcessorModule {
     }
 
     /**
+     * Returns a virtual builder used to create node lists from the results
+     * returned by getList().
+     * The default method does not associate the builder with a cloud (mmbase module),
+     * so processormodules that need this association need to override this method.
+     * Note that different lists may return different builders.
+     * @param command the LIST command for which to retrieve the builder
+     * @param params contains the attributes for the list
+     */
+    public MMObjectBuilder getListBuilder(String command, Map params) {
+        if (command.equals("TREE")) return treeBuilder;
+        if (command.equals("WHO") || command.equals("TEMPORARYRELATIONS")) {
+            String type=(String)params.get("TYPE");
+            if (type!=null) {
+                return mmb.getMMObject(type);
+            }
+        }
+        return new VirtualBuilder(mmb);
+    }
+
+    /**
+     * Generates a list of values from a command to the processor.
+     * Recognized commands are TREE, WHO, and TEMPORARYRELATIONS.
+     * @param context the context of the page or calling application (currently, this should be a scanpage object)
+     * @param command the list command to execute.
+     * @param params contains the attributes for the list
+     * @return a <code>Vector</code> that contains the list values as MMObjectNodes
+     */
+    public Vector getNodeList(Object context, String command, Map params) throws ParseException {
+        if (command.equals("WHO")) return channelBuilder.getNodeListUsers(params);
+        if (command.equals("TEMPORARYRELATIONS")) return getNodeListTemporaryRelations(params);
+        return super.getNodeList(context,command,params);
+    }
+
+    /**
      * Generates a list of values from a command to the processor.
      * Recognized commands are TREE, WHO, and TEMPORARYRELATIONS.
      * If the command is not one of these, it returns null;
-     * @pram sp the page context
-     * @param tagger contains the attributes for teh list
-     * @param value the list command to execute.
+     * @param sp the page context
+     * @param params contains the attributes for the list
+     * @param command the list command to execute.
      * @return a <code>Vector</code> that contains the list values
      */
-    public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException {
-        if (value.equals("TREE")) return messageBuilder.getListMessages(tagger);
-        if (value.equals("WHO")) return channelBuilder.getListUsers(tagger);
-        if (value.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(sp, tagger);
+    public Vector getList(scanpage sp, StringTagger params, String command) throws ParseException {
+        if (command.equals("TREE")) return messageBuilder.getListMessages(params);
+        if (command.equals("WHO")) return channelBuilder.getListUsers(params);
+        if (command.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(params);
         return null;
     }
 
@@ -223,22 +276,12 @@ public class CommunityPrc extends ProcessorModule {
      * <li>FIELDS - The values of the fields to return.</li>
      * </ul>
      */
-    public Vector getListTemporaryRelations(scanpage sp, StringTagger tagger) {
-        Vector result = new Vector();
-        String number = tagger.Value("NODE");
-        MMObjectNode node;
-        if (number == null) {
-            log.warn("getListTemporaryRelations(): Can't find node: " + number);
-            return result;
-        }
-        if (number.indexOf("_") < 0)
-            node = messageBuilder.getNode(number);
-        else
-            node = (MMObjectNode)messageBuilder.TemporaryNodes.get(number);
-        Enumeration relatedNodes = messageBuilder.getTemporaryRelated(node, tagger.Value("TYPE")).elements();
+    public Vector getListTemporaryRelations(StringTagger params) {
+        Enumeration relatedNodes = getNodeListTemporaryRelations(params).elements();
         MMObjectNode relatedNode;
         Object value;
-        Vector fields = tagger.Values("FIELDS");
+        Vector result=new Vector();
+        Vector fields = params.Values("FIELDS");
         while (relatedNodes.hasMoreElements()) {
             relatedNode = (MMObjectNode)relatedNodes.nextElement();
             for (int i = 0; i < fields.size(); i++) {
@@ -247,5 +290,41 @@ public class CommunityPrc extends ProcessorModule {
             }
         }
         return result;
+    }
+
+    /**
+     * This function returns a vector, like LIST RELATED does, with the values
+     * of the specified fields of the related nodes to a specified node.
+     * Only the field values of nodes that are related via a temporary
+     * <code>insrel</code> object are returned.
+     * Both real and temporary nodes are returned.
+     * <ul>
+     * <li>&lt;LIST TEMPORARYRELATED NODE=&quot;...&quot; TYPE=&quot;...&quot; FIELDS=&quot;...&quot;&gt;</li>
+     * <li>NODE - The node to get the related nodes from.</li>
+     * <li>TYPE - The wanted type of nodes to return.</li>
+     * <li>FIELDS - The values of the fields to return.</li>
+     * </ul>
+     */
+    public Vector getNodeListTemporaryRelations(Map params) {
+        String number = (String)params.get("NODE");
+        MMObjectNode node;
+        if (number == null) {
+            log.warn("getListTemporaryRelations(): Can't find node: " + number);
+            return new Vector();
+        }
+        int offset=0;
+        String tmp = (String)params.get("FROMCOUNT");
+        if (tmp!=null) offset=Integer.parseInt(tmp);
+        int max=Integer.MAX_VALUE;
+        tmp = (String)params.get("MAXCOUNT");
+        if (tmp!=null) max=Integer.parseInt(tmp);
+
+        // reaaaaaallly ugly!
+        if (number.indexOf("_") < 0)
+            node = messageBuilder.getNode(number);
+        else
+            node = (MMObjectNode)messageBuilder.TemporaryNodes.get(number);
+        Vector relatedNodes = messageBuilder.getTemporaryRelated(node, (String)params.get("TYPE"),offset,max);
+        return relatedNodes;
     }
 }
