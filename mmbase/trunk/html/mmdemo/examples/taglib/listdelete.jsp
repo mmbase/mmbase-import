@@ -26,14 +26,16 @@
 <table>
   <tr>
     <td valign="top">
-      <mm:listnodes type="typedef" fields="name,description">
-	<A HREF="listdelete.jsp?nodemanager=<mm:field name="name"/>"><mm:field name="name"/></A><BR>
+      <mm:listnodes type="typedef">
+       <a href="<mm:url page="listdelete.jsp">
+                   <mm:param name="nodemanager"><mm:field name="name"/></mm:param>
+                </mm:url>"><mm:field name="name"/></a><br />
       </mm:listnodes>
     </td>
     <td valign="top">
       <mm:present referid="nodemanager">
         <table>
-          <mm:listnodes type="${nodemanager}" fields="number">
+          <mm:listnodes type="${nodemanager}">
             <mm:first>
               <tr>
                 <mm:fieldlist type="list">
@@ -50,7 +52,9 @@
                 </td>
               </mm:fieldlist>
               <td>
-                <a href='listdelete.jsp?nodemanager=<mm:write referid="nodemanager"/>&deletenumber=<%=number%>'>delete</a>
+                <a href="<mm:url page="listdelete.jsp" referids="nodemanager">
+							<mm:param name="deletenumber"><mm:field name="number" /></mm:param>
+                         </mm:url>">delete</a>
               </td>
             </tr>
           </mm:listnodes>
