@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.33 2004-08-18 10:46:06 rob Exp $
+ * @version $Id: StringHandler.java,v 1.34 2004-12-20 17:11:31 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -111,7 +111,12 @@ public class StringHandler extends AbstractTypeHandler {
                     } 
                 } else { // not 'field' perhaps it's 'string'.
                     if (guiType.indexOf("password") > -1) {
-                        buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
+                        buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
+                        String opt = tag.getOptions();
+                        if (opt != null && opt.indexOf("noautocomplete") > -1) { 
+                            buffer.append("autocomplete=\"off\" ");
+                        }
+                        buffer.append("name=\"");
                     } else {
                         buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
                     }

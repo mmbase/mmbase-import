@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.26 2004-04-23 13:37:11 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.27 2004-12-20 17:11:31 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -39,8 +39,11 @@ public abstract class AbstractTypeHandler implements TypeHandler {
 
     protected StringBuffer addExtraAttributes(StringBuffer buf) throws JspTagException {
         String options = tag.getOptions();
-        if (options != null && options.startsWith("extra:")) {
-            buf.append(" " + options.substring(6) + " ");
+        if (options != null) {
+            int i = options.indexOf("extra:");
+            if (i > -1) {
+                buf.append(" " + options.substring(i + 6) + " ");
+            }
         }
         return buf;
     }
