@@ -26,90 +26,141 @@
 			<revision>
 				<revnumber>0.1</revnumber>
 				<date>Undated</date>
-				<revremark>Eduard Witteveen, part of the context security document</revremark>
+				<authorinitials>EW</authorinitials>
+				<revremark>As part of the context security document</revremark>
 			</revision>
 			<revision>
 				<revnumber>0.2</revnumber>
 				<date>25 October 2002</date>
-				<revremark>Sjoerd de Heer, s.a.deheer@student.utwente.nl</revremark>
+				<authorinitials>SdH</authorinitials>
 			</revision>
 			<revision>
 				<revnumber>0.3</revnumber>
 				<date>30 January 2003</date>
-				<revremark>Henk Hangyi, hangyi@xs4all.nl</revremark>
+				<authorinitials>HH</authorinitials>
 			</revision>
 			<revision>
 				<revnumber>0.4</revnumber>
 				<date>07 February 2003</date>
-				<revremark>Pierre van Rooden. Made this a separate document.</revremark>
+				<authorinitials>PvR</authorinitials>
+				<revremark>Made this a separate document.</revremark>
 			</revision>
 		</revhistory>
 	</articleinfo>
 	<section id="introduction">
 		<title>Introduction</title>
 		<section id="requirements">
-			<title>Security framework within MMBase</title>
-			<para>Within MMBase is a security framework, in which different security implementations can be used. In this way it is possible to adapt MMBase to the needs of the environment in which it runs. Currently there are a few different implementations ready. The context security and the cloud security are the most advanced schemes available.</para>
+			<para>MMBase uses a security framework in which different security implementations can be used. This means that is possible to developer various types of security systems, adapting MMBase to the needs of the environment in which it runs. A number of default implementations are available in MMBase (such as the context security, documented elsewhere), but new ones can be developed and easily substituted using the security configuration files.</para>
+			<para>This document focuses on eth security framework. It falls in four parts.</para>
+			<para>The first part explains the general architecture, and the way security is used by MMBase. It explains what is possible in the approach we use and what isn't. It also comments on where security is used, and how it can be circumvented.</para>
+			<para>The second part explains how to configure the security framework, such as when you want to install an alternate security system.</para>
+			<para>The third part explains how to transparently use the security in scripts (the MMCI) or with the MBase taglib.</para>
+			<para>The final part is a few handouts on how to build your own security system.</para>
+		</section>
+	</section>
+	<section id="securityframework">
+		<title>The MMBase Security Framework</title>
+		<section>
+			<title>Overview of the MMBase Architecture</title>
+			<graphic fileref="media/architecture.png" />
+			<para>As the MMBase atchitecture image shows, the MMBase security franmework forms a layer between the MMBase core and the MMCI - the MMBase Cloud Interface which is used for external programs and applications to communicate with the system.</para>
+			<para>All communication through the MMCI uses the security layer, while the 'core classes' of the system generally don't. This allows the core to handle requests quickly, while maintaining security where it matters - in communication with external sources.</para>
+			<para>When a user connects to MMBase using an external application (such as the taglibs, a jsp servlet, or the editwizards), that application creates a session to maintain the state of the user. In other words: maintaining state is left to the external application. Security itself does not offer this functionality as it is dependent on the means of communication.</para>
+			<para>The application then authenticates the user through a call to the bridge, passing authentication parameters appropriate to the authentication module in use. Various authentication modules may exist - each offering a different way of athentication, and possibly a different measure of reliability or accountability.
+			</para>
+			<para>Once authenticated, the security passes a User object back, which contains the information required by the Authorisation module. The bridge encapsulates the user object in the Cloud object, whch is passed to the calling application. The application should then take care of storing the cloud in a session.
+			</para>
+			<para>The user object is passed by to the security system every time the bridge performs a security-sensitive operation. This is done automatically - a calling applicatuion need not perform any additional actions.
+			Operations are defined on the MMBase node-level. Any operation on a Node is security-sensitive: each time a node is read, created, written, deleted, or related to, the bridge checks whether the operation is allowed. Depending on context, the bridge then either causes an error or ignores the operation (for instance, when retrieving a list of nodes, the bridge will only return nodes the user may read, ignoring any nodes the user has no access to).
+			</para>
+			<para>
+			Whether rights are actually defined on node level is dependent on the system. Complex security systems may actually specify rights for infdividual users on individual nodes. Other systems may use a more general approach, i.e. allow all actions to logged on users of a certain rank, while allowing only read access to others.
+			</para>
+		</section>
+		<section>
+			<title>Authentication and Authentication Modules</title>
+			<para>Forthcoming...</para>
+		</section>
+		<section>
+			<title>Authorisation</title>
+			<para>Forthcoming...</para>
+		</section>
+		<section>
+			<title>User Information</title>
+			<para>Forthcoming...</para>
 		</section>
 	</section>
 	<section id="configuration">
-		<title>How to configure the security-framework</title>
+		<title>Configuring the Security Framework</title>
 		<tip>
-			<para>When you alter one of the xml files related to the security implementation the whole security implementation shall be reloaded within a minute. If there are errors within the configuration file a message shall be given and the old configuration will be kept active.</para>
+			<para>When you alter one of the security configuration files, the security system reloads itself within one minute. If there are errors in the configuration, an error message is issued, and the old configuration will be kept active.</para>
 		</tip>
 		<section id="general">
 			<title>General</title>
-			<para>The security framework makes it possible to use different implementations for security within MMBase. The implementation that will be used depends on the configuration file which can be found in your configuration directory and then in the sub-dir called security. The file security.xml is the file you are looking for. The file security.xml should look like this (All comment lines have been left out)</para>
+			<para>The security framework makes it possible to use different implementations for security within MMBase. The implementation is specified in the security configuration file. This file is called <filename>security.xml</filename> and can be found in the <filename>security</filename> subdirectory in the MMBase configuration directory.</para>
+			<para>The content of the configuration file should be similar to the following:</para>
 			<programlisting><![CDATA[
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE security PUBLIC "//MMBase - security//" "http://www.mmbase.org/dtd/security.dtd">
 <security active="true">
-	<authentication class="org.mmbase.security.implementation.context.ContextAuthentication" url="context/config.xml" />
-	<authorization class="org.mmbase.security.implementation.context.ContextAuthorization" url="context/config.xml" />
+	<authentication
+		class="org.mmbase.security.implementation.context.ContextAuthentication"
+		url="context/config.xml" />
+	<authorization
+		class="org.mmbase.security.implementation.context.ContextAuthorization"
+		url="context/config.xml" />
 	<sharedsecret>my_secret_acces_code</sharedsecret>
 </security>
 			]]></programlisting>
-			<para>Within this document you can alter the following items:</para>
+			<para>Within this document you can alter the following:</para>
 			<itemizedlist>
 				<listitem>
-					<para>/security[@active] : Valid values are &#39;true&#39; and &#39;false&#39;. If the value is set to true then the selected security shall be loaded. If the value is &#39;false&#39; then there will be no security implementation loaded, but the document will also not be checked for changes so no reloads will occur. [to do: what means the last part of the sentence]</para>
+					<formalpara>
+						<title><![CDATA[<security active="...">]]></title>
+						<para>The active attribute of the security tag determines whether security is active or not.
+						Valid values are &#39;true&#39; and &#39;false&#39;. If the value is set to &#39;true&#39; the security system (authentication and authorization classes) will be loaded and activated as described in the rest of the configuration. If the value is &#39;false&#39; no security implementation well be loaded. In this case, the security configuration file will not be checked for changes (so no reloads will occur if the configuration is changed).</para>
+						<informalexample>In the example above, the security is turned on.</informalexample>
+					</formalpara>
 				</listitem>
 				<listitem>
-					<para>/security/authentication[@class] : This denotes which implementation will be loaded as security. Setting this parameter to org.mmbase.security.NoAuthentication will disable authentication.</para>
+					<formalpara>
+						<title><![CDATA[<authentication class="..." url="..." />]]></title>
+						<para>This tag defines what class to use for executing authentication requests.</para>
+						<para>The <sgmltag class="attribute">class</sgmltag> attribute defines the path of the java class that should be used. The class follows a certain interface, so various implementations can be accessed in a similar way. If you use an alternate securirty sustem., you specify the classname here. If you want to turn off authentication, you can set the attribute to <classname>org.mmbase.security.NoAuthentication</classname>.</para>
+						<para>The <sgmltag class="attribute">url</sgmltag> attribute (which is optional) specifies the path to a configuration file, which is passed to the Authentication class. The path is relative to the <filename>security.xml</filename> configuration file.</para>
+						<informalexample>In the example above, the class used for authentication is <classname>org.mmbase.security.implementation.context.ContextAuthentication</classname> (which is the classname of the MMBase context security authentication class). The url of the configuration file is <filename>context/config.xml</filename>, which defines (for the purpose of authentication) users and their passwords.</informalexample>
+					</formalpara>
 				</listitem>
 				<listitem>
-					<para>/security/authentication[@url] : In this element you can give parameter for the security implementation like a configuration file for that security type.</para>
+					<formalpara>
+						<title><![CDATA[<authorization class="..." url="..." />]]></title>
+						<para>This tag defines what class to use for executing authentication requests.</para>
+						<para>The <sgmltag class="attribute">class</sgmltag> attribute defines the path of the java class that should be used. The class follows a certain interface, so various implementations can be accessed in a similar way. If you use an alternate securirty system, you specify the classname here. If you want to turn off authentication, you can set the attribute to <classname>org.mmbase.security.NoAuthorization</classname>.</para>
+						<para>The <sgmltag class="attribute">url</sgmltag> attribute (which is optional) specifies the path to a configuration file, which is passed to the Authentication class. The path is relative to the <filename>security.xml</filename> configuration file.</para>
+						<informalexample>In the example above, the class used for authentication is <classname>org.mmbase.security.implementation.context.ContextAuthorization</classname> (which is the classname of the MMBase context security authorization class). The url of the configuration file is <filename>context/config.xml</filename>, which defines (for the purpose of authorization) the rights of users and user groups</informalexample>
+					</formalpara>
 				</listitem>
 				<listitem>
-					<para>/security/authorization[@class] : The implementation that will check if the requested operation is valid for this user in MMBase. Setting this parameter to org.mmbase.security.NoAuthorization will disable authorization.</para>
-				</listitem>
-				<listitem>
-					<para>/security/authorization[@url] : Same as with authentication, you can give additional parameters here. Like the location of a configuration file.</para>
-				</listitem>
-				<listitem>
-					<para>/security/sharedsecret : It is possible to run more than one MMBase on the same data source if that is true then they will use this password to communicate.</para>
-				</listitem>
-			</itemizedlist>
-			<para>The security.xml shown above thus states that:</para>
-			<itemizedlist>
-				<listitem>
-					<para>&lt;security active="true"&gt;: the selected security systems shall be loaded</para>
-				</listitem>
-				<listitem>
-					<para>&lt;authentication class=&quot;org.mmbase.security.implementation.context.ContextAuthentication&quot; url=&quot;context/config.xml&quot; /&gt;: Context security is used to implementate the login procedure. The file config.xml defines the rights for users, groups and ranks.</para>
-				</listitem>
-				<listitem>
-					<para>&lt;authorization class=&quot;org.mmbase.security.implementation.context.ContextAuthorization&quot; url=&quot;context/config.xml&quot; /&gt;: Context security is used to for checking which operations a user is allowed to carry out inside MMBase. The file config.xml defines the rights for users, groups and ranks.</para>
-				</listitem>
-				<listitem>
-					<para>&lt;sharedsecret&gt;appelmoes&lt;/sharedsecret&gt;: When there are more MMBase installations running on this data source, they can communicate with each other if they also have "appelmoes " as their shared secret.</para>
+					<formalpara>
+						<title><![CDATA[<sharedsecret>...</sharedsecret>]]></title>
+						<para>It is possible to run more than one MMBase on the same database. The <sgmltag class="starttag">sharedsecret</sgmltag> tag contains a password which is used to autenticate servers when they attempt to communicate with each other.</para>
+						<informalexample>In teh above example, the shared secret is 'my_secret_acces_code'. Other MMBase installations which have the same shared secret can commuinicate with this system.</informalexample>
+					</formalpara>
 				</listitem>
 			</itemizedlist>
 		</section>
 	</section>
+	<section id="useage">
+		<title>Using the Security Framework</title>
+		<para>Forthcoming...</para>
+	</section>
+	<section id="implementation">
+		<title>Implementing Your Own Security System</title>
+		<para>Forthcoming...</para>
+	</section>
 	<section id="context_dtd">
-		<title>Framework DTD for security XML</title>
-		<para>This is the DTD om which the previous XML is based:</para>
+		<title>Framework DTD for the security configuration</title>
+		<para>This is the DTD of the security configuration file. You can use this DTD to validate your files.</para>
 		<programlisting><![CDATA[
 <!ELEMENT security ( authentication, authorization, sharedsecret ) >
 <!ATTLIST security active (true|false) #REQUIRED >
