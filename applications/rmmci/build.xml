@@ -112,8 +112,7 @@ Build-compiler: ${build.compiler}
          manifest="build/rmmcitmp/manifest.mf"
     >
        <fileset dir="build/classes">
-        <include name="org/mmbase/bridge/*.class"/>
-        <include name="org/mmbase/bridge/remote/**"/>
+        <include name="org/mmbase/**"/>
        </fileset>
        <fileset dir="build/rmmcitmp">
         <include name="org/w3c/dom/Document.class"/>
