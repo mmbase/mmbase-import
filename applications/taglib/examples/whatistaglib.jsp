@@ -14,8 +14,8 @@
         <xsl:import href="mm:xslt/mmxf2xhtml.xslt" />
         <xsl:param name="color">green</xsl:param>
         <xsl:template match = "section" >
-             <xsl:if test="count(ancestor::section)=0"><font color="{$color}"><h1><xsl:value-of select="@title" /></h1></font></xsl:if>
-             <xsl:if test="count(ancestor::section)=1"><font color="red"><b><xsl:value-of select="@title" /></b></font></xsl:if>
+             <xsl:if test="count(ancestor::section)=0"><h1 style="color:{$color};"><xsl:value-of select="@title" /></h1></xsl:if>
+             <xsl:if test="count(ancestor::section)=1"><h2 style="color:red;"><strong><xsl:value-of select="@title" /></strong></h2></xsl:if>
        <xsl:apply-templates select = "section|p|ul" />
         </xsl:template>        
       </mm:xslt>
@@ -57,7 +57,7 @@
     <a href="<mm:url page="showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
     <a href="http://java.sun.com/products/jsp/tags/11/tags11.html">JSP-syntax</a><br />
     <a href="<mm:url page="index.jsp" />">Taglib examples</a><br />
-    <a href="<mm:url page="/mmdocs/mmbase-taglib.html" />">Taglib documentation</a><br />
+    <a href="<mm:url page="/mmdocs/reference/taglib/toc.html" />">Taglib documentation</a><br />
 
   </body>
 </html>
