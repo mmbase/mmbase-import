@@ -417,7 +417,10 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
         return (currentItemIndex == 0);
     }
     
-    //keesj: please add comment
+    /** 
+     * If you order a list, then this the 'changed' property will be
+     * true if the field on which you order changed value.
+     **/
     public boolean isChanged() {
         return changed;
     }

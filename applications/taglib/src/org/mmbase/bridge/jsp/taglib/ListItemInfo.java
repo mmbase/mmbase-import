@@ -26,7 +26,8 @@ public interface ListItemInfo extends TagIdentifier{
 	public int getIndex();
 	
 	/**
-	* @return waiting for docs about this features
+	* @return a boolean indicating wether the field on which was
+        * sorted is changed.
 	**/
 	public boolean isChanged();
 }
