@@ -15,7 +15,7 @@ import java.util.*;
 
 public class startMMBase extends Object {
 
-	static String runnerVersion="0.2";
+	static String runnerVersion="0.3";
 	static String appserverVersion="Orion 1.4.5";
 	static String cmsVersion="MMBase 1.2.3";
 	static String databaseVersion="Hypersonic 2.3";
@@ -39,6 +39,7 @@ public class startMMBase extends Object {
 		// detect if this is the first startup
 		if (firstContact(curdir)) {
 			System.out.println("\nDetecting this is first run, need to ask a few questions.");
+			setupMMRunner(curdir);
 		}		
 
 		System.out.println("\n----- starting java with parameters  -----");
@@ -66,7 +67,7 @@ public class startMMBase extends Object {
 			System.out.println("Within seconds server can be found at http://127.0.0.1:4242");
 			String reply=executeSpawn(startupstring);	
 		}
-		
+
 	}
 
 
@@ -134,5 +135,151 @@ public class startMMBase extends Object {
 	static private boolean firstContact(String curdir) {
                 File f=new File(curdir+"/config/.timestamp");
                 return (!f.exists() || !f.isFile());
+	}
+	
+	static void setupMMRunner(String curdir) {
+		InputStreamReader input = new InputStreamReader(System.in);
+            	BufferedReader reader = new BufferedReader(input); 
+
+			// first get a valid hostname
+			String hostname=null;
+			while (hostname==null) {	
+				hostname=getConsoleQuestion(reader,"The ipname of your machine for example mybox.myisp.com","Hostname of this machine [localhost]");
+				if (hostname.equals("")) {
+					hostname="localhost";
+				}
+			}
+
+
+			// first get a valid machinename 
+			String machinename=null;
+			while (machinename==null) {	
+				machinename=getConsoleQuestion(reader,"The name of this mmbase in your cloud cluster","Name of this mmbase machine [mmbase1]");
+				if (machinename.equals("")) {
+					machinename="mmbase1";
+				}
+			}
+
+
+			int port=-1;
+			while (port==-1) {	
+				String tmp=getConsoleQuestion(reader,"The ip port the webserver needs to be running (80 - 65535)","Port [4242]");
+				if (tmp.equals("")) {
+					port=4242;
+				} else {
+					try {
+						port=Integer.parseInt(tmp);
+						if (port<80 || port>65535) {
+							port=-1;
+						}
+	
+					} catch(Exception e) {
+						port=-1;
+					}
+				}
+			}
+
+
+			int mport=-1;
+			while (mport==-1) {	
+				String tmp=getConsoleQuestion(reader,"The multicast port used to talk to other mmbase nodes (10000 - 65535)","Port [42420]");
+				if (tmp.equals("")) {
+					mport=42420;
+				} else {
+					try {
+						mport=Integer.parseInt(tmp);
+						if (mport<10000 || mport>65535 || port==mport) {
+							mport=-1;
+						}
+	
+					} catch(Exception e) {
+						mport=-1;
+					}
+				}
+			}
+
+
+			// first get new admin password
+			String password=null;
+			while (password==null) {	
+				password=getConsoleQuestion(reader,"The admin password for mmbase","password [admin2k]");
+				if (password.equals("")) {
+					password="admin2k";
+				}
+			}
+
+			// first get new mailing host
+			String mailhost=null;
+			while (mailhost==null) {	
+				mailhost=getConsoleQuestion(reader,"Your mailing host for example smtp.mmbase.org","mailhost [smtp.mmbase.org]");
+				if (mailhost.equals("")) {
+					mailhost="smtp.mmbase.org";
+				}
+			}
+
+
+			// oke now set all these new setting in each of the files
+			updateConfigFile(curdir+"/orion/config/default-web-site.xml","port=\"4242\"","port=\""+port+"\"");
+			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","42420",""+mport);
+			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","mmbase1",machinename);
+			updateConfigFile(curdir+"/config/modules/mmbaseroot.xml","localhost",hostname);
+			updateConfigFile(curdir+"/config/accounts.properties","admin2k",password);
+			updateConfigFile(curdir+"/config/modules/sendmail.xml","smtp.mmbase.org",mailhost);
+	}
+
+	static String getConsoleQuestion(BufferedReader reader,String help, String question) {
+		try {
+			System.out.println("\n"+help);
+			System.out.print(question+" : ");
+			return(reader.readLine());
+		} catch(Exception e) {
+			return(null);
+		}
+	}
+
+	private static boolean updateConfigFile(String file,String oldstring,String newstring) {
+		String body=loadFile(file);
+		int len=oldstring.length();
+		int pos=body.indexOf(oldstring);
+		if (pos!=-1) {
+			String newbody=body.substring(0,pos);
+			newbody+=newstring;
+			newbody+=body.substring(pos+len);
+			saveFile(file,newbody);
+		}
+		return(true);
+	}
+
+
+    static boolean saveFile(String filename,String value) {
+        File sfile = new File(filename);
+        try {
+            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+            scan.writeBytes(value);
+            scan.flush();
+            scan.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return(true);
+    }
+
+
+	static String loadFile(String filename) {
+		try {
+			File sfile = new File(filename);
+			FileInputStream scan =new FileInputStream(sfile);
+			int filesize = (int)sfile.length();
+			byte[] buffer=new byte[filesize];
+			int len=scan.read(buffer,0,filesize);
+			if (len!=-1) {
+				String value=new String(buffer,0);
+				return(value);
+			}
+			scan.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return(null);
 	}
 }
