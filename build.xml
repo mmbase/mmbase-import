@@ -100,7 +100,6 @@ several MMBase-checkouts.
   <property name="generated-source-src.dir"       location="${build.dir}/src"/>
   <property name="webapp.dir"           value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir"           value="${webapp.dir}/mmdocs"/>
-  <property name="reference.dir"        value="${webapp.dir}/mmdocs/reference"/>
   <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
   <property name="release.lib.dir"      value="${web.dir}/lib"/>
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
@@ -710,7 +709,6 @@ Build-compiler: ${build.compiler}
     <mkdir dir="${build.dir}/mmbase-src/docs"/>
     <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
-             sourcepath="${source-src.dir}"
              destdir="${build.dir}/mmbase-src/docs/api"
              author="true"
              version="true"
@@ -719,7 +717,12 @@ Build-compiler: ${build.compiler}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="100M"
+             source="1.4"
              bottom="MMBase build ${distro.version}.${builddate}">
+      <fileset dir="${source.dir}" defaultexcludes="yes">
+        <include name="src/**/*.java" />
+        <include name="applications/*/src/**/*.java" />
+      </fileset>
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
