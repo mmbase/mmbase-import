@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.46 2002-10-18 08:30:09 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.47 2002-10-18 08:40:06 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -244,7 +244,15 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public RelationManagerList getAllowedRelations() {
-       return getAllowedRelations(null,null,null);
+       return getAllowedRelations((NodeManager)null,null,null);
+    }
+
+    public RelationManagerList getAllowedRelations(String nodeManager, String role, String direction) {
+        if (nodeManager==null) {
+            return getAllowedRelations((NodeManager)null,role,direction);
+        } else {
+            return getAllowedRelations(cloud.getNodeManager(nodeManager),role,direction);
+        }
     }
 
     public RelationManagerList getAllowedRelations(NodeManager nodeManager, String role, String direction) {
