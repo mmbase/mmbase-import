@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if certain id is present in the parent context.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PresentTag.java,v 1.17 2003-09-10 11:16:10 michiel Exp $
+ * @version $Id: PresentTag.java,v 1.18 2004-03-19 23:19:35 michiel Exp $
  */
 
 public class PresentTag extends ContextReferrerTag implements Condition {
@@ -35,7 +35,7 @@ public class PresentTag extends ContextReferrerTag implements Condition {
 
     public int doStartTag() throws JspTagException {
         if ((getContextProvider().getContextContainer().isPresent(getReferid())) != getInverse()) {
-            return EVAL_BODY_BUFFERED; // EVAL_BODY_INCLUDE not supported by a lot of app-servers
+            return EVAL_BODY;
         } else {
             return SKIP_BODY;
         }
@@ -43,12 +43,14 @@ public class PresentTag extends ContextReferrerTag implements Condition {
 
     // not needed if EVAL_BODY_INCLUDE
     public int doAfterBody() throws JspTagException {
-        if (bodyContent != null) {
-            try{
-                if(bodyContent != null)
-                    bodyContent.writeOut(bodyContent.getEnclosingWriter());
-            } catch(java.io.IOException e){
-                throw new TaglibException(e);
+        if (EVAL_BODY == EVAL_BODY_BUFFERED) {
+            if (bodyContent != null) {
+                try{
+                    if(bodyContent != null)
+                        bodyContent.writeOut(bodyContent.getEnclosingWriter());
+                } catch(java.io.IOException e){
+                    throw new TaglibException(e);
+                }
             }
         }
         return EVAL_PAGE;
