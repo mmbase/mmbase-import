@@ -50,7 +50,7 @@ import org.w3c.dom.Document;
  * </pre>
  *
  * @author Cees Roele
- * @version $Id: Config.java,v 1.22 2004-02-09 13:50:33 pierre Exp $
+ * @version $Id: Config.java,v 1.23 2004-03-26 14:59:20 michiel Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -140,7 +140,7 @@ public class Config extends ProcessorModule {
      * @return Whether a database mapping file is for the active DBMS
      */
     public boolean databaseIsActive(String path) {
-        XMLProperties xmlReader = XMLProperties.getPropertiesFromXML(mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml");
+        XMLProperties xmlReader = XMLProperties.getPropertiesFromXML(MMBaseContext.getConfigPath() + File.separator + "modules" + File.separator + "mmbaseroot.xml");
 
         String curdb = (String)xmlReader.get("DATABASE");
         return path.indexOf(curdb) > 0;
