@@ -9,7 +9,16 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
-$Id: remoteXML.java,v 1.12 2001-03-22 17:30:49 vpro Exp $
+Revision 1.12  2001/03/22 17:30:49  vpro
+Davzev: First off added some better docs for this servlet.
+Second, when a new RemoteBuilder node is send through either a GET or POST,
+an insert will be done using one method instead of copy/pasted code.
+When unknown node requests (GET/POST) come in  that arent of type ServiceBuilder,
+they will be ignored and request will be cancelled.
+All other node requests that can be find in mmbase will be handled correctly.
+Finally, I removed some weird vpro specific code.
+
+$Id: remoteXML.java,v 1.13 2001-03-30 09:50:40 install Exp $
 */
 package org.mmbase.servlet;
  
@@ -34,7 +43,7 @@ import org.mmbase.module.core.*;
  * The buildertypename eg. cdplayers, serviceName(cdplayersnode.name) eg. CDROM-1
  * - An incoming POST request looks like: "/remoteXML.db POST"
  * 
- * @version $Revision: 1.12 $ $Date: 2001-03-22 17:30:49 $
+ * @version $Revision: 1.13 $ $Date: 2001-03-30 09:50:40 $
  */
 public class remoteXML extends JamesServlet {
 	private boolean debug = true;
@@ -57,6 +66,10 @@ public class remoteXML extends JamesServlet {
 	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
 		incRefCount(req);
 		try {
+			String sharedsecret = req.getHeader("sharedSecret");
+			debug("Sharedsecret = "+sharedsecret);
+			// Check secret here
+			
 			if (req.getMethod().equals("POST")) {
 				if (debug) debug("service: Incoming request: POST");
 				handlePost(req,res);
