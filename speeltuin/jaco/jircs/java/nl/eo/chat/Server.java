@@ -59,6 +59,12 @@ public class Server extends HttpServlet implements Runnable {
         serverThread.start();
     }
 
+    public void destroy() {
+        Server.log.info("Servlet destroy begin.");
+        shutdown();
+        Server.log.info("Servlet destroy end.");
+    }
+
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Usage: chat.jar <properties file>");
@@ -111,6 +117,61 @@ public class Server extends HttpServlet implements Runnable {
             }
         }
         Runtime.getRuntime().exit(0);
+    }
+
+    public static void shutdown() {
+        log.info("Shutdown started.");
+        stop = true;
+        int attempts = 10;
+        boolean chatEngineIsAlive = chatEngineThread.isAlive();
+        boolean flashConnectionBuilderIsAlive = flashConnectionBuilderThread.isAlive();
+        boolean ircConnectionBuilderIsAlive = ircConnectionBuilderThread.isAlive();
+        int busyIncomingFlashTranslators = incomingFlashTranslatorPool.getBusyThreads();
+        int busyOutgoingFlashTranslators = outgoingFlashTranslatorPool.getBusyThreads();
+        int busyIncomingIrcTranslators = incomingIrcTranslatorPool.getBusyThreads();
+        int busyOutgoingIrcTranslators = outgoingIrcTranslatorPool.getBusyThreads();
+        while (chatEngineIsAlive || flashConnectionBuilderIsAlive || ircConnectionBuilderIsAlive
+                || busyIncomingFlashTranslators > 0 || busyOutgoingFlashTranslators > 0
+                || busyIncomingIrcTranslators > 0 || busyOutgoingIrcTranslators > 0) {
+            log.info("Waiting max " + attempts + " attempts for the following threads to stop:");
+            if (chatEngineIsAlive) {
+                log.info("Chat engine.");
+            }
+            if (flashConnectionBuilderIsAlive) {
+                log.info("Flash connection builder.");
+            }
+            if (ircConnectionBuilderIsAlive) {
+                log.info("IRC connection builder.");
+            }
+            if (busyIncomingFlashTranslators > 0) {
+                log.info(busyIncomingFlashTranslators + " incoming Flash translators.");
+            }
+            if (busyOutgoingFlashTranslators > 0) {
+                log.info(busyOutgoingFlashTranslators + " outgoing Flash translators.");
+            }
+            if (busyIncomingIrcTranslators > 0) {
+                log.info(busyIncomingIrcTranslators + " incoming IRC translators.");
+            }
+            if (busyOutgoingIrcTranslators > 0) {
+                log.info(busyOutgoingIrcTranslators + " outgoing IRC translators.");
+            }
+            try {
+                 Thread.currentThread().sleep(5000);
+            } catch(InterruptedException e) {
+            }
+            chatEngineIsAlive = chatEngineThread.isAlive();
+            flashConnectionBuilderIsAlive = flashConnectionBuilderThread.isAlive();
+            ircConnectionBuilderIsAlive = ircConnectionBuilderThread.isAlive();
+            busyIncomingFlashTranslators = incomingFlashTranslatorPool.getBusyThreads();
+            busyOutgoingFlashTranslators = outgoingFlashTranslatorPool.getBusyThreads();
+            busyIncomingIrcTranslators = incomingIrcTranslatorPool.getBusyThreads();
+            busyOutgoingIrcTranslators = outgoingIrcTranslatorPool.getBusyThreads();
+            attempts--;
+            if (attempts == 0) {
+                Runtime.getRuntime().halt(0);
+            }
+        }
+        log.info("All threads are done.");
     }
 
     private static boolean createPools() {
@@ -177,58 +238,9 @@ class ShutdownThread extends Thread {
     }
 
     public void run() {
-        Server.log.info("Shutdown started.");
-        Server.stop = true;
-        int attempts = 10;
-        boolean chatEngineIsAlive = Server.chatEngineThread.isAlive();
-        boolean flashConnectionBuilderIsAlive = Server.flashConnectionBuilderThread.isAlive();
-        boolean ircConnectionBuilderIsAlive = Server.ircConnectionBuilderThread.isAlive();
-        int busyIncomingFlashTranslators = Server.incomingFlashTranslatorPool.getBusyThreads();
-        int busyOutgoingFlashTranslators = Server.outgoingFlashTranslatorPool.getBusyThreads();
-        int busyIncomingIrcTranslators = Server.incomingIrcTranslatorPool.getBusyThreads();
-        int busyOutgoingIrcTranslators = Server.outgoingIrcTranslatorPool.getBusyThreads();
-        while (chatEngineIsAlive || flashConnectionBuilderIsAlive || ircConnectionBuilderIsAlive
-                || busyIncomingFlashTranslators > 0 || busyOutgoingFlashTranslators > 0
-                || busyIncomingIrcTranslators > 0 || busyOutgoingIrcTranslators > 0) {
-            Server.log.info("Waiting max " + attempts + " attempts for the following threads to stop:");
-            if (chatEngineIsAlive) {
-                Server.log.info("Chat engine.");
-            }
-            if (flashConnectionBuilderIsAlive) {
-                Server.log.info("Flash connection builder.");
-            }
-            if (ircConnectionBuilderIsAlive) {
-                Server.log.info("IRC connection builder.");
-            }
-            if (busyIncomingFlashTranslators > 0) {
-                Server.log.info(busyIncomingFlashTranslators + " incoming Flash translators.");
-            }
-            if (busyOutgoingFlashTranslators > 0) {
-                Server.log.info(busyOutgoingFlashTranslators + " outgoing Flash translators.");
-            }
-            if (busyIncomingIrcTranslators > 0) {
-                Server.log.info(busyIncomingIrcTranslators + " incoming IRC translators.");
-            }
-            if (busyOutgoingIrcTranslators > 0) {
-                Server.log.info(busyOutgoingIrcTranslators + " outgoing IRC translators.");
-            }
-            try {
-                 Thread.currentThread().sleep(5000);
-            } catch(InterruptedException e) {
-            }
-            chatEngineIsAlive = Server.chatEngineThread.isAlive();
-            flashConnectionBuilderIsAlive = Server.flashConnectionBuilderThread.isAlive();
-            ircConnectionBuilderIsAlive = Server.ircConnectionBuilderThread.isAlive();
-            busyIncomingFlashTranslators = Server.incomingFlashTranslatorPool.getBusyThreads();
-            busyOutgoingFlashTranslators = Server.outgoingFlashTranslatorPool.getBusyThreads();
-            busyIncomingIrcTranslators = Server.incomingIrcTranslatorPool.getBusyThreads();
-            busyOutgoingIrcTranslators = Server.outgoingIrcTranslatorPool.getBusyThreads();
-            attempts--;
-            if (attempts == 0) {
-                Runtime.getRuntime().halt(0);
-            }
-        }
-        Server.log.info("All threads are done.");
+        Server.log.info("Shutdown hook begin.");
+        Server.shutdown();
+        Server.log.info("Shutdown hook end.");
     }
 
 }
