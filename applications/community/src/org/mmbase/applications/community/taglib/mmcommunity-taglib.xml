@@ -109,12 +109,12 @@
       <rtexprvalue>true</rtexprvalue>
       <info>The tagname to use for the opening tags when creating the content of listhead and listtail.</info>
       <examplevalue>
-        <value>u</value>
+        <value>ul</value>
         <info>Replies of a message start a new (nested) unordered list. Default</info>
       </examplevalue>
       <examplevalue>
-        <value>blockquote</value>
-        <info>Replies of a message are nested in blockquotes</info>
+        <value>blockquote class='indent'</value>
+        <info>Replies of a message are nested in blockquotes, with the 'indent' CSS class</info>
       </examplevalue>
     </attribute>
     <attribute>
@@ -123,7 +123,7 @@
       <rtexprvalue>true</rtexprvalue>
       <info>The tagname to use for the ending tags when creating the content of listhead and listtail.</info>
       <examplevalue>
-        <value>u</value>
+        <value>ul</value>
         <info>Replies of a message start a new (nested) unordered list. Default</info>
       </examplevalue>
       <examplevalue>
@@ -253,14 +253,14 @@
       <name>node</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	  <info>The 'id' of the node or list from which this field must be taken.
+    <info>The 'id' of the node or list from which this field must be taken.
           By default this is the node or list which is enclosing this field.</info>
     </attribute>
     <attribute>
       <name>key</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
- 	  <info>The key of the attribute to retrieve.</info>
+    <info>The key of the attribute to retrieve.</info>
       <examplevalue>
         <value>name</value>
         <info>The name of the author</info>
@@ -270,7 +270,7 @@
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
- 	  <info>The name of a jsp variable which will contain the reqiested value.
+    <info>The name of a jsp variable which will contain the reqiested value.
       If not provided, the value will be printed to the page at the start of the body of the tag.
       The variable is only available within the tag's body.</info>
     </attribute>
@@ -290,7 +290,7 @@
       <name>node</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-	  <info>The 'id' of the node or list from which this field must be taken.
+    <info>The 'id' of the node or list from which this field must be taken.
           By default this is the node or list which is enclosing this field.</info>
     </attribute>
     <attribute>
@@ -303,7 +303,7 @@
       <name>key</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
- 	  <info>The key of the attribute to set.</info>
+    <info>The key of the attribute to set.</info>
       <examplevalue>
         <value>name</value>
         <info>The name of the author</info>
@@ -326,8 +326,8 @@
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
- 	  <info>The name of a jsp variable which will contain the numbe rof the enwly posted message.
- 	  The variable is accessible from the endtag of the tag and onward. Only applies to forums.</info>
+    <info>The name of a jsp variable which will contain the numbe rof the enwly posted message.
+    The variable is accessible from the endtag of the tag and onward. Only applies to forums.</info>
     </attribute>
     <example>&lt;mmcommunity:post&gt;
   &lt;mm:setfield name="channel"&gt;178&lt;/mm:setfield&gt;
@@ -372,40 +372,40 @@
         <name>message</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the message node in MMBase.
-	</info>
+  <info>
+    The nodenumber or alias identifying the message node in MMBase.
+  </info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -421,40 +421,40 @@
         <name>channel</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the channel node in MMBase.
-	</info>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+  </info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -470,19 +470,19 @@
         <name>channel</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the channel node in MMBase.
-	  When not supplied, the parent node is used instead.
-	</info>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
@@ -490,17 +490,17 @@
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	    <info>
-	     Refers to a node earlier marked with 'id'.
-        </info>	
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
     </attribute>
     <attribute>
         <name>action</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
+  <info>
           Determines whether a channel should be opened, closed, or opened read-only.
-	</info>
+  </info>
       <possiblevalue>
         <value>open</value>
         <info>Opens the channel. Default</info>
@@ -518,22 +518,22 @@
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -549,19 +549,19 @@
         <name>community</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the community node in MMBase.
-	  When not supplied, the parent node is used instead.
-	</info>
+  <info>
+    The nodenumber or alias identifying the community node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
@@ -569,17 +569,17 @@
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	    <info>
-	     Refers to a node earlier marked with 'id'.
-        </info>	
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
     </attribute>
     <attribute>
         <name>action</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
+  <info>
           Determines whether the community's channels should be opened, or closed.
-	</info>
+  </info>
       <possiblevalue>
         <value>open</value>
         <info>Opens the channel. Default</info>
@@ -593,22 +593,22 @@
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -624,18 +624,18 @@
         <name>channel</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the channel node in MMBase.
-	  When not supplied, the parent node is used instead.
-	</info>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
     </attribute>
     <attribute>
         <name>condition</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The condition to test the state of the channel to
-	</info>
+  <info>
+    The condition to test the state of the channel to
+  </info>
       <possiblevalue>
         <value>open</value>
         <info>Channel is open. Default</info>
@@ -653,7 +653,7 @@
       <name>reverse</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
- 	  <info>If true, the body tag is evaluated if the condition does NOT evaluate to true.</info>
+    <info>If true, the body tag is evaluated if the condition does NOT evaluate to true.</info>
       <possiblevalue>
         <value>true</value>
         <info>Reverse the condition</info>
@@ -667,10 +667,10 @@
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
@@ -678,30 +678,30 @@
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	    <info>
-	     Refers to a node earlier marked with 'id'.
-        </info>	
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -717,25 +717,25 @@
         <name>channel</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the channel node in MMBase.
-	</info>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+  </info>
     </attribute>
     <attribute>
         <name>file</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Filename to log to
-	</info>
+  <info>
+    Filename to log to
+  </info>
     </attribute>
     <attribute>
         <name>action</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
+  <info>
           Determines whether logging should be started or stopped.
-	</info>
+  </info>
       <possiblevalue>
         <value>file</value>
         <info>Start logging to the indicated file. Default</info>
@@ -749,10 +749,10 @@
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
@@ -760,30 +760,30 @@
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	    <info>
-	     Refers to a node earlier marked with 'id'.
-        </info>	
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -799,18 +799,18 @@
         <name>channel</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the channel node in MMBase.
-	</info>
+  <info>
+    The nodenumber or alias identifying the channel node in MMBase.
+  </info>
     </attribute>
     <attribute>
         <name>id</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
         </info>
     </attribute>
     <attribute>
@@ -818,30 +818,30 @@
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	    <info>
-	     Refers to a node earlier marked with 'id'.
-        </info>	
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
@@ -858,26 +858,26 @@
         <name>user</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the user node in MMBase.
-	  When not supplied, the parent node is used instead.
-	</info>
+  <info>
+    The nodenumber or alias identifying the user node in MMBase.
+    When not supplied, the parent node is used instead.
+  </info>
     </attribute>
     <attribute>
         <name>channel</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The nodenumber or alias identifying the channel node to connect to.
-	</info>
+  <info>
+    The nodenumber or alias identifying the channel node to connect to.
+  </info>
     </attribute>
     <attribute>
         <name>action</name>
         <required>false</required>
          <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The type of connection to perform.
-	</info>
+  <info>
+    The type of connection to perform.
+  </info>
       <possiblevalue>
         <value>stillactive</value>
         <info>Notify the channel that the user is still active. Default</info>
@@ -896,41 +896,41 @@
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
-        </info>	
+  <info>
+    With the 'id' attribute you define an unique identifier for
+    this node. At the same time this defines an jsp 'Node'
+    variable with this name.
+        </info>
     </attribute>
     <attribute>
         <name>referid</name>
         <required>false</required>
         <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
-	    <info>
-	     Refers to a node earlier marked with 'id'.
-        </info>	
+      <info>
+       Refers to a node earlier marked with 'id'.
+        </info>
     </attribute>
     <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  Create a JSP variable with this in the body. If you have defined 'fields' too,
-	  then these fields will have jsp-variables prefixed with
-	  jspvar and an underscore.
-	</info>
+  <info>
+    Create a JSP variable with this in the body. If you have defined 'fields' too,
+    then these fields will have jsp-variables prefixed with
+    jspvar and an underscore.
+  </info>
     </attribute>
     <attribute>
         <name>fields</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this 'fields' attribute will
-	  also get a jsp-variable.
-	</info>
+  <info>
+    The fields you want to have from this node. Other fields are
+    available as well, but will only be accessible with the
+    field-tag. Field indicated in this 'fields' attribute will
+    also get a jsp-variable.
+  </info>
     </attribute>
   </tag>
 
