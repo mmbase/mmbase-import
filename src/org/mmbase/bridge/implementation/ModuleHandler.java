@@ -70,43 +70,22 @@ public class ModuleHandler implements Module {
         }
     }
 
- 	/**
-     * Retrieves the Cloud to which this module belongs
-     */
     public CloudContext getCloudContext() {
         return cloudContext;
     }
 
-	/**
-     * Retrieve the name of the module
-     */
     public String getName() {
         return mmbase_module.getName();
     }
 
-	/**
-	 * Retrieve the description of the module.
-	 */
 	public String getDescription() {
         return mmbase_module.getModuleInfo();
     }
 
-	/**
-	 * Retrieve info from a module based on a command string.
-	 * Similar to the $MOD command in SCAN.
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 */
 	public String getInfo(String command) {
 	    return getInfo(command, null,null);
 	}
 
-	/**
-	 * Retrieve info from a module based on a command string
-	 * Similar to the $MOD command in SCAN.
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 * @param req the Request item to use for obtaining user information. For backward compatibility.
-	 * @param resp the Response item to use for redirecting users. For backward compatibility.
-	 */
 	public String getInfo(String command, ServletRequest req,  ServletResponse resp){
 	    if (mmbase_module instanceof ProcessorInterface) {
 	        return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
@@ -115,26 +94,10 @@ public class ModuleHandler implements Module {
 	    }
 	}
 	
-	/**
-	 * Retrieve info (as a list of virtual nodes) from a module based on a command string.
-	 * Similar to the LIST command in SCAN.
-	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 * @param parameters a hashtable containing the named parameters of the list.
-	 */
 	public NodeList getList(String command, Hashtable parameters){
 	    return getList(command,parameters,null,null);
 	}
 
-	/**
-	 * Retrieve info from a module based on a command string
-	 * Similar to the LIST command in SCAN.
-	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 * @param parameters a hashtable containing the named parameters of the list.
-	 * @param req the Request item to use for obtaining user information. For backward compatibility.
-	 * @param resp the Response item to use for redirecting users. For backward compatibility.
-	 */
 	public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
 	    if (mmbase_module instanceof ProcessorInterface) {
 	        Cloud cloud=null;
@@ -191,16 +154,16 @@ public class ModuleHandler implements Module {
 	}
 
     /**
-    * Compares two modules, and returns true if they are equal.
-    * @param o the object to compare it with
-    */
+     * Compares two modules, and returns true if they are equal.
+     * @param o the object to compare it with
+     */
     public boolean equals(Object o) {
         return (o instanceof Module) && (o.hashCode()==hashCode());
     };
 
     /**
-    * Returns the module's hashCode.
-    */
+     * Returns the module's hashCode.
+     */
     public int hashCode() {
         return mmbase_module.hashCode();
     };

@@ -14,7 +14,6 @@ import org.mmbase.module.core.*;
 import java.util.*;
 
 /**
- * A relation within the cloud.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -41,28 +40,18 @@ public class BasicRelation extends BasicNode implements Relation {
   	    temporaryNodeId=id;
   	}
 
-	/**
-	 * Retrieves the source of the relation
-	 * Note that this will not return an accurate value when the field is edited during a transaction.
-	 * @return the source node
-	 */
 	public Node getSource() {
+        // Note that this will not return an accurate value when the field is
+        // edited during a transaction.
 	    return nodeManager.getCloud().getNode(snum);
 	}
 
-	/**
-	 * Retrieves the destination of the relation.
-	 * Note that this will not return an accurate value when the field is edited during a transaction.
-	 * @return the destination node
-	 */
 	public Node getDestination() {
+	    // Note that this will not return an accurate value when the field is
+        // edited during a transaction.
 	    return nodeManager.getCloud().getNode(dnum);
 	}
 
-	/** 
-	 * Set the source of the relation.
-	 * @param the source node
-	 */
 	public void setSource(Node node) {
         if (node.getCloud() != cloud) {
             throw new BasicBridgeException("Source and relation are not in the same transaction or from different clouds");
@@ -79,10 +68,6 @@ public class BasicRelation extends BasicNode implements Relation {
 	    snum=node.getNumber();
 	}
 
-	/**
-	 * Set the destination of the relation
-	 * @param the destination node
-	 */
 	public void setDestination(Node node) {
         if (node.getCloud() != cloud) {
             throw new BasicBridgeException("Destination and relation are not in the same transaction or from different clouds");
@@ -99,10 +84,6 @@ public class BasicRelation extends BasicNode implements Relation {
 	    dnum=node.getNumber();
 	}
 
- 	/**
-     * Retrieves the RelationManager used.
-     * @return the RelationManager
-     */
     public RelationManager getRelationManager() {
         if (relationManager==null) {
   	        int stypenum=mmb.getTypeRel().getNodeType(snum);
@@ -113,18 +94,18 @@ public class BasicRelation extends BasicNode implements Relation {
     }
 
     /**
-    * Compares two relations, and returns true if they are equal.
-    * This effectively means that both objects are relations, and they both refer to the same objectnode
-    * @param o the object to compare it with
-    */
+     * Compares two relations, and returns true if they are equal.
+     * This effectively means that both objects are relations, and they both refer to the same objectnode
+     * @param o the object to compare it with
+     */
     public boolean equals(Object o) {
         return (o instanceof Relation) && (o.hashCode()==hashCode());
     };
 
     /**
-    * Returns the object's hashCode.
-    * This effectively returns th objectnode's number
-    */
+     * Returns the object's hashCode.
+     * This effectively returns th objectnode's number
+     */
     public int hashCode() {
         return getNumber();
     };
