@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.storage.search.Constraint;
 
 
@@ -22,7 +23,7 @@ import org.mmbase.storage.search.Constraint;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: LongHandler.java,v 1.7 2004-01-19 17:22:10 michiel Exp $
+ * @version $Id: LongHandler.java,v 1.8 2004-05-26 21:58:21 michiel Exp $
  */
 
 public class LongHandler extends AbstractTypeHandler {
@@ -75,5 +76,15 @@ public class LongHandler extends AbstractTypeHandler {
         } 
         return super.whereHtmlInput(field, query);
     }       
+
+    public void paramHtmlInput(ParamHandler handler, Field field) throws JspTagException  {
+        String guiType = field.getGUIType();      
+        if (guiType.equals("eventtime")) {
+            dateHandler.paramHtmlInput(handler, field);
+        } else {
+            super.paramHtmlInput(handler, field);
+        }
+    }
+
 
 }
