@@ -78,7 +78,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	}
 
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		debug("sees that : "+number+" has changed type="+ctype);
+		// debug("sees that : "+number+" has changed type="+ctype);
 		return(true);
 	}
 
@@ -92,7 +92,7 @@ public class PageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfac
 	}
 
 	public boolean fileChange(String number, String ctype) {
-		debug("fileChange="+number+" "+ctype);
+		// debug("fileChange="+number+" "+ctype);
 		// first get the change node so we can see what is the matter with it.
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		MMObjectNode filenode=bul.getNode(number);
