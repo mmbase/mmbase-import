@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urls exportsource="mmbase://localhost/mmbase/richtext" timestamp="20021109011559">
+	<node number="272" owner="system">
+		<name>blokje bolletje</name>
+		<url>http://www.omroep.nl</url>
+		<description>Omroep.nl blokje bolletje en zo.</description>
+	</node>
+
+	<node number="356" owner="system">
+		<name></name>
+		<url>http://www.nos.nl</url>
+		<description>De site van de NOS!</description>
+	</node>
+
+	<node number="4380" owner="system">
+		<name>Leefbaar Nederland</name>
+		<url>http://www.leefbaar-nederland.nl</url>
+		<description>De website van leefbaar Nederland (Pas op, begin met veel kabaal)</description>
+	</node>
+
+</urls>
