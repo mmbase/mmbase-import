@@ -416,12 +416,24 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     final public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttribute(w));
     }
+
+    final public void setEscape(String e) throws JspTagException {
+        helper.setEscape(getAttribute(e));
+    }
+
     final public Object getWriterValue() {
         return helper.getValue();
     }
     final public void haveBody() { helper.haveBody(); }
 
-
+    public ContentTag getContentTag() throws JspTagException {
+        ContentTag ct = (ContentTag) findParentTag(ContentTag.class, null, false);
+        if (ct == null) {
+            return ContentTag.DEFAULT;
+        } else {
+            return ct;
+        }
+    }
      
 
 }
