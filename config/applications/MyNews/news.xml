@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <news exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
-	<node number="8506" owner="system">
+	<node number="8506" owner="system" alias="a.news.article">
 		<body>The XML based MMBase distribution is now available at http://www.mmbase.org/download.
 Significant improvements have been made in the XML project, such as multiple language support. The editors now support English, French, and Dutch.  
 Database specific information was removed from the builder configuration files. This makes it possible to place extra builders on the www.mmbase.org site that can be downloaded when needed and used without any modification.
