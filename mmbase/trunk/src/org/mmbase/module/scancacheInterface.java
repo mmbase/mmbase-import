@@ -12,6 +12,7 @@ package org.mmbase.module;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.*;
+import org.mmbase.util.scanpage;
 
 /**
  * File cache system interface.
@@ -39,7 +40,7 @@ public interface scancacheInterface {
      * @return the cached content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
      */
-    public String get(String pool,String key);
+    public String get(String pool,String key,scanpage sp);
 
     /**
      * Retrieve a file from the indicated pool's cache.
@@ -49,7 +50,7 @@ public interface scancacheInterface {
      * @return the cached content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
      */
-    public String get(String pool,String key,String line);
+    public String get(String pool,String key,String line,scanpage sp);
 
     /**
      * Retrieve a file from the indicated pool's cache.
@@ -59,7 +60,7 @@ public interface scancacheInterface {
      * @return the cached content as a string, or <code>null</code> if no entry was found
      *     (i.e. cache was empty or poolname was invalid).
      */
-    public String getNew(String pool,String key,String line);
+    public String getNew(String pool,String key,String line,scanpage sp);
 
     /**
      * Store a file in the indicated pool's cache.
