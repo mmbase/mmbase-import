@@ -14,7 +14,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class QueryConvertorTest extends TestCase {
     
@@ -55,7 +55,7 @@ public class QueryConvertorTest extends TestCase {
     /** Test of setConstraint() method, of class org.mmbase.util.QueryConvertor. */
     public void testSetConstraint() {
         List tables = Arrays.asList(
-            new Object[] {"pools", "related", "images", "insrel", "pools0"});
+            new Object[] {"news", "related", "images", "insrel", "news0"});
         List empty = new ArrayList(0);
         BasicSearchQuery query = clusterBuilder.getMultiLevelSearchQuery(
             empty, empty, null, tables, null, 
@@ -64,7 +64,7 @@ public class QueryConvertorTest extends TestCase {
         // Altavista format.
         altaVistaSearchQueryTests();
         QueryConvertor.setConstraint(query, 
-            "pools.name=E'test1'+related.number=E10+images.number=E10+pools0.name=E'test2'");
+            "news.title=E'test1'+related.number=E10+images.number=E10+news0.title=E'test2'");
         CompositeConstraint composite 
             = (CompositeConstraint) query.getConstraint();
         assertTrue(composite.getLogicalOperator() 
@@ -74,11 +74,11 @@ public class QueryConvertorTest extends TestCase {
         FieldValueConstraint constraint0 
             = (FieldValueConstraint) constraints.get(0);
         assertTrue(constraint0.toString(), 
-            constraint0.getField().getStep().getTableName().equals("pools"));
+            constraint0.getField().getStep().getTableName().equals("news"));
         assertTrue(constraint0.toString(), 
-            constraint0.getField().getStep().getAlias().equals("pools"));
+            constraint0.getField().getStep().getAlias().equals("news"));
         assertTrue(constraint0.toString(), 
-            constraint0.getField().getFieldName().equals("name"));
+            constraint0.getField().getFieldName().equals("title"));
         assertTrue(constraint0.getField().toString(), 
             constraint0.getField().getAlias() == null);
         assertTrue(constraint0.toString(), 
@@ -118,11 +118,11 @@ public class QueryConvertorTest extends TestCase {
         FieldValueConstraint constraint3 
             = (FieldValueConstraint) constraints.get(3);
         assertTrue(constraint3.toString(), 
-            constraint3.getField().getStep().getTableName().equals("pools"));
+            constraint3.getField().getStep().getTableName().equals("news"));
         assertTrue(constraint3.toString(), 
-            constraint3.getField().getStep().getAlias().equals("pools0"));
+            constraint3.getField().getStep().getAlias().equals("news0"));
         assertTrue(constraint3.toString(), 
-            constraint3.getField().getFieldName().equals("name"));
+            constraint3.getField().getFieldName().equals("title"));
         assertTrue(constraint3.getField().toString(), 
             constraint3.getField().getAlias() == null);
         assertTrue(constraint0.getOperator() == FieldValueConstraint.LIKE);
@@ -133,8 +133,8 @@ public class QueryConvertorTest extends TestCase {
         
         // Where string.
         QueryConvertor.setConstraint(query, 
-            "WHERE LOWER(pools.name) LIKE 'test1' AND related.number=10"
-                + " AND images.number=10 AND LOWER(pools0.name) LIKE 'test2'");
+            "WHERE LOWER(news.title) LIKE 'test1' AND related.number=10"
+                + " AND images.number=10 AND LOWER(news0.title) LIKE 'test2'");
         composite = (CompositeConstraint) query.getConstraint();
         assertTrue(composite.getLogicalOperator() 
             == CompositeConstraint.LOGICAL_AND);
@@ -142,11 +142,11 @@ public class QueryConvertorTest extends TestCase {
         assertTrue(constraints.size() == 4);
         constraint0 = (FieldValueConstraint) constraints.get(0);
         assertTrue(constraint0.toString(), 
-            constraint0.getField().getStep().getTableName().equals("pools"));
+            constraint0.getField().getStep().getTableName().equals("news"));
         assertTrue(constraint0.toString(), 
-            constraint0.getField().getStep().getAlias().equals("pools"));
+            constraint0.getField().getStep().getAlias().equals("news"));
         assertTrue(constraint0.toString(), 
-            constraint0.getField().getFieldName().equals("name"));
+            constraint0.getField().getFieldName().equals("title"));
         assertTrue(constraint0.getField().toString(), 
             constraint0.getField().getAlias() == null);
         assertTrue(constraint0.toString(), 
@@ -183,11 +183,11 @@ public class QueryConvertorTest extends TestCase {
             constraint2.getValue().equals(new Double(10)));
         constraint3 = (FieldValueConstraint) constraints.get(3);
         assertTrue(constraint3.toString(), 
-            constraint3.getField().getStep().getTableName().equals("pools"));
+            constraint3.getField().getStep().getTableName().equals("news"));
         assertTrue(constraint3.toString(), 
-            constraint3.getField().getStep().getAlias().equals("pools0"));
+            constraint3.getField().getStep().getAlias().equals("news0"));
         assertTrue(constraint3.toString(), 
-            constraint3.getField().getFieldName().equals("name"));
+            constraint3.getField().getFieldName().equals("title"));
         assertTrue(constraint3.getField().toString(), 
             constraint3.getField().getAlias() == null);
         assertTrue(constraint0.getOperator() == FieldValueConstraint.LIKE);

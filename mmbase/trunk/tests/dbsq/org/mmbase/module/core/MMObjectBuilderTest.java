@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class MMObjectBuilderTest extends TestCase {
     
@@ -63,16 +63,16 @@ public class MMObjectBuilderTest extends TestCase {
     public void setUp() throws Exception {
         MMBaseContext.init();
         mmbase = MMBase.getMMBase();
-        instance = mmbase.getBuilder("pools");
+        instance = mmbase.getBuilder("news");
         images = mmbase.getBuilder("images");
-        poolsName = instance.getField("name");
+        poolsName = instance.getField("title");
         poolsNumber = instance.getField("number");
         
         // Add testnodes.
         for (int i = 0; i < NR_TEST_NODES; i++) {
             MMObjectNode node = instance.getNewNode(JUNIT_USER);
-            node.setValue("name", TEST_NAME + (NR_TEST_NODES - 1 - i));
-            node.setValue("description", "Pool created for testing only.");
+            node.setValue("title", TEST_NAME + (NR_TEST_NODES - 1 - i));
+            node.setValue("description", "News created for testing only.");
             instance.insert(JUNIT_USER, node);
             testNodes.add(node);
         }
@@ -127,7 +127,7 @@ public class MMObjectBuilderTest extends TestCase {
         
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             int result = instance.count(
-                "MMNODE name=S" + TEST_NAME + i + "+name==" + TEST_NAME);
+                "MMNODE title=S" + TEST_NAME + i + "+title==" + TEST_NAME);
             assertTrue(Integer.toString(result), result == i);
         }
     }
@@ -214,8 +214,8 @@ public class MMObjectBuilderTest extends TestCase {
         List results = null;
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
-            results = instance.searchList("WHERE name<'" + value 
-                + "' AND name LIKE '" + TEST_NAME + "%'", "name", "DOWN");
+            results = instance.searchList("WHERE title<'" + value 
+                + "' AND title LIKE '" + TEST_NAME + "%'", "title", "DOWN");
             assertTrue(results.size() == i);
         }
         Iterator iResults = results.iterator();
@@ -236,8 +236,8 @@ public class MMObjectBuilderTest extends TestCase {
         List results = null;
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
-            results = instance.searchVector("WHERE name<'" + value 
-                + "' AND name LIKE '" + TEST_NAME + "%'", "name",  "DOWN");
+            results = instance.searchVector("WHERE title<'" + value 
+                + "' AND title LIKE '" + TEST_NAME + "%'", "title",  "DOWN");
             assertTrue(results.size() == i);
         }
         Iterator iResults = results.iterator();
@@ -268,13 +268,13 @@ public class MMObjectBuilderTest extends TestCase {
         
         try {
             // Invalid expression, should throw IllegalArgumentException.
-            instance.convertMMNodeSearch2Query("MMNODE name=");
+            instance.convertMMNodeSearch2Query("MMNODE title=");
             fail("Invalid expression, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
         try {
             // Invalid expression, should throw IllegalArgumentException.
-            instance.convertMMNodeSearch2Query("MMNODE name=N");
+            instance.convertMMNodeSearch2Query("MMNODE title=N");
             fail("Invalid expression, should throw IllegalArgumentException.");
         } catch (IllegalArgumentException e) {}
         
@@ -284,7 +284,7 @@ public class MMObjectBuilderTest extends TestCase {
             = (FieldValueConstraint) query.getConstraint();
         assertTrue(constraint == null);
         
-        query = instance.convertMMNodeSearch2Query("MMNODE name=Nv");
+        query = instance.convertMMNodeSearch2Query("MMNODE title=Nv");
         assertTrue(query.getBuilder() == instance);
         constraint = (FieldValueConstraint) query.getConstraint();
         assertTrue(constraint != null);
@@ -293,7 +293,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(constraint.getValue().equals("v"));
         assertTrue(!constraint.isInverse());
         
-        query = instance.convertMMNodeSearch2Query("MMNODE builder.name=Nvalue");
+        query = instance.convertMMNodeSearch2Query("MMNODE builder.title=Nvalue");
         assertTrue(query.getBuilder() == instance);
         constraint = (FieldValueConstraint) query.getConstraint();
         assertTrue(constraint != null);
@@ -302,7 +302,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(constraint.getValue().equals("value"));
         assertTrue(!constraint.isInverse());
         
-        query = instance.convertMMNodeSearch2Query("MMNODE name=Nvalue+number=E123");
+        query = instance.convertMMNodeSearch2Query("MMNODE title=Nvalue+number=E123");
         assertTrue(query.getBuilder() == instance);
         CompositeConstraint composite 
             = (CompositeConstraint) query.getConstraint();
@@ -321,7 +321,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(constraint.getValue().equals(new Double(123)));
         assertTrue(!constraint.isInverse());
         
-        query = instance.convertMMNodeSearch2Query("MMNODE name=Nvalue-number=E123");
+        query = instance.convertMMNodeSearch2Query("MMNODE title=Nvalue-number=E123");
         assertTrue(query.getBuilder() == instance);
         composite = (CompositeConstraint) query.getConstraint();
         constraints = composite.getChilds();
@@ -349,7 +349,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(query.getConstraint() == null);
         
         // MMNODE expression.
-        query = instance.getSearchQuery("MMNODE name=Nv");
+        query = instance.getSearchQuery("MMNODE title=Nv");
         assertTrue(query.getBuilder() == instance);
         FieldValueConstraint constraint1 
             = (FieldValueConstraint) query.getConstraint();
@@ -360,7 +360,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(!constraint1.isInverse());
         
         // AltaVista format.
-        query = instance.getSearchQuery("name=N'te*?t'");
+        query = instance.getSearchQuery("title=N'te*?t'");
         assertTrue(query.getBuilder() == instance);
         FieldValueConstraint constraint1b
             = (FieldValueConstraint) query.getConstraint();
@@ -387,7 +387,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(query.getConstraint() == null);
         
         // MMNODE expression (without sortorders).
-        query = instance.getSearchQuery("MMNODE name=Nv", "", "");
+        query = instance.getSearchQuery("MMNODE title=Nv", "", "");
         assertTrue(query.getBuilder() == instance);
         FieldValueConstraint constraint1 
             = (FieldValueConstraint) query.getConstraint();
@@ -398,7 +398,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(!constraint1.isInverse());
         
         // AltaVista format (without sortorders).
-        query = instance.getSearchQuery("name=N'te*?t'");
+        query = instance.getSearchQuery("title=N'te*?t'");
         assertTrue(query.getBuilder() == instance);
         FieldValueConstraint constraint1b
             = (FieldValueConstraint) query.getConstraint();
@@ -420,7 +420,7 @@ public class MMObjectBuilderTest extends TestCase {
         List sortOrders;
         SortOrder so;
         
-        query = instance.getSearchQuery(null, "number, name", "");
+        query = instance.getSearchQuery(null, "number, title", "");
         sortOrders = query.getSortOrders();
         assertTrue(sortOrders.size() == 2);
         so = (SortOrder) sortOrders.get(0);
@@ -430,7 +430,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(so.getField() == query.getField(poolsName));
         assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
         
-        query = instance.getSearchQuery(null, "number, name", "UP");
+        query = instance.getSearchQuery(null, "number, title", "UP");
         sortOrders = query.getSortOrders();
         assertTrue(sortOrders.size() == 2);
         so = (SortOrder) sortOrders.get(0);
@@ -440,7 +440,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(so.getField() == query.getField(poolsName));
         assertTrue(so.getDirection() == SortOrder.ORDER_ASCENDING);
         
-        query = instance.getSearchQuery(null, "number, name", "DOWN");
+        query = instance.getSearchQuery(null, "number, title", "DOWN");
         sortOrders = query.getSortOrders();
         assertTrue(sortOrders.size() == 2);
         so = (SortOrder) sortOrders.get(0);
@@ -450,7 +450,7 @@ public class MMObjectBuilderTest extends TestCase {
         assertTrue(so.getField() == query.getField(poolsName));
         assertTrue(so.getDirection() == SortOrder.ORDER_DESCENDING);
         
-        query = instance.getSearchQuery(null, "number, name", "UP, DOWN");
+        query = instance.getSearchQuery(null, "number, title", "UP, DOWN");
         sortOrders = query.getSortOrders();
         assertTrue(sortOrders.size() == 2);
         so = (SortOrder) sortOrders.get(0);
@@ -577,7 +577,7 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             // Numbers retrieved by the method.
             String value = TEST_NAME + i;
-            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            Vector numbers = instance.searchNumbers("WHERE title < '" + value + "'");
             
             // Numbers retrieved by query.
             NodeSearchQuery query = new NodeSearchQuery(instance);
@@ -605,7 +605,7 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             // Numbers retrieved by query.
             String value = TEST_NAME + i;
-            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            Vector numbers = instance.searchNumbers("WHERE title < '" + value + "'");
             
             // Numbers retrieved by method.
             Vector resultNumbers = new Vector();
@@ -617,7 +617,8 @@ public class MMObjectBuilderTest extends TestCase {
             }
             
             // Should be equal.
-            assertTrue(resultNumbers.equals(numbers));
+            assertTrue("i=" + i + ", numbers=" + numbers + ", resultNumber=" + resultNumbers,
+                resultNumbers.equals(numbers));
         }
     }
   
@@ -626,12 +627,12 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             // Numbers retrieved by query.
             String value = TEST_NAME + i;
-            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            Vector numbers = instance.searchNumbers("WHERE title < '" + value + "'");
             
             // Numbers retrieved by method.
             Vector resultNumbers = new Vector();
             Iterator iNodes = instance.searchVectorIn(
-                "WHERE name < '" + value + "'", toCSV(numbers)).iterator();
+                "WHERE title < '" + value + "'", toCSV(numbers)).iterator();
             while (iNodes.hasNext()) {
                 MMObjectNode node = (MMObjectNode) iNodes.next();
                 resultNumbers.add(node.getIntegerValue("number"));
@@ -641,7 +642,7 @@ public class MMObjectBuilderTest extends TestCase {
             assertTrue(resultNumbers.equals(numbers));
 
             List nodes = instance.searchVectorIn(
-                "WHERE name >= '" + value + "'", toCSV(numbers));
+                "WHERE title >= '" + value + "'", toCSV(numbers));
             assertTrue(nodes.size() == 0);
         }
     }
@@ -652,11 +653,11 @@ public class MMObjectBuilderTest extends TestCase {
             String value = TEST_NAME + i;
 
             // Numbers retrieved by query.
-            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            Vector numbers = instance.searchNumbers("WHERE title < '" + value + "'");
             
             // Numbers retrieved by method.
             List nodes = instance.searchVectorIn(
-                "WHERE name < '" + value + "'", "number", toCSV(numbers));
+                "WHERE title < '" + value + "'", "number", toCSV(numbers));
             ListIterator iNodes = nodes.listIterator();
             int indexNumbers = 0;
             while (iNodes.hasNext()) {
@@ -670,7 +671,7 @@ public class MMObjectBuilderTest extends TestCase {
             assertTrue(numbers.containsAll(nodes));
             
             nodes = instance.searchVectorIn(
-                "WHERE name >= '" + value + "'", "number", toCSV(numbers));
+                "WHERE title >= '" + value + "'", "number", toCSV(numbers));
             assertTrue(nodes.size() == 0);
         }
     }
@@ -680,14 +681,14 @@ public class MMObjectBuilderTest extends TestCase {
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             // Numbers retrieved by query.
             String value = TEST_NAME + i;
-            Vector numbers = instance.searchNumbers("WHERE name < '" + value + "'");
+            Vector numbers = instance.searchNumbers("WHERE title < '" + value + "'");
             // Sort ascending.
             Collections.sort(numbers);
             
             // Numbers retrieved by method.
             Iterator iNodes;
             iNodes = instance.searchVectorIn(
-                "WHERE name < '" + value + "'", "number", true, toCSV(numbers))
+                "WHERE title < '" + value + "'", "number", true, toCSV(numbers))
                 .iterator();
             int indexNumbers = 0;
             while (iNodes.hasNext()) {
@@ -697,7 +698,7 @@ public class MMObjectBuilderTest extends TestCase {
             }
             
             iNodes = instance.searchVectorIn(
-                "WHERE name < '" + value + "'", "number", false, toCSV(numbers))
+                "WHERE title < '" + value + "'", "number", false, toCSV(numbers))
                 .iterator();
             indexNumbers = numbers.size() - 1;
             while (iNodes.hasNext()) {
@@ -707,7 +708,7 @@ public class MMObjectBuilderTest extends TestCase {
             }
             
             List nodes = instance.searchVectorIn(
-                "WHERE name >= '" + value + "'", "number", true, toCSV(numbers));
+                "WHERE title >= '" + value + "'", "number", true, toCSV(numbers));
             assertTrue(nodes.size() == 0);
         }
     }
@@ -719,8 +720,8 @@ public class MMObjectBuilderTest extends TestCase {
   
         for (int i = 0; i < (NR_TEST_NODES + 1); i++) {
             String value = TEST_NAME + i;
-            results = toList(instance.search("WHERE name<'" + value 
-                + "' AND name LIKE '" + TEST_NAME + "%'", "name", false));
+            results = toList(instance.search("WHERE title<'" + value 
+                + "' AND title LIKE '" + TEST_NAME + "%'", "title", false));
             assertTrue(results.size() == i);
         }
         Iterator iResults = results.iterator();
