@@ -25,7 +25,7 @@
   The cloud-tag is a rather complex thing, it has some attributes
   which can influence each other.
   Start <a href="<mm:url page="cloud.jsp" />">here for cloud tag
-  tests</a>. It will start with a login-popup.
+  tests</a>. It will start with a login-popup (don't try with mmbase 1.5).
 </p>
 
 <hr />
