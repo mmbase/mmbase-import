@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0" export="object">
+<builder maintainer="mmbase.org" version="0" extends="object">
   <classfile>Dummy</classfile>
   <searchage>14</searchage>
   <names>
@@ -13,7 +13,7 @@
 	 <plural xml:lang="us">SyncNodes</plural>
 	 <plural xml:lang="en">SyncNodes</plural>
 	 <plural xml:lang="nl">SyncNodes</plural>
-	 <plural xml:lang="nl">Samignodoj</plural>
+	 <plural xml:lang="eo">Samignodoj</plural>
   </names>
 
   <!-- <descriptions>
@@ -24,7 +24,7 @@
 	 <description xml:lang="us">SyncNodes are used to map remote mmbase nodes to this node</description>
 	 <description xml:lang="en">SyncNodes are used to map remote mmbase nodes to this node</description>
 	 <description xml:lang="nl">SyncNodes worden gebruikt om remote mmbase nodes te mappen naar lokale nodes</description>
-	 <description xml:lang="nl">Samignodoj estas uzataj por mapi forajn MMBase-nodoj al lokaj</description>
+	 <description xml:lang="eo">Samignodoj estas uzataj por mapi forajn MMBase-nodoj al lokaj</description>
   </descriptions>
 
   <!-- <fieldlist>
@@ -155,5 +155,4 @@
 	 </field>
 
   </fieldlist>
-
 </builder>
