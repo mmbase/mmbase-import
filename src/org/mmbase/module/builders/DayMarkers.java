@@ -17,7 +17,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.9 2000-06-20 14:21:06 install Exp $
+ * @version $Id: DayMarkers.java,v 1.10 2000-07-03 11:10:16 vpro Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -101,6 +101,10 @@ public class DayMarkers extends MMObjectBuilder {
 		// still has to be implemented with a cache !!!
 
 		return(-1);
+	}
+
+	public int getDayCount() {
+		return(day);
 	}
 
 	public int getDayCountAge(int daysold) {
@@ -201,6 +205,13 @@ public class DayMarkers extends MMObjectBuilder {
 		return(cal);
 	}
 
+	private Calendar getCalendarDays(int days) {
+		GregorianCalendar cal=new GregorianCalendar();
+		java.util.Date d=new java.util.Date(((long)days)*24*3600*1000);
+		cal.setTime(d);
+		return(cal);
+	}
+
 	private int getDayCountMonth(int months) {
 		Calendar cal=getCalendarMonths(months);
 		return((int)((cal.getTime().getTime())/(24*3600*1000)));
@@ -224,4 +235,32 @@ public class DayMarkers extends MMObjectBuilder {
 		return((int)((cal.getTime().getTime())/(24*3600*1000)));
 	}
 
+	public int getDayCountByObject(int number) {
+		int mday=0;
+		try {
+			MultiConnection con=mmb.getConnection();
+			Statement stmt=con.createStatement();
+			ResultSet rs=stmt.executeQuery("select min(daycount) from "+mmb.baseName+"_"+tableName+" where mark<"+number);
+			if (rs.next()) {
+				mday=rs.getInt(1);
+			}
+			stmt.close();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return(mday);
+	}
+
+	public int getMonthsByDayCount(int daycount) {
+		int months=0;
+		int year,month;
+		Calendar calendar;
+		
+		calendar=getCalendarDays(daycount);
+		year=calendar.get(Calendar.YEAR)-1970;
+		month=calendar.get(Calendar.MONTH);
+		months=month+year*12;
+		return(months);
+	}
 }
