@@ -25,7 +25,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.3 2004-02-20 18:10:05 michiel Exp $
+ * @version $Id: QueryResultCache.java,v 1.4 2004-02-20 18:24:19 michiel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -201,7 +201,6 @@ abstract public class QueryResultCache extends Cache {
             while (i.hasNext()) {
                 Object key = i.next();
                 QueryResultCache.this.remove(key);
-                result++;
             }
 
             return result;
