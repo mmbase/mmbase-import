@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.75 2002-09-06 13:08:11 michiel Exp $
+  @version $Id: wizard.xsl,v 1.76 2002-09-20 13:40:04 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -611,13 +611,15 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:for-each select="list">
-        <td class="fieldprompt">
-          <span class="valid">
-            <xsl:value-of select="prompt|title" />
-           </span>
-      </td>
-        <xsl:apply-templates select="." />
-      </xsl:for-each>
+        <tr>
+	   <td class="fieldprompt">
+             <span class="valid">
+                <xsl:value-of select="prompt|title" />
+              </span>
+	   </td>
+	<xsl:apply-templates select="." />
+     	</tr>
+    </xsl:for-each>
     </xsl:template><!-- item -->
 
   <!-- produces a bunch of links -->
