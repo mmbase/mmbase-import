@@ -115,36 +115,36 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
       <para>Create a text file in the subdir you decided, with the extension ".xml". In our example, it should be named: /practice/simple.xml . Open the newly created simple.xml in a text-editor and copy or type the following code into simple.xml. Save the simple.xml file.</para>
       <programlisting format="linespecific">
 			<![CDATA[
-			<?xml version="1.0"?>
-			<wizard-schema id="some_id">
-			  <!-- give the wizard a title -->
-			  <title>Practice</title>
+<?xml version="1.0"?>
+<wizard-schema id="some_id">
+	<!-- give the wizard a title -->
+	<title>Practice</title>
 
-			  <!-- define an action to create a people object -->
-				<action type="create">
-				 <object type="people" />
-				</action>
+	<!-- define an action to create a people object -->
+	<action type="create">
+	 <object type="people" />
+	</action>
 
-			  <!-- define an action to delete a people object -->
-				<action type="delete" />
+	<!-- define an action to delete a people object -->
+	<action type="delete" />
 
-			  <!-- define an form to edit a people object -->
-				<form-schema id="step1">
-				  <!-- form title -->
-				  <title>People Wizard</title>
+	<!-- define an form to edit a people object -->
+	<form-schema id="step1">
+		<!-- form title -->
+		<title>People Wizard</title>
 
-					<!-- edit field 'firstname' -->
-					<field name="firstname">
-					  <prompt>First name</prompt>
-					</field>
+		<!-- edit field 'firstname' -->
+		<field name="firstname">
+			<prompt>First name</prompt>
+		</field>
 
-					<!-- edit field 'lastname' -->
-					<field name="lastname">
-					  <prompt>Last name</prompt>
-					</field>
+		<!-- edit field 'lastname' -->
+		<field name="lastname">
+			<prompt>Last name</prompt>
+		</field>
 
-				</form-schema>
-			</wizard-schema>
+	</form-schema>
+</wizard-schema>
 			]]>
 			</programlisting>
     </section>
@@ -182,14 +182,18 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
       <para>The create action defines whether, and more importantly, what should be created in MMBase if the user clicks on the create-button in the list view. A create action is placed inside the /wizard-schema node. You can create multiple objects inside each other (and create relations between them), and place default values in some fields. Example:</para>
       <programlisting format="linespecific">
 			<![CDATA[
-			<action type="create" >
-			  <object type="people" >
-				  <field name="firstname">NOBODY</field>
-					<relation role="related">
-					  <object type="news" />
-					</relation>
-				</object>
-			</action>
+<action type="create" >
+	<!-- create an object of type 'people' -->
+	<object type="people" >
+		<!-- initialize the firstname field to 'NOBODY'  -->
+		<field name="firstname">NOBODY</field>
+
+		<!-- add a relation to a newly created, empty news object  -->
+		<relation role="related">
+			<object type="news" />
+		</relation>
+	</object>
+</action>
 			]]>
 			</programlisting>
       <para>This action creates 2 objects and 1 relation. It first creates a new 'people' object, and fills the field "firstname" with the value "NOBODY". It then creates a new 'news' object, and relation with role 'related' between the two new objects.</para>
@@ -200,18 +204,22 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
     </section>
     <section id="loadaction">
       <title>Load action</title>
-      <para>Generally, the wizard needs to know what objects and relations to &lt;load&lt; before the wizard-pages are displayed. By default, it loads the MMBase object that was passed to it, and all its fields. But often we will want to edit more than one object at once. In that case, we need to also load these other objects. You can use the load-action to define the load behaviour of the wizards, forcing it to load related objects so you can edit or display them along with the main object. Example:</para>
+      <para>Generally, the wizard needs to know what objects and relations to &lt;load&gt; before the wizard-pages are displayed. By default, it loads the MMBase object that was passed to it, and all its fields. But often we will want to edit more than one object at once. In that case, we need to also load these other objects. You can use the load-action to define the load behaviour of the wizards, forcing it to load related objects so you can edit or display them along with the main object. Example:</para>
       <programlisting format="linespecific">
 			<![CDATA[
-			<action type="load" >
-			  <field name="firstname"/>
-			  <field name="lastname"/>
-				<relation role="related" destinationtype="news" >
-				  <object>
-					  <field name="title"/>
-					</object>
-				</relation>
-			</action>
+<action type="load" >
+	<!-- for the object passed, only load the firstname and lastname fields -->
+	<field name="firstname"/>
+	<field name="lastname"/>
+
+	<!-- load all relations from this object to 'news' objects with role 'posrel' -->
+	<relation role="posrel" destinationtype="news" >
+		<object>
+			<!-- only load the titel field of these news objects -->
+			<field name="title"/>
+		</object>
+	</relation>
+</action>
 			]]>
 			</programlisting>
 			<para>This load action loads only the firstname and lastname fields of the object passed (a person). It also loads all the news objects (but only the title field) that are related to this object.
@@ -224,39 +232,118 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
         <para>The delete buttons will disappear.</para>
       </note>
       <note>
-        <para>When you delete an object in the editwizards, all relations with other objects will also be deleted. It is not possible to automatically delete the related objects themselves.</para>
+        <para>When you delete an object in the editwizards, all relations with other objects will also be deleted. It is not possible to automatically delete the objects related to, just the relations themselves.</para>
       </note>
     </section>
     <section id="fieldformattypes">
       <title>Field format types</title>
-			<para>You need to specify each field you like to edit in one of teh from-schema's in a wizard. Every field has a format type that determines how the field can be edited. Fields can be edited using textboxes, text areas, dropdown lists, or using an upload button, all depending on the fields' format type.</para>
+			<para>You need to specify each field you like to edit in one of the form-schema's in a wizard. Every field has a format type that determines how the field can be edited. Fields can be edited using textboxes, text areas, dropdown lists, or using an upload button, all depending on the fields' format type.</para>
       <para>By default, the wizard uses the format types (or guitype) as defined in the builders in MMBase. You can override these types with your own if you prefer another format. In the reference section you will find what field types you can use and what options they have.</para>
     </section>
     <section id="validation">
       <title>Validation</title>
-      <para>An important elemnsat of the eidtwizards is the ability to do basic validation on the fields. You can add attributes to specify limits on what a field can contain.  Eg.:</para>
-      <programlisting format="linespecific">&lt;field name="firstname"&gt; ...</programlisting>
+      <para>An important element of the editwizards is the ability to do basic validation on the fields. You can add attributes to specify limits on what a field can contain.  Eg.:</para>
+      <programlisting format="linespecific"><![CDATA[ <field name="firstname"> ...]]></programlisting>
       <para>can be extended with validation fields. Because the "firstname" field is a text-field, you can apply text-validation rules, such as a minimum or maximum text length. Eg.:</para>
-      <programlisting format="linespecific">&lt;field name="firstname" dtminlength="1" dtmaxlength="20" &gt; ...</programlisting>
-      <para>The field is now onbly valid if it contain at least 1 and at most 20 characters. As long as the field is invalid, it will be marked red in the wizard, and you cannot save the object</para>
+      <programlisting format="linespecific"><![CDATA[ <field name="firstname" dtminlength="1" dtmaxlength="20" > ...]]></programlisting>
+      <para>The field is now only valid if it contain at least 1 and at most 20 characters. As long as the field is invalid, it will be marked red in the wizard, and you cannot save the object</para>
       <note>
-				<para>The exact validation rules available are dependent in the field's datatype. The datatype is automatically determined by MMBase. Examples of datatypes are string, integer, and datetime.
+				<para>The exact validation rules available are dependent on the field's datatype. The datatype is automatically determined by MMBase. Examples of datatypes are string, integer, and datetime.
 				You can override the datatype to force certain constraints, but it is advised you stick to the types MMBase advises, unless you know what you are doing.</para>
 			</note>
     </section>
   </section>
   <section id="usinglists">
     <title>Using lists</title>
-    <para>You've seen a few basics of the wizards. We are now ready to make some other wizards. A quite important feature of the editwizard is the "lists". With lists, you can show, edit, delete and create objects related to the current working-object.</para>
-    <para>For this example you'll need the people and the news objects in MMBase. In the basic MMbase distribution, the people and the news are set to 'active' by default. If they are not enabled in your MMBase installation, please activate them. By default, MMBase does NOT allow a relation between people and news. Use the standard MMBase editors (see MMBase documentation) to make sure the creation of the relation is allowed via relations of type "related".</para>
+    <para>A quite important feature of the editwizard are the "lists". With lists, you can show, edit, delete and create objects related to the object you are working on.</para>
+    <para>For this example you'll need the people and the news objects in MMBase.</para>
     <section id="createwizard">
       <title>Create a new wizard</title>
-      <para>Create in the practice directory a new file named people.xml. Enter the following xml:</para>
-      <programlisting format="linespecific">&lt;wizard-schema id="people"&gt; &lt;title&gt;People&lt;/title&gt; &lt;action type="create"&gt; &lt;object type="people"&gt; &lt;field name="firstname"&gt;Enter firstname HERE&lt;/field&gt; &lt;/object&gt; &lt;/action&gt; &lt;action type="delete" /&gt; &lt;action type="load"&gt; &lt;relation destination="news" role="related" /&gt; &lt;/action&gt; &lt;form-schema id="step1"&gt; &lt;title&gt;People_&lt;/title&gt; &lt;field name="firstname" &gt; &lt;prompt&gt;Firstname&lt;/prompt&gt; &lt;/field&gt; &lt;field name="lastname"&gt; &lt;prompt&gt;Lastname&lt;/prompt&gt; &lt;/field&gt; &lt;list role="related" destination="news" minoccurs="0" maxoccurs="*"&gt; &lt;title&gt; Related newsitems &lt;/title&gt; &lt;command name="search" nodepath="news" fields="title" age="-1"&gt; &lt;prompt&gt;Search newsitems&lt;/prompt&gt; &lt;search-filter&gt; &lt;name&gt;name contains&lt;/name&gt; &lt;search-fields&gt;title&lt;/search-fields&gt; &lt;/search-filter&gt; &lt;/command&gt; &lt;item&gt; &lt;field name="title" ftype="data"&gt; &lt;prompt&gt;Newsitem&lt;/prompt&gt; &lt;description&gt;Here you can see the name of the related newsitem&lt;/description&gt; &lt;/field&gt; &lt;/item&gt; &lt;action type="create"&gt; &lt;relation destinationtype="news" role="related"&gt; &lt;/relation&gt; &lt;/action&gt; &lt;/list&gt; &lt;/form-schema&gt; &lt;/wizard-schema&gt;</programlisting>
+      <para>In the practice directory, create a new file named people.xml. Enter the following xml:</para>
+      <programlisting format="linespecific">
+			<![CDATA[
+<wizard-schema id="people">
+	<title>People</title>
+
+	<!-- Action to create a new people object -->
+	<action type="create">
+		<object type="people">
+			<field name="firstname">Enter firstname HERE</field>
+		</object>
+	</action>
+
+	<!-- Action to delete a people object -->
+	<action type="delete" />
+
+	<!-- Action to load a people object, including all posrel relations to news  -->
+	<action type="load">
+		<relation destinationtype="news" role="posrel" />
+	</action>
+
+	<form-schema id="step1">
+		<title>People</title>
+		<!-- Show people object -->
+		<field name="firstname" >
+			<prompt>Firstname</prompt>
+		</field>
+		<field name="lastname">
+			<prompt>Lastname</prompt>
+		</field>
+
+		<!-- List all news items related with role posrel
+				 This list can have a minumum of 0 and a amximum of inifinite ("*") items.
+				 This is also the default for a list
+		-->
+		<list role="posrel" destination="news" minoccurs="0" maxoccurs="*">
+			<title>Related newsitems</title>
+			<!-- Show the 'item' in a list (the object) -->
+			<item>
+				<field name="title" ftype="data">
+					<prompt>Newsitem</prompt>
+					<description>Here you can see the name of the related newsitem</description>
+				</field>
+			</item>
+
+			<!-- defines a search command.
+					 This creates a search box that allows you to search for objects
+					 using a specified ndoepath.
+					 In this case, the searchs ercahes for news items, using the fields
+					 'title' and 'subtitle' to show the results of the search in the list.
+			-->
+			<command name="search" nodepath="news" fields="title,subtitle" age="-1">
+				<prompt>Search newsitems</prompt>
+				<!-- Search filters determine what you can search on (in this case, on title
+						 or both title and subtitle)
+						 If you do not specify a search filter, the default is to search on the
+						 'title' field.
+				-->
+				<!-- Search on title -->
+				<search-filter>
+					<name>subtitle contains</name>
+					<search-fields>subtitle</search-fields>
+				</search-filter>
+				<!-- Search on title and subtitle
+						 not the notation in the search-fields for more than one field
+				-->
+				<search-filter>
+					<name>title or subtitle contains</name>
+					<search-fields>title|subtitle</search-fields>
+				</search-filter>
+			</command>
+			<!-- Action to create a relation, used by teh search command to create
+					 the relation once it is found and chosen.
+			-->
+			<action type="create">
+				<relation destinationtype="news" role="related" />
+			</action>
+		</list>
+	</form-schema>
+</wizard-schema>
+			]]></programlisting>
     </section>
     <section id="testwizard">
-      <title>Test our wizard</title>
-      <para>Now, everything should be working. Let's try.</para>
+      <title>Test the wizard</title>
+      <para>Try the new wizard.</para>
       <orderedlist inheritnum="ignore" continuation="restarts">
         <listitem>
           <para>Open a browser and go to the wizards. Eg.: http://localhost:4242/mmapps/editwizard/jsp/list.jsp?fields=firstname&amp;wizard=practice/people&amp;nodepath=people</para>
@@ -265,7 +352,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
           <para>Login if needed</para>
         </listitem>
         <listitem>
-          <para>Now you should see a list with all people-objects available in the system. By default, one user exists. (Admin)</para>
+          <para>Now you should see a list with all people-objects available in the system. In our example, one user exists (Rob).</para>
         </listitem>
         <listitem>
           <para>Let's create a new one. Click on the star-icon in the bottom-right of the window.</para>
@@ -280,23 +367,24 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
           <para>Fill in your values and press Save. You should see the list again with your new people-object added.</para>
         </listitem>
         <listitem>
-          <para>Now, let's test the list. Edit the admin user, by clicking on its name.</para>
+          <para>To the list, edit the new people object, by clicking on its name.</para>
         </listitem>
         <listitem>
           <para>Search for a newsitem to relate it to, by click on the search-icon in the square: "Related newsitems".</para>
         </listitem>
         <listitem>
-          <para>A popup should be visible now, with all newsitems available at this time. If none are showing, add a new newsitem using the MMBase basic editors (/mmeditors/index.shtml).</para>
+          <para>A popup should be visible now, with all newsitems available at this time. The MyNews application includes a few example items. If none are showing, you can add a new newsitem with the MMBase basic editors (/mmeditors/jsp/).</para>
         </listitem>
         <listitem>
-          <para>Click on a newsitem of your choice and press Ok. Now, the wizard-form will reload and you should see the newly related newsitem in the square.</para>
+          <para>Click on a newsitem of your choice and press Ok. The wizard-form will reload and you should see the newly related newsitem in the square.</para>
         </listitem>
         <listitem>
-          <para>Press Save. Now, the admin object is edited; it is related to the newsitem of your choice. Open the admin people-object again to verify.</para>
+          <para>Press Save. The people object is edited; it is related to the newsitem of your choice. Open the people object again to verify.</para>
         </listitem>
       </orderedlist>
     </section>
   </section>
+
   <section id="reference">
     <title>Reference</title>
     <para>This reference describes the syntax of the wizards and how to access them using a browser.</para>
@@ -381,7 +469,16 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
         <varlistentry>
           <term>Example</term>
           <listitem>
-            <programlisting format="linespecific">&lt;wizard&gt; &lt;title&gt;Wizard-Title&lt;/title&gt; &lt;form-schema id="step1"&gt; &lt;field name="firstname"&gt; &lt;prompt&gt;Your Firstname&lt;/prompt&gt; &lt;/field&gt; &lt;/form-schema&gt; &lt;/wizard&gt;</programlisting>
+            <programlisting format="linespecific"><![CDATA[
+<wizard-schema>
+  <title>Wizard-Title</title>
+	<form-schema id="step1">
+	  <field name="firstname">
+		  <prompt>Your Firstname</prompt>
+		</field>
+	</form-schema>
+</wizard-schema>
+]]></programlisting>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -433,7 +530,17 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
         <varlistentry>
           <term>Example</term>
           <listitem>
-            <programlisting format="linespecific">&lt;action type="load"&gt; &lt;relation destination="people" role="related"&gt; &lt;relation destination="urls" /&gt; &lt;/relation&gt; &lt;field name="title" /&gt; &lt;field name="subtitle" /&gt; &lt;field name=".." /&gt; &lt;/action&gt;</programlisting>
+            <programlisting format="linespecific"><![CDATA[
+<action type="load">
+  <relation destinationtype="people" role="related">
+	  <object>
+		  <relation destinationtype="urls" />
+		</object>
+	</relation>
+	<field name="title" />
+	<field name="subtitle" />
+</action>
+						]]></programlisting>
           </listitem>
         </varlistentry>
       </variablelist>
