@@ -32,7 +32,7 @@ public class ExprCalc {
     private static final int MC_NONE=0;
     private static final int MC_EOT =-1;
     // logger
-    private static Logger log = Logging.getLoggerInstance(DirectoryLister.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ExprCalc.class.getName());
 
     // a token is represented by an tokencode (MCode)
     // and a tokenvalue (MSym or MNum) depending on
