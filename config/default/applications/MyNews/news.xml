@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<news exportsource="mmbase://127.0.0.1/install/b1" timestamp="20000602143030">
+<news exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20000602143030">
 	<node number="734" owner="system">
 		<intro>
 MMBase, the VPRO s web-publishing software, will be available as Open Source beginning on April 3, 2000. The VPRO has been using MMBase for its own website (www.vpro.nl) for more than two years, and produces every year major multimedia projects such as live Internet-reporting from the Pinkpop music festival

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<urls exportsource="mmbase://127.0.0.1/install/b1" timestamp="20000602143030">
+<urls exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20000602143030">
 	<node number="1082" owner="admin">
 		<description>EO website</description>
 		<url>http://www.eo.nl</url>
