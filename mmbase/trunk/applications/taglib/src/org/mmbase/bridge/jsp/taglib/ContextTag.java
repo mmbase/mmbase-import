@@ -506,7 +506,7 @@ public class ContextTag extends ContextReferrerTag {
 
     public void unRegister(String key) throws JspTagException {
         //pageContext.removeAttribute(key);
-        log.debug("removing object " + key + " from Context " + getId());
+        if (log.isDebugEnabled()) log.debug("removing object '" + key + "' from Context '" + getId() + "'");
         container.remove(key);
     }
 
