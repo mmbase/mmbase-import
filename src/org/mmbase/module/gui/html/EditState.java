@@ -164,6 +164,7 @@ public class EditState {
 
 	public MMObjectNode getEditNode(int i) {
 		int pos=nodes.indexOf(curNode);		
+		if ((pos-i)<0) return(null);
 		EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
 		if (node==null) {
 			return(null);
@@ -174,6 +175,7 @@ public class EditState {
 
 	public EditStateNode getEditStateNode(int i) {
 		int pos=nodes.indexOf(curNode);		
+		if ((pos-i)<0) return(null);
 		EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
 		if (node==null) {
 			return(null);
