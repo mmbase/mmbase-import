@@ -3,7 +3,7 @@
 <database>
   <!-- please use relational.xml to find out what the format of this file is -->
   <name>MySQL</name>
-  <mmbasedriver>org.mmbase.storage.database.RelationalDatabaseStorage</mmbasedriver>
+  <mmbasedriver>org.mmbase.storage.database.MySqlStorage</mmbasedriver>
   <sqlhandler>org.mmbase.storage.search.implementation.database.MySqlSqlHandler</sqlhandler>
   <chainedsqlhandler/>
   <scheme>
