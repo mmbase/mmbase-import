@@ -229,6 +229,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
 	/**
      * Creates a node using a specified NodeManager
+     * The returned node will not be visible in the cloud until the commit() method is called on this node.
      * @param nodeManagerName name of the NodeManager defining the node structure
      * @return the newly created (but not yet committed) node
      */
@@ -381,7 +382,7 @@ public class BasicCloud implements Cloud, Cloneable {
     BasicCloud getCopy() {
         BasicCloud cloud=new BasicCloud(null,this);
         cloud.userName="anonymous";
-        account="U"+uniqueId();
+        cloud.account="U"+uniqueId();
         return cloud;
     }  	
 

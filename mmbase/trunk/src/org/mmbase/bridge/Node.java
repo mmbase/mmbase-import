@@ -134,10 +134,23 @@ public interface Node {
 	public String getStringValue(String fieldName);
 
 	/**
-	 * Commit the node to the database
-	 */
+	* Commit the node to the database.
+	* Makes this node and/or the changes made to this node visible to the cloud.
+    * If this method is called for the first time on this node it will make
+    * this node visible to the cloud, otherwise the modifications made to
+    * this node using the set methods will be made visible to the cloud.
+    * This action fails if the current node is not in edit mode.
+    * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+	*/
 	public void commit();
 
+	/**
+	 * Cancel changes to a node
+	 * This fails if the current node is not in edit mode.
+	 * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+	 */
+	public void cancel();
+	
 	/**
 	 * Removes the Node
 	 */

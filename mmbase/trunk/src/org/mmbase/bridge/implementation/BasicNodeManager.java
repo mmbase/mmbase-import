@@ -58,8 +58,10 @@ public class BasicNodeManager implements NodeManager {
     }
 
     /**
-     * Gets a new (initialized) node
-     */
+    * Creates a new initialized node.
+    * The returned node will not be visible in the cloud until the commit() method is called on this node.
+    * @return the new <code>Node</code>
+    */
     public Node createNode() {
         // create object as a temporary node
         int id = cloud.uniqueId();
