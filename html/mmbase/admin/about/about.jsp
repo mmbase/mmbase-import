@@ -52,7 +52,7 @@ hsqldb is a relational database engine written in Java, with a JDBC driver, supp
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../style/images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data">Return to home page</td>
 </tr>
 
