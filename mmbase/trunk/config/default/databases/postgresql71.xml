@@ -119,5 +119,6 @@
           <field name="verbose" replacement="m_verbose"/>
           <field name="version" replacement="m_version"/>
           <field name="default" replacement="m_default"/>
+          <field name="end" replacement="m_end" />
     </disallowed>
 </database>
