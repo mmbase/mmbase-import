@@ -20,8 +20,9 @@
 	
     <mm:import externid="hotspot$question" id="givenanswer" />
 
-    <%-- Search the given answer in the possible answers --%>		
-    <mm:relatednodes type="hotspotanswers" id="my_answers">
+    <%-- Search the given answer in the possible answers --%>
+    <% int i = 1; %>
+    <mm:relatednodes type="hotspotanswers" id="my_answers" orderby="x1,y1">
 
       <mm:field id="answer" name="number" write="false"/>
 
@@ -30,12 +31,14 @@
         <mm:field id="questioncorrect" name="correct" write="false"/>
         <mm:node referid="my_givenanswers">
           <mm:setfield name="score"><mm:write referid="questioncorrect"/></mm:setfield>
+          <mm:setfield name="text"><%= i %></mm:setfield>
         </mm:node>
         <mm:remove referid="questioncorrect" />
         
 <%--        <mm:createrelation role="related" source="my_givenanswers" destination="my_answers"/> --%>
         
       </mm:compare>
+      <% i++; %>
     </mm:relatednodes>
   
 </mm:node>

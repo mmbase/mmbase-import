@@ -17,26 +17,55 @@
  
   <mm:relatednodes type="givenanswers">
     <mm:relatednodes type="questions">
+    <p>
       <mm:import id="questiontype"><mm:nodeinfo type="type"/></mm:import>
 
       <mm:field id="questiontext" name="text" write="false"/>
-      Vraag: <mm:write referid="questiontext" escape="none"/><br/>
+      <b>Vraag:</b> <mm:write referid="questiontext" escape="none"/>
+      <br/>
       <mm:remove referid="questiontext"/>
       <mm:field id="questionNo" name="number" write="false"/>
     </mm:relatednodes>
 
     <mm:notpresent referid="questiontype">
-      questiontype not found 
+      <b>questiontype not found </b>
+      <br/>
       <mm:import id="questiontype">none</mm:import>
     </mm:notpresent>
 
+    
+    <mm:compare referid="questiontype" value="hotspotquestions">
+        <mm:node referid="questionNo">
+	<div style="position: relative">
+        <mm:relatednodes type="images" max="1">
+        <img src="<mm:image />" border="0" /><br/>
+        </mm:relatednodes>
+ 
+        <% int i = 1; %>
+        <mm:relatednodes type="hotspotanswers" orderby="x1,y1">
+            <a href="#" class="hotspot" style="position: absolute; left: <mm:field name="x1" />px; top: <mm:field name="y1" />px; width:<mm:field name="x2" />px; height: <mm:field name="y2" />px;"><%= i++ %></a>
+        </mm:relatednodes>
+        </div>
+        </mm:node>
+
+      <b>Gegeven antwoord:</b> <mm:field name="text" escape="none"/>
+      <br/>
+    </mm:compare>
+
+   
+    <mm:compare referid="questiontype" value="dropquestions">
+      <b>Gegeven antwoord:</b> <mm:field name="text" escape="none"/>
+      <br/>
+    </mm:compare>
+
     <mm:compare referid="questiontype" value="openquestions">
-      Gegeven antwoord: <mm:field name="text"/><br/>
+      <b>Gegeven antwoord:</b> <mm:field name="text"/>
+      <br/>
       <mm:relatednodescontainer type="feedback">
         <mm:relatednodes>
           <%-- Open Question Feedback (from teacher) --%>
-          Feedback: <mm:field name="text" escape="none"/>
-          <p/>
+          <b>Feedback:</b> <mm:field name="text" escape="none"/>
+          <br/>
         </mm:relatednodes>
       </mm:relatednodescontainer>
     </mm:compare>
@@ -48,20 +77,23 @@
 
       <mm:compare referid="type" value="0">
         <mm:relatednodes type="answers">
-          Gegeven antwoord:
+          <b>Gegeven antwoord:</b>
           <mm:field name="text"/>
+          <br/>
         </mm:relatednodes>
       </mm:compare>
       <mm:compare referid="type" value="1">
-        Gegeven antwoorden:
+        <b>Gegeven antwoorden:</b>
         <mm:relatednodes type="answers">
           <mm:field name="text"/>
+          <mm:last inverse="true">, </mm:last>
         </mm:relatednodes>
         <br/>
       </mm:compare>
     </mm:compare>
 
     <mm:compare referid="questiontype" value="couplingquestions">
+        <b>Gegeven antwoord:</b>
       <% int counter;%>
       <mm:import id="size" jspvar="size" vartype="Integer">
         <mm:relatednodescontainer type="answers" role="leftanswer">
@@ -88,11 +120,12 @@
       <% } %>
 
       <mm:remove referid="size"/>
+      <br/>
     </mm:compare>
 
 
     <mm:compare referid="questiontype" value="rankingquestions">
-
+      <b>Gegeven antwoord:</b> 
       <mm:related path="posrel,rankinganswers">
         <mm:field id="rankinganswersnumber" name="rankinganswers.number" write="false"/>
         <div class="images">
@@ -111,7 +144,7 @@
         <mm:notpresent referid="hasimage">
           <mm:field name="rankinganswers.text" escape="none"/>
         </mm:notpresent>
-         Gegeven volgorde: <mm:field name="posrel.pos"/><br>
+         Gegeven volgorde: <mm:field name="posrel.pos"/><br/>
          <mm:remove referid="rankinganswersnumber"/>
       </mm:related>
     </mm:compare>
@@ -124,14 +157,15 @@
 
     <mm:field id="questionscore" name="score" write="false"/>
     <mm:compare referid="questionscore" value="1">
-      <b>Goed</b>
+      <b>Antwoord is goed</b>
     </mm:compare>
     <mm:compare referid="questionscore" value="0">
-       <b>Fout</b>
+       <b>Antwoord is fout</b>
     </mm:compare>
     <mm:compare referid="questionscore" referid2="TESTSCORE_TBS">
-       Moet nog nagekeken worden.
+       <b>Moet nog nagekeken worden.</b>
     </mm:compare>
+    <br/>
 
     <%-- Feedback (from the question) --%>
     <mm:node number="$questionNo">
@@ -139,15 +173,16 @@
       <mm:constraint field="maximalscore" referid="questionscore" operator=">="/>
       <mm:constraint field="minimalscore" referid="questionscore" operator="<="/>
       <mm:relatednodes>
-	<h1><mm:field name="name"/></h1>
+	<b>Feedback: <mm:field name="name"/></b><br/>
 	<mm:relatednodes type="images">
 	    <img src="<mm:image template="s(150x150)"/>" alt="<mm:field name="title"/>">
+            <mm:last><br/></mm:last>
 	</mm:relatednodes>
-<p><mm:field name="text" escape="none"/></p>
+        <mm:field name="text" escape="none"/>
       </mm:relatednodes>
     </mm:relatednodescontainer>
     </mm:node>
-    <p/>
+    </p>
 
     <mm:remove referid="questionscore"/>
     <mm:remove referid="questiontype"/>
