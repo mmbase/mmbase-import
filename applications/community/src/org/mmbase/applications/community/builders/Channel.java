@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.18 2003-08-11 17:06:23 michiel Exp $
+ * @version $Id: Channel.java,v 1.19 2003-11-21 13:37:56 robmaris Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -133,7 +133,9 @@ public class Channel extends MMObjectBuilder {
      * Creates references to other required builders and relation roles.
      * <br />
      * Also opens all channels whose <code>open</code> field is set to {@link #OPEN} or
-     * {@link #WANT_OPEN} .
+     * {@link #WANT_OPEN}. This step can be skipped, to speed up startup of the server, 
+     * by specifying the property <code>open-channels-on-startup</code> in the 
+     * Channel builder configuration, and setting it to <code>false</code>.
      */
     public boolean init() {
         boolean result = super.init();
@@ -148,6 +150,11 @@ public class Channel extends MMObjectBuilder {
         if ((defaultUserType==null) || (defaultUserType.length()==0)){
             defaultUserType="chatter";
         }
+        
+        // open-channels-on-startup property:
+        String strOpenChannelsOnStartup = getInitParameter("open-channels-on-startup");
+        boolean openChannelsOnStartup = !"false".equals(strOpenChannelsOnStartup);            
+        
         // get message builder
         messageBuilder   = (Message)   mmb.getMMObject("message");
         // get community object type
@@ -157,9 +164,10 @@ public class Channel extends MMObjectBuilder {
         // create relation breaker for maintaining temporary relations
         chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
 
-        // Open all channels
-        // Comment it out to speed up start of server
-        openChannels();
+        // Open all channels, unless the configuration specifies not to.
+        if (openChannelsOnStartup) {
+            openChannels();
+        }
 
         return result;
     }
