@@ -25,7 +25,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.9 2004-03-08 14:19:43 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.10 2004-03-08 16:01:41 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -171,12 +171,17 @@ public class ValueIntercepter {
     private static void readFieldTypeDefinitions() {
         Class thisClass = ValueIntercepter.class;
         XMLEntityResolver.registerPublicID(PUBLIC_ID_FIELD_TYPE_DEFINITIONS, DTD_FIELD_TYPE_DEFINITIONS, thisClass);
-        log.service("Reading fieldtype-definitions");
         InputSource fieldTypes = new InputSource(thisClass.getResourceAsStream(XML_FIELD_TYPE_DEFINITIONS));
+
         if (fieldTypes.getSystemId() == null) {
-            Package pack = thisClass.getPackage(); // could be null if: the package of the class, or null if no package information is available from the archive or codebase.
-            fieldTypes.setSystemId("resource:" + (pack != null ? pack.getName() : "") + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honestley no idea what it should be, but this is at least fit for humans (in case of errors)
+            String name = thisClass.getName();            
+            int dot = name.lastIndexOf('.');
+            if (dot > 0) {
+                name = name.substring(0, dot);
+            }
+            fieldTypes.setSystemId("resource:" + name + "/" + XML_FIELD_TYPE_DEFINITIONS); // I've honestly no idea what it should be, but this is at least fit for humans (in case of errors)
         }
+        log.service("Reading fieldtype-definitions from " + fieldTypes.getSystemId());
         XMLBasicReader reader  = new XMLBasicReader(fieldTypes, thisClass);
 
         Element fieldtypesElement = reader.getElementByPath("fieldtypedefinitions");
