@@ -20,32 +20,18 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.6 2002-06-13 15:43:08 eduard Exp $
+ * @version $Id: BasicRelationList.java,v 1.7 2002-06-17 10:49:47 eduard Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
-    private NodeManager nodemanager;
-    
+
     /**
     * ...
     */
     BasicRelationList(Collection c, Cloud cloud, NodeManager nodemanager) {
         super(c,cloud,nodemanager);
-        this.nodemanager = nodemanager;
     }
-
-    /**
-    *
-    */
-    public Object convert(Object o, int index) {
-        if (o instanceof Relation) {
-            return o;
-        }
-        Relation r = new BasicRelation((MMObjectNode)o,nodemanager);
-        set(index ,r);
-        return r;
-    }
-
+    
     /**
     *
     */
@@ -65,34 +51,13 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
     */
     public RelationIterator relationIterator() {
         return new BasicRelationIterator(this);
-    };
+    }
 
-    public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
-
+    public class BasicRelationIterator extends BasicIterator implements RelationIterator {        
         BasicRelationIterator(BasicList list) {
             super(list);
         }
-
-
-        public void set(Object o) {
-            if (! (o instanceof Relation)) {
-                String message;
-                message = "Object must be of type Relation.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.set(index, o);
-        }
-        public void add(Object o) {
-            if (! (o instanceof Relation)) {
-                String message;
-                message = "Object must be of type Relation.";
-                log.error(message);
-                throw new BridgeException(message);
-            }
-            list.add(index, o);
-        }
-
+            
         public void set(Relation n) {
             list.set(index, n);
         }
@@ -100,13 +65,12 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
             list.add(index, n);
         }
 
-        // in fact we should also override set(Node) and add(Node),
-        // but sigh...
+        public Node nextNode() {
+            return nextRelation();
+        }
 
         public Relation nextRelation() {
             return (Relation)next();
         }
-
     }
-
 }
