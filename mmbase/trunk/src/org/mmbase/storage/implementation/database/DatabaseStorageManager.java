@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.47 2004-02-06 21:37:01 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.48 2004-02-09 13:26:32 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -445,7 +445,7 @@ public class DatabaseStorageManager implements StorageManager {
         // the same basePath, so you so need to set that up right.
         String basePath = factory.getBinaryFileBasePath();
 
-        File f = new File(basePath, node.getBuilder().getTableName() + File.separator + node.getNumber() + '.' + fieldName);        
+        File f = new File(basePath, node.getBuilder().getTableName() + File.separator + node.getNumber() + '.' + fieldName);
         if (f.exists()) { // 1.6 storage or 'support' blobdatadir
             if (! f.canRead()) {
                 log.warn("Found '" + f + "' but it cannot be read");
@@ -453,7 +453,7 @@ public class DatabaseStorageManager implements StorageManager {
                 return f;
             }
         }
-        
+
         f = new File(basePath + File.separator + factory.getCatalog() + File.separator + node.getBuilder().getFullTableName() + File.separator + node.getNumber() + '.' + fieldName );
         if (f.exists()) { // 1.7.0.rc1 blob data dir
             if (! f.canRead()) {
@@ -1552,12 +1552,16 @@ public class DatabaseStorageManager implements StorageManager {
                     } else if (parent != null) {
                         log.error("VERIFY: no parent builder defined in storage for builder " + builder.getTableName());
                     }
-                } catch (java.lang.AbstractMethodError ae) {
+                } catch (AbstractMethodError ae) {
                     // ignore: the method is not implemented by the JDBC Driver
                     log.debug("VERIFY: Driver does not fully implement the JDBC 3.0 API, skipping inheritance consistency tests for " + tableName);
-                } catch (java.lang.UnsupportedOperationException uoe) {
+                } catch (UnsupportedOperationException uoe) {
                     // ignore: the operation is not supported by the JDBC Driver
                     log.debug("VERIFY: Driver does not support all JDBC 3.0 methods, skipping inheritance consistency tests for " + tableName);
+                } catch (SQLException se) {
+                    // ignore: the method is likely not implemented by the JDBC Driver
+                    // (should be one of the above errors, but postgresql returns this as an SQLException. Tsk.)
+                    log.debug("VERIFY: determining super tables failed, skipping inheritance consistency tests for " + tableName);
                 }
             }
             ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
@@ -1873,13 +1877,13 @@ public class DatabaseStorageManager implements StorageManager {
                                 String tableName = (String)factory.getStorageIdentifier(builder);
                                 DatabaseMetaData metaData = activeConnection.getMetaData();
                                 ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
-                                while (columnsSet.next()) {                                      
+                                while (columnsSet.next()) {
                                     if (columnsSet.getString("COLUMN_NAME").equals(fieldName)) {
                                         foundColumn = true;
                                         break;
                                     }
                                 }
-                                columnsSet.close();                            
+                                columnsSet.close();
                             } catch (java.sql.SQLException sqe) {
                                 log.error(sqe.getMessage());
                             } finally {
@@ -1888,12 +1892,12 @@ public class DatabaseStorageManager implements StorageManager {
                         }
 
                         List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
-                        log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");                        
+                        log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                         Iterator i = nodes.iterator();
                         while (i.hasNext()) {
                             MMObjectNode node = (MMObjectNode) i.next();
                             File storeFile = getBinaryFile(node, fieldName);
-                            if (! storeFile.exists()) { // not found!                                
+                            if (! storeFile.exists()) { // not found!
                                 File legacyFile = getLegacyBinaryFile(node, fieldName);
                                 if (legacyFile != null) {
                                     storeFile.getParentFile().mkdirs();
@@ -1912,7 +1916,7 @@ public class DatabaseStorageManager implements StorageManager {
                                         // node.commit(); no need, because we only changed blob (so no database updates are done)
                                         result++; fromDatabase++;
                                         log.service("( " + result + ") Found bytes in database while configured to be on disk. Stored to " + storeFile);
-                                    }                                                         
+                                    }
                                 }
                             }
                         }
@@ -1931,7 +1935,7 @@ public class DatabaseStorageManager implements StorageManager {
             return result;
         } else {
 
-            // 
+            //
             return -1;
         }
     }
