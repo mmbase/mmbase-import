@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <id>crontab</id>
+  <name>crontab</name>
+  <groupId>mmbase</groupId>
+  <currentVersion>1.0</currentVersion>
+	<package>org.mmbase.applications.crontab</package>
+  <inceptionYear>2004</inceptionYear>
+  <dependencies>
+    <dependency>
+      <groupId>mmbase</groupId>
+      <artifactId>mmbase-core</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+      <url>http://www.mmbase.org/</url>
+   </dependency>
+    <dependency>
+      <groupId>mmapps</groupId>
+			<artifactId>maven-mmbasedoclet-plugin</artifactId>
+      <version>1.1</version>
+      <type>plugin</type>
+			<url>http://mmapps.sourceforge.net/maven-mmbasedoclet-plugin/</url>
+   </dependency>
+  </dependencies>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <unitTestSourceDirectory></unitTestSourceDirectory>
+  </build>
+</project>
