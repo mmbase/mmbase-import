@@ -60,15 +60,16 @@ try { max = Integer.parseInt(maxStr); } catch(Exception e) {}
 	</table>
 	</div>
 	<!-- /previous and next -->
-	</mm:first>
-	<p><b><mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field> :</b>
-	<mm:node element="news">
-	<mm:relatednodes type="images" max="1"><a href="#" onClick="javascript:launchCenter('/includes/slideshow.jsp?image=<mm:field name="number" />', 'center', 550, 740)" title="Click to enlarge image"><img src="<mm:image template="s(200x200)+part(5,5,42,42)" />" alt="<mm:field name="alt" />" width="42" align="right" border="1" /></a></mm:relatednodes >
+	</mm:first> <mm:field name="mmevents.start" write="false" id="date" />
+	<p><mm:node element="news">
+	<mm:relatednodes type="images" max="1"><a href="#" onClick="javascript:launchCenter('<mm:url page="includes/slideshow.jsp">
+	  <mm:param name="image"><mm:field name="number" /></mm:param></mm:url>', 'center', 550, 740)" title="Click to enlarge image"><img src="<mm:image template="s(100x100)+part(5,5,42,42)" />" alt="<mm:field name="alt" />" width="42" align="right" border="1" /></a></mm:relatednodes>
+	<b><mm:write referid="date"><mm:time format=":MEDIUM" /></mm:write> :</b>
 	<a href="<mm:url referids="page,portal"><mm:param name="newsnr"><mm:field name="number" /></mm:param><mm:param name="o"><%= offset %></mm:param></mm:url>"><mm:field name="title" /></a>
 	<mm:field name="subtitle"><mm:isnotempty><br /><i><mm:write /></i></mm:isnotempty></mm:field>
 	<mm:field name="intro"><mm:isnotempty><br /><mm:write /></mm:isnotempty></mm:field>
 	</mm:node>
-	</p>
+	</p><mm:remove referid="date" />
 	<mm:last>
 	<!-- previous and next -->
 	<div align="center">
