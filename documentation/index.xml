@@ -3,8 +3,8 @@
 <article>
    <articleinfo>
     <title>Documentation Overview</title>
-    <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.37 2003-07-25 09:32:35 pierre Exp $</edition>
+    <date>2002-12-03</date>
+    <edition>$Id: index.xml,v 1.38 2003-07-27 17:47:49 henk Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>

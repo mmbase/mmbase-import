@@ -4,8 +4,8 @@
   <article>
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
-		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.12 2003-07-01 14:36:58 johannes Exp $</edition>
+		<date>2002-12-05</date>
+		<edition>$Id: documentation.xml,v 1.13 2003-07-27 17:47:49 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>

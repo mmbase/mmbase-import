@@ -4,8 +4,8 @@
 <article>
 	<articleinfo>
 		<title>XML Importer overview (a.k.a. TCP 2.0)</title>
-		<date>24 December 2001</date>
-		<edition>$Id: overview.xml,v 1.4 2003-07-01 14:45:29 johannes Exp $</edition>
+		<date>2001-12-24</date>
+		<edition>$Id: overview.xml,v 1.5 2003-07-27 17:47:52 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Rob</firstname>

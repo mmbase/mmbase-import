@@ -3,8 +3,8 @@
 <article>
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
-		<date>2 September 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.19 2003-07-01 14:45:28 johannes Exp $</edition>
+		<date>2002-09-02</date>
+		<edition>$Id: editwizard-doc.xml,v 1.20 2003-07-27 17:47:51 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
