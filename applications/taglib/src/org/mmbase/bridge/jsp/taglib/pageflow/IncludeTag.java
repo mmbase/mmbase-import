@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.45 2004-03-19 23:06:26 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.46 2004-03-22 13:41:53 rob Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -175,10 +175,12 @@ public class IncludeTag extends UrlTag {
                     log.debug("key '" + e.getKey() + "' value '" + o.toString() + "'");
                 }                
             }
-        }
+        } 
+         
+        // Orion bug fix.
+        req.getParameterMap();
 
         HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
-
 
         try {
             ServletContext sc = pageContext.getServletContext();
