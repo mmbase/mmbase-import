@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.33 2002-04-16 15:04:15 eduard Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.34 2002-04-19 09:35:51 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -49,10 +49,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
         String converterRoot    = "";
         String converterCommand = "convert";
   
+        /* don't think it is necessary.
         if(System.getProperty("os.name") != null && System.getProperty("os.name").startsWith("Windows")) {
             // on the windows system, we _can_ assume the it uses .exe as extention...
             converterCommand += ".exe";
         }
+        */
         
         String tmp;
         tmp=(String)params.get("ImageConvert.ConverterRoot");
@@ -61,7 +63,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
         tmp=(String)params.get("ImageConvert.ConverterCommand");
         if (tmp!=null) converterCommand = tmp;
                 
-        String converterPath = converterCommand; // default.
+        converterPath = converterCommand; // default.
         if (! converterRoot.equals("")) { // also a root was indicated, add it..
             // now check if the specified ImageConvert.converterRoot does exist and is a directory
             File checkConvDir = new File(converterRoot).getAbsoluteFile();
