@@ -19,7 +19,7 @@ import org.mmbase.util.Casting;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen (MMFunctionParam)
  * @since  MMBase-1.7
- * @version $Id: Parameter.java,v 1.6 2004-02-09 17:58:05 michiel Exp $
+ * @version $Id: Parameter.java,v 1.6.2.1 2004-09-08 15:24:54 michiel Exp $
  * @see Parameters
  */
 
@@ -29,6 +29,7 @@ public class Parameter {
      * Parameter which might be needed in lots of Parameter definitions.
      */
     public static final Parameter LANGUAGE = new Parameter("language", String.class);
+    public static final Parameter LOCALE   = new Parameter("locale",   Locale.class);
     public static final Parameter USER     = new Parameter("user",     org.mmbase.bridge.User.class);
     public static final Parameter RESPONSE = new Parameter("response", javax.servlet.http.HttpServletResponse.class);
     public static final Parameter REQUEST  = new Parameter("request",  javax.servlet.http.HttpServletRequest.class);
