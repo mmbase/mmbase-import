@@ -3,7 +3,7 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+  @version  $Id: wizard.css,v 1.2 2005-03-24 12:44:36 jdiepenmaat Exp $
 
 body
 table.head
@@ -299,6 +299,11 @@ input.input,
 textarea.input  {
         width: 100%;
 }
+
+textarea.input { 
+    height: 50em;
+}
+    
 
 span.time_at {
   padding-left: 2ex;

@@ -45,6 +45,8 @@
     <mm:createnode type="emails" id="emailNode" jspvar="mailNode">
          <mm:setfield name="type">0</mm:setfield>
     </mm:createnode>
+
+    
     <mm:createrelation role="related" source="mailboxNode" destination="emailNode"/>
     <mm:createrelation role="related" source="attachment" destination="emailNode"/>
 

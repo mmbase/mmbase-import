@@ -39,29 +39,21 @@
 
 
 <div class="rows">
-
 <div class="navigationbar">
 <div class="titlebar">
-<%-- determine if the context is my documents or shared documents --%>
-<mm:compare referid="typeof" value="1">
-  <img src="<mm:treefile write="true" page="/gfx/icon_mydocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />"/>
-      <fmt:message key="MYDOCUMENTS" />
-</mm:compare>
-<mm:compare referid="typeof" value="2">
-  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="SHAREDDOCUMENTS" />"/>
-      <fmt:message key="SHAREDDOCUMENTS" />
-</mm:compare>
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
+      <fmt:message key="PORTFOLIO" />
 </div>
 </div>
 
 <div class="folders">
 
 <div class="folderHeader">
-    <fmt:message key="FOLDERS" />
+    <fmt:message key="PORTFOLIO" />
 </div>
-
-<div class="folderBody">
-
+  <div class="folderBody">
+  </div>
+</div>
 
 <%-- folder is open --%>
 <mm:compare referid="typeof" value="-1">

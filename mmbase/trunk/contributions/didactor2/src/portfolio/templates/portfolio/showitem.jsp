@@ -41,12 +41,12 @@
 <mm:node number="$currentitem">
     <mm:relatednodes type="portfoliopermissions" max="1">
         <mm:field name="readrights">
-            <mm:compare value="2">
+            <mm:compare value="1">
                 <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
                     <mm:import id="mayread" reset="true">true</mm:import>
                 </mm:list>
             </mm:compare>
-             <mm:compare value="3">
+             <mm:compare value="2">
                 <di:hasrole role="teacher">
                     <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
                         <mm:import id="mayread" reset="true">true</mm:import>
@@ -154,20 +154,22 @@
 
 <div class="rows">
 
-
 <div class="navigationbar">
-  <div class="titlebar">
-  <img src="<mm:treefile write="true" page="/gfx/icon_portfolio.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="MYDOCUMENTS" />" />
-  <fmt:message key="MYDOCUMENTS" />
-  </div>
+<div class="titlebar">
+  <img src="<mm:treefile write="true" page="/gfx/icon_shareddocs.gif" objectlist="$includePath" referids="$referids"/>" width="25" height="13" border="0" alt="<fmt:message key="PORTFOLIO" />"/>
+      <fmt:message key="PORTFOLIO" />
+</div>
 </div>
 
 <div class="folders">
-  <div class="folderHeader">
-  </div>
+
+<div class="folderHeader">
+    <fmt:message key="PORTFOLIO" />
+</div>
   <div class="folderBody">
   </div>
 </div>
+
 
 <div class="mainContent">
 
@@ -226,11 +228,9 @@
                 <mm:compare value="handle">
                   <mm:field name="mimetype" jspvar="mimetype" vartype="String">
                     <% if (mimetype.startsWith("image/")) { %>
-                        <p>
                           <img src="<mm:image/>"/>
-                        </p>
                     <% } else { %>
-                        <mm:compare referid="mayeditthis" value="false"><mm:fieldinfo type="guivalue"/></mm:compare>
+                        <a href="<mm:attachment/>">download</a>
                     <% } %>
                   </mm:field>
                 </mm:compare>
