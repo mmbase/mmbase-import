@@ -23,7 +23,7 @@ import org.mmbase.bridge.Cloud;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.2 2004-07-26 20:17:58 nico Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.3 2005-01-03 18:03:46 michiel Exp $ 
  * @since   MMBase-1.8
  */
 
@@ -32,6 +32,7 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
     private static final int TYPE_NAME                  = 0;
     private static final int TYPE_USER                  = 1;
     private static final int TYPE_RANK                  = 2;
+    private static final int TYPE_MMBASEVERSION         = 3;
 
 
     private Attribute type = Attribute.NULL;
@@ -50,6 +51,8 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             return TYPE_USER;
         } else if ("rank".equals(t)) { 
             return TYPE_RANK;
+        } else if ("mmbaseversion".equals(t)) { 
+            return TYPE_MMBASEVERSION;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -71,6 +74,9 @@ public class CloudInfoTag extends CloudReferrerTag implements Writer {
             break;
         case TYPE_RANK:
             show = cloud.getUser().getRank();
+            break;
+        case TYPE_MMBASEVERSION:
+            show = org.mmbase.Version.get();
             break;
         default:
             show = "";
