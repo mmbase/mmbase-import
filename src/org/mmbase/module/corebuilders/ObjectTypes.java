@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.23 2002-11-13 22:23:56 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.24 2002-11-28 10:34:34 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
@@ -497,16 +497,6 @@ public class ObjectTypes extends TypeDef {
      */
     public String getGUIIndicator(MMObjectNode node) {
         return getSingularName(node.getStringValue("name"),null);
-    }
-
-    /**
-     * What should a GUI display for this node/field combo.
-     * @param field the name field of the field to display
-     * @param node The node to display
-     * @return the display of the node's field as a <code>String</code>, null if not specified
-     */
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        return null;
     }
 
 }
