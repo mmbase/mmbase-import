@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.177 2003-07-25 18:16:52 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.178 2003-07-29 17:08:08 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4080,15 +4080,31 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>listnodescontainer</name>
-    <see tag="nodelist" />
+    <see tag="listnodes" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
     <info>
-      Surrounds a (node) list tag, provides a query object, and can contain the result.
+      Surrounds a listnodes tag and provides a query object.
     </info>
     <attribute>
       <name>type</name>
       <required>true</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>listcontainer</name>
+    <see tag="list" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
+    <info>
+      Surrounds a list tag and  provides a query object.
+    </info>
+    <attribute>
+      <name>path</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
       <info>
 
       </info>
@@ -4104,7 +4120,7 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>field</name>
       <required>true</required>
-      <rtexprvalue>false</rtexprvalue>
+
       <info>
 
       </info>
@@ -4112,7 +4128,6 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>value</name>
       <required>true</required>
-      <rtexprvalue>false</rtexprvalue>
       <info>
 
       </info>
@@ -4120,7 +4135,6 @@ The 0 is just counter, which starts at 0 on every page.
     <attribute>
       <name>operator</name>
       <required>true</required>
-      <rtexprvalue>false</rtexprvalue>
       <info>
 
       </info>

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.4 2003-07-25 21:14:03 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.5 2003-07-29 17:08:09 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -86,28 +86,24 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         Query query = c.getQuery();
 
         Constraint newConstraint;
-        if (query instanceof NodeQuery) {
-            NodeQuery nodeQuery = (NodeQuery) query;
-            int operator = getOperator();
-            Object compareValue;
-            if (operator < FieldCompareConstraint.LIKE) {
-                String stringValue = value.getString(this);
+        int operator = getOperator();
+        Object compareValue;
+        if (operator < FieldCompareConstraint.LIKE) {
+            String stringValue = value.getString(this);
+            try {
+                compareValue = new Integer(stringValue);
+            } catch (NumberFormatException e) {
                 try {
-                    compareValue = new Integer(stringValue);
-                } catch (NumberFormatException e) {
-                    try {
-                        compareValue = new Double(stringValue);
-                    } catch (NumberFormatException e2) {
-                        throw new  JspTagException("Operator requires number value ('" + stringValue + "' is not)");
-                    }
-                } 
-            } else {
-                compareValue = value.getValue(this);
-            }
-            newConstraint = nodeQuery.createConstraint(nodeQuery.getStepField(field.getString(this)), getOperator(), compareValue);
+                    compareValue = new Double(stringValue);
+                } catch (NumberFormatException e2) {
+                    throw new  JspTagException("Operator requires number value ('" + stringValue + "' is not)");
+                }
+            } 
         } else {
-            throw new UnsupportedOperationException("not yet implemented");
+            compareValue = value.getValue(this);
         }
+
+        newConstraint = query.createConstraint(query.createStepField(field.getString(this)), getOperator(), compareValue);
 
         Constraint constraint = query.getConstraint();
         if (constraint != null) {

@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListContainer.java,v 1.2 2003-07-25 21:14:57 michiel Exp $
+ * @version $Id: NodeListContainer.java,v 1.3 2003-07-29 17:08:09 michiel Exp $
  */
 public interface NodeListContainer extends TagIdentifier {
 
@@ -30,19 +30,6 @@ public interface NodeListContainer extends TagIdentifier {
      */
     Query getQuery();
 
-    
-    /**
-     * Gets the query result (the list)
-     * @throws JspTagException if the function result is not yet available
-     */
-    NodeList getResult() throws JspTagException;
-
-    /**
-     * Sets the query result (to sublist tag does this)
-     *
-     * @throws JspTagException if the function result was set already
-     */
-    void   setResult(NodeList result) throws JspTagException;
 
 
     Cloud getCloud() throws JspTagException;
