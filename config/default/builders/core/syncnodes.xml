@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="syncnodes" maintainer="mmbase.org" version="0" extends="object">
 
   <classfile>Dummy</classfile>
   <searchage>14</searchage>
@@ -35,6 +35,13 @@
   <fieldlist>
      <!-- POS 3 : <field> 'exportsource'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Source of this Node, format
+         mmbase://sourceservername/sourceapplicationname</description>
+         <description xml:lang="nl">Bron van deze node,formaat:
+         mmbase://bronservernaam/bronapplicatienaam</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Export Source</guiname>
@@ -65,6 +72,11 @@
 
      <!-- POS 4 : <field> 'timestamp'  -->
      <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Time of the export</description>
+          <description xml:lang="nl">Tijd van de export</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Time Stamp</guiname>
@@ -95,6 +107,14 @@
 
      <!-- POS 5 : <field> 'exportnumber'  -->
      <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Remote number of this node, the
+          remotenumber is mapped to the localnumber when importing nodes</description>
+          <description xml:lang="nl">Nummer van deze node in de externe cloud, het
+          externe nummer wordt gemapped naar het lokale nummer bij een
+          import van nodes</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Export Number</guiname>
@@ -126,6 +146,14 @@
 
      <!-- POS 6 : <field> 'localnumber'  -->
      <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">Local number of this node, the
+          remotenumber is mapped to the localnumber when importing nodes</description>
+          <description xml:lang="nl">Lokaal nummer van deze node, het
+          externe nummer wordt gemapped naar het lokale nummer bij een
+          import van nodes</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Local Number</guiname>

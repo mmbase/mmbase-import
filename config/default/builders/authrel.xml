@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="insrel">
-<!-- @version $Id: authrel.xml,v 1.9 2002-06-19 10:02:01 pierre Exp $ -->
+<builder name="authrel" maintainer="mmbase.org" version="0" extends="insrel">
+<!-- @version $Id: authrel.xml,v 1.10 2002-10-22 12:15:53 gerard Exp $ -->
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -55,7 +55,12 @@
 -->
 <fieldlist>
     <!-- POS 7 : <field> 'creat'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Create</guiname>
@@ -84,7 +89,12 @@
     </field>
 
     <!-- POS 8 : <field> 'us'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Use</guiname>
@@ -113,7 +123,12 @@
     </field>
 
     <!-- POS 9 : <field> 'look'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Look</guiname>

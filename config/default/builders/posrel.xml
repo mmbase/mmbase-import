@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="insrel">
+<builder name="posrel" maintainer="mmbase.org" version="0" extends="insrel">
 <!-- <status>
     what is the status of this builder options : active or inactive
 -->
@@ -52,7 +52,12 @@
 -->
 <fieldlist>
     <!-- POS 7 : <field> 'pos'  -->
-    <field>
+         <field>
+        <descriptions>
+          <!-- descriptions per language as defined by ISO 639  -->
+          <description xml:lang="en">TODO</description>
+          <description xml:lang="nl">TODO</description>
+        </descriptions>
         <!-- gui related -->
         <gui>
             <guiname xml:lang="en">Position</guiname>

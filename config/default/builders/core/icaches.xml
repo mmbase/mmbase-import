@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="icaches" maintainer="mmbase.org" version="0" extends="object">
   <classfile>ImageCaches</classfile>
 
   <searchage>14</searchage>
@@ -44,6 +44,13 @@
   <fieldlist>
      <!-- POS 3 : <field> 'ckey'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Unique key for accessing cached image</description>
+         <description xml:lang="nl">Unieke sleutel om een gecached
+         plaatje op te halen</description>
+       </descriptions>
+
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Ckey</guiname>
@@ -75,6 +82,11 @@
 
      <!-- POS 4 : <field> 'id'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">TODO</description>
+         <description xml:lang="nl">TODO</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">ID</guiname>
@@ -106,6 +118,11 @@
 
      <!-- POS 5 : <field> 'handle'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">The cached image</description>
+         <description xml:lang="nl">Het gecachte plaatje</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Image</guiname>
@@ -137,6 +154,11 @@
 
      <!-- POS 6 : <field> 'filesize'  -->
      <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Filesize of the cached image</description>
+         <description xml:lang="nl">Filegrootte van het gecachte plaatje</description>
+       </descriptions>
         <!-- gui related -->
         <gui>
           <guiname xml:lang="en">Size</guiname>

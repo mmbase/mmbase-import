@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="reldef" maintainer="mmbase.org" version="0" extends="object">
 
     <classfile>org.mmbase.module.corebuilders.RelDef</classfile>
 
@@ -43,6 +43,11 @@
     <fieldlist>
         <!-- POS 3 : <field> 'sname'  -->
         <field>
+          <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Source name of this relation definition</description>
+            <description xml:lang="nl">Bron naam van deze relatie definitie</description>
+          </descriptions>
             <!-- gui related -->
             <gui>
                 <guiname xml:lang="en">Source</guiname>
@@ -73,6 +78,13 @@
 
         <!-- POS 4 : <field> 'dname'  -->
         <field>
+          <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Destination name of this
+            relation definition</description>
+            <description xml:lang="nl">Bestemmings naam van deze
+            relatie definitie</description>
+          </descriptions>
             <!-- gui related -->
             <gui>
                 <guiname xml:lang="en">Target</guiname>
@@ -103,6 +115,12 @@
 
         <!-- POS 5 : <field> 'dir'  -->
         <field>
+          <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Directionality of this relation
+            definition</description>
+            <description xml:lang="nl">Richting van deze relatie definitie</description>
+          </descriptions>
             <!-- gui related -->
             <gui>
                 <guiname xml:lang="en">Direction</guiname>
@@ -133,6 +151,13 @@
 
         <!-- POS 6 : <field> 'sguiname'  -->
         <field>
+          <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Source guiname of this relation
+            definition, will be used in editors</description>
+            <description xml:lang="nl">Bron guinaam van deze relatie
+            definitie, deze wordt gebruikt in editors</description>
+          </descriptions>
             <!-- gui related -->
             <gui>
                 <guiname xml:lang="en">SourceGUIName</guiname>
@@ -163,6 +188,13 @@
 
         <!-- POS 7 : <field> 'dguiname'  -->
         <field>
+          <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Destination guiname of this relation
+            definition, will be used in editors</description>
+            <description xml:lang="nl">Bestemmings guinaam van deze relatie
+            definitie, deze wordt gebruikt in editors</description>
+          </descriptions>
             <!-- gui related -->
             <gui>
                 <guiname xml:lang="en">TargetGUIName</guiname>
@@ -193,6 +225,13 @@
 
     <!-- POS 8 : <field> 'builder' -->
     <field>
+          <descriptions>
+            <!-- descriptions per language as defined by ISO 639  -->
+            <description xml:lang="en">Builder which will be used by
+            relations of this relation definition</description>
+            <description xml:lang="nl">Builder welke gebruikt zal
+            worden door relaties van deze relatiedefinitie</description>
+          </descriptions>
             <!-- gui related -->
             <gui>
                 <guiname xml:lang="en">Builder</guiname>

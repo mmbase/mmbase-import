@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0" extends="object">
+<builder name="daymarks" maintainer="mmbase.org" version="0" extends="object">
 
   <classfile>DayMarkers</classfile>
 
@@ -53,6 +53,11 @@
   <fieldlist>
     <!-- POS 3 : <field> 'daycount'  -->
     <field>
+      <descriptions>
+        <!-- descriptions per language as defined by ISO 639  -->
+        <description xml:lang="en">Number of days of this daymarker</description>
+        <description xml:lang="nl">Aantal dagen van deze dagmarkeerder</description>
+      </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Day Marker</guiname>
@@ -84,6 +89,13 @@
 
     <!-- POS 4 : <field> 'mark'  -->
     <field>
+       <descriptions>
+         <!-- descriptions per language as defined by ISO 639  -->
+         <description xml:lang="en">Objectnumber of the last new object
+         untill this daymark</description>
+         <description xml:lang="nl">Objectnummer van het laatste
+         nieuwe object voor deze dagmarkeerder</description>
+       </descriptions>
       <!-- gui related -->
       <gui>
         <guiname xml:lang="en">Mark</guiname>
