@@ -1,5 +1,9 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@page contentType="text/html; charset=utf-8" %><html>
+<head>
+<title>Contexts</title>
+<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
+</head>
 <body>
 <h1>context 3</h1>
 <mm:import externid="alias" required="true" />
@@ -22,7 +26,7 @@ another field. Of course, normally is not necessary at all.
   <td><mm:field name="title" /></td>
 </mm:node>
 <mm:node referid="news_node">
-  <td><mm:field name="subtitle" /></td>
+  <td><mm:field name="subtitle" write="true"><mm:isempty>&nbsp;</mm:isempty></mm:field></td>
 </mm:node>
 </tr>
 </mm:context>
