@@ -39,8 +39,8 @@
                     (<a href="<%=response.encodeURL("change_node.jsp?node_number=" + relationDefinition.getNumber())%>">
                      <%=relationDefinition.getValue("gui(dname)")%></a>)
                 </td>
-                <th colspan="3">Relation Nodes</th>
-                <th colspan="3">Related Nodes</th>
+                <th colspan="3"><%=m.getString("relations.relations")%></th>
+                <th colspan="3"><%=m.getString("relations.related")%></th>
                 <td class="navigate">
                     <!-- <%= m.getString("new_relation.new")%> -->
                     <a href='<mm:url page="new_relation.jsp" >
@@ -137,8 +137,8 @@
                      <%=relationDefinition.getValue("gui(sname)")%></a>)
                     <% if(relationDefinition.getIntValue("dir")==1) { %>]<% } %>
                 </td>
-                <th colspan="3">Relation Nodes</th>
-                <th colspan="3">Related Nodes</th>
+                <th colspan="3"><%=m.getString("relations.relations")%></th>
+                <th colspan="3"><%=m.getString("relations.related")%></th>
                 <td class="navigate">
                     <!-- <%= m.getString("new_relation.new")%> -->
                     <a href='<mm:url page="new_relation.jsp" >
