@@ -183,7 +183,7 @@ public class XMLRelationNodeReader  {
 								if (n6!=null) value=n6.getNodeValue();
 								int type=bul.getDBType(key);
 								if (type!=-1) {
-									if (type==FieldDefs.TYPE_STRING) {
+									if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
 										if (value==null)  value="";
 										newnode.setValue(key,value);
 									} else if (type==FieldDefs.TYPE_INTEGER) {
