@@ -122,7 +122,7 @@
           <!-- name of the field in the database -->
           <name xml:lang="en">config</name>
           <!-- MMBase datatype and demands on it -->
-          <type doctype="&lt;!DOCTYPE builder PUBLIC &quot;-//MMBase/DTD builder config 1.1//EN&quot; &quot;http://www.mmbase.org/dtd/builder.dtd&quot;&gt;" key="false" notnull="true" state="virtual">XML</type>
+          <type doctype="&lt;!DOCTYPE builder PUBLIC &quot;-//MMBase/DTD builder config 1.1//EN&quot; &quot;http://www.mmbase.org/dtd/builder_1_1.dtd&quot;&gt;" key="false" notnull="true" state="virtual">XML</type>
         </db>
      </field>
   </fieldlist>
