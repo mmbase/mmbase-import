@@ -247,6 +247,9 @@
    <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
    <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
   </a>
+   <xsl:if test="since='MMBase-1.7'">
+     (new!)
+   </xsl:if>
   <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
 
