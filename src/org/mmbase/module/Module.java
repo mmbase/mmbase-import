@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.54 2004-05-24 14:20:14 michiel Exp $
+ * @version $Id: Module.java,v 1.55 2004-11-11 16:44:02 michiel Exp $
  */
 public abstract class Module {
     private static final Logger log = Logging.getLoggerInstance(Module.class);
@@ -44,7 +44,7 @@ public abstract class Module {
     String moduleName = null;
     Hashtable state = new Hashtable();
     Hashtable mimetypes;
-    Hashtable properties;
+    Hashtable properties; // would like this to be LinkedHashMap (predictable order)
     String maintainer;
     int    version;
 
@@ -366,59 +366,57 @@ public abstract class Module {
      */
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
-        File dir = new File(MMBaseContext.getConfigPath(), "modules");
-        if (dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File file = files[i];
-                String fileName = file.getName();
-                if (file.isFile() && fileName.endsWith(".xml")) {
-                    if (! file.canRead()) {
-                        log.warn("The file '" + file + "' exists but cannot be read!");
-                        continue;
-                    }
-                    fileName = fileName.substring(0, fileName.length() - 4);
-                    XMLModuleReader parser;
-                    try {
-                        parser = new XMLModuleReader(file.getAbsolutePath());
-                    } catch (Throwable t) {
-                        log.error("Could not load module with xml '" + file + "': " + t.getMessage());
-                        continue;
-                    }
-                    if (parser.getStatus().equals("active")) {
-                        String className = parser.getClassFile();
-                        // try starting the module and give it its properties
-                        try {
-                            log.service("Loading module " + fileName + " with class " + className);
-                            Module mod;
-                            if (parser.getURLString() != null){
-                                log.service("loading module from jar " + parser.getURLString());
-                                URL url = new URL(parser.getURLString());
-                                URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
-                                Class newClass = c.loadClass(className);
-                                mod = (Module) newClass.newInstance();
-                            } else {
-                                Class newClass = Class.forName(className);
-                                mod = (Module) newClass.newInstance();
-                            }
-                         
-                            results.put(fileName, mod);
-                            
-                            mod.properties =  parser.getProperties();
 
-                            // set the module name property using the module's filename
-                            // maybe we need a parser.getModuleName() function to improve on this
-                            mod.setName(fileName);
+        ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
+        Collection ms = rl.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
+        log.info("Found modules in " + rl + " " + ms);
+        Iterator i = ms.iterator();
+        while (i.hasNext()) {
+            String file = (String) i.next();
+            String fileName = ResourceLoader.getName(file);
+            
+            XMLModuleReader parser;
+            org.xml.sax.InputSource is = null;
+            try {
+                is = rl.getInputSource(file);
+                parser = new XMLModuleReader(is);
+            } catch (Throwable t) {
+                log.error("Could not load module with xml '" + (is == null ? "NULL" : is.getSystemId()) + "': " + t.getMessage());
+                continue;
+            }
 
-                            mod.setMaintainer(parser.getModuleMaintainer());
-                            mod.setVersion(parser.getModuleVersion());
-                        } catch (ClassNotFoundException cnfe) {
-                            log.error("Could not load class with name '" + className + "', " +
-                                      "which was specified in the module:'" + file + " '(" + cnfe + ")" );
-                        } catch (Exception e) {
-                            log.error("Error while loading module class" + Logging.stackTrace(e));
-                        }
+            if (parser.getStatus().equals("active")) {
+                String className = parser.getClassFile();
+                // try starting the module and give it its properties
+                try {
+                    log.service("Loading module " + fileName + " with class " + className);
+                    Module mod;
+                    if (parser.getURLString() != null){
+                        log.service("loading module from jar " + parser.getURLString());
+                        URL url = new URL(parser.getURLString());
+                        URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
+                        Class newClass = c.loadClass(className);
+                        mod = (Module) newClass.newInstance();
+                    } else {
+                        Class newClass = Class.forName(className);
+                        mod = (Module) newClass.newInstance();
                     }
+                    
+                    results.put(fileName, mod);
+                    
+                    mod.properties =  parser.getProperties();
+                    
+                    // set the module name property using the module's filename
+                    // maybe we need a parser.getModuleName() function to improve on this
+                    mod.setName(fileName);
+                    
+                    mod.setMaintainer(parser.getModuleMaintainer());
+                    mod.setVersion(parser.getModuleVersion());
+                } catch (ClassNotFoundException cnfe) {
+                    log.error("Could not load class with name '" + className + "', " +
+                              "which was specified in the module:'" + file + " '(" + cnfe + ")" );
+                } catch (Exception e) {
+                    log.error("Error while loading module class" + Logging.stackTrace(e));
                 }
             }
         }
