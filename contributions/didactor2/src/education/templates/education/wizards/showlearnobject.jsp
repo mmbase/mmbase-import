@@ -41,4 +41,12 @@
        null,
        "bewerk object",
        "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="" />");
+   <mm:compare referid="objecttype" valueset="learnblocks,tests">
+      <%
+         treeName = "tree" + learnobjects2_number + "z";
+      %>
+      var  <%= treeName %> = new MTMenu();
+            <%@include file="newfromtree.jsp" %>
+            lbTree<%= lastLearnObject[depth-1] %>z.makeLastSubmenu(<%= treeName %>, true);
+   </mm:compare>
 </mm:node>

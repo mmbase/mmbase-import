@@ -9,7 +9,7 @@
  String sAltText = "";
  String startnode = request.getParameterValues("startnode")[0];
  String parenttree = request.getParameterValues("parenttree")[0];
- 
+
  int [] offset = new int[10];
  for(int d=0; d<offset.length; d++) offset[d]= 0;
 
@@ -19,14 +19,23 @@
 
  int depth = 1;
  boolean subLearnobjectFound = false;
- 
- while((depth>0||subLearnobjectFound)&&depth<10) { 
+
+ String treeName = "lbTree" + startnode + "z";
+ %>
+    <mm:node number="<%= startnode %>">
+       var  <%= treeName %> = new MTMenu();
+       <%@include file="newfromtree.jsp" %>
+    </mm:node>
+    edutree0.makeLastSubmenu(<%= treeName %>, true);
+ <%
+
+ while((depth>0||subLearnobjectFound)&&depth<10) {
      subLearnobjectFound = false;
      %><mm:list nodes="<%= lastLearnObject[depth-1] %>" path="learnobjects1,posrel,learnobjects2"
          searchdir="destination" orderby="posrel.pos" directions="UP" max="1" offset="<%= ""+ offset[depth] %>">
          <mm:field name="learnobjects2.number" jspvar="learnobjects2_number" vartype="String" write="false">
-            <% 
-            String treeName = "lbTree" + lastLearnObject[depth-1] + "z";
+            <%
+            treeName = "lbTree" + lastLearnObject[depth-1] + "z";
             if(offset[depth]==0) { %>
                var  <%= treeName %> = new MTMenu();
                <mm:node number="component.pdf" notfound="skip">
@@ -37,10 +46,10 @@
                <mm:node element="learnobjects1">
                   <%@include file="newfromtree.jsp" %>
                </mm:node>
-            <% } %>   
+            <% } %>
             <%@include file="showlearnobject.jsp" %>
-            <%  
-               subLearnobjectFound= true; 
+            <%
+               subLearnobjectFound= true;
                offset[depth]++;
                lastLearnObject[depth] = learnobjects2_number;
                depth ++;
@@ -48,17 +57,17 @@
          </mm:field>
      </mm:list><%
      if(!subLearnobjectFound) { // go one layer back
-         if(offset[depth]!=0) { 
+         if(offset[depth]!=0) {
             if(depth>1) { %>
                lbTree<%= lastLearnObject[depth-2] %>z.makeLastSubmenu(lbTree<%= lastLearnObject[depth-1] %>z, true);
             <% } else { %>
                edutree0.makeLastSubmenu(lbTree<%= startnode %>z, true);
-            <% } 
+            <% }
          }
          offset[depth]=0;
          depth--;
      }
- } 
-%>  
+ }
+%>
 </mm:cloud>
 </mm:content>
