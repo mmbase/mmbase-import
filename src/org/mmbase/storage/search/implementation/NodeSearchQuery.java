@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -47,8 +47,8 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      * Creator.
      *
      * @param builder The builder for the nodetype, must not be a 
-     *        {@link @org.mmbase.module.core.VirtualBuilder virtual} builder.
-     * @throws IllegalArgumentException when an invalid argument is supplied
+     *        {@link org.mmbase.module.core.VirtualBuilder virtual} builder.
+     * @throws IllegalArgumentException When an invalid argument is supplied.
      */
     public NodeSearchQuery(MMObjectBuilder builder) {
         if (builder == null) {
@@ -78,7 +78,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      *
      * @param field The field.
      * @return The corresponding stepfield.
-     * @throws IllegalArgumentException If the field is not a
+     * @throws IllegalArgumentException When the field is not a
      *         persistent field of the associated nodetype.
      */
     public StepField getField(FieldDefs field) {
