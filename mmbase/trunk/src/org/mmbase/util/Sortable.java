@@ -18,9 +18,9 @@ package org.mmbase.util;
  */
 public interface Sortable
 {
-	/** 
-	 * The compare function called by SortedVector to sort things
-	 * @see org.mmbase..util.SortedVector
-	 */
-	public abstract int compare(Sortable other);
+    /**
+     * The compare function called by SortedVector to sort things
+     * @see org.mmbase.util.SortedVector
+     */
+    public abstract int compare(Sortable other);
 }

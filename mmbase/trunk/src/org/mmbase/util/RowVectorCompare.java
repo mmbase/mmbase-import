@@ -13,38 +13,64 @@ import java.util.*;
 import org.mmbase.util.*;
 
 /**
- * RowVector compare can sort Vectors in Vectors (rows) based in given item 
- * number 
- *
+ * RowVectorCompare compares a given row element in two Vectors.
  */
 public class RowVectorCompare implements CompareInterface {
-	int comparePos=1;
+    int comparePos=1;
 
-	public RowVectorCompare(int pos) {
-		comparePos = pos;
-	}
+    /**
+     * Creates a RowVectorCompare.
+     * @param pos the position (row number) at which to compare two vectors
+     */
+    public RowVectorCompare(int pos) {
+        comparePos = pos;
+    }
 
-	public int compare(Object thisOne, Object other) {
-		Object object1;
-		Object object2;
-		int result = 0;
+    /**
+     * Make the comparison.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Vector</code>.
+     * @param other the second object to compare. should be a <code>Vector</code>.
+     * @return the result of the comparison
+     */
+    public int compare(Object thisOne, Object other) {
+        Object object1;
+        Object object2;
+        int result = 0;
 
-		object1 = ((Vector)thisOne).elementAt(comparePos);
-		object2 = ((Vector)other).elementAt(comparePos);
+        object1 = ((Vector)thisOne).elementAt(comparePos);
+        object2 = ((Vector)other).elementAt(comparePos);
 
-		if(object1 instanceof String)
-			result = internalStringCompare(object1, object2);
-		else if(object1 instanceof Integer)
-			result = internalIntCompare(object1, object2);
+        if(object1 instanceof String)
+            result = internalStringCompare(object1, object2);
+        else if(object1 instanceof Integer)
+            result = internalIntCompare(object1, object2);
+        return result;
+    }
 
-		return (result);
-	}
 
-	int internalIntCompare(Object thisOne, Object other) {
-		return(((Integer)thisOne).intValue()-((Integer)other).intValue());
-	}
+    /**
+     * Make the comparison between two Integer objects.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Integer</code>.
+     * @param other the second object to compare. should be a <code>Integer</code>.
+     * @return the result of the comparison
+     */
+    int internalIntCompare(Object thisOne, Object other) {
+        return ((Integer)thisOne).intValue()-((Integer)other).intValue();
+    }
 
-	int internalStringCompare(Object thisOne, Object other) {
-		return(((String)thisOne).compareTo((String)other));
-	}
-} 
+    /**
+     * Make the comparison between two String objects.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>String</code>.
+     * @param other the second object to compare. should be a <code>String</code>.
+     * @return the result of the comparison
+     */
+    int internalStringCompare(Object thisOne, Object other) {
+        return ((String)thisOne).compareTo((String)other);
+    }
+}

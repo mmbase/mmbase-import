@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 /**
- * Class to compare two strings, used by SortedVector.
+ * Class to compare two objects, used by SortedVector.
  * This one is to sort objects supporting the Sortable interface
  * @see org.mmbase.util.Sortable
  * @see org.mmbase.util.SortedVector
@@ -21,12 +21,15 @@ package org.mmbase.util;
  */
 public class SortableCompare implements CompareInterface {
 
-	/** 
-	 * The compare function called by SortedVector to sort things
-	 * @see org.mmbase.util.SortedVector
-	 * @see org.mmbase.util.CompareInterface
-	 */
-	public int compare(Object thisone,Object other) {
-		return(((Sortable)thisone).compare((Sortable)other));
-	}
+    /**
+     * Make the comparison.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Comparable</code>.
+     * @param other the second object to compare. should be a <code>Comparable</code>.
+     * @return the result of the comparison
+     */
+    public int compare(Object thisone,Object other) {
+        return ((Sortable)thisone).compare((Sortable)other);
+    }
 }
