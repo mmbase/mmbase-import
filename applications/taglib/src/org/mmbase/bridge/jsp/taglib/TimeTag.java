@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
  * @author  Rob Vermeulen (VPRO)
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: TimeTag.java,v 1.39 2004-03-05 13:39:05 rob Exp $
+ * @version $Id: TimeTag.java,v 1.40 2004-03-08 12:31:40 michiel Exp $
  */
 public class TimeTag extends ContextReferrerTag implements Writer, WriterReferrer {
 
@@ -36,6 +36,8 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     private Attribute precision   = Attribute.NULL;
     private Attribute relevance   = Attribute.NULL;
+
+    private Attribute timezone   = Attribute.NULL;
 
     private final static int PRECISION_UNSET   = -1;
     private final static int PRECISION_SECONDS = 1;
@@ -156,6 +158,12 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
         } else {
             df = new SimpleDateFormat(format, locale);
         }
+        
+        String tz = timezone.getString(this);
+        if (! tz.equals("")) {
+            df.setTimeZone(TimeZone.getTimeZone(tz));
+        }
+
         return df;
 
     }
@@ -166,6 +174,11 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
 
     public void setOffset(String offset) throws JspTagException {
         this.offset = getAttribute(offset);
+    }
+
+
+    public void setTimezone(String tz) throws JspTagException {
+        timezone = getAttribute(tz);
     }
 
     public int doStartTag() throws JspTagException {
@@ -591,19 +604,30 @@ public class TimeTag extends ContextReferrerTag implements Writer, WriterReferre
     }
 
     protected class DayOfWeekDateFormat extends DateFormat {
+        private TimeZone zone = null;
         public Date parse(String source, ParsePosition pos) {
             Calendar calendar = Calendar.getInstance();
             int day = source.charAt(0) - '0';
             pos.setIndex(pos.getIndex() + 1);            
             calendar.set(Calendar.DAY_OF_WEEK, day);
+            if (zone != null) {
+                calendar.setTimeZone(zone);
+            }
             return calendar.getTime();
         }
         public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition pos) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
+            if (zone != null) {
+                calendar.setTimeZone(zone);
+            }
             // pos.setBeginIndex(0); pos.setEndIndex(1);
             toAppendTo.append(calendar.get(Calendar.DAY_OF_WEEK));
             return toAppendTo;
+        }
+
+        public void setTimeZone(TimeZone value) {
+            zone = value;
         }
 
         
