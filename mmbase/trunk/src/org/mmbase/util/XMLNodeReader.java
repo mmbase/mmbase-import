@@ -42,10 +42,10 @@ public class XMLNodeReader extends XMLBasicReader {
     * @param mmbase
     */
    public XMLNodeReader(String filename, String applicationpath, MMBase mmbase) {
-	   super(filename);
-	   this.applicationpath = applicationpath;
+       super(filename, false);
+       this.applicationpath = applicationpath;
    }
-
+    
    /**
     *
     */
