@@ -2,10 +2,10 @@ package org.mmbase.module;
 
 import org.mmbase.module.irc.communication.*;
 import org.mmbase.module.irc.communication.irc.*;
+import org.mmbase.module.core.*;
 import java.io.*;
 import java.util.*;
 import org.mmbase.util.*;
-import org.mmbase.module.corebuilders.*;
 
 public class IrcModule extends ProcessorModule implements CommunicationUserInterface, Runnable
 {
@@ -13,13 +13,19 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 
 	private	CommunicationInterface	com;
     private Thread kicker = null;
-	private MMObjectBuiler answers = null;
-	private MMObjectBuiler questions = null;
+	private MMObjectBuilder answers = null;
+	private MMObjectBuilder questions = null;
+	private MMBase mmbase;
+	private Hashtable user2number = new Hashtable();
+	private Hashtable number2question = new Hashtable();
+	private Hashtable number2answer = new Hashtable();
+	private int number=0;
 
 	public IrcModule() {}
 
 	public void receive( String msg ) {
 		debug( classname +":"+ msg );
+		if(msg.toLowerCase().indexOf("mmbeest")!=-1) com.sendPublic("Ahum, my name is MMBase not MMBeest");
 	}
 
 	private void debug( String msg )
@@ -29,6 +35,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 
 	public void init() {
 		super.init();
+  		mmbase=(MMBase)getModule("MMBASEROOT");
 		answers=(MMObjectBuilder)mmbase.getMMObject("answers");
 		questions=(MMObjectBuilder)mmbase.getMMObject("questions");
 		start();
@@ -52,6 +59,13 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 		System.out.println("VARS="+vars);
 		System.out.println("vraag="+vars.get("vraag"));
 		com.sendPublic((String)vars.get("vraag"));
+		MMObjectNode vraag = questions.getNewNode("irc");
+		vraag.setValue("body",vars.get("vraag"));
+		vraag.insert("irc");
+		String koekie = sp.session.getCookie();
+		String n = ""+new Integer(number++);
+		user2number.put(koekie,n);
+		number2question.put(n,vraag);
 		return(false);
 	}
 
