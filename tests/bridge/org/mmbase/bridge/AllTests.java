@@ -25,11 +25,15 @@ import org.mmbase.module.builders.*;
 public class AllTests {
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(suite());
+        try { 
+            junit.textui.TestRunner.run(suite());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    public static Test suite() {
-        startMMBase();
+    public static Test suite() throws Exception {
+        BridgeTest.startMMBase();
 
         // Create the test suite
         TestSuite suite= new TestSuite("Bridge Tests");

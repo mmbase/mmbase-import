@@ -42,7 +42,7 @@ public abstract class BridgeTest extends TestCase {
         return  ContextProvider.getCloudContext("rmi://127.0.0.1:1221/remotecontext").getCloud("mmbase","name/password", getNamePassword());
     }
 
-    protected void startMMBase() {
+    static protected void startMMBase() throws Exception {
         
         org.mmbase.module.core.MMBaseContext.init();
         org.mmbase.module.core.MMBase.getMMBase();
