@@ -17,19 +17,14 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * ListRelationsTag, a tag around bridge.Node.getRelations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListRelationsTag.java,v 1.15 2004-07-26 20:17:59 nico Exp $ 
+ * @version $Id: ListRelationsTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $ 
  */
 
 public class ListRelationsTag extends AbstractNodeListTag {
-    private static final Logger log = Logging.getLoggerInstance(ListRelationsTag.class);
 
     private Attribute type = Attribute.NULL;
     private Attribute role = Attribute.NULL;

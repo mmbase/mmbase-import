@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.16 2004-09-17 09:25:14 pierre Exp $
+ * @version $Id: ClusterNode.java,v 1.17 2005-01-30 16:46:36 nico Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
@@ -226,7 +226,7 @@ public class ClusterNode extends VirtualNode {
             String builderName = getBuilderName(fieldName);
             MMObjectNode n = getRealNode(builderName);
             if (n!=null) {
-                o = n.getValue(((ClusterBuilder)parent).getFieldNameFromField(fieldName));
+                o = n.getValue(ClusterBuilder.getFieldNameFromField(fieldName));
             } else {
                 // fall back to builder if this node doesn't contain a number to fetch te original
                 MMObjectBuilder bul = parent.mmb.getMMObject(builderName);

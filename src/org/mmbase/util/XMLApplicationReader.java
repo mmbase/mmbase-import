@@ -13,9 +13,6 @@ import java.util.*;
 
 import org.w3c.dom.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * @javadoc
  * @application Applications
@@ -25,12 +22,9 @@ import org.mmbase.util.logging.Logging;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLApplicationReader.java,v 1.22 2004-11-11 16:52:57 michiel Exp $
+ * @version $Id: XMLApplicationReader.java,v 1.23 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLApplicationReader extends XMLBasicReader {
-
-    // logger
-    private static final Logger log = Logging.getLoggerInstance(XMLApplicationReader.class);
 
     /** Public ID of the Application DTD version 1.0 */
     public static final String PUBLIC_ID_APPLICATION_1_0 = "-//MMBase//DTD application config 1.0//EN";

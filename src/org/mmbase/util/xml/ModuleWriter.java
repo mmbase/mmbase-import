@@ -11,18 +11,14 @@ package org.mmbase.util.xml;
 
 import java.util.*;
 import org.mmbase.module.Module;
-import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: ModuleWriter.java,v 1.5 2003-03-10 11:51:17 pierre Exp $
+ * @version $Id: ModuleWriter.java,v 1.6 2005-01-30 16:46:36 nico Exp $
  */
 public class ModuleWriter extends DocumentWriter  {
-
-    // logger
-    private static Logger log = Logging.getLoggerInstance(ModuleWriter.class.getName());
 
     /**
      * Hold a reference to the module for which to create an XML document.

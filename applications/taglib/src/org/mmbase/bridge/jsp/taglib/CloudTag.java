@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.103 2005-01-06 20:24:33 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.104 2005-01-30 16:46:35 nico Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -106,7 +106,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private Attribute onfail = Attribute.NULL;
 
-    private static String FAILMESSAGE = "<h1>CloudTag Error</h1>";
+    private static final String FAILMESSAGE = "<h1>CloudTag Error</h1>";
 
     private HttpSession session;
     private HttpServletRequest request;
@@ -586,7 +586,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (log.isDebugEnabled()) {
             log.debug("getting (thus creating) session now: " + session);
         }
-        session = (HttpSession) pageContext.getSession();
+        session = pageContext.getSession();
         if (session != null) { // some people like to disable their session
             Object c = session.getAttribute(getSessionName());
             if (c != null && ! (c instanceof Cloud)) {

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.65 2004-12-14 15:15:53 pierre Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.66 2005-01-30 16:46:35 nico Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -192,7 +192,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         return listHelper.getContextContainer();
     }
 
-    protected static int NOT_HANDLED = -100;
+    protected static final int NOT_HANDLED = -100;
 
     protected int doStartTagHelper() throws JspTagException {
         log.debug("doStartTaghelper");

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.implementation;
 
-import java.util.List;
 import org.mmbase.bridge.*;
 import org.mmbase.util.functions.*;
 
@@ -17,7 +16,7 @@ import org.mmbase.util.functions.*;
  * @javadoc
  * @since MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: BasicFunction.java,v 1.2 2004-12-20 17:52:12 pierre Exp $
+ * @version $Id: BasicFunction.java,v 1.3 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicFunction extends WrappedFunction {
 

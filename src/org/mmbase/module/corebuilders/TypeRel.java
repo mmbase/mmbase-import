@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.50 2004-11-23 10:29:20 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.51 2005-01-30 16:46:38 nico Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -638,7 +638,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         // make sure only MMObjectNode's are added
         public boolean add(Object object) {
-            return super.add((MMObjectNode) object);
+            return super.add(object);
         }
 
         // find some subsets:
@@ -702,7 +702,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         // make sure only MMObjectNode's are added
         public boolean add(Object object) {
-            return super.add((MMObjectNode) object);
+            return super.add(object);
         }
 
         SortedSet getByDestination(MMObjectBuilder destination) {

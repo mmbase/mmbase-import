@@ -6,12 +6,10 @@
  */
 package org.mmbase.applications.packaging.projects.creators;
 
-import org.mmbase.applications.packaging.projects.*;
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import org.mmbase.applications.packaging.projects.Target;
 
 /**
  * Interface for all the creators

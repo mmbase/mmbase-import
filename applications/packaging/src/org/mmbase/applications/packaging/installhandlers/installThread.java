@@ -6,18 +6,9 @@
  */
 package org.mmbase.applications.packaging.installhandlers;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
-import org.mmbase.applications.packaging.*;
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
+import org.mmbase.applications.packaging.InstallManager;
 import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author     Daniel Ockeloen

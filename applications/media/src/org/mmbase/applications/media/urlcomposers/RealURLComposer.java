@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.applications.media.urlcomposers;
-import org.mmbase.applications.media.builders.MediaFragments;
 import org.mmbase.applications.media.Format;
 import org.mmbase.module.core.MMObjectNode;
 import java.util.*;

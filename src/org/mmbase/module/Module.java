@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.59 2004-12-16 11:54:30 pierre Exp $
+ * @version $Id: Module.java,v 1.60 2005-01-30 16:46:37 nico Exp $
  */
 public abstract class Module extends FunctionProvider {
 
@@ -291,8 +291,7 @@ public abstract class Module extends FunctionProvider {
             try {
                 mod.onload();
             } catch (Exception f) {
-                log.warn("startModules(): modules(" + mod + ") not found to 'onload'!");
-                f.printStackTrace();
+                log.warn("startModules(): modules(" + mod + ") not found to 'onload'!", f);
             }
         }
         // so now really give em their init

@@ -4,13 +4,8 @@ import java.util.*;
 import java.rmi.*;
 import java.util.Vector;
 
-import org.mmbase.bridge.*;
 import org.mmbase.bridge.remote.*;
-import org.mmbase.bridge.remote.rmi.*;
-import org.mmbase.bridge.remote.implementation.*;
 
-import org.mmbase.storage.search.*;
-import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.*;
 /**
  * Utility class that performs translations of object to remote objects and
@@ -115,7 +110,6 @@ public abstract class ObjectWrapper {
         if (o == null) {
             return null;
         }
-        String className = o.getClass().getName();
         Object retval = null;
         if (o instanceof MappedObject) {
             retval = ((MappedObject)o).getWrappedObject();

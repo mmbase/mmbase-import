@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.26 2004-10-25 08:08:34 pierre Exp $
+ * @version $Id: Message.java,v 1.27 2005-01-30 16:46:36 nico Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -373,7 +373,7 @@ public class Message extends MMObjectBuilder {
         if (chatter != -1) {
             try {
                 String tmp = tmpNodeManager.createTmpRelationNode("creator", messageUser, getNewTemporaryKey(), "realuser", key);
-                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", (Object) new Integer(chatter));
+                tmpNodeManager.setObjectField(messageUser, tmp, "snumber", new Integer(chatter));
                 // add the message relation to the relation breaker
                 chatboxMessages.add(messageUser + "_" + tmp, (new Long(System.currentTimeMillis() + expireTime)).longValue());
                 MMObjectNode node = tmpNodeManager.getNode(messageUser, tmp);
@@ -509,9 +509,6 @@ public class Message extends MMObjectBuilder {
      * @return A <code>Vector</code> containing the requested fields.
      */
     public Vector getListMessages(StringTagger params) {
-
-        Hashtable optionalAttributes = new Hashtable();
-
         /* Get the thread/node from who the related messages have to be given.
          */
         String id = params.Value("NODE");
@@ -823,11 +820,8 @@ public class Message extends MMObjectBuilder {
                                       int offset, int max) {
         Vector result = new Vector();
         if (max <= 0) return result;
-        MMObjectNode relatedNode;
         MMObjectNode tmpInsRel;
         boolean found;
-        String _dnumber;
-        String _snumber;
         int otypewanted = mmb.getTypeDef().getIntValue(wtype);
         int count = 0;
 

@@ -9,28 +9,21 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import org.mmbase.bridge.jsp.taglib.*;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.http.*;
 
 import org.mmbase.util.Casting;
 
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * The page context container stores variables directly in the page context, like JSTL does.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PageContextContainer.java,v 1.5 2005-01-06 20:24:33 michiel Exp $
+ * @version $Id: PageContextContainer.java,v 1.6 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.8
  **/
 
 public class PageContextContainer extends ContextContainer {
-    private static final Logger log = Logging.getLoggerInstance(PageContextContainer.class);
 
     private static int SCOPE = PageContext.PAGE_SCOPE;
 

@@ -15,19 +15,14 @@ import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.logging.*;
-
 
 /**
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.21 2003-12-18 11:52:42 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.22 2005-01-30 16:46:35 nico Exp $ 
  */
-
 public class SizeTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
-
-    private static final Logger log = Logging.getLoggerInstance(SizeTag.class);
 
     private Attribute container = Attribute.NULL;
 

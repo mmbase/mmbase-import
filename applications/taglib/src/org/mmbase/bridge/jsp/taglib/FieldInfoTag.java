@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.75 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: FieldInfoTag.java,v 1.76 2005-01-30 16:46:35 nico Exp $
  */
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
     private static Logger log;
@@ -202,7 +202,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
         Node          node = null;
         FieldProvider fieldProvider = findFieldProvider();
-        Field         field = ((FieldProvider) fieldProvider).getFieldVar();
+        Field         field = fieldProvider.getFieldVar();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
          * EXPERIMENTAL
@@ -250,7 +250,6 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = field.getName();
             break;
         case TYPE_GUINAME:
-
             show = field.getGUIName(locale);
             break;
         case TYPE_VALUE:
@@ -315,7 +314,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case TYPE_DESCRIPTION:
             show = field.getDescription(locale);
             break;
+        default:
+            log.debug("Unknown info type " + infoType);
+            break;
         }
+            
 
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         helper.setValue(show);

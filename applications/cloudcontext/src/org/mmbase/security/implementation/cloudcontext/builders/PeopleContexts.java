@@ -20,7 +20,7 @@ import org.mmbase.module.corebuilders.*;
  * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.4 2004-07-30 17:24:59 michiel Exp $
+ * @version $Id: PeopleContexts.java,v 1.5 2005-01-30 16:46:35 nico Exp $
  */
 public class PeopleContexts extends Contexts {
 
@@ -52,7 +52,9 @@ public class PeopleContexts extends Contexts {
                         return true;
                     }
                     break;
-                }                
+                default:
+                    break;
+                }
             }
         }
         return false;

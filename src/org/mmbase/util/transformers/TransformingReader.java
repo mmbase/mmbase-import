@@ -103,7 +103,7 @@ public class TransformingReader extends PipedReader {
    
    
     // main for testing purposes
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
         String testString = "use argument to change this string";
         if (args.length > 0) {

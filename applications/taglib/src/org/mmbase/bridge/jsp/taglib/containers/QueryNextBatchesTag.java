@@ -14,7 +14,7 @@ import org.mmbase.bridge.jsp.taglib.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.SearchQuery;
 
 import java.util.*;
 import javax.servlet.jsp.JspTagException;
@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryNextBatchesTag.java,v 1.5 2004-09-14 17:51:38 michiel Exp $
+ * @version $Id: QueryNextBatchesTag.java,v 1.6 2005-01-30 16:46:34 nico Exp $
  */
 public class QueryNextBatchesTag extends StringListTag implements QueryContainerReferrer {
     //private static final Logger log = Logging.getLoggerInstance(QueryNextBatchesTag.class);
@@ -61,7 +61,7 @@ public class QueryNextBatchesTag extends StringListTag implements QueryContainer
         Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
-        if (maxNumber == Query.DEFAULT_MAX_NUMBER) {
+        if (maxNumber == SearchQuery.DEFAULT_MAX_NUMBER) {
             throw new JspTagException("No max-number set. Cannot batch results (use mm:maxnumber first)");
         }
         if (offset % maxNumber != 0) { // be paranoid, perhaps not necessary, but guarantees less queries in case of url-hacking (if 'offset' is used on url)

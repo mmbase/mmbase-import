@@ -13,20 +13,15 @@ package org.mmbase.bridge.implementation;
 import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.12 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.13 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
-    private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
 
-    /**
-     * ...
-     */
     BasicRelationManagerList() {
         super();
     }

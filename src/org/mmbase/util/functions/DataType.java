@@ -10,14 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.functions;
 
-import java.util.*;
-import org.mmbase.util.Casting;
 
 /**
  * @javadoc
  * @author Pierre van Rooden
  * @since  MMBase-1.8
- * @version $Id: DataType.java,v 1.1 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: DataType.java,v 1.2 2005-01-30 16:46:36 nico Exp $
  * @see Parameter
  */
 

@@ -13,7 +13,6 @@ import java.util.*;
 
 import org.mmbase.module.Module;
 import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * This module provides mail functionality
@@ -23,7 +22,6 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  */
 abstract public class AbstractSendMail extends Module implements SendMailInterface {
-    private static Logger log = Logging.getLoggerInstance(AbstractSendMail.class.getName());
 
     public void onload() { }
 

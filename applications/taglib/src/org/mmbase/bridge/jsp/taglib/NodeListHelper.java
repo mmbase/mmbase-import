@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.9 2005-01-05 20:49:36 michiel Exp $
+ * @version $Id: NodeListHelper.java,v 1.10 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -192,7 +192,7 @@ public class NodeListHelper implements ListProvider {
             setNext(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
             return ContextReferrerTag.EVAL_BODY;
         } else {
-            return BodyTagSupport.SKIP_BODY;
+            return Tag.SKIP_BODY;
         }
     }
 
@@ -228,10 +228,10 @@ public class NodeListHelper implements ListProvider {
         }
         if (nodeIterator.hasNext()){
             setNext();
-            return BodyTagSupport.EVAL_BODY_AGAIN;
+            return IterationTag.EVAL_BODY_AGAIN;
         } else {
             log.debug("writing body");
-            if (ContextReferrerTag.EVAL_BODY == BodyTagSupport.EVAL_BODY_BUFFERED) {
+            if (ContextReferrerTag.EVAL_BODY == BodyTag.EVAL_BODY_BUFFERED) {
                 BodyContent bodyContent = thisTag.getBodyContent();
                 if (bodyContent != null) {
                     try {
@@ -241,7 +241,7 @@ public class NodeListHelper implements ListProvider {
                     }
                 }
             }
-            return BodyTagSupport.SKIP_BODY;
+            return Tag.SKIP_BODY;
         }
     }
 

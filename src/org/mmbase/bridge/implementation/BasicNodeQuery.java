@@ -7,14 +7,13 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-
 package org.mmbase.bridge.implementation;
+
 import java.util.*;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
-import org.mmbase.util.logging.*;
 
 /**
  * 'Basic' implementation of bridge NodeQuery. Wraps a Query with all and only fields of one
@@ -31,17 +30,13 @@ import org.mmbase.util.logging.*;
  * @todo This kind of functionality should perhaps be present in NodeSearchQuery itself because you can then use it 'under' the bridge too.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeQuery.java,v 1.19 2004-07-29 17:16:12 michiel Exp $
+ * @version $Id: BasicNodeQuery.java,v 1.20 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.NodeSearchQuery
  */
 public class BasicNodeQuery extends BasicQuery implements NodeQuery {
 
-
-    private static final Logger log = Logging.getLoggerInstance(BasicNodeQuery.class);
-
     protected Step step = null;
-
 
     BasicNodeQuery(Cloud c) {
         super(c);
@@ -50,7 +45,6 @@ public class BasicNodeQuery extends BasicQuery implements NodeQuery {
     /**
      * node query.
      */
-
     BasicNodeQuery(BasicNodeManager nodeManager) {
         super(nodeManager.getCloud());
         query = new NodeSearchQuery(nodeManager.getMMObjectBuilder());

@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
- * @version $Id: SortedBundle.java,v 1.3 2004-09-30 16:08:39 pierre Exp $
+ * @version $Id: SortedBundle.java,v 1.4 2005-01-30 16:46:35 nico Exp $
  */
 public class SortedBundle {
 
@@ -79,8 +79,23 @@ public class SortedBundle {
             return result == 0 ? key.compareTo(other.key) : result;
         }
         public boolean equals(Object o) {
-            ValueWrapper other = (ValueWrapper) o;
-            return key.equals(other.key) && (value == null ? other.value == null : value.equals(other.value));
+            if (o == this) return true;
+            if (o == null) return false;
+            if (getClass() == o.getClass()) {
+                ValueWrapper other = (ValueWrapper) o;
+                return key.equals(other.key) && (value == null ? other.value == null : value.equals(other.value));
+            }
+            return false;
+        }
+        
+        /**
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode() {
+            int result = 0;
+            result = HashCodeUtil.hashCode(result, key);
+            result = HashCodeUtil.hashCode(result, value);
+            return result;
         }
     }
 

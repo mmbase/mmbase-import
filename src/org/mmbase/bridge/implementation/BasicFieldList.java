@@ -13,16 +13,14 @@ package org.mmbase.bridge.implementation;
 import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.13 2004-10-09 09:37:32 nico Exp $
+ * @version $Id: BasicFieldList.java,v 1.14 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
-    private static final Logger log = Logging.getLoggerInstance(BasicFieldList.class);
 
     NodeManager nodemanager=null;
 

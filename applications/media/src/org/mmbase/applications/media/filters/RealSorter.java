@@ -12,7 +12,6 @@ package org.mmbase.applications.media.filters;
 
 import org.mmbase.applications.media.urlcomposers.URLComposer;
 import org.mmbase.applications.media.Format;
-import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
@@ -31,7 +30,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.8 2004-01-19 17:07:41 michiel Exp $
+ * @version $Id: RealSorter.java,v 1.9 2005-01-30 16:46:35 nico Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class);

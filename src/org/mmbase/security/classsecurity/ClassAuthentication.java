@@ -13,7 +13,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.security.SecurityException;
 import org.mmbase.security.MMBaseCopConfig;
 import org.mmbase.util.*;
@@ -29,7 +28,7 @@ import org.xml.sax.InputSource;
  * its configuration file, contains this configuration.
  * 
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.4 2005-01-20 18:20:41 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.5 2005-01-30 16:46:39 nico Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -46,7 +45,7 @@ public class ClassAuthentication {
     private static List authenticatedClasses = null;
 
     static ResourceWatcher watcher = null;
-
+    
     /**
      * Stop watchin the config file, if there is watched one. This is needed when security
      * configuration switched to ClassAuthenticationWrapper (which will not happen very often).
@@ -56,6 +55,10 @@ public class ClassAuthentication {
         if (watcher != null) {
             watcher.exit();
         }
+    }
+    
+    private ClassAuthentication() {
+        //Static Utility class
     }
 
     /**

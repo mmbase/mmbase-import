@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.8 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.9 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -76,7 +75,7 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
 
 
     protected boolean useLower(FieldCompareConstraint constraint) {
-        if (constraint.getOperator() == FieldValueConstraint.LIKE) {
+        if (constraint.getOperator() == FieldCompareConstraint.LIKE) {
             return false;
         } else {
             return true;
@@ -125,6 +124,8 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
             case FieldValueDateConstraint.DAY_OF_WEEK:
                 datePartFunction = "DAYOFWEEK";
                 break;
+            default:
+                log.debug("Unknown datePart " + datePart);
         }
         if (datePartFunction != null) {
             sb.append("EXTRACT(");

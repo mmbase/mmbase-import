@@ -10,21 +10,14 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging.bundlehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
+import java.io.BufferedInputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.JarFile;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
+import org.mmbase.applications.packaging.sharehandlers.ShareInfo;
 
 /**
  * The bundle container, this is a class that might confuse you at first
@@ -39,7 +32,6 @@ import org.w3c.dom.*;
  * @author Daniel Ockeloen (MMBased)
  */
 public class BundleContainer implements BundleInterface {
-    private static Logger log = Logging.getLoggerInstance(BundleContainer.class);
 
     private ShareInfo shareinfo;
 

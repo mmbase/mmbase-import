@@ -16,7 +16,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @applicatie Tools
  * @author Daniel Ockeloen
- * @version $Id: Urls.java,v 1.17 2004-10-08 12:13:40 pierre Exp $
+ * @version $Id: Urls.java,v 1.18 2005-01-30 16:46:38 nico Exp $
  */
 public class Urls extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Urls.class.getName());
@@ -48,7 +48,6 @@ public class Urls extends MMObjectBuilder {
 
     private boolean nodeChanged(String number,String builder,String ctype) {
         if (builder.equals(tableName)) {
-            int nr = Integer.parseInt(number);
             Jumpers jumpers = (Jumpers)mmb.getMMObject("jumpers");
             if (jumpers == null) {
                 log.debug("Urls builder - Could not get Jumper builder");

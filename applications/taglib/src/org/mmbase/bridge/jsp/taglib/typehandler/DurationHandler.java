@@ -16,8 +16,6 @@ import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.bridge.jsp.taglib.ParamHandler;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
-import java.util.Calendar;
-import java.util.Date;
 
 
 import org.mmbase.storage.search.*;
@@ -30,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.2
- * @version $Id: DurationHandler.java,v 1.3 2004-12-22 14:58:45 pierre Exp $
+ * @version $Id: DurationHandler.java,v 1.4 2005-01-30 16:46:39 nico Exp $
  */
 public class DurationHandler extends AbstractTypeHandler {
 
@@ -105,7 +103,6 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("<input size=\"5\" type=\"text\" name=\"" + hoursName + "\" value=\"" + (searchHours == null ? "" + currentHours : searchHours) + "\" /> h :\n");
 
         String minutesName = prefix(field.getName() + "_minutes");
-        String searchMinutes =  (String) container.find(tag.getPageContext(), minutesName);
         buffer.append("<select name=\"");
         buffer.append(minutesName);
         buffer.append("\">\n");
@@ -119,7 +116,6 @@ public class DurationHandler extends AbstractTypeHandler {
         buffer.append("</select> min : ");
 
         String secondsName = prefix(field.getName() + "_seconds");
-        String searchSecond =  (String) container.find(tag.getPageContext(), secondsName);
         buffer.append("<select name=\"");
         buffer.append(secondsName);
         buffer.append("\">\n");

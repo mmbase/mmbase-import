@@ -15,21 +15,15 @@ import org.mmbase.bridge.Query;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 
 /**
  * The index of current item of a list.
  *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.17 2004-04-22 17:27:09 michiel Exp $ 
+ * @version $Id: IndexTag.java,v 1.18 2005-01-30 16:46:35 nico Exp $ 
  */
 
 public class IndexTag extends ListReferrerTag implements Writer, QueryContainerReferrer {
-
-    private static final Logger log = Logging.getLoggerInstance(IndexTag.class);
-
 
     private Attribute container = Attribute.NULL;
 

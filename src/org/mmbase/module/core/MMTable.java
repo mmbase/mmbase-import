@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.sql.*;
-
 import org.mmbase.storage.*;
 import org.mmbase.util.functions.FunctionProvider;
 
@@ -26,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.17 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: MMTable.java,v 1.18 2005-01-30 16:46:36 nico Exp $
  */
 public class MMTable extends FunctionProvider {
 

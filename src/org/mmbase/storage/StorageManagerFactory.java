@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
-import java.io.InputStream;
 import java.util.*;
 import org.xml.sax.InputSource;
 
@@ -32,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.10 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.11 2005-01-30 16:46:38 nico Exp $
  */
 public abstract class StorageManagerFactory {
 

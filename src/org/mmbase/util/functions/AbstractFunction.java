@@ -9,12 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import java.lang.reflect.*;
-import java.lang.reflect.Field;
 import java.util.*;
-
-import org.mmbase.util.logging.*;
-
 
 /**
  * An abstract representation of a piece of functionality (a 'function'). A function has a name, a
@@ -26,14 +21,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: AbstractFunction.java,v 1.2 2004-12-20 10:37:50 michiel Exp $
+ * @version $Id: AbstractFunction.java,v 1.3 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.8
  * @see Parameter
  * @see Parameters
  */
 abstract public class AbstractFunction implements Function, Comparable {
-
-    private static final Logger log = Logging.getLoggerInstance(AbstractFunction.class);
 
     protected String    name;
     protected DataType  returnType;
@@ -155,8 +148,17 @@ abstract public class AbstractFunction implements Function, Comparable {
     }
 
     public boolean equals(Object o) {
-        return (o instanceof Function) &&
-               ((Function)o).getName().equals(name);
+        if (o == this) return true;
+        if (o == null) return false;
+        return (o instanceof Function) && ((Function)o).getName().equals(name);
+    }
+    
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return name.hashCode();
     }
 
     public String toString() {

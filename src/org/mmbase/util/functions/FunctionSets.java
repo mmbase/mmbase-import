@@ -14,15 +14,12 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-import java.net.*;
 import java.io.*;
 import java.util.*;
 
 import org.w3c.dom.*;
 
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.*;
 
 /**
  * A utility class for maintaining and querying functionsets.
@@ -38,7 +35,7 @@ import org.mmbase.bridge.implementation.*;
  * @author Dani&euml;l Ockeloen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: FunctionSets.java,v 1.9 2004-12-15 16:08:12 daniel Exp $ 
+ * @version $Id: FunctionSets.java,v 1.10 2005-01-30 16:46:36 nico Exp $ 
  */
 public class FunctionSets {
 

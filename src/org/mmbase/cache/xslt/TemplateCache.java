@@ -16,7 +16,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.mmbase.util.ResourceLoader;
 import org.mmbase.util.ResourceWatcher;
 
-import java.net.URL;
 import java.util.Map;
 import java.util.Iterator;
 import javax.xml.transform.URIResolver;
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.12 2004-11-11 17:41:52 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.13 2005-01-30 16:46:38 nico Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {

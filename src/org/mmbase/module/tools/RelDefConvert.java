@@ -20,7 +20,7 @@ import java.util.*;
  *
  * @deprecated Applies to MMBase 1.4 and earlier. Not needed anymore.
  * @author Daniel ockeloen
- * @version $Id: RelDefConvert.java,v 1.5 2004-10-07 12:22:24 pierre Exp $
+ * @version $Id: RelDefConvert.java,v 1.6 2005-01-30 16:46:35 nico Exp $
  */
 public class RelDefConvert {
     /**
@@ -46,13 +46,12 @@ public class RelDefConvert {
             log.fatal("Usage: java -Dmmbase.config=<path-to-config> RelDefConvert");
         } else {
             try {
-                RelDefConvert rdc=new RelDefConvert();
                 RelDef reldef=mmbaseRoot.getRelDef();
                 if (reldef==null) {
                     throw new Exception("RelDef does not exist ("+mmbaseRoot.baseName+"_reldef)");
                 }
 
-                if (!reldef.usesbuilder) {
+                if (!RelDef.usesbuilder) {
                     throw new Exception("RelDef does not have a builder field defined ("+mmbaseRoot.baseName+"_reldef)");
                 }
 

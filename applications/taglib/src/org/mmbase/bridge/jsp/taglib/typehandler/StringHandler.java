@@ -16,7 +16,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.Encode;
-import org.mmbase.util.logging.*;
 import org.mmbase.util.transformers.Sql;
 
 /**
@@ -26,12 +25,10 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.34 2004-12-20 17:11:31 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.35 2005-01-30 16:46:39 nico Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
-
-    private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
 
     /**
      * Constructor for StringHandler.

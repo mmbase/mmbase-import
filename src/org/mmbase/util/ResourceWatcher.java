@@ -17,7 +17,6 @@ import java.util.*;
 
 import org.mmbase.module.core.MMBaseObserver;
 import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.module.core.MMBase;
 import org.mmbase.module.builders.Resources;
 
 import org.mmbase.util.logging.*;
@@ -29,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceWatcher.java,v 1.1 2004-11-11 16:41:27 michiel Exp $
+ * @version $Id: ResourceWatcher.java,v 1.2 2005-01-30 16:46:35 nico Exp $
  * @see    org.mmbase.util.FileWatcher
  * @see    org.mmbase.util.ResourceLoader
  */

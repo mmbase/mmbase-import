@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * Used by the build script to create documentation for builders.
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.6 2004-09-29 14:29:22 pierre Exp $
+ * @version $Id: BuilderList.java,v 1.7 2005-01-30 16:46:35 nico Exp $
  */
 public class BuilderList {
     // logger not used at the moment
@@ -88,8 +88,7 @@ public class BuilderList {
                                 result+=strw.toString();
                             }
                         } catch (Exception e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(""+e);
+                            throw new RuntimeException("", e);
                         }
                     } else {
                         if (!bname.equals("CVS")) {

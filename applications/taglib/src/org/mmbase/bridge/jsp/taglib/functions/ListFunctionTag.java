@@ -14,12 +14,10 @@ import java.util.*;
 
 import javax.servlet.jsp.*;
 
-import org.mmbase.bridge.FieldValue;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.util.Casting;
-import org.mmbase.util.logging.*;
 
 /**
  * A function tag for functions returning a collection.
@@ -28,11 +26,9 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.6 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: ListFunctionTag.java,v 1.7 2005-01-30 16:46:38 nico Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
-
-    private static final Logger log = Logging.getLoggerInstance(ListFunctionTag.class);
 
     // implementation of ListProvider
 

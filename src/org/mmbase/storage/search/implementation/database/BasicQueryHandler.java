@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.storage.*;
 import org.mmbase.storage.implementation.database.Attributes;
 import org.mmbase.storage.implementation.database.DatabaseStorageManager;
 import org.mmbase.storage.search.*;
@@ -31,7 +30,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.33 2005-01-27 12:44:11 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.34 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -245,7 +244,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
         try {
             while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
                 try {
-                    ResultNode node = new ResultNode((ResultBuilder) builder);
+                    ResultNode node = new ResultNode(builder);
                     node.start();
                     for (int i = 0; i < fields.length; i++) {
                         String fieldName = fields[i].getAlias();

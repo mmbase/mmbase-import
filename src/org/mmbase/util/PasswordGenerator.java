@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * @license uses the GNU license, should be moved external
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: PasswordGenerator.java,v 1.8 2004-10-11 11:08:56 pierre Exp $
+ * @version $Id: PasswordGenerator.java,v 1.9 2005-01-30 16:46:35 nico Exp $
  */
 
 public class PasswordGenerator extends Module implements PasswordGeneratorInterface {
@@ -218,7 +218,7 @@ public class PasswordGenerator extends Module implements PasswordGeneratorInterf
         } else if (tmplChar == 'S') {        //random syllable
             if (consonantNext) {
                 charsOut = consonants[mod(ranPool.value(), consonants.length)];
-                if (charsOut != "qu") consonantNext = false;
+                if (!"qu".equals(charsOut)) consonantNext = false;
             } else {
                 charsOut = vowels[mod(ranPool.value(), vowels.length)];
                 consonantNext = true;

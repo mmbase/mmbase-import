@@ -15,19 +15,15 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.logging.*;
 
 /**
  * Container cognate for ListTag.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListContainerTag.java,v 1.11 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: ListContainerTag.java,v 1.12 2005-01-30 16:46:34 nico Exp $
  */
 public class ListContainerTag extends CloudReferrerTag implements QueryContainer {
-
-
-    private static final Logger log = Logging.getLoggerInstance(ListContainerTag.class);
 
     private Query   query        = null;
     private Attribute path       = Attribute.NULL;

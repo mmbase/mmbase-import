@@ -15,9 +15,6 @@ import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * The module which provides access to the multimedia database
  * it creates, deletes and gives you methods to keep track of
@@ -27,11 +24,9 @@ import org.mmbase.util.logging.Logging;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: MMEdit.java,v 1.11 2004-10-01 08:43:45 pierre Exp $
+ * @version $Id: MMEdit.java,v 1.12 2005-01-30 16:46:39 nico Exp $
  */
 public class MMEdit extends ProcessorModule {
-
-    private static Logger log = Logging.getLoggerInstance(MMEdit.class.getName());
 
     Hashtable commandHandlers; // The objects that handle process, replace and
     // list commands

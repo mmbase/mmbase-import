@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * nodes caches in sync but also makes it possible to split tasks between machines. You could for example have a server that encodes video.
  *  when a change to a certain node is made one of the servers (if wel configured) can start encoding the videos.
  * @author  vpro
- * @version $Id: MMServers.java,v 1.31 2004-10-09 10:51:09 nico Exp $
+ * @version $Id: MMServers.java,v 1.32 2005-01-30 16:46:38 nico Exp $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnable {
 
@@ -116,7 +116,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
             // The 'node' object is not used, so this info makes only sense for _this_ server.
 
             int now = (int) (System.currentTimeMillis() / 1000);
-            int uptime = now - (int)MMBase.startTime;
+            int uptime = now - MMBase.startTime;
             return getUptimeString(uptime);
         }
         return super.getValue(node, field);
@@ -190,7 +190,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
                     checkOther(node);
                 }
             }
-            if (imoke == false) {
+            if (!imoke) {
                 createMySelf(machineName);
             }
         } catch (Exception e) {
@@ -203,12 +203,6 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver, Runnab
      */
     private boolean checkMySelf(MMObjectNode node) {
         boolean state = true;
-        String tmphost = node.getStringValue("host");
-        /* Why ?
-        if (!tmphost.equals(host)) {
-            log.warning("MMServers-> Running on a new HOST possible problem");
-        }
-        */
         log.debug("checkMySelf() updating timestamp");
         node.setValue("state", ACTIVE);
         node.setValue("atime", (int) (System.currentTimeMillis() / 1000));

@@ -14,16 +14,15 @@ import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.31 2004-12-09 14:58:34 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.32 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
-    private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
+
     protected Cloud cloud;
     protected NodeManager nodeManager = null;
 

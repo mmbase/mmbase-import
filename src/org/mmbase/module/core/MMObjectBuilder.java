@@ -25,7 +25,6 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.TypeDef;
 
-import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -56,7 +55,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.290 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.291 2005-01-30 16:46:36 nico Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2677,7 +2676,6 @@ public class MMObjectBuilder extends MMTable {
             }
         }
 
-        MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
         if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             log.debug("Builder "+tableName+" sending signal to builder "+pb.tableName+" (changed node is of type "+builder+")");
@@ -2733,7 +2731,6 @@ public class MMObjectBuilder extends MMTable {
             }
         }
 
-        MMObjectBuilder bul = mmb.getBuilder(builder);
         MMObjectBuilder pb = getParentBuilder();
         if(pb != null) { // && (pb.equals(bul) || pb.isExtensionOf(bul))) {
             if (log.isDebugEnabled()) {
@@ -3714,12 +3711,21 @@ public class MMObjectBuilder extends MMTable {
     public String toString() {
         return getSingularName();
     }
+
     /**
      * Equals must be implemented because of the list of MMObjectBuilder which is used for ancestors
      *
+     * Declared the method final, because the instanceof operator is used. This is the only
+     * MMObjectBuilder is frequently extended and subclasses will always break
+     * the equals contract.
+     * When subclasses require to implement the equals method then we should use 
+     * getClass() == o.getClass(), but this has its own issues. For more info, search for equality in Java  
+     *
      * @since MMBase-1.6.2
      */
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
+        if (o == this) return true;
+        if (o == null) return false;
         if (o instanceof MMObjectBuilder) {
             MMObjectBuilder b = (MMObjectBuilder) o;
             return tableName.equals(b.tableName);
@@ -3727,7 +3733,13 @@ public class MMObjectBuilder extends MMTable {
         return false;
     }
 
-
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return tableName == null ? 0 : tableName.hashCode();
+    }
+    
     /**
      * Implements for MMObjectNode
      * @since MMBase-1.6.2

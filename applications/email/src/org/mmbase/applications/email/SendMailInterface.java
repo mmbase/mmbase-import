@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.email;
 
-import org.mmbase.util.Mail;
 import java.util.Map;
 import javax.mail.internet.MimeMultipart;
 

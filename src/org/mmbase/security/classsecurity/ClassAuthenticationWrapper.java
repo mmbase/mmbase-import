@@ -28,16 +28,13 @@ import org.xml.sax.SAXException;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.6 2005-01-20 18:20:41 michiel Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.7 2005-01-30 16:46:39 nico Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ClassAuthenticationWrapper.class);
 
     private Authentication wrappedAuthentication;
-
-    private ClassAuthentication classAuthentication = new ClassAuthentication();
-
 
     /**
      * Instantiates an Authentication implementation
@@ -97,7 +94,7 @@ public class ClassAuthenticationWrapper extends Authentication {
      * @param parameters Required by the login method of Authentication. I think noone ever uses it.
      */
     protected UserContext login(Map loginInfo, Object[] parameters) throws SecurityException {
-        ClassAuthentication.Login l = classAuthentication.classCheck(null);
+        ClassAuthentication.Login l = ClassAuthentication.classCheck(null);
         if (l != null) {
             if (loginInfo == null) loginInfo = new HashMap();
             loginInfo.putAll(l.map);

@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.10 2005-01-27 23:31:13 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.11 2005-01-30 16:46:35 nico Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -608,7 +608,6 @@ public class ResourceLoader extends ClassLoader {
         if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
         if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
         Document doc = dbuilder.parse(source);
-        DocumentType docType = doc.getDoctype();
         return  doc;
     }
 
@@ -833,17 +832,20 @@ public class ResourceLoader extends ClassLoader {
 
 
 
+    /**
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         return "" + context.getPath() + (log.isDebugEnabled() ? " resolving in "  + roots : "");
     }
 
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     public boolean equals(Object o) {
-        if(this == o) { // if same object, true!
-            return true;
-        }
-        if (parent == null) { // if this is a 'root' loader, then the only equal object should be the object itself!
-            return false;
-        }
+        if(this == o) return true;
+        // if this is a 'root' loader, then the only equal object should be the object itself!
+        if (parent == null) return false;
         if (o instanceof ResourceLoader) {
             ResourceLoader rl = (ResourceLoader) o;
             return rl.parent == parent && rl.context.sameFile(context);
@@ -852,6 +854,15 @@ public class ResourceLoader extends ClassLoader {
         }
     }
 
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, parent);
+        result = HashCodeUtil.hashCode(result, context);
+        return result;
+    }
 
     /**
      * ================================================================================
@@ -893,9 +904,6 @@ public class ResourceLoader extends ClassLoader {
             return openConnection(getName(u));
         }
 
-        /**
-         *
-         */
         abstract Set getPaths(Set results, Pattern pattern,  boolean recursive,  boolean directories);
     }
 
@@ -1263,7 +1271,7 @@ public class ResourceLoader extends ClassLoader {
         }
         public URLConnection openConnection(String name) {
             try {
-                URL u = ResourceLoader.this.servletContext.getResource(root + ResourceLoader.this.context.getPath() + name);
+                URL u = ResourceLoader.servletContext.getResource(root + ResourceLoader.this.context.getPath() + name);
                 if (u == null) return NOT_AVAILABLE_URLSTREAM_HANDLER.openConnection(name);
                 return u.openConnection();
             } catch (IOException ioe) {

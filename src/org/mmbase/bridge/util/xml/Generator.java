@@ -15,7 +15,6 @@ import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
-import java.text.*;
 
 
 /**
@@ -23,7 +22,7 @@ import java.text.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.24 2004-12-03 14:42:09 pierre Exp $
+ * @version $Id: Generator.java,v 1.25 2005-01-30 16:46:36 nico Exp $
  * @since  MMBase-1.6
  */
 public class Generator {

@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.filters;
 
-import org.mmbase.module.core.MMObjectNode;
-import org.mmbase.applications.media.builders.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.*;
@@ -20,7 +18,6 @@ import org.w3c.dom.Element;
 
 import java.util.*;
 import java.io.File;
-import java.lang.Integer;
 
 /**
  * This is the main class for the filter process. It maintains list of
@@ -201,10 +198,7 @@ public class MainFilter {
 
     public static void main(String[] args) {
         // what is quicker: sorting a list, or creating a new sortedset:
-
-
         final int ITERATIONS = 200000;
-
 
         List list = new ArrayList();
         addTestData(list);
@@ -213,8 +207,8 @@ public class MainFilter {
             Comparator c = new TestComparator(i);
             Collections.sort(list, c);
         }
-        System.out.println("list duration: " + (System.currentTimeMillis() - start));
-        System.out.println(list);
+        log.debug("list duration: " + (System.currentTimeMillis() - start));
+        log.debug(list);
         SortedSet  sortedSet   = new TreeSet();
         addTestData(sortedSet);
         start = System.currentTimeMillis();
@@ -223,8 +217,8 @@ public class MainFilter {
             s.addAll(sortedSet);
             sortedSet = s;
         }
-        System.out.println("sortedset duration: " + (System.currentTimeMillis() - start));
-        System.out.println(sortedSet);
+        log.debug("sortedset duration: " + (System.currentTimeMillis() - start));
+        log.debug(sortedSet);
     }
 
     

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.37 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.38 2005-01-30 16:46:38 nico Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -41,7 +41,6 @@ public class DayMarkers extends MMObjectBuilder {
     private int day = 0; // current day number/count
     private Map daycache = new TreeMap();           // day -> mark, but ordered
 
-    private int smallestMark; // will be queried when this builder is started
     private int smallestDay; // will be queried when this builder is started
 
     /**
@@ -70,7 +69,6 @@ public class DayMarkers extends MMObjectBuilder {
         log.debug("Init of DayMarkers");
         boolean result;
         result = super.init();
-        smallestMark = 0;
         smallestDay  = 0;
 
         try {
@@ -82,7 +80,6 @@ public class DayMarkers extends MMObjectBuilder {
             List resultList = getNodes(query);
             if (resultList.size() > 0) {
                 MMObjectNode mark = (MMObjectNode) resultList.get(0);
-                smallestMark = mark.getIntValue(FIELD_NUMBER);
                 smallestDay  = mark.getIntValue(FIELD_DAYCOUNT);
             }
 
@@ -192,7 +189,7 @@ public class DayMarkers extends MMObjectBuilder {
             FieldDefs markFieldDefs = getField(FIELD_MARK);
             StepField markField = query.getField(markFieldDefs);
             BasicFieldValueConstraint cons = new BasicFieldValueConstraint(markField, new Integer(nodeNumber));
-            cons.setOperator(FieldValueConstraint.LESS);
+            cons.setOperator(FieldCompareConstraint.LESS);
             query.setConstraint(cons);
             query.setMaxNumber(1);
 
@@ -288,7 +285,6 @@ public class DayMarkers extends MMObjectBuilder {
             StepField daycountField = query.getField(getField(FIELD_DAYCOUNT));
             BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(daycountField, new Integer(wday));
             constraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
-            BasicSortOrder sortOrder = query.addSortOrder(daycountField);
             query.setConstraint(constraint);
             int mark = 0;
             try {
@@ -400,7 +396,7 @@ public class DayMarkers extends MMObjectBuilder {
      */
     private Calendar getCalendarDays(int days) {
         GregorianCalendar cal = new GregorianCalendar();
-        java.util.Date d = new java.util.Date(((long)days)*MILLISECONDS_IN_A_DAY);
+        java.util.Date d = new java.util.Date((days)*MILLISECONDS_IN_A_DAY);
         cal.setTime(d);
         return cal;
     }
@@ -472,15 +468,13 @@ public class DayMarkers extends MMObjectBuilder {
      * @javadoc
      */
     public int getMonthsByDayCount(int daycount) {
-        int months=0;
         int year,month;
         Calendar calendar;
 
-        calendar=getCalendarDays(daycount);
-        year=calendar.get(Calendar.YEAR)-1970;
-        month=calendar.get(Calendar.MONTH);
-        months=month+year*12;
-        return months;
+        calendar = getCalendarDays(daycount);
+        year = calendar.get(Calendar.YEAR)-1970;
+        month = calendar.get(Calendar.MONTH);
+        return month + year * 12;
     }
 
 
@@ -491,7 +485,7 @@ public class DayMarkers extends MMObjectBuilder {
      */
     public java.util.Date getDate(MMObjectNode node) {
         int dayCount = node.getIntValue(FIELD_DAYCOUNT);
-        return new java.util.Date(((long)dayCount)*MILLISECONDS_IN_A_DAY);
+        return new java.util.Date(dayCount*MILLISECONDS_IN_A_DAY);
     }
 
     /**

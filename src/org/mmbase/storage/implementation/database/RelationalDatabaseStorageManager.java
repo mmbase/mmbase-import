@@ -11,7 +11,6 @@ package org.mmbase.storage.implementation.database;
 
 import org.mmbase.module.core.*;
 import org.mmbase.storage.StorageException;
-import org.mmbase.util.logging.*;
 
 /**
  * A JDBC implementation of a storage manager for relational databases.
@@ -19,12 +18,9 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: RelationalDatabaseStorageManager.java,v 1.6 2003-12-28 19:45:57 michiel Exp $
+ * @version $Id: RelationalDatabaseStorageManager.java,v 1.7 2005-01-30 16:46:39 nico Exp $
  */
 public class RelationalDatabaseStorageManager extends DatabaseStorageManager {
-
-    // logger
-    private static final Logger log = Logging.getLoggerInstance(RelationalDatabaseStorageManager.class);
 
     /**
      * Constructor

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.20 2005-01-27 12:44:11 pierre Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.21 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery, Cloneable {
@@ -94,7 +94,9 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         case COPY_AGGREGATING:
             aggregating = true;
             break;
-
+        default:
+            log.debug("Unknown copy method " + copyMethod);
+            break;
         }
     }
 
@@ -271,7 +273,6 @@ public class BasicSearchQuery implements SearchQuery, Cloneable {
         } else if (c instanceof FieldValueInConstraint) {
             FieldValueInConstraint constraint = (FieldValueInConstraint) c;
             BasicFieldValueInConstraint newConstraint = new BasicFieldValueInConstraint(createNewStepField(q, constraint.getField()));
-            int type =  constraint.getField().getType();
 
             Iterator k = constraint.getValues().iterator();
             while (k.hasNext()) {

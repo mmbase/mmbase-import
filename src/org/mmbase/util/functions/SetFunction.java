@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import org.mmbase.module.core.*;
 import java.lang.reflect.*;
-import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -21,7 +19,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: SetFunction.java,v 1.6 2004-12-09 14:58:02 pierre Exp $
+ * @version $Id: SetFunction.java,v 1.7 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.8
  */
 public class SetFunction extends AbstractFunction {

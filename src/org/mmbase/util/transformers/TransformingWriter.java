@@ -82,7 +82,7 @@ public class TransformingWriter extends PipedWriter {
    
   
     // main for testing purposes
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Writer out = new OutputStreamWriter(System.out);
         ChainedCharTransformer t = new ChainedCharTransformer();
         t.add(new UpperCaser());

@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.12 2004-09-30 08:52:11 pierre Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.13 2005-01-30 16:46:35 nico Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -187,7 +187,7 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
         } else if (outputStream != null) {
             try {
                 byte[] allBytes;
-                if (characterEncoding == TEXT_XML_DEFAULT_CHARSET) {
+                if (TEXT_XML_DEFAULT_CHARSET.equals(characterEncoding)) {
                     // see comments in getDefaultEncoding
                     allBytes = determinXMLEncoding();
                 } else {

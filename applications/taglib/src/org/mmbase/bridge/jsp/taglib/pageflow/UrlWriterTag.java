@@ -9,15 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.Writer;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 
-
+import org.mmbase.bridge.jsp.taglib.Writer;
 import org.mmbase.util.Casting;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+
+
 
 
 /**
@@ -25,13 +27,11 @@ import org.mmbase.util.logging.Logging;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.7 2005-01-10 10:23:39 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.8 2005-01-30 16:46:38 nico Exp $
  * @since MMBase-1.8
  */
 
 public class UrlWriterTag extends UrlTag  implements Writer {
-
-    private static final Logger log = Logging.getLoggerInstance(UrlWriterTag.class);
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
@@ -63,7 +63,7 @@ public class UrlWriterTag extends UrlTag  implements Writer {
         } 
         helper.doEndTag();
         extraParameters = null;
-        return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
+        return Tag.EVAL_PAGE;
         
     }
 

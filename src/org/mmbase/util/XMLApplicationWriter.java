@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @duplicate extend from org.mmbase.util.xml.DocumentWriter
  * @deprecation-used Can use Xerces functionality to write an XML, isn't it? Should at least use StringBuffer.
  * @author DAniel Ockeloen
- * @version $Id: XMLApplicationWriter.java,v 1.26 2004-10-01 08:41:10 pierre Exp $
+ * @version $Id: XMLApplicationWriter.java,v 1.27 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLApplicationWriter  {
 
@@ -276,7 +276,6 @@ public class XMLApplicationWriter  {
             Hashtable bset=(Hashtable)e.nextElement();
             String path=(String)bset.get("path");
             String type=(String)bset.get("type");
-            String goal=(String)bset.get("goal");
 
             path=MMBaseContext.getConfigPath()+("/applications/"+path);
             log.debug("READ="+path+" type="+type);

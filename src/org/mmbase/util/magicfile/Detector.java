@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br />
  * Not supported by magic file:<br />
  * - StarOffice<br />
- * @version $Id: Detector.java,v 1.9 2004-09-30 16:08:40 pierre Exp $
+ * @version $Id: Detector.java,v 1.10 2005-01-30 16:46:35 nico Exp $
  */
 
 public class Detector {
@@ -289,8 +289,9 @@ public class Detector {
         case '<' :
             hasX = true;
             return n < 0;
+        default:
+            return false;
         }
-        return false;
     }
 
     /**
@@ -332,8 +333,9 @@ public class Detector {
             case '<' :
                 hasX = true;
                 return found < v;
+            default:
+                return false;
             }
-            return false;
         }
     }
 
@@ -393,9 +395,9 @@ public class Detector {
             case '<' :
                 hasX = true;
                 return found < v;
+            default:
+                return false;
             }
-            
-            return false;
         }
     }
     

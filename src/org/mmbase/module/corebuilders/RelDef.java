@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.35 2004-09-02 12:53:11 michiel Exp $
+ * @version $Id: RelDef.java,v 1.36 2005-01-30 16:46:38 nico Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -338,7 +338,6 @@ public class RelDef extends MMObjectBuilder {
         if (i > 0) {
             throw new RuntimeException("Cannot delete reldef node, it is still used in " + i + " relations");
         }
-        String name = node.getStringValue("sname");
         super.removeNode(node);
         removeFromCache(node);
     }

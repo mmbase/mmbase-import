@@ -6,22 +6,26 @@
  */
 package org.mmbase.applications.packaging.providerhandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.*;
-import org.xml.sax.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.BundleManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.InputSource;
 
 /**
  * DiskProvider, Handler for Disk Providers. gets packages and bundles from

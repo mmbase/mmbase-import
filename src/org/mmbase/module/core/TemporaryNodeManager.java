@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
-import java.lang.Exception;
 
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
@@ -22,7 +21,7 @@ import org.mmbase.util.Casting;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.36 2004-12-02 18:38:52 pierre Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.37 2005-01-30 16:46:36 nico Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -64,9 +63,6 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String createTmpRelationNode(String role,String owner,String key, String source,String destination) throws Exception {
-        String bulname="";
-        MMObjectNode node=null;
-        MMObjectBuilder builder=null;
         RelDef reldef;
         int rnumber;
 
@@ -76,8 +72,8 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
         if(rnumber==-1) {
             throw new Exception("role "+role+" is not a proper relation");
         }
-        builder = reldef.getBuilder(reldef.getNode(rnumber));
-        bulname=builder.getTableName();
+        MMObjectBuilder builder = reldef.getBuilder(reldef.getNode(rnumber));
+        String bulname = builder.getTableName();
 
         // Create node
         createTmpNode(bulname,owner,key);

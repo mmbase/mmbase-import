@@ -6,18 +6,8 @@
  */
 package org.mmbase.applications.packaging.projects;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
-import org.mmbase.applications.packaging.*;
-import org.mmbase.module.database.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author     Daniel Ockeloen
@@ -27,9 +17,6 @@ import org.mmbase.util.logging.Logger;
  * node)
  */
 public class packageStep {
-
-    // logger
-    private static Logger log = Logging.getLoggerInstance(packageStep.class);
 
     private String userfeedback;
 

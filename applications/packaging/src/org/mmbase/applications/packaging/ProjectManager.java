@@ -10,23 +10,21 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
-import org.mmbase.applications.packaging.projects.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.projects.creators.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import java.io.*;
-import java.util.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.projects.Project;
+import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * project manager, keeps track of projects we are working on, Projects are

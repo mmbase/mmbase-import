@@ -43,7 +43,7 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextTag.java,v 1.69 2005-01-06 20:24:33 michiel Exp $ 
+ * @version $Id: ContextTag.java,v 1.70 2005-01-30 16:46:35 nico Exp $ 
  * @see ImportTag
  * @see WriteTag
  */
@@ -151,18 +151,6 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
         log.debug("out");
         // return EVAL_BODY_INCLUDE; does not work in orion 1.6, tomcat < 4.1.19
         return EVAL_BODY;
-    }
-
-    private ContextProvider getParentContext() throws JspTagException {
-        if (! searchedParent) {
-            try {
-                parent = getContextProvider();
-            } catch (JspTagException e) {
-                throw new TaglibException("Could not find parent context!" + e.getMessage(), e);
-            }
-            searchedParent = true;
-        }
-        return parent;
     }
 
     /**

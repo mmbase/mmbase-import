@@ -34,7 +34,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.126 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: MMBase.java,v 1.127 2005-01-30 16:46:36 nico Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -838,27 +838,6 @@ public class MMBase extends ProcessorModule {
      */
     public synchronized int getDBKey() {
         return getStorageManager().createKey();
-    }
-
-    /**
-     * Removes functions from fieldnames.
-     * private, never called. should be removed.
-     */
-    private Vector removeFunctions(Vector fields) {
-        Vector results = new Vector();
-        Enumeration f = fields.elements();
-        for (; f.hasMoreElements();) {
-            // hack hack this is way silly Strip needs to be fixed
-            String fieldname = Strip.DoubleQuote((String)f.nextElement(), Strip.BOTH);
-            int pos1 = fieldname.indexOf('(');
-            if (pos1 != -1) {
-                int pos2 = fieldname.indexOf(')');
-                results.addElement(fieldname.substring(pos1 + 1, pos2));
-            } else {
-                results.addElement(fieldname);
-            }
-        }
-        return results;
     }
 
     /**

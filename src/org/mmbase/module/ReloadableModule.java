@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.io.File;
 
 import org.mmbase.util.XMLModuleReader;
 import org.mmbase.util.logging.*;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.3 2004-11-11 17:12:58 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.4 2005-01-30 16:46:37 nico Exp $
  */
 public abstract class ReloadableModule extends Module {
 

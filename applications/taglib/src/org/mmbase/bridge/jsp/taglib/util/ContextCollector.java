@@ -10,26 +10,22 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.util;
 
-import org.mmbase.bridge.jsp.taglib.ContextProvider;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import java.util.HashSet;
+import java.util.Set;
 
-
-import java.util.*;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+
+import org.mmbase.bridge.jsp.taglib.ContextProvider;
 
 /**
  * A helper class for Lists, to implement ContextProvider. This ContextContainer writes every key to
  * it's parent too, so it is 'transparent'.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.11 2005-01-05 20:49:36 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.12 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector extends StandaloneContextContainer {
-    private static final Logger log = Logging.getLoggerInstance(ContextCollector.class);
     
     private Set parentCheckedKeys = new HashSet();
 

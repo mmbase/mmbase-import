@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-
 import java.util.Map;
-
-import org.mmbase.util.logging.*;
 
 /**
  * Some Transformers implement more than one transformation. The instance can be configured.
@@ -20,10 +17,8 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
-
 public abstract class ConfigurableReaderTransformer extends ReaderTransformer implements ConfigurableTransformer {
 
-    private static final Logger log = Logging.getLoggerInstance(ConfigurableReaderTransformer.class);
     protected int to;
 
     public ConfigurableReaderTransformer() {

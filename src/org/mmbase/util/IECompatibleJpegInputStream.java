@@ -22,7 +22,7 @@ import java.io.*;
  *
  * @since MMBase 1.7
  * @author Kees Jongenburger <keesj@dds.nl>
- * @version $Id: IECompatibleJpegInputStream.java,v 1.3 2004-04-07 14:11:08 keesj Exp $
+ * @version $Id: IECompatibleJpegInputStream.java,v 1.4 2005-01-30 16:46:35 nico Exp $
  */
 public class IECompatibleJpegInputStream extends FilterInputStream implements Runnable {
 
@@ -41,9 +41,7 @@ public class IECompatibleJpegInputStream extends FilterInputStream implements Ru
         try {
             pis.connect(pos);
         } catch (IOException ioe) {
-            System.out.println(ioe);
-            ioe.printStackTrace();
-        };
+        }
 
         // I don't know if it's to heavy to start a thread
         // maybe just calling the run method is enough(proivded that the buffers are big enough)..

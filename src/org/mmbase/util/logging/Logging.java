@@ -10,14 +10,11 @@ See http://www.MMBase.org/license
 package org.mmbase.util.logging;
 
 import java.util.Iterator;
-import java.io.File;
 import java.lang.reflect.Method;
 
-import java.net.URL;
 import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.ResourceWatcher;
 import org.mmbase.util.ResourceLoader;
-import org.xml.sax.InputSource;
 
 /** 
  * With this class the logging is configured and it supplies the `Logger' objects.
@@ -60,7 +57,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.32 2004-11-11 16:54:33 michiel Exp $
+ * @version $Id: Logging.java,v 1.33 2005-01-30 16:46:39 nico Exp $
  */
 
 
@@ -160,7 +157,7 @@ public class Logging {
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             logClass = Class.forName(classToUse);
-            if (configured == true) {
+            if (configured) {
                 if (! logClassCopy.equals(logClass)) {
                     log.warn("Tried to change logging implementation from " + logClassCopy + " to " + logClass + ". This is not really possible (most static instances are unreachable). Trying anyway as requested, if this gives strange results, you might need to restart.");
                 }
@@ -204,10 +201,9 @@ public class Logging {
             log.debug("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
         } catch (java.lang.reflect.InvocationTargetException e) {
-            System.err.println("Invocation Exception while configuration class. " + e.getMessage());
-            e.printStackTrace(System.err);
+            log.error("Invocation Exception while configuration class. " + e.getMessage(), e);
         } catch (Exception e) {
-            System.err.println(e);
+            log.error("", e);
         } 
     }
 

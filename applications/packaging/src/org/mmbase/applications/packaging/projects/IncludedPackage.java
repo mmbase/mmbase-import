@@ -6,26 +6,11 @@
  */
 package org.mmbase.applications.packaging.projects;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.projects.creators.*;
-import org.mmbase.util.*;
-
-import org.mmbase.util.logging.Logging;
-import org.mmbase.util.logging.Logger;
-
 /**
  * @author     Daniel Ockeloen
  *
  */
 public class IncludedPackage {
-
-    // logger
-    private static Logger log = Logging.getLoggerInstance(IncludedPackage.class);
 
     String name;
     String type;

@@ -10,20 +10,26 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.mmbase.applications.packaging.providerhandlers.DiskProvider;
+import org.mmbase.applications.packaging.providerhandlers.HttpProvider;
+import org.mmbase.applications.packaging.providerhandlers.PackageDiscovery;
+import org.mmbase.applications.packaging.providerhandlers.ProviderFileWriter;
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.InputSource;
 
 /**
  * provider manager, maintains the package/bundles providers and abstracts
