@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.7 2003-03-10 11:50:33 pierre Exp $
+ * @version $Id: MMTable.java,v 1.8 2003-06-18 15:22:41 kees Exp $
  */
 public class MMTable {
 
@@ -90,10 +90,10 @@ public class MMTable {
     */
 	public boolean created() {
 		if (size()==-1) {
-			log.error("TABLE "+tableName+" NOT FOUND");
+			log.debug("TABLE "+tableName+" NOT FOUND");
 			return(false);
 		} else {
-			log.error("TABLE "+tableName+" FOUND");
+			log.debug("TABLE "+tableName+" FOUND");
 			return(true);
 		}
 		// better:
