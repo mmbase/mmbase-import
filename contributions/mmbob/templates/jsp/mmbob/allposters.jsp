@@ -19,7 +19,6 @@
 <%@ include file="getposterid.jsp" %>
 <!-- end login part -->
 
-
 <!-- action check -->
 <mm:import externid="action" />
 <mm:present referid="action">
@@ -37,7 +36,7 @@
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 20px;" width="90%">
 <mm:node referid="forumid">
 <tr><th >Account</th><th>Location</th><th>Last Seen</th></tr>
-	<mm:related path="related,posters">
+	<mm:related path="forposrel,posters">
 	<mm:node element="posters">
 	<tr><td><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="number" />&pathtype=allposters_poster"><mm:field name="firstname" /> <mm:field name="lastname" /> (<mm:field name="account" />)</a></td><td><mm:field name="location" /></td><td><mm:field name="lastseen"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></td></tr>
 	</mm:node>
