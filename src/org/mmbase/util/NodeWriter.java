@@ -68,7 +68,7 @@ public class NodeWriter{
         }
         // Write the header
         write("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-        write("<!DOCTYPE builder PUBLIC \"//MMBase - data//\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
+        //write("<!DOCTYPE builder PUBLIC \"//MMBase - data//\" \"http://www.mmbase.org/dtd/data.dtd\">\n");
         write("<" + builderName + " "
               + "exportsource=\"mmbase://127.0.0.1/install/b1\" "
               + "timestamp=\"20000602143030\">\n");
