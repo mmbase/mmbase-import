@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[]>
+<article>
+  <articleinfo>
+    <title>Cloud Context Security</title>
+    <date>2003-09-12</date>
+    <edition>$Id: cloudcontextsecurity.xml,v 1.1 2003-09-12 14:53:55 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>
+        This software is OSI Certified Open Source Software. OSI
+        Certified is a certification mark of the Open Source
+        Initiative.
+      </para>
+      <para>
+        The license (Mozilla version 1.0) can
+        be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <section id="intro">
+    <title>Introduction</title>
+    <para>
+      MMBase has a pluggable security system. This means the object level security can be
+      implemented on several ways. This document describes the 'cloud context' implementation for
+      MMBase security.      
+    </para>
+    <para>
+      The default security implementation for several MMBase releases was the normal 'context'
+      security. This security implementation defines users, groups and so-called 'security
+      contexts'. See also the documentation for 'context security configuration'.
+    </para>
+    <para>
+      Often it is desirable to have a more dynamic security implementation which is more readily
+      configurable than by opening an XML file on the server in your text editor. It would be nice
+      if the concepts and relations described in this XML file could be modeled using MMBase
+      objects and relation. Then security could be administrated in the same way MMBase nodes can be
+      edited.
+    </para>
+  </section>
+  <section id="object model">
+    <title>Object model</title>
+    <para>
+      Because of the nature of this security implementation, the object model of your MMBase
+      installation must be enriched with several new object types and relations types. This section
+      describes the object model needed for this security implemenation.
+    </para>
+    <para>
+      <graphic fileref="Security.jpg"/>
+    </para>
+    <section id="contexts">
+      <title>Contexts</title>
+      <para>
+        All security contexts are represented in the 'mmbase-contexts' node manager. A certain context
+        can grant the several security operations ('create', 'read', 'write', 'delete', 'change
+        context') to groups or directly to users. This goes by the role 'grant' between mmbase-context
+        and mmbaseusers and mmbasegroups.
+      </para>
+      <para>
+        To which other security contexts a context of a certain node may be changed is fixed by the
+        'allowed' relation between contexts objects.
+      </para>
+    </section>
+    <section id="groups">
+      <title>Groups</title>
+      <para>
+        Security contexts can grant rights to groups, modeled by the 'mmbasegroups' node
+        manager. Groups can contain other groups (with the 'contains' relations). Such 'contained'
+        groups inherit all rights.
+      </para>
+      <para>
+        Groups of course also can contain actual users. And users of course inherit their rights
+        from the groups they are in.
+      </para>
+    </section>
+    <section id="users">
+      <title>Users</title>
+      <para>
+        Users are represented by 'mmbaseusers' objects. Users authorize themselves with
+        username/password combinations which are fields of this node manager (the password is stored
+        md5 encrypted in the database).
+      </para>
+      <para>
+        Security contexts can also attribute rights directly to users.
+      </para>
+      <para>
+        User objects can have several statuses. A user can be 'active', 'new' or 'blocked'.
+      </para>
+    </section>
+    <section id="ranks">
+      <title>Ranks</title>
+      <para>
+        Besides the default ranks of the security frame-work, more ranks can be defined. This can be
+        used to block low ranked users to certain parts of your site.
+      </para>
+    </section>
+  </section>
+  <section id="editors">
+    <title>Security editors</title>
+    <para>
+      If you know the object model sufficiently well, security can now be administrated by using
+      'generic' editors. Cloud context security is however shipped with specialized editors.
+    </para>
+    <para>
+     <graphic fileref="editors.png"/>
+      These editors work only in MMBase-1.7. They are implemented as 'pieces of
+      html', which makes it possible to include the entire editors into other
+      editors (I use this to integrate them in the editors for a certain site),
+      and you can configure extra links for users (e.g. make a link to a 'people'
+      editwizard to relate people objects to accounts). There is an index.jsp
+      available to use them stand-alone. 
+    </para>
+  </section>
+</article>
