@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.23 2004-10-11 11:19:47 pierre Exp $
+ * @version $Id: Channel.java,v 1.24 2004-10-12 13:14:50 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -683,7 +683,7 @@ public class Channel extends MMObjectBuilder {
         // When openChannels is removed from init this can be removed
         if (communityBuilder != null) {
             int oType = communityBuilder.oType;
-            if (oType == 0) oType = mmb.TypeDef.getIntValue("community");
+            if (oType == 0) oType = mmb.getTypeDef().getIntValue("community");
             Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
             if (relatedCommunity.hasMoreElements()) {
                 return (MMObjectNode)relatedCommunity.nextElement();
