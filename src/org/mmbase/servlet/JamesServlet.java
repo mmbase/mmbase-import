@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *            not communicate well with jsp pages. Functionality might need to be moved
  *            or adapted so that it uses the MMCI.
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.43 2004-01-15 17:59:35 michiel Exp $
+ * @version $Id: JamesServlet.java,v 1.44 2004-01-15 23:21:49 michiel Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
@@ -49,7 +49,7 @@ public class JamesServlet extends MMBaseServlet {
         super.init();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(JamesServlet.class);
-        pageLog = Logging.getLoggerInstance("org.mmbase.PAGE");
+        pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
     }
 
     /**
