@@ -13,15 +13,13 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.Arguments;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.20 2003-05-19 09:59:12 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.21 2003-06-03 10:59:38 kees Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {   
