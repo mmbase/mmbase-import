@@ -28,7 +28,7 @@ import java.util.Locale;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.10 2003-02-18 00:11:16 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.11 2003-06-13 10:40:08 michiel Exp $
  */
 
 public class URLComposer  {
@@ -42,7 +42,7 @@ public class URLComposer  {
 
     protected URLComposer(MMObjectNode provider, MMObjectNode source, Map info) { 
         if (source   == null) throw new RuntimeException("Source may not be null in a URLComposer object");
-        if (provider == null) throw new RuntimeException("Source may not be null in a URLComposer object");
+        if (provider == null) throw new RuntimeException("Provider may not be null in a URLComposer object");
         this.provider = provider;
         this.source   = source;
         this.info     = info;
