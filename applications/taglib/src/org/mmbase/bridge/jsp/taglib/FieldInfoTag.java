@@ -226,7 +226,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         case Field.TYPE_BYTE:
             show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
-         //case Field.TYPE_XML:
+        case Field.TYPE_XML:
         case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
@@ -440,7 +440,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
                 }
                 break;
             }
-            //case Field.TYPE_XML:
+        case Field.TYPE_XML:
         case Field.TYPE_STRING: {
             // do the xml decoding thing...
             String fieldValue = getContextTag().findAndRegisterString(prefix(fieldName));
@@ -490,7 +490,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         switch(type) {
         case Field.TYPE_BYTE:
             throw new JspTagException("Don't know what to do with bytes()");
-            //case Field.TYPE_XML:
+        case Field.TYPE_XML:
         case Field.TYPE_STRING: {
             String search = getContextTag().findAndRegisterString(prefix(fieldName));
             if (search == null) {
