@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -558,12 +558,24 @@ public class BasicSqlHandler implements SqlHandler {
                         sb.append("<");
                         break;
                         
+                    case FieldValueConstraint.LESS_EQUAL:
+                        sb.append("<=");
+                        break;
+                        
                     case FieldValueConstraint.EQUAL:
                         sb.append("=");
                         break;
                         
+                    case FieldValueConstraint.NOT_EQUAL:
+                        sb.append("<>");
+                        break;
+                        
                     case FieldValueConstraint.GREATER:
                         sb.append(">");
+                        break;
+                        
+                    case FieldValueConstraint.GREATER_EQUAL:
+                        sb.append(">=");
                         break;
                         
                     case FieldValueConstraint.LIKE:

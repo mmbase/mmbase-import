@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint 
@@ -46,10 +46,8 @@ implements FieldCompareConstraint {
     public void setOperator(int operator) {
         
         // Test for defined operator value.
-        if (operator != FieldValueConstraint.LESS
-        && operator != FieldValueConstraint.EQUAL
-        && operator != FieldValueConstraint.GREATER
-        && operator != FieldValueConstraint.LIKE) {
+        if (operator < FieldValueConstraint.LESS
+        || operator > FieldValueConstraint.LIKE) {
             throw new IllegalArgumentException(
             "Invalid operator value: " + operator );
         }
