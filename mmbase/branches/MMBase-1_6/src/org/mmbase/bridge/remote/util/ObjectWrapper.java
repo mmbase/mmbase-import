@@ -24,7 +24,6 @@ public abstract class ObjectWrapper{
             retval =  new RemoteNode_Rmi((Node)o);
         }
         //ok .. it an mmbase object
-        System.err.println("localToRMIObject("+ o.getClass().getName() +" => "+ retval.getClass().getName() +")");
         return retval;
     }
     
@@ -40,7 +39,6 @@ public abstract class ObjectWrapper{
         if (o instanceof RemoteNode){
             retval =  new RemoteNode_Impl((RemoteNode)o);
         }
-        System.err.println("RMIObjectToRemoteImplementation("+ o.getClass().getName() +" => "+ retval.getClass().getName() +")");
         return retval;
     }
     
