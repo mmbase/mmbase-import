@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.13 2004-09-15 13:04:51 jaco Exp $
+  @version $Id: prompts.xsl,v 1.14 2004-12-14 11:39:53 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -113,6 +113,9 @@
   <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
+<xsl:variable name="tooltip_sort_on">Sorteer op</xsl:variable>
+<xsl:variable name="tooltip_sort_up">omhoog</xsl:variable>
+<xsl:variable name="tooltip_sort_down">omlaag</xsl:variable>
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Selecteer een of meer items uit de lijst</xsl:variable>
 <xsl:template name="prompt_no_results" >Geen items gevonden</xsl:template>
