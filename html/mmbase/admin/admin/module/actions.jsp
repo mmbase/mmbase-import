@@ -7,7 +7,7 @@
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
 <title>Administrate Module <%=module%></title>
-<link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+<link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 <meta http-equiv="pragma" value="no-cache" />
 <meta http-equiv="expires" value="0" />
 </head>
@@ -81,7 +81,7 @@
  <td class="data"><%=prop.getStringValue("item1")%></td>
  <td class="data" colspan="3"><%=prop.getStringValue("item2")%>&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>" />"><img src="../../images/change.gif" alt="change" border="0" /></a>
+    <a href="<mm:url page="<%="setproperty.jsp?module="+module+"&property="+prop.getStringValue("item1")%>" />"><img src="<mm:url page="/mmbase/style/images/change.gif" />" alt="change" border="0" /></a>
 </td>
 </tr>
 
@@ -91,7 +91,7 @@
  <td class="data">add new</td>
  <td class="data" colspan="3">&nbsp;</td>
  <td class="navigate">
-    <a href="<mm:url page="<%="newproperty.jsp?module="+module%>"/>"><img src="../../images/create.gif" alt="add" border="0" /></a>
+    <a href="<mm:url page="<%="newproperty.jsp?module="+module%>"/>"><img src="<mm:url page="/mmbase/style/images/create.gif" />" alt="add" border="0" /></a>
 </td>
 </tr>
 
@@ -109,7 +109,7 @@
  <td class="linkdata" >
    <input type="hidden" name="module" value="<%=module%>" />
    <input type="hidden" name="cmd" value="MODULESAVE" />
-   <input type="image" src="../../images/ok.gif" alt="OK" border="0"  />
+   <input type="image" src="<mm:url page="/mmbase/style/images/search.gif" />" alt="OK" border="0"  />
  </td>
 </tr>
   </form>
@@ -138,7 +138,7 @@
 <%  } %>
     <input type="hidden" name="config" value="modules" />
     <input type="hidden" name="target" value="<%=module%>" />
-    <input type="image" src="../../images/search.gif" alt="view" border="0"  />
+    <input type="image" src="<mm:url page="/mmbase/style/images/search.gif" />" alt="view" border="0"  />
   </form>
  </td>
 </tr>
@@ -148,7 +148,7 @@
 <% } %>
 
 <tr class="footer">
-<td class="navigate"><a href="<mm:url page="../modules.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<td class="navigate"><a href="<mm:url page="../modules.jsp" />"><img src="<mm:url page="/mmbase/style/images/back.gif" />" alt="back" border="0" /></td>
 <td class="data" colspan="4">Return to Module Overview</td>
 </tr>
 </table>
