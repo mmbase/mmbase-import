@@ -39,13 +39,8 @@
 
   <!-- hierin wordt de werkelijke chat-sessie opgezet -->
   <div class="contentBodywit">
-
-      <mm:import id="contextpath"><%=request.getContextPath()%></mm:import>
-      <mm:import id="localport"><%=request.getLocalPort()%></mm:import>
-      <mm:import id="ipaddress"><%=java.net.InetAddress.getLocalHost().getHostAddress()%></mm:import>
-
       <mm:remove referid="chaturl"/>
-      <mm:import id="chaturl">http://<mm:write referid="ipaddress"/>:<mm:write referid="localport"/><mm:write referid="contextpath"/>/chat/flashchat.swf?port=5557&host=<mm:write referid="ipaddress"/>&user=<mm:write referid="username"/>&enterchannel=<mm:write referid="class"/>&sessionkey=123&class=<mm:write referid="class"/>&provider=<mm:write referid="provider"/>&education=<mm:write referid="education"/></mm:import>
+      <mm:import id="chaturl">flashchat.swf?port=5557&host=<%= request.getServerName() %>&user=<mm:write referid="username"/>&enterchannel=<mm:write referid="class"/>&sessionkey=123&class=<mm:write referid="class"/>&provider=<mm:write referid="provider"/>&education=<mm:write referid="education"/></mm:import>
 
       <map name="chat">
       </map>
