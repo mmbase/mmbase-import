@@ -15,7 +15,7 @@
 
 
 <div class="rights">
-   <form method="post" action="<mm:url page="commit_group.jsp" />">    
+   <form method="post" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_group.jsp</mm:param></mm:url>">    
    <input type="hidden" name="group" value="<mm:field name="number" />" />
    <table>
     <mm:fieldlist type="edit">
@@ -38,7 +38,7 @@
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
-      <a href="<mm:url page="index_groups.jsp">
+      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_groups.jsp</mm:param>
       <mm:relatednodes referid="ingroups">
         <mm:param name="group"><mm:field name="number" /></mm:param>
        </mm:relatednodes>
@@ -54,7 +54,7 @@
          <option value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:unrelatednodes>
       </select>
-      <a href="<mm:url page="index_groups.jsp">
+      <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_groups.jsp</mm:param>
       <mm:relatednodes referid="fromgroups">
         <mm:param name="group"><mm:field name="number" /></mm:param>
        </mm:relatednodes>
@@ -62,6 +62,7 @@
      </td>
      </tr>
    </table>
+   <mm:import id="back">index_groups.jsp</mm:import>
    <%@include file="groupOrUserRights.table.jsp" %>
    </form>
 </div>
