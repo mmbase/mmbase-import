@@ -1,0 +1,23 @@
+This document describes all things which needs to be taken care of before
+the release of MMBase-1.7.0. Please add your own todo.
+There's also a list of testers and their environments at the end of
+this document. Please add your name if you're willing to test.
+
+TODO
+- update releasenotes
+- check all bugs and change priority to high if they need to be fixed
+before the release
+- decide what to do with the applications
+- change html directory structure
+- check documentation
+- move scan-related html into a scan-application
+- create/change upgrade documentation
+- test with large clouds
+
+
+TESTERS
+- VPRO: Solaris/jdk-1.4/Orion-1.5.4/Informix
+- PO: Redhat7/jdk-1.4/Tomcat-4.1/Postgresql7.3
+- EO: Solaris/Sun jdk-1.4.2/Tomcat-4.1.29/Informix
+- Gerard van Enk: Debian/Sun jdk-1.4.2/Tomcat-4.1.29 &
+                  Tomcat-5.0.16/Hsqldb
