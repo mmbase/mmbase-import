@@ -1,4 +1,4 @@
-<!-- ### Search form ### -->
+<!-- ### Search form ### --><a name="search"></a>
 <mm:present referid="ntype">
 	<mm:present referid="nr">		<%-- if there is a nr, there is a node and thus we are trying to find another to relate to --%>
 		<form method="post" action="<mm:url referids="ntype,nr,rkind,dir" />">
