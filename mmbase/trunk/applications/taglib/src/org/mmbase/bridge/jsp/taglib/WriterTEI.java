@@ -49,6 +49,12 @@ public class WriterTEI extends TagExtraInfo {
                 type = "org.mmbase.bridge.Node"; break;
             case WriterHelper.TYPE_INTEGER:
                 type = "java.lang.Integer"; break;
+            case WriterHelper.TYPE_DOUBLE:
+                type = "java.lang.Double"; break;
+            case WriterHelper.TYPE_FLOAT:
+                type = "java.lang.Float"; break;
+            case WriterHelper.TYPE_LONG:
+                type = "java.lang.Long"; break;
             case WriterHelper.TYPE_VECTOR:// deprecated
                 type = "java.util.Vector"; break;
             case WriterHelper.TYPE_LIST:

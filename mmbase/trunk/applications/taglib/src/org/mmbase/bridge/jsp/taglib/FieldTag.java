@@ -115,15 +115,23 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         // now also 'node' is availabe;
         if (field == null) { // some function, or 'referid' was used.
             if (getReferid() != null) { // referid
-                value = getString(getReferid());
+                value = getObject(getReferid());
             } else {                    // function
                 value = getNodeVar().getStringValue(fieldName);
             }
         } else { // a field was found!
-            if (field.getType() == Field.TYPE_BYTE) {        
-                value = node.getByteValue(name);
-            } else {    
-                value = convert(getNodeVar().getStringValue(fieldName));
+            if (helper.getVartype() == WriterHelper.TYPE_NODE) {
+                value = node.getNodeValue(fieldName);
+            } else {
+                switch(field.getType()) {
+                case Field.TYPE_BYTE:    value = node.getByteValue(fieldName);    break;
+                case Field.TYPE_INTEGER: value = new Integer(node.getIntValue(fieldName));  break;
+                case Field.TYPE_DOUBLE:  value = new Double(node.getStringValue(fieldName));  break;
+                case Field.TYPE_LONG:    value = new Long(node.getLongValue(fieldName));    break;
+                case Field.TYPE_FLOAT:   value = new Float(node.getFloatValue(fieldName));   break;
+                default:
+                    value = convert(node.getStringValue(fieldName));
+                }
             }
         }
         helper.setValue(value);
