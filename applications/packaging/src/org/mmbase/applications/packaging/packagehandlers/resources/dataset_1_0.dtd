@@ -2,7 +2,7 @@
      dataset.dtd
 -->
 
-<!ELEMENT dataset (creationinfo,objectsets?,relationsets?,selection?)>
+<!ELEMENT dataset (creationinfo*,objectsets*,relationsets*,selection*)>
 
 <!ELEMENT creationinfo (creator,creationtime,creatorcomments)>
 
