@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.4 2002-04-04 17:53:23 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.5 2002-04-04 18:53:58 michiel Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.0" 
@@ -100,9 +100,9 @@
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
   <xsl:template match="p|a"> 
     <xsl:copy>	 	 
-      <!-- find the nodes which are related to this node (by means of a 'descrel' -->
-      <xsl:variable name="relatednodes" select="//objects/object[@id=//objects/object[@type='descrel' and 
-        field[@name='name']=current()/@id and
+      <!-- find the nodes which are related to this node (by means of a 'idrel' -->
+      <xsl:variable name="relatednodes" select="//objects/object[@id=//objects/object[@type='idrel' and 
+        field[@name='id']=current()/@id and
         source/@object=current()/ancestor::object/@id]/destination/@object]" />
       
       <xsl:apply-templates select="." mode="sub">
