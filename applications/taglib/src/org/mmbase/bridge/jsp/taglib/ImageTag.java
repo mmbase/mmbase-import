@@ -69,7 +69,7 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
 
         // how about remote clouds!!!
 
-        String page = req.getContextPath() +org.mmbase.module.builders.AbstractImages.getIMGDB() + number;
+        String page = org.mmbase.module.builders.AbstractImages.getImageServletPath(req.getContextPath()) + number;
 
         helper.setValue(page);
         helper.setJspvar(pageContext);
