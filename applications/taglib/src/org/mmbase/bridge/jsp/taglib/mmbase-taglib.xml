@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.276 2004-12-10 20:25:11 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.277 2004-12-20 14:57:48 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -1926,7 +1926,7 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
       <see tag="clusternodeprovider" />
     </attribute>
     <example>Assume that node with number has a field title.
-Then the following code can be used to
+Then the following  can be used to
 access the value of title:
 &lt;mm:node number="456"&gt;
     &lt;mm:field name="title" write="true" /&gt;
@@ -4559,13 +4559,38 @@ Of course, the default behavior of getSmartPath can still be overridden.
     <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.XsltTag</tagclass>
     <info>
-      This tag must live as a sub-tag of Formatter. You can add 'inline' XSL with this. (EXPERIMENTAL)
+      <p>
+        This tag must live as a sub-tag of Formatter. You can add `inline' XSL with this.
+        If the surrounding &lt;xsl:stylesheet tag is missing, the following one is automatichly added:
+      </p>
+      <pre>
+<![CDATA[
+   <xsl:stylesheet xmlns:xsl ="http://www.w3.org/1999/XSL/Transform" version ="1.0"  
+                   xmlns:taglib="org.mmbase.bridge.jsp.taglib.XsltTag"  
+                   extension-element-prefixes="taglib">
+   ...
+   </xsl:stylesheet>
+]]>
+      </pre>
+      <p>
+       Which means that you have access to the static functions of XsltTag too, which mean goal is to provide the 'escape' moethod:
+      </p>
+      <pre>
+<![CDATA[
+   <xsl:value-of select="taglib:escape('p', mytag)"
+                         disable-output-escaping="yes" />
+]]>
+      </pre>
+      <p>
+       Which provides the same functionallity as the 'escape' attribute of writes inside XSLT.
+      </p>
     </info>
     <extends>contextreader</extends>
     <see tag="formatter" />
+    <see tag="writer" attribute="escape"/>
     <example>
       <include base="examples.taglib" href="codesamples/xsltinline.jsp" />
-    </example>
+    </example>    
   </tag>
   <tag>
     <name>time</name>
