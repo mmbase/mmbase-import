@@ -13,6 +13,7 @@ import java.util.*;
 import org.w3c.dom.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.Queue;
 import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 import org.mmbase.util.functions.*;
@@ -21,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  *
  * @author Pierre van Rooden
- * @version $Id: Lucene.java,v 1.4 2004-12-23 14:19:08 pierre Exp $
+ * @version $Id: Lucene.java,v 1.5 2005-01-19 08:57:08 pierre Exp $
  **/
 public class Lucene extends Module implements MMBaseObserver {
 
@@ -35,7 +36,7 @@ public class Lucene extends Module implements MMBaseObserver {
     /** DTD repource filename of the most recent Lucene config DTD */
     public static final String DTD_LUCENE = DTD_LUCENE_1_0;
 
-    private static long INITIAL_WAIT_TIME = 1 * 60 * 1000; // initial wait time after startup, default 5 minutes
+    private static long INITIAL_WAIT_TIME = 5 * 60 * 1000; // initial wait time after startup, default 5 minutes
     private static long WAIT_TIME = 5 * 1000; // wait time bewteen individual checks, default 5 seconds
 
     private static final Logger log = Logging.getLoggerInstance(Lucene.class);
@@ -121,8 +122,11 @@ public class Lucene extends Module implements MMBaseObserver {
         addFunction(searchSizeFunction);
         scheduler = new Scheduler();
         log.info("Module Lucene started");
-        // full index ???
-        scheduler.fullIndex();
+        // full index ??
+        String fias = getInitParameter("fullindexatstartup");
+        if ("true".equals(fias)) {
+            scheduler.fullIndex();
+        }
     }
 
     public String getModuleInfo() {
