@@ -4,8 +4,8 @@ RCS file: /usr/local/cvs/src/org/mmbase/bridge/BridgeException.java,v
 retrieving revision 1.9
 diff -u -r1.9 BridgeException.java
 --- src/org/mmbase/bridge/BridgeException.java	8 May 2003 06:13:15 -0000	1.9
-+++ src/org/mmbase/bridge/BridgeException.java	3 Jul 2003 14:12:17 -0000
-@@ -11,19 +11,12 @@
++++ src/org/mmbase/bridge/BridgeException.java	8 Jul 2003 07:07:11 -0000
+@@ -11,19 +11,11 @@
  
  /**
   * This exception gets thrown when something goes wrong on the MMCI.
@@ -14,9 +14,9 @@ diff -u -r1.9 BridgeException.java
 - * To adjust, replace the constructor bodies with the 1.4 commented-out code (so that these 
 - * tasks are delegated to Excception), and remove the private field cause and the methods 
 - * initCause() and getCause();
-  *
+- *
   * @author Pierre van Rooden
-  * @version $Id: java14.patch,v 1.2 2003-07-03 14:22:00 keesj Exp $
+  * @version $Id: java14.patch,v 1.3 2003-07-08 07:10:41 keesj Exp $
   */
  public class BridgeException extends RuntimeException {
  
@@ -25,7 +25,7 @@ diff -u -r1.9 BridgeException.java
      /**
       * Constructs a <code>BridgeException</code> with <code>null</code> as its
       * message.
-@@ -52,10 +45,7 @@
+@@ -52,10 +44,7 @@
       * @since  MMBase-1.6
       */
      public BridgeException(Throwable cause) {
@@ -37,7 +37,7 @@ diff -u -r1.9 BridgeException.java
      }
  
      /**
-@@ -68,42 +58,6 @@
+@@ -68,42 +57,6 @@
       * @since  MMBase-1.6
       */
      public BridgeException(String message, Throwable cause) {
@@ -80,14 +80,16 @@ diff -u -r1.9 BridgeException.java
 -    }
 -
 -    
- }
+-}
++}
+\ No newline at end of file
 Index: src/org/mmbase/module/database/MultiConnection.java
 ===================================================================
 RCS file: /usr/local/cvs/src/org/mmbase/module/database/MultiConnection.java,v
 retrieving revision 1.24
 diff -u -r1.24 MultiConnection.java
 --- src/org/mmbase/module/database/MultiConnection.java	3 Jul 2003 13:07:25 -0000	1.24
-+++ src/org/mmbase/module/database/MultiConnection.java	3 Jul 2003 14:12:18 -0000
++++ src/org/mmbase/module/database/MultiConnection.java	8 Jul 2003 07:07:12 -0000
 @@ -45,10 +45,10 @@
      public final static int CON_BUSY = 1;
      public final static int CON_FINISHED = 2;
@@ -668,7 +670,7 @@ RCS file: /usr/local/cvs/src/org/mmbase/module/database/MultiStatement.java,v
 retrieving revision 1.10
 diff -u -r1.10 MultiStatement.java
 --- src/org/mmbase/module/database/MultiStatement.java	8 May 2003 06:15:44 -0000	1.10
-+++ src/org/mmbase/module/database/MultiStatement.java	3 Jul 2003 14:12:18 -0000
++++ src/org/mmbase/module/database/MultiStatement.java	8 Jul 2003 07:07:12 -0000
 @@ -49,9 +49,9 @@
      /**
       * @javadoc
