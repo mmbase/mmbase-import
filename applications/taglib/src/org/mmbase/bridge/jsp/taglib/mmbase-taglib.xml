@@ -64,7 +64,7 @@ one or more examplevalue tags is you want to give some example values.
         <li>tags, which do not directly relate to the MMBase data cloud, but are simply handy sometimes</li>
       </ul>
     </p>
-    <p>		Tags can use a 'context' to exchange variables with other tags.
+    <p>Tags can use a 'context' to exchange variables with other tags.
 		What is a 'context', 'variable' and 'parameter'???
 		What is the relationship between 'context' and the Implicit JSP Objects, like request, session, application?
 		Please read the <a href="#context">documentation for mm:context</a> if you want to know how this works.
@@ -91,26 +91,30 @@ one or more examplevalue tags is you want to give some example values.
     </p>
     <p>Tags for fields are: <a href="#field">field</a>
       <a href="#setfield">setfield</a>
+      <a href="#isempty">isempty</a>
+      <a href="#isnotempty">isnotempty</a>
+      <a href="#isgreaterthan">isgreaterthan</a>
+      <a href="#islessthan">islessthan</a>
       <a href="#fieldinfo">fieldinfo</a>
       <a href="#fieldlist">fieldlist</a>
     </p>
     <p>Tags for lists of nodes are: 
 	<a href="#list">list</a>
+      <a href="#listnodes">listnodes</a>
+      <a href="#related">related</a>
+      <a href="#relatednodes">relatednodes</a>
+      <a href="#index">index</a>
       <a href="#first">first</a>
       <a href="#last">last</a>
       <a href="#even">even</a>
       <a href="#odd">odd</a>
       <a href="#changed">changed</a>
-      <a href="#index">index</a>
       <a href="#listcondition">listcondition</a>
-      <a href="#listnodes">listnodes</a>
       <a href="#listrelations">listrelations</a>
-      <a href="#related">related</a>
       <a href="#relatednode">relatednode</a>
-      <a href="#relatednodes">relatednodes</a>
       <a href="#size">size</a>
     </p>
-    <p>Tags for transactions with the object cloud:<a href="#transaction">transaction</a>
+    <p>Tags for transactions with the object cloud: <a href="#transaction">transaction</a>
       <a href="#commit">commit</a>
       <a href="#cancel">cancel</a>
     </p>
@@ -126,15 +130,11 @@ one or more examplevalue tags is you want to give some example values.
       <a href="#compare">compare</a>
     </p>
     <p>Tags that are handy: 
-<a href="#timer">timer</a>
+	  <a href="#timer">timer</a>
       <a href="#log">log</a>
       <a href="#time">time</a>
       <a href="#formatter">formatter</a>
       <a href="#xslt">xslt</a>
-      <a href="#isempty">isempty (???)</a>
-      <a href="#isnotempty">isnotempty (???)</a>
-      <a href="#isgreaterthan">isgreaterthan (???)</a>
-      <a href="#islessthan">islessthan (???)</a>
       <a href="#include">include</a>
       <a href="#url">url</a>
       <a href="#param">param</a>
@@ -143,11 +143,12 @@ one or more examplevalue tags is you want to give some example values.
       <a href="#treefile">treefile</a>
       <a href="#treeinclude">treeinclude</a>
     </p>
-    <p>Tags belong to one or more groups of tags. Each group of tags shares common properties and functionality. 
+    <p>Tags belong to one or more groups of tags, 'writers', 'readers', 'referrers' or 'providers'. Each group of tags shares common properties and functionality. 
 For instance: the tags 'list', 'related', 'createnode', 'createrelation', 'listnodes' all make use of
-the functionality in the group 'nodeprovider'. See the info about the syntax of the document on how tags and groups are distinguished in the text.
-First, groups are described in alphabetic order. Followed by a description of the tags, also in alphabetic order.
-    </p>
+the functionality in the group 'nodeprovider'. See <a href="mmbase-taglib-groups.html">table of groups and tags</a> for an overview of groups and tags. First, groups are described in alphabetic order.
+Followed by a description of the tags, also in alphabetic order.
+See the info about the syntax of the document on how tags and groups are distinguished in the text.
+   </p>
   </info>
   <taginterface>
     <name>contextreferrer</name>
@@ -647,15 +648,18 @@ First, groups are described in alphabetic order. Followed by a description of th
         destination to source or both).
       </info>
     </attribute>
-    <example>&lt;mm:list nodes="123" path="mags,news" fields="mags.title,news.number"&gt;
+    <example>&lt;mm:list nodes="123" path="mags,news"
+				fields="mags.title,news.number"&gt;
   &lt;mm:first&gt;magazine list&lt;/mm:first&gt;
   &lt;mm:field name="mags.title" /&gt;
 &lt;/mm:list&gt;</example>
-    <example>&lt;mm:list nodes="123" path="mags,posrel,news" orderby="posrel.pos" fields="news.title"&gt;
+    <example>&lt;mm:list nodes="123" path="mags,posrel,news" 
+				orderby="posrel.pos" fields="news.title"&gt;
   &lt;mm:first&gt;news in this magazine, ordered&lt;/mm:first&gt;
   &lt;mm:field name="news.title" /&gt;
 &lt;/mm:list&gt;</example>
-    <example>&lt;mm:list path="pools,pools0,urls" fields="pools.name,pools0.name,urls.url"&gt;
+    <example>&lt;mm:list path="pools,pools0,urls"
+				fields="pools.name,pools0.name,urls.url"&gt;
   &lt;mm:field name="pools.name" /&gt;
   &lt;mm:field name="pools0.name" /&gt;
   &lt;mm:field name="urls.url" /&gt;
@@ -891,6 +895,7 @@ First, groups are described in alphabetic order. Followed by a description of th
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListEvenTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is an even item</info>
+    <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
     <name>odd</name>
@@ -899,6 +904,7 @@ First, groups are described in alphabetic order. Followed by a description of th
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListOddTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is an odd item</info>
+    <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
     <name>changed</name>
@@ -910,6 +916,7 @@ First, groups are described in alphabetic order. Followed by a description of th
      The criteria applies to the field(s) given in the orderby attribute of the accompanying list.
      The first item of a list is always concidered 'changed'.
      </info>
+    <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
     <name>first</name>
@@ -919,6 +926,19 @@ First, groups are described in alphabetic order. Followed by a description of th
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
     fist item in the list.</info>
+    <example>
+&lt;mm:listnodes type="typedef"&gt;
+ &lt;mm:first&gt;&lt;ul&gt;&lt;/mm:first&gt;
+ &lt;li&gt;
+   &lt;mm:field name="name"/&gt; is: &lt;mm:field name="description"/&gt;
+   Index: &lt;mm:index /&gt;
+   &lt;mm:odd&gt;(odd item)&lt;/mm:odd&gt;
+   &lt;mm:even&gt;(even item)&lt;/mm:even&gt;
+   &lt;mm:changed&gt;(different from previous item)&lt;/mm:changed&gt;
+ &lt;/li&gt;
+ &lt;mm:last&gt;&lt;/ul&gt;&lt;/mm:last&gt;
+&lt;/mm:listnodes&gt;
+	</example>
   </tag>
   <tag>
     <name>last</name>
@@ -928,6 +948,7 @@ First, groups are described in alphabetic order. Followed by a description of th
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
     last item in the list.</info>
+    <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
     <name>cloud</name>
@@ -1072,17 +1093,22 @@ First, groups are described in alphabetic order. Followed by a description of th
       </info>
     </attribute>
     <example>
-&lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)
-only to user kamer --&gt;
+&lt;!-- Show titles of all news articles from user kamer 
+	(which are in pool kamer_pool) only to user kamer --&gt;
 &lt;mm:cloud jspvar="cloud" logon="kamer" method="http"&gt;
 logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br /&gt;
 &lt;mm:node number="kamer_pool" id="my_node"&gt;
   &lt;mm:related paths="news" orderby="number" directions="DOWN"&gt;
      &lt;mm:first&gt;
-        &lt;!-- show a small heading, in which also appears the node-number of the pool --&gt;
+        &lt;!-- show a small heading, 
+			which also contains the node-number of the pool --&gt;
         &lt;mm:field node="my_node" name="number" /&gt;:
-        &lt;mm:field name="number" /&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/mm:field&gt;:
-        &lt;mm:field name="title" /&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/mm:field&gt;:
+        &lt;mm:field name="number" /&gt;
+			&lt;mm:fieldinfo type="guiname" /&gt;
+		&lt;/mm:field&gt;:
+        &lt;mm:field name="title" /&gt;
+			&lt;mm:fieldinfo type="guiname" /&gt;
+		&lt;/mm:field&gt;:
      &lt;/mm:first&gt;
      &lt;mm:field name="number" /&gt;: &lt;mm:field name="title" /&gt;&lt;br /&gt;
   &lt;/mm:related&gt;
@@ -1091,7 +1117,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 &lt;/mm:cloud&gt;
     </example>
     <example>
-&lt;!-- To logon on as a different user on my_page.jsp, make a ref to a page with this:  --&gt;
+&lt;!-- To logon on as a different user on my_page.jsp,
+	make a ref to a page --&gt;
 &lt;mm:cloud method="logout" /&gt;
 &lt;% response.sendRedirect("http://my_host/my_page.jsp"); %&gt;
     </example>
@@ -1172,6 +1199,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	The name of the node manager, identifying the node in a list or related list tag.
       </info>
     </attribute>
+    <example>Assume that node with number has a field title.
+Then the following code can be used to
+access the value of title:
+&lt;mm:node number="456"&gt;
+	&lt;mm:field name="title" write="true" /&gt;
+&lt;/mm:node&gt;
+	 </example>
   </tag>
   <tag>
     <name>field</name>
@@ -1193,6 +1227,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	The name of the field to get.
       </info>
     </attribute>
+    <example>See the example for tag 'node'.</example>
   </tag>
   <tag>
     <name>createalias</name>
@@ -1209,6 +1244,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	In stead of giving it in the body, you can also indicate it with this parameter.
       </info>
     </attribute>
+    <example>
+&lt;mm:listnodes type="list" max="1"&gt;
+	&lt;mm:createalias&gt;my_list&lt;/mm:createalias&gt;
+&lt;/mm:listnodes&gt;
+	</example>
   </tag>
   <tag>
     <name>deletealias</name>
@@ -1225,6 +1265,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	In stead of giving it in the body, you can also indicate it with this parameter.
       </info>
     </attribute>
+    <example>Delete the alias "my_news" from one of the news nodes:
+&lt;mm:listnodes type="news"&gt;
+	&lt;mm:deletealias name="my_news" /&gt;
+&lt;/mm:listnodes&gt;
+Why should deletealias live in a NodeProvider ???
+	</example>
   </tag>
   <tag>
     <name>listcondition</name>
@@ -1280,6 +1326,9 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
           </info>
       </possiblevalue>
     </attribute>
+    <example>&lt;mm:listcondition value="first"&gt;(first)&lt;/mm:listcondition&gt;
+is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
+	</example>
   </tag>
   <tag>
     <name>context</name>
@@ -1349,7 +1398,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         itself (or one of the subcontextes).
       </p>
     </info>
-    <example>&lt;!-- use a context inside another context (inside the default 'context') and import parameters --&gt;
+    <example>Use a context inside another context (inside the default 'context')
+				and import parameters:
 &lt;mm:import id="hoi"&gt;greetings from amsterdam&lt;/mm:import&gt;
 &lt;mm:import id="alias" externid="hoi" required ="true" /&gt;
 &lt;mm:context id="other_context"&gt;
@@ -1431,6 +1481,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>people</value>
       </examplevalue>
     </attribute>
+    <example>
+	&lt;mm:createnode type="news" id="new_news"&gt;
+		&lt;mm:setfield name="title"&gt;Create node example&lt;/mm:setfield&gt;
+	&lt;/mm:createnode&gt;
+	</example>
   </tag>
   <tag>
     <name>setfield</name>
@@ -1451,6 +1506,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	look for a surrounding fieldlist tag to retrieve name and node from.
       </info>
     </attribute>
+    <example>See the example for tag 'createnode'.</example>
   </tag>
   <tag>
     <name>transaction</name>
@@ -1496,6 +1552,15 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>false</value>
       </possiblevalue>
     </attribute>
+	<example>
+&lt;mm:transaction id="post_list" name="my_trans"&gt;
+	&lt;mm:createnode type="list"&gt;
+		&lt;mm:setfield name="title"&gt;New list node&lt;/mm:setfield&gt;
+	&lt;/mm:createnode&gt;
+&lt;/mm:transaction&gt;
+&lt;mm:remove referid="post_list" /&gt;
+What is the advantage of using transaction???
+	</example>
   </tag>
   <tag>
     <name>cancel</name>
@@ -1510,6 +1575,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <rtexprvalue>true</rtexprvalue>
       <info>The id of the transaction.</info>
     </attribute>
+	<example>???</example>
   </tag>
   <tag>
     <name>commit</name>
@@ -1524,6 +1590,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <rtexprvalue>true</rtexprvalue>
       <info>The id of the transaction.</info>
     </attribute>
+	<example>???</example>
   </tag>
   <tag>
     <name>deletenode</name>
@@ -1545,6 +1612,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>false</value>
       </possiblevalue>
     </attribute>
+    <example>
+&lt;mm:listnodes type="list" max="1"&gt;
+	&lt;mm:maydelete&gt;
+		&lt;mm:deletenode deleterelations="true"/&gt;
+	&lt;/mm:maydelete&gt;
+&lt;/mm:listnodes&gt;
+	</example>
   </tag>
   <tag>
     <name>fieldlist</name>
@@ -1608,6 +1682,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         </info>
       </possiblevalue>
     </attribute>
+    <example>See the example for tag 'nodeinfo'.</example>
   </tag>
   <tag>
     <name>fieldinfo</name>
@@ -1701,6 +1776,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         </info>
       </possiblevalue>
     </attribute>
+    <example>See the example for tags 'cloud' and 'nodeinfo'.</example>
   </tag>
   <tag>
     <name>nodeinfo</name>
@@ -1734,7 +1810,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <example>&lt;mm:node number="1645"&gt;
 Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   &lt;mm:fieldlist type="edit"&gt;
-    &lt;em&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/em&gt;:    &lt;mm:fieldinfo type="value" /&gt;&lt;br /&gt;
+    &lt;em&gt;&lt;mm:fieldinfo type="guiname" /&gt;&lt;/em&gt;: 
+		&lt;mm:fieldinfo type="value" /&gt;&lt;br /&gt;
   &lt;/mm:fieldlist&gt;
 &lt;/mm:node&gt;
 </example>
@@ -1967,6 +2044,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <refercontext>true</refercontext>
       <info/>
     </attribute>
+	<example>See the example for tag 'transaction'.
+	</example>
   </tag>
   <tag>
     <name>url</name>
@@ -2000,6 +2079,12 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         result of getRequestURI. 
     </info>
     </attribute>
+	<example>
+	&lt;mm:url page="codesamples/index.jsp"&gt;
+		&lt;mm:param name="page" value="home" /&gt;
+	&lt;/mm:url&gt;
+	generates: codesamples/index.jsp?page=home 
+	</example>
   </tag>
   <tag>
     <name>image</name>
@@ -2059,6 +2144,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <value>s(200)+f(gif)+paint(10)</value>
       </examplevalue>
     </attribute>
+    <example>
+	&lt;mm:node number="&lt;%= image_number %&gt;"&gt;
+		&lt;img src="&lt;mm:image template="s(100)" /&gt;" width="100" border="0"&gt;
+	&lt;/mm:node&gt;
+	</example>
   </tag>
   <tag>
     <name>include</name>
@@ -2104,6 +2194,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see>param</see>
     <see>url</see>
+	<example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
+	</example>
   </tag>
   <tag>
     <name>compare</name>
@@ -2154,6 +2246,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       Checks if parent writer is not empty.
     </info>
+    <example>
+		  &lt;mm:field name="title"&gt;
+		    &lt;mm:isempty&gt;
+		      No title!
+		    &lt;/mm:isempty&gt;
+		    &lt;mm:isnotempty&gt;
+		      &lt;mm:write /&gt;
+		    &lt;/mm:isnotempy&gt;
+		  &lt;/mm:field&gt;
+	 </example>
   </tag>
   <tag>
     <name>isempty</name>
@@ -2163,14 +2265,42 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       Checks if parent writer is empty.
     </info>
+    <example>
+		  &lt;mm:field name="title"&gt;
+		    &lt;mm:isempty&gt;
+		      No title!
+		    &lt;/mm:isempty&gt;
+		    &lt;mm:isnotempty&gt;
+		      &lt;mm:write /&gt;
+		    &lt;/mm:isnotempy&gt;
+		  &lt;/mm:field&gt;
+	 </example>
+    <example>
+	 	&lt;mm:field name="title" write="true"&gt;
+	  	  &lt;mm:isempty&gt;
+	  	    No title!
+	  	  &lt;/mm:isempty&gt;
+		&lt;/mm:field&gt;
+	 </example>
   </tag>
   <tag>
     <name>isgreaterthan</name>
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
     <info>
-	  The body evaluated if the compared value is greater.
+      The body evaluated if the compared value is greater, working
+      only for numbers.
     </info>
+    <example>
+   <!-- this example should be fixed, or the tag must be changed... -->
+	&lt;mm:import id="title"&gt;mmbase taglib example&lt;/mm:import&gt;
+	&lt;mm:isgreaterthan referid="title" value="m"&gt;
+	         Title starts with character a, ..., m
+	&lt;/mm:isgreaterthan&gt;
+	&lt;mm:islessthan referid="title" value="n"&gt;
+	        Title starts with character n, ..., z
+	&lt;/mm:islessthan&gt;
+	</example>
   </tag>
   <tag>
     <name>islessthan</name>
@@ -2179,6 +2309,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
 	  The body evaluated if the compared value is smaller.
     </info>
+    <example>
+	&lt;mm:field name="list.title" write="true"&gt;
+		&lt;mm:isgreaterthan value="m"&gt;
+		         Title starts with character a, ..., m
+		&lt;/mm:isgreaterthan&gt;
+		&lt;mm:islessthan value="n"&gt;
+		        Title starts with character n, ..., z
+	&lt;/mm:islessthan&gt;
+	&lt;/mm:field &gt;
+	</example>
   </tag>
   <tag>
     <name>aliaslist</name>
@@ -2191,6 +2331,14 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       This is a list which can only live under a NodeProvider. In the body you can use the `writer'
       functionality to actually write out the alias.
     </info>
+    <example>
+&lt;mm:listnodes type="list"&gt;
+	&lt;mm:field name="title" /&gt;
+	&lt;mm:aliaslist&gt; has alias with name &lt;mm:field name="name" /&gt;
+			&lt;/mm:aliaslist&gt;&lt;br/&gt;
+&lt;/mm:listnodes&gt;
+note: name of alias is not returned ???
+  </example>
   </tag>
   <tag>
     <name>maywrite</name>
@@ -2200,7 +2348,13 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if node may be changed.
     </info>
-    <see>setfield</see>
+    <example>
+&lt;mm:listnodes type="list" max="1"&gt;
+	&lt;mm:maywrite&gt;
+		&lt;mm:setfield name="title"&gt;New title&lt;/mm:setfield&gt;
+	&lt;/mm:maywrite&gt;
+&lt;/mm:listnodes&gt;
+	</example>
   </tag>
   <tag>
     <name>maydelete</name>
@@ -2210,7 +2364,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if node may be deleted.
     </info>
-    <see>deletenode</see>
+    <example>See the example for tag 'deletenode'.
+	</example>
   </tag>
   <tag>
     <name>maycreate</name>
@@ -2218,13 +2373,19 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateTag</tagclass>
     <info>
-      Check if node may be created.
+    Check if node may be created.
     </info>
-    <see>createnode</see>
     <attribute>
       <name>type</name>
       <required>true</required>
     </attribute>
+    <example>
+&lt;mm:maycreate type="list"&gt;
+	&lt;mm:createnode type="list" id="this_list"&gt;
+		&lt;mm:setfield name="title"&gt;Create node example&lt;/mm:setfield&gt;
+	&lt;/mm:createnode&gt;
+&lt;/mm:maycreate&gt;
+	</example>
   </tag>
   <tag>
     <name>maycreaterelation</name>
@@ -2233,7 +2394,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
     <info>
     Check if a relation may be created.
-    </info>    
+    </info>
     <attribute>
       <name>role</name>
       <required>true</required>
@@ -2247,6 +2408,23 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <required>true</required>
     </attribute>
     <see>createrelation</see>
+    <example>
+&lt;mm:maycreate type="list"&gt;
+	&lt;mm:createnode type="list" id="this_list"&gt;
+		&lt;mm:setfield name="title"&gt;
+			Node with relation to page 97
+		&lt;/mm:setfield&gt;
+	&lt;/mm:createnode&gt;
+&lt;/mm:maycreate&gt;
+&lt;mm:node number="97" id="my_page" /&gt;
+&lt;mm:maycreaterelation role="posrel" 
+	source="my_page" destination="this_list"&gt; 
+	&lt;mm:createrelation role="posrel" 
+		source="my_page" destination="this_list" /&gt;
+&lt;/mm:maycreaterelation&gt;
+&lt;delete referid="this_list"&gt;
+&lt;delete referid="my_page"&gt;
+	</example>
   </tag>
   <tag>
     <name>maylink</name>
@@ -2254,7 +2432,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayLinkTag</tagclass>
     <info>
-      This tag will be removed!
+    This tag will be removed!
     </info>
   </tag>
   <tag>
@@ -2265,7 +2443,6 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
     Check if the context of a node may be changed.
     </info>
-    <see>setcontext</see>
   </tag>
   <tag>
     <name>setcontext</name>
@@ -2275,7 +2452,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <p>
         Change the context of a node. This has nothing to do with the
         `contextes' of the taglib, but with security. With every node a
-        `context' is associated (in fact the `owner' field is currently
+         `context' is associated (in fact the `owner' field is currently
         used for this), by which is is determined who may do what to
         it. 
       </p>
@@ -2314,6 +2491,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         specified by this attribute are returned.
       </info>
     </attribute>
+    <example>
+&lt;mm:listnodes type="list"&gt;
+	&lt;mm:field name="title" /&gt; has &lt;mm:countrelations /&gt; relation(s)&lt;br/&gt;
+&lt;/mm:listnodes&gt;
+	</example>
   </tag>
   <tag>
     <name>listrelations</name>
@@ -2339,6 +2521,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       <rtexprvalue>true</rtexprvalue>
       <info>Only list the relations which are of this role.</info>
     </attribute>
+    <example>
+&lt;mm:listnodes type="news"&gt;
+	&lt;mm:field name="title" /&gt;
+	&lt;mm:listrelations role="posrel" type="page"&gt;
+		is news item &lt;mm:field name="pos" /&gt; on page
+		&lt;mm:relatednode&gt;&lt;mm:field name="title" /&gt;&lt;/mm:relatednode&gt;
+	&lt;/mm:listrelations&gt;
+	&lt;br/&gt;
+&lt;/mm:listnodes&gt;
+	</example>
   </tag>
   <tag>
     <name>relatednode</name>
@@ -2360,6 +2552,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 		To refer to another listrelations tag then the direct parent.
     </info>
     </attribute>
+    <example>See the example for tag 'listrelations'.
+	</example>
   </tag>
   <tag>
     <name>size</name>
@@ -2371,6 +2565,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <info>
       The size of the current list.
     </info>
+	<example>
+&lt;mm:listnodes type="list"&gt;
+	&lt;mm:first&gt;&lt;mm:size /&gt;&lt;/mm:first&gt;
+&lt;/mm:listnodes&gt;
+	</example>
+	<example>
+&lt;mm:list path="list"&gt;
+	&lt;mm:first&gt;&lt;mm:size /&gt;&lt;/mm:first&gt;
+&lt;/mm:list&gt;
+	</example>
   </tag>
   <tag>
     <name>index</name>
@@ -2390,6 +2594,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
          Where do you want to start counting. Default this is 1.
         </info>
     </attribute>
+    <example>See the example for tag 'first'.</example>
   </tag>
   <tag>
     <name>timer</name>
@@ -2416,6 +2621,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	  </info>
     </attribute>
     <extends>contextreferrer</extends>
+	<example>
+	&lt;mm:timer name="listnodes timer"&gt;
+		&lt;mm:listnodes type="list"&gt; &lt;/mm:listnodes&gt;
+	&lt;/mm:timer&gt;
+	Generates in mmlog4j.log:
+	19:11:26,530 INFO  - Starting timer listnodes timer
+	19:11:26,546 INFO  - Timer listnodes timer totals:
+		 org.mmbase.bridge.jsp.taglib.debug.TimerTag: 16.0 ms
+		 org.mmbase.bridge.jsp.taglib.ListNodesTag: 16.0 ms
+	</example>
   </tag>
   <tag>
     <name>treefile</name>
@@ -2437,6 +2652,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see>param</see>
     <see>url</see>
+	<example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
     <name>leaffile</name>
@@ -2459,6 +2675,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
     <see>param</see>
     <see>url</see>
+	<example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
     <name>treeinclude</name>
@@ -2514,6 +2731,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <see>treefile</see>
     <see>param</see>
     <see>url</see>
+	<example>See the example for tag 'leafinclude'.</example>
   </tag>
   <tag>
     <name>leafinclude</name>
@@ -2534,12 +2752,13 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 Object with id '100' is an object from builder 'portals'
 Object with id '101' is an object from builder 'subsites'.
 
-When leafinclude is called with page='page.jsp' and objectlist='101,102', the following
-files will be tried to be included, in order of priority:
+When leafinclude is called with page='page.jsp' and objectlist='101,102',
+the following files will be tried to be included, in order of priority:
 100/101/page.jsp
 100/subsites/page.jsp
 portals/subsites/page.jsp.
-The default behaviour of getSmartPath is that the directory '100' is chosen for objectid '100'.
+The default behaviour of getSmartPath is that the directory '100' is chosen
+for objectid '100'.
 Ofcourse, the default behavior of getSmartPath can still be overridden.
 	</example>
   </tag>
@@ -2547,7 +2766,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <name>param</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.ParamTag</tagclass>
     <info>
-      Adds a parameter to the parent URL Tag.
+    Adds a parameter to the parent URL Tag.
     </info>
     <see>url</see>
     <see>include</see>
@@ -2569,6 +2788,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
 	The value of the parameter. Is this attribute is missing, then the body of the param tag is used.
     </info>
     </attribute>
+	<example>See the example for tag 'url'.</example>
   </tag>
   <tag>
     <name>formatter</name>
@@ -2683,10 +2903,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>
-	    The time taglib can be used for all kind of manipulations
-	    regarding to times.
-    </info>
-    <see>locale</see>
+	    The time taglib can be used for all kind of manipulations regarding to times.</info>
     <attribute>
       <name>time</name>
       <required>false</required>
@@ -2751,6 +2968,8 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       </info>
     </attribute>
     -->
+	<example>&lt;mm:time format="yyyy/mm/dd" /&gt; generates 2002/26/21 ????
+	</example>
   </tag>
   <tag>
     <name>log</name>
@@ -2758,7 +2977,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <teiclass>org.mmbase.bridge.jsp.taglib.debug.LogTEI</teiclass>
     <info>
       Logs the body or creates a Logger variable in it.  You can log
-      to the MMBase log with this. It logs its body on 'service' with
+      to the MMBase log with this.  It logs its body on 'service'
       within the category 'org.mmbase.PAGE', followed by the file name
       of the jsp which is executed.
     </info>
@@ -2771,6 +2990,13 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
         in the body this jspvar is available.
       </info>
     </attribute>
+	<example>
+	&lt;mm:log&gt;
+		Log this to the log file
+	&lt;/mm:log&gt;
+	Generates in the mmbase log file:
+	19:16:04,030 SERVICE - 0: Log this to the log file
+	</example>
   </tag>
   <tag>   
     <name>locale</name>
