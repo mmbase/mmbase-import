@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.29 2002-11-05 09:59:40 michiel Exp $
+     * @version  $Id: list.jsp,v 1.30 2003-04-24 11:36:08 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -65,6 +65,10 @@ if (listConfig==null) {
 }
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
+if (listConfig.fields==null) {
+  throw new WizardException("The parameter 'fields' is required but not given."); 
+}
+
 {
     String t = request.getParameter("template");
     if (t == null || t.equals("")) t = "xsl/list.xsl";
