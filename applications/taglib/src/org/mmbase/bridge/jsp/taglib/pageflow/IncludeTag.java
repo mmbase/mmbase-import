@@ -15,12 +15,19 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import javax.servlet.jsp.JspTagException;
 
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Like UrlTag, but does not spit out an URL, but the page itself.
  * 
  * @author Michiel Meeuwissen
  */
 public class IncludeTag extends UrlTag {
+
+    private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
+
     public int doAfterBody() throws JspTagException {
         
         if (page == null) {
@@ -46,11 +53,12 @@ public class IncludeTag extends UrlTag {
                 javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
                 urlString = 
                     request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-                    + new java.io.File(request.getRequestURI()).getParent().toString() + "/" + gotUrl;
+                    + new java.io.File(new java.io.File(request.getRequestURI()).getParent().toString() + "/" + gotUrl).getCanonicalPath();
             } else { // really absolute
                 urlString = gotUrl;
             }                
                 
+            if (log.isDebugEnabled()) log.debug("found url: " + urlString);
 	    URL includeURL = new URL(urlString); 
 	    HttpURLConnection connection = (HttpURLConnection) includeURL.openConnection();
 	    connection.connect();
