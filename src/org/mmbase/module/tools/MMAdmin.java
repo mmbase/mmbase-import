@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.63 2003-04-03 17:06:43 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.64 2003-04-09 08:50:13 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -272,6 +272,21 @@ public class MMAdmin extends ProcessorModule {
         return false;
     }
 
+    // basically replaces linefeeds and some characters.
+    private String escape(String s) {
+        if (s==null) {
+            return "";
+        } else {
+            StringObject obj=new StringObject(s);
+            obj.replace("&","&amp;");
+            obj.replace(">","&gt;");
+            obj.replace("<","&lt;");
+            obj.replace("\"","&quot;");
+            obj.replace("\n","<br />");
+            return obj.toString();
+        }
+    }
+
     /**
      * Handle a $MOD command
      * @javadoc
@@ -284,21 +299,10 @@ public class MMAdmin extends ProcessorModule {
             if (cmd.equals("VERSION")) {
                 return ""+getVersion(tok.nextToken());
             } else if (cmd.equals("DESCRIPTION")) {
-                return getDescription(tok.nextToken());
+                return escape(getDescription(tok.nextToken()));
             } else if (cmd.equals("LASTMSG")) {
                 // return lastmsg in html-format.
-                // basically replaces linefeeds and some characters.
-                if (lastmsg==null) {
-                    return "";
-                } else {
-                    StringObject obj=new StringObject(lastmsg);
-                    obj.replace(">","&gt;");
-                    obj.replace("<","&lt;");
-                    obj.replace("\"","&quot;");
-                    obj.replace("&","&amp;");
-                    obj.replace("\n","<br />");
-                    return obj.toString();
-                }
+                return escape(lastmsg);
             } else if (cmd.equals("BUILDERVERSION")) {
                 return ""+getBuilderVersion(tok.nextToken());
             } else if (cmd.equals("BUILDERCLASSFILE")) {
@@ -1705,7 +1709,6 @@ public class MMAdmin extends ProcessorModule {
 
     /**
      * @javadoc
-     * @deprecated contains code taht is commented-out, can be removed (?)
      */
     public void setBuilderDBKey(Hashtable vars) {
         if (kioskmode) {
@@ -1725,12 +1728,6 @@ public class MMAdmin extends ProcessorModule {
                 def.setDBKey(false);
             }
         }
-        /* not needed at the moment since keys
-           are not done in the database layer
-        if (mmb.getDatabase().changeField(bul,fieldname)) {
-            syncBuilderXML(bul,builder);
-        }
-        */
         syncBuilderXML(bul,builder);
     }
 
