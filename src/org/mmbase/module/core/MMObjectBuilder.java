@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.10 2003-02-13 16:22:20 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.11 2003-02-13 17:25:12 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
     
@@ -822,7 +822,7 @@ public class MMObjectBuilder extends MMTable {
             }
 
             if(numbers.length() > MAX_QUERY_SIZE) {
-                result.addAll(basicSearch("SELECT * FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+                result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + "  FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
                 numbers = new StringBuffer();
             }
         }
@@ -830,7 +830,7 @@ public class MMObjectBuilder extends MMTable {
         // now that we have a comma seperated string of numbers, we can
         // the search with a where-clause containing this list
         if(! numbers.toString().equals("")) {
-            result.addAll(basicSearch("SELECT * FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
+            result.addAll(basicSearch("SELECT " + getNonByteArrayFields(tableName) + " FROM " + getFullTableName() + " WHERE number in (" + numbers.toString() + ")"));
         } // else everything from cache
 
         // check that we didnt loose any nodes
