@@ -10,14 +10,22 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.core.MMObjectNode;
 
 /**
- * @deprecated Does not add functionality (maybe it should?)
+ * Like InsRel, only with a GUIIndicator tailored for a relation with a 'pos' field.
+ *
  * @author Rico Jansen
+ * @author Michiel Meeuwissen.
  */
 public class PosRel extends InsRel {
 
     public PosRel() {
     }
+
+    public String getGUIIndicator(MMObjectNode node) {
+        return super.getGUIIndicator(node) + ":" + node.getStringValue("pos");
+    }
+
 
 }
