@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *  authorization, you have to extend this class.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.13 2002-06-07 12:56:55 pierre Exp $
+ * @version $Id: Authentication.java,v 1.14 2002-06-25 12:30:44 michiel Exp $
  */
 public abstract class Authentication {
     private static Logger log = Logging.getLoggerInstance(Authentication.class.getName());
@@ -45,15 +45,20 @@ public abstract class Authentication {
      *	call the member function load();
      *	@param manager The class that created this instance.
      *	@param fileWatcher checks the files
-     *	@param configPath The url which contains the config information for.
-     *	    the authorization.
+     *	@param configPath The url which contains the config information for the authorization (e.g. context/config.xml)
      */
     public final void load(MMBaseCop manager, FileWatcher fileWatcher, String configPath) {
-        log.debug("Calling load() with as config file:" + configPath);
+        if (log.isDebugEnabled()) {
+            log.debug("Calling load() with as config file:" + configPath);
+        }
         this.manager = manager;
-    this.fileWatcher = fileWatcher;
-    if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
-    load();
+        this.fileWatcher = fileWatcher;
+        if(configPath != null) this.configFile = new File(configPath).getAbsoluteFile();
+
+        fileWatcher.setDelay(10 * 1000);
+        fileWatcher.add(configFile); // add the file.
+
+        load();
     }
 
     /**

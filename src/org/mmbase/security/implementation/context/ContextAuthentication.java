@@ -21,7 +21,6 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
 
 import org.apache.xpath.XPathAPI;
-import org.apache.xerces.parsers.DOMParser;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -31,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.8 2002-06-07 12:56:59 pierre Exp $
+ * @version $Id: ContextAuthentication.java,v 1.9 2002-06-25 12:30:45 michiel Exp $
  */
 public class ContextAuthentication extends Authentication {
     private static Logger log=Logging.getLoggerInstance(ContextAuthentication.class.getName());
@@ -44,7 +43,10 @@ public class ContextAuthentication extends Authentication {
     }
 
     protected void load() {
-        log.debug("using: '" + configFile + "' as config file for authentication");
+        if (log.isDebugEnabled()) {
+            log.debug("using: '" + configFile + "' as config file for context-authentication");
+        }
+
         try {
             InputSource in = new InputSource(new FileInputStream(configFile));
             document = org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(in);
@@ -59,17 +61,19 @@ public class ContextAuthentication extends Authentication {
             log.error(Logging.stackTrace(ioe));
             throw new org.mmbase.security.SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
         }
-        log.debug("loaded: '" +  configFile + "' as config file for authentication");
-        log.debug("gonna load the modules...");
+        if (log.isDebugEnabled()) {
+            log.debug("loaded: '" +  configFile + "' as config file for authentication");
+            log.debug("gonna load the modules...");
+        }
 
         // do the xpath query...
         String xpath = "/contextconfig/loginmodules/module";
-        log.debug("gonna execute the query:" + xpath );
+        if (log.isDebugEnabled()) log.debug("gonna execute the query:" + xpath );
         NodeIterator found;
         try {
             found = XPathAPI.selectNodeIterator(document, xpath);
         } catch(javax.xml.transform.TransformerException te) {
-            log.error("error executing query: '"+xpath+"' ");
+            log.error("error executing query: '" + xpath + "' ");
             log.error( Logging.stackTrace(te));
             throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
         }
@@ -94,11 +98,6 @@ public class ContextAuthentication extends Authentication {
             log.info("loaded module with the name:"+moduleName+ " with class:" + className);
             loginModules.put(moduleName, module);
         }
-        // set the reload on 10 seconds, maybe we want to put this inside the security.xml?
-        fileWatcher.setDelay(10 * 1000);
-
-        // add our config file...
-        fileWatcher.add(configFile);
 
         log.debug("done loading the modules...");
     }

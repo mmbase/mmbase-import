@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.7 2002-06-07 12:56:55 pierre Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.8 2002-06-25 12:30:45 michiel Exp $
  */
 public class MMBaseCopConfig {
-    private static Logger log=Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
 
     /** the file from which the config is loaded..*/
     private File configFile;
@@ -49,40 +49,41 @@ public class MMBaseCopConfig {
     private MMBaseCop cop;
 
     /** the class that watches if we have to reload...*/
-    private class SecurityFileWatcher extends org.mmbase.util.FileWatcher {
-//    	private final static Logger log=Logging.getLoggerInstance(SecurityFileWatcher.class.getName());
+    private class SecurityFileWatcher extends org.mmbase.util.FileWatcher  { 
+        //    	private final static Logger log=Logging.getLoggerInstance(SecurityFileWatcher.class.getName());
         private MMBaseCop cop;
-
+        
         public SecurityFileWatcher(MMBaseCop cop) {
-        super();
-        if(cop == null) throw new RuntimeException("MMBase cop was null");
-//    	    log.debug("Starting the file watcher");
-        this.cop = cop;
-    }
-
+            super(true); // true: continue after change
+            if(cop == null) throw new RuntimeException("MMBase cop was null");
+            // log.debug("Starting the file watcher");
+            this.cop = cop;
+        }
+        
         public void onChange(File file) {
-        try {
-//	    	log.info("gonna reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
-            cop.reload();
-        }
-        catch(Exception e) {
-            log.error(e);
+            try {
+                // log.info("gonna reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
+                cop.reload();
+            } catch(Exception e) {
+                log.error(e);
                 e.printStackTrace();
+            }
         }
     }
-    }
-
+    
     /**
      *	The constructor, will load the classes for authorization and authentication
      *	with their config files, as specied in the xml from configUrl
      *	@exception  java.io.IOException When reading the file failed
      *	@exception  java.lang.NoSuchMethodException When a tag was not specified
-     *	@exception  org.mmbase.security.SecurityException When the class could not
-     *	    be loaded
+     *	@exception  org.mmbase.security.SecurityException When the class could not  be loaded
+     *	   
+     *  @param mmbaseCop  The MMBaseCop for which this is a configurator
+     *  @param configFile Configuration file ('security.xml')
      */
-    public MMBaseCopConfig(MMBaseCop mmbaseCop, File configFile) throws java.io.IOException, java.lang.NoSuchMethodException, SecurityException {
+    public MMBaseCopConfig(MMBaseCop mmbaseCop, File configFile) throws java.io.IOException, NoSuchMethodException, SecurityException {
         this.configFile = configFile;
-        log.info("using: '" + configFile.getAbsolutePath() + "' as config file for security config");
+        log.info("using: '" + configFile.getAbsolutePath() + "' as configuration file for security");
 
         watcher = new SecurityFileWatcher(mmbaseCop);
 
@@ -94,44 +95,44 @@ public class MMBaseCopConfig {
         // are we active ?
         String sActive = reader.getElementAttributeValue(reader.getElementByPath("security"),"active");
         if(sActive.equalsIgnoreCase("true")) {
-        log.debug("SecurityManager will be active");
-        active = true;
-    }
+            log.debug("SecurityManager will be active");
+            active = true;
+        }
         else if(sActive.equalsIgnoreCase("false")) {
-        log.debug("SecurityManager will NOT be active");
-        active = false;
-    }
+            log.debug("SecurityManager will NOT be active");
+            active = false;
+        }
         else {
-        log.error("security attibure active must have value of true or false("+configPath+")");
-        throw new SecurityException("security attibure active must have value of true or false");
-    }
+            log.error("security attibure active must have value of true or false("+configPath+")");
+            throw new SecurityException("security attibure active must have value of true or false");
+        }
 
         // load the sharedSecret
         sharedSecret = reader.getElementValue(reader.getElementByPath("security.sharedsecret"));
         if(sharedSecret == null) {
-        String msg = "sharedsecret could not be found in security("+configPath+")";
-        log.error(msg);
+            String msg = "sharedsecret could not be found in security("+configPath+")";
+            log.error(msg);
             throw new java.util.NoSuchElementException(msg);
-    }
+        }
         log.debug("Shared Secret retrieved");
 
         if(active) {
             // load our authentication...
             org.w3c.dom.Element entry = reader.getElementByPath("security.authentication");
-        if(entry == null) throw new java.util.NoSuchElementException("security/authentication");
+            if(entry == null) throw new java.util.NoSuchElementException("security/authentication");
             String authClass = reader.getElementAttributeValue(entry,"class");
             if(authClass == null) {
-            String msg = "attribute class could not be found in authentication("+configPath+")";
-            log.error(msg);
+                String msg = "attribute class could not be found in authentication("+configPath+")";
+                log.error(msg);
                 throw new java.util.NoSuchElementException(msg);
-        }
+            }
             String authUrl = reader.getElementAttributeValue(entry,"url");
             if(authUrl == null) {
-            String msg = "attribute url could not be found in authentication("+configPath+")";
-            log.error(msg);
-            throw new java.util.NoSuchElementException(msg);
-        }
-        // make the url absolute in case it isn't:
+                String msg = "attribute url could not be found in authentication("+configPath+")";
+                log.error(msg);
+                throw new java.util.NoSuchElementException(msg);
+            }
+            // make the url absolute in case it isn't:
             File authFile = new File(authUrl);
             if (! authFile.isAbsolute()) { // so relative to currently
                 // being parsed file. make it absolute,
@@ -140,23 +141,23 @@ public class MMBaseCopConfig {
                 log.debug("will use: " + authFile.getAbsolutePath());
             }
             authentication = getAuthentication(authClass, authFile.getAbsolutePath());
-        log.debug("Authentication retrieved");
+            log.debug("Authentication retrieved");
 
             // load our authorization...
             entry = reader.getElementByPath("security.authorization");
-        if(entry == null) throw new java.util.NoSuchElementException("security.authorization");
+            if(entry == null) throw new java.util.NoSuchElementException("security.authorization");
             String auteClass = reader.getElementAttributeValue(entry,"class");
             if(auteClass == null) {
-            String msg = "attribute class could not be found in auhotization("+configPath+")";
-            log.error(msg);
-            throw new java.util.NoSuchElementException(msg);
-        }
+                String msg = "attribute class could not be found in auhotization("+configPath+")";
+                log.error(msg);
+                throw new java.util.NoSuchElementException(msg);
+            }
             String auteUrl = reader.getElementAttributeValue(entry,"url");
             if(auteUrl == null) {
-            String msg ="attribute url could not be found in auhotization("+configPath+")";
-            log.error(msg);
-            throw new java.util.NoSuchElementException(msg);
-        }
+                String msg ="attribute url could not be found in auhotization("+configPath+")";
+                log.error(msg);
+                throw new java.util.NoSuchElementException(msg);
+            }
             // make the url absolute in case it isn't:
             File auteFile = new File(auteUrl);
             if (! auteFile.isAbsolute()) { // so relative to currently
@@ -166,19 +167,18 @@ public class MMBaseCopConfig {
                 log.debug("will use: " + auteFile.getAbsolutePath());
             }
             authorization = getAuthorization(auteClass, auteFile.getAbsolutePath());
-        log.debug("Authorization retrieved");
+            log.debug("Authorization retrieved");
 
-        // add our config file..
-        watcher.add(configFile);
-    }
-    else {
-        // we dont use security...
+            // add our config file..
+            watcher.add(configFile);
+        } else {
+            // we dont use security...
             authentication = new NoAuthentication();
-        authentication.load(cop, watcher, null);
-        authorization = new NoAuthorization();
-        authorization.load(cop, watcher, null);
-        log.debug("Retrieved dummy security classes");
-    }
+            authentication.load(cop, watcher, null);
+            authorization = new NoAuthorization();
+            authorization.load(cop, watcher, null);
+            log.debug("Retrieved dummy security classes");
+        }
     }
 
     /**
@@ -246,8 +246,10 @@ public class MMBaseCopConfig {
     }
 
     private Authentication getAuthentication(String className, String configUrl) throws SecurityException {
-        log.debug("Using class:"+className+" with config:"+configUrl+" for Authentication");
-    Authentication result;
+        if (log.isDebugEnabled()) {
+            log.debug("Using class:" + className + " with config:" + configUrl + " for Authentication");
+        }
+        Authentication result;
         try {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
@@ -266,12 +268,14 @@ public class MMBaseCopConfig {
             ie.printStackTrace();
             throw new SecurityException(ie.toString());
         }
-    return result;
+        return result;
     }
 
     private Authorization getAuthorization(String className, String configUrl) throws SecurityException {
-        log.debug("Using class:"+className+" with config:"+configUrl+" for Authorization");
-    Authorization result;
+        if (log.isDebugEnabled()) {
+            log.debug("Using class:" + className + " with config:" + configUrl + " for Authorization");
+        }
+        Authorization result;
         try {
             Class classType = Class.forName(className);
             Object o = classType.newInstance();
@@ -290,6 +294,6 @@ public class MMBaseCopConfig {
             ie.printStackTrace();
             throw new SecurityException(ie.toString());
         }
-    return result;
+        return result;
     }
 }
