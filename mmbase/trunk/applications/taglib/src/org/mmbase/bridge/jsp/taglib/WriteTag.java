@@ -42,12 +42,13 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttributeBoolean(w));
     }
-    public Object getValue() {
+    public Object getWriterValue() {
         return helper.getValue();
     }
 
     private String sessionvar;
     private String cookie;
+    private String value;
 
     public void setSession(String s) throws JspTagException {
         sessionvar = getAttributeValue(s);
@@ -56,16 +57,28 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     public void setCookie(String s) throws JspTagException {
         cookie = getAttributeValue(s);
     }
+    public void setValue(String v) throws JspTagException {
+        value = getAttributeValue(v);
+    }
     
     
     protected Object getObject() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("getting object " + getReferid());
         }
-        if (getReferid() == null) { // get from parent Writer.
+        if (getReferid() == null && value == null) { // get from parent Writer.
             Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
-            return w.getValue();
+            return w.getWriterValue();
         }
+
+        if (value != null) {
+            if (getReferid() != null) {
+                throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
+            }
+            return value;
+        }
+
+
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
             return getContextTag().getBytes(getReferid()); // a hack..            
         }
