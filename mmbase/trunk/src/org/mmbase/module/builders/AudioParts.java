@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.15 2000-08-01 09:49:40 install Exp $
+$Id: AudioParts.java,v 1.16 2000-10-05 12:14:14 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.15  2000/08/01 09:49:40  install
+changed import
+
 Revision 1.14  2000/07/31 13:32:16  vpro
 davzev: Made urlCache variable static.
 
@@ -75,7 +78,7 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.15 2000-08-01 09:49:40 install Exp $
+ * @version $Id: AudioParts.java,v 1.16 2000-10-05 12:14:14 vpro Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
@@ -162,11 +165,7 @@ public class AudioParts extends MMObjectBuilder {
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("title");
-		if (str.length()>15) {
-			return(str.substring(0,12)+"...");
-		} else {
-			return(str);
-		}
+		return(str);
 	}
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
