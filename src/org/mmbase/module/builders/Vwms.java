@@ -25,6 +25,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 	private String emailFromDomain;
 	private String emailReturnPath;
 	private String emailTo;
+	private static boolean debug=false;
 
 	public boolean init () {
 		super.init ();
@@ -50,7 +51,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
 	public void startVwmsByField() {
 		Class newclass;
-		System.out.println("Vwms on machine "+getMachineName());
+		if (debug) System.out.println("Vwms on machine "+getMachineName());
 		Enumeration e=search("WHERE (wantedcpu='"+getMachineName()+"' OR wantedcpu='*') AND status=2");
 		for (;e.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -74,7 +75,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 	public void startVwms() {
 		Class newclass;
 		// try to find my own node
-		System.out.println("Vwms on machine "+getMachineName());
+		if (debug) System.out.println("Vwms on machine "+getMachineName());
 		MMObjectBuilder bul=mmb.getMMObject("mmservers");
 		Enumeration e=bul.search("WHERE name='"+getMachineName()+"'");
 		if (e.hasMoreElements()) {
