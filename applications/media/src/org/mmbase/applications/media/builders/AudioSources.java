@@ -15,8 +15,16 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMObjectNode;
 
 /**
+ *
+ * The MediaSource builder describes a specific type of media that can be retrieved (real/mp3/etc). Information about
+ * format, quality, and status will be maintained in this object. A MediaSource belongs
+ * to a MediaFragement that describes the piece of media, the MediaSource is the
+ * real audio/video itself. A MediaSource is connected to provider objects that indicate
+ * where the real audio/video files can be found.
+ *
  * @author Rob Vermeulen
- * @version $Id: AudioSources.java,v 1.1 2003-02-03 17:50:18 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: AudioSources.java,v 1.2 2003-02-05 15:39:34 rob Exp $
  * @since MMBase-1.7
  */
 public class AudioSources extends MediaSources {    
@@ -24,8 +32,6 @@ public class AudioSources extends MediaSources {
     
     /**
      * Creates a new audiosource and relates it to an audiofragment.
-     *
-     * I think this is to be used by VWMS's
      *
      * @param audiofragment the audiofragment to relate this new audiosource to.
      * @return The new created audiofragment.
