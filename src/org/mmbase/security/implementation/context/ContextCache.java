@@ -28,7 +28,7 @@ public class ContextCache  {
     private long    rightSucces = 0;
     private long    rightSize = 0;    
     
-    public void rightAdd(Operation operation, String context, String user, boolean value) {
+    public void rightAdd(String operation, String context, String user, boolean value) {
     	HashMap operationCache = (HashMap)globalRightCache.get(operation);
 	// when operation not known, create
 	if(operationCache == null) {
@@ -49,7 +49,7 @@ public class ContextCache  {
     	rightSize++;
     }
     
-    public Boolean rightGet(Operation operation, String context, String user) {
+    public Boolean rightGet(String operation, String context, String user) {
     	HashMap operationCache = (HashMap)globalRightCache.get(operation);
     	rightTries ++;
 	if(operationCache == null) {
