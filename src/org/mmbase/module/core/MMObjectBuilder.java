@@ -49,10 +49,11 @@ public class MMObjectBuilder extends MMTable {
 	public String description="Base Object"; // description of this type (overloaded)
 	public Hashtable descriptions;
 	private Hashtable fields;
-//	public Hashtable fields = new Hashtable();
 	Vector sortedEditFields = null;
 	Vector sortedListFields = null;
 	Vector sortedFields = null;
+	int version=0;
+	String maintainer="mmbase.org";
 
 	public Vector sortedDBLayout = null;
 
@@ -1739,5 +1740,13 @@ public class MMObjectBuilder extends MMTable {
 	 */
 	public String getInitParameter(String name) {
 		return (String)properties.get(name);	
+	}
+
+	public void setVersion(int i) {
+		version=i;
+	}
+
+	public void setMaintainer(String m) {
+		maintainer=m;	
 	}
 }
