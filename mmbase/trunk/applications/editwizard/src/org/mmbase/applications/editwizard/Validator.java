@@ -19,7 +19,7 @@ import org.w3c.dom.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Validator.java,v 1.6 2003-04-16 07:38:05 pierre Exp $
+ * @version $Id: Validator.java,v 1.7 2003-04-16 08:39:46 pierre Exp $
  */
 
 public class Validator {
@@ -89,55 +89,60 @@ public class Validator {
         val = field.getOwnerDocument().createElement("validator");
         field.appendChild(val);
         Utils.setAttribute(val,"valid", "true");
-        if ("string".equals(dttype)) {
-            int len = value.length();
-            int dtminlength = 0;
-            try {
-                dtminlength = Integer.parseInt(Utils.getAttribute(field,"dtminlength", "0"));
-            } catch (Exception e) {
-                // don't mind that
-            }
-            if (len<dtminlength) {
-                addValidationError(val, 1, "Entered text is too short.");
-            } else {
-                int dtmaxlength = 640000;
+        int valueLength = value.length();
+        boolean required = Utils.getAttribute(field,"dtrequired", "false").equals("true");
+        if (required && valueLength==0) {
+            addValidationError(val, 1, "Value is required.");
+        } else {
+            if ("string".equals(dttype)) {
+                int dtminlength = 0;
                 try {
-                    dtmaxlength = Integer.parseInt(Utils.getAttribute(field,"dtmaxlength","640000"));
-                } catch (Exception e){
-                    // don't mind that again
+                    dtminlength = Integer.parseInt(Utils.getAttribute(field,"dtminlength", "0"));
+                } catch (Exception e) {
+                    // don't mind that
                 }
-                if (len>dtmaxlength) {
-                    addValidationError(val, 1, "Entered text is too long.");
-                }
-            }
-        }
-        if ("int".equals(dttype)) {
-            // int
-            int nr=0;
-            boolean isint=false;
-            try {
-                nr = Integer.parseInt(value);
-                isint=true;
-            } catch (Exception e) {
-                addValidationError(val, 1, "Entered value is not a valid integer number.");
-            }
-
-            if (isint) {
-                // check min and max bounds
-                int dtmin = Integer.parseInt(Utils.getAttribute(field,"dtmin","0"));
-                int dtmax = Integer.parseInt(Utils.getAttribute(field,"dtmax","999999999"));
-                if (nr<dtmin || nr>dtmax) {
-                    addValidationError(val, 1, "Integer value is too small or too large.");
+                if (valueLength<dtminlength) {
+                    addValidationError(val, 1, "Entered text is too short.");
+                } else {
+                    int dtmaxlength = 640000;
+                    try {
+                        dtmaxlength = Integer.parseInt(Utils.getAttribute(field,"dtmaxlength","640000"));
+                    } catch (Exception e){
+                        // don't mind that again
+                    }
+                    if (valueLength>dtmaxlength) {
+                        addValidationError(val, 1, "Entered text is too long.");
+                    }
                 }
             }
-        }
-        if ("date".equals(dttype)) {
-            // date
-            // TODO
-        }
-        if ("enum".equals(dttype)) {
-            // enum
-            // TODO
+            if ("int".equals(dttype) && valueLength!=0) {
+                // int
+                int nr=0;
+                boolean isint=false;
+                try {
+                    nr = Integer.parseInt(value);
+                    isint=true;
+                } catch (Exception e) {
+                    addValidationError(val, 1, "Entered value is not a valid integer number.");
+                }
+    
+                if (isint) {
+                    // check min and max bounds
+                    int dtmin = Integer.parseInt(Utils.getAttribute(field,"dtmin","0"));
+                    int dtmax = Integer.parseInt(Utils.getAttribute(field,"dtmax","999999999"));
+                    if (nr<dtmin || nr>dtmax) {
+                        addValidationError(val, 1, "Integer value is too small or too large.");
+                    }
+                }
+            }
+            if ("date".equals(dttype)) {
+                // date
+                // TODO
+            }
+            if ("enum".equals(dttype)) {
+                // enum
+                // TODO
+            }
         }
         return Utils.getAttribute(val,"valid").equals("true");
     }
