@@ -1,0 +1,21 @@
+<application name="ImportApp" version="-1" auto-deploy="false" create-date="Dec 18, 2001 2:05:22 PM" MD5="hier moet nog een functie voor komen">
+
+	<description>This is a standard distributed app.</description>
+
+	<maintainer>
+		<name></name>
+		<company></company>
+		<info></info>
+		<email></email>
+		<homebase></homebase>
+	</maintainer>
+
+	<displays>
+	</displays>
+
+	<cloudlayouts>
+	</cloudlayouts>
+
+	<datasets>
+	</datasets>
+</application>

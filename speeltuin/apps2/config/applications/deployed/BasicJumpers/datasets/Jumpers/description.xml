@@ -1,0 +1,18 @@
+<dataset name="Jumpers" version="1" create-date="Dec 11, 2001 3:25:02 PM" md5="fb3fb9 000000 df2b9f ffffff">
+
+	<description>These are some jumpers that belong to the standard distribution of MMBase</description>
+
+	<requires>
+	</requires>
+
+	<objects>
+		<source nodemanager="jumpers" md5="befa77fd ffffffff f71d3d77 00000000" />
+	</objects>
+
+	<relations>
+	</relations>
+
+	<backupmethod>
+		<contextsource path="null" type="null" goal="null" />
+ 	</backupmethod>
+</dataset>

@@ -1,0 +1,78 @@
+<!-- gives an overview of a certain application -->
+
+<HTML>
+<HEAD>
+<TITLE>
+Apps2.0 - Adding a display element ### $PARAM1
+</TITLE>
+</HEAD>
+<BODY TEXT="#42BDAD" BGCOLOR="#00425a" LINK="#FFFFFF" ALINK="#FFFFFF" VLINK="#FFFFFF">
+<BR>
+
+<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=3>
+<A HREF="../applications.shtml">All Applications</A> > Edit:
+<A HREF="editApplicationInfo.jsp?appname=$PARAM1">ApplicationInfo</A> |
+<A HREF="editComponents.jsp?appname=$PARAM1">Components</A> |
+<b>CloudLayout Element</b><BR>
+
+<TABLE width=600 cellspacing=1 cellpadding=1 border=0>
+
+<TR>
+	<TD BGCOLOR="42BDAD" WIDTH="400" COLSPAN="2">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=3>
+	<B>Step 3 - Adding a $PARAM2 element.</B>
+	</TD>
+</TR>
+<TR>
+	<TD BGCOLOR="#CCCCCC">
+	<FONT FACE=helvetica,arial,geneva SIZE=2 COLOR="#000000">
+	<CENTER><B>Question</B></CENTER>
+	</TD>
+	<TD BGCOLOR="#CCCCCC">
+	<FONT FACE=helvetica,arial,geneva SIZE=2 COLOR="#000000">
+	<CENTER><B>Answer</B></CENTER>
+	</TD>
+</TR>
+<FORM METHOD="POST" ACTION="processCloudLayoutElement.shtml?$PARAM1+$PARAM2">
+<TR>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>Name of $PARAM2 element</FONT></A>
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	<INPUT TYPE="TEXT" NAME="SESSION-cloudlayoutname">
+	</TD>
+</TR>
+
+<TR>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>Description</FONT></A>
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	<TEXTAREA COLS="50" ROWS="3" name="SESSION-cloudlayoutdescription"></TEXTAREA>
+	</TD>
+</TR>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>Auto Deploy</FONT></A>
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	<SELECT name="SESSION-cloudlayoutautodeploy"><OPTION value="no">no<option value="yes">yes</SELECT>
+	</TD>
+</TR>
+<TR>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>Create CloudLayout Element</FONT></A>
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>
+	<INPUT TYPE="SUBMIT" value="Proceed">
+	</TD>
+	</TR>
+	</FORM>
+	</TABLE>
+	<BR><BR>
+
+</BODY>
+</HTML>

@@ -1,0 +1,9 @@
+<display name="test" version="-1" create-date="Dec 18, 2001 2:05:45 PM" MD5="hier moet nog een functie voor komen">
+
+	<description></description>
+
+	<requires>
+	</requires>
+
+	<default-web-path>/test/</default-web-path>
+</display>

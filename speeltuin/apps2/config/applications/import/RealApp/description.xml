@@ -1,0 +1,24 @@
+<application name="RealApp" version="-1" auto-deploy="false" create-date="Dec 18, 2001 2:06:02 PM" MD5="hier moet nog een functie voor komen">
+
+	<description>This is a real application</description>
+
+	<maintainer>
+		<name></name>
+		<company></company>
+		<info></info>
+		<email></email>
+		<homebase></homebase>
+	</maintainer>
+
+	<displays>
+		<display name="test" auto-deploy="false" create-date="Dec 18, 2001 2:05:45 PM" MD5="null" />
+	</displays>
+
+	<cloudlayouts>
+		<cloudlayout name="test" auto-deploy="false" create-date="Dec 18, 2001 2:05:49 PM" MD5="null" />
+	</cloudlayouts>
+
+	<datasets>
+		<dataset name="fsdfs" auto-deploy="false" create-date="Dec 18, 2001 2:06:02 PM" MD5="null" />
+	</datasets>
+</application>

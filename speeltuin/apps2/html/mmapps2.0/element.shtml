@@ -1,0 +1,24 @@
+<!-- shows information about an element. It's used in application.shtml -->
+<PROCESSOR MMADMIN>
+<TR>
+	<LIST ELEMENT-$PARAM1-$PARAM2-$PARAM3 PROCESSOR="MMADMIN" ITEMS="1">
+	<TD BGCOLOR="#00000">
+	&nbsp;&nbsp;
+	<A HREF="elementinfo.shtml?$PARAM1+$PARAM2+$PARAM3">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>$ITEM1</B></FONT></A>
+	&nbsp;
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>&nbsp;
+	<CENTER>$ITEM2</CENTER>
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>&nbsp;
+	<CENTER>$ITEM3</CENTER>
+	</TD>
+	<TD BGCOLOR="#00000">
+	<FONT COLOR="FFFFFF" FACE=helvetica,arial,geneva SIZE=2>&nbsp;
+	<CENTER>$ITEM6</CENTER>
+	</TD>
+</LIST>
+</TR>
