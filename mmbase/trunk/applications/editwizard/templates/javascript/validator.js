@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.20 2003-09-24 13:40:46 michiel Exp $
+ * @version  $Id: validator.js,v 1.21 2003-09-24 14:38:39 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -81,10 +81,7 @@ var daysofmonth   = new makeArray( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 3
 var daysofmonthLY = new makeArray( 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 function LeapYear(year) {
-    if ((year/4)   != Math.floor(year/4))   return false;
-    if ((year/100) != Math.floor(year/100)) return true;
-    if ((year/400) != Math.floor(year/400)) return false;
-    return true;
+    return ((year  % 4 == 0) && !( (year % 100 == 0) && (year % 400 != 0)));
 }
 
 function NthDay(nth,weekday,month,year) {
@@ -180,7 +177,7 @@ function validateElement_validator(el, silent) {
 
 
             /* Validation leap-year / february / day */
-            if ((year  % 4 == 0) && !( (year % 100 == 0) && (year % 400 != 0))) {
+            if (LeapYear(year)) {
                 leap = 1;
             } else {
                 leap = 0;
@@ -208,8 +205,8 @@ function validateElement_validator(el, silent) {
             }
 
             var date = new Date();
-            date.setMonth(month, day);
             date.setFullYear(year);
+            date.setMonth(month, day);
             date.setHours(hours, minutes);
 			
             var ms = date.getTime();
