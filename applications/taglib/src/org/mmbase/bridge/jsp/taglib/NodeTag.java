@@ -31,19 +31,36 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     private static Logger log = Logging.getLoggerInstance(NodeTag.class.getName());
     
-    private String number   = null;
-    private String type     = null;
-    private String element = null;
+    private String number    = null;
+    private String type      = null;
+    private String element   = null;
+    private String contextid = null;
+
+    private Node   node      = null;
     
-    public void setNumber(String number){
+    public void setNumber(String number) {
         this.number=number;    
     }
     
-    public void setParameter(String param) throws JspTagException{  
-        this.number = pageContext.getRequest().getParameter(param);
-        if (this.number == null) { 
-            throw new JspTagException("No parameter "  + param);
+    public void setParameter(String param) throws JspTagException {  
+        CloudProvider cp = findCloudProvider();
+        number = (String) cp.getObject(param);
+        if (number == null) { 
+            throw new JspTagException("No parameter "  + param);            
         }
+    }
+
+    public void setKey(String key) throws JspTagException {
+        CloudProvider cp = findCloudProvider();
+        node = cp.getNode(key);
+        if (node == null) {
+            throw new JspTagException("No key "  + key + " in Context");            
+        }
+    }
+
+
+    public void setContextid(String ci) {
+        this.contextid = ci;
     }
 
     public void setElement(String e) {
@@ -52,39 +69,38 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     
     public int doStartTag() throws JspTagException{            
-        Node node;
         
-        if (number != null) { 
-            // explicity indicated which node (by number or alias)
-            node = getCloudProviderVar().getNode(number);
-        } else { 
-            // get the node from a parent element.           
-            NodeProvider nodeProvider;
-            try {
-                nodeProvider = 
-                    (NodeProvider) findAncestorWithClass((Tag)this,
-                                                         Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider"));
-            } catch (ClassNotFoundException e){
-                throw new JspTagException("Could not find NodeProvider class");
+        if (node == null) {
+            if (number != null) { 
+                // explicity indicated which node (by number or alias)
+                node = getCloudProviderVar().getNode(number);
+                if(node == null) {
+                    throw new JspTagException("Cannot find Node with number " + number);
+                }         
+            } else { 
+                // get the node from a parent element.           
+                NodeProvider nodeProvider;
+                try {
+                    nodeProvider = 
+                        (NodeProvider) findAncestorWithClass((Tag)this,
+                                                             Class.forName("org.mmbase.bridge.jsp.taglib.NodeProvider"));
+                } catch (ClassNotFoundException e){
+                    throw new JspTagException("Could not find NodeProvider class");
+                }
+                if (nodeProvider == null) {
+                    throw new JspTagException("Could not find parent NodeProvider");
+                }
+                if (element != null) {
+                    node = nodeProvider.getNodeVar().getNodeValue(element);
+                } else {
+                    node = nodeProvider.getNodeVar();
+                }
+                
             }
-            if (nodeProvider == null) {
-                throw new JspTagException("Could not find parent NodeProvider");
-            }
-            if (element != null) {
-                node = nodeProvider.getNodeVar().getNodeValue(element);
-            } else {
-                node = nodeProvider.getNodeVar();
-            }
-
         }
-        //keesj
-        //FIXME does not make sence
-        if(node == null) {
-            throw new JspTagException("Cannot find Node with number " + number);
-        }         
+
         setNodeVar(node);        
-        log.debug("found node " + node.getValue("gui()"));
-        
+        //log.debug("found node " + node.getValue("gui()"));        
         return EVAL_BODY_TAG; 
     }
     
