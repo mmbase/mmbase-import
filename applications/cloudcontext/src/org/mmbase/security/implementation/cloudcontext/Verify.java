@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: Verify.java,v 1.2 2003-06-16 17:16:16 michiel Exp $
+ * @version $Id: Verify.java,v 1.3 2003-06-16 17:35:33 michiel Exp $
  */
 public class Verify extends Authorization {
     private static Logger    log = Logging.getLoggerInstance(Verify.class.getName());
@@ -56,9 +56,9 @@ public class Verify extends Authorization {
     }
 
     // javadoc inherited
-    public String getContext(UserContext userContext, int i) throws org.mmbase.security.SecurityException {
+    public String getContext(UserContext userContext, int nodeId) throws org.mmbase.security.SecurityException {
         //log.debug("check if we may read the node with # " + i + " nodeid?");
-        return Contexts.getBuilder().getContext((User) userContext, i);
+        return Contexts.getBuilder().getContext((User) userContext, nodeId);
     }
 
 
@@ -69,7 +69,7 @@ public class Verify extends Authorization {
     }
 
     // javadoc inherited
-    public Set getPossibleContexts(UserContext userContext, int i)  throws org.mmbase.security.SecurityException {
-        return Contexts.getBuilder().getPossibleContexts((User) userContext, i);
+    public Set getPossibleContexts(UserContext userContext, int nodeId)  throws org.mmbase.security.SecurityException {
+        return Contexts.getBuilder().getPossibleContexts((User) userContext, nodeId);
     }
 }

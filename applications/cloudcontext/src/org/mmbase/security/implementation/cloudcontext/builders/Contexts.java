@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.3 2003-06-16 17:16:17 michiel Exp $
+ * @version $Id: Contexts.java,v 1.4 2003-06-16 17:35:34 michiel Exp $
  */
 public class Contexts extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Contexts.class.getName());
@@ -246,25 +246,27 @@ public class Contexts extends MMObjectBuilder {
     }
 
     /**
-     * @javadoc
+     * Wraps getPossibleContexts of Authorisation implementaiton Verify.
+     * @see Verify#getPossibleContexts
      */
-    public Set getPossibleContexts(User user, int i) throws SecurityException {
-        MMObjectNode node = getNode(i);
+    public Set getPossibleContexts(User user, int nodeId) throws SecurityException {
+        MMObjectNode node = getNode(nodeId);
         if (node == null) {
-            throw new SecurityException("node #" + i + " not found");
+            throw new SecurityException("node #" + nodeId + " not found");
         }
         if (node.getBuilder() instanceof Groups) { 
-            return new HashSet();
+            return new HashSet();  // why?
         }
-        Enumeration enumeration = search(null); 
+        Enumeration enumeration = search(null);  // list all (readable) Contextes simply..
+
         Set hashSet = new HashSet();
         while (enumeration.hasMoreElements()) {
-            MMObjectNode node1 = (MMObjectNode) enumeration.nextElement();
-            if (mayDo(user, node1.getNumber(), Operation.READ )) {
-                hashSet.add(node1.getStringValue("name"));
+            MMObjectNode context = (MMObjectNode) enumeration.nextElement();
+            if (mayDo(user, context.getNumber(), Operation.READ )) {
+                hashSet.add(context.getStringValue("name"));
             } else {
                 if (log.isDebugEnabled()) {
-                    log.debug("context with name:" + node1.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
+                    log.debug("context with name:" + context.getStringValue("name") + " could not be added to possible contexes, since we had no read rights");
                 }
             }
         }
