@@ -76,7 +76,7 @@
          <th><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small> </th>
     </mm:fieldlist>
     <mm:size id="size" write="false" />
-    <th colspan="2"><mm:write vartype="integer" value="${+$offset + 1}" /> to <mm:write vartype="integer" value="${+$offset + $size}" /> of  <mm:write referid="totalsize"  /></th><!-- X and -> collum -->
+    <th colspan="2"><nobr><mm:write vartype="integer" value="${+$offset + 1}" />-<mm:write vartype="integer" value="${+$offset + $size}" />/<mm:write referid="totalsize"  /></nobr></th><!-- X and -> collum -->
   </tr>
 
 <mm:listnodes id="node_number" directions="DOWN"  orderby="number" jspvar="sn">
