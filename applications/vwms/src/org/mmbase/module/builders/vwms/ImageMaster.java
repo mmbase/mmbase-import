@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 
 /*
-$Id: ImageMaster.java,v 1.13 2000-06-08 09:16:58 wwwtech Exp $
+$Id: ImageMaster.java,v 1.14 2000-06-14 15:22:15 wwwtech Exp $
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/06/08 09:16:58  wwwtech
+Wilbert: buggie method path2ckey no longer converts alias to number, so the correct images from ICaches wil be found
+
 Revision 1.12  2000/06/05 15:36:39  wwwtech
 Rico: added a dup eliminator
 
@@ -94,13 +97,13 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 	public boolean nodeChanged(String number,String builder, String ctype) {
-		debug("sees that : "+number+" has changed type="+ctype);
+		if (debug) debug("sees that : "+number+" has changed type="+ctype);
 		return(true);
 	}
 
 	public boolean fileChange(String service,String subservice,String filename) {
 		filename=URLEscape.unescapeurl(filename);
-		debug("fileChange -> "+filename);
+		if (debug) debug("fileChange -> "+filename);
 		// jump to correct subhandles based on the subservice
 		if (subservice.equals("main")) {
 			handleMainCheck(service,subservice,filename);
@@ -109,7 +112,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 	public boolean fileChange(String number, String ctype) {
-		debug("fileChange="+number+" "+ctype);
+		// debug("fileChange="+number+" "+ctype);
 		// first get the change node so we can see what is the matter with it.
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		MMObjectNode filenode=bul.getNode(number);
@@ -184,12 +187,12 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					ckey=path2ckey(ckey, imagesBuilder);
 				}
 
-				debug("verzoek ckey "+ckey);
+				debug("handleMirror: ckey "+ckey);
 				byte[] filebuf=bul.getCkeyNode(ckey);
 				if (filebuf==null) {
 					debug("handleMirror: no icaches entry yet");
 				}
-				debug("verzoek size "+filebuf.length);
+				if (debug) debug("verzoek size "+filebuf.length);
 				String srcpath=getProperty("test1:path"); // hoe komen we hierachter ?
 				// Pass mimetype.
 				saveImageAsisFile(srcpath,filename,filebuf,mimetype);
@@ -269,7 +272,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		return(true);
 	}
 
-	public void handleMainCheck(String service,String subservice,String filename) {
+	public synchronized void handleMainCheck(String service,String subservice,String filename) {
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
 		if (e.hasMoreElements()) {
