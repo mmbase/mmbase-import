@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.18 2002-04-19 20:22:51 michiel Exp $
+ * @version $Id: Wizard.java,v 1.19 2002-05-07 14:39:09 michiel Exp $
  *
  */
 public class Wizard {
@@ -71,8 +71,8 @@ public class Wizard {
      *
      * @scope private
      */
-    public Document schema;
-    private Document data;
+    private  Document schema;
+    private  Document data;
     private  Document originaldata;
 
     // not yet committed uploads are stored in there hashmaps
@@ -158,6 +158,16 @@ public class Wizard {
 
     public String getDataId() {
         return dataId;
+    }
+    public Document getData() {
+        return data;
+    }
+    public Document getSchema() {
+        return schema;
+    }
+
+    public Document getPreform() {
+        return preform;
     }
     public boolean error() {
         return errors.size() > 0;
