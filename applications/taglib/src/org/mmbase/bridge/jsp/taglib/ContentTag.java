@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.3 2003-05-08 13:04:33 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.4 2003-05-08 17:08:51 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -194,7 +194,7 @@ public class ContentTag extends LocaleTag  {
         }
     }
 
-    protected CharTransformer getPostprocessor() throws JspTagException {
+    protected CharTransformer getPostProcessor() throws JspTagException {
         if (postprocessor != Attribute.NULL) {
             CharTransformer result =  (CharTransformer) postProcessors.get(postprocessor.getString(this));
             if (result == null) throw new JspTagException("The postprocessor " + postprocessor.getString(this) + " is not defined");
@@ -236,10 +236,16 @@ public class ContentTag extends LocaleTag  {
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) {
             try {
-                CharTransformer post = getPostprocessor();
+                CharTransformer post = getPostProcessor();
                 if (post == null) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("no postprocessor");
+                    }
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
                 } else {
+                    if (log.isDebugEnabled()) {
+                        log.debug("A postprocessor was defined " + post);
+                    }
                     post.transform(bodyContent.getReader(), bodyContent.getEnclosingWriter());
                 }
             } catch (IOException ioe){
