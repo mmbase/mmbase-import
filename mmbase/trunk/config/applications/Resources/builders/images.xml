@@ -52,6 +52,11 @@
     <property name="ImageConvert.ConverterCommand">convert</property>
     <property name="ImageConvert.ConverterRoot"></property>
 
+     <!-- Dummy converter when both ImageMagick and JAI are unavailable.
+          This converter ignores all image-altering features and simply returns the original image.
+     -->
+    <!-- <property name="ImageConvertClass">org.mmbase.module.builders.ConvertDummy</property> -->
+
     <!-- generic properties for all converters -->
     <property name="MaxConcurrentRequests">3</property>
     <property name="DefaultImageType">jpg</property>
