@@ -38,7 +38,7 @@
 <% } %>
 </ul>
 
-<h2>latest builds from the stable branch(MMBase-1_6)</h2>
+<h2>latest builds from the stable branch(MMBase-1_7)</h2>
 <% Iterator j = getStableBuilds(5).iterator() ;%>
 <ul>
 <% while (j.hasNext()) { 
@@ -47,7 +47,7 @@
 <% } %>
 </ul>
 
-<h2>latest builds from the (bleeding) HEAD branch</h2> 
+<h2>latest builds from the HEAD branch that is to become the 1.8 release</h2> 
 <% Iterator k = getHeadBuilds(5).iterator() ;%>
 <ul>
 <% while (k.hasNext()) {
