@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Referids;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -20,6 +21,8 @@ import javax.servlet.jsp.JspException;
 
 import org.mmbase.util.transformers.Url;
 import org.mmbase.util.transformers.CharTransformer;
+
+import org.mmbase.util.Casting;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -29,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.58 2003-12-18 11:53:19 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.59 2004-01-20 23:15:49 michiel Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
@@ -38,10 +41,10 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
     private static final CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
-    private   Attribute referids = Attribute.NULL;
-    protected List extraParameters = null;
+    private   Attribute  referids = Attribute.NULL;
+    protected List       extraParameters = null;
     protected Attribute  page = Attribute.NULL;
-    private   Attribute escapeAmps = Attribute.NULL;
+    private   Attribute  escapeAmps = Attribute.NULL;
 
 
     public void setReferids(String r) throws JspTagException {
@@ -103,14 +106,27 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     /**
+     * Whether URL must be generatored relatively. This default to false, and can be configured with
+     * the servlet context init parameter 'mmbase.taglib.url.makerelative'. It can be useful to be
+     * sure that url's are relative, if e.g. the context path is taken away in an URL-rewrite (e.g. by proxy). 
+     * This might give problems with redirects, but if you happen to solve that too, or don't do that...
+     *
+     * @since MMBase-1.7
+     */
+    protected boolean doMakeRelative() {
+        String setting = pageContext.getServletContext().getInitParameter("mmbase.taglib.url.makerelative");
+        return "true".equals(setting);
+    }
+
+    /**
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
         StringWriter w = new StringWriter();
         StringBuffer show = w.getBuffer();
         show.append(getPage());
+        javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
         if (show.toString().equals("")) {
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
 
             String thisPage = null;
             String requestURI = req.getRequestURI();
@@ -123,7 +139,13 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
             show.append(thisPage);
         }
 
-        makeRelative(show);
+        if (doMakeRelative()) { 
+            makeRelative(show);
+        } else {
+            if (show.charAt(0) == '/') { // absolute on servletcontex
+                show.insert(0, req.getContextPath());
+            }
+        }
 
         String amp = (writeamp ? "&amp;" : "&");
 
@@ -131,47 +153,12 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
         String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
 
         if (referids != Attribute.NULL) {
-            // log.info("" + referids + " : " + referids.getList(this));
-            Iterator i = referids.getList(this).iterator();
-            while (i.hasNext()) {
-                String key = (String) i.next();
-                int at = key.indexOf('@');
-                String urlKey;
-                if (at > -1) {
-                    urlKey = key.substring(at + 1, key.length());
-                    key = key.substring(0, at);
-                } else {
-                    urlKey = key;
-                }
-
-                boolean mayBeMissing;
-                if (key.endsWith("?")) {
-                    mayBeMissing = true;
-                    boolean keyIsUrlKey = key.equals(urlKey);
-                    key = key.substring(0, key.length() - 1);
-                    if (keyIsUrlKey) urlKey = key;
-                } else {
-                    mayBeMissing = false;
-                }
-                if (key.equals("_")) {
-                    if (urlKey.equals("_")) throw new JspTagException("Should use '@' when using '_' in referids");
-                    Object value = findWriter().getWriterValue();
-                    show.append(connector).append(urlKey).append("=");
-                    paramEscaper.transform(new StringReader("" + value), w);
-                    connector = amp;
-                } else if ((! mayBeMissing) || getContextProvider().getContextContainer().isPresent(key)) {
-                    Object value = getObject(key);
-                    if (value != null) {                       
-                        if (log.isDebugEnabled()) {
-                            log.debug("adding parameter (with referids) " + key + "/" + value);
-                        }
-                        show.append(connector).append(urlKey).append("=");
-                        paramEscaper.transform(new StringReader(getString(key)), w);
-                        connector = amp;
-                    }
-                } else {
-                    log.debug("No key '" + key + "' in context, not adding to referids");
-                }
+            Iterator refs = Referids.getReferids(referids, this).entrySet().iterator();
+            while (refs.hasNext()) {
+                Map.Entry entry = (Map.Entry) refs.next();
+                show.append(connector).append(entry.getKey()).append("=");
+                paramEscaper.transform(new StringReader(Casting.toString(entry.getValue())), w);
+                connector = amp;
             }
         }
         Iterator i = extraParameters.iterator();

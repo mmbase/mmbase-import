@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.233 2004-01-16 20:21:10 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.234 2004-01-20 23:15:50 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -569,6 +569,15 @@ version: $Id: mmbase-taglib.xml,v 1.233 2004-01-16 20:21:10 michiel Exp $
       <name>module</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>referids</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Similar to 'referids' attribute of mm:url
+      </info>
+      <see tag="url" attribute="referids" />
     </attribute>
   </taginterface>
   <tag>
@@ -3018,6 +3027,11 @@ like the parameter list or the session (where ever it is available) --&gt;
         You don't need it for URLs outside your application server
         application. It is very advisable to use it otherwise.
       </p>
+      <p>
+        By use of the servlet context init parameter mmbase.taglib.url.makerelative (value 'true'),
+        you can change the behaviour of all url-tags, to make them generate url's relative to the
+        current page.
+      </p>
     </info>
     <see tag="param" />
     <see tag="image" />
@@ -4569,6 +4583,15 @@ The 0 is just counter, which starts at 0 on every page.
       Surrounds a function tag, provides a container for parameters and function results.
     </info>
     <since>MMBase-1.7</since>
+    <attribute>
+      <name>referids</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Similar to 'referids' attribute of mm:url
+      </info>
+      <see tag="url" attribute="referids" />
+    </attribute>
   </tag>
   <tag>
     <name>listnodescontainer</name>
