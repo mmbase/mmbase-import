@@ -74,6 +74,9 @@ public class MMObjectNode {
     // Vector  with the related nodes to this node
     Vector relations=null; // possibly filled with insRels
 
+    private static int relation_cache_hits=0;
+    private static int relation_cache_miss=0;
+
     /**
      * Alias name of this node.
      * XXX: nodes can have multiple aliases.
@@ -935,7 +938,11 @@ public class MMObjectNode {
     public Enumeration getRelations() {
         if (relations==null) {
             relations=parent.getRelations_main(getNumber());
-        }
+	    relation_cache_miss++;
+
+        } else {
+   	    relation_cache_hits++;
+	}
         if (relations!=null) {
             return relations.elements();
         } else {
@@ -957,7 +964,11 @@ public class MMObjectNode {
     public int getRelationCount() {
         if (relations==null) {
             relations=parent.getRelations_main(getNumber());
-        }
+	    relation_cache_miss++;
+        } else {
+	    relation_cache_hits++;
+	}
+
         if (relations!=null) {
             return relations.size();
         } else {
@@ -1011,7 +1022,10 @@ public class MMObjectNode {
         if (otype!=-1) {
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
-            }
+	    	relation_cache_miss++;
+            } else {
+	    	relation_cache_hits++;
+	    }
             if (relations!=null) {
                 for(Enumeration e=relations.elements();e.hasMoreElements();) {
                     MMObjectNode tnode=(MMObjectNode)e.nextElement();
@@ -1120,5 +1134,13 @@ public class MMObjectNode {
             }
         }
         return result;
+    }
+   
+    public static int getRelationCacheHits() { 
+	return(relation_cache_hits);
+    }
+
+    public static int getRelationCacheMiss() { 
+	return(relation_cache_miss);
     }
 }
