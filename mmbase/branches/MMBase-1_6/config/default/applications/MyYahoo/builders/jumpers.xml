@@ -19,7 +19,7 @@
 
   <descriptions>
     <description xml:lang="en">Jumpers are used to create easy-to-use urls for pointing to an object or webpage</description>
-    <description xml:lang="nl">Jumpers zijn urls waarmee naar een object of webpagina wordt gesprongen</description>
+    <description xml:lang="nl">Jumpers zijn links waarmee naar een object of webpagina wordt gesprongen</description>
   </descriptions>
 
   <properties>
@@ -31,8 +31,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Shortcut url, used to access this jumper</description>
+          <description xml:lang="nl">Verkorte link waarmee de jumper kan worden aangeroepen</description>
         </descriptions>
       <!-- gui related -->
         <gui>
@@ -65,8 +65,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">Objectnumber referenced by the jumper, i.e. for teasers</description>
+          <description xml:lang="nl">Object nummer referentie, o.a. voor teasers</description>
         </descriptions>
       <!-- gui related -->
         <gui>
@@ -99,8 +99,8 @@
          <field>
         <descriptions>
           <!-- descriptions per language as defined by ISO 639  -->
-          <description xml:lang="en">TODO</description>
-          <description xml:lang="nl">TODO</description>
+          <description xml:lang="en">The actual url to redirect to when teh jumper called</description>
+          <description xml:lang="nl">De link waarnaar wordt gsprongen als de jumper wordt aangeroepen</description>
         </descriptions>
       <!-- gui related -->
       <gui>
