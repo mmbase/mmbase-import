@@ -9,7 +9,7 @@ package org.mmbase.applications.crontab;
 
 /**
  * A straight-forward abstract implementation of JCronJob. If you exend it, you only need to
- * implement run(), and the 'jCronEntry' protected member var is available. 
+ * implement run(), and the 'cronEntry' protected member var is available. 
  * 
  * @author Michiel Meeuwissen
  */
