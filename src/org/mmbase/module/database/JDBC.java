@@ -13,6 +13,8 @@ import java.util.*;
 import java.sql.*;
 import java.sql.DriverManager;
 
+import javax.servlet.http.*;
+
 import org.mmbase.util.*;
 import org.mmbase.module.*;
 
@@ -24,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.31 2003-03-04 14:40:04 nico Exp $
+ * @version $Id: JDBC.java,v 1.32 2003-03-18 16:41:07 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -85,6 +87,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     public void unload() {
     }
     public void shutdown() {
+        poolHandler.shutdown();
     }
 
     /**
