@@ -26,10 +26,11 @@ import java.util.*;
 
 
 /**
- * As AttachmentServlet, but the mime-type is always application/x-binary, forcing the browser to
+ * Base servlet for nodes with a 'handle' field. It serves as a basic implementation for more
+ * specialized servlets. The mime-type is always application/x-binary, forcing the browser to
  * download.
  *
- * @version $Id: HandleServlet.java,v 1.7 2003-05-08 06:09:24 kees Exp $
+ * @version $Id: HandleServlet.java,v 1.8 2003-07-09 20:27:32 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see ImageServlet
@@ -52,7 +53,7 @@ public class HandleServlet extends BridgeServlet {
 
     public void init() throws ServletException {
         super.init();
-        log = Logging.getLoggerInstance(BridgeServlet.class.getName());
+        log = Logging.getLoggerInstance(HandleServlet.class);
 
         String expiresParameter = getInitParameter("expire");
         if (expiresParameter == null) {
@@ -108,6 +109,26 @@ public class HandleServlet extends BridgeServlet {
         return true;
     }
 
+
+    /**
+     * Sets cache-controlling headers. Only nodes which are to be served to 'anonymous' might be
+     * (front proxy) cached. To other nodes there might be read restrictions, so they should not be
+     * stored in front-proxy caches.
+     * 
+     * @return true if cacheing is disabled.
+     * @since MMBase-1.7
+     */
+    protected boolean setCacheControl(HttpServletResponse res, Node node) {
+        if (! node.getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS)) {
+            res.setHeader("Cache-Control", "private,no-store");
+            res.setHeader("Pragma", "no-cache"); // for http 1.0
+            return true;
+        } else {
+            res.setHeader("Cache-Control", "public");
+            return false;
+        }
+    }
+
     /**
      * Serves a node with a byte[] handle field as an attachment.
      */
@@ -131,8 +152,8 @@ public class HandleServlet extends BridgeServlet {
         res.setContentType(mimeType);
 
         if (!setContent(res, node, mimeType)) return;
-        setExpires(res, node);                           
-
+        setExpires(res, node);
+        setCacheControl(res, node);
         sendBytes(res, bytes);
     }
 
