@@ -69,4 +69,33 @@
 		<filesize>-1</filesize>
 	</node>
 
+
+  <!-- journaal of tuesday is used as 'intro' because I couldn't find something real -->
+	<node number="5002" owner="default">
+		<state>-1</state>
+		<url>/tv/nos/journaal/dinsdag.2000.rm</url>
+		<width>-1</width>
+		<height>-1</height>
+		<fps>-1</fps>
+		<channels>-1</channels>
+		<codec>-1</codec>
+		<bitrate>-1</bitrate>
+		<format>6</format>
+		<filesize>-1</filesize>
+	</node>
+
+	<node number="5003" owner="default">
+		<state>1</state>
+		<url>/tv/nos/journaal/dinsdag.2000.asf</url>
+		<width></width>
+		<fps></fps>
+		<channels></channels>
+		<codec></codec>
+		<bitrate></bitrate>
+		<format>12</format>
+		<height></height>
+		<filesize></filesize>
+	</node>
+
+
 </videosources>
