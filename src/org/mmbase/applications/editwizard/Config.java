@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.2 2002-04-21 08:11:06 michiel Exp $
+ * @version $Id: Config.java,v 1.3 2002-05-07 13:28:10 michiel Exp $
  */
 
 public class Config {   
@@ -65,9 +65,11 @@ public class Config {
         private static Logger log = Logging.getLoggerInstance(Config.class.getName());
 
         private HttpServletRequest request;
+        private HttpServletResponse response;
         private Config config;
         public Configurator(HttpServletRequest req, HttpServletResponse res, Config c) {
             request = req;
+            response = res;
             config  = c;
             config.sessionId = res.encodeURL("");
             if (config.backPage == null) {
@@ -132,12 +134,12 @@ public class Config {
 
         public  ListConfig createList() {
             ListConfig l = new ListConfig();
-            l.page = request.getServletPath();
+            l.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             return l;
         }
         public Config.WizardConfig createWizard(Cloud cloud) throws SecurityException, WizardException {
             WizardConfig wizard = new WizardConfig();
-            wizard.page = request.getServletPath();
+            wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             config(wizard); // determin the objectnumber.            
             wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, config.wizard, wizard.objectNumber, cloud);
             wizard.wiz.setSessionId(config.sessionId);
