@@ -102,6 +102,8 @@ public class WriterHelper extends BodyTagSupport {
     
     private   boolean hasBody          = false;
 
+    private   boolean useEscaper       = true;
+
 
     public WriterHelper() {
     }
@@ -144,6 +146,15 @@ public class WriterHelper extends BodyTagSupport {
      */
     public void overrideWrite(boolean w) {
         overridewrite = w ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    /**
+     * Some writer tags produce very specific content, and take care
+     * of escaping themselves (UrlTag). They turn off escaping (on default).
+     */
+
+    public void useEscaper(boolean ue) {
+        useEscaper = ue;
     }
 
     public boolean  isWrite() throws JspTagException {
@@ -356,16 +367,21 @@ public class WriterHelper extends BodyTagSupport {
             w.write(org.mmbase.util.Encode.encode("BASE64", (byte[]) value)); 
             return w;
         }
-        ContentTag.Escaper escaper;
-        if (escape != Attribute.NULL) {
-            escaper = ContentTag.getEscaper(escape.getString(thisTag));
+        if (useEscaper || escape != Attribute.NULL) {
+            ContentTag.Escaper escaper;
+            if (escape != Attribute.NULL) {
+                escaper = ContentTag.getEscaper(escape.getString(thisTag));
+            } else {
+                escaper = thisTag.getContentTag().getEscaper();
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Using escaper " + escaper);
+            }
+            return  escaper.transform(value.toString(), w);
         } else {
-            escaper = thisTag.getContentTag().getEscaper();
+            w.write(value.toString());
+            return w;
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Using escaper " + escaper);
-        }
-        return  escaper.transform(value.toString(), w);
     }
 
     /**
