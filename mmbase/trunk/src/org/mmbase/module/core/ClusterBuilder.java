@@ -37,7 +37,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.51 2003-11-24 12:28:20 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.52 2003-11-27 12:44:19 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1255,14 +1255,11 @@ public class ClusterBuilder extends VirtualBuilder {
         }
 
         addRelationDirections(query, searchdir, roles);
+        
+        // Add constraints. 
+        // QueryConverter supports the old formats for backward compatibility.
+        QueryConvertor.setConstraint(query, where);
 
-        // Add constraint for the where part.
-        if (where != null && where.trim().length() != 0) {
-            //is the query contained a constraint we need to parse that constrataint
-            //and add it to the query, the ConstraintParser takes a query as argument
-            //in order to be abble to resolve tablenames etc..
-            query.setConstraint(new ConstraintParser(query).toConstraint(where));
-       }
         return query;
     }
 
