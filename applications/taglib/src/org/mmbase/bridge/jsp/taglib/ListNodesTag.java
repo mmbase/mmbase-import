@@ -13,7 +13,11 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import javax.servlet.jsp.JspTagException;
 
+import java.util.List;
+
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,14 +28,14 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.8 2003-07-25 18:16:33 michiel Exp $ 
+ * @version $Id: ListNodesTag.java,v 1.9 2003-08-01 12:13:58 michiel Exp $ 
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
     protected Attribute type      = Attribute.NULL;
-    protected Attribute container = Attribute.NULL;
+    protected Attribute container = Attribute.NULL; // not yet implemented
 
     /**
      * @param type a nodeManager
@@ -60,6 +64,32 @@ public class ListNodesTag extends AbstractNodeListTag {
             return setReturnValues(nodes, true);
         } else {
             NodeQuery query = (NodeQuery) c.getQuery();
+
+            // following code will also be necessary in list-tag, so need perhaps be available in AbstractNodeListTag
+
+            if (constraints != Attribute.NULL) {
+                Constraint newConstraint = query.createConstraint(constraints.getString(this));
+                Constraint constraint = query.getConstraint();
+                if (constraint != null) {
+                    log.debug("compositing constraint");
+                    newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+                }
+                query.setConstraint(newConstraint);
+            }
+            
+            List order = StringSplitter.split(orderby.getString(this));
+            List dirs  = StringSplitter.split(directions.getString(this));
+            for (int i = 0; i < order.size(); i++) {
+                int or;
+                if (dirs.size() > i &&  "down".equalsIgnoreCase((String) dirs.get(i)))  {                    
+                    or =  SortOrder.ORDER_DESCENDING;
+                } else {
+                    or =  SortOrder.ORDER_ASCENDING;
+                }
+                StepField orderField = query.createStepField((String) order.get(i));
+                query.addSortOrder(orderField, or);
+            }
+            
             NodeList nodes = query.getNodeManager().getList(query);
             return setReturnValues(nodes, true);
         }
