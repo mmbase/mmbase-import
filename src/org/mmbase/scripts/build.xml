@@ -756,7 +756,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="${web.dir}"/>
       <arg value="-PARAM"/>
       <arg value="files"/>
-      <arg value="taglib/>
+      <arg value="taglib" />
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
       <arg value="-IN"/>
@@ -791,7 +791,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="${web.dir}"/>
       <arg value="-PARAM"/>
       <arg value="files"/>
-      <arg value="community-taglib/>
+      <arg value="community-taglib" />
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
