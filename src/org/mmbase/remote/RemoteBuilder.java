@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.6  2000/11/22 14:22:25  vpro
+davzev: Added cvs logging comments.
+
 */
 package org.mmbase.remote;
 
@@ -19,14 +22,14 @@ import java.util.*;
 
 
 /**
- * @version $Revision: 1.6 $ $Date: 2000-11-22 14:22:25 $  
+ * @version $Revision: 1.7 $ $Date: 2000-11-27 12:33:11 $  
  * @author Daniel Ockeloen
  */
 public class RemoteBuilder {
 
-    public	static 	boolean debug       = true;
-    private 		String  classname   = getClass().getName();
-    private 		void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    public boolean debug = true;
+    public String classname = getClass().getName();
+    public void debug(String msg) {System.out.println(classname +":"+ msg);}
 
 	private MMProtocolDriver con;
 	private Hashtable values=new Hashtable();
