@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module maintainer="framfab.nl" version="1">
+  <status>inactive</status>
+  <classfile>org.mmbase.module.RemoteMMCI</classfile>
+  <properties>
+   <!-- param port: the port the RMI server should run. DEFAULT port is 1111      -->
+   <property name="port">1111</property>
+
+   <!-- RMI name to be used to bind to the registry. DEFLAUT= remotecontext       -->
+   <property name="bindname">remotecontext</property>
+
+   <!-- RemoteMMCI always first tries to connect to an existing RMI registry      -->
+   <!-- rmiRegistryServer is the server name to connect to                        -->
+   <!-- if rmiRegistryServer is not set RemoteMMCI looks for a RMIRegistryServer  -->
+   <!-- on the host defined in the mmbaseroot.xml module. If no RMIRegistryServer -->
+   <!--  was found RemoteMMCI create a new registry using the host name defined   -->
+   <!-- in mmbaseroot.xml                                                         -->
+   <!-- unless you realy want to run multiple mmbases/rmmci in one jvm or want    -->
+   <!-- multiple CloudContexts in one registry                                    -->
+   <property name="RMIRegistryServer"></property>
+
+  </properties>
+</module>

@@ -1,0 +1,4 @@
+<PROCESSOR MMBASE>
+ <LIST OBJECTS TYPE="mags" WHERE="title=='MMBase.org'" FIELDS="number">
+  <GOTO /mmadmin/examples/MyNews/index.shtml?$ITEM1>
+ </LIST>

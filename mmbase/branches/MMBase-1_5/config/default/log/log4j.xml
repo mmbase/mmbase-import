@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 
+   Location of the log4j.dtd. 
+   In Tomcat a simple "log4j.dtd" will do, but this does not work in
+   older versions of Orion (because of limitation of Xerces). 
+   You can give the full path to the dtd in the jar, like:
+   SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
+   or somewhere on the web:
+   SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
+   
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
+   [
+    <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
+    <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+    <!ENTITY logdir   "/tmp/" >
+]>
+
+<!-- 
+  MMBase logging configuration 
+
+  MMBase can use log4j for logging. See
+  http://jakarta.apache.org. This is a sample configuration file for
+  it. The name of this file is indicated in <CONFIGDIR>/log/log.xml
+
+  Quick introduction on how to configure log4j.
+
+  In the configuration you find two kind of things: Appenders, and
+  Categories. 
+
+  The Appenders are describing the logfiles. There is only one defined
+  in this file. It is a very slow one, it is better use another
+  Pattern layout in a speed critical situation.
+
+  There is one special 'Category', namely 'root'. Other categories
+  inherit from this one, but can override for example the priority. 
+
+  Currently the categories are simply the complete MMBase class-names,
+  with only one exception, namely 'STDERR'.
+
+-->
+
+<log4j:configuration>
+
+<appender name="logfile" class="org.apache.log4j.FileAppender" >
+    <param name="File"   value="&logdir;mmlog4j.log" />
+    <param name="Append" value="true" />
+    <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p - %m%n" />
+    </layout>
+</appender>
+
+<!-- categories -->
+
+<!-- examples: different priority for a few subtrees -->
+<category name="org.mmbase.bridge" class ="&logger;">
+    <priority class="&priority;" value ="info" />
+</category>
+<category name="org.mmbase.security" class ="&logger;">
+    <priority class="&priority;" value ="info" />
+</category>
+
+<!-- perhaps you use your own extensions to MMBase -->
+<category name="nl.omroep" class ="&logger;">
+    <priority class="&priority;" value ="trace" />
+</category>
+
+<!-- STDERR is a special Category, to wich stderr will be written
+     (always with priority 'warn' or higher)  -->
+
+<category name="STDERR" class ="&logger;">
+    <priority class="&priority;" value ="info" />	
+</category>
+
+<root>
+    <priority class="&priority;" value ="service" />
+    <appender-ref ref="logfile" />
+</root>
+
+
+</log4j:configuration>

@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>mmbase index page</TITLE>
+</HEAD>
+
+<BODY BACKGROUND="beeld/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+<IF $MOD-INFO-EXISTS-FILE-/mmdemo/key.txt^==YES>
+
+<TABLE width=97% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>MMBase runner version 1.4.0</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			Welcome to Runner the quick unzip & go version of the MMBase Content management system.<BR><BR>
+			This is runtime version aimed at end users of mmbase to allow people to use MMBase within minutes of downloading the system and get going. This version is for people who are oke with the bundled server and database for the other setups or if you want to  develop/change MMBase we advince you to use the MMDistro developers version also available on the <A HREF="http://www.mmbase.org">www.mmbase.org</A> site. That contains full sources and build tools.
+<BR><BR>
+If you run into problems you can get help from the following sources :<BR><BR>
+readme - <A HREF="/mmdocs/readme.txt" TARGET="_ext">/mmdocs/readme.txt</A><BR>
+website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
+mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
+irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
+<BR>
+			The MMbase Release Team.
+			<BR><BR>
+		</TD>
+</TR>
+<TR>
+	<TD>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>License info & Thanks to </B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			MMBase is released as OpenSource product under the mozilla license (<A HREF="http://www.mmbase.org/license">http://www.mmbase.org/license</A>). <BR>But to allow us to create this MMRunner version we needed to include a application server and a database. Since we wanted a simple and 100% java solution we used orion and hypersonic but MMBase itself supports many more both commercial and opensource products.<BR><BR>
+			We like to thank the sponsers, developers and users for the work done on this release.<BR><BR> Special thanks goto : 3MPS, Amaze, DDS, EO, Filmfestival rotterdam, InterNLnet, ILSE, Finalist, Q42, Kroko, Magic Minds, NetLinq/Framfab, NOS, SNOB, Submarine, SUN, Triple-P, V2, VPRO, Waag, XS4ALL and everybody we forgot.
+			<BR><BR>
+			About Orion :<BR><BR>
+			Orion is a great j2ee application server that is 100% java based, easy to install and follows all the new and hip specs. Its not free but at $1500 its very cheap indeed and it is free for development and non-profit use. Many thanks to the orion people for allowing us to include it in the demo version. More info on orion at www.orionserver.com.
+			<BR><BR>
+			About Hypersonic :<BR><BR>
+			Hypersonic is a small 100% java based JDBC database, its opensource, fast very small (about 100kb). It also supports a memory only mode what we use in the demo meaning that its empty once you stop the server. For more info on Hypersonic at http://hsql.oron.ch.<BR><BR>
+
+		</TD>
+</TR>
+</TABLE>
+<ELSE>
+<TABLE width=97% cellspacing=1 cellpadding=3 border=0>
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>MMBase Distro version </B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			Welcome to MMBase Content management system.<BR><BR>
+			This is the Distro version aimed at developers, it contains all that is needed not only to run MMBase but also to change it (it contains all the sources and build tools). To be able to run it correctly you need a j2ee application server to run it in (like apache/tomcat or orion) and a jdbc database (like mysql or oracle).
+			<BR><BR>
+			If this is the first time you are trying to setup MMBase or only want to use it not develop/change then we advice you to
+run the MMRunner version also available on the <A HREF="http://www.mmbase.org">www.mmbase.org</A> site.
+<BR><BR>
+If you run into problems you can get help from the following sources :<BR><BR>
+readme - <A HREF="/mmdocs/readme.txt" TARGET="_ext">/mmdocs/readme.txt</A><BR>
+website - <A HREF="http://www.mmbase.org" TARGET="_ext">http://www.mmbase.org</A><BR>
+mailing lists - <A HREF="http://www.mmbase.org/communication" TARGET="_ext">http://www.mmbase.org/communication</A><BR>
+irc channel - #mmbase on <A HREF="http://www.irchelp.org/irchelp/networks/servers/ircnet.html" TARGET="_ext">ircnet</A> (for example irc.xs4all.nl)<BR>
+<BR>
+			The MMbase Release Team.
+			<BR><BR>
+		</TD>
+</TR>
+<TR>
+	<TD>
+	</TD>
+</TR>
+
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>License info & Thanks to </B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			MMBase is released as OpenSource product under the mozilla license (<A HREF="http://www.mmbase.org/license">http://www.mmbase.org/license</A>). 
+			<BR><BR>
+			We like to thank the sponsers, developers and users for the work done on this release.<BR><BR> Special thanks goto : 3MPS, Amaze, DDS, EO, Filmfestival rotterdam, InterNLnet, ILSE, Finalist, Q42, Kroko, Magic Minds, NetLinq/Framfab, NOS, SNOB, Submarine, SUN, Triple-P, V2, VPRO, Waag, XS4ALL and everybody we forgot.
+			<BR><BR>
+
+		</TD>
+</TR>
+</TABLE>
+</IF>
+</BODY>
+</HTML>

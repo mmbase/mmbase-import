@@ -1,0 +1,6 @@
+
+DefaultAuth install is done, change the authtype in ROOTMMBASE.properties from <BR>
+authtype=none to authtype=basic<BR>
+<BR>
+Restart server/mmbase and login as admin (see accounts.properties for password) you should now see all editors but you can create new users (have to be defined in accounts.properties) and link them to editors that they are allowed to use. For more into see the howto's on these topics.
+<BR> 
