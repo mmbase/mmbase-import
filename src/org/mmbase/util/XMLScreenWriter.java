@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
  * Writes XML as pretty printed HTML
  *
  * @author Cees Roele
- * @version $Id: XMLScreenWriter.java,v 1.9 2003-03-10 11:51:15 pierre Exp $
+ * @version $Id: XMLScreenWriter.java,v 1.10 2003-05-08 06:09:25 kees Exp $
  */
 public class XMLScreenWriter extends XMLBasicReader {
 
@@ -46,7 +46,7 @@ public class XMLScreenWriter extends XMLBasicReader {
 
    public void write(Writer out, Node node, int level) throws IOException {
       if (node != null) {
-         if (node.getNodeType() == node.COMMENT_NODE) {
+         if (node.getNodeType() == Node.COMMENT_NODE) {
             out.write(indent(level));
             out.write(
                "<font color=\""
@@ -56,18 +56,18 @@ public class XMLScreenWriter extends XMLBasicReader {
                   + "--&gt;</font><br />\n");
          }
          else
-            if (node.getNodeType() == node.DOCUMENT_NODE) {
+            if (node.getNodeType() == Node.DOCUMENT_NODE) {
                NodeList nl = node.getChildNodes();
                for (int i = 0; i < nl.getLength(); i++) {
                   write(out, nl.item(i), level + 1);
                }
             }
             else
-               if (node.getNodeType() == node.TEXT_NODE) {
+               if (node.getNodeType() == Node.TEXT_NODE) {
                   out.write(node.getNodeValue() + "\n");
                }
                else
-                  if (node.getNodeType() == node.DOCUMENT_TYPE_NODE) {
+                  if (node.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
                      String publicid = ((DocumentType) node).getPublicId();
                      String systemid = ((DocumentType) node).getSystemId();
                      if (!((publicid == null || publicid.equals(""))
@@ -169,11 +169,11 @@ public class XMLScreenWriter extends XMLBasicReader {
       int countTextNodes = 0;
       NodeList nl = node.getChildNodes();
       for (int i = 0; i < nl.getLength(); i++) {
-         if (nl.item(i).getNodeType() == node.TEXT_NODE) {
+         if (nl.item(i).getNodeType() == Node.TEXT_NODE) {
             countTextNodes++;
          }
          else
-            if (nl.item(i).getNodeType() == node.ATTRIBUTE_NODE) {
+            if (nl.item(i).getNodeType() == Node.ATTRIBUTE_NODE) {
                // do nothing
             }
             else {

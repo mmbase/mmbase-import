@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.93 2003-05-04 13:52:56 kees Exp $
+ * @version $Id: BasicNode.java,v 1.94 2003-05-08 06:09:20 kees Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -145,7 +145,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         }
         // create shortcut to mmbase
-        mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
+        mmb = BasicCloudContext.mmb;
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
         if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(getNode()))) {

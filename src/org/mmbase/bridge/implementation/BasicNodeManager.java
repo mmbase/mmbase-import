@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.57 2003-04-11 17:49:51 kees Exp $
+ * @version $Id: BasicNodeManager.java,v 1.58 2003-05-08 06:09:19 kees Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -76,7 +76,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
      * @param Cloud the cloud to which this node belongs
      */
     BasicNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
-        super(builder.isVirtual() ? new VirtualNode(((BasicCloudContext)cloud.getCloudContext()).mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
+        super(builder.isVirtual() ? new VirtualNode(BasicCloudContext.mmb.getTypeDef()) : builder.getNode(builder.oType),cloud);
         this.builder=builder;
         initManager();
     }
@@ -121,7 +121,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
     public Node createNode() {
         // create object as a temporary node
-        int id = cloud.uniqueId();
+        int id = BasicCloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(getMMObjectBuilder().getTableName(), cloud.getAccount(), ""+id);
         // if we are in a transaction, add the node to the transaction;
         if (cloud instanceof BasicTransaction) {

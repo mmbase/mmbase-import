@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.48 2003-03-07 09:31:04 pierre Exp $
+ * @version $Id: INFO.java,v 1.49 2003-05-08 06:09:32 kees Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -1469,7 +1469,7 @@ public class INFO extends ProcessorModule {
      * @javadoc
      */
     private String nextCurTime(StringTokenizer tok) {
-        int curtime=(int)(DateSupport.currentTimeMillis()/1000);
+        int curtime=(int)(System.currentTimeMillis()/1000);
         //int curtime=(int)(System.currentTimeMillis()/1000);
         String cmd=tok.nextToken();
         if (cmd.equals("NEXTHOUR")) {

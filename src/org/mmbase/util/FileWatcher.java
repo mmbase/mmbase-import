@@ -54,7 +54,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.15 2003-04-09 14:31:24 pierre Exp $
+ * @version $Id: FileWatcher.java,v 1.16 2003-05-08 06:09:28 kees Exp $
  */
 public abstract class FileWatcher  {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class.getName());
@@ -309,7 +309,7 @@ public abstract class FileWatcher  {
                             if (f.changed() || f.mustStop()) watchers.remove(f);
                         }
                     }
-                    Thread.currentThread().sleep(THREAD_DELAY);
+                    Thread.sleep(THREAD_DELAY);
                 } catch(InterruptedException e) {
                     System.out.println("interrupted");
                     // no interruption expected

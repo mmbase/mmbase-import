@@ -20,10 +20,8 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.xml.sax.EntityResolver;
 
 public class XMLRelationNodeReader extends XMLBasicReader {
 

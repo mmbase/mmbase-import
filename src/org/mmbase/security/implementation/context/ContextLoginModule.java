@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextLoginModule.java,v 1.8 2003-03-04 15:29:37 nico Exp $
+ * @version $Id: ContextLoginModule.java,v 1.9 2003-05-08 06:09:24 kees Exp $
  */
 
 public abstract class ContextLoginModule {
@@ -94,7 +94,7 @@ public abstract class ContextLoginModule {
         NodeList nl = found.getChildNodes();
         for (int i=0;i<nl.getLength();i++) {
             Node n = nl.item(i);
-            if (n.getNodeType() == n.TEXT_NODE) {
+            if (n.getNodeType() == Node.TEXT_NODE) {
                 String value = n.getNodeValue();
                 log.debug("retrieved the value for user:" + username + " in module: " + name + " value: " + value);
                 return value;
