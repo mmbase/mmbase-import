@@ -20,6 +20,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.20 2002-09-03 18:15:29 michiel Exp $
+ * @version $Id: Attachments.java,v 1.21 2002-10-25 18:48:14 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -62,12 +63,12 @@ public class Attachments extends AbstractServletBuilder {
         return false;
     }
 
-    public String getSGUIIndicator(String session, MMObjectNode node) {
-        return getSGUIIndicator(session, "handle", node);
+    public String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
+        return getSGUIIndicator(session, res, "handle", node);
     }
 
-    public String getSGUIIndicator(String session, String field, MMObjectNode node) {
-        if (field.equals("handle")) {
+    public String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {
+        if (field.equals("handle") || field.equals("")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
 
@@ -81,9 +82,14 @@ public class Attachments extends AbstractServletBuilder {
             }
 
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
-                return title;
+                return title;               
             } else {
-                return "<a href=\"" + getServletPath(filename) + (usesBridgeServlet ? session : "") + num + "\" target=\"extern\">" + title + "</a>";
+                log.info("brdge: " + usesBridgeServlet + " ses: " + session);
+                String url = getServletPath(filename) + (usesBridgeServlet ? session : "") + num;
+                if (res != null) {
+                    url = res.encodeURL(url);
+                }
+                return "<a href=\"" + url + "\" target=\"extern\">" + title + "</a>";
             }
         }
         return super.getSuperGUIIndicator(field, node);
