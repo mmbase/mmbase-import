@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  */
 public class SendMail extends Module implements SendMailInterface {
-    private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
+    private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
    	private DataInputStream in = null;
    	private DataOutputStream out = null;
 	private Socket connect = null;
@@ -40,7 +40,7 @@ public class SendMail extends Module implements SendMailInterface {
 	
 	public void init() {
        	mailhost=getInitParameter("mailhost");
-		log.info("Module SendMail started (mailhost="+mailhost+")";
+		log.info("Module SendMail started (mailhost="+mailhost+")");
 	}
 
 	/** 
@@ -86,7 +86,7 @@ public class SendMail extends Module implements SendMailInterface {
 
 		/** Connect to mail-host **/	
 		if (!connect(mailhost,25)) {
-			log.error("SendMail cannot connect to mailhost host="+host+", port"+port+", data"+data);
+			log.error("SendMail cannot connect to mailhost host="+mailhost+", from"+from+", to"+to);
 			return false;
 		}
 
