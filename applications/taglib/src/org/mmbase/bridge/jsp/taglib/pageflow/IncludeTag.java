@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.43 2004-01-15 23:23:05 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.44 2004-02-06 12:18:38 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -225,7 +225,9 @@ public class IncludeTag extends UrlTag {
     private void cite(BodyContent bodyContent, String relativeUrl, HttpServletRequest request) throws JspTagException {
         try {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
-            if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl);
+            if (relativeUrl.indexOf("..") > -1 || relativeUrl.toUpperCase().indexOf("WEB-INF") > -1)  { // toUpperCase: just for windows, of course
+                throw new JspTagException("Not allowed to cite " + relativeUrl);
+            }
             String urlFile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
 
             // take of the sessionid if it is present
