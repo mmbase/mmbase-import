@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.33 2003-07-01 14:36:58 johannes Exp $</edition>
+    <edition>$Id: index.xml,v 1.34 2003-07-24 12:59:13 rob Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -16,21 +16,23 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="documentation.html" id="aboutmmbasedocumentation">
-            About MMBase Documentation</ulink>
-          <ulink url="documentation.pdf" id="aboutmmbasedocumenation.pdf">(pdf)</ulink>
+          About MMBase Documentation
+          (<ulink url="documentation.html" id="aboutmmbasedocumentation">HTML</ulink>, 
+          <ulink url="documentation.pdf" id="aboutmmbasedocumenation.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="xml-how-to.html" id="howtousexml">How To Use XML</ulink>
-          <ulink url="xml-how-to.pdf" id="howtousexml.pdf">(pdf)</ulink>
+          How To Use XML
+          (<ulink url="xml-how-to.html" id="howtousexml">HTML</ulink>, 
+          <ulink url="xml-how-to.pdf" id="howtousexml.pdf">PDF</ulink>)
         </para>
       </listitem>
 	  <listitem>
 		  <para>
-			<ulink url="glossary.html" id="glossary">MMBase Glossary</ulink>
-			<ulink url="glossary.pdf" id="glossary.pdf">(pdf)</ulink>
+                        MMBase Glossary
+			(<ulink url="glossary.html" id="glossary">HTML</ulink>, 
+			<ulink url="glossary.pdf" id="glossary.pdf">PDF</ulink>)
 		  </para>
       </listitem>
     </itemizedlist>
@@ -39,38 +41,33 @@
     <title>Release Information, Administration documentation</title>
     <itemizedlist>
       <listitem>
-        <para><ulink url="releases/readme.txt" id="readthisfirst">Read This First (text)</ulink></para>
+        <para>Read This First<ulink url="releases/readme.txt" id="readthisfirst">(TXT)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/release-notes.txt" id="releasenotes">Release Notes MMBase Version (text)</ulink></para>
+        <para>Release Notes MMBase Version<ulink url="releases/release-notes.txt" id="releasenotes">(TXT)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/installation.txt" id="installation">Installation Notes (text)</ulink></para>
+        <para>Installation Notes<ulink url="releases/installation.txt" id="installation">(TXT)</ulink></para>
       </listitem>
       <listitem>
-        <para><ulink url="releases/building.txt" id="building">Building from Source (text)</ulink></para>
+        <para>Building from Source<ulink url="releases/building.txt" id="building">(TXT)</ulink></para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="administrators/install-tomcat.html" id="installtomcat">
-            Installation instructions for Tomcat
-          </ulink>
-          <ulink url="administrators/install-tomcat.pdf" id="installtomcat.pdf">(pdf)
-          </ulink>
+          Installation instructions for Tomcat
+          (<ulink url="administrators/install-tomcat.html" id="installtomcat">HTML</ulink>, 
+          <ulink url="administrators/install-tomcat.pdf" id="installtomcat.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="install/orion-1.x.html" id="installationorion">Installation instructions for Orion</ulink></para>
+        <para>Installation instructions for Orion (<ulink url="install/orion-1.x.html" id="installationorion">HTML</ulink>)</para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="administrators/configuration.html" id="configuration">
-            MMBase configuration documentation
-          </ulink>
-          <ulink url="administrators/configuration.pdf" id="configuration.pdf">
-           (pdf)
-          </ulink>
+          MMBase configuration documentation
+          (<ulink url="administrators/configuration.html" id="configuration">HTML</ulink>, 
+          <ulink url="administrators/configuration.pdf" id="configuration.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
@@ -80,20 +77,16 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="general/architecture.html" id="architecturaloverview">
-            MMBase Architectural Overview
-          </ulink>
-          <ulink url="general/architecture.pdf" id="architecturaloverview.pdf">(pdf)
-          </ulink>
+          MMBase Architectural Overview
+          (<ulink url="general/architecture.html" id="architecturaloverview">HTML</ulink>, 
+          <ulink url="general/architecture.pdf" id="architecturaloverview.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="general/mmcmsd.html" id="mmcmsd">
-            MMC Mission Statement Document
-          </ulink>
-          <ulink url="general/mmcmsd.pdf" id="mmcmsd.pdf">(pdf)
-          </ulink>
+          MMC Mission Statement Document
+          (<ulink url="general/mmcmsd.html" id="mmcmsd">HTML</ulink>, 
+          <ulink url="general/mmcmsd.pdf" id="mmcmsd.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
@@ -103,12 +96,9 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="informationanalysts/builders.html" id="builders">
-            Builder configuration file
-          </ulink>
-          <ulink url="informationanalysts/builders.pdf" id="builders.pdf">
-           (pdf)
-          </ulink>
+          Builder configuration file
+          (<ulink url="informationanalysts/builders.html" id="builders">HTML</ulink>, 
+          <ulink url="informationanalysts/builders.pdf" id="builders.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
