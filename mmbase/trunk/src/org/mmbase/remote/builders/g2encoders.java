@@ -7,6 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: g2encoders.java,v 1.8 2001-02-15 15:27:29 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote.builders;
 
 import java.net.*;
@@ -19,12 +24,16 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version  3 Okt 1999
  * @author Daniel Ockeloen
+ * @version $Revision: 1.8 $ $Date: 2001-02-15 15:27:29 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;
 	private g2encoderInterface impl;
+
+	// Destination path where encoded files will be filed under.
+	// Has to move to props file but at least the mkdir is done on the remote side.
+	public final static String DST_PATH = "/data/audio/ra/";
 
 	public void init(MMProtocolDriver con,String servicefile) {
 		super.init(con,servicefile);
@@ -56,8 +65,10 @@ public class g2encoders extends RemoteBuilder {
 	 * @param ctype the node changetype.
 	 */
 	public void nodeChanged(String nodenr,String buildername,String ctype) {		
+		// All encoded files are filed under objectnr subdirectory.
+		doMakeDir(); 
 		// Gets the node by requesting it from the mmbase space through remotexml.
-		getNode();
+		getNode(); 
 				
 		String state=getStringValue("state");
 		debug("nodeChanged("+nodenr+","+buildername+","+ctype+"): state("+state+")");
@@ -65,6 +76,31 @@ public class g2encoders extends RemoteBuilder {
 			doVersion();
 		} else if (state.equals("encode")) {
 			doEncode();
+		}
+	}
+
+	/**
+	 * Makes a directory file in which the encoded file will be placed.
+	 * The directory name is the audio/videopart objectnr and the id value of the rawaudio/video
+	 * object for the encoded file.
+	 * @param subdir The directory filename.
+	 */
+	private void doMakeDir() {
+		debug("doMakeDir: disabled");
+		String subdir=null;
+		StringTagger cmdTagger = new StringTagger(getStringValue("info"));
+		if (cmdTagger.containsKey("subdir"))
+			subdir = (String) cmdTagger.Value("subdir");
+		else
+			debug("doMakeDir: ERROR no 'subdir' key in info field.");
+
+		File file = new File(DST_PATH+"/"+subdir);
+		try {
+			if (file.mkdir())
+				if (debug) debug("doMakeDir: Directory "+subdir+" created in "+DST_PATH);
+		} catch (Exception f) {
+			debug("doMakeDir: ERROR making directory "+subdir+" in "+DST_PATH);
+			f.printStackTrace();
 		}
 	}
 
