@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.20.2.2 2003-01-20 13:35:15 robmaris Exp $
+ * @version $Id: MultiPool.java,v 1.20.2.3 2003-03-16 17:47:03 michiel Exp $
  */
 public class MultiPool {
    
@@ -81,6 +81,32 @@ public class MultiPool {
       
       dbm = getDBMfromURL(url);
    }
+    protected void finalize() {
+        shutdown();        
+    }
+
+    /**
+     * 'realcloses' all connections.
+     * @since MMBase-1.6.2
+     */
+    public void shutdown() {
+        synchronized (semaphore) {
+            try {
+                for (Iterator i = busyPool.iterator(); i.hasNext();) {
+                    MultiConnection con = (MultiConnection) i.next();
+                    con.realclose();
+                }
+                busyPool.clear();
+                for (Iterator i = pool.iterator(); i.hasNext();) {
+                    MultiConnection con = (MultiConnection) i.next();
+                    con.realclose();
+                }
+                pool.clear();
+            } catch (SQLException e) {
+                log.error(e);
+            }
+        }
+    }
    
    /**
     * Check the connections

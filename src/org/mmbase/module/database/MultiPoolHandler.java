@@ -51,6 +51,17 @@ public class MultiPoolHandler {
 	}
     }
 
+    /**
+     * Calls shutdown of all registered MultiPools
+     * @since MMBase-1.6.2
+     */
+    public void shutdown() {
+        for (Iterator i = pools.values().iterator(); i.hasNext();) {
+            MultiPool pool = (MultiPool) i.next();
+	    pool.shutdown();
+	}
+    }
+
     public void checkTime() {
 	for (Iterator i = pools.values().iterator(); i.hasNext();) {
 	    MultiPool pool = (MultiPool) i.next();
