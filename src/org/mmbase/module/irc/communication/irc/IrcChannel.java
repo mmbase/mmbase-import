@@ -11,6 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.irc.communication.irc;
 import org.mmbase.util.logging.*;
 
+/**
+ * @obsolete
+ **/
 public class IrcChannel
 {
     private static Logger log = Logging.getLoggerInstance(IrcChannel.class.getName());

@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Class TcpipSendThread
  * 
- * @javadoc
+ * @obsolete
  */
 
 public class TcpipSendThread extends TcpipThread {

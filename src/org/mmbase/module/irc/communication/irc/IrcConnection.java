@@ -19,9 +19,9 @@ import org.mmbase.util.logging.*;
 /**
  * Eerste opzet : 1 class die connect naar server
  *
- * @javadoc
+ * @obsolete
  * @author vpro
- * @version $Id: IrcConnection.java,v 1.5 2002-03-04 14:07:47 pierre Exp $
+ * @version $Id: IrcConnection.java,v 1.6 2003-01-07 11:49:33 kees Exp $
  */
 public class IrcConnection extends TcpipConnection implements CommunicationInterface {
 

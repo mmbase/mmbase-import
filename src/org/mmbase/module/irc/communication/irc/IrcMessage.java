@@ -13,6 +13,9 @@ import org.mmbase.util.logging.*;
 
 import java.util.StringTokenizer;
 
+/**
+ * @obsolete
+ **/
 public class IrcMessage
 {
     private static Logger log = Logging.getLoggerInstance(IrcMessage.class.getName());

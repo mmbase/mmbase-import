@@ -19,6 +19,9 @@ import org.mmbase.module.irc.communication.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * @obsolete
+ **/
 public 	class TcpipConnection extends Thread
 {
     private static Logger log = Logging.getLoggerInstance(TcpipConnection.class.getName());
