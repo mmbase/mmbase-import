@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.29 2003-06-05 09:12:02 michiel Exp $
+ * @version $Id: RelDef.java,v 1.30 2003-07-09 13:18:49 pierre Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -155,7 +155,9 @@ public class RelDef extends MMObjectBuilder {
                   bulname=mmb.getTypeDef().getValue(builder);
               }
           } else {
+              // fix for old mmbases that have no builder field
               bulname=node.getStringValue("sname");
+              if (mmb.getMMObject(bulname)==null) bulname=null;
           }
           if (bulname==null) {
               return "insrel";
