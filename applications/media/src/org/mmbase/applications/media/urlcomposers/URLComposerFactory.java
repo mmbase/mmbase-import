@@ -29,7 +29,7 @@ import java.lang.reflect.*;
  * formats to URLComposer classes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposerFactory.java,v 1.5 2003-02-04 17:43:33 michiel Exp $
+ * @version $Id: URLComposerFactory.java,v 1.6 2003-02-05 11:41:25 michiel Exp $
  */
 
 public class URLComposerFactory  {
@@ -68,6 +68,9 @@ public class URLComposerFactory  {
                log.error("URLComposer could not be instantiated " + g.toString());
             }
             return null; // could not get instance, this is an error, but go on anyway (implemtnation checks for null)
+        }
+        public String toString() {
+            return "" + format + ":" + klass.getName();
         }
         
     }
@@ -123,6 +126,7 @@ public class URLComposerFactory  {
             String  clazz   =  reader.getElementValue(element);
             Format  format  =  Format.get(element.getAttribute(FORMAT_ATT));
             try {
+                log.service("Adding for format " + format + " urlcomposer " + clazz);
                 urlComposerClasses.add(new ComposerConfig(format, Class.forName(clazz)));
             } catch (ClassNotFoundException ex) {
                 log.error("Cannot load urlcomposer " + clazz);
@@ -146,8 +150,10 @@ public class URLComposerFactory  {
         boolean found = false;
         while (i.hasNext()) {
             ComposerConfig cc = (ComposerConfig) i.next();
+            log.debug("Trying " + cc + " for " + format);
             if (format.equals(cc.getFormat())) {
                 URLComposer uc = cc.getInstance(provider, source, fragment, info);
+                log.debug("Trying to add " + uc + " to " + urls);
                 if (uc != null && ! urls.contains(uc)) { // avoid duplicates
                     log.debug("Adding a " + uc.getClass().getName());
                     urls.add(uc);
