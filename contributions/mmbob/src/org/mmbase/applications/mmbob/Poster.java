@@ -50,12 +50,13 @@ public class Poster {
      * @param parent Forum that the poster belongs to
      */
     public Poster(Node node, Forum parent) {
-        this.state=0;
+
 	    this.quotanumber=10;
 	    this.quotaused=-1;
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
+        this.state = node.getIntValue("state");
         this.firstname=getAliased("firstname");
         this.lastname=getAliased("lastname");
         this.email=getAliased("email");
@@ -436,6 +437,17 @@ public class Poster {
         ForumManager.syncNode(node, ForumManager.FASTSYNC);
         return true;
     }
+
+   /**
+     * Check if the poster is blocked
+     *
+     * @return <code>true</code> if this method is called
+     */
+    public boolean isBlocked() {
+       if (this.state == STATE_DISABLED) return true;
+       return false;
+    }
+
 
     /**
      * get the poster's mailbox by the  name
