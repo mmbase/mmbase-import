@@ -51,7 +51,6 @@ public class FieldInfoTag extends FieldReferrerTag {
     private static final int TYPE_USESEARCHINPUT = 13;
     
     private int type;   
-    private String whichField = null;
        
     public void setType(String t) throws JspTagException {
         t = getAttributeValue(t);
@@ -80,22 +79,6 @@ public class FieldInfoTag extends FieldReferrerTag {
         }
     }
 
-    /**
-     *
-     * @deprecated Use FieldInfo under a FieldTag
-     */
-    public void setField(String f) {
-
-        // This functions now overrided 'setField' of FieldReferrer. That is very wrong!
-        // should change this.
-        // This function should be removed.
-        try {
-            whichField = getAttributeValue(f);
-        } catch (JspTagException e) {
-            throw new RuntimeException(e.toString());
-        }
-    }
-    
     public int doStartTag() throws JspTagException{
         return EVAL_BODY_TAG;
     }
@@ -149,6 +132,7 @@ public class FieldInfoTag extends FieldReferrerTag {
         case Field.TYPE_BYTE:
             show = (node != null ? node.getStringValue("gui()") : "") + "<input type=\"file\" name=\"" + prefix(field.getName()) + "\" />";
             break;
+            //case Field.TYPE_XML:
         case Field.TYPE_STRING:          
             if(! search) {
                 if(field.getMaxLength() > 2048)  {
@@ -362,6 +346,7 @@ public class FieldInfoTag extends FieldReferrerTag {
                 }
                 break;
             }
+            //case Field.TYPE_XML:
         case Field.TYPE_STRING: {
             // do the xml decoding thing...
             String fieldValue = getContextTag().findAndRegisterString(prefix(fieldName));
@@ -411,21 +396,21 @@ public class FieldInfoTag extends FieldReferrerTag {
         switch(type) {
         case Field.TYPE_BYTE:
             throw new JspTagException("Don't know what to do with bytes()");
-        case Field.TYPE_STRING:
-            {
-                String search = getContextTag().findAndRegisterString(prefix(fieldName));
-                if (search == null) {
-                    log.error("parameter " + prefix(fieldName) + " could not be found");
-                    show =  null;
-                    break;
-                }
-                if ("".equals(search)) {
-                    show =  null;
-                    break;
-                }
-                show = "( UPPER([" + fieldName + "]) LIKE '%" + search.toUpperCase() + "%')";
+            //case Field.TYPE_XML:
+        case Field.TYPE_STRING: {
+            String search = getContextTag().findAndRegisterString(prefix(fieldName));
+            if (search == null) {
+                log.error("parameter " + prefix(fieldName) + " could not be found");
+                show =  null;
+                break;
             }
-            break;
+            if ("".equals(search)) {
+                show =  null;
+                break;
+            }
+                show = "( UPPER([" + fieldName + "]) LIKE '%" + search.toUpperCase() + "%')";
+                break;
+        }        
         case Field.TYPE_INTEGER:  
             if (guitype.equals("eventtime")) {
                 Calendar cal = Calendar.getInstance();
@@ -463,9 +448,8 @@ public class FieldInfoTag extends FieldReferrerTag {
             log.debug("normal integer type, falling through");
         case Field.TYPE_FLOAT:
         case Field.TYPE_DOUBLE:
-        case Field.TYPE_LONG:
-            log.debug("treating simple types");
-            {
+        case Field.TYPE_LONG: {
+                log.debug("treating simple types");
                 log.debug("1");
                 String search = getContextTag().findAndRegisterString(prefix(fieldName));                
                 if (search == null) {
@@ -478,9 +462,9 @@ public class FieldInfoTag extends FieldReferrerTag {
                     break;
                 }
                 show =  "(" + fieldName + "=" + search + ")";
+                break;
             }
-            break;
-        default: log.error("field: " + type );
+        default: log.error("field: " + type + " not found");
             show = null;
         }
         return show;
@@ -496,22 +480,10 @@ public class FieldInfoTag extends FieldReferrerTag {
         
         Field field;
         Node node = null;
-        NodeProvider fieldProvider = null;
+        FieldProvider fieldProvider = findFieldProvider();
 
-        if (whichField == null) { // must be in FieldProvider then
-            fieldProvider = findFieldProvider();
-            field = ((FieldProvider) fieldProvider).getFieldVar();
-        } else { // not in FieldProvider, get it from a parent Node directly
-            // should be deprecated.
-            fieldProvider = findNodeProvider();
-            node = fieldProvider.getNodeVar();
-             
-            field = node.getNodeManager().getField(whichField);
-            if (field == null) {
-                throw new JspTagException("Unknown field '" + whichField + "' for nodemanager " + node.getNodeManager().getName());
-            }
-        }
-        
+        field = ((FieldProvider) fieldProvider).getFieldVar();
+
         // found the field now. Now we can decide what must be shown:
         String show = null;
 
