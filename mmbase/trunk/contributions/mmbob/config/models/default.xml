@@ -35,5 +35,7 @@
     <relation from="postareas" to="postthreads" type="related" />
     <relation from="posters" to="avatarsets" type="related" />
     <relation from="avatarsets" to="images" type="posrel" />
+    <relation from="forums" to="avatarsets" type="related" />
+    <relation from="postareas" to="avatarsets" type="related" />
   </allowedrelationlist>
 </cloudmodel>
