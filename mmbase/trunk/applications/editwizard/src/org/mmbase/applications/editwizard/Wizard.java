@@ -28,8 +28,9 @@ import org.mmbase.util.FileWatcher;
  * @author Kars Veling
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
+ * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.90 2003-06-27 09:58:35 pierre Exp $
+ * @version $Id: Wizard.java,v 1.91 2003-07-03 10:45:20 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -38,11 +39,19 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
     // File -> Document (resolved includes/shortcuts)
     private static WizardSchemaCache wizardSchemaCache;
-
+    private static NodeCache nodeCache;
+    private static FieldDataCache fieldDataCache;
+   
     static {
         wizardSchemaCache = new WizardSchemaCache();
         wizardSchemaCache.putCache();
+        nodeCache = new NodeCache();
+        nodeCache.putCache();
+        fieldDataCache = new FieldDataCache();
+        fieldDataCache.putCache();
     }
+    // Some of these variables are placed public, for debugging reasons.
+    private Document preform;
 
     /**
      * The cloud used to connect to MMBase
@@ -143,7 +152,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         return getByteSize(new org.mmbase.util.SizeOf());
     }
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
-        return sizeof.sizeof(cloud)
+        return sizeof.sizeof(preform)
+            + sizeof.sizeof(cloud)
             + sizeof.sizeof(uriResolver)
             + sizeof.sizeof(schema)
             + sizeof.sizeof(data)
@@ -233,23 +243,15 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         return schema;
     }
 
-    public Document getPreForm() throws WizardException {
-        return getPreForm(wizardName);
+    public Document getPreform() {
+        return preform;
     }
-
-    public Document getPreForm(String instanceName) throws WizardException {
-        Node datastart = Utils.selectSingleNode(data, "/data/*");
-        return createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
-    }
-
     public boolean error() {
         return errors.size() > 0;
     }
-
     public Iterator getErrors() {
         return errors.iterator();
     }
-
     public String getErrorString() {
         String str = "";
         Iterator iter = getErrors();
@@ -289,17 +291,25 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      * @throws WizardException if the object cannot be retrieved
      */
     protected boolean checkNode(String objectNumber, String operation) throws WizardException {
-        Node node;
-        NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
-        if (nodes != null && nodes.getLength() > 0) {
-            node = nodes.item(0);
-        } else {
-            // node is from outside the datacloud... 
+      Object nodeObj = nodeCache.get(objectNumber);
+      
+      if (nodeObj == null) {
+         NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
+         if (nodes != null && nodes.getLength() > 0) {
+            nodeObj = nodes.item(0);
+         } else {
+            // node is from outside the datacloud...
             // get it through dove... should we add it, and if so where?
-            node = databaseConnector.getDataNode(null, objectNumber, null);
-        }
-        return (node != null) && Utils.getAttribute(node, operation, "true").equals("true");
-    }
+            nodeObj = databaseConnector.getDataNode(null, objectNumber, null);
+         }
+         nodeCache.put(objectNumber, nodeObj);
+         log.debug("Node loaded: " + nodeObj);
+      } else {
+         log.debug("Node found in cache: " + nodeObj);
+      }
+      Node node = (Node)nodeObj;
+      return (node != null) && Utils.getAttribute(node, operation, "true").equals("true");
+   }
 
     /**
      * Returns true if the node with the specified objectnumber can be edited
@@ -453,9 +463,10 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         if (log.isDebugEnabled())
             log.debug("writeHtmlForm for " + instanceName);
+        Node datastart = Utils.selectSingleNode(data, "/data/*");
         // Build the preHtml version of the form.
-        Document preForm = getPreForm(instanceName);
-        Validator.validate(preForm, schema);
+        preform = createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
+        Validator.validate(preform, schema);
         Map params = new HashMap(variables);
         params.put("ew_context", context);
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
@@ -467,7 +478,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         if (templatesDir != null)
             params.put("templatedir", templatesDir);
 
-        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params);
+        Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
     }
 
     /**
@@ -784,28 +795,38 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 form.appendChild(newfieldset);
                 createPreHtmlForm(newfieldset, field, data);
             } else {
+               Object fieldDataObj = fieldDataCache.get(field);
+            
+               Node fieldDataNode = null;
+               NodeList fieldinstances = null;
 
-                String xpath = Utils.getAttribute(field, "fdatapath", null);
+               if (fieldDataObj == null) {
+                  log.debug("fieldDataNode not in cache");
+                  String xpath = Utils.getAttribute(field, "fdatapath", null);
 
-                Node fieldDataNode = null;
-                NodeList fieldinstances = null;
-                if (xpath == null) {
-                    String ftype = Utils.getAttribute(field, "ftype", null);
-                    if (!("startwizard".equals(ftype) || "wizard".equals(ftype))) {
+                  if (xpath == null) {
+                     String ftype = Utils.getAttribute(field, "ftype", null);
+                     if (!("startwizard".equals(ftype) || "wizard".equals(ftype))) {
                         throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
-                    }
-                } else {
-                    // xpath is found. Let's see howmany 'hits' we have
-                    fieldinstances = Utils.selectNodeList(data, xpath);
-                    if (fieldinstances == null) {
+                     }
+                  } else {
+                     // xpath is found. Let's see howmany 'hits' we have
+                     fieldinstances = Utils.selectNodeList(data, xpath);
+                     if (fieldinstances == null) {
                         throw new WizardException(
-                            "The xpath: "
-                                + xpath
-                                + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
-                    }
-                    if (fieldinstances.getLength() > 0)
+                        "The xpath: "
+                        + xpath
+                        + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
+                     }
+                     if (fieldinstances.getLength() > 0)
                         fieldDataNode = fieldinstances.item(0);
-                }
+                     fieldDataCache.put(field, fieldDataNode);
+                  }
+               }
+               else {
+                  log.debug("fieldDataNode found in cache");
+                  fieldDataNode = (Node)fieldDataObj;
+               }
                 // A normal field.
                 if (nodeName.equals("field")) {
                     if (fieldDataNode != null) {
@@ -2262,6 +2283,42 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             }
         }
     }
+  
+   /**
+    * Caches field to node.
+    * @since MMBase-1.7
+    */
+   static class FieldDataCache extends Cache {
+      FieldDataCache() {
+         super(100);
+      }
+      
+      public String getName() {
+         return "FieldDataCache";
+      }
+      
+      public String getDescription() {
+         return "field -> node";
+      }
+   }
+   
+   /**
+    * Caches objectNumber to Node.
+    * @since MMBase-1.7
+    */
+   static class NodeCache extends Cache {
+      NodeCache() {
+         super(100);
+      }
+      
+      public String getName() {
+         return "nodes";
+      }
+      
+      public String getDescription() {
+         return "objectNumber -> Node";
+      }
+   }
 
     /**
      * Caches File to  Editwizard schema Document.
