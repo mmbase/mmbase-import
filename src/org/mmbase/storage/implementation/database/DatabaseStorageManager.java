@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.20 2003-09-09 13:19:40 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.21 2003-09-09 13:30:38 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -268,14 +268,11 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException when data is incompatible or the function is not supported
      */
     protected String getStringValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
-        if (result.wasNull()) {
-            return "";  // or null ??
-        }
         if (field.getStorageType() == Types.CLOB ||
             field.getStorageType() == Types.BLOB ||
             factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
             InputStream inStream = result.getBinaryStream(index);
-            if (inStream == null) {
+            if (inStream == null || result.wasNull()) {
                 return ""; // or null ??
             }
             try {
