@@ -30,7 +30,7 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.8 $ $Date: 2000-07-22 21:10:56 $
+ * @version $Revision: 1.9 $ $Date: 2000-07-23 08:27:24 $
  */
 public abstract class ModuleXML extends Module {
 
@@ -73,13 +73,14 @@ public abstract class ModuleXML extends Module {
 		String dtmp=System.getProperty("mmbase.mode");
 		if (dtmp!=null && dtmp.equals("demo")) {
 			String curdir=System.getProperty("user.dir");
-			if (curdir.endsWith("/orion")) {
+			if (curdir.endsWith("orion")) {
 				curdir=curdir.substring(0,curdir.length()-6);
 			}
 			mmbaseconfig=curdir+"/config";
 		} else {
        		 	mmbaseconfig=System.getProperty("mmbase.config");
 		}
+		System.out.println("CONFIGPATH="+mmbaseconfig);
 
 
 		MMBaseContext.setConfigPath(mmbaseconfig);
