@@ -123,9 +123,6 @@
   <head>
     <title>Editor</title>
     <link rel="stylesheet" href="css/mmeditors.css" type="text/css" />
-    <style>
-<%@include file="css/mmeditors.css" %>     
-    </style>
   </head>
   <frameset rows="23,*" border="0" frameborder="0" framespacing="0">
     <frame src="<mm:url page="editnav.jsp" />" name="navigatorarea" scrolling="no" marginheight="0" marginwidth="0" />

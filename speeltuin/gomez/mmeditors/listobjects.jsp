@@ -13,9 +13,6 @@
   <head>
     <title>Editor</title>
     <link rel="stylesheet" href="css/mmeditors.css" type="text/css" />
-    <style>
-<%@include file="css/mmeditors.css" %>     
-    </style>
   </head>
   <body>
     <mm:import externid="offset" vartype="Integer" jspvar="offset">0</mm:import>

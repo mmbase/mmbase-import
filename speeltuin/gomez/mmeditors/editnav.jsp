@@ -4,9 +4,6 @@
   <head>
     <title>Editors</title>
     <link rel="stylesheet" href="css/mmeditors.css" type="text/css" />
-    <style>
-<%@include file="css/mmeditors.css" %>     
-    </style>
 <% if ("R".equals(session.getValue("mmeditors_reload"))) { %>
   <script type="text/javascript" language="javascript">
 <!-- 

@@ -22,9 +22,6 @@
   <head>
     <title>Editors</title>
     <link rel="stylesheet" href="css/mmeditors.css" type="text/css" />
-    <style>
-<%@include file="css/mmeditors.css" %>     
-    </style>
   </head>
   <frameset cols="220,*" framespacing="0">
     <frame src="<mm:url page="editnode.jsp" />" name="selectarea" marginheight="0" marginwidth="0" />
