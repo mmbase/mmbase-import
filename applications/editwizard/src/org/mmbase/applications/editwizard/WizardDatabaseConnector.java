@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.23 2002-10-31 08:23:20 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.24 2002-11-01 15:01:37 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -260,7 +260,11 @@ public class WizardDatabaseConnector {
         if (!cmd.hasError()) {
             // place object in targetNode
             Node objectNode=Utils.selectSingleNode(cmd.getResponseXML(), "/*/object[@number='" + objectnumber + "']");
-            // not sure if all of this is really necessary?
+            // if no destination document si given , do not copy or tag the node, just return it
+            if (document==null ) {
+                return objectNode;
+            }
+            // cop??? not sure if all of this is really necessary?
             objectNode = document.importNode(objectNode.cloneNode(true),true);
             tagDataNode(objectNode);
             return objectNode;

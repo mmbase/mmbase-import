@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.72 2002-10-25 12:57:24 pierre Exp $
+ * @version $Id: Wizard.java,v 1.73 2002-11-01 15:01:37 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1434,7 +1434,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             if ((nodesToUpdate != null) || (originalNodesToUpdate != null)) {
                 Node updatedNode=null;
                 try {
-                    updatedNode = databaseConnector.getDataRaw(value,null);
+                    updatedNode = databaseConnector.getDataNode(null,value,null);
                 } catch (Exception e) {
                     break;
                 }
