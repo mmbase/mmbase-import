@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.169 2002-10-14 17:30:54 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.170 2002-10-16 11:22:44 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -252,7 +252,7 @@ public class MMObjectBuilder extends MMTable {
     private int maxNodesFromQuery = -1;
 
     /**
-     * The string that can be used inside the builder.xml as property, 
+     * The string that can be used inside the builder.xml as property,
      * to define the maximum number of nodes to return.
      */
     private static String  MAX_NODES_FROM_QUERY_PROPERY = "max-nodes-from-query";
@@ -272,7 +272,7 @@ public class MMObjectBuilder extends MMTable {
      * @see #create
      */
     public boolean init() {
-        // skip initialisation if oType has been set (happend at end if init)
+        // skip initialisation if oType has been set (happend at end of init)
         // note that init can be called twice
         if (oType!=-1) return true;
 
@@ -288,7 +288,7 @@ public class MMObjectBuilder extends MMTable {
         // only deteremine otype if typedef is available,
         // or this is typedef itself (have to start somewhere)
         if (((typeDef != null)  && (typeDef.getObjectType()!=-1)) || (this == typeDef)) {
-                     oType = typeDef.getIntValue(tableName);
+            oType = typeDef.getIntValue(tableName);
             if (oType == -1) { // no object type number defined yet
                 if (log.isDebugEnabled()) log.debug("Creating typedef entry for " + tableName);
                 MMObjectNode node = typeDef.getNewNode("system");
@@ -1486,8 +1486,8 @@ public class MMObjectBuilder extends MMTable {
 		if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
 		    // to much nodes found...
 		    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
-		    log.error(msg);
-		    throw new RuntimeException(msg);
+		    log.warn(msg);
+		    continue;
 		}
 
 		// create the node from the record-set
@@ -1498,7 +1498,7 @@ public class MMObjectBuilder extends MMTable {
                     // node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
 		    mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
                 }
-		if(node.getNumber() <= 0) {
+		if(node.getNumber() < 0) {
 		    // never happend to me, and never should!
 		    log.error("invalid node found, node number was invalid:" + node.getNumber()+", database invalid?");
 		    // dont know what to do with this node,...
