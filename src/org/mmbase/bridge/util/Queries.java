@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.45 2004-10-09 09:37:34 nico Exp $
+ * @version $Id: Queries.java,v 1.46 2004-10-09 09:46:34 nico Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -298,16 +298,10 @@ abstract public  class Queries {
     }
 
     /**
-<<<<<<< Queries.java
      * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
      * by a string. Alreading existing constraints remain ('AND' is used)
      * @param query query to add constraint to
      * @param constraints string representation of constraints
-=======
-     * Adds a 'legacy' constraint to the query, such as constraint(s) represented
-     * by a string.
-     * Alreading existing constraints remain ('AND' is used)
->>>>>>> 1.43
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
@@ -330,13 +324,9 @@ abstract public  class Queries {
     }
 
     /**
-<<<<<<< Queries.java
      * Adds a Constraint to the already present constraint (with AND). 
      * @param query query to add the constraint to
      * @param newConstraint constraint to add
-=======
-     * Adds a Constraint to the already present constraint (with AND).
->>>>>>> 1.43
      * @return The new constraint.
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
@@ -851,16 +841,11 @@ abstract public  class Queries {
      * another then this found step.
      *
      * Furthermore may the nodes by identified by their alias, if they have one.
-<<<<<<< Queries.java
      * @param query query to add the startnodes
      * @param startNodes start nodes 
      * 
      * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery(List, List, String, List, String, List, List, int)
      * (this is essentially a 'bridge' version of the startnodes part)
-=======
-     *
-     * @see org.mmbase.module.core.ClusterBuilder#getMultiLevelSearchQuery (this is essentially a 'bridge' version of the startnodes part)
->>>>>>> 1.43
      */
     public static void addStartNodes(Query query, String startNodes) {
         if (startNodes == null || "".equals(startNodes) || "-1".equals(startNodes)) {
