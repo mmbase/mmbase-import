@@ -1,6 +1,6 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%-- @ taglib uri="oscache" prefix="cache" --%><% response.setContentType("text/html; charset=UTF-8"); %><html>
+%><%-- @ taglib uri="oscache" prefix="cache" --%><html>
 <head>
  <title>The formatter tag mm:formatter</title>
 <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
@@ -81,7 +81,7 @@ Be aware that this examples assume that the body of your news builder is of type
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfieldascii.jsp" /></mm:formatter></pre></td>
   <td width="50%"><textarea wrap="soft"><%@include file="codesamples/userichfieldascii.jsp" %></textarea></td>
-</tr>
+</tr>                      
 <tr><td colspan="2">You can also format a whole node in this way.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownode.jsp" /></mm:formatter></pre></td>
@@ -116,6 +116,13 @@ Be aware that this examples assume that the body of your news builder is of type
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelationsxml.jsp" /></mm:formatter></pre></td>
   <td width="50%"><textarea class="huge"><%@include file="codesamples/shownoderelationsxml.jsp" %></textarea></td>
+</tr>
+<tr><td colspan="2">If you want to generate your XML yourself with MMBase data, then you need to inform the tag that it should be
+                    'dumb'. If the 'wants' attribute is 'string' then every tag in the
+                    body works as if it is not in a formatter tag.</td></tr>
+<tr valign="top">
+  <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/createmmbasexml.jsp" /></mm:formatter></pre></td>
+  <td width="50%"><textarea><%@include file="codesamples/createmmbasexml.jsp" %></textarea></td>
 </tr>
 <%--
 <tr><td colspan="2">Want to try some XSL yourself?</td></tr>

@@ -5,15 +5,19 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.2 2002-04-04 17:58:23 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.3 2002-06-14 19:34:45 michiel Exp $
   @since  MMBase-1.6
   
 -->
-<xsl:stylesheet xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" version = "1.0" >
+<xsl:stylesheet 
+  xmlns:xsl = "http://www.w3.org/1999/XSL/Transform" 
+  version = "1.0" 
+  xmlns:mmxf="http://www.mmbase.org/mmxf"
+  exclude-result-prefixes="mmxf" 
+>
   <xsl:import href="mm:xslt/2xhtml.xslt" />  
   <xsl:output method="xml" omit-xml-declaration="yes"  /><!-- xhtml is a form of xml -->
     
-
   <xsl:template name="formatteddate">
 	<xsl:param name="year"     />
 	<xsl:param name="monthname" />
@@ -22,7 +26,7 @@
   </xsl:template>
 
   <!-- how to present a news node -->
-  <xsl:template match="object[@type=$newstype and @complete='true']">
+  <xsl:template match="object[@type=$newstype and not(field/@notfilled)]">
 	<xsl:apply-templates select="field[@name='title']"  />
 	<h2><font color="green"><xsl:apply-templates select="field[@name='subtitle']" /></font></h2>
 	<xsl:apply-templates select="field[@name='body']" />
@@ -33,12 +37,12 @@
       </p>
   </xsl:template>
 
-   <xsl:template match = "section" >
-     <xsl:if test="count(ancestor::section)=0"><h3><font color="red"><xsl:value-of select="@title" /></font></h3></xsl:if>
-     <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="@title" /></b></p></xsl:if>
-     <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="@title" /></p></xsl:if>
-     <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="@title" /><br /></xsl:if>
- 	 <xsl:apply-templates select = "section|p" />
+   <xsl:template match = "mmxf:section" >
+     <xsl:if test="count(ancestor::mmxf:section)=0"><h3><font color="red"><xsl:value-of select="@mmxf:title" /></font></h3></xsl:if>
+     <xsl:if test="count(ancestor::mmxf:section)=1"><p><b><xsl:value-of select="@mmxf:title" /></b></p></xsl:if>
+     <xsl:if test="count(ancestor::mmxf:section)=2"><p><xsl:value-of select="@mmxf:title" /></p></xsl:if>
+     <xsl:if test="count(ancestor::mmxf:section)>2"><xsl:value-of select="@mmxf:title" /><br /></xsl:if>
+ 	 <xsl:apply-templates select = "mmxf:section|mmxf:p" />
    </xsl:template>
 
 </xsl:stylesheet>
