@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021115165540">
+	<node number="526" owner="michiel" snumber="505" dnumber="527" rtype="parent" dir="bidirectional">
+	</node>
+
+	<node number="503" owner="admin" snumber="505" dnumber="504" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="524" owner="admin" snumber="516" dnumber="525" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="512" owner="michiel" snumber="505" dnumber="514" rtype="parent" dir="bidirectional">
+	</node>
+
+	<node number="519" owner="admin" snumber="516" dnumber="505" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="528" owner="admin" snumber="525" dnumber="529" rtype="related" dir="bidirectional">
+	</node>
+
+</insrel>

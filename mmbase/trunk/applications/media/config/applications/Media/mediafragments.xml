@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mediafragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021115165540">
+	<node number="527" owner="michiel">
+		<start>29032</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>235562</stop>
+		<title>item 0</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="505" owner="admin">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Noorderlicht</title>
+		<subtitle>fasd</subtitle>
+		<intro>asdfasdf</intro>
+	</node>
+
+	<node number="514" owner="michiel">
+		<start>16361</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>350305</stop>
+		<title>item1</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="525" owner="admin">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>2000 Journaal van maandag</title>
+		<subtitle>dasfdasf</subtitle>
+		<intro>asdfasfd</intro>
+	</node>
+
+</mediafragments>
