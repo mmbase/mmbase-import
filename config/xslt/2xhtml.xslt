@@ -3,14 +3,15 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen
-  @version: $Id: 2xhtml.xslt,v 1.6 2004-03-03 22:43:10 michiel Exp $
+  @version: $Id: 2xhtml.xslt,v 1.7 2004-06-30 16:19:35 michiel Exp $
   @since:   MMBase-1.6
 -->
-<xsl:stylesheet  version = "1.1"
+<xsl:stylesheet  
   xmlns:xsl ="http://www.w3.org/1999/XSL/Transform"
   xmlns:node ="org.mmbase.bridge.util.xml.NodeFunction"
   xmlns:mmxf="http://www.mmbase.org/mmxf"
   exclude-result-prefixes="node mmxf"
+  version = "1.1"
 >
   <xsl:import href="mmxf2xhtml.xslt" />   <!-- dealing with mmxf is done there -->
   <xsl:import href="formatteddate.xslt" /><!-- dealing with dates is done there -->
