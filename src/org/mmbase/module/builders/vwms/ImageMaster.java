@@ -144,7 +144,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					Images imagesBuilder = (Images)Vwms.mmb.getMMObject("images");		
 					mimetype = imagesBuilder.getImageMimeType(ckeyVec);
 					// debug("handleMirror: ckey "+ckey+" has mimetype: "+mimetype);
-					ckey=path2ckey(ckey);
+					ckey=path2ckey(ckey, imagesBuilder);
 				}
 
 				debug("verzoek ckey "+ckey);
@@ -299,25 +299,10 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	}
 
 
-	private String path2ckey(String path) {
+	private String path2ckey(String path, Images imageBuilder) {
 		StringTokenizer tok = new StringTokenizer(path,"+\n\r");
 		String ckey=tok.nextToken();
-
-		// check if its a number if not check for name and even oalias
-		try {
-			int numint=Integer.parseInt(ckey);
-		} catch(Exception e) {
-			MMObjectBuilder imgbul=Vwms.mmb.getMMObject("images");
-			if (imgbul!=null) {
-				Enumeration g=imgbul.search("MMNODE images.title==*"+ckey+"*");
-				while (g.hasMoreElements()) {
-					MMObjectNode imgnode=(MMObjectNode)g.nextElement();
-					ckey=""+imgnode.getIntValue("number");
-				}
-			}		
-		}	
-
-
+		ckey = imageBuilder.convertAlias(ckey);
 		while (tok.hasMoreTokens()) {
 			String key=tok.nextToken();
 			ckey+=key;
