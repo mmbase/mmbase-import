@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.99 2004-06-30 17:51:52 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.100 2004-07-05 15:24:49 pierre Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -237,7 +237,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         } else if ("sessiondelegate".equals(m)) {
             return METHOD_SESSIONDELEGATE;
         } else if ("pagelogon".equals(m)) {
-            return METHOD_LOGINPAGE;
+            return METHOD_PAGELOGON;
         } else if ("sessionlogon".equals(m)) {
             return METHOD_SESSIONLOGON;
             //} else if ("given_or_anonymous".equals(m)) {
