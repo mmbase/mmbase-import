@@ -132,6 +132,26 @@ public class RelDef extends MMObjectBuilder {
   	    }
     }
 
+    /**
+    * Returns the first occurrence of a reldef node of a relation definition.
+    * used to set the default reldef for a specific builder.
+    * @returns the default reldef node, or <code>null</code> if not found.
+    **/
+    public MMObjectNode getDefaultForBuilder(InsRel relBuilder) {
+        Enumeration e;
+  	    if (usesbuilder) {
+            e=search("WHERE builder="+relBuilder.oType+"");
+  	    } else {
+            e=search("WHERE (sname='"+relBuilder.getTableName()+"') OR (dname='"+relBuilder.getTableName()+"')");
+  	    }
+        if (e.hasMoreElements()) {
+            MMObjectNode node=(MMObjectNode)e.nextElement();
+            return node;
+        } else {
+            return null;
+        }
+    }
+
     /*
     * Tests whether the data in a node is valid (throws an exception if this is not the case).
     * @param node The node whose data to check
@@ -144,7 +164,7 @@ public class RelDef extends MMObjectBuilder {
         if (usesbuilder) {
             int builder=node.getIntValue("builder");
             if (builder<=0) {
-                builder=mmb.getTypeDef().getIntValue("insrel");
+                builder=mmb.getInsRel().oType;
             }
             if (!isRelationBuilder(builder)) {
                 throw new InvalidDataException("Builder ("+builder+") is not a relationbuilder","builder");
@@ -191,7 +211,7 @@ public class RelDef extends MMObjectBuilder {
     public void setDefaults(MMObjectNode node) {
         node.setValue("dir",2);
         if (usesbuilder) {
-            node.setValue("builder",mmb.getTypeDef().getIntValue("insrel"));
+            node.setValue("builder",mmb.getInsRel().oType);
         }
     }
 	
@@ -279,7 +299,7 @@ public class RelDef extends MMObjectBuilder {
 
     /**
     * Search the relation definition table for the identifying number of
-    * a relation, by name of the builder to use
+    * a relation, by name of the relation to use
     * Similar to {@link #getGuessedByName} (but does not make use of dname)
     * @ param name The builder name on which to search for the relation
     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
@@ -298,18 +318,18 @@ public class RelDef extends MMObjectBuilder {
 
     /**
     * Search the relation definition table for the identifying number of
-    * a relation, by name of the builder to use
+    * a relation, by name of the relation to use
     * This function is used by descendants of Insrel to determine a default reference to a 'relation definition' (reldef entry).
     * The 'default' is the relation with the same name as the builder. If no such relation exists, there is no default.
-    *
     * @ param name The builder name on which to search for the relation
     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
     * 	indicated buildername, the first one found is returned.
     * @deprecated Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
+    *   For the InsRel derived builders, use {@link #getDefaultForBuilder} instead
     **/
 
-    public int getGuessedByName(String buildername) {
-        Enumeration e=search("WHERE (sname='"+buildername+"') OR (dname='"+buildername+"')");
+    public int getGuessedByName(String name) {
+        Enumeration e=search("WHERE (sname='"+name+"') OR (dname='"+name+"')");
         if (e.hasMoreElements()) {
             MMObjectNode node=(MMObjectNode)e.nextElement();
             return node.getIntValue("number");
@@ -321,11 +341,11 @@ public class RelDef extends MMObjectBuilder {
     /**
     * Searches for the relation number on the combination of sname and dname.
     * When there's no match found in this order a search with a swapped sname and dname will be done.
+    * Note that there is no real assurance that an sname/dname combinmation must be unique.
     * @ param sname The first name on which to search for the relation (preferred as the source)
     * @ param dname The second name on which to search for the relation (preferred as the destination)
     * @ return A <code>int</code> value indicating the relation's object number, or -1 if not found. If multiple relations use the
-    * 	indicated buildername, the first one found is returned.
-    * @deprecated Not very suitable to use, as success is dependent on the uniqueness of the builder in the table (not enforced, so unpredictable).
+    * 	indicated names, the first one found is returned.
     */
     public int getRelNrByName(String sname, String dname) {
         Enumeration e = search("WHERE sname='" + sname + "' AND dname='" + dname + "'");
