@@ -72,9 +72,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
 
     private static String DEFAULT_CLOUD_NAME = "mmbase";   
-    static String DEFAULT_CLOUD_JSPVAR       = "cloud";
-
-    private String jspvar = DEFAULT_CLOUD_JSPVAR;
+    private String jspvar; 
 
     private static final String REALM = "cloud_realm_";
 
@@ -169,7 +167,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (id == null) return "cloud";
         return id;
     }
-    public void setSessionname(String s) throws JspTagException  {
+    public void setSessionname(String s) throws JspTagException {
         sessionName = getAttributeValue(s);
     }
 
@@ -254,7 +252,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
               method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
             setAnonymousCloud(cloudName);            
-            pageContext.setAttribute(jspvar, cloud);        
+            if (jspvar != null) {
+                pageContext.setAttribute(jspvar, cloud); 
+            }
             return EVAL_BODY_TAG;
         }
         
@@ -423,7 +423,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 session.setAttribute(getSessionName(), cloud);
             }
         }        
-        pageContext.setAttribute(jspvar, cloud);
+        if (jspvar != null) {
+            pageContext.setAttribute(jspvar, cloud);
+        }
         return EVAL_BODY_TAG;
     }
     
