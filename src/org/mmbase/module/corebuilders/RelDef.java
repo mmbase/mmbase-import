@@ -10,10 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
+import java.sql.*;
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * RelDef ,one of the meta stucture nodes, is used to define the possible relation types.
@@ -41,18 +41,10 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.30 2003-07-09 13:18:49 pierre Exp $
+ * @version $Id: RelDef.java,v 1.23.2.2 2003-07-09 13:16:33 pierre Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
-
-    private static Logger log = Logging.getLoggerInstance(RelDef.class.getName());
-
-    /** Value of "dir" field indicating unidirectional relations. */
-    public final static int DIR_UNIDIRECTIONAL = 1;
-
-    /** Value of "dir" field indicating bidirectional relatios. */
-    public final static int DIR_BIDIRECTIONAL = 2;
 
     /**
      * Indicates whether the relationdefinitions use the 'builder' field (that is, whether the
@@ -61,7 +53,7 @@ public class RelDef extends MMObjectBuilder {
     public static boolean usesbuilder = false;
 
     // cache of relation definitions
-    private Hashtable relCache = new Hashtable();
+    private Hashtable relCache=new Hashtable();
 
     // cache of valid relationbuilders
     private Hashtable relBuilderCache=null;
@@ -89,9 +81,9 @@ public class RelDef extends MMObjectBuilder {
      * it's sname/dname combination.
      */
     private void addToCache(MMObjectNode node) {
-        Integer rnumber = (Integer) node.getValue("number");
-        relCache.put(node.getStringValue("sname"), rnumber);
-        relCache.put(node.getStringValue("sname") + "/" + node.getStringValue("dname"), rnumber);
+        Integer rnumber=(Integer)node.getValue("number");
+        relCache.put(node.getStringValue("sname"),rnumber);
+        relCache.put(node.getStringValue("sname")+"/"+node.getStringValue("dname"),rnumber);
     }
 
     /**
@@ -101,7 +93,7 @@ public class RelDef extends MMObjectBuilder {
      */
     private void removeFromCache(MMObjectNode node) {
         relCache.remove(node.getStringValue("sname"));
-        relCache.remove(node.getStringValue("sname") + "/" + node.getStringValue("dname"));
+        relCache.remove(node.getStringValue("sname")+"/"+node.getStringValue("dname"));
     }
 
     /**
@@ -111,11 +103,10 @@ public class RelDef extends MMObjectBuilder {
      *         caught and logged.
      */
     private boolean readCache() {
-        relCache.clear();
         // add insrel (default behavior)
-        relCache.put("insrel", new Integer(-1));
+        relCache.put("insrel",new Integer(-1));
         // add relation definiation names
-        for (Enumeration e = search(null); e.hasMoreElements();) {
+        for (Enumeration e=search(null);e.hasMoreElements();) {
             MMObjectNode n= (MMObjectNode)e.nextElement();
             addToCache(n);
          }
@@ -130,7 +121,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getGUIIndicator(MMObjectNode node) {
         int dir=node.getIntValue("dir");
-        if (dir==DIR_UNIDIRECTIONAL) {
+        if (dir==1) {
             return node.getStringValue("sguiname");
         } else {
             String st1=node.getStringValue("sguiname");
@@ -191,7 +182,7 @@ public class RelDef extends MMObjectBuilder {
     /**
      * Returns the first occurrence of a reldef node of a relation definition.
      * used to set the default reldef for a specific builder.
-     * @return the default reldef node, or <code>null</code> if not found.
+     * @returns the default reldef node, or <code>null</code> if not found.
      */
     public MMObjectNode getDefaultForBuilder(InsRel relBuilder) {
         Enumeration e;
@@ -214,7 +205,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public void testValidData(MMObjectNode node) throws InvalidDataException{
         int dir=node.getIntValue("dir");
-        if ((dir!=DIR_UNIDIRECTIONAL) && (dir!=DIR_BIDIRECTIONAL)) {
+        if ((dir!=1) && (dir!=2)) {
             throw new InvalidDataException("Invalid directionality ("+dir+") specified","dir");
         }
         if (usesbuilder) {
@@ -236,16 +227,8 @@ public class RelDef extends MMObjectBuilder {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-        // check RelDef for duplicates
-        String sname = node.getStringValue("sname");
-        String dname = node.getStringValue("dname");
-        if (getNumberByName(sname + '/' + dname) != -1) {
-            log.error("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
-            throw new RuntimeException("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
-        }
-        int number = super.insert(owner,node);
-        log.service("Created new reldef " + sname + "/" + dname);
-        if (number != -1) {
+        int number=super.insert(owner,node);
+        if (number!=-1) {
             addToCache(node);
         }
         return number;
@@ -294,7 +277,7 @@ public class RelDef extends MMObjectBuilder {
      *    @param node Node to be initialized
      */
     public void setDefaults(MMObjectNode node) {
-        node.setValue("dir", DIR_BIDIRECTIONAL);
+        node.setValue("dir",2);
         if (usesbuilder) {
             node.setValue("builder",mmb.getInsRel().oType);
         }
@@ -312,15 +295,13 @@ public class RelDef extends MMObjectBuilder {
     public String getGUIIndicator(String field,MMObjectNode node) {
         try {
             if (field.equals("dir")) {
-                switch (node.getIntValue("dir")) {
-                    case DIR_BIDIRECTIONAL:
-                        return "bidirectional";
-
-                    case DIR_UNIDIRECTIONAL:
-                        return "unidirectional";
-
-                    default:
-                        return "unknown";
+                int dir=node.getIntValue("dir");
+                if (dir==2) {
+                    return "bidirectional";
+                } else if (dir==1) {
+                    return "unidirectional";
+                } else {
+                    return "unknown";
                 }
             } else if (field.equals("builder")) {
                 int builder=node.getIntValue("builder");
@@ -337,7 +318,7 @@ public class RelDef extends MMObjectBuilder {
     /**
      * Checks to see if a given relation definition is stored in the cache.
      * @param name A <code>String</code> of the relation definitions' name
-     * @return a <code>boolean</code> indicating success if the relationname exists
+     * @returns: a <code>boolean</code> indicating success if the relationname exists
      */
 
     public boolean isRelationTable(String name) {
@@ -366,7 +347,7 @@ public class RelDef extends MMObjectBuilder {
     /**
      * Checks to see if a given builder (otype) is known to be a relation builder.
      * @param number The otype of the builder
-     * @return a <code>boolean</code> indicating success if the builder exists in the cache
+     * @returns: a <code>boolean</code> indicating success if the builder exists in the cache
      */
 
     public boolean isRelationBuilder(int number) {
@@ -377,7 +358,7 @@ public class RelDef extends MMObjectBuilder {
 
     /**
      * Returns a list of builders currently implementing a relation node.
-     * @return an <code>Iteration</code> containing the builders (as otype)
+     * @returns: an <code>Iteration</code> containing the builders (as otype)
      */
 
     public Enumeration getRelationBuilders() {
@@ -427,8 +408,8 @@ public class RelDef extends MMObjectBuilder {
      */
     public int getNumberByName(String role, boolean searchBidirectional) {
         Integer number;
-        number=(Integer) relCache.get(role);
-        if (number != null) {
+        number=(Integer)relCache.get(role);
+        if (number!=null) {
             return number.intValue();
         }
         if (searchBidirectional) {

@@ -10,14 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.database;
 
 import java.util.*;
+import java.io.*;
 import java.sql.*;
-import java.io.File;
 
 import org.mmbase.module.database.JDBCInterface;
 
 import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.XMLDatabaseReader;
+import org.mmbase.util.logging.*;
 
 /**
  * Storage interface for use with a database.
@@ -29,7 +31,7 @@ import org.mmbase.util.XMLDatabaseReader;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseStorage.java,v 1.5 2003-06-24 09:47:25 michiel Exp $
+ * @version $Id: DatabaseStorage.java,v 1.2 2002-11-12 16:57:52 pierre Exp $
  */
 public interface DatabaseStorage extends Storage  {
 
@@ -49,9 +51,15 @@ public interface DatabaseStorage extends Storage  {
      * This reads database specific content from the database configuration document.
      * If needed, the code creates a 'numbertable' for mmbase to track number generation.
      * @param mmb the MBase instance that uses this database layer
-     * @param reader the database configuration reader
+     * @param document the database configuration document
      */
-    public void init(MMBase mmb, XMLDatabaseReader reader);
+    public void init(MMBase mmb,XMLDatabaseReader document);
+
+    /**
+     * This reads database specific content from the database configuration document.
+     * @param document the database configuration document
+     */
+    public void deployDatabaseDocument(XMLDatabaseReader document);
 
     /**
      * Returns whether binary objects are stored as files (rather than in the database)
@@ -70,14 +78,14 @@ public interface DatabaseStorage extends Storage  {
      * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @return the file path
      */
-    public File getBinaryFilePath();
+    public String getBinaryFilePath();
 
     /**
      * Sets the filepath where binary objects are stored.
      * Only applies if {@link #getStoreBinaryAsFile} returns true.
      * @param path the file path
      */
-    public void setBinaryFilePath(File path);
+    public void setBinaryFilePath(String path);
 
     /**
      * Sets the mapping of MMBase fieldnames (typically reserved words) to database fieldnames.
@@ -203,13 +211,13 @@ public interface DatabaseStorage extends Storage  {
      * Maps a MMBase fieldname to a fieldname acceptable to the database
      * @param fieldname the fieldname to map
      */
-    public String mapToTableFieldName(String fieldName);
+    public String mapToTableFieldName(String fieldname);
 
     /**
      * Maps a database fieldname to a fieldname as used by the MMbase system
      * @param fieldname the fieldname to map
      */
-    public String mapToMMBaseFieldName(String fieldName);
+    public String mapToMMBaseFieldName(String fieldname);
 
     /**
      * Returns the JDBC module used by this class to connect to the database.
@@ -225,7 +233,7 @@ public interface DatabaseStorage extends Storage  {
      * @param rs the ResultSet containing the table row
      * @param i the index of the field in the ResultSet
      */
-    public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);
+    public void loadFieldFromTable(MMObjectNode node,String fieldname, ResultSet rs,int i);
 
     /**
      * Set prepared statement field i with value of key from node

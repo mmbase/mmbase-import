@@ -9,10 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
+
+import java.util.Vector; 
+import java.util.Enumeration;
+import java.util.StringTokenizer;
 
 import org.mmbase.bridge.Node;
 
@@ -33,15 +34,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.26 2003-08-27 21:33:29 michiel Exp $ 
- */
-
+ **/
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
 
     // a node provider is a nodereferrer as well...
     // this is especially useful for some extended classes (like 'relatednodes').
     
-    private static final Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class);
+    private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class.getName());
     
     private   Node   node;        
     private   String jspvar = null;
@@ -87,8 +86,8 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
         if (jspvar != null && node != null) {
             pageContext.setAttribute(jspvar, node);
         }
-        if (id != Attribute.NULL) {
-            getContextProvider().getContextContainer().registerNode(getId(), node);
+        if (id != null) {
+            getContextTag().registerNode(id, node);
         }
     }
                
@@ -112,13 +111,6 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     public void setModified() {
         modified = true;
     }
-
-    /**
-     * @since MMBase-1.7
-     */
-    protected boolean getModified() {
-        return modified;
-    }
     /**
     * Does everything needed on the afterbody tag of every
     * NodeProvider.  Normally this function would be overrided with
@@ -136,6 +128,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     }
     
     public int doEndTag() throws JspTagException {
+        id = null; // setting attriubtes to null is perhaps not that prudent.
         node = null;
         modified = false;
         return EVAL_PAGE;

@@ -9,6 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
 /**
  * MMBaseProbe is a thread-like object that gets instantiated by MMbase.
  * It calls the callback method {@link MMBase#doProbeRun} in MMbase, which in turn probes the builders.
@@ -19,7 +24,7 @@ package org.mmbase.module.core;
  *
  * @author Daniel Ockeloen
  * @author Pierer van Rooden (javadoc)
- * @version $Id: MMBaseProbe.java,v 1.10 2003-07-21 07:31:55 keesj Exp $
+ * @version $Id: MMBaseProbe.java,v 1.7 2002-03-11 10:42:36 pierre Exp $
  */
 public class MMBaseProbe implements Runnable {
 
@@ -72,7 +77,6 @@ public class MMBaseProbe implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"MMBaseProbe");
-            kicker.setDaemon(true);
             kicker.start();
         }
     }
@@ -83,7 +87,7 @@ public class MMBaseProbe implements Runnable {
      */
     public void stop() {
         /* Stop thread */
-        kicker.interrupt();
+        kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
 
@@ -98,7 +102,7 @@ public class MMBaseProbe implements Runnable {
         if (kicker!=null) {
             try {
                 Thread.sleep(10*60*1000);
-            } catch (InterruptedException e) { return;}
+            } catch (InterruptedException e) {}
         }
         parent.probe=null;
     }

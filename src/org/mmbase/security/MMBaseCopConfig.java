@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: MMBaseCopConfig.java,v 1.12 2003-08-27 19:32:30 michiel Exp $
+ * @version $Id: MMBaseCopConfig.java,v 1.9 2002-10-25 13:09:52 michiel Exp $
  */
 public class MMBaseCopConfig {
-    private static final Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class);
+    private static Logger log = Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
 
     /** the file from which the config is loaded..*/
     private File configFile;
@@ -62,25 +62,13 @@ public class MMBaseCopConfig {
         
         public void onChange(File file) {
             try {
-                log.debug("Going to reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
+                // log.info("gonna reload the MMBase-cop since the file '" + file.getAbsolutePath() + "' was changed.");
                 cop.reload();
             } catch(Exception e) {
                 log.error(e);
-                log.error(Logging.stackTrace(e));
+                e.printStackTrace();
             }
         }
-    }
-
-    /** Public ID of the Builder DTD version 1.0 */
-    public static final String  PUBLIC_ID_SECURITY_1_0 = "-//MMBase//DTD security config 1.0//EN";
-    private static final String PUBLIC_ID_SECURITY_1_0_FAULT = "//MMBase - security//";
-
-    /** DTD resource filename of the Builder DTD version 1.0 */
-    public static final String DTD_SECURITY_1_0 = "security_1_0.dtd";
-
-    public static void registerPublicIDs() {
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0, DTD_SECURITY_1_0, MMBaseCopConfig.class);
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_1_0_FAULT, DTD_SECURITY_1_0, MMBaseCopConfig.class);
     }
     
     /**

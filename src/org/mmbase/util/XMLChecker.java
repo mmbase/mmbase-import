@@ -10,20 +10,23 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.io.*;
+import java.util.*;
 
-import javax.xml.parsers.DocumentBuilder;
-
-import org.mmbase.util.logging.*;
-import org.w3c.dom.Document;
 import org.xml.sax.*;
+import org.apache.xerces.parsers.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 import org.xml.sax.helpers.DefaultHandler;
+
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Check XML documents against their DTD's and be as pretty as possible about errors
  *
  * @author Cees Roele
  */
-public class XMLChecker {
+public class XMLChecker  {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(XMLChecker.class.getName());
@@ -32,6 +35,10 @@ public class XMLChecker {
      * Document to check
      */
     Document document;
+    /**
+     * Parser used for checking
+     */
+    DOMParser parser;
 
     /**
      * Stream that recieves the errors and warnings.
@@ -59,69 +66,69 @@ public class XMLChecker {
         /**
          * Stream that recieves the errors and warnings.
          */
-        PrintStream out; // XXX: not necessarily needed, can use the parent stream
+    PrintStream out; // XXX: not necessarily needed, can use the parent stream
 
         /**
          * Number of warnings
          */
-        int warningCount;
+    int warningCount;
         /**
          * Number of errors
          */
-        int errorCount;
+    int errorCount;
         /**
          * Number of fatal errors
          */
-        int fatalErrorCount;
+    int fatalErrorCount;
 
         /**
          * Create a handler.
          * @param out Stream that recieves the errors and warnings.
          */
-        public XMLCheckerHandler(PrintStream out) {
-            this.out = out;
-            warningCount = 0;
-            errorCount = 0;
-            fatalErrorCount = 0;
-        }
+    public XMLCheckerHandler(PrintStream out) {
+        this.out = out;
+        warningCount = 0;
+        errorCount = 0;
+        fatalErrorCount = 0;
+    }
 
         /**
          * Handling of an error in a xml document during parsing.
          * Writes the error to the out stream.
          * @param e the exception (error) that was thrown during parsing.
          */
-        public void error(SAXParseException e) {
-            errorCount++;
-            out.println("<font color=\"" + error_color + "\">error:</font> " + e.getMessage() + "<br />\n");
-        }
+    public void error(SAXParseException e) {
+        errorCount++;
+        out.println("<font color=\""+error_color+"\">error:</font> "+e.getMessage()+"<br>\n");
+    }
 
         /**
          * Handling of a fatal error in a xml document during parsing.
          * Writes the error to the out stream.
          * @param e the exception (fatal error) that was thrown during parsing.
          */
-        public void fatalError(SAXParseException e) {
-            fatalErrorCount++;
-            out.println("<font color=\"" + fatalerror_color + "\">fatal error:</font> " + e.getMessage() + "<br />\n");
-        }
+    public void fatalError(SAXParseException e) {
+        fatalErrorCount++;
+        out.println("<font color=\""+fatalerror_color+"\">fatal error:</font> "+e.getMessage()+"<br>\n");
+    }
 
         /**
          * Handling of a warning in a xml document during parsing.
          * Writes the warning to the out stream.
          * @param e the exception (warning) that was thrown during parsing.
          */
-        public void warning(SAXParseException e) {
-            warningCount++;
-            out.println("<font color=\"" + warning_color + "\">warning:</font> " + e.getMessage() + "<br />\n");
-        }
+    public void warning(SAXParseException e) {
+        warningCount++;
+        out.println("<font color=\""+warning_color+"\">warning:</font> "+e.getMessage()+"<br>\n");
+    }
 
         /**
          * Final action after parsing of a document.
          * Writes a report (number of errors, fatal errors, and warnings) to the out stream.
          */
-        public void report() {
-            out.println("warning(s): " + warningCount + ", error(s): " + errorCount + ", fatal error(s): " + fatalErrorCount + "<p>\n");
-        }
+    public void report() {
+        out.println("warning(s): "+warningCount+", error(s): "+errorCount+", fatal error(s): "+fatalErrorCount+"<p>\n");
+    }
     }
 
     /**
@@ -129,7 +136,7 @@ public class XMLChecker {
      * @param out Stream that recieves the results of the check (errors and warnings and report).
      */
     public XMLChecker(PrintStream out) {
-        this.out = out;
+    this.out = out;
     }
 
     /**
@@ -139,15 +146,18 @@ public class XMLChecker {
      */
     public void validateAndReport(String filename) {
         try {
-            XMLCheckerHandler errorhandler = new XMLCheckerHandler(out);
-            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(true, (ErrorHandler)errorhandler);
-            db.parse(new File(filename));
-
-            errorhandler.report();
-        } catch (Exception e) {
+            parser = new DOMParser();
+            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
+            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
+        parser.setFeature("http://xml.org/sax/features/validation", true);
+        XMLCheckerHandler errorhandler = new XMLCheckerHandler(out);
+            parser.setErrorHandler(errorhandler);
+            parser.parse(filename);
+        errorhandler.report();
+    } catch(Exception e) {
             log.error(e);
             log.error(Logging.stackTrace(e));
-        }
+    }
     }
 
     /**
@@ -157,6 +167,6 @@ public class XMLChecker {
      * @return always <code>true</code>
      */
     public boolean validate(String filename) {
-        return true;
+    return true;
     }
 }

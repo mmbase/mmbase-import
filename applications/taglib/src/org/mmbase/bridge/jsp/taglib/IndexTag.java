@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -20,35 +19,49 @@ import org.mmbase.util.logging.Logging;
 /**
  * The index of current item of a list.
  *
+ *
  * @author Michiel Meeuwissen
- * @version $Id: IndexTag.java,v 1.15 2003-08-27 21:33:33 michiel Exp $ 
+ *
  */
 
 public class IndexTag extends ListReferrerTag implements Writer {
 
-    private static final Logger log = Logging.getLoggerInstance(IndexTag.class);
+    private static Logger log = Logging.getLoggerInstance(IndexTag.class.getName());
+    // Writer implementation:
+    protected WriterHelper helper = new WriterHelper();
+    public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+    public void haveBody() { helper.haveBody(); }
 
-    private Attribute offset = Attribute.NULL; 
+    private int offset = 1; // start counting at 1 on default.
 
     public void setOffset(String o) throws JspTagException {
-        offset = getAttribute(o);
-    }
-    protected int getOffset() throws JspTagException {
-        return offset.getInt(this, getList().getIndexOffset()); // start counting at list's offset on default (normally 1)
+        offset = getAttributeInteger(o).intValue();
     }
 
     public int doStartTag() throws JspTagException{
-        helper.setTag(this);
-        helper.setValue(new Integer(getList().getIndex() + getOffset()));
+        helper.setValue(new Integer(getList().getIndex() + offset));
+        helper.setJspvar(pageContext);
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
 
 
     public int doAfterBody() throws JspException {
-        return helper.doAfterBody();
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
     }
 
     /**

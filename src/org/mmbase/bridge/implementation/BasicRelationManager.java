@@ -10,8 +10,8 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Vector;
+import java.util.Iterator;
 import org.mmbase.bridge.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
@@ -23,10 +23,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManager.java,v 1.23 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicRelationManager.java,v 1.19.2.2 2003-04-08 14:32:23 pierre Exp $
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
-    private static final Logger log = Logging.getLoggerInstance(BasicRelationManager.class);
+    private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
 
     public MMObjectNode relDefNode;
     private MMObjectNode typeRelNode;
@@ -107,7 +107,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         return relDefNode.getIntValue("dir");
     }
 
-    int getBuilder() {
+    public int getBuilder() {
         return relDefNode.getIntValue("builder");
     }
 
@@ -157,9 +157,12 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public RelationList getRelations(Node node) {
         // XXX: no caching is done here?
-        List result = new ArrayList();
+        Vector result = new Vector();
         InsRel insRel = (InsRel) builder;
-        result.addAll(insRel.getRelationsVector(node.getNumber()));
+        for (Iterator i = insRel.getRelationsVector(node.getNumber()).iterator(); i.hasNext(); ) {
+            MMObjectNode r = (MMObjectNode) i.next();
+            result.add(r);
+        }
         return new BasicRelationList(result, this);
     }
 

@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.Iterator;
 
 /**
- * MMInformix42Node extends MMSQL92Node and implements the MMJdbc2NodeInterface.
- * <p>This class overrides the methods which needed substitution to make mmbase
+ * <p>MMInformix42Node extends MMSQL92Node and implements the MMJdbc2NodeInterface.
+ * This class overrides the methods which needed substitution to make mmbase
  * work with informix dynamic server.</p>
  * <p>
  * Tested on:
@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.50 2003-09-01 13:29:44 pierre Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.5 2003-04-24 13:04:08 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -70,14 +70,15 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         name = "informix";
     }
 
-    /**
-     * The createObjectTable method is used to create toplevel database object.
-     * Only used for backwards compatibility with old builder-configs that
-     * don't support builderinheritance (ages ago)</p>
-     *
-     * @param baseName  baseName
-     * @return true if the creation succeeded
-     */
+    /*
+    * <p>createObjectTable is used to create toplevel database object</p>
+    * <p>Only used for backwards compatibility with old builder-configs that
+    *  don't support builderinheritance (ages ago)</p>
+    *
+    *  @param baseName  baseName
+    *  @return true if the creation succeeded
+    *
+    */
     public boolean createObjectTable(String baseName) {
         if (log.isDebugEnabled()) log.trace(" ");
         try {
@@ -100,8 +101,8 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
     }
 
     /**
-     * Creates the database-table for the specified builder.
-     *
+     * <p>Creates the database-table for the specified builder
+     * </p>
      * @param bul  Builder which will be used to create the object-table
      * @return     true if the creation succeeded
      */

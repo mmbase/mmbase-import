@@ -12,6 +12,7 @@ package org.mmbase.servlet;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Map;
+import java.util.Date;
 
 import org.mmbase.bridge.Node;
 
@@ -21,7 +22,7 @@ import org.mmbase.bridge.Node;
  * images), which you have to create yourself before calling this servlet. The cache() function of
  * Images can be used for this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.14 2003-06-05 09:22:13 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.11 2002-11-06 22:04:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see    org.mmbase.module.builders.AbstractImages
@@ -53,10 +54,10 @@ public class ImageServlet extends HandleServlet {
             try {
                 fileName = node.getCloud().getNode(node.getIntValue("id")).getStringValue("title");
             } catch (org.mmbase.security.SecurityException e) {
-                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied on original image node: " + e.toString());
+                res.sendError(res.SC_FORBIDDEN, "Permission denied on original image node: " + e.toString());
                 return false;
             }
-        } else { // 'images', but as you see this is not explicit, so you can also name your image builder otherwise.
+        } else { // 'images', but as you this is not explicit, so you can also name your image builder otherwise.
             fileName = node.getStringValue("title"); 
         }
 

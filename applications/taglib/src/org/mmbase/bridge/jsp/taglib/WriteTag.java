@@ -9,10 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.Node;
-
-import org.mmbase.bridge.jsp.taglib.containers.FunctionContainerReferrer;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.http.Cookie;
@@ -30,32 +26,45 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.38 2003-08-27 21:33:37 michiel Exp $ 
- */
+ **/
 
-public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
+public class WriteTag extends ContextReferrerTag implements Writer {
 
     public static int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     public static String COOKIE_PATH    = "/";
-    private static final Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
 
-    private Attribute sessionvar = Attribute.NULL;
-    private Attribute cookie = Attribute.NULL;
-    private Attribute value = Attribute.NULL;
-    private Attribute container = Attribute.NULL;
+    protected WriterHelper helper = new WriterHelper();
+    // sigh, we would of course prefer to extend, but no multiple inheritance possible in Java..
+
+    public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+    public void haveBody() { helper.haveBody(); }
+
+    private String sessionvar;
+    private String cookie;
+    private String value;
 
     public void setSession(String s) throws JspTagException {
-        sessionvar = getAttribute(s);
+        sessionvar = getAttributeValue(s);
     }
 
     public void setCookie(String s) throws JspTagException {
-        cookie = getAttribute(s);
+        cookie = getAttributeValue(s);
     }
     public void setValue(String v) throws JspTagException {
-        value = getAttribute(v);
-    }
-    public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c); // not yet implemented
+        value = getAttributeValue(v);
+        if (log.isDebugEnabled()) log.debug("found value " + value);
     }
 
 
@@ -63,15 +72,15 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("getting object " + getReferid());
         }
-        if (getReferid() == null && value == Attribute.NULL) { // get from parent Writer.
+        if (getReferid() == null && value == null) { // get from parent Writer.
             return findWriter().getWriterValue();
         }
 
-        if (value != Attribute.NULL) {
+        if (value != null) {
             if (getReferid() != null) {
-                 throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
+                throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
             }
-            return value.getString(this); // with value attribute only strings, of course.
+            return value;
         }
 
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
@@ -85,21 +94,20 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
         if (log.isDebugEnabled()) {
             log.debug("start writetag id: '" +getId() + "' referid: '" + getReferid() + "' value '" + value + "'");
         }
-        helper.setTag(this);
         helper.setValue(getObject());
-
+        helper.setJspvar(pageContext);
 
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
-        if (sessionvar != Attribute.NULL) {
+        if (sessionvar != null) {
             if (pageContext.getSession() == null) {
                 throw new JspTagException("Cannot write to session if session is disabled");
             }
-            pageContext.getSession().setAttribute(sessionvar.getString(this), helper.getValue());
+            pageContext.getSession().setAttribute(sessionvar, helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
-        if (cookie != Attribute.NULL) {
+        if (cookie != null) {
             Object v = helper.getValue();
             String cookievalue;
             if (v instanceof Node) {
@@ -131,13 +139,13 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
 
 
             {  // on root (keep things simple)
-                Cookie c = new Cookie(cookie.getString(this), cookievalue);
+                Cookie c = new Cookie(cookie, cookievalue);
                 c.setPath(COOKIE_PATH);               
                 c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
             }
             if (cookiecount > 1) { //also in current dir (in case it was there already)
-                Cookie c = new Cookie(cookie.getString(this), cookievalue);
+                Cookie c = new Cookie(cookie, cookievalue);
                 c.setMaxAge(MAX_COOKIE_AGE);
                 response.addCookie(c);
             }
@@ -147,7 +155,8 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     }
 
     public int doAfterBody() throws JspException {
-        return helper.doAfterBody();
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
     }
 
 

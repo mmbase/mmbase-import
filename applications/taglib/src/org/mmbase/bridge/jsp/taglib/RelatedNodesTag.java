@@ -8,12 +8,13 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
-import java.util.*;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -25,38 +26,31 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: RelatedNodesTag.java,v 1.24 2003-08-27 21:32:41 michiel Exp $ 
  */
-
 public class RelatedNodesTag extends AbstractNodeListTag {
-    private static final Logger log = Logging.getLoggerInstance(RelatedNodesTag.class);
-    protected Attribute type      = Attribute.NULL;
-    protected Attribute role      = Attribute.NULL;
-    protected Attribute searchDir = Attribute.NULL;
+    private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
+    protected String type = null;
+    protected String role = null;
+    protected String searchDir = null;
 
     /**
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttribute(type);
+        this.type = getAttributeValue(type);
     }
     /**
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttribute(role);
+        this.role = getAttributeValue(role);
     }
 
     /**
-     * The search parameter, determines how directionality affects the search.
-     * Possible values are <code>both</code>, <code>destination</code>,
-     * <code>source</code>, and <code>all</code>
-     * @param search the swerach value
      */
     public void setSearchdir(String search) throws JspTagException {
-        searchDir = getAttribute(search);
+        searchDir = getAttributeValue(search);
     }
-
 
     /**
      * Performs the search
@@ -71,61 +65,67 @@ public class RelatedNodesTag extends AbstractNodeListTag {
         if (parentNode == null) {
             throw new JspTagException("Could not find parent node!!");
         }
-        
-        Cloud cloud = getCloud();
-        NodeQuery query = cloud.createNodeQuery();
-        Step step1 = query.addStep(parentNode.getNodeManager());
-        query.addNode(step1, parentNode);
-        
-        NodeManager otherManager;
-        if (type == Attribute.NULL) {
-            otherManager = cloud.getNodeManager("object");
-        } else {
-            otherManager = cloud.getNodeManager(type.getString(this));
-        }
 
-        RelationStep step2 = query.addRelationStep(otherManager, (String) role.getValue(this), (String) searchDir.getValue(this));
-        Step step3 = step2.getNext();
+        NodeList nodes;
+        if ( (constraints != null && !constraints.equals(""))
+             ||
+             (orderby != null && !orderby.equals(""))
+             ) { // given orderby or constraints, start hacking:
 
-        query.setNodeStep(step3);  // define it as NodeQuery
-
-        List orderbys    = orderby.getList(this);
-        List directionss = directions.getList(this);
-        for (int i = 0; i < orderbys.size(); i ++) {
-            String fieldName = (String) orderbys.get(i);
-            int dot = fieldName.indexOf('.');
-            
-            StepField sf;
-            if (dot == -1) {
-                sf = query.getStepField(otherManager.getField(fieldName));
-            } else {
-                String alias = fieldName.substring(0, dot);
-                String field2Name = fieldName.substring(dot + 1);
-                if (! alias.equals(step2.getAlias())) throw new  JspTagException("'" + alias + "' not equal '" + step2.getAlias());
-                sf = query.createStepField(step2, field2Name);
+            if (type == null) {
+                throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             }
+            NodeManager manager = getCloud().getNodeManager(type);
+            NodeList initialnodes;
 
-            int order = SortOrder.ORDER_ASCENDING;
-            if (directionss.size() > i) {
-                String dir = ((String) directionss.get(i)).toUpperCase();
-                if (dir.equals("DOWN")) {
-                    order = SortOrder.ORDER_DESCENDING;
+            if (role == null && searchDir == null) {
+                initialnodes = parentNode.getRelatedNodes(type);
+            } else {
+                if (searchDir == null && directions != null) {
+                    log.error("WRONG use of 'directions' attribute of relatednodes (should be searchdir). Fix this page before 1.7!");
+                    initialnodes = parentNode.getRelatedNodes(type, role, directions);
+                } else {
+                    initialnodes = parentNode.getRelatedNodes(type, role, searchDir);
                 }
             }
-            query.addSortOrder(sf, order);
-        }
 
-        if (constraints != Attribute.NULL) {
-            String s = constraints.getString(this);
-            if (! s.equals("")) {
-                LegacyConstraint con = query.createConstraint(constraints.getString(this));
-                query.setConstraint(con);
+            StringBuffer where = null;
+            for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
+                Node n = i.nextNode();
+                if (where == null) {
+                    where = new StringBuffer("" +  n.getNumber());
+                } else {
+                    where.append(",").append( n.getNumber());
+                }
             }
-        }       
-                                           
-        NodeList nodes = cloud.getList(query);
-
+            if (where == null) { // empty list, so use that one.
+                nodes = initialnodes;
+            } else {
+                where.insert(0, "[number] in (").append(")");
+                if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
+                nodes = manager.getList(where.toString(), orderby, directions);
+            }
+        } else {
+            if (type == null) {
+                if (role != null) {
+                    throw new JspTagException("Must specify type attribute when using 'role'");
+                }
+                nodes = parentNode.getRelatedNodes();
+            } else {
+                if (role == null && searchDir == null) {
+                    nodes = parentNode.getRelatedNodes(type);
+                } else {
+                    if (searchDir == null && directions != null) {
+                        log.error("WRONG use of 'directions' attribute of relatednodes (should be searchdir). Fix this page before 1.7");
+                        nodes = parentNode.getRelatedNodes(type, role, directions);
+                    } else {
+                        nodes = parentNode.getRelatedNodes(type, role, searchDir);
+                    }
+                }
+            }
+        }
         return setReturnValues(nodes, true);
     }
+
 }
 

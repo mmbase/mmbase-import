@@ -13,8 +13,7 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Generates a HTML Element: SELECT.
- * Uses these variables which are set in the
+ * Generates a HTML Element: SELECT, uses this variables which are set in the<br>
  * super class (HTMLElement) to generate HTML:
  * <ul>
  * <li>boolean sel        : if true it checks if the String selected equals the
@@ -32,10 +31,10 @@ import org.mmbase.util.logging.*;
  * <li>String size        : if not null the HTML tag SIZE=size is added </li>
  * <li>boolean multiple   : if true the HTML tag MULTIPLE is added.</li>
  * <li>boolean empty      : if true an empty option value is added.</li>
- * </ul>
+ * </el>
  *
+ * @version 26-Sep-1996
  * @author Jan van Oosterom
- * @version $Id: HTMLElementSelect.java,v 1.6 2003-03-07 11:49:25 pierre Exp $
  */
 
 public class HTMLElementSelect  extends HTMLElement  {

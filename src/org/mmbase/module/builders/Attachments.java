@@ -10,13 +10,17 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.sql.*;
 
+import org.mmbase.servlet.MMBaseServlet;
+import org.mmbase.module.builders.*;
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This builder can be used for 'attachments' builders. That is
@@ -25,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.25 2003-05-19 09:59:12 michiel Exp $
+ * @version $Id: Attachments.java,v 1.21.2.1 2003-01-06 17:03:20 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -59,8 +63,11 @@ public class Attachments extends AbstractServletBuilder {
         return false;
     }
 
-    protected String getSGUIIndicator(MMObjectNode node, Arguments a) {
-        String field = a.getString("field");
+    public String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
+        return getSGUIIndicator(session, res, "handle", node);
+    }
+
+    public String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {
         if (field.equals("handle") || field.equals("")) {
             int num  = node.getIntValue("number");
             //int size = node.getIntValue("size");
@@ -77,24 +84,10 @@ public class Attachments extends AbstractServletBuilder {
             if (/*size == -1  || */ num == -1) { // check on size seems sensible, but size was often not filled
                 return title;               
             } else {
-                String ses = (String) a.get("session");
-                if (log.isDebugEnabled()) {
-                    log.debug("bridge: " + usesBridgeServlet + " ses: " + ses);
-                }
-                StringBuffer servlet = new StringBuffer();
-                HttpServletRequest req = (HttpServletRequest) a.get("request");
-                if (req != null) {            
-                    servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), filename));
-                } else {
-                    servlet.append(getServletPath(filename));
-                }
-                servlet.append(usesBridgeServlet && ses != null ? "session=" + ses + "+" : "").append(num);
-                HttpServletResponse res = (HttpServletResponse) a.get("response");
-                String url;
+                log.info("brdge: " + usesBridgeServlet + " ses: " + session);
+                String url = getServletPath(filename) + (usesBridgeServlet ? session : "") + num;
                 if (res != null) {
-                    url = res.encodeURL(servlet.toString());
-                } else {
-                    url = servlet.toString();
+                    url = res.encodeURL(url);
                 }
                 return "<a href=\"" + url + "\" target=\"extern\">" + title + "</a>";
             }
@@ -185,7 +178,6 @@ public class Attachments extends AbstractServletBuilder {
         checkHandle(node);
         return super.commit(node);
     }
-
     /**
      * Implements 'mimetype' function (Very simply for attachments, because they have the field).
      *

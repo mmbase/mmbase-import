@@ -9,10 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.util.*;
 import java.lang.Exception;
 
+import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.OAlias;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.32 2003-03-21 11:53:44 michiel Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.29.2.1 2002-11-25 11:45:56 pierre Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -42,17 +46,13 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
      * @javadoc
      */
     public String createTmpNode(String type,String owner,String key) {
-        if (log.isDebugEnabled()) {
-            log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
-        }
+        log.debug("createTmpNode : type=" + type + " owner=" + owner + " key=" + key);
         if (owner.length()>12) owner=owner.substring(0,12);
         MMObjectBuilder builder=mmbase.getMMObject(type);
         MMObjectNode node;
-        if (builder !=null) {
-            node = builder.getNewTmpNode(owner,getTmpKey(owner,key));
-            if (log.isDebugEnabled()) {
-                log.debug("New tmpnode " + node);
-            }
+        if (builder!=null) {
+            node=builder.getNewTmpNode(owner,getTmpKey(owner,key));
+            log.debug("New tmpnode " + node);
         } else {
             log.error("Can't find builder " + type);
         }

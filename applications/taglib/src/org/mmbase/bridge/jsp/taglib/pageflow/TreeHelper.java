@@ -10,12 +10,19 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.File;
 import java.util.StringTokenizer;
 import java.util.Stack;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMBaseContext;
@@ -29,9 +36,7 @@ import org.mmbase.module.core.MMBaseContext;
  *
  * @author Johannes Verelst
  * @author Rob Vermeulen (VPRO)
- * @version $Id: TreeHelper.java,v 1.6 2003-08-27 21:33:41 michiel Exp $
  */
-
 public class TreeHelper {
     /*
         Idea:
@@ -50,7 +55,7 @@ public class TreeHelper {
      */
     
     private Cloud cloud;
-    private static final Logger log = Logging.getLoggerInstance(TreeHelper.class.getName());
+    private static Logger log = Logging.getLoggerInstance(TreeHelper.class.getName());
     private static String htmlroot = MMBaseContext.getHtmlRoot();
     
     public void setCloud(Cloud cl) {

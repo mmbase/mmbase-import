@@ -9,10 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.Vector;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Class for doing random things.
@@ -80,7 +78,7 @@ public class RandomThings {
     public static Vector giveRandomFrom(Vector v,int max) {
         Vector newv=new Vector();
         Object ob;
-        int siz=v.size();
+        int siz=v.size(),c;
 
         if (max>=siz) {
             newv=shuffleCloneVector(v);

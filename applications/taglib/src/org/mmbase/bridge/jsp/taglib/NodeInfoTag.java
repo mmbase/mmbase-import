@@ -9,13 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.Arguments;
-import org.mmbase.module.core.MMObjectBuilder;
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
 
 /**
@@ -23,115 +22,112 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.25 2003-08-11 15:27:19 michiel Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
-    private static final int TYPE_NODEMANAGER           = 0;
-    private static final int TYPE_GUINODEMANAGER        = 1;
-    private static final int TYPE_GUINODEMANAGER_PLURAL = 2;
-    private static final int TYPE_NODENUMBER            = 3;
-    private static final int TYPE_GUI                   = 4;
-    private static final int TYPE_DESCRIPTION           = 5;
+    private static final int TYPE_NODEMANAGER    = 0;
+    private static final int TYPE_GUINODEMANAGER = 1;
+    private static final int TYPE_NODENUMBER     = 2;
+    private static final int TYPE_GUI            = 3;
 
 
-    private Attribute type = Attribute.NULL;
+    protected WriterHelper helper = new WriterHelper();
+    public void setVartype(String t) throws JspTagException {
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getWriterValue() {
+        return helper.getValue();
+    }
+    public void haveBody() { helper.haveBody(); }
+
+    private int type;
 
     public void setType(String tu) throws JspTagException {
-        type = getAttribute(tu);
-    }
-
-    private int getType() throws JspTagException {
-        String t = type.getString(this).toLowerCase();
+        String t = getAttributeValue(tu).toLowerCase();
         // note: 'nodemanager' and 'guinodemanager' values are deprecated
         // use 'type' and 'guitype' instead
         if ("nodemanager".equals(t) || "type".equals(t)) {
-            return TYPE_NODEMANAGER;
+            type = TYPE_NODEMANAGER;
         } else if ("guinodemanager".equals(t) || "guitype".equals(t)) {
-            return TYPE_GUINODEMANAGER;
-        } else if ("plural_guinodemanager".equals(t) || "plural_guitype".equals(t)) {
-            return TYPE_GUINODEMANAGER_PLURAL;
-        } else if ("description".equals(t)) {
-            return  TYPE_DESCRIPTION;
+            type = TYPE_GUINODEMANAGER;
         } else if ("number".equals(t)) {
-            return  TYPE_NODENUMBER;
+            type = TYPE_NODENUMBER;
         } else if ("gui".equals(t)) {
-            return TYPE_GUI;
+            type = TYPE_GUI;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
     }
 
-    private Attribute nodeManagerAtt = Attribute.NULL;
+    private String nodeManagerString;
     public void setNodetype(String t) throws JspTagException {
-        nodeManagerAtt = getAttribute(t);
+        nodeManagerString = getAttributeValue(t);
     }
 
     public int doStartTag() throws JspTagException{
 
         NodeManager nodeManager = null;
-        int t = getType();
-        switch(t) {
+
+        switch(type) {
         case TYPE_NODEMANAGER:
-        case TYPE_DESCRIPTION:
         case TYPE_GUINODEMANAGER:
-        case TYPE_GUINODEMANAGER_PLURAL:
-            if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
+            if (nodeManagerString == null) { // living as NodeReferrer
                 nodeManager = getNode().getNodeManager();
             } else {
-                nodeManager = getCloud().getNodeManager(nodeManagerAtt.getString(this));
+                nodeManager = getCloud().getNodeManager(nodeManagerString);
             }
         }
         String show = "";
 
         // set node if necessary:
-        switch(t) {
+        switch(type) {
         case TYPE_NODENUMBER:
             show = ""+getNode().getNumber();
             break;
         case TYPE_NODEMANAGER:
             show = nodeManager.getName();
             break;
-        case TYPE_DESCRIPTION:
-            show = nodeManager.getDescription();
-            break;
         case TYPE_GUINODEMANAGER:
             show = nodeManager.getGUIName();
             break;
-        case TYPE_GUINODEMANAGER_PLURAL:
-            show = nodeManager.getGUIName(10);
-            break;
         case TYPE_GUI: {
-            helper.useEscaper(false); // gui produces html
             String sessionName = "";
             CloudTag ct = null;
-            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
-            Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
-            args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-            args.set("language", getCloud().getLocale().getLanguage());
-            args.set("session",  sessionName);
-            args.set("response", pageContext.getResponse());
-            args.set("request",  pageContext.getRequest());
+
+            java.util.List args = new java.util.Vector();
+            args.add("");
+            args.add(getCloud().getLocale().getLanguage());
+            args.add(sessionName);
+            args.add(pageContext.getResponse());
+
             show = getNode().getFunctionValue("gui", args).toString();
             break;
         }
         default:
         }
 
-        helper.setTag(this);
         helper.setValue(show);
+        helper.setJspvar(pageContext);
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspException {
-        return helper.doAfterBody();
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
     }
 
     /**

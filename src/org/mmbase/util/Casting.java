@@ -134,33 +134,17 @@ public class Casting {
      * @return the field's value as an <code>int</code>
      */
     static public int toInt(Object i) {
-        return toInt(i, -1);
-    }
-    
-    /**
-     * as toInt, but with configurable fallback-value
-     * @since MMBase-1.7
-     */
-
-    static public int toInt(Object i, int def) {
-        int res = def;
+        int res = -1;
         if (i instanceof MMObjectNode) {
-            res = ((MMObjectNode)i).getNumber();
+            res=((MMObjectNode)i).getNumber();
         } else if (i instanceof Boolean) {
-            res = ((Boolean)i).booleanValue() ? 1 : 0;
+            res=((Boolean)i).booleanValue() ? 1 : 0;
         } else if (i instanceof Number) {
-            res = ((Number)i).intValue();
-        } else if (i != null) {
+            res=((Number)i).intValue();
+        } else if (i!=null) {
             try {
-                res = Integer.parseInt("" + i);
-            } catch (NumberFormatException e) {
-                // not an integer? perhaps it is a fload or double represented as String.
-                try {
-                    res = Double.valueOf("" + i).intValue();
-                } catch (NumberFormatException ex) {
-                    // give up, fall back to default.
-                }
-            }
+                res=Integer.parseInt(""+i);
+            } catch (NumberFormatException e) {}
         }
         return res;
     }
@@ -226,15 +210,8 @@ public class Casting {
             res=((Number)i).intValue();
         } else if (i!=null) {
             try {
-              res = Integer.parseInt(""+i);
-            } catch (NumberFormatException e) {
-                // not an integer? perhaps it is a float or double represented as String.
-                try {
-                    res = Double.valueOf("" + i).intValue();
-                } catch (NumberFormatException ex) {
-                    // give up, fall back to default.
-                }
-            }
+              res=Integer.parseInt(""+i);
+            } catch (NumberFormatException e) {}
         }
         return new Integer(res);
     }
@@ -257,14 +234,7 @@ public class Casting {
         } else if (i!=null) {
             try {
               res=Long.parseLong(""+i);
-            } catch (NumberFormatException e) {
-                // not an integer? perhaps it is a float or double represented as String.
-                try {
-                    res = Double.valueOf("" + i).longValue();
-                } catch (NumberFormatException ex) {
-                    // give up, fall back to default.
-                }
-            }
+            } catch (NumberFormatException e) {}
         }
         return res;
     }
@@ -291,29 +261,6 @@ public class Casting {
             } catch (NumberFormatException e) {}
         }
         return res;
-    }
-
-    /**
-     * How to convert mmbase object to a Date object
-     * @since MMBase-1.7
-     */
-
-    static public java.util.Date toDate(Object i) {
-        long date = -1;
-        if (i instanceof Integer) {
-            date = ((Integer) i).longValue();
-        } else if (i instanceof Number) {
-            date = ((Number)i).longValue();
-        } else if (i != null) {
-            try {
-                date = Long.parseLong("" + i);
-            } catch (NumberFormatException e) {}
-        }
-        if (date == -1 ) {
-            return new java.util.Date(-1);
-        } else {
-            return new java.util.Date(date * 1000);
-        }
     }
 
 

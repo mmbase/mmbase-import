@@ -14,7 +14,7 @@ package org.mmbase.util;
  * @see org.mmbase.util.SortedVector
  *
  * @author Rico Jansen
- * @version $Id: Sortable.java,v 1.5 2003-03-10 11:51:11 pierre Exp $
+ * @version 05-Mar-1997
  */
 public interface Sortable
 {

@@ -10,32 +10,18 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 /**
- * This exception gets thrown when something goes wrong in the storage layer.
+ * Storage exception.
+ * This exception is thrown when the storage layer is unable to
+ * perform an operation.
  *
- * @since  MMBase-1.7
+ * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.5 2003-08-29 09:36:54 pierre Exp $
+ * @version $Id: StorageException.java,v 1.1 2002-09-16 15:07:32 pierre Exp $
  */
 public class StorageException extends Exception {
 
-    //javadoc is inherited
-    public StorageException() {
-        super();
+    public StorageException(String s) {
+        super(s);
     }
-
-    //javadoc is inherited
-    public StorageException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public StorageException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public StorageException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
 }
+

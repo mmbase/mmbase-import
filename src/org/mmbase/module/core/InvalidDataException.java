@@ -16,29 +16,24 @@ import java.lang.Exception;
  */
 public class InvalidDataException extends Exception {
 
-    // Name of the field that caused the exception
+    /** Name of the field that caused the exception
+    */
     private String invalidField=null;
 	
-    //javadoc is inherited
-	public InvalidDataException () {
-		super();
+	/**
+	 * Create the exception.
+ 	 */
+	public InvalidDataException() {
 	}
 	
-    //javadoc is inherited
-    public InvalidDataException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public InvalidDataException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public InvalidDataException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
+	/**
+	 * Create the exception.
+	 * @param message a description of the exception
+ 	 */
+	public InvalidDataException (String message) {
+		super(message);
+	}
+	
 	/**
 	 * Create the exception.
 	 * @param message a description of the exception
@@ -50,21 +45,9 @@ public class InvalidDataException extends Exception {
 	}
 	
 	/**
-	 * Create the exception.
-     * The cause can be retrieved with getCause().
-     *
-     * @param Throwable the cause of the exception
-	 * @param fieldMame the name of the field that caused the exception
- 	 */
-	public InvalidDataException (Throwable cause, String fieldName) {
-		super(cause);
-		invalidField=fieldName;
-	}
-	
-	/**
- 	 * Retrieved the name of the field that caused the exception
-	 * @return the field name as a String
-	 */
+	* Retrieved the name of the field that caused the exception
+	* @return the field name as a String
+	*/
 	public String getInvalidFieldName() {
 	    return invalidField;
 	}

@@ -1,8 +1,0 @@
-<contextdepth>
-	<startnode>
-		<builder>mags</builder>
-		<where>title=='MyNews magazine'</where>
-	</startnode>
-
-	<depth>3</depth>
-</contextdepth>

@@ -11,79 +11,39 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.typehandler;
 
 import javax.servlet.jsp.JspTagException;
-
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
-import org.mmbase.storage.search.*;
 import org.mmbase.util.Encode;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.transformers.Sql;
 
 /**
- * A TypeHandler for strings, textareas and text-input.
- * Search values are SQL escaped.
- *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.18 2003-09-01 13:29:43 pierre Exp $
  */
-
 public class StringHandler extends AbstractTypeHandler {
-
-    private static final Logger log = Logging.getLoggerInstance(StringHandler.class);
 
     /**
      * Constructor for StringHandler.
      */
-    public StringHandler(FieldInfoTag tag) {
-        super(tag);
+    public StringHandler(FieldInfoTag context) {
+        super(context);
     }
 
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search)        throws JspTagException {
-
+            
         StringBuffer buffer = new StringBuffer();
         if(! search) {
-            if (field.getName().equals("owner")) {
-                Cloud cloud = tag.getCloud();
-                if (node == null) {
-                    buffer.append(cloud.getUser().getOwnerField());
-                } else if (! node.mayChangeContext()) {
-                    buffer.append(node.getContext());
-                } else {
-
-                    String value = node.getContext();
-                    buffer.append("<select name=\"" + prefix("owner") + "\">\n");
-
-
-                    StringList possibleContexts = node.getPossibleContexts();
-
-                    if (! possibleContexts.contains(value)) {
-                        possibleContexts.add(0, value);
-                    }
-                    StringIterator i = possibleContexts.stringIterator();
-                    while (i.hasNext()) {
-                        String listContext = i.nextString();
-                        buffer.append("  <option ");
-                        if (value.equals(listContext)){
-                            buffer.append("selected=\"selected\"");
-                        }
-                        buffer.append("value=\"" + listContext+ "\">");
-                        buffer.append(listContext);
-                        buffer.append("</option>\n");
-                    }
-                    buffer.append("</select>");
-                }
-            } else if(field.getMaxLength() > 2048)  {
+            if(field.getMaxLength() > 2048)  {
                 // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
                 buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
                 buffer.append(prefix(field.getName()));
                 buffer.append("\">");
                 if (node != null) {
-                    buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                    buffer.append(Encode.encode("ESCAPE_XML", context.decode(node.getStringValue(field.getName()), node)));
                 }
                 buffer.append("</textarea>");
             } else if(field.getMaxLength() > 255 )  {
@@ -91,19 +51,15 @@ public class StringHandler extends AbstractTypeHandler {
                 buffer.append(prefix(field.getName()));
                 buffer.append("\">");
                 if (node != null) {
-                    buffer.append(Encode.encode("ESCAPE_XML", tag.decode(node.getStringValue(field.getName()), node)));
+                    buffer.append(Encode.encode("ESCAPE_XML", context.decode(node.getStringValue(field.getName()), node)));
                 }
                 buffer.append("</textarea>");
             } else {
-                if (field.getGUIType().equals("password")) {
-                    buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
-                } else {
-                    buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
-                }
+                buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
                 buffer.append(prefix(field.getName()));
                 buffer.append("\" value=\"");
                 if (node != null) {
-                    buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
+                    buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", context.decode(node.getStringValue(field.getName()), node)));
                 }
                 buffer.append("\" />");
             }
@@ -119,16 +75,10 @@ public class StringHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
-        String fieldValue =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), prefix(fieldName));
-        if (fieldName.equals("owner")) {
-            if (fieldValue != null) {
-                node.setContext(fieldValue);
-            }
-        } else {
-            fieldValue = tag.encode(fieldValue, field);
-            if (fieldValue != null) {
-                node.setValue(fieldName,  fieldValue);
-            }
+        String fieldValue = context.getContextTag().findAndRegisterString(prefix(fieldName));
+        fieldValue = context.encode(fieldValue, field);
+        if (fieldValue != null) {
+            node.setValue(fieldName,  fieldValue);
         }
         return "";
     }
@@ -137,25 +87,15 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        String search =  findString(field);
-        if (search == null) return null;
-
-        Sql sql = new Sql(Sql.ESCAPE_QUOTES);
-        return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search) + "%')";
+        String fieldName = field.getName();
+        String search = context.getContextTag().findAndRegisterString(prefix(fieldName));
+        if (search == null) {
+            return null;
+        }
+        if ("".equals(search)) {
+            return null;
+        }
+        return "( UPPER( [" + fieldName + "] ) LIKE '%" + org.mmbase.util.transformers.Sql.singlequote(search.toUpperCase()) + "%')";
     }
-
-    protected int getOperator() {
-        return FieldCompareConstraint.LIKE;
-    }
-    protected String getSearchValue(String string) {
-        return "%" + string.toUpperCase() + "%";
-    }
-   public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
-       FieldConstraint cons = (FieldConstraint) super.whereHtmlInput(field, query);
-       if (cons != null) {
-           query.setCaseSensitive(cons, false);
-       }
-       return cons;
-   }
 
 }

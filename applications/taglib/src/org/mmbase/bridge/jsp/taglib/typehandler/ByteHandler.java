@@ -14,42 +14,36 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import java.util.List;
+import java.util.ArrayList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.Arguments;
-import org.mmbase.module.core.MMObjectBuilder;
-import javax.servlet.jsp.PageContext;
+
 
 /**
- * @javadoc
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: ByteHandler.java,v 1.7 2003-08-27 21:33:42 michiel Exp $
  */
-
 public class ByteHandler extends AbstractTypeHandler {
-    private static final Logger log = Logging.getLoggerInstance(ByteHandler.class);
+    private static Logger log = Logging.getLoggerInstance(ByteHandler.class.getName());
     /**
      * Constructor for ByteHandler.
      * @param context
      */
-    public ByteHandler(FieldInfoTag tag) {
-        super(tag);
+    public ByteHandler(FieldInfoTag context) {
+        super(context);
     }
     
     /**
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
-        args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
-        args.set("language", tag.getCloud().getLocale().getLanguage());
-        args.set("session",  tag.getSessionName());
-        PageContext pc = tag.getContextTag().getPageContext();
-        args.set("response", pc.getResponse());
-        args.set("request",  pc.getRequest());
+        List args = new ArrayList();
+        args.add("");
+        args.add(context.getSessionName());
+        args.add(context.getCloud().getLocale().getLanguage());
         return  (node != null ? node.getFunctionValue("gui", args).toString() : "") +
                  "<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" />";
     }
@@ -59,7 +53,7 @@ public class ByteHandler extends AbstractTypeHandler {
      */
     public String useHtmlInput(Node node, Field field) throws JspTagException {        
         String fieldName = field.getName();
-        byte [] bytes  = tag.getContextTag().getBytes(prefix(fieldName));
+        byte [] bytes  = context.getContextTag().getBytes(prefix(fieldName));
         if (bytes.length > 0) {
             node.setByteValue(fieldName, bytes);
         }

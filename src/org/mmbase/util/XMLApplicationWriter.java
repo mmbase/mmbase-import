@@ -9,52 +9,42 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.*;
-
 import org.mmbase.util.xml.BuilderWriter;
+import org.mmbase.module.core.*;
 
-import org.mmbase.module.core.MMBase;
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.corebuilders.*;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
 /**
  *
- * @javadoc
- * @move org.mmbase.util.xml
- * @deprecation-used Can use Xerces functionality to write an XML, isn't it?
- * @version $Id: XMLApplicationWriter.java,v 1.23 2003-04-10 07:59:42 pierre Exp $
+ *  @javadoc
+ *  @move org.mmbase.util.xml
+ *  @deprecation-used Can use Xerces functionality to write an XML, isn't it?
  */
 public class XMLApplicationWriter  {
 
     private static Logger log = Logging.getLoggerInstance(XMLApplicationWriter.class.getName());
 
     public static Vector writeXMLFile(XMLApplicationReader app, String targetpath, String goal, MMBase mmb) {
-        Vector resultmsgs=new Vector();
+    Vector resultmsgs=new Vector();
 
         // again this is a stupid class generating the xml file
         // the second part called the extractor is kind of neat
         // but very in early beta
-        String name = app.getApplicationName();
-        String maintainer = app.getApplicationMaintainer();
-        int version = app.getApplicationVersion();
-        boolean deploy = app.getApplicationAutoDeploy();
+        String  name       =app.getApplicationName();
+        String  maintainer =app.getApplicationMaintainer();
+        int     version    =app.getApplicationVersion();
+        boolean deploy     =app.getApplicationAutoDeploy();
 
         String body =
             "<?xml version=\"1.0\"?>\n" +
             "<!DOCTYPE application PUBLIC \"-//MMBase/DTD application config 1.0//EN\" \"http://www.mmbase.org/dtd/application_1_0.dtd\">\n" +
-            "<application name=\"" + name +
-              "\" maintainer=\"" + maintainer +
-              "\" version=\"" + version +
-              "\" auto-deploy=\"" + deploy + "\">\n";
-
-        // write the needed builders
-        body+=getRequirements(app);
+            "<application name=\""+name+"\" maintainer=\""+maintainer+"\" version=\""+version+"\" auto-deploy=\""+deploy+"\">\n";
 
         // write the needed builders
         body+=getNeededBuilders(app);
@@ -96,26 +86,7 @@ public class XMLApplicationWriter  {
 
         resultmsgs.addElement("Writing Application file : "+targetpath+"/"+app.getApplicationName()+".xml");
 
-        return resultmsgs;
-    }
-
-    static String getRequirements(XMLApplicationReader app) {
-        String body="\t<requirements>\n";
-        List apps=app.getRequirements();
-        for (Iterator i=apps.iterator();i.hasNext();) {
-            Map bset=(Map)i.next();
-            String name=(String)bset.get("name");
-            String maintainer=(String)bset.get("maintainer");
-            String version=(String)bset.get("version");
-            String type=(String)bset.get("type");
-            if (type==null) type="application";
-            body+="\t\t<requires type=\""+type+"\" name=\""+name+"\"";
-            if (maintainer!=null) body+=" maintainer=\""+maintainer+"\"";
-            if (version!=null) body+=" version=\""+version+"\"";
-            body+=" />\n";
-        }
-        body+="\t</requirements>\n\n";
-        return body;
+        return(resultmsgs);
     }
 
     static String getNeededBuilders(XMLApplicationReader app) {
@@ -132,6 +103,7 @@ public class XMLApplicationWriter  {
         return(body);
     }
 
+
     static String getNeededRelDefs(XMLApplicationReader app) {
         String body="\t<neededreldeflist>\n";
         Vector builders=app.getNeededRelDefs();
@@ -144,7 +116,8 @@ public class XMLApplicationWriter  {
             String guitargetname=(String)bset.get("guitargetname");
             body+="\t\t<reldef source=\""+source+"\" target=\""+target+"\" direction=\""+dir+"\" guisourcename=\""+guisourcename+"\" guitargetname=\""+guitargetname+"\"";
             String builder=(String)bset.get("builder");
-            if (builder!=null) body+=" builder=\""+builder+"\"";
+            if (builder!=null)
+                body+=" builder=\""+builder+"\"";
             body+=" />\n";
         }
         body+="\t</neededreldeflist>\n\n";
@@ -297,7 +270,7 @@ public class XMLApplicationWriter  {
                 try {
                     BuilderWriter builderOut=new BuilderWriter(bul);
                     builderOut.setIncludeComments(true);
-                    builderOut.setExpandBuilder(false);
+                    builderOut.setExpandBuilder(true);
                     builderOut.writeToFile(targetpath+"/"+app.getApplicationName()+"/builders/"+name+".xml");
                 } catch (Exception ex) {
                     log.error(Logging.stackTrace(ex));

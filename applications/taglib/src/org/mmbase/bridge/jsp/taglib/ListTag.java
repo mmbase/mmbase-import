@@ -9,12 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
-import org.mmbase.bridge.Query;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,31 +23,25 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.32 2003-08-27 21:33:34 michiel Exp $ 
  */
+public class ListTag extends AbstractNodeListTag {
+    private static Logger log = Logging.getLoggerInstance(ListTag.class.getName());
 
-public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
-    private static final Logger log = Logging.getLoggerInstance(ListTag.class);
+    protected String nodesString=null;
+    protected String pathString=null;
+    protected String distinctString=null;
+    protected String searchString=null;
 
-    protected Attribute nodes    = Attribute.NULL;
-    protected Attribute path     = Attribute.NULL;
-    protected Attribute distinct = Attribute.NULL;
-    protected Attribute search   = Attribute.NULL;
-    protected Attribute fields   = Attribute.NULL;
-    protected Attribute container = Attribute.NULL;
 
-    /**
+    protected String fields = null;
+
+    /** 
      * @param fields a comma separated list of fields of the nodes.
      **/
     public void setFields(String fields) throws JspTagException {
-        this.fields = getAttribute(fields);
+        this.fields = getAttributeValue(fields);
     }
-
-
-
-    public void setContainer(String c) throws JspTagException {
-        container = getAttribute(c);
-    }
+    
 
 
     /**
@@ -63,122 +54,92 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     public void setNodes(String nodes) throws JspTagException {
         // parse/map the nodes they can be params, sessions or aliases
         // instead of just numbers
-        this.nodes = getAttribute(nodes);
+        nodesString=parseNodes(nodes);
+    }
+
+    protected String parseNodes(String nodes) throws JspTagException {
+        // should be a StringTokenizer ?
+        return getAttributeValue(nodes);
     }
 
     /**
      * @param type a comma separated list of nodeManagers
      */
     public void setPath(String path) throws JspTagException {
-        this.path = getAttribute(path);
+        this.pathString = getAttributeValue(path);
+    }
+
+    /**
+     * @param type a comma separated list of nodeManagers
+     * @depercated use setPath instead
+     */
+    public void setType(String type) throws JspTagException {
+        this.pathString = getAttributeValue(type);
     }
 
     /**
      * The search parameter, determines how directionality affects the search.
      * Possible values are <code>both</code>, <code>destination</code>,
-     * <code>source</code>, <code>either</code> and <code>all</code>
-     * @param search the search value
+     * <code>source</code>, <code>either</code>, and <code>all</code>
+     * @param search the swerach value
      */
     public void setSearchdir(String search) throws JspTagException {
-        this.search = getAttribute(search);
-        if (log.isDebugEnabled()) log.debug("Setting search dir to " + this.search);
+        searchString = getAttributeValue(search).toUpperCase().trim();
+        if (log.isDebugEnabled()) log.debug("Setting search dir to " + searchString);
+        if (searchString.length()==0) {
+            searchString="BOTH";
+        } else if ( !searchString.equals("BOTH") &&
+                    !searchString.equals("EITHER") &&
+                    !searchString.equals("SOURCE") &&
+                    !searchString.equals("DESTINATION") &&
+                    !searchString.equals("ALL"))  {
+            throw new JspTagException("Search should be one of BOTH, EITHER, SOURCE, "+
+                        "DESTINATION, or ALL (value found was "+searchString+")");
+        }
     }
 
     /**
      * @param distinct the selection query for the object we are looking for
      */
-    public void setDistinct(String distinct) throws JspTagException {
-        this.distinct = getAttribute(distinct);
+    public void setDistinct(String distinct){
+        this.distinctString = distinct;
     }
 
 
-    /**
-     * To be overrided by related-tag
-     */
     protected String getSearchNodes() throws JspTagException {
-        if (nodes != Attribute.NULL) {
-            return nodes.getString(this);
-        } else {
-            return "-1";
-        }
+        return (nodesString == null) ? "-1" : nodesString;
     }
-
-    /**
-     * To be overrided by related-tag
-     */
     protected String getPath() throws JspTagException {
-        return (String) path.getValue(this);
-    }
-
-
-    protected NodeListContainer getListContainer() throws JspTagException {
-        return (NodeListContainer) findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
+        return pathString;
     }
 
     /**
      * Performs the search
      */
     public int doStartTag() throws JspTagException{
-        int superresult =  doStartTagHelper();
+        int superresult =  doStartTagHelper(); 
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        NodeListContainer c = getListContainer();
 
-
-        if (c == null) {
-            // old-style, container-less working
-            if (path == Attribute.NULL) {
-                throw new JspTagException("Path attribute is mandatory if referid not speficied");
-            }
-            
-            String searchString = search.getString(this).toUpperCase();
-            if (searchString.equals("")) {
-                searchString="BOTH";
-            } else if ( !searchString.equals("BOTH") &&
-                        !searchString.equals("EITHER") &&
-                        !searchString.equals("SOURCE") &&
-                        !searchString.equals("DESTINATION") &&
-                        !searchString.equals("ALL"))  {
-                throw new JspTagException("Search should be one of BOTH, SOURCE, "+
-                                          "DESTINATION, EITHER, or ALL (value found was " + searchString + ")");
-            }
-            
-            String distinctString = distinct.getString(this);
-            boolean searchDistinct = false;
-            if ("true".equals(distinctString) || "yes".equals(distinctString)) {
-                searchDistinct = true;
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("pathstring " + path.getString(this));
-                log.debug("directions " + directions);
-                log.debug("searchString " + searchString);
-            }
-            NodeList nodes = getCloud().getList(getSearchNodes(),
-                                                getPath(),
-                                                fields.getString(this),
-                                                (String) constraints.getValue(this),
-                                                (String) orderby.getValue(this),
-                                                (String) directions.getValue(this),
-                                                searchString,
-                                                searchDistinct);
-            return setReturnValues(nodes, true);
-        } else {   // container found!
-            if (constraints != Attribute.NULL || 
-                orderby != Attribute.NULL || 
-                directions != Attribute.NULL || 
-                fields != Attribute.NULL || 
-                path != Attribute.NULL || 
-                nodes != Attribute.NULL  || 
-                distinct != Attribute.NULL ||
-                search != Attribute.NULL) {
-                throw new JspTagException("Extra attributes not supported in container-referrer use");
-                // (some of these could be implemented)
-            }
-            Query query = (Query) c.getQuery();
-            NodeList nodes = getCloud().getList(query);
-            return setReturnValues(nodes, true);
+        boolean searchDistinct = false;
+        if ("true".equals(distinctString) || "yes".equals(distinctString)) {
+            searchDistinct = true;
         }
+        if (log.isDebugEnabled()) {
+            log.debug("pathstring " + pathString);
+            log.debug("directions " + directions);
+            log.debug("searchString " + searchString);
+        }
+        NodeList nodes = getCloud().getList(getSearchNodes(),
+                                            getPath(),
+                                            fields,
+                                            constraints,
+                                            orderby,
+                                            directions,
+                                            searchString,
+                                            searchDistinct);
+        return setReturnValues(nodes,true);
     }
 
 }

@@ -10,30 +10,33 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.sql.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.builders.vwms.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.*;
 
 /**
  * The NetFileServ builder contains information on services available to NetFile objects.
  * It contains a list of possible service/subservice tasks. These tasks are then attached
  * to entries in the VWMs builder, so it is possible to search for a VWM to handle a
  * service/subservice request.
- * The fields of NetFileServ are:<br />
+ * The fields of NetFileServ are:<br>
  * <ul>
  * <li><code>service</code> : the main 'service' to be performed.
  *             Together with subservice, this determines the VWM that handles the transfer,
  *             i.e. 'pages/main' is handled by the {@link PageMaster} VWM.</li>
  * <li><code>subservice</code> : the subservice to perform. i.e. in PageMaster, 'main' determines mirror sites and
  *                schedules tasks for mirroring (by creating net netfile entries), while 'mirror'
- *                performs the actual transfer to a mirror<br />
+ *                performs the actual transfer to a mirror<br>
  *                Often one VWM handles multiple subservices, but this is not a given.</li>
  * <li><code>options</code> : Currently unused (?)</li>
  *</ul>
  *
  * @author Daniel Ockeloen
- * @version $Id: NetFileSrv.java,v 1.13 2003-03-10 11:50:20 pierre Exp $
+ * @version 12 Mar 1997
  */
 public class NetFileSrv extends MMObjectBuilder {
 

@@ -9,15 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.cache;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 /**
  * A cache for MMObjectNodes. 
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeCache.java,v 1.4 2003-07-14 21:02:02 michiel Exp $
+ * @version $Id: NodeCache.java,v 1.1 2002-05-15 17:27:53 michiel Exp $
  */
 public class NodeCache extends Cache {
-    private static final int CACHE_SIZE = 4 * 1024;
-
+    private static int cacheSize = 4 * 1024;    // Max size of the node cache
     private static NodeCache cache;
 
     public static NodeCache getCache() {
@@ -25,26 +28,21 @@ public class NodeCache extends Cache {
     }
 
     static {
-        cache = new NodeCache();
-        cache.putCache();
+        cache = new NodeCache(cacheSize);
+        putCache(cache);
     }
 
     public String getName() {
         return "Nodes";
     }
     public String getDescription() {
-        return "Node number -> MMObjectNodes";
+        return "MMBase Nodes";
     }
 
     /**
      * Creates the MMBase ObjectNodes Cache.
      */
-    private NodeCache() {
-        super(CACHE_SIZE);
-    }
-
-    public Object remove(Object key) {
-        RelatedNodesCache.getCache().removeNode((Integer) key);
-        return super.remove(key);
+    private NodeCache(int size) {
+        super(size);
     }
 }

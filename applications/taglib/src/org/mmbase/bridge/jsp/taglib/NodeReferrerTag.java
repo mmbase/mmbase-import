@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+
+import javax.servlet.jsp.tagext.Tag;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.mmbase.bridge.Node;
 
@@ -25,14 +27,14 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.14 2003-08-27 21:33:35 michiel Exp $ 
+ *
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
 
-    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(NodeReferrerTag.class.getName()); 
 
-    private Attribute parentNodeId = Attribute.NULL;
+    private String parentNodeId = null;
 
     /**
      * A NodeReferrer probably wants to supply the attribute 'node',
@@ -40,8 +42,8 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
      * ancestor.
      **/
 
-    public void setNode(String node) throws JspTagException {
-        parentNodeId = getAttribute(node);
+    public void setNode(String node){
+        parentNodeId = node;
     }
 
     /**
@@ -50,7 +52,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */	
     public NodeProvider findNodeProvider() throws JspTagException {        
-        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this));
+        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId);
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
@@ -58,7 +60,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */	
     public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {        
-        return (NodeProvider) findParentTag(NodeProvider.class, (String) parentNodeId.getValue(this), throwexception);
+        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId, throwexception);
     }
 
     /**

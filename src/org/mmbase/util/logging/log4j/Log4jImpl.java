@@ -15,8 +15,11 @@ import org.mmbase.util.logging.Logging;
 
 import org.mmbase.util.FileWatcher;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import org.xml.sax.InputSource;
 import java.io.FileInputStream;
 
 import java.io.PrintStream;
@@ -110,6 +113,7 @@ public final class Log4jImpl extends org.apache.log4j.Logger  implements Logger 
     /**
      * Performs the actual parsing of the log4j configuration file and handles the errors
      */
+
     protected static void doConfigure(File f) {
         String inform = "Parsing " + configurationFile.getAbsolutePath();
         if (log == null) {

@@ -10,7 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.sql.*;
+import java.io.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
@@ -165,7 +168,7 @@ public class Statistics extends MMObjectBuilder {
                  *  hits          = number of hits in last interval
                  */
                 //int hitTime    = (int)(new java.util.Date().getTime() / 1000); // datefix
-                int hitTime=(int)(System.currentTimeMillis()/1000);
+                int hitTime=(int)(DateSupport.currentTimeMillis()/1000);
 	
                 int statsStart = stats.getIntValue ("start");
                 int nrOfSlices = stats.getIntValue ("timeslices");

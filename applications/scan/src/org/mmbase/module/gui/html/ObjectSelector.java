@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.12.2.3 2003-07-04 14:38:27 vpro Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 

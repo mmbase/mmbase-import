@@ -1,18 +1,22 @@
 /*
-
-This software is OSI Certified Open Source Software.
-OSI Certified is a certification mark of the Open Source Initiative.
-
-The license (Mozilla version 1.0) can be read at the MMBase site.
-See http://www.MMBase.org/license
-
-*/
+ * ClassName: BasicMerger.java
+ *
+ * Date: dec. 1st. 2001
+ *
+ * Copyright notice:
+ * This software is OSI Certified Open Source Software.
+ * OSI Certified is a certification mark of the Open Source Initiative.
+ *
+ * The license (Mozilla version 1.0) can be read at the MMBase site.
+ * See http://www.MMBase.org/license
+ */
 
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.applications.xmlimporter.*;
 
 /**
  * This is a basic implementation of ObjectMerger.
@@ -27,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: BasicMerger.java,v 1.4 2003-03-07 08:50:02 pierre Exp $
+ * @version $Id: BasicMerger.java,v 1.2 2002-02-27 16:54:24 pierre Exp $
  */
 public class BasicMerger implements ObjectMerger {
 

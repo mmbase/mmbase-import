@@ -18,7 +18,6 @@ import org.mmbase.module.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @rename Scanparser
  * @author Daniel Ockeloen
- * @version $Id: scanparser.java,v 1.65 2003-07-03 13:15:11 pierre Exp $
+ * @version $Id: scanparser.java,v 1.58.2.2 2003-07-03 13:13:19 vpro Exp $
  */
 public class scanparser extends ProcessorModule {
 
@@ -262,10 +261,10 @@ public class scanparser extends ProcessorModule {
         part=finddocmd(body,"<PROCESSOR ",'>',8,session,sp);
         body=part;
 
+
         // Include other HTML
         part=finddocmd(body,"<INCLUDE ",'>',5,session,sp);
         body=part;
-
 
         // <LIST text1> text2 </LIST>
         // The code below will hand text1 and text2 to the method do_list(text1, text2, session, sp)
@@ -584,22 +583,15 @@ public class scanparser extends ProcessorModule {
         }
 
         // Scan & Parse all $ attributes used in the tag.
-        part = dodollar(part,session,sp);
+        String parsedPart = dodollar(part,session,sp);
 
+        if(log.isDebugEnabled())
+            log.debug("do_counter("+parsedPart+"): inserting tag in page.");
         long time = System.currentTimeMillis();
-        part = part.trim();
-        log.debug("Using part ["+part+"]");
-        int i=part.indexOf(' ');
-        String params=null;
-        if (i!=-1) {
-            params=part.substring(i+1);
-        } else {
-            log.error("["+part +"] syntax wrong for COUNTER tag.");
-        }
+        result = counter.getTag(parsedPart, session, sp);
+        if(log.isDebugEnabled())
+            log.debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
 
-        result = counter.getTag(params, session, sp);
-
-        log.debug("processing counter took "+ (System.currentTimeMillis() - time ) + " ms.");
         return result;
     }
 
@@ -642,6 +634,7 @@ public class scanparser extends ProcessorModule {
             filename = servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename;
             if (log.isDebugEnabled()) log.debug("do_part: filename:"+filename);
         }
+
 
         // Test if we are going circular
         if (sp.partlevel>8) {
@@ -771,6 +764,7 @@ public class scanparser extends ProcessorModule {
                                      sessionInfo session, // The session for version control
                                      boolean leaf, // TREE or LEAF version
                                      boolean byALias // NAME version
+
                                     ) throws ParseException {
         // Get node from args
         MMObjectNode node = (MMObjectNode)nodes.nextElement();
@@ -823,6 +817,7 @@ public class scanparser extends ProcessorModule {
      * filepath: (optional) file to part
      * @param leaf false for TREE and true for LEAF version
      */
+
     private String do_smart(String args, sessionInfo session, scanpage sp, boolean leaf) throws ParseException {
         // Get action: PART or FILE
         String cmdName;
@@ -965,7 +960,6 @@ public class scanparser extends ProcessorModule {
         log.trace(rtn); // perhaps a little overkill
         return rtn;
     }
-
 
     /**
      * Main function, replaces most of the $ commands
@@ -1111,6 +1105,7 @@ public class scanparser extends ProcessorModule {
             }
 
         }
+
         // Handle $PARAMn
         i=Integer.parseInt(part2);
         rtn=sp.getParam(i-1);
@@ -1520,7 +1515,6 @@ public class scanparser extends ProcessorModule {
         return body;
     }
 
-
     /**
      * handle if/then/elseif/\/if
      */
@@ -1575,6 +1569,7 @@ public class scanparser extends ProcessorModule {
         Vector t,cmds,result;
         int numitems=1,maxitems=-1,curitem=0,offset=0;
         int maxtotal=-1;
+
 
         ll1=System.currentTimeMillis();
         cmd=dodollar(cmd,session,sp);
@@ -2130,7 +2125,6 @@ public class scanparser extends ProcessorModule {
         return "";
     }
 
-
     public static int calccrc32(String str) {
         CRC32 crc=new CRC32();
         str=""+crcseed+str+crcseed;
@@ -2141,3 +2135,4 @@ public class scanparser extends ProcessorModule {
         return (int)crc.getValue();
     }
 }
+

@@ -15,6 +15,7 @@ import org.mmbase.util.xml.URIResolver;
 import javax.xml.transform.TransformerFactory;
 
 import java.io.File;
+import java.util.List;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,11 +27,11 @@ import org.mmbase.util.logging.Logging;
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.5 2003-07-17 17:01:17 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.3 2002-04-11 07:56:43 michiel Exp $
  */
 public class FactoryCache extends Cache {
 
-    private static Logger log = Logging.getLoggerInstance(FactoryCache.class);
+    private static Logger log = Logging.getLoggerInstance(FactoryCache.class.getName());
 
     private static int cacheSize = 50;
     private static FactoryCache cache;

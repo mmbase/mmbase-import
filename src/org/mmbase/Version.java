@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.util.*;
 import java.util.jar.*;
 
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -22,7 +23,7 @@ import java.util.jar.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.18 2003-05-06 22:46:19 kees Exp $
+ * @version $Id: Version.java,v 1.16.2.10 2003-09-02 11:45:36 gerard Exp $
  */
 public class Version {
    
@@ -41,13 +42,13 @@ public class Version {
      * Returns the minor version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getMinor()  { return 7; }    
+    public static int     getMinor()  { return 5; }    
 
     /**
      * Returns the patch level numer of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getPatchLevel()  { return 0; }    
+    public static int     getPatchLevel()  { return 6; }
 
     /**
      * Returns the build date of this MMBase. During the build, the
@@ -75,13 +76,13 @@ public class Version {
      * Returns the version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static String  getNumber() { return getMajor() +  "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "" :  getBuildDate()); }    
+    public static String  getNumber() { return getMajor() +  "." + getMinor() + "." + getPatchLevel() + (isRelease() ? "-Final"  + getBuildDate(): getBuildDate()); }    
 
     /**
      * Returns if this is a release version of MMBase. If this is false this MMBase is only a CVS snapshot.
      * @since MMBase-1.6
      */
-    public static boolean isRelease() { return false; };    
+    public static boolean isRelease() { return true; };    
 
     /**
      * Returns the version of this MMBase.

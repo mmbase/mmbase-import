@@ -17,29 +17,12 @@ package org.mmbase.module.core;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderConfigurationException.java,v 1.3 2003-08-29 09:36:53 pierre Exp $
+ * @version $Id: BuilderConfigurationException.java,v 1.1 2002-03-21 17:17:11 pierre Exp $
  */
 public class BuilderConfigurationException extends RuntimeException {
 
-    //javadoc is inherited
-    public BuilderConfigurationException() {
-        super();
+    public BuilderConfigurationException(String s) {
+        super(s);
     }
-
-    //javadoc is inherited
-    public BuilderConfigurationException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public BuilderConfigurationException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public BuilderConfigurationException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
 }
 

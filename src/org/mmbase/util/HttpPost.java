@@ -17,9 +17,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * HttpPost handles all the PostInformation
+ * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.23 2003-08-29 09:36:55 pierre Exp $
+ * @version $Id: HttpPost.java,v 1.14.2.5 2003-04-11 11:21:50 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -187,7 +187,6 @@ public class HttpPost {
         byte[] data = (byte[]) obj;
         return data;
     }
-    
 
     /**
     * This method returns the value of the postparameter as a Vector.
@@ -245,13 +244,6 @@ public class HttpPost {
             log.warn("encoding was:" + encoding + "\n" + Logging.stackTrace(uee));
             return new String(data);
         }
-    }
-
-    /**
-     * @return true is the post was posted to a file (not in memory)
-     **/
-    public boolean isPostedToFile(){
-        return postToDisk;
     }
 
     /**
@@ -865,5 +857,4 @@ test:
         }
         return -1;
     }
-
 }

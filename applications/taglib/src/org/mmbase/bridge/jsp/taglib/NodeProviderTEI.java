@@ -13,22 +13,22 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 
+import java.util.Vector; 
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 
 /**
- * The TEI class for NodeProviders. A NodeProvider can export one or more
- * 'Nodes', and it also can export fields (if the `fields' attribute is
- * given).
- *
- * @author Michiel Meeuwissen
- * @version $Id: NodeProviderTEI.java,v 1.11 2003-08-27 21:33:35 michiel Exp $ 
- */
-
+* The TEI class for NodeProviders. A NodeProvider can export one or more
+* 'Nodes', and it also can export fields (if the `fields' attribute is
+* given).
+*
+* @author Michiel Meeuwissen
+**/
 public class NodeProviderTEI extends TagExtraInfo {
     
-    private static final Logger log = Logging.getLoggerInstance(NodeProviderTEI.class.getName());    
+    private static Logger log = Logging.getLoggerInstance(NodeProviderTEI.class.getName());    
 
     public NodeProviderTEI() { 
         super(); 
@@ -47,6 +47,12 @@ public class NodeProviderTEI extends TagExtraInfo {
         //in effect we have to parse the data twice
         //once here and onces specific attributes are set
         //maybe this can be done better I do not know
+        
+        
+        //The tag parameter fields defines what variables should be available
+        //within the body of the tag. 
+        //If an 'id' is defined as well (eg 'mynode') then this will be prefixed to the
+        //fieldnames: mynode_title.
         
         int nodeVariable = 0; 
         // Number of node-variables to be defined. 

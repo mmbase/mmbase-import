@@ -11,8 +11,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="databases">
-<tr>
+<table summary="databases" width="93%" cellspacing="1" cellpadding="3" border="0">
+<tr align="left">
   <th class="header">Connection</th>
   <th class="header">Database</th>
   <th class="header">State</th>
@@ -20,7 +20,7 @@
   <th class="header">Query #</th>
 </tr>
 <%
-   Module jdbc=ContextProvider.getDefaultCloudContext().getModule("jdbc");
+   Module jdbc=LocalContext.getCloudContext().getModule("jdbc");
    java.util.Map params = new java.util.Hashtable();
    params.put("CLOUD", cloud);
    NodeList connections=jdbc.getList("CONNECTIONS",params,request,response);
@@ -36,9 +36,8 @@
 </tr>
 <% } %>
 <tr><td>&nbsp;</td></tr>
-
-<tr class="footer">
-<td class="navigate"><a href="<mm:url page="../databases.jsp"/>"><img src="../../images/back.gif" alt="back" border="0" /></td>
+<tr>
+<td class="navigate"><a href="<mm:url page='../databases.jsp'/>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="4">Return to Database Overview</td>
 </tr>
 </table>

@@ -9,6 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
 /**
  * Object for storing file information.
  * Stores content and lastmodified date.
@@ -18,7 +23,7 @@ package org.mmbase.util;
  * @rename FileInfo
   * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: fileInfo.java,v 1.8 2003-03-10 11:51:15 pierre Exp $
+ * @version 10 Apr 2001
  */
 public class fileInfo {
     /**

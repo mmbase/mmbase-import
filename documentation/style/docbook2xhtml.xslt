@@ -44,8 +44,6 @@
 
   <!-- specify meta-tags for utf-8 'cause IE is too dumb -->
   <xsl:template name="user.head.content">
-    <link rel="icon" href="{$root}style/favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="{$root}style/favicon.ico" type="image/x-icon" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   </xsl:template>
 
@@ -108,19 +106,6 @@
       </xsl:if>
     </div>
   </xsl:template>
-
-  <!-- Sort glossary entries -->
-  <xsl:template match="glosslist">
-    <div xmlns="http://www.w3.org/1999/xhtml" class="{name(.)}">
-      <xsl:call-template name="anchor"/>
-      <dl>
-        <xsl:apply-templates>
-          <xsl:sort select="glossterm" />
-        </xsl:apply-templates>
-      </dl>
-    </div>
-  </xsl:template>
-
 
   <!-- MMBase specific footer on every page -->
   <xsl:template name="user.footer.content">

@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.28 2003-08-27 21:27:17 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.22.2.1 2003-08-15 11:30:06 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -65,23 +65,8 @@ public interface NodeManager extends Node {
     public String getName();
 
     /**
-     * Retrieve a property of the node manager.
-     * @param name the name of the property
-     * @return the property value (null if not given)
-     * @since  MMBase-1.7
-     */
-    public String getProperty(String name);
-
-    /**
-     * Retrieve a copy of the node manager's properties
-     * @return a map of node manager properties
-     * @since  MMBase-1.7
-     */
-    public Map getProperties();
-
-    /**
      * Returns the descriptive name of this node manager. This name will be in
-     * the language of the current cloud  (defined in cloud.getLocale()).
+     * the language of teh current cloud  (defined in cloud.getLocale()).
      *
      * @return the descriptive name of this node manager
      */
@@ -189,9 +174,9 @@ public interface NodeManager extends Node {
      * For more info consult a SQL tutorial like
      * <a href="http://w3.one.net/~jhoffman/sqltut.htm">this one</a>.
      *
-     * @param constraints   Constraints to prevent nodes from being
+     * @param constraints   Contraints to prevent nodes from being
      *                      included in the resulting list which would normally
-     *                      by included or <code>null</code> if no constraints
+     *                      by included or <code>null</code> if no contraints
      *                      should be applied .
      * @param orderby       A comma separated list of field names on which the
      *                      returned list should be sorted or <code>null</code>
@@ -215,22 +200,8 @@ public interface NodeManager extends Node {
      *                      value.
      * @return              a list of nodes belonging to this node manager
      */
-    public NodeList getList(String constraints, String orderby, String directions);
-
-
-
-    /**
-     * Creates a query for this NodeNanager. The nodemanager is added as a step, and also all (non
-     * byte array) fields are added.  The query can be used  by getList of Cloud.
-     *
-     * You can not add steps to this NodeQuery.
-     *
-     * @since MMBase-1.7
-     * @see #getList
-     * @see Cloud#createNodeQuery
-     */
-
-    public NodeQuery createQuery();
+    public NodeList getList(String constraints, String orderby,
+                            String directions);
 
     /**
      * Retrieve info from a node manager based on a command string.
@@ -303,21 +274,6 @@ public interface NodeManager extends Node {
      * @return  Check if the current user may create a new node of this type.
      */
     public boolean mayCreateNode();
-
-
-
-    /** 
-     * Returns a list of 'argument' definition of a certain function on nodes manager by this NodeManager.
-     *
-     *
-     * @since MMBase-1.7
-     */
-
-    /*
-    public List   getFunctionParameters(String function) {
-        return new ArrayList();
-    }
-    */
 
 
 

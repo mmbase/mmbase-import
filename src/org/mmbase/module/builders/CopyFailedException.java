@@ -10,41 +10,14 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 /**
- * @javadoc
- * @deprecated-now not used by any CVS classes (probably local code)
- *
- * @author David V van Zeventer
- * @version $Id: CopyFailedException.java,v 1.6 2003-08-29 09:36:52 pierre Exp $
+ * &author David V van Zeventer
+ * @version 5 Jan 1999
  */
 public class CopyFailedException extends Exception {
 	public String errval;
 	public String explanation;
 
-    //javadoc is inherited
-    public CopyFailedException() {
-        super();
-    }
-    
-    //javadoc is inherited
-    public CopyFailedException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public CopyFailedException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public CopyFailedException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
-    /**
-     * @javadoc
-     */
-	public CopyFailedException(String errval,String explanation) {
-        super(errval);
+	public CopyFailedException(String errval,String explanation){
 		this.errval = errval;
 		this.explanation = explanation;
 	}

@@ -17,7 +17,7 @@ package org.mmbase.util;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: SortableCompare.java,v 1.5 2003-03-10 11:51:12 pierre Exp $
+ * @version 05-Mar-1997
  */
 public class SortableCompare implements CompareInterface {
 

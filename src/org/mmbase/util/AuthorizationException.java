@@ -9,31 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import javax.servlet.ServletException;
+import javax.servlet.*;
+import java.lang.Exception;
 
 /**
  * This exception gets thrown if the user has an invalid password
  */
 public class AuthorizationException extends ServletException {
 
-    //javadoc is inherited
-    public AuthorizationException() {
-        super();
+    /**
+     * Create the exception
+     */
+    public AuthorizationException (String s) {
+      super(s);
     }
-
-    //javadoc is inherited
-    public AuthorizationException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public AuthorizationException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public AuthorizationException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
 }

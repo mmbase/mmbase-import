@@ -32,12 +32,12 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.11 2003-07-17 17:01:17 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.8.2.2 2003-02-11 18:40:54 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
 
-    private static Logger log = Logging.getLoggerInstance(TemplateCache.class);
+    private static Logger log = Logging.getLoggerInstance(TemplateCache.class.getName());
 
     private static int cacheSize = 50;
     private static TemplateCache cache;

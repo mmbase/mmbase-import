@@ -16,23 +16,10 @@ import org.mmbase.module.ParseException;
  */
 public class CircularParseException extends ParseException {
 
-    //javadoc is inherited
-    public CircularParseException() {
-        super();
-    }
-
-    //javadoc is inherited
-    public CircularParseException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public CircularParseException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public CircularParseException(String message, Throwable cause) {
-        super(message,cause);
-    }
+	/**
+	 * Create the exception
+ 	 */
+	public CircularParseException (String s) {
+		super(s);
+	}
 }

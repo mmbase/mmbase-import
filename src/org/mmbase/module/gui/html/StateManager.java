@@ -27,7 +27,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
+ * @version $Id: StateManager.java,v 1.11.2.3 2003-07-04 14:38:27 vpro Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {

@@ -8,35 +8,30 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.io.StringReader;
-
 import java.util.*;
-
-import org.mmbase.util.StringSplitter;
-import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import org.mmbase.util.Casting; // not used enough
 
+
 /**
  * Tags that are Writers can use the this class. It's a pitty that
  * they can't extend, but that's life.
  *
- * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.36 2003-08-27 21:33:37 michiel Exp $
+ *
+ * @author Michiel Meeuwissen 
  */
 
-public class WriterHelper extends BodyTagSupport {
-    // extending from it, becase we need access to protected vars.
-    // this tag is not acutally used as a tag
+public class WriterHelper  {
 
-    private static final Logger log = Logging.getLoggerInstance(WriterHelper.class);
+    private static Logger log = Logging.getLoggerInstance(WriterHelper.class.getName());
     public static boolean NOIMPLICITLIST = true;
     public static boolean IMPLICITLIST   = false;
 
@@ -52,43 +47,39 @@ public class WriterHelper extends BodyTagSupport {
     static final int TYPE_LONG    = 8;
     static final int TYPE_FLOAT   = 9;
     static final int TYPE_DECIMAL = 10;
-    static final int TYPE_DATE    = 11;
 
     static final int TYPE_NODE    = 20;
     static final int TYPE_CLOUD   = 21;
     static final int TYPE_TRANSACTION   = 22;
 
 
-    static final int stringToType(String tt) {
-        String t = tt.toLowerCase();
-        if ("string".equals(t)) {
+    static final int stringToType(String t) {
+        if ("String".equalsIgnoreCase(t)) {
             return TYPE_STRING;
-        } else if ("node".equals(t)) {
+        } else if ("Node".equalsIgnoreCase(t)) {
             return TYPE_NODE;
-        } else if ("cloud".equals(t)) {
+        } else if ("Cloud".equalsIgnoreCase(t)) {
             return TYPE_CLOUD;
-        } else if ("transaction".equals(t)) {
+        } else if ("Transaction".equalsIgnoreCase(t)) {
             return TYPE_TRANSACTION;
-        } else if ("decimal".equals(t)) {
+        } else if ("decimal".equalsIgnoreCase(t)) {
             return TYPE_DECIMAL;
-        } else if ("integer".equals(t)) {
+        } else if ("Integer".equalsIgnoreCase(t)) {
             return TYPE_INTEGER;
-        } else if ("long".equals(t)) {
+        } else if ("Long".equalsIgnoreCase(t)) {
             return TYPE_LONG;
-        } else if ("double".equals(t)) {
+        } else if ("Double".equalsIgnoreCase(t)) {
             return TYPE_DOUBLE;
-        } else if ("float".equals(t)) {
+        } else if ("Float".equalsIgnoreCase(t)) {
             return TYPE_FLOAT;
-        } else if ("vector".equals(t)) {
+        } else if ("Vector".equalsIgnoreCase(t)) {
             return TYPE_VECTOR;
-        } else if ("list".equals(t)) {
+        } else if ("List".equalsIgnoreCase(t)) {
             return TYPE_LIST;
-        } else if ("bytes".equals(t)) {
+        } else if ("bytes".equalsIgnoreCase(t)) {
             return TYPE_BYTES;
-        } else if ("object".equals(t)) {
+        } else if ("Object".equalsIgnoreCase(t)) {
             return TYPE_OBJECT;
-        } else if ("date".equals(t)) {
-            return TYPE_DATE;
         } else {
             return TYPE_UNKNOWN;
         }
@@ -97,25 +88,17 @@ public class WriterHelper extends BodyTagSupport {
     private   Object  value             = null;
 
     private   String  jspvar           = null;
-    private   Attribute write          = Attribute.NULL;
-    private   Attribute escape         = Attribute.NULL;
-    private   Boolean overrideWrite    = null;
+    private   Boolean write            = null;
+    private   Boolean overridewrite    = null;
     private   int     vartype          = TYPE_UNSET;
-
-    private   ContextReferrerTag thisTag  = null;
-
+    private   BodyContent  bodyContent;
+    private   PageContext  pageContext;
     private   boolean hasBody          = false;
-
-    private   boolean useEscaper       = true;
-
-
-    public WriterHelper() {
-    }
 
     /**
      * For implementation of the write attribute.
      */
-    public void setWrite(Attribute w) {
+    public void setWrite(Boolean w) {
         if (log.isDebugEnabled()) {
             log.debug("Setting write to " + w);
         }
@@ -123,81 +106,29 @@ public class WriterHelper extends BodyTagSupport {
     }
 
     /**
-     * For implementation of the escape attribute.
-     * @since MMBase-1.7
-     */
-
-    public void setEscape(Attribute e) {
-        if (log.isDebugEnabled()) {
-            log.debug("Setting escape to " + e);
-        }
-        escape = e;
-    }
-
-    /**
-     * Gets specified escaper (as a string) or null (if not set)
-     * @since MMBase-1.7
-     */
-
-    public String getEscape() throws JspTagException {
-        return (String) escape.getValue(thisTag);
-    }
-
-    /**
-     * @deprecated Use setWrite(Attribute)
-     */
-    public void setWrite(Boolean b) {
-        try {
-            write = Attribute.getAttribute(b.toString());
-        } catch (JspTagException e) {
-            log.error(e.toString());
-        }
-    }
-
-    /**
      * There is a default behavior for what should happen if the 'write' attribute is not set.
      * if you want to override this, then call this function.
      */
     public void overrideWrite(boolean w) {
-        overrideWrite = w ? Boolean.TRUE : Boolean.FALSE;
+        overridewrite = w ? Boolean.TRUE : Boolean.FALSE;
     }
 
-    /**
-     * Some writer tags produce very specific content, and take care
-     * of escaping themselves (UrlTag). They turn off escaping (on default).
-     */
-
-    public void useEscaper(boolean ue) {
-        useEscaper = ue;
-    }
-
-    public boolean  isWrite() throws JspTagException {
-        if (write == Attribute.NULL) {
+    public boolean  isWrite() {
+        if (write == null) {
             if (log.isDebugEnabled()) {
-                log.debug("write is unset, using default " + overrideWrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
+                log.debug("write is unset, using default " + overridewrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
             }
-            if (overrideWrite != null) return overrideWrite.booleanValue();
+            if (overridewrite != null) return overridewrite.booleanValue();            
             return "".equals(getString()) && (! hasBody);
         } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Write: " + write);
-            }
-            return write.getBoolean(thisTag, true);
+            log.debug("Write: " + write);
+            return write.booleanValue();        
         }
     }
-
+    
     public void setJspvar(String j) {
         jspvar = j;
     }
-
-    /**
-     * @deprecated use 'setTag' in doStartTag. Jspvar will be set by setValue then
-     */
-    public void setJspvar(PageContext p) throws JspTagException {
-        pageContext = p;
-        setJspvar();
-    }
-
     public String getJspvar() {
         return jspvar;
     }
@@ -209,15 +140,14 @@ public class WriterHelper extends BodyTagSupport {
      */
 
     public void setValue(Object v) throws JspTagException {
-        setValue(v, IMPLICITLIST);
+        setValue(v, IMPLICITLIST);        
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
-        value = null;
-        switch (vartype) {
+        switch (vartype) { 
             // these accept a value == null (meaning that they are empty)
         case TYPE_LIST:
             if (v instanceof String || v == null) {
-                if (! "".equals(v)) {
+                if (v != null && !"".equals(v)) {
                     value = StringSplitter.split((String) v);
                 } else {
                     value = new ArrayList();
@@ -230,43 +160,41 @@ public class WriterHelper extends BodyTagSupport {
                 value = v; // wil perhaps fail
                 
             }
-            setJspvar();
             return;
         case TYPE_VECTOR: // I think the type Vector should be deprecated?
             if (v == null) {
                 // if a vector is requested, but the value is not present,
                 // make a vector of size 0.
-                value = new Vector();
-            } else if (! (v instanceof Vector)) {
+                value = new java.util.Vector();
+            }
+            if (! (v instanceof java.util.Vector)) {
                 // if a vector is requested, but the value is not a vector,
-                if (! (v instanceof Collection)) {
+                if (! (v instanceof java.util.Collection)) {
                     // not even a Collection!
                     // make a vector of size 1.
-                    value = new Vector();
-                    ((Vector)value).add(v);
+                    value = new java.util.Vector();
+                    ((java.util.Vector)value).add(v);
                 } else {
-                    value = new Vector((Collection)v);
+                    value = new java.util.Vector((java.util.Collection)v);
                 }
             } else {
                 value = v;
-            }
-            setJspvar();
+            }            
             return;
         }
 
         // other can't be valid and still do something reasonable with 'null'.
         if (v == null) {
             value = null;
-            setJspvar();
             return;
-        }
+        } 
 
         if (noImplicitList) {
             // Take last of list if vartype defined not to be a list:
-            if (v instanceof List) {
+            if (v instanceof java.util.List) {
                 if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
-                    List l = (List) v;
-                    if (l.size() > 0) {
+                    java.util.List l = (java.util.List) v;
+                    if (l.size() > 0) { 
                         v = l.get(l.size() - 1);
                     } else {
                         v = null;
@@ -279,45 +207,33 @@ public class WriterHelper extends BodyTagSupport {
         switch (vartype) {
         case TYPE_INTEGER:
             if (! (v instanceof Integer)) {
-                value = Casting.toInteger((v.toString()));
-                setJspvar();
+                value = new Integer(v.toString());
                 return;
             }
             break;
         case TYPE_DOUBLE:
             if (! (v instanceof Double)) {
                 value = new Double(v.toString());
-                setJspvar();
                 return;
             }
             break;
         case TYPE_LONG:
             if (! (v instanceof Long)) {
                 value = new Long(v.toString());
-                setJspvar();
                 return;
             }
             break;
         case TYPE_FLOAT:
             if (! (v instanceof Float)) {
                 value =  new Float(v.toString());
-                setJspvar();
                 return;
             }
             break;
         case TYPE_STRING:
-            if (! (v instanceof String)) {
+            if (! (v instanceof String)) {                
                 value = Casting.toString(v);
-                setJspvar();
                 return;
-            }
-            break;
-        case TYPE_DATE:
-            if (! (v instanceof Date)) {
-                value = Casting.toDate(v);
-                setJspvar();
-                return;
-            }
+            } 
             break;
         case TYPE_NODE:
             if (! (v instanceof org.mmbase.bridge.Node)) {
@@ -325,37 +241,38 @@ public class WriterHelper extends BodyTagSupport {
             }
             break;
         }
-        if (value == null) value = v;
-        setJspvar();
+        value = v;
+    }
+    
+
+    public void setBodyContent(BodyContent b) {
+        bodyContent = b;
     }
 
-
-    /**
-     * To evaluate Attributes and to obtain the pagecontext for jspvars, the helper needs the Tag.
-     * Call this in your doStartTag.
-     * @since MMBase-1.7
-     */
-
-    public void setTag(ContextReferrerTag b) {
-        thisTag     = b;
-        pageContext = b.getPageContext();
+    public void setPageContext(PageContext p) {
+        pageContext = p;
     }
 
     public Object getValue() {
         return value;
     }
 
-
+    public void setJspvar(PageContext p) throws JspTagException {
+        setPageContext(p);
+        setJspvar();
+    }
+    
     /**
      * Don't forget to call 'setValue' first!
      */
-
-    private void setJspvar() throws JspTagException {
+    
+    public void setJspvar() throws JspTagException {
+      
         if (jspvar == null) return;
         if (log.isDebugEnabled()) {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
-        if (value != null) {
+        if (value != null) { 
             // if the underlying implementation uses a Hashtable (TomCat) then the value may not be null
             // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
             pageContext.setAttribute(jspvar, value);
@@ -369,7 +286,7 @@ public class WriterHelper extends BodyTagSupport {
             throw new JspTagException("Type " + t + " is not known");
         }
     }
-
+    
     public int getVartype() {
         return vartype;
     }
@@ -378,30 +295,15 @@ public class WriterHelper extends BodyTagSupport {
      * Returns a string which can be written to the page.
      */
 
-    protected java.io.Writer getPageString(java.io.Writer w) throws JspTagException, IOException {
-        if (value == null) return w;
+    protected String getPageString() throws JspTagException {
+        if (value == null) return "";
 
-        if (value instanceof byte[]) {
+        if (value instanceof byte[]) {         
             // writing bytes to the page?? We write base64 encoded...
             // this is an ondocumented feature...
-            w.write(org.mmbase.util.Encode.encode("BASE64", (byte[]) value));
-            return w;
+            return org.mmbase.util.Encode.encode("BASE64", (byte[]) value); 
         }
-        if (useEscaper || escape != Attribute.NULL) {
-            CharTransformer escaper;
-            if (! escape.getString(thisTag).equals("")) {
-                escaper = ContentTag.getCharTransformer(escape.getString(thisTag));
-            } else {
-                escaper = thisTag.getContentTag().getWriteEscaper();
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("Using escaper " + escaper);
-            }
-            return  escaper.transform(new StringReader(value.toString()), w);
-        } else {
-            w.write(value.toString());
-            return w;
-        }
+        return value.toString();
     }
 
     /**
@@ -411,7 +313,7 @@ public class WriterHelper extends BodyTagSupport {
     public void haveBody() {
         hasBody = true;
     }
-
+    
 
     public String getString() {
         if (bodyContent != null) {
@@ -420,16 +322,6 @@ public class WriterHelper extends BodyTagSupport {
             log.debug("bodycontent is null, returning empty string");
             return "";
         }
-    }
-
-    /**
-     * Sets the bodycontent (to be used in doEndTag)
-     * @since MMBase-1.7
-     */
-
-    public int doAfterBody() throws JspException {
-        bodyContent = thisTag.getBodyContent();
-        return super.doAfterBody();
     }
 
     /**
@@ -444,7 +336,7 @@ public class WriterHelper extends BodyTagSupport {
             if (isWrite()) {
                 if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 log.debug("writing to page");
-                getPageString(pageContext.getOut()).write(body);
+                pageContext.getOut().print(getPageString() + body);
             } else {
                 log.debug("not writing to page");
             }
@@ -454,20 +346,32 @@ public class WriterHelper extends BodyTagSupport {
             }
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
-        }
+        }            
         release();
-        log.debug("End of doEndTag");
+        log.debug("End of deEndTag");
         return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
     }
 
     public void release() {
-        overrideWrite = null; // for use next time
+        overridewrite = null; // for use next time
         hasBody       = false;
         bodyContent   = null;
         pageContext   = null;
         value         = null;
-        write         = Attribute.NULL;
+        jspvar        = null;
+        write         = null;
+        vartype       = TYPE_UNSET;
     }
 
+    /**
+     * @deprecated Use doEndTag
+     */
+    /*
+    public int doAfterBody() throws JspTagException {
+        doEndTag();
+        return javax.servlet.jsp.tagext.BodyTagSupport.SKIP_BODY;
+        
+    }
+    */
 
 }

@@ -3,7 +3,34 @@
 <html>
 <head>
 <title>Welcome to MMBase</title>
-<link rel="stylesheet" href="css/mmbase.css" type="text/css">
+<style>
+<!--
+ body {  background-color: white;
+         color:42BDAD;
+           font-size:medium;}
+ a:link { color: #42BDAD; }
+ a:visited { color: #AAAAAA; }
+ a:active { color: #AAAAAA; }
+
+ th {  background-color: #44BDAD;
+       color:#00425A;
+         font-size:medium;
+         font-weight:bold; }
+ th.main {  background-color: #44BDAD;
+       color:#00425A;
+         font-size:large;
+         font-weight:bold; }
+ td    {  background-color: #00425A;
+         color:#44BDAD;
+         font-size:medium;
+         font-weight:normal; }
+ td.link {  background-color: #44BDAD;
+       color:#00425A;
+         font-size:medium;
+         font-weight:normal;
+         width:14; }
+-->
+</style>
 </head>
 <body >
 <table align="center" width="97%" cellspacing="1" cellpadding="3" border="0">
@@ -12,7 +39,7 @@
 </tr>
 <tr>
 <td colspan="3">
-      You are running <%=org.mmbase.Version.get() %><br />
+      You are running <%=org.mmbase.Version.get()%><br />
 <p>This software is OSI Certified Open Source Software.<br />
 OSI Certified is a certification mark of the Open Source Initiative.</p>
 <p>MMBase has been build under the <a href="mpl-1.0.html">Mozilla Public License, Version 1.0</a></p>

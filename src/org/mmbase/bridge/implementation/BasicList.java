@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -18,17 +19,13 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.15 2003-04-29 20:19:34 michiel Exp $
+ * @version $Id: BasicList.java,v 1.9.2.3 2003-03-21 17:52:03 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
     private static Logger log = Logging.getLoggerInstance(BasicList.class.getName());
 
     private Map properties = new HashMap();
-
-    // during inititializion of the list, you sometimes want to switch off 
-    // also when everything is certainly converted
-    boolean autoConvert = true;
 
     BasicList() {
          super();
@@ -53,12 +50,6 @@ public class BasicList extends ArrayList implements BridgeList  {
         return o;
     }
 
-    public boolean contains(Object o ) {
-        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
-        convertAll();
-        return super.contains(o);
-    }
-
     /*
      * validates that an object can be converted to the excpected format
      */
@@ -67,11 +58,7 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public Object get(int index) {
-        if (autoConvert) {
-            return convert(super.get(index), index);
-        } else {
-            return super.get(index);
-        }
+        return convert(super.get(index), index);
     }
 
     public void sort() {
@@ -87,38 +74,42 @@ public class BasicList extends ArrayList implements BridgeList  {
     }
 
     public void add(int index, Object o) {
-        autoConvert = true;
         super.add(index,validate(o));
     }
 
     public boolean add(Object o) {
-        autoConvert = true;
         return super.add(validate(o));
     }
+
+
+    public boolean contains(Object o ) {
+        // make sure every element is of the right type, ArrayList implementation does _not_ call get.
+        convertAll();
+        return super.contains(o);
+    }
+
 
     /**
      * @since MMBase-1.6.2
      */
     protected void convertAll() {
-        log.debug("convert all");
         for (int i = 0; i < size(); i++) {
             convert(super.get(i), i);
         }
-        autoConvert = false;
     }
 
 
     public Object[] toArray() { // needed when you e.g. want to sort the list.
         // make sure every element is of the right type, otherwise sorting can happen on the wrong type.
-        if (autoConvert) convertAll();
+        convertAll();
         return super.toArray();
     }
 
-    protected abstract class BasicIterator implements ListIterator {
+    public abstract class BasicIterator implements ListIterator {
         protected ListIterator iterator;
 
-        BasicIterator() {
-            this.iterator = listIterator();
+        BasicIterator(List list) {
+            this.iterator = list.listIterator();
         }
 
         public boolean hasNext() {
@@ -147,14 +138,13 @@ public class BasicList extends ArrayList implements BridgeList  {
         }
 
         public void add(Object o) {
-            BasicList.this.autoConvert = true;
             iterator.add(o);
         }
 
         // normally also e.g. set(Node n); and add(Node n) will be created in
         // descendant class, because that is better for performance.
 
-        public Object next() {
+        public Object next() {       
             return iterator.next();
         }
 

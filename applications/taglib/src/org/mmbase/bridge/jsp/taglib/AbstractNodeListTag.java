@@ -12,13 +12,17 @@ package org.mmbase.bridge.jsp.taglib;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.tagext.*;
+import javax.servlet.jsp.tagext.BodyTag;
+import javax.servlet.jsp.tagext.TagSupport;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
-import org.mmbase.bridge.jsp.taglib.util.*;
-import org.mmbase.util.StringSplitter;
-import org.mmbase.util.logging.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeList;
+
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * AbstractNodeListTag, provides basic functionality for listing objects
@@ -27,23 +31,21 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.53 2003-08-29 12:12:25 keesj Exp $
  */
-
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
-    private static final Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class);
+    private static Logger log = Logging.getLoggerInstance(AbstractNodeListTag.class.getName());
 
     /**
      * Holds the list of fields to sort the list on.
      * The sort itself is implementation specific.
      */
-    protected Attribute orderby = Attribute.NULL;
+    protected String orderby = null;
 
     /**
      * Holds the direction to sort the list on (per field in {@link #orderby}).
      * The sort itself is implementation specific.
      */
-    protected Attribute directions = Attribute.NULL;
+    protected String directions = null;
 
     /**
      * Holds the clause used to filter the list.
@@ -52,28 +54,19 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * a MMBase database node search, preceded with the keyord MMNODE.
      * The filter itself is implementation specific (not all lists may implement this!).
      */
-    protected Attribute constraints = Attribute.NULL;
+    protected String constraints = null;
 
     /**
      * The maximum number of elements in a list.
      * Setting the list size to conform to this maximum is implementation specific.
      */
-    protected Attribute  max = Attribute.NULL;
+    protected int max = -1;
 
     /**
      * The offset of the elements that are returned in a list.
      * Setting the list to conform to this ofsset is implementation specific.
      */
-    protected Attribute offset = Attribute.NULL;
-
-
-    protected Attribute comparator = Attribute.NULL; 
-
-
-    /**
-     * Lists do implement ContextProvider
-     */
-    private   ContextCollector  collector;
+    protected int offset   = 0;
 
     /**
      * Determines whether a field in {@link #orderby} changed
@@ -87,7 +80,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * should be called from {@link #doStartTag}, and will be used to
      * fill the return variables for every iteration.
      */
-    protected NodeIterator nodeIterator;
+    protected NodeIterator returnValues;
     protected NodeList     returnList;
 
     /**
@@ -100,20 +93,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      */
     protected int timerHandle = -1;
 
-    private String previousValue = null; // static because  doInitBody
+    private String previousValue = null; // static voor doInitBody
 
     public int getIndex() {
         return currentItemIndex;
     }
-    public int getIndexOffset() {
-        return 1;
-    }
     public Object getCurrent() {
         return getNodeVar();
-    }
-
-    public void remove() {
-        nodeIterator.remove();
     }
 
     /**
@@ -122,7 +108,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * nodes should be sorted
      */
     public void setOrderby(String orderby) throws JspTagException {
-        this.orderby = getAttribute(orderby);
+        this.orderby = getAttributeValue(orderby);
     }
 
     /**
@@ -131,7 +117,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * direction
      */
     public void setDirections(String directions) throws JspTagException {
-        this.directions = getAttribute(directions);
+        this.directions = getAttributeValue(directions);
     }
 
     /**
@@ -139,7 +125,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setMax(String m) throws JspTagException {
-        max = getAttribute(m);
+        max = getAttributeInteger(m, -1).intValue();
     }
 
     /**
@@ -158,7 +144,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * @param max the max number of values returned
      */
     public void setOffset(String o) throws JspTagException {
-        offset = getAttribute(o);
+        offset = getAttributeInteger(o).intValue();
     }
     /*
     public void setOffset(int o) { // also need with integer argument for Tomcat.
@@ -166,40 +152,23 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     */
-
-
-    public void setComparator(String c) throws JspTagException {
-        comparator = getAttribute(c);
-    }
-
-
     /**
      * Sets the selection query
      * @param where the selection query
      */
     public void setConstraints(String where) throws JspTagException {
-        constraints = getAttribute(where);
+        constraints = getAttributeValue(where);
+        if ("".equals(constraints)) constraints = null; // this means: no constraints
     }
-
-    // ContextProvider implementation
-    public ContextContainer getContextContainer() throws JspTagException {
-        if (collector == null) return getContextProvider().getContextContainer(); // to make sure old-style implemntation work (which do not initialize container)
-        return collector.getContextContainer();
-    }
-
 
 
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
 
-        log.debug("doStartTaghelper");
-        // make a (temporary) container
-        collector = new ContextCollector(getContextProvider().getContextContainer());
-
         // serve parent timer tag:
-        TagSupport t = findParentTag(TimerTag.class, null, false);
+        TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
-            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
+            timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
         }
 
         if (getReferid() != null) {
@@ -207,31 +176,31 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             if (! (o instanceof NodeList)) {
                 throw new JspTagException("Context variable " + getReferid() + " is not a NodeList");
             }
-            if (orderby != Attribute.NULL) {
+            if (orderby != null) {
                 throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
             }
-            if (offset != Attribute.NULL) {
+            if (offset != 0) {
                 throw new JspTagException("'offset' attribute does not make sense with 'referid' attribute");
             }
-            if (max != Attribute.NULL) {
+            if (max != -1) {
                 throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
             }
-            if (directions != Attribute.NULL) {
+            if (directions != null) {
                 throw new JspTagException("'directions' attribute does not make sense with 'referid' attribute");
             }
-            if (constraints != Attribute.NULL) {
+            if (constraints != null) {
                 throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
             }
             if (getReferid().equals(getId())) { // in such a case, don't whine
-                getContextProvider().getContextContainer().unRegister(getId());
+                getContextTag().unRegister(getId());
             }
             return setReturnValues((NodeList) o);
         }
         return NOT_HANDLED;
     }
     /**
-     * Creates the node iterator and sets appropriate variables (such as listsize)
-     * from a passed node list.
+     * Creates the node iterator and sets appropriate variables (i.e. listsize)
+     * froma  passed node list.
      * The list is assumed to be already sorted and trimmed.
      * @param nodes the nodelist to create the iterator from
      * @return EVAL_BODY_BUFFERED if the resulting list is not empty, SKIP_BODY if the
@@ -243,7 +212,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     /**
-     * Creates the node iterator and sets appropriate variables (such as listsize).
+     * Creates the node iterator and sets appropriate variables (i.e. listsize).
      * Takes a node list, and trims it using the offset and
      * max attributes if so indicated.
      * The list is assumed to be already sorted.
@@ -255,71 +224,50 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  @link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
-
-        ListSorter.sort(nodes, (String) comparator.getValue(this), pageContext);
-
-        if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
+        if (trim && (max > -1 || offset > 0)) {
             int currentSize = nodes.size();
-
-            int maxi = max.getInt(this, currentSize);
-            int maxx = (maxi > currentSize ? currentSize : maxi);
-
-            int offseti = offset.getInt(this, 0);
-
-            int to = maxx + offseti;
+            int maxx = (max > currentSize ? currentSize : max);
+            if (max == -1 ) maxx = currentSize;
+            int to = maxx + offset;
             if (to >= currentSize) {
                 to = currentSize;
             }
-            if (offseti >= currentSize) {
-                offseti = currentSize;
+            if (offset >= currentSize) {
+                offset = currentSize;
             }
-            if (offseti < 0) {
-                offseti = 0;
+            if (offset < 0) {
+                offset = 0;
             }
-            nodes = nodes.subNodeList(offseti, to);
+            nodes = nodes.subNodeList(offset, to);
 
         }
         returnList   = nodes;
 
         // returnList is know, now we can serve parent formatter tag
-        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
+        FormatterTag f = (FormatterTag) findParentTag("org.mmbase.bridge.jsp.taglib.FormatterTag", null, false);
         if (f != null && f.wantXML()) {
             f.getGenerator().add(nodes);
         }
 
-        nodeIterator = returnList.nodeIterator();
+        returnValues = returnList.nodeIterator();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
-        if (orderby!=Attribute.NULL) returnList.setProperty("orderby", orderby.getString(this));
-
-
-        if (nodeIterator.hasNext()) {
-            //doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
-            //return EVAL_BODY_INCLUDE;
+        if (returnValues.hasNext())
             return EVAL_BODY_BUFFERED;
-        } else {
-            return SKIP_BODY;
-        }
+        return SKIP_BODY;
     }
 
 
     public int doAfterBody() throws JspTagException {
-        log.debug("doafterbody");
         super.doAfterBody();
         if (getId() != null) {
-            getContextProvider().getContextContainer().unRegister(getId());
+            getContextTag().unRegister(getId());
         }
-
-        if (collector != null) { // might occur for some legacy extensions
-            log.debug("copying to collector");
-            collector.doAfterBody();
-        }
-        if (nodeIterator.hasNext()){
+        if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
-            log.debug("writing body");
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -332,21 +280,20 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     }
     public int doEndTag() throws JspTagException {
-
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), returnList);
+            getContextTag().register(getId(), returnList);
         }
-        TagSupport t = findParentTag(TimerTag.class, null, false);
+        javax.servlet.jsp.tagext.TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
-            ((TimerTag)t).haltTimer(timerHandle);
+            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).haltTimer(timerHandle);
         }
         return  super.doEndTag();
     }
 
     public void doInitBody() throws JspTagException {
-        if (nodeIterator.hasNext()){
+        if (returnValues.hasNext()){
             currentItemIndex ++;
-            Node next = nodeIterator.nextNode();
+            Node next = returnValues.nextNode();
             // use order as stored in the nodelist (the property of the tag may not be set
             // if you use referid to get the result of a prevuious listtag)
             String listorder=(String)returnList.getProperty("orderby");
@@ -368,6 +315,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             fillVars();
         }
     }
+    /*
+    public boolean isFirst(){
+        return (currentItemIndex == 0);
+    }
+    */
 
     /**
      * If you order a list, then the 'changed' property will be
@@ -380,6 +332,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int size(){
         return returnList.size();
     }
+    /*
+    public boolean isLast(){
+        return (! returnValues.hasNext());
+    }
+    */
 
 }
 

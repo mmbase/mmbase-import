@@ -12,11 +12,10 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.search.implementation.BasicRelationStep;
-import org.mmbase.storage.search.RelationStep;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 
 /**
  * TypeRel defines the allowed relations between two object
@@ -32,14 +31,14 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.45 2003-08-13 14:33:30 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.20 2003-08-13 14:42:01 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
-    private static final Logger log = Logging.getLoggerInstance(TypeRel.class);
+    private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName());
 
     /**
      * Constant for {@link #contains}: return only typerels that
@@ -51,6 +50,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * with a builder or its descendants
      */
     public static final int INCLUDE_DESCENDANTS = 1;
+
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder or its parents
@@ -163,7 +163,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             }
 
             // seek all parents and store typerels for them
-            // this cache is used by contains(INCLUDE_PARENTS / INCLUDE_PARENTS_AND_DESCENDANTS));
+            // this cache is used by contains(INCLUDE_PARENTS / INCLUDE_PARENTS_AND_DESCENDANTS);
             MMObjectBuilder sourceParent=sourceBuilder;
             while (sourceParent!=null) {
                 MMObjectBuilder destinationParent=destinationBuilder;
@@ -175,34 +175,24 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                 sourceParent=sourceParent.getParentBuilder();
             }
 
+
             added.add(typerel); // replaces the ones added in the 'inheritance' loop (so now not any more Virtual)
         }
         typeRelNodes.addAll(added);
         if (bidirectional) inverseTypeRelNodes.addAll(added);
-        if (log.isDebugEnabled()) {
-            log.debug("Added to typerelcache: " + added);
-        }
+        log.debug("Added to typerelcache: " + added);
         return added;
     }
 
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
      * This method indirectly calls {@link #preCommit}.
-     * If the typerel node specified already exists (i.e. same snumber, dnumber,a nd rnumber fielfds),
-     * the typerel creation fails and returns -1.
      * @param owner The administrator creating the node
      * @param node The object to insert. The object need be of the same type as the current builder.
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-        int snumber = node.getIntValue("snumber");
-        int dnumber = node.getIntValue("dnumber");
-        int rnumber = node.getIntValue("rnumber");
-        if (contains(snumber, dnumber, rnumber, STRICT)) {
-            log.error("The typerel with snumber=" + snumber + ", dnumber=" + dnumber+ ", rnumber=" + rnumber + " already exists");
-            throw new RuntimeException("The typerel with snumber=" + snumber + ", dnumber=" + dnumber+ ", rnumber=" + rnumber + " already exists");
-        }
-        int res = super.insert(owner, node);
+        int res = super.insert(owner,node);
         return res;
     }
 
@@ -301,13 +291,13 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         set.addAll(inverseTypeRelNodes.getByDestinationSource(dnum, snum));
 
         if (set.size() != 1) {
-           return -1;
+            return -1;
         } else {
-           MMObjectNode n =  (MMObjectNode) set.iterator().next();
-           return n.getIntValue("rnumber");
+            MMObjectNode n =  (MMObjectNode) set.iterator().next();
+            return n.getIntValue("rnumber");
         }
-     }
-    
+    }
+
     /**
      *  Returns the display string for this node
      *  It returns a commbination of objecttypes and rolename : "source->destination (role)".
@@ -434,13 +424,16 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @since MMBase-1.6.2
      */
     public boolean contains(int n1,int n2, int r, int restriction) {
-        switch(restriction) {
-        case INCLUDE_DESCENDANTS:             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        case INCLUDE_PARENTS:                 return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        case INCLUDE_PARENTS_AND_DESCENDANTS: return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) || parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        default: // STRICT
-            SortedSet existingNodes = typeRelNodes.getBySourceDestinationRole(n1,n2,r);
-            return (existingNodes.size() > 0 && !((MMObjectNode)existingNodes.first()).isVirtual());
+        if (restriction==INCLUDE_DESCENDANTS) {
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else if (restriction==INCLUDE_PARENTS) {
+            return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else if (restriction==INCLUDE_PARENTS_AND_DESCENDANTS) {
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) ||
+                   parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else { // STRICT
+            SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
+            return (existingNodes.size()>0 && !((MMObjectNode)existingNodes.first()).isVirtual());
         }
     }
 
@@ -472,57 +465,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     * Optimize as relation step by considering restrictions of TypeRel. TypeRel defines which type of relations may be created, ergo can exist. 
-     *
-     * @since MMBase-1.7
-     */
-    public boolean  optimizeRelationStep(BasicRelationStep relationStep, int sourceType, int destinationType, int roleInt, int searchDir) {
-        // Determine in what direction(s) this relation can be followed:
-
-        // Check directionality is requested and supported.
-        if (searchDir != ClusterBuilder.SEARCH_ALL && InsRel.usesdir) {
-            relationStep.setCheckedDirectionality(true);
-        }
-
-        // this is a bit confusing, can the simple cases like explicit 'source' or 'destination' not be handled first?
-
-        boolean sourceToDestination = searchDir != ClusterBuilder.SEARCH_SOURCE      && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
-        boolean destinationToSource = searchDir != ClusterBuilder.SEARCH_DESTINATION && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
-
-
-        if (destinationToSource && sourceToDestination && (searchDir == ClusterBuilder.SEARCH_EITHER)) { // support old
-            destinationToSource= false;
-        }
-        
-        if (destinationToSource) {
-            // there is a typed relation from destination to src
-            if (sourceToDestination) {
-                // there is ALSO a typed relation from src to destination - make a more complex query
-                relationStep.setDirectionality(RelationStep.DIRECTIONS_BOTH);
-            } else {
-                // there is ONLY a typed relation from destination to src - optimized query
-                relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-            }
-        } else {
-            if (sourceToDestination) {
-                // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-            } else {
-                // no results possible, do something any way
-
-                if (searchDir == ClusterBuilder.SEARCH_SOURCE) { // explicitely asked for source, it would be silly to try destination now
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
-                } else {
-                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION); // the 'normal' way
-                }
-                return false;
-            }
-        }
-        return true;
-    }
-
-
-    /**
      * Implements equals for a typerel node.
      * Two nodes are equal if the snumber and dnumber fields are the same, and
      * the rnumber fields are the same, or one of these is '-1' (don't care).
@@ -547,14 +489,12 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         return 127 * o.getIntValue("snumber");
     }
 
-
     public String toString(MMObjectNode n) {
         try {
             int snumber = n.getIntValue("snumber");
             int dnumber = n.getIntValue("dnumber");
             int rnumber = n.getIntValue("rnumber");
 
-            // unfilled should only happen during creation of the node.
             String source      = snumber > -1 ? mmb.getTypeDef().getValue(snumber) : "[unfilled]";
             String destination = dnumber > -1 ? mmb.getTypeDef().getValue(dnumber) : "[unfilled]";
             MMObjectNode role  = rnumber > -1 ? mmb.getRelDef().getNode(rnumber) : null;
@@ -570,8 +510,6 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * builder. Well 'of course', the reason is not quite obvious to
      * me, it has to do with the bridge/temporarynodemanager which
      * sometimes need to know it.
-     *
-     * @since MMBase-1.6.2
      */
     static class VirtualTypeRel extends TypeRel {
         static VirtualTypeRel virtualTypeRel = null;
@@ -715,6 +653,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(source, destination, role),
                                                             new VirtualTypeRelNode(source, destination, role + 1)));
         }
+
+
     }
 
     /**

@@ -9,31 +9,31 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-
+import java.io.*;
+import org.w3c.dom.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 
-import org.w3c.dom.Document;
-
+import java.util.*;
 
 /**
  * Gives an xml-representation of a dir structure with builders
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.5 2003-03-04 13:28:50 nico Exp $
+ * @version $Id: BuilderList.java,v 1.2.2.1 2002-11-28 22:13:36 gerard Exp $
  */
 public class BuilderList {
     // logger not used at the moment
     //private static Logger log = Logging.getLoggerInstance(BuilderList.class.getName());
+
+    /**
+     * Empty constructor
+     */
+    public BuilderList () {}
 
    /**
      * Generates the document and writes it to the result object.

@@ -9,13 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+import java.lang.*;
+import java.net.*;
+import java.util.*;
+import java.io.*;
+
+
 /**
  * MMBaseMultiCastProbe a thread object started to handle all nofity's needed when
  * one is received.
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseMultiCastProbe.java,v 1.6 2003-03-04 14:19:02 nico Exp $
+ * @version $Id: MMBaseMultiCastProbe.java,v 1.5 2002-03-11 10:42:36 pierre Exp $
  */
 public class MMBaseMultiCastProbe implements Runnable {
 

@@ -18,7 +18,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Execute.java,v 1.6 2003-03-10 11:51:06 pierre Exp $
+ * @version 9 Apr 2001
  */
 public class Execute {
     // logger

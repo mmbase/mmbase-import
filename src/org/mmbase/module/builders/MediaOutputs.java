@@ -12,12 +12,14 @@ package org.mmbase.module.builders;
 import java.util.*;
 import java.sql.*;
 
+import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
+import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MediaOutputs.java,v 1.6 2003-03-10 11:50:20 pierre Exp $
+ * @version 28 Oct 1998
  */
 public class MediaOutputs extends MMObjectBuilder {
 

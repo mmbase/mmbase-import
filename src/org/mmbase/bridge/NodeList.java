@@ -10,16 +10,16 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
+import java.util.List;
+
 /**
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: NodeList.java,v 1.8 2003-08-27 21:26:02 michiel Exp $
+ * @version $Id: NodeList.java,v 1.6 2002-09-23 14:31:02 pierre Exp $
  */
 public interface NodeList extends BridgeList {
 
-
-    public static final String QUERY_PROPERTY = "query";
     /**
      * Returns the Node at the indicated postion in the list
      * @param index the position of the Node to retrieve

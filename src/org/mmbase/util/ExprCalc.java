@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
-
+import java.lang.*;
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -17,12 +17,12 @@ import org.mmbase.util.logging.*;
  * Class to calculate expressions. It implements a simple LL(1)
  * grammar to calculate simple expressions with the basic
  * operators +,-,*,/ and brackets.
- * <br />
+ * <br>
  * The grammar in EBNF notation:
- * <br />
- * &lt;expr&gt;   -&gt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } <br />
- * &lt;term&gt;   -&gt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } <br />
- * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br />
+ * <br>
+ * &lt;expr&gt;   -&gt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } <br>
+ * &lt;term&gt;   -&gt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } <br>
+ * &lt;fact&gt;   -&gt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' <br>
  *
  * @author Arnold Beck
  */
@@ -31,31 +31,31 @@ public class ExprCalc {
     private static final int MC_NUM =2;
     private static final int MC_NONE=0;
     private static final int MC_EOT =-1;
-
-    private static Logger log = Logging.getLoggerInstance(ExprCalc.class);
+    // logger
+    private static Logger log = Logging.getLoggerInstance(ExprCalc.class.getName());
 
     // a token is represented by an tokencode (MCode)
     // and a tokenvalue (MSym or MNum) depending on
     // the tokencode
 
-    private StringTokenizer tokenizer;
+    private StringTokenizer T;
 
-    private int	   mCode;
-    private char   mSymb;
-    private double mNum;
+    private int	 MCode;
+    private char   MSymb;
+    private double MNum;
 
-    private double result;
+    private double Result;
 
     /**
      * Constructor of ExrpCalc
      * @param input a <code>String</code> representing the expression
      */
     public ExprCalc(String input) {
-      tokenizer = new StringTokenizer(input, "+-*/()% \t", true);
-      mCode = MC_NONE;
-      result = expr();
-      if (mCode != MC_EOT) {
-          log.error("Could not evalutate expression:" + input);
+      T=new StringTokenizer(input,"+-*/()% \t",true);
+      MCode=MC_NONE;
+      Result = expr();
+      if (MCode!=MC_EOT) {
+          log.error("ExprCalc-> Error :"+input);
       }
     }
 
@@ -63,115 +63,114 @@ public class ExprCalc {
      * Returns the calculated value of the expression
      */
     public double getResult() {
-        return result;
+        return Result;
     }
 
     /**
-     * The lexer to produce a token when mCode is MC_NONE
+     * The lexer to produce a token when MCode is MC_NONE
      */
     private boolean lex() {
-        String token;
-        if (mCode==MC_NONE) {
-            mCode=MC_EOT;mSymb='\0';mNum=0.0;
+        String Token;
+        if (MCode==MC_NONE) {
+            MCode=MC_EOT;MSymb='\0';MNum=0.0;
             try {
                 do {
-                  token = tokenizer.nextToken();
-                } while (token.equals(" ")||token.equals("\t"));
+                  Token=T.nextToken();
+                } while (Token.equals(" ")||Token.equals("\t"));
             } catch(NoSuchElementException e)  {
                 return false;
             }
             // numeral
-            if (Character.isDigit(token.charAt(0))) {
+            if (Character.isDigit(Token.charAt(0))) {
                 int i;
-                for(i=0;i<token.length() &&
-                    (Character.isDigit(token.charAt(i)) ||
-                     token.charAt(i)=='.');i++) { };
-                if (i!=token.length()) {
-                    log.error("Could not evaluate expression '" + token + "'");
-                }
+                for(i=0;i<Token.length() &&
+                    (Character.isDigit(Token.charAt(i)) ||
+                     Token.charAt(i)=='.');i++) { };
+                if (i!=Token.length()) {
+                    log.error("ExprCalc-> Error");
+		}
                 try {
-                    mNum=(Double.valueOf(token)).doubleValue();
+                    MNum=(Double.valueOf(Token)).doubleValue();
                 } catch (NumberFormatException e) {
-                    log.error("Could not evaluate expression ('" + token + "' not a number)");
-                }
-                mCode=MC_NUM;
+                    log.debug("ExprCalc-> Error");
+		}
+                MCode=MC_NUM;
             } else {          // symbol
-                mSymb=token.charAt(0);
-                mCode=MC_SYMB;
+                MSymb=Token.charAt(0);
+                MCode=MC_SYMB;
             }
         }
         return true;
     }
 
     /**
-     * expr implements the rule: <br />
+     * expr implements the rule: <br>
      * &lt;expr&gt; -&lt; &lt;term&gt; { '+' &lt;term&gt; } | &lt;term&gt; { '-' &lt;term&gt; } .
      */
     private double expr() {
-        double tmp = term();
-        while (lex() && mCode == MC_SYMB && (mSymb == '+' || mSymb == '-')) {
-            mCode=MC_NONE;
-            if (mSymb=='+') {
-                tmp += term();
+        double tmp=term();
+        while (lex() && MCode==MC_SYMB && (MSymb=='+' || MSymb=='-')) {
+            MCode=MC_NONE;
+            if (MSymb=='+') {
+                tmp+=term();
             } else {
-                tmp -= term();
+                tmp-=term();
             }
         }
-        if (mCode==MC_SYMB && mSymb=='('
-            ||  mCode==MC_SYMB && mSymb==')'
-            ||  mCode==MC_EOT) {
-
+        if (MCode==MC_SYMB && MSymb=='('
+            ||  MCode==MC_SYMB && MSymb==')'
+            ||  MCode==MC_EOT) {
         } else {
-            log.error("Could not evaluate expression");            
-        }
+          log.error("ExprCalc-> Error");
+	}
         return tmp;
     }
 
     /**
-     * term implements the rule: <br />
+     * term implements the rule: <br>
      * &lt;term&gt; -&lt; &lt;fact&gt; { '*' &lt;fact&gt; } | &lt;fact&gt; { '/' &lt;fact&gt; } .
      */
     private double term() {
         double tmp=fac();
-        while (lex() && mCode==MC_SYMB && (mSymb=='*' || mSymb=='/' || mSymb=='%')) {
-          mCode=MC_NONE;
-          if (mSymb=='*') {
-            tmp *= fac();
-          } else if (mSymb=='/') {
-            tmp /= fac();
+        while (lex() && MCode==MC_SYMB && (MSymb=='*' || MSymb=='/' || MSymb=='%')) {
+          MCode=MC_NONE;
+          if (MSymb=='*') {
+            tmp*=fac();
+          } else if (MSymb=='/') {
+            tmp/=fac();
           } else {
-            tmp %= fac();
+            tmp%=fac();
           }
         }
         return tmp;
     }
 
     /**
-     * fac implements the rule <br />
+     * fac implements the rule <br>
      * &lt;fact&gt;  -&lt; &lt;nmeral&gt; | '(' &lt;expr&gt; ')' .
      */
     private double fac() {
-        double tmp =- 1;
+        double tmp=-1;
         boolean minus=false;
 
-        if(lex()&& mCode==MC_SYMB && mSymb=='-') {
-            mCode = MC_NONE;
-            minus = true;
+        if(lex()&& MCode==MC_SYMB && MSymb=='-') {
+            MCode=MC_NONE;
+            minus=true;
         }
-        if(lex() && mCode==MC_SYMB && mSymb=='(') {
-            mCode = MC_NONE;
-            tmp = expr();
-            if(lex() && mCode!=MC_SYMB || mSymb!=')') {
-                log.error("Could not evaluate expression");
+        if(lex() && MCode==MC_SYMB && MSymb=='(') {
+            MCode=MC_NONE;
+            tmp=expr();
+            if(lex() && MCode!=MC_SYMB || MSymb!=')') {
+                log.error("ExprCalc-> Error");
             }
-            mCode=MC_NONE;
-        } else if (mCode==MC_NUM) {
-            mCode=MC_NONE;
-            tmp=mNum;
+            MCode=MC_NONE;
+        } else if (MCode==MC_NUM) {
+            MCode=MC_NONE;
+            tmp=MNum;
         } else {
-            log.error("Could not evaluate expression");
-        }
-        if (minus) tmp = -tmp;
+            log.error("ExprCalc-> Error");
+	}
+        if (minus) tmp=-tmp;
         return tmp;
     }
 }

@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.41 2003-08-29 12:12:29 keesj Exp $
+ * @version $Id: Cloud.java,v 1.31.2.1 2002-12-02 09:41:20 pierre Exp $
  */
 public interface Cloud {
 
@@ -211,22 +211,8 @@ public interface Cloud {
      * @return                       the requested relation manager
      * @throws NotFoundException     if the specified relation manager could not be found
      */
-    public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) throws NotFoundException;
-
-
-    /**
-     * Returns the specified relation manager.
-     *
-     * @param sourceManager          the node manager of the source node
-     * @param destinationManager     the node manager of the destination node
-     * @param roleName               name of the role
-     * @return                       the requested relation manager
-     * @throws NotFoundException     if the specified relation manager could not be found
-     * @since MMBase-1.7
-     */
-    public RelationManager getRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName) throws NotFoundException;
-
-
+    public RelationManager getRelationManager(String sourceManagerName,
+            String destinationManagerName, String roleName) throws NotFoundException;
 
     /**
      * Returns whether the specified relation manager exists.
@@ -237,19 +223,6 @@ public interface Cloud {
      * @return                       <code>true</code> if the specified relation manager could not be found
      */
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
-
-
-    /**
-     * Returns whether the specified relation manager exists.
-     *
-     * @param sourceManage          name of the node manager of the source node
-     * @param destinationManager    name of the node manager of the destination node
-     * @param roleName               name of the role
-     * @return                       <code>true</code> if the specified relation manager could not be found
-     * @since MMBase-1.7
-     */
-    public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName);
-
 
     /**
      * Returns the specified relation manager.
@@ -446,9 +419,9 @@ public interface Cloud {
      *                      original node manager name of the field and a dot
      *                      in cases where more than one node manager in the
      *                      path has a field with the same name.
-     * @param constraints   Constraints to prevent nodes from being
+     * @param constraints   Contraints to prevent nodes from being
      *                      included in the resulting list which would normally
-     *                      by included or <code>null</code> if no constraints
+     *                      by included or <code>null</code> if no contraints
      *                      should be applied.
      * @param orderby       A comma separated list of field names on which the
      *                      returned list should be sorted or <code>null</code>
@@ -471,7 +444,7 @@ public interface Cloud {
      *                      sorted according to the last specified direction
      *                      value.
      * @param searchDir     Determines how directionality affects the search.
-     *                      This is a string with the following possible values:<br />
+     *                      This is a string with the following possible values:<br>
      *                      <code>"both"</code>, which is the default, searches for all
      *                      valid relations through a path, checking full directionality
      *                      of relations where appropriate.
@@ -498,43 +471,6 @@ public interface Cloud {
             String searchDir, boolean distinct);
 
     /**
-     * Executed a query and returns the result as a NodeList.
-     * 
-     * @see org.mmbase.storage.search.SearchQuery
-     * @since MMBase-1.7
-     */
-    public NodeList getList(Query query);
-
-
-
-
-    /**
-     * Create an empty Query, which can be filled, and used in {getList#query}.
-     * @since MMBase-1.7
-     */
-
-    public Query createQuery();
-
-
-    /*
-     * TODO: Why has there to be a difference between aggregated and non-aggregaged queries?
-     * @since MMBase-1.7
-     */
-    public Query createAggregatedQuery();
-
-
-    /**
-     * Create an empty NodeQuery, which can be filled, and used in {getList#nodequery}. The query
-     * can be used only when at least one step is added, and 'setNodeStep' is called.
-     * @since MMBase-1.7
-     */
-
-    public NodeQuery createNodeQuery();
-
-
-
-
-    /**
      * Sets a locale for this Cloud instance.
      * @param locale To which locale it must be set. It can be null, in which case it will be reset to a default.
      *
@@ -548,6 +484,4 @@ public interface Cloud {
      * @since MMBase-1.6
      */
     public Locale  getLocale();
-
-
 }

@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @rename Servscan
- * @version $Id: servscan.java,v 1.36 2003-05-08 06:09:22 kees Exp $
+ * @version $Id: servscan.java,v 1.33.2.4 2003-06-02 16:55:46 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -143,7 +143,7 @@ public class servscan extends JamesServlet {
                             out.print(sp.body);
                             handleCacheSave(sp, res);
                         } else if (sp.rstatus == 1) {
-                            res.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
+                            res.setStatus(res.SC_MOVED_TEMPORARILY);  // 302, "OK" ??
                             res.setContentType(addCharSet(sp.mimetype));
                             res.setHeader("Location", sp.body);
                         } else if (sp.rstatus == 2) {
@@ -154,7 +154,7 @@ public class servscan extends JamesServlet {
                         } else if (sp.rstatus == 4) {
                             String tmp = req.getHeader("If-Modified-Since:");
                             if (tmp != null && sp.processor != null) {
-                                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED); // 304, "Not Modified"
+                                res.setStatus(res.SC_NOT_MODIFIED); // 304, "Not Modified"
                                 res.setContentType(addCharSet(sp.mimetype));
                             } else {
                             	// last-modification date and expire will be set to default

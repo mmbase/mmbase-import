@@ -2,7 +2,7 @@
 %><%@page contentType="text/html; charset=utf-8" %><html>
 <head>
 <title>Contexts</title>
-<link href="../../css/mmbase.css" rel="stylesheet" type="text/css" media="screen"  />
+<link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
 <body>
 <h1>context 3</h1>

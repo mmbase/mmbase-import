@@ -21,6 +21,14 @@ import org.mmbase.util.logging.Logging;
  * The main function of this class is to 'log' (keep) the last sql statement passed to it.
  * Another function is to keep state (i.e. notifying that it is busy),
  * and to make itself available again to teh connectionpool once it is finished (closed).
+ * <br />
+ * This classs has been expanded with dummy code that enables it to be
+ * easily adapted for compilation with jdk1.4 and JDBC 3.
+ * In order to compile using this new API, comment-out the
+ * Savepoint inner class.
+ * If you actually use a JDBC 3 driver, you may also want to
+ * adapt the new JDBC 3 methods, so that they pass their call to
+ * the driver, instead of throwing an UnsupportedOperationException.
  *
  * @sql It would possibly be better to pass the logging of the sql query
  *      to the code that calls the conenction, rather than place it in
@@ -29,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.29 2003-08-28 15:31:12 pierre Exp $
+ * @version $Id: MultiConnection.java,v 1.16 2002-11-07 07:17:10 kees Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -44,7 +52,7 @@ public class MultiConnection implements Connection {
     /**
      * @javadoc
      */
-    Connection con;
+    Connection con=null;
     /**
      * @javadoc
      */
@@ -62,14 +70,16 @@ public class MultiConnection implements Connection {
      * protected constructor for extending classes, so they can use
      * this with for example only a connection..
      */
-    protected MultiConnection() {       
+    protected MultiConnection() {
+        this.con = con;
+        this.parent = null;
         state=CON_UNUSED;
     }
     
     /**
      * @javadoc
      */
-    public MultiConnection(MultiPool parent,Connection con) {
+    MultiConnection(MultiPool parent,Connection con) {
         this.con=con;
         this.parent=parent;
         state=CON_UNUSED;
@@ -156,7 +166,7 @@ public class MultiConnection implements Connection {
      * get AutoCommit mode
      */
     public boolean getAutoCommit() throws SQLException {
-        return con.getAutoCommit();
+        return(con.getAutoCommit());
     }
     
     /**
@@ -177,26 +187,9 @@ public class MultiConnection implements Connection {
      * Close connections
      */
     public void close() throws SQLException {
-        if (log.isDebugEnabled()) {
-            StringBuffer mes = new StringBuffer();
-            long time = System.currentTimeMillis() - getStartTimeMillis();
-            if (time < 10) mes.append(' ');
-            if (time < 100) mes.append(' ');
-            if (time < 1000) mes.append(' ');
-            mes.append(time);
-            mes.append(" ms: ").append(getLastSQL());
-            log.debug(mes.toString());
-        }
+        log.debug("SQL querytimer measures " + (System.currentTimeMillis() - getStartTimeMillis()) + " mSec for query: " + getLastSQL());
         state=CON_FINISHED;
-        // If there is a parent object, this connection belongs to a pool and should not be closed,
-        // but placed back in the pool
-        // If there is no parent, the connection belongs to a datasource (thus pooling is done by the appserver)
-        // and should be closed normally
-        if (parent != null) {
-            parent.putBack(this);
-        } else {
-            realclose();
-        }
+        parent.putBack(this);
     }
     
     /**
@@ -293,7 +286,7 @@ public class MultiConnection implements Connection {
      */
     public boolean checkSQLError(Exception e) {
         log.error("JDBC CHECK ERROR="+e.toString());
-        return true;
+        return(true);
     }
     
     /**
@@ -378,6 +371,8 @@ public class MultiConnection implements Connection {
         return con.prepareStatement(sql,i,y);
     }
     
+    // Note: JDBC 1.4 methods
+    
     /**
      * Changes the holdability of ResultSet objects created using this Connection
      * object to the given holdability.
@@ -386,7 +381,8 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public void setHoldability(int holdability) throws SQLException {
-        con.setHoldability(holdability);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         con.setHoldability(holdability);
     }
     
     /**
@@ -396,7 +392,8 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public int getHoldability() throws SQLException {
-        return con.getHoldability();
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.getHoldability();
     }
     
     /**
@@ -406,7 +403,8 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public Savepoint setSavepoint() throws SQLException {
-        return con.setSavepoint();
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.setSavepoint();
     }
     
     /**
@@ -417,7 +415,8 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public Savepoint setSavepoint(String name) throws SQLException {
-        return con.setSavepoint(name);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.setSavepoint(name);
     }
     
     /**
@@ -427,7 +426,8 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public void rollback(Savepoint savepoint) throws SQLException {
-        con.rollback(savepoint);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         con.rollback(savepoint);
     }
     
     /**
@@ -437,7 +437,8 @@ public class MultiConnection implements Connection {
      * @since MMBase 1.5, JDBC 1.4
      */
     public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-        con.releaseSavepoint(savepoint);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         con.releaseSavepoint(savepoint);
     }
     
     /**
@@ -454,7 +455,8 @@ public class MultiConnection implements Connection {
      */
     public Statement createStatement(int type, int concurrency, int holdability)
     throws SQLException {
-        return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //        return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
     }
     
     /**
@@ -473,7 +475,8 @@ public class MultiConnection implements Connection {
     public PreparedStatement prepareStatement(String sql, int type, int concurrency, int holdability)
     throws SQLException {
         setLastSQL(sql);
-        return con.prepareStatement(sql, type, concurrency, holdability);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.prepareStatement(sql, type, concurrency, holdability);
     }
     
     /**
@@ -492,7 +495,8 @@ public class MultiConnection implements Connection {
     public CallableStatement prepareCall(String sql, int type, int concurrency, int holdability)
     throws SQLException {
         setLastSQL(sql);
-        return con.prepareCall(sql, type, concurrency, holdability);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.prepareCall(sql, type, concurrency, holdability);
     }
     
     /**
@@ -506,7 +510,8 @@ public class MultiConnection implements Connection {
      */
     public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
         setLastSQL(sql);
-        return con.prepareStatement(sql, autoGeneratedKeys);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.prepareStatement(sql, autoGeneratedKeys);
     }
     
     /**
@@ -521,7 +526,8 @@ public class MultiConnection implements Connection {
      */
     public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
         setLastSQL(sql);
-        return con.prepareStatement(sql, columnIndexes);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.prepareStatement(sql, columnIndexes);
     }
     
     /**
@@ -536,9 +542,19 @@ public class MultiConnection implements Connection {
      */
     public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
         setLastSQL(sql);
-        return con.prepareStatement(sql, columnNames);
+        throw new UnsupportedOperationException("only available in JDBC 1.4");
+        //         return con.prepareStatement(sql, columnNames);
     }
     
+    /**
+     * Inner Class for the sole us of enabling the code to compile using jdk 1.3 or lower.
+     * In order to compile using jdk1.4 and JDBC 3.0, you need to comment this class out.
+     * @deprecated this inner class may be removed or commented-out in future releases.
+     *              do not use!
+     * @since MMBase 1.5
+     */
+    private class Savepoint {
+    }
 }
 
 

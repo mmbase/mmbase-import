@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 
 import org.mmbase.bridge.jsp.taglib.Condition;
 
@@ -18,32 +18,26 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
- * A very simple tag to check if certain id is present in the parent context.
- *
- * @author Michiel Meeuwissen
- * @version $Id: PresentTag.java,v 1.16 2003-08-11 15:27:28 michiel Exp $
- */
-
+* A very simple tag to check if certain id is present in the parent context.
+*
+* @author Michiel Meeuwissen
+*/
 public class PresentTag extends ContextReferrerTag implements Condition {
 
-    protected Attribute inverse = Attribute.NULL;
+    protected boolean inverse = false;
 
-    public void setInverse(String b) throws JspTagException {
-        inverse = getAttribute(b);
-    }
-    protected boolean getInverse() throws JspTagException {
-        return inverse.getBoolean(this, false);
+    public void setInverse(Boolean b) {
+        inverse = b.booleanValue();
     }
 
     public int doStartTag() throws JspTagException {
-        if ((getContextProvider().getContextContainer().isPresent(getReferid())) != getInverse()) {
-            return EVAL_BODY_BUFFERED; // EVAL_BODY_INCLUDE not supported by a lot of app-servers
+        if ((getContextTag().isPresent(getReferid())) != inverse) {
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }
     }
 
-    // not needed if EVAL_BODY_INCLUDE
     public int doAfterBody() throws JspTagException {
         if (bodyContent != null) {
             try{
@@ -55,4 +49,5 @@ public class PresentTag extends ContextReferrerTag implements Condition {
         }
         return EVAL_PAGE;
     }
+
 }

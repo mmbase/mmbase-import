@@ -12,19 +12,10 @@ package org.mmbase.bridge;
 /**
  * Main class to aquire CloudContexts
  * @author Kees Jongenburger
- * @version $Id: ContextProvider.java,v 1.6 2003-06-05 08:55:34 michiel Exp $
+ * @version $Id: ContextProvider.java,v 1.2.4.1 2003-07-01 09:17:10 keesj Exp $
  * @since MMBase-1.5
  */
 public class ContextProvider{
-   /**
-    * When no system property mmbase.defaultcloudcontext is set
-    * the default cloud context is the context returned when 
-    * DEFAULT_CLOUD_CONTEXT_NAME is fed to getCloudContext(String)<BR>
-    * DEFAULT_CLOUD_CONTEXT_NAME="local"
-    **/
-    public final static String DEFAULT_CLOUD_CONTEXT_NAME="local";
-    private static String defaultCloudContextName ;
-
     /**
      * Factory method to get an instance of a CloudContext. Depending
      * on the uri parameter given the CloudContext might be a local context
@@ -34,44 +25,28 @@ public class ContextProvider{
      * <UL>
      *   <LI>local : will return a local context</LI>
      *   <LI>rmi://hostname:port/contextname : will return a remote context</LI>
-     *   <LI>a null parameter: will return the default context
+     *   <LI>a null parameter: will return a local context
      * </UL>
      * @return a cloud context
-     * @throws BridgeException if the cloudcontext was not found
+     * @throws RuntimeException if anything wrong happends
      */
     public static CloudContext getCloudContext(String uri) {
-        if (uri == null || (uri != null && uri.trim().length() == 0)){
-		uri = getDefaultCloudContextName();
-	}
-        
+        if (uri == null) uri="";
+
         if (uri.startsWith("rmi")){
             return RemoteContext.getCloudContext(uri);
         } else if (uri.startsWith("local")){
             return LocalContext.getCloudContext();
         }
-	throw new BridgeException("cloudcontext with name {"+ uri +"} is not known to MMBase");
+        return LocalContext.getCloudContext();
     }
 
     /**
-     * @since MMBase-1.7
-     * @return the name of the cloud context to be used as default
-     **/
-     public static String getDefaultCloudContextName(){
-         //first choice.. set the cloud context using system properties
-         if (defaultCloudContextName == null){
-             defaultCloudContextName = System.getProperty("mmbase.defaultcloudcontext");
-         }
-         if (defaultCloudContextName == null){
-             defaultCloudContextName = DEFAULT_CLOUD_CONTEXT_NAME;
-         }
-         return defaultCloudContextName;
-     }
-    
-    /**
-     * @since MMBase-1.7
-     * @return the default cloud context
+     * this method returns the default cloud context. 
+     * it is equals to LocalContext.getCloudContext();
+     * @since MMBase-1.6.4 (backport from MMBase-1.7 for compatibility) 
      **/
     public static CloudContext getDefaultCloudContext(){
-        return getCloudContext(getDefaultCloudContextName());
-    }
+        return getCloudContext("local");
+    }   
 }

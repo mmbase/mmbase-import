@@ -8,38 +8,18 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
-
-import javax.servlet.ServletException;
-
+import java.lang.Exception;
+import javax.servlet.*;
 
 /**
  * This Exception will occur if the upload file exceeds a certain size,
- * that's specified in HttpPost.
- * @deprecated-now not used by any CVS classes (probably local code)
- *
- * @author vpro
- * @version $Id: FileToLargeException.java,v 1.6 2003-08-29 09:36:55 pierre Exp $
+ * that's specified in WorkerPostHandler.
  */
 public class FileToLargeException extends ServletException {
-
-    //javadoc is inherited
-    public FileToLargeException() {
-        super();
+    /**
+     * Create the exception
+     */
+    public FileToLargeException (String s) {
+        super(s);
     }
-    
-    //javadoc is inherited
-    public FileToLargeException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public FileToLargeException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public FileToLargeException(String message, Throwable cause) {
-        super(message,cause);
-    }
-
 }

@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.16 2003-04-11 11:05:52 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.9.2.4 2003-04-11 09:29:24 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -49,7 +49,7 @@ public class BuilderWriter extends DocumentWriter  {
      * @param builder the builder for which to create an XML document.
      */
     public BuilderWriter(MMObjectBuilder builder) throws DOMException {
-        super("builder", BuilderReader.PUBLIC_ID_BUILDER,"http://www.mmbase.org/dtd/"+BuilderReader.DTD_BUILDER);
+        super("builder", "-//MMBase//DTD builder config 1.1//EN","http://www.mmbase.org/dtd/builder_1_1.dtd");
         this.builder=builder;
         getMessageRetriever("org.mmbase.util.xml.resources.builderwriter");
     }
@@ -247,6 +247,7 @@ public class BuilderWriter extends DocumentWriter  {
                     addComment("builder.field.db.type",db);
                     Element dbtype=addContentElement("type",sType,db);
                     String sState = FieldDefs.getDBStateDescription(fielddef.getDBState());
+                    sState=sState.toLowerCase();
                     dbtype.setAttribute("state",sState);
                     int size=fielddef.getDBSize();
                     if (size>-1) {

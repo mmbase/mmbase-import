@@ -24,17 +24,17 @@ import org.mmbase.util.logging.*;
  * It's sole function is to provide a type definition for the results of a search.
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: VirtualNodeManager.java,v 1.15 2003-08-27 21:30:01 michiel Exp $
+ * @version $Id: VirtualNodeManager.java,v 1.12.2.1 2002-11-18 12:28:30 pierre Exp $
  */
 public class VirtualNodeManager extends BasicNodeManager {
-    private static final Logger log = Logging.getLoggerInstance(VirtualNodeManager.class);
+    private static Logger log = Logging.getLoggerInstance(VirtualNodeManager.class.getName());
 
     VirtualNodeManager(MMObjectBuilder builder, BasicCloud cloud) {
         super(builder,cloud);
     }
 
     VirtualNodeManager(BasicCloud cloud) {
-        super(new VirtualBuilder(BasicCloudContext.mmb), cloud);
+        super(new VirtualBuilder(((BasicCloudContext)cloud.getCloudContext()).mmb), cloud);
     }
 
     VirtualNodeManager(MMObjectNode node, BasicCloud cloud) {
@@ -78,7 +78,7 @@ public class VirtualNodeManager extends BasicNodeManager {
      */
     protected void init() {
         nodeManager=cloud.getNodeManager("typedef");
-        noderef= new VirtualNode(BasicCloudContext.mmb.getTypeDef());
+        noderef= new VirtualNode(((BasicCloudContext)cloud.getCloudContext()).mmb.getTypeDef());
         super.init();
     }
 

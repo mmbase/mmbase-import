@@ -9,15 +9,32 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.File;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.io.*;
+import java.util.*;
+
+import org.xml.sax.*;
+import org.apache.xerces.parsers.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
+
+import org.mmbase.module.corebuilders.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.w3c.dom.Element;
+
 
 /**
+ * @author cjr@dds.nl
+ * @version $Id: XMLMMLanguageReader.java,v 1.6 2002-10-25 21:25:14 michiel Exp $
+ *
+ * $Log: not supported by cvs2svn $
+ * Revision 1.5  2001/04/19 12:00:25  michiel
+ * michiel: logging, indentation
+ *
+ * Revision 1.4  2000/08/20 10:53:44  case
+ * cjr: minor changes, this class is now actually used
+ *
+ *
  * XMLLanguageReader parses the .xml file in its argument in its constructor.
  * This .xml file should be formatted according to mmlanguage.dtd.
  * 
@@ -29,8 +46,6 @@ import org.w3c.dom.Element;
  * - no check whether the input file exists
  * - doesn't read when the xml:lang attribute is absent, but doesn't generate an error either
  *
- * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.8 2003-03-10 11:51:15 pierre Exp $
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
 
@@ -88,6 +103,7 @@ public class XMLMMLanguageReader extends XMLBasicReader {
      */
     public static void main(String[] argv) {
         String path = "/opt2/mmbase/org/mmbase/config/future/modules/languages/nl.xml";
+
 
         File f = new File(path);
         if (f.exists()) {

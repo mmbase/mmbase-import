@@ -9,43 +9,33 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import java.io.File;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.*;
-import org.mmbase.util.Arguments;
-import org.mmbase.util.UriParser;
-import org.mmbase.module.builders.AbstractServletBuilder;
-import org.mmbase.module.builders.Images;
-
-import org.mmbase.security.Rank;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+import org.mmbase.bridge.Node;
 
 /**
- * Produces an url to the image servlet mapping. Using this tag makes
- * your pages more portable to other system, and hopefully less
- * sensitive for future changes in how the image servlet works.
+ * Produces a url to 'img.db'. Using this tag makes your pages more
+ * portable to other system, and hopefully less sensitive for future
+ * changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.40 2003-08-27 21:33:33 michiel Exp $ 
- */
+ **/
 
 public class ImageTag extends FieldTag {
 
-    private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
-    private Attribute template = Attribute.NULL;
+    private String template = null;
 
     /**
      * The transformation template
      */
 
     public void setTemplate(String t) throws JspTagException {
-        template = getAttribute(t);
+        template = getAttributeValue(t);
     }
 
     public int doStartTag() throws JspTagException {
@@ -60,53 +50,52 @@ public class ImageTag extends FieldTag {
         String context = req.getContextPath();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
+         * EXPERIMENTAL
          */
         String sessionName = "";
 
-        if(! getCloud().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
-            // the user is not anonymous!
-            // Need to check if node is readable by anonymous.
-            // in that case URLs can be simpler     
+        if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
+            sessionName = "cloud_mmbase";
             CloudTag ct = null;
-            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
             if (ct != null) {
-                CloudContext cc = ct.getDefaultCloudContext();
-                Cloud anonymousCloud = cc.getCloud(ct.getName());
-                try {
-                    anonymousCloud.getNode(node.getNumber());
-                } catch (org.mmbase.security.SecurityException se) {
-                    sessionName = ct.getSessionName();
-                }
-            } else {
-                // how can this happen?
+                sessionName = ct.getSessionName();
             }
         }
 
         String number;
-        String t = template.getString(this);
-        if ("".equals(t)) {
+        if (template == null || "".equals(template)) {
             // the node/image itself
             number = node.getStringValue("number");
         } else {
             // the cached image
-            number = node.getFunctionValue("cache", new Arguments(Images.CACHE_ARGUMENTS).set("template", t)).toString();
+            List args = new ArrayList();
+            args.add(template);
+            number = node.getFunctionValue("cache", args).toString();
         }
-
 
         String servletPath;
+
         {
-            Arguments args = new Arguments(AbstractServletBuilder.SERVLETPATH_ARGUMENTS)
-                .set("session",  sessionName)
-                .set("context",  UriParser.makeRelative(new File(req.getServletPath()).getParent(), "/"))
-                .set("argument", number)
-                ;
+            List args = new ArrayList();
+            args.add(sessionName);
+            args.add("");
+            args.add(context);
             servletPath = node.getFunctionValue("servletpath", args).toString();
         }
-        helper.setTag(this);
-        helper.useEscaper(false);
-        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(servletPath));
+
+        String url;
+        String fileName = node.getStringValue("filename");
+        if (servletPath.endsWith("?") ||  "".equals(fileName)) {
+            url = servletPath + number;
+        } else {
+            url = servletPath + fileName + "?" + number;
+        }
+        helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(url));
+        helper.setPageContext(pageContext);
+        helper.setJspvar();
         if (getId() != null) {
-            getContextProvider().getContextContainer().register(getId(), helper.getValue());
+            getContextTag().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

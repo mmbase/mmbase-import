@@ -10,13 +10,15 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
+import java.sql.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.database.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: Cookies.java,v 1.10 2003-03-10 11:50:17 pierre Exp $
+ * @version 10 Dec 2000
  */
 public class Cookies extends MMObjectBuilder {
 

@@ -9,8 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloud;
 
-import org.mmbase.security.*;
-import org.mmbase.bridge.Query;
+import org.mmbase.security.Authorization;
+import org.mmbase.security.Rank;
+import org.mmbase.security.UserContext;
+import org.mmbase.security.Operation;
 
 import org.mmbase.module.core.MMObjectNode;
 
@@ -21,10 +23,10 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.12 2003-08-05 19:05:21 michiel Exp $
+ * @version $Id: Verify.java,v 1.11 2002-09-26 12:25:11 eduard Exp $
  */
 public class Verify extends Authorization {
-    private static Logger   log=Logging.getLoggerInstance(Verify.class);
+    private static Logger   log=Logging.getLoggerInstance(Verify.class.getName());
     private java.util.Set adminBuilders = new java.util.HashSet();
 
     protected void load() {
@@ -192,16 +194,4 @@ public class Verify extends Authorization {
 	}
 	return node;
     }
-
-    public QueryCheck check(UserContext user, Query query, Operation operation) {
-        if(user.getRank().getInt() >= Rank.ADMIN.getInt()) {
-            return COMPLETE_CHECK;
-        }
-        if(operation == Operation.READ) {
-            return COMPLETE_CHECK;
-        } else {
-            return NO_CHECK;
-        }
-    }
-
 }

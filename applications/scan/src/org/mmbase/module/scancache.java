@@ -9,7 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.util.Hashtable;
 
@@ -18,8 +21,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.mmbase.module.builders.NetFileSrv;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.gui.html.scanparser;
-import org.mmbase.util.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.DateSupport;
+import org.mmbase.util.LRUHashtable;
+import org.mmbase.util.RFC1123;
+import org.mmbase.util.fileInfo;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * File cache system.
@@ -27,14 +35,14 @@ import org.mmbase.util.logging.*;
  * Texts are asociated with a key, which is used both as a filename on disk and a
  * key into a memory cache.
  * While in theory it is possible to cache ANY text, this module is mainly used to store pages
- * based on their url.<br />
+ * based on their url.<br>
  * Caching is done in pools. Each pool has its own memory cache and files, and has
  * different ways to handle file caching. The pools currently supported are "PAGE" and "HENK".
  *
  * @rename Scancache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.40 2003-07-02 06:20:44 keesj Exp $
+ * @version 10 Apr 2001
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -46,7 +54,7 @@ public class scancache extends Module implements scancacheInterface {
     // logger
     private static Logger log = Logging.getLoggerInstance(scancache.class.getName());
 
-        private scanparser scanparser;
+	private scanparser scanparser;
 
     /**
      * Default expiration time for a cache entry, in seconds.
@@ -68,7 +76,7 @@ public class scancache extends Module implements scancacheInterface {
      * Contains the last date (as an <code>Integer</code>) a file was stored in a pool.
      * The key to retrieve the time is poolname+filekey (where a filekey is generally the file URI).
      * There is a limit to the number of values stored in this pool. This means if you have
-         * more then 4 pooltypes you have to bump that value or suffer performance degredation
+	 * more then 4 pooltypes you have to bump that value or suffer performance degredation
      */
     LRUHashtable timepool = new LRUHashtable(MAX_CACHE_POOL_SIZE*4);
 
@@ -183,14 +191,14 @@ public class scancache extends Module implements scancacheInterface {
 /*    public String getNew(String poolName, String key,String line,scanpage sp) {
         if (status==false) return null; // no cache when inactive
         line=line.substring(0,line.indexOf('>'));
-
+        
         // org.mmbase
 //        log.debug("scancache -> new poolName="+poolName+" key="+key+" line="+line+" tagger="+counter+" stats="+stats);
 //        if (counter!=null && stats!=null) {
 //            stats.setCount(counter,1);
 //        }
-
-
+		
+		
         if (poolName.equals("HENK")) {
             String tmp=get(poolName,key,">",sp);
             return tmp;
@@ -206,10 +214,10 @@ public class scancache extends Module implements scancacheInterface {
      * It is first retrieved from meory. if that fails, the file is retrieved from disk.
      * This method performs a check on expiration using either the default expiration
      * time (6 hours), or the value in the line parameter.
-         * This method returns an old version of the page if the page in the cache has expired.
-         * It will signal the scanparser to calculate a new one in the background.
-         * This avoids contention on a busy server as the page is only calculated once when expired
-         * not calculate every request that comes in during the window of calculation.
+ 	 * This method returns an old version of the page if the page in the cache has expired.
+	 * It will signal the scanparser to calculate a new one in the background.
+	 * This avoids contention on a busy server as the page is only calculated once when expired
+ 	 * not calculate every request that comes in during the window of calculation.
      * @param poolname name of the cache pool, expected (but not verified) are "HENK" or "PAGE"
      * @param key URL of the page to retrieve
      * @param line the expiration value, either the expiration value in seconds or the word 'NOEXPIRE'. Due to
@@ -219,12 +227,12 @@ public class scancache extends Module implements scancacheInterface {
      */
     public String get(String poolName, String key, String line,scanpage sp) {
         if (status==false) return null; // no cache when inactive
-
+        
         // get the interval time
         // (nothing, NOEXPIRE, or an int value)
         String tmp=line.substring(0,line.indexOf('>')).trim();
-                int interval = getExpireInterval(tmp);
-
+		int interval = getExpireInterval(tmp);
+        
         int now=(int)(System.currentTimeMillis()/1000);
 
         // get pool memory cache
@@ -233,37 +241,37 @@ public class scancache extends Module implements scancacheInterface {
             String value=(String)pool.get(key);
             // Check expiration
             // XXX better to check value==null first...
-                        if (value!=null) {
-                    try {
-                        // get the time from memory
-                        Integer tmp2=(Integer)timepool.get(poolName+key);
-                        int then=tmp2.intValue();
-                        log.debug("scancache -> file="+then+" now="+now
-                                +" now-then="+(now-then)+" interval="+interval);
-                        if (((now-then)-interval)<0) {
-                            return value;
-                        } else {
-                                                // Don't handle flasvar
-                                                if (key.indexOf(".flashvar")<0) {
-                                                        log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
-                                                        // RICO signal page-processor
-                                                        signalProcessor(sp,key);
-                                                        return value;
-                                                } else return null;
-                        }
-                    } catch(Exception e) {}
-                        }
+			if (value!=null) {
+	            try {
+	                // get the time from memory
+	                Integer tmp2=(Integer)timepool.get(poolName+key);
+	                int then=tmp2.intValue();
+	                log.debug("scancache -> file="+then+" now="+now
+	                        +" now-then="+(now-then)+" interval="+interval);
+	                if (((now-then)-interval)<0) {
+	                    return value;
+	                } else {
+						// Don't handle flasvar						
+						if (key.indexOf(".flashvar")<0) {
+							log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
+							// RICO signal page-processor
+							signalProcessor(sp,key);
+							return value;						
+						} else return null;
+	                }
+	            } catch(Exception e) {}
+			}
         }
         // not in memorycache, get directly from file instead
         fileInfo fileinfo=loadFile(poolName,key);
         if (fileinfo!=null && fileinfo.value!=null) {
-            if (((now-fileinfo.time)-interval)>0) {
-                                if (key.indexOf(".flashvar")>=0) { // Don't handle flashvar;
-                                        return null;
-                                }
-                 log.debug("get("+poolName+","+key+","+line+"): Diskfile expired for file("+fileinfo.time+"), now("+now+") and interval("+interval+") , return old version ");
-                                // RICO signal page-processor
-                                signalProcessor(sp,key);
+            if (((now-fileinfo.time)-interval)>0) {	
+				if (key.indexOf(".flashvar")>=0) { // Don't handle flashvar;					
+					return null;
+				}
+               	 log.debug("get("+poolName+","+key+","+line+"): Diskfile expired for file("+fileinfo.time+"), now("+now+") and interval("+interval+") , return old version ");
+				// RICO signal page-processor
+				signalProcessor(sp,key);
             }
             if (pool==null) {
                 // create a new pool
@@ -277,61 +285,61 @@ public class scancache extends Module implements scancacheInterface {
         return null;
     }
 
-        /**
-         *  getExpireDate.
-         * @param poolName
-         * @param key
-         * @param expireStr
-         * @return long
-         */
-        public long getExpireDate(String poolName, String key, String expireStr) {
-                int interval = getExpireInterval(expireStr);
-                return getLastModDate(poolName, key) + (interval * 1000);
-        }
+	/**
+	 *  getExpireDate.
+	 * @param poolName
+	 * @param key
+	 * @param expireStr
+	 * @return long
+	 */
+	public long getExpireDate(String poolName, String key, String expireStr) {
+		int interval = getExpireInterval(expireStr);
+		return getLastModDate(poolName, key) + (interval * 1000);
+	}
 
-        /**
-         *  getLastModDate.
-         * @param poolName
-         * @param key
-         * @return long
-         */
-        public long getLastModDate(String poolName, String key) {
-                if (timepool.containsKey(poolName+key)) {
-                        Integer tmp2=(Integer)timepool.get(poolName+key);
-                        log.debug("scancache last modified in timepool " + (tmp2.intValue()));
-                        return ((long)tmp2.intValue()) * 1000;
-                }
-                log.debug("scancache last modified NOT in timepool");
-                return 0; //don't know
-        }
+	/**
+	 *  getLastModDate.
+	 * @param poolName
+	 * @param key
+	 * @return long
+	 */
+	public long getLastModDate(String poolName, String key) {
+		if (timepool.containsKey(poolName+key)) {
+			Integer tmp2=(Integer)timepool.get(poolName+key);
+			log.debug("scancache last modified in timepool " + (tmp2.intValue()));
+			return ((long)tmp2.intValue()) * 1000;
+		}
+		log.debug("scancache last modified NOT in timepool");
+		return 0; //don't know
+	}
 
-        /**
-         * getExpireInterval.
-         * @param cacheExpire
-         * @return int
-         */
-        private int getExpireInterval(String cacheExpire) {
-                int interval;
-                if ("".equals(cacheExpire)) {
-                         interval = defaultExpireTime;
-                }
-                else {
-                        if ("NOEXPIRE".equals(cacheExpire.toUpperCase())) {
-                                interval = Integer.MAX_VALUE;
-                        }
-                        else {
-                                try {
-                                interval = Integer.parseInt(cacheExpire);
-                        }
-                        catch (NumberFormatException n) {
-                                log.error("Number format exception for expiration time ("+cacheExpire+")");
-                                interval = defaultExpireTime;
-                        }
-                        }
-                }
-                log.debug("scancache expire interval: " + interval);
-                return interval;
-        }
+	/**
+	 * getExpireInterval.
+	 * @param cacheExpire
+	 * @return int
+	 */
+	private int getExpireInterval(String cacheExpire) {
+		int interval;
+		if ("".equals(cacheExpire)) {
+			 interval = defaultExpireTime;
+		}
+		else {
+			if ("NOEXPIRE".equals(cacheExpire.toUpperCase())) {
+				interval = Integer.MAX_VALUE;
+			}
+			else {
+				try {
+		        	interval = Integer.parseInt(cacheExpire);
+		    	}
+		     	catch (NumberFormatException n) {
+		        	log.error("Number format exception for expiration time ("+cacheExpire+")");
+		         	interval = defaultExpireTime;
+		     	}
+			}
+		}
+		log.debug("scancache expire interval: " + interval);
+		return interval;
+	}
 
     /**
      * Retrieve a file from disk.
@@ -480,7 +488,7 @@ public class scancache extends Module implements scancacheInterface {
         }
         // got pool now insert the new item and save to disk
         saveFile(poolName,key,value);
-
+        
         return (String)pool.put(key,value);
     }
 
@@ -567,7 +575,7 @@ public class scancache extends Module implements scancacheInterface {
                 String value=new String(buffer,0);
                 fileinfo.value=value;
                 fileinfo.time=(int)(sfile.lastModified()/1000);
-                                log.debug("loadFile last modified " + sfile.lastModified()/1000);
+				log.debug("loadFile last modified " + sfile.lastModified()/1000);
                 return fileinfo;
             }
             scan.close();
@@ -605,16 +613,16 @@ public class scancache extends Module implements scancacheInterface {
     String getWriteHeaders(String value, String mimeType) {
         if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
             mimeType = "text/html; charset=\"iso-8859-1\"";
-        String now = RFC1123.makeDate(new Date(System.currentTimeMillis()));
-        String expireTime = RFC1123.makeDate(new Date(System.currentTimeMillis()+15000));
+        String now = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()));
+        String expireTime = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()+15000));
         String body="Status: 200 OK\n";
         body+="Server: OrionCache\n";  // orion cache ???
         body+="Content-type: "+mimeType+"\n";
         body+="Content-length: "+value.length()+"\n";
         body+="Expires: "+expireTime+"\n";
         body+="Date: "+now+"\n";
-                // Internet explorer refuses to see resulting page as HTML
-                // when cache control header added to .asis file
+		// Internet explorer refuses to see resulting page as HTML
+		// when cache control header added to .asis file
         // body+="Cache-Control: no-cache\n";
         body+="Pragma: no-cache\n";
         body+="Last-Modified: "+now+"\n\n";
@@ -644,15 +652,15 @@ public class scancache extends Module implements scancacheInterface {
         return status;
     }
 
-        /**
-         * This method signals the scanparser to start caclulation on the page
-         * given in uri/scanpage, it will duplicate the request as not to interfere
-         * with the original request.
-         * @param sp The original requests scanpage
-         * @param uri of the request
-         */
-        private void signalProcessor(scanpage sp, String uri) {
-                scanpage fakesp=sp.duplicate();
-                scanparser.processPage(fakesp,uri);
-        }
+	/**
+	 * This method signals the scanparser to start caclulation on the page
+	 * given in uri/scanpage, it will duplicate the request as not to interfere
+	 * with the original request.
+	 * @param sp The original requests scanpage
+	 * @param uri of the request
+	 */
+	private void signalProcessor(scanpage sp, String uri) {
+		scanpage fakesp=sp.duplicate();
+		scanparser.processPage(fakesp,uri);
+	}
 }

@@ -27,34 +27,17 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Authentication based on a XML-configuration file. The XML file contains besides users, groups and
- * contexts (used for ContextAuthorization).
+ * Authentication based on a config..
+ * @javadoc
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.14 2003-08-27 19:37:12 michiel Exp $
- * @see    ContextAuthorization
+ * @version $Id: ContextAuthentication.java,v 1.12 2002-10-29 23:19:47 michiel Exp $
  */
 public class ContextAuthentication extends Authentication {
-    private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
+    private static Logger log=Logging.getLoggerInstance(ContextAuthentication.class.getName());
     private HashMap  loginModules = new HashMap();
     private Document document;
     private long validKey;
-
-    /** Public ID of the Builder DTD version 1.0 */
-    public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0 = "-//MMBase//DTD security context config 1.0//EN";
-    public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_1 = "-//MMBase//DTD security context config 1.1//EN";
-    public static final String PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_2 = "-//MMBase//DTD security context config 1.2//EN";
-
-    /** DTD resource filename of the Builder DTD version 1.0 */
-    public static final String DTD_SECURITY_CONTEXT_CONFIG_1_0 = "securitycontextconfig_1_0.dtd";
-    public static final String DTD_SECURITY_CONTEXT_CONFIG_1_1 = "securitycontextconfig_1_1.dtd";
-    public static final String DTD_SECURITY_CONTEXT_CONFIG_1_2 = "securitycontextconfig_1_2.dtd";
-
-    static {
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_0, DTD_SECURITY_CONTEXT_CONFIG_1_0, MMBaseCopConfig.class);
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_1, DTD_SECURITY_CONTEXT_CONFIG_1_1, MMBaseCopConfig.class);
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_SECURITY_CONTEXT_CONFIG_1_2, DTD_SECURITY_CONTEXT_CONFIG_1_2, MMBaseCopConfig.class);
-    }
 
     public ContextAuthentication() {
         validKey = System.currentTimeMillis();
@@ -81,12 +64,12 @@ public class ContextAuthentication extends Authentication {
         }
         if (log.isDebugEnabled()) {
             log.debug("loaded: '" +  configFile + "' as config file for authentication");
-            log.debug("going to load the modules...");
+            log.debug("gonna load the modules...");
         }
 
         // do the xpath query...
         String xpath = "/contextconfig/loginmodules/module";
-        if (log.isDebugEnabled()) log.debug("going to execute the query:" + xpath );
+        if (log.isDebugEnabled()) log.debug("gonna execute the query:" + xpath );
         NodeIterator found;
         try {
             found = XPathAPI.selectNodeIterator(document, xpath);
@@ -101,7 +84,7 @@ public class ContextAuthentication extends Authentication {
             String moduleName = nnm.getNamedItem("name").getNodeValue();
             String className = nnm.getNamedItem("class").getNodeValue();
 
-            log.debug("going to try to load module with the name:"+moduleName+ " with class:" + className);
+            log.debug("gonna try to load module with the name:"+moduleName+ " with class:" + className);
             ContextLoginModule module;
             try {
                 Class moduleClass = Class.forName(className);

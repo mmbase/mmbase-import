@@ -11,32 +11,17 @@ package org.mmbase.security;
 
 /**
  * Thrown by the security classes to indicate a security violation/malfunction.
- * 
+ * @javadoc
  * @author Eduard Witteveen
- * @version $Id: SecurityException.java,v 1.6 2003-08-29 09:38:24 pierre Exp $
+ * @version $Id: SecurityException.java,v 1.3 2002-06-07 12:56:56 pierre Exp $
  */
 public class SecurityException extends java.lang.SecurityException {
 
-    //javadoc is inherited
-    public SecurityException() {
-        super();
-    }
-
-    //javadoc is inherited
+    /**
+     *	Constructs a SecurityException with the specified detail message.
+     *	@parm message The detail message.
+     */
     public SecurityException(String message) {
         super(message);
     }
-
-    //javadoc is inherited
-    public SecurityException(Throwable cause) {
-        super();
-        initCause(cause);
-    }
-
-    //javadoc is inherited
-    public SecurityException(String message, Throwable cause) {
-        super(message);
-        initCause(cause);
-    }
-
 }

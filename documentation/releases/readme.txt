@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.7.0 - Readme
+                     MMBase 1.6 - Readme
 ===================================================================  
   
 MMBase is an Open Source content management system that can be used
@@ -19,7 +19,7 @@ building.txt                Instruction for building MMBase from
                             source-distro (only included in
 			                source-distro) 
 readme.txt                  This file
-releasenotes-1.6.0.txt      Releasenotes for this distro (contains
+release-notes.txt           Releasenotes for this distro (contains
                             changes/bugfixes/know issues) 
 installation.txt            Instructions for installing MMBase
 mmbase-webapp/              Webapplication dir, this dir goes into
@@ -29,13 +29,15 @@ mmbase-webapp/              Webapplication dir, this dir goes into
     config/                 MMBase config dir
       accounts.properties   File with accounts/passwords (deprecated)
       applications/         Applications that can be installed
-      builders/             All builders that can be used, including
-                            core builders and optional builders. Not
-			                all builders are activated by default.
+      builders/                    
+        core/               Core builders that are needed to run MMBase 
+        applications/       When builders are being installed from an
+                            application they are copied to this
+                            directory. 
       caches.xml            Configuration file for cache configuration
       databases/            Databaseconfig for databases that can be
                             used with MMBase
-      dtd/                  A few dtds, used in some xslt-transformation
+      dtd/                  A few richtext dtds
       log/                  Logging configuration
       modules/              All modules that can be used, including
                             core modules and optional modules. Not all

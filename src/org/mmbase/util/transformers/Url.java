@@ -9,7 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.transformers;
 
-import java.util.*;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.mmbase.util.URLEscape;
 import org.mmbase.util.URLParamEscape;
 
 
@@ -20,18 +25,10 @@ import org.mmbase.util.URLParamEscape;
  * @author Michiel Meeuwissen 
  */
 
-public class Url extends ConfigurableStringTransformer implements CharTransformer {
+public class Url extends AbstractTransformer implements CharTransformer {
     
-    public final static int ESCAPE       = 1;     
-    public final static int PARAM_ESCAPE = 2;
-
-    public Url() {
-        super();
-    }
-
-    public Url(int conf) {
-        super(conf);
-    }
+    private final static int ESCAPE       = 1;     
+    private final static int PARAM_ESCAPE = 2;
 
     /**
      * Used when registering this class as a possible Transformer
@@ -44,25 +41,32 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
         return h;
     }
 
+    public Writer transform(Reader r) {
+        throw new UnsupportedOperationException("transform(Reader) is not yet supported");
+    }
+    public Writer transformBack(Reader r) {
+        throw new UnsupportedOperationException("transformBack(Reader) is not yet supported");
+    } 
+
     public String transform(String r) {
         switch(to){
-        case ESCAPE:           return java.net.URLEncoder.encode(r);
+        case ESCAPE:           return URLEscape.escapeurl(r);
         case PARAM_ESCAPE:     return URLParamEscape.escapeurl(r);
-        default: throw new UnknownCodingException(getClass(), to);
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
     }
     public String transformBack(String r) {
         switch(to){
-        case ESCAPE:           return java.net.URLDecoder.decode(r);
+        case ESCAPE:           return URLEscape.unescapeurl(r);
         case PARAM_ESCAPE:     return URLParamEscape.unescapeurl(r);
-        default: throw new UnknownCodingException(getClass(), to);
+        default: throw new UnsupportedOperationException("Cannot transform");
         }
     } 
     public String getEncoding() {
         switch(to){
         case ESCAPE:        return "ESCAPE_URL";
         case PARAM_ESCAPE:  return "ESCAPE_URL_PARAM";
-        default: throw new UnknownCodingException(getClass(), to);
+        default: throw new UnsupportedOperationException("unknown encoding");
         }
     }
 }

@@ -10,11 +10,9 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
-import org.mmbase.bridge.util.xml.DocumentConverter;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
-import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -25,24 +23,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 /**
- * Basic implementation of Node. Wraps MMObjectNodes, adds security.
- *
+ * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.104 2003-08-27 21:31:27 michiel Exp $
- * @see org.mmbase.bridge.Node
- * @see org.mmbase.module.core.MMObjectNode
+ * @version $Id: BasicNode.java,v 1.77.2.12 2003-06-27 13:00:19 nico Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
-    public static final int ACTION_CREATE = 1; // create a node
-    public static final int ACTION_EDIT   = 2; // edit node, or change aliasses
-    public static final int ACTION_DELETE = 3; // delete node
-    public static final int ACTION_COMMIT = 10; // commit a node after changes
+    public static final int ACTION_CREATE = 1;   // create a node
+    public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
+    public static final int ACTION_DELETE = 3;   // delete node
+    public static final int ACTION_COMMIT = 10;   // commit a node after changes
 
-    private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
-
+    private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
 
     private boolean changed = false;
 
@@ -85,7 +78,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * This is needed to check whether people have not switched users during an edit.
      * @scope private
      */
-    protected String account = null;
+    protected String account=null;
 
     /**
      * Determines whether this node was created for insert.
@@ -101,7 +94,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param nodeManager the NodeManager to use for administrating this Node
      */
     BasicNode(MMObjectNode node, NodeManager nodeManager) {
-        this.nodeManager = nodeManager;
+        this.nodeManager=nodeManager;
         setNode(node);
         init();
     }
@@ -113,7 +106,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param Cloud the cloud to which this node belongs
      */
     BasicNode(MMObjectNode node, Cloud cloud) {
-        this.cloud = (BasicCloud)cloud;
+        this.cloud=(BasicCloud)cloud;
         setNode(node);
         init();
     }
@@ -125,7 +118,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param id the id of the node in the temporary cloud
      */
     BasicNode(MMObjectNode node, Cloud cloud, int id) {
-        this.cloud = (BasicCloud)cloud;
+        this.cloud=(BasicCloud)cloud;
         setNode(node);
         temporaryNodeId = id;
         isnew = true;
@@ -139,26 +132,23 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Sets references to MMBase modules and initializes state in case of a transaction.
      */
     protected void init() {
-
         if (cloud == null) {
             cloud = (BasicCloud) nodeManager.getCloud();
         }
-
         if (nodeManager == null) {
             // determine nodemanager, unless the node is the 'typedef' node
             // (needs to point towards itself)
             if (getNode().getBuilder().oType != getNode().getNumber()) {
                 nodeManager = cloud.getNodeManager(getNode().getBuilder().getTableName());
             } else {
-                nodeManager = (NodeManager)this;
+                nodeManager = (NodeManager) this;
             }
         }
-
-        mmb = BasicCloudContext.mmb;
-
+        // create shortcut to mmbase
+        mmb = ((BasicCloudContext)nodeManager.getCloud().getCloudContext()).mmb;
         // check whether the node is currently in transaction
         // and intialize temporaryNodeId if that is the case
-        if ((cloud instanceof BasicTransaction) && (((BasicTransaction)cloud).contains(getNode()))) {
+        if ((cloud instanceof BasicTransaction) && ( ((BasicTransaction)cloud).contains(getNode()))) {
             if (temporaryNodeId == -1) {
                 temporaryNodeId = getNode().getNumber();
             }
@@ -214,9 +204,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.6.4
      */
     protected void invalidateNode() {
-        VirtualNode n = new VirtualNode(noderef.getBuilder());
-        n.setValue("number", noderef.getNumber());
-        noderef = n;
+       VirtualNode n = new VirtualNode(noderef.getBuilder());
+       n.setValue("number",noderef.getNumber());
+       noderef=n;
     }
 
     /**
@@ -226,12 +216,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.6.4
      */
     protected void setNode(MMObjectNode n) {
-        if (n == null) {
+        if (n==null) {
             String message = "Passed Node is null";
             log.error(message);
             throw new IllegalArgumentException(message);
         }
-        noderef = n;
+        noderef=n;
     }
 
     public Cloud getCloud() {
@@ -243,10 +233,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public int getNumber() {
-        int i = getNode().getNumber();
+        int i=getNode().getNumber();
         // new node, thus return temp id.
         // note that temp id is equal to "number" if the node is edited
-        if (i == -1) {
+        if (i==-1) {
             i = temporaryNodeId;
         }
         return i;
@@ -271,7 +261,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param action The action to perform.
      */
     protected void edit(int action) {
-        if (account == null) {
+        if (account==null) {
             account = cloud.getAccount();
         } else if (account != cloud.getAccount()) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
@@ -280,18 +270,18 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             throw new BridgeException("Cannot make edits to a virtual node.");
         }
 
-        int realnumber = getNode().getNumber();
-        if (realnumber != -1) {
-            if (action == ACTION_DELETE) {
-                cloud.verify(Operation.DELETE, realnumber);
+        int realnumber=getNode().getNumber();
+        if (realnumber!=-1) {
+            if (action==ACTION_DELETE) {
+                cloud.verify(Operation.DELETE,realnumber);
             }
-            if ((action == ACTION_EDIT) && (temporaryNodeId == -1)) {
-                cloud.verify(Operation.WRITE, realnumber);
+            if ((action==ACTION_EDIT) && (temporaryNodeId==-1)) {
+                cloud.verify(Operation.WRITE,realnumber);
             }
         }
 
         // check for the existence of a temporary node
-        if (temporaryNodeId == -1) {
+        if (temporaryNodeId==-1) {
             // when committing a temporary node id must exist (otherwise fail).
             if (action == ACTION_COMMIT) {
                 // throw new BasicBridgeException("This node cannot be comitted (not changed).");
@@ -305,21 +295,23 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 throw new BridgeException(message);
             }
 
+
             // when editing a temporary node id must exist (otherwise create one)
             // This also applies if you remove a node in a transaction (as the transction manager requires a temporary node)
             //
             // XXX: If you edit a node outside a transaction, but do not commit or cancel the edits,
             // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
-            if ((action == ACTION_EDIT) || ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
+            if ((action == ACTION_EDIT) ||
+                ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
                 int id = getNumber();
-                String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account, "" + id, "" + id);
+                String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
                 if (cloud instanceof BasicTransaction) {
                     // store new temporary node in transaction
-                     ((BasicTransaction)cloud).add(currentObjectContext);
+                    ((BasicTransaction)cloud).add(currentObjectContext);
                 }
-                setNode(BasicCloudContext.tmpObjectManager.getNode(account, "" + id));
+                setNode(BasicCloudContext.tmpObjectManager.getNode(account, ""+id));
                 //  check nodetype afterwards?
-                temporaryNodeId = id;
+                temporaryNodeId=id;
             }
         }
     }
@@ -330,13 +322,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public void setValue(String attribute, Object value) {
         edit(ACTION_EDIT);
-        if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)) {
+        if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
+            ) {
             throw new BridgeException("Not allowed to change field " + attribute + ".");
         }
         if (this instanceof Relation) {
             if ("rnumber".equals(attribute)) {
                 throw new BridgeException("Not allowed to change field " + attribute + ".");
-            } else if ("snumber".equals(attribute) || "dnumber".equals(attribute)) {
+            } else if ("snumber".equals(attribute)
+                    || "dnumber".equals(attribute)) {
                 BasicRelation relation = (BasicRelation)this;
                 relation.relationChanged = true;
             }
@@ -346,8 +340,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     // Protected method to be able to set rnumber when creating a relation.
     protected void _setValue(String attribute, Object value) {
-        String result =
-            BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, attribute, value);
+        String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
             throw new BridgeException("Can't change unknown field " + attribute + ".");
         }
@@ -355,39 +348,39 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void setBooleanValue(String attribute, boolean value) {
-        setValue(attribute, new Boolean(value));
+        setValue(attribute,new Boolean(value));
     }
 
     public void setNodeValue(String attribute, Node value) {
         if (value instanceof BasicNode) {
-            setValue(attribute, ((BasicNode)value).getNode());
+            setValue(attribute,((BasicNode)value).getNode());
         } else {
-            setIntValue(attribute, value.getNumber());
+            setIntValue(attribute,value.getNumber());
         }
     }
 
     public void setIntValue(String attribute, int value) {
-        setValue(attribute, new Integer(value));
+        setValue(attribute,new Integer(value));
     }
 
     public void setFloatValue(String attribute, float value) {
-        setValue(attribute, new Float(value));
+        setValue(attribute,new Float(value));
     }
 
     public void setDoubleValue(String attribute, double value) {
-        setValue(attribute, new Double(value));
+        setValue(attribute,new Double(value));
     }
 
     public void setByteValue(String attribute, byte[] value) {
-        setValue(attribute, value);
+        setValue(attribute,value);
     }
 
     public void setLongValue(String attribute, long value) {
-        setValue(attribute, new Long(value));
+        setValue(attribute,new Long(value));
     }
 
     public void setStringValue(String attribute, String value) {
-        setValue(attribute, value);
+        setValue(attribute,value);
     }
 
     public Object getValue(String attribute) {
@@ -399,15 +392,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public Node getNodeValue(String attribute) {
-        if (attribute == null || attribute.equals("number")) {
-            return this;
-        }
-        MMObjectNode noderes = getNode().getNodeValue(attribute);
-        if (noderes != null) {
+        if (attribute==null || attribute.equals("number")) return this;
+        MMObjectNode noderes=getNode().getNodeValue(attribute);
+        if (noderes!=null) {
             if (noderes.getBuilder() instanceof InsRel) {
-                return new BasicRelation(noderes, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+                return new BasicRelation(noderes,cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             } else {
-                return new BasicNode(noderes, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
+                return new BasicNode(noderes,cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
         } else {
             return null;
@@ -439,11 +430,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public FieldValue getFieldValue(String fieldName) throws NotFoundException {
-        return new BasicFieldValue(this, getNodeManager().getField(fieldName));
+        return new BasicFieldValue(this,getNodeManager().getField(fieldName));
     }
 
     public FieldValue getFieldValue(Field field) {
-        return new BasicFieldValue(this, field);
+        return new BasicFieldValue(this,field);
     }
 
     public FieldValue getFunctionValue(String functionName, List arguments) {
@@ -454,17 +445,16 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return getNode().getXMLValue(fieldName);
     }
 
+
     public Element getXMLValue(String fieldName, Document tree) {
         Document doc = getXMLValue(fieldName);
-        if (doc == null) {
-            return null;
-        }
-        return (Element)tree.importNode(doc.getDocumentElement(), true);
+        if(doc==null) return null;
+        return (Element) tree.importNode(doc.getDocumentElement(), true);
     }
 
     public void setXMLValue(String fieldName, Document value) {
         // do conversion, if needed from doctype 'incoming' to doctype 'needed'
-        DocumentConverter dc = DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
+        org.mmbase.bridge.util.xml.DocumentConverter dc = org.mmbase.bridge.util.xml.DocumentConverter.getDocumentConverter(getNode().getBuilder().getField(fieldName).getDBDocType());
         setValue(fieldName, dc.convert(value, cloud));
     }
 
@@ -486,7 +476,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 cloud.updateSecurityInfo(getNumber());
             }
             // remove the temporary node
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             temporaryNodeId = -1;
             // invalid nodereference, so retrieve node anew
             setNode(mmb.getTypeDef().getNode(getNode().getNumber()));
@@ -501,15 +491,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             ((Transaction)cloud).cancel();
         } else {
             // remove the temporary node
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
             if (isnew) {
-                isnew = false;
+                isnew=false;
                 invalidateNode();
             } else {
                 // update the node, reset fields etc...
-                setNode(mmb.getTypeDef().getNode(noderef.getNumber()));
+                setNode(mmb.getTypeDef().getNode(getNode().getNumber()));
             }
-            temporaryNodeId = -1;
+            temporaryNodeId=-1;
         }
         changed = false;
     }
@@ -525,10 +515,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             // note that the node is immediately destroyed !
             // possibly older edits will fail if they refernce this node
             if (cloud instanceof Transaction) {
-                ((BasicTransaction)cloud).remove("" + temporaryNodeId);
+                ((BasicTransaction)cloud).remove(""+temporaryNodeId);
             }
             // remove a temporary node (no true instantion yet, no relations)
-            BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+            BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
         } else {
             // remove a node that is edited, i.e. that already exists
             // check relations first!
@@ -537,11 +527,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 deleteRelations(-1);
             } else {
                 // option unset, fail if any relations exit
-                if (getNode().hasRelations()) {
-                    throw new BridgeException(
-                        "This node ("
-                            + getNode().getNumber()
-                            + ") cannot be deleted. It still has relations attached to it.");
+                if(getNode().hasRelations()) {
+                    throw new BridgeException("This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.");
                 }
             }
             // remove aliases
@@ -552,25 +539,32 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 // note that the node still exists until the transaction completes
                 // a getNode() will still retrieve the node and make edits possible
                 // possibly 'older' edits will fail if they reference this node
-                 ((BasicTransaction)cloud).delete("" + temporaryNodeId);
+                ((BasicTransaction)cloud).delete(""+temporaryNodeId);
             } else {
                 // remove the node
-                if (temporaryNodeId != -1) {
-                    BasicCloudContext.tmpObjectManager.deleteTmpNode(account, "" + temporaryNodeId);
+                if (temporaryNodeId!=-1) {
+                    BasicCloudContext.tmpObjectManager.deleteTmpNode(account,""+temporaryNodeId);
                 }
-                MMObjectNode node = getNode();
-                int number = getNumber();
+                MMObjectNode node= getNode();
+                int number=getNumber();
                 node.getBuilder().removeNode(node);
                 cloud.removeSecurityInfo(number);
             }
         }
         // the node does not exist anymore, so invalidate all references.
-        temporaryNodeId = -1;
+        temporaryNodeId=-1;
         invalidateNode();
     }
 
     public String toString() {
-        return getNode().toString();
+        // return getNode().toString();
+        Object value = getNode().getFunctionValue("gui", null);
+        if (value==null) {
+            return "*unknown*";
+        } else {
+            return value.toString();
+        }
+
     }
 
     /**
@@ -579,31 +573,30 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param type  the type of relation (-1 = don't care)
      */
     private void deleteRelations(int type) {
-        RelDef reldef = mmb.getRelDef();
-        List relations = null;
-        if (type == -1) {
+        RelDef reldef=mmb.getRelDef();
+        List relations=null;
+        if (type==-1) {
             relations = mmb.getInsRel().getAllRelationsVector(getNode().getNumber());
         } else {
             relations = mmb.getInsRel().getRelationsVector(getNode().getNumber());
         }
-        if (relations != null) {
+        if (relations!=null) {
             // check first
-            for (Iterator i = relations.iterator(); i.hasNext();) {
+            for (Iterator i = relations.iterator(); i.hasNext(); ) {
                 MMObjectNode node = (MMObjectNode)i.next();
-                cloud.verify(Operation.DELETE, node.getNumber());
+                cloud.verify(Operation.DELETE,node.getNumber());
             }
             // then delete
-            for (Iterator i = relations.iterator(); i.hasNext();) {
+            for (Iterator i = relations.iterator(); i.hasNext(); ) {
                 MMObjectNode node = (MMObjectNode)i.next();
-                if ((type == -1) || (node.getIntValue("rnumber") == type)) {
+                if ((type==-1) || (node.getIntValue("rnumber")==type)) {
                     if (cloud instanceof Transaction) {
-                        String oMmbaseId = "" + node.getValue("number");
-                        String currentObjectContext =
-                            BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
+                        String oMmbaseId = ""+node.getValue("number");
+                        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+oMmbaseId,oMmbaseId);
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
-                        int number = node.getNumber();
+                        int number=node.getNumber();
                         node.getBuilder().removeNode(node);
                         cloud.removeSecurityInfo(number);
                     }
@@ -617,10 +610,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public void deleteRelations(String type) throws NotFoundException {
-        RelDef reldef = mmb.getRelDef();
-        int rType = reldef.getNumberByName(type);
-        if (rType == -1) {
-            throw new NotFoundException("Relation with role : " + type + " does not exist.");
+        RelDef reldef=mmb.getRelDef();
+        int rType=reldef.getNumberByName(type);
+        if (rType==-1) {
+            throw new NotFoundException("Relation with role : "+type+" does not exist.");
         } else {
             deleteRelations(rType);
         }
@@ -637,13 +630,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return an Enumeration with the relations
      */
     private Enumeration getRelationEnumeration(int role, int otype, boolean usedirectionality) {
-        InsRel relbuilder = mmb.getInsRel();
-        Enumeration e = null;
-        if ((role != 1) || (otype != -1)) {
-            if (role != -1) {
-                relbuilder = mmb.getRelDef().getBuilder(role);
+        InsRel relbuilder=mmb.getInsRel();
+        Enumeration e=null;
+        if ((role!=1) || (otype!=-1)) {
+            if (role!=-1) {
+                relbuilder=mmb.getRelDef().getBuilder(role);
             }
-            return relbuilder.getRelations(getNumber(), otype, role, usedirectionality);
+            return relbuilder.getRelations(getNumber(),otype, role, usedirectionality);
         } else {
             return getNode().getRelations();
         }
@@ -657,86 +650,51 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return a RelationList with the relations
      */
     private RelationList getRelations(int role, int otype) {
-        Enumeration e = getRelationEnumeration(role, otype, true);
-        List relvector = new ArrayList();
-        if (e != null) {
+        Enumeration e=getRelationEnumeration(role, otype, true);
+        Vector relvector=new Vector();
+        if (e!=null) {
             while (e.hasMoreElements()) {
-                MMObjectNode mmnode = (MMObjectNode)e.nextElement();
+                MMObjectNode mmnode=(MMObjectNode)e.nextElement();
                 if (cloud.check(Operation.READ, mmnode.getNumber())) {
                     relvector.add(mmnode);
                 }
             }
         }
-        return new BasicRelationList(relvector, cloud);
+        return new BasicRelationList(relvector,cloud);
     }
 
     public RelationList getRelations() {
-        return getRelations(null, (String) null);
+        return getRelations(null,(String)null);
     }
 
     public RelationList getRelations(String role) {
-        return getRelations(role, (String) null);
+        return getRelations(role, (String)null);
     }
 
     public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
-        int otype = -1;
-        if (nodeManager != null) {
-            otype = mmb.getTypeDef().getIntValue(nodeManager);
-            if (otype == -1) {
+        int otype=-1;
+        if (nodeManager!=null) {
+            otype=mmb.getTypeDef().getIntValue(nodeManager);
+            if (otype==-1) {
                 throw new NotFoundException("NodeManager " + nodeManager + " does not exist.");
             }
         }
-        int rolenr = -1;
-        if (role != null) {
-            rolenr = mmb.getRelDef().getNumberByName(role);
-            if (rolenr == -1) {
+        int rolenr=-1;
+        if (role!=null) {
+            rolenr=mmb.getRelDef().getNumberByName(role);
+            if (rolenr==-1) {
                 throw new NotFoundException("Relation with role " + role + " does not exist.");
             }
         }
-        return getRelations(rolenr, otype);
+        return getRelations(rolenr,otype);
     }
 
     public RelationList getRelations(String role, NodeManager nodeManager) {
-        if (nodeManager == null) {
+        if (nodeManager==null) {
             return getRelations(role);
         } else {
             return getRelations(role, nodeManager.getName());
         }
-    }
-
-    public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        // temporay implementation to get it working for now. Really we would want to make separate queries, I think.
-
-        RelationList  relations = getRelations(role, nodeManager);
-
-        int dir = ClusterBuilder.SEARCH_BOTH;
-        if (searchDir != null) {
-            dir = ClusterBuilder.getSearchDir(searchDir);
-        }
-        if (dir == ClusterBuilder.SEARCH_BOTH) return relations;
-
-        RelationIterator it = relations.relationIterator();
-
-        RelationList result = new BasicRelationList();
-
-        while (it.hasNext()) {
-            Relation relation = it.nextRelation();
-            switch(dir) {
-            case ClusterBuilder.SEARCH_DESTINATION: 
-                if(relation.getSource().getNumber() == getNumber()) {
-                    result.add(relation);
-                }
-                break;
-            case ClusterBuilder.SEARCH_SOURCE:
-                if(relation.getDestination().getNumber() == getNumber()) {
-                    result.add(relation);
-                }
-                break;
-            default: 
-                result.add(relation); // er..
-            }
-        }
-        return result;
     }
 
     public boolean hasRelations() {
@@ -744,44 +702,31 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public int countRelations() {
-        return countRelatedNodes(cloud.getNodeManager("object"), null, "BOTH");
+        return getRelations().size();
     }
 
     public int countRelations(String type) {
-        //err
-        return countRelatedNodes(cloud.getNodeManager("object"), type, "BOTH"); 
+        return getRelations(type).size();
     }
-
-
-    public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
-        Query count = cloud.createAggregatedQuery();
-        count.addStep(nodeManager);
-        Step step = count.addRelationStep(otherNodeManager, role, direction).getPrevious();
-        count.addNode(step, this);
-        count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        Node result = (Node) cloud.getList(count).get(0);
-        return result.getIntValue("number");
-    }
-
 
     public NodeList getRelatedNodes() {
         return getRelatedNodes("object", null, null);
     }
 
     public NodeList getRelatedNodes(String type) {
-        return getRelatedNodes(type, null, null);
+        return getRelatedNodes(type,null,null);
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager) {
-        return getRelatedNodes(nodeManager, null, null);
+        return getRelatedNodes(nodeManager,null,null);
     }
 
     /**
      * @since MMBase-1.6
      */
-    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir) {
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
         if (log.isDebugEnabled()) {
-            log.debug("type(" + nodeManager.getName() + "), role(" + role + "), dir(" + searchDir + ")");
+            log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+direction+")");
         }
 
         // default directionalty to query for the bridge is SEARCH_BOTH;
@@ -789,8 +734,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // the Clusterbuidler has to assume SEARCH_EITHER as a default.
         // therefor we have to set SEARCH_BOTH manually
         int dir = ClusterBuilder.SEARCH_BOTH;
-        if (searchDir != null) {
-            dir = ClusterBuilder.getSearchDir(searchDir);
+        if (direction!=null) {
+            dir = ClusterBuilder.getSearchDir(direction);
         }
         // call list: note: role can be null
         List mmnodes = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
@@ -798,9 +743,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // remove the elements which may not be read:
         ListIterator li = mmnodes.listIterator();
         while (li.hasNext()) {
-            MMObjectNode node = (MMObjectNode)li.next();
-            if (!cloud.check(Operation.READ, node.getNumber()))
-                li.remove();
+            MMObjectNode node = (MMObjectNode) li.next();
+            if (! cloud.check(Operation.READ, node.getNumber())) li.remove();
         }
         if (nodeManager != null) {
             return new BasicNodeList(mmnodes, nodeManager);
@@ -808,8 +752,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             return new BasicNodeList(mmnodes, cloud);
         }
     }
-    public NodeList getRelatedNodes(String type, String role, String searchDir) {
-        return getRelatedNodes(cloud.getNodeManager(type), role, searchDir);
+    public NodeList getRelatedNodes(String type, String role, String direction) {
+        return getRelatedNodes(cloud.getNodeManager(type), role, direction);
     }
 
     public int countRelatedNodes(String type) {
@@ -817,40 +761,29 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public StringList getAliases() {
-        NodeManager oalias = cloud.getNodeManager("oalias");
-        Query q = cloud.createQuery();
-        Step s = q.addStep(oalias);
-        StepField sf = q.addField(s, oalias.getField("name"));
-        Constraint c = q.createConstraint(q.createStepField(s, "destination"), new Integer(getNumber()));
-        q.setConstraint(c);        
-        NodeList aliases = cloud.getList(q);
-        StringList result = new BasicStringList();
-        NodeIterator i = aliases.nodeIterator();
-        while (i.hasNext()) {
-            result.add(i.nextNode().getStringValue("oalias.name"));
+        Vector aliasvector=new Vector();
+        OAlias alias=mmb.OAlias;
+        if (alias!=null) {
+            for(Enumeration e=alias.search("WHERE "+"destination"+"="+getNumber()); e.hasMoreElements();) {
+                MMObjectNode node=(MMObjectNode)e.nextElement();
+                aliasvector.add(node.getStringValue("name"));
+            }
         }
-        return result;
+        return new BasicStringList(aliasvector);
     }
 
     public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
-            String aliasContext =
-                BasicCloudContext.tmpObjectManager.createTmpAlias(
-                    aliasName,
-                    account,
-                    "a" + temporaryNodeId,
-                    "" + temporaryNodeId);
+            String aliasContext=BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName,account,"a"+temporaryNodeId, ""+temporaryNodeId);
             ((BasicTransaction)cloud).add(aliasContext);
         } else if (isnew) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
-            if (!getNode().getBuilder().createAlias(getNumber(), aliasName)) {
+            if (! getNode().getBuilder().createAlias(getNumber(), aliasName)) {
                 Node otherNode = cloud.getNode(aliasName);
                 if (otherNode != null) {
-                    throw new BridgeException(
-                        "Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName()
-                            + " node " + otherNode.getNumber() + " already");
+                    throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
                 } else {
                     throw new BridgeException("Alias " + aliasName + " could not be created.");
                 }
@@ -869,24 +802,23 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // If people remove a node for which they created aliases in the same transaction, that transaction will fail.
         // Live with it.
         if (!isnew) {
-            String sql = "WHERE (destination" + "=" + getNumber() + ")";
-            if (aliasName != null) {
-                sql += " AND (name='" + aliasName + "')";
+            String sql = "WHERE (destination"+"="+getNumber()+")";
+            if (aliasName!=null) {
+                sql += " AND (name='"+aliasName+"')";
             }
             // search existing aliases until the right one is found!
-            OAlias alias = mmb.getOAlias();
-            if (alias != null) {
-                for (Enumeration e = alias.search(sql); e.hasMoreElements();) {
-                    MMObjectNode node = (MMObjectNode)e.nextElement();
+            OAlias alias=mmb.getOAlias();
+            if (alias!=null) {
+                for(Enumeration e=alias.search(sql); e.hasMoreElements();) {
+                    MMObjectNode node=(MMObjectNode)e.nextElement();
                     if (cloud instanceof Transaction) {
-                        BasicTransaction tran = (BasicTransaction)cloud;
-                        String oMmbaseId = "" + node.getValue("number");
-                        String currentObjectContext =
-                            BasicCloudContext.tmpObjectManager.getObject(account, "" + oMmbaseId, oMmbaseId);
+                        BasicTransaction tran=(BasicTransaction) cloud;
+                        String oMmbaseId = ""+node.getValue("number");
+                        String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+oMmbaseId,oMmbaseId);
                         ((BasicTransaction)cloud).add(currentObjectContext);
                         ((BasicTransaction)cloud).delete(currentObjectContext);
                     } else {
-                        int number = node.getNumber();
+                        int number=node.getNumber();
                         alias.removeNode(node);
                         cloud.removeSecurityInfo(number);
                     }
@@ -901,23 +833,39 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
-        Relation relation = relationManager.createRelation(this, destinationNode);
-        return relation;
+            Relation relation = relationManager.createRelation(this,destinationNode);
+            return relation;
     }
 
-
-    // javadoc inherited (from Node)
+    /**
+     * set the Context of the current Node
+     *
+     * @param context	    	    The context to which the current node should belong,
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (change context)
+     */
     public void setContext(String context) {
         cloud.setContext(getNumber(), context);
     }
 
-    // javadoc inherited (from Node)
+    /**
+     * get the Context of the current Node
+     *
+     * @return the current context of the node
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (read rights)
+     */
     public String getContext() {
         return cloud.getContext(getNumber());
     }
 
-
-    // javadoc inherited (from Node)
+    /**
+     * get the Contextes which can be set to this specific node
+     *
+     * @return the contextes from which can be chosen
+     * @throws BridgeException      Dunno?
+     * @throws SecurityException    When not the approperate rights (read rights)
+     */
     public StringList getPossibleContexts() {
         return new BasicStringList(cloud.getPossibleContexts(getNumber()));
     }
@@ -961,8 +909,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
         // my opinion is that this should happen, as soon as edit-ting starts,..........
         // when still has modifications.....
-        if (changed) {
-            if (!(cloud instanceof Transaction)) {
+        if(changed) {
+            if(!(cloud instanceof Transaction)) {
                 // cancel the modifications...
                 cancel();
             }
@@ -981,28 +929,28 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param o the object to compare it with
      */
     public int compareTo(Object o) {
-        Node n = (Node)o;
-        String s1 = "";
+        Node n= (Node)o;
+        String s1 ="";
         if (this instanceof NodeManager) {
-            s1 = ((NodeManager)this).getGUIName();
+            s1=((NodeManager)this).getGUIName();
         } else {
-            s1 = getStringValue("gui()");
+            s1=getStringValue("gui()");
         }
-        String s2 = "";
+        String s2 ="";
         if (n instanceof NodeManager) {
-            s2 = ((NodeManager)n).getGUIName();
+            s2=((NodeManager)n).getGUIName();
         } else {
-            s2 = n.getStringValue("gui()");
+            s2=n.getStringValue("gui()");
         }
-        int res = s1.compareTo(s2);
-        if (res != 0) {
+        int res=s1.compareTo(s2);
+        if (res!=0) {
             return res;
         } else {
-            int n1 = getNumber();
-            int n2 = n.getNumber();
-            if (n2 > n1) {
+            int n1=getNumber();
+            int n2=n.getNumber();
+            if (n2>n1) {
                 return -1;
-            } else if (n2 < n1) {
+            } else if (n2<n1) {
                 return -1;
             } else {
                 return ((Comparable)cloud).compareTo(n.getCloud());
@@ -1023,7 +971,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());
+        return (o instanceof Node) &&
+            getNumber()==((Node)o).getNumber() &&
+            cloud.equals(((Node)o).getCloud());
 
     }
 

@@ -14,9 +14,8 @@ import org.mmbase.util.*;
 /**
  * interface for TransactionHandler
  *
- * @move to org.mmbase.applications.xmlimporter.TransactionHandlerInterface
- * @author  John balder
- * @version $Id: TransactionHandlerInterface.java,v 1.5 2003-08-29 09:36:52 pierre Exp $
+ * @author  $Author: install $ 
+ * @version $Revision: 1.3 $ $Date: 2000-10-25 14:47:05 $
  */
 public interface TransactionHandlerInterface {
 	

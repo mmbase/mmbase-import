@@ -28,15 +28,15 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.79 2003-08-26 08:17:37 pierre Exp $
+ * @version $Id: MMSQL92Node.java,v 1.75.2.2 2003-03-27 17:31:43 robmaris Exp $
  */
-public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
+public class MMSQL92Node implements MMJdbc2NodeInterface {
 
     /**
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMSQL92Node.class.getName());
-    
+
     //does the database support keys?
     private boolean keySupported=false;
 
@@ -47,7 +47,7 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     public String name="sql92";
     /**
      * @javadoc
-     * @scope private    
+     * @scope private
      */
     protected XMLDatabaseReader parser;
     /**
@@ -80,7 +80,8 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
      */
     protected MMBase mmb;
 
-    public MMSQL92Node() {}
+    public MMSQL92Node() {
+    }
 
     /**
      * @javadoc
@@ -99,10 +100,6 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         allowed2disallowed = getReverseHash(disallowed2allowed);
         // map the default types
         mapDefaultFields(disallowed2allowed);
-        
-        // Instantiate and initialize sql handler.
-        super.init(disallowed2allowed, parser);
-        
         // Check if the numbertable exists, if not one will be created.
         checkNumberTable();
     }
@@ -314,8 +311,12 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
-            if (rs.next()) {
-                result=getDBText(rs,1);
+            try {
+                if (rs.next()) {
+                    result=getDBText(rs,1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -339,8 +340,12 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
                 MultiConnection con=mmb.getConnection();
                 Statement stmt=con.createStatement();
                 ResultSet rs=stmt.executeQuery("SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" where "+getNumberString()+"="+number);
-                if (rs.next()) {
-                    result=getDBByte(rs,1);
+                try {
+                    if (rs.next()) {
+                        result=getDBByte(rs,1);
+                    }
+                } finally {
+                    rs.close();
                 }
                 stmt.close();
                 con.close();
@@ -937,8 +942,12 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             //stmt.executeUpdate("lock tables "+mmb.baseName+"_numberTable WRITE;");
             stmt.executeUpdate("update "+mmb.baseName+"_numberTable set "+getNumberString()+" = "+getNumberString()+"+1");
             ResultSet rs=stmt.executeQuery("select "+getNumberString()+" from "+mmb.baseName+"_numberTable;");
-            while(rs.next()) {
-                number=rs.getInt(1);
+            try {
+                while(rs.next()) {
+                    number=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
             // not part of sql92, please find new trick (daniel)
             // stmt.executeUpdate("unlock tables;");
@@ -965,12 +974,16 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
                 MultiConnection con=mmb.getConnection();
                 Statement stmt=con.createStatement();
                 ResultSet rs=stmt.executeQuery("select max("+getNumberString()+") from "+mmb.getBaseName()+"_object");
-                if (rs.next()) {
-                    number=rs.getInt(1);
-                    number++;
-                } else {
-                    // no objects yet
-                    number = 1;
+                try {
+                    if (rs.next()) {
+                        number=rs.getInt(1);
+                        number++;
+                    } else {
+                        // no objects yet
+                        number = 1;
+                    }
+                } finally {
+                    rs.close();
                 }
                 stmt.close();
                 con.close();
@@ -1003,12 +1016,16 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         MultiConnection con=null;
         Statement stmt=null;
         try {
+            int i=-1;
             con=mmb.getConnection();
             stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("SELECT count(*) FROM "+tableName+";");
-            int i=-1;
-            while(rs.next()) {
-                i=rs.getInt(1);
+            try {
+                while(rs.next()) {
+                    i=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -1572,8 +1589,12 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select count(*) from "+mmb.baseName+"_"+tablename);
-            if (rs.next()) {
-                size1=rs.getInt(1);
+            try {
+                if (rs.next()) {
+                    size1=rs.getInt(1);
+                }
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -1643,43 +1664,47 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             MultiConnection con2=mmb.getConnection();
             Statement stmt2=con2.createStatement();
             ResultSet rs2=stmt2.executeQuery("select * from "+mmb.baseName+"_"+tmptable);
-            ResultSetMetaData rsmd2 = rs2.getMetaData();
-            int colcount2=rsmd2.getColumnCount();
+            try {
+                ResultSetMetaData rsmd2 = rs2.getMetaData();
+                int colcount2=rsmd2.getColumnCount();
 
-            while (rs.next()) {
-                Hashtable values1=new Hashtable(colcount1);
-                for (int i=1;i<colcount1+1;i++) {
-                    Object o=rs.getObject(i);
-                    if (o instanceof byte[]) {
-                        o=rs.getString(i);
+                while (rs.next()) {
+                    Hashtable values1=new Hashtable(colcount1);
+                    for (int i=1;i<colcount1+1;i++) {
+                        Object o=rs.getObject(i);
+                        if (o instanceof byte[]) {
+                            o=rs.getString(i);
+                        }
+                        String colname=rsmd.getColumnName(i);
+                        colname=colname.toLowerCase();
+                        values1.put(colname,o);
                     }
-                    String colname=rsmd.getColumnName(i);
-                    colname=colname.toLowerCase();
-                    values1.put(colname,o);
-                }
-                rs2.next();
-                Hashtable values2=new Hashtable(colcount1);
-                for (int i=1;i<colcount2+1;i++) {
-                    Object o=rs2.getObject(i);
-                    if (o instanceof byte[]) {
-                        o=rs2.getString(i);
+                    rs2.next();
+                    Hashtable values2=new Hashtable(colcount1);
+                    for (int i=1;i<colcount2+1;i++) {
+                        Object o=rs2.getObject(i);
+                        if (o instanceof byte[]) {
+                            o=rs2.getString(i);
+                        }
+                        String colname=rsmd2.getColumnName(i);
+                        colname=colname.toLowerCase();
+                        values2.put(colname,o);
                     }
-                    String colname=rsmd2.getColumnName(i);
-                    colname=colname.toLowerCase();
-                    values2.put(colname,o);
-                }
 
-                for (Enumeration e=values1.keys();e.hasMoreElements();) {
-                    String key1=(String)e.nextElement();
-                    if (ignorefield==null || !key1.equals(ignorefield)) {
-                        Object value1=values1.get(key1);
-                        Object value2=values2.get(key1);
-                        if (!(value1.toString()).equals((value2.toString()))) {
-                            log.error("data check error on field : "+key1);
-                            return(false);
+                    for (Enumeration e=values1.keys();e.hasMoreElements();) {
+                        String key1=(String)e.nextElement();
+                        if (ignorefield==null || !key1.equals(ignorefield)) {
+                            Object value1=values1.get(key1);
+                            Object value2=values2.get(key1);
+                            if (!(value1.toString()).equals((value2.toString()))) {
+                                log.error("data check error on field : "+key1);
+                                return(false);
+                            }
                         }
                     }
                 }
+            } finally {
+                rs.close();
             }
             stmt2.close();
             con2.close();
@@ -1701,95 +1726,99 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
             MultiConnection con=mmb.getConnection();
             Statement stmt=con.createStatement();
             ResultSet rs=stmt.executeQuery("select * from "+mmb.baseName+"_"+tablename);
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int colcount=rsmd.getColumnCount();
-            StringBuffer fieldAmounts = new StringBuffer();
+            try {
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int colcount=rsmd.getColumnCount();
+                StringBuffer fieldAmounts = new StringBuffer();
 
-            Vector newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
-            for (int i=0;i<newfields.size();i++) {
-                fieldAmounts.append(",?");
-            }
-
-            while(rs.next()) {
-                MultiConnection con2=mmb.getConnection();
-                PreparedStatement stmt2=con2.prepareStatement("insert into "+mmb.baseName+"_"+tmptable+" values("+fieldAmounts.substring(1)+")");
-                stmt2.setEscapeProcessing(false);
-                Hashtable oldvalues=new Hashtable(colcount);
-                for (int i=1;i<colcount+1;i++) {
-                    Object o=rs.getObject(i);
-                    String colname=rsmd.getColumnName(i);
-                    colname=colname.toLowerCase();
-                    oldvalues.put(colname,o);
+                Vector newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
+                for (int i=0;i<newfields.size();i++) {
+                    fieldAmounts.append(",?");
                 }
-                newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
 
-                Object o=oldvalues.get(getAllowedField("number"));
-                stmt2.setInt(1,((Integer)o).intValue());
-                for (Enumeration e=newfields.elements();e.hasMoreElements();) {
-                    FieldDefs def=(FieldDefs) e.nextElement();
-                    String newname=def.getDBName();
-                    int dbpos=def.getDBPos();
+                while(rs.next()) {
+                    MultiConnection con2=mmb.getConnection();
+                    PreparedStatement stmt2=con2.prepareStatement("insert into "+mmb.baseName+"_"+tmptable+" values("+fieldAmounts.substring(1)+")");
+                    stmt2.setEscapeProcessing(false);
+                    Hashtable oldvalues=new Hashtable(colcount);
+                    for (int i=1;i<colcount+1;i++) {
+                        Object o=rs.getObject(i);
+                        String colname=rsmd.getColumnName(i);
+                        colname=colname.toLowerCase();
+                        oldvalues.put(colname,o);
+                    }
+                    newfields= (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
 
-                    o=oldvalues.get(getAllowedField(newname));
+                    Object o=oldvalues.get(getAllowedField("number"));
+                    stmt2.setInt(1,((Integer)o).intValue());
+                    for (Enumeration e=newfields.elements();e.hasMoreElements();) {
+                        FieldDefs def=(FieldDefs) e.nextElement();
+                        String newname=def.getDBName();
+                        int dbpos=def.getDBPos();
 
-                    if (o==null) {
-                        int type=def.getDBType();
-                        switch (type) {
-                        case FieldDefs.TYPE_BYTE:
-                            setDBByte(dbpos,stmt2,new byte[0]);
-                            break;
-                        case FieldDefs.TYPE_XML:
-                        case FieldDefs.TYPE_STRING:
-                            setDBText(dbpos,stmt2,new String());
-                            break;
-                        case FieldDefs.TYPE_NODE:
-                        case FieldDefs.TYPE_INTEGER:
-                            stmt2.setInt(dbpos,-1);
-                            break;
-                        case FieldDefs.TYPE_DOUBLE:
-                            stmt2.setDouble(dbpos,-1);
-                            break;
-                        case FieldDefs.TYPE_FLOAT:
-                            stmt2.setFloat(dbpos,-1);
-                            break;
-                        case FieldDefs.TYPE_LONG:
-                            stmt2.setLong(dbpos,-1);
-                            break;
-                        }
-                    } else {
-                        int type=def.getDBType();
-                        switch (type) {
-                        case FieldDefs.TYPE_BYTE:
-                            setDBByte(dbpos,stmt2,(byte[])o);
-                            break;
-                        case FieldDefs.TYPE_XML:
-                        case FieldDefs.TYPE_STRING:
-                            if (o instanceof byte[]) {
-                                String s=new String((byte[])o);
-                                setDBText(dbpos,stmt2,s);
-                            } else {
-                                setDBText(dbpos,stmt2,o.toString());
+                        o=oldvalues.get(getAllowedField(newname));
+
+                        if (o==null) {
+                            int type=def.getDBType();
+                            switch (type) {
+                            case FieldDefs.TYPE_BYTE:
+                                setDBByte(dbpos,stmt2,new byte[0]);
+                                break;
+                            case FieldDefs.TYPE_XML:
+                            case FieldDefs.TYPE_STRING:
+                                setDBText(dbpos,stmt2,new String());
+                                break;
+                            case FieldDefs.TYPE_NODE:
+                            case FieldDefs.TYPE_INTEGER:
+                                stmt2.setInt(dbpos,-1);
+                                break;
+                            case FieldDefs.TYPE_DOUBLE:
+                                stmt2.setDouble(dbpos,-1);
+                                break;
+                            case FieldDefs.TYPE_FLOAT:
+                                stmt2.setFloat(dbpos,-1);
+                                break;
+                            case FieldDefs.TYPE_LONG:
+                                stmt2.setLong(dbpos,-1);
+                                break;
                             }
-                            break;
-                        case FieldDefs.TYPE_NODE:
-                        case FieldDefs.TYPE_INTEGER:
-                            stmt2.setInt(dbpos,((Number)o).intValue());
-                            break;
-                        case FieldDefs.TYPE_DOUBLE:
-                            stmt2.setDouble(dbpos,((Number)o).doubleValue());
-                            break;
-                        case FieldDefs.TYPE_FLOAT:
-                            stmt2.setFloat(dbpos,((Number)o).floatValue());
-                            break;
-                        case FieldDefs.TYPE_LONG:
-                            stmt2.setLong(dbpos,((Number)o).longValue());
-                            break;
+                        } else {
+                            int type=def.getDBType();
+                            switch (type) {
+                            case FieldDefs.TYPE_BYTE:
+                                setDBByte(dbpos,stmt2,(byte[])o);
+                                break;
+                            case FieldDefs.TYPE_XML:
+                            case FieldDefs.TYPE_STRING:
+                                if (o instanceof byte[]) {
+                                    String s=new String((byte[])o);
+                                    setDBText(dbpos,stmt2,s);
+                                } else {
+                                    setDBText(dbpos,stmt2,o.toString());
+                                }
+                                break;
+                            case FieldDefs.TYPE_NODE:
+                            case FieldDefs.TYPE_INTEGER:
+                                stmt2.setInt(dbpos,((Number)o).intValue());
+                                break;
+                            case FieldDefs.TYPE_DOUBLE:
+                                stmt2.setDouble(dbpos,((Number)o).doubleValue());
+                                break;
+                            case FieldDefs.TYPE_FLOAT:
+                                stmt2.setFloat(dbpos,((Number)o).floatValue());
+                                break;
+                            case FieldDefs.TYPE_LONG:
+                                stmt2.setLong(dbpos,((Number)o).longValue());
+                                break;
+                            }
                         }
                     }
+                    stmt2.executeUpdate();
+                    stmt2.close();
+                    con2.close();
                 }
-                stmt2.executeUpdate();
-                stmt2.close();
-                con2.close();
+            } finally {
+                rs.close();
             }
             stmt.close();
             con.close();
@@ -1813,5 +1842,4 @@ public class MMSQL92Node extends BaseJdbc2Node implements MMJdbc2NodeInterface {
         }
         return false;
     }
-    
 }

@@ -20,8 +20,7 @@ import org.mmbase.util.logging.Logging;
  * The implementation of the log tag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: LogTag.java,v 1.9 2003-08-11 15:27:25 michiel Exp $ 
- */
+ **/
 
 public class LogTag extends ContextReferrerTag {
     private Logger log;           
@@ -42,14 +41,8 @@ public class LogTag extends ContextReferrerTag {
     public void setPageContext(PageContext pc) {
         /* Determin only once per page if it can log */
         super.setPageContext(pc);        
-        log = (Logger) pageContext.getAttribute("__logtag_logger");
-        if(log == null) {
-            log = Logging.getLoggerInstance(LOGTAG_CATEGORY + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
-            doLog = log.isServiceEnabled();
-            counter = 0;
-            pageContext.setAttribute("__logtag_logger", log);
-        }
-
+        log = Logging.getLoggerInstance(LOGTAG_CATEGORY + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().replace('/', '.'));
+        doLog = log.isServiceEnabled();        
     }
 
     public int doStartTag() throws JspTagException {
@@ -64,9 +57,7 @@ public class LogTag extends ContextReferrerTag {
     }
 
     public int doEndTag() throws JspTagException {
-        if (doLog && jspvar == null) { 
-            log.service(counter++ + ": " + (bodyContent != null ? bodyContent.getString() : "-"));
-        }
+        if (doLog && jspvar == null) log.service(counter++ + ": " + (bodyContent != null ? bodyContent.getString() : ""));
         if (jspvar != null) {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());

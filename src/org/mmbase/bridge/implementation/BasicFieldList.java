@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import org.mmbase.bridge.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -19,10 +20,10 @@ import org.mmbase.util.logging.*;
  * A list of fields
  *
  * @author Pierre van Rooden
- * @version $Id: BasicFieldList.java,v 1.12 2003-08-27 21:30:35 michiel Exp $
+ * @version $Id: BasicFieldList.java,v 1.8 2002-10-03 12:28:10 pierre Exp $
  */
 public class BasicFieldList extends BasicList implements FieldList {
-    private static final Logger log = Logging.getLoggerInstance(BasicFieldList.class);
+    private static Logger log = Logging.getLoggerInstance(BasicFieldList.class.getName());
 
     NodeManager nodemanager=null;
 
@@ -66,17 +67,17 @@ public class BasicFieldList extends BasicList implements FieldList {
      *
      */
     public FieldIterator fieldIterator() {
-        return new BasicFieldIterator();
+        return new BasicFieldIterator(this);
     }
 
-    protected class BasicFieldIterator extends BasicIterator implements FieldIterator {
+    public class BasicFieldIterator extends BasicIterator implements FieldIterator {
+
+        BasicFieldIterator(BasicList list) {
+            super(list);
+        }
 
         public Field nextField() {
             return (Field) next();
-        }
-
-        public Field previousField() {
-            return (Field) previous();
         }
 
     }

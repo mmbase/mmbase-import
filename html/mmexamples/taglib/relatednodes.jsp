@@ -15,8 +15,7 @@
 <html>
 
 <head>
-  <title>Using the relatednodes tag</title>
-  <link href="../../css/mmbase.css" rel="stylesheet" type="text/css"/>
+  <title>Taglib examples</title>
 </head>
 
 <body>
@@ -27,7 +26,7 @@
 
 <table cellpadding="5">
   <tr>
-    <td valign="top">
+    <td valign="top" bgcolor="EEEEEE">
 
 <form method="POST">
 

@@ -10,43 +10,36 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 /**
- * A UserContext object is the result of an authentication, on which authorization can be
- * based. Normally your authorization/authentication implementation will also provide an extension
- * to this class.
- *
- * This default implementation is the most simple one, actually implementing 'no authorization'
- * (because the rank is fixed to 'administrator').
- *
- * This class is <em>not</em> necessarily also the container class for the client's credentials,
- * although this is possible.
- *
+ * This UserContext class provides a storage for the authentication
+ * and authorization, so that information can be shared.
+ * This class is NOT a container class for client related stuff, altrough
+ * this is possible.
+ * @javadoc
  * @author Eduard Witteveen
- * @version $Id: UserContext.java,v 1.14 2003-07-09 10:03:11 michiel Exp $
+ * @version $Id: UserContext.java,v 1.12 2002-06-07 12:56:56 pierre Exp $
  */
 public class UserContext {
 
     /**
-     * Gets the unique identifier for this user. This should be unique
+     * Get the unique identifier for this user. This should be unique
      * for every different user on the system.
-     *
-     * @return A unique identifier for this user.
+     * @return a unique identifier for this user.
      */
     public String getIdentifier() {
         return "anonymous";
     }
 
     /**
-     * Gets the owner field value of new objects created by this user. The default implementation
-     * returns the user's identifier. This can be changed if the authorization implementation does
-     * not attribute rights to users directly ('context' implementations).
-     * @return A possible value for the owner field
+     * Get the identifier to be used as the owner field value of
+     * objects created by this user.
+     * @return an identifier for the owner field
      */
     public String getOwnerField() {
         return getIdentifier();
     }
 
     /**
-     * Gets the rank of this user.
+     * Get the rank of this user.
      * @return the user rank
      */
     public Rank getRank() throws org.mmbase.security.SecurityException {
@@ -55,7 +48,7 @@ public class UserContext {
     }
 
     /**
-     * Gets a string representation of this user context (for debugging)
+     * Get the string respresnetation of the user context.
      * @return a string describing the usercontext
      */
     public String toString() {

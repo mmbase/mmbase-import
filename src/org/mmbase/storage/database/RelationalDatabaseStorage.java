@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.database;
 
 import java.util.*;
+import java.io.*;
 import java.sql.*;
 
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
@@ -17,6 +18,7 @@ import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.XMLDatabaseReader;
 import org.mmbase.util.logging.*;
 
 /**
@@ -30,26 +32,19 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.11 2003-07-09 18:14:51 michiel Exp $
- * @todo This function contains a lot of methods which do not seem
- *       specific for a 'relational' database. They should perhaps be moved
- *        to 'abstract' databasestorage
+ * @version $Id: RelationalDatabaseStorage.java,v 1.4 2002-11-12 16:57:53 pierre Exp $
  */
 public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements DatabaseStorage, MMJdbc2NodeInterface {
 
-    private static Logger log = Logging.getLoggerInstance(RelationalDatabaseStorage.class);
+    /**
+     * Logging instance
+     */
+    private static Logger log = Logging.getLoggerInstance(RelationalDatabaseStorage.class.getName());
 
     /**
      * Constructs the Ansi SQL database layer support class
      */
     public RelationalDatabaseStorage() {
-        super();
-    }
-
-
-    // javadoc inherited
-    public boolean supportsExtendedTables() {
-        return false;
     }
 
     /**
@@ -63,59 +58,139 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
         checkNumberTable();
     }
 
-
+    /**
+     * Returns whether this storage layer supports extended tables.
+     * @return boolean true if extended tables are supported
+     */
+    public boolean supportsExtendedTables() {
+        return false;
+    }
     /**
      * Get text from blob
      * @javadoc
      */
-    public String getText(String tableName, String fieldName, int number) {
-        log.debug("getText");
-        String result = null;
-        String sqlselect = selectSQL(tableName, fieldName, number);
-        DatabaseTransaction trans = null;
+    public String getText(String tableName,String fieldname,int number) {
+        String result=null;
+        String sqlselect=selectSQL(tableName,fieldname,number);
+        DatabaseTransaction trans=null;
         try {
-            trans = createDatabaseTransaction();
-            ResultSet rs = trans.executeQuery(sqlselect);
-            if ((rs != null) && rs.next()) {
-                result = getDBText(rs,1);
-            }
-            if (log.isDebugEnabled()) {
-                log.debug("getText found " + result + " with '" + sqlselect + "'") ;
+            trans=createDatabaseTransaction();
+            ResultSet rs=trans.executeQuery(sqlselect);
+            if ((rs!=null) && rs.next()) {
+                result=getDBText(rs,1);
             }
             trans.commit();
         } catch (Exception e) {
-            if (trans != null) trans.rollback();
+            if (trans!=null) trans.rollback();
         }
         return result;
     }
 
 
-    // this looks a bit dirty.  perhaps the nicer version of
-    // PostgreslStorage should be moved to AbstractDatabaseStorage,
-    // and this one moved to MySqlStorage
-    
-    // javadoc inherited
-    /*
+    /**
+     * Get byte of a database blob
+     * @javadoc
+     */
+    public byte[] getBytes(String tableName,String fieldname,int number) {
+        byte[] result=null;
+        String sqlselect=selectSQL(tableName,fieldname,number);
+        DatabaseTransaction trans=null;
+        try {
+            trans=createDatabaseTransaction();
+            ResultSet rs=trans.executeQuery(sqlselect);
+            if ((rs!=null) && rs.next()) {
+                result=getDBByte(rs,1);
+            }
+            trans.commit();
+        } catch (Exception e) {
+            if (trans!=null) trans.rollback();
+        }
+        return result;
+    }
+
+    /**
+     * Get byte of a database blob
+     * @javadoc
+     */
     public byte[] getDBByte(ResultSet rs,int idx) {
         byte[] bytes=null;
         try {
-            InputStream inp = rs.getBinaryStream(idx);
-            int siz = inp.available(); // DIRTY
-            DataInputStream input = new DataInputStream(inp);
-            bytes = new byte[siz];
-            if (log.isDebugEnabled()) {
-                log.debug("got " + bytes.length + " bytes for field  " + idx);
-            }
+            InputStream inp=rs.getBinaryStream(idx);
+            int siz=inp.available(); // DIRTY
+            DataInputStream input=new DataInputStream(inp);
+            bytes=new byte[siz];
             input.readFully(bytes);
             input.close(); // this also closes the underlying stream
         } catch (Exception e) {
-            log.error("byte  exception "+e);
+            log.error("MMObjectBuilder -> MMMysql byte  exception "+e);
             log.error(Logging.stackTrace(e));
         }
         return bytes;
     }
-    */
 
+    /**
+     * Get text of a database blob
+     * @javadoc
+     */
+    public String getDBText(ResultSet rs,int idx) {
+        String str=null;
+        try {
+            InputStream inp = rs.getBinaryStream(idx);
+            if ((inp==null) || rs.wasNull()) {
+                return("");
+            }
+            int siz=inp.available(); // DIRTY
+            if (siz<=0) return("");
+            DataInputStream input=new DataInputStream(inp);
+            byte[] rawchars = new byte[siz];
+            input.readFully(rawchars);
+            str = new String(rawchars, mmb.getEncoding());
+            input.close(); // this also closes the underlying stream
+        } catch (Exception e) {
+            log.error("MMObjectBuilder -> MMMysql text  exception "+e);
+            log.error(Logging.stackTrace(e));
+            return "";
+        }
+        return str;
+    }
+
+    /**
+     * Set text array in database
+     * @javadoc
+     */
+    public void setDBText(int i, PreparedStatement stmt,String body) {
+        byte[] rawchars=null;
+        try {
+            rawchars=body.getBytes(mmb.getEncoding());
+        } catch (Exception e) {
+            log.error("MMObjectBuilder -> String contains odd chars");
+            log.error(body);
+            log.error(Logging.stackTrace(e));
+        }
+        try {
+            ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
+            stmt.setBinaryStream(i,stream,rawchars.length);
+            stream.close();
+        } catch (Exception e) {
+            log.error("MMObjectBuilder : Can't set ascii stream");
+            log.error(Logging.stackTrace(e));
+        }
+    }
+
+    /**
+     * Set byte array in database
+     * @javadoc
+     */
+    public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
+        try {
+            ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
+            stmt.setBinaryStream(i,stream,bytes.length);
+            stream.close();
+        } catch (Exception e) {
+            log.error("MMObjectBuilder : Can't set byte stream");
+            log.error(Logging.stackTrace(e));
+        }
+    }
 
     /**
      * Checks if the numberTable exists.
@@ -124,23 +199,23 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      */
     private void checkNumberTable() {
         if (log.isDebugEnabled()) log.trace("checks if table numberTable exists.");
-        if(! created(getFullTableName("numberTable"))) {
+        if(!created(getFullTableName("numberTable"))) {
             // Get the current object number
             int number = getCurrentKey();
             // integer should use getDataType?
             DatabaseTransaction trans=null;
             try {
-                trans = createDatabaseTransaction();
+                trans=createDatabaseTransaction();
                 String sqlcreate=
                     createSQL(getFullTableName("numberTable"),
-                        constructFieldDefinition("numberTable", "number", FieldDefs.TYPE_INTEGER, -1, KEY_PRIMARY));
+                        constructFieldDefinition("numberTable","number",FieldDefs.TYPE_INTEGER,-1,KEY_PRIMARY));
                 trans.executeUpdate(sqlcreate);
                 String sqlinsert= insertSQL(getFullTableName("numberTable"),getNumberString(),""+number);
                 trans.executeUpdate(sqlinsert);
                 trans.commit();
             } catch (StorageException e) {
                 log.error(e.toString());
-                if (trans != null) trans.rollback();
+                if (trans!=null) trans.rollback();
                 return;
             }
         }
@@ -150,24 +225,30 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
      * @javadoc
      */
     private synchronized int getCurrentKey() {
-        int number = 0;
-        DatabaseTransaction trans = null;
+        int number=0;
+        DatabaseTransaction trans=null;
         try {
-            trans = createDatabaseTransaction();
-            String sqlselect = selectSQL(getFullTableName("object"), "max(" + getNumberString() + ")");
+            trans=createDatabaseTransaction();
+            String sqlselect=selectSQL(getFullTableName("object"),"max("+getNumberString()+")");
             trans.executeQuery(sqlselect);
             number=trans.getIntegerResult();
             trans.commit();
         } catch (StorageException e) {
-            log.debug(e.toString()); // probably object table did not exist yet, which is all right
+            log.error(e.toString());
             if (trans!=null) trans.rollback();
         }
         return number;
     }
 
-    // javadoc inherited from Storage
+    /**
+     * Gives an unique number for a node to be inserted.
+     * This method will work with multiple mmbases
+     * @param trans the transaction to use for obtaining the key
+     * @return unique number
+     * @throws StorageException if an error occurred while obtaining the key
+     */
     public synchronized int createKey(Transaction trans) throws StorageException {
-        DatabaseTransaction dbtrans = (DatabaseTransaction) trans;
+        DatabaseTransaction dbtrans = (DatabaseTransaction)trans;
         dbtrans.executeUpdate("UPDATE "+getFullTableName("numberTable")+" SET "+getNumberString()+" = "+getNumberString()+"+1;");
         String sqlselect=selectSQL(getFullTableName("numberTable"),getNumberString());
         dbtrans.executeQuery(sqlselect);
@@ -187,11 +268,11 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
 
         if (super.insertIntoTable(builder,node,trans)==-1) return -1;
 
-        MMObjectBuilder parent = getParentBuilder(builder);
+        MMObjectBuilder parent=getParentBuilder(builder);
 
         // call the database to update the parent table
-        if (parent != null) {
-            insertIntoTable(parent, node, trans);
+        if (parent!=null) {
+            insertIntoTable(parent,node,trans);
         } else if (!builder.getTableName().equals("object")) {
             // parent is object table
             insertObjectTable(node,trans);

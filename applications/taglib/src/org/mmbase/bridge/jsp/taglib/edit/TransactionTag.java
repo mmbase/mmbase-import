@@ -14,32 +14,31 @@ import java.io.IOException;
 
 import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Transaction;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.CloudProvider;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- *
- * Creates a new Transaction.
- *
- * @author Michiel Meeuwissen
- * @version $Id: TransactionTag.java,v 1.19 2003-08-27 21:33:40 michiel Exp $ 
- */
-
+*
+* Creates a new Transaction.
+*
+* @author Michiel Meeuwissen
+*
+**/
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
-    private static final Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;
-    private Attribute commit = Attribute.NULL;
-    private Attribute name   = Attribute.NULL;
+    private boolean commit = true;
+    private String name = null;
     private String jspvar = null;
 
     public void setCommitonclose(String c) throws JspTagException {
-        commit = getAttribute(c);
+        commit = getAttributeBoolean(c).booleanValue();
     }
 
     public Cloud getCloudVar() throws JspTagException {
@@ -47,7 +46,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     }
 
     public void setName(String s) throws JspTagException {
-        name = getAttribute(s);
+        name = getAttributeValue(s);
     }
 
     public void setJspvar(String jv) {
@@ -59,7 +58,7 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
      */
     public int doStartTag() throws JspTagException{
         log.debug("value of commit: " + commit);
-        transaction = null;
+        transaction =null;
         if (getId() != null) { // look it up from session
             log.debug("looking up transaction in context");
             try {
@@ -68,13 +67,13 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
             } catch (JspTagException e) { }
         }
         if (transaction == null) { // not found in context
-            if (name == Attribute.NULL) {
+            if (name == null) {
                 throw new JspTagException("Did not find transaction in context, and no name for transaction supplied");
             }
-            transaction = findCloudProvider().getCloudVar().getTransaction(name.getString(this));
+            transaction = findCloudProvider().getCloudVar().getTransaction(name);
             if (getId() != null) { // put it in context
                 log.debug("putting transaction in context");
-                getContextProvider().getContextContainer().register(getId(), transaction);
+                getContextTag().register(getId(), transaction);
             }
         }
         if (jspvar != null) {
@@ -85,10 +84,10 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
 
     public int doEndTag() throws JspTagException {
-        if (commit.getBoolean(this, true)) {
+        if (commit) {
             ((Transaction) getCloudVar()).commit();
             if (getId() != null) {
-                getContextProvider().getContextContainer().unRegister(getId());
+                getContextTag().unRegister(getId());
             }
         }
         return EVAL_PAGE;

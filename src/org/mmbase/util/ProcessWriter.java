@@ -14,13 +14,13 @@ import org.mmbase.util.logging.*;
 /**
  * A class to pipe data from one stream to the other as a thread.
  * Useful for building execution pipes.
- *
+ * 
  * @deprecated-now 
  * 	External process streams are handled by the org.mmbase.util.externalprocess package
  * 	The StreamCopyThread does the same thing as this class
  *
  * @author Kees Jongenburger
- * @version $Id: ProcessWriter.java,v 1.7 2003-05-12 11:06:56 nico Exp $
+ * @version $Id: ProcessWriter.java,v 1.5.4.1 2003-05-12 11:05:41 nico Exp $
  */
 public class ProcessWriter implements Runnable{
 
@@ -103,8 +103,8 @@ public class ProcessWriter implements Runnable{
             if (in == null ) {
                 log.warn("Inputstream is null");
             }
-            if (out == null ) {
-                log.warn("Outputstream is null");
+              if (out == null ) {
+                log.warn("Inputstream is null");
             }
         }
     }

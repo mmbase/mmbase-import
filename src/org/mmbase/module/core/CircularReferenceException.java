@@ -16,29 +16,12 @@ package org.mmbase.module.core;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: CircularReferenceException.java,v 1.4 2003-08-29 09:36:53 pierre Exp $
+ * @version $Id: CircularReferenceException.java,v 1.2 2002-03-21 17:17:11 pierre Exp $
  */
 public class CircularReferenceException extends BuilderConfigurationException {
 
-    //javadoc is inherited
-    public CircularReferenceException() {
-        super();
+    public CircularReferenceException(String s) {
+        super(s);
     }
-    
-    //javadoc is inherited
-    public CircularReferenceException(String message) {
-        super(message);
-    }
-
-    //javadoc is inherited
-    public CircularReferenceException(Throwable cause) {
-        super(cause);
-    }
-
-    //javadoc is inherited
-    public CircularReferenceException(String message, Throwable cause) {
-        super(message,cause);
-    }
-    
 }
 

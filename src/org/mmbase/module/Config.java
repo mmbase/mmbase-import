@@ -1,31 +1,40 @@
 /*
-
+ 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
-
+ 
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
-
+ 
 */
 package org.mmbase.module;
 
-import java.io.*;
+import java.lang.*;
+import java.net.*;
 import java.util.*;
+import java.io.*;
+import java.sql.*;
 
+import org.xml.sax.*;
+import org.apache.xerces.parsers.*;
+import org.w3c.dom.*;
+import org.w3c.dom.traversal.*;
 import javax.xml.parsers.DocumentBuilder;
 
-import org.mmbase.config.ReportInterface;
-import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.xml.BuilderReader;
-import org.w3c.dom.Document;
+import org.mmbase.config.*;
+import org.mmbase.module.core.*;
 
 
 /**
+ * @author cjr@dds.nl
+ *
+ * Config module
+ *
  * This module analyses the MMBase XML configuration files.
  *
- * <pre>LIST functions are:
+ * LIST functions are:
  *  - token=SHOW
  *  - type={builders,databases,modules}
  *  Returns an list of arrays:
@@ -43,19 +52,54 @@ import org.w3c.dom.Document;
  *    ANNOTATE: return a string with the XML file with errors listed
  *      and pointed out visually.
  *
- *    Example: $MOD-CONFIG-SHOW-builders-people
+ *    Example: $MOD-CONFIG-SHOW-builders-people  
  *
  * Additional REPLACE function is: REPORT
  *    which has no arguments.
- * </pre>
  *
- * @author Cees Roele
- * @version $Id: Config.java,v 1.21 2003-07-07 13:34:22 keesj Exp $
- * @todo
- * - Add code for examples<br />
- * - Add code to check whether database configuration works<br />
- * - Add code for fault oriented results, rather than directory oriented results<br />
- * - Remove xerces specific code
+ *
+ * @version $Id: Config.java,v 1.14.6.2 2002-12-18 20:53:03 michiel Exp $
+ *
+ * $Log: not supported by cvs2svn $
+ * Revision 1.14.6.1  2002/12/03 21:22:31  michiel
+ * fixes for bugs #4249, #3713 and #4393 plus a little cleaning in the process. All related to DTD resolving / XML validation
+ *
+ * Revision 1.14  2001/07/16 10:08:07  jaco
+ * jaco: Moved all configuration stuff to MMBaseContext.
+ * If needed params not found or incorrect a ServletException with a description isthrown.
+ * It's now again possible to not redirect System.out and System.err to a file.
+ * Parameters are searched in the webapp (using context-param parameters) when started using a servlet.
+ * If htmlroot is not specified MMBaseContext will try to set it to the webapp root directory.
+ *
+ * Revision 1.13  2001/06/23 16:42:38  daniel
+ * changed init to MMBaseContect
+ *
+ * Revision 1.12  2001/03/06 16:17:35  pierre
+ * pierre: added logging
+ *
+ * Revision 1.11  2000/09/11 20:19:21  case
+ * cjr: Added processing of $MOD-Config-REPORT, which displays a report on
+ *      the configuration, including error notifications, possibly with hints
+ *
+ * Revision 1.10  2000/08/27 22:30:02  daniel
+ * small change for mmdemo
+ *
+ * Revision 1.8  2000/08/10 21:06:46  case
+ * cjr: Added some badly needed comments
+ *
+ * Revision 1.7  2000/08/06 14:56:18  case
+ * cjr: Now tells if no dtd is defined - in this case no validation takes place and previously it was presented as if validation had been done successfully.
+ *
+ * Revision 1.6  2000/08/06 10:00:42  case
+ * cjr: very minor change
+ *
+ *
+ * TODO:
+ * - Add code for examples
+ * - Add code to check whether database configuration works
+ * - Add code for fault oriented results, rather than directory oriented results
+
+ * - Remove xerces specific code.
  */
 public class Config extends ProcessorModule {
     // debug routines
@@ -80,7 +124,7 @@ public class Config extends ProcessorModule {
                 XMLCheckErrorHandler errorHandler = new XMLCheckErrorHandler();
                 DocumentBuilder db = XMLBasicReader.getDocumentBuilder(true, errorHandler, resolver);
                 Document document = db.parse(path);
-
+           
                 hasDTD  = resolver.hasDTD();
                 dtdpath = resolver.getDTDPath();
 
@@ -131,18 +175,51 @@ public class Config extends ProcessorModule {
     }
 
     public boolean builderIsActive(String path) {
-        BuilderReader reader = new BuilderReader(path);
+        XMLBuilderReader reader = new XMLBuilderReader(path);
         return reader.getStatus().equalsIgnoreCase("active");
     }
 
     /**
      * @param path Relative path to database mapping file
+     *
      * @return Whether a database mapping file is for the active DBMS
+     * @aaargh!
      */
     public boolean databaseIsActive(String path) {
-        XMLProperties xmlReader = XMLProperties.getPropertiesFromXML(mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml");
-        	
-        String curdb = (String)xmlReader.get("DATABASE");
+        XMLProperties xmlReader = new XMLProperties();
+        SAXParser parser = new SAXParser();
+        // Telling the parser it must not use some features
+        // we're not using right now as dtd-validation and namespaces
+        try {
+            parser.setFeature("http://xml.org/sax/features/validation",false);
+            parser.setFeature("http://xml.org/sax/features/namespaces",false);
+        } catch (SAXNotSupportedException ex) {
+            log.error("Config::databaseIsActive: failed because parser doesn't support feature");
+            ex.printStackTrace();
+        }
+        catch (SAXNotRecognizedException ex) {
+            log.error("Config::databaseIsActive(): failed because parser didn't recognize feature");
+            ex.printStackTrace();
+        }
+        // create new ContentHandler and let the parser use it
+        xmlReader = new XMLProperties();
+        parser.setContentHandler(xmlReader);
+
+        // get us a (normal) propertie reader
+        Hashtable mods = null;
+
+        // load the
+        String filename = mmbaseconfig + File.separator + "modules" + File.separator + "mmbaseroot.xml";
+        // filename=filename.replace('/',File.separator)
+        // filename=filename.replace('\\',File.separator)
+        // check if there's a xml-configuration file
+        try {
+            parser.parse(new InputSource(filename));
+            mods = xmlReader.getProperties();
+        } catch (Exception e) {}
+
+
+        String curdb = (String)mods.get("DATABASE");
         return path.indexOf(curdb) > 0;
     }
 
@@ -290,7 +367,7 @@ public class Config extends ProcessorModule {
 
     /**
      * Retrieve all xml files in a directory
-     *
+     * 
      * @param path Directory path
      * @return String array containing the names of the xml files in the directory
      *
@@ -392,7 +469,7 @@ public class Config extends ProcessorModule {
         }
 
         if (argv.length == 1 && argv[0].equalsIgnoreCase("REPORT")) {
-            return report("<br />\n");
+            return report("<br>\n");
         } else if (argv.length != 3) {
             return "$MOD-CONFIG should have three arguments, e.g. $MOD-CONFIG-show-builders-people";
         } else {
@@ -536,7 +613,7 @@ public class Config extends ProcessorModule {
 
 
     protected String checkXML(String path) {
-
+       
         ParseResult pr = new ParseResult(path);
         if (pr.getResultList().size() == 0) {
             return "Checked ok";
@@ -547,25 +624,25 @@ public class Config extends ProcessorModule {
             fatals   = pr.getFatalList().size();
 
             StringBuffer s = new StringBuffer();
-            s.append("warnings = "+warnings+"  errors = "+errors+"   fatal errors = "+fatals+"<br />\n");
+            s.append("warnings = "+warnings+"  errors = "+errors+"   fatal errors = "+fatals+"<br>\n");
             if (warnings > 0) {
                 for (int i=0;i<warnings;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getWarningList().get(i));
-                    s.append("warning at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
+                    s.append("warning at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
                 }
             }
 
             if (errors > 0) {
                 for (int i=0;i<errors;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getErrorList().get(i));
-                    s.append("error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
+                    s.append("error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
                 }
             }
 
             if (fatals > 0) {
                 for (int i=0;i<fatals;i++) {
                     ErrorStruct es = (ErrorStruct)(pr.getFatalList().get(i));
-                    s.append("fatal error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br />");
+                    s.append("fatal error at line "+es.getLineNumber()+" column "+es.getColumnNumber()+": "+es.getMessage()+"<br>");
                 }
             }
 

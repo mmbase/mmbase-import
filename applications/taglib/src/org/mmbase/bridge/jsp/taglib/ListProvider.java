@@ -9,14 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
+import org.mmbase.bridge.Node;
+
 /**
  * Basic interface that parent should implement if they provide Lists.
  * For example the several NodeListTag's  provide a List.
  *
- * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.7 2003-08-08 09:22:54 michiel Exp $ 
  */
-public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.taglib.containers.NodeListContainerOrListProvider {
+public interface ListProvider extends TagIdentifier {
     /**
      * @return the size of the list
      *
@@ -28,13 +28,6 @@ public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.tag
      *
      */
     public int getIndex();
-
-
-    /**
-     * @return The offset of the index (normally this will return 1)
-     * @since MMBase-1.7
-     */
-    public int getIndexOffset();
 
     /**
      * @return the current item in a list
@@ -49,11 +42,4 @@ public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.tag
      *
      */
     public boolean isChanged();
-
-    /**
-     * Removes the current item from the list.
-     * @since MMBase-1.7
-     */
-    public void remove();
-
 }

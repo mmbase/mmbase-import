@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
@@ -20,10 +21,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.32 2003-08-13 16:40:14 michiel Exp $
+ * @version $Id: BasicRelation.java,v 1.25.2.5 2003-04-08 14:32:22 pierre Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
-    private static Logger log = Logging.getLoggerInstance(BasicRelation.class);
+    private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
 
     private RelationManager relationManager = null;
     protected int snum;
@@ -142,8 +143,8 @@ public class BasicRelation extends BasicNode implements Relation {
         //int snumber = snumtype.getNumber();
         //int dnumber = dnumtype.getNumber();
         int rnumber = getNode().getIntValue("rnumber");
-        if (!mmb.getTypeRel().contains(snumtype, dnumtype, rnumber)) {
-            if (!mmb.getTypeRel().contains(dnumtype,snumtype,rnumber)) {
+        if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
+            if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
                 throw new BridgeException("Source and/or Destination node are not of the correct type. ("
                           + cloud.getNode(snumtype).getValue("name") + ","
                           + cloud.getNode(dnumtype).getValue("name") + ","
@@ -183,5 +184,4 @@ public class BasicRelation extends BasicNode implements Relation {
             dnum = getNode().getIntValue("dnumber");
         }
     }
-
 }

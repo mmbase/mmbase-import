@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Servjumpers
   * @author Daniel Ockeloen
- * @version $Id: servjumpers.java,v 1.17 2003-03-10 11:50:42 pierre Exp $
+ * @version 24 Apr 2001
  */
 public class servjumpers extends JamesServlet {
     private static Logger log;
@@ -46,7 +46,7 @@ public class servjumpers extends JamesServlet {
      * by a user.
      * Determines an url based on a jumper key, provided the original
      * url (reclaimed from the request) is NOT a directory root and NOT a fully
-     * specified file.<br />
+     * specified file.<br>
      * So '/mypath/' or '/myfile.html' will not be filtered, but '/mypath' will.
      * @param req The HTTP Servlet request
      * @param res The HTTP Servlet response
