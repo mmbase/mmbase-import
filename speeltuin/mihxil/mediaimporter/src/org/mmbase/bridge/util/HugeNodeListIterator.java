@@ -12,18 +12,18 @@ package org.mmbase.bridge.util;
 
 import org.mmbase.bridge.*;
 import org.mmbase.storage.search.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.cache.*;
 
 import java.util.*;
 
 /**
- * Iterates the big result of a query. The query is 'batched' to avoid reading in all nodes in
- * memory, and the batches are removed from the query-caches.
- *
+ * Iterates the big result of a query. It avoids using a lot of memory (which you would need if you
+ * get the complete NodeList first), and pollution of the (node) cache. In this current
+ * implementation the Query is 'batched' to avoid reading in all nodes in memory, and the batches
+ * are removed from the query-caches.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: HugeNodeListIterator.java,v 1.2 2004-04-05 19:04:12 michiel Exp $
+ * @version $Id: HugeNodeListIterator.java,v 1.3 2004-05-27 16:47:14 michiel Exp $
  * @since   MMBase-1.8
  */
 
@@ -33,28 +33,29 @@ public class HugeNodeListIterator implements NodeIterator {
     protected static MultilevelCache multilevelCache  = MultilevelCache.getCache(); 
     protected static NodeListCache nodeListCache      = NodeListCache.getCache();
 
+    public static final int DEFAULT_BATCH_SIZE = 10000;
+
     protected NodeIterator nodeIterator;
     protected Node         nextNode;
     protected Node         previousNode;
 
     protected Query   originalQuery;
-    protected int     batchSize = 10000;
+    protected int     batchSize = DEFAULT_BATCH_SIZE;
 
     protected int     nextIndex = 0;
 
-    protected boolean nodeQueries;
     
 
     /**
      * Constructor for this Iterator.
      *
-     * @param query      The query which is used as a base for the querie(s) to be executed.
+     * @param query     The query which is used as a base for the querie(s) to be executed.
      * @param batchSize The (approximate) size of the sub-queries, should be a reasonably large
-     * number, like 10000 or so.
+     *                   number, like 10000 or so.
      */
     public HugeNodeListIterator(Query query, int batchSize) {
-        this(query);
         this.batchSize = batchSize;
+        init(query);
     }
 
     /**
@@ -64,15 +65,21 @@ public class HugeNodeListIterator implements NodeIterator {
      * @param query      The query which is used as a base for the querie(s) to be executed.
      */
     public HugeNodeListIterator(Query query) {
+        if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
+            batchSize = query.getMaxNumber();
+        } // else leave on default;
+        init(query);
+    }
+
+    /**
+     * Called by constructors only
+     */
+    private void init(Query query) {
         if (query.getOffset() > 0) {
             throw new UnsupportedOperationException("Not implemented for queries with offset");
         }
         Queries.sortUniquely(query);
-        if (query.getMaxNumber() != SearchQuery.DEFAULT_MAX_NUMBER) {
-            batchSize = query.getMaxNumber();
-        }
         originalQuery = query;
-        nodeQueries = originalQuery instanceof NodeQuery;
         executeNextQuery((Query) originalQuery.clone());
     }
 
@@ -83,7 +90,7 @@ public class HugeNodeListIterator implements NodeIterator {
      */
     protected void executeQuery(Query currentQuery) {
         currentQuery.setMaxNumber(batchSize);
-        if (nodeQueries) {
+        if (originalQuery instanceof NodeQuery) {
             NodeQuery nq = (NodeQuery) currentQuery;
             nodeIterator = nq.getNodeManager().getList(nq).nodeIterator();
             nodeListCache.remove(nq);
@@ -149,7 +156,7 @@ public class HugeNodeListIterator implements NodeIterator {
      * {@inheritDoc}
      */
     public Object previous() {
-        return previous();
+        return previousNode();
     }
     /**
      * {@inheritDoc}
@@ -171,13 +178,20 @@ public class HugeNodeListIterator implements NodeIterator {
      * this, but that seems not to be the case.
      */
     protected boolean equals(Node node1, Node node2) {
-        Iterator i = node1.getNodeManager().getFields().iterator();
+        if (node1 == null) return node2 == null;
+        if (node2 == null) return node1 == null;
+        Iterator i = node1.getNodeManager().getFields().iterator();       
         while (i.hasNext()) {
             Field f = (Field) i.next();
             String name = f.getName();
-            if (! node1.getValue(name).equals(node2.getValue(name))) {
-                return false;
-            }            
+            Object value = node1.getValue(name);
+            if (value == null) {
+                if (node2.getValue(name) != null) return false;
+            } else {
+                if (! value.equals(node2.getValue(name))) {
+                    return false;
+                } 
+            }
         }
         return true;
 
@@ -212,7 +226,7 @@ public class HugeNodeListIterator implements NodeIterator {
                 executeNextQuery(currentQuery); 
 
                 // perhaps the sort-order did not find a unique result, skip some nodes in that case.
-                // XXX This wrong if there follow more nodes than 'batchSize'.
+                // XXX This wrong if (which is unlikely) there follow more nodes than 'batchSize'.
                 while(nextNode != null && equals(nextNode, previousNode)) {
                     if (nodeIterator.hasNext()) {
                         nextNode = nodeIterator.nextNode();
@@ -224,7 +238,7 @@ public class HugeNodeListIterator implements NodeIterator {
 
             return previousNode; // looks odd, but really is wat is meant.
         } else {
-            throw new NoSuchElementException("No such element");
+            throw new NoSuchElementException("No next element");
         }
     }
 
@@ -261,7 +275,7 @@ public class HugeNodeListIterator implements NodeIterator {
             }
             return nextNode;
         } else {
-            throw new NoSuchElementException("No such element");
+            throw new NoSuchElementException("No previous element");
         }
     }
 
@@ -269,7 +283,6 @@ public class HugeNodeListIterator implements NodeIterator {
     /**
      * @throws UnsupportedOperationException 
      */
-
     public void remove() {
         throw new UnsupportedOperationException("Optional operation 'remove' not implemented");
     }
@@ -288,6 +301,9 @@ public class HugeNodeListIterator implements NodeIterator {
         throw new UnsupportedOperationException("Optional operation 'set' not implemented");
     }
 
+    /**
+     * Main only for testing.
+     */
     public static void main(String[] args) {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
         NodeQuery q = cloud.getNodeManager("object").createQuery();
