@@ -176,11 +176,12 @@ public class XMLRelationNodeReader extends XMLBasicReader {
                      Node n5 = n2.getFirstChild();
                      while (n5 != null) {
                         String key = n5.getNodeName();
-                        if (!key.equals("#text")) {
+                        if (n5.getNodeType() == Node.ELEMENT_NODE) {
                            Node n6 = n5.getFirstChild();
                            String value = "";
-                           if (n6 != null)
-                              value = n6.getNodeValue();
+                           if (n6 != null) {
+                               value = n6.getNodeValue(); // needs to be a loop
+                           }
                            int type = bul.getDBType(key);
                            if (type != -1) {
                               if (type == FieldDefs.TYPE_STRING
