@@ -77,7 +77,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
            These editors are mostly intended for experienced users.
         </td>
         <td class="link" >
-                <a href="<mm:url page="mmeditors/jsp/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+                <a href="<mm:url page="mmbase/edit/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
         </td>
 </tr>
 
@@ -88,7 +88,7 @@ OSI Certified is a certification mark of the Open Source Initiative.</p>
            servers, and databases.
         </td>
         <td class="link" >
-                <a href="<mm:url page="mmadmin/jsp/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
+                <a href="<mm:url page="mmbase/admin/" />"><img alt=">" src="mmadmin/jsp/images/next.gif" border="0" align="left" /></a>
         </td>
 </tr>
 
