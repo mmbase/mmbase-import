@@ -12,7 +12,7 @@ package org.mmbase.storage.search;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-
+import org.mmbase.util.logging.*;
 
 /**
  * A <code>ResultBuilder</code> is a builder for 
@@ -22,11 +22,13 @@ import org.mmbase.module.corebuilders.*;
  * This builder contains info on the fields of the resultnodes.
  *
  * @author  Rob van Maris
- * @version $Id: ResultBuilder.java,v 1.4 2003-03-10 11:50:49 pierre Exp $
+ * @version $Id: ResultBuilder.java,v 1.5 2003-09-02 19:56:52 michiel Exp $
  * @since MMBase-1.7
  */
 public class ResultBuilder extends VirtualBuilder {
-    
+
+    private static final Logger log = Logging.getLoggerInstance(ResultBuilder.class);    
+
     /** Map, maps fields by field alias. */
     private Map fieldsByAlias = null;
     
@@ -60,6 +62,7 @@ public class ResultBuilder extends VirtualBuilder {
         int result;
         StepField stepField = (StepField) fieldsByAlias.get(fieldName);
         if (stepField == null) {
+            log.error("not a known stepfield with name " + fieldName + " " + fieldsByAlias);
             result = FieldDefs.TYPE_UNKNOWN;
         } else {
             result = stepField.getType();
