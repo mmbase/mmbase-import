@@ -1,0 +1,10 @@
+===================================================================
+                     MMBase 1.7.0 - Release Plan
+===================================================================  
+  
+TODO for 1.7.0 release of MMBase:
+
+- Query-project
+- Storage class testing
+- Removal of xerces/xalan dependencies (cleaning project)
+- Running on packed war (xml configuration as resources)
