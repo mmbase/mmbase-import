@@ -13,7 +13,7 @@
 <mm:import externid="sarea" />
 <mm:import externid="sversion" />
 <mm:import externid="sfixedin" />
-<mm:import externid="spriority" />
+<mm:import externid="spriority" >3</mm:import>
 <mm:import externid="smaintainer">-1</mm:import>
 <mm:import externid="noffset">0</mm:import>
 
