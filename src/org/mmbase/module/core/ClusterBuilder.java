@@ -37,7 +37,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.47 2003-09-16 20:21:58 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.48 2003-09-16 21:21:25 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -547,8 +547,9 @@ public class ClusterBuilder extends VirtualBuilder {
         // Execute query, return results.
 
         if (query instanceof NodeQuery) {
-            List results = mmb.getDatabase().getNodes(query, this);
-            processSearchResults(results);
+            NodeQuery nq = (NodeQuery) query;
+            List results = mmb.getDatabase().getNodes(nq, this);
+            mmb.getBuilder(nq.getNodeManager().getName()).processSearchResults(results);
             return results;
         } else {
             return mmb.getDatabase().getNodes(query, this);
