@@ -333,12 +333,12 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
             int maxx = (max == null ? nodes.size() - 1 : max.intValue());
             int to = maxx + offset;
             
-            listSize = nodes.size();
-            if (to >= listSize) {
-                to = listSize;
+            int currentSize = nodes.size();
+            if (to >= currentSize) {
+                to = currentSize;
             }
-            if (offset >= listSize) {
-                offset = listSize - 1;
+            if (offset >= currentSize) {
+                offset = currentSize - 1;
             }
             if (offset < 0) {
                 offset = 0;
