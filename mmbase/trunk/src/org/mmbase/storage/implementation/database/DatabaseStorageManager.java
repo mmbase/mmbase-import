@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.66 2004-06-02 09:39:09 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.67 2004-06-15 21:27:57 robmaris Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -261,20 +261,24 @@ public class DatabaseStorageManager implements StorageManager {
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), bufferSize });
                 logQuery(query);
                 s = activeConnection.createStatement();
-                ResultSet result = s.executeQuery(query);
-                if (result.next()) {
-                    int keynr = result.getInt(1);
-                    // add remaining keys to sequenceKeys
-                    for (int i = 1; i < bufferSize.intValue(); i++) {
-                        sequenceKeys.add(new Integer(keynr+i));
+                try {
+                    ResultSet result = s.executeQuery(query);
+                    try {
+                        if (result.next()) {
+                            int keynr = result.getInt(1);
+                            // add remaining keys to sequenceKeys
+                            for (int i = 1; i < bufferSize.intValue(); i++) {
+                                sequenceKeys.add(new Integer(keynr+i));
+                            }
+                            return keynr;
+                        } else {
+                            throw new StorageException("The sequence table is empty.");
+                        }
+                    } finally {
+                        result.close();
                     }
-                    result.close();
+                } finally {
                     s.close();
-                    return keynr;
-                } else {
-                    result.close();
-                    s.close();
-                    throw new StorageException("The sequence table is empty.");
                 }
             } catch (SQLException se) {
                 log.error(Logging.stackTrace(se));
@@ -298,15 +302,19 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
-            if ((result != null) && result.next()) {
-                String rvalue = getStringValue(result, 1, field);
+            try {
+                if ((result != null) && result.next()) {
+                    String rvalue = getStringValue(result, 1, field);
+                    result.close();
+                    s.close();
+                    return rvalue;
+                } else {
+                    if (result != null) result.close();
+                    s.close();
+                    throw new StorageException("Node with number " + node.getNumber() + " not found.");
+                }
+            } finally {
                 result.close();
-                s.close();
-                return rvalue;
-            } else {
-                if (result != null) result.close();
-                s.close();
-                throw new StorageException("Node with number " + node.getNumber() + " not found.");
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -387,15 +395,19 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
-            if ((result != null) && result.next()) {
-                byte[] retval = getBinaryValue(result, 1, field);
+            try {
+                if ((result != null) && result.next()) {
+                    byte[] retval = getBinaryValue(result, 1, field);
+                    result.close();
+                    s.close();
+                    return retval;
+                } else {
+                    if (result != null) result.close();
+                    s.close();
+                    throw new StorageException("Node with number " + node.getNumber() + " not found.");
+                }
+            } finally {
                 result.close();
-                s.close();
-                return retval;
-            } else {
-                if (result != null) result.close();
-                s.close();
-                throw new StorageException("Node with number " + node.getNumber() + " not found.");
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1134,16 +1146,24 @@ public class DatabaseStorageManager implements StorageManager {
             MMBase mmbase = factory.getMMBase();
             String query = scheme.format(new Object[] { this, mmbase, mmbase.getTypeDef().getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
-            ResultSet result = s.executeQuery(query);
-            if ((result != null) && result.next()) {
-                int retval = result.getInt(1);
-                result.close();
+            try {
+                ResultSet result = s.executeQuery(query);
+                if (result != null) {
+                    try {
+                        if (result.next()) {
+                            int retval = result.getInt(1);
+                            return retval;
+                        } else {
+                            return -1;
+                        }
+                    } finally {
+                        result.close();
+                    }
+                } else {
+                    return -1;
+                }
+            } finally {
                 s.close();
-                return retval;
-            } else {
-                if (result != null) result.close();
-                s.close();
-                return -1;
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1524,8 +1544,12 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             DatabaseMetaData metaData = activeConnection.getMetaData();
             ResultSet res = metaData.getTables(null, null, tableName, null);
-            boolean result = res.next();
-            return result;
+            try {
+                boolean result = res.next();
+                return result;
+            } finally {
+                res.close();
+            }
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
         } finally {
@@ -1546,9 +1570,13 @@ public class DatabaseStorageManager implements StorageManager {
             String query = scheme.format(new Object[] { this, builder });
             Statement s = activeConnection.createStatement();
             ResultSet res = s.executeQuery(query);
-            res.next();
-            int retval = res.getInt(1);
-            res.close();
+            int retval;
+            try {
+                res.next();
+                retval = res.getInt(1);
+            } finally {
+                res.close();
+            }
             s.close();
             return retval;
         } catch (Exception e) {
@@ -1643,15 +1671,19 @@ public class DatabaseStorageManager implements StorageManager {
                 MMObjectBuilder parent = builder.getParentBuilder();
                 try {
                     ResultSet superTablesSet = metaData.getSuperTables(null, null, tableName);
-                    if (superTablesSet.next()) {
-                        String parentName = superTablesSet.getString("SUPERTABLE_NAME");
-                        if (parent == null || !parentName.equals(factory.getStorageIdentifier(parent))) {
-                            log.error("VERIFY: parent builder in storage for builder " + builder.getTableName() + " should be " + parent.getTableName() + " but defined as " + parentName);
-                        } else {
-                            log.debug("VERIFY: parent builder in storage for builder " + builder.getTableName() + " defined as " + parentName);
+                    try {
+                        if (superTablesSet.next()) {
+                            String parentName = superTablesSet.getString("SUPERTABLE_NAME");
+                            if (parent == null || !parentName.equals(factory.getStorageIdentifier(parent))) {
+                                log.error("VERIFY: parent builder in storage for builder " + builder.getTableName() + " should be " + parent.getTableName() + " but defined as " + parentName);
+                            } else {
+                                log.debug("VERIFY: parent builder in storage for builder " + builder.getTableName() + " defined as " + parentName);
+                            }
+                        } else if (parent != null) {
+                            log.error("VERIFY: no parent builder defined in storage for builder " + builder.getTableName());
                         }
-                    } else if (parent != null) {
-                        log.error("VERIFY: no parent builder defined in storage for builder " + builder.getTableName());
+                    } finally {
+                        superTablesSet.close();
                     }
                 } catch (AbstractMethodError ae) {
                     // ignore: the method is not implemented by the JDBC Driver
@@ -1665,18 +1697,21 @@ public class DatabaseStorageManager implements StorageManager {
                     log.debug("VERIFY: determining super tables failed, skipping inheritance consistency tests for " + tableName);
                 }
             }
-            ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
-            // get column information
             Map columns = new HashMap();
-            while (columnsSet.next()) {
-                Map colInfo = new HashMap();
-                colInfo.put("DATA_TYPE", new Integer(columnsSet.getInt("DATA_TYPE")));
-                colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
-                colInfo.put("COLUMN_SIZE", new Integer(columnsSet.getInt("COLUMN_SIZE")));
-                colInfo.put("NULLABLE", new Boolean(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
-                columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
+            ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
+            try {
+                // get column information
+                while (columnsSet.next()) {
+                    Map colInfo = new HashMap();
+                    colInfo.put("DATA_TYPE", new Integer(columnsSet.getInt("DATA_TYPE")));
+                    colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
+                    colInfo.put("COLUMN_SIZE", new Integer(columnsSet.getInt("COLUMN_SIZE")));
+                    colInfo.put("NULLABLE", new Boolean(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
+                    columns.put(columnsSet.getString("COLUMN_NAME"), colInfo);
+                }
+            } finally {
+                columnsSet.close();
             }
-            columnsSet.close();
             // iterate through fields and check all fields present
             int pos = 0;
             List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
@@ -1769,22 +1804,26 @@ public class DatabaseStorageManager implements StorageManager {
             if (deleteIndexScheme != null) {
                 DatabaseMetaData metaData = activeConnection.getMetaData();
                 ResultSet indexSet = metaData.getIndexInfo(null, null, builder.getTableName(), true, false);
-                // get index information
-                String indexName = null;
-                while (indexSet.next()) {
-                    int indexType = indexSet.getInt("TYPE");
-                    if (indexType == DatabaseMetaData.tableIndexClustered) {
-                        indexName = indexSet.getString("INDEX_NAME");
+                try {
+                    // get index information
+                    String indexName = null;
+                    while (indexSet.next()) {
+                        int indexType = indexSet.getInt("TYPE");
+                        if (indexType == DatabaseMetaData.tableIndexClustered) {
+                            indexName = indexSet.getString("INDEX_NAME");
+                        }
                     }
-                }
-                indexSet.close();
-                // remove index if found
-                if (indexName != null) {
-                    Statement s = activeConnection.createStatement();
-                    String query = deleteIndexScheme.format(new Object[] { this, builder, indexName });
-                    logQuery(query);
-                    s.executeUpdate(query);
-                    s.close();
+                    indexSet.close();
+                    // remove index if found
+                    if (indexName != null) {
+                        Statement s = activeConnection.createStatement();
+                        String query = deleteIndexScheme.format(new Object[] { this, builder, indexName });
+                        logQuery(query);
+                        s.executeUpdate(query);
+                        s.close();
+                    }
+                } finally {
+                    indexSet.close();
                 }
             }
         }
@@ -1974,13 +2013,16 @@ public class DatabaseStorageManager implements StorageManager {
                                 String tableName = (String)factory.getStorageIdentifier(builder);
                                 DatabaseMetaData metaData = activeConnection.getMetaData();
                                 ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
-                                while (columnsSet.next()) {
-                                    if (columnsSet.getString("COLUMN_NAME").equals(fieldName)) {
-                                        foundColumn = true;
-                                        break;
+                                try {
+                                    while (columnsSet.next()) {
+                                        if (columnsSet.getString("COLUMN_NAME").equals(fieldName)) {
+                                            foundColumn = true;
+                                            break;
+                                        }
                                     }
+                                } finally {
+                                    columnsSet.close();
                                 }
-                                columnsSet.close();
                             } catch (java.sql.SQLException sqe) {
                                 log.error(sqe.getMessage());
                             } finally {

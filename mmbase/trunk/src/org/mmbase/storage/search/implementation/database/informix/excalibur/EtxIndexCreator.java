@@ -33,7 +33,7 @@ import org.xml.sax.*;
  * <a href="http://www.mmbase.org/dtd/etxindices.dtd">here</a> online. 
  *
  * @author Rob van Maris
- * @version $Id: EtxIndexCreator.java,v 1.1 2003-12-23 11:03:03 robmaris Exp $
+ * @version $Id: EtxIndexCreator.java,v 1.2 2004-06-15 21:29:12 robmaris Exp $
  * @since MMBase-1.7
  */
 public class EtxIndexCreator {
@@ -230,27 +230,31 @@ public class EtxIndexCreator {
     private String getOperatorClass(String table, String field) throws SQLException {
         DatabaseMetaData metadata = con.getMetaData();
         ResultSet columninfo = metadata.getColumns(null, null, table, field);
-        boolean hasRows = columninfo.next();
-        if (!hasRows) {
-            throw new IllegalArgumentException(
-                "The field " + field + " of table " + table
-                + " does not exist.");
-        }
-        String typeName = columninfo.getString("TYPE_NAME").toLowerCase();
-        if (typeName.equals("blob")) {
-            return "etx_blob_ops";
-        } else if (typeName.equals("clob")) {
-            return "etx_clob_ops";
-        } else if (typeName.equals("char")) {
-            return "etx_char_ops";
-        } else if (typeName.equals("lvarchar")) {
-            return "etx_lvarc_ops";
-        } else if (typeName.equals("varchar")) {
-            return ("etx_varc_ops");
-        } else {
-            throw new IllegalArgumentException(
-                "The field " + field + " of table " + table
-                + " is not of an appropriate type for an Etx index.");
+        try {
+            boolean hasRows = columninfo.next();
+            if (!hasRows) {
+                throw new IllegalArgumentException(
+                    "The field " + field + " of table " + table
+                    + " does not exist.");
+            }
+            String typeName = columninfo.getString("TYPE_NAME").toLowerCase();
+            if (typeName.equals("blob")) {
+                return "etx_blob_ops";
+            } else if (typeName.equals("clob")) {
+                return "etx_clob_ops";
+            } else if (typeName.equals("char")) {
+                return "etx_char_ops";
+            } else if (typeName.equals("lvarchar")) {
+                return "etx_lvarc_ops";
+            } else if (typeName.equals("varchar")) {
+                return ("etx_varc_ops");
+            } else {
+                throw new IllegalArgumentException(
+                    "The field " + field + " of table " + table
+                    + " is not of an appropriate type for an Etx index.");
+            }
+        } finally {
+            columninfo.close();
         }
     }
 }

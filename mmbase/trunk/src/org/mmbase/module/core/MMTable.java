@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.13 2004-05-06 12:34:32 keesj Exp $
+ * @version $Id: MMTable.java,v 1.14 2004-06-15 21:13:25 robmaris Exp $
  */
 public class MMTable {
 
@@ -89,8 +89,12 @@ public class MMTable {
                 log.info(query);
                 ResultSet rs=stmt.executeQuery(query);
                 int i=-1;
-                while(rs.next()) {
-                    i=rs.getInt(1);
+                try {
+                    while(rs.next()) {
+                        i=rs.getInt(1);
+                    }
+                } finally {
+                    rs.close();
                 }
                 stmt.close();
                 con.close();

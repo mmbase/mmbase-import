@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: PropertiesProbe.java,v 1.8 2003-05-08 06:01:22 kees Exp $
+ * @version $Id: PropertiesProbe.java,v 1.9 2004-06-15 21:10:34 robmaris Exp $
  * @author Daniel Ockeloen
  */
 public class PropertiesProbe implements Runnable {
@@ -87,13 +87,17 @@ public class PropertiesProbe implements Runnable {
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("select "+parent.mmb.getDatabase().getAllowedField("parent")+" from "+parent.mmb.baseName+"_"+parent.tableName+" where "+parent.mmb.getDatabase().getAllowedField("key")+"='LASTVISIT' AND value<10536");
 			int max=0;
-			while (rs.next() && max<1000) {
-				int number=rs.getInt(1);
-				log.info("Want delete on : " + number);
-				deleteProperties(number);
-				deleteUser(number);
-				max++;
-			}
+            try {
+                while (rs.next() && max<1000) {
+                    int number=rs.getInt(1);
+                    log.info("Want delete on : " + number);
+                    deleteProperties(number);
+                    deleteUser(number);
+                    max++;
+                }
+            } finally {
+                rs.close();
+            }
 			stmt.close();
 			con.close();
 		} catch (Exception e) {}

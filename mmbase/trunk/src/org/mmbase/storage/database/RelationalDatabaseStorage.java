@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.12 2004-01-27 12:04:46 pierre Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.13 2004-06-15 21:27:07 robmaris Exp $
  * @todo This function contains a lot of methods which do not seem
  *       specific for a 'relational' database. They should perhaps be moved
  *        to 'abstract' databasestorage
@@ -78,13 +78,17 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
         try {
             trans = createDatabaseTransaction();
             ResultSet rs = trans.executeQuery(sqlselect);
-            if ((rs != null) && rs.next()) {
-                result = getDBText(rs,1);
+            try {
+                if ((rs != null) && rs.next()) {
+                    result = getDBText(rs,1);
+                }
+                if (log.isDebugEnabled()) {
+                    log.debug("getText found " + result + " with '" + sqlselect + "'") ;
+                }
+                trans.commit();
+            } finally {
+                rs.close();
             }
-            if (log.isDebugEnabled()) {
-                log.debug("getText found " + result + " with '" + sqlselect + "'") ;
-            }
-            trans.commit();
         } catch (Exception e) {
             if (trans != null) trans.rollback();
         }
