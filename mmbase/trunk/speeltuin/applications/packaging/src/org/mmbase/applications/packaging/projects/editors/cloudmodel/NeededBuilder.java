@@ -20,7 +20,7 @@ public class NeededBuilder {
 	String extend="object";
 	boolean relation;
 	String status="active";
-	String classfile = "Dummy";
+	String classname = "Dummy";
 	String searchage = "1000";
 	HashMap names_singular = new HashMap();
 	HashMap names_plural = new HashMap();
@@ -97,6 +97,14 @@ public class NeededBuilder {
 		this.extend = extend;	
 	}
 
+	public String getClassName() {
+		return classname;
+	}
+
+	public void setClassName(String classname) {
+		this.classname = classname;	
+	}
+
 	public String getVersion() {
 		return version;
 	}
@@ -125,8 +133,45 @@ public class NeededBuilder {
 		fields.add(field);
 	}
 
+
+
+	public void addField(String newname,String newtype,String newstatus,int newsize) {
+		log.info("new name="+newname);
+		NeededBuilderField field = new NeededBuilderField();
+		field.setDBName(newname);
+		field.setDBType(newtype);
+		field.setDBState(newstatus);
+		field.setDBSize(newsize);
+		fields.add(field);
+	}
+
  	public Iterator getFields() {
 		return fields.iterator();
 	}
+
+
+    	public NeededBuilderField getField(String field) {
+    		Iterator nbfl=getFields();
+		while (nbfl.hasNext()) {
+			NeededBuilderField nbf=(NeededBuilderField)nbfl.next();
+			if (nbf.getDBName().equals(field)) {
+				return nbf;
+			}
+		}
+		return null;
+    	}
+
+
+    	public boolean deleteField(String field) {
+    		Iterator nbfl=getFields();
+		while (nbfl.hasNext()) {
+			NeededBuilderField nbf=(NeededBuilderField)nbfl.next();
+			if (nbf.getDBName().equals(field)) {
+				fields.remove(nbf);	
+				return true;
+			}
+		}
+		return false;
+    	}
 
 }
