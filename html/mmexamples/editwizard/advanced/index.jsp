@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.5 2002-05-16 16:09:26 michiel Exp $
+    @version  $Id: index.jsp,v 1.6 2002-05-17 11:12:32 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -58,7 +58,6 @@
   <table>    
    <tr><td>          
 	<a href="<mm:url referids="referrer" page="${jsps}list.jsp">           
-           <mm:param name="title">People</mm:param>
            <mm:param name="wizard">samples/people</mm:param>
            <mm:param name="nodepath">people</mm:param>
            <mm:param name="fields">number,firstname,lastname</mm:param>
@@ -79,7 +78,6 @@
   </td></tr>
   <tr><td>
    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
-           <mm:param name="title">Images</mm:param>
            <mm:param name="wizard">samples/imageupload</mm:param>
            <mm:param name="nodepath">images</mm:param>
            <mm:param name="fields">title,owner</mm:param>
@@ -92,7 +90,6 @@
     </td><tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
-		       <mm:param name="title">News</mm:param>
         	 <mm:param name="wizard">samples/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
            <mm:param name="fields">number,title</mm:param>
@@ -106,7 +103,7 @@
      </td></tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
-		       <mm:param name="title">News</mm:param>
+		       <mm:param name="title">MyNews Magazine news</mm:param>
 		       <mm:param name="startnodes">default.mags</mm:param>
         	 <mm:param name="wizard">samples/news</mm:param>
            <mm:param name="nodepath">mags,news</mm:param>
@@ -119,7 +116,6 @@
      </td></tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
-		       <mm:param name="title">Magazines</mm:param>
         	 <mm:param name="wizard">samples/mags</mm:param>
            <mm:param name="nodepath">mags</mm:param>
            <mm:param name="fields">number,title</mm:param>
