@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  * 
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.3 2003-06-26 20:58:48 michiel Exp $
+ * @version $Id: Ranks.java,v 1.4 2003-06-30 13:32:55 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
@@ -53,7 +53,7 @@ public class Ranks extends MMObjectBuilder {
              String name = rank.getStringValue("name");
              Rank r = Rank.getRank(name);
              if (r == null) {                  
-                 Rank.registerRank(rank.getIntValue("rank"), name);
+                 Rank.createRank(rank.getIntValue("rank"), name);
              }
          }
          return res;
@@ -76,7 +76,7 @@ public class Ranks extends MMObjectBuilder {
                 throw new SecurityException("Cannot insert rank '" + name + "', because there is already is a rank with rank weight " + rank + " (" + r + ")");
             }
         }
-        Rank.registerRank(rank, name);      
+        Rank.createRank(rank, name);      
         return res;
     }
 
@@ -92,7 +92,7 @@ public class Ranks extends MMObjectBuilder {
             throw new SecurityException("Rank " + node + " cannot be removed because there are users with this rank: " + users);
         }
         String name = node.getStringValue("name");
-        Rank.unregisterRank(name);                  
+        Rank.deleteRank(name);                  
         super.removeNode(node);
     }
 
