@@ -212,9 +212,9 @@ public class PostArea {
 
     /**
      * get an iterator of the postthreads in the postarea
-     * @param page
-     * @param pagecount
-     * @return
+     * @param page which page in the sequence
+     * @param pagecount maximum number of PostThreads on the page
+     * @return postthreads
      */
     public Iterator getPostThreads(int page, int pagecount) {
         if (postthreads == null) readPostThreads();
@@ -246,9 +246,9 @@ public class PostArea {
     }
 
     /**
-     * get a navigationline to "walk through" the defferent pages for a postarea
+     * get a (html) navigationline to "walk through" the different pages of PostThreads for a postarea
      * @param baseurl url
-     * @param page
+     * @param page which page in the sequence
      * @param pagesize maximum number of postthreads to be shown on one page
      * @param cssclass cssclass to be used to display the navigationline
      * @return navigationline in html

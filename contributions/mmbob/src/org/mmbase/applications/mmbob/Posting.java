@@ -24,74 +24,131 @@ import org.mmbase.util.logging.Logger;
 
 /**
  * @author Daniel Ockeloen
- * 
  */
 public class Posting {
- 
+
     // logger
-    static private Logger log = Logging.getLoggerInstance(Posting.class); 
+    static private Logger log = Logging.getLoggerInstance(Posting.class);
 
-   private int id;
-   private PostThread parent;
-   private Node node;
+    private int id;
+    private PostThread parent;
+    private Node node;
 
-   public Posting(Node node,PostThread parent) {
-	this.node=node;
-	this.id=node.getNumber();
-	this.parent=parent;
-   }
+    /**
+     * Construct the posting
+     *
+     * @param node postingnode
+     * @param parent postthread
+     */
+    public Posting(Node node, PostThread parent) {
+        this.node = node;
+        this.id = node.getNumber();
+        this.parent = parent;
+    }
 
-   public void setId(int id) {
-	this.id=id;
-   }
+    /**
+     * Set the id of this postingnode
+     * @param id posting id
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
-   public void setSubject(String subject) {
-	node.setValue("subject",subject);
-   }
+    /**
+     * set the subject of the posting
+     * @param subject
+     */
+    public void setSubject(String subject) {
+        node.setValue("subject", subject);
+    }
 
-   public void setBody(String body) {
-       node.setStringValue("body",body);
-   }
+    /**
+     * set the body of the posting
+     * @param body
+     */
+    public void setBody(String body) {
+        node.setStringValue("body", body);
+    }
 
-   public void setEditTime(int time) {
-	node.setIntValue("edittime",time);
-   }
+    /**
+     * set the date/time of the last time this posting was editted
+     * @param time Date/time (Epoch)
+     */
+    public void setEditTime(int time) {
+        node.setIntValue("edittime", time);
+    }
 
-   public int getEditTime() {
-	return node.getIntValue("edittime");
-   }
+    /**
+     * get the date/time of the last time this posting was editted
+     * @return Date/time (Epoch)
+     */
+    public int getEditTime() {
+        return node.getIntValue("edittime");
+    }
 
-   public int getId() {
-	return id;
-   }
+    /**
+     * get the id of this posting
+     * @return
+     */
+    public int getId() {
+        return id;
+    }
 
-   public void setNode(Node node) {
-	this.node=node;
-   }
+    /**
+     * set the node of this posting
+     * @param node posting
+     */
+    public void setNode(Node node) {
+        this.node = node;
+    }
 
-   public String getSubject() {
-	return node.getStringValue("subject");
-   }
+    /**
+     * get the subject of this posting
+     * @return subject of this posting
+     */
+    public String getSubject() {
+        return node.getStringValue("subject");
+    }
 
-   public String getBody() {
-	return node.getStringValue("body");
-   }
+    /**
+     * get the body of this posting
+     * @return body of this posting
+     */
+    public String getBody() {
+        return node.getStringValue("body");
+    }
 
-   public String getPoster() {
-	return node.getStringValue("poster");
-   }
+    /**
+     * get the accountname/nick of the poster of this posting
+     * @return accountname/nick of the poster
+     */
+    public String getPoster() {
+        return node.getStringValue("poster");
+    }
 
-   public int getPostTime() {
-	return node.getIntValue("createtime");
-   }
+    /**
+     * get the date/time (epoch) when this posting was posted
+     * @return date/time (epoch)
+     */
+    public int getPostTime() {
+        return node.getIntValue("createtime");
+    }
 
-   public boolean remove() {
-	parent.childRemoved(this);
-	return true;
-   }
-  
-   public boolean save() {
-	node.commit();
-	return true;
-   }
+    /**
+     * signal the parent postthread that the posting must be removed
+     * @return allways <code>true</code>
+     */
+    public boolean remove() {
+        parent.childRemoved(this);
+        return true;
+    }
+
+    /**
+     * save the node to the cloud
+     * @return allways <code>true</code>
+     */
+    public boolean save() {
+        node.commit();
+        return true;
+    }
 }
