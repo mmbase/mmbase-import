@@ -26,14 +26,14 @@ import java.sql.*;
  * adapt the new JDBC 3 methods, so that they pass their call to
  * the driver, instead of throwing an UnsupportedOperationException.
  *
- * @deprecated It would possibly be better to pass the logging of the sql query
- *              to the code that calls the statement, rather than place it in
- *              the statement itself, as it's implementation leads to conflicts
- *              between various JDBC versions.
+ * @sql It would possibly be better to pass the logging of the sql query
+ *      to the code that calls the statement, rather than place it in
+ *      the statement itself, as it's implementation leads to conflicts
+ *      between various JDBC versions.
  *
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiStatement.java,v 1.7 2002-03-01 09:53:19 pierre Exp $
+ * @version $Id: MultiStatement.java,v 1.8 2002-03-04 09:50:43 pierre Exp $
  */
 public class MultiStatement implements Statement {
 
