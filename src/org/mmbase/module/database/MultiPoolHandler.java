@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 public class MultiPoolHandler {
-    private static Logger log = Logging.getLoggerInstance(MultiPoolHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MultiPoolHandler.class);
     private int maxConnections;
     private int maxQuerys;
     private Map pools = new Hashtable();
@@ -41,13 +41,17 @@ public class MultiPoolHandler {
     }
 
     public MultiConnection getConnection(String url, String name, String password) throws SQLException {
-	MultiPool pool = (MultiPool) pools.get(url+","+name+","+password);
-	if (pool!=null) {
+	MultiPool pool = (MultiPool) pools.get(url + "," + name + "," + password);
+	if (pool != null) {
 	    return pool.getFree();
 	} else {
-	    pool = new MultiPool(databasesupport, url, name, password, maxConnections, maxQuerys);
-	    pools.put(url+","+name+","+password, pool);
-	    return pool.getFree();
+            synchronized(pools) {
+                pool = new MultiPool(databasesupport, url, name, password, maxConnections, maxQuerys);
+                if (pools.put(url + "," + name + "," + password, pool) != null) {
+                    log.error("Replaced an old MultiPool!? " + Logging.stackTrace());
+                }
+                return pool.getFree();
+            }
 	}
     }
 
