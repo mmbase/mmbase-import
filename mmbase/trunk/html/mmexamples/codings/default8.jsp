@@ -29,8 +29,9 @@
 		  of question marks, but everything should work.
 		</p>
     <h1>In-page text</h1>
-    <p>Café tweeëntwintig</p> <p>Ĉu vi ŝatas tion?</p> 
-    
+    <p>Café tweeëntwintig</p> 
+    <p>Ĉu vi ŝatas tion?</p> 
+    <p>CP1252:  <%= org.mmbase.util.transformers.CP1252Surrogator.getTestString() %></p>    
     <h1>MMBase data</h1>
     <mm:import externid="node" from="parameters">codings</mm:import>
     <mm:node id="cod" number="$node" notfound="skip">
