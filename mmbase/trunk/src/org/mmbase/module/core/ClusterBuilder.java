@@ -26,9 +26,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * ClusterBuilder is a builder which creates 'virtual' nodes.
- * This is an alternate class for 'MultiRelations', which will be used by the MMCI.
- * The old class may eventually get deprecated, but is supported to allow the
- * new system to be developed without accidentally breaking older code.
+ * This class replaces {@link org.mmbase.module.builders.MultiRelations}.
  * <br />
  * The nodes are build out of a set of fields from different nodes, combined through a complex query,
  * which is in turn based on the relations that exist between nodes.<br>
@@ -41,7 +39,8 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.26 2003-01-03 12:39:29 robmaris Exp $
+ * @author Rob van Maris
+ * @version $Id: ClusterBuilder.java,v 1.27 2003-01-13 17:03:35 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -76,6 +75,19 @@ public class ClusterBuilder extends VirtualBuilder {
      * This is the default value (for compatibility purposes).
      */
     public static final int SEARCH_EITHER = 4;
+
+    // logging variable
+    private static Logger log = Logging.getLoggerInstance(ClusterBuilder.class.getName());
+
+    /**
+     * Creates <code>ClusterBuilder</code> instance.
+     * Must be called from the MMBase class.
+     * @param m the MMbase cloud creating the node
+     * @scope package
+     */
+    public ClusterBuilder(MMBase m) {
+        super(m,"clusternodes");
+    }
 
     /**
      * Translates a string to a search direction constant.
@@ -120,18 +132,6 @@ public class ClusterBuilder extends VirtualBuilder {
         }
     }
 
-    // logging variable
-    private static Logger log = Logging.getLoggerInstance(ClusterBuilder.class.getName());
-
-    /**
-     * Creates an instance of the MultiRelations builder.
-     * Called from the MMBase class.
-     * @param m the MMbase cloud creating the node
-     */
-    public ClusterBuilder(MMBase m) {
-        super(m,"clusternodes");
-    }
-
     /**
      * Get a new node, using this builder as its parent.
      * The new node is a cluster node.
@@ -153,7 +153,14 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the display of the node as a <code>String</code>
      */
      public String getGUIIndicator(MMObjectNode node) {
-        String s="";
+        // Return "name"-field when available.
+        String s = node.getStringValue("name");
+        if (s!=null) {
+            return s;
+        }
+        
+        // Else "name"-fields of contained nodes.
+        s = "";
         for (Enumeration i=node.values.keys(); i.hasMoreElements(); ) {
             String key = (String)i.nextElement();
             if (key.endsWith(".name")) {
@@ -173,7 +180,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * For a multilevel node, the builder tries to determine
      * the original builder of a field, and invoke the method using
      * that builder.
-     * XXX: should retrieve the actual node belonging to the field, instead...
+     * 
      * @param node The node to display
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
@@ -241,7 +248,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Return all the objects that match the searchkeys.
      * @param snode The number of the node to start the search with. The node has to be present in the first table
      *      listed in the tables parameter.
-     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder name are ignored.
+     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
      *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
      *      Examples: 'people.lastname'
      * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
@@ -268,7 +275,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Return all the objects that match the searchkeys.
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
      *      listed in the tables parameter.
-     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder name are ignored.
+     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
      *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
      *      Examples: 'people.lastname'
      * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
@@ -293,7 +300,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Return all the objects that match the searchkeys.
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
      *      listed in the tables parameter.
-     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder name are ignored.
+     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
      *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
      *      Examples: 'people.lastname'
      * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
@@ -1374,10 +1381,12 @@ public class ClusterBuilder extends VirtualBuilder {
     }
     
     /**
-     * Retrieves fieldnames from an ezpression, and adds these to a search 
+     * Retrieves fieldnames from an expression, and adds these to a search 
      * query.
      * The expression may be either a fieldname or a a functionname with a 
-     * parameterlist between parenthesis.
+     * (commaseparated) parameterlist between parenthesis 
+     * (parameters being expressions themselves).
+     * <p>
      * Fieldnames must be formatted as <em>stepalias.field</em>.
      *
      * @param query The query.
