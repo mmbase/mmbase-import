@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
@@ -87,6 +88,7 @@ public class WriterHelper  {
     private   Boolean overridewrite    = null;
     private   int     vartype          = TYPE_UNSET;
     private   BodyContent  bodyContent;
+    private   PageContext  pageContext;
     private   boolean hasBody          = false;
 
     /**
@@ -108,10 +110,10 @@ public class WriterHelper  {
     public boolean  isWrite() {
         if (write == null) {
             if (log.isDebugEnabled()) {
-                log.debug("write is unset, using default " + overridewrite + " with body == '" + bodyContent.getString() + "' and hasBody (which is determined by childs) = " + hasBody);
+                log.debug("write is unset, using default " + overridewrite + " with body == '" + getString() + "' and hasBody (which is determined by childs) = " + hasBody);
             }
             if (overridewrite != null) return overridewrite.booleanValue();            
-            return "".equals(bodyContent.getString()) && (! hasBody);
+            return "".equals(getString()) && (! hasBody);
         } else {
             log.debug("Write: " + write);
             return write.booleanValue();        
@@ -200,18 +202,30 @@ public class WriterHelper  {
         }
         value = v;
     }
+    
+
     public void setBodyContent(BodyContent b) {
         bodyContent = b;
     }
+
+    public void setPageContext(PageContext p) {
+        pageContext = p;
+    }
+
     public Object getValue() {
         return value;
     }
 
+    public void setJspvar(PageContext p) throws JspTagException {
+        setPageContext(p);
+        setJspvar();
+    }
+    
     /**
      * Don't forget to call 'setValue' first!
      */
     
-    public void setJspvar(javax.servlet.jsp.PageContext pageContext) throws JspTagException {
+    public void setJspvar() throws JspTagException {
       
         if (jspvar == null) return;
         if (log.isDebugEnabled()) {
@@ -257,28 +271,53 @@ public class WriterHelper  {
         hasBody = true;
     }
     
+
+    public String getString() {
+        if (bodyContent != null) {
+            return bodyContent.getString();
+        } else {
+            log.debug("bodycontent is null, returning empty string");
+            return "";
+        }
+    }
+
     /**
-     * A basic afterbody for Writers.
+     * A basic doEndTag for Writers.
      *
      * It decides if to write or not.
      */
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
+        log.debug("doEndTag of WriterHelper");
         try {
-            String body = bodyContent.getString();
+            String body = getString();
             if (isWrite()) {
-                bodyContent.clearBody();
+                if (bodyContent != null) bodyContent.clearBody(); // clear all space and so on
                 log.debug("writing to page");
-                bodyContent.print(getPageString() + body);
+                pageContext.getOut().print(getPageString() + body);
             } else {
                 log.debug("not writing to page");
             }
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            if (bodyContent != null) {
+                // if this writer (still) has body, it should be written out.
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }
         } catch (IOException ioe){
             throw new JspTagException(ioe.toString());
         }            
         overridewrite = null; // for use next time
         hasBody       = false;
-        return javax.servlet.jsp.tagext.BodyTagSupport.SKIP_BODY;
+        return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
     }
+
+    /**
+     * @deprecated Use doEndTag
+     */
+    /*
+    public int doAfterBody() throws JspTagException {
+        doEndTag();
+        return javax.servlet.jsp.tagext.BodyTagSupport.SKIP_BODY;
+        
+    }
+    */
 
 }

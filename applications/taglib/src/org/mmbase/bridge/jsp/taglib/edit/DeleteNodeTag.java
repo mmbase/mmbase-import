@@ -27,8 +27,8 @@ public class DeleteNodeTag extends NodeTag {
         deleteRelations = r;
     }
         
-    public int doAfterBody() throws JspTagException {    
+    public int doEndTag() throws JspTagException {    
         getNodeVar().delete(deleteRelations);       
-        return super.doAfterBody();
+        return super.doEndTag();
     }
 }

@@ -49,15 +49,14 @@ public class LeafFileTag extends UrlTag {
         }        
         return super.doStartTag();
     }    
-    public int doAfterBody() throws JspTagException {
-
+    public int doEndTag() throws JspTagException {
         th.setCloud(getCloud());
 
         String orgpage = page;
         page = th.findLeafFile(orgpage, objectlist, pageContext.getSession());
         log.debug("Retrieving page '" + page + "'");
         if (page == null) throw new JspTagException("Could not find page " + orgpage);
-        return super.doAfterBody();
+        return super.doEndTag();
     }
     
     public void setObjectlist(String p) throws JspTagException {

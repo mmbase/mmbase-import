@@ -332,7 +332,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         if (timerHandle != -1) {
             ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false)).haltTimer(timerHandle);
         }
-        return helper.doAfterBody();
+        return helper.doEndTag();
     } // doEndTag
 
 
@@ -361,11 +361,13 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         Templates cachedXslt = cache.getTemplates(xsl);
         if (cachedXslt == null) {
             try {
+                log.debug("getting for " + cwd);
                 cachedXslt = getFactory().newTemplates(xsl);
+                log.debug("hoi");
                 cache.put(xsl, cachedXslt);
             } catch (javax.xml.transform.TransformerConfigurationException e) {
                 // throw new JspTagException(e.toString());
-                return e.toString();
+                return e.toString() + ": " + Logging.stackTrace(e);
             }
         } else {
             if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
