@@ -1,0 +1,9 @@
+#!/usr/local/bin/bash
+cd /usr/local/algemeen/orion
+LD_LIBRARY_PATH=/usr/local/algemeen/orion/lib/org/mmbase/util/platform
+export LD_LIBRARY_PATH
+
+while [ 1==1 ]; do
+echo 'Start at ' `date`
+java -Dmmbase.userlevel=wwwtech:www -Dmmbase.config=/usr/local/algemeen/orion/lib/org/mmbase/config/mysql -Dmmbase.htmlroot=/usr/local/algemeen/orion/default-site/html/ -Dmmbase.outputfile=/usr/local/algemeen/log/orion.log -jar orion.jar 
+done
