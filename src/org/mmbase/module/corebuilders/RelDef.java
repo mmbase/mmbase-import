@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  * RelDef ,one of the meta stucture nodes, is used to define the possible relation types.
  * <p>
  * A Relation Definition consists of a source and destination, and a descriptor
- * (direction) for it's use (uni-directional or bi-directional).
+ * (direction) for it's use (unidirectional or bidirectional).
  * </p><p>
  * Relations are mapped to a builder.<br />
  * This is so that additonal functionality can be added by means of a builder (i.e. AuthRel)<br />
@@ -224,7 +224,7 @@ public class RelDef extends MMObjectBuilder {
 
     /**
     * Sets defaults for a new relation definition.
-    * Initializes a relation to be bi-directional, and, if applicable, to use the 'insrel' builder.
+    * Initializes a relation to be bidirectional, and, if applicable, to use the 'insrel' builder.
     *	@param node Node to be initialized
     **/
     public void setDefaults(MMObjectNode node) {
@@ -248,9 +248,9 @@ public class RelDef extends MMObjectBuilder {
             if (field.equals("dir")) {
                 int dir=node.getIntValue("dir");
                 if (dir==2) {
-                    return "bi-directional";
+                    return "bidirectional";
                 } else if (dir==1) {
-                    return "uni-directional";
+                    return "unidirectional";
                 } else {
                     return "unknown";
                 }

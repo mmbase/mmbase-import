@@ -790,7 +790,7 @@ public class MMObjectNode {
 
 	/**
 	* Returns whether this node has relations.
-	* This includes uni-direction relations which would otherwise not be counted.
+	* This includes unidirection relations which would otherwise not be counted.
 	* @return <code>true</code> if any relations exist, <code>false</code> otherwise.
 	*/	
 	public boolean hasRelations() {
