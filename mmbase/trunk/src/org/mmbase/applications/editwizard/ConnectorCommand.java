@@ -17,7 +17,7 @@ import java.util.Date;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommand.java,v 1.4 2002-03-18 17:13:06 eduard Exp $
+ * @version $Id: ConnectorCommand.java,v 1.5 2002-04-19 20:20:28 michiel Exp $
  */
 
 public class ConnectorCommand {
@@ -82,7 +82,7 @@ public class ConnectorCommand {
      * @javadoc
      */
     public void setResponse(Node responsenode) {
-        responsexml = Utils.EmptyDocument();
+        responsexml = Utils.emptyDocument();
         responsexml.appendChild(responsexml.importNode(responsenode.cloneNode(true), true));
     }
 
