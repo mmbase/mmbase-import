@@ -15,7 +15,7 @@ package org.mmbase.bridge;
  *
  * @author Pierre van Rooden
  * @since MMBase 1.6
- * @version $Id: FieldValue.java,v 1.9 2004-10-09 09:40:09 nico Exp $
+ * @version $Id: FieldValue.java,v 1.10 2005-01-03 12:11:23 michiel Exp $
  */
 public interface FieldValue {
 
@@ -201,6 +201,13 @@ public interface FieldValue {
      * @param value the field value as an Object
      */
     public void set(Object value);
+
+    /*
+     * Sets the value of the specified field using an object, but without dispatching to the right
+     * type first.
+     * @since MMBase-1.8
+     */
+    public void setObject(Object value);
 
     /**
      * Sets the value, passing a boolean value.
