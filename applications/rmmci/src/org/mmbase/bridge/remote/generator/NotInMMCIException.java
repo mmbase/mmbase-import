@@ -11,10 +11,30 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.remote.generator;
 
 /**
+ * @javadoc 
  * @author Kees Jongenburger <keesj@dds.nl>
- **/
-public class NotInMMCIException extends Exception{
-    public NotInMMCIException(String message){
+ * @version $Id: NotInMMCIException.java,v 1.3 2003-08-29 09:40:19 pierre Exp $
+ */
+public class NotInMMCIException extends Exception {
+    
+    //javadoc is inherited
+    public NotInMMCIException() {
+        super();
+    }
+
+    //javadoc is inherited
+    public NotInMMCIException(String message) {
         super(message);
     }
+
+    //javadoc is inherited
+    public NotInMMCIException(Throwable cause) {
+        super(cause);
+    }
+
+    //javadoc is inherited
+    public NotInMMCIException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
