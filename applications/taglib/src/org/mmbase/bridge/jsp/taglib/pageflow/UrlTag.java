@@ -30,12 +30,12 @@ import org.mmbase.util.logging.Logging;
  * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlTag.java,v 1.53 2003-09-24 08:43:05 michiel Exp $
+ * @version $Id: UrlTag.java,v 1.54 2003-10-24 08:21:11 pierre Exp $
  */
 
 public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
-    private static final Logger log = Logging.getLoggerInstance(UrlTag.class); 
+    private static final Logger log = Logging.getLoggerInstance(UrlTag.class);
 
     private static CharTransformer paramEscaper = new Url(Url.PARAM_ESCAPE);
 
@@ -66,7 +66,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
 
 
-    public int doStartTag() throws JspTagException {        
+    public int doStartTag() throws JspTagException {
         log.debug("starttag");
         extraParameters = new ArrayList();
         helper.setTag(this);
@@ -82,7 +82,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     /**
      * If it would be nice that an URL starting with '/' would be generated relatively to the current request URL, then this method can do it.
      * If the URL is not used to write to (this) page, then you probably don't want that.
-     * 
+     *
      * The behaviour can be overruled by starting the URL with two '/'s.
      *
      * @since MMBase-1.7
@@ -99,7 +99,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 String thisDir = new java.io.File(req.getServletPath()).getParent();
                 show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
             }
-        } 
+        }
         return show;
     }
 
@@ -138,8 +138,9 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
 
                 boolean mayBeMissing;
                 if (key.endsWith("?")) {
-                    mayBeMissing = true;                    
+                    mayBeMissing = true;
                     key = key.substring(0, key.length() - 1);
+                    urlKey = key;
                 } else {
                     mayBeMissing = false;
                 }
@@ -158,31 +159,26 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
                 }
             }
         }
-
-        {
-            Iterator i = extraParameters.iterator();
-            while (i.hasNext()) {
-                Param param  = (Param) i.next();
-                if (param.value == null) continue;
-                show.append(connector).append(param.key).append('=');
-                paramEscaper.transform(new StringReader(param.value.toString()), w);
-                connector = amp;
-            }
+        Iterator i = extraParameters.iterator();
+        while (i.hasNext()) {
+            Param param  = (Param) i.next();
+            if (param.value == null) continue;
+            show.append(connector).append(param.key).append('=');
+            paramEscaper.transform(new StringReader(param.value.toString()), w);
+            connector = amp;
         }
-
-        {
-            if (encode) {
-                javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
-                return response.encodeURL(show.toString());
-            } else {
-                return show.toString();
-            }
+        if (encode) {
+            javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
+            return response.encodeURL(show.toString());
+        } else {
+            return show.toString();
         }
-
     }
+
     protected String getUrl() throws JspTagException {
         return getUrl(escapeAmps.getBoolean(this, true));
     }
+
     protected String getUrl(boolean e) throws JspTagException {
         return getUrl(e, true);
     }
@@ -197,7 +193,7 @@ public class UrlTag extends CloudReferrerTag  implements  ParamHandler {
     }
 
     public int doEndTag() throws JspTagException {
-        log.debug("endtag of url tag");    
+        log.debug("endtag of url tag");
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
             // because Url tag can have subtags (param), default writing even with body seems sensible
