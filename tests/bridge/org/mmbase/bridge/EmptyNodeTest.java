@@ -37,14 +37,13 @@ public class EmptyNodeTest extends NodeTest {
 
     public void testGetValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            /*
             if (fieldTypes[i].equals("byte")) {
-                byte[] bytes = (byte[])node.getValue(fieldTypes[i] + "field");                
+                byte[] bytes = (byte[]) node.getValue(fieldTypes[i] + "field");                
+                assertTrue("Empty " + fieldTypes[i] + " field did return null (should be empty byte[])", bytes != null);
                 assertTrue(bytes.length == 0);
             } else {
-            */
-                assertTrue(node.getValue(fieldTypes[i] + "field") == null);
-                /*}*/
+                assertTrue("Empty " + fieldTypes[i] + " field did not return null", node.getValue(fieldTypes[i] + "field") == null);
+            }
         }
     }
 

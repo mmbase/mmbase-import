@@ -165,6 +165,7 @@ public abstract class NodeTest extends org.mmbase.tests.BridgeTest {
     public void testCreateAlias() {
         try {
             node.createAlias("node_alias");       
+            node.commit();
             // look it up again
             boolean found = false;
             Iterator i = node.getAliases().iterator();
