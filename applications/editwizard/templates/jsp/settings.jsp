@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.15 2002-07-04 08:32:51 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.16 2002-07-09 14:12:53 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -21,7 +21,6 @@
 
         Configurator(HttpServletRequest req, HttpServletResponse res, Config c) {
             super(req, res, c);
-            c.wizard    = getParam("wizard", c.wizard);
             c.maxupload = getParam("maxsize", new Integer(4 * 1024 * 1024)).intValue(); // 1 MByte max uploadsize
         }
 
@@ -31,6 +30,7 @@
             if (c.template==null) {
                 c.template = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
             }
+            c.wizard      = getParam("wizard", c.wizard);
             c.startNodes  = getParam("startnodes", c.startNodes);
             c.nodePath    = getParam("nodepath", c.nodePath);
             c.fields      = getParam("fields", c.fields);
@@ -86,6 +86,7 @@
 
         // which parameter to use to configure a wizard page
         public void config(Config.WizardConfig c) {
+            c.wizard      = getParam("wizard", c.wizard);
             c.objectNumber = getParam("objectnumber");
         }
     }
