@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.40 2004-10-11 11:08:50 pierre Exp $
+ * @version $Id: JDBC.java,v 1.41 2004-10-25 08:08:39 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -334,7 +334,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * User interface stuff
      * @javadoc
      */
-    public Vector getList(PageContext sp, StringTagger tagger, String value) {
+    public Vector getList(PageInfo sp, StringTagger tagger, String value) {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {

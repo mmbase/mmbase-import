@@ -16,14 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * The PageContext is a container class.
+ * The PageInfo is a container class.
  * Needed for the ProcessorInterface.
  *
  * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: PageContext.java,v 1.1 2004-10-11 11:08:55 pierre Exp $
+ * @version $Id: PageInfo.java,v 1.1 2004-10-25 08:08:40 pierre Exp $
  */
-public class PageContext {
+public class PageInfo {
     /**
      * The request object associated with the current page.
      * Not a very good name - and should not be public, but needed for
@@ -41,14 +41,14 @@ public class PageContext {
     /**
      * Empty constructor, needed for call from scanpage
      */
-    protected PageContext() {}
+    protected PageInfo() {}
 
     /**
      * Creates a pagecontext with a user's request information.
      * @param request the HttpServletRequest object for this request
      * @param response the HttpServletResponse object for this request
      */
-    public PageContext(HttpServletRequest request, HttpServletResponse response) {
+    public PageInfo(HttpServletRequest request, HttpServletResponse response) {
         setRequest(request);
         setResponse(response);
     }

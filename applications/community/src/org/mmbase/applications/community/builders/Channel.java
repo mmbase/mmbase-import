@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.24 2004-10-12 13:14:50 michiel Exp $
+ * @version $Id: Channel.java,v 1.25 2004-10-25 08:08:33 pierre Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -768,11 +768,11 @@ public class Channel extends MMObjectBuilder {
      * <li>channelnumber-STILLACTIVE-usernumber - resets the time-out before the user is
      *      automatically disconnected from the channel. </li>
      * </ul>
-     * @param sp  the current PageContext context
+     * @param sp  the current PageInfo context
      * @param tok the tokenized command
      * @return the result of the command as a String
      */
-    public String replace(PageContext sp, StringTokenizer tok) {
+    public String replace(PageInfo sp, StringTokenizer tok) {
         // The first thing we expect is a channel number.
         if (!tok.hasMoreElements()) {
             log.error("replace(): channel number expected after $MOD-BUILDER-channel-.");

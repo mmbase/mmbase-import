@@ -18,7 +18,7 @@ import javax.servlet.http.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.ProcessorInterface;
-import org.mmbase.util.PageContext;
+import org.mmbase.util.PageInfo;
 import org.mmbase.util.logging.*;
 
 /**
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.23 2004-10-11 11:08:42 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.24 2004-10-25 08:08:35 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -107,7 +107,7 @@ public class ModuleHandler implements Module, Comparable {
 
     public String getInfo(String command, ServletRequest req,  ServletResponse resp){
         if (mmbase_module instanceof ProcessorInterface) {
-            return ((ProcessorInterface)mmbase_module).replace(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),command);
+            return ((ProcessorInterface)mmbase_module).replace(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),command);
         } else {
             throw new BridgeException("getInfo() is not supported by this module.");
         }
@@ -133,7 +133,7 @@ public class ModuleHandler implements Module, Comparable {
                 } else {
                     partab=new Hashtable();
                 }
-                ((ProcessorInterface)mmbase_module).process(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),cmds,partab);
+                ((ProcessorInterface)mmbase_module).process(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),cmds,partab);
                 if (auxparameters!=null) auxparameters.putAll(partab);
         } else {
             throw new BridgeException("process() is not supported by this module.");
@@ -155,7 +155,7 @@ public class ModuleHandler implements Module, Comparable {
                 cloud=(BasicCloud)cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
             }
             try {
-                Vector v=((ProcessorInterface)mmbase_module).getNodeList(new PageContext((HttpServletRequest)req, (HttpServletResponse)resp),command,parameters);
+                Vector v=((ProcessorInterface)mmbase_module).getNodeList(new PageInfo((HttpServletRequest)req, (HttpServletResponse)resp),command,parameters);
                 MMObjectBuilder bul=((ProcessorInterface)mmbase_module).getListBuilder(command,parameters);
                 NodeManager tempNodeManager = null;
                 if (bul.isVirtual()) {

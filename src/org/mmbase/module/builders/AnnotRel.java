@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author David van Zeventer
- * @version $Id: AnnotRel.java,v 1.19 2004-10-11 11:08:46 pierre Exp $
+ * @version $Id: AnnotRel.java,v 1.20 2004-10-25 08:08:36 pierre Exp $
  */
 public class AnnotRel extends InsRel {
 
@@ -108,13 +108,13 @@ public class AnnotRel extends InsRel {
     /**
      * The hook that passes all form related pages to the correct handler.
      * This method is not supported.
-     * @param sp The PageContext
+     * @param sp The PageInfo
      * @param command the command to execute
      * @param cmds the commands (PRC-CMD) to process
      * @param vars variables (PRC-VAR) to use
      * @return the result value as a <code>String</code>
      */
-    public boolean process(PageContext sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds, Hashtable vars) {
         log.debug("process: This method isn't implemented yet.");
         return false;
     }
@@ -122,11 +122,11 @@ public class AnnotRel extends InsRel {
     /**
      * Obtains a string value by performing the provided command.
      * This method is not supported.
-     * @param sp The PageContext
+     * @param sp The PageInfo
      * @param tok the command to execute
      * @return the result value as a <code>String</code>
      */
-    public String replace(PageContext sp, StringTokenizer command) {
+    public String replace(PageInfo sp, StringTokenizer command) {
         log.debug("replace: This method isn't implemented yet.");
         return "";
     }

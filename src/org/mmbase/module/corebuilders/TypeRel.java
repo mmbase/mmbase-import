@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.48 2004-10-11 11:08:49 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.49 2004-10-25 08:08:38 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -360,7 +360,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * requested data (based on the content of TYPE and NODE, which can be retrieved through tagger).
      * @javadoc parameters
      */
-    public Vector getList(PageContext sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(PageInfo sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();    //Retrieving command.
             if (cmd.equals("ALLOWEDRELATIONSNAMES")) {

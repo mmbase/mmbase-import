@@ -51,7 +51,7 @@ import org.w3c.dom.Document;
  *
  * @application Config
  * @author Cees Roele
- * @version $Id: Config.java,v 1.26 2004-10-11 11:08:43 pierre Exp $
+ * @version $Id: Config.java,v 1.27 2004-10-25 08:08:36 pierre Exp $
  * @todo
  * - Add code for examples<br />
  * - Add code to check whether database configuration works<br />
@@ -179,7 +179,7 @@ public class Config extends ProcessorModule {
     /**
      * Generate a list of values from a command to the processor
      */
-    public Vector  getList(PageContext sp,StringTagger tagger, String value) {
+    public Vector  getList(PageInfo sp,StringTagger tagger, String value) {
         Vector v = new Vector();
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
@@ -293,7 +293,7 @@ public class Config extends ProcessorModule {
     /**
      * Execute the commands provided in the form values
      */
-    public boolean process(PageContext sp, Hashtable cmds,Hashtable vars) {
+    public boolean process(PageInfo sp, Hashtable cmds,Hashtable vars) {
         log.debug("CMDS="+cmds);
         log.debug("VARS="+vars);
         return(false);
@@ -354,7 +354,7 @@ public class Config extends ProcessorModule {
     /**
      *  Handle a $MOD command
      */
-    public String replace(PageContext sp, String cmds) {
+    public String replace(PageInfo sp, String cmds) {
         String[] dirlist;
 
         int level = 1;
