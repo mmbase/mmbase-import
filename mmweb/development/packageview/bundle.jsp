@@ -1,6 +1,6 @@
 <table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" border="0">
 <mm:import externid="id" />
-<tr class="layout"><td align="left"><a href="index.jsp"><img src="images/arrow-left.gif" border="0"></a></tr>
+<tr class="layout"><td align="left"><a href="index.jsp"><img src="/media/arrow-left.gif" border="0"></a></tr>
 <tr>
 <td width="50%" align="middle" valign="top">
 <table cellpadding="0" cellspacing="0" class="list" style="margin-left : 10px;">
