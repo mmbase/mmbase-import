@@ -95,7 +95,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.6 2004-10-02 17:36:07 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.7 2004-10-12 19:34:54 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -115,6 +115,28 @@ public class ResourceLoader extends ClassLoader {
      * Used when getting resources with normal class-loader.
      */
     protected static final String CLASSLOADER_ROOT = "/org/mmbase/config";
+
+    /**
+     * Protocol prefix used by URL objects in this class.
+     */
+    public static final URL NODE_URL_CONTEXT;
+
+    private static URL createNodeURL() {
+        // sigh I don't see another compiling way to fill NODE_URL_CONTEXT
+        try {
+            return new URL("http", "localhost", "/node/");
+        } catch (MalformedURLException mfue) {
+            // should not happen
+            log.error(mfue);
+            return null;
+        }
+    }
+    static {
+        NODE_URL_CONTEXT = createNodeURL();
+    }
+
+
+
     
     /**
      * Used when using getResourcePaths for normal class-loaders.
@@ -229,14 +251,16 @@ public class ResourceLoader extends ClassLoader {
      * Sets the MMBase builder which must be used for resource.
      * The builder must have an URL and a HANDLE field.
      * This method can be called only once.
-     * @param b An MMObjectBuilder.
+     * @param b An MMObjectBuilder (this may be <code>null</code> if no such builder available)
      * @throws RuntimeException if builder was set already.
      */
     public static void setResourceBuilder(MMObjectBuilder b) {
-        if (resourceBuilder != null) {
+        if (ResourceWatcher.resourceWatchers == null) {
             throw new RuntimeException("A resource builder was set already: " + resourceBuilder);
         }
         resourceBuilder = b;
+        // must be informed to existing ResourceWatchers.
+        ResourceWatcher.setResourceBuilder(); // this will also set ResourceWatcher.resourceWatchers to null.
     }
 
     
@@ -693,6 +717,11 @@ public class ResourceLoader extends ClassLoader {
     }
 
 
+
+    Resolver getResolver(String name) {
+        return new Resolver(findResource(name));
+    }
+
     /**
      * @return A List of all files associated with the resource.
      *         Used by {@link ResourceWatcher}. And by some deprecated code that wants to produce File objects.
@@ -721,7 +750,7 @@ public class ResourceLoader extends ClassLoader {
     /**
      * Resolves MM:urls
      */
-    protected static class Resolver {
+    protected  static class Resolver {
         private URL url;
 
         // try to cache the results a bit.
@@ -731,7 +760,7 @@ public class ResourceLoader extends ClassLoader {
         private URL classLoaderResource    = null;
         
 
-        Resolver(URL u) {
+        private Resolver(URL u) {
             this.url = u;
         }
 
@@ -836,6 +865,81 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
 
+        URL getNodeURL(MMObjectNode node) {
+            try {
+                return new URL(NODE_URL_CONTEXT, "" + node.getNumber());
+            } catch (MalformedURLException mfue) {
+                // should not happen.
+                return null;
+            }
+        }
+
+
+        /**
+         * Determine wether File f is shadowed.
+         * @param name Check for resource with this name
+         * @param file The file to check for this resource.
+         * @return The URL for the shadowing resource, or <code>null</code> if not shadowed.
+         * @throws IllegalArgumentException if <code>file</code> is not a file associated with the resource with given name.
+         */
+        URL shadowed(File f) {
+            MMObjectNode node = getResourceNode();
+            if (node != null) {
+                return getNodeURL(node);
+            }
+            Iterator i = ResourceLoader.getRootFiles(url.getPath()).iterator();
+            while (i.hasNext()) {
+                File file = (File) i.next();
+                if (file.equals(f)) {
+                    return null; // ok, not shadowed.
+                } else {
+                    if (file.exists()) {
+                        try {
+                            return file.toURL(); // f is shadowed!
+                        } catch (MalformedURLException mfue) {
+                            // should not happen.
+                        }
+                    }
+                }
+            }
+            // did not find f as a file for this resource
+            throw new IllegalArgumentException("File " + f + " is not a file for resource "  + url.getProtocol() + ":" + url.getPath());
+        }
+
+        /**
+         * Logs warning if 'newer' resources are shadowed by older ones.
+         */
+        void checkShadowedNewerResources() {
+            long lastModified = -1;
+            URL  usedUrl = null;
+            MMObjectNode node = getResourceNode();
+            if (node != null) {
+                usedUrl = getNodeURL(node);
+                Date lm = node.getDateValue("lastmodified");
+                if (lm != null) {                    
+                    lastModified = lm.getTime();
+                }
+            }
+            Iterator i = ResourceLoader.getRootFiles(url.getPath()).iterator();
+            while (i.hasNext()) {
+                File file = (File) i.next();
+                if (file.exists()) {
+                    long lm = file.lastModified();
+                    if (lastModified > 0 && lm > lastModified) {
+                        log.warn("File " + file + " is newer then " + usedUrl + " but shadowed by it");
+                    }
+                    if (usedUrl == null) {
+                        try {
+                            usedUrl = file.toURL();
+                            lastModified = lm;
+                        } catch (MalformedURLException mfue) {
+                            assert false : mfue;
+                        }
+                    }
+                }
+            }            
+        }
+
         /**
          * implementation for MMUrlStreamHandler.
          */
@@ -843,7 +947,7 @@ public class ResourceLoader extends ClassLoader {
             {
                 MMObjectNode node = getResourceNode();
                 if (node != null) {
-                    return "http://localhost/node/" + node.getNumber();
+                    return getNodeURL(node).toExternalForm();
                 }
             }
             {
@@ -868,7 +972,12 @@ public class ResourceLoader extends ClassLoader {
                     return u.toExternalForm();
                 }
             }
-            return null;
+            try {
+                return new URL("http", "localhost", "/NOTFOUND" + url.getPath()).toExternalForm();
+            } catch (MalformedURLException mfue) {
+                assert false : mfue;
+                return mfue.toString();
+            }
             
         }
     }
@@ -946,8 +1055,7 @@ public class ResourceLoader extends ClassLoader {
                     return u.openStream();
                 }
             } catch (UnknownServiceException use) {
-                // should not happen
-                log.warn("" + use.getMessage());
+                assert false : use;
             }
             try {
                 URL u = resolver.getClassLoaderResource();
@@ -955,8 +1063,7 @@ public class ResourceLoader extends ClassLoader {
                     return u.openStream();
                 }
             } catch (UnknownServiceException use) {
-                // should not happen
-                log.warn("" + use.getMessage());
+                assert false : use;
             }
             return null;
             
