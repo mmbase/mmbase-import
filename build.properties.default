@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.1 2004-01-19 13:24:29 gerard Exp $
+# $Id: build.properties.default,v 1.2 2004-01-19 14:09:56 gerard Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -44,9 +44,6 @@ hsqldb.loc=${sourceforge.loc}/hsqldb/${hsqldb.file}
 hsqldb.dir=${expand.dir}/${hsqldb.version}
 hsqldb.jar=${hsqldb.dir}/hsqldb/lib/hsqldb.jar
 
-# ----- Xalan/Xerces ----
-
-
 # ---- Jai, version 1.0.2 ----
 # It's a very old version, but the only one that can be download
 # without expiring urls.
@@ -83,6 +80,8 @@ docbook-xsl.version=docbook-xsl-1.62.4
 docbook-xsl.file=${docbook-xsl.version}.tar.gz
 docbook-xsl.dest=${download.dir}/${docbook-xsl.file}
 docbook-xsl.loc=${sourceforge.loc}/docbook/${docbook-xsl.file}
+docbook-xsl.exp=${expand.dir}/${docbook-xsl.version}
+
 
 # ----- Log4j ----------
 log4j.version=1.2.8

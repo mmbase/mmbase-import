@@ -897,6 +897,7 @@ Build-compiler: ${build.compiler}
     <antcall target="downloadgz">
       <param name="sourcefile" value="${servlet.loc}"/>
       <param name="destfile" value="${servlet.dest}"/>
+      <param name="expandedfile" value="${servlet.jar}"/>
     </antcall>
 
     <echo message="hsqldb" />
@@ -904,6 +905,7 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile" value="${hsqldb.loc}"/>
       <param name="destfile" value="${hsqldb.dest}"/>
       <param name="destdir" value="${hsqldb.dir}"/>
+      <param name="expandedfile" value="${hsqldb.jar}"/>
     </antcall>
 
     <echo message="jai" />
@@ -911,6 +913,7 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile" value="${jai.loc}"/>
       <param name="destfile" value="${jai.dest}"/>
       <param name="destdir" value="${jai.dir}"/>
+      <param name="expandedfile" value="${jai_core.jar}"/>
     </antcall>
 
     <echo message="javamail" />
@@ -918,6 +921,7 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile" value="${javamail.loc}"/>
       <param name="destfile" value="${javamail.dest}"/>
       <param name="destdir" value="${javamail.dir}"/>
+      <param name="expandedfile" value="${javamail.jar}"/>
     </antcall>
 
     <echo message="javaactivation" />
@@ -925,24 +929,28 @@ Build-compiler: ${build.compiler}
       <param name="sourcefile" value="${javaactivation.loc}"/>
       <param name="destfile" value="${javaactivation.dest}"/>
       <param name="destdir" value="${javaactivation.dir}"/>
+      <param name="expandedfile" value="${javaactivation.jar}"/>
     </antcall>
 
     <echo message="docbook" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${docbook-xsl.loc}"/>
       <param name="destfile" value="${docbook-xsl.dest}"/>
+      <param name="expandedfile" value="${docbook-xsl.exp}"/>
     </antcall>
 
     <echo message="log4j" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${log4j.loc}"/>
       <param name="destfile" value="${log4j.dest}"/>
+      <param name="expandedfile" value="${log4j.jar}"/>
     </antcall>
 
     <echo message="xalan and xerces" />
     <antcall target="downloadgz">
       <param name="sourcefile" value="${xalan.loc}"/>
       <param name="destfile" value="${xalan.dest}"/>
+      <param name="expandedfile" value="${xalan.jar}"/>
     </antcall>
   </target>
 
@@ -965,26 +973,33 @@ Build-compiler: ${build.compiler}
     <available file="${destfile}" property="exist"/>
   </target>
 
-  <target name="downloadgz" unless="exist" depends="setproxy,testexist">
-    <!-- Download and extract the package -->
+  <target name="testexpanded">
+    <echo message="Testing for ${expandedfile}"/>
+    <available file="${expandedfile}" property="expanded"/>
+  </target>
+
+  <target name="download" unless="exist" depends="setproxy,testexist">
+    <!-- Download the package -->
     <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  </target>
+
+  <target name="downloadgz" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
     <gunzip src="${destfile}" dest="${download.dir}/file.tar"/>
     <untar src="${download.dir}/file.tar" dest="${expand.dir}"/>
     <delete file="${download.dir}/file.tar"/>    
   </target>
 
-  <target name="downloadbz2" unless="exist" depends="setproxy,testexist">
-    <!-- Download and extract the package -->
-    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  <target name="downloadbz2" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
     <mkdir dir="${destdir}" />
     <bunzip2 src="${destfile}" dest="${download.dir}/file.tar"/>
     <untar src="${download.dir}/file.tar" dest="${destdir}"/>
     <delete file="${download.dir}/file.tar"/>
   </target>
 
-  <target name="downloadzip" unless="exist" depends="setproxy,testexist">
-    <!-- Download and extract the package -->
-    <get src="${sourcefile}" dest="${destfile}" verbose="on" />
+  <target name="downloadzip" unless="expanded" depends="download,testexpanded">
+    <!-- Extract the package -->
     <mkdir dir="${destdir}" />
     <unzip src="${destfile}" dest="${destdir}"/>
   </target>
