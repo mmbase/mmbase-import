@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <urls exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
 	<node number="8516" owner="system">
-		<name></name>
 		<url>http://www.mmbase.org/download</url>
 		<description>Download MMbase</description>
 	</node>
 
 	<node number="8514" owner="system">
-		<name></name>
 		<url>http://www.mmbase.org/mmbase/pool/project.shtml?452+3022</url>
 		<description>The Defining Builders project</description>
 	</node>
 
 	<node number="8512" owner="admin">
-		<name></name>
 		<url>http://www.vpro.nl/pinkpop2000</url>
 		<description>Pinkpop 2000</description>
 	</node>
 
 	<node number="8510" owner="admin">
-		<name></name>
 		<url>http://www.eo.nl</url>
 		<description>EO website</description>
 	</node>
