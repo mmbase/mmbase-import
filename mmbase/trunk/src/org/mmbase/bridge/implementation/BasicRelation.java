@@ -21,17 +21,17 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.23 2002-10-15 15:28:29 pierre Exp $
+ * @version $Id: BasicRelation.java,v 1.24 2002-10-17 16:57:58 pierre Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
 
     private RelationManager relationManager = null;
-    protected int snum = 0;
-    protected int dnum = 0;
+    protected int snum;
+    protected int dnum;
 
-    private int snumtype = 0;
-    private int dnumtype = 0;
+    private int snumtype;
+    private int dnumtype;
 
     protected boolean relationChanged = false; // Indicates a change in snum or dnum
 
@@ -131,6 +131,9 @@ public class BasicRelation extends BasicNode implements Relation {
         if (relationManager==null) {
             int stypenum=mmb.getTypeRel().getNodeType(snum);
             int dtypenum=mmb.getTypeRel().getNodeType(dnum);
+
+            log.info(stypenum+" ,"+stypenum+","+getNode().getIntValue("rnumber"));
+
             relationManager=cloud.getRelationManager(stypenum,dtypenum,
                                 getNode().getIntValue("rnumber"));
         }

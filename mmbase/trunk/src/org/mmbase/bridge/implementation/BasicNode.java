@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.74 2002-10-17 10:55:18 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.75 2002-10-17 16:57:57 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -616,32 +616,36 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         }
     }
 
-    public RelationList getRelations() {
-        return getRelations(-1,-1);
-    }
-
     /**
-     * @javadoc
+     * Returns an enumeration of MMObjectNodes, which respresent relations of this node
+     * with specified role and otype
+     * @param role the role (reldef) number, can be -1
+     * @param otype the destination object type number, can be -1
+     * @return an Enumeration with the relations
      */
-    private RelationList getRelations(int role) {
-        return getRelations(role,-1);
-    }
-
-    /**
-     * @javadoc
-     */
-    private RelationList getRelations(int role, int otype) {
+    private Enumeration getRelationEnumeration(int role, int otype) {
         InsRel relbuilder=mmb.getInsRel();
-        Vector relvector=new Vector();
         Enumeration e=null;
         if ((role!=1) || (otype!=-1)) {
             if (role!=-1) {
                 relbuilder=mmb.getRelDef().getBuilder(role);
             }
-            e=relbuilder.getRelations(getNumber(),otype, role);
+            return relbuilder.getRelations(getNumber(),otype, role);
         } else {
-            e=getNode().getRelations();
+            return getNode().getRelations();
         }
+    }
+
+    /**
+     * Returns a list of Relation objects, which represent relations of this node
+     * with specified role and otype
+     * @param role the role (reldef) number, can be -1
+     * @param otype the destination object type number, can be -1
+     * @return a RelationList with the relations
+     */
+    private RelationList getRelations(int role, int otype) {
+        Enumeration e=getRelationEnumeration(role, otype);
+        Vector relvector=new Vector();
         if (e!=null) {
             while (e.hasMoreElements()) {
                 MMObjectNode mmnode=(MMObjectNode)e.nextElement();
@@ -650,29 +654,26 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 }
             }
         }
-        return new BasicRelationList(relvector,cloud.getNodeManager(relbuilder.getTableName()));
+        return new BasicRelationList(relvector,cloud);
+    }
+
+    public RelationList getRelations() {
+        return getRelations(null,(String)null);
     }
 
     public RelationList getRelations(String role) {
-        int rolenr=mmb.getRelDef().getNumberByName(role);
-        if (rolenr==-1) {
-            String message;
-            message = "Relation type " + role + " does not exist.";
-            log.error(message);
-            throw new BridgeException(message);
-        } else {
-            return getRelations(rolenr);
-        }
+        return getRelations(role, (String)null);
     }
 
     public RelationList getRelations(String role, String nodeManager) {
-        if (nodeManager==null) return getRelations(role);
-        int otype=mmb.getTypeDef().getIntValue(nodeManager);
-        if (otype==-1) {
-            String message;
-            message = "NodeManager " + nodeManager + " does not exist.";
-            log.error(message);
-            throw new BridgeException(message);
+        int otype=-1;
+        if (nodeManager!=null) {
+            otype=mmb.getTypeDef().getIntValue(nodeManager);
+            if (otype==-1) {
+                String message = "NodeManager " + nodeManager + " does not exist.";
+                log.error(message);
+                throw new BridgeException(message);
+            }
         }
         int rolenr=-1;
         if (role!=null) {
@@ -685,6 +686,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         }
         return getRelations(rolenr,otype);
+    }
+
+    public RelationList getRelations(String role, NodeManager nodeManager) {
+        if (nodeManager==null) {
+            return getRelations(role);
+        } else {
+            return getRelations(role, nodeManager.getName());
+        }
     }
 
     public boolean hasRelations() {
@@ -700,93 +709,75 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public NodeList getRelatedNodes() {
-        Vector relvector=new Vector();
-        Enumeration e=getNode().getRelatedNodes().elements();
-        if (e!=null) {
-            while (e.hasMoreElements()) {
-                MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-                if (cloud.check(Operation.READ, mmnode.getNumber())) {
-                    relvector.add(mmnode);
-                }
-            }
-        }
-        return new BasicNodeList(relvector,cloud);
+        return getRelatedNodes((String)null,null,null);
     }
 
     public NodeList getRelatedNodes(String type) {
-        Vector relvector=new Vector();
-        Vector nv = getNode().getRelatedNodes(type);
-        if (nv == null) {
-            throw new BridgeException("Could not get related nodes of type '" + type + "', because that is not a known NodeManager");
-        }
-        Enumeration e = nv.elements();
-        if (e!=null) {
-            while (e.hasMoreElements()) {
-                MMObjectNode mmnode=(MMObjectNode)e.nextElement();
-                if (cloud.check(Operation.READ, mmnode.getNumber())) {
-                    relvector.add(mmnode);
-                }
-            }
-        }
-        return new BasicNodeList(relvector,cloud);
+        return getRelatedNodes(type,null,null);
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager) {
-        return getRelatedNodes(nodeManager.getName());
+        return getRelatedNodes(nodeManager,null,null);
     }
 
     /**
      * @since MMBase-1.6
      */
     public NodeList getRelatedNodes(String type, String role, String direction) {
+        int requestedRole = -1;
+        if (role!=null) {
+            requestedRole = mmb.getRelDef().getNumberByName(role);
+            if (requestedRole == -1) {
+                throw new NotFoundException("Could not get role '" + role + "'");
+            }
+        }
 
-        log.debug("listing related nodes of role '" + role + "'" );
-        int requestedRole = mmb.getRelDef().getNumberByName(role);
-        List result = new Vector();
+        int otype=-1;
+        MMObjectBuilder bul = mmb.getTypeDef();
+        if (type!=null) {
+            bul=mmb.getMMObject(type);
+            if (bul == null) {
+                throw new NotFoundException("Could not get related nodes of type '" + type + "', because that is not a known NodeManager");
+            }
+            otype=bul.oType;
+        }
 
-        InsRel insrel = mmb.getInsRel();
         int dir  = ClusterBuilder.getSearchDir(direction);
-        MMObjectBuilder bul = mmb.getMMObject(type);
-        if (bul == null) {
-            throw new NotFoundException("Could not get related nodes of type '" + type + "', because that is not a known NodeManager");
-        }
 
-        log.debug("role number '" + requestedRole + "'" );
-        if (requestedRole == -1) {
-            throw new NotFoundException("Could not get role '" + role + "'");
-        }
-
-        Enumeration e = getNode().getRelations();
-
+        Enumeration e = getRelationEnumeration(requestedRole,otype);
+        List result = new Vector();
         if (e != null) {
             while(e.hasMoreElements()) {
                 MMObjectNode relNode = (MMObjectNode) e.nextElement();
-                log.debug("Found relation node '" + relNode + "'" );
-                int rnumber = relNode.getIntValue("rnumber");
-
-                if (rnumber == requestedRole) {
-                    int number = relNode.getIntValue("dnumber");
-                    if (number == getNumber()) {
-                        if (dir == ClusterBuilder.SEARCH_DESTINATION) {
-                            continue;
-                        }
-                        number = relNode.getIntValue("snumber");
-                    } else {
-                        if (dir == ClusterBuilder.SEARCH_SOURCE) {
-                            continue;
-                        }
+                int number = relNode.getIntValue("dnumber");
+                if (number == getNumber()) {
+                    if (dir == ClusterBuilder.SEARCH_DESTINATION) {
+                        continue;
                     }
-                    // TODO more things with direction?
-                    MMObjectNode destNode = (MMObjectNode) bul.getNode(number);
-                    result.add(destNode);
+                    number = relNode.getIntValue("snumber");
+                } else {
+                    if (dir == ClusterBuilder.SEARCH_SOURCE) {
+                        continue;
+                    }
                 }
+                result.add(bul.getNode(number));
             }
         }
-        return new BasicNodeList(result, cloud);
+        NodeManager rm;
+        if (role!=null) {
+            rm=cloud.getRelationManager(role);
+        } else {
+            rm=cloud.getNodeManager("insrel");
+        }
+        return new BasicNodeList(result, rm);
     }
 
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
-        return getRelatedNodes(nodeManager.getName(), role, direction);
+        if (nodeManager==null) {
+            return getRelatedNodes((String)null, role, direction);
+        } else {
+            return getRelatedNodes(nodeManager.getName(), role, direction);
+        }
     }
 
     public int countRelatedNodes(String type) {
