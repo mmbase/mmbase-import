@@ -114,6 +114,16 @@
                     <search-fields>name</search-fields>
                 </search-filter>
            </command>
+
+<!--        <command name="search" nodepath="learnobjects,metadata,metavalue,metalangstring" fields="metalangstring.value" age="7" orderby="number" directions="down" >
+            <prompt>Zoeken naar Leerobjecten dmv Metadata text</prompt>
+            <search-filter>
+                <name>Metadata text Bevat</name>
+                <search-fields>value</search-fields>
+            </search-filter>
+        </command> -->
+ 
+           
         </list>
         <list role="related" extends="list/online.xml" />
     </form-schema>
