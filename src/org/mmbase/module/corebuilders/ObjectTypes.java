@@ -30,7 +30,7 @@ import org.mmbase.util.xml.BuilderReader;
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.29 2004-01-06 12:26:28 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.30 2004-01-06 12:51:08 michiel Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -182,7 +182,11 @@ public class ObjectTypes extends TypeDef {
 
 
         BuilderReader originalBuilderXml = new BuilderReader(getBuilderFilePath(node), getMMBase());
-        BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(node.getStringValue("config"))), getMMBase());
+        BuilderReader newBuilderXml      = new BuilderReader(new InputSource(new StringReader(
+                                                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+                                                 "<!DOCTYPE builder PUBLIC \"" + BuilderReader.PUBLIC_ID_BUILDER +
+                                                 "\" \":http://www.mmbase.org/dtd/" + BuilderReader.DTD_BUILDER + "\" >\n" +
+                                                 node.getStringValue("config"))), getMMBase());
 
 
         boolean equal = originalBuilderXml.equals(newBuilderXml);
