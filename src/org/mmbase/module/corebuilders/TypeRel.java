@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.34 2003-02-28 20:28:49 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.35 2003-02-28 20:49:53 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -553,7 +553,8 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         if (o2.parent instanceof TypeRel) {
             return o1.getIntValue("snumber") == o2.getIntValue("snumber") &&
                    o1.getIntValue("dnumber") == o2.getIntValue("dnumber") &&
-                   o1.getIntValue("rnumber") == o2.getIntValue("rnumber");
+                   o1.getIntValue("rnumber") == o2.getIntValue("rnumber") &&
+                   o1.getStringValue("owner").equals(o2.getStringValue("owner"));
         }
         return false;
     }
