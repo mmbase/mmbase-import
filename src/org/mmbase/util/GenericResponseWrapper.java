@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.3.2.6 2004-07-29 18:54:36 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.3.2.7 2004-09-22 07:25:25 keesj Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -165,29 +165,17 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
 
 
     public void sendRedirect(String location) throws IOException  {
-        checkWritten();
         getHttpServletResponse().sendRedirect(location);
     }
     public void setStatus(int s) {
-        checkWritten();
         getHttpServletResponse().setStatus(s);
     }
 
     public void addCookie(Cookie c) {
-        checkWritten();
         getHttpServletResponse().addCookie(c);
     }
     public void setHeader(String header, String value) {
         getHttpServletResponse().setHeader(header,value);
-    }
-
-
-    protected void checkWritten() { 
-        if (writer != null || outputStream != null) {
-            log.error("Allready written headers, perhaps you need to increase the 'buffer' of your JSP (with the @page directive)");
-            log.debug(Logging.stackTrace());
-            //throw new RuntimeException("Allready written");
-        }
     }
 
 
