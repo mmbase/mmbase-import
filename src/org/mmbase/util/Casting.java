@@ -118,7 +118,7 @@ public class Casting {
             if (log.isServiceEnabled()) {
                 String msg = xmltext;
                 if (msg.length()>20) msg = msg.substring(0,20);
-                log.service("Object " + msg + "... is not a Document, but a " + o.getClass().getName());
+                log.service("Object " + msg + "... is not a Document, but " + (o == null ? "NULL" : "a " + o.getClass().getName()));
             }
             return convertStringToXML(xmltext, documentType, conversion);
         }
