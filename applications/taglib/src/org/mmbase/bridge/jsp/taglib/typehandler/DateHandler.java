@@ -14,6 +14,7 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.util.Queries;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
+import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.Logger;
  * @author Michiel Meeuwissen
  * @author Vincent vd Locht
  * @since  MMBase-1.6
- * @version $Id: DateHandler.java,v 1.11 2003-12-09 21:18:19 michiel Exp $
+ * @version $Id: DateHandler.java,v 1.12 2003-12-12 20:10:24 michiel Exp $
  */
 public class DateHandler extends AbstractTypeHandler {
 
@@ -82,9 +83,10 @@ public class DateHandler extends AbstractTypeHandler {
         buffer.append("\" />");
         // give also present value, this makes it possible to see if user changed this field.
 
+        ContextContainer container = tag.getContextProvider().getContextContainer();
         if (search) {
             String name = prefix(field.getName() + "_search");
-            String searchi =  (String) tag.getContextProvider().getContextContainer().find(tag.getPageContext(), name);
+            String searchi =  (String) container.find(tag.getPageContext(), name);
             if (searchi == null) searchi = "no";
             buffer.append("<select name=\"" + name + "\">\n");
             buffer.append("  <option value=\"no\" ");
@@ -106,9 +108,17 @@ public class DateHandler extends AbstractTypeHandler {
 
         String options = tag.getOptions();
         if (options == null || options.indexOf("date") > -1) {
-            buffer.append("<select name=\"" + prefix(field.getName() + "_day") + "\">\n");
+            String dayName = prefix(field.getName() + "_day");
+            String searchDay =  (String) container.find(tag.getPageContext(), dayName);
+            int checkDay;
+            if (searchDay == null) {
+                checkDay = cal.get(Calendar.DAY_OF_MONTH);
+            } else {
+                checkDay = Integer.parseInt(searchDay);
+            }
+            buffer.append("<select name=\"" + dayName + "\">\n");
             for (int i = 1; i <= 31; i++) {
-                if (cal.get(Calendar.DAY_OF_MONTH) == i) {
+                if (checkDay == i) {
                     buffer.append("  <option selected=\"selected\">");
                     buffer.append(i);
                     buffer.append("</option>\n");
@@ -119,11 +129,19 @@ public class DateHandler extends AbstractTypeHandler {
                 }
             }
             buffer.append("</select>-");
+            String monthName = prefix(field.getName() + "_month");
+            String searchMonth =  (String) container.find(tag.getPageContext(), monthName);
+            int checkMonth;
+            if (searchMonth == null) {
+                checkMonth = cal.get(Calendar.MONTH) + 1;
+            } else {
+                checkMonth = Integer.parseInt(searchMonth);
+            }
             buffer.append("<select name=\"");
-            buffer.append(prefix(field.getName() + "_month"));
+            buffer.append(monthName);
             buffer.append("\">\n");
             for (int i = 1; i <= 12; i++) {
-                if (cal.get(Calendar.MONTH) == (i - 1)) {
+                if (checkMonth == i) {
                     buffer.append("  <option selected=\"selected\">" + i + "</option>\n");
                 } else {
                     buffer.append("  <option>" + i + "</option>\n");
@@ -131,34 +149,57 @@ public class DateHandler extends AbstractTypeHandler {
             }
             buffer.append("</select>-");
             buffer.append("<input type =\"text\" size=\"5\" name=\"");
-            buffer.append(prefix(field.getName() + "_year"));
+            String yearName = prefix(field.getName() + "_year");
+            String searchYear =  (String) container.find(tag.getPageContext(), yearName);
+            buffer.append(yearName);
             buffer.append("\" ");
             buffer.append("value=\"");
-            yearFieldValue(cal, buffer);
+            if (searchYear == null) {
+                yearFieldValue(cal, buffer);
+            } else {
+                buffer.append(searchYear);
+            }
             buffer.append("\" />");
         } else {
             buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_day") + "\" value=\"" + cal.get(Calendar.DAY_OF_MONTH) + "\" />");
             buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_month") + "\" value=\"" + cal.get(Calendar.MONTH) + "\" />");
             buffer.append("<input type=\"hidden\" name=\"" + prefix(field.getName() + "_year") + "\" value=\"");
-           yearFieldValue(cal, buffer);
+            yearFieldValue(cal, buffer);
             buffer.append("\" />");
         }
         if (options == null || options.indexOf("time") > -1) {
-            buffer.append("&nbsp;&nbsp;<select name=\"" + prefix(field.getName() + "_hour") + "\">\n");
+            String hourName = prefix(field.getName() + "_hour");
+            String searchHour =  (String) container.find(tag.getPageContext(), hourName);
+            int checkHour;
+            if (searchHour == null) {
+                checkHour = cal.get(Calendar.HOUR_OF_DAY);
+            } else {
+                checkHour = Integer.parseInt(searchHour);
+            }
+            buffer.append("&nbsp;&nbsp;<select name=\"" + hourName + "\">\n");
             for (int i = 0; i <= 23; i++) {
-                if (cal.get(Calendar.HOUR_OF_DAY) == i) {
+                if (checkHour == i) {
                     buffer.append("  <option selected=\"selected\">");
                 } else {
                     buffer.append("  <option>");
                 }
-                if (i<10) buffer.append("0");
+                if (i <10) buffer.append("0");
                 buffer.append(i + "</option>\n");
             }
             buffer.append("</select> h :");
 
-            buffer.append("<select name=\"" + prefix(field.getName() + "_minute") + "\">\n");
+            String minuteName = prefix(field.getName() + "_minute");
+            String searchMinute =  (String) container.find(tag.getPageContext(), minuteName);
+            int checkMinute;
+            if (searchMinute == null) {
+                checkMinute = cal.get(Calendar.MINUTE);
+            } else {
+                checkMinute = Integer.parseInt(searchMinute);
+            }
+
+            buffer.append("<select name=\"" + minuteName + "\">\n");
             for (int i = 0; i <= 59; i++) {
-                if (cal.get(Calendar.MINUTE) == i) {
+                if (checkMinute == i) {
                     buffer.append("  <option selected=\"selected\">");
                 } else {
                     buffer.append("  <option>");
@@ -167,9 +208,19 @@ public class DateHandler extends AbstractTypeHandler {
                 buffer.append(i + "</option>\n");
             }
             buffer.append("</select> m :");
-            buffer.append("<select name=\"" + prefix(field.getName() + "_second") + "\">\n");
+
+            String secondName = prefix(field.getName() + "_second");
+            String searchSecond =  (String) container.find(tag.getPageContext(), secondName);
+            int checkSecond;
+            if (searchSecond == null) {
+                checkSecond = cal.get(Calendar.SECOND);
+            } else {
+                checkSecond = Integer.parseInt(searchSecond);
+            }
+
+            buffer.append("<select name=\"" + secondName + "\">\n");
             for (int i = 0; i <= 59; i++) {
-                if (cal.get(Calendar.SECOND) == i) {
+                if (checkSecond == i) {
                     buffer.append("  <option selected=\"selected\">");
                 } else {
                     buffer.append("  <option>");
