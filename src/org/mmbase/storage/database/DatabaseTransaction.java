@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.3 2003-03-07 09:31:11 pierre Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.4 2003-05-02 20:25:45 michiel Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -223,15 +223,17 @@ public class DatabaseTransaction implements Transaction {
      * @throws StorageException when the query failed
      */
     public ResultSet executeQuery(String sql) throws StorageException {
-        stmt=null;
+        stmt = null;
         try {
-            if (log.isDebugEnabled()) log.trace("execute : "+sql);
+            if (log.isDebugEnabled()) { 
+                log.trace("execute : " + sql);
+            }
             // should we use preparedstatement???
-            stmt=con.createStatement();
-            res=stmt.executeQuery(sql);
+            stmt = con.createStatement();
+            res = stmt.executeQuery(sql);
             return res;
         } catch (Exception e){
-            throw new StorageException(e.getMessage());
+            throw new StorageException(e.getMessage());            
         }
     }
 
@@ -257,22 +259,24 @@ public class DatabaseTransaction implements Transaction {
      */
     public boolean executeUpdate(String sql, List fields,MMObjectNode node) throws StorageException {
         try {
-            stmt=null;
-            if (log.isDebugEnabled()) log.trace("Prepare statement : "+sql);
-            stmt=con.prepareStatement(sql);
+            stmt = null;
+            if (log.isDebugEnabled()) { 
+                log.trace("Prepare statement : " + sql);
+            }
+            stmt = con.prepareStatement(sql);
             stmt.setEscapeProcessing(false); // useful?? not used by prepped statements.
             if (fields!=null) {
                 int nroffields=0;
                 for (Iterator f=fields.iterator(); f.hasNext();) {
-                    FieldDefs field=(FieldDefs)f.next();
+                    FieldDefs field = (FieldDefs) f.next();
                     nroffields++;
-                    database.setValuePreparedStatement((PreparedStatement)stmt,node,field.getDBName(),nroffields);
+                    database.setValuePreparedStatement((PreparedStatement)stmt, node, field.getDBName(), nroffields);
                 }
             }
             ((PreparedStatement)stmt).executeUpdate();
             return true;
         } catch (SQLException e) {
-            throw new StorageException(e.getMessage());
+            throw new StorageException(Logging.stackTrace(e));
         }
     }
 
