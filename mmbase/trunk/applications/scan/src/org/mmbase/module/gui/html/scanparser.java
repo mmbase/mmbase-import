@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.24 2000-10-10 12:02:59 vpro Exp $
+$Id: scanparser.java,v 1.25 2000-10-13 09:38:11 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.24  2000/10/10 12:02:59  vpro
+Rico: scanparser added better part support
+
 Revision 1.23  2000/09/14 09:14:52  install
 Rob made a change for Gerard ;-)
 
@@ -93,7 +96,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.24 $ $Date: 2000-10-10 12:02:59 $
+ * @$Revision: 1.25 $ $Date: 2000-10-13 09:38:11 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -108,6 +111,7 @@ public class scanparser extends ProcessorModule {
     private static sessionsInterface sessions=null;
     private static idInterface id=null;
 	private static MMBase mmbase=null;
+	private static TransactionHandler transactionhandler;
     private static Hashtable processors = new Hashtable();
     private static boolean debug=false;
 
@@ -151,6 +155,7 @@ public class scanparser extends ProcessorModule {
 		scancache=(scancacheInterface)getModule("SCANCACHE");
 		counter=(CounterInterface)getModule("COUNTER");
 		mmbase=(MMBase)getModule("MMBASEROOT");
+		transactionhandler=(TransactionHandler)getModule("TRANSACTIONHANDLER");
         // org.mmbase stats=(StatisticsInterface)getModule("STATS");
     }
 
@@ -379,31 +384,6 @@ public class scanparser extends ProcessorModule {
 		newbody.append(body.substring(postcmd+1));
 		body=newbody.toString();
 
-		// <TRANSACTION text1> text2 </TRANSACTION>
-		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
-		newbody=new StringBuffer();
-		postcmd=-1;
-		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
-			newbody.append(body.substring(postcmd+1,precmd));
-			prepostcmd=precmd+12;
-			if ((postcmd=body.indexOf('>',precmd))!=-1) {
-				end_pos2=body.indexOf("</TRANSACTION>",prepostcmd);
-				if (end_pos2!=-1) {
-					try {
-						newbody.append(do_transaction(body.substring(prepostcmd,postcmd),body.substring(postcmd+1,end_pos2),session,sp));
-					} catch(Exception e) {
-						debug("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
-						e.printStackTrace();
-					}
-					postcmd=end_pos2+14;
-				} 
-			} else {
-				postcmd=prepostcmd;
-			}
-		}
-
-		newbody.append(body.substring(postcmd+1));
-		body=newbody.toString();
 
 		// detect a <IF> page (daniel)
 
@@ -493,6 +473,33 @@ public class scanparser extends ProcessorModule {
 		// <LEAFPART, LEAFFILE
 		part=finddocmd(body,"<LEAF",'>',22,session,sp);
 		body=part; 
+
+		// <TRANSACTION text1> text2 </TRANSACTION>
+		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
+		newbody=new StringBuffer();
+		postcmd=-1;
+
+		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
+			newbody.append(body.substring(postcmd+1,precmd));
+			prepostcmd=precmd+12;
+			if ((postcmd=body.indexOf('>',precmd))!=-1) {
+				end_pos2=body.indexOf("</TRANSACTION>",prepostcmd);
+				if (end_pos2!=-1) {
+					postcmd=end_pos2+14;
+					try {
+						newbody.append(do_transaction(body.substring(precmd,postcmd),session,sp));
+					} catch(Exception e) {
+						debug("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
+						e.printStackTrace();
+					}
+				} 
+			} else {
+				postcmd=prepostcmd;
+			}
+		}
+
+		newbody.append(body.substring(postcmd+1));
+		body=newbody.toString();
 
 		// Last one always
 		part=finddocmd(body,"$LBJ-",'^',4,session,sp);
@@ -2011,9 +2018,8 @@ public class scanparser extends ProcessorModule {
 		return(rtn);
 	}
 
-	private String do_transaction(String cmd,String template, sessionInfo session,scanpage sp) throws ParseException {
-		System.out.println("cmd = "+cmd);
-		System.out.println("template = "+template);
-		return "Transaction parsed";	
+	private String do_transaction(String template, sessionInfo session,scanpage sp) throws ParseException {
+		transactionhandler.handleTransaction(template,session,sp);
+		return "";	
 	}
 }
