@@ -1,13 +1,8 @@
 <mm:import externid="o" jspvar="ofs_str" vartype="String">0</mm:import>
-
-<mm:import from="cookie" id="conf_max" externid="my_editors_maxitems" jspvar="conf_max" vartype="String">25</mm:import>
-<mm:import from="cookie" id="conf_days" externid="my_editors_maxdays" jspvar="conf_days" vartype="String">999</mm:import>
+<mm:import from="cookie" id="conf_max"  externid="my_editors_maxitems" jspvar="conf_max" vartype="String">25</mm:import>
 <mm:import from="cookie" id="conf_list" externid="my_editors_typelist" jspvar="conf_list" vartype="String">editable</mm:import>
-
-<%-- mm:import externid="conf_max" jspvar="conf_max" vartype="String">25</mm:import>
-<mm:import externid="conf_days" jspvar="conf_days" vartype="String">999</mm:import>
-<mm:import externid="conf_list" jspvar="conf_list" vartype="String">editable</mm:import --%>
-
+<mm:import from="cookie" id="maxdays"   externid="my_editors_maxdays">99</mm:import>
+<mm:import from="parameters" externid="conf_days" jspvar="conf_days" vartype="String"><mm:write referid="maxdays" /></mm:import>
 <% // Set and get some values
 int max = Integer.parseInt(conf_max);
 int ofs = Integer.parseInt(ofs_str);
