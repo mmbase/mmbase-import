@@ -126,6 +126,8 @@ public class MMAdmin extends ProcessorModule {
 				startAppTool(appname);
 			} else if (token.equals("BUILDER")) {
 				doBuilderPosts(tok.nextToken(),cmds,vars);
+			} else if (token.equals("MODULE")) {
+				doModulePosts(tok.nextToken(),cmds,vars);
 			} else if (token.equals("MODULESAVE")) {
 				String modulename=(String)cmds.get(cmdline);
 				String savepath=(String)vars.get("PATH");
@@ -173,6 +175,8 @@ public class MMAdmin extends ProcessorModule {
 				return(getGuiNameValue(tok.nextToken(),tok.nextToken(),tok.nextToken()));
 			} else if (cmd.equals("GETBUILDERFIELD")) { 
 				return(getBuilderField(tok.nextToken(),tok.nextToken(),tok.nextToken()));
+			} else if (cmd.equals("GETMODULEPROPERTY")) { 
+				return(getModuleProperty(tok.nextToken(),tok.nextToken()));
 			} else if (cmd.equals("MODULEDESCRIPTION")) { 
 				return(""+getModuleDescription(tok.nextToken()));
 			} else if (cmd.equals("MODULECLASSFILE")) { 
@@ -218,6 +222,39 @@ public class MMAdmin extends ProcessorModule {
 			return(mod.getClassFile());
 		}
 		return("");
+	}
+
+	public void setModuleProperty(Hashtable vars) {
+		String modname=(String)vars.get("MODULE");
+		String key=(String)vars.get("PROPERTYNAME");
+		String value=(String)vars.get("VALUE");
+		Module mod=(Module)getModule(modname);
+		System.out.println("MOD="+mod);
+		if (mod!=null) {
+			mod.setInitParameter(key,value);
+			syncModuleXML(mod,modname);
+		}
+
+	}
+
+	String getModuleProperty(String modname,String key) {
+		/*
+		String path=MMBaseContext.getConfigPath()+("/modules/");
+		XMLModuleReader mod=new XMLModuleReader(path+modname+".xml");
+		if (mod!=null) {
+			Hashtable props=mod.getProperties();
+			String value=(String)props.get(key);
+			return(value);
+		}
+		*/
+		Module mod=(Module)getModule(modname);
+		if (mod!=null) {
+			String value=mod.getInitParameter(key);
+			if (value!=null) return(value);
+			
+		}
+		return("");
+		
 	}
 
 
@@ -1010,6 +1047,12 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 
+	public void doModulePosts(String command,Hashtable cmds,Hashtable vars) {
+		if (command.equals("SETPROPERTY")) {
+			setModuleProperty(vars);
+		}
+	}
+
 	public void doBuilderPosts(String command,Hashtable cmds,Hashtable vars) {
 		if (command.equals("SETGUINAME")) {
 			setBuilderGuiName(vars);
@@ -1333,5 +1376,10 @@ public class MMAdmin extends ProcessorModule {
 	public void syncBuilderXML(MMObjectBuilder bul,String builder) {
 		String savepath=MMBaseContext.getConfigPath()+("/builders/"+builder+".xml");
 		XMLBuilderWriter.writeXMLFile(savepath,bul);
+	}
+
+	public void syncModuleXML(Module mod,String modname) {
+		String savepath=MMBaseContext.getConfigPath()+("/modules/"+modname+".xml");
+		XMLModuleWriter.writeXMLFile(savepath,mod);
 	}
 }
