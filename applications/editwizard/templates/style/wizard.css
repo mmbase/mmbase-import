@@ -6,12 +6,11 @@
 
   This is the style specific to 'wizard' pages.
 
-  @version  $Id: wizard.css,v 1.9 2002-08-21 17:27:40 michiel Exp $
+  @version  $Id: wizard.css,v 1.10 2003-12-09 15:58:14 jaco Exp $
   
 */
 
 @import url("base.css");
-@import url("wysiwyg.css");
 
 
 table.body {

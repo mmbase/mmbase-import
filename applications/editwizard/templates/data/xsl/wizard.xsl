@@ -6,7 +6,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.101 2003-11-14 14:45:06 michiel Exp $
+  @version $Id: wizard.xsl,v 1.102 2003-12-09 15:56:55 jaco Exp $
   -->
 
   <xsl:import href="xsl/base.xsl"/>
@@ -224,28 +224,36 @@
     <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?referrer={$referrer}&amp;language={$language}">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script language="javascript" src="{$javascriptdir}wysiwyg.js">
+    <script language="javascript" src="../htmlarea/htmlarea.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <script language="javascript" src="../htmlarea/lang/en.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <script language="javascript" src="../htmlarea/dialog.js">
+      <xsl:comment>help IE</xsl:comment>
+    </script>
+    <style type="text/css">@import url(../htmlarea/htmlarea.css);</style>
+    <script language="javascript" src="../htmlarea/my-htmlarea.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script language="javascript">
       <xsl:text disable-output-escaping="yes">
         <![CDATA[<!--
           window.history.forward(1);
+        ]]></xsl:text>
+
+      // Store htmlarea names.
+      var htmlAreas = new Array();
+      <xsl:for-each select="//*[@ftype='html']">
+        htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
+      </xsl:for-each>
+
+      <xsl:text disable-output-escaping="yes">
+        <![CDATA[
           -->
         ]]></xsl:text>
     </script>
-    <xsl:if test="//*[@ftype='html']">
-<!-- no need to add the wysiwyg button bar if there are not fields of this type -->
-      <script language="javascript">
-        <xsl:text disable-output-escaping="yes">
-          <![CDATA[<!--
-            if (browserutils.ie5560win) {
-            window.attachEvent("onload",start_wysiwyg);
-            }
-            -->
-          ]]></xsl:text>
-      </script>
-    </xsl:if>
     <xsl:call-template name="extrajavascript"/>
   </xsl:template>
 
@@ -431,6 +439,9 @@
           <span>
             <xsl:text disable-output-escaping="yes">&lt;textarea
               name="</xsl:text>
+            <xsl:value-of select="@fieldname"/>
+            <xsl:text>"
+              id="</xsl:text>
             <xsl:value-of select="@fieldname"/>
             <xsl:text>"
               dttype="</xsl:text>
