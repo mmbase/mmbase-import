@@ -5,7 +5,7 @@
 	 <articleinfo>
 		<title>About MMBase Documentation</title>
 		<date>December 5, 2002</date>
-		<edition>$Id: documentation.xml,v 1.7 2003-02-11 22:23:06 michiel Exp $</edition>
+		<edition>$Id: documentation.xml,v 1.8 2003-05-09 13:30:41 henk Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -25,8 +25,9 @@
 		<title>Introduction</title>
 		<para>
 			This document will describe in what way MMBase is documented, and how you can contribute to
-			updating or adding to the MMBase documentation.
+			updating or adding to the MMBase documentation. But first have a look at the overview of available MMBase documentation and how it is organized. The documentation is mainly written for different target groups. Documents of one target group may be important for other target groups as well. For instance, backend and frontend developers will have also have to be familiar with the documents on builders and applications.
 		</para>
+		<graphic fileref="general/media/documentation.png"></graphic>
 		<para>
 			There are several sources of documentation and information available. There are a few
 			web-sites of the MMBase project (www.mmbase.org, foundation.mmbase.org, design.mmbase.org),
