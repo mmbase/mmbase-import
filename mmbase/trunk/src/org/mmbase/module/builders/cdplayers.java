@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: cdplayers.java,v 1.5 2000-03-31 13:27:52 wwwtech Exp $
+$Id: cdplayers.java,v 1.6 2000-11-27 14:18:25 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/31 13:27:52  wwwtech
+Wilbert: Introduction of ParseException for method getList
+
 Revision 1.4  2000/03/30 13:11:35  wwwtech
 Rico: added license
 
@@ -37,27 +40,50 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.5 $ $Date: 2000-03-31 13:27:52 $ 
+ * @version $Revision: 1.6 $ $Date: 2000-11-27 14:18:25 $ 
  */
 public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 
-	private boolean debug=false;
+	private boolean debug=true;
 
 	public cdplayers() {
 	}
 
-	
+	/**
+	 * Calls its super method and than calls nodeChanged. 
+     * @param number object number of node who's state has been changed remotely.
+     * @param builder a String with the buildername of the node that was changed remotely.
+     * @param ctype a String with the node change type.
+	 * @return result value of nodeChanged call.
+	 */
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
+		if (debug) debug("nodeRemoteChanged("+number+","+builder+","+ctype+"): Call super");
 		super.nodeRemoteChanged(number,builder,ctype);
 		return(nodeChanged(number,builder,ctype));
 	}
 
+	/**
+	 * Calls its super method and than calls nodeChanged. 
+     * @param number object number of node who's state has been changed.
+     * @param builder a String with the buildername of the node that was changed.
+     * @param ctype a String with the node change type.
+	 * @return result value of nodeChanged call.
+	 */
 	public boolean nodeLocalChanged(String number,String builder,String ctype) {
+		if (debug) debug("nodeLocalChanged("+number+","+builder+","+ctype+"): Call super");
 		super.nodeLocalChanged(number,builder,ctype);
 		return(nodeChanged(number,builder,ctype));
 	}
 
+	/**
+	 * Does nothing, returns immediately.
+     * @param number object number of node who's state has been changed.
+     * @param builder a String with the buildername of the node that was changed.
+     * @param ctype a String with the node change type.
+	 * @return true, always.
+	 */
 	public boolean nodeChanged(String number,String builder,String ctype) {
+		if (debug) debug("nodeChanged("+number+","+builder+","+ctype+"): Do nothing and return");
 		return(true);
 	}
 
@@ -110,12 +136,13 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 					result.addElement(trlen);
 				}
 			} catch(Exception e) {
+				debug("getHTMLDir: Error, NROFTRACKS doesn't contain an integer! "+e);
 			}
 		}
 		tagger.setValue("ITEMS","3");
+		debug("getHTMLDir: returning result: "+result);
 		return(result);
 	}
-
 
 	/**
 	* replace all for frontend code
@@ -125,11 +152,10 @@ public class cdplayers extends ServiceBuilder implements MMBaseObserver {
 			String cmd=tok.nextToken();
 			System.out.println("cdplayers -> "+cmd);
 			if (cmd.equals("claim")) {
+				debug("replace: Command is: 'claim', calling doClaim()");
 				doClaim(tok);
 			}
 		}
 		return("");
 	}
-
-	
 }
