@@ -13,6 +13,7 @@ import java.sql.*;
 
 import javax.sql.DataSource;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.database.JDBCInterface;
 import org.mmbase.storage.StorageInaccessibleException;
@@ -27,7 +28,7 @@ import org.mmbase.storage.StorageInaccessibleException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.2 2003-08-29 12:12:27 keesj Exp $
+ * @version $Id: GenericDataSource.java,v 1.3 2003-10-13 08:36:10 keesj Exp $
  */
 public final class GenericDataSource implements DataSource {
 
@@ -45,7 +46,7 @@ public final class GenericDataSource implements DataSource {
      * @throws StorageInaccessibleException if the JDBC module used in creating the datasource is inaccessible
      */
     public GenericDataSource(MMBase mmbase) throws StorageInaccessibleException {
-        jdbc = (JDBCInterface)mmbase.getModule("JDBC", true);
+        jdbc = (JDBCInterface)Module.getModule("JDBC", true);
         if (jdbc == null) {
             throw new StorageInaccessibleException("Cannot load Datasource or JDBC Module");
         }
