@@ -40,6 +40,14 @@ public class ListNodesTag extends AbstractNodeListTag {
      * Performs the search
      */
     public int doStartTag() throws JspTagException{
+        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
+        }
+        if (typeString == null) {
+            throw new JspTagException("Attribute 'type' must be provided in listnodes tag (unless referid is given)");
+        }
+
         NodeManager manager=getCloudProviderVar().getNodeManager(typeString);
         NodeList nodes = manager.getList(whereString,sortedString,directionString);
         return setReturnValues(nodes,true);
