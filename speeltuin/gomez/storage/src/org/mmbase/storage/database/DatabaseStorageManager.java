@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.15 2003-08-01 14:16:12 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.16 2003-08-01 15:00:21 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -198,6 +198,33 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     abstract public int createKey() throws StorageException;
+
+    // create key using number table
+    // use schemes???
+    //
+    //  GET_CURRENT_NUMBER = SELECT max({1}) FROM {0}
+    //  CREATE_SEQUENCE = CREATE TABLE {0}_numberTable {1] {2}
+    //  INITIALIZE_SEQUENCE = INSERT INTO {0}_numberTable ({1}) VALUES ({2}) 
+    //  UPDATE_SEQUENCE  =  UPDATE {0}_numberTable SET {1} = {1} +1
+    //  GET_SEQUENCE == SELECT {1} FROM {0}_numberTable
+    
+    private int createKeyFromNumberTable () throws StorageException {
+        try {
+            Scheme scheme = new Scheme(factory, "UPDATE {0}_numberTable SET {1} = {1} +1");
+            String query = scheme.format(new Object[] { this, "number" });
+            getActiveConnection();
+            Statement s = activeConnection.createStatement();
+            s.executeUpdate(query);
+            scheme = new Scheme(factory, "SELECT {1} FROM {0}_numberTable");
+            query = scheme.format(new Object[] { this, "number" });
+            ResultSet result = s.executeQuery(query);
+            return result.getInt(1);
+        } catch (SQLException se) {
+            throw new StorageException(se);
+        } finally {
+            releaseActiveConnection();
+        }
+    }
 
     public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
