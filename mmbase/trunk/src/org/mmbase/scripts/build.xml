@@ -533,7 +533,8 @@ Change directory to ${build.dir}/orion and run:
   <target name="jar" description="Create the MMBase jar file"
           depends="compile">
     <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
-         basedir="${build.dir}/classes"/>
+         basedir="${build.dir}/classes"
+	 includes="org/mmbase/**" />
   </target>
 
 
@@ -543,7 +544,8 @@ Change directory to ${build.dir}/orion and run:
   <target name="jar.cust" description="Create a customized MMBase jar file"
           depends="compile.cust">
     <jar jarfile="${build.dir}/mmbase.jar"
-         basedir="${build.dir}/classes"/>
+         basedir="${build.dir}/classes"
+	 includes="org/mmbase/**" />
   </target>
 
 
@@ -581,7 +583,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- them from here, depending on this 'web' target                      -->
   <!-- =================================================================== -->
   <target name="web" description="Make the things which must appear web-servers html directory"
-          depends="init.compile">
+         depends="init.compile">
     <mkdir dir="${web.dir}"/>
 
     <echo message="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
@@ -632,10 +634,16 @@ Change directory to ${build.dir}/orion and run:
       </fileset>
     </copy>
     <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
+             token="!ENTITY logdir   &quot;/tmp/&quot; "
+             value="!ENTITY logdir   &quot;${build.dir}/tomcat/logs/&quot; " />
+    <!--
+    <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
              token="DOCTYPE log4j:configuration"
              value="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"/>
+    -->
     <!-- Prevent multiple replaces by multiple builds by allways copying the
          file. -->
+
     <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
           todir="${build.dir}/tomcat/bin"
           overwrite="yes"/>
@@ -756,8 +764,11 @@ Change directory to ${build.dir}/orion and run:
     </copy>
     <echo message="log4j.dtd:  ${log4j.dtd}" />
     <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
-             token="DOCTYPE log4j:configuration"
+             token="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"
              value="DOCTYPE log4j:configuration SYSTEM &quot;${log4j.dtd}&quot;"/>
+    <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
+             token="!ENTITY logdir   &quot;/tmp/&quot;"
+             value="!ENTITY logdir   &quot;${build.dir}/orion/log/&quot;" />
     <copy file="${mmbase.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/orion/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/orion/lib"/>
