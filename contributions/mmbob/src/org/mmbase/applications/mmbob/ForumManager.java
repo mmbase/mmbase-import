@@ -234,14 +234,15 @@ public class ForumManager {
     }
 
     /**
-     * ToDo: Write docs!
-     * very ugly need to be beter
+     * Remove the given deleted node from the sync queues
+     * ToDo: very ugly need to be beter
      * @param node
      */
     public static void nodeDeleted(org.mmbase.bridge.Node node) {
         if (syncfast != null) {
             syncfast.nodeDeleted(node);
-        } else if (syncslow != null) {
+        }
+        if (syncslow != null) {
             syncslow.nodeDeleted(node);
         }
     }
