@@ -9,20 +9,16 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.module;
 
-//java classes
 import java.rmi.*;
 import java.rmi.registry.*;
 
-//mmbase bridge classes
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.remote.*;
 import org.mmbase.bridge.remote.rmi.*;
 import org.mmbase.bridge.remote.implementation.*;
 
-//logging class
 import org.mmbase.util.logging.*;
 
-//legacy class
 import org.mmbase.module.ProcessorModule;
 
 
@@ -30,14 +26,14 @@ import org.mmbase.module.ProcessorModule;
 /**
  * RemoteMMCI is a MMBase module that starts a Remote Method Invocation
  * registry and binds a remote MMCI to the server. Look a rmmci.xml for configuration
- * options
+ * options. Note in the configuration of mmbaseroot.xml the host should be a valid
+ * host address.
  * @Author Kees Jongenburger <keesj@framfab.nl>
+ * @version $Id: RemoteMMCI.java,v 1.2 2001-11-16 11:09:47 kees Exp $
  */
-public class RemoteMMCI
-extends ProcessorModule
-implements Runnable {
+public class RemoteMMCI extends ProcessorModule {
     
-    //get an instance initialize the logger
+    //get an instance and initialize the logger
     private static Logger log = Logging.getLoggerInstance(RemoteMMCI.class.getName());
     
     /**
@@ -46,27 +42,24 @@ implements Runnable {
     public static final int DEFAULT_RMIREGISTRY_PORT = 1111;
     
     /**
-     * DEFAULT_SLEEP_TIME =30 , seconds.
-     * When MMBase is stated
-     */
-    public static final int DEFAULT_SLEEP_TIME= 30;
-    
-    /**
      * DEFAULT_BIND_NAME = "remotecontext"
      */
     public static final String DEFAULT_BIND_NAME = "remotecontext";
     
-    private int registryPort = DEFAULT_RMIREGISTRY_PORT;
-    private int sleepTime = DEFAULT_SLEEP_TIME;
-    private String bindName = DEFAULT_BIND_NAME;
-    
-    
+    /**
+     * Method called by MMBase at startup
+     * it calls the createRemoteMMCI based on the rmmci.xml configuration
+     */
     public void init() {
         super.init(); // is this required?
         
         log.debug("Module RemoteMMCI starting");
         
-        //read the server port from the xml configuration
+        //set the class default hard coded start values
+        int registryPort = DEFAULT_RMIREGISTRY_PORT;
+        String bindName = DEFAULT_BIND_NAME;
+        
+        //read the server port from the configuration
         String portString  = getInitParameter("port");
         if (portString != null){
             try{
@@ -76,42 +69,27 @@ implements Runnable {
             log.warn("missing port init param, using (default)=("+ registryPort +")");
         }
         
-        String sleepTimeString = getInitParameter("sleeptime");
-        if (sleepTimeString != null){
-            try{
-                sleepTime = Integer.parseInt(sleepTimeString);
-            } catch (NumberFormatException nfe){ log.warn("sleeptime parameter of rmmci.xml if not ot type int");};
-        } else {
-            log.warn("missing sleeptime init param, using (default)=("+ sleepTime +")");
-        }
-        
         String bindNameParam = getInitParameter("bindname");
         if (bindNameParam != null){
             bindName = bindNameParam;
         } else {
             log.warn("missing bindname init param, using (default)=("+ bindName +")");
         }
-        
-        //start a new "kicker"
-        new Thread(this,"RMIServerStarterThread").start();
+        createRemoteMMCI(registryPort,bindName);
     }
     
+    
+    
     /**
-     * starter Thread. The Tread sleeps for a while. after that
-     * a new rmi registry is created the RemoteCloudContext is bind the the rmi registry
-     * and the Thread stops
+     * This method creates the RMI registry at a specific port and binds a new RemoteContext
+     * @param registryPort the registry port to start the RMI registry
+     * @param bindName the name of the object (aka remotecontext)
      */
-    public void run(){
+    private void createRemoteMMCI(int registryPort,String bindName){
         try {
-            log.debug("Waiting for MMBase to startup. Sleeping " +  sleepTime + " seconds");
-            //wait for a wile for MMBase to be started
-            try {Thread.sleep(sleepTime * 1000);} catch (InterruptedException ie){
-                log.warn("Module RemoteMMCI interrupted during startup sleep. still continuing");
-            };
-            
-            
             try {
-                ProcessorModule mmbase = (ProcessorModule)getModule("MMBASEROOT");
+                // load MMBase and make sure it is started first
+                ProcessorModule mmbase = (ProcessorModule)getModule("MMBASEROOT",true);
                 String host = mmbase.getInitParameter("host");
                 log.debug("using host FROM MMBASEROOT " + host);
                 java.net.InetAddress.getByName(host);
@@ -119,7 +97,6 @@ implements Runnable {
             } catch (java.net.UnknownHostException uhn){
                 log.warn("property host in mmbaseroot.xml is not set correctly.");
                 log.warn("Chances are big the Remote MMCI will nog work");
-                log.warn("An other possibility is that the MMBase module MMBASEROOT is not started yet");
             }
             
             // Start up the registry, this sloud be optional to be able to run a single
@@ -130,10 +107,11 @@ implements Runnable {
             log.debug("Create the remote context");
             
             // Create the Database object
-            //interace RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
+            //interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
             RemoteCloudContext remoteCloudContext = new RemoteCloudContext_Rmi(LocalContext.getCloudContext());
             
             log.debug("bind RempoteCloudContext in the registry using (name)=("+ bindName +")");
+            
             //bind it to the registry.
             reg.rebind(bindName,remoteCloudContext);
             log.info("Module RemoteMMCI Running on tcp (port,name)=("+ registryPort +","+ bindName +")");
