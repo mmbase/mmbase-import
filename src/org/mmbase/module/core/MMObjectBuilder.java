@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.268 2004-05-13 09:17:46 rob Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.269 2004-06-28 21:36:34 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -87,10 +87,11 @@ public class MMObjectBuilder extends MMTable {
 
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter("field",    String.class),
-        Parameter.LANGUAGE, // should add Locale
+        Parameter.LANGUAGE, 
         new Parameter("session",  String.class),
         Parameter.RESPONSE,
-        Parameter.REQUEST
+        Parameter.REQUEST,
+        Parameter.LOCALE
     //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
     };
@@ -2796,14 +2797,14 @@ public class MMObjectBuilder extends MMTable {
                 return info.get(arguments.get(0));
             }
        } else if (function.equals("wrap")) {
-            if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currenty:" + arguments.size() + " : "  + arguments + ")");
+            if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
             try {
                 String val  = node.getStringValue((String)arguments.get(0));
                 int wrappos = Integer.parseInt((String)arguments.get(1));
                 return wrap(val, wrappos);
             } catch(Exception e) {}
         } else if (function.equals("substring")) {
-            if (arguments.size() < 2) throw new IllegalArgumentException("substring function needs 2 or 3 arguments (currenty:" + arguments.size() + " : "  + arguments + ")");
+            if (arguments.size() < 2) throw new IllegalArgumentException("substring function needs 2 or 3 arguments (currently:" + arguments.size() + " : "  + arguments + ")");
             try {
                 String val = node.getStringValue((String)arguments.get(0));
                 int len    = Integer.parseInt((String)arguments.get(1));
@@ -2832,30 +2833,52 @@ public class MMObjectBuilder extends MMTable {
                 log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
             }
         } else if (function.equals("gui")) {
-            if (log.isDebugEnabled()) log.debug("GUI of builder with " + arguments);
+            if (log.isDebugEnabled()) {
+                log.debug("GUI of builder with " + arguments);
+            }
             if (arguments == null || arguments.size() == 0) {
                 return getGUIIndicator(node);
             } else {
-                String rtn;
-                String field = (String) arguments.get(0);
-                Locale locale = null;
-                if (arguments.size() < 2) { // support for login info not needed
-                    rtn = getGUIIndicator(field, node);
+                Parameters pars = Parameters.get(GUI_PARAMETERS, arguments);
+
+                Locale locale = (Locale) pars.get(Parameter.LOCALE);
+                String language = (String) pars.get(Parameter.LANGUAGE);
+                if (locale == null) {
+                    if (language != null) {
+                        locale = new Locale(language, "");
+                    }
                 } else {
-                    String language = (String) arguments.get(1);
-                    if (language == null) language = mmb.getLanguage();
-                    locale = new Locale(language, "");
-                    if (null == field || "".equals(field)) {
+                    if (language != null && (! locale.getLanguage().equals(language))) { // odd, but well, 
+                        locale = new Locale(language, locale.getCountry());
+                    }
+                }
+                if (locale == null) locale = mmb.getLocale();
+
+                if (log.isDebugEnabled()) {
+                    log.debug("language " + locale.getLanguage() + " country " + locale.getCountry());
+                }
+
+                String rtn;
+                String field = pars.getString("field");
+
+                if (locale == null) {
+                    if ("".equals(field)) {
+                        rtn = getGUIIndicator(node);
+                    } else {
+                        rtn = getGUIIndicator(field, node);
+                    }
+                } else {
+                    if ("".equals(field)) {
                         rtn = getLocaleGUIIndicator(locale, node);
                     } else {
                         rtn = getLocaleGUIIndicator(locale, field, node);
                     }
                 }
 
+
                 if (rtn == null) {
                     FieldDefs fdef = getField(field);
                     if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
-                        if (locale == null) locale = new Locale(mmb.getLanguage(), "");
                         Date date = new Date(node.getLongValue(field) * 1000);
                         rtn = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale).format(date);
                         Calendar calendar = new GregorianCalendar(locale);

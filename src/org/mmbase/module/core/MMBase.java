@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.114 2004-05-03 14:56:32 keesj Exp $
+ * @version $Id: MMBase.java,v 1.115 2004-06-28 21:36:34 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -301,7 +301,7 @@ public class MMBase extends ProcessorModule {
 
     /**
      * Initalizes the MMBase module. Evaluates the parameters loaded from the configuration file.
-     * Sets parameters (authorisation, langauge), loads the builders, and starts MultiCasting.
+     * Sets parameters (authorisation, language), loads the builders, and starts MultiCasting.
      */
     public void init() {
         log.service("Init of " + org.mmbase.Version.get() + " (" + this + ")");
@@ -459,7 +459,7 @@ public class MMBase extends ProcessorModule {
         try {
             mmbaseCop = new MMBaseCop(MMBaseContext.getConfigPath() + File.separator + "security" + File.separator + "security.xml");
         } catch (Exception e) {
-            log.fatal("error loading the mmbase cop: " + e.toString());
+            log.fatal("error loading the mmbase cop: " + e.getMessage());
             log.error(Logging.stackTrace(e));
             log.error("MMBase will continue without security.");
             log.error("All future security invocations will fail.");
@@ -758,7 +758,8 @@ public class MMBase extends ProcessorModule {
                 // lock until up. (Init is synchronized on this too)
             }
         }
-    }
+    }        
+
 
     /**
      * Get a database connection that is multiplexed and checked.
@@ -775,11 +776,8 @@ public class MMBase extends ProcessorModule {
             try {
                 con = database.getConnection(jdbc);
             } catch (SQLException sqle) {
-                log.fatal(
-                    "Could not get a multi-connection, will try again over "
-                        + timeout
-                        + " seconds: "
-                        + sqle.getMessage());
+                log.fatal("Could not get a multi-connection, will try again over " + timeout + " seconds: " + sqle.getMessage());
+
                 if (tries == 1) {
                     log.error(Logging.stackTrace(sqle));
                 } else {
@@ -1504,12 +1502,21 @@ public class MMBase extends ProcessorModule {
     /**
      * Retrieves the current language.
      * This value is set using the configuration file.
-     * Examples are 'us' or 'nl'.
+     * Examples are 'en' or 'nl'.
      * @return the language as a <code>String</code>
      */
     public String getLanguage() {
         return locale.getLanguage();
     }
+
+    /**
+     * Retrieves the current locale. 
+     * @since MMBase-1.8
+     */
+    public Locale getLocale() {
+        return locale;
+    }
+
 
     /**
      * Retrieves the encoding.
