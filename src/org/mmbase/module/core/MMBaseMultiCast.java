@@ -46,6 +46,8 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 		this.parent=parent;
 		if (parent.multicasthost!=null) multicastaddress=parent.multicasthost;
 		if (parent.multicastport!=-1) mport=parent.multicastport;
+		System.out.println("M="+multicastaddress);
+		System.out.println("P="+mport);
 
 		init();
 	}
@@ -128,6 +130,10 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 	}
 
 	public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype) {
+
+		// check if MMBase is 100% up and running, if not eat event
+		if (!parent.getState()) return(true);
+
 		//System.out.println("M='"+machine+"' vnr='"+vnr+"' id='"+id+"' tb='"+tb+"' ctype='"+ctype+"'");
 		MMObjectBuilder bul=parent.getMMObject(tb);
 		if (bul==null) {
