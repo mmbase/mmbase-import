@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.bridge.jsp.taglib.Writer;
 import org.mmbase.bridge.jsp.taglib.WriterHelper;
@@ -28,13 +29,12 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * A Tag to produce an URL with parameters. This meant to live in a
- * Context of type 'parameters'.
+ * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
  *
  * @author Michiel Meeuwissen
  */
 
-public class UrlTag extends CloudReferrerTag  implements Writer {
+public class UrlTag extends CloudReferrerTag  implements Writer, ParamHandler {
 
     private static Logger log = Logging.getLoggerInstance(UrlTag.class.getName()); 
     protected WriterHelper helper = new WriterHelper();
@@ -54,24 +54,24 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
 
-    private   List  referids = null;
-    protected Map   extraParameters = null;
-    protected String  page;
-    private   boolean escapeAmps = true;
+    private   Attribute referids = Attribute.NULL;
+    protected Map extraParameters = null;
+    protected Attribute  page = Attribute.NULL;
+    private   Attribute escapeAmps = Attribute.NULL;
 
     public void setReferids(String r) throws JspTagException {
-        referids = StringSplitter.split(getAttributeValue(r));
+        referids = getAttribute(r);
     }
 
     public void setPage(String p) throws JspTagException {
-        page = getAttributeValue(p);
+        page = getAttribute(p);
     }
 
     public void setEscapeamps(String e) throws JspTagException {
-        escapeAmps = getAttributeValue(e).equalsIgnoreCase("true");
+        escapeAmps = getAttribute(e);
     }
 
-    protected void addParameter(String key, Object value) throws JspTagException {
+    public void addParameter(String key, Object value) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("adding parameter " + key + "/" + value);
         }
@@ -83,10 +83,6 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     public int doStartTag() throws JspTagException {
         log.debug("starttag");
         extraParameters = new HashMap();
-        if (page == null || "".equals(page)) {
-            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            page = new java.io.File(req.getRequestURI()).getName();
-        }
         return EVAL_BODY_BUFFERED;
     }
 
@@ -94,21 +90,25 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
      * Returns url with the extra parameters (of referids and sub-param-tags).
      */
     protected String getUrl(boolean writeamp, boolean encode) throws JspTagException {
-        StringBuffer show = new StringBuffer(page);
+        StringBuffer show = new StringBuffer(page.getString(this));
+        if (show.toString().equals("")) {
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest) pageContext.getRequest();
+            show.append(new java.io.File(req.getRequestURI()).getName());
+        }
+
         String amp = (writeamp ? "&amp;" : "&");
 
-        if (show.charAt(0) == '/') { // absolute on servercontex
+        if (show.charAt(0) == '/') { // absolute on servletcontex
             log.debug("'absolute' url");
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-            //String thisDir = new java.io.File(req.getServletPath()).getParent().toString();
-            //show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
-            show.insert(0,  req.getContextPath());            
-        }
+            String thisDir = new java.io.File(req.getServletPath()).getParent();
+            show.insert(0,  org.mmbase.util.UriParser.makeRelative(thisDir, "/")); // makes a relative path to root.
+        } 
 
         String connector = (show.toString().indexOf('?') == -1 ? "?" : amp);
 
-        if (referids != null) {
-            Iterator i = referids.iterator();
+        if (referids != Attribute.NULL) {
+            Iterator i = referids.getList(this).iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
                 String value = getString(key);
@@ -140,7 +140,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
 
     }
     protected String getUrl() throws JspTagException {
-        return getUrl(escapeAmps);
+        return getUrl(escapeAmps.getBoolean(this, true));
     }
     protected String getUrl(boolean e) throws JspTagException {
         return getUrl(e, true);
