@@ -1038,7 +1038,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
     <attribute>
         <name>field</name>
-        <required>true</required>
+        <required>false</required>
+	    <requirednote>Use 'name'. 'field' is obsolete. But use one of them.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>name</name>
+        <required>false</required>
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
@@ -1442,7 +1448,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>input</value>
 	<info>
 	A form entry for the field. This can only be used if the
-        FieldList was in a NodeProvider tag, of if you have provided
+        FieldList was in a Noderovider tag, of if you have provided
         the `nodemanager' attribute. If the FieldList has an id, the
         names of the form entries will be prefixed with it.
         </info>
