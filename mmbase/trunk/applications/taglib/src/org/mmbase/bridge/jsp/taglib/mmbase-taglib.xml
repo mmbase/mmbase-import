@@ -437,11 +437,6 @@ one or more examplevalue tags is you want to give some example values.
       </info>
     </attribute>
     <attribute>
-      <name>fields</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
       <name>constraints</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -522,11 +517,6 @@ one or more examplevalue tags is you want to give some example values.
       <requirednote>
         You cannot use 'orderby' or 'constraints' if you do not use 'type'.
       </requirednote>
-    </attribute>
-    <attribute>
-      <name>fields</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
       <name>constraints</name>
@@ -815,8 +805,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-       The name of the Jsp variable to export by cloud. If not
-       specified, then a variable with name `cloud' will exist.
+       The name of the Jsp variable to export by cloud. 
       </info>
     </attribute>
 
@@ -921,17 +910,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
          <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The name of the node manager, identifying the node in a list or related list tag.
-	</info>
-    </attribute>
-    <attribute>
-        <name>fields</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  The fields you want to have from this node. Other fields are
-	  available as well, but will only be accessible with the
-	  field-tag. Field indicated in this `fields' attribute will
-	  also get a jsp-variable.
 	</info>
     </attribute>
   </tag>
@@ -1404,11 +1382,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
-        <name>fields</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
         <name>jspvar</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
@@ -1662,7 +1635,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>type</name>
+        <name>vartype</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
 	<info>
@@ -1691,6 +1664,13 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <name>write</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	    <info>Wether to write to the page or not. Normally the default value will suffice</info>
+    </attribute>
+    <attribute>
+        <name>session</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+	    <info>You can also put things into the session with this.</info>
     </attribute>
     <example>&lt;!-- write the variable `hoi' to the page --&gt;
 &lt;mm:write referid="hoi" /&gt;</example>
@@ -1793,7 +1773,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>type</name>
+        <name>vartype</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
 	<info>
@@ -1867,8 +1847,8 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
 	<info>
-	In stead of writing to the page, you can also write the
-	resulting URL to a jsp variable.
+		In stead of writing to the page, you can also write the
+		resulting URL to a jsp variable.
 	</info>
     </attribute>    
     <attribute>
@@ -1878,6 +1858,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	     The produced string can also be put in the context, for later
 	     reuse with the write tag.
 	   </info>
+    </attribute>
+	    <attribute>
+        <name>write</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
   <tag>
@@ -1939,11 +1924,13 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     <attribute>
         <name>referid</name>
-        <required>true</required>
+        <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 		<refercontext>true</refercontext>
 	<info>
-	The context variable to compare to.
+	The context variable to compare to. If not present, than the value
+	of the surrounding Writer tag will be compared.
+
 	 </info>
     </attribute>
     <attribute>
