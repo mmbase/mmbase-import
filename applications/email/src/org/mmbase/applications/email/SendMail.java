@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @since  MMBase-1.6
  */
 public class SendMail extends AbstractSendMail {
-    private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(SendMail.class);
     private Session session;
 
     public void reload() {

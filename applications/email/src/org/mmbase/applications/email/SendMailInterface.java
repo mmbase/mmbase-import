@@ -12,6 +12,9 @@ package org.mmbase.applications.email;
 import java.util.*;
 import org.mmbase.util.*;
 
+/**
+ * @javadoc
+ */
 
 public interface SendMailInterface {
     public boolean sendMail(String from, String to, String data);
