@@ -11,7 +11,8 @@ package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -21,13 +22,15 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Jaco de Groot
  * @author Michiel Meeuwissen
- * @version $Id: CountRelationsTag.java,v 1.14 2003-06-06 10:03:07 pierre Exp $ 
+ * @version $Id: CountRelationsTag.java,v 1.15 2003-08-06 19:43:06 michiel Exp $ 
  */
 
 public class CountRelationsTag extends NodeReferrerTag implements Writer {
 
-    private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
-    private Attribute type = Attribute.NULL;
+    private static Logger log   = Logging.getLoggerInstance(CountRelationsTag.class);
+    private Attribute type      = Attribute.NULL;
+    private Attribute searchDir = Attribute.NULL;
+    private Attribute role      = Attribute.NULL;
 
     /**
      * Set the type of related nodes wich should be counted. If not set all
@@ -37,6 +40,14 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         this.type = getAttribute(type);
     }
 
+    public void setSearchdir(String s) throws JspTagException {
+        searchDir = getAttribute(s);
+    }
+
+    public void setRole(String r) throws JspTagException {
+        role = getAttribute(r);
+    }
+
     public int doStartTag() throws JspTagException {
         helper.setTag(this);
         if (getReferid() != null) {
@@ -44,11 +55,15 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         } else {
             log.debug("Search the node.");
             Node node = getNode();
-            if (type == Attribute.NULL) {
-                helper.setValue(new Integer(node.countRelations()));
-            } else {
-                helper.setValue(new Integer(node.countRelatedNodes(type.getString(this))));
+            NodeManager other = type      == Attribute.NULL ? getCloud().getNodeManager("object") : getCloud().getNodeManager(type.getString(this));
+            int search = RelationStep.DIRECTIONS_BOTH;
+            if (searchDir != Attribute.NULL) {
+                String string = searchDir.getString(this).toLowerCase();
+                for (search = 0; search < RelationStep.DIRECTIONALITY_NAMES.length; search ++) {
+                    if (string.equals(RelationStep.DIRECTIONALITY_NAMES[search])) break;
+                }
             }
+            helper.setValue(new Integer(node.countRelatedNodes(other, (String) role.getValue(this), search)));
         }
         if (getId() != null) {
             getContextProvider().getContainer().register(getId(), helper.getValue());
