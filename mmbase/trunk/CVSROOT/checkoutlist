@@ -12,5 +12,5 @@
 #
 # comment lines begin with '#'
 
-CVSROOT/xmlvalidate.pl  No XML-validation script could be found 
-CVSROOT/log/cvsmail     No mails script could be found 
+xmlvalidate.pl  No XML-validation script could be found 
+log/cvsmail     No mails script could be found 
