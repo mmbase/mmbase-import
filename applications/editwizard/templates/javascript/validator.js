@@ -1,9 +1,20 @@
+/**
+ * validator.jsp
+ * Routines for validating the edit wizard form
+ *
+ * @since    MMBase-1.6
+ * @version  $Id: validator.js,v 1.3 2002-05-27 09:50:47 pierre Exp $
+ * @author   Kars Veling
+ * @author   Pierre van Rooden
+ */
+
 //constructor
 function Validator() {
     //properties
 
     //methods
 }
+
 Validator.prototype.attach = attach_validator;
 Validator.prototype.detach = detach_validator;
 Validator.prototype.validate = validate_validator;
@@ -157,7 +168,7 @@ function validateElement_validator(el, silent) {
         var description=prompt.getAttribute("description");
         if (err.length > 0) {
             prompt.title = description+" \n\n"+getToolTipValue(form,"message_thisnotvalid",
-                                  "This field is not valid")+":\n "err;
+                                  "This field is not valid")+":\n "+err;
             try {
                 window.status = getToolTipValue(form,"message_notvalid",
                                 "The {0} is not valid",orgprompt)+": "+err;

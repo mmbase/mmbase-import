@@ -1,4 +1,16 @@
 <% response.setContentType("text/javascript"); %>
+/**
+ * editwizard.jsp
+ * Routines for refreshing the edit wizard,
+ * interaction between form elements, navigation,
+ * and validation (in validator.js)
+ *
+ * @since    MMBase-1.6
+ * @version  $Id: editwizard.jsp,v 1.5 2002-05-27 09:50:47 pierre Exp $
+ * @author   Kars Veling
+ * @author   Pierre van Rooden
+ */
+
 var form = null;
 var validator = new Validator();
 
