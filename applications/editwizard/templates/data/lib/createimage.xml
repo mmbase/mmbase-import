@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<wizard-schema>
+	<title>Create image</title>
+
+	<action type="create">
+		<object type="images">
+		</object>
+	</action>
+	
+	<action type="load">
+  </action>
+
+	<form-schema id="step1">
+		<title>Image upload</title>
+		
+		<field name="title" dtminlength="1" dtmaxlength="255">
+			<prompt>Titel</prompt>
+		</field>
+		
+		<field name="description" dtminlength="0" dtmaxlength="*" rows="8">
+			<prompt>Omschrijving</prompt>
+		</field>
+		
+		<field name="handle" dttype="image" ftype="upload">
+			<prompt>upload</prompt>
+		</field>
+
+  	</form-schema>	
+</wizard-schema>
