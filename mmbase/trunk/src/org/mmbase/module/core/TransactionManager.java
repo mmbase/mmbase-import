@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.14 2001-02-05 11:41:15 daniel Exp $
+	$Id: TransactionManager.java,v 1.15 2001-02-23 11:19:31 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.14  2001/02/05 11:41:15  daniel
+	changed some debug, they did not seem to be errors and resulted in alot of output
+	
 	Revision 1.13  2001/01/08 13:14:17  vpro
 	Rico: fixed semantics of deleteObject
 	
@@ -61,7 +64,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.14 2001-02-05 11:41:15 daniel Exp $
+ * @version $Id: TransactionManager.java,v 1.15 2001-02-23 11:19:31 install Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -241,6 +244,7 @@ public class TransactionManager implements TransactionManagerInterface {
 					// if (!debug) transactions.remove(transactionname);
 				}
 			}
+			transactions.remove(transactionname);
 		} else {
 			debug("Can't find transaction "+transactionname);
 		}
