@@ -164,15 +164,18 @@
 			</input>
 		</xsl:when>
 		<xsl:when test="@ftype='text'">
-			<textarea name="{@fieldname}" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
-			<xsl:choose>
-				<xsl:when test="@rows"><xsl:attribute name="rows"><xsl:value-of select="@rows" /></xsl:attribute></xsl:when>
-				<xsl:otherwise><xsl:attribute name="rows">10</xsl:attribute></xsl:otherwise>
-			</xsl:choose>
-			<xsl:apply-templates select="@*" />
-				<xsl:value-of select="value" />
-			</textarea>
-		</xsl:when>
+ 			<xsl:text disable-output-escaping="yes">&lt;textarea name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>" class="width400" wrap="soft" cols="80" onkeyup="validate_validator(event);" onblur="validate_validator(event);"</xsl:text>			
+ 			<xsl:choose>
+             <xsl:when test="@rows">
+                 <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
+ 			</xsl:when>
+             <xsl:otherwise>
+                 <xsl:text>rows="10"</xsl:text>
+             </xsl:otherwise></xsl:choose>
+             <xsl:apply-templates select="@*" />
+             <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of select="value" />
+ 			<xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
+	    </xsl:when>
 		<xsl:when test="@ftype='relation' or @ftype='enum'">
 			<select name="{@fieldname}" class="width400" onchange="validate_validator(event);" onblur="validate_validator(event);">
 			<xsl:apply-templates select="@*" />
