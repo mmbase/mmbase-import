@@ -26,7 +26,7 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.27 2005-02-05 13:24:12 andre Exp $
+ * @version $Id: RelatedTag.java,v 1.28 2005-02-06 20:42:25 andre Exp $
  */
 public class RelatedTag extends ListTag {
     // private static final Logger log = Logging.getLoggerInstance(RelatedTag.class);
@@ -34,7 +34,7 @@ public class RelatedTag extends ListTag {
     protected Node getBaseNode() throws JspTagException {
         if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
             // return getCloudVar().getNode((String)StringSplitter.split(nodes.getString(this), ",").get(0));
-            String[] ns = nodes.getString(this).split(",");
+            String[] ns = nodes.getString(this).replaceAll("\\s", "").split(",");
             return getCloudVar().getNode( ns[0] );
         } else {
             return getNode();

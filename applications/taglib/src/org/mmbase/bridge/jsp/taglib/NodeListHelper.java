@@ -18,14 +18,13 @@ import javax.servlet.jsp.tagext.*;
 import org.mmbase.bridge.*;
 import java.io.IOException;
 
-// import org.mmbase.util.StringSplitter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.11 2005-02-05 13:24:12 andre Exp $
+ * @version $Id: NodeListHelper.java,v 1.12 2005-02-06 20:42:25 andre Exp $
  * @since MMBase-1.7
  */
 
@@ -276,7 +275,7 @@ public class NodeListHelper implements ListProvider {
                 // then you can also ask if 'changed' the node
                 // look only at first field of sorted for the /moment.
                 // String f = (String) StringSplitter.split(listOrder).get(0);
-                String[] fa = listOrder.split(",");
+                String[] fa = listOrder.replaceAll("\\s", "").split(",");
                 String value = "" + next.getValue(fa[0]); // cannot cast  to String, since it can also be e.g. Integer.
                 if (previousValue != null) {
                     if (value.equals(previousValue)) {

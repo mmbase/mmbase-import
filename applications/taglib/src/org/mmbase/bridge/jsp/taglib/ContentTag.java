@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.30 2005-02-05 13:24:12 andre Exp $
+ * @version $Id: ContentTag.java,v 1.31 2005-02-06 20:42:25 andre Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -284,7 +284,7 @@ public class ContentTag extends LocaleTag  {
         if (id.indexOf(',') > 0) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
-            Iterator ids = Arrays.asList(id.split(",")).iterator();
+            Iterator ids = Arrays.asList( id.replaceAll("\\s", "").split(",") ).iterator();
             while (ids.hasNext()) {
                 String i = (String) ids.next();
                 CharTransformer c = (CharTransformer) charTransformers.get(i);
