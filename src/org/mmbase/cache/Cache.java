@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.14 2002-10-29 23:55:06 michiel Exp $
+ * @version $Id: Cache.java,v 1.15 2002-10-30 00:05:03 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
@@ -92,6 +92,10 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
                         log.service("Setting maximum entry size on " + cacheName + ": " + cache.maxEntrySize + " bytes ");
                     } catch (NumberFormatException nfe2) {
                         log.error("Could not set max entry size cache  of " + cacheName + " because " + nfe2.toString());
+                    }
+                } else {
+                    if (cache.getDefaultMaxEntrySize() > 0) {
+                        log.service("No max entry size specified for this cache taking default " + cache.getDefaultMaxEntrySize() + " bytes");
                     }
                 }
             }
