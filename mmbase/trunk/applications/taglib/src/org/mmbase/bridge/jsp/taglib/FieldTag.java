@@ -47,7 +47,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
     protected NodeProvider nodeProvider;
     protected Field  field;
     protected String fieldName;
-    private   String name;   
+    protected   String name;   
        
     public void setName(String n) throws JspTagException {
         name = getAttributeValue(n);
@@ -78,7 +78,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         return field;
     }
 
-    private void setFieldVar(String n) throws JspTagException {
+    protected void setFieldVar(String n) throws JspTagException {
         if (n != null) {             
             field = getNodeVar().getNodeManager().getField(n);
             fieldName = n;
@@ -88,6 +88,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         } else { 
             if (getReferid() == null) {
                 field = getField(); // get from parent.
+                getNodeVar();       // be sure to set the nodevar too, though.
                 fieldName = field.getName();
             }
         }       
@@ -124,11 +125,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 value = node.getNodeValue(fieldName);
             } else {
                 switch(field.getType()) {
-                case Field.TYPE_BYTE:    value = node.getByteValue(fieldName);    break;
-                case Field.TYPE_INTEGER: value = new Integer(node.getIntValue(fieldName));  break;
+                case Field.TYPE_BYTE:    value = node.getByteValue(fieldName);                break; 
+                case Field.TYPE_INTEGER: value = new Integer(node.getIntValue(fieldName));    break;
                 case Field.TYPE_DOUBLE:  value = new Double(node.getStringValue(fieldName));  break;
-                case Field.TYPE_LONG:    value = new Long(node.getLongValue(fieldName));    break;
-                case Field.TYPE_FLOAT:   value = new Float(node.getFloatValue(fieldName));   break;
+                case Field.TYPE_LONG:    value = new Long(node.getLongValue(fieldName));      break;
+                case Field.TYPE_FLOAT:   value = new Float(node.getFloatValue(fieldName));    break;
                 default:
                     value = convert(node.getStringValue(fieldName));
                 }
@@ -136,7 +137,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         }
         helper.setValue(value);
         helper.setJspvar(pageContext);        
-        if (getId() != null) {
+        if (getId() != null) {           
             getContextTag().register(getId(), helper.getValue());
         }
         
