@@ -25,48 +25,48 @@
       <mm:present referid="nodemanager">
 
         <% String where = "name='" + nodemanager + "'"; %>
-        <mm:listnodes type="typedef" fields="name,description" where="<%= where %>">
+        <mm:listnodes type="typedef" fields="name,description" constraints="<%= where %>">
           <p><b><%=name%></b></p>
           <p><%=description%></p>
         </mm:listnodes>
 
         <p><b>Names of all fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>'>
+        <mm:fieldlist nodetype='<%=nodemanager%>'>
           <mm:fieldinfo type="name"/>
         </mm:fieldlist>
 
         <p><b>GUI names of all fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>'>
+        <mm:fieldlist nodetype='<%=nodemanager%>'>
           <mm:fieldinfo type="guiname"/>
         </mm:fieldlist>
 
         <p><b>Names of all edit fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>' type="edit">
+        <mm:fieldlist nodetype='<%=nodemanager%>' type="edit">
           <mm:fieldinfo type="name"/>
         </mm:fieldlist>
 
         <p><b>GUI names of all edit fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>' type="edit">
+        <mm:fieldlist nodetype='<%=nodemanager%>' type="edit">
           <mm:fieldinfo type="guiname"/>
         </mm:fieldlist>
 
         <p><b>Names of all list fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>' type="list">
+        <mm:fieldlist nodetype='<%=nodemanager%>' type="list">
           <mm:fieldinfo type="name"/>
         </mm:fieldlist>
 
         <p><b>GUI names of all list fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>' type="list">
+        <mm:fieldlist nodetype='<%=nodemanager%>' type="list">
           <mm:fieldinfo type="guiname"/>
         </mm:fieldlist>
 
         <p><b>Names of all search fields</b></p>
-        <mm:fieldlist nodemanager='<%= nodemanager%>' type="search">
+        <mm:fieldlist nodetype='<%= nodemanager%>' type="search">
           <mm:fieldinfo type="name"/>
         </mm:fieldlist>
 
         <p><b>GUI names of all search fields</b></p>
-        <mm:fieldlist nodemanager='<%=nodemanager%>' type="search">
+        <mm:fieldlist nodetype='<%=nodemanager%>' type="search">
           <mm:fieldinfo type="guiname"/>
         </mm:fieldlist>
 
