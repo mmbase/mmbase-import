@@ -22,6 +22,11 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+[1.7.2]
+- A unicast implementation for broadcasting changes in the cloud has
+  been added. One can choose between the unicast en the multicast
+  implementation. You need to change your config for this. See also
+  update.txt for more information.
 [1.7.0]
 - Storing blobs (e.g. images) on disk has changed. 
   Blobs are now stored as follows:
@@ -97,6 +102,7 @@ Taglib New Features:
 -------------------
 [1.7.2]
 - #6582 Wish: lacking support for 'relativetime' guitype
+- #6624 Wish: Needing support for CP1252 
 [1.7.1]
 - #6441 container attribute missing on function-tags.
 - #6510 mm:relatednodes missing path attribute (also fixed for mm:listnodes)
@@ -162,12 +168,22 @@ Generic Bug Fixes:
 ------------------
 [1.7.2]
 - #6254 searchquery Fieldaliases converted to lowercase in result of aggregating query. 
+- #6612 searchquery NodeManager.getList(String, String, String) broken
+        if security implementation does not implement 
+        Authorization.check(UserContext, Query, Operation) 
 - #6570 Multicast does not refresh reldef and oalias caches 
 - #6583 code does not check key == null
 - #6578 does not implement nodeRemoteChanged
 - #6585 Dove: Lack of base64 support in dove. Adding encoding attribute to dove dtd
 - #6583 Builders: users.java: remote change cookies -> users where
         user not in usercache: nullpointer exception
+- #6592 Builders: Deleting an image gives ClassCastException on
+        ImageCaches.nodeLocalChanged 
+- #6579 Builders: Problems with non-ASCII characters with ImageMagick
+        and text, especially on Windows
+- #6591 Builders: NullPointerException at module.builders.Jumpers.getGUIIndicator
+- #6623 nodeRemoteChanged can be called recursively
+- #6625 Emailapplication: in application Email guinames has been mixed 
 - EmailSendProbe: mailtime now may be null. Rewrote deprecated
   search() method to searchQuery and added constraint to match
   null-values.
@@ -249,6 +265,10 @@ Security Bug Fixes:
 ---------------
 Core Bug Fixes:
 ---------------
+[1.7.2]
+- #6616 MMBase shoudl not give response code 500 but 503 on start-up
+- #6608 New builders are inited twice.
+- #6617 MMObjectBuilder.java: DEFAULT_ALINEA contains 
 [1.7.1]
 - #6560 ClusterBuilder does not allow queries over nodemanagers with
         short name  	
@@ -272,6 +292,9 @@ Core Bug Fixes:
 -------------------------
 Database Layer Bug Fixes:
 -------------------------
+[1.7.2]
+- #6599 UNION queries in informix contains invailid relational constraints
+- #6609 Verify does not show the field it is actually looking for 
 [1.7.1]
 - #6554 mmbase can't handle a mysql restart   	
 - #6498 Resultsets not closed/connectionpool depleted in PostgreSQL  	
@@ -322,6 +345,10 @@ Taglib Bug Fixes:
 - #6569 Using wrong character encoding for post data
 - #6586 Uploading files. Associated fields (mimetype, size, filename)
         are not filled by upload of 'handle' fields by mm:fieldinfo
+- #6603 mm:constraint field="number" operator="IN" value="<comma
+        sepreatoraliases>" does not work
+- #6589 mm:import crashes on escape="text/plain" and escape="none"
+- #6590 escape="lowercase" does not work on jspvar 
 [1.7.1] 
 - #6241 TreeTag: No way to order or constrain steps.   	
 - #6230 Taglib documentation wider than window.  	
@@ -571,6 +598,5 @@ Databases
         Ver 11.15 Distrib 3.23.41
   for pc-linux-gnu (i686)
 - Postgresql
-- Informix
 
 
