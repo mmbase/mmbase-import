@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.56 2004-03-24 00:58:48 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57 2004-04-01 15:21:05 pierre Exp $
  * @see ContextTag
  */
 
@@ -32,8 +32,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /**
      * EVAL_BODY is EVAL_BODY_INCLUDE or EVAL_BODY_BUFFERED. It wants to be EVAL_BODY_INCLUDE, but
-     * because that often not works, it on default is EVAL_BODY_BUFFERED. 
-     * 
+     * because that often not works, it on default is EVAL_BODY_BUFFERED.
+     *
      * This configurable constant might become deprecated, because it is a bit experimental.
      *
      */
@@ -68,7 +68,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     public void setPageContext(PageContext pc) {
         if (EVAL_BODY == -1) { // as yet unset
             EVAL_BODY =  "true".equals(pc.getServletContext().getInitParameter("mmbase.taglib.eval_body_include")) ?
-                EVAL_BODY_INCLUDE : EVAL_BODY_BUFFERED; 
+                EVAL_BODY_INCLUDE : EVAL_BODY_BUFFERED;
 
             log.info("Using " + (EVAL_BODY == EVAL_BODY_BUFFERED ? " EVAL_BODY_BUFFERED " :  "EVAL_BODY_INCLUDE"));
         }
@@ -333,7 +333,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
-                        throw new JspTagException ("Could not find parent Tag of type " + clazz.getName() + " with id " + id);
+                        throw new JspTagException ("Could not find parent Tag of type " + clazz.getName() + " with id " + tagId);
                     } else {
                         return null;
                     }
