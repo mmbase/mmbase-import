@@ -504,22 +504,6 @@
 		</function>
 
 
-		<function name="changeProviderSettings">
-			<description>
-			</description>
-			<type>class</type>
-			<class>org.mmbase.applications.packaging.gui.Controller</class>
-			<method>changeProviderSettings</method>
-			<param name="name" type="String" description="" />
-			<param name="maintainer" type="String" description="" />
-			<param name="account" type="String" description="" />
-			<param name="password" type="String" description="" />
-			<param name="path" type="String" description="" />
-			<return type="Node">
-				<field name="name" type="String" description="" />
-			</return>
-		</function>
-
                 <function name="changeSettings">
 			<description>
 			</description>

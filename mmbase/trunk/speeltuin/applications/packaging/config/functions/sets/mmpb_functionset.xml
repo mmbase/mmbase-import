@@ -72,6 +72,9 @@
 			<param name="newversion" type="int" description="" />
 			<param name="latest" type="String" description="" />
 			<param name="createnew" type="String" description="" />
+			<param name="publishprovider" type="String" description="" />
+			<param name="publishstate" type="String" description="" />
+			<param name="publishsharepassword" type="String" description="" />
 			<return type="Boolean">
 			</return>
 		</function>
@@ -144,6 +147,34 @@
 			<param name="newtargetname" type="String" description="" />
 			<param name="newtargettype" type="String" description="" />
 			<param name="newtargetpath" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setPublishModeOn">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>setPublishModeOn</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
+			<param name="publishprovider" type="String" description="" />
+			<param name="publishsharepassword" type="String" description="" />
+			<return type="Boolean">
+			</return>
+		</function>
+
+
+		<function name="setPublishModeOff">
+			<description>
+			</description>
+			<type>class</type>
+			<class>org.mmbase.applications.packaging.projects.gui.Controller</class>
+			<method>setPublishModeOff</method>
+			<param name="project" type="String" description="" />
+			<param name="target" type="String" description="" />
 			<return type="Boolean">
 			</return>
 		</function>
