@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.5 2003-02-27 16:09:56 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.6 2003-02-27 16:29:14 michiel Exp $
  */
 public class TypeRelTest extends TestCase {
 
@@ -155,8 +155,10 @@ public class TypeRelTest extends TestCase {
     public void testClearUpMess() {
         System.out.println("Clearing up the mess");
         NodeIterator i = createdNodes.nodeIterator();
-        while (i.hasNext()) {
-            Node node = i.nextNode();
+        while (i.hasNext()) { i.next();};
+
+        while (i.hasPrevious()) {
+            Node node = (Node) i.previous();
             System.out.println("Deleting " + node);
             node.delete();
         }
