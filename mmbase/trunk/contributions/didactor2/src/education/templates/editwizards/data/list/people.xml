@@ -36,7 +36,7 @@
 
     <command name="startwizard" inline="true" wizardname="people" objectnumber="new" />
 
-    <command name="search" nodepath="people" fields="firstname,lastname" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="people" fields="firstname,lastname" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar studenten</prompt>
         <search-filter>
             <name>Achternaam bevat</name>

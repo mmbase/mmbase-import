@@ -21,7 +21,7 @@
         <relation destination="videotapes" role="related"/>
     </action>
 
-    <command name="search" nodepath="videotapes" fields="title" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="videotapes" fields="title" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Videofragmenten</prompt>
         <search-filter>
             <name>Titel bevat</name>

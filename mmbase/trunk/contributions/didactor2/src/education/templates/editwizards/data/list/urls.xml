@@ -18,7 +18,7 @@
         <relation destination="urls" role="related"/>
     </action>
 
-    <command name="search" nodepath="urls" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="urls" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar URLS</prompt>
         <search-filter>
             <name>URL bevat</name>

@@ -8,7 +8,7 @@
             <field name="layout">0</field>
         </object>
     </action>
-    
+
     <action type="load">
         <relation destination="openanswers" role="related" />
         <relation destination="feedback" role="related" />
@@ -43,7 +43,7 @@
     </action>
 
     <action type="delete" />
-    
+
 
     <lists>
         <optionlist name="layout">
@@ -91,7 +91,7 @@
                 </relation>
             </action>
 
-            <command name="search" nodepath="openanswers" fields="text" age="7" orderby="number" directions="down">
+            <command name="search" nodepath="openanswers" fields="text" age="-1" orderby="number" directions="down">
                 <prompt>Zoeken naar Antwoorden</prompt>
                 <search-filter>
                     <name>Tekst bevat</name>

@@ -21,7 +21,7 @@
 
     <command name="startwizard" inline="true" wizardname="workgroups" objectnumber="new" />
 
-    <command name="search" nodepath="workgroups" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="workgroups" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar werkgroepen</prompt>
         <search-filter>
             <name>Naam bevat</name>

@@ -39,7 +39,7 @@
 
     <command name="startwizard" inline="true" wizardname="classes" objectnumber="new" />
 
-    <command name="search" nodepath="classes" fields="name" age="7" orderby="number" directions="down" >
+    <command name="search" nodepath="classes" fields="name" age="-1" orderby="number" directions="down" >
         <prompt>Zoeken naar Klassen</prompt>
         <search-filter>
             <name>Naam bevat</name>
