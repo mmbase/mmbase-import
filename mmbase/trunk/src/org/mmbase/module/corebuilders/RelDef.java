@@ -39,16 +39,6 @@ public class RelDef extends MMObjectBuilder {
 		return(true);
 	}
 	
-	/*
-	public RelDef(MMBase m) {
-		this.mmb=m;
-		this.tableName="reldef";
-		init();
-		m.mmobjs.put(tableName,this);
-		readCache();
-	}
-	*/
-
 	private boolean readCache() {
 		try {
 			MultiConnection con=mmb.getConnection();
