@@ -1,0 +1,51 @@
+<application name="MyNews" maintainer="mmbase.org" version="1" auto-deploy="false">
+	<neededbuilderlist>
+		<builder maintainer="mmbase.org" version="1">mags</builder>
+		<builder maintainer="mmbase.org" version="1">urls</builder>
+		<builder maintainer="mmbase.org" version="1">jumpers</builder>
+		<builder maintainer="mmbase.org" version="1">news</builder>
+		<builder maintainer="mmbase.org" version="1">mmevents</builder>
+		<builder maintainer="mmbase.org" version="1">people</builder>
+		<builder maintainer="mmbase.org" version="1">images</builder>
+	</neededbuilderlist>
+
+	<neededreldeflist>
+		<reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" />
+	</neededreldeflist>
+
+	<allowedrelationlist>
+		<relation from="mags" to="news" type="related" />
+		<relation from="news" to="images" type="related" />
+		<relation from="news" to="urls" type="related" />
+		<relation from="news" to="mmevents" type="related" />
+		<relation from="news" to="people" type="related" />
+		<relation from="mags" to="jumpers" type="related" />
+	</allowedrelationlist>
+
+	<datasourcelist>
+		<datasource builder="mags" path="MyNews/mags.xml" />
+		<datasource builder="news" path="MyNews/news.xml" />
+		<datasource builder="people" path="MyNews/people.xml" />
+		<datasource builder="urls" path="MyNews/urls.xml" />
+		<datasource builder="jumpers" path="MyNews/jumpers.xml" />
+		<datasource builder="images" path="MyNews/images.xml" />
+		<datasource builder="mmevents" path="MyNews/mmevents.xml" />
+	</datasourcelist>
+
+	<relationsourcelist>
+		<relationsource builder="insrel" path="MyNews/insrel.xml" />
+	</relationsourcelist>
+
+	<contextsourcelist>
+		<contextsource path="MyNews/backup.xml" type="depth" goal="backup"/>
+	</contextsourcelist>
+
+	<description>
+		MyNews is a example (very bad one) of a news magazine
+	</description>
+
+	<install-notice>
+		Now its installed you can view a default magazine with
+		/news.
+	</install-notice>
+</application>

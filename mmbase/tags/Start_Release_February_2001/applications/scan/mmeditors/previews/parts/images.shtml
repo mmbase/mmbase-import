@@ -1,0 +1,17 @@
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=90%> 
+<TR>
+<TD BGCOLOR="#000000">
+<TABLE BORDER=0 CELLSPACING=1 CELLPADDING=1 WIDTH=100%>
+   <TR>
+   <TD BGCOLOR="#C0C0C0" WIDTH="70%">
+   <FONT COLOR="#000000" SIZE="2" FACE="arial,helvetica">
+     <TD WIDTH="170" BGCOLOR="#FFFFFF"><FONT SIZE="2" FACE="arial,helvetica">Relaties met de volgende afbeeldingen</FONT></TD>
+	</TD>
+   </LIST>
+   </TR>
+</TABLE>
+</TABLE>
+<LIST RELATIONS TYPE="images" NODE="$PARAM1" FIELDS="number,description">
+<A HREF="JavaScript:openWin('$ITEM1');"><FONT COLOR="#FFFFFF"><IMG SRC="/img.db?$ITEM1+s(100x60)" hspace=0 vspace=5 border=1></FONT></A></LIST>
+<P>
+
