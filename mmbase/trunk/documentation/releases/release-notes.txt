@@ -126,7 +126,12 @@ Know Issues and Problems:
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
   this by changing the properties in
-  <mmbase-webapp/WEB-INF/config/builders/images.xml> into:
+
+   <mmbase-webapp>/WEB-INF/config/builders/applications/images.xml (after installation of 'Resource')
+   or 
+   <mmbase-webapp>/WEB-INF/config/applications/Resources/builders/images.xml (before installation of 'Resource')
+
+   into:
   
   <properties>
     <property name="ImageConvertClass">
