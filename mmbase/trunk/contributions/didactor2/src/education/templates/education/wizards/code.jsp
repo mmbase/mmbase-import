@@ -1,6 +1,11 @@
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <%@taglib uri="http://www.didactor.nl/ditaglib_1.0" prefix="di" %>
+<%
+   String imageName = "";
+   String sAltText = "";
+%>
+
 
 <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <mm:content postprocessor="reducespace">
@@ -9,6 +14,7 @@
 
   <mm:import externid="showcode">false</mm:import>
   <mm:import id="wizardjsp"><mm:treefile write="true" page="/editwizards/jsp/wizard.jsp" objectlist="$includePath" /></mm:import>
+  <mm:import id="listjsp"><mm:treefile write="true" page="/editwizards/jsp/list.jsp" objectlist="$includePath" /></mm:import>
 
   <mm:compare referid="showcode" value="true" inverse="true">
   <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -22,7 +28,7 @@
         </style>
  
         
-       <script type="text/javascript" src="<mm:treefile page="/education/wizards/mtmcode.jsp" objectlist="$includePath" referids="$referids" write="true"/>"></script>
+        <script type="text/javascript" src="<mm:treefile page="/education/wizards/mtmcode.jsp" objectlist="$includePath" referids="$referids" write="true"/>"></script>
 
 
 <mm:node number="component.pdf" notfound="skip">
@@ -80,6 +86,7 @@ var MTMIconList = new IconList();
 
 <% int treeCount = 0; %>
 <% int metatreeCount = 0; %>
+<% int comptreeCount = 0; %>
 
 // testing...
 //MTMSubsAutoClose = true;
@@ -91,14 +98,14 @@ var menu = new MTMenu();
                  "<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=new",
                  null,
                  "<fmt:message key="createNewEducationDescription"/>",
-	         "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+            "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
   </di:hasrole>
 
   <di:hasrole role="systemadministrator">
     menu.addItem("<fmt:message key="editComponents"/>",
-    	         "<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />",
-        	 "_top",
-            	 "<fmt:message key="editComponentsDescription"/>",
+               "<mm:treefile write="true" page="/components/index.jsp" objectlist="$includePath" />",
+          "_top",
+                "<fmt:message key="editComponentsDescription"/>",
                  "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
     menu.addItem("<fmt:message key="roles"/>","",null,"");
     var rolestree = new MTMenu();
@@ -106,16 +113,16 @@ var menu = new MTMenu();
     <%-- doesn't work properly, so commented it out for the moment
     rolestree.addItem("<fmt:message key="editPeopleRoleRelEducation"/>",
                       "<mm:treefile write="true" page="/education/wizards/roles.jsp" objectlist="$includePath" />",
-        	      null,
-            	      "<fmt:message key="editPeopleRoleRelEducationDescription"/>",
-	              "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+               null,
+                     "<fmt:message key="editPeopleRoleRelEducationDescription"/>",
+                 "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
 --%>
     <%-- create new role --%>
     rolestree.addItem("<fmt:message key="createNewRoles"/>",
-     	         "<mm:write referid="wizardjsp"/>?wizard=roles&objectnumber=new",
-        	     null,
-            	 "<fmt:message key="createNewRolesDescription"/>",
-	             "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+               "<mm:write referid="wizardjsp"/>?wizard=roles&objectnumber=new",
+              null,
+                "<fmt:message key="createNewRolesDescription"/>",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
 
 <%-- edit existing roles --%>
 <mm:listnodes type="roles">
@@ -129,8 +136,8 @@ menu.makeLastSubmenu(rolestree, true);
 </di:hasrole>
 
 
- <di:hasrole role="filemanager">          
-       menu.addItem("<fmt:message key="filemanagement"/>", 
+ <di:hasrole role="filemanager">
+       menu.addItem("<fmt:message key="filemanagement"/>",
                "<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />",
                              null,
                          "<fmt:message key="filemanagement"/>",
@@ -138,33 +145,72 @@ menu.makeLastSubmenu(rolestree, true);
 
 
 <%-- has to be only for admin I believe --%>
+
+menu.addItem("Competentie beheer","",null,"");
+var comptree = new MTMenu();
+
+comptree.addItem("Competenties",
+               "<mm:write referid="listjsp"/>?wizard=competencies&nodepath=competencies&searchfields=name&fields=name",
+              null,
+                "Competenties edit",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+comptree.addItem("Preassessments",
+               "<mm:write referid="listjsp"/>?wizard=preassessments&nodepath=preassessments&searchfields=name&fields=name",
+              null,
+                "Preassessments edit",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+comptree.addItem("Postassessments",
+               "<mm:write referid="listjsp"/>?wizard=postassessments&nodepath=postassessments&searchfields=name&fields=name",
+              null,
+                "Postassessments edit",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+comptree.addItem("Profielen",
+               "<mm:write referid="listjsp"/>?wizard=profiles&nodepath=profiles&searchfields=name&fields=name",
+              null,
+                "Profielen edit",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+comptree.addItem("P.O.P.",
+               "<mm:write referid="listjsp"/>?wizard=pop&nodepath=pop&searchfields=name&fields=name",
+              null,
+                "P.O.P. edit",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+menu.makeLastSubmenu(comptree, true);
+
+
+
+
+
+
+
+
+
 menu.addItem("<fmt:message key="metadata"/>","",null,"");
 var metatree = new MTMenu();
 
 <%-- create new metadata standard --%>
-metatree.addItem("<fmt:message key="createNewMetadatastandard"/>",
-    	         "<mm:write referid="wizardjsp"/>?wizard=metastandard&objectnumber=new",
-        	     null,
-            	 "<fmt:message key="createNewMetadatastandardDescription"/>",
-	             "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+metatree.addItem("<fmt:message key="createNewMetadatastandard"/>1",
+               "<mm:write referid="wizardjsp"/>?wizard=metastandard&objectnumber=new",
+              null,
+                "<fmt:message key="createNewMetadatastandardDescription"/>",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
 
 <%-- edit existing metadata standards --%>
 <mm:listnodes type="metastandard">
 <mm:remove referid="metastandardNumber"/>
 <mm:field id="metastandardNumber" name="number" write="false"/>
-  metatree.addItem("<mm:field name="name" />",
+  metatree.addItem("<mm:field name="name" /></a>&nbsp;<a href='metaedit.jsp?number=<mm:field name="number"/>&set_defaults=true' target='text'><img src='gfx/metavalid.gif' border='0' alt='Bewerk standaard waarden voor metadatastandaard'>",
                   "<mm:write referid="wizardjsp"/>?wizard=metastandard&objectnumber=<mm:field name="number" />",
                   null,
                   "<fmt:message key="treatMetastandard"/>",
                   "<mm:treefile write="true" page="/education/wizards/gfx/learnblock.gif" objectlist="$includePath" />");
 
-var metadeftree<%= metatreeCount %> = new MTMenu(); 
+var metadeftree<%= metatreeCount %> = new MTMenu();
 <%-- create new metadefinition --%>
 metadeftree<%= metatreeCount %>.addItem("<fmt:message key="createNewMetadefinition"/>",
-    	         "<mm:write referid="wizardjsp"/>?wizard=metadefinition&objectnumber=new&origin=<mm:write referid="metastandardNumber" />",
-        	     null,
-            	 "<fmt:message key="createNewMetadefinitionDescription"/>",
-	             "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
+               "<mm:write referid="wizardjsp"/>?wizard=metadefinition&objectnumber=new&origin=<mm:write referid="metastandardNumber" />",
+              null,
+                "<fmt:message key="createNewMetadefinitionDescription"/>",
+                "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");
 
 
 <mm:related path="metadefinition"><%-- orderby="metadefinition.name" directions="up" searchdir="destination">--%>
@@ -182,8 +228,8 @@ metadeftree<%= metatreeCount %>.addItem("<fmt:message key="createNewMetadefiniti
     <mm:param name="startnode"><mm:field name="number" /></mm:param>
     <mm:param name="depth">10</mm:param>
   </mm:treeinclude>--%>
- 
- </mm:node> 
+
+ </mm:node>
 <mm:last>
 
  </mm:last>
@@ -206,16 +252,18 @@ menu.makeLastSubmenu(metatree, true);
 
 
 <mm:listnodes type="educations">
-menu.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:present>",
+<%@include file="whichimage.jsp"%>
+menu.addItem("<mm:field name="name" /><mm:present referid="pdfurl"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
              "<mm:write referid="wizardjsp"/>?wizard=educations&objectnumber=<mm:field name="number" />",
              null,
              "<fmt:message key="editEducation"/>",
              "<mm:treefile write="true" page="/education/wizards/gfx/edit_education.gif" objectlist="$includePath" />");
 <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
 <mm:first>
-var edutree<%= treeCount %> = new MTMenu(); 
+var edutree<%= treeCount %> = new MTMenu();
 </mm:first>
  <mm:node element="learnobjects">
+ <%@include file="whichimage.jsp"%>
     <mm:nodeinfo type="type" id="this_node_type">
         <mm:import id="mark_error" reset="true"></mm:import>
         <mm:compare referid="this_node_type" value="tests">
@@ -241,10 +289,8 @@ var edutree<%= treeCount %> = new MTMenu();
                 </mm:field>
             </mm:field>
         </mm:compare>
-
-
-                   
-  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight:bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty>",
+  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:present referid="pdfurl"
+                      ><mm:compare referid="this_node_type" value="pages"></a> <a href='<mm:write referid="pdfurl" />&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'>",
                   "<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />",
                   null,
                   "<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />",
@@ -255,8 +301,8 @@ var edutree<%= treeCount %> = new MTMenu();
     <mm:param name="startnode"><mm:field name="number" /></mm:param>
     <mm:param name="depth">10</mm:param>
   </mm:treeinclude>
- 
- </mm:node> 
+
+ </mm:node>
 <mm:last>
  menu.makeLastSubmenu(edutree<%= treeCount++ %>, true);
  </mm:last>
