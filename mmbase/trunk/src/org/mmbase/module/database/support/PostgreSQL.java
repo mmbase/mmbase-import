@@ -7,15 +7,12 @@
 */
 package org.mmbase.module.database.support;
 
-import java.util.*;
 import java.sql.*;
-
-import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
+import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.*;
-import org.mmbase.util.*;
+import org.mmbase.module.database.MultiConnection;
 import org.mmbase.util.logging.*;
 
 /**
@@ -43,7 +40,7 @@ import org.mmbase.util.logging.*;
  *
  * Postgresql driver for MMBase
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.1 2003-04-17 15:24:19 michiel Exp $
+ * @version $Id: PostgreSQL.java,v 1.2 2003-07-02 06:20:45 keesj Exp $
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL72.class.getName());

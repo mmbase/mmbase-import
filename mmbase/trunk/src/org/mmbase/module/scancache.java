@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * @rename Scancache
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: scancache.java,v 1.39 2003-06-11 09:09:49 kees Exp $
+ * @version $Id: scancache.java,v 1.40 2003-07-02 06:20:44 keesj Exp $
  */
 public class scancache extends Module implements scancacheInterface {
 
@@ -605,8 +605,8 @@ public class scancache extends Module implements scancacheInterface {
     String getWriteHeaders(String value, String mimeType) {
         if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
             mimeType = "text/html; charset=\"iso-8859-1\"";
-        String now = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()));
-        String expireTime = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()+15000));
+        String now = RFC1123.makeDate(new Date(System.currentTimeMillis()));
+        String expireTime = RFC1123.makeDate(new Date(System.currentTimeMillis()+15000));
         String body="Status: 200 OK\n";
         body+="Server: OrionCache\n";  // orion cache ???
         body+="Content-type: "+mimeType+"\n";

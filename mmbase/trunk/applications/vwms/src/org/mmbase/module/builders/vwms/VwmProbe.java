@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: VwmProbe.java,v 1.9 2003-04-23 08:59:27 kees Exp $ current version $Id: VwmProbe.java,v 1.9 2003-04-23 08:59:27 kees Exp $
+ * @version $Id: VwmProbe.java,v 1.10 2003-07-02 06:20:45 keesj Exp $ current version $Id: VwmProbe.java,v 1.10 2003-07-02 06:20:45 keesj Exp $
  * @author Daniel Ockeloen
  */
 public class VwmProbe implements Runnable {
@@ -88,7 +88,7 @@ public class VwmProbe implements Runnable {
                     log.info("No tasks, anode=null, waiting 1 hour.");
                     wait(3600*1000);
                 } else {
-                    int curTime=(int)((DateSupport.currentTimeMillis()/1000));
+                    int curTime=(int)((System.currentTimeMillis()/1000));
                     int timeDifference = anode.getIntValue("wantedtime") - curTime;
                     if (timeDifference<TASK_PICKUP_TIMEDIFFERENCE) {
                         log.service("Difference between curtime and task starttime"

@@ -9,14 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.builders.vwms;
 
-import java.util.*;
+import java.util.Enumeration;
 
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Rico Jansen
@@ -79,7 +76,7 @@ public class MediaCheck extends Vwm {
 			tnode=vwmtask.getNewNode("VWM MediaCheck");
 			tnode.setValue("wantedcpu",machine);
 			tnode.setValue("task","mediacheck");
-			wantedtime=(int)(((DateSupport.currentTimeMillis())/1000)+36*(60*60));
+			wantedtime=(int)(((System.currentTimeMillis())/1000)+36*(60*60));
 			tnode.setValue("wantedtime",wantedtime); 
 			tnode.setValue("expiretime",wantedtime+50*60);
 			tnode.setValue("vwm",getName());

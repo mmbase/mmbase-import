@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * It allows for emailing on time, repeat mail, stats
  * and using urls as input for subject and body.
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.22 2003-05-08 06:01:20 kees Exp $
+ * @version $Id: Email.java,v 1.23 2003-07-02 06:20:44 keesj Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -110,7 +110,7 @@ public class Email extends MMObjectBuilder {
         if (i==-1) {
             // set value to current time+2
             // the +2 is give the queue some time to react
-            node.setValue("mailtime",((int)((DateSupport.currentTimeMillis()/1000))+2));
+            node.setValue("mailtime",((int)((System.currentTimeMillis()/1000))+2));
         }
 
         // insert it into the database
@@ -124,7 +124,7 @@ public class Email extends MMObjectBuilder {
             // check if we need to queue this mail, it does
             // this by checking if it needs to be put into
             // STATE_QUEUED mode
-            int ttime=(int)((DateSupport.currentTimeMillis()/1000));
+            int ttime=(int)((System.currentTimeMillis()/1000));
             ttime=node.getIntValue("mailtime")-ttime;
 
             // ttime hold the time in seconds until we want
@@ -210,7 +210,7 @@ public class Email extends MMObjectBuilder {
                 node.commit();
 
                 // well try putting it in the queue
-                int ttime=(int)((DateSupport.currentTimeMillis()/1000));
+                int ttime=(int)((System.currentTimeMillis()/1000));
                 int ntime=node.getIntValue("mailtime");
                 if (ntime<(ttime+sendprobe.maxtasktime)) {
                     sendprobe.putTask(node);
@@ -323,7 +323,7 @@ public class Email extends MMObjectBuilder {
                     System.out.println("FAKE SEND");
                     node.setValue("mailstatus",STATE_DELIVERED);
                 } else {
-                if (to==null || mmb.getSendMail().sendMail(mail)==false) {
+                if (to==null || ((SendMailInterface)Module.getModule("sendmail")).sendMail(mail)==false) {
                     log.debug("Email -> mail failed");
                     node.setValue("mailstatus",STATE_FAILED);
                     // add one to the sendmail counter
