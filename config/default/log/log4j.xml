@@ -5,15 +5,13 @@
    You can give the full path to the dtd in the jar, like:
    SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
    or somewhere on the web:
-   SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd"
+   SYSTEM "http://web.omroep.nl/mmbase/logging/log4j.dtd"
    
-   What always will work (in version 1.1 of log4j, which cannot be
-   used with current CVS of mmbase) is simply not specifying the the
-   location of the dtd, since log4j does not seem to do any
-   validating.
+   What always will work is simply not specifying the the location of
+   the dtd, since log4j does not seem to do any validating.
 
 -->
-<!DOCTYPE configuration SYSTEM "log4j.dtd" 
+<!DOCTYPE configuration
    [
     <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
     <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
