@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
  
  */
-package org.mmbase.module.builders;
+package org.mmbase.module.builders.media;
 
 import java.util.*;
 import org.mmbase.module.core.*;
@@ -65,15 +65,15 @@ public class MediaFragment extends MMObjectBuilder {
     private final static int STORAGE_MONO_NOBACKUP=4;
     
     // This filter is able to find the best mediasource by a mediafragment.
-    private MediaSourceFilter mediasourcefilter = new MediaSourceFilter(this);
+    private MediaSourceFilter mediaSourceFilter = new MediaSourceFilter(this);
     
     // The media source builder
-    private MediaSource mediasourcebuilder = null;
+    private MediaSource mediaSourceBuilder = null;
     
     public MediaFragment() {
         // Retrieve a reference to the MediaSource builder
-        mediasourcebuilder = (MediaSource) mmb.getMMObject("mediasources");
-        if(mediasourcebuilder==null) {
+        mediaSourceBuilder = (MediaSource) mmb.getMMObject("mediasources");
+        if(mediaSourceBuilder==null) {
             log.error("Builder mediasources is not loaded.");
         } else {
             log.debug("The builder mediasources is retrieved.");
@@ -134,9 +134,9 @@ public class MediaFragment extends MMObjectBuilder {
      */
     private String getUrl(int mediafragmentnr, HttpServletRequest request, int wantedspeed, int wantedchannels) {
         // Which MediaSource is the best one to use ?
-        MMObjectNode mediafragment = getNode(mediafragmentnr);
-        MMObjectNode mediasource = mediasourcefilter.filterMediaSource(mediafragment, request, wantedspeed, wantedchannels);
-        return mediasourcebuilder.getUrl(mediafragment, mediasource, request, wantedspeed, wantedchannels);
+        MMObjectNode mediaFragment = getNode(mediafragmentnr);
+        MMObjectNode mediaSource = mediaSourceFilter.filterMediaSource(mediaFragment, request, wantedspeed, wantedchannels);
+        return mediaSourceBuilder.getUrl(mediaFragment, mediaSource, request, wantedspeed, wantedchannels);
     }
     
     /**
