@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
-<application name="DidactorPortfolio" maintainer="didactor.nl" version="4" auto-deploy="true">
+<application name="DidactorPortfolio" maintainer="didactor.nl" version="7" auto-deploy="true">
     <requirements>
         <requires name="DidactorWorkspace" maintainer="didactor.nl" version="2" />
         <requires name="DidactorForum" maintainer="didactor.nl" version="2" />
@@ -10,6 +10,7 @@
         <builder maintainer="didactor.nl" version="2">portfolios</builder>
         <builder maintainer="didactor.nl" version="2">folders</builder>
         <builder maintainer="didactor.nl" version="2">forummessages</builder>
+        <builder maintainer="didactor.nl" version="2">portfoliopermissions</builder>
     </neededbuilderlist>
 
     <neededreldeflist>
@@ -29,6 +30,11 @@
         <relation from="pages" to="forummessages" type="related"/>
         <relation from="chatlogs" to="forummessages" type="related"/>
         <relation from="attachments" to="forummessages" type="related"/>
+
+        <relation from="urls" to="portfoliopermissions" type="related"/>
+        <relation from="pages" to="portfoliopermissions" type="related"/>
+        <relation from="chatlogs" to="portfoliopermissions" type="related"/>
+        <relation from="attachments" to="portfoliopermissions" type="related"/>
     </allowedrelationlist>
 
     <datasourcelist>

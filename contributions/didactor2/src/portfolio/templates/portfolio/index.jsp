@@ -17,14 +17,14 @@
 
 <mm:import externid="currentfolder">-1</mm:import>
 
+<mm:import id="myuser"><mm:write referid="user"/></mm:import>
 <mm:import externid="contact">-1</mm:import>
 <mm:compare referid="contact" value="-1" inverse="true">
-  <mm:import id="user" reset="true"><mm:write referid="contact"/></mm:import>
+  <mm:import id="myuser" reset="true"><mm:write referid="contact"/></mm:import>
 </mm:compare>
 
 <%-- Determine if my documents or shared documents is started --%>
 <mm:import externid="typeof">-1</mm:import>
-<mm:node number="$user" id="myuser"/>
 
 <%-- Get the first folder if no folder selected --%>
 <mm:compare referid="typeof" value="-1" inverse="true">
@@ -41,6 +41,24 @@
     </mm:node>
   </mm:compare>
 </mm:compare>
+
+<mm:import id="mayeditentries">false</mm:import>
+<di:hasrole role="teacher">
+    <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+        <mm:import id="mayeditentries" reset="true">true</mm:import>
+    </mm:list>
+</di:hasrole>
+<mm:list nodes="$user" path="people1,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+    <mm:import id="mayeditentries" reset="true">true</mm:import>
+</mm:list>
+
+<mm:import id="mayeditfolders">false</mm:import>
+<mm:list nodes="$user" path="people1,portfolios,folders" constraints="folders.number=$currentfolder AND portfolios.m_type!=1" max="1">
+    <mm:import id="mayeditfolders" reset="true">true</mm:import>
+</mm:list>
+
+
+
 
 <mm:import externid="action_delete.x" id="action_delete" from="parameters"/>
 <mm:import externid="action_move.x" id="action_move" from="parameters"/>
@@ -83,6 +101,7 @@
 
 <div class="folderBody">
 
+<mm:compare referid="mayeditfolders" value="true">
 <mm:compare referid="typeof" value="-1" inverse="true">
 <a href="<mm:treefile page="/portfolio/createfolder.jsp" objectlist="$includePath" referids="$referids,contact?">
 	   <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
@@ -118,6 +137,8 @@
 <mm:compare referid="typeof" value="-1" inverse="true">
   <img src="<mm:treefile page="/portfolio/gfx/mapdicht.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="FOLDERCLOSED" />" />
 </mm:compare>
+</mm:compare>
+
 <a href="index.jsp">Portfolio cockpit</a><br/>
 
 
@@ -229,6 +250,7 @@
   <div class="contentSubHeader">
 
     <mm:isgreaterthan referid="currentfolder" value="0">
+      <mm:compare referid="mayeditentries" value="true">
       <a href="<mm:treefile page="/portfolio/adddocument.jsp" objectlist="$includePath" referids="$referids,contact?">
 	  	            <mm:param name="currentfolder"><mm:write referid="currentfolder"/></mm:param>
 		            <mm:param name="callerpage">/portfolio/index.jsp</mm:param>
@@ -247,6 +269,7 @@
         <input type="image" name="action_move" src="<mm:treefile page="/portfolio/gfx/verplaats geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="MOVESELECTED" />" />
 
         <input type="image" name="action_delete" src="<mm:treefile page="/portfolio/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETESELECTED" />"/>
+      </mm:compare>
     </mm:isgreaterthan>
 
   </div>
@@ -308,6 +331,33 @@
           </di:row>
 
           <mm:listnodes>
+            <mm:import id="mayread" reset="true">false</mm:import>
+                <mm:relatednodes type="portfoliopermissions" max="1">
+                    <mm:field name="readrights">
+                        <mm:compare value="2">
+                            <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
+                                <mm:import id="mayread" reset="true">true</mm:import>
+                            </mm:list>
+                        </mm:compare>
+                         <mm:compare value="3">
+                            <di:hasrole role="teacher">
+                                <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders"  constraints="folders.number=$currentfolder" max="1">
+                                    <mm:import id="mayread" reset="true">true</mm:import>
+                                </mm:list>
+                            </di:hasrole>
+                        </mm:compare>
+                        <mm:compare value="3">
+                            <mm:import id="mayread" reset="true">true</mm:import>
+                        </mm:compare>
+                        <mm:compare value="4">
+                            <mm:import id="mayread" reset="true">true</mm:import>
+                        </mm:compare>
+                    </mm:field>
+               </mm:relatednodes>
+               <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+                  <mm:import id="mayread" reset="true">true</mm:import>
+               </mm:list> 
+            <mm:compare referid="mayread" value="true">
 
             <mm:field name="number" id="itemnumber">
                 <mm:listnodes type="daymarks" constraints="mark <= $itemnumber" orderby="mark" directions="down" max="1">
@@ -369,7 +419,7 @@
               </mm:compare>
 
   		    </di:row>
-
+            </mm:compare>
   		  </mm:listnodes>
 
         </di:table>
@@ -430,18 +480,20 @@ Mijn gegevens:
         </tr>
       </table>
     <td>
-      <mm:node number="$user">
+      <mm:node number="$myuser">
         <mm:relatednodes type="images">
           <img src="<mm:image template="s(300)"/>"/>
         </mm:relatednodes>
       </mm:node>
     </td>
   <tr>
+  <mm:compare referid="myuser" value="$user">
   <tr>
     <td>
       <a href="index.jsp?edit=true">edit</a>
     </td>
   <tr>
+  </mm:compare>
 </table>
 
 
@@ -501,7 +553,7 @@ Mijn gegevens:
 </form>
 
 <form name="cancel" method="POST" action="<mm:treefile page="/portfolio/index.jsp" objectlist="$includePath"/>">
-  <input class="formbutton" type="submit" name="cancel" value="<fmt:message key="CANCEL"/>"/>
+  <input class="formbutton" type="submit" name="cancel" value="<fmt:message key="BACK"/>"/>
 </form>
 
 </mm:compare>
