@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeManager;
@@ -122,12 +123,15 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
         return EVAL_BODY_BUFFERED;
     }
 
+    public int doAfterBody() throws JspException {
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
+    }
 
     /**
      * Write the value of the nodeinfo.
      */
     public int doEndTag() throws JspTagException {
-        helper.setBodyContent(bodyContent);
         return helper.doEndTag();
     }
 }

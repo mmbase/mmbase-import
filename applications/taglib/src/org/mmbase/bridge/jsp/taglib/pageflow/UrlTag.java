@@ -23,6 +23,7 @@ import org.mmbase.bridge.jsp.taglib.WriterHelper;
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -139,10 +140,14 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
         helper.setValue(getUrl());
     }
 
-    public int doEndTag() throws JspTagException {
-        log.debug("endtag of url tag");
+    public int doAfterBody() throws JspException {
         if (bodyContent != null) bodyContent.clearBody(); // don't show the body.
         helper.setBodyContent(bodyContent);
+        return super.doAfterBody();
+    }
+
+    public int doEndTag() throws JspTagException {
+        log.debug("endtag of url tag");    
         if (helper.getJspvar() == null) {
             helper.overrideWrite(true);
             // because Url tag can have subtags (param), default writing even with body seems sensible
