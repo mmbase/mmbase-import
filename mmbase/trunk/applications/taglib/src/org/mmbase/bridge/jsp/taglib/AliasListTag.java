@@ -25,16 +25,32 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* This class makes a tag which can list the aliases of a Node.
-*
-* @author Michiel Meeuwissen
-**/
-public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
+ * This class makes a tag which can list the aliases of a Node.
+ *
+ * @author Michiel Meeuwissen
+ **/
+
+public class AliasListTag extends NodeReferrerTag implements ListItemInfo, Writer {
     private static Logger log = Logging.getLoggerInstance(AliasListTag.class.getName());
+
+    protected WriterHelper helper = new WriterHelper(); 
+
+    public void setVartype(String t) throws JspTagException { 
+        helper.setVartype(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getValue() {
+        return helper.getValue();
+    }
 
     private StringList     returnList;
     private StringIterator returnValues;
-    private String currentAlias;
+    //private String currentAlias;
     private int currentItemIndex= -1;
 
     public int size(){
@@ -46,9 +62,8 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
     public boolean isChanged() {
         return true;
     }
-
     public Object getCurrent() {
-        return currentAlias;
+        return getValue();
     }
 
     /**
@@ -56,6 +71,7 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
      *
      */
     public int doStartTag() throws JspTagException{       
+        helper.overrideWrite(false); // default behavior is not to write to page
         currentItemIndex= -1;  // reset index        
         Node node = getNode();
         returnList = node.getAliases();
@@ -94,10 +110,10 @@ public class AliasListTag extends NodeReferrerTag implements ListItemInfo {
     public void doInitBody() throws JspTagException {
         if (returnValues.hasNext()){
             currentItemIndex ++;
-            currentAlias = returnValues.nextString();
-
+            helper.setValue(returnValues.nextString());
+            helper.setJspvar(pageContext);  
             if (getId() != null) {
-                getContextTag().register(getId(), currentAlias);
+                getContextTag().register(getId(), helper.getValue());
             }
 
         }
