@@ -125,7 +125,7 @@ public interface Logger {
        
 
     /**
-     * If you want to override the priority in the configuration file
+     * If you want to override the level in the configuration file
      * fixed for this category, you can do it with this method. This
      * could be usefull for example to switch on all debug logging
      * when something has gone wrong.
@@ -134,7 +134,14 @@ public interface Logger {
      * Level.WARN, Level.ERROR or Level.FATAL.  
      */
 
+    public void setLevel(Level p);
+
+    /**
+     * @deprecated Use setLevel.
+     */
+
     public void setPriority(Level p);
+
   
 		
 }

@@ -96,6 +96,9 @@ public final class Log4jImpl extends Category  implements Logger {
         return configurationFile;
     }
 
+    public void setLevel(Level p) {
+        setPriority(p);
+    }
     public void setPriority(Level p) {
         switch (p.toInt()) {
         case Level.TRACE_INT:   setPriority(Log4jPriority.TRACE);   break;
