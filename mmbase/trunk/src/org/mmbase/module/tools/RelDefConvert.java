@@ -34,7 +34,7 @@ public class RelDefConvert {
 
     public static void main(String[] argv) {
 		// check if the property has been set for config dir....
-        if (System.getProperty("mmbase.config") == null) {
+        if (MMBaseContext.getConfigPath() == null) {
       	    log.fatal("Please use the property mmbase.config");
 		    log.fatal("Usage: java -Dmmbase.config=<path-to-config> RelDefConvert");
 		} else {

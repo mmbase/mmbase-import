@@ -14,8 +14,8 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.*;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -29,9 +29,12 @@ import org.mmbase.util.logging.Logging;
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
  * 
- * $Id: XSLConvert.java,v 1.4 2001-04-11 10:06:55 michiel Exp $
+ * $Id: XSLConvert.java,v 1.5 2001-07-09 12:30:02 jaco Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  2001/04/11 10:06:55  michiel
+ * michiel: new logging system
+ *
  * Revision 1.3  2000/08/22 09:34:30  daniel
  * small fix for mmdemo
  *
@@ -57,9 +60,8 @@ public class XSLConvert extends ProcessorModule {
             }
             configpath=curdir+"/config";
         } else {
-            configpath=System.getProperty("mmbase.config");
+            configpath = MMBaseContext.getConfigPath();
         }
-        //configpath = System.getProperty("mmbase.config");
         if (configpath.endsWith(File.separator)) {
             configpath = configpath.substring(0,configpath.length()-1);
         }
