@@ -13,12 +13,14 @@ import org.w3c.dom.*;
 
 import javax.xml.parsers.*;
 import org.xml.sax.*;
-import org.apache.xml.serialize.*;
 import java.io.*;
 import java.util.*;
 
+import org.mmbase.util.*;
+import org.mmbase.util.xml.*;
+
 /**
- * @author Kees Jongenburger <keesj@framfab.nl>
+ * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class MMCI{
     Hashtable classes;
@@ -37,15 +39,8 @@ public class MMCI{
 
     public static MMCI getDefaultMMCI(String fileName) throws Exception{
         if (MMCI.STATIC_MMCI == null){
-            // get a new documentbuilder...
-            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-            // turn validating on..
-            //  && MMBaseContext.isInitialized());
-            DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
-            EntityResolver resolver = new DummyEntityResolver();
-            documentBuilder.setEntityResolver(resolver);
-            dfactory.setValidating(false);
-            MMCI.STATIC_MMCI =  MMCI.fromXML(documentBuilder.parse(fileName));
+            DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
+            MMCI.STATIC_MMCI =  MMCI.fromXML(db.parse(fileName));
         }
         return MMCI.STATIC_MMCI;
     }
@@ -123,12 +118,10 @@ public class MMCI{
             if (argv.length==1) {
                 os = new FileOutputStream(argv[0]);
             }
-            OutputFormat format = new OutputFormat(doc);
-            format.setIndenting(true);
-            format.setPreserveSpace(false);
-            XMLSerializer prettyXML = new XMLSerializer(os,format);
-            prettyXML.serialize(doc);
-            os.flush();
+	    OutputStreamWriter w = new OutputStreamWriter(os);
+	    XMLWriter.write(doc,w,true);
+            w.flush();
+	    w.close();
         }
     }
 

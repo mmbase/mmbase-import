@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Basic class to do reflection on a Class file and create
  * an XML description of the class
- * @author Kees Jongenburger <keesj@framfab.nl>
+ * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class ClassToXML {
     
