@@ -2,7 +2,17 @@
      dataset.dtd
 -->
 
-<!ELEMENT dataset (objectsets?,relationsets?)>
+<!ELEMENT dataset (creationinfo,objectsets?,relationsets?)>
+
+<!ELEMENT creationinfo (creator,creationtime,creatorcomments)>
+
+<!ELEMENT creator (#PCDATA)>
+<!ATTLIST creator name CDATA #IMPLIED>
+<!ATTLIST creator maintainer CDATA #IMPLIED>
+<!ATTLIST creator version CDATA #IMPLIED>
+
+<!ELEMENT creationtime (#PCDATA)>
+<!ELEMENT creatorcomments (#PCDATA)>
 
 <!ELEMENT objectsets (objectset*)>
 <!ELEMENT objectset (#PCDATA)>
