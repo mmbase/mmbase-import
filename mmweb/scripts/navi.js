@@ -129,7 +129,7 @@ function checkUserInput()
 
 	if (checkIt) clearTimeout(checkIt);
 
-	checkIt = setTimeout('closeAll(0)',4000);
+	checkIt = setTimeout('closeAll(0)',1600);
 
 }
 
