@@ -3,13 +3,9 @@
 <application name="BugTracker" maintainer="submarine.nl" version="1" auto-deploy="true">
 	<requirements>
 		<requires name="Resources" maintainer="mmbase.org" version="1" />
-		<!--
-		<requires name="Security"  maintainer="mmbase://security.mmbase.org/" version="1" />
-		-->
 	</requirements>
 	<neededbuilderlist>
-    <builder maintainer="mmbase.org" version="1">email</builder>
-
+		<builder maintainer="mmbase.org" version="1">email</builder>
 		<builder maintainer="mmbase.org" version="1">pools</builder>
 		<builder maintainer="mmbase.org" version="1">bugreports</builder>
 		<builder maintainer="mmbase.org" version="1">bugreportupdates</builder>
@@ -19,7 +15,6 @@
 		<builder maintainer="mmbase.org" version="1">rolerel</builder>
 		<builder maintainer="mmbase.org" version="1">areas</builder>
 		<builder maintainer="mmbase.org" version="1">comments</builder>
-
 		<builder maintainer="mmbase.org" version="1">groups</builder>
 	</neededbuilderlist>
 
@@ -42,6 +37,8 @@
 		<relation from="bugreports" to="users" type="rolerel" />
 		<relation from="bugreports" to="mmevents" type="related" />
 		<relation from="users" to="groups" type="related" />
+		<!-- for sending email to users of a certain area -->
+		<relation from="users" to="areas" type="rolerel" />
 	</allowedrelationlist>
 
 	<datasourcelist>
