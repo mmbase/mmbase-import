@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.9.2.1 2005-01-07 11:07:03 gerard Exp $
+ * @version $Id: JumpersFilter.java,v 1.9.2.2 2005-01-07 11:29:38 gerard Exp $
  */
 public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -52,12 +52,15 @@ public class JumpersFilter implements Filter, MMBaseStarter {
     public MMBase getMMBase() {
         return mmbase;
     }
+
     public void setMMBase(MMBase mmb) {
         mmbase = mmb;
     }
+
     public void setInitException(ServletException se) {
         // never mind, simply, ignore
     }
+
     /**
      * Initializes the filter
      */
@@ -69,7 +72,6 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
         initThread = new MMBaseStartThread(this);
         initThread.start();
-
     }
 
     /**
@@ -91,7 +93,7 @@ public class JumpersFilter implements Filter, MMBaseStarter {
         }
         HttpServletRequest req = (HttpServletRequest)servletRequest;
         HttpServletResponse res = (HttpServletResponse)servletResponse;
-        /**
+        /*
          * getContextPath()
          * Returns the portion of the request URI that indicates the context of the request.
          * The context path always comes first in a request URI.
