@@ -19,7 +19,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2002-09-02</date>
-		<edition>$Id: editwizard-reference.xml,v 1.16 2004-01-09 13:02:23 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.17 2004-05-27 08:43:55 johannes Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -1152,7 +1152,7 @@
 				<varlistentry>
 					<term>Usage</term>
 					<listitem>
-						<para>Use this node to define an optionlist.</para>
+						<para>Use this node to define an optionlist. It can be either a static list of options, or a list filled using an MMBase query.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -1165,6 +1165,8 @@
 					<term>Possible attributes</term>
 					<listitem>
 						<para>name="[optionlistname]" This optional attribute can be used if an optionlist is defined in a &lt;lists /&gt; node. To reference to the defined optionlist, you will need the optionlistname. Eg.: &lt;optionlist select="earlier_defined_optionlist" /&gt;</para>
+						<para>optionid="field[@name='fieldname']" This optional attribute can be used if an underlying 'query' node is present. Of all matching nodes, the field with name given in 'optionid' will be used as the 'id' part of the option.</para>
+						<para>optioncontent="field[@name='fieldname']" This optional attribute can be used if an underlying 'query' node is present. Of all matching nodes, the field with name given in 'optioncontent' will be used as the content part of the option.</para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -1176,7 +1178,16 @@
 				<varlistentry>
 					<term>Possible childnodes</term>
 					<listitem>
-						<para>See needed childnodes</para>
+						<para>&lt;query&gt; This childnode can be used instead of &lt;option&gt; childnodes to fill the optionlist with options. The query has three attributes: optional 'where' and 'orderby' clauses and a required 'xpath' clause. The xpath can have the following syntax:
+                          <itemizedlist>
+                            <listitem>
+                              <para>/*@buildername, in this case a nodequery will be performed.</para>
+                            </listitem>
+                            <listitem>
+                              <para>/*@buildername,otherbuildername,..., in this case a multilevel query will be performed. When doing a multilevel query, there must be a &lt;object&gt; childnode with two &lt;field&gt; childnodes for the 'optionid' and 'optioncontent' arguments of the optionlist.</para>
+                            </listitem>  
+                          </itemizedlist>
+                        </para>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -1188,8 +1199,18 @@
 				</varlistentry>
 				<varlistentry>
 					<term>Example</term>
-					<listitem>
-						<para>See the example for lists</para>
+                    <listitem>
+                        <programlisting format="linespecific"><![CDATA[
+<optionlist name="role"
+            optionid="field[@name='role.role']"
+            optioncontent="field[@name='role.name']">
+    <query xpath="/*@companies,roles" where="company.number = {$origin}">
+        <object>
+            <field name="role.role" />
+            <field name="role.name" />
+        </object>
+    </query>
+</optionlist>]]></programlisting>
 					</listitem>
 				</varlistentry>
 			</variablelist>
