@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Arguments.java,v 1.3 2003-08-12 18:11:28 michiel Exp $
+ * @version $Id: Arguments.java,v 1.4 2003-08-13 10:34:52 michiel Exp $
  * @see Argument
  */
 
@@ -119,7 +119,7 @@ public class Arguments extends AbstractList implements List  {
 
     protected void checkType(Argument a, Object value) {
         if (! a.type.isInstance(value)) {
-            throw new IllegalArgumentException("Argument '" + value + "' must be of type " + a.type + " (but is " + value.getClass() + ")");
+            throw new IllegalArgumentException("Argument '" + value + "' must be of type " + a.type + " (but is " + (value == null ? value : value.getClass()) + ")");
         }
     }
 
