@@ -40,8 +40,13 @@ if ($child = fork()) {
 	    $cvsuser = $1;
 	}
     }
+
+    my $subject = "[MMBASE CVS] ".$dir." ";
+    for my $file (@files) {
+	$subject .= (split(",", $file))[0] . " ";
+    }
            
-    my $message = "From: $cvsuser <$user\@mmbase.org>\n".join("", @message);
+    my $message = "From: $cvsuser <$user\@mmbase.org>\nSubject: $subject\n".join("", @message);
     my $logfile = new FileHandle(">>$log_filename");
     
     print $logfile "--------------------------------------------------------\n";
@@ -50,10 +55,6 @@ if ($child = fork()) {
     print $logfile "\n[$files]\n";
     $logfile->close();
     
-    my $subject = "[MMBASE CVS] ".$dir." ";
-    for my $file (@files) {
-	$subject .= (split(",", $file))[0] . " ";
-    }
 
     my $mail = new FileHandle("|mail -s \"$subject\" $toaddress");
     
