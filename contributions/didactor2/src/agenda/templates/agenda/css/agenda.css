@@ -4,19 +4,24 @@
 }*/
 
 /* The class of the <th> element which contains the month name + year */
+
+.calDay tr td {
+    font-size: 10px;
+}
+
 .calHeader {
   text-align: center;
   text-decoration: bold;
 }
 
 .calMonth {
-    font-size: 12px;
+    font-size: 10px;
 }
 
 /* The class of the <td> elements that give the table some spacing on the
    left and right side */
 .calDaySpacing {
-  width: 10px;
+  width: 8px;
 }
 
 /* The class of the <td> elements that contain the names of the days of
