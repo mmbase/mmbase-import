@@ -24,7 +24,7 @@ Selecteer afbeelding:
 	<IF $ITEMP=E3 OR $ITEMP=E6 OR $ITEMP=E9 OR $ITEMP=E12 OR $ITEMP=E15 OR $ITEMP=E18 OR $ITEMP=E21 OR $ITEMP=E24 OR $ITEMP=E27>
                 <TD>
                   <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
-                  <A HREF="JavaScript:openWin('$ITEM1');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
+                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
                   $ITEM2
                 </TD>
                 </TR>
@@ -32,7 +32,7 @@ Selecteer afbeelding:
         <ELSE>
                 <TD>
                   <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
-                  <A HREF="JavaScript:openWin('$ITEM1');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
+                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
                   $ITEM2
                 </TD>
         </IF>
