@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.60 2002-08-13 08:20:22 michiel Exp $
+ * @version $Id: Wizard.java,v 1.61 2002-08-13 15:41:21 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -82,12 +82,12 @@ public class Wizard implements org.mmbase.util.Sizeable {
     private  Document originalData;
 
     // not yet committed uploads are stored in these hashmaps
-    private Map binaries;
-    private Map binaryNames;
-    private Map binaryPaths;
+    private Map binaries     = new HashMap();
+    private Map binaryNames  = new HashMap();
+    private Map binaryPaths  = new HashMap();
 
     // in the wizards, variables can be used. Values of the variables are stored here.
-    private Map variables;
+    private Map variables    = new HashMap();
 
     // the constraints received from mmbase are stored + cached in this xmldom
     private Document constraints;
@@ -123,7 +123,7 @@ public class Wizard implements org.mmbase.util.Sizeable {
      * This list stores all errors and warnings occured
      *
      */
-    private List errors;
+    private List errors = new Vector();
 
 
     public int getByteSize() {
@@ -146,25 +146,6 @@ public class Wizard implements org.mmbase.util.Sizeable {
     
 
     /**
-     * Constructor. Setup initial variables. No connection to mmbase is made yet.
-     * Make sure a valid path is supplied.
-     * Use initialize() to really startup the wizard and start communicating with mmbase
-     *
-     * @param context the editwizard context path
-     * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
-     */
-    protected Wizard(String c, URIResolver uri) throws WizardException {
-        context = c;
-        uriResolver = uri;
-        binaries = new HashMap();
-        binaryNames = new HashMap();
-        binaryPaths = new HashMap();
-        variables = new Hashtable();
-        errors = new Vector();
-        constraints = Utils.parseXML("<constraints/>");
-    }
-
-    /**
      * Constructor. Setup initial variables and connects to mmbase to load the data structure.
      *
      * @deprecated use Wizard(String, URIResolver, Config.WizardConfig, Cloud)
@@ -175,11 +156,9 @@ public class Wizard implements org.mmbase.util.Sizeable {
      * @param cloud the Cloud to use
      */
     public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
-        this(context, uri);
         Config.WizardConfig wizardConfig = new Config.WizardConfig();
-        wizardConfig.wizard=wizardname;
-        wizardConfig.objectNumber=dataid;
-        initialize(wizardConfig, cloud);
+        wizardConfig.objectNumber = dataid;
+        initialize(context, uri, wizardConfig, cloud);
     }
 
     /**
@@ -191,34 +170,14 @@ public class Wizard implements org.mmbase.util.Sizeable {
      * @param cloud the Cloud to use
      */
     public Wizard(String context, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException, SecurityException {
-        this(context, uri);
-        initialize(wizardConfig, cloud);
+        initialize(context, uri, wizardConfig, cloud);
     }
 
-    /**
-     * Creates a connection to MMBase using a {@link WizardDatabaseConnector}.
-     * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
-     *
-     * @deprecated use initialize(Config.WizardConfig, Cloud)
-     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
-     * @param dataid the dataid (objectNumber) of the main object what is used by the editwizard
-     * @param cloud the Cloud to use
-     */
-    public void initialize(String wizardname, String dataid, Cloud cloud) throws WizardException, SecurityException {
-        Config.WizardConfig wizardConfig = new Config.WizardConfig();
-        wizardConfig.wizard=wizardname;
-        wizardConfig.objectNumber=dataid;
-        initialize(wizardConfig, cloud);
-    }
-
-    /**
-     * Creates a connection to MMBase using a {@link WizardDatabaseConnector}.
-     * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
-     *
-     * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
-     * @param cloud the Cloud to use
-     */
-    public void initialize(Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException, SecurityException {
+    private void initialize(String c, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException, SecurityException {
+        
+        context = c;
+        uriResolver = uri;
+        constraints = Utils.parseXML("<constraints/>");
         // initialize database connector
         databaseConnector = new WizardDatabaseConnector();
         databaseConnector.setUserInfo(cloud);
@@ -229,7 +188,6 @@ public class Wizard implements org.mmbase.util.Sizeable {
         // actually load the wizard
         loadWizard(wizardConfig);
     }
-
     public void setSessionId(String s) {
         sessionId = s;
     }
@@ -431,6 +389,10 @@ public class Wizard implements org.mmbase.util.Sizeable {
         params.put("sessionkey", sessionKey);
         params.put("referrer",   referrer);
         params.put("language",   language);
+        /*
+        params.put("popup",      popup);
+        params.put("level",      level);
+        */
         if (templatesDir != null) params.put("templatedir",  templatesDir);
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
