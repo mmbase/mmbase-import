@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.6 2003-09-10 09:59:48 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.7 2003-09-19 09:59:43 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -241,7 +241,6 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
             }
             return true;
         } catch (StorageException se) {
-            log.error(se.getMessage());
             throw new StorageError(se);
         }
     }
