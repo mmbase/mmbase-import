@@ -4,7 +4,7 @@
   Editwizard cascading style sheet.
   You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
 
-  @version  $Id: base.css,v 1.1 2002-07-18 09:14:47 michiel Exp $
+  @version  $Id: base.css,v 1.2 2002-07-18 11:10:59 michiel Exp $
   
 */
 
@@ -24,8 +24,9 @@ textarea {
      font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif; 
      font-size:13px; 
      letter-spacing:0.05em; 
-     font-weight:400; color:#000000; 
-     background-color: #FFF;
+     font-weight:400; 
+     color:#000000; 
+	 /*  background-color: #FFF; */
      margin: 0;
 }
 
