@@ -15,5 +15,4 @@ while(c<currentPath.size()) {
 	</mm:node><%
 	c++;
 } %>
-
 <!-- END FILE: breadcrumb.jsp -->
