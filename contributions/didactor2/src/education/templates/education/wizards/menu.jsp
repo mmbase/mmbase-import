@@ -15,9 +15,16 @@
  <body bgcolor="white">
    <img src="<mm:treefile page="/education/wizards/gfx/loading.gif" objectlist="$includePath" referids="$referids" />" alt="">
    <script type="text/javascript">
-    if (top.frames['code'].location) {
+   <%-- 
+    this reloads the menu when the editwizards are "done"
+
+    the first check is to make sure were in the right iframe (this page is loaded in 2 frames
+    and this code won't work when we're in the wrong one)
+    --%>
+    
+    if (top.frames['text'].location.href == document.location.href && top.frames['code'].location.href.indexOf("code.jsp") >= 0) {
 	top.frames['code'].location.reload();
-    }
+    } 
    </script>
    
    </body>

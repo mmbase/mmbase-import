@@ -195,7 +195,7 @@
 
     <mm:sortorder field="posrel.pos" direction="up"/>
 
-    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up">
+    <mm:tree type="learnobjects" role="posrel" searchdir="destination" orderby="posrel.pos" direction="up" maxdepth="15">
 
       <%-- TODO here... to continue... How to implement --%>
       <%-- Determine if the learnobject is active or not --%>
@@ -233,7 +233,7 @@
         %>
 
         <script>
-        javascript:addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
+        addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
         </script>
 
         <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" />
