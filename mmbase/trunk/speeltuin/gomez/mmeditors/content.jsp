@@ -9,7 +9,7 @@
     <title>Editors</title>
     <link rel="stylesheet" href="css/mmeditors.css" type="text/css" />
   </head>
-  <frameset cols="220,*" framespacing="0">
+  <frameset cols="220,*" framespacing="0" frameborder="0" >
   <% if (nodeID == null) { %>
     <frame src="<mm:url page="select.jsp" />" name="selectarea" marginheight="0" marginwidth="0" />
   <% } else { %>
