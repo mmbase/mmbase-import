@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: startRemoteBuilders.java,v 1.7 2000-12-19 17:16:56 vpro Exp $
+$Id: startRemoteBuilders.java,v 1.8 2000-12-20 16:31:45 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/12/19 17:16:56  vpro
+Davzev: Added cvs comments
+
 */
 package org.mmbase.remote;
 
@@ -27,7 +30,7 @@ import java.util.*;
  * example : java org.mmbase.startRemoteBuilders /tmp/cdrom1.cfg
  * </PRE>
  *
- * @version $Revision: 1.7 $ $Date: 2000-12-19 17:16:56 $
+ * @version $Revision: 1.8 $ $Date: 2000-12-20 16:31:45 $
  * @author Daniel Ockeloen
  */
 public class startRemoteBuilders {
@@ -85,9 +88,9 @@ public class startRemoteBuilders {
 					port=Integer.parseInt(tmp.substring(pos+1));
 				} catch(Exception e) {}
 			}
-			debug("main(): "+classname +":main(): Prot="+protocol);
-			debug("main(): "+classname +":main(): Host="+host);
-			debug("main(): "+classname +":main(): Port="+port);
+			debug("main(): Prot="+protocol);
+			debug("main(): Host="+host);
+			debug("main(): Port="+port);
 			
 			String name=(String)servprops.get("name");
 			if (protocol.equals("ulticast")) {	
@@ -123,7 +126,7 @@ public class startRemoteBuilders {
 					e.printStackTrace();
 				}
 			}
-			debug("main(): "+classname+":main(): Running");
+			debug("main(): Running");
 		}
 
 
