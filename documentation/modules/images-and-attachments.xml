@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Images and Attachments</title>
     <date>20 April 2003</date>
-    <edition>$Id: images-and-attachments.xml,v 1.3 2003-06-30 13:29:13 johannes Exp $</edition>
+    <edition>$Id: images-and-attachments.xml,v 1.4 2003-07-18 10:49:59 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -214,15 +214,11 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
         attachments-servlet.
       </para>
       <para>
-        It works exactly the same as for images. You could even use the image-tag to create urls to the
-        attachment-servlet. That would be a bit silly though, so there is also an 'attachment' tag. It
-        does exactly the same (the only difference being that the 'template' attribute of the next
-        section may not be used).
-      </para>
-      <para>
-        There is one other thing where images are more then attachments. Images can be converted into
-        other images (they can be resized, turned etc.). MMBase can also do this for you, and this will
-        be described in the next section.
+        It works exactly the same as for images. You could even use the image-tag to create urls to
+        the attachment-servlet. That would be a bit silly though, so there is also an 'attachment'
+        tag. It does exactly the same. As mentioned though, Images can be converted into other
+        images (they can be resized, turned etc.). This is of course not valid for attachments, so
+        the 'template' attribute cannot be used on the attachment tag.
       </para>
       <para>
         For every day usage you know enough now. The following sections will be more technical.
