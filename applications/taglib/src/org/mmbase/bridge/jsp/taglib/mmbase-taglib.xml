@@ -2292,14 +2292,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
       only for numbers.
     </info>
     <example>
-   <!-- this example should be fixed, or the tag must be changed... -->
-	&lt;mm:import id="title"&gt;mmbase taglib example&lt;/mm:import&gt;
-	&lt;mm:isgreaterthan referid="title" value="m"&gt;
-	         Title starts with character a, ..., m
-	&lt;/mm:isgreaterthan&gt;
-	&lt;mm:islessthan referid="title" value="n"&gt;
-	        Title starts with character n, ..., z
-	&lt;/mm:islessthan&gt;
+&lt;mm:import id="number"&gt;5&lt;/mm:import&gt;
+&lt;mm:import id="compare"&gt;6&lt;/mm:import&gt;
+&lt;mm:write referid="number"&gt;
+   &lt;mm:isgreaterthan value="$compare"&gt;
+       &lt;mm:write /&gt; greater then &lt;mm:write referid="compare" /&gt;
+   &lt;/mm:isgreaterthan&gt;
+   &lt;mm:islessthan value="$compare"&gt;
+       &lt;mm:write /&gt; less then &lt;mm:write referid="compare" /&gt;
+   &lt;/mm:islessthan&gt;
+&lt;/mm:write&gt;
 	</example>
   </tag>
   <tag>
@@ -2307,18 +2309,10 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsLessThanTag</tagclass>
     <info>
-	  The body evaluated if the compared value is smaller.
+	  The body evaluated if the compared value is smaller. This is more
+	  or less the inverse of isgreatehan, of course.
     </info>
-    <example>
-	&lt;mm:field name="list.title" write="true"&gt;
-		&lt;mm:isgreaterthan value="m"&gt;
-		         Title starts with character a, ..., m
-		&lt;/mm:isgreaterthan&gt;
-		&lt;mm:islessthan value="n"&gt;
-		        Title starts with character n, ..., z
-	&lt;/mm:islessthan&gt;
-	&lt;/mm:field &gt;
-	</example>
+    <see>isgreaterthan</see>
   </tag>
   <tag>
     <name>aliaslist</name>
@@ -2980,6 +2974,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       to the MMBase log with this.  It logs its body on 'service'
       within the category 'org.mmbase.PAGE', followed by the file name
       of the jsp which is executed.
+
     </info>
     <attribute>
       <name>jspvar</name>
