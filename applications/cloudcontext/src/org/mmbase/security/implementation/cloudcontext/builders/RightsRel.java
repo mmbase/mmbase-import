@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.9 2004-02-25 21:57:25 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.10 2004-02-25 22:06:27 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -81,18 +81,16 @@ public class RightsRel extends InsRel {
 
 
     public int insert(String owner, MMObjectNode node) {
-        int res = super.insert(owner, node);
-        if (res > 0) {
-            if(node.getStringValue("operation").equals("all")) {
-                getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.READ).insert(owner);
-                getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.WRITE).insert(owner);
-                getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CREATE).insert(owner);
-                getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGE_RELATION).insert(owner);
-                getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.DELETE).insert(owner);
-                getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGECONTEXT).insert(owner);
-            }
+
+        if(node.getStringValue("operation").equals("all")) {
+            node.setValue("operation", Operation.READ.toString());
+            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.WRITE).insert(owner);
+            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CREATE).insert(owner);
+            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGE_RELATION).insert(owner);
+            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.DELETE).insert(owner);
+            getNewNode(owner, node.getIntValue("snumber"), node.getIntValue("dnumber"), Operation.CHANGECONTEXT).insert(owner);
         }
-        return res;
+        return super.insert(owner, node);
     }
 
     /**
