@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.3 2002-05-07 13:37:57 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.4 2002-05-17 10:52:03 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -26,7 +26,7 @@ if (ewconfig.subObjects.size() > 0) {
             wizardConfig.wiz.processRequest(request);
         }
     }
-} 
+}
 
 if (wizardConfig == null) {
     log.trace("creating new wizard");
@@ -37,11 +37,11 @@ if (wizardConfig == null) {
 
 if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
-    response.sendRedirect(response.encodeURL("wizard.jsp?proceed=yes&remove=true"));
+    response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey="+ewconfig.sessionKey+"&proceed=true&remove=true"));
 } else {
     log.trace("Send html back");
     wizardConfig.wiz.writeHtmlForm(out, ewconfig.wizard);
-}    
+}
 %>
 </mm:log></mm:cloud>
 
