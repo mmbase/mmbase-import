@@ -5,13 +5,13 @@
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<link rel="stylesheet" href="/mmbase/my_editors/my_editors.css" type="text/css" />
+	<link rel="stylesheet" href="<%= request.getContextPath() %>/mmbase/my_editors/my_editors.css" type="text/css" />
 	<title>mmbase.org - <%= title %></title>
 </head>
 <body bgcolor="#FFFFFF">
 <div style="margin-left: 50px; margin-right: 50px; margin-top: 50px; margin-bottom: 50px;" align="center">
 <mm:import externid="username" from="parameters" />
-<mm:import externid="referrer">/dologin.jsp</mm:import>
+<mm:import externid="referrer"><%= request.getContextPath() %>/dologin.jsp</mm:import>
 <% if(request.getParameter("reason") != null) { %>
 	<p class="message"><%= request.getParameter("reason") %> </p>
 	<p>&nbsp;</p>

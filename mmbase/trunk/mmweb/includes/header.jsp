@@ -1,39 +1,4 @@
 <% String componentTitle = "header";%>
-<%!
-
-    // MM: hard node numbers ?!?!
-    // To create an URL you need a request and a response (jsessionid encoding, contextpath)
-    // these functions can't be right!
-
-    /* Transforms a portal node number into the base url for that portal
-     * Notice that the old format (/index.jsp?portal=123) will still work
-     * and is still used underwater.
-     * @param portalNumber The number of the node of the portal.
-     * @returns A base url for the specified portal.
-     */
-    String createUrlXXX(String portalNumber) {
-        String pn = portalNumber.intern();
-        if(pn == "199") return "/devportal/index.jsp";
-        if(pn == "202") return "/mmbaseportal/index.jsp";
-        if(pn == "205") return "/foundationportal/index.jsp";
-        // this should never happen - parameters should not be appended.
-        return "/index.jsp?portal=" + pn;
-    }
-                                                                                                                                  
-    /**
-     * Like the former, but will render the first parameter.
-     * Further parameters can be appended by &paramName=paramValue
-     */
-    String createUrlXXX(String portalNumber, String encodedParamName1, String encodedParamValue1) {
-        String pn = portalNumber.intern();
-        String param = encodedParamName1 + "=" + encodedParamValue1;
-        if(pn == "199") return "/devportal/index.jsp?" + param;
-        if(pn == "202") return "/mmbaseportal/index.jsp?" + param;
-        if(pn == "205") return "/foundationportal/index.jsp?" + param;
-        // this should never happen - parameters may be appended.
-        return "/index.jsp?portal=" + pn + "&" + param;
-    }
-%>
 <%@include file="cachesettings.jsp" %>
 <% String userFullName = (String) session.getAttribute("user_node_name"); %>
 <cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
@@ -90,11 +55,13 @@
 	    <td width="100%"><span class="breadcrum"><%@ include file="/includes/breadcrums.jsp" %></span></td>
 <%  String rightContent = "";
     if(userFullName != null) {
-      rightContent = "<a style=\"color: black;\" href=\"/login/mmaccount.jsp\">Welcome&nbsp;" + org.apache.commons.lang.StringUtils.replace(userFullName, " ", "&nbsp;") + "</a>&nbsp;";
+      rightContent = "<a style=\"color: black;\" href=\""+request.getContextPath()+response.encodeURL("/login/mmaccount.jsp")+"\">Welcome&nbsp;" + org.apache.commons.lang.StringUtils.replace(userFullName, " ", "&nbsp;") + "</a>&nbsp;";
     } else {
-      String orgLocation = "/index.jsp" + ((request.getQueryString() == null) ? "" : ("?" + request.getQueryString()));
+      String orgLocation = request.getContextPath() + "/index.jsp" + ((request.getQueryString() == null) ? "" : ("?" + request.getQueryString()));
       orgLocation = java.net.URLEncoder.encode(orgLocation);
-      rightContent = "<a style=\"color: black;\" href=\"/login/mmlogin.jsp?orgLocation=" + orgLocation + "\">login</a>";
+String myUrl = request.getContextPath() + "/login/mmlogin.jsp?orgLocation="+orgLocation;
+      String encUrl = response.encodeURL(myUrl);
+      rightContent = "<a style=\"color: black;\" href=\"" +encUrl+ "\">login</a>";
     }
 %>
 <td align="right"><%=rightContent%></td>
