@@ -32,7 +32,7 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.17 2003-08-19 13:29:07 michiel Exp $
+ * @version $Id: Contexts.java,v 1.18 2003-09-05 17:39:45 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -638,13 +638,18 @@ public class Contexts extends MMObjectBuilder {
      * @return boolean
      */    
     protected boolean parentsAllow(MMObjectNode contextNode, MMObjectNode groupOrUserNode, Operation operation) {
-        Groups groups = Groups.getBuilder();
-
-        Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
-        Iterator i = groupsAndUsers.iterator();
-        while (i.hasNext()) {
-            MMObjectNode containingGroup = (MMObjectNode) i.next();
-            if (groups.contains(containingGroup, groupOrUserNode)) return true;
+        log.info("parents allow for " + contextNode + " " + groupOrUserNode + " " + operation);
+        try {
+            Groups groups = Groups.getBuilder();
+            
+            Set groupsAndUsers = getGroupsAndUsers(contextNode, operation);
+            Iterator i = groupsAndUsers.iterator();
+            while (i.hasNext()) {
+                MMObjectNode containingGroup = (MMObjectNode) i.next();
+                if (groups.contains(containingGroup, groupOrUserNode)) return true;
+            }
+        } catch (Throwable e) {
+            log.error(Logging.stackTrace(e));
         }
         return false;
     }
@@ -789,13 +794,13 @@ public class Contexts extends MMObjectBuilder {
                 return info.get(args.get(0));
             }
         } else if (function.equals("allows")) {
-            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);  // 'ALLOW' argument would be more logical, but don't wien because of the extra argument (practical can use several functions with same arguments list)
+            Arguments a = Arguments.get(GRANT_ARGUMENTS, args);  // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             if (allows(node, getNode(a.getString("grouporuser")), Operation.getOperation(a.getString("operation")))) {
                 return Boolean.TRUE;
             } else {
                 return Boolean.FALSE;
             }
-        } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't wien because of the extra argument (practical can use several functions with same arguments list)
+        } else if (function.equals("parentsallow")) {   // 'ALLOW' argument would be more logical, but don't when because of the extra argument (practical can use several functions with same arguments list)
             Arguments a = Arguments.get(GRANT_ARGUMENTS, args);
             if (parentsAllow(node, getGroupOrUserNode(a), Operation.getOperation(a.getString("operation")))) {
                 return Boolean.TRUE;
