@@ -49,12 +49,44 @@ public class FieldSelector implements CommandHandlerInterface {
 			return(getPosRelations(state,args));
 		} else if (token.equals("GETTYPES")) {
 			return(getTypes(state,args));
+		} else if (token.equals("GETRELTYPES")) {
+			return(getRelTypes(state,args));
+		} else if (token.equals("GETDATATYPES")) {
+			return(getDataTypes(state,args));
 		} else if (token.equals("GETRELDEFS")) {
 			return(getRelDefs(state,args));
 		}
 		return(null);
 	}
 
+	Vector getRelTypes(EditState ed,StringTagger args) {
+		Vector results=new Vector();
+		for (Enumeration h=stateMngr.mmBase.mmobjs.elements();h.hasMoreElements();) {
+		    MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
+		    if (bul instanceof InsRel) {
+			    results.addElement(""+bul.oType);
+			    results.addElement(bul.tableName);
+			    results.addElement(bul.description);
+		    }
+		}
+		args.setValue("ITEMS","3");
+		return(results);
+	}
+	
+	Vector getDataTypes(EditState ed,StringTagger args) {
+		Vector results=new Vector();
+		for (Enumeration h=stateMngr.mmBase.mmobjs.elements();h.hasMoreElements();) {
+		    MMObjectBuilder bul=(MMObjectBuilder)h.nextElement();
+		    if (!(bul instanceof InsRel)) {
+			    results.addElement(""+bul.oType);
+			    results.addElement(bul.tableName);
+			    results.addElement(bul.description);
+		    }
+		}
+		args.setValue("ITEMS","3");
+		return(results);
+	}
+	
 	Vector getTypes(EditState ed,StringTagger args) {
 		Vector results=new Vector();
 		Enumeration h=stateMngr.mmBase.getTypeDef().search("");

@@ -77,7 +77,7 @@ public class StateManager implements CommandHandlerInterface {
 	
 		if (userName==null) return("StateManager-> not logged in");	
 		EditState state = getEditState(userName);
-	//	System.out.println("STATE="+state);
+  	//	System.out.println("STATE="+state);
 
 		if (commands.hasMoreTokens()) {
 			token = commands.nextToken();
@@ -144,9 +144,20 @@ public class StateManager implements CommandHandlerInterface {
 	}
 
 
-	/**
-	* setInsEditor
-	*/
+    /**
+    * Creates a new Node, depending on the builder name (or relation name) specified in the StringTokenizer.
+    * This method is used to create relation nodes
+    * @param ed Editstate in which to add the new node.
+    * @param userName User who becomes owner of the new node
+    * @param tok Tokens used to configure the node. The next three tokens should be:
+    *	<ul>
+    *	<li> The number of the node to link FROM </li>
+    *	<li> The number of the node to link TO</li>
+    *	<li> The name of the builder to use or relation to add (determines type of node and/or relation)</li>
+    *       </ul>
+    * @return Always true. If the addition was successful, a new node has been added to the EditState object.
+    **/
+
     boolean newInsNode(EditState ed,String userName,StringTokenizer tok) {
         try {
             String tmp=tok.nextToken();
@@ -158,52 +169,60 @@ public class StateManager implements CommandHandlerInterface {
             String builder=tok.nextToken();
 
             int rtype=-1;
-            if (mmBase.getTypeDef().getIntValue(builder)==-1) {
 
-            // ***
-            // *   Obtain number of the relation in getRelDef
-            // *   This works if 'builder' is a relationname
-            // *   Not very neat, but it works as long as you don't have any relations
-            // *   that are equal to builder names (but that should give you problems in the
-            // *   old situation, too).
-            // ***
+        	// tests if the 'builder' specified is actually a relationname.
+            // If so, the number of the relation in RelDef is obtained,
+            // and the name of the builder to use is determined (if explicitly given)).
 
-                rtype = mmBase.getRelDef().getGuessedByName(builder);  
-                // *** added
+            rtype = mmBase.getRelDef().getGuessedNumber(builder);
+
+            boolean usesbuilder=mmBase.getRelDef().usesbuilder;
+
+            if ((rtype!=-1) && (usesbuilder))  { // relation found
+                MMObjectNode node=mmBase.getRelDef().getNode(rtype);  // retrieve the reldef node
+                int ibuilder=node.getIntValue("builder");
+                if (ibuilder>0) {
+                    builder=mmBase.getTypeDef().getValue(ibuilder);
+                }
+            }
+
+            // check whether the builder is a valid relationbuilder.
+            // otherwise assign InsRel
+            // note that is the builder specified is not an InsRel-derived builder, it will be overridden
+
+            MMObjectBuilder bul = mmBase.getMMObject(builder);
+            if (!(bul instanceof InsRel)) {
                 builder="insrel";
             }
 
             ed.popState();
             ed.setBuilder(builder);
-            MMObjectBuilder bul=ed.getBuilder();
-
-            MMObjectNode nn1=bul.getNode(n1);
-            int t1=nn1.getIntValue("otype");
 
             ed.NewNode(userName);
             MMObjectNode node=ed.getEditNode();
             node.setValue("snumber",n1);
             node.setValue("dnumber",n2);
 
-            if (builder.equals("insrel")) {
+            // If rtype is unknown, try to get the type from TypeRel
+            // note that typerel is only unknown if the relationname was invalid
+            // (which implies it as an insrel relation)
+            //                                             -->  shouldn't we throw an exception instead???
+            if (builder.equals("insrel") && (rtype==-1)) {
+                bul=ed.getBuilder();
+                rtype=mmBase.getTypeRel().getAllowedRelationType(bul.getNodeType(n1),bul.getNodeType(n2));
+            }
 
-            // ***
-            // *   if rtype was set, use that number, otherwise get the type from TypeRel
-            // ***
-
-                if (rtype==-1) {
-                    int t2=(bul.getNode(n2)).getIntValue("otype");
-
-                    rtype=mmBase.getTypeRel().getAllowedRelationType(t1,t2);
-                }
+		    // assign rtype. Note that rtype is only set if it is actually known.
+		    // in rare cases, rtype can be -1. This happens if the relationname specified is the name of a
+		    // relationbuilder for which no relation definition with the same name is defined.
+            if (rtype!=-1) {
                 node.setValue("rnumber",rtype);
             }
-            // ***
 
-            } catch (Exception e) {
-                System.out.println("StateManager -> Can't create insnode");
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            System.out.println("StateManager -> Can't create insnode");
+            e.printStackTrace();
+        }
         return(true);
     }
 
