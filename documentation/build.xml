@@ -45,8 +45,9 @@
   <property name="documentation.xml-source.dir" value="${documentation.src.dir}"/>
   <property name="documentation.builders.language" value="en" />
   <property name="documentation.temp.dir" value="${documentation.build.dir}/temp" />
-  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
-  <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />
+  <!-- try xhtml/chunk.xsl (in build.properties) if you like chunks -->
+  <!-- property name="docbook.stylesheet" value="xhtml/chunk.xsl" /-->
+  <property name="docbook.stylesheet" value="xhtml/docbook.xsl" />
   <property name="documentation.docbook.html.stylesheet" 
             value="${download.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
   <property name="documentation.docbook.fo.stylesheet" 
