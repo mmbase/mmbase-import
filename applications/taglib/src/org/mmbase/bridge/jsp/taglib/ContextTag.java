@@ -33,23 +33,145 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-*
-* Groups tags. The tags can referrence each other, by use of the group
-* hash of this class. You can have several types, but they have a
-* certain order. The most complex Context is a Context of type
-* 'session'. If you try to get something from a session context, it
-* will first search in the session, if it cannot find it there, it
-* will try to find a multipart post with that key, if that is also not
-* there, it will try a parameter, and finally it will try to see if
-* the object was registered in this page.
-*
-* Inside a session context you will by the way not register anything
-* in the hashmap of the context, because the session is used for that
-* already.
-*
-*
-* @author Michiel Meeuwissen
-*/
+ * This is a HashMap, but the keys can contain 'dots', in which case
+ * there is searched for HashMaps in the HashMap.
+ */
+
+
+class ContextContainer extends HashMap {
+
+    private static Logger log = Logging.getLoggerInstance(ContextContainer.class.getName());
+    private String id;
+    private ContextContainer parent;
+
+    ContextContainer(String _id, ContextContainer _parent) {
+        super();
+        id = _id;        
+        parent = _parent;
+    }
+
+    public Object put(Object key, Object value) {
+        throw new RuntimeException("Error, key should be string in ContextContainers!");
+    }
+
+    public Object put(String key, Object value) throws JspTagException {
+        if (key.indexOf('.') != -1) {
+            throw new JspTagException("Key may not contain dots");
+        }
+        return super.put(key, value);
+    }
+    public boolean containsKey(Object key) {
+        throw new RuntimeException("Error, key should be string in ContextContainers!");
+    }
+
+    private Pair getPair(String key, boolean checkParent) throws JspTagException {
+        // checking if key contains a 'dot'.
+        int dotpos = key.indexOf('.');
+        if (dotpos > 0) {  
+            String contextKey = key.substring(0, dotpos);
+            // find the Context:
+            boolean wentDown = true;
+            Object c = simpleGet(contextKey, checkParent);
+            if(c == null && checkParent) {
+                c = parentGet(contextKey);
+                wentDown = false;
+            } 
+            
+            if(c == null) {
+                throw new JspTagException("Context '" + contextKey+ "' could not be found.");
+            }
+            if (! (c instanceof ContextContainer)) {
+                throw new JspTagException(contextKey + " is not a Context, but a " + c.getClass().getName());
+            }
+            String newKey = key.substring(dotpos + 1);
+            // and search with that one:
+            return new Pair((ContextContainer)c, newKey, wentDown);
+        } else {
+            return null;
+        }
+
+    }
+
+    public boolean containsKey(String key, boolean checkParent) throws JspTagException {
+        Pair p = getPair(key, checkParent);
+        if (p == null) {
+            return super.containsKey(key);
+        } else {
+            return p.context.containsKey(p.restKey, ! p.wentDown);
+        }                
+    }
+    public boolean containsKey(String key) throws JspTagException {
+        return containsKey(key, true);
+    }
+
+    private Object simpleGet(String key, boolean checkParent) { // already sure that there is no dot.        
+        Object result =  super.get(key);
+        if (result == null && checkParent) {
+            return parentSimpleGet(key);
+        } 
+        return result;
+    }
+    private Object parentSimpleGet(String key) {
+        if (parent != null) {
+            return parent.simpleGet(key, true);
+        } else {
+            return null;
+        }
+    }
+
+    private Object parentGet(String key) throws JspTagException {
+        if (parent != null) {         // try it with the parent
+            return parent.get(key, true);
+        } else {
+            return null;
+        }
+    }
+
+    public Object get(String key, boolean checkParent) throws JspTagException {
+        Pair p = getPair(key, checkParent);
+        if (p == null) {
+            return simpleGet(key, checkParent);
+        } else {     
+            return p.context.get(p.restKey, ! p.wentDown);
+        }
+    }
+
+    public Object get(String key) throws JspTagException {
+        return get(key, true);
+    }
+
+
+    private class Pair {
+        ContextContainer context;
+        String           restKey;
+        boolean          wentDown;
+        Pair(ContextContainer c, String k, boolean w) {
+            context = c; restKey = k; wentDown = w;
+        }
+    }
+
+}
+
+
+/**
+ *
+ * Groups tags. The tags can referrence each other, by use of the group
+ * hash of this class. You can have several types, but they have a
+ * certain order. The most complex Context is a Context of type
+ * 'session'. If you try to get something from a session context, it
+ * will first search in the session, if it cannot find it there, it
+ * will try to find a multipart post with that key, if that is also not
+ * there, it will try a parameter, and finally it will try to see if
+ * the object was registered in this page.
+ *
+ * Inside a session context you will by the way not register anything
+ * in the hashmap of the context, because the session is used for that
+ * already.
+ *
+ *
+ * @author Michiel Meeuwissen
+ */
+
 public class ContextTag extends ContextReferrerTag {
 
     public static final int TYPE_NOTSET         = -10;
@@ -61,7 +183,7 @@ public class ContextTag extends ContextReferrerTag {
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
-    private HashMap myHashMap = null; 
+    private ContextContainer container = null; 
 
     private ContextTag parent = null;
     private boolean    searchedParent = false;
@@ -84,12 +206,13 @@ public class ContextTag extends ContextReferrerTag {
 
     void fillVars() {
         ContextTag page = (ContextTag) pageContext.getAttribute("__context");
-        if (page == null) { // first time on page
-			// we want to be sure that these are refilled:
-			httpSession = null;
-			httpRequest = null;
-			multipartChecked = false;
-			// and also the multipart request must be filled if appropriate:
+        if (page == null) { // first time on page..
+            // we want to be sure that these are refilled:
+            httpSession = null;
+
+            httpRequest = null;
+            multipartChecked = false;
+            // and also the multipart request must be filled if appropriate:
             if (isMultipart()) {
                 getMultipartRequest();
             } else {
@@ -113,6 +236,17 @@ public class ContextTag extends ContextReferrerTag {
         fillVars();
     }
 
+    void createContainer(ContextContainer c) {
+        if (container != null) {
+            throw new RuntimeException("This context already had Container");
+        }
+        container = new ContextContainer(getId(), c);
+    }
+
+    ContextContainer getContainer() {
+        return container;        
+    }
+
     public int doStartTag() throws JspTagException {
         log.debug("Start tag of ContextTag");
         // release() is not called in Orion 1.5.2 (a bug!)  therefore we
@@ -124,11 +258,12 @@ public class ContextTag extends ContextReferrerTag {
 
         parent = null;
         searchedParent = false;
-        pageContext.removeAttribute(getId()); // make sure it does not exist.
-        pageContext.setAttribute(getId(), new HashMap());
-        myHashMap = (HashMap) pageContext.getAttribute(getId());
-        if (myHashMap == null) {
-            throw new JspTagException("hashmap is null");
+        createContainer(getContextTag().getContainer());
+        if (getId() != null) {
+            if (log.isDebugEnabled()) {
+                log.debug("registering container " + getId() + " with context " + getContextTag().getId());
+            }
+            getContextTag().register(getId(), container);
         }
         log.debug("out");
         return EVAL_BODY_TAG;
@@ -157,31 +292,6 @@ public class ContextTag extends ContextReferrerTag {
         }
         return httpSession;
     }
-
-    public void setId(String i) {
-        log.debug("setting id to " + i);
-        super.setId(i);
-    }
-
-    /**
-     * Returns the id of the context. If there was no id-attibute in
-     * this tag, then the id is implicitily 'context'.
-     */
-
-    public String getId() {
-        if (id == null) return "context"; // a context has a default id.
-        return id;
-    }
-
-    /*
-    private HttpPost getPoster() {
-        if (poster == null) {
-            log.debug("Creating new  poster");
-            poster = new HttpPost(getHttpRequest());
-        }
-        return poster;
-    }
-    */
 
     boolean isMultipart() {
         String ct = getHttpRequest().getContentType();
@@ -214,14 +324,12 @@ public class ContextTag extends ContextReferrerTag {
 
     }
 
-    private ContextTag getParentContext() {
+    private ContextTag getParentContext() throws JspTagException {
         if (! searchedParent) {
             try {
                 parent = getContextTag();
             } catch (JspTagException e) {
-                // ok. No parent Context. No problem.
-                // use the hashmap.
-                parent = null;
+                throw new JspTagException("Could not find parent context!");
             }
             searchedParent = true;
         }
@@ -230,7 +338,7 @@ public class ContextTag extends ContextReferrerTag {
 
 
     /**
-     *
+     * Precisely like 'register', only
      *
      * @param key the key (id) of the node to register
      * @param node the node to put in the hashmap
@@ -243,7 +351,7 @@ public class ContextTag extends ContextReferrerTag {
 
     //
 
-    public boolean findAndRegister(int from, String referid, String newid) throws JspTagException {
+    public Object findAndRegister(int from, String referid, String newid) throws JspTagException {
         if (newid == null) {
             throw new JspTagException("Cannot register with id is null");
         }
@@ -284,7 +392,10 @@ public class ContextTag extends ContextReferrerTag {
         case TYPE_PARENT:
             if (getParentContext() != null) {
                 if (parent.isRegistered(referid)) {
-                    result = parent.getObject(referid);
+                    result = parent.container.get(referid);
+                    if (result == this.container) { // don't find this tag itself...
+                        result = null;
+                    }
                 }
             }
             break;
@@ -295,33 +406,40 @@ public class ContextTag extends ContextReferrerTag {
             result = null;
         }
         register(newid, result);
-        if (result == null) return false;
-        log.debug("found " + newid + " (" + result + ")");
-        return true;
+        if (log.isDebugEnabled()) {
+            log.debug("found " + newid + " (" + result + ")");
+        }
+        return result;
     }
 
     /**
      * Searches a key in request, postparameters, session, parent context and registers it in this one.
+     *
+     * Returns null if it could not be found.
      */
 
-    public boolean findAndRegister(String externid, String newid) throws JspTagException {
+    public Object findAndRegister(String externid, String newid) throws JspTagException {
         log.debug("searching to register object " + externid + " in context " + getId());
         // if (findAndRegister(TYPE_PAGE, referid, id)) return true;
         log.debug("searching in parent");
-        if (findAndRegister(TYPE_PARENT, externid, newid)) return true;
+        Object result; 
+        result = findAndRegister(TYPE_PARENT, externid, newid);
+        if (result != null) return result;
         unRegister(newid); // unregister the 'null' value
         log.debug("searching in parameters");
-        if (findAndRegister(TYPE_PARAMETERS, externid, newid)) return true;
+        result = findAndRegister(TYPE_PARAMETERS, externid, newid);
+        if (result != null) return result;
         unRegister(newid);
         if (isMultipart()) {
             log.debug("searching in multipart post");
-            if (findAndRegister(TYPE_MULTIPART, externid, newid)) return true;
+            result = findAndRegister(TYPE_MULTIPART, externid, newid);
+            if (result != null) return result;
             unRegister(newid);
         }
         log.debug("searching in session");
-        if (findAndRegister(TYPE_SESSION, externid, newid)) return true;
+        result = findAndRegister(TYPE_SESSION, externid, newid);
         // don't unregister now, it stays registered as a null value,t hat is registerd, but not found.
-        return false;
+        return result;
     }
 
 
@@ -332,7 +450,7 @@ public class ContextTag extends ContextReferrerTag {
 
     public void register(String newid, Object n) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.trace("registering " + n + " under " + newid + " with context " + getId());
+            log.trace("registering " + n + " a (" + (n!=null ? n.getClass().getName() :"")+ ") under " + newid + " with context " + getId());
         }
         //pageContext.setAttribute(id, n);
         if (isRegistered(newid)) {
@@ -340,20 +458,15 @@ public class ContextTag extends ContextReferrerTag {
             log.error(mes);
             throw new JspTagException(mes);
         }
-        getHashMap().put(newid, n);
+        container.put(newid, n);
     }
 
     public void unRegister(String key) throws JspTagException {
         //pageContext.removeAttribute(key);
         log.debug("removing object " + key + " from Context " + getId());
-        getHashMap().remove(key);
+        container.remove(key);
     }
 
-    /*
-    public Cloud getCloudVar() throws JspTagException {
-        return getCloudProviderVar();
-    }
-    */
 
     /**
      * 'present' means ='not null'. 'null' means 'registered, but not present'.
@@ -361,58 +474,40 @@ public class ContextTag extends ContextReferrerTag {
      */
 
     public boolean isPresent(String key) throws JspTagException {
-        // return (pageContext.getAttribute(id) != null);
-		if (! isRegistered(key)) {
-			log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
-			return false;
-		}
-        return (getObject(key) != null);
-    }
-
-
-    final private HashMap getHashMap() throws JspTagException {
-        //return myHashMap;
-/*        String key = "CONTEXT:" + getId();
-        log.debug("using HashMap " + key);
-        if (pageContext.getAttribute(key) == null) {
-            pageContext.setAttribute(key, new HashMap());
+        if (! isRegistered(key)) {
+            log.warn("Checking presence of unregistered context variable " + key + " in context " + getId());
+            return false;
         }
-*/
-        HashMap hm = (HashMap) pageContext.getAttribute(getId());
-        if (hm == null) {
-            throw new JspTagException("hashmap is null");
-        }
-        return hm;
+        return (container.get(key) != null);
     }
+    
 
     private boolean isRegistered(String key) throws JspTagException {
-        return (getHashMap().containsKey(key));
+        return (container.containsKey(key, false)); // don't check parent.
+    }
+    private boolean isRegisteredSomewhere(String key) throws JspTagException {
+        return (container.containsKey(key, true)); // do check parent.
+    }
+    
+    public Object findAndRegister(String id) throws JspTagException {
+        return findAndRegister(id, id);
+    }
+    public String findAndRegisterString(String id) throws JspTagException {
+        return (String) findAndRegister(id, id);
     }
 
-    public Object getObject(String key) throws JspTagException {
-        if (log.isDebugEnabled()) {
-            log.trace("getting object " + key + " from Context " + getId());
+    public Object getContainerObject(String key) throws JspTagException {
+        if (! isRegisteredSomewhere(key)) {
+            throw new JspTagException("Object '" + key + "' is not registered");            
         }
-        //Object result = pageContext.getAttribute(id);
-        //if (result == null) {
-
-        if (! isRegistered(key)) {
-            throw new JspTagException("Object with id " + key + " was not registered in Context '" + getId() + "'");
-        }
-        Object result = getHashMap().get(key);
-        log.debug("found object " + key + " in context " + getId() + " value: " + result);
-        return result;
+        return container.get(key);
     }
 
-    public String getStringFindAndRegister(String id) throws JspTagException {
-        boolean found = findAndRegister(id, id);
-        if (! found) {
-            throw new JspTagException("No object with id " + id + " could be found in Context '" + getId() + "'");
-        }
-        return getObjectAsString(id);
-    }
+    
 
-    public String getObjectAsString(String key) throws JspTagException {
+
+    /*
+    public String getString(String key) throws JspTagException {
         Object o = getObject(key);
         if (o == null) return null;
         if (o instanceof Node) {
@@ -421,16 +516,14 @@ public class ContextTag extends ContextReferrerTag {
         }
         return o.toString();
     }
+    */
 
     public byte[] getBytes(String key) throws JspTagException {
         return getMultipartRequest().getBytes(key);
 
     }
 
-    public Node getNode(String key) throws JspTagException {
-        return (Node) getObject(key);
-    }
-
+    /*
     public Vector getKeys() {
         Vector result = new Vector();
         Enumeration e = pageContext.getAttributeNamesInScope(pageContext.PAGE_SCOPE);
@@ -439,9 +532,12 @@ public class ContextTag extends ContextReferrerTag {
         }
         return result;
     }
+    */
 
     public int doAfterBody() throws JspTagException {
-        log.debug("after body of context " + getId());
+        if (log.isDebugEnabled()) {
+            log.debug("after body of context " + getId());
+        }
         
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());
