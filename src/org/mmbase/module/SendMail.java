@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Johannes Verelst
  */
-public class SendMail extends Module implements SendMailInterface {
+public class SendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
     private DataInputStream in = null;
     private DataOutputStream out = null;
@@ -35,8 +35,7 @@ public class SendMail extends Module implements SendMailInterface {
 
     public void unload() { }
     
-    public void onload() { }
-    
+   
     public void shutdown() { }
     
     public void init() {
@@ -132,7 +131,17 @@ public class SendMail extends Module implements SendMailInterface {
      * Client: QUIT
      * Server: <closes connection>
      */    
-    public synchronized boolean sendMail(String from, String to, String data) {
+    public synchronized boolean sendMail(String from, String to, String data, Map headers) {
+        if (headers != null) {
+            String headerString = "";       
+            for (Iterator i = headers.entrySet().iterator(); i.hasNext();) {
+                Map.Entry e  = (Map.Entry) i.next();
+                headerString += e.getKey() + ": " + e.getValue() + "\r\n";
+            }    
+            headerString += "\r\n";
+            data = headerString + data;
+        }
+
         log.service("SendMail sending mail to " + to);
         String answer="";
 
@@ -213,85 +222,6 @@ public class SendMail extends Module implements SendMailInterface {
         }
     }
 
-    /** 
-     * Send mail with headers 
-     */
-    public boolean sendMail(String from, String to, String data, Hashtable headers) {
-        String header="";
-        String temp="";
-       
-        for (Enumeration t = headers.keys(); t.hasMoreElements();) {
-            header = (String)t.nextElement();
-            temp += header + ": ";
-            temp += headers.get(header) + "\r\n";
-        }    
-        temp += "\r\n";
-        data = temp + data;
-        return sendMail(from,to,data);
-    }
-
-    /**
-     * Send mail
-     */    
-    public boolean sendMail(Mail mail) {
-        return sendMail(mail.from, mail.to, mail.text, mail.headers);
-    }
-
-    /**
-     * checks the e-mail address
-     */ 
-    public String verify(String name) {
-        String answer = "";
- 
-        // Connect to mail-host
-        if (!connect(mailhost, 25)) return "Error";
- 
-        try {
-            out.writeBytes("VRFY " + name + "\r\n");
-            out.flush();
-            answer = in.readLine();
-            if (answer.indexOf("250") != 0) {
-                return "Error";
-            }
-            out.writeBytes("QUIT\r\n");
-            out.flush();
-            in.close();
-            out.close();
-        } catch (Exception e) {
-            log.error("Sendmail verify error on: " + name + ". " + e);
-            return "Error";
-        }
-        answer = answer.substring(4);
-        return answer;
-    }
-
-    /**
-     * gives all the members of a mailinglist 
-     */    
-    public Vector expand(String name) {
-        String answer="";
-        Vector ret = new Vector();
- 
-        /** Connect to mail-host **/
-        if (!connect(mailhost, 25)) return ret;
- 
-        try {
-            out.writeBytes("EXPN " + name + "\r\n");
-            out.flush();
-            while (true) {
-                answer = in.readLine();
-                if(answer.indexOf("250") == 0) {
-                    ret.addElement(answer.substring(4));
-                }
-                if(answer.indexOf("-") != 3) break;
-            }
-        } catch (Exception e) {
-            log.error("Sendmail expand error on: " + name + ". " + e);
-            return new Vector();
-        }
-        return ret;
-    }
-
     public String getModuleInfo() {
         return("Sends mail using a mailhost, Rob Vermeulen");
     }
@@ -325,4 +255,60 @@ public class SendMail extends Module implements SendMailInterface {
         }
         return("Unparsable error: " + line);
     }
+
+    /**
+     * checks the e-mail address
+     */ 
+    public String verify(String name) {
+        String answer = "";
+ 
+        // Connect to mail-host
+        if (!connect(mailhost, 25)) return "Error";
+ 
+        try {
+            out.writeBytes("VRFY " + name + "\r\n");
+            out.flush();
+            answer = in.readLine();
+            if (answer.indexOf("250") != 0) {
+                return "Error";
+            }
+            out.writeBytes("QUIT\r\n");
+            out.flush();
+            in.close();
+            out.close();
+        } catch (Exception e) {
+            log.error("Sendmail verify error on: " + name + ". " + e);
+            return "Error";
+        }
+        answer = answer.substring(4);
+        return answer;
+    }
+
+    /**
+     * gives all the members of a mailinglist 
+     */    
+    public List expand(String name) {
+        String answer="";
+        List ret = new Vector();
+ 
+        /** Connect to mail-host **/
+        if (!connect(mailhost, 25)) return ret;
+ 
+        try {
+            out.writeBytes("EXPN " + name + "\r\n");
+            out.flush();
+            while (true) {
+                answer = in.readLine();
+                if(answer.indexOf("250") == 0) {
+                    ret.add(answer.substring(4));
+                }
+                if(answer.indexOf("-") != 3) break;
+            }
+        } catch (Exception e) {
+            log.error("Sendmail expand error on: " + name + ". " + e);
+            return new Vector();
+        }
+        return ret;
+    }
+
 }
