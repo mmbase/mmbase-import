@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.24 2000-07-06 10:19:58 daniel Exp $
+$Id: MMSQL92Node.java,v 1.25 2000-07-10 15:59:04 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.24  2000/07/06 10:19:58  daniel
+Daniel.. started to add more mmbase types (not done yet)
+
 Revision 1.23  2000/06/30 09:30:59  install
 Rob: select max(number) from [table].object returned 0 while using jdbc 1 but it returns null while using jdbc 2
 
@@ -122,7 +125,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.24 $ $Date: 2000-07-06 10:19:58 $
+* @$Revision: 1.25 $ $Date: 2000-07-10 15:59:04 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -192,6 +195,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					node.setValue(prefix+fieldname,tmp);
 				}
 				return(node);
+			/*
 			case TYPE_INTEGER:
 				node.setValue(prefix+fieldname,rs.getInt(i));
 				return(node);
@@ -204,6 +208,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			case TYPE_DOUBLE:
 				node.setValue(prefix+fieldname,rs.getDouble(i));
 				return(node);
+			*/
 			case TYPE_BLOB:
 				node.setValue(prefix+fieldname,"$SHORTED");
 				return(node);
