@@ -41,7 +41,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.119 2004-03-19 11:08:44 nico Exp $
+ * @version $Id: Wizard.java,v 1.120 2004-04-07 12:34:20 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -506,6 +506,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));      params.put("sessionid", sessionId);
       params.put("sessionkey", sessionKey);
       params.put("referrer", referrer);
+      params.put("referrer_encoded", java.net.URLEncoder.encode(referrer));
       params.put("language", cloud.getLocale().getLanguage());
       params.put("cloud", cloud);
 
