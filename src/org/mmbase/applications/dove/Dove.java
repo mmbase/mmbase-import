@@ -47,13 +47,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.36 2003-06-02 12:21:59 pierre Exp $
+ * @version $Id: Dove.java,v 1.37 2003-07-09 16:42:09 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
 
-    //logger
-    private static Logger log = Logging.getLoggerInstance(Dove.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Dove.class);
 
     /**
      * Constructor
@@ -123,12 +122,12 @@ public class Dove extends AbstractDove {
      * @param nd The node to store in out.
      */
     public void getDataNode(Element in, Element out, org.mmbase.bridge.Node nd) {
-        NodeManager nm=nd.getNodeManager();
-        out.setAttribute(ELM_TYPE,nm.getName());
-        out.setAttribute(ELM_MAYWRITE,""+nd.mayWrite());
-        out.setAttribute(ELM_MAYDELETE,""+nd.mayDelete());
+        NodeManager nm = nd.getNodeManager();
+        out.setAttribute(ELM_TYPE, nm.getName());
+        out.setAttribute(ELM_MAYWRITE, "" + nd.mayWrite());
+        out.setAttribute(ELM_MAYDELETE, "" + nd.mayDelete());
         // load fields
-        Element field=getFirstElement(in,FIELD);
+        Element field=getFirstElement(in, FIELD);
         if (field==null) {
             for (FieldIterator i=nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field f=i.nextField();
@@ -724,38 +723,42 @@ public class Dove extends AbstractDove {
      * @param repository Repository that contains the blobs
      */
     public void put(Element in, Element out, Cloud cloud, Map repository) {
-        // first colelct all new and original nodes
-        Map orgnodes=new HashMap();
-        Map newnodes=new HashMap();
-        Map orgrelations=new HashMap();
-        Map newrelations=new HashMap();
+        // first collect all new and original nodes
+        Map originalNodes     = new HashMap();
+        Map nodeNodes         = new HashMap();
+        Map originalRelations = new HashMap();
+        Map newRelations      = new HashMap();
 
         // get all the needed info from the xml stream
-        Element query=getFirstElement(in);
+        Element query = getFirstElement(in);
         while (query!=null) { // select child tags, should be 'original' or 'new'
             if (query.getTagName().equals(ORIGINAL) || query.getTagName().equals(NEW)) {
-                boolean isorg=query.getTagName().equals(ORIGINAL);
-                Element node=getFirstElement(query);
+                boolean isOriginal = query.getTagName().equals(ORIGINAL);
+                Element node = getFirstElement(query);
 
                 while (node!=null) { // select all child tags, should be 'object'
                     if (node.getTagName().equals(OBJECT) || node.getTagName().equals(RELATION)) {
-                        boolean isrelation=node.getTagName().equals(RELATION);
+                        boolean isRelation = node.getTagName().equals(RELATION);
 
                         // store the values of one node
-                        Map values=new HashMap();
-                        if (isrelation)
-                            if (isorg)
-                                orgrelations.put((String)node.getAttribute(ELM_NUMBER),values);
-                            else
-                                newrelations.put((String)node.getAttribute(ELM_NUMBER),values);
-                        else
-                            if (isorg)
-                                orgnodes.put((String)node.getAttribute(ELM_NUMBER),values);
-                            else
-                                newnodes.put((String)node.getAttribute(ELM_NUMBER),values);
-                        if (!isorg)
+                        Map values = new HashMap();
+                        if (isRelation) {
+                            if (isOriginal) {
+                                originalRelations.put((String)node.getAttribute(ELM_NUMBER),values);
+                            } else {
+                                newRelations.put((String)node.getAttribute(ELM_NUMBER),values);
+                            }
+                        } else {
+                            if (isOriginal) {
+                                originalNodes.put((String)node.getAttribute(ELM_NUMBER),values);
+                            } else {
+                                nodeNodes.put((String)node.getAttribute(ELM_NUMBER),values);
+                            }
+                        }
+                        if (! isOriginal) {
                             values.put("_status",(String)node.getAttribute(ELM_STATUS));
-                        if (isrelation) {
+                        }
+                        if (isRelation) {
                             String role=node.getAttribute(ELM_ROLE);
                             if (role!=null) values.put("_role",role);
 
@@ -768,11 +771,11 @@ public class Dove extends AbstractDove {
                             String type=node.getAttribute(ELM_TYPE);
                             if (type!=null) values.put("_otype",type);
                         }
-                        Element field=getFirstElement(node);
-                        while (field!=null) { // select all child tags, should be 'fields'
+                        Element field = getFirstElement(node);
+                        while (field != null) { // select all child tags, should be 'fields'
                             if (field.getTagName().equals(FIELD)) {
-                                String fieldname=field.getAttribute(ELM_NAME);
-                                String href=field.getAttribute(ELM_HREF);
+                                String fieldname = field.getAttribute(ELM_NAME);
+                                String href = field.getAttribute(ELM_HREF);
                                 if (!href.equals("")) {
                                     // binary data.
                                     Object repval=repository.get(href);
@@ -784,41 +787,41 @@ public class Dove extends AbstractDove {
                                         }
                                     }
                                 } else {
-                                    if(field.getFirstChild()==null) {
+                                    if(field.getFirstChild() == null) {
                                         values.put(fieldname,"");
                                     } else {
-                                        values.put(fieldname,field.getFirstChild().getNodeValue());
+                                        values.put(fieldname, field.getFirstChild().getNodeValue());
                                     }
                                 }
                             }
-                            field=getNextElement(field);
+                            field = getNextElement(field);
                         }
                     }
-                    node=getNextElement(node);
+                    node = getNextElement(node);
                 }
             }
-            query=getNextElement(query);
+            query = getNextElement(query);
         }
         // are there new nodes to handle ?
-        if (newnodes.size()>0 || newrelations.size()>0) {
+        if (nodeNodes.size() > 0 || newRelations.size() > 0) {
             Transaction trans = cloud.createTransaction();
-            Map nodesadded = new HashMap ();
-            Map relationsadded = new HashMap();
-            if (mergeClouds(orgnodes,newnodes,orgrelations,newrelations,nodesadded,relationsadded,out,trans) ) {
+            Map addedNodes     = new HashMap ();
+            Map addedRelations = new HashMap();
+            if (mergeClouds(originalNodes, nodeNodes, originalRelations, newRelations, addedNodes, addedRelations, out, trans) ) {
                 try {
                     trans.commit();
                     // retrieve all numbers and reset them to the right value
                     // This is possible, as the nodes themselves contain this info after the
                     // transaction
                     //
-                    for (Iterator i = nodesadded.entrySet().iterator(); i.hasNext(); ) {
+                    for (Iterator i = addedNodes.entrySet().iterator(); i.hasNext(); ) {
                         Map.Entry me=(Map.Entry)i.next();
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element oe = (Element)me.getValue();
                         oe.setAttribute(ELM_NUMBER,n.getStringValue("number"));
                     }
                     // retrieve all numbers, snumbers, dnumbers and reset them to the right value
-                    for (Iterator i = relationsadded.entrySet().iterator(); i.hasNext(); ) {
+                    for (Iterator i = addedRelations.entrySet().iterator(); i.hasNext(); ) {
                         Map.Entry me=(Map.Entry)i.next();
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element re = (Element)me.getValue();
@@ -883,36 +886,39 @@ public class Dove extends AbstractDove {
      * @param node the node to fill
      * @param out the XML element to fill with the changed data for feedback
      * @param values a Map with new node values
-     * @param orgvalues a Map with the original values of the node, needed for checking.
+     * @param originalValues a Map with the original values of the node, needed for checking.
      *        if <code>null</code>, no checking takes place
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map orgvalues) {
+    protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
         NodeManager nm = node.getNodeManager();
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry me=(Map.Entry)i.next();
-            String key=(String)me.getKey();
+            Map.Entry me = (Map.Entry)i.next();
+            String key = (String)me.getKey();
             if (isDataField(node,key)) {
-                Object value=me.getValue();
-                if ((orgvalues!=null) &&
-                    (!(value instanceof byte[]))) {    // XXX: currently, we do not validate on byte fields
-                    String orgvalue=(String)orgvalues.get(key);
-                    String mmbasevalue=node.getStringValue(key);
-                    if ((orgvalue!=null) && !orgvalue.equals(mmbasevalue)) {
+                Object value = me.getValue();
+                if ((originalValues != null) &&
+                    (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
+                    String originalValue = (String)originalValues.get(key);
+                    String mmbaseValue = node.getStringValue(key);
+                    if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
-                        Element err=addContentElement(ERROR,"Node was changed in the cloud, node number : "+alias+" field name "+key,out);
-                        err.setAttribute(ELM_TYPE,IS_SERVER);
+                        Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key, out);
+                        err.setAttribute(ELM_TYPE, IS_SERVER);
                         return false;
                     }
                 }
-                node.setValue(key,value);
-                Element fieldelement=doc.createElement(FIELD);
-                fieldelement.setAttribute(ELM_NAME,key);
-                if (!(value instanceof byte[])) {
-                    Text tel=doc.createTextNode(value.toString());
-                    fieldelement.appendChild(tel);
+                if (log.isDebugEnabled()) {
+                    log.debug("Setting field " + key + " to '" + value + "'");
                 }
-                out.appendChild(fieldelement);
+                node.setValue(key, value);
+                Element fieldElement = doc.createElement(FIELD);
+                fieldElement.setAttribute(ELM_NAME, key);
+                if (!(value instanceof byte[])) {
+                    Text tel = doc.createTextNode(value.toString());
+                    fieldElement.appendChild(tel);
+                }
+                out.appendChild(fieldElement);
             }
         }
         return true;
@@ -923,7 +929,7 @@ public class Dove extends AbstractDove {
      * @param alias the node alias in the put tree
      * @param values a Map with new node values
      * @param aliases a Map with mappings from XML aliases to node reference values
-     * @param nodesadded a Map used to keep associations between xml elements and newly created nodes,
+     * @param addedNodes a Map used to keep associations between xml elements and newly created nodes,
      *                   needed for resolving new node numbers
      * @param out the element that describes 'new' cloud.
      *           The result of the put (an error or the resulting cloud) should be added
@@ -931,7 +937,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewNode(String alias, Map values, Map aliases, Map nodesadded, Element out, Cloud cloud) {
+    protected boolean putNewNode(String alias, Map values, Map aliases, Map addedNodes, Element out, Cloud cloud) {
         String type = (String) values.get("_otype");
         try {
             NodeManager nm = cloud.getNodeManager(type);
@@ -948,7 +954,7 @@ public class Dove extends AbstractDove {
                 objectelement.setAttribute(ELM_NUMBER,""+number);
                 objectelement.setAttribute(ELM_OLDNUMBER, alias);
                 // keep in transaction for later update...
-                nodesadded.put(newnode,objectelement);
+                addedNodes.put(newnode,objectelement);
                 // add node to response
                 out.appendChild(objectelement);
                 return true;
@@ -970,7 +976,7 @@ public class Dove extends AbstractDove {
      * @param alias the node alias in the put tree
      * @param values a Map with new node values
      * @param aliases a Map with mappings from XML aliases to node reference values
-     * @param relationsadded a Map used to keep associations between xml elements and newly created relations,
+     * @param addedRelations a Map used to keep associations between xml elements and newly created relations,
      *                   needed for resolving new node numbers and references
      * @param out the element that describes 'new' cloud.
      *           The result of the put (an error or the resulting cloud) should be added
@@ -978,7 +984,7 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putNewRelation(String alias, Map values, Map aliases, Map relationsadded, Element out, Cloud cloud) {
+    protected boolean putNewRelation(String alias, Map values, Map aliases, Map addedRelations, Element out, Cloud cloud) {
         String role=(String)values.get("_role");
         try {
             RelationManager relman=cloud.getRelationManager(role);
@@ -999,7 +1005,7 @@ public class Dove extends AbstractDove {
                 if (log.isServiceEnabled()) log.service("Created new relation " + number);
                 aliases.put(alias, new Integer(number));
                 // keep in transaction for later update...
-                relationsadded.put(newnode,relationelement);
+                addedRelations.put(newnode,relationelement);
                 // add node to response
                 relationelement.setAttribute(ELM_NUMBER,""+number); // result in transaction ???
                 out.appendChild(relationelement);
@@ -1151,29 +1157,29 @@ public class Dove extends AbstractDove {
 
     /**
      * Performs the put within a transaction.
-     * @param orgnodes the nodes in the original cloud, used in validation
-     * @param newnodes the nodes in the new cloud
-     * @param orgrelations the relations in the original cloud, used in validation
-     * @param newrelations the relations in the new cloud
-     * @param nodesadded a Map used to keep associations between xml elements and newly created nodes,
+     * @param originalNodes the nodes in the original cloud, used in validation
+     * @param nodeNodes the nodes in the new cloud
+     * @param originalRelations the relations in the original cloud, used in validation
+     * @param newRelations the relations in the new cloud
+     * @param addedNodes a Map used to keep associations between xml elements and newly created nodes,
      *                   needed for resolving new node numbers and references
-     * @param relationsadded a Map used to keep associations between xml elements and newly created relations,
+     * @param addedRelations a Map used to keep associations between xml elements and newly created relations,
      *                   needed for resolving new node numbers and references
      * @param out the element that described the <code>put</code> result.
      *           The result of the put (an error or the resulting cloud) should be added
      *           as childs to this element.
      * @param cloud the cloud to work on
      */
-    protected boolean mergeClouds(Map orgnodes, Map newnodes, Map orgrelations, Map newrelations,
-                                  Map nodesadded, Map relationsadded, Element out, Cloud cloud) {
-        Map aliases=new HashMap(); // hash from alias names to real names
+    protected boolean mergeClouds(Map originalNodes, Map nodeNodes, Map originalRelations, Map newRelations,
+                                  Map addedNodes, Map addedRelations, Element out, Cloud cloud) {
+        Map aliases = new HashMap(); // hash from alias names to real names
 
         // create new tag and add it to response
-        Element newelement=doc.createElement(NEW);
-        out.appendChild(newelement);
+        Element newElement = doc.createElement(NEW);
+        out.appendChild(newElement);
 
-        // lets enum all the newnodes
-        for (Iterator i = newnodes.entrySet().iterator(); i.hasNext(); ) {
+        // lets enum all the nodeNodes
+        for (Iterator i = nodeNodes.entrySet().iterator(); i.hasNext(); ) {
             // handle the several cases we have when we have
             // a new node (merge, really new)
             Map.Entry me=(Map.Entry)i.next();
@@ -1182,56 +1188,56 @@ public class Dove extends AbstractDove {
             String status=(String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
-            if (status!=null && status.equals("new")) {
-                if (!putNewNode(alias,values,aliases, nodesadded, newelement, cloud)) return false;
-            } else if (status!=null && status.equals("delete")) {
+            if (status != null && status.equals("new")) {
+                if (!putNewNode(alias, values, aliases, addedNodes, newElement, cloud)) return false;
+            } else if (status != null && status.equals("delete")) {
                 // to check if they send a original
                 // XXX: no original is not an error ???
-                Map orgvalues=(Map)orgnodes.get(alias);
-                if (orgvalues!=null) {
-                    if(!putDeleteNode(alias,orgvalues,newelement, cloud)) return false;;
+                Map originalValues = (Map) originalNodes.get(alias);
+                if (originalValues!=null) {
+                    if (!putDeleteNode(alias, originalValues, newElement, cloud)) return false;;
                 }
             } else if (status==null || status.equals("") || status.equals("change")) {
                 // check if they send a original
-                Map orgvalues=(Map )orgnodes.get(alias);
-                if (orgvalues!=null) {
-                    if(!putChangeNode(alias,values,orgvalues,aliases, newelement, cloud)) return false;
+                Map originalValues = (Map )originalNodes.get(alias);
+                if (originalValues!=null) {
+                    if(!putChangeNode(alias, values, originalValues,aliases, newElement, cloud)) return false;
                 } else {
                     // give error not a org. node
-                    Element err=addContentElement(ERROR,"Node not defined in original tag, node number : "+alias,out);
-                    err.setAttribute(ELM_TYPE,IS_SERVER);
+                    Element err = addContentElement(ERROR,"Node not defined in original tag, node number : " + alias, out);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
                     return false;
                 }
             } else {
                 // give error not a org. node
-                Element err=addContentElement(ERROR,"Invalid status "+status+" for node : "+alias,out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                Element err = addContentElement(ERROR,"Invalid status "+status+" for node : "+alias,out);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
                 return false;
             }
         }
 
         // now handle all the relations
-        for (Iterator i = newrelations.entrySet().iterator(); i.hasNext(); ) {
+        for (Iterator i = newRelations.entrySet().iterator(); i.hasNext(); ) {
             // handle the several cases we have when we have
             // a new node (merge, really new)
-            Map.Entry me=(Map.Entry)i.next();
-            String alias=(String)me.getKey();
-            Map values=(Map)me.getValue();
-            String status=(String)values.get("_status");
+            Map.Entry me = (Map.Entry)i.next();
+            String alias = (String)me.getKey();
+            Map values = (Map)me.getValue();
+            String status = (String)values.get("_status");
 
             // is it a new node if so create one and remember its alias
             if (status!=null && status.equals("new")) {
-                if (!putNewRelation(alias,values,aliases, relationsadded, newelement, cloud)) return false;
+                if (!putNewRelation(alias, values, aliases, addedRelations, newElement, cloud)) return false;
             } else if (status!=null && status.equals("delete")) {
-                Map orgvalues=(Map)orgrelations.get(alias);
-                if (orgvalues!=null) {
-                    if(!putDeleteRelation(alias,orgvalues,newelement, cloud)) return false;;
+                Map originalValues = (Map)originalRelations.get(alias);
+                if (originalValues != null) {
+                    if(!putDeleteRelation(alias, originalValues, newElement, cloud)) return false;;
                 } // no error ???
             // add code for change relation ?
             } else {
                 // give error not a org. node
-                Element err=addContentElement(ERROR,"Invalid status "+status+" for node : "+alias,out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                Element err = addContentElement(ERROR, "Invalid status " + status + " for node : " + alias, out);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
                 return false;
             }
         }
