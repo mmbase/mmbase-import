@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.137 2002-05-03 15:09:27 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.138 2002-05-08 13:57:11 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -750,21 +750,27 @@ public class MMObjectBuilder extends MMTable {
         }
         // do the query on the database
         try {
-            String bul="typedef";
-
             // retrieve node's objecttype
             int bi=getNodeType(number);
-            if (bi!=0) {
+
+            String bul = null;
+            if(bi == 0) {
+                bul = "typedef";
+            }
+            else if(bi > 0) {
                 bul=mmb.getTypeDef().getValue(bi);
-             }
-            if (bul==null) {
-                log.error("getNode(): got a null type table ("+bi+") on node ="+number+", possible non table query blocked !!!");
+            }
+            else {
+                // smaller then 0, cant be possible!
+                throw new RuntimeException("The nodetype of node #" + number + " could be found(nodetype # " + bi + ")");
+            }
+            if (bul == null) {
+                log.error("The nodetype of node #" + number + " could be found(nodetype # " + bi + "(possible non table query blocked?) )");
                 return null;
             }
-
+            
             MultiConnection con =null;
             Statement stmt = null;
-
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
@@ -772,8 +778,8 @@ public class MMObjectBuilder extends MMTable {
                 if (rs.next()) {
                     // create a new object and add it to the result vector
                     MMObjectBuilder bu=mmb.getMMObject(bul);
-                    if (bu==null) {
-                        log.error("getMMObject did not return builder on : "+bul);
+                    if (bu == null) {
+                        log.error("Could not get the builder for nodetype with name : " + bul + "(node #" + number + " nodetype #" + bi + ")");
                         return null;
                     }
                     node=new MMObjectNode(bu);
@@ -791,7 +797,7 @@ public class MMObjectBuilder extends MMTable {
                     // clear the changed signal
                     node.clearChanged();
                 } else {
-                    log.warn("getNode(): Node not found "+number);
+                    log.warn("Node #" + number + " could not be found(nodetype: " + bul + "(" + bi + "))");
                     return null; // not found
                 }
             } finally {
