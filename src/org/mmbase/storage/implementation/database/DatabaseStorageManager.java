@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.49 2004-02-12 10:23:03 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.50 2004-02-13 13:37:22 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -228,12 +228,13 @@ public class DatabaseStorageManager implements StorageManager {
         synchronized (sequenceLock) {
             try {
                 getActiveConnection();
-                Statement s = activeConnection.createStatement();
+                Statement s;
                 String query;
                 Scheme scheme = factory.getScheme(Schemes.UPDATE_SEQUENCE, Schemes.UPDATE_SEQUENCE_DEFAULT);
                 if (scheme != null) {
                     query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
                     logQuery(query);
+                    s = activeConnection.createStatement();
                     s.executeUpdate(query);
                     s.close();
                 }
@@ -244,8 +245,8 @@ public class DatabaseStorageManager implements StorageManager {
                 ResultSet result = s.executeQuery(query);
                 if (result.next()) {
                     int keynr = result.getInt(1);
-                    s.close();
                     result.close();
+                    s.close();
                     return keynr;
                 } else {
                     result.close();
@@ -276,6 +277,8 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
                 return rvalue;
             } else {
+                if (result != null) result.close();
+                s.close();
                 throw new StorageException("Node with number " + node.getNumber() + " not found.");
             }
         } catch (SQLException se) {
@@ -359,6 +362,7 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
                 return retval;
             } else {
+                if (result != null) result.close();
                 s.close();
                 throw new StorageException("Node with number " + node.getNumber() + " not found.");
             }
@@ -966,8 +970,14 @@ public class DatabaseStorageManager implements StorageManager {
             }
             String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
-            fillNode(node, s.executeQuery(query), builder);
-            s.close();
+            ResultSet result = null;
+            try {
+                result = s.executeQuery(query);
+                fillNode(node, result, builder);
+            } finally {
+                if (result != null) result.close();
+                s.close();
+            }
             return node;
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1065,6 +1075,8 @@ public class DatabaseStorageManager implements StorageManager {
                 s.close();
                 return retval;
             } else {
+                if (result != null) result.close();
+                s.close();
                 return -1;
             }
         } catch (SQLException se) {
