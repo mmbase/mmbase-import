@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.224 2003-12-24 00:31:36 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.225 2003-12-24 15:15:14 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4233,6 +4233,13 @@ Of course, the default behavior of getSmartPath can still be overridden.
 				<value>y</value>
 				<info>
 					Only the year part of the speficied time
+				</info>
+			</possiblevalue>
+			<possiblevalue>
+				<value>e</value>
+				<info>
+          Day of the week as in integer (7=Saturday, 1=Sunday). This is not done by
+          SimpleDateFormat, because it doesn't support that (Don't ask me why).
 				</info>
 			</possiblevalue>
 			<possiblevalue>
