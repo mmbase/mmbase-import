@@ -557,7 +557,7 @@ public class MMAdmin extends ProcessorModule {
             Vector vec=bul.getFields();
             for (Enumeration h = vec.elements();h.hasMoreElements();) {
                 FieldDefs def=(FieldDefs)h.nextElement();
-                if (def.isKey) {
+                if (def.isKey()) {
                     int type=def.getDBType();
                     String name=def.getDBName();
                     if (type==FieldDefs.TYPE_STRING) {
@@ -1046,9 +1046,9 @@ public class MMAdmin extends ProcessorModule {
             for (Enumeration h = defs.elements();h.hasMoreElements();) {
                 FieldDefs def=(FieldDefs)h.nextElement();
                 //log.debug("DEFS="+def);
-                results.addElement(""+def.DBPos);
-                results.addElement(""+def.DBName);
-                int type=def.DBType;
+                results.addElement(""+def.getDBPos());
+                results.addElement(""+def.getDBName());
+                int type=def.getDBType();
                 switch (type) {
                     case FieldDefs.TYPE_STRING:
                         results.addElement("STRING");
@@ -1069,11 +1069,11 @@ public class MMAdmin extends ProcessorModule {
                         results.addElement("BYTE");
                         break;
                 }
-                int size=def.DBSize;
+                int size=def.getDBSize();
                 if (size==-1) {
                     results.addElement("fixed");
                 } else {
-                    results.addElement(""+def.DBSize);
+                    results.addElement(""+size);
                 }
             }
 
