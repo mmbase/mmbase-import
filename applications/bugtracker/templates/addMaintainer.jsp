@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:cloud method="asis">
-  <%@include file="parameters.jsp" %>
+%><mm:cloud method="asis"
+>  <%@include file="parameters.jsp" %>
   <%@include file="login.jsp" %>
 <mm:import externid="bugreport" required="true"/>
 
