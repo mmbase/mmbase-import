@@ -13,7 +13,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.7 2002-07-24 08:17:53 mark Exp $
+     * @version  $Id: processuploads.jsp,v 1.8 2002-10-31 09:07:50 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -37,6 +37,7 @@ if (ewconfig.subObjects.size() > 0) {
     }
 }
 
+    String did = request.getParameter("did");
     int maxsize = ewconfig.maxupload;
     try {
         maxsize = Integer.parseInt(request.getParameter("maxsize"));
@@ -48,9 +49,8 @@ if (ewconfig.subObjects.size() > 0) {
     mySmartUpload.setTotalMaxFileSize(maxsize);
 
     // Upload
-    mySmartUpload.upload();
-
     try {
+        mySmartUpload.upload();
 
         Files flist = mySmartUpload.getFiles();
 
@@ -80,9 +80,20 @@ if (ewconfig.subObjects.size() > 0) {
                 } catch (e) {}
             </script>
         <%
+    } catch (java.lang.SecurityException e) {
+  %>
+      Uploaded file exceeds maximum file size of <%=maxsize%> bytes.<br />
+      <a href="upload.jsp?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
+      <a href="javascript:window.close();">abandon upload</a>.
+  <%
     } catch (Exception e) {
-        out.println(e.toString());
+  %>
+      An error ocurred while uploading this file (<%=e.toString()%>).<br />
+      <a href="upload.jsp?proceed=true&did=<%=did%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizardConfig.wizard%>&maxsize=<%=ewconfig.maxupload%>">Try again</a> or
+      <a href="javascript:window.close();">abandon upload</a>.
+  <%
     }
+
 
 
 
