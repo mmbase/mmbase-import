@@ -3,7 +3,7 @@
   org.mmbase.bridge.util.Generator, and the XSL is invoked by FormatterTag.
 
   @author:  Michiel Meeuwissen 
-  @version: $Id: 2xhtml.xslt,v 1.10 2002-10-14 16:00:35 eduard Exp $
+  @version: $Id: 2xhtml.xslt,v 1.11 2002-10-14 16:10:50 eduard Exp $
   @since:   MMBase-1.6
 -->
 <xsl:stylesheet  version = "1.1" 
@@ -104,7 +104,36 @@
   
   
   <!-- template to override mmxf tags with an 'id', we support links to it here -->
-  <xsl:template match="section|p|a"> 
+  <xsl:template match="section">
+    <xsl:if test="count(ancestor::section)=0"><h3><xsl:value-of select="@title" /></h3></xsl:if>
+    <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="@title" /></b></p></xsl:if>
+    <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="@title" /></p></xsl:if>
+    <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="@title" /><br /></xsl:if>
+
+    <xsl:copy>
+     
+      <!-- store the 'relation' nodes for convenience in $rels:-->
+      <xsl:variable name="rels"   select="ancestor::object/relation[@role='idrel']" />
+
+        <!-- also for conveniences: all related nodes to this node-->
+      <xsl:variable name="related_to_node"   select="//objects/object[@id=$rels/@related]" />
+
+        <!-- There are two type of relations, it is handy to treat them seperately: -->
+      <xsl:variable name="srelations" select="//objects/object[@id=$rels[@type='source']/@object      and field[@name='id'] = current()/@id]" />
+      <xsl:variable name="drelations" select="//objects/object[@id=$rels[@type='destination']/@object and field[@name='id'] = current()/@id]" />
+
+        <!-- now link the relationnodes with the nodes related to this node, the find the 'relatednodes' -->
+      <xsl:variable name="relatednodes" select="$related_to_node[@id = $srelations/field[@name = 'dnumber']] | $related_to_node[@id = $drelations/field[@name='snumber']]" />
+             
+      <xsl:apply-templates select="." mode="sub">
+        <xsl:with-param name="relatednodes" select="$relatednodes" />
+      </xsl:apply-templates>
+    </xsl:copy>
+  </xsl:template>
+
+
+  <!-- template to override mmxf tags with an 'id', we support links to it here -->
+  <xsl:template match="p|a"> 
     <xsl:copy>
      
       <!-- store the 'relation' nodes for convenience in $rels:-->
