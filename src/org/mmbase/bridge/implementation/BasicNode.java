@@ -700,4 +700,22 @@ public class BasicNode implements Node {
 	    Relation relation = relationManager.createRelation(this,destinationNode);
         return relation;
     };
+
+
+    /**
+    * Compares two objects, and returns true if they are equal.
+    * This effectively means that both objects are nodes, and they both refer to the same objectnode
+    * @param o the object to compare it with
+    */
+    public boolean equals(Object o) {
+        return (o instanceof Node) && (o.hashCode()==hashCode());
+    };
+
+    /**
+    * Returns the object's hashCode.
+    * This effectively returns th objectnode's number
+    */
+    public int hashCode() {
+        return getNodeID();
+    };
 }

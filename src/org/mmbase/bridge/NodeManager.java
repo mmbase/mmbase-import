@@ -9,7 +9,8 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.List;
+import java.util.*;
+import javax.servlet.*;
 import org.mmbase.module.core.*;
 
 /**
@@ -75,5 +76,41 @@ public interface NodeManager {
      * @return a <code>List</code> of found nodes
      */
     public NodeList getList(String where, String sorted, boolean direction);
+
+	/**
+	 * Retrieve info from a node manager based on a command string.
+	 * Similar to the $MOD command in SCAN.
+	 * @param command the info to obtain, i.e. "USER-OS".
+	 */
+	public String getInfo(String command);
+
+	/**
+	 * Retrieve info from a node manager based on a command string
+	 * Similar to the $MOD command in SCAN.
+	 * @param command the info to obtain, i.e. "USER-OS".
+	 * @param req the Request item to use for obtaining user information. For backward compatibility.
+	 * @param resp the Response item to use for redirecting users. For backward compatibility.
+	 */
+	public String getInfo(String command, ServletRequest req,  ServletResponse resp);
+	
+	/**
+	 * Retrieve info (as a list of virtual nodes) from a node manager based on a command string.
+	 * Similar to the LIST command in SCAN.
+	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
+	 * @param command the info to obtain, i.e. "USER-OS".
+	 * @param parameters a hashtable containing the named parameters of the list.
+	 */
+	public NodeList getList(String command, Hashtable parameters);
+
+	/**
+	 * Retrieve info from a node manager based on a command string
+	 * Similar to the LIST command in SCAN.
+	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
+	 * @param command the info to obtain, i.e. "USER-OS".
+	 * @param parameters a hashtable containing the named parameters of the list.
+	 * @param req the Request item to use for obtaining user information. For backward compatibility.
+	 * @param resp the Response item to use for redirecting users. For backward compatibility.
+	 */
+	public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp);
 
 }

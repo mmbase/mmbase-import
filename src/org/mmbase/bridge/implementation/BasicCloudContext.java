@@ -12,6 +12,9 @@ package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import java.util.*;
+import org.mmbase.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 /**
  * The collection of clouds, and modules within a Java Virtual Machine.
@@ -84,8 +87,12 @@ public class BasicCloudContext implements CloudContext {
 	 * @param modulename name of the module
 	 * @return the requested module
 	 */
-	public Module getModule(String modulename) {
-	    return (Module)localModules.get(modulename);
+	public Module getModule(String moduleName) {
+	    Module mod = (Module)localModules.get(moduleName);
+        if (mod==null) {
+            throw new BridgeException("Module "+moduleName+" does not exist.");
+        }
+        return mod;
 	}
 
 	/**
@@ -106,8 +113,44 @@ public class BasicCloudContext implements CloudContext {
 	 * @return the requested Cloud
 	 */
 	public Cloud getCloud(String cloudName) {
-        Cloud cloud = (Cloud)localClouds.get(cloudName);
-        Cloud newcloud = ((BasicCloud)cloud).getCopy();
-	    return newcloud;
+	    return getCloud(cloudName,false);
 	}
+
+	/**
+	 * Retrieves a Cloud.
+	 * @param cloudname name of the Cloud
+	 * @param readonly if <code>true</code>, the cloud returned is read-only.
+	 *          No transactions are possible, nor any edits/changes to the cloud.
+	 *          This can be used for optimization.
+	 * @return all Clouds
+	 */
+	public Cloud getCloud(String cloudName, boolean readonly) {
+        Cloud cloud = (Cloud)localClouds.get(cloudName);
+        if (cloud==null) {
+            throw new BridgeException("Cloud "+cloudName+" does not exist.");
+        }
+	    if (!readonly) {
+            cloud = ((BasicCloud)cloud).getCopy();
+	    }
+	    return cloud;
+	}
+
+	/**
+    * Create a temporary scanpage object.
+	*/
+    static scanpage getScanPage(ServletRequest rq, ServletResponse resp) {
+	    scanpage sp = new scanpage();
+        if (rq instanceof HttpServletRequest) {
+            HttpServletRequest req=(HttpServletRequest)rq;
+        	sp.setReq(req);
+	        sp.setRes((HttpServletResponse)resp);
+    	    if (req!=null) {
+	            sp.req_line=req.getRequestURI();
+    	        sp.querystring=req.getQueryString();
+        	}
+	    }
+	    return sp;
+    }
+	
+
 }

@@ -45,4 +45,14 @@ public interface CloudContext {
 	 */
 	public Cloud getCloud(String cloudname);
 
+	/**
+	 * Retrieves a Cloud.
+	 * @param cloudname name of the Cloud
+	 * @param readonly if <code>true</code>, the cloud returned is read-only.
+	 *          No transactions are possible, nor any edits/changes to the cloud.
+	 *          This can be used for optimization.
+	 * @return all Clouds
+	 */
+	public Cloud getCloud(String cloudname, boolean readonly);
+
  }
