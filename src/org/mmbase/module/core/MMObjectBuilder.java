@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.100 $ $Date: 2001-05-07 09:38:48 $
+ * @version $Revision: 1.101 $ $Date: 2001-05-14 09:58:24 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -102,7 +102,7 @@ public class MMObjectBuilder extends MMTable {
     * @deprecated : use Logger routines instead
     */
     public boolean debug=false;
-	
+
     /**
     * Sets debugging on or off
     * @deprecated : use Logger routines instead
@@ -235,6 +235,11 @@ public class MMObjectBuilder extends MMTable {
     * determines whether builders are created using xml, accessible through {@link #getXMLConfig}
     */
     private boolean isXmlConfig=false;
+
+    /**
+    * Determines whether a builder is virtual (data is not stored in a database).
+    */
+    protected boolean virtual=false;
 
     // Properties of a specific Builder.
     // Specified in the xml builder file with the <properties> tag.
@@ -469,10 +474,10 @@ public class MMObjectBuilder extends MMTable {
         		if( name != null && !name.equals("")) {
         			String sNumber = (String)nameCache.get(name);
         			try {
-        				int number = Integer.parseInt( sNumber );	
+        				int number = Integer.parseInt( sNumber );
         				if( number == node.getNumber()) {
-        					nameCache.remove( name );	
-        				} 
+        					nameCache.remove( name );
+        				}
         			} catch( NumberFormatException e ) {
         				log.debug("removeNode("+node+"): ERROR: snumber("+sNumber+") from nameCache not valid number!");
         			}
@@ -514,6 +519,16 @@ public class MMObjectBuilder extends MMTable {
     */
     public boolean isNodeCached(int number) {
         return nodeCache.containsKey(new Integer(number));
+    }
+
+    /**
+    * Is this byuilder virtual?
+    * A virtual builder represents nodes that are not stored or retrieved directly
+    * from the database, but are created as needed.
+    * @return <code>true</code> if the builder is virtual.
+    */
+    public boolean isVirtual() {
+        return virtual;
     }
 
     /**
@@ -627,15 +642,15 @@ public class MMObjectBuilder extends MMTable {
             c++;
             node.setValue("CacheCount",c);
             return node;
-        } // else 
+        } // else
 			//log.info("NODE "+number+" NOT IN CACHE");
 
         // do the query on the database
         try {
             String bul="typedef";
-		
+
 	    // retrieve node's objecttype
-            int bi=getNodeType(number);		
+            int bi=getNodeType(number);
             if (bi!=0) {
             	bul=mmb.getTypeDef().getValue(bi);
              }
@@ -704,9 +719,9 @@ public class MMObjectBuilder extends MMTable {
 		try {
 			MMObjectNode node =null;
 			String bul="typedef";
-		
+
 			// retrieve node's objecttype
-			int bi=getNodeType(number);		
+			int bi=getNodeType(number);
 			if (bi!=0)
 				bul=mmb.getTypeDef().getValue(bi);
 			if (bul==null) {
@@ -752,7 +767,7 @@ public class MMObjectBuilder extends MMTable {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Create a new temporary node and put it in the temporary _exist
 	 * node space
@@ -765,7 +780,7 @@ public class MMObjectBuilder extends MMTable {
 		TemporaryNodes.put(key,node);
 		return node;
 	}
-	
+
     /**
     * Put a Node in the temporary node list
     * @param key  The (temporary) key under which to store the node
@@ -1033,7 +1048,7 @@ public class MMObjectBuilder extends MMTable {
             //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
-	
+
 	// temp mapper hack only works in single order fields
 	sorted=mmb.getDatabase().getAllowedField(sorted);
         String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
@@ -1107,7 +1122,7 @@ public class MMObjectBuilder extends MMTable {
      * a given order.
      *
      * @param where       where clause that the objects need to fulfill
-     * @param sorted      a comma separated list of field names on wich the 
+     * @param sorted      a comma separated list of field names on wich the
      *                    returned list should be sorted
      * @param directions  A comma separated list of the values indicating wether
      *                    to sort up (ascending) or down (descending) on the
@@ -1382,7 +1397,7 @@ public class MMObjectBuilder extends MMTable {
 	    if (curpos>=dbpos) def.setDBPos(curpos-1);
         }
 
-	
+
         sortedEditFields = null;
         sortedListFields = null;
         sortedFields = null;
@@ -1664,7 +1679,7 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("longmonth")) {		// longmonth September
             int v=node.getIntValue(field);
             rtn=DateStrings.longmonths[DateSupport.getMonthInt(v)];
-        } else if (function.equals("monthnumber")) {		
+        } else if (function.equals("monthnumber")) {
             int v=node.getIntValue(field);
             rtn=""+(DateSupport.getMonthInt(v)+1);
         } else if (function.equals("month")) {			// month Sep
@@ -1685,15 +1700,15 @@ public class MMObjectBuilder extends MMTable {
         } else if (function.equals("year")) {			// year 2001
             int v=node.getIntValue(field);
             rtn=DateSupport.getYear(v);
-        } else if (function.equals("thisdaycurtime")) {			// 
+        } else if (function.equals("thisdaycurtime")) {			//
             int curtime=node.getIntValue(field);
     	    // gives us the next full day based on time (00:00)
     	    int days=curtime/(3600*24);
 	        rtn=""+((days*(3600*24))-3600);
             // text convertion  functions
         }
-       
-		// functions that do not require a field 
+
+		// functions that do not require a field
 		// These are more or like pseudo fields, like the age of a node.
 		// node.getAge("age()"); will work.
 
@@ -1701,7 +1716,7 @@ public class MMObjectBuilder extends MMTable {
 			Integer val = new Integer(node.getAge());
 			rtn = val.toString();
 		}
-		// text convertion  functions 
+		// text convertion  functions
         else if (function.equals("wap")) {
             String val=node.getStringValue(field);
             rtn=getWAP(val);
@@ -1804,7 +1819,7 @@ public class MMObjectBuilder extends MMTable {
 	* @return the found path as a <code>String</code>, or <code>null</code> if not found
 	* @deprecated This is a utility method for use with a number of SCAN commands. Since it does not actually require knowledge of the nodes,
 	* this method should be moved to the {@link #org.mmbase.module.gui.html.scanparser} class.
-	*/	
+	*/
 	public String getSmartPath(String documentRoot, String path, String nodeNumber, String version) {
 		File dir = new File(documentRoot+path);
 		if (version!=null) nodeNumber+="."+version;
@@ -1812,7 +1827,7 @@ public class MMObjectBuilder extends MMTable {
 		if ((matches == null) || (matches.length <= 0))
 			return null;
 		return path + matches[0] + File.separator;
-	}	
+	}
 
     /**
     * Gets the number of nodes currently in the cache.
