@@ -32,7 +32,7 @@
                      NodeManagerList l = cloud.getNodeManagers();
                     java.util.Collections.sort(l); // MMCI doesn't sort, do it ourselves.
                     for (int i=0; i<l.size(); i++) {
-			NodeManager nt = l.getNodeManager(i);
+                    NodeManager nt = l.getNodeManager(i);
 		    %>
       	    	    <tr valign="top">
       	    	    	<td class="data" width="100%" colspan="2"><%=nt.getGUIName()%></td>
