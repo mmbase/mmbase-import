@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rico Jansen
  * @author Michiel Meeuwissen
  * @author Nico Klasens
- * @version $Id: ConvertImageMagick.java,v 1.55 2003-11-25 18:50:01 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.56 2004-05-05 08:14:13 jaco Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static final Logger log = Logging.getLoggerInstance(ConvertImageMagick.class);
@@ -327,7 +327,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     int secondcomma = cmd.indexOf(',', firstcomma + 1);
                     type = "draw";
                     try {
-                        cmd = "text " + cmd.substring(0, secondcomma) + " " + ((String) cmd).substring( secondcomma + 1).replace( '\'', '"');
+                        cmd = "text " + cmd.substring(0, secondcomma) + " " + cmd.substring(secondcomma + 1);
                         cmd = new String(cmd.getBytes("UTF-8"), "ISO-8859-1");
                         // convert needs UTF-8, but Runtime seemingly always writes ISO-8859-1, so we
                         // are going to lie here.
