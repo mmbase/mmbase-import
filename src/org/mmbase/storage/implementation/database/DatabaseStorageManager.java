@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.42 2004-01-20 20:14:58 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.43 2004-01-21 08:33:15 johannes Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -221,14 +221,21 @@ public class DatabaseStorageManager implements StorageManager {
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
                 logQuery(query);
                 s.executeUpdate(query);
+                s.close();
             }
             scheme = factory.getScheme(Schemes.READ_SEQUENCE, Schemes.READ_SEQUENCE_DEFAULT);
             query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number")});
             logQuery(query);
+            s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
             if (result.next()) {
-                return result.getInt(1);
+                int keynr = result.getInt(1);
+                s.close();
+                result.close();
+                return keynr;
             } else {
+				result.close();
+                s.close();
                 throw new StorageException("The sequence table is empty.");
             }
         } catch (SQLException se) {
@@ -249,7 +256,10 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
             if ((result != null) && result.next()) {
-                return getStringValue(result, 1, field);
+                String rvalue = getStringValue(result, 1, field);
+                result.close();
+                s.close();
+                return rvalue;
             } else {
                 throw new StorageException("Node with number " + node.getNumber() + " not found.");
             }
@@ -326,8 +336,12 @@ public class DatabaseStorageManager implements StorageManager {
                 Statement s = activeConnection.createStatement();
                 ResultSet result = s.executeQuery(query);
                 if ((result != null) && result.next()) {
-                    return getBinaryValue(result, 1, field);
+                    byte[] retval = getBinaryValue(result, 1, field);
+                    result.close();
+                    s.close();
+                    return retval;
                 } else {
+					s.close();
                     throw new StorageException("Node with number " + node.getNumber() + " not found.");
                 }
             } catch (SQLException se) {
@@ -445,7 +459,7 @@ public class DatabaseStorageManager implements StorageManager {
         } catch (IOException ie) {
             throw new StorageException(ie);
         }
-    	//TODO: find you why is this code only here and not in other methods/ 
+        //TODO: find you why is this code only here and not in other methods/ 
     }
 
     // javadoc is inherited
@@ -514,6 +528,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
                 logQuery(query);
                 ps.executeUpdate();
+                ps.close();
             } catch (SQLException se) {
                 throw new StorageException(se);
             } finally {
@@ -583,6 +598,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
                 logQuery(query);
                 ps.executeUpdate();
+                ps.close();
             } catch (SQLException se) {
                 throw new StorageException(se);
             } finally {
@@ -820,6 +836,7 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             logQuery(query);
             s.executeUpdate(query);
+            s.close();
         } catch (SQLException se) {
             throw new StorageException(se);
         } finally {
@@ -854,6 +871,7 @@ public class DatabaseStorageManager implements StorageManager {
             String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
             fillNode(node, s.executeQuery(query), builder);
+            s.close();
             return node;
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -946,7 +964,10 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
             if ((result != null) && result.next()) {
-                return result.getInt(1);
+                int retval = result.getInt(1);
+                result.close();
+                s.close();
+                return retval;
             } else {
                 return -1;
             }
@@ -1061,6 +1082,7 @@ public class DatabaseStorageManager implements StorageManager {
                 Statement s = activeConnection.createStatement();
                 logQuery(query);
                 s.executeUpdate(query);
+                s.close();
             }
             // create the table
             String query =
@@ -1082,6 +1104,7 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             logQuery(query);
             s.executeUpdate(query);
+            s.close();
             // TODO: use CREATE_SECONDARY_INDEX to create indices for all fields that have one
             // has to be done seperate
         } catch (SQLException se) {
@@ -1214,12 +1237,14 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             logQuery(query);
             s.executeUpdate(query);
+            s.close();
             scheme = factory.getScheme(Schemes.DROP_ROW_TYPE);
             if (scheme != null) {
                 query = scheme.format(new Object[] { this, builder });
                 s = activeConnection.createStatement();
                 logQuery(query);
                 s.executeUpdate(query);
+                s.close();
             }
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
@@ -1257,18 +1282,22 @@ public class DatabaseStorageManager implements StorageManager {
             String fieldName = (String)factory.getStorageIdentifier("number");
             String fieldDef = fieldName + " " + ((TypeMapping)typeMappings.get(found)).type + " NOT NULL, PRIMARY KEY(" + fieldName + ")";
             String query;
-            Statement s = activeConnection.createStatement();
+            Statement s;
             Scheme scheme = factory.getScheme(Schemes.CREATE_SEQUENCE, Schemes.CREATE_SEQUENCE_DEFAULT);
             if (scheme != null) {
                 query = scheme.format(new Object[] { this, fieldDef });
                 logQuery(query);
+                s = activeConnection.createStatement();
                 s.executeUpdate(query);
+                s.close();
             }
             scheme = factory.getScheme(Schemes.INIT_SEQUENCE, Schemes.INIT_SEQUENCE_DEFAULT);
             if (scheme != null) {
                 query = scheme.format(new Object[] { this, factory.getStorageIdentifier("number"), new Integer(1)});
                 logQuery(query);
+                s = activeConnection.createStatement();
                 s.executeUpdate(query);
+                s.close();
             }
         } catch (SQLException se) {
             throw new StorageException(se);
@@ -1320,7 +1349,10 @@ public class DatabaseStorageManager implements StorageManager {
             Statement s = activeConnection.createStatement();
             ResultSet res = s.executeQuery(query);
             res.next();
-            return res.getInt(1);
+            int retval = res.getInt(1);
+            res.close();
+            s.close();
+            return retval;
         } catch (Exception e) {
             throw new StorageException(e);
         } finally {
@@ -1558,6 +1590,7 @@ public class DatabaseStorageManager implements StorageManager {
                     String query = deleteIndexScheme.format(new Object[] { this, builder, indexName });
                     logQuery(query);
                     s.executeUpdate(query);
+                    s.close();
                 }
             }
         }
@@ -1577,6 +1610,7 @@ public class DatabaseStorageManager implements StorageManager {
                 String query = createIndexScheme.format(new Object[] { this, builder, constraintDef });
                 logQuery(query);
                 s.executeUpdate(query);
+                s.close();
             }
         }
     }
@@ -1602,6 +1636,7 @@ public class DatabaseStorageManager implements StorageManager {
                     Statement s = activeConnection.createStatement();
                     logQuery(query);
                     s.executeUpdate(query);
+                    s.close();
                     // add constraints
                     String constraintDef = getConstraintDefinition(field);
                     if (constraintDef != null) {
@@ -1611,6 +1646,7 @@ public class DatabaseStorageManager implements StorageManager {
                             s = activeConnection.createStatement();
                             logQuery(query);
                             s.executeUpdate(query);
+                            s.close();
                         }
                     }
                     // if the field is a key, redefine the composite key
@@ -1654,6 +1690,7 @@ public class DatabaseStorageManager implements StorageManager {
                     Statement s = activeConnection.createStatement();
                     logQuery(query);
                     s.executeUpdate(query);
+                    s.close();
                     // add constraints
                     String constraintDef = getConstraintDefinition(field);
                     if (constraintDef != null) {
@@ -1663,6 +1700,7 @@ public class DatabaseStorageManager implements StorageManager {
                             s = activeConnection.createStatement();
                             logQuery(query);
                             s.executeUpdate(query);
+                            s.close();
                         }
                     }
                     // if the field is a key, add the composite key
@@ -1702,6 +1740,7 @@ public class DatabaseStorageManager implements StorageManager {
                     Statement s = activeConnection.createStatement();
                     logQuery(query);
                     s.executeUpdate(query);
+                    s.close();
                     // if the field is a key, add the composite key
                     if (field.isKey()) {
                         createCompositeIndex(field.getParent());
