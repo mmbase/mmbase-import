@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63 2004-03-29 09:57:19 rob Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.1 2004-04-23 13:28:12 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -146,6 +146,10 @@ public class DatabaseStorageManager implements StorageManager {
     protected void releaseActiveConnection() {
         if (!(inTransaction && factory.supportsTransactions()) && activeConnection != null) {
             try {
+                // ensure that future attempts to obtain a connection (i.e.e if it came from a pool)
+                // start with autocommit set to true
+                // needed because Query interface does not use storage layer to obtain transactions
+                activeConnection.setAutoCommit(true);
                 activeConnection.close();
             } catch (SQLException se) {
                 // if something went wrong, log, but do not throw exceptions
