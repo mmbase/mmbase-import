@@ -69,7 +69,7 @@ public class Cookies extends MMObjectBuilder {
 		}
 
 		// its not in cache so lets check the database
-		Enumeration e=search("WHERE "+mmbase.getDatabase().getAllowedField("cookiekey")+"='"+key+"'";
+		Enumeration e=search("WHERE "+mmb.getDatabase().getAllowedField("cookiekey")+"='"+key+"'");
 		if (e.hasMoreElements()) {
 			// found this cookie in the cloud so 
 			// put it in cache and return it
