@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.170 2002-10-16 11:22:44 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.171 2002-10-16 14:14:26 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -721,7 +721,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public int getNodeType(int number) {
 	// assertment
-	if(number <= 0 ) throw new RuntimeException("node number was invalid("+number+")" );
+	if(number < 0 ) throw new RuntimeException("node number was invalid("+number+")" );
 
         int otype=-1;
         try {
@@ -785,26 +785,30 @@ public class MMObjectBuilder extends MMTable {
      */
     public MMObjectNode getNode(String key, boolean usecache) {
         int nr;
-        MMObjectNode node = null;
         if( key == null ) {
             log.error("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
             return null;
         }
+
+	// first look if we have a number...
         try {
-            nr=Integer.parseInt(key);
+	    nr = Integer.parseInt(key);
         } catch (Exception e) {
             log.debug("Getting node by alias");
-            nr=-1;
+            nr = -1;
         }
-        // is not a number, try top obtain the number from the alias builder
-        if ((nr < 0) && (mmb.getOAlias()!=null)) {
-            nr=mmb.getOAlias().getNumber(key);
+        // it is/was not a number,..
+	// try top obtain the number from the alias builder(when it is active)
+        if (nr < 0 && mmb.getOAlias() != null) {
+            nr = mmb.getOAlias().getNumber(key);
         }
-        // load the node if the number is right
-        if (nr > 0) {
-            node=getNode(nr,usecache);
-        }
-        return node;
+        // we now should have a node number,...
+	// if it is an invalid node number, return null
+	if(nr < 0) {
+	    return null;
+	}
+	// return the node...
+        return getNode(nr,usecache);
     }
 
     /**
@@ -1504,7 +1508,6 @@ public class MMObjectBuilder extends MMTable {
 		    // dont know what to do with this node,...
 		    // continue to the next one!
 		    continue;
-
 		}
 
 		Integer number = new Integer(node.getNumber());
@@ -1627,7 +1630,7 @@ public class MMObjectBuilder extends MMTable {
 		    convertedCount ++;
 		}
 		current = (MMObjectNode) results.get(i);
-		if(current.getNumber() <= 0) {
+		if(current.getNumber() < 0) {
 		    // never happend to me, and never should!
 		    throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());
 		}
