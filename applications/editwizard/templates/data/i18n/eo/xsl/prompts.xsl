@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: prompts.xsl,v 1.2 2002-08-02 14:20:38 pierre Exp $
+  @version $Id: prompts.xsl,v 1.3 2002-08-02 14:55:14 michiel Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -99,7 +99,7 @@
 <xsl:variable name="tooltip_index" >Reen al enirejo</xsl:variable>
 <xsl:template name="prompt_logout">Malsaluti</xsl:template>
 <xsl:variable name="tooltip_logout" >Malsaluti enirejen</xsl:variable>
-<xsl:variable name="filter_required" >Entering a searchterm is required.</xsl:variable>
+<xsl:variable name="filter_required" >Estas devige enigi serĉeron.</xsl:variable>
 <!-- prompts and tooltips for lists -->
 <xsl:template name="prompt_edit_list" >
 <xsl:value-of select="$title" />(<xsl:value-of select="@count" /> da eroj)
