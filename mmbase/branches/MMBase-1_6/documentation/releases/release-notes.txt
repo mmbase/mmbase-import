@@ -220,8 +220,8 @@ Know Issues and Problems:
   problems.
 
 - Some details can't autodetect the context in which MMBase is running
-   (like gui-functions of images), so it adviced to explicitely inform
-   MMBase with the mmbase.htmlrooturlpath context parameter from web.xml.
+  (like gui-functions of images), so it adviced to explicitely inform
+  MMBase with the mmbase.htmlrooturlpath context parameter from web.xml.
 
 ============
 Requirements:
