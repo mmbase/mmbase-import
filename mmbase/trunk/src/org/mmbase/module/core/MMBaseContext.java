@@ -12,6 +12,7 @@ package org.mmbase.module.core;
 import java.util.*;
 import java.io.*;
 import javax.servlet.*;
+import java.text.DateFormat;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.39 2004-02-19 17:33:20 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.40 2004-02-24 13:48:41 michiel Exp $
  */
 public class MMBaseContext {
     private static final Logger log = Logging.getLoggerInstance(MMBaseContext.class);
@@ -38,7 +39,7 @@ public class MMBaseContext {
     private static String outputFile;
 
     /**
-     * Initialize MMBase using a <code>SevletContext</code>. This method will
+     * Initialize MMBase using a <code>ServletContext</code>. This method will
      * check the servlet configuration for context parameters mmbase.outputfile
      * and mmbase.config. If not found it will look for system properties.
      *
@@ -86,9 +87,9 @@ public class MMBaseContext {
                 configPath = servletContext.getRealPath(configPath.substring(8));
             }
             try {
-                initConfigpath(configPath);
+                initConfigPath(configPath);
             } catch(Exception e) {
-                throw new ServletException(e.getMessage());
+                throw new ServletException(e);
             }
             // Init logging.
             initLogging();
@@ -115,7 +116,7 @@ public class MMBaseContext {
             initOutputfile(System.getProperty("mmbase.outputfile"));
 
             // Init configpath.
-            initConfigpath(configPath);
+            initConfigPath(configPath);
             // Init logging.
             if (initLogging) {
                 initLogging();
@@ -163,7 +164,7 @@ public class MMBaseContext {
         }
     }
 
-    private static synchronized void initConfigpath(String c) throws Exception {
+    private static synchronized void initConfigPath(String c) throws Exception {
         configPath = c;
         if (configPath == null) {
             userDir = null;
@@ -263,6 +264,7 @@ public class MMBaseContext {
         rt.gc();
         log.info("free memory       : " + rt.freeMemory() / (1024 * 1024) + " Mbyte");
         log.info("system locale     : " + Locale.getDefault());
+        log.info("start time        : " + DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date(1000 * (long) MMBase.startTime)));
 
     }
 
