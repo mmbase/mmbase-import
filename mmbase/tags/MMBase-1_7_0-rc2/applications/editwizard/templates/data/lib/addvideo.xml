@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<list fdatapath="relation[object/@type='videoparts']" minoccurs="0" maxoccurs="*" type="video" hidecommand="">
+	<title>Related video</title>
+	<description>These are the relation video fragments.</description>
+
+	<command name="search" nodepath="videoparts" fields="title,description">
+		<prompt>Search and relate video</prompt>
+	</command>
+
+	<item displaytype="video">
+		<description></description>
+		<field name="name" fdatapath="object/field[@name='title']" ftype="data" />
+	</item>
+
+	<action type="create">
+		<relation role="related" destinationtype="videoparts" >
+		</relation>
+	</action>
+</list>
