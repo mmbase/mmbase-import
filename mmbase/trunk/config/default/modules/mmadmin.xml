@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <!--
     The MMAdmin module contains procedures, callable from jsp or SCAN, which allow for
     administration tasks, such as installing applications, monitoring cache performance,
