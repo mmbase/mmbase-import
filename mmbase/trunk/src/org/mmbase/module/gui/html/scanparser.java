@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.22 2000-09-12 12:22:45 install Exp $
+$Id: scanparser.java,v 1.23 2000-09-14 09:14:52 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.22  2000/09/12 12:22:45  install
+Rob added the connection for the transaction handler <TRANSACTION arg1> arg2 </TRANSACTION>
+
 Revision 1.21  2000/09/08 11:44:19  wwwtech
 Rob added message ERROR in SORTPOS (sortpos counts from 0 .. n)
 
@@ -86,7 +89,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.22 $ $Date: 2000-09-12 12:22:45 $
+ * @$Revision: 1.23 $ $Date: 2000-09-14 09:14:52 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -350,9 +353,12 @@ public class scanparser extends ProcessorModule {
 			}
 		}
 
+		newbody.append(body.substring(postcmd+1));
+		body=newbody.toString();
 
 		// <TRANSACTION text1> text2 </TRANSACTION>
 		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
+		newbody=new StringBuffer();
 		postcmd=-1;
 		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
 			newbody.append(body.substring(postcmd+1,precmd));
@@ -372,9 +378,6 @@ public class scanparser extends ProcessorModule {
 				postcmd=prepostcmd;
 			}
 		}
-
-
-
 
 		newbody.append(body.substring(postcmd+1));
 		body=newbody.toString();
