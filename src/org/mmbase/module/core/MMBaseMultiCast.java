@@ -12,6 +12,7 @@ package org.mmbase.module.core;
 import java.net.*;
 import java.util.*;
 import org.mmbase.util.*;
+import org.mmbase.util.Queue;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: MMBaseMultiCast.java,v 1.13 2002-03-11 10:42:36 pierre Exp $
+ * @version $Id: MMBaseMultiCast.java,v 1.14 2004-02-06 16:16:40 michiel Exp $
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 
@@ -40,8 +41,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
      */
     public static int mport=4243;
 
-    // logging
-    private static Logger log = Logging.getLoggerInstance(MMBaseMultiCast.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(MMBaseMultiCast.class);
 
     /**
      * @javadoc
