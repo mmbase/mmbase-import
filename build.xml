@@ -300,7 +300,10 @@ builddate=${builddate}
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
     <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
-    <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
+    <copy file="${mlibwrapper_jai.jar}" todir="${release.lib.dir}" />
+    <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
+    <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
+    <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
     
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
