@@ -1,10 +1,11 @@
 package nl.omroep.mmbase;
 
 import org.mmbase.applications.crontab.*;
+import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.HugeNodeListIterator;
-import org.mmbase.bridge.util.Queries;
+import org.mmbase.bridge.util.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.cache.*;
 
 import org.mmbase.util.logging.*;
 
@@ -18,16 +19,71 @@ import java.text.*;
  * be scheduled using the crontab module.
  *
  * The read file should be generated with something like
- * <pre>
- find /e/streams -follow -type f -printf "%P\t%C@\t%s\n" | sort -t "`echo -e '\t'`" -k1,1df -k1,1r | gzip  > /tmp/test.gz
+ * 
+<pre>
+  find /e/streams -follow -type f -printf "%P\t%T@\t%s\n" | sort -t "`echo -e '\t'`" -k1,1 | gzip  > /tmp/test.gz
 </pre>
  *
  * @author Michiel Meeuwissen
  */
 
-public class MediaImporter extends BasicCronJob {
+public class MediaImporter extends AbstractCronJob {
 
     private static final Logger log = Logging.getLoggerInstance(MediaImporter.class);
+    protected static NodeCache nodeCache  = NodeCache.getCache(); 
+
+
+    private static final Comparator NODE_URL_COMPARATOR = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Node node = (Node) o1; String url = (String) o2;
+                return node.getStringValue("url").compareTo(url);
+            }
+        };
+
+    private static final Comparator NODE_DIR_COMPARATOR = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Node node = (Node) o1; String dir = (String) o2;
+                return node.getStringValue("name").compareTo(dir);
+            }
+        };
+    
+    private static final Comparator STREAMFILE_URL_COMPARATOR = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                StreamFile streamFile = (StreamFile) o1; String url = (String) o2;
+                return streamFile.url.compareTo(url);
+            }
+        };
+
+    private static final Comparator CASE_SENSITIVE_ORDER = new Comparator() {
+            public int compare(Object o1, Object o2) {
+                String s1 = (String) o1; String s2 = (String) o2;
+                return s1.compareTo(s2);
+            }
+            public String toString() { return "DEFAULT_STRING"; }
+        };
+
+    private static Collator PSQL_COMPARATOR;
+
+    // trying to compare like postgresql does.
+
+    static {
+        try {
+
+            final String IGNORED = "'-','/',' ','#','~', '!','^', '$', '%', '\\', '*', '(', ')', '_', '+', '=', '&', ':', ';', '<', '>', '.', '?', '{', '}', '@', ',','|'";
+            PSQL_COMPARATOR = new RuleBasedCollator("," + IGNORED + "<" +
+                                           " 0 < 1 < 2 < 3 < 4 < 5 < 6 < 7 < 8 < 9 < a,A< b,B< c,C< d,D< e,E< f,F< g,G< h,H< i,I< j,J < k,K< l,L< m,M< n,N< o,O< p,P< q,Q< r,R< s,S< t,T < u,U< v,V< w,W< x,X< y,Y< z,Z" +
+             ((RuleBasedCollator) Collator.getInstance(Locale.US)).getRules()
+            );
+            PSQL_COMPARATOR.setStrength(Collator.IDENTICAL);
+            PSQL_COMPARATOR.setDecomposition(Collator.FULL_DECOMPOSITION);
+        } catch (Exception e) {
+            log.error(e.toString());
+        }
+
+
+
+    }
+
 
 
     /**
@@ -45,12 +101,15 @@ public class MediaImporter extends BasicCronJob {
      */
     private int  fifoSize = 1000;
 
+    
+    private Comparator comparator = null;
+
     /**
      * Read configuration, from cronjob's configuration string.
      */
     protected void init() {
         try {
-            String config = jCronEntry.getConfiguration();
+            String config = cronEntry.getConfiguration();
             if (config == null) config = "";
             String[] configs = config.trim().split("\\s");
             String fileName;
@@ -73,14 +132,43 @@ public class MediaImporter extends BasicCronJob {
                 fifoSize = new Integer(configs[2].trim()).intValue();
                 log.info("Set fifo-size to " + fifoSize);
             }
+
+            if (configs.length > 3) {
+                String caseSens = configs[3].trim().toLowerCase();
+                if (caseSens.equals("caseinsensitive")) {
+                    comparator = String.CASE_INSENSITIVE_ORDER;
+                } else if (caseSens.equals("casesensitive")) {
+                    comparator = CASE_SENSITIVE_ORDER;
+                } else if (caseSens.equals("psqlcaseinsensitive")) {
+                    comparator = PSQL_COMPARATOR;
+                } else {
+                    log.warn("Unrecognised comparator " + caseSens);
+                }
+            } 
+            if (comparator == null) { 
+                comparator = CASE_SENSITIVE_ORDER;
+            }
+            log.info("Using comparator: " + comparator);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
         
     }
 
-    int fileLine = 0;
-    int dbLine = 0;
+    
+    protected BufferedReader getFileReader() throws IOException, FileNotFoundException {
+        // build file reader
+        if (file.getName().endsWith(".gz")) { // supporting that too.
+            return  new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));                
+        } else {
+            return new BufferedReader(new FileReader(file));
+        }
+    }
+
+
+
+    private int fileLine = 0;
+    private int dbLine = 0;
     
     /**
      * Reads next line from the file-reader, and translates it into a 'StreamFile' object.
@@ -91,16 +179,23 @@ public class MediaImporter extends BasicCronJob {
         String line = fileReader.readLine();
         if (line == null) return null;
         fileLine++;
-        StringTokenizer st = new StringTokenizer(line, "\t");
-        String url = st.nextToken();
-        //if (url.endsWith("~"))     return nextFileUrl(); // ignore emacs-backup
-        //if (url.indexOf("#") >= 0) return nextFileUrl(); // ignore a.o. emacs CVS files. Also # is sorted differntly by sort then by psql
-        if (url.startsWith("./"))  url = url.substring(1);
-        if (! url.startsWith("/")) url = "/" + url;
-        long  lastModified = new Long(st.nextToken()).longValue();
-        int byteSize = new Integer(st.nextToken()).intValue();
+        // default in case of error
+        String url = "ERROR";
+        long   lastModified = -1;
+        int    byteSize = 0;
+        try {
+            StringTokenizer st = new StringTokenizer(line, "\t");
+            url = st.nextToken();
+            if (url.startsWith("./"))  url = url.substring(1);
+            if (! url.startsWith("/")) url = "/" + url;
+            lastModified = new Long(st.nextToken()).longValue();
+            byteSize = new Integer(st.nextToken()).intValue();
+        } catch (Throwable t) {
+            log.error(t.getMessage());
+        }
         return new StreamFile(url, lastModified, byteSize);
     }
+
 
     protected Node nextNode(NodeIterator nodeIterator) {
         Node node      = nodeIterator.hasNext() ? nodeIterator.nextNode() : null;
@@ -109,26 +204,6 @@ public class MediaImporter extends BasicCronJob {
     }
 
 
-    // trying to compare like postgresql does.
-    private static String IGNORED = "'-','/',' ','#','~', '!','^', '$', '%', '\\', '*', '(', ')', '_', '+', '=', '&', ':', ';', '<', '>', '.', '?', '{', '}', '@', ','";
-    private static Collator collator;
-    static {
-        try {
-            collator = new RuleBasedCollator("," + IGNORED + "<" +
-                                             " 0 < 1 < 2 < 3 < 4 < 5 < 6 < 7 < 8 < 9 < a,A< b,B< c,C< d,D< e,E< f,F< g,G< h,H< i,I< j,J < k,K< l,L< m,M< n,N< o,O< p,P< q,Q< r,R< s,S< t,T < u,U< v,V< w,W< x,X< y,Y< z,Z"
-            // ((RuleBasedCollator) Collator.getInstance(Locale.US)).getRules()
-                                             );
-        } catch (Exception e) {
-            log.error(e.toString());
-        }
-        collator.setStrength(Collator.IDENTICAL);
-        collator.setDecomposition(Collator.FULL_DECOMPOSITION);
-    }
-
-
-    protected static int getComp(String url1, String url2) {
-        return collator.compare(url1, url2);
-    }
     /**
      * Compares a StreamFile object with a Node object.
      */
@@ -142,7 +217,64 @@ public class MediaImporter extends BasicCronJob {
         } else if (node == null) {
             return 1;
         } else {
-            return getComp(node.getStringValue("url"), streamFile.url);
+            return comparator.compare(node.getStringValue("url"), streamFile.url);
+        }
+    }
+
+    protected int getComp(String dir, Node node) {
+
+        if (dir == null) {
+            if (node == null) return 0;
+            return -1;
+        } else if (node == null) {
+            return 1;
+        } else {
+            return comparator.compare(node.getStringValue("name"), dir);
+        }
+    }
+
+
+    protected String getDir(StreamFile string) {
+        if (string == null) return null;
+        File f = new File(string.url).getParentFile();;
+        while (f.getName().matches("\\d+")) { // remove trailing dir names only existing from digits (vpro object numbers)
+            f = f.getParentFile();
+        }
+        // now, apply 'maxdepth'
+
+        int depth = new StringTokenizer(f.toString(), "/").countTokens();
+        while (depth > 4) {
+            depth --;
+            f = f.getParentFile();
+        }
+        return f.toString() + "/";
+
+    }
+
+    protected void addDir(StreamFile sf, Set set) {
+        String s = getDir(sf);
+        if (s != null && ! s.equals("//")) {
+            set.add(s);
+        }
+        
+    }
+    /**
+     * Compares a StreamFile object with a Node object.
+     */
+    protected int getDirComp(StreamFile streamFile, Node node) {
+        if (log.isDebugEnabled()) {
+            log.debug("comparing " + (streamFile == null ? "NULL" : streamFile.url) + " to " + (node == null ? "NULL" : node.getStringValue("url")));
+        }
+        if (streamFile == null) {
+            if (node == null) return 0;
+            return -1;
+        } else if (node == null) {
+            return 1;
+        } else {
+            int pos = streamFile.url.lastIndexOf('/');
+            String dir = streamFile.url.substring(0, pos);
+            return node.getStringValue("name").compareTo(dir);
+            //return getComp(node.getStringValue("url"), streamFile.url);
         }
     }
 
@@ -152,128 +284,325 @@ public class MediaImporter extends BasicCronJob {
     
     /**
      * {@inheritDoc}
+     * Just catched the exception of #importMedia
      */
     public void run() {
+        try {
+            log.info("Starting media-import: files");
+            importMedia();
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+   
+
+    
+    protected void importMedia() throws Exception {
+
+        long lastTimeCheck = System.currentTimeMillis();
+        long startTime     = lastTimeCheck;
+
+        // build query node iterator
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);            
+        log.service("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank()); 
+        
+        final NodeManager mediaSources = cloud.getNodeManager("mediasources");
+        final NodeManager undefSources = cloud.getNodeManager("undefsources");
+        
+        NodeQuery query = mediaSources.createQuery();
+        query.addSortOrder(query.getStepField(mediaSources.getField("url")), SortOrder.ORDER_ASCENDING);
+
+        Queries.addConstraint(query, query.createConstraint(query.getStepField(mediaSources.getField("filelastmodified")),  
+                                                            FieldCompareConstraint.GREATER,
+                                                            new Integer(0)));
+
+        NodeIterator nodeIterator = new HugeNodeListIterator(query, batchSize);
+
+
+        BufferedReader fileReader  = getFileReader();
+            
+
+        // fifo's are needed to handle minor discrepancies in sorting order (caused by non alfanumeric chars)
+        NodeDeleterFifo  deleter  = new NodeDeleterFifo(fifoSize);
+        NodeInserterFifo inserter = new NodeInserterFifo(fifoSize, new NodeInserterFifo.Inserter() {
+                public int insert(Object o) {
+                    StreamFile streamFile = (StreamFile) o;
+                    try {
+                        Node newNode = undefSources.createNode();
+                        newNode.setStringValue("url", streamFile.url);
+                        newNode.setLongValue("filelastmodified", streamFile.lastModified);
+                        newNode.setIntValue("filesize", streamFile.byteSize);
+                        newNode.setIntValue("state", MediaSources.STATE_SOURCE);
+                        newNode.commit();
+                        nodeCache.remove(new Integer(newNode.getNumber()));
+                        return 1;
+                    } catch (Throwable t) {
+                        log.error(t.getMessage());
+                        return 0;
+                    }
+                }
+                        
+            });
+
+        SortedSet dirs = new TreeSet();
+
         fileLine = 0;
         dbLine = 0;
+
         int created = 0;
         int removed = 0;
         int nofile = 0;
         int modified = 0;
         int total = 0;
         int errors = 0;
-        try {
-            Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);            
-            log.service("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank()); 
 
-            NodeManager mediaSources = cloud.getNodeManager("mediasources");
-
-            NodeQuery query = mediaSources.createQuery();
-            query.addSortOrder(query.getStepField(mediaSources.getField("url")),  
-                               SortOrder.ORDER_ASCENDING);
-            Queries.addConstraint(query, query.createConstraint(query.getStepField(mediaSources.getField("filelastmodified")),  
-                                                                FieldCompareConstraint.GREATER,
-                                                                new Integer(0)));
-            BufferedReader fileReader;
-
-            
-            if (file.getName().endsWith(".gz")) { // supporting that too.
-                fileReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file))));                
-            } else {
-                fileReader = new BufferedReader(new FileReader(file));
-            }
-            
-            NodeIterator nodeIterator = new HugeNodeListIterator(query, batchSize);
-                       
-            int i = 0;
-            Transaction trans = cloud.createTransaction();
-
-            NodeDeleterFifo deleter = new NodeDeleterFifo(fifoSize);
-            NodeInserterFifo inserter = new NodeInserterFifo(mediaSources, fifoSize);
-
-            while (true) {
-                StreamFile streamFile = nextFileUrl(fileReader);
-                Node node             = nextNode(nodeIterator);
-
-                if (streamFile == null && node == null) {  // end of both
-                    break;
-                }
-
-                int comp = getComp(streamFile, node);
+        // this loop iterates through all nodes and list of files simultaneously
+        while (true) {
+            StreamFile streamFile = nextFileUrl(fileReader);
+            Node       node       = nextNode(nodeIterator);
+            addDir(streamFile, dirs);
      
-                while (comp != 0) {
-                    if (comp < 0) { // node's url is smaller, so node should be removed.
-                        log.debug("Node " + node.getStringValue("url") + " not found " + node.getLongValue("filelastmodified"));
-                        if (node.hasRelations() || (! node.mayDelete())) {
-                            node.setLongValue("filelastmodified", -1);
-                            node.commit();
-                            nofile++;
-                        } else {
-                            if (inserter.check(node.getStringValue("url"))) {
-                                log.debug(here() + "Detected discrepancy in ordering of " + node.getStringValue("url"));
-                            } else {                                
-                                removed += deleter.add(node);
-                            }
-                        }                  
-                        node    = nextNode(nodeIterator);
-                    } else { // ah, a new Node was found.
-                        if (deleter.check(streamFile.url)) {
-                            log.debug(here() + "Detected discrepancy in ordering of " + streamFile.url);
-                        } else {
-                            created += inserter.add(streamFile);
-                        }
-
-                        streamFile = nextFileUrl(fileReader);
-                        if (streamFile != null) fileLine++;
-                    }
-                    total++;
-                    comp = getComp(streamFile, node);
-                }
-                if (node != null && streamFile != null) {
-                    if (node.getStringValue("url").equals(streamFile.url)) {
-                        // check.
-                        if (node.getLongValue("filelastmodified") != streamFile.lastModified ||
-                            node.getIntValue("filesize") != streamFile.byteSize) {
-                            
-                            log.info("Updating node " + node.getStringValue("url") + " file was modified on: " + new Date(streamFile.lastModified * 1000));
-                            node.setLongValue("filelastmodified", streamFile.lastModified);
-                            node.setIntValue("filesize", streamFile.byteSize);
-                            node.commit();
-                            modified++;
-                        }
-                    } 
-                }
-                if (node != null) {
-                    if (deleter.remove(node)) {
-                        log.debug(here() + "Detected discrepancy in ordering of " + node.getStringValue("url"));
-                    }
-                }
-                if (streamFile != null) {
-                    if (inserter.remove(streamFile)) {
-                        log.debug(here() + "Detected discrepancy in ordering of " + streamFile.url);
-                    }
-                }
+            int comp;
+            do {
+                comp = getComp(streamFile, node);
                 total++;
+                if (total % 1000 == 0) {
+                    long time =  System.currentTimeMillis();
+                    log.info("Current check-rate (on " + total + "): " + 1000000 / (time - lastTimeCheck) + " records / s. Current no of dirs: " + dirs.size());
+                    lastTimeCheck = time;
+                }
 
+                if (comp < 0) { // node's url is smaller, so node should be removed.
+                    log.debug("Node " + node.getStringValue("url") + " not found " + node.getLongValue("filelastmodified"));
+                    if (node.hasRelations() || (! node.mayDelete())) {
+                        node.setLongValue("filelastmodified", -1);
+                        node.setIntValue("state", MediaSources.STATE_REMOVED);
+                        node.commit();
+                        nodeCache.remove(new Integer(node.getNumber()));
+                        nofile++;
+                    } else {
+                        if (inserter.remove(node.getStringValue("url"), STREAMFILE_URL_COMPARATOR)) {
+                            log.service(here() + "Detected discrepancy in ordering of " + node.getStringValue("url"));
+                            created--; errors++;
+                        } else if (deleter.add(node)) {
+                            removed++;
+                        }
+                    }                  
+                    node    = nextNode(nodeIterator);
+                } else if (comp > 0) { // ah, a new Node was found.
+                    if (deleter.remove(streamFile.url, NODE_URL_COMPARATOR)) {
+                        log.service(here() + "Detected discrepancy in ordering of " + streamFile.url);
+                        removed--; errors++;
+                    } else if(inserter.add(streamFile)) {
+                        created++; 
+                    }
+
+                    streamFile = nextFileUrl(fileReader);
+                    addDir(streamFile, dirs);
+                }
+             
+            } while (comp != 0);
+
+
+            if (streamFile == null && node == null) {  // end of both, we are ready.
+                break;
             }
-            removed += deleter.empty();
-            created += inserter.empty();
+
                 
-            
-        } catch (Exception e) {
-            errors++;
-            log.error(e.getClass().getName() + ":" + e.getMessage() + Logging.stackTrace(e));
-        }
+            // node and streamFile in sync now, check if streamFile was updated.
+            if (node.getStringValue("url").equals(streamFile.url)) {
+                // check.
+                if (node.getLongValue("filelastmodified") < streamFile.lastModified || 
+                                                       // < and not != because some files appear with 2 last different last-modified dates (because the file-set is a join of more sets)
+                    node.getIntValue("filesize") != streamFile.byteSize) {
+                    if (log.isServiceEnabled()) {
+                        log.service("Updating node " + node.getStringValue("url") + " file was modified on: " + new Date(streamFile.lastModified * 1000));
+                    }
+                    node.setLongValue("filelastmodified", streamFile.lastModified);
+                    node.setIntValue("filesize", streamFile.byteSize);
+                    node.commit();
+                    modified++;
+                }
+            } 
+
+            // remove from deleter and inserter, in case they accidently ended up there (discrepancy in sort order).
+            log.debug("check deleter");
+            if (deleter.remove(node)) {
+                removed--; errors++;
+                log.service(here() + "Detected discrepancy in ordering of " + node.getStringValue("url"));
+            }
+            log.debug("check inserter");
+            if (inserter.remove(streamFile)) {
+                created--; errors++;
+                log.service(here() + "Detected discrepancy in ordering of " + streamFile.url);
+            }
+
+
+        }// end of loop.
+
+        deleter.empty();
+        inserter.empty();
+                
+        
+        long duration = System.currentTimeMillis() - startTime;
+        log.info("Ready importing media. Total: " + total + " Modified: "  + modified + 
+                 " Created: " + created + " Removed: " + removed + 
+                 " No-file: " + nofile + 
+                 " Sort-order discrepancies: " + errors);
+        log.info("Duration: " + (duration / 60000) + " minutes (" + (total * 1000 / duration) + " records /s)");
 
         
+        log.info("Starting media-import: directory-structure");
+        importDirs(dirs);
 
-        log.info("Ready importing media. Total: " + total + " Modified: "  + modified + " Created: " + created + " Removed: " + removed + " No-file: " + nofile + " Errors: " + errors);
+        
     }
+
+
+
+
+    
+    protected void importDirs(Set foundDirs) throws Exception {
+
+        long lastTimeCheck = System.currentTimeMillis();
+        long startTime     = lastTimeCheck;
+
+        // build query node iterator
+        Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);            
+        log.service("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank()); 
+        
+        final NodeManager dirs = cloud.getNodeManager("dirs");
+        NodeQuery dirQuery = dirs.createQuery();
+        dirQuery.addSortOrder(dirQuery.getStepField(dirs.getField("name")), SortOrder.ORDER_ASCENDING);
+
+        NodeIterator dirsIterator = new HugeNodeListIterator(dirQuery, batchSize);
+        // fifo's are needed to handle minor discrepancies in sorting order (caused by non alfanumeric chars)
+
+        NodeDeleterFifo  deleter  = new NodeDeleterFifo(500);
+        NodeInserterFifo inserter = new NodeInserterFifo(500, new NodeInserterFifo.Inserter() {
+                public int insert(Object o) {
+                    String dir = (String) o;
+                    try {
+                        Node newNode = dirs.createNode();
+                        newNode.setStringValue("name", dir);
+                        newNode.setStringValue("description", "Automaticly created by media-import");
+                        newNode.commit();
+                        nodeCache.remove(new Integer(newNode.getNumber()));
+                        return 1;
+                    } catch (Throwable t) {
+                        log.error(t.getMessage());
+                        return 0;
+                    }
+                        
+                }
+            });
+
+
+        fileLine = 0;
+        dbLine = 0;
+
+        int created = 0;
+        int removed = 0;
+        int nofile = 0;
+        int modified = 0;
+        int total = 0;
+        int errors = 0;
+
+        Iterator foundDirsIterator = foundDirs.iterator();
+       
+        String lastDir = null;
+        // this loop iterates through all nodes and list of files simultaneously
+        while (true) {
+            if (foundDirsIterator.hasNext()) {
+                lastDir =  (String) foundDirsIterator.next();
+            } else {
+                lastDir = null;
+            }
+            Node       node       = nextNode(dirsIterator);
+
+     
+            int comp;
+            do {
+                comp = getComp(lastDir, node);
+                total++;
+                if (total % 1000 == 0) {
+                    long time =  System.currentTimeMillis();
+                    log.info("Current check-rate (on " + total + "): " + 1000000 / (time - lastTimeCheck) + " records / s");
+                    lastTimeCheck = time;
+                }
+
+                if (comp < 0) { // node's url is smaller, so node should be removed.
+                    if (node.hasRelations() || (! node.mayDelete())) {
+                        node.setStringValue("description", "No files found in this dir");
+                        node.commit();
+                        nodeCache.remove(new Integer(node.getNumber()));
+                        nofile++;
+                    } else {
+                        if (inserter.remove(node.getStringValue("name"), comparator)) {
+                            log.service(here() + "Detected discrepancy in ordering of " + node.getStringValue("url"));
+                            created--; errors++;
+                        } else if (deleter.add(node)) {
+                            removed++;
+                        }
+                    }                  
+                    node    = nextNode(dirsIterator);
+                } else if (comp > 0) { // ah, a new Node was found.
+                    if (deleter.remove(lastDir, NODE_DIR_COMPARATOR)) {
+                        log.service(here() + "Detected discrepancy in ordering of " + lastDir);
+                        removed--; errors++;
+                    } else if(inserter.add(lastDir)) {
+                        created++; 
+                    }
+
+                    if (foundDirsIterator.hasNext()) {
+                        lastDir =  (String) foundDirsIterator.next();
+                    } else {
+                        lastDir = null;
+                    }
+                }
+             
+            } while (comp != 0);
+
+
+            if (lastDir == null && node == null) {  // end of both, we are ready.
+                break;
+            }
+
+                
+            // remove from deleter and inserter, in case they accidently ended up there (discrepancy in sort order).
+            log.debug("check deleter");
+            if (deleter.remove(node)) {
+                removed--; errors++;
+                log.service(here() + "Detected discrepancy in ordering of " + node.getStringValue("url"));
+            }
+            log.debug("check inserter");
+            if (inserter.remove(lastDir)) {
+                created--; errors++;
+                log.service(here() + "Detected discrepancy in ordering of " + lastDir);
+            }
+
+
+        }// end of loop.
+
+        deleter.empty();
+        inserter.empty();
+                
+        
+        long duration = System.currentTimeMillis() - startTime;
+        log.info("Ready importing media-dirs. Total: " + total + " Modified: "  + modified + 
+                 " Created: " + created + " Removed: " + removed + 
+                 " No-file: " + nofile + 
+                 " Sort-order discrepancies: " + errors);
+        log.info("Duration: " + (duration / 60000) + " minutes (" + (total * 1000 / duration) + " records /s)");
+    }
+
+
 
 
     
     /**
-     * Structure describe one line of the file which jobs reads.
+     * Structure describing one line of the file which the job reads.
      */
     class StreamFile {
         String url;
@@ -287,121 +616,13 @@ public class MediaImporter extends BasicCronJob {
         }
     }
 
+
+
     /**
-     * These FIFO's make it insensible to minor variations in sort-order
+     * for testing only
      */
-
-    class NodeDeleterFifo {
-        List list = new LinkedList();
-        int size ;
-        NodeDeleterFifo(int s) {
-            size = s;
-        }
-        int add(Node node) {
-            list.add(node);
-            if (list.size() > size) {
-                Node removedNode = (Node) list.remove(0);
-                log.debug("Deleting because FIFO full");
-                removedNode.delete();
-                log.service(here() + "Deleted " + node.getStringValue("url"));
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        boolean remove(Node node) {
-            return list.remove(node);
-        }
-
-        int empty() {
-            int result = 0;
-            while (list.size() > 0) {
-                Node removedNode = (Node) list.remove(0);
-                removedNode.delete();
-                log.service(here() + "Deleted " + removedNode.getStringValue("url"));
-                result++;
-            }
-            return result;
-        }
-        boolean check(String url) {
-            ListIterator i = list.listIterator();
-            while (i.hasNext()) {
-                Node node = (Node) i.next();
-                if (node.getStringValue("url").equals(url)) {
-                    i.remove();
-                    return true;
-                }
-                
-            }
-            return false;
-            
-        }
-    }
-    class NodeInserterFifo {
-        NodeManager mediaSources;
-
-        int size;
-        NodeInserterFifo(NodeManager nm, int s) {
-            mediaSources = nm;
-            size = s;
-        }
-        List list = new LinkedList();
-
-        private int insert(StreamFile streamFile) {
-            try {
-                Node newNode = mediaSources.createNode();
-                newNode.setStringValue("url", streamFile.url);
-                newNode.setLongValue("filelastmodified", streamFile.lastModified);
-                newNode.setIntValue("filesize", streamFile.byteSize);
-                newNode.commit();
-                log.service(here() + "Inserted " + streamFile.url); 
-            } catch (Throwable t) {
-                log.error(t.getMessage());
-                return 0;
-            }
-            return 1;
-        }
-        int add(StreamFile sf) {
-            list.add(sf);
-            if (list.size() > size) {
-                StreamFile streamFile = (StreamFile) list.remove(0);
-                log.debug("Inserting because FIFO full");
-                return insert(streamFile);
-            } else {
-                return 0;
-            }
-        }
-
-        boolean remove(StreamFile sf) {
-            return list.remove(sf);
-        }
-
-        int empty() {
-            int result = 0;
-            while (list.size() > 0) {
-                StreamFile streamFile = (StreamFile) list.remove(0);
-                result += insert(streamFile);
-            }
-            return result;
-        }
-        boolean check(String url) {
-            ListIterator i = list.listIterator();
-            while (i.hasNext()) {
-                StreamFile streamFile = (StreamFile) i.next();
-                if (streamFile.url.equals(url)) {
-                    i.remove();
-                    return true;
-                }
-                
-            }
-            return false;
-            
-        }
-    }
-
     public static void main(String[] args) {
-        System.out.println(getComp("a/aa", "AA.A"));
+        //System.out.println(getCompn("a/aa", "AA.A"));
     }
 
 }
