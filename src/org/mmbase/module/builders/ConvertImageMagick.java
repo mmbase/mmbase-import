@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.7 2001-01-26 14:58:08 install Exp $
+	$Id: ConvertImageMagick.java,v 1.8 2001-01-26 15:21:32 install Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.7  2001/01/26 14:58:08  install
+	Rob added some features
+	
 	Revision 1.6  2000/11/14 11:41:57  eduard
 	Eduard: Added a check in init(Hashtable params) to check if the ConverterRoot and ConverterCommand are existing,.. furhermore added some documentation
 	
@@ -42,12 +45,12 @@ import org.mmbase.util.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.7 2001-01-26 14:58:08 install Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.8 2001-01-26 15:21:32 install Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug = true;
+	private boolean debug = false;
 	private void debug(String msg) { System.out.println(classname+":"+msg); }
 
 	// Currenctly only ImageMagick works, this are the default value's
@@ -142,6 +145,8 @@ public class ConvertImageMagick implements ImageConvertInterface {
 					cmds.addElement("-region "+cmd);
 				} else if (type.equals("spread")) {
 					cmds.addElement("-spread "+cmd);
+				} else if (type.equals("solarize")) {
+					cmds.addElement("-solarize "+cmd);
 				} else if (type.equals("r")) {
 					cmds.addElement("-rotate "+cmd);
 				} else if (type.equals("c")) {
