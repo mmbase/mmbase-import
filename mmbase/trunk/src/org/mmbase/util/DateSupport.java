@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Johannes Verelst
- * @version $Id: DateSupport.java,v 1.19 2004-03-23 08:49:51 rob Exp $
+ * @version $Id: DateSupport.java,v 1.20 2004-06-04 09:11:58 marcel Exp $
  */
 public class DateSupport {
 
@@ -306,7 +306,7 @@ public class DateSupport {
             }
             v = new Date((long) val * 1000);
         }
-        SimpleDateFormat f = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat("HH:mm:ss");
         return f.format(v);
     }
 
