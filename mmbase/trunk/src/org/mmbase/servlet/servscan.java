@@ -109,95 +109,105 @@ public class servscan extends JamesServlet {
 	 * This processes the the page and sends it back
 	 */
 	public void service(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException {
-
 		incRefCount(req);
 		try {
-		scanpage sp=new scanpage();
-		sp.req_line=req.getRequestURI();
-		sp.querystring=req.getQueryString();
-
-		// needs to be replaced (get the context ones)		
-		ServletConfig sc=getServletConfig();
-		ServletContext sx=sc.getServletContext();
-		String mimetype=sx.getMimeType(sp.req_line);
-		if (mimetype==null) mimetype="text/html";
-		sp.mimetype=mimetype;
-		sp.setReq(req);
-
-		String sname=getCookie(sp.req,res);
-		sp.sname=sname;
-		sessionInfo session=sessions.getSession(sp,sname);
-		sp.session=session;
-
-		doEditorReload(sp,res);
-
-		// POST
-		if (req.getMethod().equals("POST")) {
-			handlePost(sp,res);
-		}
-
-		// Generate page
-		PrintWriter out=res.getWriter();
-		do {
-			sp.rstatus=0;
-			sp.body=parser.getfile(sp.req_line);
-			doSecure(sp,res); // name=doSecure(sp,res); but name not used here
-			long stime=handleTime(sp);
-
-			if (handleCache(sp,res,out)) return;
-
-			if (sp.body!=null && !sp.body.equals("")) {
-				long oldtime = System.currentTimeMillis();
-				// Process HTML
-				sp.body = handle_line(sp.body, session, sp);
-
-				// Send data back
-				if (sp.body!=null) {
-					if (sp.rstatus==0) {
-						res.setContentType( addCharSet( mimetype ) ); 
-						out.print(sp.body);
-						handleCacheSave(sp,res);
-					} else if (sp.rstatus==1) {
-						res.setStatus(302,"OK");
-						res.setContentType( addCharSet( mimetype ) ); 
-						res.setHeader("Location",sp.body);
-					} else if (sp.rstatus==2) {
-						sp.req_line=sp.body;	
-						if (sp.req_line.indexOf('\n')!=-1) {
-							sp.req_line=sp.req_line.substring(0,sp.req_line.indexOf('\n'));
-						}
-					} else if (sp.rstatus==4) {
-						String tmp = req.getHeader("If-Modified-Since:");
-						if (tmp!=null && sp.processor!=null) {
-							res.setStatus(304,"Not Modified");
-							res.setContentType( addCharSet(mimetype) ); 
-						} else {
-							setHeaders(sp,res,sp.body.length());
+			scanpage sp=new scanpage();
+			sp.req_line=req.getRequestURI();
+			sp.querystring=req.getQueryString();
+	
+			// needs to be replaced (get the context ones)		
+			ServletConfig sc=getServletConfig();
+			ServletContext sx=sc.getServletContext();
+			String mimetype=sx.getMimeType(sp.req_line);
+			if (mimetype==null) mimetype="text/html";
+			sp.mimetype=mimetype;
+			sp.setReq(req);
+	
+			String sname=getCookie(sp.req,res);
+			sp.sname=sname;
+			sessionInfo session=sessions.getSession(sp,sname);
+			sp.session=session;
+	
+			doEditorReload(sp,res);
+	
+			// POST
+			if (req.getMethod().equals("POST")) {
+				handlePost(sp,res);
+			}
+	
+			// Generate page
+			PrintWriter out=res.getWriter();
+			do {
+				sp.rstatus=0;
+				sp.body=parser.getfile(sp.req_line);
+				doSecure(sp,res); // name=doSecure(sp,res); but name not used here
+				long stime=handleTime(sp);
+	
+				if (handleCache(sp,res,out)) return;
+	
+				if (sp.body!=null && !sp.body.equals("")) {
+					long oldtime = System.currentTimeMillis();
+					// Process HTML
+					sp.body = handle_line(sp.body, session, sp);
+					// Send data back
+					if (sp.body!=null) {
+						if (sp.rstatus==0) {
+							res.setContentType( addCharSet( mimetype ) ); 
 							out.print(sp.body);
+							handleCacheSave(sp,res);
+						} else if (sp.rstatus==1) {
+							res.setStatus(302,"OK");
+							res.setContentType( addCharSet( mimetype ) ); 
+							res.setHeader("Location",sp.body);
+						} else if (sp.rstatus==2) {
+							sp.req_line=sp.body;	
+							if (sp.req_line.indexOf('\n')!=-1) {
+								sp.req_line=sp.req_line.substring(0,sp.req_line.indexOf('\n'));
+							}
+						} else if (sp.rstatus==4) {
+							String tmp = req.getHeader("If-Modified-Since:");
+							if (tmp!=null && sp.processor!=null) {
+								res.setStatus(304,"Not Modified");
+								res.setContentType( addCharSet(mimetype) ); 
+							} else {
+								setHeaders(sp,res,sp.body.length());
+								out.print(sp.body);
+							}
 						}
+					} else {
+						sp.body="<TITLE>Servscan</TITLE>handle_line returned null<BR>";
+						setHeaders(sp,res,sp.body.length());
+						out.print(sp.body);
 					}
 				} else {
-					sp.body="<TITLE>Servscan</TITLE>handle_line returned null<BR>";
-					setHeaders(sp,res,sp.body.length());
-					out.print(sp.body);
+					break;
 				}
-			} else {
-				break;
-			}
-
-			if (stime!=-1) {
-				stime=System.currentTimeMillis()-stime;
-				debug("service(): STIME "+stime+"ms "+(stime/1000)+"sec URI="+req.getRequestURI());
-			}
-		} while (sp.rstatus==2);	
-		// End of page parser
-		
-		out.flush();
-		out.close();
+	
+				if (stime!=-1) {
+					stime=System.currentTimeMillis()-stime;
+					debug("service(): STIME "+stime+"ms "+(stime/1000)+"sec URI="+req.getRequestURI());
+				}
+			} while (sp.rstatus==2);	
+			// End of page parser
+			
+			out.flush();
+			out.close();
 		} catch(NotLoggedInException e) {
-			debug( "NotLoggedInException: " + e );
+			String page = null;
+			if( req	!= null ) {
+				page = req.getRequestURI();
+				if( req.getQueryString()!=null ) 
+					page += "?" + req.getQueryString();
+			}
+			debug( "service(): page("+page+"): NotLoggedInException: " + e );
 		} catch(Exception a) {
-			debug( "Exception on page: " + req.getRequestURI() );
+			String page = null;
+            if( req != null ) {
+                page = req.getRequestURI();
+                if( req.getQueryString()!=null )
+                    page += "?" + req.getQueryString();
+            }
+			debug( "service(): page("+page+"): Exception on page: " + req.getRequestURI() );
 			a.printStackTrace();
 		} finally { decRefCount(req); }
 	}// service
@@ -274,7 +284,9 @@ public class servscan extends JamesServlet {
 			String sec = poster.getPostParameter("SECURE");
 
 				if (sec!=null) {
+					if( debug ) debug("handlePost(): Secure tag found in page("+sp.getUrl()+"), displaying username/password window at client-side.");
 					name=getAuthorization(req,res);
+					if( debug ) debug("handlePost(): Secure tag found in page("+sp.getUrl()+"), displaying username/password window at client-side.");
 					String sname=getCookie(req,res);
 					if (name==null) { 
 						debug("handlePost(): Warning Username is null");
@@ -402,14 +414,17 @@ public class servscan extends JamesServlet {
 	private String doSecure(scanpage sp,HttpServletResponse res) throws Exception {
 		String name=null;
 		if (sp.body!=null && sp.body.indexOf("<SECURE>")!=-1) {
+
+			if( debug ) debug("doSecure("+sp.getUrl()+"): Secure tag found, calling getAuthorization()...");
 			name=getAuthorization(sp.req,res);
+			if( debug ) debug("doSecure("+sp.getUrl()+"): getting cookie from user...");
 			String sname=getCookie(sp.req,res);
 
 			// check name
 			// ----------
 
 			if (name==null) { 
-				debug("doSecure(): Warning: Username is null");
+				if( debug ) debug("doSecure("+sp.getUrl()+"): WARNING: no username found!");
 				return(null);
 			}
 		}
