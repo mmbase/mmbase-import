@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.63 2002-07-26 08:47:32 vpro Exp $
+ * @version $Id: BasicCloud.java,v 1.64 2002-08-19 15:47:04 eduard Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -752,37 +752,46 @@ public class BasicCloud implements Cloud, Cloneable {
         // Keep in mind that at this point, the remaining string could contain different information 
         // than the original string. This doesnt matter for the next sequence...
         // but it is important to realize!
-        while(remaining.length() > 0 && remaining.indexOf('\'') != -1) {                
-            // we still contain a "'"
-            int start = remaining.indexOf('\'');
+        while(remaining.length() > 0) {
+	    if(remaining.indexOf('\'') != -1) {
+		// we still contain a "'"
+		int start = remaining.indexOf('\'');
 
-            // escaping started, but no stop
-            if(start == remaining.length())  {
-                log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints);
-                return false;
-            }
+		// escaping started, but no stop
+		if(start == remaining.length())  {
+		    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints);
+		    return false;
+		}
             
-            String notEscaped = remaining.substring(0, start);
-            if(notEscaped.indexOf(';') != -1) {
-                log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nnot excaped:" + notEscaped);
-                return false;
-            }
+		String notEscaped = remaining.substring(0, start);
+		if(notEscaped.indexOf(';') != -1) {
+		    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nnot excaped:" + notEscaped);
+		    return false;
+		}
                         
-            int stop = remaining.substring(start + 1).indexOf('\'');
-            if(stop < 0) {
-                log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nlast escaping:" + remaining.substring(start + 1));
-                return false;
-            }
-            // we added one to to start, thus also add this one to stop...
-            stop = start + stop + 1;
+		int stop = remaining.substring(start + 1).indexOf('\'');
+		if(stop < 0) {
+		    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nlast escaping:" + remaining.substring(start + 1));
+		    return false;
+		}
+		// we added one to to start, thus also add this one to stop...
+		stop = start + stop + 1;
             
-            // when the last character was the stop of our escaping
-            if(stop == remaining.length())  {
-                return true;
-            }
+		// when the last character was the stop of our escaping
+		if(stop == remaining.length())  {
+		    return true;
+		}
             
-            // cut the escaped part from the string, and continue with resting sting...
-            remaining = remaining.substring(stop + 1);
+		// cut the escaped part from the string, and continue with resting sting...
+		remaining = remaining.substring(stop + 1);
+	    }
+	    else{
+		if(remaining.indexOf(';')!= -1) {
+		    log.warn("found a ';' inside our contrain:" + contraints);
+		    return false;
+		}
+		return true;
+	    }
         }
         return true;
     }
