@@ -40,7 +40,7 @@ public class SendMail extends Module implements SendMailInterface {
 	
 	public void init() {
        	mailhost=getInitParameter("mailhost");
-		log.info("Module SendMail started (mailhost="+mailhost+")");
+		log.debug("Module SendMail started (mailhost="+mailhost+")");
 	}
 
 	/** 
@@ -93,8 +93,13 @@ public class SendMail extends Module implements SendMailInterface {
 	 	try {
 			out.writeBytes("MAIL FROM:<"+from+">\r\n");
 			out.flush();
-            anwser = in.readLine();
-        	if(anwser.indexOf("250")!=0)  return false;
+            		anwser = in.readLine();
+            		log.debug("SendMail "+getStateInfo(anwser)+" based on anwser="+anwser);
+		
+        		if (anwser.indexOf("250")!=0) {
+            			log.error("SendMail error sending "+from+","+to+", error nr : "+getStateInfo(anwser)+" based on anwser="+anwser);
+				return(false);
+			}
 
 			StringTokenizer tok = new StringTokenizer(to,",\n\r");
 			while (tok.hasMoreTokens()) {
@@ -103,18 +108,30 @@ public class SendMail extends Module implements SendMailInterface {
 			}
 			out.flush();
             		anwser = in.readLine();
-        	if(anwser.indexOf("250")!=0)  return false;
+            		log.debug("SendMail "+getStateInfo(anwser)+" based on anwser="+anwser);
+        		if (anwser.indexOf("250")!=0) {
+            			log.error("SendMail error sending "+from+","+to+", error nr : "+getStateInfo(anwser)+" based on anwser="+anwser);
+				 return false;
+			}
 			
 			out.writeBytes("DATA\r\n");
 			out.flush();
-            anwser = in.readLine();
-        	if(anwser.indexOf("354")!=0)  return false;
+            		anwser = in.readLine();
+            		log.debug("SendMail "+getStateInfo(anwser)+" based on anwser="+anwser);
+        		if (anwser.indexOf("354")!=0)  {
+            			log.error("SendMail error sending "+from+","+to+", error nr : "+getStateInfo(anwser)+" based on anwser="+anwser);
+				 return false;
+			}
 				
 			out.writeBytes(data+"\r\n");
 			out.writeBytes("\r\n.\r\n");
 			out.flush();
-            anwser = in.readLine();
-        	if(anwser.indexOf("250")!=0)  return false;
+            		anwser = in.readLine();
+            		log.debug("SendMail "+getStateInfo(anwser)+" based on anwser="+anwser);
+        		if (anwser.indexOf("250")!=0) {
+            			log.error("SendMail error sending "+from+","+to+", error nr : "+getStateInfo(anwser)+" based on anwser="+anwser);
+				 return false;
+			}
 			
 			out.writeBytes("QUIT\r\n");
 			out.flush();
@@ -202,5 +219,35 @@ public class SendMail extends Module implements SendMailInterface {
 
 	public String getModuleInfo() {
 		return("Sends mail using a mailhost, Rob Vermeulen");
+	}
+
+        public String getStateInfo(String line) {
+		try {
+			int error=Integer.parseInt(line.substring(0,3));
+               		switch(error) {
+                    		case 500: return("user error, 500 ,Syntax error command unrecognized");
+                    		case 501: return("user error, 501 ,Syntax error in parameters or agruments");
+                    		case 502: return("user error, 502 ,Command not implemented");
+                    		case 503: return("user error, 503 ,Bad sequence of commands");
+                    		case 504: return("user error, 504 ,Syntax error command unrecognized");
+                    		case 211: return("status, 211 ,System status, or system help reply");
+                    		case 214: return("status, 214 ,Help message");
+                    		case 220: return("success, 220 ,Service ready");
+                    		case 221: return("success, 221 ,Service closing transmission channel");
+                    		case 250: return("success, 250 ,Requested mail action okey, completed");
+                    		case 251: return("success, 251 ,User not local will forward to ");
+                    		case 354: return("success, 354,Start mail input; end with <CRLF><CRLF>");
+                    		case 421: return("system error, 421,Service not available, closing transmition channel");
+                    		case 450: return("system error, 450,Requested mail action not taken: mailbox unavailable");
+                    		case 551: return("system error, 551,User not local, please try forward");
+                    		case 452: return("system error, 452,Request not taken: insufficient system storage");
+                    		case 552: return("system error, 552,Request action aborted: exceeded storage allocation");
+                    		case 553: return("system error, 553,Request action not taken: mailbox name not allowed");
+                    		case 554: return("system error, 554,Transaction failed");
+                	}
+		} catch(Exception e) {
+			return("parse error in getStateInfo on : "+line);
+		}
+		return("");
 	}
 }
