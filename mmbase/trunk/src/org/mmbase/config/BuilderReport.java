@@ -15,11 +15,17 @@ import java.sql.*;
 
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Case Roole, cjr@dds.nl
- * @version $Id: BuilderReport.java,v 1.2 2000-10-07 17:06:07 case Exp $
+ * @version $Id: BuilderReport.java,v 1.3 2001-04-10 11:02:07 michiel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/10/07 17:06:07  case
+ * cjr: Added checking of mmbase JVM options and some minor bugfixes
+ *
  * Revision 1.1  2000/09/11 20:26:53  case
  * cjr: Code to generate reports on mmbase configuration:
  *      - JVM and classpath
@@ -32,6 +38,8 @@ import org.mmbase.util.*;
  *
  */
 public class BuilderReport extends AbstractReport {
+
+    private static Logger log = Logging.getLoggerInstance(BuilderReport.class.getName()); 
     // Core builders are the builders containing the meta data for the cloud
     private static final String coreBuilderList[] = new String[]{"typedef","reldef","insrel"};
 
@@ -60,7 +68,7 @@ public class BuilderReport extends AbstractReport {
 	    try {
 		builderList = listDirectory(configpath+File.separator+"builders");
 	    } catch (IOException e) {
-		debug("Error reading builder directory: "+e.getMessage());
+		log.error("Error reading builder directory: " + e.getMessage());
 		builderList = new Vector();
 	    }
 	    String buildername, path;
