@@ -19,7 +19,7 @@ import java.util.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.5 2004-12-15 16:08:24 daniel Exp $
+ * @version $Id: ReturnType.java,v 1.6 2004-12-16 09:23:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class ReturnType extends AbstractDataType {
@@ -27,7 +27,7 @@ public class ReturnType extends AbstractDataType {
     /**
      * The return type of a function that does not return a thing.
      */
-    public static final ReturnType VOID = new ReturnType(null, "Does not return anything");
+    public static final ReturnType VOID = new ReturnType(void.class, "Does not return anything");
 
     /**
      * The return type of a function that returns a String.
