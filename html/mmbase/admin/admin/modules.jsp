@@ -37,6 +37,7 @@
    NodeList modules=mmAdmin.getList("MODULES",params,request,response);
    for (int i=0; i<modules.size(); i++) {
     Node module=modules.getNode(i);
+    try {
 %>
 <tr>
   <td class="data"><%=module.getStringValue("item1")%></td>
@@ -47,7 +48,11 @@
     <a href="<mm:url page="<%="module/actions.jsp?module="+module.getStringValue("item1")%>"/>"><img src="<mm:url page="/mmbase/style/images/next.gif" />" border="0" alt="next" /></a>
   </td>
 </tr>
-<% } %>
+<% 
+   } catch (Throwable t) {
+   out.println("  " + t.getMessage());
+   }
+} %>
 <tr><td>&nbsp;</td></tr>
 
 <tr class="footer">
