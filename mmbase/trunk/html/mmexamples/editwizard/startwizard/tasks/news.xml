@@ -12,6 +12,8 @@
     <relation destination="people" role="related" />
   </action>
   
+  <action type="delete" />
+
   <form-schema id="basics">
     <title>Basic News</title>
     <subtitle>foobar</subtitle>
@@ -33,7 +35,10 @@
           <field ftype="data" name="firstname" />
           <field ftype="data" name="lastname" />
           <field ftype="startwizard" wizardname="tasks/people" />		
-          <field ftype="startwizard" wizardname="tasks/people" inline="true"/>		
+          <field ftype="startwizard" wizardname="tasks/people" inline="true">
+            <postfix>(inline)</postfix>
+          </field>
+            
           <prompt>Name</prompt>
         </fieldset>
       </item>
