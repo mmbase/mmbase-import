@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.32 2003-12-21 19:58:25 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.33 2004-02-16 17:27:03 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -46,6 +46,20 @@ public class BasicQuery implements Query  {
     protected BasicSearchQuery query;
 
     protected Cloud cloud; // reference to the cloud.
+
+
+
+    /**
+     * The implicitely added 'extra' fields. These are removed if the query becomes 'distinct'. So,
+     * you can e.g. not do element= on a distinct query result.     
+     */
+    protected List implicitFields = new ArrayList();
+
+    /**
+     * The explicitely added 'extra' fields. Because you explicitely added those, they will not be removed if the query becomes 'distinct'.
+     */
+    protected List explicitFields = new ArrayList();
+
 
 
     BasicQuery(Cloud c) {
@@ -199,8 +213,8 @@ public class BasicQuery implements Query  {
         next.setAlias(createAlias(next.getTableName()));
         if (! aggregating) {
             // the number fields must always be queried, otherwise the original node cannot be found back (e.g. <mm:node element=)
-            addField(relationStep, relationManager.getField("number"));  // query relation node
-            addField(next,         otherNodeManager.getField("number"));  // and next node
+            addFieldImplicit(relationStep, relationManager.getField("number"));  // query relation node
+            addFieldImplicit(next,         otherNodeManager.getField("number"));  // and next node
             // distinct?
         }
         return relationStep;
@@ -258,10 +272,12 @@ public class BasicQuery implements Query  {
     
     public StepField addField(Step step, Field field) {
         if (used) throw new BridgeException("Query was used already");
-        return query.addField(step, ((BasicField) field).field);
+        BasicStepField sf = query.addField(step, ((BasicField) field).field);
+        explicitFields.add(sf);
+        implicitFields.remove(sf); // it's explicitly added now
+        return sf;
     }
     public StepField addField(String fieldIdentifier) {
-
         // code copied from createStepField, should be centralized
         if (used) throw new BridgeException("Query was used already");
         int dot = fieldIdentifier.indexOf('.');
@@ -272,6 +288,17 @@ public class BasicQuery implements Query  {
         NodeManager nm = cloud.getNodeManager(step.getTableName());
         Field field = nm.getField(fieldName);
         return addField(step, field);
+    }
+
+    /**
+     * Fields which are added 'implicity' should be added by this function.
+     */
+    protected void addFieldImplicit(Step step, Field field) {
+        if (used) throw new BridgeException("Query was used already");
+        if (! query.isDistinct()) {
+            BasicStepField sf = query.addField(step, ((BasicField) field).field);
+            implicitFields.add(sf);
+        }
     }
 
     public StepField createStepField(Step step, Field field) {
@@ -317,9 +344,20 @@ public class BasicQuery implements Query  {
         return aggregatedField;
     }
     
+    
+
     public Query setDistinct(boolean distinct) {
         if (used) throw new BridgeException("Query was used already");
         query.setDistinct(distinct);
+        if (distinct) { // in that case, make sure only the 'explicitely' added fields remain.
+            query.removeFields();
+            implicitFields.clear();
+            Iterator i = explicitFields.iterator();
+            while (i.hasNext()) {                
+                BasicStepField sf = (BasicStepField) i.next();
+                query.addField(sf.getStep(), sf.getFieldDefs());
+            }
+        }
         return this;
     }
 
