@@ -267,7 +267,7 @@
       </sect2>
     </sect1>
   </chapter>
-  <chapter>
+  <chapter id="caches">
     <title>Caches</title>
     <para>
       MMBase has several caches, which can be configured by a file
