@@ -55,7 +55,7 @@
       </action>
     </list>
 
-    <list role="posrel" destination="images">
+    <list role="posrel" destination="images" orderby="field[@name='pos']">
       <title xml:lang="nl">Gerelateerde plaatjes</title>
       <title xml:lang="en">Related images</title>
 
@@ -67,19 +67,25 @@
         <field name="title" ftype="image" />
       </item>
       <action type="create">
-        <relation destinationtype="images" role="posrel"/>
+        <relation destinationtype="images" role="posrel">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        </relation>
       </action>
     </list>
 
-    <list role="posrel" destination="urls">
+    <list role="posrel" destination="urls" orderby="field[@name='pos']">
       <title xml:lang="nl">Gerelateerde Urls</title>
       <title xml:lang="en">Related urls</title>
 
       <item>
         <field name="url" />
       </item>
+
+      <command name="insert" /> <!-- this was not needed in the 1.6 front-end -->
+
       <action type="create">
         <relation destinationtype="urls" role="posrel">
+          <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
           <object type="urls">
             <field name="url">http://</field>
           </object>
