@@ -104,7 +104,7 @@
        only works when community-application has been activated -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
+    <taglib-location>/WEB-INF/mmcommunity-taglib.tld</taglib-location>
   </taglib>
 
 </web-app>
