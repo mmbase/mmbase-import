@@ -14,11 +14,15 @@
     <create-extended>CREATE TABLE {0} ({1}) INHERITS ({2})</create-extended>
     <not-null>{0} {1} NOT NULL</not-null>
     <primary-key>{0} {1} NOT NULL, PRIMARY KEY ({0})</primary-key>
-    <!-- here (foreign-key) we want something like 
-    {0} {1} NOT NULL, FOREIGN KEY ({0}) REFERENCES install_object(number) 
-    but the current "sheme" does not allow this
+    <!-- 
+       Foreign keys do not work on postgresql (at least not on inherited tables
+
+       This would be logical:
+       <foreign-key>{0} {1} NULL, FOREIGN KEY ({0}) REFERENCES {2} (number)</foreign-key>
+
+       But we have to do this because of silly limitations in postgresql:
     -->
-    <foreign-key>{0} {1} NOT NULL</foreign-key>
+    <foreign-key>{0} {1} NULL</foreign-key> <!-- node field must accept null during import -->
     <key>{0} {1} NOT NULL, UNIQUE ({0})</key>
   </scheme>
   <mapping>
@@ -29,7 +33,8 @@
     <type-mapping mmbase-type="NODE">INTEGER</type-mapping>
     <type-mapping mmbase-type="STRING">TEXT</type-mapping>
     <type-mapping mmbase-type="XML">TEXT</type-mapping>
-    <type-mapping mmbase-type="BYTE">OID</type-mapping> <!-- This works with postgresql 7.3.2 (driver 1.7.1). bytea didn't -->
+    <type-mapping mmbase-type="BYTE">OID</type-mapping> 
+       <!-- This works with postgresql 7.3.2 (driver 1.7.1). bytea didn't -->
     <!-- type-mapping mmbase-type="BYTE">bytea</type-mapping-->
   </mapping>
   &extra;
