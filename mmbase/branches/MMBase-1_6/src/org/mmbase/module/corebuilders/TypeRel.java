@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.19 2003-04-03 17:18:15 pierre Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.20 2003-08-13 14:42:01 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -44,24 +44,24 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * Constant for {@link #contains}: return only typerels that
      * exactly match.
      */
-    public static int STRICT = 0;
+    public static final int STRICT = 0;
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder or its descendants
      */
-    public static int INCLUDE_DESCENDANTS = 1;
+    public static final int INCLUDE_DESCENDANTS = 1;
 
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder or its parents
      */
-    public static int INCLUDE_PARENTS = 2;
+    public static final int INCLUDE_PARENTS = 2;
 
     /**
      * Constant for {@link #contains}: return typerels where source/destination match
      * with a builder, its descendants, or its parents
      */
-    public static int INCLUDE_PARENTS_AND_DESCENDANTS = 3;
+    public static final int INCLUDE_PARENTS_AND_DESCENDANTS = 3;
 
     /**
      * TypeRel should contain only a limited amount of nodes, so we
