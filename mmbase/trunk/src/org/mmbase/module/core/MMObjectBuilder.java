@@ -969,22 +969,54 @@ public class MMObjectBuilder extends MMTable {
 	* should be overriden if you want to define derived fields in a object
 	*/	
 	public Object getValue(MMObjectNode node,String field) {
+		Object rtn=null;
+		int pos2,pos1=field.indexOf('(');
+		String name,function,val;
+		if (pos1!=-1) {
+			pos2=field.indexOf(')');
+			if (pos2!=-1) {
+				name=field.substring(pos1+1,pos2);
+				function=field.substring(0,pos1);
+				rtn=executeFunction(node,function,name);
+			}
+		}
+		// Old code
 		if (field.indexOf("short_")==0) {
-			String val=node.getStringValue(field.substring(6));
+			val=node.getStringValue(field.substring(6));
 			val=getShort(val,34);
-			return(val);
+			rtn=val;
 		}  else if (field.indexOf("html_")==0) {
-			String val=node.getStringValue(field.substring(5));
+			val=node.getStringValue(field.substring(5));
 			val=getHTML(val);
-			return(val);
+			rtn=val;
 		} else if (field.indexOf("wap_")==0) {
-			String val=node.getStringValue(field.substring(4));
+			val=node.getStringValue(field.substring(4));
 			val=getWAP(val);
-			return val;
+			rtn=val;
 		} 
-		return(null);
+		// end old
+		return(rtn);
 	}
 
+
+	private Object executeFunction(MMObjectNode node,String function,String field) {
+		Object rtn=null;
+
+//		System.out.println("Builder ("+tableName+") execute "+function+" on "+field);
+		if(function.equals("date")) {
+			int v=node.getIntValue(field);
+			rtn=makedate(v);
+		} else if (function.equals("time")) {
+			int v=node.getIntValue(field);
+			rtn=maketime(v);
+		} else if (function.equals("time_hhmm")) {
+			int v=node.getIntValue(field);
+			rtn=maketime_hhmm(v);
+		} else {
+			System.out.println("Builder ("+tableName+") unknown function '"+function+"'");
+		}
+		return(rtn);
+	}
 
 
 	// called main to prevent override by insrel;
@@ -1619,5 +1651,60 @@ public class MMObjectBuilder extends MMTable {
 		// return true means the call will continue
 		// return false means that we have handled all
 		return(true);
+	}
+
+	/**
+	 * Global functions for getValue
+	 */
+	protected String makedate(int val) {
+		String rtn="";
+		int y,m,d;
+
+		java.util.Date da=new java.util.Date(1000*(long)val);
+		Calendar cal=Calendar.getInstance();
+		cal.setTime(da);
+		y=cal.get(Calendar.YEAR);
+		m=cal.get(Calendar.MONTH)+1;
+		d=cal.get(Calendar.DAY_OF_MONTH);
+		if (d<10) rtn+="0"+d;
+		else rtn+=""+d;
+		rtn+="-";
+		if (m<10) rtn+="0"+m;
+		else rtn+=""+m;
+		rtn+="-";
+		rtn+=""+y;
+		return(rtn);
+	}
+
+	protected String maketime(int val) {
+		String rtn="";
+		int h,m,s;
+
+		h=((val%86400)/3600);
+		m=((val%3600)/60);
+		s=(val%60);
+		if (h<10) rtn="0"+h;
+		else rtn=""+h;
+		rtn+=":";
+		if (m<10) rtn+="0"+m;
+		else rtn+=""+m;
+		rtn+=":";
+		if (s<10) rtn+="0"+s;
+		else rtn+=""+s;
+		return(rtn);
+	}
+
+	protected String maketime_hhmm(int val) {
+		String rtn="";
+		int h,m,s;
+
+		h=((val%86400)/3600);
+		m=((val%3600)/60);
+		if (h<10) rtn="0"+h;
+		else rtn=""+h;
+		rtn+=":";
+		if (m<10) rtn+="0"+m;
+		else rtn+=""+m;
+		return(rtn);
 	}
 }
