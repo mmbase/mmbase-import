@@ -29,22 +29,46 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.5 2004-06-15 16:24:04 michiel Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.6 2004-06-15 17:33:35 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
 
 
-    private static final Pattern XMLHEADER = Pattern.compile("<\\?xml.*?\\sencoding=(?:\"([^\"]+?)\"|'([^']+?)')\\s*\\?>.*", Pattern.DOTALL);    
+    private static final Pattern XMLHEADER = Pattern.compile("<\\?xml.*?(?:\\sencoding=(?:\"([^\"]+?)\"|'([^']+?)'))?\\s*\\?>.*", Pattern.DOTALL);    
+    /**
+     * Takes a String, which is considered to be (the first) part of an XML, and returns the encoding.
+     * @returns The XML Encoding, or null if the String was not recognized as XML (not <?xml header found)
+     * @since MMBase-1.7.1
+     */
     public static final String getXMLEncoding(String xmlString) {
         Matcher m = XMLHEADER.matcher(xmlString);
         if (! m.matches()) {
-            return "UTF-8";
+            return null; // No <? xml header found, this file is probably not XML.
         }  else {
             String encoding = m.group(1);
             if (encoding == null) encoding = m.group(2);
+            if (encoding == null) encoding = "UTF-8"; // default encoding for XML.
             return encoding;
         }
+    }
+    /**
+     * Takes a ByteArrayInputStream, which is considered to be (the first) part of an XML, and returns the encoding.
+     * @returns The XML Encoding, or null if the String was not recognized as XML (not <?xml header found)
+     * @since MMBase-1.7.1
+     */
+    public static String getXMLEncoding(byte[] allBytes) {
+        byte[] firstBytes = allBytes;
+        if (allBytes.length > 100) {
+            firstBytes = new byte[100];
+            System.arraycopy(allBytes, 0, firstBytes, 0, 100);
+        }
+        try {
+            return  getXMLEncoding(new String(firstBytes, "US-ASCII"));
+        } catch (java.io.UnsupportedEncodingException uee) {
+            // cannot happen, US-ASCII is known
+        }
+        return "UTF-8";
     }
 
 
@@ -153,18 +177,11 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
     }
 
 
+
     protected byte[] determinXMLEncoding() {
         byte[] allBytes = bytes.toByteArray();
-        byte[] firstBytes = allBytes;
-        if (allBytes.length > 100) {
-            firstBytes = new byte[100];
-            System.arraycopy(allBytes, 0, firstBytes, 0, 100);
-        }
-        try {
-            characterEncoding = getXMLEncoding(new String(firstBytes, "US-ASCII"));
-        } catch (java.io.UnsupportedEncodingException uee) {
-            // cannot happen, US-ASCII is known
-        }
+        characterEncoding = getXMLEncoding(allBytes);
+        if (characterEncoding == null) characterEncoding = "UTF-8"; // missing <?xml header, but we _know_ it is XML.
         return allBytes;
     }
 
@@ -190,6 +207,13 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
             return "";
         }
     }
+
+    /*
+    public static void  main(String[] argv) {
+        log.info("Found encoding " + getXMLEncoding(argv[0]));
+    }
+    */
+
     
 }
 
@@ -215,5 +239,7 @@ class MyServletOutputStream extends ServletOutputStream {
     public void write(byte[] b, int off, int len) throws IOException {
         stream.write(b, off, len);
     }
+
+
 }
 
