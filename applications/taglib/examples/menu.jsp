@@ -27,5 +27,5 @@
   |
   <a href="tipsandtricks.jsp">Tips and Tricks (FAQ)</a>
   <br />
-  <a href="<mm:url file="/mmdocs/mmbase-taglib.html" />" >Taglib documentation</a>
+  <a href="<mm:url page="/mmdocs/mmbase-taglib.html" />" >Taglib documentation</a>
 </p>
