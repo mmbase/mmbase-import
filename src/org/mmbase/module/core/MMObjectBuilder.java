@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.219 2003-03-12 16:16:13 vpro Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.220 2003-03-12 20:12:28 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1971,7 +1971,7 @@ public class MMObjectBuilder extends MMTable {
                     // builder not known in typedef?
                     // skip this builder and process to next one..
                     // TODO: research: add incorrect node to node's cache?
-                    log.error("Could not find typdef node #"+otype);
+                    log.error("Could not find typedef node #"+otype);
                     continue;
                 }
                 MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
