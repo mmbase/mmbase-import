@@ -17,6 +17,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media.video;
 
 import java.util.*;
+import java.net.URLEncoder;
 
 import org.mmbase.util.media.MediaUtils;
 import org.mmbase.util.media.video.videoparts.*;
@@ -253,7 +254,9 @@ public class VideoUtils extends MediaUtils
                             debug2("getVideoUrl("+number+","+speed+","+channels+"): for videopart: found author("+author+").");
                             //url += "&author=\""+author+"\"";
                 			//Removed double quotes in author value since Real SMIL doesn't handle it correctly.
-                			url += "&author="+author;
+                			//url += "&author="+plusToProcent20(URLEncoder.encode(author)); //URLEncode value.
+							//Our realserver can't handle URLEncoded strings .
+                			url += "&author="+author; 
 
                         }
                     }
