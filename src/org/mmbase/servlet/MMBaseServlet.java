@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.servlet;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseContext;
 
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.18 2003-03-18 13:24:34 pierre Exp $
+ * @version $Id: MMBaseServlet.java,v 1.19 2003-03-18 16:44:25 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -123,7 +124,7 @@ public class MMBaseServlet extends  HttpServlet {
         // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
             initialize = (servletInstanceCount == 0);
-            servletInstanceCount+=1;
+            servletInstanceCount++;
         }
         if (initialize) {
             // used to determine the accurate way to access a servlet
@@ -158,7 +159,7 @@ public class MMBaseServlet extends  HttpServlet {
         }
         if (mmbase == null) {
             log.service("Creating MMBase module in " + getServletName());
-            mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");
+            mmbase = MMBase.getMMBase();
             if (mmbase == null) {
                 log.error("Could not find module with name 'MMBASEROOT'!");
             }
@@ -300,7 +301,6 @@ public class MMBaseServlet extends  HttpServlet {
     /**
      * Decrease the reference count of the servlet
      * @param req The HttpServletRequest.
-     * @scope private
      */
 
     protected void decRefCount(HttpServletRequest req) {
@@ -357,13 +357,16 @@ public class MMBaseServlet extends  HttpServlet {
         super.destroy();
          // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
-           servletInstanceCount -= 1;
+           servletInstanceCount--;
             if (servletInstanceCount == 0) {
                 log.info("Unloaded servlet mappings");
                 associatedServlets.clear();
                 servletMappings.clear();
-                log.info("No servlets left, MMBase can be shut down");
-                mmbase.shutdown();
+                log.info("No MMBase servlets left; modules can be shut down");
+                Module.shutdownModules();
+                Logging.shutdown();
+                mmbase = null;
+                log    = null;
             }
         }
    }

@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.85 2003-03-07 09:31:07 pierre Exp $
+ * @version $Id: MMBase.java,v 1.86 2003-03-18 16:43:08 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -435,14 +435,6 @@ public class MMBase extends ProcessorModule  {
      * @deprecated-now unused
      */
     public void unload() {
-    }
-
-    /**
-     * @deprecated-now unused
-     */
-    public void shutdown() {
-        log.service("Shutting down MMBase");
-        Logging.shutdown();
     }
 
     /**

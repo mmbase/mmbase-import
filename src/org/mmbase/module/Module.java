@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.42 2002-11-22 13:40:13 pierre Exp $
+ * @version $Id: Module.java,v 1.43 2003-03-18 16:41:58 michiel Exp $
  */
 public abstract class Module {
 
@@ -107,6 +107,17 @@ public abstract class Module {
      * This method is called by {@link #startModules()}. You should not call onload() directly.
      */
     public abstract void onload();
+
+    /**
+     * Shuts down the module. This method is called by shutdownModules.
+     *
+     * @since MMBase-1.6.2
+     */
+    protected void shutdown() {
+        // on default, nothing needs to be done.        
+    }
+
+
 
     /**
      * state, returns the state hashtable that is/can be used to debug. Should
@@ -222,6 +233,23 @@ public abstract class Module {
         }
         return mimetype;
     }
+
+    /**
+     * Calls shutdown of all registered modules.
+     *
+     * @since MMBase-1.6.2
+     */
+    public static synchronized final void shutdownModules() {
+        Iterator i = getModules();
+        while (i.hasNext()) {
+            Module m = (Module) i.next();
+            log.service("Shutting down " + m.getName());
+            m.shutdown();
+        }
+        modules = null;
+    }
+
+
 
     public static synchronized final void startModules() {
         // call the onload to get properties
