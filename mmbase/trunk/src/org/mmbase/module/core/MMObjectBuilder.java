@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.114 $ $Date: 2002-01-28 13:05:25 $
+ * @version $Revision: 1.115 $ $Date: 2002-02-14 12:32:33 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1827,6 +1827,21 @@ public class MMObjectBuilder extends MMTable {
                 val=node.getStringValue(field);
             }
             rtn=val;
+        } else if (function.equals("smartpath")) {
+            Vector v=getFunctionParameters(field);
+            try {
+                String documentRoot = (String)v.get(0);
+                String path = (String)v.get(1);
+                String version = (String)v.get(2);
+                if (version != null) {
+                    if (version.equals("")) {
+                        version = null;
+                    }
+                }
+                rtn = getSmartPath(documentRoot, path, "" + node.getNumber(), version);
+            } catch(Exception e) {
+                log.error("Evaluating smartpath for "+node.getNumber()+" went wrong");
+            }
         } else {
             log.warn("Builder ("+tableName+") unknown function '"+function+"'");
         }
