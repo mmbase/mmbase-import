@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.23 2002-03-22 10:05:36 pierre Exp $
+ * @version $Id: TransactionManager.java,v 1.24 2002-09-23 11:02:56 michiel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -314,13 +314,13 @@ public class TransactionManager implements TransactionManagerInterface {
                         }
                         if (!debug) {
                             if (node.parent.safeInsert(node,username)!=-1) {
-                                nodestate[i]=COMMITED;
+                                nodestate[i] = COMMITED;
                                 if (user instanceof UserContext) {
                                     mmbaseCop.getAuthorization().create((UserContext)user,node.getNumber());
                                 }
                             } else {
-                                nodestate[i]=FAILED;
-                                String message = "When this failed, it is possible that the creation of an insrel wend right, with leads to database inconsitent.. stop now..(transaction 2.0: [rollback?])";
+                                nodestate[i] = FAILED;
+                                String message = "When this failed, it is possible that the creation of an insrel went right, which leads to a database inconsistency..  stop now.. (transaction 2.0: [rollback?])";
                                 log.error(message);
                                 throw new RuntimeException(message);
                             }
