@@ -2022,7 +2022,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
   </tag>
   <tag>
-    <name>maylink</name>
+    <name>maychangecontext</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayChangeContextTag</tagclass>
     <info>
 	Check if context of node may be changed
