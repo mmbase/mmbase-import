@@ -21,7 +21,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.gui.html.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class MMFlash extends Module {
+
+	static Logger log =Logging.getLoggerInstance(MMFlash.class.getName()); 
 
 	private String classname = getClass().getName();
 	private boolean debug = false;
@@ -47,8 +52,31 @@ public class MMFlash extends Module {
 		mmb=(MMBase)getModule("MMBASEROOT");
 		scanp=(scanparser)getModule("SCANPARSER");
 		generatortemppath=getInitParameter("generatortemppath");
+		log.debug("generatortemppath:'"+generatortemppath+"'");
 		generatorpath=getInitParameter("generatorpath");
+		log.debug("generatorpath:'"+generatorpath+"'");		
 		generatorprogram=getInitParameter("generatorprogram");
+		log.debug("generatorprogram:'"+generatorprogram+"'");		
+
+		// check if we may create a file on location of generatorTempPath
+		File tempPath = new File(generatortemppath);
+		if(!tempPath.isDirectory()) {
+			log.error("Generator Temp Path was not a direcory('"+generatorpath+generatorprogram+"'), please edit mmflash.xml, or create directory");							
+		}
+		try {
+			File test = File.createTempFile("flash", "test", tempPath);
+			test.deleteOnExit();
+		} catch (Exception e) {
+			log.error("Could not create a temp file in directory:'"+generatortemppath+"' for flash, please edit mmflash.xml or change rights");					
+		}
+		
+		// check if there is a program on this location
+		try {
+			(Runtime.getRuntime()).exec(generatorpath+generatorprogram);
+		} catch (Exception e) {
+			log.error("Could not execute command:'"+generatorpath+generatorprogram+"' for flash, please edit mmflash.xml");					
+		}
+		log.debug("Module MMFlash started (flash-generator='"+generatorpath+generatorprogram+"' and can be executed and tmpdir is checked)");							
 	}
 
 	public void onload() {
@@ -65,7 +93,7 @@ public class MMFlash extends Module {
 
     	byte[] inp=readBytesFile(filename);
 		if (inp==null) {
-			System.out.println("No valid sxf file ("+filename+") !");
+			log.error( "No valid sxf file ("+filename+") !" );		
 			return(null);
 		}
 		String ibody=new String(inp);
@@ -81,7 +109,7 @@ public class MMFlash extends Module {
 				ibody=scanp.handle_line(sp.body,null,sp);
 			} catch(Exception e) {}
 		} else {
-			System.out.println("MMFlash-> can't reach scanparser");
+			log.error("MMFlash-> can't reach scanparser");
 		}
 
 
@@ -113,12 +141,12 @@ public class MMFlash extends Module {
 		} else if (caching!=null && caching.equals("disk")) {
 			byte[] bytes=(byte[])lru.get(url+query);
 			if (bytes!=null) {
-				System.out.println("WOW from disk+lru");
+				log.error("WOW from disk+lru");
 				return(bytes);
 			} else {
 				bytes=loadDiskCache(htmlroot+src,query);
 				if (bytes!=null) {
-					System.out.println("WOW from disk");
+					log.error("WOW from disk");
 					lru.put(url+query,bytes);
 					return(bytes);
 				}
@@ -303,10 +331,11 @@ public class MMFlash extends Module {
 			int len=scan.read(buffer,0,filesize);
 			scan.close();
 		} catch(FileNotFoundException e) {
-			//System.out.println("error getfile : "+filename);
+			log.error("error getfile, not found : "+filename);
 			return(null);
  		} catch(IOException e) {
-			return(null);
+			log.error("error getfile, could not read : "+filename);		
+			return null;
 		}
 		return(buffer);
     }
@@ -326,9 +355,10 @@ public class MMFlash extends Module {
 			int len=scan.read(buffer,0,filesize);
 			scan.close();
 		} catch(FileNotFoundException e) {
-			//System.out.println("error getfile : "+filename);
+			log.error("error getfile, not found : "+filename);			
 			return(null);
  		} catch(IOException e) {
+			log.error("error getfile, could not read : "+filename);		
 			return(null);
 		}
 		return(buffer);
@@ -337,10 +367,10 @@ public class MMFlash extends Module {
 
 	private void generateFlash(String scriptpath) {	
 		Process p=null;
-        	String s="",tmp="";
+        String s="",tmp="";
 		DataInputStream dip= null;
 		DataInputStream diperror= null;
-		String command;
+		String command="";
 		PrintStream out=null;	
 		RandomAccessFile  dos=null;	
 
@@ -349,10 +379,11 @@ public class MMFlash extends Module {
 			command=generatorpath+generatorprogram+" "+generatortemppath+"input.sws";
 			p = (Runtime.getRuntime()).exec(command);
 		} catch (Exception e) {
+			log.error("could not execute command:'"+command+"'");					
 			s+=e.toString();
 			out.print(s);
 		}
-
+		log.debug("Executed command: "+command+" succesfull, now gonna parse");									
 		dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
 		byte[] result=new byte[1024];
 
@@ -372,6 +403,7 @@ public class MMFlash extends Module {
 			}
 			dip.close();
         } catch (Exception e) {
+			log.error("could not parse output from '"+command+"'");					
 			e.printStackTrace();
         	try {
 				dip.close();
@@ -389,6 +421,7 @@ public class MMFlash extends Module {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
+			log.error("Could not write values to file:" +filename+ " with value" + value);		
 			e.printStackTrace();
 		}
 		return(true);
@@ -401,6 +434,7 @@ public class MMFlash extends Module {
 		} else {
 			filename=filename.substring(0,filename.length()-3)+"swf";
 		}
+		log.debug("filename="+filename);		
 		//System.out.println("filename="+filename);	
 		
 		File sfile = new File(filename);
@@ -410,7 +444,8 @@ public class MMFlash extends Module {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.error("Could not write to disk cache, file:"+filename+" query:" + query);		
+			log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
@@ -420,6 +455,7 @@ public class MMFlash extends Module {
 		Vector params=new Vector();
 		if (bul!=null) {
 			// rebuild the param
+			log.debug("rebuilding param");					
 			StringTokenizer tok = new StringTokenizer(imageline,"+\n\r");
 			while (tok.hasMoreTokens()) {
 				params.addElement(tok.nextToken());
@@ -440,7 +476,8 @@ public class MMFlash extends Module {
 			scan.flush();
 			scan.close();
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.error("Could not save to file:"+filename);							
+			log.error(Logging.stackTrace(e));
 		}
 		return(true);
 	}
