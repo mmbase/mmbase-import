@@ -1967,9 +1967,9 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     <attribute>
         <name>id</name>
-        <required>true</required>
+        <required>false</required>
         <rtexprvalue>false</rtexprvalue>
-		<refercontext>false</refercontext>
+        <refercontext>false</refercontext>
     </attribute>
     <attribute>
         <name>node</name>
