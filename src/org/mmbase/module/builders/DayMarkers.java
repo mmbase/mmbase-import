@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.18 2001-04-10 10:36:16 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.19 2001-04-25 14:21:35 daniel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -54,12 +54,14 @@ public class DayMarkers extends MMObjectBuilder {
 		try {
 			MultiConnection con = mmb.getConnection();
 			Statement stmt=con.createStatement();		
-			ResultSet rs=stmt.executeQuery("select number, daycount from " + mmb.baseName + "_" + tableName + " order by number");
+
+			ResultSet rs=stmt.executeQuery("select "+mmb.getDatabase().getAllowedField("number")+", daycount from " + mmb.baseName + "_" + tableName + " order by "+mmb.getDatabase().getAllowedField("number"));
 			if (rs.next()) {
 				smallestMark   = rs.getInt(1);
 				smallestDay    = rs.getInt(2);
 			} else {
 			    smallestDay = currentDay();
+			    createMarker();
 			    //smallestMark = 0;
 			}
 			stmt.close();
@@ -97,7 +99,7 @@ public class DayMarkers extends MMObjectBuilder {
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("select number from "+mmb.baseName+"_"+tableName+" where daycount="+day);
+			ResultSet rs=stmt.executeQuery("select "+mmb.getDatabase().getAllowedField("number")+" from "+mmb.baseName+"_"+tableName+" where daycount="+day);
 			if (rs.next()) {
 				mday=rs.getInt(1);
 			}
@@ -112,7 +114,7 @@ public class DayMarkers extends MMObjectBuilder {
 			try {
 				MultiConnection con=mmb.getConnection();
 				Statement stmt=con.createStatement();
-				ResultSet rs = stmt.executeQuery("select max(number) from "+mmb.baseName+"_object");
+				ResultSet rs = stmt.executeQuery("select max("+mmb.getDatabase().getAllowedField("number")+") from "+mmb.baseName+"_object");
 				if (rs.next()) {
 					max=rs.getInt(1);
 				}
