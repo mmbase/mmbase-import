@@ -427,6 +427,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
     
     public int doAfterBody() throws JspTagException {
+        logon = null;
         try {
             bodyContent.writeOut(bodyContent.getEnclosingWriter());            
             return SKIP_BODY;
