@@ -63,22 +63,12 @@
 		</list>
 
 
-    <list include="lib/addimages.xml" defaultdisplaymode="add" />
-
-		<list role="related" destination="images">
-			<command name="search" nodepath="images" fields="title" age="-1">
-        <prompt>Images</prompt>
-			</command>
-
-			<item>
-				<field name="title" ftype="image" />
-			</item>
-
+    <list extends="lib/addimages.xml">
 			<action type="create">
 				<relation destinationtype="images" role="related">					
 				</relation>
 			</action>
+    </list>
 
-		</list>
 	</form-schema>
 </wizard-schema>
