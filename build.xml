@@ -102,7 +102,7 @@ several MMBase-checkouts.
     <tstamp/>
     <mkdir dir="${build.dir}"/>
     <property name="name" value="mmbase"/>
-    <property name="version" value="${DSTAMP}"/>
+    <property name="builddate" value="${DSTAMP}"/>
   </target>
 
 
@@ -478,7 +478,7 @@ version=${version}
       <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
-    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${version}</echo>
+    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${builddate}</echo>
   </target>
 
   <!-- =================================================================== -->
@@ -558,7 +558,7 @@ Name: org/mmbase
 Vendor: MMBase Community
 URL: http://www.mmbase.org
 Comment: The MMBase Content Managment System
-Version: ${distro}.${version}
+Version: ${distro}.${builddate}
 Distribution: ${distro}
 Build-by: ${ant.version}
 Build-java-version: ${ant.java.version}
@@ -640,7 +640,7 @@ Name: org/mmbase/resources/dtds
 Vendor: MMBase Community
 URL: http://www.mmbase.org
 Comment: The MMBase Content Managment System
-Version: ${distro}.${version}
+Version: ${distro}.${builddate}
 Distribution: ${distro}
 Build-by: ${ant.version}
 Build-java-version: ${ant.java.version}
@@ -1368,7 +1368,7 @@ Name: org/mmbase
 Vendor: MMBase Community
 URL: http://www.mmbase.org
 Comment: The Remote MMBase Cloud Interfaces to connect to MMBase.
-Version: ${distro}.${version}
+Version: ${distro}.${builddate}
 Distribution: ${distro}
 Build-by: ${ant.version}
 Build-java-version: ${ant.java.version}
