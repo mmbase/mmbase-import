@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE database PUBLIC "-//MMBase/DTD database config 1.1//EN" "http://www.mmbase.org/dtd/database_1_1.dtd">
+<!DOCTYPE database PUBLIC "-//MMBase/DTD database config 1.2//EN" "http://www.mmbase.org/dtd/database_1_2.dtd">
 <database>
 
     <!-- <name>
@@ -13,6 +13,17 @@
     -->
     <mmbasedriver>org.mmbase.module.database.support.MMHsqldb2Node</mmbasedriver>
 
+    <!-- <sqlhandler>
+        Defines the SqlHandler that converts SearchQuery objects to sql statements.
+    -->
+    <sqlhandler>org.mmbase.storage.search.implementation.database.BasicSqlHandler</sqlhandler>
+
+    <!-- <chainedsqlhandler>
+        Defines the chained SqlHandler that extend the sqlhandler's functionality.
+        This enables database extensions to be used.
+    -->
+    <chainedsqlhandler></chainedsqlhandler>
+  
     <!-- <scheme>
         Defines the strings for the different scheme database
         statements.
