@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.98 2003-07-09 17:37:18 michiel Exp $
+ * @version $Id: Wizard.java,v 1.99 2003-07-09 18:12:42 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -546,27 +546,33 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                if (formEncoding == null) {
                   log.debug("request did not mention coding");
 
-                  // The form encoding was not known, so probable the local was used or ISO-8859-1
-                  // lets make sure it is right:
+                  // The form encoding was not known, so probably  ISO-8859-1 was supposed (as required by HTTP)
+                  // lets make sure it is right though, because wizard pages posted UTF-8:
                   try {
                      if (cloud != null) {
-                        log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
-                        result = new String(req.getParameter(name).getBytes(),
-                                            cloud.getCloudContext() .getDefaultCharacterEncoding());
+                         if (log.isDebugEnabled()) {
+                             log.debug("Cloud found, supposing parameter in " + cloud.getCloudContext().getDefaultCharacterEncoding());
+                         }
+                         result = new String(req.getParameter(name).getBytes("ISO-8859-1"),
+                                             cloud.getCloudContext() .getDefaultCharacterEncoding());
                      } else { // no cloud? I don't know how to get default char encoding then.
-                        // suppose it utf-8
-                        log.debug("No cloud found, supposing parameter in UTF-8" + req.getParameter(name));
-                        result = new String(req.getParameter(name).getBytes(), "UTF-8");
+                         // suppose it utf-8
+                         if (log.isDebugEnabled()) {
+                             log.debug("No cloud found, supposing parameter in UTF-8");
+                         }
+                         result = new String(req.getParameter(name).getBytes("ISO-8859-1"), "UTF-8");
                      }
+                     if (log.isDebugEnabled()) {
+                         log.debug("Found in post '" + req.getParameter(name) +  "' -> '" + result + "'");
+                     }
+
+                     
                   } catch (java.io.UnsupportedEncodingException e) {
                      log.warn(e.toString());
                      result = req.getParameter(name);
                   }
                } else { // the request encoding was known, so, I think we can suppose that the Parameter value was interpreted correctly.
                   result = req.getParameter(name);
-               }
-               if (log.isDebugEnabled()) {
-                   log.debug("Found in post '" + result + "'");
                }
                storeValue(ids[0], ids[1], result);
             }
