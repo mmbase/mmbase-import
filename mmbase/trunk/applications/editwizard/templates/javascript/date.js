@@ -3,7 +3,7 @@
  * Routines for dates in the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: date.js,v 1.2 2003-12-23 21:46:27 nico Exp $
+ * @version  $Id: date.js,v 1.3 2004-05-02 15:02:01 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -39,51 +39,4 @@ function DayOfWeek(day,month,year) {
     var m = month + 12*a - 2;
     var d = (day + y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) + Math.floor((31*m)/12)) % 7;
     return d+1;
-}
-
-function getDate(elementvalue) {
-    var ms = 1000 * elementvalue;
-
-    var d = new Date();
-    d.setTime(ms);
-    var year = d.getFullYear();
-
-    // Here we'll  calculate the start and end of Daylight Saving Time
-    // We need that in order to display correct date and times in IE on Macintosh
-    var DSTstart = new Date(year,4-1,NthDay(1,1,4,year),2,0,0);
-    var DSTend   = new Date(year,10-1,NthDay(-1,1,10,year),2,0,0);
-    var DSTstartMS = Date.parse(DSTstart);
-    var DSTendMS = Date.parse(DSTend);
-
-    // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes 
-    if ((navigator.appVersion.indexOf('MSIE')!=-1) 
-        && (navigator.appVersion.indexOf('Mac')!=-1)
-        && (ms > DSTstartMS) && (ms < DSTendMS)) {
-        
-        d.setTime((1000 * elementvalue) + (1000*60*60));
-    }
-    return d;
-}
-
-function getDateSeconds(ms) {
-    var d = new Date();
-    d.setTime(ms);
-    var year = d.getFullYear();
-
-    // Here we'll  calculate the start and end of Daylight Saving Time
-    // We need that in order to display correct date and times in IE on Macintosh
-    var DSTstart = new Date(year,4-1,NthDay(1,1,4,year),2,0,0);
-    var DSTend   = new Date(year,10-1,NthDay(-1,1,10,year),2,0,0);
-    var DSTstartMS = Date.parse(DSTstart);
-    var DSTendMS = Date.parse(DSTend);
-
-    // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes 
-    if ((navigator.appVersion.indexOf('MSIE') != -1)
-         && (navigator.appVersion.indexOf('Mac') != -1)
-         && (ms > DSTstartMS) && (ms < DSTendMS)) {
-
-        return Math.round(ms/1000-(60*60));
-    } else {
-        return Math.round(ms/1000); // - (60*d.getTimezoneOffset()));
-    }
 }

@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.49 2004-03-10 16:42:00 michiel Exp $
+ * @version $Id: Config.java,v 1.49.2.1 2004-05-02 15:03:14 nico Exp $
  */
 
 public class Config {
@@ -47,6 +47,7 @@ public class Config {
     public String backPage;
     public String templates;
     public String language;
+    public String timezone;
 
 
     /**
@@ -362,7 +363,7 @@ public class Config {
             searchDir   = configurator.getParam("searchdir",  searchDir);
             directions  = configurator.getParam("directions", directions);
             orderBy     = configurator.getParam("orderby",    orderBy);
-            distinct    = configurator.getParam("distinct",   new Boolean(false)).booleanValue();
+            distinct    = configurator.getParam("distinct",   false);
 
             // only perform the following is there was no prior parsing
             if (!parsed) {
@@ -527,6 +528,11 @@ public class Config {
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
             }
+            
+            if (config.timezone == null) {
+                config.timezone = getParam("timezone", "");
+            }
+
             /*
               // contained in config.attributes now
             if (config.context == null) {
@@ -732,6 +738,7 @@ public class Config {
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
             wizard.wiz.setTemplatesDir(config.templates);
+            wizard.wiz.setTimezone(config.timezone);
             return wizard;
         }
 

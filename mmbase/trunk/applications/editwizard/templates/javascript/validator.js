@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.31 2004-02-04 15:28:07 pierre Exp $
+ * @version  $Id: validator.js,v 1.32 2004-05-02 15:02:02 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -366,52 +366,49 @@ function validateDatetime(el, form, v) {
     }
 
     if (errormsg.length == 0) {
-            var date = new Date();
-            date.setFullYear(year);
-            date.setMonth(month, day);
-            if (ftype == "duration") {
-                date.setUTCHours(hours, minutes, seconds, 0);
-            } else {
-                date.setHours(hours, minutes, seconds, 0);
+        var date = new Date();
+        date.setFullYear(year);
+        date.setMonth(month, day);
+        if (ftype == "duration") {
+            date.setUTCHours(hours, minutes, seconds, 0);
+        } else {
+            date.setHours(hours, minutes, seconds, 0);
+        }
+
+        var ms = date.getTime();
+
+        /* Date is lenient which means that it accepts a wider range of values than it produces.
+         * January 32 = February 1
+         * This check should always fail
+         */
+        if (date.getDate() != day) {
+            errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
+        } else {
+        	  // Validation on min and max values in milliseconds from the epoch (1 january 1970) could
+        	  // lead to invalid fields on the client when they are valid on the server or the other way around.
+        	  // The server could be in a different timezone and have a different milliseconds from the epoch with
+        	  // the same day, month, year values. For example a dutch client will have a difference of 3600000 
+        	  // or 7200000 from a UTC server.
+            minvalue = el.getAttribute("dtmin");
+            // checks min/max. note: should use different way to determine outputformat (month)
+            if ((ftype != "time") && (ftype != "duration") && (!isEmpty(minvalue)) && (ms < 1000*minvalue)) {
+                var d = new Date();
+                d.setTime(1000*minvalue);
+                errormsg += getToolTipValue(form,"message_datemin",
+                       "date must be at least {0}",
+                       d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
             }
-
-            var ms = date.getTime();
-
-            /* Date is lenient which means that it accepts a wider range of values than it produces.
-             * January 32 = February 1
-             * This check should always fail
-             */
-            if (date.getDate() != day) {
-                errormsg += getToolTipValue(form,"message_dateformat", "date/time format is invalid");
-            } else {
-                minvalue = el.getAttribute("dtmin");
-                // checks min/max. note: should use different way to determine outputformat (month)
-                if ((ftype != "time") && (ftype != "duration") && (!isEmpty(minvalue)) && (ms < 1000*minvalue)) {
+            else {
+                maxvalue = el.getAttribute("dtmax");
+                if ((ftype != "time") && (ftype != "duration") && (!isEmpty(maxvalue)) && (ms > 1000*maxvalue)) {
                     var d = new Date();
-                    d.setTime(1000*minvalue);
-                    errormsg += getToolTipValue(form,"message_datemin",
-                           "date must be at least {0}",
+                    d.setTime(1000*maxvalue);
+                    errormsg += getToolTipValue(form,"message_datemax",
+                           "date must be at most {0}",
                            d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
-                }
-                else {
-                    maxvalue = el.getAttribute("dtmax");
-                    if ((ftype != "time") && (ftype != "duration") && (!isEmpty(maxvalue)) && (ms > 1000*maxvalue)) {
-                        var d = new Date();
-                        d.setTime(1000*maxvalue);
-                        errormsg += getToolTipValue(form,"message_datemax",
-                               "date must be at most {0}",
-                               d.getDate() + " " + (d.getMonth()+1) + " " + d.getUTCFullYear());
-                    }
                 }
             }
         }
-
-    /** VERY UGLY TO USE THE VALIDATOR TO CHANGE AN ELEMENT VALUE, BUT I HAVE NO IDEA HOW TO SOLVE IT.
-     * THIS IS THE ONLY PLACE IN THE VALIDATOR WHERE AN ELEMENT VALUE IS CHANGED.
-     */
-    if (errormsg.length == 0) {
-        form.elements[id].value = getDateSeconds(ms);
-        //alert(form.elements[id].value + " = " + day + " " + month + " " + year + " " + hours + ":" + minutes);
     }
     return errormsg;
 }
