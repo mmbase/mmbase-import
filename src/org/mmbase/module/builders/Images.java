@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.60 2002-09-09 10:21:43 vpro Exp $
+ * @version $Id: Images.java,v 1.61 2002-09-30 13:00:51 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -64,10 +64,10 @@ public class Images extends AbstractImages {
 
         String tmp;
         int itmp;
-        tmp=getInitParameter("ImageConvertClass");
-        if (tmp!=null) ImageConvertClass=tmp;
+        tmp = getInitParameter("ImageConvertClass");
+        if (tmp != null) ImageConvertClass=tmp;
         getImageConvertParams(getInitParameters());
-        tmp=getInitParameter("MaxConcurrentRequests");
+        tmp = getInitParameter("MaxConcurrentRequests");
         if (tmp!=null) {
             try {
                 itmp=Integer.parseInt(tmp);
@@ -102,11 +102,14 @@ public class Images extends AbstractImages {
      *
      * @since MMBase-1.6
      */
-    protected Object executeFunction(MMObjectNode node, String function, String field) {
+    public Object executeFunction(MMObjectNode node, String function, List args) {
+        log.debug("executeFunction of images builder");
         if ("cache".equals(function)) {
-            return new Integer(cacheImage(node, field));
+            if (args == null || args.size() != 1) throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
+
+            return new Integer(cacheImage(node, (String) args.get(0)));
         } else {
-            return super.executeFunction(node, function, field);
+            return super.executeFunction(node, function, args);
         }
     }
 
@@ -127,7 +130,10 @@ public class Images extends AbstractImages {
         }
         // NOTE that this has to be configurable instead of static like this
         String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
-        String imageThumb = servlet + node.getIntValue("cache(s(100x60))");
+        
+        List args = new Vector();
+        args.add("s(100x60)");
+        String imageThumb = servlet + executeFunction(node, "cache", args);
         String image      = servlet + node.getNumber();
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
