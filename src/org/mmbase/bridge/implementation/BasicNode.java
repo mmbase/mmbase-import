@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.130 2004-09-17 09:25:45 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.131 2004-09-17 09:33:49 pierre Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -328,18 +328,21 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     public void setValue(String fieldName, Object value) {
         int type = nodeManager.getField(fieldName).getType();
-        switch(type) {
-        case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
-        case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
-        case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
-        case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
-        case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
-        case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
-        case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
-        case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
-        default:                 setValueWithoutProcess(fieldName, value);
+        if (value == null) {
+            setValueWithoutProcess(fieldName, value);
+        } else {
+            switch(type) {
+                case Field.TYPE_STRING:  setStringValue(fieldName, (String) value); break;
+                case Field.TYPE_INTEGER: setIntValue(fieldName, Casting.toInt(value)); break;
+                case Field.TYPE_BYTE:    setByteValue(fieldName, Casting.toByte(value)); break;
+                case Field.TYPE_FLOAT:   setFloatValue(fieldName, Casting.toFloat(value)); break;
+                case Field.TYPE_DOUBLE:  setDoubleValue(fieldName, Casting.toDouble(value)); break;
+                case Field.TYPE_LONG:    setLongValue(fieldName, Casting.toLong(value)); break;
+                case Field.TYPE_XML:     setXMLValue(fieldName, Casting.toXML(value, null, null)); break;
+                case Field.TYPE_NODE:    setNodeValue(fieldName, Casting.toNode(value, cloud)); break;
+                default:                 setValueWithoutProcess(fieldName, value);
+            }
         }
-
     }
 
     /**
@@ -461,17 +464,17 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
             switch(type) {
-            case Field.TYPE_STRING:  return getStringValue(fieldName);
-            case Field.TYPE_BYTE:    return getByteValue(fieldName);
-            case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
-            case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
-            case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
-            case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
-            case Field.TYPE_XML:     return getXMLValue(fieldName);
-            case Field.TYPE_NODE:    return getNodeValue(fieldName);
-            default:
-                log.error("Unknown fieldtype '" + type + "'");
-                return value;
+                case Field.TYPE_STRING:  return getStringValue(fieldName);
+                case Field.TYPE_BYTE:    return getByteValue(fieldName);
+                case Field.TYPE_INTEGER: return new Integer(getIntValue(fieldName));
+                case Field.TYPE_FLOAT:   return new Float(getFloatValue(fieldName));
+                case Field.TYPE_DOUBLE:  return new Double(getDoubleValue(fieldName));
+                case Field.TYPE_LONG:    return new Long(getLongValue(fieldName));
+                case Field.TYPE_XML:     return getXMLValue(fieldName);
+                case Field.TYPE_NODE:    return getNodeValue(fieldName);
+                default:
+                    log.error("Unknown fieldtype '" + type + "'");
+                    return value;
             }
         } else {
             //log.warn("Requesting value of unknown field '" + fieldName + "')");
