@@ -16,13 +16,13 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: CronEntry.java,v 1.2 2004-05-04 09:32:49 keesj Exp $
+ * @version $Id: CronEntry.java,v 1.3 2004-05-04 13:23:48 keesj Exp $
  */
 
 public class CronEntry {
 
     private static final Logger log = Logging.getLoggerInstance(CronEntry.class);
-    
+
     private Runnable cronJob;
 
     private Thread thread;
@@ -45,13 +45,14 @@ public class CronEntry {
     /**
      * @throws ClassCastException if className does not refer to a Runnable.
      */
-    public CronEntry(String id, String cronTime, String name, String className) throws Exception {
+    public CronEntry(String id, String cronTime, String name, String className, String configuration) throws Exception {
         this.id = id;
         this.name = name;
         if (this.name == null)
             this.name = "";
         this.className = className;
         this.cronTime = cronTime;
+        this.configuration = configuration;
         cronJob = (Runnable)Class.forName(className).newInstance();
 
         second = new CronEntryField();
@@ -68,7 +69,7 @@ public class CronEntry {
             ((CronJob)cronJob).init(this);
         }
     }
-    
+
     public void stop() {
         if (cronJob instanceof CronJob) {
             ((CronJob)cronJob).stop();
@@ -97,7 +98,7 @@ public class CronEntry {
         if (st.countTokens() > 5) {
             throw new RuntimeException("Too many (" + st.countTokens() + "> 6)  tokens in " + cronTime);
         }
- 
+
         minute.setTimeVal(st.nextToken());
         hour.setTimeVal(st.nextToken());
         dayOfMonth.setTimeVal(st.nextToken());
