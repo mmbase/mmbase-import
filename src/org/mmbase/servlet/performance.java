@@ -6,10 +6,12 @@
  */
 package org.mmbase.servlet;
 
-import java.io.*;
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.mmbase.util.logging.*;
 
@@ -19,25 +21,21 @@ import org.mmbase.util.logging.*;
  *
  * @rename     Performance
  * @author     vpro
- * @version    $Id: performance.java,v 1.8 2002-06-28 07:08:25 pierre Exp $
+ * @version    $Id: performance.java,v 1.9 2002-06-28 07:49:24 pierre Exp $
  */
 public class performance extends JamesServlet {
-    static Logger log;
+    // logging
+    private static Logger log;
 
     /**
      * @javadoc
      */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
+    public void init() throws ServletException {
+        super.init();
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(performance.class.getName());
-        log.info("Init of servlet " + config.getServletName() + ".");
+        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
     }
-
-    /**
-     * @javadoc
-     */
-    public void reload() { }
 
     /**
      * Called by the server when a request is done.
