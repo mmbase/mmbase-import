@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.100 2003-09-01 12:39:07 pierre Exp $
+ * @version $Id: MMBase.java,v 1.101 2004-01-07 15:06:07 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -243,11 +243,6 @@ public class MMBase extends ProcessorModule {
      * @see ClusterBuilder
      */
     private ClusterBuilder clusterBuilder;
-
-    /**
-     * Reference to the sendmail module. Accessible using getSendMail();
-     */
-    private SendMailInterface sendmail;
 
     /**
      * Currently used locale. Access using getLanguage()
@@ -851,13 +846,12 @@ public class MMBase extends ProcessorModule {
     /**
      * Retrieves a reference to the sendmail module.
      * @deprecated use getModule("sendmail") instead
+     *      SendMail will become a separate application.
+     *      In MMBase 1.8. this method will be removed
      * @return a <code>SendMailInterface</code> object if the module was loaded, <code>null</code> otherwise.
      */
     public SendMailInterface getSendMail() {
-        // retrieve module if needed
-        if (sendmail == null)
-            sendmail = (SendMailInterface)getModule("sendmail");
-        return sendmail;
+        return  (SendMailInterface)getModule("sendmail");
     }
 
     /**
