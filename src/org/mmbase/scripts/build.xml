@@ -391,6 +391,8 @@ Change directory to ${build.dir}/orion and run:
                classname="javax.media.jai.JAI"/>
     <available property="log4j.in.classpath"
                classname="org.apache.log4j.ConsoleAppender"/>
+    <available property="nanoxml.in.classpath"
+               classname="nanoxml.XMLElement"/>
     <!-- ConsoleAppender ensures that you have a version > 1.04 -->
     <available property="junit.in.classpath"
                classname="junit.runner.BaseTestRunner"/>
@@ -458,6 +460,15 @@ Change directory to ${build.dir}/orion and run:
     <echo message=""/>
   </target>
 
+  <target name="check.optional.nanoxml" depends="init.compile.cust"
+          unless="nanoxml.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package nanoxml."/>
+    <echo message="You can't use the remote MMCI without this package,"/> 
+    <echo message="MMBase will compile and run without this package."/>
+    <echo message=""/>
+  </target>
+
   <target name="check.optional.log4j" depends="init.compile.cust"
           unless="log4j.in.classpath">
     <echo message=""/>
@@ -506,7 +517,7 @@ Change directory to ${build.dir}/orion and run:
 
   <target name="check.package.all"
           depends="check.needed.xerces,check.needed.servlet,
-                   check.optional.xalan,check.optional.jai,check.optional.log4j,
+                   check.optional.xalan,check.optional.nanoxml,check.optional.jai,check.optional.log4j,
                    check.optional.junit,check.needed.for.tomcat,
                    check.optional.postgresql"/>
 
@@ -531,6 +542,9 @@ Change directory to ${build.dir}/orion and run:
            deprecation="${deprecation}">
       <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
       <exclude name="org/mmbase/module/tools/MMAppTool/startAppTool.java"/>
+      <exclude name="**/RemoteMMCI.java" unless="nanoxml.in.classpath"/>
+      <exclude name="org/mmbase/bridge/remote/**" unless="nanoxml.in.classpath"/>
+      <exclude name="org/mmbase/bridge/RemoteContext.java" unless="nanoxml.in.classpath"/>
       <exclude name="**/XSLTransformer.java" unless="xalan.in.classpath"/>
       <exclude name="**/jumpersInterceptor.java" unless="tomcat.in.classpath"/>
       <exclude name="**/ConvertJAI.java" unless="jai.in.classpath"/>
