@@ -227,15 +227,16 @@
 <input type="hidden" name="action" value="addbundletarget" />
 <tr>    
         <td width="200">
-	<input style="width: 98%" name="newtargetname" value="[auto]">	
+	<input style="width: 80%" name="newtargetname" value="[auto]"><img src="<mm:write referid="image_help" />"  valign="middle" title="target name, leave on [auto] unless you have more of the same type in this project" />
         </td>
-	<td width="100">
+	<td width="140">
 	<select name="newtargettype">
 		<option>bundle/basic
 	</select>
+<img src="<mm:write referid="image_help" />"  valign="middle" title="type of bundle target you want to add to this project" />
 	</td>
         <td>    
-	<input style="width: 99%" name="newtargetpath" value="[auto]">	
+	<input style="width: 85%" name="newtargetpath" value="[auto]"><img src="<mm:write referid="image_help" />"  valign="middle" title="path of the packaging.xml file of this target when only one of each type leave on [auto],example /usr/me/myproject/packaging/basicbundle.xml" />
 	</td>
 </tr>
 <tr>    
@@ -266,9 +267,10 @@
 <input type="hidden" name="action" value="addpackagetarget" />
 <tr>    
         <td width="200">
-	<input style="width: 98%" name="newtargetname" value="[auto]">	
+	<input style="width: 80%" name="newtargetname" value="[auto]">	
+<img src="<mm:write referid="image_help" />"  valign="middle" title="target name, leave on [auto] unless you have more of the same type in this project" />
         </td>
-	<td width="100">
+	<td width="140">
 	<select name="newtargettype">
 		<option>display/html
 		<option>cloud/model
@@ -277,9 +279,10 @@
 		<option>config/basic
 		<option>function/set
 	</select>
+	<img src="<mm:write referid="image_help" />"  valign="middle" title="type of bundle target you want to add to this project" />
 	</td>
         <td>    
-	<input style="width: 99%" name="newtargetpath" value="[auto]">	
+	<input style="width: 86%" name="newtargetpath" value="[auto]"><img src="<mm:write referid="image_help" />"  valign="middle" title="path of the packaging.xml file of this target when only one of each type leave on [auto],example /usr/me/myproject/packaging/html_package.xml" />
 	</td>
 </tr>
 <tr>    
