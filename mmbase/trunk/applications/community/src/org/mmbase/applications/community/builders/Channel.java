@@ -187,6 +187,9 @@ public class Channel extends MMObjectBuilder {
         // Try to open the channel, when the channel is part of a chatbox put
         // the channel with his highest sequence in the openChannels HashTable.
         Integer channelnr=new Integer(channel.getNumber());
+        if (log.isDebugEnabled())
+            log.debug("open(): Opening channel "+channelnr+" ("+channel.getValue("name")+")");
+
         MMObjectNode community = communityParent(channel);
         if (community==null) {
             log.error("open(): Can't open channel " + channelnr+" : no relation with a community");
@@ -205,7 +208,7 @@ public class Channel extends MMObjectBuilder {
                     openChannels.put(channelnr,new Integer(highestSequence));
                  }
             }
-            log.debug("open(): channel "+channelnr+" ("+channel.getValue("name")+") opened");
+            log.debug("open(): channel "+channelnr+" opened");
             return true;
         }
         log.error("open(): Can't open channel "+channelnr);
@@ -622,14 +625,17 @@ public class Channel extends MMObjectBuilder {
      *  channel is not associated with a community.
      */
     public MMObjectNode communityParent(MMObjectNode channel) {
-        Enumeration relatedCommunity =
-                mmb.getInsRel().getRelated(channel.getNumber(),communityBuilder.oType);
+        // During call to Channel.init(), communityBuilder.oType is still 0
+        // So need to check it before using it
+        int oType = communityBuilder.oType;
+        if (oType==0) oType = mmb.TypeDef.getIntValue("community");
+        
+        Enumeration relatedCommunity = mmb.getInsRel().getRelated(channel.getNumber(), oType);
         if (relatedCommunity.hasMoreElements())
             return (MMObjectNode)relatedCommunity.nextElement();
-        else
-            return null;
+        return null;
     }
-
+               
     /**
      * Provides additional functionality when obtaining field values.
      * This method is called whenever a Node of the builder's type fails at
