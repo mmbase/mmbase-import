@@ -70,5 +70,6 @@
           <field name="second" replacement="m_second" />
           <field name="local" replacement="m_local" />
           <field name="group" replacement="m_group" />
+          <field name="max" replacement="m_max" />
     </disallowed>
 </database>
