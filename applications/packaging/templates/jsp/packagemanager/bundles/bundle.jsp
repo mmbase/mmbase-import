@@ -200,8 +200,19 @@ function refresh()
 			</td>
 		  </mm:compare>
 
-
-
+                  <mm:compare value="upgrade available">  
+ 	    		<tr><th>Upgrade</th>
+			<td>
+			<A HREF="<mm:url page="index.jsp">
+					<mm:param name="main" value="$main" />
+					<mm:param name="sub" value="bundle" />
+					<mm:param name="id" value="$id" />
+					<mm:param name="mode" value="askinstall" />
+					<mm:param name="provider"><mm:field name="provider" /></mm:param>
+					<mm:param name="version"><mm:field name="version" /></mm:param>
+				</mm:url>"><IMG SRC="<mm:write referid="image_arrowright" />" BORDER="0" ALIGN="left"></A>
+			</td>
+		  </mm:compare>
                   <mm:compare value="installed">  
  	    		<tr><th>Uninstall</th>
 			<td>
