@@ -60,7 +60,7 @@
 			Password
 		  </th>
 		  <td>
-			<input size="10" name="password" value="<mm:field name="password" />">
+			<input size="10" type="password" name="password" value="<mm:field name="password" />">
 		  </td>
 		  </tr>
 
