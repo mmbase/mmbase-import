@@ -1546,6 +1546,7 @@ Version: MMBase build ${version}
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
@@ -1636,10 +1637,11 @@ Version: MMBase build ${version}
 
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
-					fork="yes"
+          fork="yes"
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
@@ -1651,10 +1653,11 @@ Version: MMBase build ${version}
 
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
-					fork="yes"
+          fork="yes"
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
