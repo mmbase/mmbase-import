@@ -55,6 +55,8 @@ public class JCronDaemon implements Runnable {
         if (containing != null) {
             if (removedCronEntries.contains(containing)) {
                 addedCronEntries.add(entry);
+                // do copy the 'crontime' allready.
+                containing.setCronTime(entry.getCronTime());
                 return;
             } else {
                 throw new RuntimeException("There is an entry  " + entry + " already");
@@ -157,7 +159,7 @@ public class JCronDaemon implements Runnable {
                 while (z.hasNext()) {
                     JCronEntry entry = (JCronEntry) z.next();
                     if (entry.isAlive()) {
-                        log.service("Job " + entry + " still running, so could not yet be removed");
+                        log.debug("Job " + entry + " still running, so could not yet be removed");                        
                     } else {
                         removeEntry(entry);
                         z.remove();
