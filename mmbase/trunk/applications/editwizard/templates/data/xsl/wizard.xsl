@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.82 2002-11-19 21:09:41 michiel Exp $
+  @version $Id: wizard.xsl,v 1.83 2002-12-18 19:48:06 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -169,6 +169,17 @@
     <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="/*/form[@id=current()/@form-schema]/title" /></xsl:call-template>
   </xsl:template>
 
+      
+  <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
+  <xsl:template name="mediaitembuttons">
+    <xsl:if test="@displaytype='audio'">
+        <a href="{$ew_context}/rastreams.db?{@destination}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+    </xsl:if>
+    <xsl:if test="@displaytype='video'">
+        <a href="{$ew_context}/rmstreams.db?{@destination}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+    </xsl:if>
+  </xsl:template>
+
 
   <!-- ================================================================================
        The following is functionality. You probably don't want to override it.
@@ -300,7 +311,7 @@
        Useful in fieldsets. 
        -->
   <xsl:template match="prefix|postfix">
-     <xsl:value-of select="." />
+    <xsl:value-of select="." />
   </xsl:template>
 
   <xsl:template name="prompt">
@@ -627,14 +638,12 @@
     </xsl:for-each>
     </xsl:template><!-- item -->
 
+    
+
+
   <!-- produces a bunch of links -->
   <xsl:template name="itembuttons">
-    <xsl:if test="@displaytype='audio'">
-        <a href="{$ew_context}/rastreams.db?{@destination}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
-    </xsl:if>
-    <xsl:if test="@displaytype='video'">
-        <a href="{$ew_context}/rmstreams.db?{@destination}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
-    </xsl:if>
+    <xsl:call-template name="mediaitembuttons" />
     <xsl:if test="command[@name='delete-item']">
         <span class="imagebutton" title="{$tooltip_remove}" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
           <xsl:call-template name="prompt_remove" />

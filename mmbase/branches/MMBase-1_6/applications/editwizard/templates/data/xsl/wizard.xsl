@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.80.2.2 2002-12-04 20:37:52 michiel Exp $
+  @version $Id: wizard.xsl,v 1.80.2.3 2002-12-18 19:46:14 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -167,6 +167,17 @@
       <xsl:call-template name="prompt_step" />
     </a>
     <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="/*/form[@id=current()/@form-schema]/title" /></xsl:call-template>
+  </xsl:template>
+
+      
+  <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
+  <xsl:template name="mediaitembuttons">
+    <xsl:if test="@displaytype='audio'">
+        <a href="{$ew_context}/rastreams.db?{@destination}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+    </xsl:if>
+    <xsl:if test="@displaytype='video'">
+        <a href="{$ew_context}/rmstreams.db?{@destination}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+    </xsl:if>
   </xsl:template>
 
 
@@ -627,14 +638,12 @@
     </xsl:for-each>
     </xsl:template><!-- item -->
 
+    
+
+
   <!-- produces a bunch of links -->
   <xsl:template name="itembuttons">
-    <xsl:if test="@displaytype='audio'">
-        <a href="{$ew_context}/rastreams.db?{@destination}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
-    </xsl:if>
-    <xsl:if test="@displaytype='video'">
-        <a href="{$ew_context}/rmstreams.db?{@destination}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
-    </xsl:if>
+    <xsl:call-template name="mediaitembuttons" />
     <xsl:if test="command[@name='delete-item']">
         <span class="imagebutton" title="{$tooltip_remove}" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
           <xsl:call-template name="prompt_remove" />
