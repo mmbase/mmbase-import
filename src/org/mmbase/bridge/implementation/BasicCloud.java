@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.56 2002-05-03 15:09:26 eduard Exp $
+ * @version $Id: BasicCloud.java,v 1.57 2002-05-07 15:32:53 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -212,21 +212,21 @@ public class BasicCloud implements Cloud, Cloneable {
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
         BasicNodeManager nodeManager=(BasicNodeManager)nodeManagerCache.get(nodeManagerName);
         MMObjectBuilder bul = cloudContext.mmb.getMMObject(nodeManagerName);
-        // always look if builder exists, since otherwise 
+        // always look if builder exists, since otherwise
         if (bul == null) {
             String message;
             message = "Node manager with name " + nodeManagerName + " does not exist.";
             log.error(message);
             throw new BridgeException(message);
         }
-        if (nodeManager==null) {            
+        if (nodeManager==null) {
             // not found in cache
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }
         else if (nodeManager.getMMObjectBuilder() != bul) {
             // cache differs
-            nodeManagerCache.remove(nodeManagerName);        
+            nodeManagerCache.remove(nodeManagerName);
             nodeManager=new BasicNodeManager(bul, this);
             nodeManagerCache.put(nodeManagerName,nodeManager);
         }
@@ -605,6 +605,11 @@ public class BasicCloud implements Cloud, Cloneable {
           pars+=" WHERE='"+constraints.replace(' ','_')+"'";
         }
 
+        if (distinct) {
+            sdistinct="YES";
+            pars+=" DISTINCT='YES'";
+        }
+
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
         if (searchDir!=null) {
             searchDir = searchDir.toUpperCase();
@@ -621,7 +626,6 @@ public class BasicCloud implements Cloud, Cloneable {
             }
         }
 
-        if (distinct) sdistinct="YES";
         Vector snodes = tagger.Values("NODES");
         Vector sfields = tagger.Values("FIELDS");
         Vector tables = tagger.Values("TYPES");
