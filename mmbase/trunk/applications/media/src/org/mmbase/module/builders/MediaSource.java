@@ -8,16 +8,26 @@ See http://www.MMBase.org/license
  
  */
 
-package org.mmbase.module.builders;
+package org.mmbase.module.builders.media;
 
-import java.util.Enumeration;
-import java.sql.Connection;
-import java.io.File;
+import java.util.Map;
+import java.util.HashMap;
+import java.net.URL;
+import java.net.URLConnection;
+import java.io.*;
 
-import org.mmbase.module.core.*;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+
+import org.mmbase.util.FileWatcher;
+import org.mmbase.util.StringObject;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * The MediaSource class describes pieces of media (audio / video). Information about
@@ -53,55 +63,167 @@ public class MediaSource extends MMObjectBuilder {
     
     private final static int MONO = 1;
     private final static int STEREO = 2;
+
+
+    private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
+            public String getName()        { return "mediasource cache"; }
+            public String getDescription() { return "If the server gives ram's you can read them, results are stored in this cache."; }
+        };
+    private Map    servers;   
+    private Map    descriptions;  
+    private String defaultServer;
+
+
+    private FileWatcher configWatcher = new FileWatcher (true) {
+            protected void onChange(File file) {
+                readConfiguration(file);
+            }
+        };
     
+    public MediaSource() {
+        cache.putCache();
+        log.debug("static init");    
+        File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediaservers.xml");
+        if (! configFile.exists()) {
+            log.warn("Configuration file for mediasources " + configFile + " does not exist");
+        }
+        readConfiguration(configFile);
+        configWatcher.add(configFile);
+        configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+        configWatcher.start();
+    }
+	    
     /**
-     * resolves the url
-     */
-    public String getURL() {
+     * After changing the configuration file, you could call this
+     * method. (No need to restart MMBase then).
+     **/
+
+    private void readConfiguration(File configFile) {
+        servers      = new HashMap();
+        descriptions = new HashMap();
+        try {        
+            log.debug("reading " + configFile);
+            DOMParser parser = new DOMParser();
+            parser.parse(configFile.toString());
+            
+            Document doc = parser.getDocument();
+            org.w3c.dom.Node n = doc.getFirstChild();
+            while (n != null) {              
+                if (n.getNodeName().equals("mediaservers")) {
+                    NamedNodeMap map1= n.getAttributes();                            
+                    defaultServer = map1.getNamedItem("default").getNodeValue();
+
+                    org.w3c.dom.Node n2 = n.getFirstChild();
+                    while (n2 != null) {
+                        if (n2.getNodeName().equals("server")) {
+                            NamedNodeMap map= n2.getAttributes();
+                            String id      = map.getNamedItem("id").getNodeValue();
+                            
+                            descriptions.put(id, map.getNamedItem("description").getNodeValue());
+                            servers.put(id, n2.getFirstChild().getNodeValue());;
+                            // check:
+                            StringObject s = new StringObject((String)servers.get(id));
+                            if (s.indexOf("%s", 0) < 0 ) {
+                                throw new RuntimeException("No %s in servert");
+                            }
+
+                            if (log.isDebugEnabled()) {
+                                log.info("found script in configuration file mediaservers.xml. Id: " + id + " source: " + servers.get(id));
+                            }
+                        }
+                        n2 = n2.getNextSibling();
+                    }                 
+                }
+                n = n.getNextSibling();
+            }
+        } catch (org.xml.sax.SAXException e) {
+            String message = "Error reading mediaservers.xml " + e.toString();
+            throw new RuntimeException(message);
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Error reading mediaservers.xml " + e.toString());
+        }
     }
     
+
+
+    
+    /**
+     * Resolves the url
+     */
+    protected String getURL(MMObjectNode node, String srv) {
+        if (srv == null || srv.equals("")) srv = defaultServer;
+        log.debug("Getting URL for node " + node + " and server " + srv);
+        String serverTemplate = (String) servers.get(srv); // not yet decided how to do anything else then default
+        if (serverTemplate == null) {           
+            throw new RuntimeException("No server with id = " + serverTemplate + " is not defined");
+        }
+
+        StringObject serverObj = new StringObject(serverTemplate);
+        serverObj.replace("%s", node.getStringValue("url"));
+        if (log.isDebugEnabled()) log.debug("new url: " + serverObj.toString() + " with " + node.getStringValue("url"));
+        return  serverObj.toString();
+    }
+    
+    /**
+     * Gets the first line of a ram file. This can be needed in smil.
+     */
+    protected String getURLResult(MMObjectNode node, String src) {
+        String url = getURL(node, src);
+        String result = (String) cache.get(url);
+        if (result == null) {
+            try {
+                URL u = new URL(url);            
+                URLConnection con = u.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                result = in.readLine();
+                in.close();
+            } catch (java.net.MalformedURLException e) {
+                throw new RuntimeException(e.toString());
+            } catch (java.io.IOException e) {
+                throw new RuntimeException(e.toString());
+            }
+            cache.put(url, result);
+        }
+        return result;
+    }
+
     /**
      * used in the editors
      */
     public String getGUIIndicator(MMObjectNode node) {
-        String str=node.getStringValue("number");
-        if (str.length()>15) {
-            return str.substring(0,12)+"...";
-        } else {
-            return str;
-        }
+        return node.getStringValue("url");
     }
     
-    /**
-     * used in the editors
-     */
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        return getValue(node, "str("+field")");
+   
+    public String getGUIIndicator(String field, MMObjectNode node) {
+        return "" + getValue(node, "str("+field+")");
     }
     
     /**
      * return some human readable strings
      */
-    public Object getValue(MMObjectNode node,String field) {
-        if (field.equals("str(status)")) {
-            int val=node.getIntValue("status");
-            switch(val) {
+    protected Object executeFunction(MMObjectNode node, String function, String field) {
+        if (log.isDebugEnabled()) log.debug("executeFunction  " + function + "(" + field + ") on" + node); 
+        if (function.equals("str")) {
+            if (field.equals("status")) {
+                int val=node.getIntValue("status");
+                switch(val) {
                 case REQUEST: return "Request";
                 case BUSY: return "Busy";
                 case DONE: return "Done";
                 case SOURCE: return "Source";
                 default: return "Undefined";
-            }
-        } else if (field.equals("str(channels)")) {
-            int val=node.getIntValue("channels");
-            switch(val) {
+                }
+            } else if (field.equals("channels")) {
+                int val=node.getIntValue("channels");
+                switch(val) {
                 case MONO: return "Mono";
                 case STEREO: return "Stereo";
                 default: return "Undefined";
-            }
-        } else if (field.equals("str(format)")) {
-            int val=node.getIntValue("format");
-            switch(val) {
+                }
+            } else if (field.equals("format")) {
+                int val=node.getIntValue("format");
+                switch(val) {
                 case MP3_FORMAT: return "mp3";
                 case RA_FORMAT: return "ra";
                 case WAV_FORMAT: return "wav";
@@ -112,16 +234,23 @@ public class MediaSource extends MMObjectBuilder {
                 case RM_FORMAT: return "Rm";
                 case MOV_FORMAT: return "Mov";
                 default: return "Undefined";
-            }
-        } else if (field.equals("str(issurestream)")) {
-            int val=node.getIntValue("issurestream");
-            switch( val ) {
+                }
+            } else if (field.equals("issurestream")) {
+                int val=node.getIntValue("issurestream");
+                switch( val ) {
                 case 0	: return "false";
                 case 1	: return "true";
-                default	: return "onbepaald";
+                default	: return "Undefined";
+                }
+            } else {
+                return field;
             }
-        }
-        return super.getValue(node,field);
+        } else if (function.equals("absoluteurl")) {
+            return getURL(node, field);
+        } else if (function.equals("urlresult")) {
+            return getURLResult(node, field);
+        }      
+        return super.executeFunction(node, function, field);
     }
     
     /**
