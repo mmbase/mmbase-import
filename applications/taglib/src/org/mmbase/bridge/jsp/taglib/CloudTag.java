@@ -82,13 +82,18 @@ public class CloudTag extends MMTaglib implements BodyTag{
         this.pwd = pwd;
     }
 
-    public void setAuthenticate(String authenticate){
-        this.authenticate = authenticate;
+    public void setAuthenticate(String authenticate) {
+        if (! "".equals(authenticate) ) {   // this makes it easier to ignore.
+            this.authenticate = authenticate;
+        }
     }
     public void setMethod(String m){
         this.method = m;
     }
 
+    public Cloud getCloud() {
+        return getPageCloud();
+    }
 
     /**
      *  Deny access to this page
