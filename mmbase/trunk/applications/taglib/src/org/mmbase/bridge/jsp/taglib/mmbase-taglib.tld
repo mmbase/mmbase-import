@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE taglib
+        PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+	"http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+<!-- a tag library descriptor -->
+
+<taglib>
+  <!-- after this the default space is
+	"http://java.sun.com/j2ee/dtds/jsptaglibrary_1_2.dtd"
+   -->
+
+  <tlibversion>1.0</tlibversion>
+  <jspversion>1.1</jspversion>
+  <shortname>mmbase</shortname>
+  <uri></uri>
+  <info>
+	tab library for MMBase based on MMCI(MMBase Cloud Interface)
+  </info>
+  <tag>
+    <name>list</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.MMList</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.MMList</teiclass>
+    <bodycontent>JSP</bodycontent>
+    <info>
+	The list tag provides a syntax to list objects managed by MMBase 
+    </info>
+    <attribute>
+      <name>nodes</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>type</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>fields</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>where</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>sorted</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>direction</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>distinct</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>max</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>prefix</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
+	<name>mod</name>
+	<tagclass>org.mmbase.bridge.jsp.taglib.MMMod</tagclass>
+	<info>this tag can be used to call features provided by Modules in MMBase</info>
+	<attribute>
+		<name>name</name>
+		<required>true</required>
+	</attribute>
+  </tag>
+</taglib>
