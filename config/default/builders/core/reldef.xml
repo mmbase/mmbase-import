@@ -28,9 +28,8 @@
     small description of the builder for human reading
     -->
     <descriptions>
-        <!-- descriptions per language as defined by ISO 639  -->
         <description xml:lang="en">Defines relations</description>
-        <description xml:lang="nl">Defineerd relaties</description>
+        <description xml:lang="nl">Definieert relaties</description>
         <description xml:lang="eo">Difinas rilatojn</description>
         <description xml:lang="it">Definisce le relazioni</description>
     </descriptions>
