@@ -1,8 +1,11 @@
 /*
 
-$Id: Teasers.java,v 1.5 2000-03-29 10:59:25 wwwtech Exp $
+$Id: Teasers.java,v 1.6 2000-03-30 12:58:13 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/29 10:59:25  wwwtech
+Rob: Licenses changed
+
 Revision 1.4  2000/03/21 15:45:46  wwwtech
 Removed private debug method and private field classname, using inherited instead
 
@@ -10,6 +13,7 @@ Revision 1.3  2000/03/17 12:31:27  wwwtech
 - (marcel) added better support for functions in getValue
 
 */
+
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -26,7 +30,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.5 $ $Date: 2000-03-29 10:59:25 $ 
+ * @version $Revision: 1.6 $ $Date: 2000-03-30 12:58:13 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {
@@ -37,11 +41,7 @@ public class Teasers extends MMObjectBuilder {
 	// Temp Temp for searchhack
 	// total table holds nodes !!
 	Hashtable ts_cache_total=new Hashtable();
-	Hashtable ks_cache_total=new Hashtable();
-	Hashtable ks_cache_parts=new Hashtable();
 	Hashtable ts_image_cache=new Hashtable();
-
-
 
 	private boolean createTeaser(String number) {
 		MMObjectNode node=getNode(number);
@@ -130,13 +130,9 @@ public class Teasers extends MMObjectBuilder {
 		Vector results=new Vector();
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
-			//String msg = "getList("+sp.req.getRequestURI()+"): Teasers->"+cmd;
-			//debug( msg );
-
 			if (cmd.equals("KEYWORDS")) {
 				results=getKeyWords(tagger);
 			}
-			//debug( msg+" done");
 		}
 		return(results);
 	}
@@ -148,7 +144,6 @@ public class Teasers extends MMObjectBuilder {
 		if (node==null)
 			return new Vector();
 		String s = node.getStringValue("title")+" "+node.getStringValue("body");
-		//debug("getKeyWords "+s);
 		return Keywords.createKeywords(s);
 	}
 
@@ -207,7 +202,7 @@ public class Teasers extends MMObjectBuilder {
 		return(null);
 	}
 
-	/* Currently dead code
+	/* Currently dead code II
 	public boolean createTeaserSearchTable() {
 		// create the main object table
 		try {
@@ -234,7 +229,7 @@ public class Teasers extends MMObjectBuilder {
 	}
 	*/
 
-	/* Currently dead code
+	/* Currently dead code II
 	public boolean createTeaserUrlTable() {
 		// create the main object table
 		try {
@@ -253,7 +248,7 @@ public class Teasers extends MMObjectBuilder {
 	}
 	*/
 
-	/** Currently dead code
+	/** Currently dead code II
 	public boolean fillTeaserSearchTable() {
 		return(fillTeaserSearchTable(-1));
 	}
@@ -477,7 +472,7 @@ public class Teasers extends MMObjectBuilder {
 	}
 
 
-	/* Currently dead code
+	/* Currently dead code II
 	public boolean fillTeaserUrlTable() {
 		MMObjectNode node2,other;
 		int i=0;
@@ -555,7 +550,7 @@ public class Teasers extends MMObjectBuilder {
 		return(false);
 	}
 
-	/* Currently dead code
+	/* Currently dead code II
 	public boolean hasRelatedTeaser(String number) {
 		boolean b=false;
 		try {
@@ -574,7 +569,7 @@ public class Teasers extends MMObjectBuilder {
 	}
 	*/
 	
-	/** Currently dead code
+	/** Currently dead code II
 	* generates a teaser and creates a relation between this new Teaser
 	* and the given node (id).
 	public int autoGenerateTeaser(String id) {
@@ -600,7 +595,7 @@ public class Teasers extends MMObjectBuilder {
 	}
 	*/
 
-	/*	Nothing as we would get dup's otherwise
+	/*	Nothing as we would get dup's otherwise II
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
         super.nodeRemoteChanged(number,builder,ctype);
 		if (builder.equals(tableName)) {

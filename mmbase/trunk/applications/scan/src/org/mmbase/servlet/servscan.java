@@ -101,7 +101,7 @@ public class servscan extends JamesServlet {
 	 */
 	public void service(HttpServletRequest req,HttpServletResponse res) throws ServletException, IOException {
 
-		incRefCount();
+		incRefCount(req);
 		try {
 		scanpage sp=new scanpage();
 		sp.req_line=req.getRequestURI();
@@ -190,7 +190,7 @@ public class servscan extends JamesServlet {
 		} catch(Exception a) {
 			debug( "Exception on page: " + req.getRequestURI() );
 			a.printStackTrace();
-		} finally { decRefCount(); }
+		} finally { decRefCount(req); }
 	}// service
 
 	private final void setHeaders(scanpage sp,HttpServletResponse res,int len) {

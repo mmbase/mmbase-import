@@ -30,7 +30,7 @@ public class servjumpers extends JamesServlet
  	*/
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
 	{	
-		incRefCount();
+		incRefCount(req);
 		try {
 			String url=null;
 			String tmpr=req.getRequestURI().substring(1);
@@ -42,7 +42,7 @@ public class servjumpers extends JamesServlet
 				return;
 			}
 		}
-		finally { decRefCount(); }
+		finally { decRefCount(req); }
 	}
 
 
