@@ -330,6 +330,11 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	private boolean startAppTool(String appname) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused starting app tool , im in kiosk mode");
+			return(false);
+		}
+
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		System.out.println("Starting apptool with : "+path+"/"+appname+".xml");
 		MMAppTool app=new MMAppTool(path+"/"+appname+".xml");
@@ -339,6 +344,10 @@ public class MMAdmin extends ProcessorModule {
 	}
 
 	private boolean installApplication(String applicationname) {
+		if (kioskmode) {
+			System.out.println("MMAdmin> refused installing app , im in kiosk mode");
+			return(false);
+		}
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
 		if (app!=null) {
