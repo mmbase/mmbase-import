@@ -155,6 +155,9 @@ several MMBase-checkouts.
           tofile="${build.dir}/mmbase-src/build-example.properties"/>
 
     <!-- create build.properties needed for the srcdist -->
+    <!-- only needed because the config dir doesn't contain -->
+    <!-- default in it's path and because documentation is -->
+    <!-- somewhere else, but this maybe has to change -->
     <echo file="${build.dir}/mmbase-src/build.properties">
 source.dir=.
 source-config.dir=config
