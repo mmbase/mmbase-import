@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.120 2004-10-29 13:42:27 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.121 2004-10-29 15:00:41 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -692,7 +692,10 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         UserContext user = userContext.getUserContext();
         List steps = query.getSteps();
-
+        Step nodeStep = null;
+        if (query instanceof NodeQuery) {
+            nodeStep = ((NodeQuery) query).getNodeStep();
+        }
         log.debug("Creating iterator");
         ListIterator li = resultNodeList.listIterator();
         while (li.hasNext()) {
@@ -704,17 +707,22 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             MMObjectNode node = (MMObjectNode)o;
             boolean mayRead = true;
             for (int j = 0; mayRead && (j < steps.size()); ++j) {
-                // Only virtual nodes have fields with a prepended builder name (bug #6612).
+                Step step = (Step) steps.get(j);
                 int nodenr;
-                if (node.isVirtual()) {
-                    nodenr = node.getIntValue(((Step)steps.get(j)).getTableName() + ".number");                 
-                } else {
+                if (step.equals(nodeStep)) {
                     nodenr = node.getIntValue("number");
-                }
+                } else {
+                    String pref = step.getAlias();
+                    if (pref == null) {
+                        pref = step.getTableName();
+                    }
+                    nodenr = node.getIntValue(pref + ".number");                 
+                } 
                 if (nodenr != -1) {
                     mayRead = auth.check(user, nodenr, Operation.READ);            
                 }
             }
+
             if (!mayRead) {
                 li.remove();
             }
