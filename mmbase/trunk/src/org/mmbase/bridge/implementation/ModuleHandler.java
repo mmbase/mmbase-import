@@ -9,19 +9,23 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.*;
-import org.mmbase.module.ProcessorInterface;
-import org.mmbase.module.core.*;
-import java.lang.reflect.*;
-import org.mmbase.util.*;
+
 import java.util.*;
+import java.lang.reflect.*;
 import javax.servlet.*;
+import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.ProcessorInterface;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * ModuleHandler
  * @author Rob Vermeulen
  */
 public class ModuleHandler implements Module {
+    private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
+
     //removed InvocationHandler because this is jdk1.3, and MMBase requires 1.2
     //
     //, InvocationHandler {
@@ -90,8 +94,10 @@ public class ModuleHandler implements Module {
 	    if (mmbase_module instanceof ProcessorInterface) {
 	        return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
 	    } else {
-	        throw new BridgeException("getInfo() is not supported by this "
-                                          + "module.");
+	        String message;
+                message = "getInfo() is not supported by this module.";
+                log.error(message);
+	        throw new BridgeException(message);
 	    }
 	}
 
@@ -111,8 +117,10 @@ public class ModuleHandler implements Module {
 	        ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),
                         cmds,auxparameters);
 	    } else {
-	        throw new BridgeException("process() is not supported by this "
-                                          + "module.");
+	        String message;
+                message = "process() is not supported by this module.";
+                log.error(message);
+	        throw new BridgeException(message);
 	    }
 	}
 
@@ -120,62 +128,69 @@ public class ModuleHandler implements Module {
 	    return getList(command,parameters,null,null);
 	}
 
-	public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
-	    if (mmbase_module instanceof ProcessorInterface) {
-	        Cloud cloud=null;
-	        StringTagger params= new StringTagger("");
-	        if (parameters!=null) {
-	            cloud=(Cloud)parameters.get("CLOUD");
-    	        for (Enumeration keys=parameters.keys(); keys.hasMoreElements(); ) {
-	                String key=(String)keys.nextElement();
-	                Object o = parameters.get(key);
-	                if (o instanceof Vector) {
-	                    params.setValues(key,(Vector)o);
-    	            } else {
-	                    params.setValue(key,""+o);
-	                }
-	            }
-	        }
-
-	        try {
-    	        Vector v=((ProcessorInterface)mmbase_module).getList(BasicCloudContext.getScanPage(req, resp),params,command);
-    	        if (v==null) { v=new Vector(); }
+    public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
+        if (mmbase_module instanceof ProcessorInterface) {
+            Cloud cloud=null;
+            StringTagger params= new StringTagger("");
+            if (parameters!=null) {
+                cloud=(Cloud)parameters.get("CLOUD");
+                for (Enumeration keys=parameters.keys(); keys.hasMoreElements(); ) {
+                    String key=(String)keys.nextElement();
+                    Object o = parameters.get(key);
+                    if (o instanceof Vector) {
+                        params.setValues(key,(Vector)o);
+                    } else {
+                        params.setValue(key,""+o);
+                    }
+                }
+            }
+            try {
+                Vector v=((ProcessorInterface)mmbase_module).getList(BasicCloudContext.getScanPage(req, resp),params,command);
+                if (v == null) {
+                    v = new Vector();
+                }
                 int items=1;
-    	        try { items=Integer.parseInt(params.Value("ITEMS")); } catch (Exception e) {}
-	            Vector fieldlist=params.Values("FIELDS");
-
-
-	            Vector res=new Vector(v.size() / items);
-    	        MMObjectBuilder bul= ((BasicCloudContext)cloudContext).mmb.getMMObject("multirelations");
-    	        for(int i= 0; i<v.size(); i+=items) {
-    	            MMObjectNode node = new MMObjectNode(bul);
-    	            for(int j= 0; (j<items) && (j<v.size()); j++) {
-    	                if ((fieldlist!=null) && (j<fieldlist.size())) {
-        	                node.setValue((String)fieldlist.get(j),v.get(i+j));
-    	                } else {
-        	                node.setValue("item"+(j+1),v.get(i+j));
-        	            }
-    	            }
-    	            res.add(node);
-    	        }
-   		        NodeManager tempNodeManager = null;
-   		        if (cloud==null) {
-			// anonymous access on the cloud....
-       		        cloud=cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
-       		    }
-  		        if (res.size()>0) {
-  		            tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
-      		    }
-      		    return new BasicNodeList(res,cloud,tempNodeManager);
-    	    } catch (Exception e) {
-    	        throw new BridgeException(e.getMessage());
-    	    }
-
-	    } else {
- 	        throw new BridgeException("getInfo() is not supported by this "
-                                          + "module.");
-	    }
-	}
+    	        try {
+                    items=Integer.parseInt(params.Value("ITEMS"));
+                } catch (Exception e) {
+                }
+                Vector fieldlist=params.Values("FIELDS");
+                Vector res=new Vector(v.size() / items);
+                MMObjectBuilder bul;
+                bul = ((BasicCloudContext)cloudContext).mmb.getMMObject("multirelations");
+                for(int i= 0; i<v.size(); i+=items) {
+                    MMObjectNode node = new MMObjectNode(bul);
+                    for(int j= 0; (j<items) && (j<v.size()); j++) {
+                        if ((fieldlist!=null) && (j<fieldlist.size())) {
+                            node.setValue((String)fieldlist.get(j),v.get(i+j));
+                        } else {
+                            node.setValue("item"+(j+1),v.get(i+j));
+                        }
+                    }
+                    res.add(node);
+                }
+                NodeManager tempNodeManager = null;
+                if (cloud==null) {
+                    // anonymous access on the cloud....
+                    cloud=cloudContext.getCloud("mmbase"); // get cloud object so you can create a node list. doh.
+                }
+                if (res.size()>0) {
+                    tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
+                }
+                return new BasicNodeList(res,cloud,tempNodeManager);
+            } catch (Exception e) {
+                String message;
+                message = e.getMessage();
+                log.error(message);
+                throw new BridgeException(message);
+            }
+        } else {
+            String message;
+            message = "getInfo() is not supported by this module.";
+            log.error(message);
+            throw new BridgeException(message);
+        }
+    }
 
     /**
      * Compares two modules, and returns true if they are equal.

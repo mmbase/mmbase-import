@@ -9,13 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge;
 
-import org.mmbase.util.logging.*;
-
 /**
  * This exception gets thrown when something goes wronmg on the MMCI.
  */
 public class BridgeException extends RuntimeException {
-    private static Logger log = Logging.getLoggerInstance(BridgeException.class.getName());
 
     /**
      * Constructs a <code>BridgeException</code> with the specified detail
@@ -25,7 +22,6 @@ public class BridgeException extends RuntimeException {
      */
     public BridgeException(String message) {
         super(message);
-        log.error(message);
     }
 
 }

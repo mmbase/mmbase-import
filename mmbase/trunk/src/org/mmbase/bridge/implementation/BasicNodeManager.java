@@ -9,13 +9,15 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.security.*;
+
 import java.util.*;
 import javax.servlet.*;
-import org.mmbase.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.security.*;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  * This class represents a node's type information object - what used to be the 'builder'.
@@ -29,6 +31,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Pierre van Rooden
  */
 public class BasicNodeManager implements NodeManager, Comparable {
+    private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
 
     // Cloud for this nodetype
     protected BasicCloud cloud=null;
@@ -205,7 +208,10 @@ public class BasicNodeManager implements NodeManager, Comparable {
             }
             return new BasicNodeList(res,cloud,tempNodeManager);
         } catch (Exception e) {
-            throw new BridgeException(e.getMessage());
+            String message;
+            message = e.getMessage();
+            log.error(message);
+            throw new BridgeException(message);
         }
     }
 

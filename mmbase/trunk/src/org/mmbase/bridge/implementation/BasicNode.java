@@ -9,11 +9,13 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+
+import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
@@ -21,6 +23,7 @@ import java.util.*;
  * @author Pierre van Rooden
  */
 public class BasicNode implements Node {
+    private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
 
     public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
@@ -97,7 +100,10 @@ public class BasicNode implements Node {
 
     protected MMObjectNode getNode() {
         if (noderef==null) {
-            throw new BridgeException("Node is invalidated or removed.");
+            String message;
+            message = "Node is invalidated or removed.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         return noderef;
     }
@@ -143,10 +149,17 @@ public class BasicNode implements Node {
         if (account==null) {
             account = cloud.getAccount();
         } else if (account != cloud.getAccount()) {
-            throw new BridgeException("User context changed. Cannot proceed to edit this node .");
+            String message;
+            message = "User context changed. Cannot proceed to edit this "
+                      + "node .";
+            log.error(message);
+            throw new BridgeException(message);
         }
         if (nodeManager instanceof VirtualNodeManager) {
-            throw new BridgeException("Cannot make edits to a virtual node.");
+            String message;
+            message = "Cannot make edits to a virtual node.";
+            log.error(message);
+            throw new BridgeException(message);
         }
 
         int realnumber=noderef.getNumber();
@@ -171,7 +184,11 @@ public class BasicNode implements Node {
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
             if (action == ACTION_CREATE) {
-                throw new BridgeException("This node cannot be added. It was not correctly instantiated (internal error)");
+                String message;
+                message = "This node cannot be added. It was not correctly "
+                          + "instantiated (internal error).";
+                log.error(message);
+                throw new BridgeException(message);
             }
 
             // when editing a temporary node id must exist (otherwise create one)
@@ -199,13 +216,17 @@ public class BasicNode implements Node {
         if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
             //|| "snumber".equals(attribute) || "dnumber".equals(attribute) || "rnumber".equals(attribute)
             ) {
-            throw new BridgeException("Not allowed to change field "
-                                      + attribute);
+            String message;
+            message = "Not allowed to change field " + attribute + ".";
+            log.error(message);
+            throw new BridgeException(message);
         }
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
-            throw new BridgeException("Can't change unknown field "
-                                      + attribute);
+            String message;
+            message = "Can't change unknown field " + attribute + ".";
+            log.error(message);
+            throw new BridgeException(message);
         }
 
     }
@@ -342,9 +363,11 @@ public class BasicNode implements Node {
                 // option unset, fail if any relations exit
                 int relations = getNode().getRelationCount();
                 if(relations!=0) {
-                    throw new BridgeException("This node cannot be deleted. It has "
-                                              + relations
-                                              + " relations attached to it.");
+                    String message;
+                    message = "This node cannot be deleted. It has "
+                              + relations + " relations attached to it.";
+                    log.error(message);
+                    throw new BridgeException(message);
                 }
             }
             // remove aliases
@@ -411,7 +434,10 @@ public class BasicNode implements Node {
         RelDef reldef=mmb.getRelDef();
         int rType=reldef.getNumberByName(type);
         if (rType==-1) {
-            throw new BridgeException("Cannot find relation type.");
+            String message;
+            message = "Cannot find relation type.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             deleteRelations(rType);
         }
@@ -441,8 +467,10 @@ public class BasicNode implements Node {
     public RelationList getRelations(String type) {
         int rType=mmb.getRelDef().getNumberByName(type);
         if (rType==-1) {
-            throw new BridgeException("Relation type " + type
-                                      + " does not exist.");
+            String message;
+            message = "Relation type " + type + " does not exist.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             return getRelations(rType);
         }
@@ -514,7 +542,11 @@ public class BasicNode implements Node {
             // this will be resolved by the transaction manager
             aliasNode.setValue("_destination", getValue("_number"));
         } else if (isnew) {
-            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
+            String message;
+            message = "Cannot add alias to a new node that has not been "
+                      + "committed.";
+            log.error(message);
+            throw new BridgeException(message);
         } else {
             getNode().parent.createAlias(getNumber(),aliasName);
         }

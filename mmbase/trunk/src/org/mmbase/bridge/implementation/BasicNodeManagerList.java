@@ -9,10 +9,12 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
+
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import org.mmbase.bridge.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of nodes
@@ -20,6 +22,7 @@ import java.util.NoSuchElementException;
  * @author Pierre van Rooden
  */
 public class BasicNodeManagerList extends BasicList implements NodeManagerList {
+    private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
 
     protected Cloud cloud;
 
@@ -65,13 +68,19 @@ public class BasicNodeManagerList extends BasicList implements NodeManagerList {
         
         public void set(Object o) {
             if (! (o instanceof NodeManager)) {
-                throw new BridgeException("Object must be of type NodeManager" );
+                String message;
+                message = "Object must be of type NodeManager.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.set(index, o);
         }
         public void add(Object o) {
             if (! (o instanceof NodeManager)) {
-                throw new BridgeException("Object must be of type NodeManager" );
+                String message;
+                message = "Object must be of type NodeManager.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.add(index, o);
         }

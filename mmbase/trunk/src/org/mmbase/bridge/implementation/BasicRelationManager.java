@@ -12,11 +12,11 @@ package org.mmbase.bridge.implementation;
 
 import java.util.Vector;
 import java.util.Iterator;
-
-import org.mmbase.security.*;
 import org.mmbase.bridge.*;
+import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
@@ -24,6 +24,7 @@ import org.mmbase.module.corebuilders.*;
  * @author Pierre van Rooden
  */
 public class BasicRelationManager extends BasicNodeManager implements RelationManager {
+    private static Logger log = Logging.getLoggerInstance(BasicRelationManager.class.getName());
 
     private MMObjectNode typeRelNode = null;
     private MMObjectNode relDefNode = null;
@@ -79,7 +80,11 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public NodeManager getSourceManager() {
         if (typeRelNode==null) {
-          throw new BridgeException("This relationmanager does not contain source information.");
+            String message;
+            message = "This relationmanager does not contain source "
+                      + "information.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         int nr=typeRelNode.getIntValue("snumber");
         return cloud.getNodeManager(nr);
@@ -87,8 +92,11 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public NodeManager getDestinationManager() {
         if (typeRelNode==null) {
-          throw new BridgeException("This relationmanager does not contain "
-                                    + "destination information.");
+            String message;
+            message = "This relationmanager does not contain destination "
+                      + "information.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         int nr=typeRelNode.getIntValue("dnumber");
         return cloud.getNodeManager(nr);
@@ -100,19 +108,26 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
         // maybe should be made more flexible?
         //
         if (sourceNode.getCloud() != cloud) {
-            throw new BridgeException("Relationmanager and source node are not "
-                                      + "in the same transaction or in "
-                                      + "different clouds");
+            String message;
+            message = "Relationmanager and source node are not in the same "
+                      + "transaction or in different clouds.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         if (destinationNode.getCloud() != cloud) {
-            throw new BridgeException("Relationmanager type and destination "
-                                      + "node are not in the same transaction "
-                                      + "or in different clouds");
+            String message;
+            message = "Relationmanager and destination node are not in the same "
+                      + "transaction or in different clouds.";
+            log.error(message);
+            throw new BridgeException(message);
         }
         if (!(cloud instanceof Transaction)  &&
-             (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
-            throw new BridgeException("Cannot add a relation to a new node "
-                                      + "that has not been committed.");
+                (((BasicNode)sourceNode).isNew() || ((BasicNode)destinationNode).isNew())) {
+            String message;
+            message = "Cannot add a relation to a new node that has not been "
+                      + "committed.";
+            log.error(message);
+            throw new BridgeException(message);
         }
 
        BasicRelation relation = (BasicRelation)createNode();

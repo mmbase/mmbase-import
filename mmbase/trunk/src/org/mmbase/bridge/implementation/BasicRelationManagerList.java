@@ -9,10 +9,11 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+
+import java.util.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import java.util.*;
-import java.util.NoSuchElementException;
+import org.mmbase.util.logging.*;
 
 /**
  * A list of relation managers
@@ -20,6 +21,7 @@ import java.util.NoSuchElementException;
  * @author Pierre van Rooden
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
+    private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
 
     /**
     * ...
@@ -63,13 +65,19 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
                              
         public void set(Object o) {
             if (! (o instanceof RelationManager)) {
-                throw new BridgeException("Object must be of type RelationManager" );
+                String message;
+                message = "Object must be of type RelationManager.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.set(index, o);
         }
         public void add(Object o) {
             if (! (o instanceof RelationManager)) {
-                throw new BridgeException("Object must be of type RelationManager" );
+                String message;
+                message = "Object must be of type RelationManager.";
+                log.error(message);
+                throw new BridgeException(message);
             }
             list.add(index, o);
         }
