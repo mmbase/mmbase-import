@@ -16,6 +16,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpServletRequestWrapper;
@@ -47,7 +48,7 @@ public class IncludeTag extends UrlTag {
      * Test whether or not the 'cite' parameter is set
      */
     public void setCite(String c) throws JspTagException {
-        cite = ("true".equals(getAttributeValue(c)));
+        cite = ("true".equalsIgnoreCase(getAttributeValue(c)));
     }
 
     public int doStartTag() throws JspTagException {
@@ -144,9 +145,9 @@ public class IncludeTag extends UrlTag {
     private void internal(BodyContent bodyContent, String relativeUrl, HttpServletRequest req, HttpServletResponse resp) throws JspTagException {
         if (log.isDebugEnabled()); log.debug("Internal: found url: >" + relativeUrl + "<");
         debugStart(relativeUrl);
-        String targetEncoding = resp.getCharacterEncoding();
+        String targetEncoding   = resp.getCharacterEncoding();
         ResponseWrapper response = new ResponseWrapper(resp);
-        RequestWrapper request = new RequestWrapper(req);
+        RequestWrapper request   = new RequestWrapper(req);
 
         try {
             javax.servlet.ServletContext sc = pageContext.getServletContext();
@@ -162,6 +163,8 @@ public class IncludeTag extends UrlTag {
         debugEnd(relativeUrl);
     }
 
+
+    
     /**
      * When staying in the same web-application, then the file also can be found on the file system,
      * and the possibility arises simply citing it (passing the web-server). It is in no way
@@ -171,7 +174,19 @@ public class IncludeTag extends UrlTag {
         try {
             if (log.isDebugEnabled()) log.debug("Citing " + relativeUrl);
             if (relativeUrl.indexOf("..") > -1 || relativeUrl.indexOf("WEB-INF") > -1)  throw new JspTagException("Not allowed to cite " + relativeUrl); 
-            java.io.File file = new java.io.File(pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length())));
+            String urlfile = pageContext.getServletContext().getRealPath(relativeUrl.substring(request.getContextPath().length()));
+          
+            // take of the sessionid if it is present
+            HttpSession session = request.getSession(false);
+            if (session != null && session.isNew()) { // means there is a ;jsession argument
+                int j = urlfile.lastIndexOf(';');
+                if (j != -1) {
+                    urlfile=urlfile.substring(0, j);
+                }
+
+            }
+            java.io.File file = new java.io.File(urlfile);
+                                                 
             if (file.isDirectory()) {
                 throw new JspTagException("Cannot cite a directory");
             }
@@ -210,7 +225,7 @@ public class IncludeTag extends UrlTag {
                 nudeUrl = gotUrl;
                 params  = "";
             }
-	        if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
+            if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
                
