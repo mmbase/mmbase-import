@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: MultiRelations.java,v 1.4 2000-03-08 14:20:26 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.5 2000-03-09 10:07:14 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.4  2000/03/08 14:20:26  wwwtech
+	Rico: zapped several old unused methods
+	
 	Revision 1.3  2000/03/08 14:16:46  wwwtech
 	Rico: fixed the scope of several methods, plus added fix against similar table names going wrong in where clause
 	
@@ -32,11 +35,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.4 2000-03-08 14:20:26 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.5 2000-03-09 10:07:14 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
-	final static boolean debug=true;
+	final static boolean debug=false;
 	private String classname = getClass().getName();
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
@@ -423,16 +426,10 @@ public class MultiRelations extends MMObjectBuilder {
 	}
 
 	private String getWhereConvert(Vector alltables,String where,Vector tables) {
-		StringObject result=new StringObject(where);
-		String atable,table;
-		int i=0,x,y,idx;
-/*
-		for (Enumeration e=alltables.elements();e.hasMoreElements();) {
-			atable=(String)e.nextElement();
-			result.replace(atable+".",""+idx2char(i)+".");
-			i++;
-		}
-*/
+		String atable,table,pre,post,result2=where;
+		int i=0,x,y,idx,cx,px;
+		char ch;
+
 		for (Enumeration e=tables.elements();e.hasMoreElements();) {
 			atable=Strip.DoubleQuote((String)e.nextElement(),Strip.BOTH);
 			x=getTableNumber(atable);
@@ -449,14 +446,35 @@ public class MultiRelations extends MMObjectBuilder {
 			}
 			// not 100% safe
 			if (idx<0) idx=0;
-			result.replace(" "+atable+"."," "+idx2char(idx)+".");
-			result.replace("="+atable+".","="+idx2char(idx)+".");
-			result.replace("<"+atable+".","<"+idx2char(idx)+".");
-			result.replace(">"+atable+".",">"+idx2char(idx)+".");
-			result.replace("-"+atable+".","-"+idx2char(idx)+".");
-			result.replace("+"+atable+".","+"+idx2char(idx)+".");
+
+			// This translates the long tablename to the short one , the
+			// database expects
+			// ie people.account to a.account
+			cx=result2.indexOf(atable+".",0);
+			while (cx!=-1) {
+				if (cx>0) ch=result2.charAt(cx-1);
+				else ch=0;
+				if (!isTableNameChar(ch)) {
+					pre=result2.substring(0,cx);
+					post=result2.substring(cx+atable.length());
+					result2=pre+idx2char(idx)+post;
+				}
+				cx=result2.indexOf(atable+".",cx+1);
+			}
+			if (debug) debug("getWhereConvert for table "+atable+"|"+result2+"|");
 		}
-		return(result.toString());
+		return(result2.toString());
+	}
+
+	/**
+	 * This method defines what is 'allowed' in tablenames
+	 * Multilevel uses this to find out what is a tablename and what not
+	 */
+	private boolean isTableNameChar(char ch) {
+		boolean rtn=false;
+
+		if (ch=='_' || Character.isLetterOrDigit(ch)) rtn=true;
+		return(rtn);
 	}
 
 	private String getTableString(Vector alltables) {
