@@ -5,7 +5,7 @@
   <articleinfo>
     <title>Dove 1.1 XML API</title>
     <date>20 july 2002</date>
-    <edition>$Id: dovexmlapi.xml,v 1.8 2003-04-02 15:26:13 michiel Exp $</edition>
+    <edition>$Id: dovexmlapi.xml,v 1.9 2003-04-05 10:43:19 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Pierre</firstname>
@@ -50,7 +50,7 @@
       ]]></programlisting>
       <para>The commands that should be comprehended are : <sgmltag>getdata</sgmltag>, <sgmltag>getnew</sgmltag>, <sgmltag>getnewrelation</sgmltag>, <sgmltag>getrelations</sgmltag>, <sgmltag>getconstraints</sgmltag>, <sgmltag>getlist</sgmltag>, and <sgmltag>put</sgmltag>.</para>
       <note>
-        <para>Note: Custom Dove implementations may implement additional commands.</para>
+        <para>Custom Dove implementations may implement additional commands.</para>
       </note>
       <para>The command tags support an <sgmltag class="attribute">id</sgmltag> attribute. The attribute has no significance to the Dove, but is ment to support a client-generated id system. When an id attribute is provided, this attribute is also returned in the appropriate tag in the response.</para>
       <para>The result of the commands are tallied and returned in an xml with as root the <sgmltag>response</sgmltag> tag.</para>
@@ -60,8 +60,13 @@
       ]]></programlisting>
       <para>Each command contains the result of that command or an <sgmltag>error</sgmltag> tag if the command failed.</para>
       <note>
-        <para>Note: If Dove cannot handle the command, an <sgmltag>error</sgmltag> tag is returned instead to stay compliant with the response dtd. It is recommended you validate a document before passing it to the Dove.</para>
+        <para>If Dove cannot handle the command, an <sgmltag>error</sgmltag> tag is returned instead to stay compliant with the response dtd. It is recommended you validate a document before passing it to the Dove.</para>
       </note>
+      <sidebar>
+        <title>How to Call Dove</title>
+        <para>The <classname>org.mmbase.applications.dove.Dove</classname> Java class contains the code that processes the xml tree. If you want to use the Dove from java code, you should first create a DOM tree, containing the command to run. You then instantiate Dove, using a DOM Document to be used for creating the response, and finally call the executeRequest method, passing the entity that contains the root of the request. For more information on calling the class we refer to the MMBase API docuumentation</para>
+        <para>If you want to call Dove remote, you can also install the DoveServlet (comments on configuring this servlet can be found in the sample web.xml that comes with MMBase). You can call this servlet using a html form containing an 'xml' field that should then contain the xml to parse and run. The result of the call is the xml repsone (in text format).</para>
+      </sidebar>
     </section>
     <section>
       <title>Security</title>
@@ -85,7 +90,7 @@
       ]]></programlisting>
       </example>
       <note>
-        <para>Note: Dove does not allow anonymous access: if you do not provide a security login, you need to provide a secure MMCI cloud as an additional parameter when passing the XML.</para>
+        <para>Dove does not allow anonymous access: if you do not provide a security login, you need to provide a secure MMCI cloud as an additional parameter when passing the XML.</para>
       </note>
     </section>
     <section>
@@ -142,7 +147,7 @@
         ]]></programlisting>
       </example>
       <note>
-        <para>Note: Except during a put, Dove attempts to continue execution when it runs into an error.</para>
+        <para>Except during a put, Dove attempts to continue execution when it runs into an error.</para>
       </note>
     </section>
   </section>
@@ -185,7 +190,7 @@
       <listitem>
         <formalpara>
           <title><sgmltag>getlist</sgmltag></title>
-          <para>Returns the constraints of a node type</para>
+          <para>Returns a list of nodes following a constraint</para>
         </formalpara>
       </listitem>
       <listitem>
@@ -199,7 +204,7 @@
   <section>
     <title>getdata</title>
     <para>A <sgmltag>getdata</sgmltag> command retrieves objects from MMBase by their number.</para>
-    <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag type="attribute">number</sgmltag> attribute. If the referenced object can be found, the object, along with type and all its fields, is returned in the response. If retrieving the object fails, the returned response <sgmltag>object</sgmltag> tag contains an <sgmltag>error</sgmltag> tag describing the problem.</para>
+    <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag class="attribute">number</sgmltag> attribute. If the referenced object can be found, the object, along with type and all its fields, is returned in the response. If retrieving the object fails, the returned response <sgmltag>object</sgmltag> tag contains an <sgmltag>error</sgmltag> tag describing the problem.</para>
     <para>If you do not want to retrieve all the object's fields, you can specify the fields you want to retrieve by including <sgmltag>field</sgmltag> tags in the body of the object tag. The field tags' <sgmltag class="attribute">name</sgmltag> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned. Note that you should not retrieve relation objects directly - use <sgmltag>getrelations</sgmltag> instead.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getdata (object+) >
@@ -274,7 +279,7 @@
     <para>A <sgmltag>getrelations</sgmltag> command obtains the relation objects belonging to the specified objects, filtered by a specified destination type or relation role.</para>
     <para>The command should contain one or more <sgmltag>object</sgmltag> tags, each tag referencing an object through the <sgmltag class="attribute">number</sgmltag> attribute. If the referenced object can be found, the object's relations are retrieved and returned.</para>
     <para>An object tag may include one or more <sgmltag>relation</sgmltag> tags, allowing to retrieve a narrow selection of relations, relating to a specified type of object or using a specified role. Restricting the selection is done by supplying a <sgmltag class="attribute">role</sgmltag> or a <sgmltag class="attribute">destinationtype</sgmltag> attribute (or both) to a relation tag.</para>
-    <para>By default, all fields of a relation are returned. If you do not want to retrieve all an relations's fields, you can specify the fields you want to retrieve by including <sgmltag>field</sgmltag> tags in the body of the relation tag. The field tags' <sgmltag class="attribute">name</sgmltag> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned.</para>
+    <para>By default, all fields of a relation are returned. If you only want to retrieve certain fields, you can do so by specifying these fields by including <sgmltag>field</sgmltag> tags in the body of the relation tag. The field tags' <sgmltag class="attribute">name</sgmltag> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned.</para>
     <note>
       <para>In Dove 1.0, a <sgmltag>searchdir</sgmltag> attribute can be specified to limit the result
       based on directionality. The value 'source' limits the returned relations to those that link TO the specifed object FROM a 'source' object, 'destination' limits the relatiosn to those that link FROM the specified object TO a 'destination object, and 'both' (the default) returns all relations, except those that would violate directionality (i.e. uni-directional relations).</para>
@@ -692,7 +697,7 @@
     <para>The <sgmltag>getlist</sgmltag>command is used to retrieve lists of nodes using a set of criteria , such as nodetype and field content. The tag contains a set of <sgmltag>query</sgmltag> tags, each specifying the constraints to retrieve nodes with.</para>
     <para>Each query element should have a <sgmltag class="attribute">xpath</sgmltag> attribute to indicate the nodemanager to run the list on, and optionally a <sgmltag class="attribute">where</sgmltag> attribute that contains the field-constraints.</para>
     <para>The <sgmltag class="attribute">xpath</sgmltag> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". It is possible taht in future implementations more versatile xpaths can be used</para>
-    <para>The <sgmltag class="attribute">where</sgmltag> attribute uses a SQL syntax to check a field, such as "name LIKE '%a%'". It is in all respects the same as the constarints attribute as used in the mm:listnodes tag of the MMBase taglib (described elsewhere).</para>
+    <para>The <sgmltag class="attribute">where</sgmltag> attribute uses a SQL syntax to check a field, such as "name LIKE '%a%'". It is in all respects the same as the constraints attribute as used in the mm:listnodes tag of the MMBase taglib (described elsewhere).</para>
     <para>Fields to retrieve can be limited in the same way as witha  <sgmltag>getdata</sgmltag> command: by specifying the fields in an <sgmltag>object</sgmltag> tag.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT getlist (query+) >
@@ -774,16 +779,16 @@
     <title>put</title>
     <para>The <sgmltag>put</sgmltag> command is used to update MMBase by sending a set of nodes and relations to add or change. Each put command contains two node lists: the <sgmltag>original</sgmltag> tag contains a set of (original) objects that should be changed or deleted, the <sgmltag>new</sgmltag> tag contains a corresponding set of object with the needed changes, as well as a set of objects or relations that are new and need to be added.</para>
     <note>
-      <simpara>Changes made by the put command are created through a transaction. This means that if an error occurs \ (i.e. because changes were invalid), nothing is changed, maintaining the consistency of the system. This same mechanism also means that large updates through Dove are discouraged as they are quite slow and eat resources.
+      <simpara>Changes made by the put command are created through a transaction. This means that if an error occurs (i.e. because changes were invalid), nothing is changed, maintaining the consistency of the system. This same mechanism also means that large updates through Dove are discouraged as they are quite slow and eat resources.
       </simpara>
     </note>
-    <para>The <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in original follow the general format (specifying a <sgmltag class="attribute">number</sgmltag> attribute and <sgmltag>field</sgmltag>tags) and should be existing nodes - the contents of the fields specified in this list should match data in the database. If data is specified that is incoorrect, an error is generated by the system, dictating an invalid attempt to change the data</para>
+    <para>The <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in original follow the general format (specifying a <sgmltag class="attribute">number</sgmltag> attribute and <sgmltag>field</sgmltag> tags) and should be existing nodes - the contents of the fields specified in this list should match data in the database. If data is specified that is incorrect, an error is generated by the system, dictating an invalid attempt to change the data</para>
     <note>
       <simpara>This check is used as a way to prevent edits from concurrent users from crossing each other: If two users attempt changes on the same object at the same time, one of them will fail, which ensures that data does not become corrupted or invalid.
       </simpara>
     </note>
     <para>Each object or relation in the original list should have a <sgmltag class="attribute">status</sgmltag> attribute which indicates what should happen to the object: 'change' (edit content) or 'delete' (remove the object from the cloud).</para>
-    <para>The <sgmltag>new</sgmltag> tag lists all objects that should either be changed or added - objects with a status of 'delete' should not be included in this list. New objects in this list should have the status 'new'. All data mentions here is changed or added - note that if a field is not mentioned, the content of that field (either default or existing content) is unchanged.</para>
+    <para>The <sgmltag>new</sgmltag> tag lists all objects that should either be changed or added - objects with a status of 'delete' should not be included in this list. New objects in this list should have the status 'new'. All data mentioned here is changed or added - note that if a field is not mentioned, the content of that field (either default or existing content) is unchanged.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ENTITY % putstatus "(change,delete,new)">
 
@@ -807,7 +812,7 @@
 <!ATTLIST field name NMTOKEN #REQUIRED >
 <!ATTLIST field href CDATA #IMPLIED >
 ]]></programlisting>
-    <para>If the out is succesful, the <sgmltag>response</sgmltag> tag contains a result list of <sgmltag>objact</sgmltag> and <sgmltag>relation</sgmltag> tags in the <sgmltag>new</sgmltag> tag.</para>
+    <para>If the out is succesful, the <sgmltag>response</sgmltag> tag contains a result list of <sgmltag>object</sgmltag> and <sgmltag>relation</sgmltag> tags in the <sgmltag>new</sgmltag> tag.</para>
     <para>This list consists of all changed and added nodes - deleted nodes are not included.</para>
     <programlisting format="linespecific"><![CDATA[
 <!ELEMENT put (new|error) >
