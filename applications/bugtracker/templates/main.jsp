@@ -17,13 +17,14 @@
   
   <mm:import externid="flap">search</mm:import>
   
-  
+ <%-- 
   <%@include file="actions.jsp" %>
   
   
   <%@ include file="mainparts/flaps_index.jsp" %>
   
 
+ --%>
   <mm:compare referid="flap" value="search">
     <%@ include file="mainparts/search.jsp" %>
   </mm:compare>
