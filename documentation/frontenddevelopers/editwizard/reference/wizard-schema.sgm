@@ -1,3 +1,6 @@
+<!-- Include file for the editwizard refernce docbook: 
+     'wizard-schema' tag
+-->
 <section id="wizard-schema">
 	<title>wizard-schema</title>
 	<formalpara>

@@ -1,3 +1,6 @@
+<!-- Include file for the editwizard refernce docbook: 
+     'steps' tag
+-->
 <section id="steps">
 	<title>steps</title>
 	<formalpara>

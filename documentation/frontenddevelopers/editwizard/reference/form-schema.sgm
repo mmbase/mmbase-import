@@ -1,3 +1,6 @@
+<!-- Include file for the editwizard refernce docbook: 
+     'form-schema' tag
+-->
 <section id="form-schema">
 	<title>form-schema</title>
 	<formalpara>

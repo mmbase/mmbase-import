@@ -1,3 +1,6 @@
+<!-- Include file for the editwizard refernce docbook: 
+     'action type="delete"' tag
+-->
 <section id="action-delete">
 	<title>action type="delete"</title>
 	<formalpara>
