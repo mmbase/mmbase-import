@@ -73,9 +73,17 @@
 
 
 
-<%-- check if this is the current user's portfolio --%>
+<%-- check if the use may edit this entry --%>
 <mm:import id="mayeditthis">false</mm:import>
-<mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder">
+<%-- user may edit if he's a teacher of this portfolio's owner--%>
+<di:hasrole role="teacher">
+    <mm:list nodes="$user" path="people1,classes,people2,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+         <mm:import id="mayeditthis" reset="true">true</mm:import>
+    </mm:list>
+</di:hasrole>
+
+<%-- user may edit if he's the owner and this is not the assessment portfolio --%>
+<mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder and portfolios.m_type != 1" max="1">
     <mm:import id="mayeditthis" reset="true">true</mm:import>
 </mm:list>
 
@@ -200,7 +208,15 @@
                   </mm:field>
                 </mm:compare>
                 <mm:compare value="handle" inverse="true">
-                    <mm:compare referid="mayeditthis" value="false"><mm:fieldinfo type="guivalue" escape="p"/></mm:compare>
+                    <mm:compare referid="mayeditthis" value="false">
+                    
+                        <mm:compare value="url">
+                            <mm:fieldinfo type="guivalue"/>
+                        </mm:compare>
+                        <mm:compare value="url" inverse="true">
+                            <mm:fieldinfo type="guivalue" escape="p"/>
+                        </mm:compare>
+                    </mm:compare>
                 </mm:compare>
             </mm:fieldinfo>
           </td>
