@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: OwnerAuthorization.java,v 1.5 2002-06-07 12:56:57 pierre Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.6 2002-06-10 12:41:55 eduard Exp $
  */
 public class OwnerAuthorization extends Authorization {
     private static Logger log=Logging.getLoggerInstance(OwnerAuthorization.class.getName());
@@ -131,17 +131,6 @@ public class OwnerAuthorization extends Authorization {
         return permitted;
     }
 
-    public void assert(UserContext user, int node, Operation operation)
-        throws org.mmbase.security.SecurityException {
-        // hmm, we can use check :)
-        if(manager.getActive()){
-            if (!check(user, node, operation)) {
-                throw new org.mmbase.security.SecurityException(
-                    "Operation '" + operation + "' on " + node + " was NOT permitted to " + user.getIdentifier());
-            }
-        }
-    }
-
     public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) {
         if(manager.getActive()){
             // nah, we always except links from other nodes if not anonymous
@@ -151,17 +140,6 @@ public class OwnerAuthorization extends Authorization {
             }
         }
         return true;
-    }
-
-    public void assert(UserContext user, int node, int srcNode, int dstNode, Operation operation)
-        throws org.mmbase.security.SecurityException {
-        // hmm, we can use check :)
-        if(manager.getActive()){
-            if (!check(user, node, srcNode, dstNode, operation)) {
-                throw new org.mmbase.security.SecurityException(
-                    "Operation '" + operation + "' on " + node + " was NOT permitted to " + user.getIdentifier());
-            }
-        }
     }
 
     public String getContext(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
