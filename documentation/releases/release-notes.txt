@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.3 - Release Notes
+                     MMBase 1.6.4 - Release Notes
 ===================================================================
 
 ============
@@ -22,6 +22,14 @@ NEW FEATURES:
 --------------------
 General New Features:
 --------------------
+
+[1.6.4]
+- Improved documentation
+- Added search facilities to the editwizard list page. Made the error page configurable.
+  Added the searchdir attribute to list and relation creation tags. Made optionlist sortable.
+- Added functionality to the jsp editors: you can now create an object as you add a relation.
+  Added a shortlist option for the editors to make the pages a bit more userfriendly.
+  Fills in default age.
 
 [1.6.3]
 - added ConvertDummy class, which can be used if ImageMagic or JAI are unavailable
@@ -109,6 +117,7 @@ MMCI New Features:
 -------------------
 Taglib New Features:
 -------------------
+[1.6.4]
 [1.6.3]
 [1.6.2]
 [1.6.1]
@@ -122,6 +131,7 @@ Taglib New Features:
 ---------------------
 Examples New Features:
 ---------------------
+[1.6.4]
 [1.6.3]
 [1.6.2]
 - jsp editors use MMCI 1.2 features now (getAllowedRelations etc), and use their error-page
@@ -139,6 +149,18 @@ BUG FIXES AND IMPROVEMENTS:
 General Bug Fixes:
 ------------------
 
+[1.6.4]
+- #6073 Flash does not pass image parameters to servlet
+- #6071 html() field format function does not escape properly 
+- #6059 SCAN typerel editor isn't working 
+- #6055 JSP Editors forget search values after search 
+- #6052 Problems with setting start/stop times in audioparts.
+- #6034 Null in integer fields, leads to nullpointer exceptions
+- #6031 MMInformix42node's decodeDBNodeField throws nullpointer on MultiRelations-node
+- #6030/5933 ConvectImageMagick issues warnings.
+- #6024 Unable to search on fields with reserved word name in the JSP Editors.
+- #6007 Config files (modules) etc. still use bad public IDs 
+  
 [1.6.3]
 - #5978 MMInformix42Node throws nullpointer as reading empty
   database-field
@@ -182,10 +204,28 @@ General Bug Fixes:
 - Connection pool can run on a lower amount of connections
 - Nodes are always returned with the correct type of builder
 
+---------------------
+Editwizard bug fixes:
+---------------------
+
+[1.6.4]
+- #6080 Debug page doesn't work when sessionkey used 
+- #6072 Cannot list number in wizard list 
+- #6041 Cannot search for number in editwizard relation search
+- #6040 Search LIKE in editwizards not case-insenstitive 
+- #6035 Wizards don't work if server=tomcat and client refuses cookies.  
+- #6029 Cannot show 'number' field in wizards
+- #6021 Wizards do not check required fields 
+- #6020 Invalid lists are not checked outside the form they are in
+- #6019 Wizards do not validate string fields 
+- #5982 Wrong epoch-time when manipulating datetime in MSIE on the Mac 
 
 ---------------------
 Application bug fixes:
 ---------------------
+
+[1.6.4]
+- #5996 myyahoo/install.jsp shows messy installation notes 
 
 [1.6.3]
 
@@ -200,6 +240,8 @@ Application bug fixes:
 ------------------
 Security Bug Fixes:
 ------------------
+
+[1.6.4]
 
 [1.6.3]
 -  #5976  mm:relatednodes doesn't check read rights of destination node
@@ -220,6 +262,10 @@ Security Bug Fixes:
 ----------------
 MMCI Bug Fixes:
 ----------------
+
+[1.6.4]
+- #6001 Cannot call 'equals' on deleted node
+
 [1.6.3]
 - #5961 'contains' of NodeList work oddly
 
@@ -231,6 +277,8 @@ MMCI Bug Fixes:
 RMMCI Bug Fixes:
 ----------------
 
+[1.6.4]
+
 [1.6.2]
 - improved support for casting (a nodemanager extends a node etc)
 - iterators are working
@@ -239,6 +287,11 @@ RMMCI Bug Fixes:
 ----------------
 Taglib Bug Fixes:
 ----------------
+
+[1.6.4]
+- #6028 Cannot specify 'either' as searchdir value in mm:list tag
+- #6004 mm:related does no behave as expected 
+- #6002 country attribute does not work for mm:locale 
 
 [1.6.3]
 - #5979 FieldInfo's NodeHandler implements check for NodeManager wrong
@@ -269,12 +322,17 @@ Taglib Bug Fixes:
 -----------------
 Example Bug Fixes:
 -----------------
-- advanced editwizard example didn't make much sense, becuase original
+- advanced editwizard example didn't make much sense, because original
   list.xml changed.
 
 ========
 Upgrade:
 ========
+[1.6.4]
+- Replace mmbase.jar
+- Replace editwizard jsp and xsl files
+- Replace jsp editor files
+
 [1.6.3]
 - Replace mmbase.jar
 - Add httppost.xml configuration file to config/utils dir
