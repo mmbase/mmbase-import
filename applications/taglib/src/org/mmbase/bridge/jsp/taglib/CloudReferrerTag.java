@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * class. 
  *
  * @author Michiel Meeuwissen 
- * @version $Id: CloudReferrerTag.java,v 1.22 2004-07-10 12:16:43 nico Exp $ 
+ * @version $Id: CloudReferrerTag.java,v 1.23 2004-07-26 20:17:58 nico Exp $ 
  */
 
 public abstract class CloudReferrerTag extends ContextReferrerTag {
@@ -79,7 +79,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
      * @return a Cloud
      */
-    public Cloud getProviderCloudVar() throws JspTagException {
+    public Cloud getCloudVar() throws JspTagException {
         return findCloudProvider().getCloudVar();
     }
 
@@ -97,7 +97,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     protected Node getNode(String key) throws JspTagException {
         Node n = getNodeOrNull(key);
-        if (n == null) getProviderCloudVar().getNode((String) getObject(key)); // cause exception
+        if (n == null) getCloudVar().getNode((String) getObject(key)); // cause exception
         return n;
     }
     /**
@@ -111,8 +111,8 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
             return (Node) n;
         } else if ((n instanceof String) || (n instanceof Number)) {
             log.debug("found a Node Number in Context");
-            if (! getProviderCloudVar().hasNode(n.toString())) return null;
-            return getProviderCloudVar().getNode(n.toString());
+            if (! getCloudVar().hasNode(n.toString())) return null;
+            return getCloudVar().getNode(n.toString());
         } else {
             throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
         }

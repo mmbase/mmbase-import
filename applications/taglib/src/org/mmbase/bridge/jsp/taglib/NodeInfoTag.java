@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.29 2004-07-10 12:16:44 nico Exp $ 
+ * @version $Id: NodeInfoTag.java,v 1.30 2004-07-26 20:17:59 nico Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -80,7 +80,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             if (nodeManagerAtt == Attribute.NULL) { // living as NodeReferrer
                 nodeManager = getNode().getNodeManager();
             } else {
-                nodeManager = getProviderCloudVar().getNodeManager(nodeManagerAtt.getString(this));
+                nodeManager = getCloudVar().getNodeManager(nodeManagerAtt.getString(this));
             }
         }
         String show = "";

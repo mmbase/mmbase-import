@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.49 2004-07-10 12:16:43 nico Exp $
+ * @version $Id: ListTag.java,v 1.50 2004-07-26 20:17:58 nico Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -152,7 +152,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                 log.debug("searchString " + searchString);
             }
 
-            query = Queries.createQuery(getProviderCloudVar(),
+            query = Queries.createQuery(getCloudVar(),
                     getSearchNodes(),
                     getPath(),
                     fields.getString(this),

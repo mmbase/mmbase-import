@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAgeConstraintTag.java,v 1.3 2004-07-10 12:16:45 nico Exp $
+ * @version $Id: QueryAgeConstraintTag.java,v 1.4 2004-07-26 20:18:00 nico Exp $
  * @see    org.mmbase.module.builders.DayMarkers
  */
 public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
@@ -60,7 +60,7 @@ public class QueryAgeConstraintTag extends CloudReferrerTag implements QueryCont
 
     protected int getDayMark(int age) throws JspTagException {
         log.debug("finding day mark for " + age + " days ago");
-        Cloud cloud = getProviderCloudVar();
+        Cloud cloud = getCloudVar();
         NodeManager dayMarks = cloud.getNodeManager("daymarks");
         NodeQuery query = dayMarks.createQuery();
         StepField step = query.createStepField("daycount");

@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.46 2004-07-10 12:16:43 nico Exp $
+ * @version $Id: ImageTag.java,v 1.47 2004-07-26 20:17:58 nico Exp $
  */
 
 public class ImageTag extends FieldTag {
@@ -65,7 +65,7 @@ public class ImageTag extends FieldTag {
          */
         String sessionName = "";
 
-        if(! getProviderCloudVar().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
+        if(! getCloudVar().getUser().getRank().equals(Rank.ANONYMOUS.toString())) {
             // the user is not anonymous!
             // Need to check if node is readable by anonymous.
             // in that case URLs can be simpler

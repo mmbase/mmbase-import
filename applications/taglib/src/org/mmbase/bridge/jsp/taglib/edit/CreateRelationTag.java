@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A tag lib to create relations.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CreateRelationTag.java,v 1.18 2004-07-10 12:16:46 nico Exp $
+ * @version $Id: CreateRelationTag.java,v 1.19 2004-07-26 20:18:02 nico Exp $
  */
 
 public class CreateRelationTag extends NodeTag {
@@ -48,7 +48,7 @@ public class CreateRelationTag extends NodeTag {
     }
 
     public int doStartTag() throws JspTagException {
-        RelationManager rm = getProviderCloudVar().getRelationManager(role.getString(this));
+        RelationManager rm = getCloudVar().getRelationManager(role.getString(this));
         Node sourceNode      = getNode(source.getString(this));
         Node destinationNode = getNode(destination.getString(this));
 

@@ -16,7 +16,7 @@ import javax.servlet.jsp.JspException;
  * Calls 'doInfo' from NodeManager or from Module.
  *
  * @author Michiel Meeuwissen
- * @version $Id: InfoTag.java,v 1.23 2004-07-10 12:16:42 nico Exp $ 
+ * @version $Id: InfoTag.java,v 1.24 2004-07-26 20:17:58 nico Exp $ 
  * @deprecated
  */
 
@@ -42,7 +42,7 @@ public class InfoTag extends  CloudReferrerTag implements Writer {
             if (module != Attribute.NULL) {
                 throw new JspTagException("Cannot give both module and nodemanager");
             }
-            result = getProviderCloudVar().getNodeManager(nodeManager.getString(this)).getInfo(command.getString(this),
+            result = getCloudVar().getNodeManager(nodeManager.getString(this)).getInfo(command.getString(this),
                                                                                     pageContext.getRequest(),
                                                                                     pageContext.getResponse());
         } else if (module != Attribute.NULL) {
