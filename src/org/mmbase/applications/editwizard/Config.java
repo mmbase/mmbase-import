@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.15 2002-07-18 16:25:29 eduard Exp $
+ * @version $Id: Config.java,v 1.16 2002-07-19 13:05:00 eduard Exp $
  */
 
 public class Config {
@@ -121,6 +121,21 @@ log.info("storing "+name+" :"+value);
                 File refFile;
                 // capture direct reference of http:// and shttp:// referers
                 int protocolPos= config.backPage.indexOf(PROTOCOL);
+                if(request.getParameter("templates") != null && request.getParameter("wizard") != null) {
+                    // get the directory of the xml we are using.....
+                    File workingDir = new File(request.getParameter("wizard")).getParentFile();                    
+                    // now w need to find our template dir, it's relative from the wizard directorie
+                    File templateDir = new File(workingDir.getAbsolutePath() + File.separator +  request.getParameter("templates"));
+                    try {
+                        templateDir = templateDir.getCanonicalFile();
+                    }
+                    catch(java.io.IOException ieo) {
+                        throw new RuntimeException("io error:" + ieo);
+                    }
+                    File check = new File(templateDir, File.separator + "xsl");
+                    if(!check.isDirectory()) throw new RuntimeException("template directory not found : " + check);
+                    extraDirs.add("templates:", templateDir);
+                }                
                 if (protocolPos >=0 ) { // given absolutely
                     String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
                     // Using URL.getPath() would be nicer, but is not availeble in java 1.2
