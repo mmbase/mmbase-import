@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.260 2004-06-22 08:37:09 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.261 2004-07-01 11:05:43 johannes Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5239,6 +5239,16 @@ The 0 is just counter, which starts at 0 on every page.
 				<value>AND</value>
 			</possiblevalue>
 		</attribute>
+        <example><![CDATA[<mm:listnodescontainer type="people">
+  <mm:composite operator="OR">
+    <mm:constraint field="username" value="admin" operator="LIKE" />
+    <mm:constraint field="username" value="test" operator="LIKE" />
+  </mm:composite>
+  <mm:listnodes>
+    <mm:field name="username" /> <br />
+  </mm:listnodes>
+</mm:listnodescontainer>]]> 
+        </example>
 	</tag>
 
 	<tag>
