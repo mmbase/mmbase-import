@@ -20,7 +20,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManager.java,v 1.8 2003-07-31 09:53:36 pierre Exp $
+ * @version $Id: StorageManager.java,v 1.9 2003-07-31 17:19:53 pierre Exp $
  */
 public interface StorageManager {
 
@@ -55,7 +55,7 @@ public interface StorageManager {
 
     /**
      * Cancels any transaction that was started and rollback changes if possible.
-     * @return <code>true</code> if changes were rolled back, <code>false</code> if the transaction was 
+     * @return <code>true</code> if changes were rolled back, <code>false</code> if the transaction was
      * canceled but the storage does not support rollback
      * @throws StorageException if a transaction is not currently active, or an error occurred during rollback
      */
@@ -141,13 +141,13 @@ public interface StorageManager {
      * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    public boolean create() throws StorageException;
+    public void create() throws StorageException;
 
     /**
      * Determine if a storage element exists for storing the given builder's objects
      * @param builder the builder to check
      * @return <code>true</code> if the storage element exists, false if it doesn't
-     * @throws StorageException if an error occurred while querying the storage 
+     * @throws StorageException if an error occurred while querying the storage
      */
     public boolean created(MMObjectBuilder builder) throws StorageException;
 
@@ -155,7 +155,7 @@ public interface StorageManager {
      * Determine if the basic storage elements exist
      * Basic storage elements include the 'object' storage (where all objects and their types are registered).
      * @return <code>true</code> if basic storage elements exist
-     * @throws StorageException if an error occurred while querying the storage 
+     * @throws StorageException if an error occurred while querying the storage
      */
     public boolean created() throws StorageException;
 
@@ -169,7 +169,7 @@ public interface StorageManager {
 
     /**
      * Return the total number of objects in the storage
-     * @return the number of objects 
+     * @return the number of objects
      * @throws StorageException if the basic storage elements do not exist
      */
     public int size() throws StorageException;
