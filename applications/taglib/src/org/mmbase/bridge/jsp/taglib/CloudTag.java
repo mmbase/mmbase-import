@@ -82,6 +82,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
 
     private static String DEFAULT_CLOUD_NAME = "mmbase";
+    private static String DEFAULT_AUTHENTICATION = "name/password";
     private String jspvar;
 
     private static final String REALM = "realm_";
@@ -96,7 +97,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private static HashMap anonymousClouds = new HashMap();
 
-    private String authenticate = "name/password";
+    private String authenticate = DEFAULT_AUTHENTICATION;
 
     private String loginpage =  null;
     private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.    
@@ -632,14 +633,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 log.debug("Request to login with loginpage, trying to perform an login");
             }
             // now pass all the attributes to the cloud-login method of the cloudcontext!
-            authenticate = request.getParameter(LOGINPAGE_AUTHENTICATE_PARAMETER);
-            if(authenticate == null) {
-                throw new JspTagException ("no parameter '"+LOGINPAGE_AUTHENTICATE_PARAMETER+"' was specified for login on the cloud!");
+            String authenticatePassed=request.getParameter(LOGINPAGE_AUTHENTICATE_PARAMETER);
+            if(authenticatePassed != null) {
+                authenticate=authenticatePassed;
             }
-            cloudName = request.getParameter(LOGINPAGE_CLOUD_PARAMETER);
-            if(cloudName == null) {
-                if (log.isDebugEnabled()) log.debug("no parameter '" + LOGINPAGE_CLOUD_PARAMETER + "' was specified for login on the cloud!");
-                cloudName = DEFAULT_CLOUD_NAME;
+            String cloudNamePassed=request.getParameter(LOGINPAGE_CLOUD_PARAMETER);
+            if (cloudNamePassed!=null) {
+                cloudName =cloudNamePassed; 
             }
             Enumeration enum = request.getParameterNames();                 
             while(enum.hasMoreElements()) {
