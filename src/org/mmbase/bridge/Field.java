@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.8 2002-07-24 10:59:46 pierre Exp $
+ * @version $Id: Field.java,v 1.9 2002-07-24 11:15:13 pierre Exp $
  */
 public interface Field {
 
@@ -90,6 +90,15 @@ public interface Field {
      * @return  <code>true</code> if the field is required
      */
     public boolean isRequired();
+
+    /**
+     * Returns whether this field is unique (should have content that occurs only once).
+     * Note that MMBase lets the database layer handle this. If your database or configuration does 
+     * not support this the uniqueness may not be enforced.
+     *
+     * @return  <code>true</code> if the field is unique
+     */
+    public boolean isUnique();
 
     /**
      * Returns the maximum length of data this field can contain.
