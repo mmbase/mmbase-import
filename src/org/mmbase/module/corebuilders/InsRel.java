@@ -89,9 +89,11 @@ public class InsRel extends MMObjectBuilder {
 
 	    MMObjectNode n1=getNode(snumber);
         MMObjectNode n2=getNode(dnumber);
-
+        // Gerard: temporary removed here, should be removed from databaselayer!!!!
+        /*
 		mmb.mmc.changedNode(n1.getIntValue("number"),n1.getTableName(),"r");
 		mmb.mmc.changedNode(n2.getIntValue("number"),n2.getTableName(),"r");
+        */
 		return(result);
 	}
 
