@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.19 2002-07-25 15:15:16 michiel Exp $
+ * @version $Id: Config.java,v 1.20 2002-07-26 17:14:20 michiel Exp $
  */
 
 public class Config {
@@ -101,7 +101,7 @@ public class Config {
             config  = c;
             config.sessionId = res.encodeURL("");
 
-            if (config.backPage == null) {
+            if (config.language == null) {
                 config.language = getParam("language", "");
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
@@ -138,7 +138,7 @@ public class Config {
 
                 if (protocolPos >=0 ) { // given absolutely
                     String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
-                    // Using URL.getPath() would be nicer, but is not availeble in java 1.2
+                    // Using URL.getPath() would be nicer, but is not available in java 1.2
                     // suppose it is from the same server, web can find back the directory then:
                     refFile = new File(request.getRealPath(path.substring(request.getContextPath().length()))).getParentFile();
 
@@ -177,6 +177,18 @@ public class Config {
 
                 File jspFileDir = new File(request.getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
                 File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data"); // ew default data/xsls is in ../data then
+
+
+                if (! config.language.equals("")) {
+                    File i18n = new File(basedir, "i18n" + File.separator + config.language);
+                    if (i18n.isDirectory()) {
+                        extraDirs.add("i18n:", i18n);
+                    } else {
+                        log.warn("Tried to internatationlize the editwizard for language " + config.language + " for which support is lacking (" + i18n + " is not an existing directory)");
+                    }
+                }
+
+
                 extraDirs.add("ew:", basedir);
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
             }
@@ -227,6 +239,7 @@ public class Config {
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);
             wizard.wiz.setTemplatesDir(config.templates);
+            wizard.wiz.setLanguage(config.language);
             return wizard;
         }
         public abstract void config(Config.ListConfig c);

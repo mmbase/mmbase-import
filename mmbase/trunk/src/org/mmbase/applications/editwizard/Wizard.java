@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.56 2002-07-24 12:07:58 pierre Exp $
+ * @version $Id: Wizard.java,v 1.57 2002-07-26 17:14:20 michiel Exp $
  *
  */
 public class Wizard {
@@ -69,6 +69,7 @@ public class Wizard {
     private String sessionId;
     private String sessionKey="editwizard";
     private String referrer="";
+    private String language = "en";
     private String templatesDir = null;
 
     /**
@@ -219,6 +220,9 @@ public class Wizard {
 
     public void setReferrer(String s) {
         referrer = s;
+    }
+    public void setLanguage(String l) {
+        language = l;
     }
 
     public void setTemplatesDir(String f) {
@@ -406,6 +410,7 @@ public class Wizard {
         params.put("sessionid",  sessionId);
         params.put("sessionkey", sessionKey);
         params.put("referrer",   referrer);
+        params.put("language",   language);
         if (templatesDir != null) params.put("templatedir",  templatesDir);
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
