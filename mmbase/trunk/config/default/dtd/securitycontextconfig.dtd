@@ -1,6 +1,6 @@
 <!ELEMENT contextconfig ( loginmodules, accounts, groups, contexts ) > 
     <!ELEMENT loginmodules ( module+ ) >     
-    	<!ELEMENT module ( property? ) >
+    	<!ELEMENT module ( property* ) >
     	<!ATTLIST module class NMTOKEN #REQUIRED >
     	<!ATTLIST module name CDATA #REQUIRED > 
     	    <!ELEMENT property ( #PCDATA ) >
@@ -23,9 +23,9 @@
     	    		
     <!ELEMENT contexts ( context+ ) >
     <!ATTLIST contexts default NMTOKEN #REQUIRED >			
-    	<!ELEMENT context ( operation+, possible ) >
+    	<!ELEMENT context ( operation*, possible+ ) >
     	<!ATTLIST context name NMTOKEN #REQUIRED > 
-    	    <!ELEMENT operation ( grant ) >
+    	    <!ELEMENT operation ( grant* ) >
     	    <!ATTLIST operation type CDATA #REQUIRED > 
     	    	<!ELEMENT grant EMPTY >
     	    	<!ATTLIST grant group NMTOKEN #REQUIRED > 
