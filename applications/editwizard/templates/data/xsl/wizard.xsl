@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.20 2002-05-28 11:23:44 pierre Exp $
+  @version $Id: wizard.xsl,v 1.21 2002-06-04 12:22:54 pierre Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -84,7 +84,7 @@
   </xsl:template>
 
   <xsl:template match="form">
-    <xsl:for-each select="field|list">
+    <xsl:for-each select="fieldset|field|list">
       <tr>
         <xsl:apply-templates select="." />
       </tr>
@@ -95,12 +95,37 @@
   </xsl:template>
 
   <xsl:template match="field">
-
     <td align="left" valign="top" width="150">
-      <xsl:if test="../../item[count(field) &gt; 1]">
+      <xsl:call-template name="prompt" />
+    </td>
+    <td align="left">
+      <xsl:if test="../../item[count(field|fieldset) &gt; 1]">
+        <xsl:attribute name="style">border-width:0 1 0 0; border-style:solid; border-color:#000000; padding-right:3;</xsl:attribute>
+      </xsl:if>
+      <xsl:call-template name="fieldintern" />
+    </td>
+  </xsl:template>
+
+  <xsl:template match="fieldset">
+    <td align="left" valign="top" width="60">
+      <xsl:call-template name="prompt" />
+    </td>
+    <td align="left">
+      <xsl:if test="../../item[count(field|fieldset) &gt; 1]">
+        <xsl:attribute name="style">border-width:0 1 0 0; border-style:solid; border-color:#000000; padding-right:3;</xsl:attribute>
+      </xsl:if>
+      <xsl:for-each select="field">
+       <xsl:call-template name="fieldintern" />
+       <xsl:text disable-output-escaping="yes"> </xsl:text>
+      </xsl:for-each>
+    </td>
+  </xsl:template>
+
+  <xsl:template name="prompt">
+      <xsl:if test="../../item[count(field|fieldset) &gt; 1]">
         <xsl:attribute name="style">border-width:0 0 0 1; border-style:solid; border-color:#000000; padding-left:3;</xsl:attribute>
       </xsl:if>
-      <img src="{$mediadir}nix.gif" width="150" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
+      <img src="{$mediadir}nix.gif" width="60" height="1" hspace="0" vspace="0" border="0" alt="" /><br />
       <span id="prompt_{@fieldname}" class="valid" prompt="{prompt}">
         <xsl:choose>
           <xsl:when test="description">
@@ -112,15 +137,11 @@
             <xsl:attribute name="description"><xsl:value-of select="prompt" /></xsl:attribute>
           </xsl:otherwise>
         </xsl:choose>
-
         <xsl:value-of select="prompt" />
       </span>
-    </td>
-    <td align="left">
-      <xsl:if test="../../item[count(field) &gt; 1]">
-        <xsl:attribute name="style">border-width:0 1 0 0; border-style:solid; border-color:#000000; padding-right:3;</xsl:attribute>
-      </xsl:if>
+   </xsl:template>
 
+   <xsl:template name="fieldintern">
       <xsl:choose>
         <xsl:when test="@ftype='data'">
           <span style="width:400;"><xsl:value-of select="value" /></span>
@@ -262,7 +283,6 @@
           </input>
         </xsl:otherwise>
       </xsl:choose>
-    </td>
   </xsl:template>
 
   <xsl:template match="item">
@@ -308,13 +328,15 @@
             </table>
           </span>
         </xsl:when>
-        <xsl:when test="count(field) &lt; 2">
-          <table border="0" cellspacing="0" cellpadding="0" width="610">
+        <xsl:when test="count(field|fieldset) &lt; 2">
+          <table border="0" cellspacing="0" cellpadding="0" width="100%">
             <tr>
               <td align="left" valign="top">
                 <table border="0" cellspacing="0" cellpadding="0">
                   <tr>
-                    <xsl:apply-templates select="field" />
+                     <xsl:for-each select="field|fieldset">
+                      <xsl:apply-templates select="." />
+                     </xsl:for-each>
                   </tr>
                 </table>
               </td>
@@ -335,7 +357,7 @@
             </tr>
             <!-- draw all fields, if there are any for this item -->
             <tr><td colspan="2" style="border-width:1 1 0 1; border-style:solid; border-color:#000000;"><img src="{$mediadir}nix.gif" width="1" height="3" hspace="0" vspace="0" border="0" alt="" /></td></tr>
-            <xsl:for-each select="field">
+            <xsl:for-each select="field|fieldset">
               <tr>
                 <xsl:apply-templates select="." />
               </tr>
