@@ -237,7 +237,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         String body = bodyContent.getString().trim();
         bodyContent.clearBody(); // should not be shown itself.
 
-        if (! body.equals("") && wantXML()) {
+        if(body.trim().length() > 0) {
+            throw new JspTagException ("The body of the formatter cannot contain anything, except from taglibs.");
+        }
+/*        if (wantXML()) {
             if (log.isDebugEnabled()) log.debug("bodycontent:>" + body + "<");
             Document bodyContentDocument;
             try {
@@ -249,8 +252,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 log.debug("created an element: " + bodyContentDocument.getDocumentElement().getTagName());            
             }
             org.w3c.dom.Node field = doc.importNode(bodyContentDocument.getDocumentElement(), true);
-            doc.appendChild(field);            
-        }
+            doc.appendChild(field);
+        } */
 
 
         if (log.isDebugEnabled()) {
