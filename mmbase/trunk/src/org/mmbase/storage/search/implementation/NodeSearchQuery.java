@@ -32,7 +32,7 @@ import org.mmbase.storage.search.*;
  * <li>{@link #addAggregatedField(Step,FieldDefs,int) addAggregatedField()}
  *
  * @author  Rob van Maris
- * @version $Id: NodeSearchQuery.java,v 1.7 2003-03-21 14:29:10 kees Exp $
+ * @version $Id: NodeSearchQuery.java,v 1.8 2003-07-29 07:55:18 michiel Exp $
  * @since MMBase-1.7
  */
 public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
@@ -43,6 +43,7 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
     /** Map, maps fields to stepfields. */
     private Map stepFields = new HashMap();
     
+
     /** 
      * Creator.
      *
@@ -52,28 +53,53 @@ public class NodeSearchQuery extends BasicSearchQuery implements SearchQuery {
      */
     public NodeSearchQuery(MMObjectBuilder builder) {
         if (builder == null) {
-            throw new IllegalArgumentException(
-					       "Invalid builder value: " + builder);
+            throw new IllegalArgumentException("Invalid builder value: " + builder);
         }
         if (builder instanceof VirtualBuilder) {
-            throw new IllegalArgumentException(
-					       "Invalid builder type, because this is a virtual builder: "
-					       + builder.getClass().getName());
+            throw new IllegalArgumentException("Invalid builder type, because this is a virtual builder: " + builder.getClass().getName());
         }
         this.builder = builder;
         Step step = super.addStep(builder);
         Iterator iFields = builder.getFields().iterator();
         while (iFields.hasNext()) {
             FieldDefs field = (FieldDefs) iFields.next();
-	    if (field.getDBType() != FieldDefs.TYPE_BYTE 
-		&& (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT 
-		    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
+	    if ( field.getDBType() != FieldDefs.TYPE_BYTE 
+		 && ( field.getDBState() == FieldDefs.DBSTATE_PERSISTENT 
+	      || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
 		    )
 		) {
 		BasicStepField stepField = super.addField(step, field);
 		stepFields.put(field, stepField);
 	    }
         }
+    }
+    NodeSearchQuery(SearchQuery searchQuery) {
+        super(searchQuery);
+        List steps = searchQuery.getSteps();
+        if (steps.size() != 1) throw new IllegalArgumentException("Given search-query cannot be a NodeSearchQuery");
+        Step step = (Step) steps.get(0);
+        fields.clear();
+        Iterator iFields = builder.getFields().iterator();
+        while (iFields.hasNext()) {
+            FieldDefs field = (FieldDefs) iFields.next();
+	    if ( field.getDBType() != FieldDefs.TYPE_BYTE 
+		 && ( field.getDBState() == FieldDefs.DBSTATE_PERSISTENT 
+	      || field.getDBState() == FieldDefs.DBSTATE_SYSTEM
+		    )
+		) {
+		BasicStepField stepField = super.addField(step, field);
+		stepFields.put(field, stepField);
+	    }
+        }
+        
+        
+    }
+
+    protected void copySteps(SearchQuery q) {
+    }
+
+
+    protected void copyFields(SearchQuery q) {
     }
     
     /**
