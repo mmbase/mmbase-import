@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.8 2003-09-25 12:53:10 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.9 2004-01-06 13:18:10 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 
@@ -78,7 +78,7 @@ public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
         try {
             String mmfieldName = prefix + getDisallowedField(fieldName);
             FieldDefs field = node.getBuilder().getField(mmfieldName);
-            if (field ==null) {
+            if (field == null && !node.getBuilder().isVirtual()) {
                 log.warn("Cannot determine field, fieldname passed: " + fieldName +
                           " prefix passed: " + prefix +
                           " from builder : " + node.getBuilder().getTableName());
