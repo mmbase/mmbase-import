@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.36 2003-12-21 16:16:05 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.37 2003-12-23 21:46:27 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -33,7 +33,7 @@ function doOnLoad_ew() {
         var ftype = elem.getAttribute("ftype");
         switch (dttype) {
             case "datetime":
-                if (elem.value == "" || (elem.value == -1)) {
+                if (elem.value == "") { //|| (elem.value == -1)
                     var d = new Date();
                     elem.value = Math.round(d.getTime()/1000);
                 }
@@ -233,9 +233,7 @@ function doCancel() {
 
 function doSave() {
     doCheckHtml();
-    
-    var savebut = document.getElementById("bottombutton-save");
-    if (!savebut.disabled) {
+    if (!isSaveInactive()) {
         setButtonsInactive();
         doSendCommand("cmd/commit////");
         cleanScroll();
@@ -244,12 +242,20 @@ function doSave() {
 
 function doSaveOnly() {
     doCheckHtml();
-    
-    var savebut = document.getElementById("bottombutton-save");
-    if (!savebut.disabled) {
+    if (!isSaveInactive()) {
         setButtonsInactive();
         doSendCommand("cmd/save////");
     }
+}
+
+function isSaveInactive() {
+    var savebut = document.getElementById("bottombutton-save");
+    return (savebut.getAttribute("inactive") == 'true');
+}
+
+function setSaveInactive(inactive) {
+    var savebut = document.getElementById("bottombutton-save");
+    savebut.setAttribute("inactive", inactive);
 }
 
 function doRefresh() {
