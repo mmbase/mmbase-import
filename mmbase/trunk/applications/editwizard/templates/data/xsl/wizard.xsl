@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.93 2003-06-12 13:01:18 pierre Exp $
+  @version $Id: wizard.xsl,v 1.94 2003-07-07 13:23:46 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -24,7 +24,7 @@
 
   <!-- It can be usefull to add a style, change the title -->
   <xsl:template name="style"> 
-     <title><xsl:call-template name="i18n"><xsl:with-param name="nodes"  select="title" /></xsl:call-template></title>
+     <title><xsl:call-template name="i18n"><xsl:with-param name="nodes"  select="title" /></xsl:call-template> - <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="form[@id=/wizard/curform]/title" /></xsl:call-template></title>
      <link rel="stylesheet" type="text/css" href="../style/wizard.css" />
      <xsl:call-template name="extrastyle" /><!-- see base.xsl -->
   </xsl:template>
