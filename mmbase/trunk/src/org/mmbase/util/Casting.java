@@ -69,7 +69,7 @@ public class Casting {
         if (!(o instanceof Document)) {
             //do conversion from string to Document thing...
             if (log.isServiceEnabled()) {
-                log.service("Object " + o.getClass().getName() + "is not a Document, but a " + o.getClass().getName());
+                log.service("Object " + o.getClass().getName() + " is not a Document, but a " + o.getClass().getName());
             }
             return convertStringToXML(toString(o), documentType, conversion);
         }
