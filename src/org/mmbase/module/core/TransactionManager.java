@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.26 2003-11-26 17:55:07 michiel Exp $
+ * @version $Id: TransactionManager.java,v 1.26.2.1 2004-06-23 12:39:56 pierre Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -78,9 +78,9 @@ public class TransactionManager implements TransactionManagerInterface {
                 n=v.indexOf(node);
                 if (n==-1) {
                     v.addElement(node);
-                } else {
-                    throw new TransactionManagerException(
-                        "node not added as it was already in the transaction");
+//                } else {
+//                    throw new TransactionManagerException(
+//                        "node not added as it was already in the transaction");
                 }
             }
         } else {
@@ -103,9 +103,9 @@ public class TransactionManager implements TransactionManagerInterface {
                 n=v.indexOf(node);
                 if (n>=0) {
                     v.removeElementAt(n);
-                } else {
-                    throw new TransactionManagerException(
-                        "node is not in transaction ");
+//                } else {
+//                    throw new TransactionManagerException(
+//                        "node is not in transaction ");
                 }
             } else {
                 throw new TransactionManagerException(
