@@ -7,9 +7,12 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 */
 /*
-$Id: VideoParts.java,v 1.12 2000-11-23 14:42:46 vpro Exp $
+$Id: VideoParts.java,v 1.13 2000-12-14 15:52:04 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.12  2000/11/23 14:42:46  vpro
+Wilbert: Added cvs log and id, removed unused fields diskid and playtime, unnesc overrides of getGuiIndicator, constructor and getNewNode
+
 */
 package org.mmbase.module.builders;
 
@@ -29,11 +32,11 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: VideoParts.java,v 1.12 2000-11-23 14:42:46 vpro Exp $
+ * @version $Id: VideoParts.java,v 1.13 2000-12-14 15:52:04 vpro Exp $
  */
-public class VideoParts extends MMObjectBuilder {
-
-	private static String classname = "VideoParts"; // getClass().getName();
+public class VideoParts extends MediaParts {
+	private String classname = getClass().getName();
+	private boolean debug = false;
 
 	public int insertDone(EditState ed,MMObjectNode node) {
 		String sourcepath=ed.getHtmlValue("sourcepath");
@@ -532,12 +535,47 @@ public class VideoParts extends MMObjectBuilder {
 	public void setDefaults(MMObjectNode node) {
 		node.setValue("storage",2);
 	}
-
-	public String getVideopartUrl(MMBase mmbase, scanpage sp, int number, int speed, int channels)
-	{
-        	return VideoUtils.getVideoUrl( mmbase, sp, number, speed, channels);
+	
+	/**
+	 * Calls the get url method for videoparts.
+	 * @param sp the scanpage
+	 * @param number the videopart object number
+	 * @param speed the user speed value
+	 * @param channels the user channels value
+	 * @return a String with url to a videopart.
+	 */
+	public String doGetUrl(scanpage sp,int number,int userSpeed,int userChannels) {
+		return getVideopartUrl(mmb,sp,number,userSpeed,userChannels);
+	}
+	
+	/**
+	 * Gets the url for a videopart using the mediautil classes.
+	 * @param mmbase mmbase reference
+	 * @param sp the scanpage
+	 * @param number the videopart object number
+	 * @param speed the user speed value
+	 * @param channels the user channels value
+	 * @return a String with url to a videopart.
+	 */
+	public String getVideopartUrl(MMBase mmbase,scanpage sp,int number,int speed,int channels){
+        return VideoUtils.getVideoUrl(mmbase,sp,number,speed,channels);
 	}
 
+	/**
+	 * Gets minimal speed setting from videoutil
+	 * @return minimal speed setting
+	 */
+	public int getMinSpeed() {
+		return RawVideoDef.MINSPEED;
+	}
+	/**
+	 * Gets minimal channel setting from videoutil
+	 * @return minimal channel setting
+	 */
+	public int getMinChannels() {
+		return RawVideoDef.MINCHANNELS;
+	}
+	
 	public static void main( String args[] )
 	{
 		String time = "05:04:03:02.01";
