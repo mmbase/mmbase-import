@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.11 2003-08-04 20:26:36 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.12 2003-08-05 09:07:00 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -197,7 +197,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             return dateHandler.whereHtmlInput(field);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
+            if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
                 return null;
             } else {
                 return super.whereHtmlInput(field);
@@ -220,7 +220,7 @@ public class IntegerHandler extends AbstractTypeHandler {
             dateHandler.whereHtmlInput(field, query);
         } else if ("types".equals(guiType) || "reldefs".equals(guiType)) {
             String id = prefix(fieldName + "_search");
-            if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
+            if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
             } else {
                 super.whereHtmlInput(field, query);
             }

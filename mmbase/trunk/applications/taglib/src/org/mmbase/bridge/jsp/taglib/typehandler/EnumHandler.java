@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.9 2003-08-04 20:26:36 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.10 2003-08-05 09:07:00 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -123,7 +123,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public String whereHtmlInput(Field field) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
+        if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
             return "";
         } else {
             return super.whereHtmlInput(field);
@@ -134,7 +134,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
     public void whereHtmlInput(Field field, Query query) throws JspTagException {
         String fieldName = field.getName();
         String id = prefix(fieldName + "_search");
-        if ( (String) context.getContextProvider().getContainer().findAndRegister(context.getPageContext(), id) == null) {
+        if ( (String) context.getContextProvider().getContainer().find(context.getPageContext(), id) == null) {
         } else {
             super.whereHtmlInput(field, query);
         }
