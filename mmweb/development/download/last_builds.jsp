@@ -20,7 +20,7 @@
 	}
 
 List  showDirs(File thisDir, String prefix, int max) throws IOException {
-  List buildInfos = new Vector();
+  List buildInfos = new ArrayList();
   File[] content = thisDir.listFiles(); 
   Arrays.sort(content, new DirSorter());
   int found = 0;
