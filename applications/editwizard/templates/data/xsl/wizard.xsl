@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.29 2002-07-02 09:54:58 michiel Exp $
+  @version $Id: wizard.xsl,v 1.30 2002-07-02 21:17:37 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -57,6 +57,8 @@
               message_mindate="{$message_mindate}" message_maxdate="{$message_maxdate}"
               message_dateformat="{$message_dateformat}"
               message_thisnotvalid="{$message_thisnotvalid}" message_notvalid="{$message_notvalid}"
+              message_listtooshort="{$message_listtooshort}"            
+              invalidlist="{/wizard/form[@id=/wizard/curform]/@invalidlist}"
         >
           <input type="hidden" name="curform" value="{/wizard/curform}" />
           <input type="hidden" name="cmd" value="" id="hiddencmdfield" />

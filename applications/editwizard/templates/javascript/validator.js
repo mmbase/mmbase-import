@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.4 2002-06-28 12:48:22 pierre Exp $
+ * @version  $Id: validator.js,v 1.5 2002-07-02 21:17:36 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -189,6 +189,11 @@ function validateElement_validator(el, silent) {
 function doValidateForm() {
     var invalid=false;
     form = document.forms["form"];
+
+	if (form.getAttribute("invalidlist")!="") {
+	   invalid = true;
+    }	
+
     for (var i=0; i<form.elements.length; i++) {
         var elem = form.elements[i];
 
