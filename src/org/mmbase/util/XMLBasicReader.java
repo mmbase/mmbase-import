@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.27 2002-11-18 15:12:11 pierre Exp $
+ * @version $Id: XMLBasicReader.java,v 1.26.2.1 2002-11-18 15:14:28 pierre Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());

@@ -18,7 +18,6 @@ import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.BodyContent;
 
 import org.mmbase.bridge.Node;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,48 +31,26 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(NodeTag.class.getName());
 
-    private Attribute number    = Attribute.NULL;
-    private Attribute element   = Attribute.NULL;
+    private String number    = null;
+    private String type      = null;
+    private String element   = null;
 
     private final static int NOT_FOUND_THROW = 0;
     private final static int NOT_FOUND_SKIP  = 1;
     private final static int NOT_FOUND_PROVIDENULL  = 2;
 
 
-    private Attribute notfound = Attribute.NULL;
+    private int notfound = NOT_FOUND_THROW;
 
-
-    private int getNotfound() throws JspTagException {
-        if (notfound == Attribute.NULL) {
-            return  NOT_FOUND_THROW;
-        }
-        String is = notfound.getString(this).toLowerCase();
-        if ("skip".equals(is)) {
-            return NOT_FOUND_SKIP;
-        } else if ("skipbody".equals(is)) {
-            return NOT_FOUND_SKIP;
-        } else if ("throw".equals(is)) {
-            return NOT_FOUND_THROW;
-        } else if ("exception".equals(is)) {
-            return NOT_FOUND_THROW;
-        } else if ("throwexception".equals(is)) {
-            return NOT_FOUND_THROW;
-        } else if ("null".equals(is)) {
-            return NOT_FOUND_PROVIDENULL;
-        } else if ("providenull".equals(is)) {
-            return  NOT_FOUND_PROVIDENULL;
-        } else {
-            throw new JspTagException("Invalid value for attribute 'notfound' " + is + "(" + notfound + ")");
-        }
-    }
     /**
      * Release all allocated resources.
      */
     public void release() {
         log.debug("releasing");
         super.release();
-        number = Attribute.NULL;
-        element = Attribute.NULL;
+        number = null;
+        type = null ;
+        element = null;
     }
 
 
@@ -81,12 +58,29 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);
         }
-        this.number = getAttribute(number);
+        this.number = getAttributeValue(number);
     }
 
 
     public void setNotfound(String i) throws JspTagException {
-        notfound = getAttribute(i);
+        String is = getAttributeValue(i);
+        if ("skip".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_SKIP;
+        } else if ("skipbody".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_SKIP;
+        } else if ("throw".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_THROW;
+        } else if ("exception".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_THROW;
+        } else if ("throwexception".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_THROW;
+        } else if ("null".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_PROVIDENULL;
+        } else if ("providenull".equalsIgnoreCase(is)) {
+            notfound = NOT_FOUND_PROVIDENULL;
+        } else {
+            throw new JspTagException("Invalid value for attribute 'notfound' " + is + "(" + i + ")");
+        }
     }
     /**
      * This function cannot be added because of Orion.
@@ -104,33 +98,33 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
      * clusternodes.
      */
     public void setElement(String e) throws JspTagException {
-        element = getAttribute(e);
+        element = getAttributeValue(e);
     }
 
 
     public int doStartTag() throws JspTagException{
         Node node = null;
-        if (referid != Attribute.NULL) {
-            String referString = referid.getString(this);
+        
+        if (referid != null) {
             // try to find if already in context.
             if (log.isDebugEnabled()) {
                 log.debug("looking up Node with " + referid + " in context");
             }
-            switch(getNotfound()) {               
+            switch(notfound) {
             case NOT_FOUND_SKIP:         { 
-                node = getNodeOrNull(referString);
+                node = getNodeOrNull(referid);
                 if (node == null) return SKIP_BODY;
                 break;
             }
             case NOT_FOUND_PROVIDENULL:  {
-                node = getNodeOrNull(referString);
+                node = getNodeOrNull(referid);
                 break;
             }                
-            default: node = getNode(referString);
+            default: node = getNode(referid);
             }
 
             if(referid.equals(id)) {
-                getContextTag().unRegister(referString);
+                getContextTag().unRegister(referid);
                 // register it again, but as node
                 // (often referid would have been a string).                
             }
@@ -138,19 +132,19 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         
         if (node == null) {
             log.debug("node is null");
-            if (number != Attribute.NULL) {
+            if (number != null) {
                 // explicity indicated which node (by number or alias)
-                switch(getNotfound()) {
-                case NOT_FOUND_SKIP:         if (! getCloud().hasNode(number.getString(this))) return SKIP_BODY;
-                case NOT_FOUND_PROVIDENULL:  if (! getCloud().hasNode(number.getString(this))) { node = null; break; }
-                default:                     node = getCloud().getNode(number.getString(this));
+                switch(notfound) {
+                case NOT_FOUND_SKIP:         if (! getCloud().hasNode(number)) return SKIP_BODY;
+                case NOT_FOUND_PROVIDENULL:  if (! getCloud().hasNode(number)) { node = null; break; }
+                default:                     node = getCloud().getNode(number);
                 }
                 
             } else {
                 // get the node from a parent element.
                 NodeProvider nodeProvider = (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", null);
-                if (element != Attribute.NULL) {
-                    node = nodeProvider.getNodeVar().getNodeValue(element.getString(this));
+                if (element != null) {
+                    node = nodeProvider.getNodeVar().getNodeValue(element);
                 } else {
                     node = nodeProvider.getNodeVar();
                 }

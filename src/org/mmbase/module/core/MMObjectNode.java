@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.91 2003-01-06 13:01:34 kees Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.3 2003-01-03 18:57:10 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -348,8 +348,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         return setValue(fieldName,new Integer(fieldValue));
     }
 
-    public boolean setValue(String fieldName, long fieldValue) {
-        return setValue(fieldName, new Long(fieldValue));
+
+    public boolean setValue(String fieldName,long fieldValue) {
+        return setValue(fieldName,new Long(fieldValue));
     }
 
     /**
@@ -565,9 +566,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * Executes getFunctionValue of MMOBjectBuilder
      * @since MMBase-1.6
-     * @see MMObjectBuilder#getFunctionValue
      */
     public Object getFunctionValue(String function, List args) {
         return  parent.getFunctionValue(this, function, args);
@@ -1028,6 +1027,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         int count = 0;
         MMObjectBuilder type = parent.mmb.getBuilder(wantedtype);
         if (type != null) {
+
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
                 relation_cache_miss++;
@@ -1044,7 +1044,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     } else {
                         nodetype=parent.getNodeType(snumber);
                     }
-                    if (type.isInstanceOfBuilder(parent.mmb.getTypeDef().getValue(nodetype))) {                        
+                    if (type.isInstanceOfBuilder(parent.mmb.getTypeDef().getValue(nodetype))) {
                         count++;
                     }
                 }

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * 
  * @author Rob vermeulen
  * @author Kees Jongenburger
- * @version $Id: LinkChecker.java,v 1.8 2003-01-16 10:48:01 kees Exp $
+ * @version $Id: LinkChecker.java,v 1.7 2002-03-10 21:33:19 kees Exp $
  **/
 public class LinkChecker extends ProcessorModule implements Runnable {
 
@@ -35,14 +35,14 @@ public class LinkChecker extends ProcessorModule implements Runnable {
     MMBase mmbase;
     MMObjectBuilder urls;
     MMObjectBuilder jumpers;
-    SendMailInterface sendmail;
+    SendMail sendmail;
 
     public void init() {
 	super.init();
 	mmbase=(MMBase)getModule("MMBASEROOT");
 	urls=(MMObjectBuilder)mmbase.getMMObject("urls");
 	jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
-	sendmail=(SendMailInterface)getModule("sendmail");
+	sendmail=(SendMail)getModule("sendmail");
 	log.info("Module LinkChecker started");
 	start();
     }
@@ -76,9 +76,20 @@ public class LinkChecker extends ProcessorModule implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"LinkChecker");
-            kicker.setDaemon(true);
             kicker.start();
         }
+    }
+
+    /**
+     * stop the Thead
+     * @deprecated start and stop methods ot Threads should never be overwritten
+     **/
+    public void stop() {
+        /* Stop thread */
+        kicker.setPriority(Thread.MIN_PRIORITY);
+        kicker.suspend();
+        kicker.stop();
+        kicker = null;
     }
 
     public void run () {
@@ -99,7 +110,7 @@ public class LinkChecker extends ProcessorModule implements Runnable {
 		jumpers=(MMObjectBuilder)mmbase.getMMObject("jumpers");
 	    }
 	    if(sendmail==null) {
-		sendmail=(SendMailInterface)getModule("sendmail");
+		sendmail=(SendMail)getModule("sendmail");
 	    }
 
 	    // Get all urls.

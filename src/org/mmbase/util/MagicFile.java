@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.8 2003-01-21 12:30:37 kees Exp $
+ * @version $Id: MagicFile.java,v 1.7.2.1 2003-01-21 12:16:48 kees Exp $
  */
 public class MagicFile  {
     private static Logger log = Logging.getLoggerInstance(MagicFile.class.getName());

@@ -75,6 +75,7 @@ public class ImageTag extends FieldTag {
         }
 
         String servletPath;
+
         {
             List args = new ArrayList();
             args.add(sessionName);

@@ -243,7 +243,6 @@ public abstract class FileWatcher extends Thread {
     }
     
     private void removeFiles() {
-        log.debug("Start");
         synchronized(this) {
             // remove files if necessary
             Iterator ri = removeFiles.iterator();
@@ -266,7 +265,6 @@ public abstract class FileWatcher extends Thread {
             }
             removeFiles.clear();
         }
-        log.debug("End");
     }
 
     /**

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.22 2003-01-06 17:04:29 michiel Exp $
+ * @version $Id: Attachments.java,v 1.21.2.1 2003-01-06 17:03:20 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -178,7 +178,6 @@ public class Attachments extends AbstractServletBuilder {
         checkHandle(node);
         return super.commit(node);
     }
-
     /**
      * Implements 'mimetype' function (Very simply for attachments, because they have the field).
      *

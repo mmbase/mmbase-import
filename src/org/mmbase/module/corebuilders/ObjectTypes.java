@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.24 2002-11-28 10:34:34 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.23.2.1 2002-11-28 10:28:51 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());

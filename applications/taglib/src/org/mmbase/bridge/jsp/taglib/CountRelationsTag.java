@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import org.mmbase.bridge.Node;
@@ -41,14 +41,14 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
     public void haveBody() { helper.haveBody(); }
 
     private static Logger log = Logging.getLoggerInstance(CountRelationsTag.class.getName());
-    private Attribute type = Attribute.NULL;
+    private String type;
 
     /**
      * Set the type of related nodes wich should be counted. If not set all
      * related nodes are counted.
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttribute(type);
+        this.type = getAttributeValue(type);
     }
 
     public int doStartTag() throws JspTagException {
@@ -57,10 +57,10 @@ public class CountRelationsTag extends NodeReferrerTag implements Writer {
         } else {
             log.debug("Search the node.");
             Node node = getNode();
-            if (type == Attribute.NULL) {
+            if (type == null) {
                 helper.setValue(new Integer(node.countRelations()));
             } else {
-                helper.setValue(new Integer(node.countRelatedNodes(type.getString(this))));
+            helper.setValue(new Integer(node.countRelatedNodes(type)));
             }
         }
         helper.setJspvar(pageContext);

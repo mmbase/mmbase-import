@@ -63,7 +63,6 @@ NetComponents can be found at:
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
-
   <property name="source.dir"   location="." />
   <property name="build.dir"    value="${source.dir}/build" />
   <property name="download.dir" value="${build.dir}/download" />
@@ -76,7 +75,7 @@ NetComponents can be found at:
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
-  <property name="distro"      value="MMBase 1.7.0"/>
+  <property name="distro"      value="MMBase 1.6.1"/>
   <property name="documentation.builders.language" value="en" />
   <property name="source-config.dir"         location="${source.dir}/config/default"/>
   <property name="source-config-builders.dir" location="${source.dir}/config/default/builders;${source.dir}/config/default/applications"/>
@@ -164,8 +163,8 @@ build.compiler=modern
 optimize=on
 debug=off
 deprecation=on
-distro=MMBase 1.7.0
-version=1.7.0-dev
+distro=MMBase 1.6.1
+version=1.6.1
     </echo>
 
     <!-- copy a readme and other basic docs from documentation dir -->
@@ -221,6 +220,7 @@ version=1.7.0-dev
     <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
           tofile="${build.dir}/mmbase/LICENSE"/>
 
+
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip">
      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}" 
@@ -269,6 +269,9 @@ version=1.7.0-dev
     </copy>
 
   </target>
+
+
+
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation" 
           depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation,get.jdbc">
@@ -383,9 +386,9 @@ version=1.7.0-dev
           <include name="*.zip"/>
           <exclude name="mmbase.jar"/>
         </fileset>
-         <fileset dir="${optional.lib.dir}">
-           <include name="*.jar"/>
-           <include name="*.zip"/>
+        <fileset dir="${optional.lib.dir}">
+          <include name="*.jar"/>
+          <include name="*.zip"/>
         </fileset>
       </classpath>
     </available>
@@ -1543,6 +1546,7 @@ Version: MMBase build ${version}
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
@@ -1633,10 +1637,11 @@ Version: MMBase build ${version}
 
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
-					fork="yes"
+          fork="yes"
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>
@@ -1648,10 +1653,11 @@ Version: MMBase build ${version}
 
     <java classname="org.mmbase.util.XSLTransformer"
           classpathref="compile.classpath"
-					fork="yes"
+          fork="yes"
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source.dir}/config/default" />
       <jvmarg value="-mx100m" />
+      <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
       <classpath>
         <pathelement location="${build.dir}/classes" />
       </classpath>

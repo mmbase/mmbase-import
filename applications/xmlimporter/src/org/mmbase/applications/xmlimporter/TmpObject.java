@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: TmpObject.java,v 1.4 2003-01-09 17:48:02 robmaris Exp $
+ * @version $Id: TmpObject.java,v 1.3.2.2 2003-01-09 17:50:17 robmaris Exp $
  */
 public class TmpObject {
 

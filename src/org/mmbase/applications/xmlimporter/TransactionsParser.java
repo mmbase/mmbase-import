@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.SAXParser;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionsParser.java,v 1.4 2003-01-06 18:29:36 robmaris Exp $
+ * @version $Id: TransactionsParser.java,v 1.3.2.1 2003-01-06 18:17:55 robmaris Exp $
  */
 
 public class TransactionsParser extends DefaultHandler {

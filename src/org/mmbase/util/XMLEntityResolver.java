@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $ Id: $
+ * @version $Id: XMLEntityResolver.java,v 1.18.2.3 2002-12-20 12:42:04 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 

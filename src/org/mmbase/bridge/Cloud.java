@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.32 2002-12-02 09:49:21 pierre Exp $
+ * @version $Id: Cloud.java,v 1.31.2.1 2002-12-02 09:41:20 pierre Exp $
  */
 public interface Cloud {
 

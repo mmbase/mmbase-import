@@ -6,7 +6,7 @@
     <articleinfo>
     <title>MMBase Configuration documentation</title>
     <date>4 december 2002</date>
-    <edition>$Id: configuration.xml,v 1.14 2002-12-05 21:14:54 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.12.2.2 2002-12-05 21:11:57 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>

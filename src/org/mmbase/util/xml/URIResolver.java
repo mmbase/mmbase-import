@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.12 2003-01-17 17:11:06 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.9.2.3 2003-01-17 17:09:18 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {

@@ -14,13 +14,13 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
-//import org.mmbase.module.builders.protocoldrivers.*;
+import org.mmbase.module.builders.protocoldrivers.*;
 import org.mmbase.util.logging.*;
 
 /**
  * @javadoc
- * @author  $Author: rob $
- * @version $Revision: 1.18 $ $Date: 2003-01-14 10:53:19 $
+ * @author  $Author: vpro $
+ * @version $Revision: 1.17 $ $Date: 2002-05-06 14:39:42 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -31,8 +31,10 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
     private String host;
     private Vector possibleServices=new Vector();
 
-    //private Hashtable name2driver;
-    //private Hashtable url2driver;
+    /** @scope private */
+    Hashtable name2driver;
+    /** @scope private */
+    Hashtable url2driver;
     private int starttime;
 
     /**
@@ -129,7 +131,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
         if (imoke==false) {
             createMySelf(machineName);
         }
-        //if (name2driver==null) startProtocolDrivers();
+        if (name2driver==null) startProtocolDrivers();
     }
 
     /**
@@ -240,8 +242,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
     /**
      * @javadoc
      */
-    /*
-    private void startProtocolDrivers() {
+    public void startProtocolDrivers() {
         name2driver=new Hashtable();
         url2driver=new Hashtable();
         Enumeration e=search("");
@@ -291,7 +292,13 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
             }
         }
     }
-    */
+
+    /**
+     * @javadoc
+     */
+    public ProtocolDriver getDriverByName(String name) {
+        return (ProtocolDriver)name2driver.get(name);
+    }
 
     /**
      * @javadoc

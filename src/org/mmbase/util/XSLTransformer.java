@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.13 2002-12-05 17:31:07 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.12.2.1 2002-12-05 17:29:42 michiel Exp $
  *
  */
 public class XSLTransformer {

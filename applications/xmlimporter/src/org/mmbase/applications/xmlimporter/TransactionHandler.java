@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Rob van Maris: Finnalist IT Group
  * @author Erik Visser: Finnalist IT Group
  * @since MMBase-1.5
- * @version $Id: TransactionHandler.java,v 1.6 2003-01-09 14:44:28 robmaris Exp $
+ * @version $Id: TransactionHandler.java,v 1.4.2.2 2003-01-09 14:39:31 robmaris Exp $
  */
 
 public class TransactionHandler extends Module implements TransactionHandlerInterface {

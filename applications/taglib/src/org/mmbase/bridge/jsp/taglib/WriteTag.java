@@ -9,9 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import org.mmbase.bridge.Node;
-
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.http.Cookie;
@@ -52,19 +49,20 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
 
-    private Attribute sessionvar;
-    private Attribute cookie;
-    private Attribute value;
+    private String sessionvar;
+    private String cookie;
+    private String value;
 
     public void setSession(String s) throws JspTagException {
-        sessionvar = getAttribute(s);
+        sessionvar = getAttributeValue(s);
     }
 
     public void setCookie(String s) throws JspTagException {
-        cookie = getAttribute(s);
+        cookie = getAttributeValue(s);
     }
     public void setValue(String v) throws JspTagException {
-        value = getAttribute(v);
+        value = getAttributeValue(v);
+        if (log.isDebugEnabled()) log.debug("found value " + value);
     }
 
 
@@ -78,9 +76,9 @@ public class WriteTag extends ContextReferrerTag implements Writer {
 
         if (value != null) {
             if (getReferid() != null) {
-                 throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
+                throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
             }
-            return value.getValue(this);
+            return value;
         }
 
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
@@ -104,18 +102,18 @@ public class WriteTag extends ContextReferrerTag implements Writer {
             if (pageContext.getSession() == null) {
                 throw new JspTagException("Cannot write to session if session is disabled");
             }
-            pageContext.getSession().setAttribute(sessionvar.getString(this), helper.getValue());
+            pageContext.getSession().setAttribute(sessionvar, helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         if (cookie != null) {
             Object v = helper.getValue();
             Cookie c;
             if (v instanceof String) {
-                c = new Cookie(cookie.getString(this), (String) v);
+                c = new Cookie(cookie, (String) v);
             } else if (v instanceof Integer) {
-                c = new Cookie(cookie.getString(this), "" + v);
+                c = new Cookie(cookie, "" + v);
             } else if (v instanceof Node) {
-                c = new Cookie(cookie.getString(this), "" + ((Node) v).getNumber());
+                c = new Cookie(cookie, "" + ((Node) v).getNumber());
             } else {
                 throw new JspTagException(v.toString() + " is not of the right type to write to cookie. It is a (" +  v.getClass().getName() + ")");
             }

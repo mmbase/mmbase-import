@@ -17,22 +17,22 @@
         </frameset>
 <% } else { %>
         <frameset rows="60,*" border="0" frameborder="0" framespacing="0">
-                <frame src="<mm:url page="<%="nav.jsp?category="+category+"&subcategory="+subcategory%>" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+                <frame src="<mm:url page='<%="nav.jsp?category="+category+"&subcategory="+subcategory%>' />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
         <% if (category.equals("examples")) { %>
                   <frame src="<mm:url page="/mmexamples/index.jsp" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else if (category.equals("documentation")) { %>
                   <frame src="<mm:url page="/mmdocs/index.html" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else if (subcategory==null) { %>
-                  <frame src="<mm:url page="<%=category+"/main.jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+                  <frame src="<mm:url page='<%=category+"/main.jsp"%>' />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
-                  <frame src="<mm:url page="<%=category+"/"+subcategory+".jsp"%>" />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+                  <frame src="<mm:url page='<%=category+"/"+subcategory+".jsp"%>' />" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } %>
         </frameset>
 <% } %>
 
 <noframes>
 <body class="basic">
-<table summary="navigation">
+<table summary="navigation" width="93%" cellspacing="1" cellpadding="3" border="0">
 
 <tr>
   <td class="data"><img src="images/logo.gif" border="0" alt="MMBase">
@@ -40,7 +40,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
   <th class="header">About MMBase</td>
 </tr>
 <tr>
@@ -52,7 +52,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
   <th class="header">Demos</td>
 </tr>
 <tr>
@@ -61,7 +61,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
   <th class="header">Editors</td>
 </tr>
 <tr>
@@ -70,7 +70,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
   <th class="header">Administration</td>
 </tr>
 <tr>
@@ -94,7 +94,7 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
+<tr align="left">
   <th class="header">Tools</td>
 </tr>
 <tr>

@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.57 2002-12-18 20:57:15 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.54.2.2 2002-12-18 20:54:27 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
