@@ -47,7 +47,7 @@
 		<datasource builder="videofragments"   path="Media/videofragments.xml" />
 		<datasource builder="audiosources"     path="Media/audiosources.xml" />
 		<datasource builder="lookup"           path="Media/lookup.xml" />
-		<datasource builder="mediaproviders"   path="Media/mediaprovider.xml" />
+		<datasource builder="mediaproviders"   path="Media/mediaproviders.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
