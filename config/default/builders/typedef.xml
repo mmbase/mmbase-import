@@ -144,7 +144,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>name</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
+			<type state="persistent" size="32" notnull="false" key="true">STRING</type>
 		</db>
 	</field>
 
