@@ -563,14 +563,16 @@ public class MMBase extends ProcessorModule  {
  		File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
-            for (int i=0;i<files.length;i++) {
-                String bname=files[i];
-                if (bname.endsWith(".xml")) {
-                     bname=bname.substring(0,bname.length()-4);
-                     loadBuilderFromXML(bname,ipath);
-                } else {
- 				 	 loadBuilders(ipath +  bname + File.separator);
- 			    }
+            if (files!=null) {
+                for (int i=0;i<files.length;i++) {
+                    String bname=files[i];
+                    if (bname.endsWith(".xml")) {
+                         bname=bname.substring(0,bname.length()-4);
+                         loadBuilderFromXML(bname,ipath);
+                    } else {
+ 	    			 	 loadBuilders(ipath +  bname + File.separator);
+ 		    	    }
+                }
             }
         }
 		
@@ -596,14 +598,15 @@ public class MMBase extends ProcessorModule  {
  			// not in the builders path, so we need to search recursively
  			File dirList = new File(path);
  			String[] files = dirList.list();
-
- 			for (int i=0; i<files.length;i++) {
- 				String lPath = ipath + files[i] + File.separator;
- 				if ((new File(builderpath + lPath)).isDirectory()) {
- 					bul = loadBuilder(builder, lPath);
- 					if (bul!=null) {
- 						return bul;
- 					}
+            if (files!=null) {
+ 			    for (int i=0; i<files.length;i++) {
+ 				    String lPath = ipath + files[i] + File.separator;
+     				if ((new File(builderpath + lPath)).isDirectory()) {
+ 	    				bul = loadBuilder(builder, lPath);
+ 		    			if (bul!=null) {
+ 			    			return bul;
+ 				    	}
+ 				    }
  				}
  			}
  			return(null);
