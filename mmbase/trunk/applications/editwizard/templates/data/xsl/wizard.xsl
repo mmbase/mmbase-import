@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.130 2004-06-02 16:21:25 michiel Exp $
+    @version $Id: wizard.xsl,v 1.131 2004-06-03 08:47:38 michiel Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -42,7 +42,7 @@
     <script type="text/javascript" src="{$javascriptdir}validator.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
-    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}">
+    <script type="text/javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}?language={$language}&amp;country={$country}&amp;timezone={$timezone}&amp;referrer={$referrer_encoded}">
       <xsl:comment>help IE</xsl:comment>
     </script>
     <script type="text/javascript">
@@ -628,10 +628,10 @@
   <xsl:template name="ftype-data">
     <xsl:choose>
       <xsl:when test="@dttype=&apos;datetime&apos;">
-        <xsl:value-of select="date:format(string(value), $date-pattern, $timezone, $language)" disable-output-escaping="yes"/>
+        <xsl:value-of select="date:format(string(value), $date-pattern, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:when test="@dttype=&apos;millisecondsdatetime&apos;">
-        <xsl:value-of select="date:format(string(value), $date-pattern, 1, $timezone, $language)" disable-output-escaping="yes"/>
+        <xsl:value-of select="date:format(string(value), $date-pattern, 1, $timezone, $language, $country)" disable-output-escaping="yes"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="value" mode="line"/>
