@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE database PUBLIC "-//MMBase//DTD database config 1.2//EN" "http://www.mmbase.org/dtd/database_1_2.dtd" [
+<!DOCTYPE database PUBLIC "-//MMBase//DTD database config 1.2//EN" "http://www.mmbase.org/dtd/database_1_2.dtd" 
+[
   <!ENTITY extra  SYSTEM "postgresql_extra.xml">
 ]
 >
-
 <database>
   <name>PostgreSQL</name>
-  <mmbasedriver>org.mmbase.storage.database.OODatabaseStorage</mmbasedriver>
+  <mmbasedriver>org.mmbase.storage.database.PostgreSqlStorage</mmbasedriver>
   <sqlhandler>org.mmbase.storage.search.implementation.database.PostgreSqlSqlHandler</sqlhandler>
   <chainedsqlhandler></chainedsqlhandler>
   <scheme>
