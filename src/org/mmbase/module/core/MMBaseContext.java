@@ -26,11 +26,11 @@ import org.mmbase.util.logging.Logging;
  * Using MMBaseContext class you can retrieve the servletContext from anywhere
  * using the get method.
  *
- * @version $Id: MMBaseContext.java,v 1.24 2002-03-04 14:44:11 pierre Exp $
+ * @version $Id: MMBaseContext.java,v 1.25 2002-03-13 10:07:52 michiel Exp $
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.24 $ $Date: 2002-03-04 14:44:11 $
+ * @$Revision: 1.25 $ $Date: 2002-03-13 10:07:52 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -429,8 +429,10 @@ public class MMBaseContext {
                 htmlRootUrlPathInitialized = true; 
                 return htmlRootUrlPath;
             }
-            htmlRootUrlPath = sx.getInitParameter("mmbase.htmlrooturlpath");
-            if (htmlRootUrlPath == null) {
+            String initPath = sx.getInitParameter("mmbase.htmlrooturlpath");
+            if (initPath != null) {
+                htmlRootUrlPath = initPath;
+            } else {
                 // init the htmlRootUrlPath
                 // fetch resource path for the current serletcontext root...
                 String contextUrl = convertResourceUrl(sx, "/");
@@ -449,6 +451,10 @@ public class MMBaseContext {
                     else {
                         log.warn("the current context:" + contextUrl + " did not begin with the root context :"+rootContextUrl);
                     }
+                } else {
+                    log.warn("Could not determine htmlRootUrlPath. Using default " + htmlRootUrlPath 
+                             + "\n  contextUrl     :" + contextUrl
+                             + "\n  rootContextUrl :" + rootContextUrl );
                 }
             }
 	    htmlRootUrlPathInitialized = true;                      
