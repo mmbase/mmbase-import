@@ -26,26 +26,30 @@
 
 #speeltuin /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 
-speeltuin /home/michiel/cvsmail  /home/michiel/speeltuin.log $USER %{sVv}
+speeltuin $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/speeltuin.log $USER %{sVv}
 
-tests /home/michiel/cvsmail  /home/michiel/tests.log $USER %{sVv}
+tests $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/tests.log $USER %{sVv}
 
-applications /home/michiel/cvsmail  /home/michiel/applications.log $USER %{sVv}
+applications $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/applications.log $USER %{sVv}
 
-documentation /home/michiel/cvsmail  /home/michiel/documentation.log $USER %{sVv}
+documentation $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/documentation.log $USER %{sVv}
 
-src /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+#src /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+src $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/src.log $USER %{sVv}
 
-html /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+#html /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+html $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/html.log $USER %{sVv}
 
-config /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
-
-
-#all       /home/michiel/cvsmail  /home/michiel/all.log $USER %{sVv}
-all /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+#config /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+config $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/config.log $USER %{sVv}
 
 
-CVSROOT /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+#all /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+all $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/all.log $USER %{sVv}
+
+
+#CVSROOT /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
+CVSROOT $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/CVSROOT.log $USER %{sVv}
 
 ALL /home/wwwtech/bin/updateVersions >/tmp/updateVersions.log 2>/tmp/updateVersions.log
 DEFAULT (echo ""; id; echo %s; date; cat) >> $CVSROOT/CVSROOT/commitlog
