@@ -470,13 +470,19 @@ public class BasicBundle implements BundleInterface {
        while (n2 != null) {
            if (n2.getNodeName().equals("description")) {
                org.w3c.dom.Node n3 = n2.getFirstChild();
-               description = n3.getNodeValue();
+               if (n3!=null) {
+                   description = n3.getNodeValue();
+               }
            } else if (n2.getNodeName().equals("releasenotes")) {
                org.w3c.dom.Node n3 = n2.getFirstChild();
-               releasenotes = n3.getNodeValue();
+               if (n3!=null) {
+                   releasenotes = n3.getNodeValue();
+               }
            } else if (n2.getNodeName().equals("installationnotes")) {
                org.w3c.dom.Node n3 = n2.getFirstChild();
-               installationnotes = n3.getNodeValue();
+               if (n3!=null) {
+                   installationnotes = n3.getNodeValue();
+               }
            } else if (n2.getNodeName().equals("license")) {
                org.w3c.dom.Node n3 = n2.getFirstChild();
                if (n3 != null) {
