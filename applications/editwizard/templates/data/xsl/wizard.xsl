@@ -138,7 +138,7 @@
               <xsl:text>rows="10"</xsl:text>
             </xsl:otherwise></xsl:choose>
           <xsl:apply-templates select="@*" />
-          <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of select="value" />
+          <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of disable-output-escaping="yes" select="value" />
           <xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
         </xsl:when>
         <xsl:when test="@ftype='relation' or @ftype='enum'">
