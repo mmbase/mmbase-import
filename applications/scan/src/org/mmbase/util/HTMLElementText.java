@@ -11,46 +11,51 @@ package org.mmbase.util;
 
 import java.util.*;
 
-public class HTMLElementText  extends HTMLElement 
-{
-	public HTMLElementText()
-	{
-	}	
+/**
+ * Generates a HTML Element: INPUT TEXT, uses this variables which are set in the<br>
+ * super class (HTMLElement) to generate HTML:
+ * <ul>
+ * <li>boolean moreValues : if true it will take the first value of a list of items.</li>
+ * <li>Vector valuesList  : The list of items. </li>
+ * <li>String size        : if not null the HTML tag SIZE=size is added </li>
+ * </ul>
+ *
+ * @version 26-Sep-1996
+ * @author Jan van Oosterom
+ */
+public class HTMLElementText  extends HTMLElement {
+    /**
+     * Creates a HTMLElementText
+     */
+    public HTMLElementText() {
+    }
 
-	protected String generate()
-	{		
-		String html = "";
-		if (moreValues)
-		{
-			System.out.println("valuesList: " + valuesList );
-			Enumeration e = valuesList.elements();
-			if (e.hasMoreElements())
-			{
-				String val = (String) e.nextElement();
-				//System.out.println("val: " + val );
-
-				if (val.equals("null"))
-				{
-					val = "";
-				}
-				html += " <INPUT TYPE=TEXT NAME=" + name + " VALUE=\"" + val + "\"";
-				if (size != null) html += "SIZE= " +  size;	
- 				html += ">" ;
-				System.out.println("html: " + html);
-			}
-		}
-		else
-		{
-			if (values.equals("null"))
-			{
-				values = "";
-			}
-			html += " <INPUT TYPE=TEXT NAME=" + name + " "; 		
-			if (values != null) html +=	"VALUE=\"" + values + "\"";
-			if (size != null) html += "SIZE= " +  size;	
- 			html += ">";
-			System.out.println("html2: " + html);
-		}
-		return html;
-	}
+    /**
+     * Generates the HTML code.
+     */
+    protected String generate() {
+        String html = "";
+        if (moreValues) {
+            Enumeration e = valuesList.elements();
+            if (e.hasMoreElements()) {
+                String val = (String) e.nextElement();
+                if (val.equals("null")) {
+                    val = "";
+                }
+                html += " <input type=\"text\" name=\"" + name + "\" ";
+                html += "value=\"" + val + "\"";
+                if (size != null) html += "size=\"" + size+"\"";
+                html += ">" ;
+            }
+        } else {
+            if (values.equals("null")) {
+                values = "";
+            }
+            html += " <input type=\"text\" name=\"" + name + "\" ";
+            if (values != null) html += "value=\"" + values + "\"";
+            if (size != null) html += "size=\"" + size+"\"";
+            html += ">";
+        }
+        return html;
+    }
 }
