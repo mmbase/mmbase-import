@@ -74,16 +74,10 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
         packageStep step = getNextPackageStep();
         step.setUserFeedBack("display/theme packager started");
 
-        String basedir = target.getBaseDir() + getItemStringValue(target, "basedir");
-        String include = getItemStringValue(target, "include");
-        String exclude = getItemStringValue(target, "exclude");
+        String themename = getItemStringValue(target, "themename");
 
         step = getNextPackageStep();
-        step.setUserFeedBack("used basedir : " + basedir);
-        step = getNextPackageStep();
-        step.setUserFeedBack("used include : " + include);
-        step = getNextPackageStep();
-        step.setUserFeedBack("used exclude : " + exclude);
+        step.setUserFeedBack("used themename : " + themename);
 
         String newfilename = getBuildPath() + getName(target).replace(' ', '_') + "@" + getMaintainer(target) + "_display_theme_" + newversion;
         try {
@@ -98,10 +92,24 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
             createDependsMetaFile(jarfile, target);
             step.setUserFeedBack("creating depends.xml file...done");
 
-            int filecount = addFiles(jarfile, basedir, include, exclude, "display", "theme");
+            step = getNextPackageStep();
+            step.setUserFeedBack("theme name ... "+themename);
+
+	    String packpath=target.getBaseDir()+"themes"+File.separator+themename+File.separator+File.separator+"theme.xml";
+            addFile(jarfile, packpath,themename+File.separator+"theme.xml", "themefile", "");
+
+	    packpath=target.getBaseDir()+"themes"+File.separator+themename+File.separator+"images"+File.separator;
+            int filecount = addFiles(jarfile, packpath, "*", "CVS", "image themefiles", "images/"+themename);
             if (filecount == 0) {
                 step = getNextPackageStep();
-                step.setUserFeedBack("did't add any display files, no files found");
+                step.setUserFeedBack("did't add any theme image files, no files found");
+                step.setType(packageStep.TYPE_WARNING);
+            }
+	    packpath=target.getBaseDir()+"themes"+File.separator+themename+File.separator+"css"+File.separator;
+            filecount = addFiles(jarfile, packpath, "*", "CVS", "css themefiles", "css/"+themename);
+            if (filecount == 0) {
+                step = getNextPackageStep();
+                step.setUserFeedBack("did't add any theme css files, no files found");
                 step.setType(packageStep.TYPE_WARNING);
             }
             jarfile.close();
@@ -148,9 +156,7 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
      */
     public boolean decodeItems(Target target) {
         super.decodeItems(target);
-        decodeStringItem(target, "include");
-        decodeStringItem(target, "basedir");
-        decodeStringItem(target, "exclude");
+        decodeStringItem(target, "themename");
         return true;
     }
 
@@ -164,9 +170,7 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
     public String getXMLFile(Target target) {
         String body = getDefaultXMLHeader(target);
         body += getDefaultXMLMetaInfo(target);
-        body += "\t<basedir>" + getItemStringValue(target, "basedir") + "</basedir>\n";
-        body += "\t<include>" + getItemStringValue(target, "include") + "</include>\n";
-        body += "\t<exclude>" + getItemStringValue(target, "exclude") + "</exclude>\n";
+        body += "\t<themename>" + getItemStringValue(target, "themename") + "</themename>\n";
         body += getPackageDependsXML(target);
         body += getRelatedPeopleXML("initiators", "initiator", target);
         body += getRelatedPeopleXML("supporters", "supporter", target);
@@ -190,9 +194,7 @@ public class DisplayThemeCreator extends BasicCreator implements CreatorInterfac
      * @param  target  The new defaults value
      */
     public void setDefaults(Target target) {
-        target.setItem("basedir", "thememanager/");
-        target.setItem("include", "*");
-        target.setItem("exclude", "CVS");
+        target.setItem("themename", target.getName());
     }
 
 }
