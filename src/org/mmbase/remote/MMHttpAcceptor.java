@@ -238,22 +238,30 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			out.flush();
 			DataInputStream in=new DataInputStream(connect.getInputStream());
 			String line=readline(in);
-			if (line.indexOf("200 OK")!=-1) {
-				Hashtable headers=readHeaders(in);
-				try {
-					int len=Integer.parseInt((String)headers.get("Content-Length"));
-   	 				byte[] buffer=readContentLength(len,in);
-					String xml=new String(buffer,0,0,buffer.length);
-					RemoteBuilder serv=(RemoteBuilder)listeners.get(nodename);
-					if (serv==null) return(true);
-					serv.gotXMLValues(xml);
-				} catch(Exception e) {
- 					debug("getNode("+nodename+","+tableName+"): ERROR: while connecting to host("+remoteHost+","+remotePort+"): ");
-					e.printStackTrace();
+			if (line!=null && !line.equals("")) {
+				if (line.indexOf("200 OK")!=-1) {
+					Hashtable headers=readHeaders(in);
+					try {
+						int len=Integer.parseInt((String)headers.get("Content-Length"));
+	   	 				byte[] buffer=readContentLength(len,in);
+						String xml=new String(buffer,0,0,buffer.length);
+						RemoteBuilder serv=(RemoteBuilder)listeners.get(nodename);
+						if (serv==null) return(true);
+						serv.gotXMLValues(xml);
+					} catch(Exception e) {
+	 					debug("getNode("+nodename+","+tableName+"): ERROR: while connecting to host("+remoteHost+","+remotePort+"): ");
+						e.printStackTrace();
+					}
+				} else {
+					debug("getNode(): Error expected 200 OK got: "+line);
 				}
-			}	
+			} else {
+				debug("getNode(): Error nothing received from server");
+			}
 			connect.close();
-		} catch(Exception e) { debug("getNode() general failure"); e.printStackTrace(); }
+		} catch(Exception e) { 
+			debug("getNode() general failure"); e.printStackTrace();
+		}
 		return(true);
 	}
 
