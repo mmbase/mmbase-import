@@ -95,7 +95,7 @@ When you want to place a configuration file then you have several options, wich 
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.7 2004-10-12 19:34:54 michiel Exp $
+ * @version $Id: ResourceLoader.java,v 1.8 2004-10-12 21:19:58 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -716,10 +716,20 @@ public class ResourceLoader extends ClassLoader {
         return new EncodingDetectingOutputStreamWriter(os);        
     }
 
-
+    /**
+     * Returns a 'Resolver' for a certain resource.
+     */
 
     Resolver getResolver(String name) {
         return new Resolver(findResource(name));
+    }
+
+    /**
+     * Returns an abstract URL for a resource with given name. findResource(name).toString() would give an 'external' form.
+     */
+    public String toInternalForm(String name) {
+        URL u = findResource(name);
+        return u.getProtocol() + ":" + u.getPath();
     }
 
     /**
@@ -748,7 +758,7 @@ public class ResourceLoader extends ClassLoader {
 
 
     /**
-     * Resolves MM:urls
+     * Resolves these abstract mm:-urls to actual things, like Files, MMObjectNodes and 'external' URL's.
      */
     protected  static class Resolver {
         private URL url;
@@ -865,6 +875,9 @@ public class ResourceLoader extends ClassLoader {
             return null;
         }
 
+        /**
+         * Returns an URL which is associated with a certain resource-node.
+         */
         URL getNodeURL(MMObjectNode node) {
             try {
                 return new URL(NODE_URL_CONTEXT, "" + node.getNumber());

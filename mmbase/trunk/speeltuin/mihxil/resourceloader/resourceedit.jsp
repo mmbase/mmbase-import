@@ -20,11 +20,11 @@
   <tr>
     <th class="main" colspan="2">
       <mm:present referid="resource">
-	<a href="<mm:url referids="search" />">&lt;-- Back</a> | 
+        <a href="<mm:url referids="search" />">&lt;-- Back</a> | 
       </mm:present>
       <mm:write referid="title" /> 
     </th> 
-    <th class="main" colspan="1">Root: <%= resourceLoader.findResource("") %></th>
+    <th class="main" colspan="1">Root: <%= resourceLoader.toInternalForm("") %></th>
   </tr> 
   <input type="hidden" name="keepsearch" value="<mm:write referid="search" />" />
   <mm:notpresent referid="resource">
