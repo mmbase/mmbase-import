@@ -3,7 +3,7 @@
      * upload.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: upload.jsp,v 1.8 2002-11-27 14:56:22 pierre Exp $
+     * @version  $Id: upload.jsp,v 1.9 2003-08-27 12:30:21 michiel Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -45,7 +45,7 @@ if (did==null) {
     }
 %>
 <div id="form">
-    <form action="processuploads.jsp?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
+    <form action="<mm:url page="processuploads.jsp" />?did=<%=did%>&proceed=true&popupid=<%=popupId%>&sessionkey=<%=ewconfig.sessionKey%>&wizard=<%=wizard%>&maxsize=<%=ewconfig.maxupload%>" enctype="multipart/form-data" method="POST" >
         <input type="file" name="<%=did%>" onchange="upload();"></input><br />
         <input type="button" onclick="upload();" value="upload"></input><br />
     </form>
