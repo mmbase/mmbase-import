@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @rename VwmTasks
  * @author Arjan Houtman
  * @author Pierre van Rooden (javadocs)
- * @version $Id: Vwmtasks.java,v 1.16 2004-10-08 10:59:39 pierre Exp $
+ * @version $Id: Vwmtasks.java,v 1.17 2004-10-27 15:42:22 pierre Exp $
  */
 public class Vwmtasks extends MMObjectBuilder implements Runnable {
     /**
@@ -88,6 +88,18 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
      * Time (in seconds since 1/1/1970) that the builder last checked for new tasknodes to en handled
      */
     int lastchecked=0;
+
+    public boolean init () {
+        if (oType != -1) {
+            return true;
+        } else {
+            boolean success = super.init ();
+            if (success) {
+                start();
+            }
+            return success;
+        }
+    }
 
     /**
      * Starts the thread for the task scheduler
@@ -201,8 +213,10 @@ public class Vwmtasks extends MMObjectBuilder implements Runnable {
     protected void getVwmTasks() {
         String vwm,task;
         // get out alter ego Vwms Builder to pass the new tasks
-        if (vwms==null)
+        if (vwms==null) {
             vwms = (Vwms)mmb.getMMObject("vwms");
+            vwms.init(); // make sure it is initialized
+        }
         int checktime = lastchecked;
         lastchecked= (int)(System.currentTimeMillis()/1000);
         //Enumeration e=search("WHERE changedtime>"+checktime+" AND wantedcpu='"+getMachineName()+"' AND status=1");

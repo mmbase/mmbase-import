@@ -39,7 +39,7 @@ import org.mmbase.util.logging.*;
  * @author Arjan Houtman
  * @author Rico Jansen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: Vwms.java,v 1.19 2004-10-08 10:59:39 pierre Exp $
+ * @version $Id: Vwms.java,v 1.20 2004-10-27 15:42:21 pierre Exp $
  */
 public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
@@ -85,7 +85,15 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
      * @return Always true.
      */
     public boolean init () {
-      return super.init ();
+        if (oType != -1) {
+            return true;
+        } else {
+            boolean success = super.init ();
+            if (success) {
+                startVwms();
+            }
+            return success;
+        }
     }
 
     /**
@@ -151,22 +159,10 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
         Class newclass;
         // try to find my own node
         log.debug("Vwms:startVwms -> Vwms on machine "+getMachineName());
-        MMObjectBuilder bul=mmb.getMMObject("mmservers");
-        Enumeration e=bul.search("WHERE name='"+getMachineName()+"'");
-        if (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-/* search is implemented in MMSERVERS, so better:
         MMServers bul=(MMServers)mmb.getMMObject("mmservers");
+        bul.init(); // make sure mmservers is initialized
         MMObjectNode node=bul.getMMServerNode(getMachineName());
         if (node!=null) {
-*/
-
-            // Only one mmserver instance may exist, so print ERROR when you find multiple.
-            if (e.hasMoreElements()) {
-                log.error("Multiple mmserver nodes found named: "+getMachineName()+", only single node allowed!!!!");
-                log.error("Please delete all but one mmservers named: "+getMachineName());
-            }
-
             for (Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms"); f.hasMoreElements();) {
                 MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
                 log.service("Vwms:startVwms -> VWM="+vwmnode);
