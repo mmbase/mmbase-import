@@ -10,84 +10,118 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import org.mmbase.util.logging.*;
 
-public class HTMLElementCheckBox  extends HTMLElement 
-{
-	public HTMLElementCheckBox()
-	{
-	}	
+/**
+ * Generates a HTML Element: INPUT CHECKBOX, uses this variables which are set in the<br>
+ * super class (HTMLElement) to generate HTML:
+ * <ul>
+ * <li>boolean sel        : if true it checks if the String selected equals the
+ *                          current value if equal the HTML tag CHECKED is added.</li>
+ * <li>String selected    : see above   </li>
+ * <li>boolean ex         : if true it checks if the String exclude equals the current
+ *                          value, if equal this value will be skipped (no HTML
+ *                          generated for this item)</li>
+ * <li>String exclude     : see above</li>
+ * <li>boolean moreValues : if true it will make a list of items.</li>
+ * <li>boolean moredouble : if true it will make a paired list of items.
+ *                          (first item = VALUE second item=NAME)</li>
+ * <li>Vector valuesList  : The list of items. </li>
+ * <li>boolean vertical    : if true the various checkboxes are seperated with &lt;brk /&gt; tags.</li>
+ * </ul>
+ *
+ * @version 26-Sep-1996
+ * @author Jan van Oosterom
+ */
+public class HTMLElementCheckBox  extends HTMLElement {
+    // Note: more appropriate would be to extend from HTMLElementSelect
 
-	protected String generate()
-	{		
-		String html = "";
-		if (selected != null && selected.equals("null"))
-        {
+    // logger
+    private static Logger log = Logging.getLoggerInstance(HTMLElementCheckBox.class.getName());
+
+    /**
+     * Creates a HTMLElementCheckbox
+     */
+    public HTMLElementCheckBox() {
+    }
+
+    /**
+     * Generates the HTML code.
+     */
+    protected String generate() {
+        String html = "";
+        if (selected != null && selected.equals("null")) {
             sel = false;
         }
-        if (exclude != null && exclude.equals("null"))
-        {
+        if (exclude != null && exclude.equals("null")) {
             ex = false;
         }
-		if (moreValues)
-        {		
-			String val = null;
-			String basic = "<INPUT TYPE=CHECKBOX NAME=" +name+ " " + "VALUE=\"";  
-        	Enumeration e = valuesList.elements();
+        if (moreValues) {
+            String val = null;
+            String basic = "<input type=\"checkbox\" name=\"" +name+ "\" value=\"";
+            Enumeration e = valuesList.elements();
 
             Vector list = new Vector();
-	
-        	while (e.hasMoreElements())
-        	{
-        		val = (String) e.nextElement();
-				if (sel) 
-				{	
-					if (selected.equalsIgnoreCase(val))
-					{
-						if (vertical) list.addElement(basic +val + "\" CHECKED> " + val + "<BR>\n"); 
-						else list.addElement(basic +val + "\" CHECKED> " + val); 
-					}
-					else
-					{ 
-						if (ex)
-                        {
-                            if (!exclude.equalsIgnoreCase(val))
-                            {
-								if (vertical) list.addElement(basic + val + "\"> " + val + "<BR>\n");
-								else list.addElement(basic + val + "\"> " + val);
-							}
-						}
-						else
-						{
-							if (vertical) list.addElement(basic + val + "\"> " + val + "<BR>\n");
-							else list.addElement(basic + val + "\"> " + val);
-						}
-					}
-				}
-				else
-				{
-                    if (ex)
-                    {
-                        if (!exclude.equalsIgnoreCase(val))
-                        {
-							if (vertical) list.addElement(basic + val + "\"> " + val + "<BR>\n");
-							else list.addElement(basic + val + "\"> " + val);
-						}
-					}
-					else
-					{
-						if (vertical) list.addElement(basic + val + "\"> " + val + "<BR>\n");
-						else list.addElement(basic + val + "\"> " + val);
-					}
-				}
-				
-			}
-			Enumeration le = list.elements();
+
+            String brk="";
+            if (vertical) {
+              brk="<br />\n";
+            }
+            while (e.hasMoreElements()) {
+                val = (String) e.nextElement();
+                if (sel && selected.equalsIgnoreCase(val)) {
+                    list.addElement(basic +val + "\" checked >" + val + brk);
+                } else if (!ex || (!exclude.equalsIgnoreCase(val))) {
+                    list.addElement(basic +val + "\" >" + val + brk);
+                }
+/**                if (sel) {
+                    if (selected.equalsIgnoreCase(val)) {
+                        if (vertical) {
+                            list.addElement(basic +val + "\" checked> " + val + "<br />\n");
+                        } else {
+                            list.addElement(basic +val + "\" checked> " + val);
+                        }
+                    } else {
+                        if (ex) {
+                            if (!exclude.equalsIgnoreCase(val)) {
+                                if (vertical) {
+                                    list.addElement(basic + val + "\"> " + val + "<br />\n");
+                                } else {
+                                    list.addElement(basic + val + "\"> " + val);
+                                }
+                            }
+                        } else {
+                            if (vertical) {
+                                list.addElement(basic + val + "\"> " + val + "<br />\n");
+                            } else {
+                                list.addElement(basic + val + "\"> " + val);
+                            }
+                        }
+                    }
+                } else {
+                    if (ex) {
+                        if (!exclude.equalsIgnoreCase(val)) {
+                            if (vertical) {
+                                list.addElement(basic + val + "\"> " + val + "<br />\n");
+                            } else {
+                                list.addElement(basic + val + "\"> " + val);
+                            }
+                        }
+                    } else {
+                        if (vertical) {
+                            list.addElement(basic + val + "\"> " + val + "<br />\n");
+                        } else {
+                            list.addElement(basic + val + "\"> " + val);
+                        }
+                    }
+                }
+*/
+            }
+            Enumeration le = list.elements();
             int i=0;
             String h = "";
-            while(le.hasMoreElements())
-            {
-                while( i < 22 && le.hasMoreElements() )
-                {
+            while(le.hasMoreElements()) {
+                while( i<22 && le.hasMoreElements()) {
                     h += (String) le.nextElement();
                     i++;
                 }
@@ -95,80 +129,79 @@ public class HTMLElementCheckBox  extends HTMLElement
                 h = "";
                 i = 0;
             }
-		}
-		else
-		if (moredouble)
-        {		
-			String val = null;
-			String basic = "<INPUT TYPE=CHECKBOX NAME=" +name+ " " + "VALUE=\"";  
-        	Enumeration e = valuesList.elements();
+        } else if (moredouble) {
+            String val = null;
+            String basic = "<input type=\"checkbox\" name=\"" +name+ "\" value=\"";
+            Enumeration e = valuesList.elements();
 
             Vector list = new Vector();
-	
-        	while (e.hasMoreElements())
-        	{
-        		val = (String) e.nextElement();
-				String val2 ;
-                if (e.hasMoreElements())
-                {
+
+            String brk="";
+            if (vertical) {
+              brk="<br />\n";
+            }
+            while (e.hasMoreElements()) {
+                val = (String) e.nextElement();
+                String val2 ;
+                if (e.hasMoreElements()) {
                     val2= (String) e.nextElement();
-                }
-                else
-                {
-                     System.out.println("HTMLElementCheckBox.generate: Expecting a double list (the DOUBLE key word was selected");
+                } else {
+                     log.warn("HTMLElementCheckBox.generate: Expecting a double list (the DOUBLE key word was selected");
                      return html;
                 }
-
-
-				if (sel) 
-				{	
-					if (selected.equalsIgnoreCase(val))
-					{
-						if (vertical) list.addElement(basic +val2 + "\" CHECKED> " + val + "<BR>\n"); 
-						else list.addElement(basic +val + "\" CHECKED> " + val); 
-					}
-					else
-					{ 
-						if (ex)
-                        {
-                            if (!exclude.equalsIgnoreCase(val))
-                            {
-								if (vertical) list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
-								else list.addElement(basic + val2 + "\"> " + val);
-							}
-						}
-						else
-						{
-							if (vertical) list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
-							else list.addElement(basic + val2 + "\"> " + val);
-						}
-					}
-				}
-				else
-				{
-                    if (ex)
-                    {
-                        if (!exclude.equalsIgnoreCase(val))
-                        {
-							if (vertical) list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
-							else list.addElement(basic + val2 + "\"> " + val);
-						}
-					}
-					else
-					{
-						if (vertical) list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
-						else list.addElement(basic + val2 + "\"> " + val);
-					}
-				}
-				
-			}
-			Enumeration le = list.elements();
+                if (sel && selected.equalsIgnoreCase(val)) {
+                    list.addElement(basic +val2 + "\" checked >" + val + brk);
+                } else if (!ex || (!exclude.equalsIgnoreCase(val))) {
+                    list.addElement(basic +val2 + "\" >" + val + brk);
+                }
+/**
+                if (sel) {
+                    if (selected.equalsIgnoreCase(val)) {
+                        if (vertical) {
+                            list.addElement(basic +val2 + "\" CHECKED> " + val + "<BR>\n");
+                        } else {
+                            list.addElement(basic +val + "\" CHECKED> " + val);
+                        }
+                    } else {
+                        if (ex) {
+                            if (!exclude.equalsIgnoreCase(val)) {
+                                if (vertical) {
+                                    list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
+                                } else {
+                                    list.addElement(basic + val2 + "\"> " + val);
+                                }
+                            }
+                        } else {
+                            if (vertical) {
+                                list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
+                            } else {
+                                list.addElement(basic + val2 + "\"> " + val);
+                            }
+                        }
+                    }
+                } else {
+                    if (ex) {
+                        if (!exclude.equalsIgnoreCase(val)) {
+                            if (vertical) {
+                                list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
+                            } else {
+                                list.addElement(basic + val2 + "\"> " + val);
+                            }
+                        }
+                    } else {
+                        if (vertical) {
+                            list.addElement(basic + val2 + "\"> " + val + "<BR>\n");
+                        } else {
+                            list.addElement(basic + val2 + "\"> " + val);
+                        }
+                    }
+                }
+*/            }
+            Enumeration le = list.elements();
             int i=0;
             String h = "";
-            while(le.hasMoreElements())
-            {
-                while( i < 22 && le.hasMoreElements() )
-                {
+            while(le.hasMoreElements()) {
+                while( i < 22 && le.hasMoreElements()) {
                     h += (String) le.nextElement();
                     i++;
                 }
@@ -176,14 +209,11 @@ public class HTMLElementCheckBox  extends HTMLElement
                 h = "";
                 i = 0;
             }
-		}
-		else
-		{
-			html += "<INPUT ";
-			if (sel) html += "CHECKED ";
-			html += "TYPE=CHECKBOX NAME=" + name + " "; 		
-			html +=	"VALUE=\"" + values + "\"> " + values ;
-		}
-		return html;
-	}
+        } else {
+            html += "<input  type=\"checkbox\" name=\""+name + "\" ";
+            if (sel) html += "checked ";
+            html +=    "value=\"" + values + "\">" + values ;
+        }
+        return html;
+    }
 }
