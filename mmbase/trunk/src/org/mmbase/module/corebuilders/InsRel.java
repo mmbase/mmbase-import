@@ -47,19 +47,19 @@ public class InsRel extends MMObjectBuilder {
      */
     public int relnumber=-1;
 
-    /** 
+    /**
      *  Cache system, holds the relations from the 25
      *  most used relations
      */
 
-    private Cache relatedCache = new Cache(25) {  
+    private Cache relatedCache = new Cache(25) {
         public String getName()        { return "RelatedCache"; }
         public String getDescription() { return "Cache for Related Nodes"; }
         };
 
 
     /* perhaps this would be nice?
-    private Cache relationsCache = new Cache(25) {  
+    private Cache relationsCache = new Cache(25) {
         public String getName()        { return "RelationsCache"; }
         public String getDescription() { return "Cache for Relations"; }
         };
@@ -225,16 +225,11 @@ public class InsRel extends MMObjectBuilder {
      * Get relation(s) for a MMObjectNode, using a specified role (reldef) as a filter
      * @param src Identifying number of the object to find the relations of.
      * @param rnumber The number of the relation definition (role) to filter on
-     * @return If succesful, an <code>Enumeration</code> listing the relations.
-     *         If no relations exist, the method returns <code>null</code>.
+     * @return an <code>Enumeration</code> listing the relations.
      * @see #getRelationsVector(int,int)
      */
     public Enumeration getRelations(int src, int rnumber) {
-        Vector re=getRelationsVector(src,rnumber);
-        if (re!=null)
-            return re.elements();
-        else
-            return null;
+        return getRelationsVector(src,rnumber).elements();
     }
 
     /**
@@ -246,13 +241,34 @@ public class InsRel extends MMObjectBuilder {
      *   according to the specified filter(s).
      */
     public Enumeration getRelations(int src,int otype, int rnumber) {
+        return getRelations(src,otype,rnumber,true);
+    }
+
+    /**
+     * Gets relations for a specified MMObjectNode
+     * @param src this is the number of the MMObjectNode requesting the relations
+     * @param otype the object type of the nodes you want to have. -1 means any node.
+     * @param rnumber Identifying number of the role (reldef)
+     * @param usedirectionality if <code>true</code> teh result si filtered on unidirectional relations.
+     *                          specify <code>false</code> if you want to show unidoerctional relations
+     *                          from destination to source.
+     * @returns An <code>Enumeration</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+     *   according to the specified filter(s).
+     */
+    public Enumeration getRelations(int src,int otype, int rnumber, boolean usedirectionality) {
+        Vector re;
+        if (usedirectionality) {
+             re=getRelationsVector(src,rnumber);
+        } else {
+             re=getAllRelationsVector(src,rnumber);
+        }
         if (otype==-1) {
-            return getRelations(src,rnumber);
+            return re.elements();
         } else {
             Vector list=new Vector();
             MMObjectNode node;
             int nodenr = -1;
-            for(Enumeration e=getRelations(src,rnumber); e.hasMoreElements(); ) {
+            for(Enumeration e=re.elements(); e.hasMoreElements(); ) {
                 node=(MMObjectNode)e.nextElement();
                 nodenr=node.getIntValue("snumber");
                 if (nodenr==src) {
@@ -289,6 +305,27 @@ public class InsRel extends MMObjectBuilder {
      */
     public Vector getAllRelationsVector(int src) {
         return searchVector("WHERE snumber="+src+" OR dnumber="+src);
+    }
+
+    /**
+     * Get all relation(s) for a MMObjectNode
+     * This function returns all relations in which the node is either a source or
+     * the destination (even if the direction is unidirectional).
+     * @param src Identifying number of the object to find the relations of.
+     * @param rnumber The number of the relation definition (role) to filter on
+     * @return If succesful, a <code>Vector</code> containing the relations.
+     *       Each element in the vector's enumeration is a node object retrieved from the
+     *       associated table (i.e. 'insrel'), containing the node's fields.
+     *       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
+     */
+    public Vector getAllRelationsVector(int src, int rnumber) {
+        if (rnumber==-1) {
+            return getAllRelationsVector(src);
+        } else {
+            // assures that retrieved nodes are correct
+            MMObjectBuilder builder=mmb.getRelDef().getBuilder(rnumber);
+            return builder.searchVector("WHERE (snumber="+src+" OR dnumber="+src+") AND rnumber="+rnumber);
+        }
     }
 
     /**
