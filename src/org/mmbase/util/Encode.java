@@ -22,6 +22,7 @@ import java.util.Iterator;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
+ * @code-conventions rename to Encoder
  *
  *  Supported encodings are at this moment:
  *  <UL>
