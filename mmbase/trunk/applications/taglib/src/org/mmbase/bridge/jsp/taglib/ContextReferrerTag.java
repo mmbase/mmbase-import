@@ -100,14 +100,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /**
      * Call this function in your set-attribute function. It makes it
-     * possible for the user of the taglib to prefix the attribute
-     * value with things like 'session:', 'param:' and of course with
-     * 'context:'.
-     *
+     * possible for the user of the taglib to include ids of values stored in
+     * the context.
+     * The method replaces all occurrences of ${x}, where x is a reference to
+     * a attribute value, possibly prefixed with a context name.
      */
-
-
-
     protected String getAttributeValue(String attribute) throws JspTagException {
         String result="";
         int beginpos = attribute.indexOf("${");
@@ -124,7 +121,6 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                     context = varid;
                     varid = tk.nextToken();
                 }
-                log.info("Attribute " + attribute + " refers " + context + " - "+varid);
                 ContextTag ct = getContextTag(context);
                 String varValue = ct.getObjectAsString(varid);
                 if (varValue == null) {
