@@ -22,364 +22,364 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.11 2002-03-28 09:33:50 johannes Exp $
+ * @version $Id: EditState.java,v 1.12 2002-04-18 06:35:47 pierre Exp $
  */
 public class EditState {
 
     /**
     * Logging instance
     */
-	private static Logger log = Logging.getLoggerInstance(EditState.class.getName());
-	
-	private String user;
-	
-	Vector nodes=new Vector();
-	EditStateNode curNode;
-	MMBase mmBase;
-	
-	public EditState(String user,MMBase mmBase) {
-		if( mmBase != null )
-		{
-			this.mmBase=mmBase;
-			//pushState();
-		}
-		else
-	        log.error("EditState("+mmBase+"): MMBase is not valid!");
-		if (user!=null) {
-			this.user=user;
-		} else {
-			log.error("EditState("+user+"): User is not valid");
-		}
-	}
+    private static Logger log = Logging.getLoggerInstance(EditState.class.getName());
 
-	public boolean pushState() {
-		curNode=new EditStateNode(mmBase);		
-		nodes.addElement(curNode);
-		return(true);
-	}
+    private String user;
 
-	public boolean clear() {
-		nodes=new Vector();
-		return(true);
-	}
+    Vector nodes=new Vector();
+    EditStateNode curNode;
+    MMBase mmBase;
 
-	public boolean popState() {
-		nodes.removeElement(curNode);	
-		curNode=(EditStateNode)nodes.lastElement();		
-		return(true);
-	}
+    public EditState(String user,MMBase mmBase) {
+        if( mmBase != null )
+        {
+            this.mmBase=mmBase;
+            //pushState();
+        }
+        else
+            log.error("EditState("+mmBase+"): MMBase is not valid!");
+        if (user!=null) {
+            this.user=user;
+        } else {
+            log.error("EditState("+user+"): User is not valid");
+        }
+    }
 
-	public Vector getEditStates() {
-		return(nodes);
-	}
+    public boolean pushState() {
+        curNode=new EditStateNode(mmBase);
+        nodes.addElement(curNode);
+        return(true);
+    }
 
-	public boolean setSearchValue(String fieldname,Object value) {
-		boolean result = false;
+    public boolean clear() {
+        nodes=new Vector();
+        return(true);
+    }
 
-		if( fieldname != null )
-			if( !fieldname.equals("") )
-				result = curNode.setSearchValue(fieldname,value);
-			else
-				log.error("setSearchValue("+fieldname+","+value+"): fieldname is empty!");
-		else
-			log.error("setSearchValue("+fieldname+","+value+"): fieldname is null!");
-		
-		return result;
-	}
+    public boolean popState() {
+        nodes.removeElement(curNode);
+        curNode=(EditStateNode)nodes.lastElement();
+        return(true);
+    }
 
-	public String getSearchValue(String name) {
-		String result = null;
+    public Vector getEditStates() {
+        return(nodes);
+    }
 
-		if(name!=null)
-			if( !name.equals("") )
-				result = curNode.getSearchValue(name);
-			else
-				log.error("getSeachValue("+name+"): name is empty!");
-		else
-			log.error("getSeachValue("+name+"): name is null!");
+    public boolean setSearchValue(String fieldname,Object value) {
+        boolean result = false;
 
-		return result;
-	}
+        if( fieldname != null )
+            if( !fieldname.equals("") )
+                result = curNode.setSearchValue(fieldname,value);
+            else
+                log.error("setSearchValue("+fieldname+","+value+"): fieldname is empty!");
+        else
+            log.error("setSearchValue("+fieldname+","+value+"): fieldname is null!");
 
-	public Hashtable getSearchValues() {
-		return (curNode.getSearchValues());
-	}
+        return result;
+    }
 
-	public void clearSearchValues() {
-		curNode.clearSearchValues();
-	}
+    public String getSearchValue(String name) {
+        String result = null;
 
+        if(name!=null)
+            if( !name.equals("") )
+                result = curNode.getSearchValue(name);
+            else
+                log.error("getSeachValue("+name+"): name is empty!");
+        else
+            log.error("getSeachValue("+name+"): name is null!");
 
-	public boolean setHtmlValue(String fieldname,Object value) {
-		boolean result = false;
+        return result;
+    }
 
-		if( fieldname != null )
-			if( !fieldname.equals("") )
-				result = curNode.setHtmlValue(fieldname,value);
-			else
-				log.error("setHtmlValue("+fieldname+","+value+"): fieldname is !");
-		else
-			log.error("setHtmlValue("+fieldname+","+value+"): fieldname is null!");
-		
-		return result;
-	}
+    public Hashtable getSearchValues() {
+        return (curNode.getSearchValues());
+    }
 
-	public String getHtmlValue(String name) {
-		String result = null;
-		
-		if( name != null )
-			if( !name.equals("") )	
-				result = curNode.getHtmlValue(name);
-			else
-				log.error("getHtmlValue("+name+"): name is empty!");
-		else
-			log.error("getHtmlValue("+name+"): name is null!");
-
-		return result;
-	}
-
-	public Hashtable getHtmlValues() {
-		return (curNode.getHtmlValues());
-	}
-
-	public void clearHtmlValues() {
-		curNode.clearHtmlValues();
-	}
-
-	public void setEditNode(String number,String userName) {
-		if( number != null )
-			if(!number.equals(""))
-				if(userName!=null)
-					if(!userName.equals(""))
-					{
-						delInsSaveList();
-						curNode.setEditNode(number,userName);
-					}
-					else
-						log.error("setEditNode("+number+","+userName+"): username is empty!");
-				else
-					log.error("setEditNode("+number+","+userName+"): username is null!");
-			else
-				log.error("setEditNode("+number+","+userName+"): number is empty!");
-		else
-			log.error("setEditNode("+number+","+userName+"): number is null!");
-	}
-
-	public MMObjectNode getEditNode() {
-		if (curNode == null) return null;
-		return(curNode.getEditNode());
-	}
+    public void clearSearchValues() {
+        curNode.clearSearchValues();
+    }
 
 
+    public boolean setHtmlValue(String fieldname,Object value) {
+        boolean result = false;
 
-	public MMObjectNode getEditNode(int i) {
-		int pos=nodes.indexOf(curNode);		
-		if ((pos-i)<0) return(null);
-		EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
-		if (node==null) {
-			return(null);
-		} else {
-			return(node.getEditNode());
-		}
-	}
+        if( fieldname != null )
+            if( !fieldname.equals("") )
+                result = curNode.setHtmlValue(fieldname,value);
+            else
+                log.error("setHtmlValue("+fieldname+","+value+"): fieldname is !");
+        else
+            log.error("setHtmlValue("+fieldname+","+value+"): fieldname is null!");
 
-	public EditStateNode getEditStateNode(int i) {
-		int pos=nodes.indexOf(curNode);		
-		if ((pos-i)<0) return(null);
-		EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
-		if (node==null) {
-			return(null);
-		} else {
-			return(node);
-		}
-	}
+        return result;
+    }
 
-	public void NewNode(String owner) {
-		curNode.getNewNode(owner);
-		delInsSaveList();
-	}
+    public String getHtmlValue(String name) {
+        String result = null;
 
-	public void removeNode() {
-		curNode.removeNode();
-	}
+        if( name != null )
+            if( !name.equals("") )
+                result = curNode.getHtmlValue(name);
+            else
+                log.error("getHtmlValue("+name+"): name is empty!");
+        else
+            log.error("getHtmlValue("+name+"): name is null!");
 
-	public void removeRelations() {
-		curNode.removeRelations();
-	}
+        return result;
+    }
 
-	public void removeEd() {
-		curNode.removeNode();
-	}
+    public Hashtable getHtmlValues() {
+        return (curNode.getHtmlValues());
+    }
 
-	public int getEditNodeNumber() {
-		return(curNode.getEditNodeNumber());
-	}
+    public void clearHtmlValues() {
+        curNode.clearHtmlValues();
+    }
 
-	public int getEditNodeSrcNumber() {
-		MMObjectNode snode=getEditSrcNode();
-		if (snode!=null) {
-			return(snode.getIntValue("number"));
-		}
-		return(-1);
-	}
+    public void setEditNode(String number,String userName) {
+        if( number != null )
+            if(!number.equals(""))
+                if(userName!=null)
+                    if(!userName.equals(""))
+                    {
+                        delInsSaveList();
+                        curNode.setEditNode(number,userName);
+                    }
+                    else
+                        log.error("setEditNode("+number+","+userName+"): username is empty!");
+                else
+                    log.error("setEditNode("+number+","+userName+"): username is null!");
+            else
+                log.error("setEditNode("+number+","+userName+"): number is empty!");
+        else
+            log.error("setEditNode("+number+","+userName+"): number is null!");
+    }
 
-	public int getEditNodeDstNumber() {
-		MMObjectNode snode=getEditDstNode();
-		if (snode!=null) {
-			return(snode.getIntValue("number"));
-		}
-		return(-1);
-	}
-
-	public String getEditNodeSrcDutchName() {
-		MMObjectNode snode=getEditSrcNode();
-		if (snode!=null) {
-			String dname=snode.getDutchSName();
-			if (dname!=null) return(dname);
-		}
-		return("");
-	}
+    public MMObjectNode getEditNode() {
+        if (curNode == null) return null;
+        return(curNode.getEditNode());
+    }
 
 
-	public String getEditNodeDstGuiIndicator() {
-		MMObjectNode dnode=getEditDstNode();
-		if (dnode!=null) {
-			String dgui=dnode.getGUIIndicator();
-			if (dgui!=null) return(dgui);
-		}
-		return("");
-	}
+
+    public MMObjectNode getEditNode(int i) {
+        int pos=nodes.indexOf(curNode);
+        if ((pos-i)<0) return(null);
+        EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
+        if (node==null) {
+            return(null);
+        } else {
+            return(node.getEditNode());
+        }
+    }
+
+    public EditStateNode getEditStateNode(int i) {
+        int pos=nodes.indexOf(curNode);
+        if ((pos-i)<0) return(null);
+        EditStateNode node=(EditStateNode)nodes.elementAt(pos-i);
+        if (node==null) {
+            return(null);
+        } else {
+            return(node);
+        }
+    }
+
+    public void NewNode(String owner) {
+        curNode.getNewNode(owner);
+        delInsSaveList();
+    }
+
+    public void removeNode() {
+        curNode.removeNode();
+    }
+
+    public void removeRelations() {
+        curNode.removeRelations();
+    }
+
+    public void removeEd() {
+        curNode.removeNode();
+    }
+
+    public int getEditNodeNumber() {
+        return(curNode.getEditNodeNumber());
+    }
+
+    public int getEditNodeSrcNumber() {
+        MMObjectNode snode=getEditSrcNode();
+        if (snode!=null) {
+            return(snode.getIntValue("number"));
+        }
+        return(-1);
+    }
+
+    public int getEditNodeDstNumber() {
+        MMObjectNode snode=getEditDstNode();
+        if (snode!=null) {
+            return(snode.getIntValue("number"));
+        }
+        return(-1);
+    }
+
+    public String getEditNodeSrcDutchName() {
+        MMObjectNode snode=getEditSrcNode();
+        if (snode!=null) {
+            String dname=snode.parent.getSingularName();
+            if (dname!=null) return(dname);
+        }
+        return("");
+    }
 
 
-	public String getEditNodeSrcGuiIndicator() {
-		MMObjectNode snode=getEditSrcNode();
-		if (snode!=null) {
-			String sgui=snode.getGUIIndicator();
-			if (sgui!=null) return(sgui);
-		}
-		return("");
-	}
+    public String getEditNodeDstGuiIndicator() {
+        MMObjectNode dnode=getEditDstNode();
+        if (dnode!=null) {
+            String dgui=dnode.getGUIIndicator();
+            if (dgui!=null) return(dgui);
+        }
+        return("");
+    }
 
 
-	public String getEditNodeDstDutchName() {
-		MMObjectNode snode=getEditDstNode();
-		if (snode!=null) {
-			String dname=snode.getDutchSName();
-			if (dname!=null) return(dname);
-		}
-		return("");
-	}
+    public String getEditNodeSrcGuiIndicator() {
+        MMObjectNode snode=getEditSrcNode();
+        if (snode!=null) {
+            String sgui=snode.getGUIIndicator();
+            if (sgui!=null) return(sgui);
+        }
+        return("");
+    }
 
 
-	public String getEditNodeSrcName() {
-		MMObjectNode snode=getEditSrcNode();
-		if (snode!=null) {
-			String dname=snode.getName();
-			if (dname!=null) return(dname);
-		}
-		return("");
-	}
+    public String getEditNodeDstDutchName() {
+        MMObjectNode snode=getEditDstNode();
+        if (snode!=null) {
+            String dname=snode.parent.getSingularName();
+            if (dname!=null) return(dname);
+        }
+        return("");
+    }
 
 
-	public String getEditNodeDstName() {
-		MMObjectNode snode=getEditDstNode();
-		if (snode!=null) {
-			String dname=snode.getName();
-			if (dname!=null) return(dname);
-		}
-		return("");
-	}
+    public String getEditNodeSrcName() {
+        MMObjectNode snode=getEditSrcNode();
+        if (snode!=null) {
+            String dname=snode.getName();
+            if (dname!=null) return(dname);
+        }
+        return("");
+    }
 
-	public MMObjectNode getEditSrcNode() {
-		return(curNode.getEditSrcNode());
-	}
 
-	public MMObjectNode getEditDstNode() {
-		return(curNode.getEditDstNode());
-	}
+    public String getEditNodeDstName() {
+        MMObjectNode snode=getEditDstNode();
+        if (snode!=null) {
+            String dname=snode.getName();
+            if (dname!=null) return(dname);
+        }
+        return("");
+    }
 
-	public void setBuilder(String name) {
-		if( name != null )
-		{
-			if( !name.equals("") )
-			{
-				//if( curNode != null )
-				{
-					pushState();
-					curNode.setBuilder(name);
-				} //else log.error("setBuilder("+name+"): curNode is null!");
-			} else log.error("setBuilder("+name+"): name is empty!");
-		} else log.error("setBuilder("+name+"): name is null!");
-	}
+    public MMObjectNode getEditSrcNode() {
+        return(curNode.getEditSrcNode());
+    }
 
-	public String getBuilderName() {
-		String result= null;
-		if( curNode != null )
-			result = curNode.getBuilderName();
-		else
-			log.error("getBuilderName(): curNode("+curNode+") is null!");
+    public MMObjectNode getEditDstNode() {
+        return(curNode.getEditDstNode());
+    }
 
-		return result;
-	}
+    public void setBuilder(String name) {
+        if( name != null )
+        {
+            if( !name.equals("") )
+            {
+                //if( curNode != null )
+                {
+                    pushState();
+                    curNode.setBuilder(name);
+                } //else log.error("setBuilder("+name+"): curNode is null!");
+            } else log.error("setBuilder("+name+"): name is empty!");
+        } else log.error("setBuilder("+name+"): name is null!");
+    }
 
-	public MMObjectBuilder getBuilder() {
-		return (curNode.getBuilder());
-	}
+    public String getBuilderName() {
+        String result= null;
+        if( curNode != null )
+            result = curNode.getBuilderName();
+        else
+            log.error("getBuilderName(): curNode("+curNode+") is null!");
 
-	public void setSelectionQuery(String query) {
-		curNode.setSelectionQuery(query);
-	}
+        return result;
+    }
 
-	public String getSelectionQuery() {
-		return (curNode.getSelectionQuery());
-	}
+    public MMObjectBuilder getBuilder() {
+        return (curNode.getBuilder());
+    }
 
-	public boolean isChanged() {
-		return (curNode.isChanged());
-	}
+    public void setSelectionQuery(String query) {
+        curNode.setSelectionQuery(query);
+    }
 
-	public boolean addRelation(String owner) {
-		boolean result=false;
-		// relations are not saved by themself but saved or dropped
-		// by there caller !!
-		int pos=nodes.indexOf(curNode);		
-		int src=curNode.getEditNodeNumber();
-		EditStateNode node2=(EditStateNode)nodes.elementAt(pos-1);
-		if (node2!=null) {
-			log.debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
-			mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
-			result=true;
-		} else {
- 			log.error("addRelation("+owner+"): src("+src+"), pos("+pos+"), cannot create relation from "+node2+" to "+src+" reltype 2");
-		}
-		return(result);
-	}
+    public String getSelectionQuery() {
+        return (curNode.getSelectionQuery());
+    }
 
-	public boolean getInsSave() {
-		return (curNode.getInsSave());
-	}
+    public boolean isChanged() {
+        return (curNode.isChanged());
+    }
 
-	public void setInsSave(boolean set) {
-		curNode.setInsSave(set);
-	}
+    public boolean addRelation(String owner) {
+        boolean result=false;
+        // relations are not saved by themself but saved or dropped
+        // by there caller !!
+        int pos=nodes.indexOf(curNode);
+        int src=curNode.getEditNodeNumber();
+        EditStateNode node2=(EditStateNode)nodes.elementAt(pos-1);
+        if (node2!=null) {
+            log.debug("addRelation("+owner+"): Create relation from "+node2.getEditNodeNumber()+" to "+src+" reltype 2");
+            mmBase.getInsRel().insert(owner,node2.getEditNodeNumber(),src,14);
+            result=true;
+        } else {
+            log.error("addRelation("+owner+"): src("+src+"), pos("+pos+"), cannot create relation from "+node2+" to "+src+" reltype 2");
+        }
+        return(result);
+    }
 
-	public Vector getInsSaveList() {
-		return(curNode.getInsSaveList());
-	}
+    public boolean getInsSave() {
+        return (curNode.getInsSave());
+    }
 
-	public void delInsSaveList() {
-		if (curNode!=null) curNode.delInsSaveList();
-	}
+    public void setInsSave(boolean set) {
+        curNode.setInsSave(set);
+    }
 
-	public Hashtable getRelationTable() {
-		return(curNode.getRelationTable());
-	}
+    public Vector getInsSaveList() {
+        return(curNode.getInsSaveList());
+    }
 
-	public String getLanguage() {
-		return(mmBase.getLanguage());
-	}
+    public void delInsSaveList() {
+        if (curNode!=null) curNode.delInsSaveList();
+    }
 
-	public String getUser() {
-		return(user);
-	}
+    public Hashtable getRelationTable() {
+        return(curNode.getRelationTable());
+    }
+
+    public String getLanguage() {
+        return(mmBase.getLanguage());
+    }
+
+    public String getUser() {
+        return(user);
+    }
 }
