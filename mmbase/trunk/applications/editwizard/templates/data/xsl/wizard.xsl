@@ -210,7 +210,7 @@
             <xsl:when test="@dttype='image' and not(upload)">
               <div class="imageupload">
                 <div><input type="hidden" name="{@fieldname}" value="YES" />
-                  <img src="{$ew_imgdb}{@number}" hspace="0" vspace="0" border="0" /><br />
+                  <img src="{$ew_imgdb}{node:function(string(@number), concat('cache(',$imagesize,')'))}" hspace="0" vspace="0" border="0" /><br />
                   <a href="upload.jsp?did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">Upload new Image</a>
                 </div>            
               </div>
@@ -277,7 +277,7 @@
               <tr>
                 <td>
                   <span>
-                    <img src="{$ew_imgdb}{@destination}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
+                    <img src="{$ew_imgdb}{node:function(string(@destination), concat('cache(',$imagesize,')'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
                   </span>
                 </td>
                 <td width="20"><img src="media/nix.gif" width="20" height="1" /></td>
