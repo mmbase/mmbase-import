@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.8 2002-12-05 17:11:18 michiel Exp $;
+ @version $Id: documentation.css,v 1.9 2003-02-14 15:13:58 pierre Exp $;
 */
 
 
@@ -74,12 +74,12 @@ div.navigation {
 
 div.navigation[class] {
   display: block;
-  background: transparent url(semi2x2.png); 
+  background: transparent url(semi2x2.png);
   position: fixed;
   top: 2em;
   left: auto;
   width: 10%;
-  height:100%; 
+  height:100%;
   overflow:auto;
   right: 1em;
   font-size: smaller;
@@ -110,7 +110,6 @@ div.navigation p {
   text-align: right;
 }
 
-
 div.figure p {
   text-align: center;
 }
@@ -118,6 +117,14 @@ div.figure p {
 div.figure p.title {
   text-align: left;
   color: green;
+}
+
+.legalnotice {
+   font-size: smaller;
+   background-color: #eee;
+   padding: 5pt;
+   margin: 5pt;
+   border: solid thin black;
 }
 
 h1 {
