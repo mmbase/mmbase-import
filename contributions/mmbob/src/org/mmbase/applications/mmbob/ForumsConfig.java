@@ -377,6 +377,10 @@ public class ForumsConfig {
         return privateMessagesEnabled;
     }
 
+    public String getLanguage() {
+        return "en";
+    }
+
     public int getPostingsPerPage() {
         return postingsPerPage;
     }
@@ -391,5 +395,75 @@ public class ForumsConfig {
 
     public String getFooterPath() {
         return htmlFooterPath;
+    }
+
+    public void save(String filename) {
+	String body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+	body += "<!DOCTYPE mmbobconfig PUBLIC \"-//MMBase/DTD mmbob config 1.0//EN\" \"http://www.mmbase.org/dtd/mmbobconfig_1_0.dtd\">\n";
+	body += "<mmbobconfig>\n";
+	body += "\t<forums account=\""+getDefaultAccount()+"\" password=\""+getDefaultPassword()+"\" language=\""+getLanguage()+"\">\n";
+	body += "\t\t<generatedata role=\"body\" file=\"generate/body.txt\" tokenizer=\",!? \" />\n";
+	body += "\t\t<generatedata role=\"smileys\" file=\"generate/smileys.txt\" tokenizer=\" \\n\\r\" />\n";
+	body += "\t\t<generatedata role=\"punctuation\" file=\"generate/punctuation.txt\" tokenizer=\" \\n\\r\" />\n\n";
+	body += "\t\t<accountcreation type=\""+getAccountCreationType()+"\" />\n";
+	body += "\t\t<accountremoval type=\""+getAccountRemovalType()+"\" />\n\n";
+	body += "\t\t<loginmode type=\""+getLoginModeType()+"\" />\n";
+	body += "\t\t<logoutmode type=\""+getLogoutModeType()+"\" />\n";
+	body += "\t\t<guestreadmode type=\""+getGuestReadModeType()+"\" />\n";
+	body += "\t\t<guestwritemode type=\""+getGuestWriteModeType()+"\" />\n\n";
+	body += "\t\t<avatars>\n";
+	body += "\t\t\t<upload enable=\""+getAvatarsUploadEnabled()+"\"/>\n";
+	body += "\t\t\t<gallery enable=\""+getAvatarsGalleryEnabled()+"\"/>\n";
+	body += "\t\t</avatars>\n\n";
+
+	body += "\t\t<email from=\""+getFromEmailAddress()+"\"/>\n\n";
+	body += "\t\t <layout>\n";
+	body += "\t\t\t<header path=\""+getHeaderPath()+"\"/>\n";
+	body += "\t\t\t<footer path=\""+getFooterPath()+"\"/>\n";
+	body += "\t\t</layout>\n\n";
+
+	body += "\t\t<xslts>\n";
+	body += "\t\t\t<postings odd=\""+getXSLTPostingsOdd()+"\" even=\""+getXSLTPostingsEven()+"\" />\n";
+	body += "\t\t</xslts>\n\n";
+
+	body += "\t\t<contactinfo enable=\""+getContactInfoEnabled()+"\"/>\n";
+	body += "\t\t<smileys enable=\""+getSmileysEnabled()+"\"/>\n";
+	body += "\t\t<privatemessages enable=\""+getPrivateMessagesEnabled()+"\"/>\n";
+	body += "\t\t<postingsperpage value=\""+getPostingsPerPage()+"\"/>\n\n";
+
+	// now loop all the forums
+        for (Enumeration forums = ForumManager.getForums(); forums.hasMoreElements();) {
+             Forum forum = (Forum) forums.nextElement();
+	     body += "\t\t<forum id=\""+forum.getName()+"\" language=\""+forum.getLanguage()+"\">\n";
+	     body += "\t\t\t<loginmode type=\""+forum.getLoginModeType()+"\" />\n";
+	     body += "\t\t\t<logoutmode type=\""+forum.getLogoutModeType()+"\" />\n";
+    	     body += "\t\t\t<guestreadmode type=\""+forum.getGuestReadModeType()+"\" />\n";
+	     body += "\t\t\t<guestwritemode type=\""+forum.getGuestWriteModeType()+"\" />\n\n";
+             for (Enumeration postareas = forum.getPostAreas(); postareas.hasMoreElements();) {
+             	PostArea postarea = (PostArea) postareas.nextElement();
+	        body += "\t\t\t<postarea id=\""+postarea.getName()+"\" language=\"nl\">\n";
+    	        body += "\t\t\t\t<guestreadmode type=\""+postarea.getGuestReadModeType()+"\" />\n";
+	        body += "\t\t\t\t<guestwritemode type=\""+postarea.getGuestWriteModeType()+"\" />\n\n";
+		body += "\t\t\t</postarea>\n";
+	     }
+	     body += "\t\t</forum>\n\n";
+	}
+	body += "\t</forums>\n";
+	body += "</mmbobconfig>\n";
+	saveFile(filename,body);
+    }
+
+
+    static boolean saveFile(String filename,String value) {
+        File sfile = new File(filename);
+        try {
+            DataOutputStream scan = new DataOutputStream(new FileOutputStream(sfile));
+            scan.writeBytes(value);
+            scan.flush();
+            scan.close();
+        } catch(Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
+        return true;
     }
 }

@@ -269,6 +269,10 @@ public class ForumManager {
 	return config.getDefaultAccount();
     }
 
+    public static String getLanguage() {
+	return "en";
+    }
+
     /**
      * ToDo: Write docs!
      * @return
@@ -328,6 +332,16 @@ public class ForumManager {
                 }
             }
         };
+
+
+    public static void saveConfig() {
+        String filename = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator + "mmbob.xml";
+ 	if (config != null) {
+		config.save(filename);
+	} else {
+		log.info("missing config file, can't save");
+	}	 
+    }
 
     /**
      * ToDo: Write docs!
