@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.26 2000-07-12 13:16:24 install Exp $
+$Id: MMSQL92Node.java,v 1.27 2000-07-12 15:13:45 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.26  2000/07/12 13:16:24  install
+Rob bug removed
+
 Revision 1.25  2000/07/10 15:59:04  daniel
 Daniel.. removed invalid methods
 
@@ -128,7 +131,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.26 $ $Date: 2000-07-12 13:16:24 $
+* @$Revision: 1.27 $ $Date: 2000-07-12 15:13:45 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -150,13 +153,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	final static int TYPE_BLOB = 4;
 	final static int TYPE_REAL = 5;
 	final static int TYPE_DOUBLE = 6;
-	final static int TYPE_LONG = 7;
 
 	public MMSQL92Node() {
 		typesmap.put("VARCHAR",new Integer(TYPE_STRING));
 		typesmap.put("VARSTRING",new Integer(TYPE_STRING));
 		typesmap.put("STRING",new Integer(TYPE_STRING));
-		typesmap.put("LONG",new Integer(TYPE_INTEGER));
 		typesmap.put("INTEGER",new Integer(TYPE_INTEGER));
 		typesmap.put("text",new Integer(TYPE_TEXT));
 		typesmap.put("TEXT",new Integer(TYPE_TEXT));
@@ -165,7 +166,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		typesmap.put("BINARY",new Integer(TYPE_BLOB));
 		typesmap.put("REAL",new Integer(TYPE_REAL));
 		typesmap.put("DOUBLE",new Integer(TYPE_DOUBLE));
-		typesmap.put("LONG",new Integer(TYPE_LONG));
 	}
 
 	public void init(MMBase mmb,XMLDatabaseReader parser) {
@@ -188,6 +188,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		if (allowed2disallowed.containsKey(fieldname)) {
 			fieldname=(String)allowed2disallowed.get(fieldname);
 		}
+
+		if (fieldtype!=null && fieldtype.equals("LONG")) fieldtype="INTEGER";
 		int type=((Integer)typesmap.get(fieldtype)).intValue();
 		switch (type) {
 			case TYPE_STRING:
@@ -201,17 +203,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			case TYPE_INTEGER:
 				node.setValue(prefix+fieldname,rs.getInt(i));
 				return(node);
-			/*
-			case TYPE_LONG:
-				node.setValue(prefix+fieldname,rs.getLong(i));
-				return(node);
-			case TYPE_REAL:
-				node.setValue(prefix+fieldname,rs.getFloat(i));
-				return(node);
-			case TYPE_DOUBLE:
-				node.setValue(prefix+fieldname,rs.getDouble(i));
-				return(node);
-			*/
 			case TYPE_BLOB:
 				node.setValue(prefix+fieldname,"$SHORTED");
 				return(node);
@@ -298,8 +289,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				break;
 			}
 
-		} else if (dbtype.equals("LONG") || dbtype.equals("int")) {
-		//} else if (dbtype.equals("LONG") || dbtype.equals("INTEGER")) {
+		} else if (dbtype.equals("int")) {
+		//} else if (dbtype.equals("INTEGER")) {
 			switch (operatorChar) {
 			case '=':
 			case 'E':
@@ -931,6 +922,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 		result=getMatchCREATE(bul.getTableName())+"( number integer not null, "+result+" );";
 
+			 System.out.println("XMLCREATE="+result);
 		try {
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
@@ -968,6 +960,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		// get the wanted mmbase type
 		String name=def.getDBName();
 
+		System.out.println("TYPE convertXML="+name+" t="+type);
 		// weird extra code to map to old types, needs to be done
 		// better, will do that soon once all types are clear (daniel).
 		if (type.equals("varchar")) {
@@ -975,9 +968,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		} else
 		if (type.equals("int")) {
 			type="INTEGER";
-		} else
-		if (type.equals("long")) {
-			type="LONG";
 		} else
 		if (type.equals("real")) {
 			type="REAL";
