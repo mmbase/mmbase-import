@@ -104,38 +104,38 @@ public class SimpleImpl implements Logger {
 
     public void trace (Object m) {
         if (level <= Level.TRACE_INT) {
-            log("TRACE " + m.toString());
+            log("TRACE " + m);
         }
     }
     public void debug (Object m) {
         if (level <= Level.DEBUG_INT) {
-            log("DEBUG " + m.toString());
+            log("DEBUG " + m);
         }
     }
 
     public void service (Object m) {
         if (level <= Level.SERVICE_INT) {
-            log("SERVICE " + m.toString());
+            log("SERVICE " + m);
         }
     }
     public void info    (Object m) {
         if (level <= Level.INFO_INT) {
-            log("INFO " + m.toString());
+            log("INFO " + m);
         }
     }
     public void warn    (Object m) {
         if (level <= Level.WARN_INT) {
-            log("WARN " + m.toString());
+            log("WARN " + m);
         }
     }
     public void error   (Object m) {
         if (level <= Level.ERROR_INT) {
-            log("ERROR " + m.toString());
+            log("ERROR " + m);
         }
     }
     public void fatal   (Object m) {
         if (level <= Level.FATAL_INT) {
-            log("FATAL " + m.toString());
+            log("FATAL " + m);
         }
     }
 
