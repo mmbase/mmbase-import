@@ -19,7 +19,7 @@ package org.mmbase.module.core;
  *
  * @author Daniel Ockeloen
  * @author Pierer van Rooden (javadoc)
- * @version $Id: MMBaseProbe.java,v 1.9 2003-03-26 10:15:20 kees Exp $
+ * @version $Id: MMBaseProbe.java,v 1.10 2003-07-21 07:31:55 keesj Exp $
  */
 public class MMBaseProbe implements Runnable {
 
@@ -98,7 +98,7 @@ public class MMBaseProbe implements Runnable {
         if (kicker!=null) {
             try {
                 Thread.sleep(10*60*1000);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) { return;}
         }
         parent.probe=null;
     }
