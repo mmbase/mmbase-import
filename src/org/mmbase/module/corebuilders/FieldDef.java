@@ -9,11 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.util.*;
-import java.sql.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.database.*;
-import org.mmbase.module.database.support.*;
 
 /**
  * FieldDef, one of the meta stucture nodes it is used to define the
@@ -22,7 +18,7 @@ import org.mmbase.module.database.support.*;
  *
  * @deprecated-now
  * @author Daniel Ockeloen
- * @version $Id: FieldDef.java,v 1.12 2002-01-17 08:10:35 pierre Exp $
+ * @version $Id: FieldDef.java,v 1.13 2003-03-04 14:27:05 nico Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 
