@@ -1,5 +1,5 @@
 /*
-$Id: EncodeHandler.java,v 1.7 2000-03-27 16:01:02 wwwtech Exp $
+$Id: EncodeHandler.java,v 1.8 2000-03-27 16:10:37 wwwtech Exp $
 
 VPRO (C)
 
@@ -36,7 +36,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.7 $ $Date: 2000-03-27 16:01:02 $
+ * @version $Revision: 1.8 $ $Date: 2000-03-27 16:10:37 $
  */
 public class EncodeHandler implements Runnable {
 
@@ -173,7 +173,7 @@ public class EncodeHandler implements Runnable {
 		}
 
 		// -------------------------------------------
-
+/*
 		int 	number	= -1;
 		String snumber = bul.getNumberFromName("noise1");
 
@@ -215,7 +215,7 @@ public class EncodeHandler implements Runnable {
 				debug("doG2Encode(): ERROR: number("+snumber+") not a real number!");	
 			}
 		} else debug("doG2Encode(): ERROR: no number("+snumber+") found for noise1!");	
-
+*/
 
 		if( g2node != null )
 		{

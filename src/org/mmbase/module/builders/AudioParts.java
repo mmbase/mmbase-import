@@ -1,5 +1,5 @@
 /*
-$Id: AudioParts.java,v 1.4 2000-03-24 14:33:56 wwwtech Exp $
+$Id: AudioParts.java,v 1.5 2000-03-27 16:10:35 wwwtech Exp $
 
 VPRO (C)
 
@@ -8,6 +8,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/24 14:33:56  wwwtech
+Rico: total recompile
+
 Revision 1.3  2000/02/28 17:13:48  wwwtech
 - (marcel) Added getAudiopartUrl()
 
@@ -29,6 +32,7 @@ import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
 
 import nl.vpro.mmbase.util.media.audio.*;
+import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer
