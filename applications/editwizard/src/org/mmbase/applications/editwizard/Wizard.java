@@ -27,7 +27,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.77 2003-04-02 19:20:24 michiel Exp $
+ * @version $Id: Wizard.java,v 1.78 2003-04-16 10:06:08 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1135,9 +1135,12 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // emptry string.
         if (log.isDebugEnabled()) log.debug("minoccurs:" + minoccurs + " maxoccurs: " + maxoccurs + " items: " + nrOfItems);
         if ((nrOfItems > maxoccurs && maxoccurs != -1 )|| ( nrOfItems < minoccurs) ) { // form cannot be valid in that case
+            ((Element) newlist).setAttribute("status", "invalid");
             // which list?
             String listTitle = Utils.selectSingleNodeText(fieldlist, "title", "some list");
             ((Element) form).setAttribute("invalidlist", listTitle);
+        } else {
+            ((Element) newlist).setAttribute("status", "invalid");
         }
 
         log.debug("can we place an add-button?");
