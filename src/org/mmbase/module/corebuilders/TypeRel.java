@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.27.2.12 2003-02-28 20:48:48 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.27.2.13 2003-03-05 08:24:20 pierre Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
@@ -57,7 +57,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                     public int compare(Object o1, Object o2) {
                         MMObjectNode n1 = (MMObjectNode) o1;
                         MMObjectNode n2 = (MMObjectNode) o2;
-                        
+
                         int i1 = n1.getIntValue("snumber");
                         int i2 = n2.getIntValue("snumber");
                         if (i1 != i2) return i1 - i2;
@@ -115,7 +115,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
                     public int compare(Object o1, Object o2) {
                         MMObjectNode n1 = (MMObjectNode) o1;
                         MMObjectNode n2 = (MMObjectNode) o2;
-                        
+
                         int i1 = n1.getIntValue("dnumber");
                         int i2 = n2.getIntValue("dnumber");
                         if (i1 != i2) return i1 - i2;
@@ -135,7 +135,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         // make sure only MMObjectNode's are added
         public boolean add(Object object) {
             return super.add((MMObjectNode) object);
-        }        
+        }
 
         SortedSet getByDestination(MMObjectBuilder destination) {
             return Collections.unmodifiableSortedSet(subSet(new VirtualTypeRelNode(-1, destination.oType),
@@ -507,7 +507,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * are swapped, and when a typecombo does not exist -
      * it is not possible to derive whether one or the other has occurred.
      * <p>
-     *
+     * @deprecated use {@link #contains} instead
      * @param n1 The source type number.
      * @param n2 The destination type number.
      * @param r The relation definition (role) number.
@@ -515,7 +515,53 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      *
      */
     public boolean reldefCorrect(int n1,int n2, int r) {
-        return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        return contains(n1, n2, r);
+    }
+
+    /**
+     * Tests if a specific relation type is defined.
+     * The method also returns true if the typerel occurs as a virtual (derived) node.
+     * <p>
+     * Note that this routine returns false both when a snumber/dnumber
+     * are swapped, and when a typecombo does not exist -
+     * it is not possible to derive whether one or the other has occurred.
+     * <p>
+     *
+     * @param n1 The source type number.
+     * @param n2 The destination type number.
+     * @param r The relation definition (role) number.
+     * @return <code>true</code> when the relation exists, false otherwise.
+     *
+     * @since MMBase-1.6.2
+     */
+    public boolean contains(int n1,int n2, int r) {
+        return contains(n1, n2, r, true);
+    }
+
+    /**
+     * Tests if a specific relation type is defined.
+     * <p>
+     * Note that this routine returns false both when a snumber/dnumber
+     * are swapped, and when a typecombo does not exist -
+     * it is not possible to derive whether one or the other has occurred.
+     * <p>
+     *
+     * @param n1 The source type number.
+     * @param n2 The destination type number.
+     * @param r The relation definition (role) number.
+     * @param virtual if true, the method also returns true if the typerel occurs as a virtual (derived) node.
+     *                if false, it only returns true if the typerel occurs as-is in the database
+     * @return <code>true</code> when the relation exists, false otherwise.
+     *
+     * @since MMBase-1.6.2
+     */
+    public boolean contains(int n1,int n2, int r, boolean virtual) {
+        if (virtual) {
+            return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
+        } else {
+            SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
+            return (existingNodes.size()>0 && !((MMObjectNode)existingNodes.first()).isVirtual());
+        }
     }
 
     public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
