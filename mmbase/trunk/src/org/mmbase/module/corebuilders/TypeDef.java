@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.36 2003-05-13 08:15:33 michiel Exp $
+ * @version $Id: TypeDef.java,v 1.37 2003-09-02 20:25:18 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -316,7 +316,7 @@ public class TypeDef extends MMObjectBuilder {
      * @param node The node to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(String field,MMObjectNode node) {
+    public String getGUIIndicator(String field, MMObjectNode node) {
         if (field.equals("name")) {
             String name = node.getStringValue("name");
             String guiname= getSingularName(name, null);
@@ -394,10 +394,13 @@ public class TypeDef extends MMObjectBuilder {
                 return getGUIIndicator(node);
             } else {
                 String rtn;
-                if (args.size() <= 2) {
+                if (args.size() <= 1) {
                     rtn = getGUIIndicator((String) args.get(0), node);
                 } else {
-                    rtn = getLocaleGUIIndicator(new Locale((String) args.get(2), ""), (String) args.get(0), node);
+                    String language = (String) args.get(1);
+                    if (language == null) language = mmb.getLanguage();
+                    Locale locale = new Locale(language, "");
+                    rtn = getLocaleGUIIndicator(locale, (String) args.get(0), node);
                 }
                 if (rtn == null) return super.executeFunction(node, function, args);
                 return rtn;
