@@ -18,11 +18,11 @@ import org.mmbase.util.logging.*;
  * This is the base class for all basic implementations of the bridge lists.
  *
  * @author Pierre van Rooden
- * @version $Id: BasicList.java,v 1.15 2003-04-29 20:19:34 michiel Exp $
+ * @version $Id: BasicList.java,v 1.16 2003-12-17 09:16:44 michiel Exp $
  */
 public class BasicList extends ArrayList implements BridgeList  {
 
-    private static Logger log = Logging.getLoggerInstance(BasicList.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BasicList.class);
 
     private Map properties = new HashMap();
 

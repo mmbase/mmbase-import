@@ -21,10 +21,10 @@ import org.mmbase.util.logging.*;
  * which means that chanegs are committed only if you commit the transaction itself.
  * This mechanism allows you to rollback changes if something goes wrong.
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.14 2003-03-07 09:31:00 pierre Exp $
+ * @version $Id: BasicTransaction.java,v 1.15 2003-12-17 09:16:44 michiel Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
-    private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(BasicTransaction.class);
 
     /**
      * The id of the transaction for use with the transaction manager.
@@ -75,14 +75,14 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             // do nothing
         } else {
             try {
-            // BasicCloudContext.transactionManager.commit(account, transactionContext);
+                // BasicCloudContext.transactionManager.commit(account, transactionContext);
                 BasicCloudContext.transactionManager.commit(userContext.getUserContext(), transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
                 String message = e.getMessage();
                 log.error(message);
-                throw new BridgeException(message,e);
+                throw new BridgeException(message, e);
             }
         }
         // remove the transaction from the parent cloud
