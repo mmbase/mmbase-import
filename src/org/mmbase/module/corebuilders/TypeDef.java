@@ -19,9 +19,10 @@ import org.mmbase.util.logging.*;
  * TypeDef, one of the meta stucture nodes it is used to define the
  * object types (builders)
  *
+ * @duplicate adopt code from ObjectTypes
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.40 2004-10-25 08:08:38 pierre Exp $
+ * @version $Id: TypeDef.java,v 1.41 2004-10-25 12:02:43 pierre Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -71,6 +72,18 @@ public class TypeDef extends MMObjectBuilder {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
+        return insert(owner, node, true);
+    }
+
+    /**
+     * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
+     * This method indirectly calls {@link #preCommit}.
+     * @param owner The administrator creating the node
+     * @param node The object to insert. The object need be of the same type as the current builder.
+     * @param loadBuilder ignored, only used by the ObjectTypes builder
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+     */
+    public int insert(String owner, MMObjectNode node, boolean loadBuilder) {
         int result=super.insert(owner, node);
         if (result!=-1) {
             Integer number=node.getIntegerValue("number");
