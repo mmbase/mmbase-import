@@ -22,6 +22,7 @@ import org.mmbase.bridge.NodeList;
 import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
+import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -182,15 +183,16 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
 
+        log.debug("doStartTaghelper");
         // make a (temporary) container 
         container = new ContextContainer(null, getContextProvider().getContainer());
         collector = new HashMap();
         
 
         // serve parent timer tag:
-        TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
+        TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            timerHandle = ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).startTimer(getId(), getClass().getName());
+            timerHandle = ((TimerTag)t).startTimer(getId(), getClass().getName());
         }
 
         if (getReferid() != null) {
@@ -280,26 +282,31 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         previousValue = null;
         changed = true;
         if (returnValues.hasNext()) {
-            return EVAL_BODY_BUFFERED;
+            doInitBody(); // because EVAL_BODY_INCLUDE is returned now (by setReturnValues), doInitBody is not called by taglib impl.
+            return EVAL_BODY_INCLUDE;
+        } else {
+            return SKIP_BODY;
         }
-        return SKIP_BODY;
     }
 
 
     public int doAfterBody() throws JspTagException {
+        log.debug("doafterbody");
         super.doAfterBody();
         if (getId() != null) {
             getContextProvider().getContainer().unRegister(getId());
         }
 
-        
+        log.debug("copying to collector");
+        collector.putAll(container);
+        container.clear();
+                
         if (returnValues.hasNext()){
-            collector.putAll(container);
-            container.clear();
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
-            getContextProvider().getContainer().registerAll(collector);
+            log.debug("writing body");
+            /*
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
@@ -307,17 +314,22 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                     throw new JspTagException(ioe.toString());
                 }
             }
+            */
             return SKIP_BODY;
         }
 
     }
     public int doEndTag() throws JspTagException {
+        
+        log.debug("registering all");
+        getContextProvider().getContainer().registerAll(collector);
+
         if (getId() != null) {
             getContextProvider().getContainer().register(getId(), returnList);
         }
-        javax.servlet.jsp.tagext.TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
+        TagSupport t = findParentTag(TimerTag.class, null, false);
         if (t != null) {
-            ((org.mmbase.bridge.jsp.taglib.debug.TimerTag)t).haltTimer(timerHandle);
+            ((TimerTag)t).haltTimer(timerHandle);
         }
         return  super.doEndTag();
     }
