@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.40 2004-02-04 17:39:19 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.41 2004-04-20 13:10:10 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -75,30 +75,42 @@ public class WizardDatabaseConnector {
         didcounter = Utils.tagNodeList(nodes, "did", "d", didcounter);
     }
 
+
     /**
      * This method loads relations from MMBase and stores the result in the given object node.
      *
      * @param  object          The objectNode where the results should be appended to.
      * @param  objectnumber    The objectnumber of the parentobject from where the relations should originate.
      * @param  loadaction      The node with loadaction data. Has inforation about what relations should be loaded and what fields should be retrieved.
-     * @throws WizardException if loading the realtions fails
+     * @return  The new relations (in the data object), or <code>null</code> if none.
+     * @throws WizardException if loading the relations fails
      */
-    private void loadRelations(Node object, String objectnumber, Node loadaction) throws WizardException {
+
+    Collection loadRelations(Node object, String objectNumber, Node loadAction) throws WizardException {
         // loads relations using the loadaction rules
-        NodeList allRelations = Utils.selectNodeList(loadaction, ".//relation");
+        NodeList allRelations = Utils.selectNodeList(loadAction, ".//relation"); 
+
+        if (log.isDebugEnabled()) {
+            log.debug("All relations " + Utils.getXML(allRelations) + " adding to " + Utils.getXML(object));
+        }
         // complete relations: add empty <object> tag where there is none.
-        for (int i=0; i<allRelations.getLength(); i++) {
+        for (int i = 0; i < allRelations.getLength(); i++) {
             Node relation = allRelations.item(i);
             // if there is not yet an object attached, load it now
             NodeList objects = Utils.selectNodeList(relation, "object");
-            if (objects.getLength()==0) {
+            if (objects.getLength() == 0) {
                 relation.appendChild(relation.getOwnerDocument().createElement("object"));
             }
         }
         // root list of relations
-        NodeList relations = Utils.selectNodeList(loadaction, "relation");
+        NodeList relations = Utils.selectNodeList(loadAction, "relation");
         // load relations (automatically loads related objects and 'deep' relations)
-        if (relations.getLength()>0) getRelations(object, objectnumber, relations);
+        if (relations.getLength() > 0) {
+            return getRelations(object, objectNumber, relations);
+        } else {
+            return new ArrayList();
+        }
+
     }
 
     /**
@@ -108,36 +120,33 @@ public class WizardDatabaseConnector {
      * @param objectnumber The objectnumber of the object to start with.
      * @return The resulting data document.
      * @throws WizardException if loading the schema fails
+     * @since MMBase-1.7
      */
-    public Document load(Node schema, String objectnumber) throws WizardException {
+    public Document load(Node schema, String objectNumber) throws WizardException {
         // intialize data xml
         Document data = Utils.parseXML("<data />");
 
-        try {
-            // load initial object using object number
-            log.debug("Loading: " + objectnumber);
-
-            // restrict fields to load
-            NodeList fieldstoload = Utils.selectNodeList(schema, "action[@type='load']/field");
-            Node object=null;
-            if (fieldstoload==null || fieldstoload.getLength()==0) {
-                object = getData(data.getDocumentElement(), objectnumber);
-            } else {
-                object = getData(data.getDocumentElement(), objectnumber, fieldstoload);
-            }
-
-            // load relations, if present
-            Node loadaction = Utils.selectSingleNode(schema, "action[@type='load']");
-            if (loadaction!=null) {
-                loadRelations(object, objectnumber, loadaction);
-            }
-        } catch (WizardException e) {
-            log.error("Could not load object ["+objectnumber+"]. MMBase returned some errors.\n"+e.getMessage());
-            throw e;
+        // load initial object using object number
+        log.debug("Loading: " + objectNumber);
+        
+        // restrict fields to load
+        NodeList fieldstoload = Utils.selectNodeList(schema, "action[@type='load']/field");
+        Node object=null;
+        if (fieldstoload == null || fieldstoload.getLength() == 0) {
+            object = getData(data.getDocumentElement(), objectNumber);
+        } else {
+            object = getData(data.getDocumentElement(), objectNumber, fieldstoload);
+        }
+        
+        // load relations, if present
+        Node loadAction = Utils.selectSingleNode(schema, "action[@type='load']");
+        if (loadAction != null) {
+            loadRelations(object, objectNumber, loadAction);
         }
         tagDataNodes(data);
         return data;
     }
+
 
     /**
      * This method gets constraint information from mmbase about a specific objecttype.
@@ -255,24 +264,26 @@ public class WizardDatabaseConnector {
      * This method gets relation information from mmbase.
      *
      * @param  targetNode      The targetnode where the results should be appended.
-     * @param  objectnumber    The objectnumber of the parent object from where the relations originate.
-     * @param  loadaction      The loadaction data as defined in the schema. These are used as 'restrictions'.
+     * @param  objectNumber    The objectnumber of the parent object from where the relations originate.
+     * @param  queryRelations  A list of 'relation' DOM-nodes, defining the relations which must be fetched.
      * @throws WizardException if the relations could not be obtained
      */
-    public void getRelations(Node targetNode, String objectnumber, NodeList queryrelations) throws WizardException {
-        // fires getRelations command and places results targetNode
+    public Collection getRelations(Node targetNode, String objectNumber, NodeList queryRelations) throws WizardException {
 
-        ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectnumber, queryrelations);
+        // fires getRelations command and places results inside targetNode
+        ConnectorCommandGetRelations cmd = new ConnectorCommandGetRelations(objectNumber, queryRelations);
         fireCommand(cmd);
         if (!cmd.hasError()) {
             NodeList relations = Utils.selectNodeList(cmd.getResponseXML(), "/*/object/relation");
-            for (int i=0; i<relations.getLength(); i++) {
+            for (int i = 0; i < relations.getLength(); i++) {
                 tagDataNode(relations.item(i));
             }
-            Utils.appendNodeList(relations, targetNode);
+            return Utils.appendNodeList(relations, targetNode);
+            // return relations;
         } else {
-            throw new WizardException("Could not ontain relations for " + objectnumber + "  : " + cmd.getError());
+            throw new WizardException("Could not ontain relations for " + objectNumber + "  : " + cmd.getError());
         }
+
     }
 
     /**
