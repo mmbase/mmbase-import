@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.48 2002-02-04 12:54:43 pierre Exp $
+ * @version $Id: MMBase.java,v 1.49 2002-02-19 18:47:44 michiel Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -215,6 +215,16 @@ public class MMBase extends ProcessorModule  {
     private String language="us";
 
     /**
+     * Currently used encoding. Access using getEncoding(). This
+     * default to ISO-8859-1 as long as support for other encodings is
+     * not thoroughly tested. In the feature we will probably switch
+     * to UTF-8.
+     *
+     * @since MMBase-1.6
+     */
+    private String encoding="ISO-8859-1";
+     
+    /**
      * MMbase 'up state. Access using getState()
      */
     private boolean mmbasestate=false;
@@ -261,6 +271,11 @@ public class MMBase extends ProcessorModule  {
         tmp=getInitParameter("LANGUAGE");
         if (tmp!=null && !tmp.equals("")) {
             language=tmp;
+        }
+
+        tmp=getInitParameter("ENCODING");
+        if (tmp != null && !tmp.equals("")) {
+            encoding=tmp;
         }
 
         tmp=getInitParameter("AUTH401URL");
@@ -1081,6 +1096,19 @@ public class MMBase extends ProcessorModule  {
     public String getLanguage() {
         return language;
     }
+    /**
+     * Retrieves the encoding.
+     * This value is set using the configuration file.
+     * Examples are 'UTF-8' (default) or 'ISO-8859-1'.
+     *
+     * @return the coding as a <code>String</code>
+     * @since  MMBase-1.6
+     */
+
+     public String getEncoding() {
+         return encoding;
+     }
+
 
     /**
      * Retrieves whether this mmbase module is running.
