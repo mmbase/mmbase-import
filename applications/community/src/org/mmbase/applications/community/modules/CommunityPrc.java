@@ -42,13 +42,12 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.11 2004-01-08 11:09:00 pierre Exp $
+ * @version $Id: CommunityPrc.java,v 1.12 2004-01-21 10:17:29 michiel Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(CommunityPrc.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CommunityPrc.class);
 
     private Message messageBuilder;
     private Channel channelBuilder;
@@ -78,20 +77,25 @@ public class CommunityPrc extends ProcessorModule {
 
     /**
      * Initialize the community and activate it if all builders are present.
+     * @since MMBase-1.7
      */
     public boolean activate() {
         if (!active) {
-            messageBuilder = (Message)mmb.getMMObject("message");
-            if (messageBuilder != null && messageBuilder.activate()) {
-                communityBuilder = (Community)mmb.getMMObject("community");
-                if (communityBuilder != null && communityBuilder.activate()) {
-                    channelBuilder = (Channel)mmb.getMMObject("channel");
-                    if (channelBuilder != null && channelBuilder.activate()) {
-                        initializeTreeBuilder();
-                        active = true;
-                    }
-                }
+            messageBuilder = (Message) mmb.getMMObject("message");
+            if (messageBuilder == null  || !messageBuilder.activate()) {
+                log.error("Community module could not be activated because message builder missing or could not be activated");
+                return false;
             }
+            communityBuilder = (Community)mmb.getMMObject("community");
+            if (communityBuilder == null || !communityBuilder.activate()) {
+                log.info("Community builder missing or could not be activated. Communityprc can work without it though.");
+            }
+            channelBuilder = (Channel) mmb.getMMObject("channel");
+            if (channelBuilder == null || ! channelBuilder.activate()) {
+                log.info("Channel builder missing or could not be activated. Communityprc can work without it though.");
+            }
+            initializeTreeBuilder();
+            active = true;
         }
         return active;
     }
@@ -340,7 +344,7 @@ public class CommunityPrc extends ProcessorModule {
             if (command.equals("WHO")) return channelBuilder.getListUsers(params);
             if (command.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(params);
         }
-        return null;
+        return null; // returning null gives NPE in ProcessorModule, how nice it that?
     }
 
     /**
