@@ -1,4 +1,4 @@
-/* 
+/* -*- tab-width: 4 -*- 
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -20,19 +20,20 @@ import javax.servlet.http.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
+import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.Logger;
+
 /**
  * Module , the wrapper for the modules.
  *
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.27 $ $Date: 2001-03-06 10:06:46 $
+ * @version $Revision: 1.28 $ $Date: 2001-04-09 14:42:25 $
  */
 public abstract class Module {
 
-	static String   classname   = "org.mmbase.module.Module"; // getClass().getName();
-	private static void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
-	//private void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    static Logger log = Logging.getLoggerInstance(Module.class.getName()); 
 
 	Object SecurityObj;
 	String moduleName=null;
@@ -50,7 +51,6 @@ public abstract class Module {
 	private String className;
 	String maintainer;
 	int    version;	
-
 		
 	/**
  	 * variable to synchronize SecurityObj
@@ -106,7 +106,7 @@ public abstract class Module {
 			}
 			return(value);
 		} else {
-			debug("getInitParameters("+key+"): No properties found, called before they where loaded");
+            log.error("getInitParameters(" + key + "): No properties found, called before they where loaded");
 		}
 		return(null);
 	}
@@ -270,7 +270,7 @@ public abstract class Module {
         ServletContext sx=MMBaseContext.getServletContext();
         String mimetype=sx.getMimeType(filename);
         if (mimetype==null) {
-            if (debug) debug("getMimeType("+filename+"): WARNING: Can't find mimetype retval=null -> setting mimetype to default text/html");
+            log.warn("getMimeType(" + filename + "): Can't find mimetype retval=null -> setting mimetype to default text/html");
             mimetype="text/html";
         }
         return(mimetype);
@@ -280,27 +280,34 @@ public abstract class Module {
 
 	public static synchronized final void startModules() {
 		// call the onload to get properties
-		if( debug ) debug("startModules(): onloading modules("+modules+")");
+		if( log.isDebugEnabled()) {
+            log.debug("startModules(): onloading modules(" + modules + ")");
+        }
 		for (Enumeration e=modules.elements();e.hasMoreElements();) {
 			Module mod=(Module)e.nextElement();
-			if( debug ) debug("startModules(): modules.onload("+mod+")");
+			if( log.isDebugEnabled() ) {
+                log.debug("startModules(): modules.onload(" + mod + ")");
+            }
 			try {
 				mod.onload();		
 			} catch (Exception f) {
-				debug("startModules(): Warning: modules("+mod+") not found to 'onload'!");
+				log.warn("startModules(): modules(" + mod + ") not found to 'onload'!");
 				f.printStackTrace();
 			}
 		}
-
 		// so now really give em their init
-		if (debug) debug("startModules(): init the modules("+modules+")");
+		if (log.isDebugEnabled()) {
+            log.debug("startModules(): init the modules(" + modules + ")");
+        }
 		for (Enumeration e=modules.elements();e.hasMoreElements();) {
 			Module mod=(Module)e.nextElement();
-			if (debug) debug("startModules(): mod.init("+mod+")");
+			if ( log.isDebugEnabled()) {
+                log.debug("startModules(): mod.init(" + mod + ")");
+            }
 			try {
 				mod.init();		
 			} catch (Exception f) {
-				debug("startModules(): module("+mod+") not found to 'init'!");
+				log.error("startModules(): module(" + mod + ") not found to 'init'!");
 				f.printStackTrace();
 			}
 		}
@@ -312,7 +319,9 @@ public abstract class Module {
 
 		if (modules==null) {
 				modules=loadModulesFromDisk();
-			if (debug) debug("getModule("+name+"): Modules not loaded, loading them..");
+			if (log.isDebugEnabled()) {
+                log.debug("getModule(" + name + "): Modules not loaded, loading them..");
+            }
 			startModules();
 			// also start the maintaince thread that calls all modules every x seconds
 			mprobe = new ModuleProbe(modules);
@@ -366,7 +375,7 @@ public abstract class Module {
 
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results=new Hashtable();
-
+        
         String dtmp=System.getProperty("mmbase.mode");
         if (dtmp!=null && dtmp.equals("demo")) {
             String curdir=System.getProperty("user.dir");
@@ -376,53 +385,54 @@ public abstract class Module {
             mmbaseconfig=curdir+"/config";
         } else {
             mmbaseconfig=System.getProperty("mmbase.config");
-            if (mmbaseconfig==null) 
-                debug("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
+            if (mmbaseconfig == null) {
+                log.error("mmbase.config not defined, use property (-D)mmbase.config=/my/config/dir/");
+            }
         }
         MMBaseContext.setConfigPath(mmbaseconfig);
 
-	String dirname=(mmbaseconfig+"/modules/");
-	File bdir = new File(dirname);
+        String dirname=(mmbaseconfig+"/modules/");
+        File bdir = new File(dirname);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
             for (int i=0;i<files.length;i++) {
                 String bname=files[i];
                 if (bname.endsWith(".xml")) {
-                     bname=bname.substring(0,bname.length()-4);
-		     XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
-		     if (parser!=null) {		
-			if (parser.getStatus().equals("active")) {
-				String cname=parser.getClassFile();
-            			// try starting the module and give it its properties
-            			try {
-               		 		Class newclass=Class.forName(cname);
-                	 		Object mod = newclass.newInstance();
-                			if (mod!=null) {
-                    				results.put(bname,mod);
-                    				Hashtable modprops = parser.getProperties();
-                    				if (modprops!=null) {
-			                       	 ((Module)mod).properties=modprops;
-                    				}
-                        // set the module name property using the module's filename
-                        // maybe we need a parser.getModuleName() function to improve on this
- 						((Module)mod).setName(bname);
-						((Module)mod).setMaintainer(parser.getModuleMaintainer());
-						((Module)mod).setVersion(parser.getModuleVersion());
-						((Module)mod).setClassName(parser.getClassFile());
-
-					}
-				} catch (java.lang.ClassNotFoundException cnfe) {
-					System.err.println("[error][" + Module.class.getName() + "]Could not load class with name '"+cname+"', which was "+
-							"specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		    }
-		}
-	    }
-	}
-	return(results);
+                    bname=bname.substring(0,bname.length()-4);
+                    XMLModuleReader parser=new XMLModuleReader(dirname+bname+".xml");
+                    if (parser!=null) {		
+                        if (parser.getStatus().equals("active")) {
+                            String cname=parser.getClassFile();
+                            // try starting the module and give it its properties
+                            try {
+                                Class newclass=Class.forName(cname);
+                                Object mod = newclass.newInstance();
+                                if (mod!=null) {
+                                    results.put(bname,mod);
+                                    Hashtable modprops = parser.getProperties();
+                                    if (modprops!=null) {
+                                        ((Module)mod).properties=modprops;
+                                    }
+                                    // set the module name property using the module's filename
+                                    // maybe we need a parser.getModuleName() function to improve on this
+                                    ((Module)mod).setName(bname);
+                                    ((Module)mod).setMaintainer(parser.getModuleMaintainer());
+                                    ((Module)mod).setVersion(parser.getModuleVersion());
+                                    ((Module)mod).setClassName(parser.getClassFile());
+                                    
+                                }
+                            } catch (java.lang.ClassNotFoundException cnfe) {
+                                log.error("Could not load class with name '" + cname + "', " + 
+                                          "which was specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
+                            } catch (Exception e) {
+                                log.error("Error while loading module class" + Logging.stackTrace(e));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return(results);
     }
 
 }
