@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Revision: 1.109 $ $Date: 2001-10-18 13:04:10 $
+ * @version $Revision: 1.110 $ $Date: 2001-11-27 10:27:00 $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2632,6 +2632,21 @@ public class MMObjectBuilder extends MMTable {
 
 
     /**
+     *  Sets a key/value pair in the main values of this node.
+     *  Note that if this node is a node in cache, the changes are immediately visible to
+     *  everyone, even if the changes are not committed.
+     *  The fieldname is added to the (public) 'changed' vector to track changes.
+     *  @param fieldname the name of the field to change
+     *  @param fieldValue the value to assign
+     *  @param originalValue the value which was original in the field
+     *  @return <code>true</code> When an update is required(when changed), 
+	 *	<code>false</code> if original value was set back into the field.
+     */
+    public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
+        return setValue(node,fieldname);
+    }
+
+    /**
      * Provides additional functionality when setting field values.
      * This method is called whenever a Node of the builder's type tries to change a value.
      * It allows the system to add functionality such as checking valid data.
@@ -2643,6 +2658,8 @@ public class MMObjectBuilder extends MMTable {
     public boolean setValue(MMObjectNode node,String fieldname) {
         return true;
     }
+	
+	
 
 
     /**
