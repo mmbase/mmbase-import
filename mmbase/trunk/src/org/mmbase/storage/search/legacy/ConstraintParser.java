@@ -69,12 +69,12 @@ import org.mmbase.util.logging.*;
  * </ul>
  * A <em>string-search-condition</em> can be of this form:
  * <ul>
- * <li><b>StringSearch(</b>PHRASE|PROXIMITY|WORD<b>,</b>
+ * <li><b>StringSearch(</b><em>field</em><b>,</b>PHRASE|PROXIMITY|WORD<b>,</b>
  *  FUZZY|LITERAL|SYNONYM<b>,</b>
  *  <em>searchterms</em><b>,</b>
  *  <em>casesensitive</em><b>)</b>
  *  [<b>.set(FUZZINESS,</b><em>fuzziness</em><b>)</b>]
- *  [<b>.set(PROXIMITY_LIMIT,</b>proximity</em><b>)</b>]
+ *  [<b>.set(PROXIMITY_LIMIT,</b><em>proximity</em><b>)</b>]
  * </ul>
  * <em>searchterms</em> can be of one of these forms:
  * <ul>
@@ -103,7 +103,7 @@ import org.mmbase.util.logging.*;
  * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.16 2003-11-27 16:00:54 vpro Exp $
+ * @version $Id: ConstraintParser.java,v 1.17 2003-12-23 15:12:52 robmaris Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
@@ -738,7 +738,7 @@ public class ConstraintParser {
         String token = (String) iTokens.next();
         if (!token.equals("(")) {
             throw new IllegalArgumentException(
-                "Unexpected token (expected \")\"): \""
+                "Unexpected token (expected \"(\"): \""
                 + token + "\"");
         }
 
