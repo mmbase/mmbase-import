@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.37 2004-01-13 12:23:46 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.38 2004-01-13 14:03:45 michiel Exp $
  */
 public class MultiPool {
 
@@ -60,6 +60,30 @@ public class MultiPool {
         this.maxQueries      = maxQueries;
         this.databaseSupport = databaseSupport;
 
+        boolean logStack = true;
+        while (!fillPool(logStack)) {
+            log.error("Cannot run with no connections, retrying after 10 seconds");
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ie) {
+                log.error(ie.getMessage());
+            }
+            logStack = false; // don't log that mess a second time
+            log.info("Retrying now");
+        }
+     
+        semaphore = new DijkstraSemaphore(pool.size());
+
+        dbm = getDBMfromURL(url);
+    }
+
+
+    /**
+     * Fills the connection pool.
+     * @return true if the pool contains connections and mmbase can be started.
+     * @since MMBase-1.7
+     */
+    protected boolean fillPool(boolean logStack) {
         int errors = 0;
         SQLException firstError = null;
         // put connections on the pool
@@ -74,21 +98,18 @@ public class MultiPool {
                 if (firstError == null) firstError = se;
             }
         }
-        if (errors > 0) {
-            if (pool.size() < 2) { // that is fatal.
-                throw firstError;
-            }
-            log.error("Could not get all connections (" + errors + " failures). First error: " + firstError.getMessage() + Logging.stackTrace(firstError));
+        if (errors > 0) { 
+            log.error("Could not get all connections (" + errors + " failures). First error: " + firstError.getMessage() + (logStack ? Logging.stackTrace(firstError) : ""));
             log.info("Multipools size is now " + pool.size() + " rather then " + conMax);
+            if (pool.size() < 1) { // that is fatal.
+                return false;
+            }
             this.conMax = pool.size();
         }
 
+        return true;
+     
 
-        
-
-        semaphore = new DijkstraSemaphore(pool.size());
-
-        dbm = getDBMfromURL(url);
     }
 
     /**
@@ -256,9 +277,20 @@ public class MultiPool {
             //see comment in method checkTime()
             semaphore.acquire();
             synchronized (semaphore) {
+                log.debug("Getting free connection from pool " + pool.size());
                 con = (MultiConnection) pool.remove(0);
                 con.claim();
+                try {
+                    if (con.isClosed()) {
+                        log.warn("Got a closed connection from the connection Pool. Trying to get a new one");
+                        con = getMultiConnection();
+                        con.claim();
+                    }
+                } catch (SQLException sqe) {
+                    log.error(sqe.getMessage());
+                }
                 busyPool.add(con);
+                log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
             }
         } catch (InterruptedException e) {
             log.error("GetFree was Interrupted");
@@ -280,6 +312,7 @@ public class MultiPool {
         }
         //see comment in method checkTime()
         synchronized (semaphore) {
+            log.debug("Putting back to Pool: " + pool.size() + " from busypool: " + busyPool.size());
             if (! busyPool.contains(con)) {
                 log.warn("Put back connection (" + con.lastSql + ") was not in busyPool!!");
             }
@@ -305,6 +338,7 @@ public class MultiPool {
             }
             pool.add(con);
             busyPool.remove(oldcon);
+            log.debug("Pool: " + pool.size() + " busypool: " + busyPool.size());
             semaphore.release();
         }
     }
@@ -365,6 +399,7 @@ public class MultiPool {
     /**
      * @javadoc
      */
+    /*
     private boolean checkConnection(Connection conn) {
         Statement statement;
         boolean rtn;
@@ -380,6 +415,7 @@ public class MultiPool {
         }
         return(rtn);
     }
+    */
 
 
     /**
