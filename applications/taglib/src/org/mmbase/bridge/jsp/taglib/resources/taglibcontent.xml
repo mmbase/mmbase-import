@@ -27,39 +27,51 @@
   
   <escaper id="text/plain">
   </escaper>
-  <escaper id="none" type="text/html">
+  <escaper id="none">
   </escaper>
   <escaper id="text/html">
     <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
   </escaper>
-  <escaper id="text/html/attribute" type="text/html">
+  <escaper id="text/html/attribute">
     <class config="ESCAPE_ATTRIBUTE_HTML">org.mmbase.util.transformers.Xml</class>
   </escaper>
   <escaper id="text/xml">
     <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
   </escaper>
-  <escaper id="text/html/rich" type="text/html">
+  <escaper id="text/html/rich">
     <class config="POOR" back="true">org.mmbase.util.transformers.XmlField</class>
   </escaper>
+  <escaper id="uppercase">
+    <class>org.mmbase.util.transformers.UpperCaser</class>
+  </escaper>
+  <escaper id="censor">
+    <class>org.mmbase.util.transformers.Censor</class>
+  </escaper>
+  <escaper id="swallow">
+    <class>org.mmbase.util.transformers.Swallower</class>
+  </escaper>
 
-  <!-- The content-tag then can 'postprocess' everything in its body.  These are meant to be simple
-       transformations, like throwing away too much space, or escaping unknown characters.
-       There is no real difference between escapers and postprocessors, only in goal.
+  <!-- The content-tag then can 'postprocess' everything in its body.
+       These are meant to be simple transformations, like throwing
+       away too much space, or escaping unknown characters.  There is
+       no real difference between escapers and postprocessors, only in
+       goal. Postprocessors are meant to be for the complete
+       content-tag body, thought escapers are only for writers.  But
+       you can use them mixed (and there is no need to define
+       something as a postprocessor if it is an escaper already). 
   -->
 
   <postprocessor id="reducespace">
     <class>org.mmbase.util.transformers.SpaceReducer</class>
   </postprocessor>
   <postprocessor id="entities">
-    <class>org.mmbase.util.transformers.SpaceReducer</class>
     <class>org.mmbase.util.transformers.XmlEntities</class>
   </postprocessor>
   <postprocessor id="xmetodo">
-    <class>org.mmbase.util.transformers.SpaceReducer</class>
     <class config="XMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
   </postprocessor>
   <postprocessor id="hmetodo">
-    <class>org.mmbase.util.transformers.SpaceReducer</class>
     <class config="HMETODO">org.mmbase.util.transformers.Latin3Surrogator</class>
   </postprocessor>
+
 </taglibcontent>
