@@ -69,7 +69,7 @@ NetComponents can be found at:
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="mmbase-taglib" value="mmbase-taglib.xml"/>
-  <property name="manifest"      value="manifest.mf"/>
+  <property name="distro"      value="MMBase 1.6.0"/>
   <!-- Don't change the following properties unless you know what you're doing -->
   <property name="mmbase.jar" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="source-config.dir" location="${source.dir}/config"/>
@@ -535,10 +535,21 @@ NetComponents can be found at:
           depends="compile,taglib.tld">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
+
+    <echo file="${build.dir}/manifest.mf">
+Name: org/mmbase
+Vendor: MMBase Community
+URL: http://www.mmbase.org
+Comment: The MMBase Content Managment System
+Version: ${distro}.${version}
+Distribution: ${distro}
+</echo>
+    
+
     <jar jarfile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"
          basedir="${build.dir}/classes"
 	     includes="org/mmbase/**"
-	     manifest="${manifest}" >
+	     manifest="${build.dir}/manifest.mf" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
         <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
@@ -1085,10 +1096,8 @@ NetComponents can be found at:
     <untar src="${expand.dir}/jspsmartupload/${jspsmartupload.file}.tar" dest="${expand.dir}/jspsmartupload"/>
 
     <echo file="${expand.dir}/jspsmartupload/manifest.mf">
-Name: jspsmartupload
-Manifest-Version: 1.0
-Created-By: MMBase build ${version}
-Signature-Version: ${version}
+Name: com/jspsmart/upload
+Version: MMBase build ${version}
 </echo>
     <jar jarfile="${expand.dir}/jspsmartupload/jspsmartupload.jar"
          basedir="${expand.dir}/jspsmartupload/jspsmartupload/Web-inf/classes"
