@@ -851,61 +851,7 @@ Build-compiler: ${build.compiler}
     <antcall target="documentation" />
   </target>
 
-
-  <!-- =================================================================== -->
-  <!-- Compile the AppTool                                                 -->
-  <!-- =================================================================== -->
-  <target name="compile.apptool" description="Compile the AppTool"
-          depends="init.compile">
-    <mkdir dir="${build.dir}/apptool/classes"/>
-    <javac srcdir="${source-src.dir}"
-           destdir="${build.dir}/apptool/classes"
-           classpathref="compile.classpath"
-           debug="${debug}"
-           optimize="${optimize}"
-           nowarn="${nowarn}"
-           deprecation="${deprecation}">
-      <include name="org/mmbase/module/tools/MMAppTool/*.java"/>
-    </javac>
   </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Build the AppTool                                                   -->
-  <!-- =================================================================== -->
-  <target name="apptool" description="Build the AppTool"
-          depends="jar,compile.apptool">
-    <mkdir dir="${build.dir}/apptool/lib"/>
-    <copy file="${mmbase.jar}" todir="${build.dir}/apptool/lib"/>
-    <copy file="${xerces.jar}" todir="${build.dir}/apptool/lib"/>
-    <copy file="${servlet.jar}" todir="${build.dir}/apptool/lib"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Run the AppTool                                                     -->
-  <!-- =================================================================== -->
-  <target name="run.apptool" description="Run the AppTool"
-          depends="apptool">
-    <java classname="org.mmbase.module.tools.MMAppTool.MMAppTool" fork="true">
-      <classpath>
-        <pathelement location="${build.dir}/apptool/classes"/>
-        <fileset dir="${build.dir}/apptool/lib">
-          <include name="**/*.jar"/>
-          <include name="**/*.zip"/>
-        </fileset>
-      </classpath>
-    </java>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Clean the apptool                                                   -->
-  <!-- =================================================================== -->
-  <target name="clean.apptool" description="Clean the apptool">
-    <delete dir="${build.dir}/apptool"/>
-  </target>
-
 
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
@@ -1244,10 +1190,9 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target
     name="clean.build"
-    depends="clean.compile,clean.generatedsource,clean.apptool,clean.lib"
+    depends="clean.compile,clean.generatedsource,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
-    <!-- apptool? -->
   </target>
 
   <!-- this doesn't get clean anywhere else -->
