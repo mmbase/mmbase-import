@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.10 2003-07-14 21:17:20 michiel Exp $
+ * @version $Id: Users.java,v 1.11 2003-07-18 13:40:23 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -40,12 +40,12 @@ public class Users extends MMObjectBuilder {
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
     protected static Cache rankCache = new Cache(20) {
-            public String getName()        { return "SecurityRankCache"; }
+            public String getName()        { return "CCS:SecurityRank"; }
             public String getDescription() { return "Caches the rank of users"; }
         };
 
     protected static Cache userCache = new Cache(20) {
-            public String getName()        { return "SecurityUserCache"; }
+            public String getName()        { return "CCS:SecurityUser"; }
             public String getDescription() { return "Caches the users"; }
         };
 

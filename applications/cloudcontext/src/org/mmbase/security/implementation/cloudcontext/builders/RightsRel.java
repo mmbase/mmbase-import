@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.2 2003-05-23 12:05:14 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.3 2003-07-18 13:40:22 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
@@ -34,7 +34,7 @@ public class RightsRel extends InsRel {
         OperationsCache() {
             super(100);
         }
-        public String getName()        { return "SecurityOperationsCache"; }
+        public String getName()        { return "CCS:SecurityOperations"; }
         public String getDescription() { return "The groups associated with a security operation";}
         
         public Object put(MMObjectNode context, Operation op, List groups) {

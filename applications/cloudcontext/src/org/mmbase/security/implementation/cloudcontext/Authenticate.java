@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: Authenticate.java,v 1.2 2003-06-16 13:07:17 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.3 2003-07-18 13:40:22 michiel Exp $
  */
 public class Authenticate extends Authentication {
-    private static Logger log = Logging.getLoggerInstance(Authenticate.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Authenticate.class);
     private long uniqueNumber;
 
     /**
