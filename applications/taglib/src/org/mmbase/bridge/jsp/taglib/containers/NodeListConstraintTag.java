@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.14 2003-10-16 07:25:11 pierre Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.15 2003-10-30 14:05:07 pierre Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -30,7 +30,6 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
     private static final Logger log = Logging.getLoggerInstance(NodeListConstraintTag.class);
 
     protected Attribute container  = Attribute.NULL;
-
 
     protected Attribute operator   = Attribute.NULL;
 
@@ -60,7 +59,6 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
     }
-
 
     public void setValue2(String v) throws JspTagException {
         value2 = getAttribute(v);
@@ -95,7 +93,6 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         } else {
             throw new JspTagException("Unknown Field Compare Operator '" + op + "'");
         }
-
     }
 
     protected static Number getNumberValue(String stringValue) throws JspTagException {
@@ -110,8 +107,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         }
     }
 
-
-    public static FieldConstraint addConstraint(Query query, String field, String field2, int operator, String stringValue, String stringValue2) throws JspTagException {
+    public static Constraint buildConstraint(Query query, String field, String field2, int operator,
+                                          String stringValue, String stringValue2) throws JspTagException {
         Object compareValue;
 
         StepField stepField = query.createStepField(field);
@@ -141,6 +138,10 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
                 }
             }
         }
+        return newConstraint;
+    }
+
+    public static Constraint addConstraintToQuery(Query query, Constraint newConstraint) throws JspTagException {
         Constraint constraint = query.getConstraint();
         if (constraint != null) {
             log.debug("compositing constraint");
@@ -150,7 +151,22 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
             query.setConstraint(newConstraint);
         }
         return newConstraint;
+    }
 
+    private Constraint addConstraint(Query query, String field, String field2, int operator,
+                                          String stringValue, String stringValue2) throws JspTagException {
+        Constraint newConstraint = buildConstraint(query, field, field2, operator, stringValue, stringValue2);
+
+        // if there is a OR or an AND tag, add
+        // the constraint to that tag,
+        // otherwise add it direct to the query
+        NodeListCompositeConstraintTag cons = (NodeListCompositeConstraintTag) findParentTag(NodeListCompositeConstraintTag.class, (String) container.getValue(this), false);
+        if (cons!=null) {
+            cons.addChildConstraint(newConstraint);
+        } else {
+            newConstraint = addConstraintToQuery(query, newConstraint);
+        }
+        return newConstraint;
     }
 
     public int doStartTag() throws JspTagException {

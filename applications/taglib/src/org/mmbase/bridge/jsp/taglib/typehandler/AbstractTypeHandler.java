@@ -21,7 +21,7 @@ import org.mmbase.storage.search.*;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.19 2003-10-16 07:25:11 pierre Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.20 2003-10-30 14:05:08 pierre Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -122,7 +122,8 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
         String value = findString(field);
         if (value != null) {
-            return NodeListConstraintTag.addConstraint(query, field.getName(), null, getOperator(), getSearchValue(findString(field)), null);
+            Constraint con = NodeListConstraintTag.buildConstraint(query, field.getName(), null, getOperator(), getSearchValue(findString(field)), null);
+            return NodeListConstraintTag.addConstraintToQuery(query,con);
         } else {
             return null;
         }
