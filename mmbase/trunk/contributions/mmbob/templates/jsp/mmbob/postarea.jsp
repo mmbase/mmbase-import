@@ -8,6 +8,8 @@
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBase Forum</title>
 </head>
+<body>
+
 <mm:import externid="adminmode">false</mm:import>
 <mm:import externid="forumid" />
 <mm:import externid="postareaid" />
@@ -27,7 +29,6 @@
 
 <mm:locale language="$lang"> 
 
-<center>
 <mm:include page="path.jsp?type=postarea" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
   		  <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
@@ -39,8 +40,9 @@
 					<br />
 					</mm:compare>
 			<b>Area name</b> : <mm:field name="name" /> <b>Topics</b> : <mm:field name="postthreadcount" /> <b>Messages</b> : <mm:field name="postcount" /> <b>Views</b> : <mm:field name="viewcount" /><br />
-			<b>Laatste bijdrage</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b>door</b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1">nog geen bericten</mm:compare></mm:field><br />
+			<b>Laatste bijdrage</b> : <mm:field name="lastposttime"><mm:compare value="-1" inverse="true"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> <b>door</b> <mm:field name="lastposter" /> <b> : '</b><mm:field name="lastsubject" /><b>'</b></mm:compare><mm:compare value="-1">nog geen bericten</mm:compare></mm:field><br />
 			<mm:import id="isadministrator"><mm:field name="isadministrator" /></mm:import>
+                        <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
 		  </mm:nodefunction>
 	<br />
 	<b>Moderators</b> :
@@ -51,9 +53,9 @@
 	</tr>
 </table>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
-   <tr><th width="15">&nbsp;</th><th width="15">&nbsp;</th><th>Onderwerp</th><th>Gestart door</th><th>Reacties</th><th>Views</th><th>Laatste bijdrage</th><mm:compare referid="isadministrator" value="true"><th>admin</th></mm:compare></tr>
+   <tr><th width="15">&nbsp;</th><th width="15">&nbsp;</th><th>Onderwerp</th><th>Gestart door</th><th>Reacties</th><th>Views</th><th>Laatste bijdrage</th><mm:compare referid="ismoderator" value="true"><th>Moderator</th></mm:compare></tr>
   	  <mm:nodelistfunction set="mmbob" name="getPostThreads" referids="forumid,postareaid,posterid,page">
-			<tr><td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td><td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> door <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:field name="lastposternumber" />"><mm:field name="lastposter" /></a></td><mm:compare referid="isadministrator" value="true"><td>
+			<tr><td><mm:field name="state"><mm:write referid="image_state_$_" /></mm:field></td><td><mm:field name="mood"><mm:write referid="image_mood_$_" /></mm:field></td><td align="left"><a href="thread.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&postthreadid=<mm:field name="id" />"><mm:field name="name" /></a> <mm:field name="navline" /></td><td align="left"><mm:field name="creator" /></td><td align="left"><mm:field name="replycount" /></td><td align="left"><mm:field name="viewcount" /></td><td align="left"><mm:field name="lastposttime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field> door <mm:field name="lastposter" /></td><mm:compare referid="ismoderator" value="true"><td>
 <a href="<mm:url page="removepostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">X</a> / <a href="<mm:url page="editpostthread.jsp" referids="forumid,postareaid"><mm:param name="postthreadid"><mm:field name="id" /></mm:param></mm:url>">E</a></td></mm:compare></tr>
 		  
 		  </mm:nodelistfunction>
@@ -115,5 +117,5 @@
 
 </mm:locale>
 </mm:cloud>
-</center>
+</body>
 </html>
