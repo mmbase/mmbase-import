@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.24 2002-03-22 14:12:42 daniel Exp $
+ * @version $Id: FieldDefs.java,v 1.25 2002-03-22 14:20:44 pierre Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -32,7 +32,7 @@ public class FieldDefs implements Comparable {
     public final static int DBSTATE_MAXVALUE = 3;
     public final static int DBSTATE_UNKNOWN = -1;
 
-    public final static int TYPE_MINVALUE = 1;   
+    public final static int TYPE_MINVALUE = 1;
     public final static int TYPE_STRING = 1;
     public final static int TYPE_INTEGER = 2;
     public final static int TYPE_BYTE = 4;
@@ -40,7 +40,7 @@ public class FieldDefs implements Comparable {
     public final static int TYPE_DOUBLE = 6;
     public final static int TYPE_LONG = 7;
     public final static int TYPE_XML = 8;
-    public final static int TYPE_MAXVALUE = 8;   
+    public final static int TYPE_MAXVALUE = 8;
     public final static int TYPE_UNKNOWN = -1;
 
     public final static int ORDER_CREATE = 0;
@@ -160,6 +160,7 @@ public class FieldDefs implements Comparable {
     public static int getDBTypeId(String type) {
         if (type == null) return DBSTATE_UNKNOWN;
         // XXX: deprecated VARCHAR
+        type=type.toUpperCase();
         if (type.equals("VARCHAR")) return TYPE_STRING;
         if (type.equals("STRING"))  return TYPE_STRING;
         if (type.equals("XML"))     return TYPE_XML;
@@ -172,13 +173,13 @@ public class FieldDefs implements Comparable {
     }
 
     /**
-     * Provide an id for the specified mmbase state description
+     * Provide an id for the specified mmbase state description.
      * @param type the state description to get the id of
      * @return the id of the state.
      */
     public static int getDBStateId(String state) {
         if (state == null) return DBSTATE_UNKNOWN;
-	state=state.toUpperCase();
+        state=state.toUpperCase();
         if (state.equals("PERSISTENT"))  return DBSTATE_PERSISTENT;
         if (state.equals("VIRTUAL")) return DBSTATE_VIRTUAL;
         if (state.equals("SYSTEM")) return DBSTATE_SYSTEM;
@@ -270,12 +271,12 @@ public class FieldDefs implements Comparable {
     /**
      * Retrieve whether the field can be left blank.
      */
-    public boolean getDBNotNull() {    
+    public boolean getDBNotNull() {
         return DBNotNull;
     }
 
     /**
-     * Retrieve the doctype  
+     * Retrieve the doctype
      */
     public String getDBDocType() {
         return DBDocType;
