@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.280 2005-01-04 10:27:05 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.281 2005-01-05 11:50:08 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -5140,6 +5140,7 @@ The 0 is just counter, which starts at 0 on every page.
     <name>listnodescontainer</name>
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag</tagclass>
     <info>
       Surrounds a listnodes tag and provides a query object.
@@ -5205,9 +5206,12 @@ The 0 is just counter, which starts at 0 on every page.
     <name>relatednodescontainer</name>
     <type>mmbase.list</type>
     <extends>querycontainer</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedNodesContainerTag</tagclass>
     <info>
-       Surrounds a relatednodes tag and provides a query object.
+       Surrounds a relatednodes tag and provides a query object. Alternatively, it can also surround
+       a listnodes tag (because a relatenodescontainer is a specialized version of a
+       listnodescontainer).
     </info>
     <see tag="listnodes" />
     <see tag="querycontainerreferrer" />
