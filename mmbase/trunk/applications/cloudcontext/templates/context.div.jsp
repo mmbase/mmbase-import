@@ -5,7 +5,7 @@
  </p>
 
 <div class="rights">
-   <form method="post" action="<mm:url page="commit_context.jsp" />">    
+   <form method="post" action="<mm:url referids="parameters,$parameters"><mm:param name="url">commit_context.jsp</mm:param></mm:url>">    
    <input type="hidden" name="context" value="<mm:field name="number" />" />
    <table>
      <mm:fieldlist type="edit" fields="owner">
@@ -23,7 +23,7 @@
     <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
     <mm:listnodes id="thisgroup" type="mmbasegroups">
       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
-      <tr><td class="text"><a href="<mm:url referids="thisgroup@group" page="index_groups.jsp" />"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
+      <tr><td class="text"><a href="<mm:url referids="parameters,$parameters,thisgroup@group"><mm:param name="url">index_groups.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
 
         <mm:stringlist referid="operations">
         <mm:param name="operation"><mm:write /></mm:param>
@@ -49,7 +49,7 @@
     </mm:listnodes>
     </mm:functioncontainer> 
     <tr><td class="text"><input type="submit"  name="submit" value="submit" /></td></tr>
-    <tr><td class="text"><a href="<mm:url page="index_contexts.jsp" />">back</a></td></tr>
+    <tr><td class="text"><a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>">back</a></td></tr>
    </table>
    </form>
 </div>

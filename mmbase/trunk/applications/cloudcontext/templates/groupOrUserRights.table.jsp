@@ -5,7 +5,7 @@
     <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
     <mm:listnodes id="thiscontext" type="mmbasecontexts">
-      <tr><td class="text"><a href="<mm:url referids="thiscontext@context" page="index_contexts.jsp" />"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
+      <tr><td class="text"><a href="<mm:url referids="parameters,$parameters,thiscontext@context"><mm:param name="url">index_contexts.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>
         <mm:stringlist referid="operations">
         <mm:param name="operation"><mm:write /></mm:param>
         <td <mm:booleanfunction name="parentsallow">
@@ -30,4 +30,5 @@
     </mm:listnodes>
     </mm:functioncontainer> 
     <tr><td><input type="submit"  name="submit" value="submit" /></td></tr>
+    <tr><td class="text"><a href="<mm:url referids="back@url,parameters,$parameters" />">back</a></td></tr>
    </table>

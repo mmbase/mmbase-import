@@ -1,12 +1,9 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
-<%@page language="java" contentType="text/html; charset=UTF-8"
-%><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><html><mm:content postprocessor="reducespace">
-<%@include file="settings.jsp" %>
-<head>
-    <title>Cloud Context Groups Administration</title>
-    <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
-</head>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
+%><%@page language="java" contentType="text/html; charset=UTF-8"
+%><mm:content postprocessor="reducespace">
+<%@include file="import.jsp" %><%@include file="settings.jsp" %>
+<mm:import id="url">index_contexts.jsp</mm:import>
+
 <mm:import externid="offset">0</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:import externid="context" vartype="list" />
@@ -19,7 +16,7 @@
 
   <p class="action">
    <mm:maycreate type="mmbasecontexts">
-    <a href="<mm:url page="create_context.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create context"  /></a>
+    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_context.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" tooltip="create context"  /></a>
    </mm:maycreate>
    <mm:maycreate type="mmbasecontexts" inverse="true">
      You are not allowed to create new security contexts.
@@ -49,7 +46,7 @@
          <td><mm:fieldinfo type="guivalue" /></td>
       </mm:fieldlist>
       <td class="commands">
-         <a href="<mm:url referids="currentcontext@context" />"><img src="images/mmbase-edit.gif" alt="Wijzigen" title="Wijzigen" /></a>
+         <a href="<mm:url referids="parameters,$parameters,currentcontext@context,url" />"><img src="<mm:url page="${location}images/mmbase-edit.gif" />" alt="Wijzigen" title="Wijzigen" /></a>
       </td>
       </tr>
      </mm:listnodes>
@@ -65,7 +62,6 @@
      </mm:stringlist>
    </mm:present>
 
- </body>
 </mm:cloud>
 </mm:content>
-</html>
+

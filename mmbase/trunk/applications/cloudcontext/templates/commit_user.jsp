@@ -1,32 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html;charset=UTF-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><%@include file="settings.jsp" %><html>
+%><%@include file="settings.jsp"
+%><%@include file="import.jsp" %>
 <mm:import externid="user" required="true" />
 
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 <mm:node id="user" referid="user">
-  <head>
-    <title>Commit user <mm:field name="gui()" /></title>
-   <link href="<mm:write referid="stylesheet" />" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
- <h1><mm:field name="gui()" /></h1>
-
-  <%@include file="you.div.jsp" %>
-
-
-   <table>
+ <%@include file="you.div.jsp" %>
+  <mm:context>
     <mm:fieldlist type="edit" fields="owner">
-    <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="useinput" /></td></tr>
+       <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
     <mm:import externid="_groups" vartype="list" jspvar="groups" /> 
-    <tr>
-     <td>Groups</td>
-     <td>
      <mm:listrelations type="mmbasegroups" role="contains">
        <mm:relatednode jspvar="group">
-         <%= group.getNumber() %>
         <% if (! groups.contains("" + group.getNumber())) { %>
           <mm:import id="delete" />
         <% } %>
@@ -45,11 +32,6 @@
         </mm:node>
      </mm:stringlist>
      </mm:write>
-     </td>
-    </tr>
-    <tr>
-     <td>Rank</td>
-     <td>
      <mm:import externid="_rank" />
      <mm:isnotempty referid="_rank">      
        <mm:listrelations type="mmbaseranks" role="rank">
@@ -60,13 +42,12 @@
      </mm:isnotempty>
 
    <%@include file="commitGroupOrUserRights.jsp" %>
-   </table>
+   </mm:context>
+    <h1><mm:field name="gui()" /> (commited)</h1>
+   <%@include file="edit_user.form.jsp" %>
+</mm:node>
 
+</mm:cloud>
 
-   </mm:node>
-  </mm:cloud>
-  <mm:write referid="user" jspvar="node" vartype="node">
-  <% response.sendRedirect(response.encodeRedirectURL("edit_user.jsp?user=" + node.getNumber())); %>
-  </mm:write>
-  </body>
-</html>
+   
+
