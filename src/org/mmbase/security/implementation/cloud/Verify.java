@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.8 2002-08-08 12:14:56 eduard Exp $
+ * @version $Id: Verify.java,v 1.9 2002-09-05 10:51:41 eduard Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class.getName());
@@ -58,14 +58,15 @@ public class Verify extends Authorization {
 	// everyone may read everything....
 	if(operation == Operation.READ) return true;
 
-	log.info("[node #"+nodeid+"] check by ["+user.getIdentifier()+"] for operation ["+operation+"]");
-
 	// anonoymous may do nothing further...
 	if(user.getRank() == Rank.ANONYMOUS) return false;
 
-
+	// link operation may always be done by basic users..
+	if(operation == Operation.CHANGE_RELATION) return true;
 
 	MMObjectNode node = getMMNode(nodeid);
+	log.debug("[node #"+nodeid+"] check by ["+user.getIdentifier()+"] for operation ["+operation+"]");
+
 	String username = user.getIdentifier();
 	String builder = node.getName();
 	Rank rank = user.getRank();
@@ -74,35 +75,44 @@ public class Verify extends Authorization {
 	// onlything that we have to lookout for are:
 	//- we are creating a new user
 	//- we are changing behaviour of a user....
-	if(!builder.equals("mmbaseusers") || !(node.parent.getTableName().equals("typedef") && node.getStringValue("name").equals("mmbaseusers") && Operation.CREATE == operation)) {
-	    // not working on security thingies.. thus should be oke...
-	    if(username.equals(node.getStringValue("username"))) {
-		return true;
+	if(builder.equals("mmbaseusers")) {
+	    // look at our node..
+	    if(node.getStringValue("username").equals(username)){
+		if(operation == Operation.WRITE) return true;
+		if(operation == Operation.DELETE) return false;		
 	    }
-	    return false;
+	    // further nothing allowed, unless we are the admin..
+	    return rank == Rank.ADMIN;
 	}
-	// security related objects
-	if(rank == Rank.ADMIN) {
-	    // admin may see all security nodes, create, change, delete them.. (maybe someone lost its password), except it's own account
-	    if(username.equals(node.getStringValue("username")) && Operation.DELETE == operation) {
-		// user may not delete it's own account
-		return false;
+	else {
+	    // admin may do everything else..
+	    if(rank == Rank.ADMIN) return true;
+
+	    // if we want to create a new user, special rules apply..
+	    if(operation == Operation.CREATE) {
+		// only admin may create new users..
+		return !node.getStringValue("name").equals("mmbaseusers");
 	    }
-	    // furthermore admin may do everyting...
+	    // change context and change node itselve only allowed for the owner...	    
+	    if(operation == Operation.WRITE || operation == Operation.CHANGECONTEXT || operation == Operation.DELETE) {
+		// look if this is a valid context...
+		String context = node.getStringValue("owner");
+		if(!getPossibleContexts(user, nodeid).contains(context)) {
+		    log.warn("context with name:'" + context + "' not found as user, granting the user the rights for operation:" + operation + " on node #" + nodeid);
+		    return true;
+		}
+		return context.equals(username) || context.equals(SHARED_CONTEXT_ID);
+	    }	    
+	    // basic users may do everything further...
 	    return true;
 	}
-	if(rank == Rank.BASICUSER) {
-	    // when we are ourselve...
-	    if(username.equals(node.getStringValue("username"))) {
-		return true;
-	    }
-	    return operation == Operation.CREATE;
-	}
-	return false;
     }
 
+    private static String SHARED_CONTEXT_ID = "[shared]";
+
     public boolean check(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) {
-	if(user.getRank() == Rank.ANONYMOUS)return false;
+	// link is always permitted!
+	if(user.getRank() == Rank.ANONYMOUS) return false;
 	return true;
     }
 
@@ -142,6 +152,7 @@ public class Verify extends Authorization {
 	while(e.hasMoreElements()) {
 	    contexts.add(((MMObjectNode) e.nextElement()).getStringValue("username"));
 	}
+	contexts.add(SHARED_CONTEXT_ID);
 	return contexts;
     }
 
