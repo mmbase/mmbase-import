@@ -15,13 +15,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- *  This class is a empty implementation of the Authentication, it will only
- *  return successful authentications.
+ *  This class is a abstract implementation of the Authentication.
  *
  *  To make your own implementation of authentication, you have to extend this class.
  *
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.19 2003-09-26 13:00:17 michiel Exp $
+ * @author Michiel Meeuwissen (javadocs)
+ * @version $Id: Authentication.java,v 1.20 2003-09-26 17:41:10 michiel Exp $
  */
 public abstract class Authentication extends Configurable {
 
@@ -29,16 +29,17 @@ public abstract class Authentication extends Configurable {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
     /**
-     *  This method will verify the login, and give a UserContext back if everything
-     *  was valid.
+     *  This method will verify the login, and give a UserContext back if the login procedure was successful.
      *	@param application A String that further specifies the login method (one implementation could handle more then one methods)
      *                     A typical value might be 'username/password'.
-
-     *	@param loginInfo   A Map containing the credentials or other objects which might be used to obtain them (e.g. request/response objects)
-
-     *	@param parameters a list of optional parameters, may also be null
      *
-     *	@return <code>null</code When not valid a (maybe new) UserContext when valid.
+     *	@param loginInfo   A Map containing the credentials or other objects which might be used to obtain them (e.g. request/response objects).
+     *                     It might also be 'null', in which case your implementation normally should return the 'anonymous' user (or null, if
+     *                     no such user can be defined).
+     *
+     *	@param parameters  A list of optional parameters, may also (and will often) be null.
+     *
+     *	@return <code>null</code if no valid credentials were supplied,  a (perhaps new) UserContext if login succeeded.
      *
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */
