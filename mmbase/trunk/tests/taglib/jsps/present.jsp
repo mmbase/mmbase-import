@@ -148,10 +148,19 @@ Ok, threw exception without 'reset'.<br />
 <% } %>
 
 <% try { %>
- <mm:import id="some_id" reset="true">test2test2</mm:import>
+ <mm:import id="some_id" reset="true">test<mm:write referid="some_id" />test2</mm:import>
 Ok, did not throw exception with 'reset'.<br />
 <% } catch (Exception e) { %>
- WRONG, should not have thrown exception with reset="true".<br />
+ WRONG, should not have thrown exception with reset="true".
+ <%= e.getMessage() %>
+ <br />
+<% } %>
+<% try { %>
+ <mm:import externid="a_param" id="some_id" reset="true">bla bla </mm:import>
+<% } catch (Exception e) { %>
+ WRONG, should not have thrown exception with reset="true".
+ <%= e.getMessage() %>
+ <br />
 <% } %>
 </p>
 <h2>Combo with lists</h2>
