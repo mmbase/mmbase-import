@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.3 2003-02-25 10:18:28 michiel Exp $
+ * @version $Id: RealSorter.java,v 1.4 2003-03-04 10:23:15 rob Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class.getName());
@@ -54,15 +54,17 @@ public class RealSorter extends  ChainSorter {
     /**
      * Sort with speed
      */
-
     protected class SpeedSorter extends PreferenceSorter {
 
         private int minSpeed        = -1;
         private int maxSpeed        = -1;    
+        private int defaultSpeed        = -1;    
+
         public void configure(XMLBasicReader reader, Element e) {
             try {
                 minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minspeed")));
                 maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxspeed")));
+                defaultSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".defaultspeed")));
             } catch (Exception ex) {
                 log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
                 log.error(Logging.stackTrace(ex));
@@ -70,6 +72,7 @@ public class RealSorter extends  ChainSorter {
             if(log.isDebugEnabled()) {
                 log.debug("Minspeed="   + minSpeed);
                 log.debug("Maxspeed="   + maxSpeed);
+                log.debug("Defaultspeed="   + defaultSpeed);
            }
         }
         /**
@@ -85,7 +88,9 @@ public class RealSorter extends  ChainSorter {
             if(info.containsKey("wantedSpeed")) {
                 preference = 1;  // explicitely requested something real-specific, prefer real
                 wantedSpeed    = ((Integer) info.get("wantedSpeed")).intValue();
-            }
+            } else {
+		wantedSpeed = defaultSpeed;
+	    }
 
             if (log.isDebugEnabled()) {
                 log.debug("wantedSpeed:" + wantedSpeed + " minspeed: " + minSpeed + " maxspeed: " + maxSpeed);
@@ -113,12 +118,14 @@ public class RealSorter extends  ChainSorter {
     protected class ChannelsSorter extends PreferenceSorter {
         private int minChannels     = -1;
         private int maxChannels     = -1;
+        private int defaultChannels = -1;
 
 
         public void configure(XMLBasicReader reader, Element e) {
             try {
                 minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".minchannels")));
                 maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".maxchannels")));
+                defaultChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, CONFIG_TAG + ".defaultchannels")));
             } catch (Exception ex) {
                 log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
                 log.error(Logging.stackTrace(ex));
@@ -126,6 +133,7 @@ public class RealSorter extends  ChainSorter {
             if(log.isDebugEnabled()) {
                 log.debug("Minchannels="   + minChannels);
                 log.debug("Maxchannels="   + maxChannels);
+                log.debug("Defaultchannels="   + defaultChannels);
             }
         }
 
@@ -142,12 +150,13 @@ public class RealSorter extends  ChainSorter {
             if(info.containsKey("wantedChannels")) {
                 preference = 1; // explicitely requested something real-specific, prefer real
                 wantedChannels = ((Integer) info.get("wantedChannels")).intValue();
-            }
+            } else {
+		    wantedChannels = defaultChannels;
+	    }
 
             if (log.isDebugEnabled()) {
                 log.debug("wantedChannels:" + wantedChannels + " minchennels: " + minChannels + " maxchannels: " + maxChannels);
             }
-        
 
             int channels    = ri.getSource().getIntValue("channels");
 
