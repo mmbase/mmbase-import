@@ -47,6 +47,16 @@
         <a href="<mm:url page="mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
+
+    <tr>
+      <td>My Yahoo</td>
+      <td>
+        Small example of a yahoo-like system
+      </td>
+      <td class="link" >
+        <a href="<mm:url page="myyahoo.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+      </td>
+    </tr>
     
     <tr>
       <td>Taglib</td>
