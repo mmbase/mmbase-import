@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.11 2003-09-04 11:04:39 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.12 2003-09-04 12:16:38 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1075,12 +1075,13 @@ public class DatabaseStorageManager implements StorageManager {
         if (field.getDBName().equals("number")) {
             scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
         } else if (field.isKey()) {
-            scheme = factory.getScheme(Schemes.CREATE_SECONDARY_KEY);
+            scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY);
         } else if (field.getDBType() == FieldDefs.TYPE_NODE) {
             scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY);
         }
         if (scheme != null) {
-            return scheme.format(new Object[]{ this, field.getParent(), field, field, factory.getMMBase()} );
+            return scheme.format(new Object[]{ this, field.getParent(), field, field,
+                                               factory.getMMBase(), factory.getStorageIdentifier("number") } );
         } else {
             return null;
         }
@@ -1092,7 +1093,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @return the index definition as a String, or <code>null</code> if no definition is available
      */
     protected String getCompositeIndexDefinition(List fields) throws StorageException {
-        Scheme scheme = factory.getScheme(Schemes.CREATE_SECONDARY_KEY);
+        Scheme scheme = factory.getScheme(Schemes.CREATE_UNIQUE_KEY);
         if (scheme != null) {
             StringBuffer indices = new StringBuffer();
             for (Iterator i = fields.iterator(); i.hasNext();) {
