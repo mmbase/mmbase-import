@@ -7,7 +7,7 @@
 
     <date>2002-07-28</date>
 
-    <edition>$Id: index.xml,v 1.40 2003-08-21 09:56:30 pierre Exp $</edition>
+    <edition>$Id: index.xml,v 1.41 2003-12-03 11:40:45 henk Exp $</edition>
 
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified
@@ -96,6 +96,27 @@
         url="administrators/configuration.html">HTML</ulink>, <ulink
         id="configuration.pdf" url="administrators/configuration.pdf">PDF</ulink>)</para>
       </listitem>
+	  
+	   <listitem>
+		  <para>The MMBase Security Framework (<ulink id="securityframework"
+		  url="administrators/security-framework.html">HTML</ulink>, <ulink
+		  id="securityframework.pdf" url="administrators/security-framework.pdf">PDF</ulink>)</para>
+		</listitem>
+
+		<listitem>
+		  <para>Installing and using Context Security (<ulink
+		  id="securitycontext" url="administrators/context-security.html">HTML</ulink>,
+		  <ulink id="securitycontext.pdf"
+		  url="administrators/context-security.pdf">PDF</ulink>)</para>
+		</listitem>
+
+		<listitem>
+		  <para>Installing and using Cloud Security(<ulink
+		  id="securitycloud" url="administrators/cloud-security.html">HTML</ulink>,
+		  <ulink id="securitycloud.pdf"
+		  url="administrators/cloud-security.pdf">PDF</ulink>)</para>
+      </listitem>
+	  
     </itemizedlist>
   </section>
 
@@ -128,25 +149,6 @@
         url="administrators/remoteservices.html">MMBase Remote Services</ulink></para>
       </listitem>
 
-      <listitem>
-        <para>The MMBase Security Framework (<ulink id="securityframework"
-        url="administrators/security-framework.html">HTML</ulink>, <ulink
-        id="securityframework.pdf" url="administrators/security-framework.pdf">PDF</ulink>)</para>
-      </listitem>
-
-      <listitem>
-        <para>Installing and using Context Security (<ulink
-        id="securitycontext" url="administrators/context-security.html">HTML</ulink>,
-        <ulink id="securitycontext.pdf"
-        url="administrators/context-security.pdf">PDF</ulink>)</para>
-      </listitem>
-
-      <listitem>
-        <!-- old format (mmdocs) documentation -->
-
-        <para><ulink id="securitycloud" url="security/cloud-security.html">Installing
-        and using Cloud Security</ulink></para>
-      </listitem>
     </itemizedlist>
   </section>
 
