@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.31 2003-08-26 12:57:00 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.32 2003-08-26 13:50:54 michiel Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -469,31 +469,35 @@ public class WizardDatabaseConnector {
 
         if (objectDef == null) throw new WizardException("No 'objectDef' given"); // otherwise NPE in getAttribute
 
-        String objectType = Utils.getAttribute(objectDef, "type");
-
-        if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
-
-        if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
-        String nodename = objectDef.getNodeName();
-
-        // no relations to add here..
-        NodeList relations;
-        Node objectNode;
+        String nodeName = objectDef.getNodeName();
 
         // check if we maybe should create multiple objects or relations
-        if (nodename.equals("action")) {
+
+        if (nodeName.equals("action")) {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
             Node firstobject = null;
             for (int i=0; i < objectdefs.getLength(); i++) {
                 firstobject = createObject(data, targetParentNode, objectdefs.item(i), params);
             }
-            log.debug("This is an action");
-            return firstobject;
-        } else if (nodename.equals("relation")) {
+            log.debug("This is an action");  // no relations to add here..
+            return firstobject;        
+        } 
+
+        NodeList relations;
+        Node objectNode;
+
+        if (nodeName.equals("relation")) {
             // objectNode equals targetParentNode
             objectNode = targetParentNode;
+            if (objectNode == null) {
+                throw new WizardException("Could not find a parent node for relation " + Utils.stringFormatted(objectDef));
+            }
             relations = Utils.selectNodeList(objectDef, ".");
-        } else if (nodename.equals("object")) {
+        } else if (nodeName.equals("object")) {
+            String objectType = Utils.getAttribute(objectDef, "type");            
+            if (objectType.equals("")) throw new WizardException("No 'type' attribute used in " + Utils.stringFormatted(objectDef));
+            if (log.isDebugEnabled()) log.debug("Create object of type " + objectType);
+
             // create a new object of the given type
             objectNode = getNew(targetParentNode, objectType);
             fillObjectFields(data,targetParentNode,objectDef,objectNode,params,createorder);
@@ -568,7 +572,7 @@ public class WizardDatabaseConnector {
             }
             relationNode.appendChild(inside_object);
         }
-        if (nodename.equals("relation")) {
+        if (nodeName.equals("relation")) {
             return lastCreatedRelation;
         } else {
             return objectNode;
