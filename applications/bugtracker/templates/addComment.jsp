@@ -13,17 +13,20 @@
           <td>
             Commenting on bugreport :
             <mm:field name="issue" escape="p" />
-          Commenting type :
-          <p><mm:write referid="commenttype" /></p>
+            Commenting type :
+            <p><mm:write referid="commenttype" /></p>
+
           <mm:compare referid="commenttype" value="regular">
+
             <form action="<mm:url referids="parameters,$parameters,bugreport,user@newuser">
-            <mm:param name="btemplate" value="fullview.jsp" />
-            <mm:param name="flap"     value="overview" /></mm:url>" method="post">
-            Title<br /> <input name="newtitle" style="width: 100%" /><br />
-            Text<br /> <textarea name="newtext" rows="25" style="width: 100%"></textarea>
-            <input type="hidden" name="action" value="addcomment" />
-            <center><input type="submit" value="enter comment"></center>
-          </form>
+                            <mm:param name="btemplate" value="fullview.jsp" />
+                            <mm:param name="flap"     value="overview" /></mm:url>" method="post">
+
+	        Title<br /> <input name="newtitle" style="width: 100%" /><br />
+                Text<br /> <textarea name="newtext" rows="25" style="width: 100%"></textarea>
+               <input type="hidden" name="action" value="addcomment" />
+               <input type="submit" value="enter comment" />
+           </form>
         </mm:compare>
       </td>
     </tr>

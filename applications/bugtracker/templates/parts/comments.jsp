@@ -3,7 +3,7 @@
     <th>Statement from the maintainer</th>
     <td>
       <mm:field name="rationale">
-        <mm:isnotempty><mm:write escape="p" /></mm:isnotempty>
+        <mm:isnotempty><mm:write escape="p,links" /></mm:isnotempty>
         <mm:isempty>no maintainer statement yet</mm:isempty>
       </mm:field>
     </td>
@@ -26,7 +26,7 @@
           </tr>
           <tr>
             <td>&nbsp;</td>
-            <td><mm:field name="body" escape="p" /></td>
+            <td><mm:field name="body" escape="p,links" /></td>
           </tr>        
         </mm:relatednodes>
       </table>

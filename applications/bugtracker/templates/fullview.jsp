@@ -6,7 +6,18 @@
   <%@include file="parameters.jsp" %>
   <%@include file="login.jsp" %>
 
-  <mm:import externid="bugreport" required="true"/>
+  <mm:import externid="bugnumber" />
+  <mm:present referid="bugnumber">
+    <mm:listnodescontainer type="bugreports">
+       <mm:constraint field="bugid" value="$bugnumber" />
+       <mm:listnodes max="1">
+	 <mm:node id="bugreport" />
+       </mm:listnodes>
+    </mm:listnodescontainer>
+  </mm:present>
+  <mm:notpresent referid="bugnumber">
+    <mm:import externid="bugreport" required="true" />
+  </mm:notpresent>
   <mm:import externid="flap">overview</mm:import>
   
   
@@ -22,11 +33,12 @@
     
     <%@ include file="parts/flaps.jsp" %>
 
-		<mm:compare referid="flap" value="overview">
+    <mm:compare referid="flap" value="overview">
       <%@ include file="parts/overview.jsp" %> 
       <%@ include file="parts/comments.jsp" %> 
     </mm:compare>
-		<mm:compare referid="flap" value="history">
+    
+    <mm:compare referid="flap" value="history">
       <%@ include file="parts/history.jsp" %>
     </mm:compare>
 		<mm:compare referid="flap" value="change">

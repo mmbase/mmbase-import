@@ -23,9 +23,9 @@
       <select name="newbtype">
         <!-- sigh, we need a field-type here -->
         <option value="1" <mm:compare value="1">selected="selected"</mm:compare>>bug</option>
-        <option VALUE="2" <mm:compare value="2">selected="selected"</mm:compare>>wish</option>
-        <option VALUE="3" <mm:compare value="3">selected="selected"</mm:compare>>docbug</option>
-        <option VALUE="4" <mm:compare value="4">selected="selected"</mm:compare>>docwish</option>
+        <option value="2" <mm:compare value="2">selected="selected"</mm:compare>>wish</option>
+        <option value="3" <mm:compare value="3">selected="selected"</mm:compare>>docbug</option>
+        <option value="4" <mm:compare value="4">selected="selected"</mm:compare>>docwish</option>
       </select>
      </mm:field>
   </td>
@@ -46,7 +46,7 @@
         <option value="3" <mm:compare value="3">selected="selected"</mm:compare>>rejected</option>
         <option value="4" <mm:compare value="4">selected="selected"</mm:compare>>pending</option>
         <option value="5" <mm:compare value="5">selected="selected"</mm:compare>>integrated</option>
-        <option VALUE="6" <mm:compare value="6">selected="selected"</mm:compare>>closed</option>
+        <option value="6" <mm:compare value="6">selected="selected"</mm:compare>>closed</option>
       </select>
      </mm:field>
   </td>

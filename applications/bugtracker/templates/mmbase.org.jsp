@@ -12,9 +12,8 @@
 <%@include file="/includes/getids.jsp" %>
 <%@include file="/includes/header.jsp"%>
 
-
-<%--
  <%@include file="actions.jsp" %>
+<%--
  <%@include file="showMessage.jsp" %>
 --%>
 
