@@ -202,7 +202,11 @@ public class BasicNode implements Node {
            throw new BasicBridgeException("Not allowed to change field "
                                           + attribute);
         }
-        BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
+        String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
+        if ("unknown".equals(result)) {
+            throw new BasicBridgeException("Can't change unknown field "
+                                           + attribute);
+        }
     }
 
 	public void setIntValue(String attribute, int value) {

@@ -18,9 +18,12 @@ import org.mmbase.module.corebuilders.RelDef;
 import org.mmbase.module.corebuilders.InsRel;
 
 /*
-	$Id: TemporaryNodeManager.java,v 1.18 2001-03-23 03:31:00 eduard Exp $
+	$Id: TemporaryNodeManager.java,v 1.19 2001-04-06 13:43:55 jaco Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.18  2001/03/23 03:31:00  eduard
+	eduard: it's late and i now throw an exception in this case... has to be looked at later... otherwise will generate nullpointer exceptions...
+	
 	Revision 1.17  2001/03/09 13:57:40  pierre
 	pierre: changed so builder for relation is correctly determined
 	
@@ -78,7 +81,7 @@ import org.mmbase.module.corebuilders.InsRel;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.18 2001-03-23 03:31:00 eduard Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.19 2001-04-06 13:43:55 jaco Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -242,6 +245,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 			} else {
 				node.setValue(field,value);
 //				debug("Invalid type for field "+field);
+				return("unknown");
 			}
 		} else {
 			debug("setObjectField(): Can't find node : "+key);
