@@ -28,11 +28,10 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.41 2004-01-16 13:11:35 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.42 2004-01-20 20:14:58 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
-    // logger
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManager.class);
 
     /**
@@ -426,8 +425,14 @@ public class DatabaseStorageManager implements StorageManager {
         try {
             String fieldName = field.getDBName();
             File binaryFile = getBinaryFile(node, fieldName);
-            if (!binaryFile.exists()) {
-                return null;
+            if (! binaryFile.canRead()) {
+                String desc = "while it should contain the byte data for node '" + node.getNumber() + "' field '" + fieldName + "'. Returning null.";
+                if (! binaryFile.exists()) {
+                    log.debug("The file '" + binaryFile + "' does not exist, " + desc);
+                } else {
+                    log.error("The file '" + binaryFile + "' can not be read, " + desc);
+                }
+                return null; 
             }
             int fileSize = (int)binaryFile.length();
             byte[] buffer = new byte[fileSize];
@@ -440,6 +445,7 @@ public class DatabaseStorageManager implements StorageManager {
         } catch (IOException ie) {
             throw new StorageException(ie);
         }
+    	//TODO: find you why is this code only here and not in other methods/ 
     }
 
     // javadoc is inherited
@@ -861,7 +867,7 @@ public class DatabaseStorageManager implements StorageManager {
      * You can use this method to iterate through a query, creating multiple nodes, provided the resultset still contains
      * members (that is, <code>result.isAfterLast</code> returns <code>false</code>)
      * @param node The MMObjectNode to be filled
-     * @param res the resultset
+     * @param result the resultset
      * @param builder the builder to use for creating the node
      * @return void
      * @throws StorageException if the resultset is exhausted or a database error occurred
@@ -1154,7 +1160,7 @@ public class DatabaseStorageManager implements StorageManager {
     /**
      * Creates a composite index definition string (an index over one or more fields) to be
      * passed when creating a table.
-     * @param fields a List of fields for which to make the index definition
+     * @param builder The builder for which to make the index definition
      * @return the index definition as a String, or <code>null</code> if no definition is available
      */
     protected String getCompositeConstraintDefinition(MMObjectBuilder builder) throws StorageException {
