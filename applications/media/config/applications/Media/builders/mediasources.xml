@@ -63,7 +63,6 @@
         <guiname xml:lang="en">Codec</guiname>
         <guiname xml:lang="nl">Codec</guiname>
         <guitype>org.mmbase.applications.media.resources.codecs</guitype>
-        <guitype>integer</guitype>
       </gui>
       <editor>
         <positions>
