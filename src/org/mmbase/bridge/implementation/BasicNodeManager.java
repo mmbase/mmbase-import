@@ -161,11 +161,11 @@ public class BasicNodeManager implements NodeManager {
 		    v = builder.searchVector(where);
 	    }
 	    // remove all nodes that cannot be accessed
-	    for(int i=(v.size()-1); i>-1; i--) {
+//	    for(int i=(v.size()-1); i>-1; i--) {
 //	        if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getIntValue("number"))) {
-	            v.remove(i);
+//	            v.remove(i);
 //	        }
-	    }
+//	    }
 	    return new BasicNodeList(v,cloud,this);
     }
 }
