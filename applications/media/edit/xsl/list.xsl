@@ -4,8 +4,6 @@
 
   <xsl:import href="ew:xsl/list.xsl" /> <!-- extend from standard  editwizard xslt -->
 
-  <xsl:variable name="objectnumber">-1</xsl:variable>
-
  <xsl:template name="body"> 
     <body onLoad="window.focus(); init(''); ">
       <xsl:call-template name="bodycontent" />

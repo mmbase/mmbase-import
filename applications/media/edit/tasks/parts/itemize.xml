@@ -1,17 +1,21 @@
-<form-schema id="itemize">
-    <title>Itemize</title>
-		<list role="parent" destination="mediafragments" orderby="start" >
-      <title>Items</title>       
-      <item>          
-        <field name="title" />
-        <field name="start"  ftype="realposition" />
-        <field name="stop"   ftype="realposition" />
-      </item>
-		
-			<action type="create">
-				<relation  role="parent"  destinationtype="mediafragments">
-          <object type="mediafragments" />
-        </relation>
-			</action>
-		</list>
-</form-schema>
+<list role="posrel" destination="mediafragments" fields="posrel.pos" orderby="posrel.pos">
+  <title>Items</title>       
+  <item>          
+    <field name="title" />
+
+    <field inline="true" ftype="startwizard" wizardname="tasks/mediafragments">
+      <prompt xml:lang="en">Other fields</prompt>
+      <prompt xml:lang="nl">Andere velden</prompt>
+    </field>
+
+    <field name="start"  ftype="realposition" />
+    <field name="stop"   ftype="realposition" />
+  </item>
+
+	<action type="create">
+     <relation role="posrel" destinationtype="mediafragments" >
+        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        <object type="mediafragments" />
+     </relation>
+	</action>
+</list>

@@ -7,7 +7,8 @@
           <title>Test</title>
         </head>
         <body>
-          <embed src="http://cgi.omroep.nl/cgi-bin/play?/tv/nos/journaal/maandag.2000.rm" 
+          <embed
+            src="http://michiel.omroep.nl/mm/mediaedit/test.ram.jsp" 
             width="260" 
             height="200"   
             type="audio/x-pn-realaudio-plugin"

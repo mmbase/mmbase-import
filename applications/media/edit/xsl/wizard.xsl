@@ -12,11 +12,11 @@
   </xsl:template>
 
 
-  <xsl:template name="realposition">    
-  <span style="width:128;">
+  <xsl:template name="realposition">
+  <span class="realpositionitem">
     <nobr><input type="text" name="{@fieldname}" value="{value}" class="input" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
     <xsl:apply-templates select="@*" />
-    </input>
+    </input> ms
     <input type="button" value="get" onClick="document.forms['form'].elements['{@fieldname}'].value = parent.frames['player'].document.embeddedplayer.GetPosition();" />
     <input type="button" value="set" onClick="parent.frames['player'].document.embeddedplayer.setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
     </nobr>
@@ -56,6 +56,28 @@
     </tr>
   </xsl:template>
 
+ <!-- The appearance of one 'step' button -->
+  <xsl:template name="step">
+    <a>
+      <xsl:call-template name="stepaattributes" />
+      <xsl:call-template name="prompt_step" />
+      </a><br />
+      <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="/*/form[@id=current()/@form-schema]/title" /></xsl:call-template>
+  </xsl:template>
 
+
+ <xsl:template name="buttons">
+    <tr>
+      <td colspan="2">
+        <hr />
+        <p>
+          <xsl:call-template name="cancelbutton" />
+        </p>
+        <p>
+          <xsl:call-template name="savebutton" />
+        </p>
+      </td>
+    </tr>    
+  </xsl:template>
   
 </xsl:stylesheet>

@@ -89,7 +89,7 @@ public class MediaFragments extends MMObjectBuilder {
      * will contain the classification field. This field will contain numbers that are 
      * resolved using the lookup builder. This construction, using classification in 
      * mediafragment, was used for speeding up listings. 
-     * @depricated
+     * @deprecated
      */
     private void retrieveClassificationInfo() {
         
@@ -201,7 +201,7 @@ public class MediaFragments extends MMObjectBuilder {
             log.error("Cannot determine url");
             return "";
         }
-        return mediaSourceBuilder.getURL(mediaSource, info);
+        return mediaSourceBuilder.getUrl(mediaSource, info);
     }
     
     /**
