@@ -24,7 +24,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloudContext.java,v 1.24 2002-08-16 18:17:02 michiel Exp $
+ * @version $Id: BasicCloudContext.java,v 1.25 2002-09-23 10:44:53 michiel Exp $
  */
 public class BasicCloudContext implements CloudContext {
     private static Logger log = Logging.getLoggerInstance(BasicCloudContext.class.getName());
@@ -93,7 +93,7 @@ public class BasicCloudContext implements CloudContext {
         Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
             String message;
-            message = "Module " + moduleName + " does not exist.";
+            message = "Module '" + moduleName + "' does not exist.";
             log.error(message);
             throw new BridgeException(message);
         }
@@ -107,7 +107,7 @@ public class BasicCloudContext implements CloudContext {
     public Cloud getCloud(String name, String application, Map loginInfo) {
         if ( !localClouds.contains(name) ) {
              String message;
-             message = "Cloud " + name + " does not exist.";
+             message = "Cloud '" + name + "' does not exist.";
              log.error(message);
             throw new BridgeException(message);
         }
