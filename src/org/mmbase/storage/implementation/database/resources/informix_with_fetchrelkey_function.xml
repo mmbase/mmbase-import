@@ -21,6 +21,7 @@
 
 		<!-- Not sure about this option, so turned it off -->
 		<option name="database-supports-blob" value="false" />
+		<option name="trim-strings" value="true" />
 
 		<!-- remove empty parenthesis in table definitions -->
 		<option name="database-remove-empty-definitions" />
