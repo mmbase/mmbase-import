@@ -287,9 +287,15 @@ public class TypeDef extends MMObjectBuilder {
      */
     protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
         if (field == null || "".equals(field) || "name".equals(field)){
-            return getSingularName(node.getStringValue("name"), locale.getLanguage());
+            return getLocaleGUIIndicator(locale, node);
         }
         return null;
+    }
+
+    protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
+        String rtn =  getSingularName(node.getStringValue("name"), locale.getLanguage());
+        if (rtn == null) return node.getStringValue("name");
+        return rtn;
     }
 
 
@@ -300,7 +306,7 @@ public class TypeDef extends MMObjectBuilder {
         if(!typedefsLoaded.contains(name)) {
             typedefsLoaded.add(name);
         } else {
-            log.debug("Builder "+name+" is already loaded!");
+            if (log.isDebugEnabled()) log.debug("Builder "+name+" is already loaded!");
         }
     }
 
