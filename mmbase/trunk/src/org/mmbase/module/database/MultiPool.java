@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.35 2003-12-10 10:04:46 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.36 2004-01-09 18:54:26 keesj Exp $
  */
 public class MultiPool {
 
@@ -197,7 +197,7 @@ public class MultiPool {
                 } else {
                     // above 120 we close the connection and open a new one
                     MultiConnection newcon = null;
-                    log.warn("KILLED SQL " + con.lastSql + " time " + diff + " because it took too long");
+                    log.warn("KILLED SQL " + con.lastSql + " after " + diff + " seconds, because it took too long");
                     try {
                         newcon = getMultiConnection();
                         if (log.isDebugEnabled()) {
