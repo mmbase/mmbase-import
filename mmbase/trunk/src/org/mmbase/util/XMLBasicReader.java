@@ -21,7 +21,9 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author cjr@dds.nl
+ * @version $Id: XMLBasicReader.java,v 1.4 2000-08-17 21:16:00 case Exp $
  *
+ * $Log: not supported by cvs2svn $
  */
 public class XMLBasicReader  {
 
@@ -34,21 +36,21 @@ public class XMLBasicReader  {
     Hashtable dictionary; // dictionary of mmbase term identifiers to translations in language
 
 
-    public XMLBasicReader(String filename) {
-
+    public XMLBasicReader(String path) {
         try {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             EntityResolver resolver = new XMLEntityResolver();
             parser.setEntityResolver(resolver);
-            parser.parse(filename);
+            parser.parse(path);
             document = parser.getDocument();
 
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
+
 
     /**
      * @param path Dot-separated list of tags describing path from root element to requested element. 
@@ -129,7 +131,11 @@ public class XMLBasicReader  {
     public String getElementAttributeValue(Element e, String attr) {
         Node n = e.getAttributes().getNamedItem(attr);
         // XXX Add errorchecking
-        return n.getNodeValue();
+        if (n==null) {
+            return "";
+        } else {
+            return n.getNodeValue();
+        }
     }
 
     /**
