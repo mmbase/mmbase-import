@@ -12,30 +12,36 @@ package org.mmbase.security.implementation.basic;
 import org.mmbase.bridge.Query;
 import org.mmbase.util.ExtendedProperties;
 
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.*;
 import org.mmbase.security.*;
+import org.mmbase.security.SecurityException;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+import java.util.*;
+
 /**
- * @javadoc
+ * A very simple Authorization implementation
+ *
  * @author Eduard Witteveen
- * @version $Id: OwnerAuthorization.java,v 1.9 2003-08-05 19:05:21 michiel Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: OwnerAuthorization.java,v 1.10 2003-09-26 19:41:17 michiel Exp $
  */
 public class OwnerAuthorization extends Authorization {
-    private static Logger log=Logging.getLoggerInstance(OwnerAuthorization.class);
 
-    private static org.mmbase.module.core.MMObjectBuilder builder = null;
+    private static final Logger log = Logging.getLoggerInstance(OwnerAuthorization.class);
+
+    private static MMObjectBuilder builder = null; // only to get Nodes from
 
     private MMObjectNode getMMNode(int n) {
         if(builder == null) {
-            org.mmbase.module.core.MMBase mmb = (org.mmbase.module.core.MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
-            builder =  mmb.getMMObject("typedef");
-            if(builder == null) throw new org.mmbase.security.SecurityException("builder not found");
+            MMBase mmb = MMBase.getMMBase();
+            builder =  mmb.getMMObject("typedef"); // only because it always exists
+            if(builder == null) throw new SecurityException("Builder 'typedef'not found.");
         }
         MMObjectNode node = builder.getNode(n);
-        if(node == null) throw new org.mmbase.security.SecurityException("node not found");
+        if(node == null) throw new SecurityException("Node '" + n + "' not found");
         return node;
     }
 
@@ -95,88 +101,94 @@ public class OwnerAuthorization extends Authorization {
 
         switch(operation.getInt()) {
             // say we may always create, if we are authenticated.
-            case Operation.CREATE_INT:
+        case Operation.CREATE_INT:
             // nah, we may always view other nodes.,....
-            case Operation.READ_INT:
-                permitted = true;
-                break;
+        case Operation.READ_INT:
+            permitted = true;
+            break;
             // same rights as writing, no break
         case Operation.DELETE_INT:
             // dont think so when we are anonymous...
-            case Operation.WRITE_INT:
-            case Operation.CHANGECONTEXT_INT:
-                // we are logged in, check if we may edit this node,....
-                if(user.getRank() != Rank.ANONYMOUS) {
-                    MMObjectNode node = getMMNode(nodeNumber);
-                    String ownerName = node.getStringValue("owner");
+        case Operation.WRITE_INT:
+        case Operation.CHANGECONTEXT_INT:
+            // we are logged in, check if we may edit this node,....
+            if(user.getRank() != Rank.ANONYMOUS) {
+                MMObjectNode node = getMMNode(nodeNumber);
+                String ownerName = node.getStringValue("owner");
+                if (log.isDebugEnabled()) {
                     log.debug("Owner of checking field is:'" + ownerName + "' and user is '" + user.getIdentifier() + "'");
-                    permitted = ownerName.equals(user.getIdentifier());
                 }
-                else {
-                    // if user is anonymous.....
-                    permitted = false;
-                }
-                break;
-            default:
-                throw new org.mmbase.security.SecurityException("Operation was NOT permitted, OPERATION UNKNOWN????");
+                permitted = ownerName.equals(user.getIdentifier());
+            }
+            else {
+                // if user is anonymous.....
+                permitted = false;
+            }
+            break;
+        default:
+            throw new SecurityException("Operation '" + operation + "' on node '" + nodeNumber + "' was NOT permitted to user '" + user + "' (Operation unknown?)");
         }
-
-        if (permitted) {
-            log.trace("operation was permitted");
-        } else {
-            log.info(" user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber  + "   operation was NOT permitted");
+        
+        if (log.isDebugEnabled()) {
+            if (permitted) {
+                log.trace("operation was permitted");
+            } else {
+                log.debug(" user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber  + "   operation was NOT permitted");
+            }
         }
         return permitted;
     }
 
     public boolean check(UserContext user, int nodeNumber, int srcNodeNumber, int dstNodeNumber, Operation operation) {
         if(manager.getActive()){
-            // nah, we always except links from other nodes if not anonymous
             if (user.getRank() == Rank.ANONYMOUS) {
-                log.info(" user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber  + "   operation was NOT permitted");
+                if (log.isDebugEnabled()) {
+                    log.debug(" user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber  + "   operation was NOT permitted");
+                }
                 return false;
             }
         }
         return true;
     }
 
-    public String getContext(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
-    verify(user, nodeNumber, Operation.READ);
-
+    public String getContext(UserContext user, int nodeNumber) throws SecurityException {
+        verify(user, nodeNumber, Operation.READ);        
         // and get the value...
-    MMObjectNode node = getMMNode(nodeNumber);
-    return node.getStringValue("owner");
+        MMObjectNode node = getMMNode(nodeNumber);
+        return node.getStringValue("owner");
     }
 
     /**
      * This method does nothing, except from checking if the setContext was valid..
      */
-    public void setContext(UserContext user, int nodeNumber, String context) throws org.mmbase.security.SecurityException {
-    // check if is a valid context for us..
-    java.util.Set possible = getPossibleContexts(user, nodeNumber);
-    if(!possible.contains(context)) {
-        String msg = "could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user+"not a valid context";
-        log.error(msg);
-        throw new org.mmbase.security.SecurityException(msg);
+    public void setContext(UserContext user, int nodeNumber, String context) throws SecurityException {
+        // check if is a valid context for us..
+        Set possible = getPossibleContexts(user, nodeNumber);
+        if(!possible.contains(context)) {
+            throw new SecurityException("could not set the context to "+context+" for node #"+nodeNumber+" by user: " +user+"not a valid context");
         }
-
-    // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
-    verify(user, nodeNumber, Operation.CHANGECONTEXT);
-
-    // well now really set it...
-    MMObjectNode node = getMMNode(nodeNumber);
+        
+        // check if this operation is allowed? (should also be done somewhere else, but we can never be sure enough)
+        verify(user, nodeNumber, Operation.CHANGECONTEXT);
+        
+        // well now really set it...
+        MMObjectNode node = getMMNode(nodeNumber);
         node.setValue("owner", user.getIdentifier());
         node.commit();
-    log.info("changed context settings of node #"+nodeNumber+" to context: "+context+ " by user: " +user);
+        if (log.isServiceEnabled()) {
+            log.service("changed context settings of node #" + nodeNumber + " to context: " + context + " by user: " + user);
+        }
     }
 
     /**
-     * This method does nothing, except from returning a dummy value
+     * Returns a list of all users in accounts.properties
      */
-    public java.util.Set getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
+    public Set getPossibleContexts(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
         ExtendedProperties reader = new ExtendedProperties();
 
-        log.debug("reading accounts from " + configFile);
+        if (log.isDebugEnabled()) {
+            log.debug("reading accounts from " + configFile);
+        }
         java.util.Hashtable accounts = reader.readProperties(configFile.getAbsolutePath());
 
         if (accounts == null) {
@@ -184,10 +196,12 @@ public class OwnerAuthorization extends Authorization {
         }
 
         // return a list of the users possible..
-    java.util.HashSet set = new java.util.HashSet(accounts.keySet());
-    log.debug("returning possible contexts, amount of entries is:" + set.size() + " the following entries where found:" );
-    // for(java.util.Iterator i= set.iterator(); i.hasNext(); log.debug("\t"+i.next()) );
-    return set;
+        Set set = accounts.keySet();
+        if (log.isDebugEnabled()) {
+            log.debug("returning possible contexts, amount of entries is:" + set.size() + " the following entries where found:" );
+            // for(java.util.Iterator i= set.iterator(); i.hasNext(); log.debug("\t"+i.next()) );
+        }
+        return set;
     }
 
     public QueryCheck check(UserContext user, Query query, Operation operation) {
