@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.290 2005-03-29 13:12:22 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.291 2005-03-29 16:33:47 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -91,9 +91,9 @@ version: $Id: mmbase-taglib.xml,v 1.290 2005-03-29 13:12:22 michiel Exp $
     </description>
     <name>escape</name>
     <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
-    <function-signature>void escape(java.lang.String, java.lang.String)</function-signature>
+    <function-signature>java.lang.String escape(java.lang.String, java.lang.Object)</function-signature>
     <example>
-      &lt;a href="title="${mm:remove('text/html/attribute', node.title)}" .../&gt;
+      &lt;a href="title="${mm:escape('text/html/attribute', node.title)}" .../&gt;
     </example>
   </function>
   
@@ -683,6 +683,7 @@ version: $Id: mmbase-taglib.xml,v 1.290 2005-03-29 13:12:22 michiel Exp $
         <document file="resources/taglibcontent.xml" mode="escapers" />
       </info>
       <see tag="content" />
+      <see tag="formatter" attribute="format" />
       <since>MMBase-1.7</since>
     </attribute>
   </taginterface>
@@ -3423,7 +3424,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <see tag="writer" attribute="escape" />
       <info>
         The import tag does not write anything to the page, so for that the `escape' attribute is not
-        usefull. The escape attribute from the import tag is therefore used to escape the actual
+        useful. The escape attribute from the import tag is therefore used to escape the actual
         value of the generated taglib variable. You can for example use it to uppercase an URL
         parameter or so (for searching).
       </info>
@@ -4670,6 +4671,13 @@ Of course, the default behavior of getSmartPath can still be overridden.
         </p>
       </info>
       <possiblevalue>
+        <value>none</value>
+        <info>
+          No transformation done by this tag itself. Simply writes out the body, it considers
+          the 'escape' attribute though, so this can be used to apply escapers to body-text.
+        </info>
+      </possiblevalue>
+      <possiblevalue>
         <value>xhtml</value>
         <info>An XSLT. Transforms nodes or fields to an XHTML presentation.</info>
       </possiblevalue>
@@ -4687,23 +4695,19 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </possiblevalue>
       <possiblevalue>
         <value>escapexml</value>
-        <info>Escapes characters which make something XML. This way you can easily present XML in XHTML pages</info>
+        <info>
+          Escapes characters which make something XML. This way you can easily present XML in XHTML
+          pages. This option is obsoleted by the 'escape' attributes of writers.
+        </info>
+        <see tag="writer" attribute="escape" />
       </possiblevalue>
       <possiblevalue>
         <value>escapexmlpretty</value>
-        <info>Similar to escapexml, but the XML is nicely formatted for human consumption first. This required the XML to be valid, otherwise you get an exception.</info>
+        <info>
+          Similar to escapexml, but the XML is nicely formatted for human consumption first. This
+          required the XML to be valid, otherwise you get an exception.
+        </info>
       </possiblevalue>
-      <!-- THERE IS A TIME TAG TO DO THESE KIND OF THINGS
-      <possiblevalue>
-      <value>date</value>
-      <info>
-          Take a date-time field and formats it like a real date and/or
-          time. Use the options attribute to specify how this must be
-          done exactly. It is an argument for
-          java.text.SimpleDateFormat.applyPattern.
-    </info>
-      </possiblevalue>
-      -->
     </attribute>
     <attribute>
       <name>options</name>
