@@ -3,15 +3,22 @@
 []>
 <article>
    <articleinfo>
-    <title>Media-project documentation</title>
+    <title>Media project documentation</title>
     <date>17 December 2002</date>
-    <edition>$Id: media.xml,v 1.1 2002-12-17 11:55:48 michiel Exp $</edition>
+    <edition>$Id: media.xml,v 1.2 2003-06-13 16:00:19 rob Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
         <surname>Meeuwissen</surname>
         <affiliation>
           <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+      <author>
+        <firstname>Rob</firstname>
+        <surname>Vermeulen</surname>
+        <affiliation>
+          <orgname>VPRO</orgname>
         </affiliation>
       </author>
     </authorgroup>
@@ -23,40 +30,124 @@
       </para>
       <para>
         The license (Mozilla version 1.0) can
-        be read at the MMBase site. See <ulink
-          url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+        be read at the MMBase site. See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
       </para>
     </legalnotice>
   </articleinfo>
   <section id="intro">
     <title>Introduction</title>
     <para>
-      The `media' project provides a generalized way to handle streams
-      in MMBase.
+    The media application providers a comprehensive and generic way to handle media within MMBase. The first phase of the Media project focused on creating a generic structure that can be easily reused, and on which new media related software can be build. The current media application can be used to maintain media, which consist of audio and video. 
+    After analyses of the already existing media integration within MMBase, and investigation of the wishes  by organisations that were using the MMBase media integration, we came to the following list of issues that should be covered by the first phase of the Media project:
+	<itemizedlist>
+	<listitem>
+	<para>
+    Defining Generic Object Types. While creating additional media tools, such as automatic recording of radio and television programs, you have to make sure that organizations are using the same object model. Otherwise the software cannot be easily used. Generic object types also enables you to easily exchange media information between different MMBase systems.
+	</para>
+	</listitem>
+	<listitem>
+	<para>
+    Inherentance. Inherentance was something that was lacking within MMBase. MMBase 1.6.3 is the first release with inherintance functionality and this makes it possible to use audio en video interchangebly. This feature is nice to use while listing media in your web site instead of audio and video separated. 
+	</para>
+	</listitem>
+	<listitem>
+	<para>
+    Filters. Media maintained within MMBase can have all kind of different formats such as: mp3, realaudio, quicktime, etc. and media can also be located on different web servers. To manage that a visitor on your web site retrieves the media in the most appropriate format and from the most desirable web server filters can be used.
+	</para>
+	</listitem>
+	<listitem>
+	<para>
+    Url Composers. The actual information that will be provided can be manipulated in a generic way. This enables you to provide another url if the media format is mp3 instead of realaudio. (i.e. a realaudio url can contain information about author, start/stop times of the media file, copyright information etc.)
+	</para>
+	</listitem>
+	</itemizedlist>
+
+	The media application 1.0 is the first step towards a better media integration within MMBase. A logical second step is to integrate media tools to be able to work with the MMBase media application.
+    </para>
+  </section>
+  <section id="design">
+   <title>Templating</title>
+    <para>
+    Media can be easily put on a web site by using a scripting language. This chapter will contain some examples that will show how to do this with the standard MMBase taglibs. The first example shows how an audio fragment can be published on your web site. I assume that this example is understandable to read, if not i refer you to the MMBase taglib documentation.</para>
+
+ <programlisting id="examplenowebxml">
+ 	<![CDATA[
+
+	<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+
+	<mm:cloud>
+	<mm:node  number="number of audio fragment">
+		<a href="<mm:field name="url(mp3)" />"><mm:field name="title" /></a>
+	</mm:node>
+	</mm:cloud>
+	]]>
+ </programlisting>
+
+	<para>
+	This example will put a hyper link on your web site. The link will be the most appropriate media (in this case it will be probably mp3), the text of the link will be the title of the media fragment.
+	</para>
+	<para>
+ 	Audio and video are both media types in the media application. This means that instead of showing only audio, or only video, also media can be showed. The following example shows the titles of all media fragments (audio and video mixed together).</para>
+
+	<programlisting id="examplenowebxml">
+	<![CDATA[
+	<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
+
+	<mm:cloud>
+	<mm:listnodes type="mediafragments">
+		<mm:field name="title" />
+	</mm:listnode>
+	</mm:cloud>
+	]]>
+	</programlisting>
+
+
+
+	<para>
     </para>
   </section>
   <section id="objectmodel">
    <title>Object model</title>
     <para>
-      link to builder docs, object model image
+    One of the main issues to start the Media project was to define a generic object model that can be used for all kinds of media in all kinds of situations. Figure 1 shows how inheritance of object types is used within the media project. A Media fragment is a generic type which is extended by two more specific types: audio fragments, and video fragments. The Media source is also a object type that is extended by audio sources, and video sources. In case of the video source the object type even contains more fields. The advantage of using inheritance is that you can handle media which consists of audio and video. e.g. You are able to show all media related to a interview, this media can be audio or video. Figure 1 shows the object types that are used, beneath the picture a more detailed explanation of the object types is given.
+
+    <para>
+         <graphic fileref="mediabuilders.jpg"/>
+         Figure 1: The Object Nodes for the Media project. (picture has to be updated and will be a .png)
+    </para>
+
+    <para>
+    After analysis of the media object structure that was already available in MMBase we designed the object structure shown in Figure 1. The most important object types are: media fragments, media sources, media providers. These types will be explained in more detail.
+    <itemizedlist>
+        <listitem>
+	    Media fragments are describing the actual media. Some fields like: title, subtitle, intro, body are available for this description. Regardless if the media is available in different formats/speeds/etc. it will be described only once within MMBase. This makes it easy to relate for example a song with a band (you only relate it once) and to change the description of the song without having it to change it for all different media types.
+        </listitem>
+        <listitem>
+	    Media sources are a description for the actual kind of media files that are provided somewhere. i.e. If you provide mp3/quicktime/divx these file have to exist somewhere. To tell MMBase that these files are available you have to create a media source for every kind of media that you provide. In a media source things like: speed (kbs), channels (stereo/mono/dts), fps (frames per second), format (avi,mpeg), codex (divx, avi) and more can be specified.
+        </listitem>
+        <listitem>
+	    Media providers are systems that are providing media files. In this way different streaming servers at different locations can be used.
+        </listitem>
+    </itemizedlist>
+
+   A relation between a media source and a media provider specifies that that media source is available on the related media provider. Relations between media sources and media fragments indicate that the media fragment contains the related media sources. A somewhat more advanced feature is that media fragments can have relations to other media fragments. e.g. A journal can be described by a media fragment. The journal can have a relation to two media sources e.g. a realvideo stream in smallband and broadband. If you also want to provide the news items of the journal you don't want to create new media fragments, with two new media sources, for each item. i.e. you already have the items but only in a longer video fragment. The solution for this is to create new media fragments for each item and to specify the start and stop times to the originating journal. In this case MMBase will reuse the media sources of the journal. Be aware that this only works if you can annotate the media. 
+    </para>
+
     </para>
   </section>
-  <section id="use">
-   <title>Using the media objects</title>
+  <section id="Filters">
+   <title>Filters</title>
     <para>
-      How to get an url, some demo's
     </para>
   </section>
-  <section id="edit">
-    <title>Creating and editing media objects (meta information)</title>
+  <section id="URL Composers">
+    <title>URL Composers</title>
     <para>
-      'streammanager', editors
     </para>
   </section>
-  <section id="">
-    <title>Creating new streams</title>
+  <section id="installation">
+    <title>Installation</title>
     <para>
-      Uploading, CD-ripping etc. (phase 2).
     </para>
   </section>
 </article>
