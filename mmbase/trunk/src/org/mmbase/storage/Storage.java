@@ -18,9 +18,11 @@ import org.mmbase.storage.search.*;
  * The interface contains methods that can be used to query the storage, insert, update, or remove objects,
  * or to change object definitions (adding fields, etc.).
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Storage.java,v 1.3 2002-11-22 08:28:03 pierre Exp $
+ * @version $Id: Storage.java,v 1.4 2004-01-27 12:04:45 pierre Exp $
  */
 public interface Storage extends SearchQueryHandler {
 

@@ -43,10 +43,12 @@ import java.util.Iterator;
  *     <li>JDBC-DriverVersion: 2.21.JC2
  * </ul>
  * </p>
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.50 2003-09-01 13:29:44 pierre Exp $
+ * @version $Id: MMInformix42Node.java,v 1.51 2004-01-27 12:04:47 pierre Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 

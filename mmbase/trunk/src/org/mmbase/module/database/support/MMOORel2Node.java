@@ -26,9 +26,11 @@ import org.mmbase.util.logging.Logging;
 * OO-rel types of databbases  this is the class used to abstact the query's
 * needed for mmbase for each database.
 *
+* @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+*             StorageManager implementation.
 * @author Daniel Ockeloen
-* @version $Id: MMOORel2Node.java,v 1.10 2003-03-10 11:50:38 pierre Exp $
-* @version $Id: MMOORel2Node.java,v 1.10 2003-03-10 11:50:38 pierre Exp $
+* @version $Id: MMOORel2Node.java,v 1.11 2004-01-27 12:04:48 pierre Exp $
+* @version $Id: MMOORel2Node.java,v 1.11 2004-01-27 12:04:48 pierre Exp $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 

@@ -35,9 +35,11 @@ import org.mmbase.util.logging.*;
  * methods for returning SQL SELECT statements.
  * You can override these method to change the sql statements used by the database layer.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.18 2003-09-02 19:52:46 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.19 2004-01-27 12:04:46 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class);
@@ -264,7 +266,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             if (value == MMObjectNode.VALUE_NULL || value == null) {
                 stmt.setNull(i, java.sql.Types.INTEGER);
             } else {
-                // retrieve node as a numeric value                    
+                // retrieve node as a numeric value
                 int nodeNumber = node.getIntValue(fieldName);
                 stmt.setInt(i, nodeNumber);
             }
@@ -394,11 +396,11 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
 
     /**
      * retrieves bytes from file or database depending on if getStoreBinayAsFIle is true
-     * 
+     *
      * @javadoc
      */
     public final byte[] getBytes(MMObjectNode node, String fieldName) {
-    	//TODO: find you why is this code only here and not in other methods/ 
+        //TODO: find you why is this code only here and not in other methods/
         if (getStoreBinaryAsFile()) {
             return readBytesFromFile(node.getBuilder().getTableName(), fieldName, node.getNumber());
         } else {
@@ -478,7 +480,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             }
         }
         // Prepare the statement using the amount of fields found.
-        String sqlinsert = insertSQL(getFullTableName(builder), 
+        String sqlinsert = insertSQL(getFullTableName(builder),
                                      fieldNames.toString(), fieldValues.toString());
         if (log.isDebugEnabled()) {
             log.debug("Executing insert with " + sqlinsert);
@@ -881,7 +883,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @param file name the path of the file
      * @return value the value read
      */
-    protected byte[] readBytesFromFile(String tableName, String fieldName, int number) { 
+    protected byte[] readBytesFromFile(String tableName, String fieldName, int number) {
         File binaryFile = getBinaryFile(tableName, fieldName, number);
         int fileSize = (int) binaryFile.length();
         byte[] buffer = new byte[fileSize];

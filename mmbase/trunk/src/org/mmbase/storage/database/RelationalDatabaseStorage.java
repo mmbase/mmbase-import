@@ -28,9 +28,11 @@ import org.mmbase.util.logging.*;
  * the methods for storing and retrieving huge texts and bytefields, and teh methods for determining
  * database key (for the object 'number' field).
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: RelationalDatabaseStorage.java,v 1.11 2003-07-09 18:14:51 michiel Exp $
+ * @version $Id: RelationalDatabaseStorage.java,v 1.12 2004-01-27 12:04:46 pierre Exp $
  * @todo This function contains a lot of methods which do not seem
  *       specific for a 'relational' database. They should perhaps be moved
  *        to 'abstract' databasestorage
@@ -93,7 +95,7 @@ public class RelationalDatabaseStorage extends SQL92DatabaseStorage implements D
     // this looks a bit dirty.  perhaps the nicer version of
     // PostgreslStorage should be moved to AbstractDatabaseStorage,
     // and this one moved to MySqlStorage
-    
+
     // javadoc inherited
     /*
     public byte[] getDBByte(ResultSet rs,int idx) {

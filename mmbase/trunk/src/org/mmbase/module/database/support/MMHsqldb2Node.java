@@ -19,33 +19,35 @@ import org.mmbase.util.logging.*;
 
 /**
 * MMHsqldb2Node implements the MMJdbc2NodeInterface for
-* the hsqldb-database (previously called Hypersonic). 
+* the hsqldb-database (previously called Hypersonic).
 *
+* @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+*             StorageManager implementation.
 * @since MMBase-1.5
 * @author Gerard van Enk
-* @version $Id: MMHsqldb2Node.java,v 1.7 2003-05-02 15:11:40 michiel Exp $
-*  
+* @version $Id: MMHsqldb2Node.java,v 1.8 2004-01-27 12:04:47 pierre Exp $
+*
 */
 public class MMHsqldb2Node extends MMSQL92Node {
     /**
      * Logging instance
      */
     private static Logger log = Logging.getLoggerInstance(MMHsqldb2Node.class.getName());
-    
+
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix) {
         fieldname = fieldname.toLowerCase();
         return super.decodeDBnodeField(node,fieldname,rs,i,prefix);
     }
-    
+
 
     public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException {
-        MultiConnection con = jdbc.getConnection(jdbc.makeUrl(), 
+        MultiConnection con = jdbc.getConnection(jdbc.makeUrl(),
                                                  jdbc.getUser(),
-                                                 jdbc.getPassword());        
+                                                 jdbc.getPassword());
         return con;
     }
-    
-    
+
+
     public String getDBText(ResultSet rs,int idx) {
         String result = null;
         try {

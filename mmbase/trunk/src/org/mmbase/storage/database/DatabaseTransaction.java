@@ -26,9 +26,11 @@ import org.mmbase.util.logging.*;
  * for rollback in complex database transactions (if supported).
  * This class is a base class for making connections and submitting changes to the database.
  *
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.8 2003-11-19 13:49:45 michiel Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.9 2004-01-27 12:04:46 pierre Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -282,7 +284,7 @@ public class DatabaseTransaction implements Transaction {
                     FieldDefs field = (FieldDefs) f.next();
                     if (database.setValuePreparedStatement((PreparedStatement) stmt, node, field.getDBName(), fieldNumber)) {
                         ++fieldNumber;
-                    } 
+                    }
                 }
             }
             ((PreparedStatement) stmt).executeUpdate();

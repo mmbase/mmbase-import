@@ -1,9 +1,9 @@
 /*
-	This software is OSI Certified Open Source Software.
-	OSI Certified is a certification mark of the Open Source Initiative.
+    This software is OSI Certified Open Source Software.
+    OSI Certified is a certification mark of the Open Source Initiative.
 
-	The license (Mozilla version 1.0) can be read at the MMBase site.
-	See http://www.MMBase.org/license
+    The license (Mozilla version 1.0) can be read at the MMBase site.
+    See http://www.MMBase.org/license
 */
 package org.mmbase.module.database.support;
 
@@ -39,8 +39,10 @@ import org.mmbase.util.logging.*;
  *
  *
  * Postgresql driver for MMBase
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL.java,v 1.3 2004-01-08 16:30:02 robmaris Exp $
+ * @version $Id: PostgreSQL.java,v 1.4 2004-01-27 12:04:49 pierre Exp $
  */
 public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterface   {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL72.class.getName());
@@ -64,12 +66,12 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                 log.error("\tSQLState : " + e.getSQLState());
                 log.error("\tErrorCode : " + e.getErrorCode());
                 log.error("\tMessage : " + e.getMessage());
-            } 
+            }
             try {
                 if(stmt!=null) stmt.close();
                 // con.rollback();
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             return false;
         }
@@ -79,18 +81,18 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
     protected boolean createNumberCheck() {
         // TODO: has to be generated, when isnt there...
         // CREATE FUNCTION ${BASENAME}_check_number (integer)
-        //    RETURNS boolean AS 
-        //        'SELECT CASE WHEN (( SELECT COUNT(*) 
+        //    RETURNS boolean AS
+        //        'SELECT CASE WHEN (( SELECT COUNT(*)
         //         FROM ${BASENAME}_object
-        //         WHERE ${BASENAME}_object.number = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean 
+        //         WHERE ${BASENAME}_object.number = $1 ) > 0 ) THEN 1::boolean ELSE 0::boolean
         //         END;'
         // LANGUAGE 'sql';
         MultiConnection con = null;
         Statement stmt = null;
-        String sql = 
-            "CREATE FUNCTION " + numberCheckNameName() +  " (integer) RETURNS boolean AS " + 
-            "'SELECT CASE WHEN (( SELECT COUNT(*) FROM " + objectTableName() + 
-            " WHERE " + objectTableName() + "." + getNumberString() + " = $1 ) > 0 ) " + 
+        String sql =
+            "CREATE FUNCTION " + numberCheckNameName() +  " (integer) RETURNS boolean AS " +
+            "'SELECT CASE WHEN (( SELECT COUNT(*) FROM " + objectTableName() +
+            " WHERE " + objectTableName() + "." + getNumberString() + " = $1 ) > 0 ) " +
             " THEN true ELSE false END;' LANGUAGE 'sql';";
         try {
             log.debug("gonna execute the following sql statement: " + sql);
@@ -110,7 +112,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                 if(stmt != null) stmt.close();
                 // con.rollback();
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             return false;
         }
@@ -224,7 +226,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
             } else {
                 /**
                  http://www.postgresql.org/idocs/index.php?inherit.html :
-                 A limitation of the inheritance feature is that indexes (including unique constraints) and foreign key constraints only apply to single tables, not to their inheritance children. Thus, in the above example, specifying that another table's column REFERENCES cities(name)  would allow the other table to contain city names but not capital names. This deficiency will probably be fixed in some future release. 
+                 A limitation of the inheritance feature is that indexes (including unique constraints) and foreign key constraints only apply to single tables, not to their inheritance children. Thus, in the above example, specifying that another table's column REFERENCES cities(name)  would allow the other table to contain city names but not capital names. This deficiency will probably be fixed in some future release.
                  Workaround (i still need more time ;))
                  Jon Obuchowski <jon_obuchowski@terc.edu>
                  2001-11-05 15:03:25-05 Here's a manual method for implementing a foreign key constraint across inherited tables - instead of using the "references" syntax within the dependent table's "CREATE TABLE" statement, specify a custom "CHECK" constraint - this "CHECK" constraint can use the result of a stored procedure/function to verify the existence of a given value for a specific field of a specific table.
@@ -290,7 +292,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
         // when an error occures, we know our field-state info...
         FieldDefs currentField = null;
         int current = 1;
-        
+
         // Now fill the fields
         try {
             preStmt.setEscapeProcessing(false);
@@ -306,7 +308,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                     current++;
                 } else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                     log.trace("DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
-                } 
+                }
                 else {
                     if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
                         setValuePreparedStatement( preStmt, node, key, current );
@@ -336,7 +338,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                 con.rollback();
                 con.setAutoCommit(true);
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             throw new RuntimeException(sqle.toString());
         }
@@ -418,21 +420,21 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
             key = getAllowedField(key);
 
             // add the fieldname,.. and do smart ',' mapping
-            if (builderFieldSql == null) 
+            if (builderFieldSql == null)
             {
                 builderFieldSql = key + "=?";
-            } 
-            else 
+            }
+            else
             {
                 builderFieldSql += ", " + key+ "=?";
             }
             // not allowed as far as im concerned...
-            if(key.equals("number")) 
+            if(key.equals("number"))
             {
                 log.fatal("trying to change the 'number' field");
                 throw new RuntimeException("trying to change the 'number' field");
-            } 
-            else if(key.equals("otype")) 
+            }
+            else if(key.equals("otype"))
             {
                 // hmm i dont like the idea of changing the otype..
                 log.error("changing the otype field, is this really needed? i dont think so, but hey i dont care..");
@@ -483,7 +485,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                     con.rollback();
                     con.setAutoCommit(true);
                     con.close();
-                } 
+                }
                 catch(Exception other) {}
                 return false;
             }
@@ -504,8 +506,8 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                 MMObjectNode n2=bul.getNode(node.getIntValue("dnumber"));
                 mmb.mmc.changedNode(n1.getIntValue("number"),n1.parent.getTableName(),"r");
                 mmb.mmc.changedNode(n2.getIntValue("number"),n2.parent.getTableName(),"r");
-            } 
-            else 
+            }
+            else
             {
                 mmb.mmc.changedNode(node.getIntValue("number"),bul.tableName,"c");
             }
@@ -517,14 +519,14 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
 
     public boolean addField(MMObjectBuilder bul,String fieldname) {
         log.info("add field for builder with name: " + bul.getTableName() + " with field with name: " + fieldname);
-        
+
         FieldDefs def = bul.getField(fieldname);
-        if(def == null) 
+        if(def == null)
         {
             log.error("could not find field definition for field: "+fieldname+" for builder :" + bul.getTableName());
             return false;
         }
-        if (def.getDBState() == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) 
+        if (def.getDBState() == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL)
         {
             log.error("could not add field, was defined as an virtual field for field: "+fieldname+" for builder :" + bul.getTableName());
             return false;
@@ -566,7 +568,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
             }
             stmt.close();
             con.close();
-        } 
+        }
         catch (SQLException sqle) {
             log.error("error, could not retrieve new object number:"+sql);
             for(SQLException se = sqle;se != null; se = se.getNextException()) {
@@ -577,7 +579,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
             try {
                 if(stmt!=null) stmt.close();
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             throw new RuntimeException(sqle.toString());
         }
@@ -587,9 +589,9 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
 
     public boolean createObjectTable(String notUsed) {
         log.warn("create object table is depricated!");
-        
+
         // first create the auto update thingie...
-        if(!createSequence()) return false;        
+        if(!createSequence()) return false;
 
         MultiConnection con = null;
         Statement stmt = null;
@@ -611,7 +613,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
             stmt.close();
             con.close();
             return createNumberCheck();
-        } 
+        }
         catch (SQLException sqle) {
             log.error("error, could not create object table.."+sql);
             for(SQLException e = sqle;e != null; e = e.getNextException()) {
@@ -623,7 +625,7 @@ public class PostgreSQL extends Sql92SingleFields implements MMJdbc2NodeInterfac
                 if(stmt!=null) stmt.close();
                 // con.rollback();
                 con.close();
-            } 
+            }
             catch(Exception other) {}
             return false;
         }

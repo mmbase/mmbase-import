@@ -1,7 +1,7 @@
 /*
         This software is OSI Certified Open Source Software.
         OSI Certified is a certification mark of the Open Source Initiative.
- 
+
         The license (Mozilla version 1.0) can be read at the MMBase site.
         See http://www.MMBase.org/license
  */
@@ -18,12 +18,14 @@ import org.mmbase.util.logging.*;
 
 /**
  * Database driver with views driver for MMBase
+ * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
+ *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92WithViews.java,v 1.3 2003-05-08 06:09:33 kees Exp $
+ * @version $Id: Sql92WithViews.java,v 1.4 2004-01-27 12:04:49 pierre Exp $
  */
 public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92WithViews.class.getName());
-    
+
     protected boolean createSequence() {
         //  CREATE SEQUENCE autoincrement INCREMENT BY 1 START WITH 1
         MultiConnection con = null;
@@ -51,12 +53,12 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         }
         return true;
     }
-    
+
     private String getTableName(MMObjectBuilder bul) {
         boolean inheritedTable = (getInheritTableName(bul) != null);
-        
+
         String tableName = mmb.baseName+"_"+bul.getTableName();
-        
+
         // there are 2 types of table's:
         // when it is an inherited table, add the '_TABLE' extension,
         // the view will get the name that shows everything.
@@ -65,26 +67,26 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         }
         return tableName;
     }
-    
+
     public boolean create(MMObjectBuilder bul) {
         String tableName = getTableName(bul);
         log.info("create table definition for:'" + tableName + "'");
-        
+
         // is this the top level superclass?
         boolean inheritedTable = (getInheritTableName(bul) != null);
-        
+
         String sql = null;
         MultiConnection con=null;
         Statement stmt=null;
-        
+
         // look if we really have to create the table
         // maybe only view is missing
         if(!created(tableName) ) {
             // first thing to do, when object table is not created, is creation of sequence,..
             if (!inheritedTable) createSequence();
-            
+
             sql = "CREATE TABLE " + tableName + "(" + getFieldList(bul, false, true, false) + getFieldContrains(bul) +  ")";
-            
+
             log.info("create table definition for:'" + tableName  + "' with sql:" + sql );
             try {
                 con=mmb.getConnection();
@@ -108,28 +110,28 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                 return false;
             }
         }
-        
+
         // when it is not the inherited table, no need to create an view of it,...
         // so we leave this method..
         if (!inheritedTable) return true;
-        
+
         String viewName = mmb.baseName + "_" + bul.getTableName();
         String parentTable = mmb.baseName + "_" + getInheritTableName(bul);
-        
+
         sql = "CREATE VIEW " + viewName + " ( " + getFieldList(bul, true, false, false) + ")";
         sql += " AS SELECT " + getFieldList(bul, true, false, true);
         sql += " FROM " + tableName + ", "  + parentTable;
         sql += " WHERE " + tableName + "." + getNumberString() + " = "  + parentTable + "." + getNumberString();
-        
+
         log.info("create view definition for:'" + viewName + "' with sql:" + sql );
-        
+
         try {
             con=mmb.getConnection();
             stmt=con.createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
             con.close();
-            
+
             // everything wend well,..
             log.debug("succes creating datastructure for: " + bul.getTableName());
             return true;
@@ -147,7 +149,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         }
         return false;
     }
-    
+
     private String getFieldList(MMObjectBuilder bul, boolean addInheritedFields, boolean addDeclaration, boolean numberReferencesObject) {
         // retrieve the field of the builder
         Vector sfields = (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
@@ -155,7 +157,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             log.error("sfield was null for builder with name :" + bul);
             return "";
         }
-        
+
         String fieldList=null;
         // process all the fields..
         for (Enumeration e = sfields.elements();e.hasMoreElements();) {
@@ -190,31 +192,31 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         }
         //if all fields are inherited the field list can be empty
         if (fieldList == null) fieldList="";
-        
+
         // return the result
         return fieldList;
     }
-    
+
     protected String getDbFieldDef(FieldDefs def, MMObjectBuilder bul) {
         // create the creation line of one field...
         // would be something like : fieldname FIELDTYPE NOT NULL KEY "
         // first get our thingies...
         String  fieldName = getAllowedField(def.getDBName());
-        
+
         boolean fieldRequired = def.getDBNotNull();
         boolean fieldIsReferer = isReferenceField(def, bul);
         boolean fieldIsPrimaryKey = getNumberString().equals(fieldName);
         boolean inheritedTable = (getInheritTableName(bul) != null);
-        
+
         String fieldType = getDbFieldType(def, def.getDBSize(), fieldRequired);
         String result = fieldName + " " + fieldType;
-        
+
         if(fieldRequired) {
             result += " NOT NULL ";
         }
         return result;
     }
-    
+
     private String getFieldContrains(MMObjectBuilder bul) {
         // retrieve the field of the builder
         Vector sfields = (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
@@ -222,7 +224,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             log.error("sfield was null for builder with name :" + bul);
             return "";
         }
-        
+
         String constrains = "";
         // process all the fields..
         for (Enumeration e = sfields.elements();e.hasMoreElements();) {
@@ -236,7 +238,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                     boolean inheritedTable = getInheritBuilder(bul) != null;
                     boolean fieldIsReferer = isReferenceField(def, bul) && inheritedTable;
                     boolean fieldUnique = def.isKey();
-                    
+
                     if(fieldIsPrimaryKey) {
                         constrains += ",   CONSTRAINT " + constrainName(bul) + " PRIMARY KEY ( " + fieldName + " ) ";
                         // if this is the primary key, it reference's the main table,..
@@ -259,19 +261,19 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         log.debug("fieldcontrains was:" + constrains);
         return constrains;
     }
-    
+
     /**
      * @returns a unique contrain name
      */
     private String constrainName(MMObjectBuilder bul) {
         return mmb.baseName + "_CONTRAIN_" + getDBKey();
     }
-    
+
     /**
      * @return a new unique number for new nodes or -1 on failure
      */
     public synchronized int getDBKey() {
-        
+
         MultiConnection con=null;
         Statement stmt=null;
         // select test8_autoincrement.nextval from dual;
@@ -312,10 +314,10 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         log.debug("new object id #"+number);
         return number;
     }
-    
+
     public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
         int number=node.getIntValue("number");
-        
+
         Vector rels=bul.getRelations_main(number);
         if (rels != null && rels.size() > 0) {
             // we still had relations ....
@@ -364,23 +366,23 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             }
         }
     }
-    
+
     protected int insertRecord(MMObjectBuilder bul,String owner, MMObjectNode node) {
         // insert records recursive, starting with the highest table first,..
         MMObjectBuilder parent = getInheritBuilder(bul);
         if (parent != null) insertRecord(parent, owner, node);
-        
+
         String tableName = getTableName(bul);
         String sql = insertPreSQL(bul, ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements(), node);
         MultiConnection con=null;
         PreparedStatement preStmt=null;
-        
+
         // Insert statements, with fields still empty..
         try {
             // Create the DB statement with DBState values in mind.
             log.debug("executing following insert : " + sql);
             con=bul.mmb.getConnection();
-            
+
             preStmt=con.prepareStatement(sql);
         }
         catch (SQLException sqle) {
@@ -398,12 +400,12 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             catch(Exception other) {}
             throw new RuntimeException(sqle.toString());
         }
-        
-        
+
+
         // when an error occures, we know our field-state info...
         FieldDefs currentField = null;
         int current = 1;
-        
+
         // Now fill the fields
         try {
             preStmt.setEscapeProcessing(false);
@@ -452,11 +454,11 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         }
         return node.getIntValue("number");
     }
-    
+
     private String insertPreSQL(MMObjectBuilder bul, Enumeration fieldLayout, MMObjectNode node) {
         String fieldNames = null;
         String fieldValues = null;
-        
+
         // Append the DB elements to the fieldAmounts String.
         while(fieldLayout.hasMoreElements()) {
             String key = ((FieldDefs) fieldLayout.nextElement()).getDBName();
@@ -466,7 +468,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             if (!isInheritedField(bul, fieldName)) {
                 if ( DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT || DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM ) {
                     log.trace("Insert: DBState = "+DBState+", adding key: "+key);
-                    
+
                     // add the values to our lists....
                     if (fieldNames == null) {
                         fieldNames = fieldName;
@@ -510,23 +512,23 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         log.trace("created pre sql: " + sql);
         return sql;
     }
-    
+
     private boolean commitTable(MMObjectBuilder bul,MMObjectNode node) {
         // commit records recursive, starting with the highest table first,..
         MMObjectBuilder parent = getInheritBuilder(bul);
         if (parent != null) commitTable(parent, node);
-        
-        
+
+
         // the update statement,...
         String builderFieldSql = null;
-        
+
         // create the prepared statement
         for (Enumeration e = node.getChanged().elements();e.hasMoreElements();) {
             String key = (String)e.nextElement();
             if (isBuilderField(bul, key) && !isInheritedField(bul, key)) {
                 // is this key disallowed ? ifso map it back
                 key = getAllowedField(key);
-                
+
                 // add the fieldname,.. and do smart ',' mapping
                 if (builderFieldSql == null) {
                     builderFieldSql = key + "=?";
@@ -545,24 +547,24 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                 }
             }
         } // add all changed fields...
-        
+
         // when we had a update...
         // it can happen that in this table, no updates are needed, so dont do it!
         if(builderFieldSql != null) {
             //  precommit call, needed to convert or add things before a save
             bul.preCommit(node);
-            
+
             String sql = "UPDATE " + getTableName(bul);
             sql += " SET " + builderFieldSql + " WHERE " + getNumberString() + " = " + node.getValue("number");
-            
+
             MultiConnection con = null;
             PreparedStatement stmt = null;
             try {
                 // start with the update of builder itselve first..
                 con=mmb.getConnection();
-                
+
                 stmt = con.prepareStatement(sql);
-                
+
                 // fill the '?' thingies with the values from the nodes..
                 Enumeration changedFields = node.getChanged().elements();
                 int currentParameter = 1;
@@ -570,7 +572,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                     String key = (String) changedFields.nextElement();
                     if (isBuilderField(bul, key) && !isInheritedField(bul, key)) {
                         int type = node.getDBType(key);
-                        
+
                         // for the right type call the right method..
                         setValuePreparedStatement(stmt, node, key, currentParameter);
                         currentParameter++;
@@ -598,15 +600,15 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         }
         return true;
     }
-    
+
     public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
         // do the commit on the table,..
         // quit if fails
         if (!commitTable(bul, node)) return false;
-        
+
         // done database update, so clear changed flags..
         node.clearChanged();
-        
+
         // broadcast the changes, if nessecary...
         if (bul.broadcastChanges) {
             if (bul instanceof InsRel) {
@@ -624,10 +626,10 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
         // done !
         return true;
     }
-    
+
     public boolean created(String tableName) {
         String sql = "SELECT COUNT(*) FROM " + tableName;
-        
+
         MultiConnection con=null;
         Statement stmt=null;
         try {
@@ -648,25 +650,25 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             return false;
         }
     }
-    
+
     public boolean addField(MMObjectBuilder bul,String fieldname) {
         log.debug("addField");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("addField");
     }
-    
+
     public boolean removeField(MMObjectBuilder bul,String fieldname) {
         log.debug("removeField");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("removeField");
     }
-    
+
     public boolean changeField(MMObjectBuilder bul,String fieldname) {
         log.debug("changeField");
         log.fatal("This function is not implemented !!");
         throw new UnsupportedOperationException("changeField");
     }
-    
+
     public boolean createObjectTable(String notUsed) {
         log.debug("createObjectTable");
         log.fatal("This function is not implemented !!");
