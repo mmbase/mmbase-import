@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<wizard-schema id="media">
+	<title>Media editor</title>
+
+	<action type="create">
+		<object type="mediasources">
+			<field name="url">/your_club/</field>
+		</object>
+	</action>
+	
+	<action type="delete" />
+	
+	<action type="load">
+	</action>
+	
+ <list include="tasks/formats.xml" />
+
+
+	<form-schema id="basics">
+		<title>MediaSource</title>
+		<field name="url" >
+			<prompt>url</prompt>
+		</field>
+    <field name="format" dtminlength="1" dtmaxlength="10" ftype="enum" dtrequired="true">
+	    <prompt>Format</prompt>
+      <optionlist select="formats" />
+   	</field>
+
+	</form-schema>
+
+</wizard-schema>
