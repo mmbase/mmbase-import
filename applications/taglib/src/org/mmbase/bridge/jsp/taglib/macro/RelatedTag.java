@@ -15,6 +15,7 @@ import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.ListTag;
 import org.mmbase.bridge.jsp.taglib.NodeProvider;
+import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -27,16 +28,7 @@ public class RelatedTag extends ListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
 
     private String parentNodeId = null;
-    private String relatedNodesString=null;
     private String relatedPathString=null;
-    //private String number    = null;
-
-    /**
-     * Override original ListTag method.
-     */
-    public void setNodes(String nodes) throws JspTagException {
-        relatedNodesString=parseNodes(nodes);
-    }
 
     /**
      * Override original ListTag method.
@@ -53,22 +45,18 @@ public class RelatedTag extends ListTag {
         log.debug("setting path to " + path);
         this.relatedPathString = getAttributeValue(path);
     }
-    /*
-    public void setNumber(String number) throws JspTagException {
-        this.number = getAttributeValue(number);
-    }
-    */
 
     public int doStartTag() throws JspTagException {
         int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-
-        Node node = getNode();
-        nodesString=node.getStringValue("number");
-        if (relatedNodesString!=null) {
-           nodesString+=","+relatedNodesString;
+        Node node;
+        if (nodesString != null && !nodesString.equals("")) {
+            node = getCloud().getNode((String)StringSplitter.split(nodesString, ",").elementAt(0));
+        } else {
+            node = getNode();
+            nodesString = node.getStringValue("number");
         }
         String nodeType=node.getNodeManager().getName();
         // adapt the path to include the (needed) starting nodemanager name
