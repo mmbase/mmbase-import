@@ -98,7 +98,7 @@ several MMBase-checkouts.
   <property name="release.lib.dir"      value="${web.dir}/lib"/>
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
   <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
-  <property name="mmbase.jar"           value="${release.lib.dir}/mmbase.jar"/>
+  <property name="mmbase.jar"           value="${build.dir}/mmbase.jar"/>
 
   <target name="init" depends="check.dir.all">
     <tstamp/>
@@ -210,7 +210,7 @@ builddate=${builddate}
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,jar,web">
+          depends="lib.release,web">
 
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
@@ -254,7 +254,7 @@ builddate=${builddate}
   <target
     name="lib.release"
     description="Create the lib directory"
-    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai">
+    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jai,jar">
 
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
@@ -264,12 +264,12 @@ builddate=${builddate}
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
     <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
     <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
-
+    <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
+    
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
       <fileset dir="${source-documentation.dir}/releases/legal"/>
     </copy>
-
   </target>
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation"
@@ -469,7 +469,6 @@ builddate=${builddate}
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
-      <exclude name="org/mmbase/module/tools/mmrunner/startMMBase.java"/>
       <exclude name="org/mmbase/module/JMSendMail.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
@@ -539,8 +538,8 @@ builddate=${builddate}
   <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
   <!-- =================================================================== -->
-  <target name="clean.compile" description="Clean the compiled classes"
-          depends="clean.lib">
+  <target name="clean.compile" description="Clean the compiled classes"  depends="clean.lib">
+    <delete file="${build.dir}/mmbase.jar"/>
     <delete dir="${build.dir}/classes"/>
   </target>
 
@@ -582,7 +581,7 @@ Build-compiler: ${build.compiler}
 Main-Class: org.mmbase.Version
 </echo>
 
-    <mkdir dir="${release.lib.dir}" />
+    <mkdir dir="${build.dir}" />
     <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
        includes="org/mmbase/**"
@@ -598,7 +597,9 @@ Main-Class: org.mmbase.Version
     <!-- can cause problems on certain servlet-engines -->
     <!--<delete file="${web.dir}/mmbase-taglib.tld" />-->
     <!--<delete file="${web.dir}/mmcommunity-taglib.tld" />-->
-
+    
+    <!-- still copy mmbase.jar to relase dir for backward compatibility-->
+    <copy file="${mmbase.jar}"       todir="${release.lib.dir}" />
   </target>
 
 
@@ -831,9 +832,6 @@ Build-compiler: ${build.compiler}
                defaultexcludes="yes">
       </fileset>
     </copy>
-
-
-
   </target>
 
   <target name="taglib.tld.check">
