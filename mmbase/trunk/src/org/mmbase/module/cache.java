@@ -20,7 +20,7 @@ import org.mmbase.util.LRUHashtable;
  * Simple file cache system that can be used by any servlet
  *
  * @author  $Author: wwwtech $ 
- * @version $Revision: 1.6 $ $Date: 2000-06-15 13:25:53 $
+ * @version $Revision: 1.7 $ $Date: 2000-06-20 14:56:13 $
  */
 public class cache extends Module implements cacheInterface {
 
@@ -56,7 +56,7 @@ public class cache extends Module implements cacheInterface {
 	/**
 	* old interface to the inner table, will be removed soon
 	*/
-	public Hashtable lines() {
+	public LRUHashtable lines() {
 		return(lines);
 	}
 
