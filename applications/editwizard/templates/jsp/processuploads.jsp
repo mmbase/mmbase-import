@@ -12,7 +12,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.12 2004-01-06 13:20:38 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.13 2004-01-26 10:08:10 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -73,7 +73,16 @@ if (! ewconfig.subObjects.empty()) {
         for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
             FileItem fi = (FileItem)i.next();
             if (!fi.isFormField()) {
-                wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fi.getName(), fi.getName());
+                String fullFileName = fi.getName();
+                String fileName = fullFileName;
+                // the path passed is in the cleint system's format,
+                // so test both path separator chars ('/' and '\')
+                int last = fullFileName.lastIndexOf("/");
+                if (last==-1) last = fullFileName.lastIndexOf("\\");
+                if (last>0) {
+                    fileName = fullFileName.substring(last+1);
+                }
+                wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName);
                 fileCount++;
             }
         }
