@@ -30,5 +30,5 @@
    </table>
    </form>
   </mm:cloud>
-  <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_groups.jsp</mm:param></mm:url>">Back</a>
+  <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">index_groups.jsp</mm:param></mm:url>"><%=getPrompt(m, "back")%></a>
 </mm:content>
