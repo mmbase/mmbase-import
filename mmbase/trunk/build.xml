@@ -482,7 +482,7 @@ version=1.7.0-dev
       <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
-    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
+    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${version}</echo>
   </target>
 
   <!-- =================================================================== -->
