@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.5 2003-07-24 12:29:05 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.6 2003-07-25 12:42:06 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -172,7 +172,7 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
             }
             // get our config...
             // This won't work now, we will probably need a LegacyStorageReader...
-            return new StorageReader(databaseConfig.getPath());
+            return new StorageReader(this,databaseConfig.getPath());
         }
     }
     
