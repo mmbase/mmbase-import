@@ -12,6 +12,13 @@
 </head>
 <body>
 
+<%-- remember this page --%>
+<mm:treeinclude page="/education/storebookmarks.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="learnobject"><mm:write referid="edu"/></mm:param>
+    <mm:param name="learnobjecttype">educations</mm:param>
+</mm:treeinclude>
+
+
 <mm:node number="$edu">
   <h1><mm:field name="name"/></h1>
   <mm:field id="intro" name="intro" write="false"/>

@@ -61,7 +61,7 @@
       <hr />
       Tekst:
       <br />
-      <mm:field name="body"/>
+      <mm:field name="body" escape="p"/>
       <hr />
       <mm:relatednodes type="attachments">
         <mm:first>
