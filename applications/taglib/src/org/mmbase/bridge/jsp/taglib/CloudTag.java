@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.102 2004-11-17 13:35:28 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.103 2005-01-06 20:24:33 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -474,6 +474,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
         if (jspVar != null) {
             log.debug("Setting jspVar " + jspVar);
+            Object was = pageContext.getAttribute(jspVar);
+            if (was != null && ! was.equals(cloud)) {
+                throw new JspTagException("Jsp-var '" + jspVar + "' already in pagecontext! (" + was + "), can't write " + cloud + " in it. This may be a backwards-compatibility issue. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
+            }
             pageContext.setAttribute(jspVar, cloud);
         }
 

@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.56 2005-01-03 20:16:32 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.57 2005-01-06 20:24:33 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -335,6 +335,8 @@ public class WriterHelper extends BodyTagSupport {
             _Stack = new Stack();
             pageContext.setAttribute(STACK_ATTRIBUTE, _Stack);
         }
+
+        setJspvar();
         if (pushed) {
             if (log.isDebugEnabled()) {
                 log.debug("Value was set already by this tag");
@@ -344,12 +346,10 @@ public class WriterHelper extends BodyTagSupport {
             _Stack.push(value);
             pushed = true;
         }
-
         pageContext.setAttribute("_", Casting.wrapToString(value));
         if (log.isDebugEnabled()) {
             log.debug("pushed " + value + " on _stack, for " + thisTag.getClass().getName() + "  now " + _Stack);
         }
-        setJspvar();
     }
 
 
@@ -369,6 +369,10 @@ public class WriterHelper extends BodyTagSupport {
             log.debug("Setting variable " + jspvar + " to " + value + "(" + (value != null ? value.getClass().getName() : "" ) + ")");
         }
         if (value != null) {
+            Object was = pageContext.getAttribute(jspvar);
+            if (!pushed && was != null && ! was.equals(value)) {
+                // throw new JspTagException("Jsp-var '" + jspvar + "' already in pagecontext! (" + was.getClass().getName() + " " + was + "), can't write " + value.getClass().getName() + " " + value + " in it. This may be a backwards-compatibility issue. Change jspvar name or switch on backwards-compatibility mode (in your web.xml)");
+            }
             // if the underlying implementation uses a Hashtable (TomCat) then the value may not be null
             // When it doesn't, it goes ok. (at least I think that this is the difference between orion and tomcat)
             pageContext.setAttribute(jspvar, value);
