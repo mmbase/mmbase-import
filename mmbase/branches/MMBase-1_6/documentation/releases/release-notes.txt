@@ -399,6 +399,9 @@ Example Bug Fixes:
 ========
 Upgrade:
 ========
+[1.6.5]
+- Replace mmbase.jar
+
 [1.6.4]
 - Replace mmbase.jar
 - Replace editwizard jsp and xsl files
