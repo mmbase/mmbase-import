@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -76,6 +76,13 @@ public class BasicSqlHandlerTest extends TestCase {
      * Tears down after each test.
      */
     public void tearDown() throws Exception {}
+    
+    /** Test of init method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
+    public void testInit() throws Exception {
+        // Same as:
+        testToSqlString();
+        testToSql();
+    }
     
     /** Test of toSqlString method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
     public void testToSqlString() throws Exception {

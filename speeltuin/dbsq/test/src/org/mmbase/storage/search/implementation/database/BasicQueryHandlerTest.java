@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -134,7 +134,7 @@ public class BasicQueryHandlerTest extends TestCase {
                 MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
                 assertTrue(iResultNodes.hasNext());
                 MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
-                assertTrue(resultNode.getBuilder() == mmbase.getBuilder("pools"));
+                assertTrue(resultNode.getBuilder() == pools);
                 assertTrue(resultNode.getStringValue("name") != null
                 && resultNode.getStringValue("name").length() > 0);
                 assertTrue(resultNode.getStringValue("name").equals(testNode.getStringValue("name")));

@@ -6,6 +6,7 @@
 
 package org.mmbase.storage.search.implementation.database;
 
+import java.util.Map;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.database.SqlHandler;
 
