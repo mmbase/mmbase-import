@@ -21,12 +21,9 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash
- * based on a template and information from within MMBase
- * @rename Servflash
- * @application Flash, SCAN
- * @author Vpro
- * @version $Id: servflash.java,v 1.14 2004-09-29 10:34:59 pierre Exp $
+  * The Servflas servlet responds on certain file extensions to dynamically generate Shockwave Flash
+  * based on a template and information from within MMBase
+  * @rename Servflash
  */
 public class servflash extends JamesServlet {
     private static Logger log;
@@ -37,9 +34,16 @@ public class servflash extends JamesServlet {
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(servflash.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
-        MMBaseContext.initHtmlRoot();
+        log = Logging.getLoggerInstance(servflash.class);
+    }
+    
+    public void setMMBase(org.mmbase.module.core.MMBase mmb) {
+        super.setMMBase(mmb);        
+        try {            
+            MMBaseContext.initHtmlRoot();
+        } catch (ServletException se) {
+            log.error(se);            
+        }        
         gen = (MMFlash)getModule("mmflash");
         sessions = (sessionsInterface)getModule("SESSION");
     }
@@ -55,6 +59,10 @@ public class servflash extends JamesServlet {
      * by a user.
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        if (!checkInited(res)) {
+            return;            
+        }
+
         incRefCount(req);
         try {
             pageLog.service("Parsing FLASH page: " + req.getRequestURI());

@@ -26,14 +26,12 @@ import org.mmbase.util.logging.*;
 /**
  * The servdb servlet handles binairy requests.
  * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
- * With servscan it provides the communication between the clients browser and the MMBase space.
+ * With servscan it provides the communication between the clients browser and the mmbase space.
  *
- * @application SCAN (depends from JamesServlet)
  * @rename Servdb
  * @deprecation-used
- * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead. Needs a better implementation that
- *             captures things that now do not work in ImageServlet
- * @version $Id: servdb.java,v 1.57 2004-10-01 08:41:48 pierre Exp $
+ * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
+ * @version $Id: servdb.java,v 1.58 2004-11-08 12:49:08 michiel Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -45,7 +43,6 @@ public class servdb extends JamesServlet {
     private		cacheInterface 		cache;
     private		filebuffer 			buffer;
     private		Hashtable 			Roots 		= new Hashtable();
-    private		MMBase 	mmbase;
     private 	sessionsInterface 	sessions;
 
     /**
@@ -64,23 +61,25 @@ public class servdb extends JamesServlet {
         // Initializing log here because log4j has to be initialized first.
         log = Logging.getLoggerInstance(servdb.class);
 
-        cache = (cacheInterface) getModule("cache");
-        if (cache == null) {
-            log.debug("Could not find cache module, proceeding without cache");
-        }
-        mmbase = (MMBase) getModule("MMBASEROOT");
-        if (mmbase == null) {
-            log.error("Could not find module with name 'MMBASEROOT'!");
-        }
-        sessions = (sessionsInterface) getModule("SESSION");
-        if (sessions == null) {
-            log.debug("Could not find session module, proceeding without sessions");
-        }
-
         // associate explicit mapping
         // Needed because servdb explicitly tests on these maps
         associateMapping("images","/img.db",new Integer(10));
         associateMapping("attachments","/attachment.db",new Integer(10));
+    }
+    
+
+    public void setMMBase(MMBase mmb) {
+        super.setMMBase(mmb);        
+
+        cache = (cacheInterface) getModule("cache");
+        if (cache == null) {
+            log.debug("Could not find cache module, proceeding without cache");
+        }
+
+        sessions = (sessionsInterface) getModule("SESSION");
+        if (sessions == null) {
+            log.debug("Could not find session module, proceeding without sessions");
+        }
     }
 
     // utility method for converting strings to bytes
@@ -98,11 +97,15 @@ public class servdb extends JamesServlet {
 
     // perhaps this method can simply be doGet
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
+        if (!checkInited(res)) {
+            return;            
+        }
+
         Date lastmod;
         String templine,templine2;
         int filesize;
 
-        incRefCount(req); // this is already done in service of MMBaseServlet,
+        incRefCount(req); // this is already done in service of MMBaseServlet, 
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
@@ -233,16 +236,16 @@ public class servdb extends JamesServlet {
                         // img
                         // ---
 
-                        boolean notANumber=false;
+						boolean notANumber=false;
                         Vector params = getParamVector(req);
-                        // Catch alias only images without parameters.
-                        if (params.size()==1) {
-                            try {
-                                Integer.parseInt((String)params.elementAt(0));
-                            } catch (NumberFormatException e) {
-                                notANumber=true;
-                            }
-                        }
+						// Catch alias only images without parameters.
+						if (params.size()==1) {
+							try { 
+								Integer.parseInt((String)params.elementAt(0));
+							} catch (NumberFormatException e) {
+								notANumber=true;
+							}
+						}
 
                         if (params.size() > 1 || notANumber) {
                             // template was included on URL
@@ -265,10 +268,10 @@ public class servdb extends JamesServlet {
 
                         if (params.size()>0) {
                             // good image
-                            ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
-                            cline.buffer   = icaches.getImageBytes(params);
-                            cline.mimetype = icaches.getImageMimeType(params);
-                            mimetype=cline.mimetype;
+	                        ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
+	                        cline.buffer   = icaches.getImageBytes(params);
+	                        cline.mimetype = icaches.getImageMimeType(params);
+	                        mimetype=cline.mimetype;
                         } else {
                             // return a broken image
                             cline.buffer=null;
@@ -276,7 +279,8 @@ public class servdb extends JamesServlet {
                             mimetype=cline.mimetype;
                         }
 
-                        if (mimetype.equals("image/jpeg") || mimetype.equals("image/jpg"))
+                        // bugfix #6558 - fix for broken IE images in scan
+                        if (mimetype.equals("image/jpeg") || mimetype.equals("image/jpg")) 
                             cline.buffer = IECompatibleJpegInputStream.process(cline.buffer);
 
                         if (log.isDebugEnabled()) log.debug("servdb::service(img): The contenttype for this image is: "+mimetype);

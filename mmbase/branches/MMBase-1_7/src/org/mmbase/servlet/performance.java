@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename  Performance
  * @author  vpro
- * @version $Id: performance.java,v 1.11 2003-03-10 11:50:41 pierre Exp $
+ * @version $Id: performance.java,v 1.11.2.1 2004-11-08 12:40:39 michiel Exp $
  */
 public class performance extends BridgeServlet {
     // logging
@@ -38,8 +38,7 @@ public class performance extends BridgeServlet {
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(performance.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+        log = Logging.getLoggerInstance(performance.class);
     }
 
     /**
