@@ -5,7 +5,7 @@
   </action>
 
 	<action type="load">
-		<relation destination="&fragments;"    role="parent"  />
+		<relation destination="&fragments;"    role="parent" />
 		<relation destination="&fragments;"    role="posrel"  />
 		<relation destination="publishtimes"   role="related">
        <object type="publishtimes"/>
@@ -28,6 +28,10 @@
           <search-fields>&fragments;.title</search-fields>
         </search-filter>
       </command>
+
+      <command name="startwizard" inline="true" wizardname="tasks/&fragments;" objectnumber="new" origin="{$origin}">
+      </command>
+
       <action type="create">
         <relation destinationtype="&fragments;" role="parent" />
       </action>
