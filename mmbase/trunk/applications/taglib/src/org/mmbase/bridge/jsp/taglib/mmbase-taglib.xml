@@ -3346,6 +3346,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
     <bodycontent>JSP</bodycontent>
     <info>
         The time taglib can be used for all kind of manipulations regarding to times.</info>
+    <see tag="locale" />
     <attribute>
       <name>time</name>
       <required>false</required>
@@ -3410,7 +3411,20 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
       </info>
     </attribute>
     -->
-    <example>&lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
+    <example>
+      &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
+    </example>
+    <example>     
+      <include base="examples.taglib" href="codesamples/timelocale.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/timetime.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/timeoffset.jsp" />
+    </example>
+    <example>
+      <include base="examples.taglib" href="codesamples/timeenv.jsp" />
     </example>
   </tag>
   <tag>
