@@ -16,64 +16,69 @@ import java.util.*;
 
 import org.mmbase.service.interfaces.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  */
+
 public class dropboxUnix implements dropboxInterface {
 
-	private String dir;
-	private String cmd;
-	private String wwwpath;
-	
+    private static Logger log = Logging.getLoggerInstance(dropboxUnix.class.getName());
 
-	public void startUp() {
-	}
+    private String dir;
+    private String cmd;
+    private String wwwpath;
+    
 
-	public void shutDown() {
-	}
+    public void startUp() {
+    }
 
-	public String getVersion() {		
-		return("0.31");
-	}
+    public void shutDown() {
+    }
 
- 	 /**
-	  * executes the given command
-	  * @return standard output
-	  */
-	private String execute (String command) {
-		Process p=null;
+    public String getVersion() {        
+        return("0.31");
+    }
+
+      /**
+      * executes the given command
+      * @return standard output
+      */
+    private String execute (String command) {
+        Process p=null;
         String s="",tmp="";
-		DataInputStream dip= null;
+        DataInputStream dip= null;
 
-		try {
-			p = (Runtime.getRuntime()).exec(command,null);
-		} catch (Exception e) {
-			s+=e.toString();
-			return s;
-		}
-		dip = new DataInputStream(p.getInputStream());
+        try {
+            p = (Runtime.getRuntime()).exec(command,null);
+        } catch (Exception e) {
+            s+=e.toString();
+            return s;
+        }
+        dip = new DataInputStream(p.getInputStream());
         try {
             while ((tmp = dip.readLine()) != null) {
-               	s+=tmp+"\n"; 
-		   }
+                   s+=tmp+"\n"; 
+           }
         } catch (Exception e) {
-			//s+=e.toString();
-			return s;
-	   }
-	   return s;
-	}
+            //s+=e.toString();
+            return s;
+       }
+       return s;
+    }
 
     public String doDir( String cmds ) {
         String result = "";
         String cmdline=cmd+" "+dir;
-        System.out.println("EXEC->"+cmdline);
+        log.debug("EXEC->"+cmdline);
         result=execute(cmdline);
-        System.out.println("EXEC->"+result);
+        log.debug("EXEC->"+result);
         StringTokenizer tok=new StringTokenizer(result,"\n\r");
         String result2="";
         while (tok.hasMoreTokens()) {
             String line=tok.nextToken();
-            System.out.println("FILE="+line);
+            log.debug("FILE="+line);
             result2+=wwwpath+line+",";
         }
 
@@ -81,15 +86,15 @@ public class dropboxUnix implements dropboxInterface {
     }
 
 
-	public void setDir(String dir) {
-		this.dir=dir;
-	}
+    public void setDir(String dir) {
+        this.dir=dir;
+    }
 
-	public void setCmd(String cmd) {
-		this.cmd=cmd;
-	}
+    public void setCmd(String cmd) {
+        this.cmd=cmd;
+    }
 
-	public void setWWWPath(String wwwpath) {
-		this.wwwpath=wwwpath;
-	}
+    public void setWWWPath(String wwwpath) {
+        this.wwwpath=wwwpath;
+    }
 }
