@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.29 2004-03-15 14:54:26 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.30 2004-03-15 15:40:03 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -154,8 +154,10 @@ public class BasicSqlHandler implements SqlHandler {
     public BasicSqlHandler(Map disallowedValues) {
         mmbase = MMBase.getMMBase();
         disallowed2Allowed = new HashMap(disallowedValues);
-        log.debug("disallowed2Allowed=" + disallowed2Allowed);
-        log.warn(Logging.stackTrace());
+        if (log.isDebugEnabled()) {
+            log.debug("disallowed2Allowed=" + disallowed2Allowed);
+            log.trace(Logging.stackTrace());
+        }
     }
 
     // javadoc is inherited
