@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.103 2003-08-15 11:16:58 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.104 2003-08-27 21:31:27 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -41,7 +41,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public static final int ACTION_DELETE = 3; // delete node
     public static final int ACTION_COMMIT = 10; // commit a node after changes
 
-    private static Logger log = Logging.getLoggerInstance(BasicNode.class);
+    private static final Logger log = Logging.getLoggerInstance(BasicNode.class);
 
 
     private boolean changed = false;
@@ -141,7 +141,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     protected void init() {
 
         if (cloud == null) {
-            cloud = (BasicCloud)nodeManager.getCloud();
+            cloud = (BasicCloud) nodeManager.getCloud();
         }
 
         if (nodeManager == null) {
@@ -399,8 +399,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public Node getNodeValue(String attribute) {
-        if (attribute == null || attribute.equals("number"))
+        if (attribute == null || attribute.equals("number")) {
             return this;
+        }
         MMObjectNode noderes = getNode().getNodeValue(attribute);
         if (noderes != null) {
             if (noderes.getBuilder() instanceof InsRel) {
