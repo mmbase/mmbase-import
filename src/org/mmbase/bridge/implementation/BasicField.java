@@ -74,7 +74,23 @@ public class BasicField implements Field {
 	/**
 	* retrieve the size of the field (i.e. the maximum length for a String)
 	*/
-	public int getSize() {
+	public int getMaxLength() {
 	    return field.getDBSize();
 	}
+
+    /**
+    * Compares two fields, and returns true if they are equal.
+    * @param o the object to compare it with
+    */
+    public boolean equals(Object o) {
+        return (o instanceof Field) && (o.hashCode()==hashCode());
+    };
+
+    /**
+    * Returns the object's hashCode.
+    * This effectively returns the objectnode's number
+    */
+    public int hashCode() {
+        return ((getNodeManager().hashCode()) * 100) + field.getDBPos();
+    };
 }

@@ -126,11 +126,12 @@ public interface Cloud {
 
     /**
      * Returnes the transaction with the specified name.
+     * If no active transaction exists, a new transaction is craeted.
      *
      * @param name  the name of the requested transaction
      * @return      the requested transaction
      */
-    public Transaction openTransaction(String name);
+    public Transaction getTransaction(String name);
    	
     /**
      * Logs on a user. This will associate the user with this cloud instance.

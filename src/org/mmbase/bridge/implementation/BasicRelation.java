@@ -65,18 +65,18 @@ public class BasicRelation extends BasicNode implements Relation {
 	 */
 	public void setSource(Node node) {
         if (node.getCloud() != cloud) {
-            throw new BridgeException("Source and relation are not in the same transaction or from different clouds");
+            throw new BasicBridgeException("Source and relation are not in the same transaction or from different clouds");
         }
         Edit(ACTION_EDIT);
         ((BasicNode)node).Edit(ACTION_LINK);
-	    int source=node.getIntValue("number");
+	    int source=node.getNumber();
         if (source==-1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_snumber",node.getValue("_number"));
         } else {
     	    getNode().setValue("snumber",source);
         }
-	    snum=node.getNodeNumber();
+	    snum=node.getNumber();
 	}
 
 	/**
@@ -85,18 +85,18 @@ public class BasicRelation extends BasicNode implements Relation {
 	 */
 	public void setDestination(Node node) {
         if (node.getCloud() != cloud) {
-            throw new BridgeException("Destination and relation are not in the same transaction or from different clouds");
+            throw new BasicBridgeException("Destination and relation are not in the same transaction or from different clouds");
         }
         Edit(ACTION_EDIT);
         ((BasicNode)node).Edit(ACTION_LINK);
-	    int dest=node.getIntValue("number");
+	    int dest=node.getNumber();
         if (dest==-1) {
             // set a temporary field, transactionmanager resolves this
             getNode().setValue("_dnumber",node.getValue("_number"));
         } else {
     	    getNode().setValue("dnumber",dest);
         }
-	    dnum=node.getNodeNumber();
+	    dnum=node.getNumber();
 	}
 
  	/**
@@ -111,5 +111,22 @@ public class BasicRelation extends BasicNode implements Relation {
         }
         return relationManager;
     }
+
+    /**
+    * Compares two relations, and returns true if they are equal.
+    * This effectively means that both objects are relations, and they both refer to the same objectnode
+    * @param o the object to compare it with
+    */
+    public boolean equals(Object o) {
+        return (o instanceof Relation) && (o.hashCode()==hashCode());
+    };
+
+    /**
+    * Returns the object's hashCode.
+    * This effectively returns th objectnode's number
+    */
+    public int hashCode() {
+        return getNumber();
+    };
 }
 
