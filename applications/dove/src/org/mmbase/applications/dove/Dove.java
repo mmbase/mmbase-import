@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.37 2003-07-09 16:42:09 michiel Exp $
+ * @version $Id: Dove.java,v 1.38 2003-07-09 17:35:37 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -156,7 +156,7 @@ public class Dove extends AbstractDove {
                     fel.setAttribute(ELM_NAME,fname);
                 } else {
                     Element err=addContentElement(ERROR,"field with name "+fname+" does not exist",out);
-                    err.setAttribute(ELM_TYPE,IS_PARSER);
+                    err.setAttribute(ELM_TYPE, IS_PARSER);
                 }
                 field=getNextElement(field,FIELD);
             }
@@ -196,7 +196,7 @@ public class Dove extends AbstractDove {
             getDataNode(in,out,nd);
         } catch (RuntimeException e) {
             Element err=addContentElement(ERROR,"node not found",out);
-            err.setAttribute(ELM_TYPE,IS_SERVER);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
         }
     }
 
@@ -230,9 +230,9 @@ public class Dove extends AbstractDove {
         }
 
         // determines whether to load the object (and possible restrictions)
-        Element objectDef=getFirstElement(relation,OBJECT);
+        Element objectDef = getFirstElement(relation,OBJECT);
         try {
-            for (RelationIterator i=nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
+            for (RelationIterator i = nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
                 Relation nrel=i.nextRelation();
                 if (searchDir==1) {
                     if (thisNumber!=nrel.getIntValue("snumber")) continue;
@@ -267,7 +267,7 @@ public class Dove extends AbstractDove {
             }
         } catch (RuntimeException e) {
             Element err=addContentElement(ERROR,"role or nodetype for relation invalid ("+e.getMessage()+")",out);
-            err.setAttribute(ELM_TYPE,IS_CLIENT);
+            err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
     }
 
@@ -318,7 +318,7 @@ public class Dove extends AbstractDove {
             }
         } catch (RuntimeException e) {
             Element err=addContentElement(ERROR,"node not found",out);
-            err.setAttribute(ELM_TYPE,IS_SERVER);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
         }
     }
 
@@ -345,7 +345,7 @@ public class Dove extends AbstractDove {
                 String number = node.getAttribute(ELM_NUMBER); // check id;
                 if (number.equals("")) {
                     Element err=addContentElement(ERROR,"number required for node",out);
-                    err.setAttribute(ELM_TYPE,IS_PARSER);
+                    err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else {
                     Element data=doc.createElement(OBJECT);
                     data.setAttribute(ELM_NUMBER, number);
@@ -354,7 +354,7 @@ public class Dove extends AbstractDove {
                 }
             } else {
                 Element err=addContentElement(ERROR,"Unknown subtag in getdata: "+node.getTagName(),out);
-                err.setAttribute(ELM_TYPE,IS_PARSER);
+                err.setAttribute(ELM_TYPE, IS_PARSER);
             }
             node=getNextElement(node);
         }
@@ -376,7 +376,7 @@ public class Dove extends AbstractDove {
         String nodemanagername = in.getAttribute(ELM_TYPE); // check type;
         if (nodemanagername.equals("")) {
             Element err=addContentElement(ERROR,"type required for getnew",out);
-            err.setAttribute(ELM_TYPE,IS_PARSER);
+            err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
             try {
                 out.setAttribute(ELM_TYPE,nodemanagername);
@@ -394,7 +394,7 @@ public class Dove extends AbstractDove {
             } catch (RuntimeException e) {
                 Element err=addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
                 log.warn(Logging.stackTrace(e));
-                err.setAttribute(ELM_TYPE,IS_CLIENT);
+                err.setAttribute(ELM_TYPE, IS_CLIENT);
             }
         }
     }
@@ -422,7 +422,7 @@ public class Dove extends AbstractDove {
 
         if (rolename.equals("")) {
             Element err=addContentElement(ERROR,"role required for getrelations",out);
-            err.setAttribute(ELM_TYPE,IS_PARSER);
+            err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
             try {
                 out.setAttribute(ELM_ROLE,rolename);
@@ -458,10 +458,10 @@ public class Dove extends AbstractDove {
             } catch (RuntimeException e) {
                 if (destinationType.equals("") || sourceType.equals("") ) {
                     Element err=addContentElement(ERROR,"role ("+rolename+") does not exist",out);
-                    err.setAttribute(ELM_TYPE,IS_CLIENT);
+                    err.setAttribute(ELM_TYPE, IS_CLIENT);
                 } else {
                     Element err=addContentElement(ERROR,"relation ("+sourceType+"-"+rolename+"->"+destinationType+") constraint does not exist",out);
-                    err.setAttribute(ELM_TYPE,IS_CLIENT);
+                    err.setAttribute(ELM_TYPE, IS_CLIENT);
                 }
             }
         }
@@ -485,24 +485,24 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      */
     public void getRelations(Element in, Element out, Cloud cloud) {
-        Element node=getFirstElement(in);
-        while (node!=null) { // select all child tags, should be 'object'
+        Element node = getFirstElement(in);
+        while (node != null) { // select all child tags, should be 'object'
             if (node.getTagName().equals(OBJECT)) {
                 String number = node.getAttribute(ELM_NUMBER); // check id;
                 if (number.equals("")) {
-                    Element err=addContentElement(ERROR,"number required for node",out);
-                    err.setAttribute(ELM_TYPE,IS_PARSER);
+                    Element err = addContentElement(ERROR,"number required for node", out);
+                    err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else {
-                    Element data=doc.createElement(OBJECT);
+                    Element data = doc.createElement(OBJECT);
                     data.setAttribute(ELM_NUMBER, number);
                     out.appendChild(data);
                     getRelationsNodes(node,data,cloud);
                 }
             } else {
-                Element err=addContentElement(ERROR,"Unknown subtag in getrelations: "+node.getTagName(),out);
-                err.setAttribute(ELM_TYPE,IS_PARSER);
+                Element err = addContentElement(ERROR,"Unknown subtag in getrelations: " + node.getTagName(), out);
+                err.setAttribute(ELM_TYPE, IS_PARSER);
             }
-            node=getNextElement(node);
+            node = getNextElement(node);
         }
     }
 
@@ -524,14 +524,14 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      */
     public void getConstraints(Element in, Element out, Cloud cloud) {
-        String nodemanagername = in.getAttribute(ELM_TYPE); // check type;
-        if (nodemanagername.equals("")) {
+        String nodeManagerName = in.getAttribute(ELM_TYPE); // check type;
+        if (nodeManagerName.equals("")) {
             Element err=addContentElement(ERROR,"type required for getconstraints",out);
-            err.setAttribute(ELM_TYPE,IS_PARSER);
+            err.setAttribute(ELM_TYPE, IS_PARSER);
         } else {
             try {
-                out.setAttribute(ELM_TYPE,nodemanagername);
-                NodeManager nm =cloud.getNodeManager(nodemanagername);
+                out.setAttribute(ELM_TYPE,nodeManagerName);
+                NodeManager nm =cloud.getNodeManager(nodeManagerName);
 
                 // XXX: language is currently ignored
                 // (not supported by the MMCI)
@@ -578,60 +578,66 @@ public class Dove extends AbstractDove {
                         elm=addContentElement(DESCRIPTION,fielddef.getDescription(),field);
                         if (lang!=null) elm.setAttribute(ELM_LANG,lang);
                         // guitype
-                        String guitype=fielddef.getGUIType();
-                        if (guitype.indexOf("/")==-1) {
-                            if (guitype.equals("field")) {
-                                guitype="string/text";
-                            } else if (guitype.equals("string")) {
-                                guitype="string/line";
-                            } else if (guitype.equals("eventtime")) {
-                                guitype="datetime/datetime";
-                            } else if (guitype.equals("newimage")) {
-                                guitype="binary/image";
-                            } else if (guitype.equals("newfile")) {
-                                guitype="binary/file";
+                        String guiType = fielddef.getGUIType();
+                        if (guiType.indexOf("/")==-1) {
+                            if (guiType.equals("field")) {
+                                guiType = "string/text";
+                            } else if (guiType.equals("string")) {
+                                guiType = "string/line";
+                            } else if (guiType.equals("eventtime")) {
+                                guiType = "datetime/datetime";
+                            } else if (guiType.equals("newimage")) {
+                                guiType = "binary/image";
+                            } else if (guiType.equals("newfile")) {
+                                guiType = "binary/file";
                             } else {
-                                String dttype="string";
-                                int itype=fielddef.getType();
-                                if (itype==Field.TYPE_NODE)
-                                    dttype="int";
-                                else if (itype==Field.TYPE_INTEGER)
-                                    dttype="int";
-                                else if (itype==Field.TYPE_LONG)
+                                String dttype = "string";
+                                int itype = fielddef.getType();
+                                switch(itype) {
+                                case Field.TYPE_INTEGER:
+                                case Field.TYPE_NODE: 
+                                    dttype = "int";
+                                    break;
+                                case Field.TYPE_LONG:
                                     dttype="long";
-                                else if (itype==Field.TYPE_FLOAT)
+                                    break;                                    
+                                case Field.TYPE_FLOAT:
                                     dttype="float";
-                                else if (itype==Field.TYPE_DOUBLE)
+                                    break;
+                                case Field.TYPE_DOUBLE:
                                     dttype="double";
-                                else if (itype==Field.TYPE_BYTE)
+                                    break;
+                                case Field.TYPE_BYTE:
                                     dttype="binary";
-                                guitype=dttype+"/"+guitype;
+                                    break;
+                                }
+                                guiType = dttype + "/" + guiType;
                             }
                         }
 
-                        addContentElement(GUITYPE,guitype,field);
+                        addContentElement(GUITYPE, guiType, field);
 
-                        int maxLength=fielddef.getMaxLength();
+                        int maxLength = fielddef.getMaxLength();
                         if (maxLength>0) {
-                            addContentElement(MAXLENGTH,""+maxLength,field);
+                            addContentElement(MAXLENGTH, "" + maxLength, field);
                         }
 
                         if (fielddef.isRequired()) {
-                            addContentElement(REQUIRED,IS_TRUE,field);
+                            addContentElement(REQUIRED, IS_TRUE, field);
                         } else {
-                            addContentElement(REQUIRED,IS_FALSE,field);
+                            addContentElement(REQUIRED, IS_FALSE, field);
                         }
                     }
                 }
                 // relations
-                Element relations=doc.createElement(RELATIONS);
+                Element relations = doc.createElement(RELATIONS);
                 out.appendChild(relations);
                 // XXX: getAllowedRelations is not yet supported by the MMCI
                 // This code commented out
             } catch (RuntimeException e) {
-                Element err=addContentElement(ERROR,"node type " + nodemanagername + " does not exist(" + e.toString() + ")",out);
+                Element err = addContentElement(ERROR, "node type " + nodeManagerName + " does not exist(" + e.toString() + ")",out);
                 log.warn(Logging.stackTrace(e));
-                err.setAttribute(ELM_TYPE,IS_CLIENT);
+                err.setAttribute(ELM_TYPE, IS_CLIENT);
             }
         }
     }
@@ -664,7 +670,7 @@ public class Dove extends AbstractDove {
                 if ("".equals(directions)) directions=null;
                 if (xpath.equals("")) {
                     Element err=addContentElement(ERROR,"xpath required for query",out);
-                    err.setAttribute(ELM_TYPE,IS_PARSER);
+                    err.setAttribute(ELM_TYPE, IS_PARSER);
                 } else {
                     Element querydata=doc.createElement(QUERY);
                     querydata.setAttribute(ELM_XPATH, xpath);
@@ -683,7 +689,7 @@ public class Dove extends AbstractDove {
 
                     if (xpath.indexOf("/*@")!=0) {
                         Element err=addContentElement(ERROR,"invalid xpath",out);
-                        err.setAttribute(ELM_TYPE,IS_CLIENT);
+                        err.setAttribute(ELM_TYPE, IS_CLIENT);
                     } else {
                         //get node data, bit stupid
                         try {
@@ -698,13 +704,13 @@ public class Dove extends AbstractDove {
                         } catch(RuntimeException e) {
                             Element err=addContentElement(ERROR,"node type " + xpath.substring(3) + " does not exist(" + e.toString() + ")",out);
                             log.warn(Logging.stackTrace(e));
-                            err.setAttribute(ELM_TYPE,IS_CLIENT);
+                            err.setAttribute(ELM_TYPE, IS_CLIENT);
                         }
                     }
                 }
             } else {
                 Element err=addContentElement(ERROR,"Unknown subtag in getlist: "+query.getTagName(),out);
-                err.setAttribute(ELM_TYPE,IS_PARSER);
+                err.setAttribute(ELM_TYPE, IS_PARSER);
             }
             query=getNextElement(query);
         }
@@ -725,7 +731,7 @@ public class Dove extends AbstractDove {
     public void put(Element in, Element out, Cloud cloud, Map repository) {
         // first collect all new and original nodes
         Map originalNodes     = new HashMap();
-        Map nodeNodes         = new HashMap();
+        Map newNodes          = new HashMap();
         Map originalRelations = new HashMap();
         Map newRelations      = new HashMap();
 
@@ -752,7 +758,7 @@ public class Dove extends AbstractDove {
                             if (isOriginal) {
                                 originalNodes.put((String)node.getAttribute(ELM_NUMBER),values);
                             } else {
-                                nodeNodes.put((String)node.getAttribute(ELM_NUMBER),values);
+                                newNodes.put((String)node.getAttribute(ELM_NUMBER),values);
                             }
                         }
                         if (! isOriginal) {
@@ -803,11 +809,11 @@ public class Dove extends AbstractDove {
             query = getNextElement(query);
         }
         // are there new nodes to handle ?
-        if (nodeNodes.size() > 0 || newRelations.size() > 0) {
+        if (newNodes.size() > 0 || newRelations.size() > 0) {
             Transaction trans = cloud.createTransaction();
             Map addedNodes     = new HashMap ();
             Map addedRelations = new HashMap();
-            if (mergeClouds(originalNodes, nodeNodes, originalRelations, newRelations, addedNodes, addedRelations, out, trans) ) {
+            if (mergeClouds(originalNodes, newNodes, originalRelations, newRelations, addedNodes, addedRelations, out, trans) ) {
                 try {
                     trans.commit();
                     // retrieve all numbers and reset them to the right value
@@ -825,14 +831,14 @@ public class Dove extends AbstractDove {
                         Map.Entry me=(Map.Entry)i.next();
                         org.mmbase.bridge.Node n = (org.mmbase.bridge.Node)me.getKey();
                         Element re = (Element)me.getValue();
-                        re.setAttribute(ELM_NUMBER,n.getStringValue("number"));
-                        re.setAttribute(ELM_SOURCE,n.getStringValue("snumber"));
-                        re.setAttribute(ELM_DESTINATION,n.getStringValue("dnumber"));
+                        re.setAttribute(ELM_NUMBER, n.getStringValue("number"));
+                        re.setAttribute(ELM_SOURCE, n.getStringValue("snumber"));
+                        re.setAttribute(ELM_DESTINATION, n.getStringValue("dnumber"));
                     }
                 } catch (RuntimeException e) {
-                    Element err=addContentElement(ERROR,"Transaction failed : "+e.getMessage(),out);
+                    Element err=addContentElement(ERROR, "Transaction failed : " + e.getMessage(), out);
                     log.error(Logging.stackTrace(e));
-                    err.setAttribute(ELM_TYPE,IS_SERVER);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
                 }
             } else {
                 trans.cancel();
@@ -961,12 +967,12 @@ public class Dove extends AbstractDove {
             } catch (RuntimeException e) {
                 // give error
                 Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : "+alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch (BridgeException e) {
             // give error this cloud doesn't support this type
             Element err = addContentElement(ERROR, Logging.stackTrace(e), out);
-            err.setAttribute(ELM_TYPE,IS_SERVER);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
         }
         return false;
     }
@@ -1013,12 +1019,12 @@ public class Dove extends AbstractDove {
             } catch (RuntimeException e) {
                 // give error
                 Element err=addContentElement(ERROR,"Cloud can not insert this object, alias number : " + alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
             Element err=addContentElement(ERROR,"Error. Does the cloud does support role :" + role + "?:" + e.getMessage(), out);
-            err.setAttribute(ELM_TYPE,IS_CLIENT);
+            err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;
     }
@@ -1027,39 +1033,39 @@ public class Dove extends AbstractDove {
     /**
      * Creates a new node.
      * @param alias the node alias in the put tree
-     * @param orgvalues a Map with the original values of the node
+     * @param originalValues a Map with the original values of the node
      * @param out the element that describes 'new' cloud.
      *           The result of the put (an error or the resulting cloud) should be added
      *           as childs to this element.
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putDeleteNode(String alias, Map orgvalues, Element out, Cloud cloud) {
+    protected boolean putDeleteNode(String alias, Map originalValues, Element out, Cloud cloud) {
         // check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
-        String type=(String)orgvalues.get("_otype");
+        String type = (String)originalValues.get("_otype");
         try {
-            NodeManager nm=cloud.getNodeManager(type);
+            NodeManager nm = cloud.getNodeManager(type);
             try {
-                org.mmbase.bridge.Node mmbasenode=cloud.getNode(alias);
-                if (mmbasenode.getNodeManager().getName().equals(nm.getName()) ) {
-                    mmbasenode.delete(true);
+                org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
+                if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
+                    mmbaseNode.delete(true);
                     return true;
                 } else {
                     // give error its the wrong type
-                    Element err=addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbasenode.getNodeManager().getName()+", expected="+nm.getName()+")",out);
-                    err.setAttribute(ELM_TYPE,IS_SERVER);
+                    Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+nm.getName()+")",out);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
                 }
             } catch(RuntimeException e) {
                 // give error node not found
                 Element err=addContentElement(ERROR,"Node not in the cloud (anymore?), node number : "+alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch(RuntimeException e) {
             // give error can't find builder of that type
             Element err=addContentElement(ERROR,"Cloud does not support type : "+type + "(" + e.toString() + ")",out);
-            err.setAttribute(ELM_TYPE,IS_CLIENT);
+            err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;
      }
@@ -1067,35 +1073,35 @@ public class Dove extends AbstractDove {
     /**
      * Creates a new node.
      * @param alias the node alias in the put tree
-     * @param orgvalues a Map with the original values of the relation
+     * @param originalValues a Map with the original values of the relation
      * @param out the element that describes 'new' cloud.
      *           The result of the put (an error or the resulting cloud) should be added
      *           as childs to this element.
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putDeleteRelation(String alias, Map orgvalues, Element out, Cloud cloud) {
-        String role=(String)orgvalues.get("_role");
+    protected boolean putDeleteRelation(String alias, Map originalValues, Element out, Cloud cloud) {
+        String role = (String)originalValues.get("_role");
         try {
-            RelationManager relman=cloud.getRelationManager(role);
+            RelationManager relman = cloud.getRelationManager(role);
             try {
-                org.mmbase.bridge.Node mmbasenode=cloud.getNode(alias);
+                org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
                 // check if they are the same type
-                if (mmbasenode.getNodeManager().getName().equals(relman.getName()) ) {
-                    mmbasenode.delete(true);
+                if (mmbaseNode.getNodeManager().getName().equals(relman.getName()) ) {
+                    mmbaseNode.delete(true);
                     return true;
                 } else {
-                    Element err=addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbasenode.getNodeManager().getName()+", expected="+relman.getName()+")",out);
-                    err.setAttribute(ELM_TYPE,IS_SERVER);
+                    Element err=addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbaseNode.getNodeManager().getName()+", expected="+relman.getName()+")",out);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
                 }
             } catch (RuntimeException e) {
                 Element err=addContentElement(ERROR,"Relation not in the cloud (anymore?), relation number : "+alias,out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch (RuntimeException e) {
             // give error can't find builder of that type
             Element err=addContentElement(ERROR,"Cloud does not support role : "+role, out);
-            err.setAttribute(ELM_TYPE,IS_SERVER);
+            err.setAttribute(ELM_TYPE, IS_SERVER);
         }
         return false;
      }
@@ -1104,7 +1110,7 @@ public class Dove extends AbstractDove {
      * Creates a new node.
      * @param alias the node alias in the put tree
      * @param values a Map with new node values
-     * @param orgvalues a Map with original node values, used for validation
+     * @param originalValues a Map with original node values, used for validation
      * @param aliases a Map with mappings from XML aliases to node reference values
      * @param out the element that describes 'new' cloud.
      *           The result of the put (an error or the resulting cloud) should be added
@@ -1112,45 +1118,45 @@ public class Dove extends AbstractDove {
      * @param cloud the cloud to work on
      * @return true if succesful, false if an error ocurred
      */
-    protected boolean putChangeNode(String alias, Map values, Map orgvalues, Map aliases, Element out, Cloud cloud) {
+    protected boolean putChangeNode(String alias, Map values, Map originalValues, Map aliases, Element out, Cloud cloud) {
         // now check if this org node is also found in
         // mmbase cloud and if its still the same
         // also check if its the same type
-        String type=(String)values.get("_otype");
+        String type = (String)values.get("_otype");
         try {
-            NodeManager nm=cloud.getNodeManager(type);
+            NodeManager nm = cloud.getNodeManager(type);
             try {
-                org.mmbase.bridge.Node mmbasenode=cloud.getNode(alias);
+                org.mmbase.bridge.Node mmbaseNode = cloud.getNode(alias);
                 // check if they are the same type
-                if (mmbasenode.getNodeManager().getName().equals(nm.getName()) ) {
+                if (mmbaseNode.getNodeManager().getName().equals(nm.getName()) ) {
                     // create new node for response
-                    Element objectelement=doc.createElement(OBJECT);
-                    objectelement.setAttribute(ELM_TYPE,type);
-                    objectelement.setAttribute(ELM_NUMBER,alias);
-                    if (!fillFields(alias,mmbasenode,objectelement,values,orgvalues)) {
-                        out.appendChild(objectelement);
+                    Element objectElement = doc.createElement(OBJECT);
+                    objectElement.setAttribute(ELM_TYPE, type);
+                    objectElement.setAttribute(ELM_NUMBER, alias);
+                    if (!fillFields(alias, mmbaseNode, objectElement, values, originalValues)) {
+                        out.appendChild(objectElement);
                         return false;
                     }
-                    mmbasenode.commit();
+                    mmbaseNode.commit();
                     // add node to response
-                    out.appendChild(objectelement);
+                    out.appendChild(objectElement);
                     return true;
                 } else {
                     // give error its the wrong type
-                    Element err=addContentElement(ERROR,"Node not same type as in the cloud, node number : "+alias+", cloud type="+mmbasenode.getNodeManager().getName()+", expected="+nm.getName()+")",out);
-                    err.setAttribute(ELM_TYPE,IS_SERVER);
+                    Element err = addContentElement(ERROR,"Node not same type as in the cloud, node number : " + alias + ", cloud type=" + mmbaseNode.getNodeManager().getName()+", expected=" + nm.getName() + ")", out);
+                    err.setAttribute(ELM_TYPE, IS_SERVER);
                 }
 
             } catch(RuntimeException e) {
                 // give error node not found
                 log.error(Logging.stackTrace(e));
-                Element err=addContentElement(ERROR,"Node not in the cloud (any more), node number : "+alias + "(" + e.toString() + ")",out);
-                err.setAttribute(ELM_TYPE,IS_SERVER);
+                Element err = addContentElement(ERROR,"Node not in the cloud (any more), node number : " + alias + "(" + e.toString() + ")", out);
+                err.setAttribute(ELM_TYPE, IS_SERVER);
             }
         } catch(RuntimeException e) {
             // give error can't find builder of that type
-            Element err=addContentElement(ERROR, "Cloud does not support type : "+type + "(" + e.toString() + ")",out);
-            err.setAttribute(ELM_TYPE,IS_CLIENT);
+            Element err=addContentElement(ERROR, "Cloud does not support type : " + type + "(" + e.toString() + ")", out);
+            err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return false;
     }
@@ -1158,7 +1164,7 @@ public class Dove extends AbstractDove {
     /**
      * Performs the put within a transaction.
      * @param originalNodes the nodes in the original cloud, used in validation
-     * @param nodeNodes the nodes in the new cloud
+     * @param newNodes the nodes in the new cloud
      * @param originalRelations the relations in the original cloud, used in validation
      * @param newRelations the relations in the new cloud
      * @param addedNodes a Map used to keep associations between xml elements and newly created nodes,
@@ -1170,7 +1176,7 @@ public class Dove extends AbstractDove {
      *           as childs to this element.
      * @param cloud the cloud to work on
      */
-    protected boolean mergeClouds(Map originalNodes, Map nodeNodes, Map originalRelations, Map newRelations,
+    protected boolean mergeClouds(Map originalNodes, Map newNodes, Map originalRelations, Map newRelations,
                                   Map addedNodes, Map addedRelations, Element out, Cloud cloud) {
         Map aliases = new HashMap(); // hash from alias names to real names
 
@@ -1178,8 +1184,8 @@ public class Dove extends AbstractDove {
         Element newElement = doc.createElement(NEW);
         out.appendChild(newElement);
 
-        // lets enum all the nodeNodes
-        for (Iterator i = nodeNodes.entrySet().iterator(); i.hasNext(); ) {
+        // lets enum all the newNodes
+        for (Iterator i = newNodes.entrySet().iterator(); i.hasNext(); ) {
             // handle the several cases we have when we have
             // a new node (merge, really new)
             Map.Entry me=(Map.Entry)i.next();
@@ -1271,47 +1277,48 @@ public class Dove extends AbstractDove {
      */
     public void doRequest(Element in, Element out, Cloud cloud, Map repository) {
         // set repository for blobs
-        if (repository==null) repository= new HashMap();
+        if (repository == null) repository = new HashMap();
 
-        Element command=getFirstElement(in);
-        if ((cloud==null)) {
+        Element command = getFirstElement(in);
+        if ((cloud == null)) {
             // make new cloud if not specified,
-            cloud=checkSecurity(command,out);
-            if(cloud==null)
+            cloud = checkSecurity(command,out);
+            if(cloud == null) {
                 return; // Athentication failed, so stop
-            command=getNextElement(command);
+            }
+            command = getNextElement(command);
         }
         // skip security if cloud was given - or throw exception???
         if (SECURITY.equals(command.getTagName())) {
-            command=getNextElement(command);
+            command = getNextElement(command);
         }
 
         while (command!=null) {
-            String cmd=command.getTagName();
-            Element data=doc.createElement(cmd);
+            String cmd = command.getTagName();
+            Element data = doc.createElement(cmd);
             if (command.hasAttribute(ELM_ID)) {
                 data.setAttribute(ELM_ID, command.getAttribute(ELM_ID));
             }
             out.appendChild(data);
             if (cmd.equals(GETDATA)) {
-                getData(command,data,cloud);
+                getData(command, data, cloud);
             } else if (cmd.equals(GETNEW)) {
-                getNew(command,data,cloud);
+                getNew(command, data, cloud);
             } else if (cmd.equals(GETNEWRELATION)) {
-                getNewRelation(command,data,cloud);
+                getNewRelation(command, data, cloud);
             } else if (cmd.equals(GETRELATIONS)) {
-                getRelations(command,data,cloud);
+                getRelations(command, data, cloud);
             } else if (cmd.equals(GETCONSTRAINTS)) {
-                getConstraints(command,data,cloud);
+                getConstraints(command, data, cloud);
             } else if (cmd.equals(GETLIST)) {
-                getList(command,data,cloud);
+                getList(command, data, cloud);
             } else if (cmd.equals(PUT)) {
-                put(command,data,cloud,repository);
+                put(command, data, cloud, repository);
             } else {
-                Element err=addContentElement(ERROR,"Unknown command: "+cmd,data);
-                err.setAttribute(ELM_TYPE,IS_PARSER);
+                Element err=addContentElement(ERROR, "Unknown command: " + cmd, data);
+                err.setAttribute(ELM_TYPE, IS_PARSER);
             }
-            command=getNextElement(command);
+            command = getNextElement(command);
         }
     }
 
@@ -1320,34 +1327,34 @@ public class Dove extends AbstractDove {
      * @return true if the user is authenticated, false otherwise
      */
     private Cloud checkSecurity(Element command, Element out) {
-        Element data=doc.createElement(SECURITY);
+        Element data = doc.createElement(SECURITY);
         out.appendChild(data);
 
         if (command!=null && command.getTagName().equals(SECURITY)) {
-            String username = command.getAttribute(SECURITY_NAME); // retrieve name
+            String userName = command.getAttribute(SECURITY_NAME); // retrieve name
             try {
                 String password = command.getAttribute(SECURITY_PASSWORD); // retrieve password
-                String methodname = command.getAttribute(SECURITY_METHOD ); // retrieve method name
-                if ((methodname==null) || (methodname.equals(""))) methodname="name/password";
-                String cloudname = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
-                if ((cloudname==null) || (cloudname.equals(""))) cloudname="mmbase";
-                HashMap user = new HashMap();
-                if ((username!=null) && (!username.equals(""))) {
-                    user.put("username", username);
+                String methodName = command.getAttribute(SECURITY_METHOD ); // retrieve method name
+                if ((methodName == null) || (methodName.equals(""))) methodName="name/password";
+                String cloudName = command.getAttribute(SECURITY_CLOUD); // retrieve cloud name
+                if ((cloudName == null) || (cloudName.equals(""))) cloudName="mmbase";
+                Map user = new HashMap();
+                if ((userName!=null) && (!userName.equals(""))) {
+                    user.put("username", userName);
                     user.put("password", password);
                 }
-                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudname,methodname,user);
+                Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud(cloudName, methodName, user);
                 return cloud;
             } catch (RuntimeException e) {
                 // most likely security failed...
-                log.warn("Authentication error : "+e.getMessage());
-                Element err=addContentElement(ERROR,"Authentication error : "+e.getMessage(),data);
-                err.setAttribute(ELM_TYPE,IS_CLIENT);
+                log.warn("Authentication error : " + e.getMessage());
+                Element err=addContentElement(ERROR, "Authentication error : " + e.getMessage(), data);
+                err.setAttribute(ELM_TYPE, IS_CLIENT);
             }
         } else {
             log.warn("Authentication error  (security info missing)");
-            Element err=addContentElement(ERROR,"Authentication error (security info missing).",data);
-            err.setAttribute(ELM_TYPE,IS_CLIENT);
+            Element err = addContentElement(ERROR, "Authentication error (security info missing).", data);
+            err.setAttribute(ELM_TYPE, IS_CLIENT);
         }
         return null;
     }
