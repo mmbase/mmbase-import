@@ -587,7 +587,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (log.isDebugEnabled()) {
             log.debug("found cloud in session m: " + method + " l: " + logon);
         }
-        if (logon == Attribute.NULL && rank == Attribute.NULL  && method != Attribute.NULL) {
+        if (logon == Attribute.NULL && rank == Attribute.NULL  && method != Attribute.NULL && getMethod() != METHOD_ASIS) {
             // authorisation was requested, but not indicated for whom
             if (log.isDebugEnabled()) log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());
             if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
