@@ -2766,11 +2766,27 @@ like the parameter list or the session (where ever it is available) --&gt;
         parameters and knows the 'param' sub tag.
       </p>
       <p>
+        mm:include also can be used to include 'external' URL's, so
+        you can 'steal' from another server. But <em>be aware</em>
+        that this causes your server to do an http-request itself to
+        another server. It depends on your server's configuration and
+        of its network's setup, if it is allowed to do this.       
+      </p>      
+      <p>
+        If this version of MMBase is running on the Orion application
+        server even 'internal' URL's, so pointing to files on the same
+        server, will work like this. In other words, orion will do an
+        http-request to itself. This was the way the include-tag
+        worked always in MMBase 1.5.        
+      </p>
+      <p>
         You can also consider using the jsp &lt;%@include file=""
         %&gt;. This will include the code of that page in place and
         compile it together with your page. So in that aspect it is
         much different from this tag, which "includes" a stand-alone
-        page.
+        page. Using the 'context' tag you can still give this included
+        file its own scope. If this will do the trick for you then it
+        is perhaps best to use this rather then the mm:include tag.
       </p>
       <p>
         See <a
@@ -2811,6 +2827,7 @@ like the parameter list or the session (where ever it is available) --&gt;
          documenation of page-creating/taglib itself.
       </info>
     </attribute>
+    <see tag="context" />
     <see tag="param" />
     <see tag="url" />
     <example>&lt;mm:include page="codesamples/index.jsp.1" /&gt;
