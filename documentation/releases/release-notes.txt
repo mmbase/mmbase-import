@@ -23,6 +23,17 @@ NEW FEATURES:
 General New Features:
 --------------------
 
+- Storing images on disk has changed. Note: if you are upgrading from 1.7.0 RC1 you need to convert!
+  Images are now changed as follows:
+  An images' number is broken up in parts. The 3 least significant digits are ignored.
+  The remaining digits are divided by hundreds (pairs of digits of 2).
+  These are then broken up in nested directories.
+  For instance, the field 'handle' of node with number 5447637 is stored as:
+    data/databasename/buildername/54/47/5447637.handle
+  while the same field of node number 1205 is stopped as:
+    data/databasename/buildername/01/1205.handle
+  This improves performance on systems when you get a large number of binary fields.
+
 - Query-object, which allows for several new taglib and MMCI features.
 
 - New storage layer, which allows for real transactions!
@@ -187,6 +198,8 @@ Upgrade:
 - The fields parameter of the MMBase taglib list tags (related, list, etc) now no longer accepts
   fields that do not exist. Some pages may give errors now if they specified wrong fieldnames,
   so you are advised to check your site's pages for this error.
+
+- If needed, convert the data directory where mmbase stored binary data
 
 ========================
 Know Issues and Problems:
