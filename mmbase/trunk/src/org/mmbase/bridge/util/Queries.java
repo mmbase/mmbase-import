@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.22 2004-02-12 15:55:56 keesj Exp $
+ * @version $Id: Queries.java,v 1.23 2004-02-16 15:55:39 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -560,8 +560,7 @@ public class Queries {
                 }
             } else {
                 NodeManager nodeManager = cloud.getNodeManager(token);
-                RelationStep step = query.addRelationStep(nodeManager, null /* role */
-                , searchDir);
+                RelationStep step = query.addRelationStep(nodeManager, null /* role */ , searchDir);
                 if (!completeToken.equals(nodeManager.getName())) {
                     Step next = step.getNext();
                     query.setAlias(next, completeToken);
@@ -637,8 +636,10 @@ public class Queries {
         Cloud cloud = query.getCloud();
         Query count = query.aggregatingClone();
         Step step = (Step) (count.getSteps().get(0));
-        count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        Node result = (Node)cloud.getList(count).get(0);
+        
+        count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), 
+                                 query.isDistinct() ? AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT : AggregatedField.AGGREGATION_TYPE_COUNT);
+        Node result = (Node) cloud.getList(count).get(0);
         return result.getIntValue("number");
     }
 
