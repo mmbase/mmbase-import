@@ -52,6 +52,13 @@
 		<property name="ImageConvert.ConverterCommand">convert</property>
 		<property name="ImageConvert.ConverterRoot"></property>
 
+		<!-- convert using ImageMagick example for windows -->
+		<!--
+		<property name="ImageConvertClass">org.mmbase.module.builders.ConvertImageMagick</property>
+		<property name="ImageConvert.ConverterCommand">convert.exe</property>
+		<property name="ImageConvert.ConverterRoot">C:\Program Files\ImageMagick-5.5.7-Q8\</property>
+		-->
+
 		 <!-- Dummy converter when both ImageMagick and JAI are unavailable.
 					This converter ignores all image-altering features and simply returns the original image.
 		 -->
