@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.23 2002-03-21 10:02:38 pierre Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.24 2002-03-22 10:55:30 michiel Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -188,6 +188,7 @@ public class XMLBuilderReader extends XMLBasicReader {
     /**
      * Get the field definitions of this builder.
      * If applicable, this includes the fields inherited from a parent builder.
+     *
      * @code-conventions return type should be List
      * @return a Vector of all Fields as FieldDefs
      */
@@ -212,6 +213,13 @@ public class XMLBuilderReader extends XMLBasicReader {
                     newfield.setDBSize(f.getDBSize());
                     newfield.setDBDocType(f.getDBDocType());
                     newfield.setDBPos(pos++);
+                    // also inherit the gui names
+                    Iterator guinames = f.getGUINames().entrySet().iterator();
+                    while(guinames.hasNext()) {
+                        Map.Entry p = (Map.Entry) guinames.next();
+                        newfield.setGUIName((String)p.getKey(), (String)p.getValue());
+                    }
+                    
                     results.add(newfield);
                     oldset.put(newfield.getDBName(),newfield);
                 }
@@ -378,12 +386,6 @@ public class XMLBuilderReader extends XMLBasicReader {
      */
     public Hashtable getDescriptions() {
         Hashtable results=new Hashtable();
-        if (parentBuilder!=null) {
-            Map parentdescs= parentBuilder.getDescriptions();
-            if (parentdescs!=null) {
-                results.putAll(parentdescs);
-            }
-        }
         Element tmp;
         String lang;
         for (Enumeration enum = getChildElements("builder.descriptions","description");
@@ -391,6 +393,14 @@ public class XMLBuilderReader extends XMLBasicReader {
             tmp = (Element)enum.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
+        }
+        if (results.isEmpty()) {
+            if (parentBuilder!=null) {
+                Map parentdescs= parentBuilder.getDescriptions();
+                if (parentdescs!=null) {
+                    results.putAll(parentdescs);
+                }
+            }
         }
         return results;
     }
@@ -402,20 +412,24 @@ public class XMLBuilderReader extends XMLBasicReader {
      */
     public Hashtable getPluralNames() {
         Hashtable results=new Hashtable();
-        if (parentBuilder!=null) {
-            Map parentnames= parentBuilder.getPluralNames();
-            if (parentnames!=null) {
-                results.putAll(parentnames);
-            }
-        }
         Element tmp;
         String lang;
         for (Enumeration enum = getChildElements("builder.names","plural");
              enum.hasMoreElements(); ) {
             tmp = (Element)enum.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
-            results.put(lang,getElementValue(tmp));
+            results.put(lang,getElementValue(tmp));        
         }
+        if (results.isEmpty()) { // nothing, thats little. Try parent.
+            if (parentBuilder!=null) {
+                Map parentnames= parentBuilder.getPluralNames();
+                if (parentnames!=null) {
+                    results.putAll(parentnames);
+                }
+            }
+        }
+
+
         return results;
     }
 
@@ -426,13 +440,6 @@ public class XMLBuilderReader extends XMLBasicReader {
      */
     public Hashtable getSingularNames() {
         Hashtable results=new Hashtable();
-        if (parentBuilder!=null) {
-            Map parentnames= parentBuilder.getSingularNames();
-            if (parentnames!=null) {
-                results.putAll(parentnames);
-            }
-            results.putAll(parentnames);
-        }
         Element tmp;
         String lang;
         for (Enumeration enum = getChildElements("builder.names","singular");
@@ -440,6 +447,15 @@ public class XMLBuilderReader extends XMLBasicReader {
             tmp = (Element)enum.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
+        }
+        if (results.isEmpty()) { // nothing, try parent, to have something at least.. 
+            if (parentBuilder!=null) {
+                Map parentnames= parentBuilder.getSingularNames();
+                if (parentnames!=null) {
+                    results.putAll(parentnames);
+                }
+                results.putAll(parentnames);
+            }
         }
         return results;
     }
