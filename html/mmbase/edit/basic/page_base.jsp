@@ -11,16 +11,16 @@ response.setDateHeader("Date",  now);
 %><%@ page language="java" contentType="text/html; charset=utf-8"
 %><html>
 <head>
-<link rel="icon" href="images/favicon.ico"" type="image/x-icon" />
+<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 <%@ page import="org.mmbase.bridge.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
-<%-- some configuration 
-     first try if it is in the session --%>
+<%-- some configuration first try if it is in the session --%>
 <mm:import id="config" externid="mmeditors_config" from="session" />
 
 <mm:import externid="set_liststyle" from="parameters" />
+
 <mm:present referid="set_liststyle">
   <mm:remove referid="config" />
   <mm:write referid="set_liststyle" cookie="mmjspeditors_liststyle" />
@@ -28,27 +28,34 @@ response.setDateHeader("Date",  now);
 
 <!-- if not, fill it with default -->
 <mm:notpresent referid="config">
-<mm:remove referid="config" /><!-- it is not possible to overwrite existing var -->
-<mm:context id="config">
-  <mm:import id="page_size">20</mm:import>
-  <%-- <mm:import id="hide_search">false</mm:import> --%>
-  <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
-  <mm:present referid="set_liststyle">
-    <mm:import id="liststyle"><mm:write referid="set_liststyle" /></mm:import>
-   </mm:present>
-  <mm:notpresent referid="set_liststyle">
-    <mm:import id="liststyle" externid="mmjspeditors_liststyle" from="cookie">short</mm:import>
-  </mm:notpresent>
-  <mm:import id="lang" externid="mmjspeditors_language"  from="cookie" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
-  <mm:import id="method" externid="mmjspeditors_method"  from="cookie" >loginpage</mm:import>
-  <mm:import id="session" externid="mmjspeditors_session"  from="cookie" >mmbase_editors_cloud</mm:import>
-</mm:context>
-<mm:write referid="config" session="mmeditors_config" />
+  <mm:remove referid="config" /><!-- it is not possible to overwrite existing var -->
+
+  <mm:context id="config">
+    <mm:import id="page_size">20</mm:import>
+    <%-- <mm:import id="hide_search">false</mm:import> --%>
+    <mm:import id="style_sheet" externid="mmjspeditors_style" from="cookie">mmbase.css</mm:import>
+    <mm:present referid="set_liststyle">
+      <mm:import id="liststyle"><mm:write referid="set_liststyle" /></mm:import>
+    </mm:present>
+    <mm:notpresent referid="set_liststyle">
+      <mm:import id="liststyle" externid="mmjspeditors_liststyle" from="cookie">short</mm:import>
+    </mm:notpresent>
+    <mm:import id="lang" externid="mmjspeditors_language"  from="cookie" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
+    <mm:import id="method" externid="mmjspeditors_method"  from="cookie" >loginpage</mm:import>
+    <mm:import id="session" externid="mmjspeditors_session"  from="cookie" >mmbase_editors_cloud</mm:import>
+  </mm:context>
+  <mm:write referid="config" session="mmeditors_config" />
 </mm:notpresent>
 
 <mm:present referid="config">
+
+  <mm:import id="extmethod" externid="method" from="parameters" />
+  <mm:present referid="extmethod">
+    <mm:import reset="true" id="config.method"><mm:write referid="extmethod" /></mm:import>
+  </mm:present>
+  
     <!--
-     not possible to 'repare' a context (not possible to write in non-current context bug #4707
+    would now be possible to 'repare' a context (#4707 was fixed)
      Throw the whole thing away if something wrong;
     -->
     <mm:notpresent referid="config.lang">
@@ -56,6 +63,7 @@ response.setDateHeader("Date",  now);
          response.sendRedirect(response.encodeRedirectURL("."));%>
     </mm:notpresent>
 </mm:present>
+
 <% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; %>
 <mm:write referid="config.lang" jspvar="lang" vartype="string">
