@@ -78,7 +78,9 @@ public class ContextAuthorization extends Authorization {
 	NamedNodeMap nnm = found.getAttributes();
 	Node contextNode = nnm.getNamedItem("context");
 	String defaultContext = contextNode.getNodeValue();
-	log.debug("user with name: " + user + " has the default context: " + defaultContext);	
+        if (log.isDebugEnabled()) {
+            log.debug("user with name: " + user + " has the default context: " + defaultContext);	
+        }
     	setContext(user, nodeNumber, defaultContext);
     }
 
@@ -94,7 +96,9 @@ public class ContextAuthorization extends Authorization {
 
     public void setContext(UserContext user, int nodeNumber, String context) throws org.mmbase.security.SecurityException {
     	// notify the log
-	log.info("set context on node #"+nodeNumber+" by user: " +user);
+        if (log.isDebugEnabled()) {
+            log.info("set context on node #"+nodeNumber+" by user: " +user + " to " + context );
+        }
 
 	// check if is a valid context for us..
 	HashSet possible = getPossibleContexts(user, nodeNumber);
@@ -109,9 +113,11 @@ public class ContextAuthorization extends Authorization {
 	
 	// well now really set it...
 	MMObjectNode node = getMMNode(nodeNumber);
-    	node.setValue("owner", user.getIdentifier());
+    	node.setValue("owner", context);
         node.commit();	
-	log.info("changed context settings of node #"+nodeNumber+" to context: "+context+ " by user: " +user);	
+        if (log.isDebugEnabled()) {
+            log.info("changed context settings of node #"+nodeNumber+" to context: "+context+ " by user: " +user);	
+        }
     }
 
     public String getContext(UserContext user, int nodeNumber) throws org.mmbase.security.SecurityException {
@@ -164,7 +170,9 @@ public class ContextAuthorization extends Authorization {
 	    NamedNodeMap nnm = context.getAttributes();
 	    Node contextNameNode = nnm.getNamedItem("context");
     	    list.add(contextNameNode.getNodeValue());
-	    log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
+            if (log.isDebugEnabled()) {
+                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
+            }
 	}
     	synchronized(cache) {
 	    cache.contextAdd(currentContext, list);
@@ -173,7 +181,9 @@ public class ContextAuthorization extends Authorization {
     }   
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) throws org.mmbase.security.SecurityException{        
-	log.info("check on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+        if (log.isDebugEnabled()) {
+            log.info("check on node #"+nodeNumber+" by user: " +user+ " for operation "+ operation);
+        }
 
     	// is our usercontext still valid?
 	if(!manager.getAuthentication().isValid(user)) {
@@ -212,11 +222,18 @@ public class ContextAuthorization extends Authorization {
 	    NamedNodeMap nnm = contains.getAttributes();
 	    Node contextNameNode = nnm.getNamedItem("group");
     	    allowedGroups.add(contextNameNode.getNodeValue());
-	    log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
+            if (log.isDebugEnabled()) {
+                log.debug("the context: "+contextNameNode.getNodeValue() +" is possible context for node #"+nodeNumber+" by user: " +user);
+            }
 	}	
 	boolean allowed = userInGroups(user.getIdentifier(), allowedGroups, new HashSet());
-    	if(allowed) log.debug("operation " + operation + " was permitted for user with id " + user);
-	else log.debug("operation " + operation + " was NOT permitted for user with id " + user);
+        if (log.isDebugEnabled()) {
+            if (allowed) {
+                log.debug("operation " + operation + " was permitted for user with id " + user);
+            } else {
+                log.debug("operation " + operation + " was NOT permitted for user with id " + user);
+            }
+        }
 
     	synchronized(cache) {
 	    cache.rightAdd(operation, context, user.getIdentifier(), allowed);
