@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: HSqlStorage.java,v 1.1 2003-05-02 14:26:27 michiel Exp $
+ * @version $Id: HSqlStorage.java,v 1.2 2003-05-02 14:44:00 michiel Exp $
  */
 public class HSqlStorage extends RelationalDatabaseStorage {
     /**
@@ -50,7 +50,7 @@ public class HSqlStorage extends RelationalDatabaseStorage {
      */
     
     protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType) {
-        log.info("createinf field definition for " + tablename);
+        log.debug("createing field definition for " + tablename);
         String name   = mapToTableFieldName(fieldname);
         String result = matchType(type,size);
         // cannot determine database type. log the error, but continue -
@@ -103,7 +103,7 @@ FOREIGN KEY ( column [,column...] ) REFERENCES refTable ( column [,column...]) [
 
     // javadoc inherited
     protected String createSQL(String tableName, String fields, String parentTableName, String parentFields) {
-        log.info("Creating SQL for " + tableName);
+        log.debug("Creating SQL for " + tableName);
         if (!supportsExtendedTables() && (parentFields != null) && (! "".equals(parentFields))) {
             if (fields == null || "".equals(fields)) {
                 fields = parentFields;
@@ -113,7 +113,7 @@ FOREIGN KEY ( column [,column...] ) REFERENCES refTable ( column [,column...]) [
         }       
         StringBuffer constraints = (StringBuffer) tableConstraints.get(tableName);
         if (constraints != null) {
-            log.service("using constraints " + constraints);
+            log.debug("using constraints " + constraints);
             fields = fields + constraints.toString();
         }
         return applyCreateScheme(tableName, fields, parentTableName)+";";
