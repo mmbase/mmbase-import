@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.17 2002-07-10 11:23:20 pierre Exp $
+     * @version  $Id: list.jsp,v 1.18 2002-07-10 11:54:51 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -167,8 +167,8 @@ if (multilevel) {
 log.trace("Got " + results.size() + " results");
 
 int start = listConfig.start;
-int len        = ewconfig.list_pagelength;
-int maxpages   = ewconfig.list_maxpagecount;
+int len        = listConfig.pagelength;
+int maxpages   = listConfig.maxpagecount;
 
 if (start>results.size()-1) start = results.size()-1;
 if (start<0) start=0;
