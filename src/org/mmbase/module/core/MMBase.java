@@ -171,8 +171,10 @@ public class MMBase extends ProcessorModule  {
 	// Classname and debug routines
 	private String	_classname = getClass().getName();
 	private static Logger log = Logging.getLoggerInstance(MMBase.class.getName());
-	private boolean debug=false;
+
+/*	private boolean debug=false;
 	private void 	debug( String msg ) { log.warn("deprecated call to debug method :"+ msg ); }
+*/
 
 	/**
 	* Reference to the sendmail module. Accessible using getSendMail();
@@ -341,8 +343,7 @@ public class MMBase extends ProcessorModule  {
 			MultiConnection con=getConnection();
 			Statement stmt=con.createStatement();
 			ResultSet rs=stmt.executeQuery("select count(*) from "+baseName+"_object");
-			stmt.close();
-			con.close();	
+            closeConnection(con,stmt);
 			return true;	
 		} catch (SQLException e) {
 			//e.printStackTrace();
