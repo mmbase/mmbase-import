@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.44 2004-02-26 14:34:13 nico Exp $
+ * @version  $Id: editwizard.jsp,v 1.45 2004-03-11 15:11:21 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -71,7 +71,11 @@ function initializeElement(elem, dttype, ftype) {
 }
 
 function doOnUnLoad_ew() {
-    saveScroll();
+// This code is still here to document not to use the onunload event handler
+// Since 1.7 a new wysiwyg editor (HTMLArea) is installed which replaces the
+// onunload handler with one of his own. It is hard to override that one,
+// because a timer is used to wait a while before attaching it.
+// In short, DON'T USE OR OVERRIDE THIS FUNCTION.
 }
 
 //********************************
@@ -210,6 +214,7 @@ function showSearchScreen(cmd, url) {
 
 function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
     doCheckHtml();
+    saveScroll();
 
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/start-wizard/"+fieldid+"/"+dataid+"/"+objectnumber+"/"+origin+"/";
@@ -219,12 +224,12 @@ function doStartWizard(fieldid,dataid,wizardname,objectnumber,origin) {
 
 function doGotoForm(formid) {
     doCheckHtml();
+    saveScroll();
 
     var fld = document.getElementById("hiddencmdfield");
     fld.name = "cmd/goto-form//"+formid+"//";
     fld.value = "";
     document.forms[0].submit();
-    document.body.scrollTop = 0;
 }
 
 function doSendCommand(cmd, value) {
@@ -236,19 +241,21 @@ function doSendCommand(cmd, value) {
 }
 
 function doAdd(s, cmd) {
+    saveScroll();
     if (!s || (s == "")) return;
     doSendCommand(cmd, s);
 }
 
 function doCancel() {
+    clearScroll();
     setButtonsInactive();
     doSendCommand("cmd/cancel////");
-    cleanScroll();
 }
 
 function doSave() {
     doCheckHtml();
     if (!isSaveInactive()) {
+        clearScroll();
         setButtonsInactive();
         doSendCommand("cmd/commit////");
         cleanScroll();
@@ -258,6 +265,7 @@ function doSave() {
 function doSaveOnly() {
     doCheckHtml();
     if (!isSaveInactive()) {
+        saveScroll();
         setButtonsInactive();
         doSendCommand("cmd/save////");
     }
@@ -274,6 +282,7 @@ function setSaveInactive(inactive) {
 }
 
 function doRefresh() {
+    saveScroll();
     doSendCommand("","");
 }
 
@@ -358,13 +367,11 @@ function objClick(el) {
 //********************************
 // SCROLLBAR STUFF
 //********************************
-
-var cleanupScroll = false;
-
 function restoreScroll() {
-    var st = readCookie_general("scrollTop", 0);
-    var pf = readCookie_general("prevForm", "-");
-    if (pf == document.forms[0].id) {
+    var wizardinstance = document.forms[0].getAttribute("wizardinstance");
+    var id = document.forms[0].getAttribute("id");
+    var st = readCookie_general(wizardinstance, id, 0);
+    if (st != 0) {
         document.getElementById("editform").scrollTop = st;
     } else {
         setFocusOnFirstInput();
@@ -372,17 +379,16 @@ function restoreScroll() {
 }
 
 function saveScroll() {
-    if (!cleanupScroll) {
-        writeCookie_general("scrollTop", document.getElementById("editform").scrollTop);
-        writeCookie_general("prevForm", document.forms[0].id);
-    } else {
-        writeCookie_general("scrollTop", 0);
-        writeCookie_general("prevForm", 0);
-    }
+    var wizardinstance = document.forms[0].getAttribute("wizardinstance");
+    var id = document.forms[0].getAttribute("id");
+    var scrollTop = document.getElementById("editform").scrollTop;
+		writeCookie_general(wizardinstance, id, scrollTop);
 }
 
-function cleanScroll() {
-    cleanupScroll = true;
+function clearScroll() {
+    var wizardinstance = document.forms[0].getAttribute("wizardinstance");
+    var id = document.forms[0].getAttribute("id");
+		clearCookie_general(wizardinstance, id);
 }
 
 function setFocusOnFirstInput() {

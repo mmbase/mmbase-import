@@ -9,7 +9,7 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: wizard.xsl,v 1.122 2004-03-05 11:56:09 pierre Exp $
+    @version $Id: wizard.xsl,v 1.123 2004-03-11 15:11:21 nico Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -214,6 +214,7 @@
     <tr class="formcanvas">
       <td>
         <form name="form" method="post" action="{$formwizardpage}" id="{/wizard/curform}"
+          wizardinstance="{/wizard/@instance}"
           message_pattern="{$message_pattern}" message_required="{$message_required}"
           message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}"
           message_min="{$message_min}" message_max="{$message_max}" message_mindate="{$message_mindate}"
