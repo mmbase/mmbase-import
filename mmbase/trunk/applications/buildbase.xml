@@ -109,7 +109,8 @@ Create a build.xml with a DOCTYPE like this:
 
   <target name="init" depends="">
     <available property="src.available"           file="${project.source.dir}/src"/>
-    <available property="documentation.available" file="${project.build.dir}/documentation" />
+    <available property="documentation.available" file="${project.source.dir}/documentation" />
+    <available property="documentation.build.available" file="${project.build.dir}/documentation" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
     <available property="templates.available"     file="${project.templates.dir}"/>
@@ -319,7 +320,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
 
   <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
-    <available property="documentation.available"        file="${project.build.dir}/documentation"/>
+    <available property="documentation.build.available"        file="${project.build.dir}/documentation"/>
   </target>
 
   <target name="documentation.rawhtml" depends="init" if="do.generate.documentation">
@@ -419,7 +420,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
   </target>
 
-  <target name="install.documentation" depends="documentation" if="documentation.available">
+  <target name="install.documentation" depends="documentation" if="documentation.build.available">
     <copy todir="${mmdocs.dir}">
       <fileset dir="${project.build.dir}/documentation">
       </fileset>
