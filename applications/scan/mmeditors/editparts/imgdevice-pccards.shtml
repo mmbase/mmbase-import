@@ -22,7 +22,7 @@ Selecteer afbeelding:
 
      <TD>
                   <INPUT TYPE="radio" NAME="PRC-CMD-EDIT-SETFIELDFILE_DISK-$PARAM1" VALUE="$ITEM1">
-                  <A HREF="JavaScript:openWin('$ITEM3');"><IMG alt="Afbeelding" SRC="$ITEM3" WIDTH="70" HEIGHT="50"></A>
+                  <A HREF="JavaScript:openWin('$ITEM1');"><IMG alt="Afbeelding" SRC="$ITEM1" WIDTH="70" HEIGHT="50"></A>
                   $ITEM2
     </TD>
 
