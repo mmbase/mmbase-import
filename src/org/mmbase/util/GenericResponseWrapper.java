@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: GenericResponseWrapper.java,v 1.3.2.7 2004-09-22 07:25:25 keesj Exp $
+ * @version $Id: GenericResponseWrapper.java,v 1.3.2.8 2005-02-14 14:05:12 michiel Exp $
  */
 public class GenericResponseWrapper extends HttpServletResponseWrapper {
     private static final Logger log = Logging.getLoggerInstance(GenericResponseWrapper.class);
@@ -183,13 +183,16 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Return the OutputStream. This is a 'MyServletOutputStream'.
      */
     public ServletOutputStream getOutputStream() throws IOException {
+        if (outputStream != null) return outputStream;
+        
         if (writer != null) {
-            throw new RuntimeException("Should use getOutputStream _or_ getWriter");
+            outputStream = new MyServletOutputStream(new WriterOutputStream(writer, characterEncoding));
+            return outputStream;            
+            //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
-        if (outputStream == null) {
-            bytes        = new ByteArrayOutputStream();
-            outputStream = new MyServletOutputStream(bytes);
-        }
+        bytes        = new ByteArrayOutputStream();
+        outputStream = new MyServletOutputStream(bytes);
+
         return outputStream;
     }
 
@@ -197,13 +200,15 @@ public class GenericResponseWrapper extends HttpServletResponseWrapper {
      * Return the PrintWriter
      */
     public PrintWriter getWriter() throws IOException {
+        if (writer != null) return writer;
+        
         if (outputStream != null) {
-            throw new RuntimeException("Should use getOutputStream _or_ getWriter");
+            writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(getOutputStream(), characterEncoding)));
+            return writer;            
+            //throw new RuntimeException("Should use getOutputStream _or_ getWriter");
         }
-        if (writer == null) {
-            string = new StringWriter();
-            writer  = new PrintWriter(string);
-        }
+        string = new StringWriter();
+        writer  = new PrintWriter(string);
         return writer;
     }
 
