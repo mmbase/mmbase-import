@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.16 2000-06-24 23:19:29 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.17 2000-06-25 00:39:14 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2000/06/24 23:19:29  wwwtech
+Daniel.. changed init call for XML parser
+
 Revision 1.15  2000/06/24 18:42:46  wwwtech
 Daniel.. added auto convertor for illegal fieldnames
 
@@ -98,7 +101,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.16 $ $Date: 2000-06-24 23:19:29 $
+* @$Revision: 1.17 $ $Date: 2000-06-25 00:39:14 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -975,7 +978,6 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			//type="INTEGER";
 			return("otype integer "+parser.getNotNullScheme());
 		} else {
-			System.out.println("NAME="+name+" "+parser.getDisallowedFields());
 			if (disallowed2allowed.containsKey(name)) {
 				name=(String)disallowed2allowed.get(name);
 			}
