@@ -14,9 +14,12 @@ import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 /*
-	$Id: TemporaryNodeManager.java,v 1.9 2000-11-08 16:11:52 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.10 2000-11-08 16:24:13 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.9  2000/11/08 16:11:52  vpro
+	Rico: added temporary key method
+	
 	Revision 1.8  2000/11/08 14:46:29  vpro
 	Rico: added splitting into datatypes
 	
@@ -47,7 +50,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.9 2000-11-08 16:11:52 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.10 2000-11-08 16:24:13 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -207,7 +210,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(rtn);
 	}
 
-	public String getTmpKey(String owner,String key) {
+	private String getTmpKey(String owner,String key) {
 		return(owner+"_"+key);
 	}
 }
