@@ -3,7 +3,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %>
 <mm:cloud>
-<mm:import externid="source" required="true" />
+<mm:import externid="source"   required="true" />
 <mm:import externid="fragment" required="true" />
 <mm:node number="$source">
 <smil>
@@ -17,8 +17,7 @@
   </head>
   <body>    
      <par>
-      <video src="<mm:field name="urlresult()" />" region="filmpje"  />
-      <textstream src="<mm:url referids="fragment" page="display.rt.jsp" />"  region="filmtext" />
+      <video      src="<mm:field name="urlresult(streams)" />" region="filmpje"  />
      </par>
   </body>
 </smil>

@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-    <!ENTITY formats SYSTEM "parts/formats.xml">
-    <!ENTITY itemize SYSTEM "parts/itemize.xml">
+    <!ENTITY formats SYSTEM "http://michiel.omroep.nl/mm/mediaedit/tasks/parts/formats.xml.jsp" >
+    <!ENTITY itemize SYSTEM  "parts/itemize.xml">
+    <!ENTITY itemize2 SYSTEM "parts/itemize2.xml">
   ]
 >
 <wizard-schema id="media">
@@ -50,5 +51,6 @@
   </form-schema>
 
   &itemize;
+  &itemize2;
 
 </wizard-schema>

@@ -1,5 +1,5 @@
 <!-- Author Rob Vermeulen (VPRO) -->
-<!ELEMENT mediasourcefilter (chain,preferedSource?,realaudio?)>
+<!ELEMENT mediasourcefilter (chain,preferredSource?,realaudio?)>
 
 <!ELEMENT chain (filter+)>
 <!ELEMENT filter (#PCDATA)>

@@ -201,7 +201,7 @@ public class MediaFragments extends MMObjectBuilder {
             log.error("Cannot determine url");
             return "";
         }
-        return mediaSourceBuilder.getUrl(mediaSource, info);
+        return mediaSourceBuilder.getURL(mediaSource, info);
     }
     
     /**
