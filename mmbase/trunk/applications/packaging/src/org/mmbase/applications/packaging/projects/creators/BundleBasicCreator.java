@@ -53,12 +53,18 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
    public boolean createPackage(Target target,int newversion) {
 
    	clearPackageSteps();
+	// set the size of both bars on 1000 steps
+        setProgressBar(1000);
 
         // step1
         packageStep step=getNextPackageStep();
         step.setUserFeedBack("bundle/basic packager started");
 
+	// set to 5%
+        increaseProgressBar(50);
+
 	// lets first see if we need to create related targets
+        setSubProgressBar(relatedtargetcreate.size());
        	for (Iterator i = relatedtargetcreate.iterator(); i.hasNext();) {
 		Target rt = (Target)i.next();
 		// tricky should be make last version based on local number
@@ -79,7 +85,11 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
                 target.setIncludedVersion(rt.getId(),""+nv);
                 ProviderManager.resetSleepCounter();
         	step.setUserFeedBack("related create : "+rt.getId()+" version "+nv+"...done");
+        	increaseSubProgressBar(1);
 	}
+	// set to 25%
+        increaseProgressBar(200);
+
 	relatedtargetcreate = new ArrayList();
 	
 
@@ -93,8 +103,13 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 		createBundleMetaFile(jarfile,target,newversion);
         	step.setUserFeedBack("creating bundle.xml file...done");
 
+		// set to 35%
+        	increaseProgressBar(100);
+
 		// loop the included packages to put them in the bundle jar
 		ArrayList packages=(ArrayList)target.getItem("includedpackages");
+
+        	setSubProgressBar(packages.size());
         	for (Iterator i = packages.iterator(); i.hasNext();) {
                		IncludedPackage ip=(IncludedPackage)i.next();
 			if (ip.getIncluded()) {
@@ -118,6 +133,9 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
 			}
 						
 		}
+       		increaseSubProgressBar(1);
+		// set to 55%
+        	increaseProgressBar(200);
 
 		jarfile.close();
 	} catch(Exception e) {
@@ -143,6 +161,8 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         	step=getNextPackageStep();
         	step.setUserFeedBack("Saving new version : "+newversion);
 	}
+	// set to 75%
+       	increaseProgressBar(200);
 
 	// do we need to send this to a publish provider ?
 	if (target.getPublishState()) {
@@ -157,9 +177,13 @@ public class BundleBasicCreator extends BasicCreator implements CreatorInterface
         		step.setUserFeedBack("sending file (version "+newversion+") : "+target.getId()+" ... failed");
 		}
 	}
+	// set to 95%
+       	increaseProgressBar(200);
 
         step=getNextPackageStep();
         step.setUserFeedBack("bundle/basic packager ended : "+getErrorCount()+" errors and "+getWarningCount()+" warnings");
+	// set to 100%
+       	increaseProgressBar(50);
         return true;
    }    
 

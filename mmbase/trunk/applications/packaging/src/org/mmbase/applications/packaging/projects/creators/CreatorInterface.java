@@ -493,5 +493,9 @@ public interface CreatorInterface {
     public String getDefaultTargetName();
 
     public void addRelatedTargetsCreate(Target t);
+
+    public int getProgressBarValue();
+
+    public int getSubProgressBarValue();
 }
 
