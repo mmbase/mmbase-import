@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 
 import java.util.*;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
@@ -24,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.24 2003-09-16 09:37:56 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.25 2003-09-16 18:52:08 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -125,16 +126,15 @@ public class BasicQuery implements Query  {
     }
 
 
-    protected String createAlias(Step step) {
+    protected String createAlias(String  name) {
         if (used) throw new BridgeException("Query was used already");
-        String tableName = step.getTableName();
-        Integer seq = (Integer) aliasSequences.get(tableName);
+        Integer seq = (Integer) aliasSequences.get(name);
         if (seq == null) {
-            aliasSequences.put(tableName, new Integer(1));
-            return tableName;
+            aliasSequences.put(name, new Integer(1));
+            return name;
         } else {
-            aliasSequences.put(tableName, new Integer(seq.intValue() + 1));
-            return tableName + seq;
+            aliasSequences.put(name, new Integer(seq.intValue() + 1));
+            return name + seq;
         }
     }
 
@@ -145,7 +145,7 @@ public class BasicQuery implements Query  {
         removeSecurityConstraint(); // if present
  
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
-        setAlias(step, null); // null: generate alias
+        setAlias(step, ""); // "": generate alias
         if (! aggregating && ! (this instanceof NodeQuery)) {
             addField(step, nm.getField("number"));
         }
@@ -154,7 +154,10 @@ public class BasicQuery implements Query  {
     }
 
     public void setAlias(Step step, String alias) {
-        if (alias == null)  alias = createAlias(step);
+        if ("".equals(alias)) {
+            alias = createAlias(step.getTableName());
+        } 
+        
         BasicStep basicStep = (BasicStep) step;
         basicStep.setAlias(alias);
     }
@@ -182,9 +185,9 @@ public class BasicQuery implements Query  {
         MMObjectBuilder otherBuilder = ((BasicNodeManager) otherNodeManager).builder;        
         BasicRelationStep relationStep = query.addRelationStep(insrel, otherBuilder);
         relationStep.setDirectionality(direction); 
-        relationStep.setAlias(createAlias(relationStep));
+        relationStep.setAlias(createAlias(relationStep.getTableName()));
         BasicStep next = (BasicStep) relationStep.getNext();
-        next.setAlias(createAlias(next));
+        next.setAlias(createAlias(next.getTableName()));
         if (! aggregating) addField(next, otherNodeManager.getField("number")); // distinct?
         return relationStep;
     }
@@ -218,7 +221,7 @@ public class BasicQuery implements Query  {
             BasicRelationStep step =  addRelationStep(insrel, otherNodeManager, relationDir);
             step.setRole(new Integer(r));
             if (! cloud.hasNodeManager(role)) {
-                step.setAlias(role);
+                step.setAlias(createAlias(role));
             }
             if (! typeRel.optimizeRelationStep(step, cloud.getNodeManager(step.getPrevious().getTableName()).getNumber(), otherNodeManager.getNumber(), r, searchDir)) {
                 log.warn("Added an impossible relation step (" + step + " to " + otherNodeManager + ") to the query. The query-result will always be empty now (so you could as well not execute it).");
@@ -244,16 +247,7 @@ public class BasicQuery implements Query  {
     
 
     public Step getStep(String stepAlias) {
-        Iterator i = getSteps().iterator();
-        while (i.hasNext()) {
-            Step step = (Step) i.next();
-            if (stepAlias.equals(step.getAlias())) {
-                return step;
-            } else if (stepAlias.equals(step.getTableName())) {
-                return step;
-            }
-        }
-        return null;
+        return Queries.searchStep(getSteps(), stepAlias);
     }
 
     public StepField createStepField(String fieldIdentifier) {
