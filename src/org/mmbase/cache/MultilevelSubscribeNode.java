@@ -15,22 +15,19 @@ import java.util.Enumeration;
 import org.mmbase.module.core.MMBase;
 import org.mmbase.module.core.MMBaseObserver;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * This object subscribes itself to builder changes
  * @rename MultiLevelSubscribeNode
  * @author Daniel Ockeloen
- * @version $Id: MultilevelSubscribeNode.java,v 1.7 2002-06-16 23:55:28 daniel Exp $
+ * @version $Id: MultilevelSubscribeNode.java,v 1.8 2002-09-17 12:06:47 eduard Exp $
  */
 class MultilevelSubscribeNode implements MMBaseObserver {
+    private static Logger log = Logging.getLoggerInstance(MultilevelSubscribeNode.class.getName());
 
-    /**
-     * @javadoc
-     */
-    private MMBase mmb;
-    /**
-     * @javadoc
-     */
-    private String type;
+
     /**
      * @javadoc
      * @badliteral initial size should be configurable or java default?
@@ -41,10 +38,16 @@ class MultilevelSubscribeNode implements MMBaseObserver {
      * @javadoc
      */
     MultilevelSubscribeNode(MMBase mmb,String type) {
-        this.mmb=mmb;
-        this.type=type;
-        mmb.addLocalObserver(type,this);
-        mmb.addRemoteObserver(type,this);
+	// when the type is a role, we need to subscribe
+	// the builder it belongs to..
+	if(mmb.getMMObject(type) == null) {
+	    int builderNumber  = mmb.getRelDef().getNumberByName(type);
+	    String newType = mmb.getRelDef().getBuilder(builderNumber).getTableName();
+	    log.info("replaced the type: "+type+" with type:" + newType);
+	    type = newType;
+	}
+	mmb.addLocalObserver(type,this);
+	mmb.addRemoteObserver(type,this);
     }
 
     /**
