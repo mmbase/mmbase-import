@@ -768,7 +768,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>number</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <requirednote>Either 'number' or 'referid' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<refercontext>true</refercontext>
 	<info>
@@ -776,25 +776,22 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	</info>
     </attribute>
     <attribute>
-        <name>id</name>
-        <required>false</required>
-        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
-	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
-        </info>
-    </attribute>
-    <attribute>
         <name>referid</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
+        <requirednote>Either 'number' or 'referid' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  The 'id' (name of the variable) of a node to refer to.
+        </info>
+    </attribute>    
+    <attribute>
+        <name>id</name>
+        <required>false</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  With the 'id' attribute you define an unique identifier for
-	  this node. At the same time this defines an jsp 'Node'
-	  variable with this name.
+	  this node. Nested tags can refer to this directly and other
+	  tags by means of a context.
         </info>
     </attribute>
     <attribute>
