@@ -17,31 +17,29 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetData.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommandGetData.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
  */
 
 public class ConnectorCommandGetData extends ConnectorCommand {
 
-  String objecttype, objectnumber;
-  Document cmd;
-
-  public ConnectorCommandGetData(String aobjectnumber) {
-    super("getconstraints");
-    addObject(aobjectnumber, null);
-  }
-
-  public ConnectorCommandGetData(String aobjectnumber, NodeList queryfields) {
-    super("getdata");
-    addObject(aobjectnumber, queryfields);
-  }
-
-  public void addObject(String objectnumber, NodeList queryfields) {
-    String nr = objectnumber;
-    Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
-    if (queryfields!=null) {
-        // place extra restrictions
-    Utils.appendNodeList(queryfields, obj.getDocumentElement());
+    /**
+     * @javadoc
+     */
+    public ConnectorCommandGetData(String aobjectnumber, NodeList queryfields) {
+        super("getdata");
+        addObject(aobjectnumber, queryfields);
     }
-    addCommandNode(obj.getDocumentElement());
-  }
+
+    /**
+     * @javadoc
+     */
+    private void addObject(String objectnumber, NodeList queryfields) {
+        String nr = objectnumber;
+        Document obj = Utils.parseXML("<object number=\""+objectnumber+"\"/>");
+        if (queryfields!=null) {
+            // place extra restrictions
+            Utils.appendNodeList(queryfields, obj.getDocumentElement());
+        }
+        addCommandNode(obj.getDocumentElement());
+    }
 }

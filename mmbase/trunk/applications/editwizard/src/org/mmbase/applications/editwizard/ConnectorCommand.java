@@ -17,41 +17,80 @@ import java.util.Date;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommand.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommand.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
  */
 
 public class ConnectorCommand {
-  String id;
-  String name;
-  Document xml;
-  Document responsexml;
+    private String id;
+    private String name;
+    private Document xml;
+    private Document responsexml;
 
-  public ConnectorCommand(String aname) {
-    name = aname;
-    id = new Date().getTime()+"";
-    xml = Utils.parseXML("<"+name+" id=\"" + id + "\"/>");
-    responsexml = Utils.parseXML("<response/>");
-  }
+    /**
+     * @javadoc
+     */
+    public ConnectorCommand(String aname) {
+        name = aname;
+        id = new Date().getTime()+"";
+        xml = Utils.parseXML("<"+name+" id=\"" + id + "\"/>");
+        responsexml = Utils.parseXML("<response/>");
+    }
 
-  public void addCommandNode(Node node) {
-    Node newnode = xml.getDocumentElement().appendChild(xml.importNode(node.cloneNode(true), true));
-  }
+    /**
+     * @javadoc
+     */
+    public void addCommandNode(Node node) {
+        Node newnode = xml.getDocumentElement().appendChild(xml.importNode(node.cloneNode(true), true));
+    }
 
-  public void addCommandAttr(String name, String value) {
-    Utils.setAttribute(xml.getDocumentElement(), name, value);
-  }
+    /**
+     * @javadoc
+     */
+    public void addCommandAttr(String name, String value) {
+        Utils.setAttribute(xml.getDocumentElement(), name, value);
+    }
 
-  public Document getCommandXML() {
-    return xml;
-  }
+    /**
+     * @javadoc
+     */
+    public Document getCommandXML() {
+        return xml;
+    }
 
-  public void setResponseXML(Node responsenode) {
-    responsexml = Utils.EmptyDocument();
-    responsexml.appendChild(responsexml.importNode(responsenode.cloneNode(true), true));
-  }
+    /**
+     * @javadoc
+     */
+    public Document getResponseXML() {
+        return responsexml;
+    }
 
-  public boolean hasError() {
-    return false;
-  }
+    /**
+     * @javadoc
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @javadoc
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @javadoc
+     */
+    public void setResponse(Node responsenode) {
+        responsexml = Utils.EmptyDocument();
+        responsexml.appendChild(responsexml.importNode(responsenode.cloneNode(true), true));
+    }
+
+    /**
+     * @javadoc
+     */
+    public boolean hasError() {
+        return false;
+    }
 
 }

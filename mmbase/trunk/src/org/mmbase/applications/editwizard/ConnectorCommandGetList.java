@@ -17,31 +17,23 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetList.java,v 1.2 2002-02-25 11:53:57 pierre Exp $
+ * @version $Id: ConnectorCommandGetList.java,v 1.3 2002-03-15 09:52:36 pierre Exp $
  */
 
 public class ConnectorCommandGetList extends ConnectorCommand {
 
-  String objecttype, objectnumber;
-  Document cmd;
+    /**
+     * @javadoc
+     */
+    public ConnectorCommandGetList(Node query) {
+        super("getlist");
+        addQuery(query);
+    }
 
-  public ConnectorCommandGetList(String objecttype) {
-    super("getlist");
-    addQuery(objecttype);
-  }
-
-  public ConnectorCommandGetList(Node query) {
-    super("getlist");
-    addQuery(query);
-  }
-
-  public void addQuery(Node query) {
-    addCommandNode(query.cloneNode(true));
-  }
-
-  public void addQuery(String xpath) {
-    String nr = objectnumber;
-    Document obj = Utils.parseXML("<query xpath=\"/*@" + xpath + "\"/>");
-    addCommandNode(obj.getDocumentElement());
-  }
+    /**
+     * @javadoc
+     */
+    public void addQuery(Node query) {
+        addCommandNode(query.cloneNode(true));
+    }
 }
