@@ -36,7 +36,7 @@ import java.lang.reflect.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.3 2004-02-02 10:42:22 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.4 2004-02-09 17:59:43 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -154,6 +154,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
             if (localeTag != null) {
                 p.set(Parameter.LANGUAGE, localeTag.getLocale().getLanguage());
             }
+        }
+        if (p.hasParameter(Parameter.CLOUD)) {
+            p.set(Parameter.CLOUD, getCloud());
         }
         if (p.hasParameter(Parameter.USER)) {
             p.set(Parameter.USER, getCloud().getUser());
