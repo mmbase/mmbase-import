@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.module;
 
@@ -24,13 +24,15 @@ import org.mmbase.util.logging.Logging;
  *   $MOD-XSLCONVERT-xmlPath-xslFile
  * where xmlPath is the path relative to mmbase.config and xslFile is
  * and xsl file located in the subdirectory xslt of mmbase.config.
- * 
+ *
+ * @application XSL or Tools
+ * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLConvert.java,v 1.9 2004-05-03 13:07:54 michiel Exp $
+ * @version $Id: XSLConvert.java,v 1.10 2004-10-04 14:11:53 pierre Exp $
  */
 public class XSLConvert extends ProcessorModule {
 
-    private static final Logger log = Logging.getLoggerInstance(XSLConvert.class); 
+    private static final Logger log = Logging.getLoggerInstance(XSLConvert.class);
 
     private String configpath;
 
@@ -42,7 +44,7 @@ public class XSLConvert extends ProcessorModule {
 
     /**
      * Generate a list of values from a command to the processor
-     * 
+     *
      * NOT IMPLEMENTED FOR XSLConvert
      */
     public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
