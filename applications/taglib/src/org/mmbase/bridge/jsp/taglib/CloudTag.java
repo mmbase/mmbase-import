@@ -320,7 +320,7 @@ public class CloudTag extends ContextTag implements CloudProvider {
                 Rank curRank = Rank.getRank(cloud.getUser().getRank());
                 if (curRank.getInt() < rank.getInt()) {
                     log.debug("logged on, but rank of user is to low. log out first.");
-                    cloud = null;
+                    cloud = null;                    
                     session.removeAttribute("cloud_" + cloudName);
                 } else {
                     log.debug("Cloud is ok already");
@@ -391,9 +391,12 @@ public class CloudTag extends ContextTag implements CloudProvider {
                     if (rank != null) { 
                         Rank curRank = Rank.getRank(cloud.getUser().getRank());
                         if (curRank.getInt() < rank.getInt()) {
-                            log.debug("logged on, but rank of user is to low. log out first.");
+                            log.debug("logged on, but rank of user is to low (" + cloud.getUser().getRank() + ". log out first.");
                             cloud = null;
-                            return deny("<h2>Rank to low for this page</h2>");
+                            session.removeAttribute("cloud_" + cloudName);
+                            return deny("<h2>Rank to low for this page (is " + curRank.toString() + ", must be at least " + rank.toString() + ")</h2>");
+                            
+
                         }
                         
                     }
