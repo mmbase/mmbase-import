@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Node;
 /**
  * Writer tag are tags which can write something to the page (or to
  * something else). To ensure a common behavior, this interface is

@@ -236,6 +236,7 @@ public class ContextTag extends ContextReferrerTag {
     public static final int LOCATION_PARAMETERS     = 10;
     public static final int LOCATION_MULTIPART      = 20;
     public static final int LOCATION_SESSION        = 30;
+    public static final int LOCATION_COOKIE         = 40;
 
     private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
@@ -256,6 +257,8 @@ public class ContextTag extends ContextReferrerTag {
             location = ContextTag.LOCATION_MULTIPART;
         } else if ("multipart".equalsIgnoreCase(s)) {
             location = ContextTag.LOCATION_MULTIPART;
+        } else if ("cookie".equalsIgnoreCase(s)) {
+            location = ContextTag.LOCATION_COOKIE;
         } else {
             throw new JspTagException("Unknown context-type " + s);
         }
@@ -455,6 +458,20 @@ public class ContextTag extends ContextReferrerTag {
         // if it cannot be found, then 'null' will be put in the hashmap ('not present')
 
         switch (from) {
+        case LOCATION_COOKIE:
+            javax.servlet.http.Cookie[] cookies = getHttpRequest().getCookies();
+            for (int i=0; i< cookies.length; i++) {
+                if (cookies[i].getName().equals(referid)) {
+                    // simply return the first value found.
+                    // this is probably a little to simple...
+                    // since a cookie can e.g. also have another path.
+                    result = cookies[i].getValue();
+                    // touch cookie
+                    cookies[i].setMaxAge(WriteTag.MAX_COOKIE_AGE);
+                    break;
+                }
+            }
+            break;
         case LOCATION_SESSION:
             result = getSession().getAttribute(referid);
             break;
