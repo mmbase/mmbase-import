@@ -9,12 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * This class is somekinda enumeration of the ranks possible within
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Rank.java,v 1.6 2003-01-31 15:02:13 pierre Exp $
+ * @version $Id: Rank.java,v 1.7 2003-01-31 16:06:28 pierre Exp $
  */
 public class Rank {
     /** int value for the anonymous Rank*/
@@ -34,6 +37,14 @@ public class Rank {
 
     /** Identifier for admin rank*/
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
+
+    private static Map ranks = new HashMap();
+
+    static {
+        registerRank(ANONYMOUS,ANONYMOUS.toString());
+        registerRank(BASICUSER,BASICUSER.toString());
+        registerRank(ADMIN,ADMIN.toString());
+    }
 
     /**
      *	constructor
@@ -66,9 +77,16 @@ public class Rank {
     private String description;
 
     public static Rank getRank(String rankDesc) {
-        if(ANONYMOUS.toString().equals(rankDesc)) return ANONYMOUS;
-        if(BASICUSER.toString().equals(rankDesc)) return BASICUSER;
-        if(ADMIN.toString().equals(rankDesc)) return ADMIN;
-        return null;
+        return (Rank)ranks.get(rankDesc);
+    }
+
+    public static void registerRank(Rank rankObject, String rankDesc) {
+        ranks.put(rankDesc,rankObject);
+    }
+
+    public static Rank registerRank(int rank, String rankDesc) {
+        Rank rankObject=new Rank(rank,rankDesc);
+        registerRank(rankObject,rankDesc);
+        return rankObject;
     }
 }
