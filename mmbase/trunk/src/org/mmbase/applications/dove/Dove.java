@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.14 2002-06-28 11:21:56 pierre Exp $
+ * @version $Id: Dove.java,v 1.15 2002-06-28 13:08:53 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -548,6 +548,9 @@ public class Dove extends AbstractDove {
                             } else if (guitype.equals("eventtime")) {
                                 guitype="datetime/date";
                             } else {
+                                if (guitype.equals("newfile")) {
+                                    guitype="binary";
+                                }
                                 String dttype="string";
                                 int itype=fielddef.getType();
                                 if (itype==Field.TYPE_NODE)
