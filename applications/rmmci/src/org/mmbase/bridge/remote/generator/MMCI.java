@@ -102,6 +102,7 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.StringList",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.Transaction",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.bridge.User",doc));
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
     }
 
     public static void main(String [] argv) throws Exception{
