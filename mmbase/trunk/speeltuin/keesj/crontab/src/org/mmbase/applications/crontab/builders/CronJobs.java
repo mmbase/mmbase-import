@@ -30,9 +30,9 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         t.start();
     }
 
-	/**
-	 * This thread wait's for MMBase to be started and then adds all the crontEntries to the CronDaemon
-	 */
+    /**
+     * This thread wait's for MMBase to be started and then adds all the crontEntries to the CronDaemon
+     */
     public void run() {
         while (!MMBase.getMMBase().getState()) {
             try {
@@ -60,7 +60,6 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         return number;
     }
 
-
     /**
      * Commits a cronjob to the database.
      * On commit of a cronjob, the job is first removed from the cronDeamon and a new cronEntry is created and added to the CronDaemon.
@@ -81,18 +80,17 @@ public class CronJobs extends MMObjectBuilder implements Runnable {
         super.removeNode(objectNodenode);
         cronDaemon.remove(cronDaemon.getCronEntry(number));
     }
-    
-    
-	private CronEntry createJCronEntry(Node node) {
-		try {
-			return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"));
-		} catch (Throwable e) {
-			System.err.println(e.getMessage());
-		}
-		return null;
-	}
+
+    private CronEntry createJCronEntry(Node node) {
+        try {
+            return new CronEntry("" + node.getNumber(), node.getStringValue("crontime"), node.getStringValue("name"), node.getStringValue("classfile"), node.getStringValue("config"));
+        } catch (Throwable e) {
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
 
     private Cloud getCloud() {
-        return LocalContext.getCloudContext().getCloud("mmbase", "class", null);
+        return LocalContext.getCloudContext().getCloud("mmbase");
     }
 }
