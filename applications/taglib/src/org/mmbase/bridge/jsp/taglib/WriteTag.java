@@ -54,9 +54,9 @@ public class WriteTag extends ContextReferrerTag implements Writer {
     }
     public void haveBody() { helper.haveBody(); }
 
-    private Attribute sessionvar;
-    private Attribute cookie;
-    private Attribute value;
+    private Attribute sessionvar = Attribute.NULL;
+    private Attribute cookie = Attribute.NULL;
+    private Attribute value = Attribute.NULL;
 
     public void setSession(String s) throws JspTagException {
         sessionvar = getAttribute(s);
@@ -74,15 +74,15 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         if (log.isDebugEnabled()) {
             log.debug("getting object " + getReferid());
         }
-        if (getReferid() == null && value == null) { // get from parent Writer.
+        if (getReferid() == null && value == Attribute.NULL) { // get from parent Writer.
             return findWriter().getWriterValue();
         }
 
-        if (value != null) {
+        if (value != Attribute.NULL) {
             if (getReferid() != null) {
                  throw new JspTagException("Cannot specify the 'value' atribute and the 'referid' attribute at the same time");
             }
-            return value.getValue(this);
+            return value.getString(this); // with value attribute only strings, of course.
         }
 
         if (helper.getVartype() == WriterHelper.TYPE_BYTES) {
@@ -102,14 +102,14 @@ public class WriteTag extends ContextReferrerTag implements Writer {
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
-        if (sessionvar != null) {
+        if (sessionvar != Attribute.NULL) {
             if (pageContext.getSession() == null) {
                 throw new JspTagException("Cannot write to session if session is disabled");
             }
             pageContext.getSession().setAttribute(sessionvar.getString(this), helper.getValue());
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
-        if (cookie != null) {
+        if (cookie != Attribute.NULL) {
             Object v = helper.getValue();
             String cookievalue;
             if (v instanceof Node) {

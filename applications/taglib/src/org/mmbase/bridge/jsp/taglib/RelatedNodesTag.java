@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
@@ -29,20 +29,20 @@ import org.mmbase.util.logging.Logging;
  */
 public class RelatedNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedNodesTag.class.getName());
-    protected String type = null;
-    protected String role = null;
+    protected Attribute type = Attribute.NULL;
+    protected Attribute role = Attribute.NULL;
 
     /**
      * @param type a nodeManager
      */
     public void setType(String type) throws JspTagException {
-        this.type = getAttributeValue(type);
+        this.type = getAttribute(type);
     }
     /**
      * @param role a role
      */
     public void setRole(String role) throws JspTagException {
-        this.role = getAttributeValue(role);
+        this.role = getAttribute(role);
     }
 
     /**
@@ -59,22 +59,23 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             throw new JspTagException("Could not find parent node!!");
         }
 
+        
         NodeList nodes;
-        if ( (constraints != null && !constraints.equals(""))
+        if ( (constraints != Attribute.NULL && !constraints.getString(this).equals(""))
              ||
-             (orderby != null && !orderby.equals(""))
+             (orderby != Attribute.NULL && !orderby.getString(this).equals(""))
              ) { // given orderby or constraints, start hacking:
 
-            if (type == null) {
+            if (type == Attribute.NULL) {
                 throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
             }
-            NodeManager manager = getCloud().getNodeManager(type);
+            NodeManager manager = getCloud().getNodeManager(type.getString(this));
             NodeList initialnodes;
 
-            if (role == null) {
-                initialnodes = parentNode.getRelatedNodes(type);
+            if (role == Attribute.NULL) {
+                initialnodes = parentNode.getRelatedNodes(type.getString(this));
             } else {
-                initialnodes = parentNode.getRelatedNodes(type, role, directions);
+                initialnodes = parentNode.getRelatedNodes(type.getString(this), role.getString(this), directions.getString(this));
             }
 
             StringBuffer where = null;
@@ -90,20 +91,20 @@ public class RelatedNodesTag extends AbstractNodeListTag {
                 nodes = initialnodes;
             } else {
                 where.insert(0, "[number] in (").append(")");
-                if (constraints != null) where.insert(0, "(" + constraints + ") AND ");
-                nodes = manager.getList(where.toString(), orderby, directions);
+                if (! constraints.getString(this).equals("")) where.insert(0, "(" + constraints.getString(this) + ") AND ");
+                nodes = manager.getList(where.toString(), orderby.getString(this), directions.getString(this));
             }
         } else {
-            if (type == null) {
-                if (role != null) {
+            if (type == Attribute.NULL) {
+                if (role != Attribute.NULL) {
                     throw new JspTagException("Must specify type attribute when using 'role'");
                 }
                 nodes = parentNode.getRelatedNodes();
             } else {
-                if (role == null) {
-                    nodes = parentNode.getRelatedNodes(type);
+                if (role == Attribute.NULL) {
+                    nodes = parentNode.getRelatedNodes((String) type.getValue(this));
                 } else {
-                    nodes = parentNode.getRelatedNodes(type, role, directions);
+                    nodes = parentNode.getRelatedNodes((String) type.getValue(this), (String) role.getValue(this), (String) directions.getValue(this));
                 }
             }
         }

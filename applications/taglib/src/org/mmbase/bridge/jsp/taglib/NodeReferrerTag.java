@@ -50,7 +50,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */	
     public NodeProvider findNodeProvider() throws JspTagException {        
-        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId.getString(this));
+        return (NodeProvider) findParentTag(NodeProvider.class.getName(), (String) parentNodeId.getValue(this));
     }
     /**
     * This method tries to find an ancestor object of type NodeProvider
@@ -58,7 +58,7 @@ public abstract class NodeReferrerTag extends CloudReferrerTag {
     *
     */	
     public NodeProvider findNodeProvider(boolean throwexception) throws JspTagException {        
-        return (NodeProvider) findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider", parentNodeId.getString(this), throwexception);
+        return (NodeProvider) findParentTag(NodeProvider.class.getName(), (String) parentNodeId.getValue(this), throwexception);
     }
 
     /**

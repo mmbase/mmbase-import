@@ -56,7 +56,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
     */
 	
     protected CloudProvider findCloudProvider() throws JspTagException {
-        return (CloudProvider) findParentTag("org.mmbase.bridge.jsp.taglib.CloudProvider", cloudId.getString(this));
+        return (CloudProvider) findParentTag(CloudProvider.class.getName(), (String) cloudId.getValue(this));
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      *
     */	
     public CloudProvider findCloudProvider(boolean throwexception) throws JspTagException {        
-        return (CloudProvider) findParentTag("org.mmbase.bridge.jsp.taglib.CloudProvider", cloudId.getString(this), throwexception);
+        return (CloudProvider) findParentTag(CloudProvider.class.getName(), (String) cloudId.getValue(this), throwexception);
     }
 
     

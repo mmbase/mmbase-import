@@ -303,7 +303,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     public ContextTag getContextTag() throws JspTagException {
-        return getContextTag(contextId.getString(this));
+        return getContextTag((String) contextId.getValue(this));
     }
     /**
      * Finds a parent context tag using an id. 
@@ -315,7 +315,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if(log.isDebugEnabled()) {
             log.debug("Searching context " + contextid);
         }
-        ContextTag contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextid, false);
+        ContextTag contextTag = (ContextTag) findParentTag(ContextTag.class.getName(), contextid, false);
         if (contextTag == null) {
             log.debug("Didn't find one, take the pageContextTag");
             contextTag = pageContextTag;

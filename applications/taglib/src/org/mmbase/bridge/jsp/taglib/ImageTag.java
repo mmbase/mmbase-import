@@ -16,16 +16,20 @@ import javax.servlet.jsp.JspTagException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
- * Produces a url to 'img.db'. Using this tag makes your pages more
- * portable to other system, and hopefully less sensitive for future
- * changes in how the image servlet works.
+ * Produces an url to the image servlet mapping. Using this tag makes
+ * your pages more portable to other system, and hopefully less
+ * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
  **/
 
 public class ImageTag extends FieldTag {
 
+    private static Logger log = Logging.getLoggerInstance(ImageTag.class.getName());
     private String template = null;
 
     /**
@@ -83,10 +87,13 @@ public class ImageTag extends FieldTag {
 
         String url;
         String fileName = node.getStringValue("filename");
+        String thisDir = new java.io.File(req.getServletPath()).getParent();
+        log.info("making relative");
+        String root    = org.mmbase.util.UriParser.makeRelative(thisDir, "/");
         if (servletPath.endsWith("?") ||  "".equals(fileName)) {
-            url = servletPath + number;
+            url = root + servletPath + number;
         } else {
-            url = servletPath + fileName + "?" + number;
+            url = root + servletPath + fileName + "?" + number;
         }
         helper.setValue(((HttpServletResponse) pageContext.getResponse()).encodeURL(url));
         helper.setPageContext(pageContext);
