@@ -29,12 +29,11 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BuilderReader.java,v 1.5 2003-06-27 08:51:31 michiel Exp $
+ * @version $Id: BuilderReader.java,v 1.6 2003-08-06 16:54:38 michiel Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(BuilderReader.class.getName());
+    private static Logger log = Logging.getLoggerInstance(BuilderReader.class);
 
     /** Public ID of the Builder DTD version 1.0 */
     public static final String PUBLIC_ID_BUILDER_1_0 = "-//MMBase//DTD builder config 1.0//EN";
@@ -391,13 +390,18 @@ public class BuilderReader extends XMLBasicReader {
             if (searchPos > -1) searchPositions.add(new Integer(searchPos));
             def.setGUISearch(searchPos);
         } else {       
-            // if not specified, use lowest 'free' position.
-            int i = 1;
-            while (searchPositions.contains(new Integer(i))) {
-                ++i;
+            // if not specified, use lowest 'free' position, unless, db-type is BYTE (non-sensical searching on that)
+            if (def.getDBType() != FieldDefs.TYPE_BYTE) {
+                int i = 1;
+                while (searchPositions.contains(new Integer(i))) {
+                    ++i;
+                }
+                searchPositions.add(new Integer(i));
+                def.setGUISearch(i);
+            } else {
+                def.setGUISearch(-1);
             }
-            searchPositions.add(new Integer(i));
-            def.setGUISearch(i);
+                    
             
         }
     }
