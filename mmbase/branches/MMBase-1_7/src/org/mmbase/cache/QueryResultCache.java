@@ -10,6 +10,7 @@ package org.mmbase.cache;
 
 import java.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.storage.search.*;
@@ -25,7 +26,7 @@ import org.mmbase.storage.search.*;
  *
  * @author  Daniel Ockeloen
  * @author  Michiel Meeuwissen
- * @version $Id: QueryResultCache.java,v 1.5.2.2 2004-12-13 13:15:51 marcel Exp $
+ * @version $Id: QueryResultCache.java,v 1.5.2.3 2004-12-13 14:05:00 marcel Exp $
  * @since   MMBase-1.7
  * @see org.mmbase.storage.search.SearchQuery
  */
@@ -48,7 +49,6 @@ abstract public class QueryResultCache extends Cache {
      * @return number of entries invalidated
      */
     public static  int invalidateAll(MMObjectBuilder builder) {
-        
         int result = 0;
         while (builder != null) {
             String tn = builder.getTableName();
@@ -71,10 +71,6 @@ abstract public class QueryResultCache extends Cache {
     // @todo I think it can be done with one Observer instance too, (in which case we can as well
     // let QueryResultCache implement MMBaseObserver itself)
     private Map observers = new HashMap();
-
-
-
-
      QueryResultCache(int size) {
         super(size);
         log.info("Instantiated a " + this.getClass().getName()); // should happend limited number of times
@@ -130,12 +126,19 @@ abstract public class QueryResultCache extends Cache {
      * Adds observers on the entry
      */
     private synchronized void addObservers(SearchQuery query) {
+        MMBase mmb = MMBase.getMMBase();
+
         Iterator i = query.getSteps().iterator();
         while (i.hasNext()) {
             Step step = (Step) i.next();
             String type = step.getTableName();
+
+            if(mmb.getBuilder(type) instanceof InsRel)
+                continue;
+
             Observer o;
             o = (Observer) observers.get(type);
+
             if (o == null) {
                 o = new Observer(type);
                 observers.put(type, o);
@@ -194,9 +197,6 @@ abstract public class QueryResultCache extends Cache {
          * @return number of keys invalidated
          */
         protected int nodeChanged(String number, String builder) {
-
-            log.error("number("+number+"), type("+type+"): builder("+builder+") changed");
-
             int result = 0;
             Set removeKeys = new HashSet();
             synchronized(this) { 
