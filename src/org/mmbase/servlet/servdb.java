@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.53 2003-08-25 16:01:44 vpro Exp $
+ * @version $Id: servdb.java,v 1.54 2003-08-26 09:35:14 vpro Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -241,6 +241,7 @@ public class servdb extends JamesServlet {
 								notANumber=true;
 							}
 						}
+
                         if (params.size() > 1 || notANumber) {
                             // template was included on URL
                             log.debug("Using a template, precaching this image");
@@ -251,15 +252,28 @@ public class servdb extends JamesServlet {
                             if (imageNumber > 0) {
                                 params.clear();
                                 params.add(new Integer(imageNumber));
+                            } else {
+                                // Conversion failure.
+                                log.error("Image not found " + params);
+                                cacheReq=false;
+                                params.clear();
                             }
                             if (log.isDebugEnabled()) log.debug("found image " + imageNumber);
                         }
 
-                        ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
-                        cline.buffer   = icaches.getImageBytes(params);
-                        cline.mimetype = icaches.getImageMimeType(params);
-                        mimetype=cline.mimetype;
-                        // System.out.println("servdb::service(img): The contenttype for this image is: "+mimetype);
+                        if (params.size()>0) {
+                            // good image
+	                        ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
+	                        cline.buffer   = icaches.getImageBytes(params);
+	                        cline.mimetype = icaches.getImageMimeType(params);
+	                        mimetype=cline.mimetype;
+                        } else {
+                            // return a broken image
+                            cline.buffer=null;
+                            cline.mimetype="image/gif";
+                            mimetype=cline.mimetype;
+                        }
+                        if (log.isDebugEnabled()) log.debug("servdb::service(img): The contenttype for this image is: "+mimetype);
 
                         // check point, plugin needed for mirror system
                         checkImgMirror(sp);
