@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspException;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -107,11 +108,9 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
     public int doStartTag() throws JspTagException{
 
-        Field field;
-        Node node = null;
+        Node          node = null;
         FieldProvider fieldProvider = findFieldProvider();
-
-        field = ((FieldProvider) fieldProvider).getFieldVar();
+        Field         field = ((FieldProvider) fieldProvider).getFieldVar();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
          * EXPERIMENTAL
@@ -192,7 +191,6 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = field.getGUIType();
             break;
         }
-
         helper.setValue(show);
         helper.setJspvar(pageContext);
         if (getId() != null) {
@@ -231,10 +229,11 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * @param field and this field.
      */
 
-    private String htmlInput(Node node, Field field, boolean search) throws JspTagException {
+    private String htmlInput(Node node, Field field, boolean search) throws JspTagException {        
         StringBuffer show;
         int type = field.getType();
         if (log.isDebugEnabled()) {
+        
             String value = "<search>";
             if (! search) {
                 if (node == null) {
@@ -683,11 +682,17 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
         return show.toString();
     }
 
+
+
+    public int doAfterBody() throws JspException {
+        helper.setBodyContent(getBodyContent());
+        return super.doAfterBody();
+    }
+
     /**
      * Write the value of the fieldinfo.
      */
     public int doEndTag() throws JspTagException {
-        helper.setBodyContent(bodyContent);
         return helper.doEndTag();
     }
 }
