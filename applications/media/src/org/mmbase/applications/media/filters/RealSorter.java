@@ -26,11 +26,12 @@ import java.util.*;
  *
  * This ia 'chainsorter' meaning that it is a combination of severa;
  * other sorters, which are implemented as inner classes. This is
- * because several criteria are to be distinguished.
+ * because several criteria are to be distinguished, and taking them
+ * apart makes things nice and simple.
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.2 2003-02-18 17:08:57 michiel Exp $
+ * @version $Id: RealSorter.java,v 1.3 2003-02-25 10:18:28 michiel Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class.getName());
