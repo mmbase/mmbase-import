@@ -37,11 +37,17 @@ public class SimpleImpl implements Logger {
 
    
 	public static  void configure(String c) {
+		if(c == null) {
+			ps = System.out;
+			return;
+		}
 		if(c.equals("stderr")) {
 			ps = System.err;
+			return;
 		}
 		if(c.equals("stdout")) {
 			ps = System.out;
+			return;
 		}
 
 		
