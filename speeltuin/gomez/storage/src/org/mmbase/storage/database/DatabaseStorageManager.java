@@ -26,11 +26,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * A JDBC implementation of a storage manager.
  * @javadoc
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.11 2003-07-31 16:26:03 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.12 2003-07-31 17:19:53 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -934,6 +935,11 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during the creation of the table
      */
     public void create(MMObjectBuilder builder) throws StorageException {
+        // object table should be build with create();
+        if (builder.getTableName().equals("object")) {
+            create();
+            return;
+        }
         if (log.isDebugEnabled()) {
             log.debug("Creating a table for " + builder);
         }
@@ -1026,7 +1032,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * '[fieldname] [fieldtype] NOT NULL' (depending on whether the field is nullable).
      * The fieldtype is taken from the type mapping in the factory.
      * @param field the field
-     * @return teh typedefiniton as a String
+     * @return the typedefiniton as a String
      * @throws StorageException if the field type cannot be mapped
      */
     protected String getFieldDefinition(FieldDefs field) throws StorageException {
@@ -1053,7 +1059,9 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * @javadoc
+     * Creates an index definition string to be passed when creating a table.
+     * @param field the field for which to make the index definition
+     * @return the index definition as a String, or <code>null</code> if no definition is available
      */
     protected String getIndexDefinition(FieldDefs field) throws StorageException {
         Scheme scheme = null;
@@ -1065,14 +1073,23 @@ public abstract class DatabaseStorageManager implements StorageManager {
             scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY);
         }
         if (scheme != null) {
-            return scheme.format(new Object[]{ this, field.getParent(), field, field, factory.getMMBase()} );
+            // fallback for cases where builder is null
+            // this may happen if this code is called from create()
+            // when there is no 'object' builder.
+            if (field.getParent() == null) {
+                return scheme.format(new Object[]{ this, factory.getMMBase(), field, field, factory.getMMBase()} );
+            } else {
+                return scheme.format(new Object[]{ this, field.getParent(), field, field, factory.getMMBase()} );
+            }
         } else {
             return null;
         }
     }
 
     /**
-     * @javadoc
+     * Creates a composite index definition string (an idnex over one or more fields) to be passed when creating a table.
+     * @param fields a List of fields for which to make the index definition
+     * @return the index definition as a String, or <code>null</code> if no definition is available
      */
     protected String getCompositeIndexDefinition(List fields) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.CREATE_SECONDARY_KEY);
@@ -1084,7 +1101,14 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 indices.append(factory.getStorageIdentifier(field));
             }
             MMObjectBuilder builder = ((FieldDefs)fields.get(0)).getParent();
-            return scheme.format(new Object[]{ this, builder, builder.getTableName()+"_key", indices.toString(), factory.getMMBase()} );
+            // fallback for cases where builder is null
+            // this may happen if this code is called from create()
+            // when there is no 'object' builder.
+            if (builder == null) {
+                return scheme.format(new Object[]{ this, factory.getMMBase(), "object_key", indices.toString(), factory.getMMBase()} );
+            } else {
+                return scheme.format(new Object[]{ this, builder, builder.getTableName()+"_key", indices.toString(), factory.getMMBase()} );
+            }
         } else {
             return null;
         }
@@ -1095,7 +1119,15 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @return <code>true</code> if the storage was succesfully created
      * @throws StorageException if an error occurred during the creation of the object storage
      */
-    abstract public boolean create() throws StorageException;
+    public void create() throws StorageException {
+        MMBase mmbase = factory.getMMBase();
+        MMObjectBuilder object = mmbase.getMMObject("object");
+        if (object!=null) {
+// use builder ...??
+        } else {
+// generate ourselves ??...
+        }
+    }
 
     /**
      * Queries the database metadata to test whether a given table exists.
