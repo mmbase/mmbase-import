@@ -36,11 +36,11 @@ MMCI (bridge) New Features:
 -------------------------
 [1.7.0]
 
-- All interfaces of the org.mmbase.storage.search package are part of the 'bridge' now.  There is
-  also a new 'Query' object in org.mmbase.bridge, which allows for query creation and modification
-  in a generic way.
+- All interfaces of the new org.mmbase.storage.search package are part of the 'bridge' now.  There
+  is also a new 'Query' object in org.mmbase.bridge, which allows for query creation and
+  modification in a generic way.
 
-- The new Query framework allows for easy execution of 'aggregating queries' (e.g. counts) through the
+- The new Query frame work allows for easy execution of 'aggregating queries' (e.g. counts) through the
   bridge.
 
 - The bridge implementation now also lets security modify its queries to exclude read-protected
@@ -74,6 +74,11 @@ Taglib New Features:
 
 - compare tag: valueSet attribute
 
+- List-tags now provide a kind of 'temporary' context for taglib variables. In practice this means
+  that inner context tags (or 'remove' tags) will not be needed any more.
+
+...
+
     
 ==========================
 BUG FIXES AND IMPROVEMENTS:
@@ -84,6 +89,10 @@ Taglib Bug Fixes:
 -----------------
 [1.7.0] 
  - Working with resin now
+
+ - Lots of small attributes-related things, like emulating complete absence of the the attribute
+   when its value is empty. Some attributes (like the 'id' attribute) did not yet accept taglib
+   variables ($-variables), which also has been fixed on several places.
 
 ------------------
 Generic Bug Fixes:
@@ -105,6 +114,7 @@ Generic Bug Fixes:
 Security Bug Fixes:
 ------------------ 
 [1.7.0] 
+- It is for a security implementation possible to define new ranks now.
 
 ----------------
 Taglib Bug Fixes:
