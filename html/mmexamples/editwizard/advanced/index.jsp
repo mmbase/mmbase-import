@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.10 2002-05-27 22:02:04 michiel Exp $
+    @version  $Id: index.jsp,v 1.11 2002-05-27 22:13:35 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -45,7 +45,7 @@
    relativily to this file in the 'samples' directory.
   </p>
   <p>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/xsl/list.xsl"%></mm:param></mm:url>">view xsl/list.xsl</a></td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a></td>
   </p>
   <!-- check if the MyNews application was installed -->
   <mm:cloud>
@@ -78,7 +78,7 @@
  	   demonstrate here how you can jump directly to the wizard to create a
 	   new person (without having to go to the list first).
   </td>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/people.xml"%></mm:param></mm:url>">view XML</a></td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/samples/people.xml</mm:param></mm:url>">view XML</a></td>
   </tr>
   <tr><td>
    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
@@ -93,7 +93,7 @@
     A very simple image uploader. We show here how you could add
    search criteria. We also see that the delete prompt is overridden.
     </td>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/imageupload.xml"%></mm:param></mm:url>">view XML</a></td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/samples/imageupload.xml</mm:param></mm:url>">view XML</a></td>
  <tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
@@ -109,7 +109,7 @@
       include in you own wizards. You'll find an example for
       'subwizards' here as well.
      </td>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/news.xml"%></mm:param></mm:url>">view XML</a></td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/samples/news.xml</mm:param></mm:url>">view XML</a></td>
    </tr>
     <tr><td>
     <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
@@ -135,7 +135,7 @@
      </td><td>       
        Demonstrated is how to use 'posrel', and how to create 'optionlists'.
      </td>
-  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page"><%=new java.io.File(request.getServletPath()).getParent() + "/samples/mags.xml"%></mm:param></mm:url>">view XML</a></td>
+  <td><a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/samples/mags.xml</mm:param></mm:url>">view XML</a></td>
       </tr>
      </table>
      
