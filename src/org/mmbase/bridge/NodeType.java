@@ -9,8 +9,8 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import org.mmbase.module.core.*;
 import java.util.List;
+import org.mmbase.module.core.*;
 
 /**
  * This interface represents a node's type information object - what used to be the 'builder'.
@@ -73,4 +73,13 @@ public interface NodeType {
 	 * @return a <code>List</code> of field names as <code>String</code>
 	 */
 	public List getFields();
+
+	/**
+     * search nodes of this type
+     * @param where the contraint
+     * @param order the field on which you want to sort
+     * @param direction true=UP false=DOWN
+     */
+    public Vector search(String where, String sorted, boolean direction);
+
 }
