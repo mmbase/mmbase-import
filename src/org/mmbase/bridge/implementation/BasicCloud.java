@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.81 2003-02-19 20:23:52 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.82 2003-02-23 15:25:44 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -297,8 +297,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
-        Set set = new HashSet(cloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId));
-        set.addAll(cloudContext.mmb.getTypeRel().getAllowedRelations(destinationManagerId, sourceManagerId, roleId));
+        Set set = cloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId);
         if (set.size() > 0) {
             return new BasicRelationManager((MMObjectNode) set.iterator().next(), this);
         } else {

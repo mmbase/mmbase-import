@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.30 2003-02-21 14:50:52 michiel Exp $
+ * @version $Id: TypeRel.java,v 1.31 2003-02-23 15:23:43 michiel Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -312,21 +312,42 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
     }
 
     /**
-     *  Retrieves all relations which are 'allowed' between two specified nodes.
-     *  @param n1 The first objectnode (the source)
-     *  @param n2 The second objectnode (the destination)
+     *  Retrieves all relations which are 'allowed' between two
+     *  specified nodes. No distinction between source / destination.
+     *  @param n1 The first objectnode
+     *  @param n2 The second objectnode
      *  @return An <code>Enumeration</code> of nodes containing the typerel relation data
      */
     public Enumeration getAllowedRelations(MMObjectNode n1, MMObjectNode n2) {
-        return Collections.enumeration(typeRelNodes.getBySourceDestination(n1.getBuilder(), n2.getBuilder()));
+        int builder1 = n1.getOType();
+        int builder2 = n2.getOType();
+        return getAllowedRelations(builder1, builder2);
+
     }
+
+    
+    /**
+     * An enumeration of all allowed relations between two
+     * builders. No distinction is made between source and
+     * destination.
+     *
+     */
 
     public Enumeration getAllowedRelations(int builder1, int builder2) {
-        return Collections.enumeration(typeRelNodes.getBySourceDestination(builder1, builder2));
+        Set res = new HashSet(typeRelNodes.getBySourceDestination(builder1, builder2)); 
+        res.addAll(typeRelNodes.getBySourceDestination(builder2, builder1));
+        return Collections.enumeration(res);
     }
-
+    /**
+     * A Set of all allowed relations of a certain role between two
+     * builders. No distinction between source and destination.
+     *
+     * @since MMBase-1.6.2
+     */
+    
     public Set getAllowedRelations(int builder1, int builder2, int role) {
-        SortedSet res =  typeRelNodes.getBySourceDestinationRole(builder1, builder2, role);
+        Set res = new HashSet(typeRelNodes.getBySourceDestinationRole(builder1, builder2, role)); 
+        res.addAll(typeRelNodes.getBySourceDestinationRole(builder2, builder1, role));
         return res;
     }
 
