@@ -14,17 +14,13 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 
 /**
-* The TEI class for UrlTag. If 'jspvar' attribute is defined, then a
-* UrlTag will not output an url but set a variable with it. That
-* variable cannot be used in jsp:include, so it's probably not that usefull.
-*
-* @author Michiel Meeuwissen
-**/
+ * The TEI class for UrlTag. If 'jspvar' attribute is defined, then a
+ * UrlTag will not output an url but set a variable with it. That
+ * variable cannot be used in jsp:include, so it's probably not that usefull.
+ *
+ * @author Michiel Meeuwissen
+ **/
 public class UrlTEI extends TagExtraInfo {
-
-    public UrlTEI() { 
-        super(); 
-    }
 
     public VariableInfo[] getVariableInfo(TagData data){
         VariableInfo[] variableInfo =    null;
