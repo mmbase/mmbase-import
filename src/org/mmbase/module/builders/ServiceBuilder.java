@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.20 $ $Date: 2001-05-03 10:08:11 $
+ * @version $Revision: 1.21 $ $Date: 2001-05-04 13:54:56 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -207,19 +207,20 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	/**
 	 * Called when another mmbse changed the service, if so then we print 
 	 * service state and info contents..
+	 * @param machine Name of the machine that changed the node.
 	 * @param number Object number of the changed service.
 	 * @param builder The buildername of the changed service.
 	 * @param ctype The node change type.
 	 * @return true, always!?
 	 */
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
 
 		// Print state and info contents.
 		if (!ctype.equals("d")) {
 			MMObjectNode node = getNode(number);
 			if (log.isDebugEnabled()) {
-				log.debug("("+number+","+builder+","+ctype+"): Printing state="
+				log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
 				        + node.getStringValue("state") + " and info="
 				        + node.getStringValue("info") + " , returning.");
 			}
@@ -233,19 +234,20 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	/**
 	 * Called when an operation is done on a service node eg insert, commit, it calls method
 	 * to send the node change to the remote side.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number a String with the object number of the node that was operated on.
 	 * @param builder a String with the buildername of the node that was operated on.
 	 * @param ctype a String with the node change type.
 	 * @return true, always!?
 	 */
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
 
 		// Print state and info contents.
 		if (!ctype.equals("d")) {
 			MMObjectNode node = getNode(number);
 			if (log.isDebugEnabled()) {
-				log.debug("("+number+","+builder+","+ctype+"): Printing state="
+				log.debug("("+machine+","+number+","+builder+","+ctype+"): Printing state="
 				        + node.getStringValue("state") + " and info="
 				        + node.getStringValue("info") + " , returning.");
 			}

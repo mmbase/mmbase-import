@@ -75,7 +75,7 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.17 $ $Date: 2001-04-27 14:37:49 $
+ * @version $Revision: 1.18 $ $Date: 2001-05-04 13:59:12 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -127,45 +127,48 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 
 	/**
 	 * Called when node was changed by remote mmbase, inturn this method calls nodeChanged method.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number object number of node who's state has been changed remotely.
 	 * @param builder a String with the buildername of the node that was changed remotely.
 	 * @param ctype a String with the node change type.
 	 * @return result value of nodeChanged call.
 	 */
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		log.debug("("+number+","+builder+","+ctype+"): Calling nodeChanged to evaluate change.");
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		log.debug("("+machine+","+number+","+builder+","+ctype+"): Calling nodeChanged to evaluate change.");
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
 	/**
 	 * Called when node was changed on local mmbase, inturn this method calls nodeChanged method.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number object number of node who's state has been changed.
 	 * @param builder a String with the buildername of the node that was changed.
 	 * @param ctype a String with the node change type.
 	 * @return result value of nodeChanged call.
 	 */
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		log.debug("("+number+","+builder+","+ctype+"): Calling nodeChanged to evaluate change.");
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		log.debug("("+machine+","+number+","+builder+","+ctype+"): Calling nodeChanged to evaluate change.");
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
 	/**
 	 * Checks node changetype and buildertype to decide which type of Changed method should be called.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number object number of node who's state has been changed.
 	 * @param builder a String with the buildername of the node that was changed.
 	 * @param ctype a String with the node change type.
 	 * @return true, always.
 	 */
-	public boolean nodeChanged(String number,String builder, String ctype) {
-		log.debug("("+number+","+builder+","+ctype+"): Checking for changes of type 'c' OR 'n' and buildertype.");
+	public boolean nodeChanged(String machine,String number,String builder, String ctype) {
+		log.debug("("+machine+","+number+","+builder+","+ctype+"): Checking for changes of type 'c' OR 'n' and buildertype.");
 		if (ctype.equals("c") || ctype.equals("n")) {
 			boolean result = false;
 			if (builder.equals("audioparts"))
-				result=audiopartChanged(number,ctype);	
+				result=audiopartChanged(machine,number,ctype);	
 			else if (builder.equals("rawaudios"))
-				result=rawaudioChanged(number,ctype);
+				result=rawaudioChanged(machine,number,ctype);
 			else if (builder.equals("g2encoders"))
-				result=g2encoderChanged(number,ctype);
+				result=g2encoderChanged(machine,number,ctype);
 			if (!result)
 				log.error("Couldn't check the audiopart for changes");
 		}
@@ -175,13 +178,14 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	/**
 	 * Checks the audiopart ctype and source value and when ok, it creates an 
 	 * EncodeHandler with task 'newcdtrack' to rip for this new audiopart.
+	 * @param machine Name of the machine that changed the node.
 	 * @param number - a String containing the object nr of this audioparts node.
 	 * @param ctype - a String with the node changed type.
 	 * @return false when we can't the builder to get & check the audiopart, otherwise true .
 	 * @param number
 	 */
-	public boolean audiopartChanged(String number,String ctype) {
-		log.info("("+number+","+ctype+"): Getting node and checking ctype and audiosource.");
+	public boolean audiopartChanged(String machine,String number,String ctype) {
+		log.info("("+machine+","+number+","+ctype+"): Getting node and checking ctype and audiosource.");
 		if (ctype.equals("n")) {
 			AudioParts bul=(AudioParts)Vwms.mmb.getMMObject("audioparts");
 			if (bul!=null) {
@@ -207,12 +211,13 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	/**
 	 * Checks the rawaudio ctype and state & format value and when ok, it creates an 
 	 * an EncodeHandler with task 'g2encode' to encode for this rawaudio. 
+	 * @param machine Name of the machine that changed the node.
 	 * @param number - a String containing the object nr of this rawaudios node.
 	 * @param ctype - a String with the node changed type.
 	 * @return false when we can't the builder to get & check the rawaudio, otherwise true.
 	 */
-	public boolean rawaudioChanged(String number,String ctype) {
-		log.debug("("+number+","+ctype+"): Getting raNode and checking state & format.");
+	public boolean rawaudioChanged(String machine,String number,String ctype) {
+		log.debug("("+machine+","+number+","+ctype+"): Getting raNode and checking state & format.");
 		RawAudios bul=(RawAudios)Vwms.mmb.getMMObject("rawaudios");		
 		if (bul!=null) {
 			try {
@@ -243,11 +248,12 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	 * If this is true that the g2encoder is added made avaiable again by adding it to 
 	 * the freeservices list.
 	 *
+	 * @param machine Name of the machine that changed the node.
 	 * @param number - a String containing the object nr of this g2encoders node.
 	 * @param ctype - a String with the node changed type.
 	 * @return false when we can't the builder or get & check the g2encoder, otherwise true.
 	 */
-	public boolean g2encoderChanged(String number,String ctype) {
+	public boolean g2encoderChanged(String machine,String number,String ctype) {
 		g2encoders g2bul=(g2encoders)Vwms.mmb.getMMObject("g2encoders");
 		if (g2bul!=null) {
 			try {
@@ -257,12 +263,12 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 				String name  = g2encnode.getStringValue("name");
 				// A service is available when state is waiting and the info field is empty.
 				if (state.equals("waiting") && info.equals("")) {
-					log.info("("+number+","+ctype+"): Adding service "+name+" available for usage"); 
+					log.info("("+machine+","+number+","+ctype+"): Adding service "+name+" available for usage"); 
 					addService(g2encnode.getIntValue("number"));	
 				} else
-					log.info("("+number+","+ctype+"): Can't put service "+name+" available, state!=waiting ("+state+") info!='' ("+info+")");
+					log.info("("+machine+","+number+","+ctype+"): Can't put service "+name+" available, state!=waiting ("+state+") info!='' ("+info+")");
 			} catch (NumberFormatException nfe) {
-				log.error("("+number+","+ctype+"): Can't check service state & info cause number("+number+") isn't an int!");
+				log.error("("+machine+","+number+","+ctype+"): Can't check service state & info cause number("+number+") isn't an int!");
 				nfe.printStackTrace();
 				return false;
 			}

@@ -26,17 +26,17 @@ public class dropboxes extends ServiceBuilder implements MMBaseObserver {
 	public dropboxes() {
 	}
 
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeChanged(String number,String builder,String ctype) {
+	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		return(true);
 	}
 

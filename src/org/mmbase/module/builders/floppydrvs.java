@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: floppydrvs.java,v 1.6 2001-04-10 20:22:45 michiel Exp $
+$Id: floppydrvs.java,v 1.7 2001-05-04 13:54:56 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.6  2001/04/10 20:22:45  michiel
+michiel: new logging system
+
 Revision 1.5  2000/03/31 13:27:52  wwwtech
 Wilbert: Introduction of ParseException for method getList
 
@@ -43,7 +46,7 @@ import org.mmbase.util.logging.Logger;
 /**
  * @author Daniel Ockeloen
  * @author David V van Zeventer
- * @version $Revision: 1.6 $ $Date: 2001-04-10 20:22:45 $
+ * @version $Revision: 1.7 $ $Date: 2001-05-04 13:54:56 $
  */
 public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 
@@ -156,17 +159,17 @@ public class floppydrvs extends MMObjectBuilder implements MMBaseObserver {
 		return(null);
 	}
 
-	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
-		super.nodeRemoteChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+		super.nodeRemoteChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeLocalChanged(String number,String builder,String ctype) {
-		super.nodeLocalChanged(number,builder,ctype);
-		return(nodeChanged(number,builder,ctype));
+	public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
+		super.nodeLocalChanged(machine,number,builder,ctype);
+		return(nodeChanged(machine,number,builder,ctype));
 	}
 
-	public boolean nodeChanged(String number,String builder,String ctype) {
+	public boolean nodeChanged(String machine,String number,String builder,String ctype) {
 		MMObjectNode node=getNode(number);
 		if (node!=null) {
             if (log.isDebugEnabled()) {
