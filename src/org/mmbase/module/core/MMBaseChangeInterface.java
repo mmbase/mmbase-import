@@ -9,18 +9,33 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.core;
 
+
 /**
- * Builds a MultiCast Thread to receive  and send 
- * changes from other MMBase Servers.
+ * Builds a Thread to receive from and send changes to other MMBase Servers.
  *
- * @version $Id: MMBaseChangeInterface.java,v 1.3 2003-03-10 11:50:30 pierre Exp $
+ * @version $Id: MMBaseChangeInterface.java,v 1.4 2004-10-09 10:51:03 nico Exp $
  * @author Daniel Ockeloen
  */
 public interface MMBaseChangeInterface {
 
-	public boolean handleMsg(String machine,String vnr,String id,String tb,String ctype);
-	public boolean changedNode(int nodenr,String tableName,String type);
-	public boolean waitUntilNodeChanged(MMObjectNode node);
-	public void checkWaitingNodes(String snumber);
-	public boolean commitXML(String machine,String vnr,String id,String tb,String ctype,String xml);
+	/**
+     * Initialize MMBaseChangeInterface 
+	 * @param mmb MMBase instance
+	 */
+	void init(MMBase mmb);
+
+    /**
+	 * @param nodenr Node number
+	 * @param tableName Node type (tablename)
+	 * @param type the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
+	 * @return <code>true</code> if added to queue
+	 */
+	boolean changedNode(int nodenr,String tableName,String type);
+    
+	/** 
+     * Wait until the node change notification is completed.
+	 * @param node Node to wait for
+	 * @return <code>true</code> if done waiting
+	 */
+	boolean waitUntilNodeChanged(MMObjectNode node);
 }
