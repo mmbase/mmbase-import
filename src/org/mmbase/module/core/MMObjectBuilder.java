@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.185 2002-11-26 17:35:26 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.186 2002-11-27 10:47:54 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1601,7 +1601,7 @@ public class MMObjectBuilder extends MMTable {
      * @param results The nodes. After returning, partially retrieved nodes 
      *        in the result are replaced <em>in place</em> by complete nodes.
      */
-    private void processSearchResults(List results) {
+    protected void processSearchResults(List results) {
         Map convert = new HashMap();
         int convertCount = 0;
         int convertedCount = 0;
