@@ -41,14 +41,23 @@ public class ClientFormatFilter implements Filter {
             if (log.isDebugEnabled()) {
                 log.debug("Client specified format = " + format);
             }
-            
+          
             if(format==null) {
                 if (log.isDebugEnabled()) {
                     log.debug("Client did not specify format.");
                 }
                 return urlcomposers;
             }
-            
+
+            if( format instanceof List) {
+                if( ((List)format).size()==0 ) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Client did not specify format.");
+                    }
+                    return urlcomposers;
+		}
+            } 
+
             if (format instanceof Format) {
                 if (format == urlcomposer.getFormat()) filteredUrlcomposers.add(urlcomposer);
             } else if (format instanceof String) {
