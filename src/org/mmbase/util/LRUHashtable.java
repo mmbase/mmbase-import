@@ -18,7 +18,7 @@ import java.util.*;
  *
  * @author  Rico Jansen
  * @author  Michiel Meeuwissen
- * @version $Id: LRUHashtable.java,v 1.9 2002-06-17 20:20:31 michiel Exp $
+ * @version $Id: LRUHashtable.java,v 1.10 2002-08-12 16:12:29 michiel Exp $
  * @see    org.mmbase.cache.Cache
  */
 public class LRUHashtable extends Hashtable implements Cloneable {
@@ -409,15 +409,16 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         public Object nextElement() {
             LRUEntry entry;
             
-            entry=(LRUEntry)superior.nextElement();
+            entry=(LRUEntry) superior.nextElement();
             return entry.value;
         }
     }
 
+
     /**
      * Element used to store information from the LRUHashtable.
      */
-    private static class LRUEntry implements Map.Entry {
+    protected static class LRUEntry implements Map.Entry, Sizeable {
         /**
          * The element value
          */
@@ -464,7 +465,15 @@ public class LRUHashtable extends Hashtable implements Cloneable {
         }
         
         public String toString() {
-            return (value != null) ? value.toString() : null;
+            // THis goes seriously wrong if a cache contains itself. (StackOverFlow)
+            // TODO: should be fixed.
+            return  ((value != null) ? value.toString() : null); 
+        }
+        public int getByteSize() {
+            return new SizeOf().sizeof(value);
+        }
+        public int getByteSize(SizeOf sizeof) {
+            return sizeof.sizeof(value);
         }
         
     }
