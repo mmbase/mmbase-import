@@ -9,9 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -22,7 +20,7 @@ import org.mmbase.util.logging.*;
  * @author Kars Veling
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.9 2002-06-24 12:33:19 pierre Exp $
+ * @version $Id: WizardCommand.java,v 1.10 2002-07-16 17:37:15 michiel Exp $
  */
 public class WizardCommand {
 
@@ -50,7 +48,7 @@ public class WizardCommand {
 
     private String commandname="unknown";
     private int type = UNKNOWN_COMMAND;
-    private ArrayList params = null;
+    private List params = null;
 
     private String value = null;
 
@@ -73,7 +71,7 @@ public class WizardCommand {
     public WizardCommand(String acommand, String avalue) {
         command = acommand.toLowerCase();
         value = avalue;
-        log.debug("command: "+command + " : "+value);
+        if (log.isDebugEnabled()) log.debug("command: "+command + " : "+value);
 
         StringTokenizer st= new StringTokenizer(command,"/",true);
         // skip first token ('cmd') and delimiter
