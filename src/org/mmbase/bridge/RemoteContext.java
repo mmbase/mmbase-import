@@ -12,13 +12,14 @@ package org.mmbase.bridge;
 
 import java.rmi.*;
 import java.lang.reflect.*;
+import java.net.MalformedURLException;
 
 // import org.mmbase.bridge.remote.RemoteCloudContext;
 
 /**
  * @javadoc
  * @author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteContext.java,v 1.5 2003-03-07 09:31:00 pierre Exp $
+ * @version $Id: RemoteContext.java,v 1.6 2004-07-13 18:38:31 nico Exp $
  * @since MMBase-1.5
  */
 public class RemoteContext {
@@ -46,6 +47,19 @@ public class RemoteContext {
             } catch (NoSuchMethodException e) {
                 return null;
             }
+        } catch (MalformedURLException mue) {
+        	String message = mue.getMessage();
+        	if (message != null && message.indexOf("no protocol") > -1) {
+                throw new RuntimeException(
+                	"This exception maybe occured, because the servlet container is " +
+                	"installed in a directory with spaces.\n" +
+                	"The java.rmi.server.RMIClassLoader loads classes from network locations " +
+					"(one or more URLS) for marschalling and unmarschalling parameters and return values. " +
+					"The RMIClassLoader uses a codebase where to load the classes. The codebase is a string " +
+					"with URLs separated by spaces.\n" +
+					"Error message: " + mue.getMessage());
+        	}
+            throw new RuntimeException(mue.getMessage());
         } catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }
