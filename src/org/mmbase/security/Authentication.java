@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.util.Map;
-import org.mmbase.bridge.CloudContext;
 
 import org.mmbase.util.functions.*;
 
@@ -24,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.26 2005-03-07 15:12:51 michiel Exp $
+ * @version $Id: Authentication.java,v 1.27 2005-03-13 18:58:50 nico Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
