@@ -1,11 +1,16 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 import org.mmbase.bridge.Cloud;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.HashMap;
+import java.util.*;
 import java.io.*;
 import org.mmbase.applications.dove.Dove;
 import org.mmbase.util.logging.*;
@@ -14,30 +19,26 @@ import org.w3c.dom.*;
 
 
 /**
- * Title:        VPRO EditWizard
- * Description:
- *      This class handles all communition with mmbase. It uses the MMBase-Dove code to do the transactions and get the information
- *      needed for rendering the wizard screens.
- * Copyright:    Copyright (c) 1999
- * Company:      Q42
- * @author Kars Veling
- * @version
- */
-
-/**
+ * This class handles all communition with mmbase. It uses the MMBase-Dove code to do the transactions and get the information
+ * needed for rendering the wizard screens.
  * The WizardDatabaseConnector can connect to MMBase and get data, relations, constraints, lists. It can also
  * store changes, create new objects and relations.
  *
  * The connector can be instantiated without the wizard class, but will usually be called from the Wizard class itself.
  *
+ * EditWizard
+ * @javadoc
+ * @author Kars Veling
+ * @author Michiel Meeuwissen
+ * @since   MMBase-1.6
+ * @version $Id: WizardDatabaseConnector.java,v 1.3 2002-02-25 11:53:58 pierre Exp $
+ *
  */
 public class WizardDatabaseConnector {
-        private static Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class.getName());
+    private static Logger log = Logging.getLoggerInstance(WizardDatabaseConnector.class.getName());
 
-    public boolean debugging = false;
-        String path;
-        Vector commandlist;
-        int didcounter=1;
+    Vector commandlist;
+    int didcounter=1;
     private String username = null;
     private String password = null;
     private String logonmethodname = "name/password";
@@ -51,15 +52,6 @@ public class WizardDatabaseConnector {
      */
     public WizardDatabaseConnector(){
         commandlist = new Vector();
-    }
-
-    /**
-     * Initializes the connector.
-     *
-     * @param       apath   The path to the datadir.
-     */
-    public void init(String apath) {
-        path = apath;
     }
 
     /**
@@ -252,19 +244,19 @@ public class WizardDatabaseConnector {
    * Depricated.
    */
   public Node getList(Node query) throws Exception {
-    // fires getData command and places result in targetNode
-    ConnectorCommand cmd = new ConnectorCommandGetList(query);
-    fireCommand(cmd);
+      // fires getData command and places result in targetNode
+      ConnectorCommand cmd = new ConnectorCommandGetList(query);
+      fireCommand(cmd);
 
-    if (!cmd.hasError()) {
-        // place object in targetNode
-        if (debugging) Utils.printXML(cmd.responsexml);
-            Node result = cmd.responsexml.cloneNode(true);
-            return result;
-        } else {
-            throw new Exception("getList command not succesful");
-        }
-    }
+      if (!cmd.hasError()) {
+          // place object in targetNode
+          if (log.isDebugEnabled()) log.debug(Utils.getSerializedXML(cmd.responsexml));
+          Node result = cmd.responsexml.cloneNode(true);
+          return result;
+      } else {
+          throw new Exception("getList command not succesful");
+      }
+  }
 
   /**
    * This method retrieves data (objectdata) from mmbase.

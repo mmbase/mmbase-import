@@ -1,21 +1,25 @@
+/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 import org.w3c.dom.*;
 
 /**
- * Title:        EditWizard
- * Description:
- * Copyright:    Copyright (c) 2001
- * Company:      Q42
+ * This class validates pre-html documents for the EditWizard.
+ * It is mainly used to register invalid form and fields.
+ *
+ * @javadoc
  * @author Kars Veling
- * @version 1.0
+ * @since   MMBase-1.6
+ * @version $Id: Validator.java,v 1.2 2002-02-25 11:53:58 pierre Exp $
  */
-
- /**
-  * This class validates pre-html documents for the EditWizard.
-  *
-  * It is mainly used to register invalid form and fields.
-  */
 
 public class Validator {
 

@@ -1,15 +1,21 @@
 /*
- * WizardException.java
- *
- * Created on 27 november 2001, 14:16
- */
 
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.applications.editwizard;
 
 /**
  *
- * @author  Administrator
- * @version
+ * EditWizard
+ * @javadoc
+ * @author Kars Veling
+ * @since   MMBase-1.6
+ * @version $Id: WizardException.java,v 1.2 2002-02-25 11:53:58 pierre Exp $
  */
 public class WizardException extends java.lang.Exception {
     /**
