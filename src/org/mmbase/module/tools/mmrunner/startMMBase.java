@@ -18,7 +18,7 @@ public class startMMBase extends Object {
 	static String runnerVersion="0.3";
 	static String appserverVersion="Orion 1.4.5";
 	static String cmsVersion="MMBase 1.2.3";
-	static String databaseVersion="Hypersonic 2.3";
+	static String databaseVersion="Hypersonic 1.4.3";
 
 
 	public static void main(String[] args) {
@@ -56,15 +56,18 @@ public class startMMBase extends Object {
 		System.out.println("Starting Application server : "+appserverVersion);
 		System.out.println("Loading  CMS : "+cmsVersion);
 		System.out.println("Loading  JDBC Database : "+databaseVersion+"\n");
+
+		String activehost=getSetting(curdir+"/config/modules/mmbaseroot.xml","\"host\">","<");
+		String activeport=getSetting(curdir+"/orion/config/default-web-site.xml","port=\"","\"");
 		if (mode.equals("loop")) {
 			System.out.println("Logfiles active in the log dir (log/mmbase.log for example)");
-			System.out.println("Within seconds server can be found at http://127.0.0.1:4242");
+			System.out.println("Within seconds server can be found at http://"+activehost+":"+activeport);
 			while (1==1) {
 				String reply=execute(startupstring);	
 			}
 		} else if (mode.equals("bg")) {
 			System.out.println("Logfiles active in the log dir (log/mmbase.log for example)");
-			System.out.println("Within seconds server can be found at http://127.0.0.1:4242");
+			System.out.println("Within seconds server can be found at http://"+activehost+":"+activeport);
 			String reply=executeSpawn(startupstring);	
 		}
 
@@ -250,6 +253,21 @@ public class startMMBase extends Object {
 		}
 		return(true);
 	}
+
+    private static String getSetting(String file,String setting,String endtoken) {
+		String body=loadFile(file);
+		int len=setting.length();
+		int pos=body.indexOf(setting);
+		if (pos!=-1) {
+			String value=body.substring(pos+len);
+			pos=value.indexOf(endtoken);
+			if (pos!=-1) {
+				value=value.substring(0,pos);
+				return(value);
+			}
+		}
+		return("");
+    }
 
 
     static boolean saveFile(String filename,String value) {
