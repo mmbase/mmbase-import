@@ -3,7 +3,7 @@
  * Routines for reading and writing cookies
  *
  * @since    MMBase-1.6
- * @version  $Id: tools.js,v 1.4 2003-07-23 19:02:27 michiel Exp $
+ * @version  $Id: tools.js,v 1.5 2003-12-19 11:09:08 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -68,3 +68,78 @@ function writeCookie_general(theName, theValue) {
     }
 }
 
+function getDimensions() {
+    var dims = { };
+    if (typeof window.innerHeight != 'undefined') {
+        dims.windowWidth = window.innerWidth;
+        dims.windowHeight = window.innerHeight;
+        dims.documentWidth = window.document.width;
+        dims.documentHeight = window.document.height;
+    }
+    else {
+        if (window.document.body && typeof window.document.body.offsetWidth != 'undefined') {
+            var doc = window.document;
+            if (doc.compatMode && doc.compatMode != 'BackCompat') {
+                dims.windowWidth = doc.documentElement.offsetWidth;
+                dims.windowHeight = doc.documentElement.offsetHeight;
+                dims.documentWidth = doc.documentElement.scrollWidth;
+                dims.documentHeight = doc.documentElement.scrollHeight;
+            }
+            else {
+                dims.windowWidth = doc.body.offsetWidth;
+                dims.windowHeight = doc.body.offsetHeight;
+                dims.documentWidth = doc.body.scrollWidth;
+                dims.documentHeight = doc.body.scrollHeight;
+            }
+        }
+    }
+    return dims;
+}
+
+function findPosX(obj) {
+    var curleft = 0;
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curleft += obj.offsetLeft
+            obj = obj.offsetParent;
+        }
+    }
+    else {
+        if (obj.x) {
+            curleft += obj.x;
+        }
+    }
+    return curleft;
+}
+
+function findPosY(obj) {
+    var curtop = 0;
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curtop += obj.offsetTop
+            obj = obj.offsetParent;
+        }
+    }
+    else {
+    	if (obj.y) {
+            curtop += obj.y;
+        }
+    }
+    return curtop;
+}
+
+
+// debug method
+function checkDimensions (windowOrFrame) {
+   var dims = getDimensions();
+   if (typeof dims.windowWidth != 'undefined') {
+     var text = 'window width: ' + dims.windowWidth + '\n';
+     text += 'window height: ' + dims.windowHeight + '\n';
+     text += 'document width: ' + dims.documentWidth + '\n';
+     text += 'document height: ' + dims.documentHeight;
+     alert(text);
+   }
+   else {
+     alert('Unable to determine window dimensions.');
+   }
+}

@@ -133,8 +133,45 @@ popupDialogAction = function(param) {
 }
 
 myValidateSaveAction = function(editor) {
-  saveHtmlAreas();
-  validateElement_validator(editor._textArea);
-  doValidateAndUpdateButtons();
+  doCheckHtml();
 }
 
+// overrides editwizard.jsp
+function doCheckHtml() {
+// editors in IE will maybe complain that it is very messy with 
+// <strong> and <b> tags mixed when they edit, but without this function
+// they would also do when others would use Gecko browsers.
+// Now we are backwards compatible with the old editwizard wysiwyg and the
+// frontend only has to deal with <b> and <i>
+    for (var i = 0; i < htmlAreas.length; i++) {
+      var editor = htmlAreas[i];
+      value = editor.getHTML();
+      
+      //replace <EM> by <i>
+      value = value.replace(/<([\/]?)EM>/gi, "<$1i>");
+      value = value.replace(/<([\/]?)em>/gi, "<$1i>");
+      //replace <STRONG> by <b>
+      value = value.replace(/<([\/]?)STRONG>/gi, "<$1b>");
+      value = value.replace(/<([\/]?)strong>/gi, "<$1b>");
+      //replace <BR> by <BR/>
+      value = value.replace(/<BR>/gi, "<br/>");
+      value = value.replace(/<br>/gi, "<br/>");
+      
+      editor._textArea.value = value;
+
+	  if (editor._editMode == "wysiwyg") {
+		if (HTMLArea.is_gecko) {
+			// disable design mode before changing innerHTML
+			editor._doc.designMode = "off";
+		}
+		editor._doc.body.innerHTML = value;
+		if (HTMLArea.is_gecko) {
+			// we need to refresh that info for Moz-1.3a
+			editor._doc.designMode = "on";
+		}
+      }
+
+      // editwizard validation
+      validator.validate(editor._textArea);
+    }
+}
