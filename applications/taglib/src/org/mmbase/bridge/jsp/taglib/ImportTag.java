@@ -35,9 +35,11 @@ public class ImportTag extends WriteTag {
     protected boolean required     = false;
     protected int     from         = ContextTag.LOCATION_NOTSET;
 
-    protected String externid      = null;
+    protected String  externid      = null;
 
     private   boolean found = false;
+    private   boolean reset = false;
+    private   String  useId = null;
 
 
     /**
@@ -67,6 +69,16 @@ public class ImportTag extends WriteTag {
         required = b;
     }
 
+
+    /**
+     * If 'required' then the variable must be available in the
+     * external source, otherwise exception.
+     *
+     */
+    public void setReset(boolean b) {
+        reset = b;
+    }
+
     /**
      * From which external source
      */
@@ -78,35 +90,40 @@ public class ImportTag extends WriteTag {
     public int doStartTag() throws JspTagException {
         Object value = null;
         log.trace("dostarttag of import");
-        if (externid != null) {
-            log.trace("Externid was given " + externid);
-            if (id == null) {
-                log.trace("No id was given, using externid ");
-                id = externid;
-            } else {
-                log.trace("An id was given (" + id + ")");
-            }
+        if (getId() == null) {
+            log.trace("No id was given, using externid ");
+            useId = externid;
+        } else {
+            useId = id;
+            if (log.isDebugEnabled()) log.trace("An id was given (" + id + ")");
+        }
+        if (reset) { // should this be more general? Also in other contextwriters?
+            if (log.isDebugEnabled()) log.trace("Resetting variable " + useId);
+            getContextTag().unRegister(useId);
+        }
 
+        if (externid != null) {            
+            log.trace("Externid was given " + externid);
             if (from == ContextTag.LOCATION_NOTSET) {
-                found = (getContextTag().findAndRegister(externid, id) != null);
+                found = (getContextTag().findAndRegister(externid, useId) != null);
             } else {
-                found = (getContextTag().findAndRegister(from, externid, id) != null);
+                found = (getContextTag().findAndRegister(from, externid, useId) != null);
             }
 
             if (! found && required) {
                 throw new JspTagException("Required parameter '" + externid + "' not found in " + ContextTag.locationToString(from));
             }
             if (found) {
-                value = getObject(id);
+                value = getObject(useId);
                 if (log.isDebugEnabled()) {
-                    log.debug("found value for " + id + " " + value);
+                    log.debug("found value for " + useId + " " + value);
                 }
             }
         }
         if (found) {
             helper.setValue(value);
-            if (id != null) {
-                getContextTag().reregister(id, helper.getValue());
+            if (useId != null) {
+                getContextTag().reregister(useId, helper.getValue());
             }
             return SKIP_BODY;
         } else {
@@ -117,6 +134,7 @@ public class ImportTag extends WriteTag {
     }
 
     public int doEndTag() throws JspTagException {
+        if (log.isDebugEnabled()) log.debug("endtag of import with id:" + id + " externid: " + externid);
         if (externid != null) {
             if (! found ) {
                 if (log.isDebugEnabled()) log.debug("External Id " + externid + " not found");
@@ -127,26 +145,28 @@ public class ImportTag extends WriteTag {
                         log.debug("Found a default in the body (" + body + ")");
                     }
                     helper.setValue(body);
-                    getContextTag().reregister(id, helper.getValue());
-                    found = true;
+                    getContextTag().reregister(useId, helper.getValue());
                 }
             }
         } else { // get value from the body of the tag.
             helper.setValue(bodyContent != null ? bodyContent.getString() : "");
-            if (id != null) {
+            if (useId != null) {
                 if (log.isDebugEnabled()) {
-                    log.debug("Setting " + id + " to " + helper.getValue());
+                    log.debug("Setting " + useId + " to " + helper.getValue());
                 }
-                getContextTag().register(id, helper.getValue());
+                getContextTag().register(useId, helper.getValue());
             } else {
                 if (helper.getJspvar() == null) {
+                    found = false; // for use next time
+                    useId = null;
                     throw new JspTagException("Attributes externid, id and jspvar cannot be all missing");
                 }
             }
         }
-        found = false; // for use next time
         helper.setJspvar(pageContext);
-        id = null;
+        found = false; // for use next time
+        useId = null;
+        log.debug("end of importag");
         return EVAL_PAGE;
     }
 
