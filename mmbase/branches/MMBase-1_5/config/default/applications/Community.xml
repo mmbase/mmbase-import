@@ -48,7 +48,10 @@
 	</contextsourcelist>
 
 	<description>
-	    Forum and Chat
+	    Forum and Chat, please copy the builders in the Community/builders dir into your 
+        config/builders dir. Also copy communityprc.xml from Community/modules into your 
+        config/modules dir. You could also switch these builders on by setting their state 
+        into active (in your config dir).
 	</description>
 
 	<install-notice>

@@ -44,7 +44,9 @@
 	</contextsourcelist>
 
 	<description>
-		BugTracking application for www.mmbase.org
+		BugTracking application for www.mmbase.org, before deploying this make sure all the 
+        builders from the BugTracker/builders dir are also in your config/builders dir and the
+        state of these builders is active.
 	</description>
 
 	<install-notice>

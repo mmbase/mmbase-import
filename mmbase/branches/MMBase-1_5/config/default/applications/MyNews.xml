@@ -44,6 +44,8 @@
 
 	<description>
 		The MyNews magazine is an example of a magazine with news articles.
+        Before deploying this make sure all the builders from the MyNews/builders dir 
+        are also in your config/builders dir and the state of these builders is active.
 	</description>
 
 	<install-notice>
