@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: GrowingTreeList.java,v 1.5 2004-07-29 17:19:12 michiel Exp $
+ * @version $Id: GrowingTreeList.java,v 1.6 2004-10-09 09:37:34 nico Exp $
  * @since   MMBase-1.7
  */
 
@@ -38,12 +38,11 @@ public  class GrowingTreeList extends TreeList {
      * @param q              The 'base' query defining the minimal depth of the tree elements
      * @param maxDepth       You must supply a maximal depth of the nodes, because MMBase is basicly a network rather then a tree, so
      *                        tree representations could be infinitely deep.
-     * @param NodeManager
-     * @param role
-     * @param searchDir
+     * @param nodeManager    Destination Nodemanager in the tree
+     * @param role           Role of the relations in the tree
+     * @param searchDir      Direction of the relations in the tree
      * @since MMBase-1.7.1
      */
-
     public GrowingTreeList(NodeQuery q, int maxDepth, NodeManager nodeManager, String role, String searchDir) {
         super(q);
 
@@ -66,6 +65,7 @@ public  class GrowingTreeList extends TreeList {
 
     /**
      * As long as the tree is not 'started' yet, max depth can still be changed.
+     * @param maxDepth max number of Steps
      * @since MMBase-1.7.1
      */
 
@@ -82,6 +82,7 @@ public  class GrowingTreeList extends TreeList {
      * Returns the Query which is used as a template to 'grow' the query. You can change it, add sort-orders and add constraints before 
      * the tree is 'started'.
      * All but the first step of this query are added. This query itself is never used.
+     * @return Query which is used as a template
      * @since MMBase-1.7.1
      */
 

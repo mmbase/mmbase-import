@@ -22,7 +22,7 @@ import java.util.*;
  * represents the result of a `function' on a node and it (therefore) is a unmodifiable.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: BasicFunctionValue.java,v 1.7 2004-09-17 09:25:45 michiel Exp $
+ * @version $Id: BasicFunctionValue.java,v 1.8 2004-10-09 09:37:33 nico Exp $
  * @since   MMBase-1.6
  */
 public class BasicFunctionValue implements FieldValue {
@@ -128,9 +128,9 @@ public class BasicFunctionValue implements FieldValue {
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void set(Object value) {
         throw CANNOTCHANGE;
     }
@@ -138,81 +138,81 @@ public class BasicFunctionValue implements FieldValue {
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setBoolean(boolean value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setFLoat(float value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setDouble(double value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setLong(long value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setInt(int value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setByte(byte[] value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setString(String value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setNode(Node value) {
         throw CANNOTCHANGE;
     }
 
     /**
      * Function values cannot be changed, and all set-functions throw an exception.
+     * @param value set value
      * @throws BridgeException
      */
-
     public void setXML(Document value) {
         throw CANNOTCHANGE;
     }

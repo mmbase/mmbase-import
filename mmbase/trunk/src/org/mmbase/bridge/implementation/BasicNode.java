@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.133 2004-09-24 13:06:25 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.134 2004-10-09 09:37:33 nico Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -109,7 +109,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Instantiates a node, linking it to a specified cloud
      * The NodeManager for the node is requested from the Cloud.
      * @param node the MMObjectNode to base the node on
-     * @param Cloud the cloud to which this node belongs
+     * @param cloud the cloud to which this node belongs
      */
     BasicNode(MMObjectNode node, Cloud cloud) {
         this.cloud = (BasicCloud) cloud;
@@ -120,7 +120,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * Instantiates a new node (for insert), using a specified nodeManager.
      * @param node a temporary MMObjectNode that is the base for the node
-     * @param nodeManager the node manager to create the node with
+     * @param cloud the cloud to create the node in
      * @param id the id of the node in the temporary cloud
      */
     BasicNode(MMObjectNode node, Cloud cloud, int id) {
@@ -253,6 +253,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Returns whether this is a new (not yet committed) node.
+     * @return is a new node
      */
     boolean isNew() {
         return isnew;
@@ -325,6 +326,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Setting value with default method (depending on field's type)
+     * @param fieldName name of the field
+     * @param value set value
      */
     public void setValue(String fieldName, Object value) {
         int type = nodeManager.getField(fieldName).getType();
@@ -347,6 +350,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Like setValue, but withouth the valueinterceptor, this is called by nthe other set-values.
+     * @param fieldName name of field
+     * @param value new value of the field
      * @todo setting certain specific fields (i.e. snumber) should be directed to a dedicated
      *       method such as setSource(), where applicable.
      * @since MMBase-1.7
@@ -369,6 +374,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     /**
      * Protected method to be able to set rnumber when creating a relation.
+     * @param fieldName name of field
+     * @param value new value of field
      * @since MMBase-1.7
      */
     protected void setValueWithoutChecks(String fieldName, Object value) {
@@ -840,6 +847,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     /**
+     * Returns a list of relations of the given node.
+     * @param role role of the relation
+     * @param nodeManager node manager on the other side of the relation
+     * @param searchDir direction of the relation
+     * @return list of relations
+     * @throws NotFoundException
+     * 
      * @see Queries#createRelationNodesQuery Should perhaps be implemented with that
      */
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
@@ -963,6 +977,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
+     * @param nodeManager node manager on the other side of the relation
+     * @param role role of the relation
+     * @param searchDir direction of the relation
+     * @return List of related nodes
      * @see Queries#createRelatedNodesQuery Should perhaps be implemented with that.
      * @since MMBase-1.6
      */
@@ -1164,6 +1182,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * and (if needed) on their owning clouds.
      *
      * @param o the object to compare it with
+     * @return 0 if they are equal, -1 if the object passed is a NodeManager and larger than this manager,
+     * and +1 if the object passed is a NodeManager and smaller than this manager.
      */
     public int compareTo(Object o) {
         Node n = (Node)o;
@@ -1196,6 +1216,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     * 
      * @since MMBase-1.6.2
      */
     public int hashCode() {
@@ -1206,6 +1228,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * Compares two nodes, and returns true if they are equal.
      * This effectively means that both objects are nodes, and they both have the same number and cloud
      * @param o the object to compare it with
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
         return (o instanceof Node) && getNumber() == ((Node)o).getNumber() && cloud.equals(((Node)o).getCloud());

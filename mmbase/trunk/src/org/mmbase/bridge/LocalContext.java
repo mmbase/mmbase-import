@@ -16,7 +16,7 @@ import org.mmbase.bridge.implementation.BasicCloudContext;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: LocalContext.java,v 1.3 2002-04-13 10:58:44 michiel Exp $
+ * @version $Id: LocalContext.java,v 1.4 2004-10-09 09:40:10 nico Exp $
  */
 public final class LocalContext extends BasicCloudContext {
 
@@ -33,6 +33,7 @@ public final class LocalContext extends BasicCloudContext {
 
     /**
      * Called from the script to retrieve the current CloudContext
+     * @return current CloudContext
      */
     public static CloudContext getCloudContext() {
         return thiscontext;
