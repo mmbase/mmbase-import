@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.2 2002-12-24 18:17:27 michiel Exp $
+ * @version $Id: Attribute.java,v 1.3 2002-12-24 18:59:50 michiel Exp $
  * @since   MMBase-1.6.1
  */
 
@@ -102,7 +102,7 @@ public class Attribute {
     protected Attribute() {}
 
     /**
-     * Concatates every part of the attribute to a string for actual use in the tag implementations.
+     * Appends the evaluated Attribute to StringBuffer
      * 
      * @param ContextReferrerTag The tag relative to which the variable evalutations must be done
      *                           (normally 'this')
@@ -119,6 +119,11 @@ public class Attribute {
             ap.appendValue(tag, buffer);
         }
     }
+
+    /** 
+     * Returns the evaluated Attribute as an Object.
+     */
+
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("Evaluating " + this);
@@ -133,20 +138,23 @@ public class Attribute {
         return result.toString();
     }
 
+    /** 
+     * Returns the evaluated Attribute as a String
+     */
 
     public String getString(ContextReferrerTag tag) throws JspTagException {
         return getValue(tag).toString();
     }
 
     /**
-     * Returns the unparsed Attribute as a string.
+     * String representation of this Attribute object (for debugging)
      */
     public String toString() {
         return "att: " + attribute.toString() + " parts: " + attributeParts;         
     }
 
     /**
-     * Parses this attribute into list of 'attributeparts'. toString will concatate then together again.
+     * Parses this attribute into list of 'attributeparts'. getValue will concatate them together again (after evaluation).
      */
 
     protected void parse() throws AttributeException {
@@ -239,6 +247,18 @@ public class Attribute {
         final static int EXPRESSION  = 12;
         private int type;
         private Object part;
+
+        static String getType(int t) {
+            switch(t) {
+            case STRING: return "String";
+            case DOUBLE: return "Double";
+            case VAR:    return "Variable";
+            case ATTRIBUTE: return "Attribute";
+            case EXPRESSION: return "Expression";
+            default: return "????";
+            }
+        }
+
         AttributePart(int t, Object p) throws AttributeException {
             type = t; 
             part = p;
@@ -258,15 +278,18 @@ public class Attribute {
             this(STRING, att);
         }
 
+        /**
+         * String representation of this AttributePart (for debugging)
+         */
         public String toString() {
-            return "(" + type + "/" + part.toString() + ")";
+            return "(" + getType(type) + "/" + part.toString() + ")";
         }
 
         /**
          * After construction some basic checks can be done.
          */
         void check() throws AttributeException {
-            if (log.isDebugEnabled()) log.trace("Checking new AttributePart '" + part + "'/" + type);
+            if (log.isDebugEnabled()) log.trace("Checking new AttributePart '" + part + "'/" + getType(type));
             switch(type) {
             case VAR: {
                 String var =  part.toString();
@@ -288,6 +311,9 @@ public class Attribute {
         }
 
         Object getValue(ContextReferrerTag tag) throws JspTagException {
+            if(log.isDebugEnabled()) {
+                log.trace("Evaluating part '" + part + "' of  type " + getType(type));
+            }
             switch(type) {
             case DOUBLE:
             case STRING: return  part;
@@ -311,16 +337,17 @@ public class Attribute {
 
         void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {            
             if (log.isDebugEnabled()) {
-                log.trace("Appending part '" + part + "' of  type " + type);
+                log.trace("Appending part '" + part + "' of  type " + getType(type));
             }
             switch(type) {
             case STRING:
             case DOUBLE:
             case VAR:
             case EXPRESSION:
+            case ATTRIBUTE:
                 buffer.append(getValue(tag).toString()); 
                 return;
-            case ATTRIBUTE:   ((Attribute) part).appendValue(tag, buffer); return;
+                // case ATTRIBUTE:   ((Attribute) part).appendValue(tag, buffer); return;
             default: throw new AttributeException("Found an unknown Attribute Part type");
             }
 
@@ -332,11 +359,9 @@ public class Attribute {
  * The attribute containing 'null' is special. No parsing needed, nothing needed.
  */
 class NullAttribute extends Attribute {
-    NullAttribute() { 
-    }
+    NullAttribute() { }
     public Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
     public String getString(ContextReferrerTag tag) throws JspTagException { return null; }
     public void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
-    public String toString() { return ""; }
-
+    public String toString() { return "NULLATTRIBUTE"; }
 }
