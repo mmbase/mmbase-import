@@ -5,7 +5,7 @@
  * (c) Q42, 2001
  *
  * @since    MMBase-1.6
- * @version  $Id: wysiwyg.js,v 1.2 2002-05-27 09:50:47 pierre Exp $
+ * @version  $Id: wysiwyg.js,v 1.3 2002-06-26 07:24:22 pierre Exp $
  * @author   Kars Veling
  */
 
@@ -207,10 +207,10 @@ Wysiwyg.prototype.createEditBar = function () {
         var hint = this.editBarButtonHints[i];
         if (!hint) hint=cmd;
         if (!cmd) {
-            s+='<td><div class="separator"><img src="pixel.gif" width=1 height=19 alt=""></div></td>';
+            s+='<td><div class="separator"><img src="../media/wysiwyg/pixel.gif" width=1 height=19 alt=""></div></td>';
             continue;
         }
-        s+='<td><a href="javascript:doExecCommand(\''+cmd+'\')" class="barbutton" id="'+cmd+'button"><img src="media/wysiwyg/'+cmd+'.gif" width=23 height=22 alt="'+hint+'"></a></td>';
+        s+='<td><a href="javascript:doExecCommand(\''+cmd+'\')" class="barbutton" id="'+cmd+'button"><img src="../media/wysiwyg/'+cmd+'.gif" width=23 height=22 alt="'+hint+'"></a></td>';
     }
     s+="</tr></table>";
     var div = document.createElement("div");
