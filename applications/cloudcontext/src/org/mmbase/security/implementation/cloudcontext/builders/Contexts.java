@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.11 2003-08-06 10:03:25 michiel Exp $
+ * @version $Id: Contexts.java,v 1.12 2003-08-06 21:54:00 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
@@ -55,6 +55,25 @@ public class Contexts extends MMObjectBuilder {
             public String getName()        { return "CCS:AllowingContextsCache"; }
             public String getDescription() { return "Links user id to a set of contexts"; }
         };
+    protected static class OperationsCache extends Cache {
+        OperationsCache() {
+            super(100);
+        }
+        public String getName()        { return "CCS:SecurityOperations"; }
+        public String getDescription() { return "The groups associated with a security operation";}
+        
+        public Object put(MMObjectNode context, Operation op, Set groups) {
+            return super.put(op.toString() + context.getNumber(), groups);
+        }
+        public Set get(MMObjectNode context, Operation op) {
+            return (Set) super.get(op.toString() + context.getNumber());
+        }
+        
+    };
+
+    protected static OperationsCache operationsCache = new OperationsCache();
+
+
 
     protected static Map  invalidableObjects = new HashMap();
 
@@ -76,6 +95,9 @@ public class Contexts extends MMObjectBuilder {
 
         contextCache.putCache();
         allowingContextsCache.putCache();
+        operationsCache.putCache();
+
+        CacheInvalidator.getInstance().addCache(operationsCache);
         CacheInvalidator.getInstance().addCache(contextCache);
         CacheInvalidator.getInstance().addCache(allowingContextsCache);
         CacheInvalidator.getInstance().addCache(invalidableObjects);
@@ -206,7 +228,7 @@ public class Contexts extends MMObjectBuilder {
      */
     protected boolean mayDo(User user, MMObjectNode contextNode, Operation operation) {
 
-        Iterator iter = RightsRel.getBuilder().getGroups(contextNode, operation).iterator();        
+        Iterator iter = getGroups(contextNode, operation).iterator();        
 
         // now checking if this user is in one of these groups.
         while (iter.hasNext()) {
@@ -224,6 +246,8 @@ public class Contexts extends MMObjectBuilder {
         }
         return false;
     }
+
+
 
     /**
      * Returns a Set (of Strings) of all existing contexts
@@ -315,6 +339,13 @@ public class Contexts extends MMObjectBuilder {
                         StepField field = query.createStepField(step, "owner");
                         Constraint newConstraint = query.createConstraint(field, ac.contexts);
                         if (ac.inverse) query.setInverse(newConstraint, true);
+                        if (step.getTableName().equals("mmbaseusers")) { // anybody may see own node
+                            Users users = Users.getBuilder();
+                            Constraint own = query.createConstraint(query.createStepField(step, "number"),
+                                                                    new Integer(users.getUser(userContext.getIdentifier()).getNumber()));
+                            newConstraint = query.createConstraint(newConstraint, CompositeConstraint.LOGICAL_OR, own);
+                        }
+
                         if (constraint == null) {
                             constraint = newConstraint;
                         } else {
@@ -361,6 +392,40 @@ public class Contexts extends MMObjectBuilder {
         }
         return context;
     }
+
+    /**
+     * @return a  Set of all groups which are allowed to for operation operation.
+     */
+    protected  Set getGroups(MMObjectNode contextNode, Operation operation) {        
+        
+        Set found = operationsCache.get(contextNode, operation);
+        if (found == null) {
+            found = new HashSet();
+            for(Enumeration enumeration = contextNode.getRelations(); enumeration.hasMoreElements();) {
+                // needed to get the correct type of builder!!
+                MMObjectNode relation = getNode(((MMObjectNode) enumeration.nextElement()).getNumber());
+                if (relation.parent instanceof RightsRel) {
+                    String nodeOperation = relation.getStringValue(RightsRel.OPERATION_FIELD);
+                    if (nodeOperation.equals(operation.toString()) || nodeOperation.equals("all")) {
+                        int source      = relation.getIntValue("snumber");
+                        MMObjectNode destination = relation.getNodeValue("dnumber");
+                        if (source == contextNode.getNumber()) {
+                            if (log.isDebugEnabled()) {
+                                log.debug("found group # " + destination.getNumber() + " for operation" + operation + "(because " + nodeOperation + ")");
+                            }
+                            found.add(destination);
+                        } else {
+                            log.warn("source was not the same as out contextNode");
+                        }
+                    }  
+                } 
+            }
+            log.debug("found groups for operation " + operation + " " + found);
+            operationsCache.put(contextNode, operation, found);
+        }
+        return found;
+    }
+
 
    
 

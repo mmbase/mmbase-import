@@ -26,32 +26,12 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: RightsRel.java,v 1.3 2003-07-18 13:40:22 michiel Exp $
+ * @version $Id: RightsRel.java,v 1.4 2003-08-06 21:54:00 michiel Exp $
  */
 public class RightsRel extends InsRel {
 
-    protected static class OperationsCache extends Cache {
-        OperationsCache() {
-            super(100);
-        }
-        public String getName()        { return "CCS:SecurityOperations"; }
-        public String getDescription() { return "The groups associated with a security operation";}
-        
-        public Object put(MMObjectNode context, Operation op, List groups) {
-            return super.put(op.toString() + context.getNumber(), groups);
-        }
-        public List get(MMObjectNode context, Operation op) {
-            return (List) super.get(op.toString() + context.getNumber());
-        }
-        
-    };
-
-    protected static OperationsCache operationsCache = new OperationsCache();
-
 
     public boolean init() {
-        operationsCache.putCache();
-        CacheInvalidator.getInstance().addCache(operationsCache);
         mmb.addLocalObserver(getTableName(), CacheInvalidator.getInstance());
         mmb.addRemoteObserver(getTableName(), CacheInvalidator.getInstance());
         return super.init();
@@ -63,7 +43,7 @@ public class RightsRel extends InsRel {
      */
     public static String OPERATION_FIELD = "operation";
 
-    private static Logger log = Logging.getLoggerInstance(RightsRel.class.getName());
+    private static Logger log = Logging.getLoggerInstance(RightsRel.class);
 
     /**
      * Util method to get this Builder.
@@ -73,41 +53,6 @@ public class RightsRel extends InsRel {
     public static RightsRel getBuilder() {
         return (RightsRel) MMBase.getMMBase().getBuilder("rightsrel");
     }
-
-    /**
-     * @return a List of all groups which are allowed to for operation operation.
-     */
-    public List getGroups(MMObjectNode contextNode, Operation operation) {
-        
-        
-        List found = operationsCache.get(contextNode, operation);
-        if (found == null) {
-            found = new ArrayList();
-            for(Enumeration enumeration = contextNode.getRelations(); enumeration.hasMoreElements();) {
-                // needed to get the correct type of builder!!
-                MMObjectNode relation = getNode(((MMObjectNode) enumeration.nextElement()).getNumber());
-                if (relation.parent instanceof RightsRel) {
-                    String nodeOperation = relation.getStringValue(OPERATION_FIELD);
-                    if (nodeOperation.equals(operation.toString()) || nodeOperation.equals("all")) {
-                        int source      = relation.getIntValue("snumber");
-                        MMObjectNode destination = relation.getNodeValue("dnumber");
-                        if (source == contextNode.getNumber()) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("found group # " + destination.getNumber() + " for operation" + operation + "(because " + nodeOperation + ")");
-                            }
-                            found.add(destination);
-                        } else {
-                            log.warn("source was not the same as out contextNode");
-                        }
-                    }  
-                } 
-            }
-            log.debug("found groups for operation " + operation + " " + found);
-            operationsCache.put(contextNode, operation, found);
-        }
-        return found;
-    }
-
 
     // inherited
     public String getGUIIndicator(MMObjectNode node) {

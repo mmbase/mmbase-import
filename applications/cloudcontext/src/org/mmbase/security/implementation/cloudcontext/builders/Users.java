@@ -12,7 +12,7 @@ package org.mmbase.security.implementation.cloudcontext.builders;
 import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
-import org.mmbase.security.Rank;
+import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 import org.mmbase.cache.Cache;
 import org.mmbase.util.Encode;
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.11 2003-07-18 13:40:23 michiel Exp $
+ * @version $Id: Users.java,v 1.12 2003-08-06 21:54:00 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -36,7 +36,10 @@ public class Users extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Users.class);
 
 
-    public final static String FIELD_STATUS    = "status";
+    public final static String FIELD_STATUS      = "status";
+    public final static String FIELD_USERNAME    = "username";
+    public final static String FIELD_PASSWORD    = "password";
+
     public final static String STATUS_RESOURCE = "org.mmbase.security.status";
 
     protected static Cache rankCache = new Cache(20) {
@@ -120,13 +123,16 @@ public class Users extends MMObjectBuilder {
 
     //javadoc inherited
     public boolean setValue(MMObjectNode node, String field, Object originalValue) {
-        if (field.equals("username")) {
+        if (field.equals(FIELD_USERNAME)) {
             Object value = node.values.get(field);
-            if (originalValue != null && ! originalValue.equals(value)) {
-                node.values.put(field, value);
-                return false; // hmm?
-            }
-        } else if(field.equals("password")) {
+            if (node.getIntValue(FIELD_STATUS) >= 0) {
+                if (originalValue != null && ! originalValue.equals(value)) {
+                    node.values.put(field, value);
+                    log.warn("Cannot change username (unless account is blocked)"); 
+                    return false; // hmm?
+                }
+            } 
+        } else if(field.equals(FIELD_PASSWORD)) {
             Object value = node.values.get(field);
             if (originalValue != null && ! originalValue.equals(value)) {
                 node.values.put(field, encode((String) value));
@@ -137,7 +143,7 @@ public class Users extends MMObjectBuilder {
 
     //javadoc inherited
     public void setDefaults(MMObjectNode node) {
-        node.setValue("password", "");
+        node.setValue(FIELD_PASSWORD, "");
     }
 
     /**
@@ -270,6 +276,7 @@ public class Users extends MMObjectBuilder {
         */
     }
 
+
     /**
      * @javadoc
      */
@@ -290,8 +297,7 @@ public class Users extends MMObjectBuilder {
             if (function.equals("gui")) {
                 String field = (String) args.get(0);
                 
-                if ("state".equals(field)) {
-
+                if (FIELD_STATUS.equals(field)) {
                     // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
                     ResourceBundle bundle;
