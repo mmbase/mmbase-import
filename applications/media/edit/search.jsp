@@ -9,7 +9,8 @@
 <head>
 <mm:import externid="origin">media.myyfragments</mm:import>
 <body class="left"  onload="initLeft('entrance');">
-
+  <%@include file="submenu.jsp" %>
+  <hr />
  <h1>Zoek</h1>
   <p>
 <mm:log />
@@ -37,13 +38,6 @@
     <tr><td>Verzenden</td><td><button type="submit"><img src="media/search.gif" /></button></td></tr>
   </form>
   </table>
-  </p>
-  <p>
-  <hr />
-  <p align="right">
-    <a target="content" href="<mm:url page="edit.jsp" />">Edit</a>
- |
-    <a href="<mm:url page="config" />">Config</a>
   </p>
 </body>
 </html>

@@ -4,11 +4,15 @@
 <%@include file="read.jsp" 
 %><html>
   <link href="../style/streammanager.css" type="text/css" rel="stylesheet" />
-  <title>Configuration</title>
+  <title><%=m.getString("configuration")%></title>
 </head>
-<body>
- <h1>Configuration</h1>
- <mm:import externid="referrer">../search.jsp</mm:import>
+<mm:cloud jspvar="cloud" method="asis">
+<body class="left">
+  <mm:import id="current">config</mm:import>
+  <mm:import id="dir">../</mm:import>
+  <%@include file="../submenu.jsp" %>
+  <hr />
+ <h1><%=m.getString("configuration")%> <mm:present referid="config.configsubmitted">*</mm:present></h1>
   <form name="config" method="post">
   <table class="edit" summary="streammager configuration">  
    <tr><td><%=m.getString("language")%></td>  
@@ -45,13 +49,10 @@
            </mm:write>
          </select>
          </td></tr>
-     <tr><td colspan="2"><button type="submit" value="config" name="config">Config</button></td></tr>
+     <tr><td /><td><button type="submit" value="config" name="config"><img src="../media/neworg.gif" /></button></td></tr>
      </tr>
   </table>
   </form>
-  <hr />
-  <p>
-    <a href="<mm:url page="$referrer" />">Back</a>
-  </p>   
 </body>
+</mm:cloud>
 </html>

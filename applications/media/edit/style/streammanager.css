@@ -64,6 +64,13 @@ body.left input {
    background-color : #fff;
 }
 
+p.menu { 
+  text-align: right;
+  width: 100%;
+}
+p.menu .current { 
+  background-color: yellow;
+}
 
 
 	
@@ -74,6 +81,13 @@ textarea {
   background-color : #F0F2F5;
   }
 
+input.small { 
+  width: 100%;
+}
+textarea.small { 
+  width: 100%;
+  height: 5ex;
+}
 
 span.realpositionitem  {
   width: 100%;
