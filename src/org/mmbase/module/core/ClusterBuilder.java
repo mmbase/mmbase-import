@@ -36,7 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.40 2003-06-18 15:23:21 kees Exp $
+ * @version $Id: ClusterBuilder.java,v 1.41 2003-07-01 15:09:16 keesj Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1659,10 +1659,10 @@ public class ClusterBuilder extends VirtualBuilder {
             if (role != null) {
                 relationStep.setRole(role);
                 srctodest=
-                    searchdir != SEARCH_SOURCE && mmb.getTypeRel().reldefCorrect(srcType, destType, role.intValue());
+                    searchdir != SEARCH_SOURCE && mmb.getTypeRel().contains(srcType, destType, role.intValue());
                 desttosrc=
                     searchdir != SEARCH_DESTINATION
-                        && mmb.getTypeRel().reldefCorrect(destType, srcType, role.intValue());
+                        && mmb.getTypeRel().contains(destType, srcType, role.intValue());
             } else {
                 Enumeration e= mmb.getTypeRel().getAllowedRelations(srcType, destType);
                 while (e.hasMoreElements()) {
