@@ -15,7 +15,7 @@ package org.mmbase.storage.implementation.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.13 2004-11-30 08:30:57 pierre Exp $
+ * @version $Id: Attributes.java,v 1.14 2005-02-03 09:21:38 michiel Exp $
  */
 public final class Attributes {
 
@@ -57,6 +57,12 @@ public final class Attributes {
      * The default is <code>false</code>
      */
     public static final String FORCE_ENCODE_TEXT = "database-force-encode-text";
+
+    /**
+     * If the database is ISO-8859-1, then you can switch this option to true, to store CP1252 in it.
+     */
+    public static final String LIE_CP1252        = "database-lie-cp1252";
+
 
     /**
      * Option: <code>database-supports-blob</code>.

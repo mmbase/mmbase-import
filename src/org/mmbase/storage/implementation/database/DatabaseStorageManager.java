@@ -20,6 +20,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.*;
 import org.mmbase.util.Casting;
+
 import org.mmbase.util.logging.*;
 
 /**
@@ -28,7 +29,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.84 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.85 2005-02-03 09:21:38 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -119,6 +120,7 @@ public class DatabaseStorageManager implements StorageManager {
                 }
             }
         }
+
     }
 
     /**
@@ -353,16 +355,40 @@ public class DatabaseStorageManager implements StorageManager {
                     c = inStream.read();
                 }
                 inStream.close();
-                untrimmedResult = new String(bytes.toByteArray(), factory.getMMBase().getEncoding());
+                String encoding = factory.getMMBase().getEncoding();
+                if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                    // CP 1252 only fills in the 'blanks' of ISO-8859-1, 
+                    // so it is save to upgrade the encoding, in case accidentily those bytes occur
+                    encoding = "CP1252";                    
+                }                
+                untrimmedResult = new String(bytes.toByteArray(), encoding);
             } catch (IOException ie) {
                 throw new StorageException(ie);
             }
         } else {
             untrimmedResult = result.getString(index);
+            if (factory.hasOption(Attributes.LIE_CP1252)) {
+                try {                
+                    String encoding = factory.getMMBase().getEncoding();
+                    if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                        untrimmedResult = new String(untrimmedResult.getBytes("ISO-8859-1"), "CP1252");                
+                    }
+                 } catch(java.io.UnsupportedEncodingException uee) {
+                     // cannot happen
+                 }
+            }
         }
-        if (untrimmedResult != null && factory.hasOption(Attributes.TRIM_STRINGS)) {
-             return untrimmedResult.trim();
+
+        
+        if(untrimmedResult != null) {
+            if (factory.hasOption(Attributes.TRIM_STRINGS)) {
+                untrimmedResult = untrimmedResult.trim();
+            }
+            if (factory.getGetSurrogator() != null) {
+                untrimmedResult = factory.getGetSurrogator().transform(untrimmedResult);
+            }
         }
+
         return untrimmedResult;
     }
 
@@ -907,7 +933,7 @@ public class DatabaseStorageManager implements StorageManager {
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
-            setStringValue(statement, index, value, field, node);
+            node.storeValue(fieldName, setStringValue(statement, index, value, field, node));
             break;
             // Store binary data
         case FieldDefs.TYPE_BYTE : {
@@ -1148,26 +1174,65 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if the data is invalid or missing
      * @throws SQLException if an error occurred while filling in the fields
      */
-    protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
-        if (!setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) {
-            String value = Casting.toString(objectValue);
-            // Store data as a binary stream when the code is a clob or blob, or
-            // when database-force-encode-text is true.
-            if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
-                byte[] rawchars = null;
-                try {
-                    rawchars = value.getBytes(factory.getMMBase().getEncoding());
-                    ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
-                    statement.setBinaryStream(index, stream, rawchars.length);
-                    stream.close();
-                } catch (IOException ie) {
-                    throw new StorageException(ie);
-                }
-            } else {
-                statement.setString(index, value);
-            }
-            if (objectValue == null) node.storeValue(field.getDBName(),value);
+    protected Object setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field, MMObjectNode node) throws StorageException, SQLException {
+
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return objectValue;
+        String value = Casting.toString(objectValue);
+        if (factory.getSetSurrogator() != null) {
+            value = factory.getSetSurrogator().transform(value);
         }
+        String encoding = factory.getMMBase().getEncoding();
+        // Store data as a binary stream when the code is a clob or blob, or
+        // when database-force-encode-text is true.
+        if (field.getStorageType() == Types.CLOB || field.getStorageType() == Types.BLOB || factory.hasOption(Attributes.FORCE_ENCODE_TEXT)) {
+            byte[] rawchars = null;
+            try {
+                if (encoding.equalsIgnoreCase("ISO-8859-1") && factory.hasOption(Attributes.LIE_CP1252)) {                    
+                    encoding = "CP1252";                    
+                } else {
+                }  
+                rawchars = value.getBytes(encoding);
+                ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
+                statement.setBinaryStream(index, stream, rawchars.length);
+                stream.close();
+            } catch (IOException ie) {
+                throw new StorageException(ie);
+            }
+        } else {
+             String setValue = value;
+             if (factory.hasOption(Attributes.LIE_CP1252)) {
+                 try {
+                     if (encoding.equalsIgnoreCase("ISO-8859-1")) {
+                         log.info("Lying CP-1252");
+                         encoding = "CP1252";
+                         setValue = new String(value.getBytes("CP1252"), "ISO-8859-1");
+                     } else {
+                     }
+                 } catch(java.io.UnsupportedEncodingException uee) {
+                     // cannot happen
+                 }
+             } else {
+             }
+
+            statement.setString(index, setValue);
+
+        }
+        if (! encoding.equalsIgnoreCase("UTF-8")) {                
+            try {
+                value = new String(value.getBytes(encoding), encoding);
+            } catch(java.io.UnsupportedEncodingException uee) {
+                log.error(uee);
+                // cannot happen
+            }
+        }
+
+        if (objectValue == null) node.storeValue(field.getDBName(),value);
+
+        // execute also getSurrogator, to make sure that it does not confuse, and the node contains what it would contain if fetched from database.
+        if (factory.getGetSurrogator() != null) { 
+            value = factory.getGetSurrogator().transform(value);
+        }            
+        return value;
     }
 
     /**
