@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <%@page language="java" contentType="text/html; charset=UTF-8" errorPage="error.jsp"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><mm:import externid="language">en</mm:import>
-<%@include file="settings.jsp"
+%><%@include file="settings.jsp"
 %><mm:content language="$language"  type="text/html" expires="0">
 <mm:import externid="url">index_users.jsp</mm:import>
 <mm:import externid="location" />

@@ -6,7 +6,7 @@
 <mm:import id="url">index_groups.jsp</mm:import>
 
 <mm:import externid="offset">0</mm:import>
-<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+<mm:cloud loginpage="login.jsp" rank="$rank">
 <mm:import externid="group" vartype="list" />
 <mm:import id="nodetype">mmbasegroups</mm:import>
 <mm:import id="fields">name,description,owner</mm:import>
@@ -21,7 +21,7 @@
     <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasegroups" inverse="true">
-      <%=getPrompt(m, "notallowedtocreategroups")%>
+    <%=getPrompt(m, "notallowedtocreategroups")%>
   </mm:maycreate>
 </p>
 
@@ -75,4 +75,3 @@
 
 </mm:cloud>
 </mm:content>
-
