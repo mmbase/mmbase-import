@@ -318,6 +318,12 @@ one or more examplevalue tags is you want to give some example values.
       <info>The authentication name to use (account).</info>
     </attribute>
     <attribute>
+      <name>rank</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>The required rank</info>
+    </attribute>
+    <attribute>
       <name>pwd</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
