@@ -243,7 +243,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
 
     <echo message="compiling" />
-
+    <echo message="${project.extra.path}" />
     <javac srcdir ="${project.source.dir}/src"
            destdir="${project.build.dir}/classes"
            debug="${debug}"
@@ -252,7 +252,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            excludes="${compile.excludes}"
 
       >
-      <classpath id="compile.classpath">
+   <classpath id="compile.classpath">
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
