@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.42 2003-09-02 20:19:20 michiel Exp $
+     * @version  $Id: list.jsp,v 1.43 2003-10-02 11:58:26 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -20,14 +20,14 @@ Config.SubConfig    top = null;
 
 if (! ewconfig.subObjects.empty()) {
     top  = (Config.SubConfig) ewconfig.subObjects.peek();
-    if (! popup) { 
+    if (! popup) {
         log.debug("This is not a popup");
         if (top instanceof Config.ListConfig) {
             listConfig = (Config.ListConfig) top;
         } else {
             log.debug("not a list on the stack?");
         }
-    
+
     } else {
         log.debug("this is a popup");
         Stack stack = (Stack) top.popups.get(popupId);
@@ -39,7 +39,7 @@ if (! ewconfig.subObjects.empty()) {
         } else {
             if (stack.empty()) {
                 log.error("Empty stack?");
-            } else {                
+            } else {
                 listConfig = (Config.ListConfig) stack.peek();
             }
         }
@@ -53,7 +53,7 @@ if (! ewconfig.subObjects.empty()) {
 
 if (listConfig == null) {
     listConfig = configurator.createList(cloud);
-    if (! popup) {       
+    if (! popup) {
         if (log.isDebugEnabled()) log.trace("putting new list on the stack for list " + listConfig.title);
         ewconfig.subObjects.push(listConfig);
     } else {
@@ -102,7 +102,7 @@ if (listConfig.wizard != null) {
     wiz = new Wizard(request.getContextPath(), ewconfig.uriResolver, listConfig.wizard, null, cloud);
     deletable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='delete']")!=null);
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
-    
+
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null, cloud);
     deleteprompt = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null, cloud);
     titles            = Utils.selectNodeList(wiz.getSchema(), "/wizard-schema/title");
@@ -121,12 +121,12 @@ Query query = null;
 
 //// do not list anything if search is forced and no searchvalue given
 if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=null && "".equals(listConfig.searchValue)) {
-    results = cloud.getCloudContext().createNodeList();    
+    results = cloud.getCloudContext().createNodeList();
 } else if (listConfig.multilevel) {
     log.trace("this is a multilevel");
     query = Queries.createQuery(cloud, listConfig.startNodes, listConfig.nodePath, listConfig.fields, listConfig.constraints,
                                 listConfig.orderBy,
-                                listConfig.directions, "both",
+                                listConfig.directions, listConfig.searchDir,
                                 listConfig.distinct);
 
 } else {
@@ -137,12 +137,12 @@ if (listConfig.search == listConfig.SEARCH_FORCE && listConfig.searchFields!=nul
     Queries.addConstraints(q, listConfig.constraints);
     Queries.addSortOrders(q, listConfig.orderBy, listConfig.directions);
     query = q;
-} 
+}
 
 
 if (query != null) {
   query.setMaxNumber(len);
-  query.setOffset(start );   
+  query.setOffset(start );
   results = cloud.getList(query);
 }
 
@@ -253,7 +253,7 @@ if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
 if (listConfig.title == null) {
     params.put("title", manager.getGUIName(2));
 }
-                  
+
 params.put("username", cloud.getUser().getIdentifier());
 params.put("language", cloud.getLocale().getLanguage());
 params.put("ew_context", request.getContextPath());

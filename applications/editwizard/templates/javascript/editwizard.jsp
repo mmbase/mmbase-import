@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.30 2003-09-24 14:38:39 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.31 2003-10-02 11:58:26 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -89,8 +89,8 @@ function doOnLoad_ew() {
                     var DSTstartMS = Date.parse(DSTstart);
                     var DSTendMS = Date.parse(DSTend);
 
-                    // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes 
-                    // 
+                    // If Daylight Saving Time is active and clientNavigator=MSIE/Mac, add 60 minutes
+                    //
                     if ((navigator.appVersion.indexOf('MSIE')!=-1) && (navigator.appVersion.indexOf('Mac')!=-1) && (ms>DSTstartMS) && (ms<DSTendMS)) {
                         d.setTime((1000*elem.value)+(1000*60*60));
                     }
@@ -148,7 +148,7 @@ function doOnUnLoad_ew() {
 document.writeln('<div id="searchframe" class="searchframe"><iframe onblur="removeModalIFrame();" src="searching.html" id="modaliframe" class="searchframe" scrolling="no"></iframe></div>');
 
 function doSearch(el, cmd, sessionkey) {
-    
+
     // most of this is probably better to just pass to list.jsp...
 
     var searchfields = document.forms[0].elements["searchfields_" + cmd].value;
@@ -164,7 +164,7 @@ function doSearch(el, cmd, sessionkey) {
         var form = document.forms["form"];
         var errmsg=form.getAttribute("filter_required")
         if (errmsg==null || errmsg=="") {
-            errmsg="Entering a search term is required";                        
+            errmsg="Entering a search term is required";
         }
         alert(errmsg);
         return;
@@ -175,6 +175,7 @@ function doSearch(el, cmd, sessionkey) {
         searchage = 99999;
     }
 
+    var searchdir = el.getAttribute("searchdir");
     var startnodes = el.getAttribute("startnodes");
     var nodepath   = el.getAttribute("nodepath");
     var fields     = el.getAttribute("fields");
@@ -185,17 +186,17 @@ function doSearch(el, cmd, sessionkey) {
 
     // lastobject is generally the last builder in the nodepath.
     // however, if the first field is a "<buildername>.number" field, that buildername is used
-    
+
     var tmp=nodepath.split(",");
     var lastobject="";
     if (tmp.length>1) {
         lastobject=tmp[tmp.length-1];
         tmp=fields.split(",");
         if (tmp.length>1 && tmp[0].indexOf(".number") != -1) {
-            lastobject=tmp[0].split(".")[0];            
+            lastobject=tmp[0].split(".")[0];
         }
     }
-    
+
     // check constraints
     var cs = searchfields.split("|");
     if (constraints!="" && constraints) var constraints = "("+constraints+") AND (";
@@ -204,7 +205,7 @@ function doSearch(el, cmd, sessionkey) {
         if (i>0) constraints += " OR ";
         var fieldname=cs[i];
         if (fieldname.indexOf(".")==-1 && lastobject!="") fieldname = lastobject+"."+fieldname;
-        
+
         if (searchtype=="string") {
             constraints += fieldname+" = '%25"+searchterm+"%25'";
         } else if (searchtype=="like") {
@@ -226,7 +227,7 @@ function doSearch(el, cmd, sessionkey) {
             }
         }
         // make sure these fields are added to the fields-param, but not if its the number field
-        // 
+        //
         //if (fields.indexOf(fieldname)==-1 && fieldname.indexOf("number")==-1) {
         //    fields += "," + fieldname;
         //}
@@ -238,6 +239,7 @@ function doSearch(el, cmd, sessionkey) {
     url += setParam("sessionkey", sessionkey);
     url += setParam("startnodes", startnodes);
     url += setParam("constraints", constraints);
+    url += setParam("searchdir", searchdir);
     url += setParam("orderby", orderby);
     url += setParam("directions", directions);
     url += setParam("distinct", distinct);
