@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.97 2004-06-18 08:09:12 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.98 2004-06-29 09:21:10 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -297,7 +297,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             Cookie c = searchCookie();
             if (c == null) {
                 c = new Cookie(REALM + getSessionName(), r);
-                c.setPath(request.getContextPath());
+                String path = request.getContextPath();
+                if (path.equals("")) path = "/";
+                c.setPath(path);
                 c.setMaxAge(-1); // duration of browser
             } else {
                 c.setValue(r);
@@ -357,8 +359,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (session == null) { // try with cookie
             Cookie c = searchCookie();
             if (c != null) {
-                if (log.isDebugEnabled())
-                    log.debug("found cookie on path = " + c);
+                if (log.isDebugEnabled()) {
+                    log.debug("found cookie on path = " + c.getPath());
+                }
                 return c.getValue();
             }
             return null;
@@ -1106,7 +1109,9 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         super.setPageContext(pc);
         request = (HttpServletRequest) pageContext.getRequest();
         response = (HttpServletResponse) pageContext.getResponse();
-
+        if (log.isDebugEnabled()) {
+            log.debug("Got a " + response.getClass().getName());
+        }
     }
 
     /**
