@@ -1,7 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
+<%@include file="../../settings.jsp" %>
+<mm:cloud method="$method" authenticate="$authenticate" rank="administrator">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
 %>
