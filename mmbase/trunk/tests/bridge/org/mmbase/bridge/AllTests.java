@@ -11,11 +11,6 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 import junit.framework.*;
-import junit.runner.BaseTestRunner;
-
-import org.mmbase.module.core.*;
-import org.mmbase.module.builders.*;
-
 
 /**
  * TestSuite that runs all the bridge tests.
@@ -44,6 +39,7 @@ public class AllTests {
         suite.addTestSuite(FilledNodeTestTransaction.class);
         suite.addTestSuite(NodeManagerTest.class);
         suite.addTestSuite(CloudTest.class);
+		suite.addTestSuite(RelationTest.class);
         return suite;
     }
 	
