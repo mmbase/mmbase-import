@@ -61,8 +61,8 @@
     <!-- if alias added (only for new nodes), do that too --> 
     <mm:present referid="alias_name">
     	<mm:node id="new_node3" referid="new_node" >
-            <mm:createalias name="${alias_name}" />
-        </mm:node>
+        <mm:createalias name="$alias_name" />
+      </mm:node>
     </mm:present>
    </mm:present>
 </mm:present>

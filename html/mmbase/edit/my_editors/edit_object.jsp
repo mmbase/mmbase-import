@@ -103,8 +103,8 @@ title = "Edit " + ntype + " node";
     <%-- When there is was a alias, create that 1 2 --%> 
     <mm:present referid="alias_name">
     	<mm:node id="new_alias">
-            <mm:createalias name="${alias_name}" />
-        </mm:node>
+        <mm:createalias name="$alias_name" />
+      </mm:node>
     </mm:present>
 	<p class="message">The node <b><mm:field name="gui()" /></b> (<%= nr %>) is changed.</p>
   </td>

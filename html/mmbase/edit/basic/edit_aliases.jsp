@@ -10,14 +10,14 @@
 <mm:import externid="new_alias" />
 <mm:import externid="delete_alias" />
 
-<mm:node number="${node_number}" jspvar="node">
+<mm:node number="$node_number" jspvar="node">
 
 <mm:present referid="new_alias">
-  <mm:createalias name="${new_alias}" />
+  <mm:createalias name="$new_alias" />
 </mm:present>
 
 <mm:present referid="delete_alias">
-  <mm:deletealias name="${delete_alias}" />
+  <mm:deletealias name="$delete_alias" />
 </mm:present>
 
 <form name="add_alias" enctype="multipart/form-data" method="post" action='<mm:url referids="node_number" />'>
