@@ -1,26 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE project 
- [
-    <!ENTITY base     SYSTEM "buildbase.xml" >
- ]
+ [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
 >
-<!-- ===========================================================================
-
-
-Generic project build file.
-
-Generates a jar for your project. 
-
-You can also do a test. (specify test.class).
-This makes sure you use the right class-path and so on.
-
-Copy or symlink this file to the root of your project's dir.
-
-@author Michiel Meeuwissen.
-
-============================================================================ -->
 
 <project name="MMBase media project" default="jar" basedir=".">
+  <property name="project.name"   value="mmmedia" />
   &base;
 </project>
 

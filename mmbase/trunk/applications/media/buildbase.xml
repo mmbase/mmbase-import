@@ -1,3 +1,24 @@
+<!-- ===========================================================================
+
+
+Generic project build file template. 
+
+Generates a jar for your project. 
+
+You can also do a test. (specify test.class).
+This makes sure you use the right class-path and so on.
+
+Create a build.xml with a DOCTYPE like this:
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
+>
+(point to this file)
+
+@author Michiel Meeuwissen.
+
+============================================================================ -->
+
+
   <!-- =================================================================== -->
   <!-- Init                                                                -->
   <!-- =================================================================== -->
@@ -17,7 +38,7 @@
 
   <property name="servlet.jar" value="${build.dir}/lib/servlet.jar"/>
   <property name="project.name" value="a-mmbase-project" />
-  <property name="mmbase.classes" value="org/mmbase/util/logging/Logging.class,org/mmbase/util/logging/Logger.class,org/mmbase/util/logging/Level.class,org/mmbase/util/logging/SimpleImpl.class" />
+  <property name="mmbase.classes" value="this_file_does_not_exist_and_ant_sucks" /><!-- specify mmbase classes to appear in the jar too -->
 
   <property name="test.class"   value="org.mmbase.Version" />
   <property name="test.arg"     value="" />
