@@ -9,20 +9,17 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-import org.mmbase.bridge.jsp.taglib.ContextTag;
-
 import org.mmbase.bridge.jsp.taglib.ConditionTag;
-
+import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A very simple tag to check if the value of a certain context
-* variable equals a certain String value. 
-* 
-* @author Michiel Meeuwissen 
-*/
+ * A very simple tag to check if the value of a certain context
+ * variable equals a certain String value. 
+ * 
+ * @author Michiel Meeuwissen 
+ */
 
 public class CompareTag extends PresentTag implements ConditionTag {
 
@@ -33,7 +30,14 @@ public class CompareTag extends PresentTag implements ConditionTag {
     }
                
     public int doStartTag() throws JspTagException {
-        if (value.equals(getString(getReferid())) != inverse ) {
+        String compare;
+        if (getReferid() == null) {
+            Writer w =  (Writer) findParentTag("org.mmbase.bridge.jsp.taglib.Writer", null);
+            compare =  (String) w.getValue();
+        } else {
+            compare = getString(getReferid());            
+        }
+        if (value.equals(compare) != inverse ) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;

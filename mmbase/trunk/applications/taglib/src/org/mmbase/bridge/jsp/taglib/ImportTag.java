@@ -20,6 +20,7 @@ import org.mmbase.util.logging.Logging;
 * environment or from its body.
 * 
 * @author Michiel Meeuwissen 
+* @see    ContextTag
 */
 
 public class ImportTag extends WriteTag {
@@ -28,12 +29,10 @@ public class ImportTag extends WriteTag {
 
     protected boolean required     = false;
     //protected String  defaultValue = null;
-    protected int     from         = ContextTag.TYPE_NOTSET;
+    protected int     from         = ContextTag.LOCATION_NOTSET;
 
     protected String externid      = null;
     
-    private   Object value = null;
-
 
     /**
      * Release all allocated resources.
@@ -42,7 +41,6 @@ public class ImportTag extends WriteTag {
         log.debug("releasing" );
         super.release();       
         externid = null;
-        value = null;
         id = null;
     }
 
@@ -74,21 +72,7 @@ public class ImportTag extends WriteTag {
      */
 
     public void setFrom(String s) throws JspTagException {
-        if ("parent".equalsIgnoreCase(s)) {
-            from = ContextTag.TYPE_PARENT;
-        } else if ("page".equalsIgnoreCase(s)) {
-            from = ContextTag.TYPE_PAGE;
-        } else if ("session".equalsIgnoreCase(s)) {
-            from = ContextTag.TYPE_SESSION;
-        } else if ("parameters".equalsIgnoreCase(s)) {
-            from = ContextTag.TYPE_PARAMETERS;
-        } else if ("postparameters".equalsIgnoreCase(s)) { // backward compatible
-            from = ContextTag.TYPE_MULTIPART;
-        } else if ("multipart".equalsIgnoreCase(s)) {
-            from = ContextTag.TYPE_MULTIPART;
-        } else {
-            throw new JspTagException("Unknown context-type " + s);
-        }
+        from = ContextTag.stringToLocation(getAttributeValue(s));
     }
 
     public int doStartTag() throws JspTagException {
@@ -103,14 +87,14 @@ public class ImportTag extends WriteTag {
 
     private Object getFromBodyContent() throws JspTagException {
         Object res;
-        switch(type) {
-        case WriteTag.TYPE_NODE:
+        switch(helper.getType()) {
+        case WriterHelper.TYPE_NODE:
             throw new JspTagException("Type Node not (yet) supported for this Tag");
-        case WriteTag.TYPE_INTEGER:
+        case WriterHelper.TYPE_INTEGER:
             res = new Integer(bodyContent.getString());
             break;
-        case WriteTag.TYPE_VECTOR:
-        case WriteTag.TYPE_LIST:
+        case WriterHelper.TYPE_VECTOR:
+        case WriterHelper.TYPE_LIST:
             String bod = bodyContent.getString();
             if (! "".equals(bod)) {
                 res = stringSplitter(bod);
@@ -123,8 +107,8 @@ public class ImportTag extends WriteTag {
     }
 
     public int doAfterBody() throws JspTagException{        
-        value = null;
-        
+        Object value = null;
+        log.trace("doafterbody of import");
         if (externid != null) {
             log.trace("Externid was given " + externid);
             if (id == null) {
@@ -135,7 +119,7 @@ public class ImportTag extends WriteTag {
             }
                     
             boolean found;
-            if (from == ContextTag.TYPE_NOTSET) {
+            if (from == ContextTag.LOCATION_NOTSET) {
                 found = (getContextTag().findAndRegister(externid, id) != null);
             } else {
                 found = (getContextTag().findAndRegister(from, externid, id) != null);
@@ -167,14 +151,13 @@ public class ImportTag extends WriteTag {
             log.debug("Setting " + id + " to " + value);
             getContextTag().register(id, value);            
         }
+        helper.setValue(value);
 
         return SKIP_BODY;
     }
 
     public int doEndTag() throws JspTagException {
-        if (value != null && jspvar != null) {
-            setJspVar(value);
-        }
+        helper.setJspVar(pageContext);
         id = null;
         return EVAL_PAGE;
     }
