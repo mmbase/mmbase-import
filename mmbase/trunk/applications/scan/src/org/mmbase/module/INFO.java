@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.15 $ $Date: 2000-05-23 13:46:39 $
+ * @$Revision: 1.16 $ $Date: 2000-05-29 11:22:46 $
  */
 public class INFO extends ProcessorModule {
 
@@ -428,6 +428,13 @@ public class INFO extends ProcessorModule {
 				return(rtn);
 			}
 
+			if (cmd.equals("MONTHS")) {
+				int year=calendar.get(Calendar.YEAR)-1970;
+				int month=calendar.get(Calendar.MONTH);
+				int months=month+year*12;
+				return(""+months);
+			}
+
 			//WEEK
 			if (cmd.equals("WEEK")) return(""+((days/7)+1));
 			if (cmd.equals("WEEKOFYEAR")) return(""+calendar.get(Calendar.WEEK_OF_YEAR));
@@ -608,6 +615,7 @@ public class INFO extends ProcessorModule {
 				return(""+ctime);
 				//return(t2d(ctime));
 			}
+
 
 			return("Illegal date command");	
 		} else {
