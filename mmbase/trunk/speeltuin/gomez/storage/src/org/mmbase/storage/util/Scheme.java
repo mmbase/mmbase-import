@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * Schemes are used by the storage to create configurable storage instructions (specifically database SQL code).
  *
  * @author Pierre van Rooden
- * @version $Id: Scheme.java,v 1.1 2003-07-25 12:42:07 pierre Exp $
+ * @version $Id: Scheme.java,v 1.2 2003-07-25 14:47:26 pierre Exp $
  */
 public final class Scheme extends MessageFormat {
 
@@ -69,17 +69,7 @@ public final class Scheme extends MessageFormat {
         } else if (param instanceof MMObjectNode) {
             return ((MMObjectNode)param).getIntegerValue("number");
         } else if (param instanceof FieldDefs) {
-            String name = ((FieldDefs)param).getDBName();
-            Map disallowedFields = factory.getDisallowedFields();
-            if (disallowedFields.containsKey(name)) {
-                String newName = (String)disallowedFields.get(name);
-                if (newName == null) {
-                    throw new StorageException("The name of the field '"+name+"' is disallowed, and no alternate value is available.");
-                }
-                return newName;
-            } else {
-                return name;
-            }
+            return factory.mapField(((FieldDefs)param).getDBName());
         } else {
             return param;
         }

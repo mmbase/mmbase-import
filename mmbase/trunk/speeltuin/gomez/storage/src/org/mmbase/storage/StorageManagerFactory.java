@@ -21,7 +21,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.8 2003-07-25 12:42:05 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.9 2003-07-25 14:47:25 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -148,6 +148,20 @@ public interface StorageManagerFactory {
      */
 	public Map getDisallowedFields();
 
+    /**
+     * Maps a field from a fieldname as used by MMBase to a storage-specific field name
+     * @param name the MMBase fieldname
+     * @return the storage-specific field name
+     */
+	public String mapField(String name) throws StorageException;
+    
+    /**
+     * 'Unmaps' a field from a storage-specific field name to a fieldname as used by MMBase
+     * @param name the storage-specific field name
+     * @return the MMBase fieldname
+     */
+	public String unmapField(String name) throws StorageException;
+        
     /**
      * Returns whether transactions, and specifically rollback, is supported in the storage layer.
      * @return  <code>true</code> if trasnactions are supported
