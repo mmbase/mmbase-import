@@ -1,8 +1,9 @@
 
+/* general (also used in entrance page) */
 
 body {
- color: black;
- background-color: lightblue;
+   color: black;
+   background-color: lightblue;
 }
 
 p {
@@ -50,8 +51,25 @@ a:hover {
   color: red;
 }
 
+/* wizard */
+
+td.fieldprompt {
+   background-color: #aaa;
+   color: #fff;
+}
+
+.valid {
+  color: #fff;
+}
+
 .tableheader		{ color: #f00; font-weight:900; }
-.superhead  		{ text-align: center; }
+td.superhead { text-align: right; }
+
+td.superhead:before { /* only works in newer browser (mozilla) */
+  content: "--- "; 
+}
+
+/* for searchlist */
 
 table.searchresult {
   background-color: #005;
@@ -65,8 +83,9 @@ table.searchresult tr.selected_odd  td { color: #fff; background-color: #55A; }
 
 /* for list */
 
-table.list {
-   background-color: transparent;
+td.listcanvas {
+   background-color: white;
+   border-color: #000;
 }
 
 tr.itemrow-hover td	{
