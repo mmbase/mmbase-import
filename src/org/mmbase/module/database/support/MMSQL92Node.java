@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.7 2000-06-20 08:49:16 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.8 2000-06-20 09:32:46 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/06/20 08:49:16  wwwtech
+better config loading
+
 Revision 1.6  2000/06/20 08:20:14  wwwtech
 changed create calls to xml
 
@@ -71,7 +74,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.7 $ $Date: 2000-06-20 08:49:16 $
+* @$Revision: 1.8 $ $Date: 2000-06-20 09:32:46 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -934,7 +937,10 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
 		// get the wanted notnull
 		boolean notnull=def.getDBNotNull();
-		if (name.equals("otype")) notnull=true;
+		if (name.equals("otype")) { 
+			notnull=true;
+			type="INTEGER";
+		}
 
 		String result=name+" "+matchType(type,size,notnull);
 		if (notnull) result+=" "+parser.getNotNullScheme();
