@@ -9,9 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
+import org.mmbase.bridge.jsp.taglib.WriterTEI;
 import javax.servlet.jsp.tagext.VariableInfo;
-import javax.servlet.jsp.tagext.TagData;
-import javax.servlet.jsp.tagext.TagExtraInfo;
 
 /**
  * The TEI class for UrlTag. If 'jspvar' attribute is defined, then a
@@ -20,22 +19,13 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  *
  * @author Michiel Meeuwissen
  **/
-public class UrlTEI extends TagExtraInfo {
-
-    public VariableInfo[] getVariableInfo(TagData data){
-        VariableInfo[] variableInfo =    null;
-                    
-        Object varObject = data.getAttribute("jspvar");
-
-        if (varObject != null) {
-            variableInfo = new VariableInfo[1];
-            variableInfo[0] = new VariableInfo(
-                 varObject.toString(),
-                "java.lang.String",
-                true,
-                VariableInfo.NESTED);
-        }
-        return variableInfo;
+public class UrlTEI extends  WriterTEI {
+    
+    protected int scope() {
+        return VariableInfo.AT_END;
+    }
+    protected String defaultType() {
+        return "String";
     }
         
 }
