@@ -3,6 +3,7 @@
        - DTD for MMBase builder definitions
 -->
 <!ELEMENT builder (status?,classfile?,searchage?,names?,descriptions?,properties?,fieldlist?)>
+<!ATTLIST builder name CDATA #IMPLIED>
 <!ATTLIST builder maintainer CDATA #IMPLIED>
 <!ATTLIST builder version CDATA #IMPLIED>
 <!ATTLIST builder extends CDATA #IMPLIED>
@@ -17,7 +18,7 @@
 <!ATTLIST plural xml:lang NMTOKEN "en">
 <!ELEMENT status (#PCDATA)>
 <!ELEMENT fieldlist (field*)>
-<!ELEMENT field (gui?,editor?,db)>
+<!ELEMENT field (descriptions?,gui?,editor?,db)>
 <!ELEMENT names (singular*,plural*)>
 <!ELEMENT properties (property*)>
 <!ELEMENT property (#PCDATA)>
