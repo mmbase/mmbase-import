@@ -27,7 +27,7 @@ import org.mmbase.bridge.jsp.taglib.*;
  *
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: GetInfoTag.java,v 1.13 2003-06-18 20:03:57 michiel Exp $
+ * @version $Id: GetInfoTag.java,v 1.14 2003-08-11 17:06:24 michiel Exp $
  */
  
 public class GetInfoTag extends NodeReferrerTag implements Writer {
@@ -57,7 +57,7 @@ public class GetInfoTag extends NodeReferrerTag implements Writer {
         helper.setValue(value);
         helper.useEscaper(false); // fieldinfo typicaly produces xhtml
         if (getId() != null) {
-            getContextProvider().getContainer().register(getId(), helper.getValue());
+            getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         return EVAL_BODY_BUFFERED;
     }

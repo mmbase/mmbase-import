@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.17 2003-06-18 20:03:54 michiel Exp $
+ * @version $Id: Channel.java,v 1.18 2003-08-11 17:06:23 michiel Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -149,9 +149,9 @@ public class Channel extends MMObjectBuilder {
             defaultUserType="chatter";
         }
         // get message builder
-        messageBuilder   = (Message) mmb.getMMObject("message");
+        messageBuilder   = (Message)   mmb.getMMObject("message");
         // get community object type
-        communityBuilder = (Community)mmb.getMMObject("community");
+        communityBuilder = (Community) mmb.getMMObject("community");
         // obtain temporary node manager
         tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
@@ -620,8 +620,10 @@ public class Channel extends MMObjectBuilder {
 
     // javadoc overriden
     public void setDefaults(MMObjectNode node) {
-        //node.
+        node.setValue(F_OPEN, OPEN);
+        node.setValue(F_STATE, 0);
     }
+
 
 
     /**
