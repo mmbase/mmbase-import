@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig.dtd">
+<!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig_1_0.dtd">
 <!-- the configuration for the user->group*->context->object security -->
 <contextconfig>    
   <!--
