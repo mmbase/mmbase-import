@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.10.2.1 2002-04-10 11:00:25 pierre Exp $
+ * @version $Id: Message.java,v 1.10.2.2 2002-08-15 05:54:08 mark Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -371,15 +371,13 @@ public class Message extends MMObjectBuilder {
      */
     public int insert(String owner, MMObjectNode node) {
         // determine how the timestamp is stored (as a long or as two integers)
-        if (node.getIntValue(F_TIMESTAMP) == -1 ) {
-            boolean useTimeStamp=(getField(F_TIMESTAMP) != null);
-            if (useTimeStamp) {
-                node.setValue(F_TIMESTAMP, new Long(System.currentTimeMillis()));
-            } else {
-                TimeStamp timeStamp = new TimeStamp();
-                node.setValue("timestampl", timeStamp.lowIntegerValue());
-                node.setValue("timestamph", timeStamp.highIntegerValue());
-            }
+        boolean useTimeStamp=(getField(F_TIMESTAMP) != null);
+        if (useTimeStamp) {
+            node.setValue(F_TIMESTAMP, new Long(System.currentTimeMillis()));
+        } else {
+            TimeStamp timeStamp = new TimeStamp();
+            node.setValue("timestampl", timeStamp.lowIntegerValue());
+            node.setValue("timestamph", timeStamp.highIntegerValue());
         }
         InsRel insrel = mmb.getInsRel();
         insrel.deleteRelationCache(node.getIntValue(F_THREAD));
