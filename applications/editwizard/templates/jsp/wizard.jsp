@@ -5,7 +5,7 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.18 2003-07-03 10:57:27 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.19 2003-11-19 13:34:28 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -16,7 +16,7 @@ Config.SubConfig    top = null;
 
 if (! ewconfig.subObjects.empty()) {
     top  = (Config.SubConfig) ewconfig.subObjects.peek();
-    if (! popup) { 
+    if (! popup) {
         log.debug("This is not a popup");
         if (top instanceof Config.WizardConfig) {
             log.debug("checking configuration");
@@ -24,7 +24,7 @@ if (! ewconfig.subObjects.empty()) {
         } else {
             log.debug("not a wizard on the stack?");
         }
-    
+
     } else {
         log.debug("this is a popup");
         Stack stack = (Stack) top.popups.get(popupId);
@@ -91,11 +91,11 @@ if (wizardConfig == null) {
     wizardConfig.parentFid = request.getParameter("fid");
     wizardConfig.parentDid = request.getParameter("did");
     wizardConfig.popupId   = popupId;
-    if (! popup) {       
+    if (! popup) {
         if (log.isDebugEnabled()) log.trace("putting new wizard on the stack for object " + wizardConfig.objectNumber);
         ewconfig.subObjects.push(wizardConfig);
     } else {
-        if (log.isDebugEnabled()) log.trace("putting new wizard in popup map  for object " + wizardConfig.objectNumber);        
+        if (log.isDebugEnabled()) log.trace("putting new wizard in popup map  for object " + wizardConfig.objectNumber);
         Stack stack = (Stack) top.popups.get(popupId);
         stack.push(wizardConfig);
     }
@@ -110,22 +110,24 @@ if (wizardConfig.wiz.startWizard()) {
     if (parentDid==null) parentDid="";
     String objectnumber = cmd.getParameter(2);
     String origin = cmd.getParameter(3);
+
     String wizardname = cmd.getValue();
-    String redirectTo = response.encodeURL("wizard.jsp?fid="+parentFid+
-                                 "&did="+parentDid+
-                                 "&proceed=true&wizard="+wizardname+
-                                 "&sessionkey="+ewconfig.sessionKey+
-                                 "&objectnumber="+objectnumber+
-                                 "&origin="+origin +
+    String redirectTo = response.encodeURL("wizard.jsp?fid=" + parentFid +
+                                 "&did=" + parentDid +
+                                 "&proceed=true&wizard=" + wizardname +
+                                 "&sessionkey=" + ewconfig.sessionKey +
+                                 "&objectnumber=" + objectnumber +
+                                 "&origin=" + origin +
                                  "&popupid=" + popupId +
+                                 "&context=" + ewconfig.context +
                                  "&language=" + ewconfig.language);
     log.debug("Redirecting to " + redirectTo);
     response.sendRedirect(redirectTo);
 } else if (wizardConfig.wiz.mayBeClosed()) {
     log.trace("Closing this wizard");
-    response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey + 
-                                             "&proceed=true" + 
-                                             "&remove=true" + 
+    response.sendRedirect(response.encodeURL("wizard.jsp?sessionkey=" + ewconfig.sessionKey +
+                                             "&proceed=true" +
+                                             "&remove=true" +
                                              "&popupid=" + popupId ));
 } else {
     log.trace("Send html back");

@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.108 2003-11-12 13:54:40 michiel Exp $
+ * @version $Id: Wizard.java,v 1.109 2003-11-19 13:34:27 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -340,7 +340,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       variables.put("wizardname", wizardName);
 
       // set attributes from config
-      // this sets: origin, debug, objectnumber, and wizard
+      // this sets: origin, context, debug, objectnumber, and wizard
       variables.putAll(wizardConfig.getAttributes());
    }
 
@@ -427,7 +427,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // - load data.
         // - tags the datanodes
         data = databaseConnector.load(schema.getDocumentElement(), dataId);
-        
+
         if (data == null) {
             throw new WizardException("The requested object could not be loaded from MMBase. ObjectNumber:" + dataId +
                                       ". Does the object exists and do you have enough rights to load this object.");
@@ -435,7 +435,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         // setup original data
         originalData = Utils.emptyDocument();
 
-        
+
         // store original data, so that the put routines will know what to save/change/add/delete
         originalData.appendChild(originalData.importNode(data.getDocumentElement().cloneNode(true), true));
     }
@@ -2140,8 +2140,8 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                 log.trace("Using data was " + Utils.getSerializedXML(originalData));
                 log.trace("is " + Utils.getSerializedXML(data));
             }
-             
-             // copy data to original data. 
+
+             // copy data to original data.
              // makes sense but we don't get the new object numbers like that.
 
 

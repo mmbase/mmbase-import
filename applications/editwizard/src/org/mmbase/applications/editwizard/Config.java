@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.41 2003-11-12 13:53:59 michiel Exp $
+ * @version $Id: Config.java,v 1.42 2003-11-19 13:34:27 pierre Exp $
  */
 
 public class Config {
@@ -40,21 +40,22 @@ public class Config {
     // protocol string to test referrer pages
     private final static String PROTOCOL = "http://";
 
-    public String      sessionKey        = null;
-    public URIResolver uriResolver       = null;
-    public int         maxupload = DEFAULT_MAX_UPLOAD_SIZE;
-    public Stack       subObjects = new Stack(); // stores the Lists and Wizards.
-    public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
-    public String      backPage;
-    public String      templates;
-    public String      language;
+    public String sessionKey = null;
+    public URIResolver uriResolver = null;
+    public int maxupload = DEFAULT_MAX_UPLOAD_SIZE;
+    public Stack subObjects = new Stack(); // stores the Lists and Wizards.
+    public String sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
+    public String backPage;
+    public String templates;
+    public String language;
+    public String context;
 
     static public class SubConfig {
         public boolean debug = false;
         public String wizard;
         public String page;
-        public Map   popups     = new HashMap(); // all popups now in use below this (key -> Config)
-        public Map    attributes = new HashMap();
+        public Map popups = new HashMap(); // all popups now in use below this (key -> Config)
+        public Map attributes = new HashMap();
 
         /**
          * Basic configuration. The configuration object passed is updated with information retrieved
@@ -63,6 +64,7 @@ public class Config {
          * <ul>
          *   <li>wizard</li>
          *   <li>origin</li>
+         *   <li>context</li>
          *   <li>debug</li>
          * </ul>
          *
@@ -76,6 +78,7 @@ public class Config {
                 wizard = "file://" + configurator.getRealPath(wizard);
             }
             setAttribute("origin",configurator.getParam("origin"));
+            setAttribute("context",configurator.getContext());
             // debug parameter
             debug = configurator.getParam("debug",  debug);
         }
@@ -502,10 +505,11 @@ public class Config {
             config.sessionId = response.encodeURL("test.jsp").substring(8);
             log.debug("Sessionid : " + config.sessionId);
 
-
-
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
+            }
+            if (config.context == null) {
+                config.context = getParam("context");
             }
             // The editwizard need to know the 'backpage' (for 'index' and 'logout' links).
             // It can be specified by a 'referrer' parameter. If this is missing the
@@ -655,6 +659,10 @@ public class Config {
             } else {
                 return ((SubConfig) config.subObjects.peek()).page;
             }
+        }
+
+        public String getContext(){
+            return config.context;
         }
 
         public  ListConfig createList(Cloud cloud) {
