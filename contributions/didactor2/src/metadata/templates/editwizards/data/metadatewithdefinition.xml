@@ -3,23 +3,17 @@
 <wizard-schema id="empty">
   <title>Metadata Editor</title>
   <action type="load">
-    <!--<relation destinationtype="metadata" role="related">
-      <object type="metadata">-->
-        <relation destinationtype="metadate" role="posrel">
-          <object type="metadate"/>
-        </relation>
-      <!--</object>
-    </relation>-->
+    <relation destinationtype="metadate" role="posrel">
+      <object type="metadate"/>
+    </relation>
   </action>
   
   <action type="create">
-    <!--<relation destinationtype="metadata" role="related">-->
-      <object type="metadata">
-        <relation destinationtype="metadate" role="posrel">
-          <object type="metadate"/>
-        </relation>
-      </object>
-<!--    </relation>-->
+    <object type="metadata">
+      <relation destinationtype="metadate" role="posrel">
+        <object type="metadate"/>
+      </relation>
+    </object>
   </action>
 
   <steps>
@@ -32,12 +26,7 @@
     <list extends="list/metadefinition-inmetavalues.xml"/>
 
     <field fdatapath="relation[@role='posrel']/object[@type='metadate']/field[@name='value']" ftype="datetime">
-<!--    <field name="value" ftype="line">-->
       <prompt>Waarde</prompt>
     </field>
-    <!--<field name="language" ftype="line">
-      <prompt>Taal van de bovenstaande waarde</prompt>
-    </field>-->
-
     </form-schema>
 </wizard-schema>
