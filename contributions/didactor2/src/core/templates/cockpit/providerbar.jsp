@@ -11,7 +11,6 @@
 <%@include file="/shared/setImports.jsp" %>
 
 <div style="display:none;">
-<%--<div>--%>
     <mm:treeinclude write="true" page="/shared/onlineReporter.jsp" objectlist="$includePath" referids="$referids" />
 </div>
  

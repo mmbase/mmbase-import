@@ -52,15 +52,13 @@
  
   </table>
  
-  <p>
     <mm:relatednodes type="attachments">
-      <mm:field name="title"/>
+    <p>
+      <a href="<mm:attachment/>"><mm:field name="title"/></a>
       <br/>
       <mm:field name="description" escape="p"/>
-      <br/>
-      <a href="<mm:attachment/>"><mm:field name="title"/></a>
+    </p>
     </mm:relatednodes>
-  </p>
 
   <div class="audiotapes">
     <mm:relatednodes type="audiotapes">
