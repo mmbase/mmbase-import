@@ -16,8 +16,7 @@ import java.io.File;
 import java.util.*;
 
 import javax.servlet.http.*;
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.*;
 import javax.servlet.RequestDispatcher;
 
 import org.mmbase.bridge.*;
@@ -37,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.94.2.5 2004-07-05 14:56:32 pierre Exp $
+ * @version $Id: CloudTag.java,v 1.94.2.6 2004-07-05 17:19:56 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -872,7 +871,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
 
             /*
-            if (1 == 0) {
+            if (1 == 0) { 
                 // XXXXX hmm, should test this in freeze
                 // making relative urls'.
 
@@ -1131,7 +1130,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         if (checkAnonymous()) { // check if requested, and create
             if (cloud == null) { // could not be created!
-                // what can we do now?
+                // what can we do now?                
                 return SKIP_BODY;
             } else {
                 // yes, found
@@ -1160,7 +1159,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             }
             return SKIP_BODY;
         }
-        if (checkLogoutMethod()) {
+        if (checkLogoutMethod()) { 
             return evalBody();
         }
 
@@ -1177,8 +1176,21 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         return evalBody();
     }
 
+    public int doEndTag() throws JspTagException {
+        // can be cleaned for gc:
+        cookies = null;
+        cloudContext = null;
+        cloud = null;
+        logon = null;
+        session = null;
+        request = null;
+        response = null;
+        return super.doEndTag();
+    }
+
     // if EVAL_BODY == EVAL_BODY_BUFFERED
     public int doAfterBody() throws JspTagException {
+
         if (EVAL_BODY == EVAL_BODY_BUFFERED) {
             try {
                 if (bodyContent != null) {

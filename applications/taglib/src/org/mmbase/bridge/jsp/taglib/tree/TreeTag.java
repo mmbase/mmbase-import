@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.6.2.1 2004-06-17 11:25:14 johannes Exp $
+ * @version $Id: TreeTag.java,v 1.6.2.2 2004-07-05 17:20:04 michiel Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -306,6 +306,12 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
         if (t != null) {
             ((TimerTag)t).haltTimer(timerHandle);
         }
+        // dereference for gc
+        tree = null;
+        iterator = null;
+        shrinkStack = null;
+        nextNode = null;
+        collector = null;
         return super.doEndTag();
     }
 

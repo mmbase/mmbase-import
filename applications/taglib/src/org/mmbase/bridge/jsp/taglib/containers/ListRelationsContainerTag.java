@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.2 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.2.2.1 2004-07-05 17:20:01 michiel Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
 
@@ -78,7 +78,7 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
             nm = getCloud().getNodeManager(type.getString(this));
         }
         Node relatedFromNode = getNode();
-        query = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
+        query        = Queries.createRelationNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
         relatedQuery = Queries.createRelatedNodesQuery(relatedFromNode, nm, (String) role.getValue(this), (String) searchDir.getValue(this)); 
 
         return EVAL_BODY;
@@ -95,6 +95,10 @@ public class ListRelationsContainerTag extends NodeReferrerTag implements QueryC
             } 
         }
         return SKIP_BODY;        
+    }
+    public int doEndTag() throws JspTagException {
+        query = null;
+        return super.doEndTag();
     }
 
 }

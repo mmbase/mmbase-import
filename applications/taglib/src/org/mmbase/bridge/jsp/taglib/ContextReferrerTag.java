@@ -10,12 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
+import org.mmbase.util.GenericResponseWrapper;
+
+import java.util.Locale;
 
 /**
  * If you want to have attributes which obtain the value from a
@@ -24,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.57 2004-04-01 15:21:05 pierre Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.57.2.1 2004-07-05 17:19:57 michiel Exp $
  * @see ContextTag
  */
 
@@ -83,7 +87,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (pageContextTag == null) { // not yet put
             log.debug("No pageContextTag found in pagecontext, creating..");
             if (pageLog.isServiceEnabled()) {
-                thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
+                HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+                thisPage = request.getRequestURI();
                 String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
                 pageLog.service("Parsing JSP page: " + thisPage + (queryString != null ? "?" + queryString : ""));
             }
@@ -149,7 +154,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     /**
      * Which writer to use.
      */
-    protected String writerid = null;
+    protected Attribute writerid = Attribute.NULL;
 
 
     /**
@@ -166,7 +171,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.6.2
      */
     public Writer findWriter(boolean th) throws JspTagException {
-        Writer w = (Writer) findParentTag(Writer.class, writerid, th);
+        Writer w = (Writer) findParentTag(Writer.class, (String) writerid.getValue(this), th);
         if (w != null) {
             w.haveBody();
         }
@@ -179,11 +184,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * Sets the writer attribute.
      */
     public void setWriter(String w) throws JspTagException {
-        writerid = getAttributeValue(w);
+        writerid = getAttribute(w);
 
     }
 
-
+    public int doEndTag() throws JspTagException {
+        return EVAL_PAGE;
+    }
 
     /**
      * Release all allocated resources.
@@ -197,12 +204,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
+        pageContextTag = null;
         /*
         id = null;
         referid   = Attribute.NULL;
         contextId = Attribute.NULL;
         */
-        pageContextTag = null;
     }
 
 
