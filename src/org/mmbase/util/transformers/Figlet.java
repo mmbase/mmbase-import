@@ -16,12 +16,12 @@ package org.mmbase.util.transformers;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: Figlet.java,v 1.1 2003-05-12 21:09:52 michiel Exp $
+ * @version $Id: Figlet.java,v 1.2 2003-05-12 21:21:26 michiel Exp $
  * @todo   no way to specify commandline arguments on the fly.
  */
 
 public class Figlet extends AbstractCommandStringTransformer implements CharTransformer {
     protected String[] getCommand() {
-        return new String[] {"figlet", "-w", "-160"};
+        return new String[] {"figlet", "-w", "160"};
     }
 }
