@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * user.
  * 
  * @author Eduard Witteveen
- * @version $Id: NameContext.java,v 1.3 2003-07-09 10:12:41 michiel Exp $
+ * @version $Id: NameContext.java,v 1.4 2004-04-19 17:23:47 michiel Exp $
  */
 public class NameContext extends UserContext {
     private static Logger log = Logging.getLoggerInstance(NameContext.class);
@@ -46,6 +46,13 @@ public class NameContext extends UserContext {
             throw new SecurityException("No rank was provider by the security implementation. This is required.");
         }
         return rank;
+    }
+
+    /**
+     * @since MMBase-1.8
+     */
+    void setRank(Rank r) {
+        rank = r;
     }
 
     void setIdentifier(String ident) {
