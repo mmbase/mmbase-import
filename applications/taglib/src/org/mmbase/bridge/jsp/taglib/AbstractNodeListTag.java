@@ -37,7 +37,7 @@ import java.util.HashMap;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.49 2003-08-08 13:30:02 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.50 2003-08-08 16:03:48 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -75,6 +75,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Setting the list to conform to this ofsset is implementation specific.
      */
     protected Attribute offset = Attribute.NULL;
+
+
+    protected Attribute comparator = Attribute.NULL; 
 
 
     /**
@@ -173,6 +176,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     */
+
+
+    public void setComparator(String c) throws JspTagException {
+        comparator = getAttribute(c);
+    }
+
+
     /**
      * Sets the selection query
      * @param where the selection query
@@ -255,6 +265,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  @link #doStartTag}.
      */
     protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
+
+        ListSorter.sort(nodes, (String) comparator.getValue(this), pageContext);
+
         if (trim && (max != Attribute.NULL || offset != Attribute.NULL)) {
             int currentSize = nodes.size();
 
