@@ -38,7 +38,8 @@ public class ListTag extends NodeLikeTag implements BodyTag {
     private String searchString=null;
     private String commandString = null;
 
-    private int    offset   =0;
+    private int    offset   = 0;
+    private boolean changed = true;
 
     /**
      * used when nesting tags to make a differance between the variables
@@ -144,6 +145,7 @@ public class ListTag extends NodeLikeTag implements BodyTag {
      **/
     public void setSorted(String sorted){
 	this.sortedString = sorted;
+        
     }
 
     /**
@@ -311,14 +313,30 @@ public class ListTag extends NodeLikeTag implements BodyTag {
 
     }
     
-    public void doInitBody() throws JspException {       
+    
+    private String previousValue = null; // static voor doInitBody
+    public void doInitBody() throws JspException { 
         if (returnValues.hasNext()){
-	    currentItemIndex ++;            
-	    setNode(returnValues.nextNode());
-            fillVars
-();
-	}
-    } 
+            currentItemIndex ++;
+            Node next = returnValues.nextNode();
+            if (sortedString != null) { // then you can also ask if 'changed' the node
+                // look only at first field of sorted for the /moment.
+                String f = (String)stringSplitter(sortedString).get(0);
+                String value = (String)next.getValue(f);
+                if (previousValue !=null) {
+                    if (value.equals(previousValue)) {
+                        changed = false;
+                    } else {
+                        changed = true;
+                    }
+                }
+                previousValue = value;                
+            }
+            setNodeVar(next);
+            fillVars();
+        }
+    }
+     
 
     private String parseNodes(String nodes) {
 	// should be a StringTokenizer have to check mmci how
@@ -334,6 +352,11 @@ public class ListTag extends NodeLikeTag implements BodyTag {
     public boolean isFirst(){
 	return (currentItemIndex == 0);
     }
+
+    public boolean isChanged() {
+        return changed;
+    }
+
     public int size(){
 	return listSize;
     }
