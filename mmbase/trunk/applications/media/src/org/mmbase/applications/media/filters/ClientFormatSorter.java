@@ -20,10 +20,10 @@ import org.mmbase.util.logging.*;
 
 /**
  * Client's format can be different for every request. So this does
- * not extend FormatSorter, but is does something similar.
+ * not extend Formatorter, but is does something similar.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClientFormatSorter.java,v 1.1 2003-02-05 16:31:37 michiel Exp $
+ * @version $Id: ClientFormatSorter.java,v 1.2 2003-02-05 16:55:27 michiel Exp $
  */
 public class ClientFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ClientFormatSorter.class.getName());
@@ -41,7 +41,6 @@ public class ClientFormatSorter extends  PreferenceSorter {
         if (format == null) {                  
             return 0; // no client preference given
         } else {
-            FormatSorter comp;
             if (format instanceof Format) {
                 if (format == ri.getFormat()) return 100;
             } else if (format instanceof String) {

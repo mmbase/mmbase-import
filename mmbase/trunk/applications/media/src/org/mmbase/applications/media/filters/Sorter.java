@@ -16,9 +16,9 @@ import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
 
 /**
- * Implements a Filter as a Sorter. That means that it only sorts,
- * and the implementation is done by implementating it as an
- * Sorter.
+ * Implements a Filter as a Comparator. That means that it only sorts,
+ * and the implementation is done by calling Collections.sort. You can
+ * be sure that no URLs are removed during the filter process.
  *
  * @author  Michiel Meeuwissen
  */
@@ -40,7 +40,7 @@ abstract public class Sorter implements Comparator, Filter {
         return compareURLComposer(ri1, ri2);
     }
 
-    public List filter(List urlcomposers) {
+    final public List filter(List urlcomposers) {
         Collections.sort(urlcomposers, this);
         return urlcomposers;
     }
