@@ -9,12 +9,9 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-import java.lang.*;
-import java.net.*;
 import java.util.*;
-import java.io.*;
-import javax.servlet.http.*;
-import java.text.*;
+import java.io.File;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import org.mmbase.util.*;
@@ -30,32 +27,43 @@ import org.mmbase.util.logging.Logger;
  * Most functions in this module are specific for SCAN - other scripting languages generally have
  * their own ways of obtaining this data.
  *
+ * @application SCAN
+ * @rename Info
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Version:$
- *
- * @$Revision: 1.42 $ $Date: 2001-12-19 17:35:09 $
- */
+ * @version $Id: INFO.java,v 1.43 2002-01-25 09:53:00 pierre Exp $
+.*/
 public class INFO extends ProcessorModule {
 
+    /**
+     * @rename NOT
+     */
     public final static int Not=0;
     public final static int Dutch=1;
     public final static int English=2;
 
-    static Logger log = Logging.getLoggerInstance(INFO.class.getName()); 
-   
-    Random rnd;
-    String documentroot;
-    Hashtable DirCache=new Hashtable();
+    private static Logger log = Logging.getLoggerInstance(INFO.class.getName());
 
+    /**
+     * @scope private
+     */
+    Random rnd;
+    /**
+     * @scope private
+     */
+    String documentroot;
+    /**
+     * @scope private
+     */
+    Hashtable DirCache=new Hashtable();
 
     /**
      * Constructor for
      */
     public INFO() {
     }
-    
+
     /**
      * Initializes the module.
      * Determines the document root by reading system properties.
@@ -65,7 +73,7 @@ public class INFO extends ProcessorModule {
         // org.mmbase super.init();
         rnd=new RandomPlus();
     }
-    
+
 
     /**
      * Generate a list of values from a command to the processor.<br />
@@ -88,7 +96,7 @@ public class INFO extends ProcessorModule {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();    
+            String cmd=tok.nextToken();
             if (cmd.equals("COLOR")) { tagger.setValue("ITEMS","2"); return doColor(tok); }
             if (cmd.equals("RANGE")) { tagger.setValue("ITEMS","1"); return doRange(tok); }
             if (cmd.equals("SCANDATE")) { tagger.setValue("ITEMS","4"); return doScanDate(sp,tagger); }
@@ -138,8 +146,8 @@ public class INFO extends ProcessorModule {
     public String replace(scanpage sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();    
-            if (cmd.equals("CLASS")) return("CLASS="+this);
+            String cmd=tok.nextToken();
+            if (cmd.equals("CLASS")) return "CLASS="+this;
             if (cmd.equals("BROWSER")) return doBrowser(sp,tok);
             if (cmd.equals("DECODE")) return doParamDecode(sp,tok);
             if (cmd.equals("ENCODE")) return doParamEncode(sp,tok);
@@ -158,16 +166,16 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("PARSETIME")) return doParseTime(tok);
 
             if (cmd.equals("USER")) return doUser(sp,tok);
-            
+
         }
         return "No command defined";
     }
 
 
     /**
-    * takes a time in several formats and creates a time from it
+     * takes a time in several formats and creates a time from it
      * @param tok the processing command's arguments
-    */
+     */
     String doParseTime(StringTokenizer tok) {
         String rawstr=tok.nextToken();
         String formatstr="";
@@ -190,22 +198,19 @@ public class INFO extends ProcessorModule {
         df.setTimeZone(tz);
 
         Date date = null;
-        try
-        {
-            date = df.parse(rawstr); 
-        }
-        catch( java.text.ParseException e )
-        {
+        try {
+            date = df.parse(rawstr);
+        } catch( java.text.ParseException e ) {
             log.error(e.toString());
         }
 
         if( date != null) {
-            return(""+(int)((date.getTime()-DateSupport.getMilliOffset())/1000));
+            return ""+(int)((date.getTime()-DateSupport.getMilliOffset())/1000);
         } else {
-            return("");
+            return "";
         }
     }
-    
+
     /**
      * Formats either the current or a given timevalue according to a specified format.
      * Cmd arguments are an optional timevalue and a format (default HH:MM:ss).
@@ -239,7 +244,7 @@ public class INFO extends ProcessorModule {
     }
 
 
-    /**    
+    /**
      * Performs tests on strings. Cmd arguments are:
      * EQUALS-val-compareVal : checks whether two strings are the same
      * STARTSWITH-val-compareVal(-toffset) or LEFTSTRING : checks whether one strings starts with another
@@ -262,15 +267,15 @@ public class INFO extends ProcessorModule {
                             } catch (NumberFormatException nfe) {
                                 log.error(""+nfe);
                                 return "Error in "+cmd+" offset arg";
-                            } 
+                            }
                             return ""+val.startsWith(compareVal,toffset);
                         }
                         return ""+val.startsWith(compareVal);
-                    } else if (cmd.equals("ENDSWITH")||cmd.equals("RIGHTSTRING")) { 
+                    } else if (cmd.equals("ENDSWITH")||cmd.equals("RIGHTSTRING")) {
                         return ""+val.endsWith(compareVal);
-                    } else if (cmd.equals("EQUALS")) { 
+                    } else if (cmd.equals("EQUALS")) {
                         return ""+val.equals(compareVal);
-                    } else if (cmd.equals("INDEXOF")||cmd.equals("CONTAINS")) { 
+                    } else if (cmd.equals("INDEXOF")||cmd.equals("CONTAINS")) {
                         return ""+(val.indexOf(compareVal)!=-1);
                     } else { return ("Unknown String cmd "+cmd);
                     }
@@ -344,7 +349,7 @@ public class INFO extends ProcessorModule {
         return URLParamEscape.unescapeurl(result);
     }
 
-    
+
     /**
      * Retrieve the name of the user's operating system.
      * This command takes no arguments
@@ -355,7 +360,7 @@ public class INFO extends ProcessorModule {
     String doOs(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            return "Illegal OS command";    
+            return "Illegal OS command";
         } else {
             String tmp=sp.req.getHeader("User-Agent");
             tmp = tmp.toLowerCase();
@@ -367,7 +372,7 @@ public class INFO extends ProcessorModule {
                 return "Windows 2000";
             } else if (tmp.indexOf("winnt")!=-1 || tmp.indexOf("windows nt")!=-1) {
                 return "Windows NT";
-            } else if (tmp.indexOf("win")!=-1) { 
+            } else if (tmp.indexOf("win")!=-1) {
                 return "Windows";
             } else if (tmp.indexOf("mac")!=-1) {
                 return "MAC";
@@ -410,7 +415,7 @@ public class INFO extends ProcessorModule {
                 j=Math.abs(rnd.nextInt()%(e-s));
             } catch (Exception f) {}
         }
-    }    
+    }
     return ""+(s+j);
     }
 
@@ -427,7 +432,7 @@ public class INFO extends ProcessorModule {
      * @param sp the current page context
      * @param tok The StringTokenizer containing the subsequent cmd argument tokens.
      * @return a <code>String</code> containing the result
-     */    
+     */
     String doBrowser(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -442,7 +447,7 @@ public class INFO extends ProcessorModule {
                     }
                     return sp.req.getHeader(cmd);
                 } else {
-                    return "Illegal browser command";    
+                    return "Illegal browser command";
                 }
             }
             if (cmd.equals("WANTEDHOST")) {
@@ -454,11 +459,11 @@ public class INFO extends ProcessorModule {
             String br=sp.req.getHeader("User-Agent");
             if (cmd.equals("NETSCAPE")) {
                 return toYesNo(br.indexOf("Mozilla")==0 && br.indexOf("MSIE")==-1);
-            } 
+            }
             if (cmd.equals("MSIE")) {
                 return toYesNo(br.indexOf("MSIE")!=-1);
             }
-            return "Illegal browser command";    
+            return "Illegal browser command";
         } else {
             return sp.req.getHeader("User-Agent");
         }
@@ -539,7 +544,7 @@ public class INFO extends ProcessorModule {
                     return toYesNo(servername.equals(tmp));
                 }
             }
-            return "Illegal user command";    
+            return "Illegal user command";
         } else {
             return HttpAuth.getRemoteUser(sp.req);
         }
@@ -578,7 +583,7 @@ public class INFO extends ProcessorModule {
             if (firstToken.equals("ALPHA")) {  // return the alphabet
                 for (int i='A';i<='Z';i++) {
                     results.addElement(""+(char)i);
-                }        
+                }
             }
         }
         return results;
@@ -641,7 +646,7 @@ public class INFO extends ProcessorModule {
         results.addElement("black");results.addElement("000000");
         return results;
     }
-    
+
     /**
      * Returns a list of the 16 windows color names and their RGB values. <br />
      * @return a <code>Vector</code> containing color names and RGB values
@@ -670,6 +675,7 @@ public class INFO extends ProcessorModule {
     /**
      * Formats either the current or a given timevalue according to a specified format.
      * Cmd arguments are an optional timevalue, a format, and the timepart to return.
+     * @deprecation uses Date instead of Calendar
      * @param tok the processing command's arguments
      * @param inSec if <code>true</code>, the timevalue is in seconds instead of milliseconds
      * @return a <code>String</code> containing the time in the specified format
@@ -677,7 +683,7 @@ public class INFO extends ProcessorModule {
     String doTime(StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken(),rtn="";
-            
+
             Date d=new Date(System.currentTimeMillis());
             TimeZone tz = TimeZone.getTimeZone("ECT"); //Rob
             GregorianCalendar calendar = new GregorianCalendar(tz); //Rob
@@ -691,11 +697,11 @@ public class INFO extends ProcessorModule {
             } catch(Exception e) {
                 // no problem it was probably not a number
             }
-			int ctime=(int)(calendar.getTime().getTime()/1000);
+            int ctime=(int)(calendar.getTime().getTime()/1000);
 
             int whichname=INFO.Not;
 
-            if (cmd.equals("NAME") || cmd.equals("ENGLISH")) { 
+            if (cmd.equals("NAME") || cmd.equals("ENGLISH")) {
                 whichname=INFO.English;
                 if (tok.hasMoreTokens()) cmd=tok.nextToken();
             } else if (cmd.equals("DUTCHNAME") || cmd.equals("DUTCH")) {
@@ -715,14 +721,14 @@ public class INFO extends ProcessorModule {
                     return ""+calendar.get(Calendar.HOUR_OF_DAY)+":"+getminutes;
                 }
             }
-            
+
             int days = calendar.get(Calendar.DAY_OF_YEAR);
 
             if (cmd.equals("CURTIME")) {
                 if (tok.hasMoreTokens()) {
-                    return(nextCurTime(tok));
+                    return nextCurTime(tok);
                 } else {
-                    return(""+System.currentTimeMillis()/1000);
+                    return ""+System.currentTimeMillis()/1000;
                 }
             }
             if (cmd.equals("DCURTIME")) return ""+DateSupport.currentTimeMillis()/1000;
@@ -738,8 +744,8 @@ public class INFO extends ProcessorModule {
                 } else {
                     return ""+getyear;
                 }
-            } 
-    
+            }
+
             //MONTH
             if (cmd.equals("MONTH") || cmd.equals("SHORTMONTH")) {
                 int getmonth = calendar.get(Calendar.MONTH);
@@ -782,7 +788,7 @@ public class INFO extends ProcessorModule {
                             w=1;
                         } else if (tk.equals("MONTH")) {
                             tk=tok.nextToken();
-                            w=2;    
+                            w=2;
                         }
                         try {
                             imonth=Integer.parseInt(tk);
@@ -791,7 +797,7 @@ public class INFO extends ProcessorModule {
                         }
                     } else {
                         imonth=0;
-                    } 
+                    }
                     cal=getCalendarMonths(imonth);
                 }
                 switch(whichname) {
@@ -852,7 +858,7 @@ public class INFO extends ProcessorModule {
                         }
                         break;
                 }
-            
+
                 return rtn;
             }
 
@@ -1035,7 +1041,7 @@ public class INFO extends ProcessorModule {
                 ctime-=(min*60);
                 ctime-=(sec);
                 return ""+ctime;
-			} else if (cmd.equals("DAYCURTIME")) {
+            } else if (cmd.equals("DAYCURTIME")) {
                 Date d2=calendar.getTime();
                 int hours=d2.getHours();
                 int min=d2.getMinutes();
@@ -1047,13 +1053,13 @@ public class INFO extends ProcessorModule {
             }
 
 
-            return "Illegal date command";    
+            return "Illegal date command";
         } else {
             return new Date(DateSupport.currentTimeMillis()).toString();
         }
     }
 
-    /**    
+    /**
      * Returns a description of the module.
      * @return a <code>String</code> describing the module's function.
      */
@@ -1061,7 +1067,7 @@ public class INFO extends ProcessorModule {
         return "Support routines for servscan, Daniel Ockeloen";
     }
 
-    /**    
+    /**
      * This method is used to retrieve time related info from a relative time value.
      * Valid commands are :
      * GET/GETTIME-timeValueInMillis : time passed since the indicated time
@@ -1093,30 +1099,30 @@ public class INFO extends ProcessorModule {
                     return error;
                 }
             } else if (cmd.startsWith("GET")) {
-            
+
                 if (tok.hasMoreTokens()) {
                     try {
                         timeValue = Integer.parseInt(tok.nextToken());
                     } catch (NumberFormatException nfe) {
                         log.warn("doRelTime: Invalid timeValue specified. "+nfe);
                         return "INFO::doRelTime: Invalid timeValue specified timeValue="+timeValue;
-                    } 
+                    }
                 } else {
                     return "INFO::doRelTime: No timeValue specified";
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("doRelTime: "+cmd+"-"+timeValue+" result= "+RelativeTime.getHours(timeValue));                
+                    log.debug("doRelTime: "+cmd+"-"+timeValue+" result= "+RelativeTime.getHours(timeValue));
                 }
                 if (cmd.equals("GETHOURS")) {
-                    return (""+RelativeTime.getHours(timeValue));    
+                    return (""+RelativeTime.getHours(timeValue));
                 } else if (cmd.equals("GETMINUTES")) {
-                    return (""+RelativeTime.getMinutes(timeValue));    
+                    return (""+RelativeTime.getMinutes(timeValue));
                 } else if (cmd.equals("GETSECONDS")) {
-                return (""+RelativeTime.getSeconds(timeValue));    
+                return (""+RelativeTime.getSeconds(timeValue));
                 } else if (cmd.equals("GETMILLIS")) {
-                    return (""+RelativeTime.getMillis(timeValue));    
+                    return (""+RelativeTime.getMillis(timeValue));
                 } else {
-                    return (""+RelativeTime.convertIntToTime(timeValue));    
+                    return (""+RelativeTime.convertIntToTime(timeValue));
                 }
             } else {
                 return "INFO::doRelTime: Undefined command specified, command= "+cmd;
@@ -1193,7 +1199,7 @@ public class INFO extends ProcessorModule {
         String base=tagger.Value("BASE");
         if (base==null) return results;
            base = Strip.DoubleQuote(base,Strip.BOTH);
-    
+
         // find the start
         Date start=null;
         String val=tagger.Value("START");
@@ -1209,7 +1215,6 @@ public class INFO extends ProcessorModule {
             val = Strip.DoubleQuote(val,Strip.BOTH);
             end=DateSupport.parsedbmdate(val);
         }
-        
 
         // start included
         boolean startincluded=true;
@@ -1218,7 +1223,6 @@ public class INFO extends ProcessorModule {
             val = Strip.DoubleQuote(val,Strip.BOTH);
             startincluded=isNotNo(val);
         }
-
 
         // end included
         boolean endincluded=true;
@@ -1256,7 +1260,7 @@ public class INFO extends ProcessorModule {
                 if (!endincluded) val4--; // shift end to exclude start
                 Date rd;
                 for (Enumeration e=fullres.elements();e.hasMoreElements();) {
-                    val3=Long.parseLong((String)e.nextElement());    
+                    val3=Long.parseLong((String)e.nextElement());
                     if (val3>=val2 && val3<=val4) {
                         rd=new Date(val3);
                         results.addElement(DateSupport.makedbmdate(rd));
@@ -1268,7 +1272,7 @@ public class INFO extends ProcessorModule {
             } else {
                 Date rd;
                 for (Enumeration e=fullres.elements();e.hasMoreElements();) {
-                    val3=Long.parseLong((String)e.nextElement());    
+                    val3=Long.parseLong((String)e.nextElement());
                     if (val3>=val2) {
                         rd=new Date(val3);
                         results.addElement(DateSupport.makedbmdate(rd));
@@ -1282,7 +1286,7 @@ public class INFO extends ProcessorModule {
         tagger.setValue("ITEMS","4");
         return results;
     }
-    
+
     /**
      * Reverse the order of a list of values
      * @param src the source of values to reverse
@@ -1309,7 +1313,7 @@ public class INFO extends ProcessorModule {
         File theFile;
         Date d;
         String theFileName;
-        String files[] = scanfile.list();        
+        String files[] = scanfile.list();
         if (files!=null) {
             for (int i=0;i<files.length;i++) {
                 theFileName=files[i];
@@ -1407,7 +1411,7 @@ public class INFO extends ProcessorModule {
                     moveFile( from, toDir );
             } else
                 log.error("doMove(): ERROR: page("+sp.getUrl()+"): no destination specified in $MOD-INFO-MOVE-"+from+" !");
-        } else 
+        } else
             log.error("doMove(): ERROR: page("+sp.getUrl()+"): no source directory given in $MOD-INFO-MOVE-.. !");
         return result;
     }
@@ -1416,8 +1420,7 @@ public class INFO extends ProcessorModule {
     // check if this will work with moveFile("/a/b/file.txt", "../c")
     //
     // moves file from '/../directory/filename' to '/../otherdirectory/'
-
-    private boolean moveFile( String pathslashfile , String otherdirectory ) { 
+    private boolean moveFile( String pathslashfile , String otherdirectory ) {
         boolean result = false;
         if( fileExists(pathslashfile) ) {
             File f1 = new File( pathslashfile );
@@ -1431,17 +1434,17 @@ public class INFO extends ProcessorModule {
             File    f2         = new File( oparent );
 
             if( f2.isDirectory() ) {
-                if( f2.canWrite() ) { 
+                if( f2.canWrite() ) {
                     f2 = new File( oparent , name );
-                    if( f1.renameTo( f2 ) ) { 
+                    if( f1.renameTo( f2 ) ) {
                         result = true;
                     } else
                         log.error("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: move file("+pathslashfile+") -> file("+oparent+","+name+") did not succeed!");
-                } else 
+                } else
                     log.error("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: directory("+oparent+") has no write-permission set!");
-            } else 
+            } else
                 log.error("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: directory("+oparent+") is not a valid directory!");
-        } else 
+        } else
             log.error("moveFile("+pathslashfile+","+otherdirectory+"): ERROR: first parameter is not a valid file!");
 
         return result;
@@ -1451,7 +1454,7 @@ public class INFO extends ProcessorModule {
     private String toYesNo(boolean value) {
         return ( value ? "YES" : "NO" );
     }
-    
+
     // returns true is a string value is equal to YES or TRUE
     private boolean isYes(String value) {
         return (value.equals("YES") || value.equals("TRUE"));
@@ -1462,7 +1465,9 @@ public class INFO extends ProcessorModule {
         return !(value.equals("NO") || value.equals("FALSE"));
     }
 
-    
+    /**
+     * @javadoc
+     */
     private String nextCurTime(StringTokenizer tok) {
         int curtime=(int)(DateSupport.currentTimeMillis()/1000);
         //int curtime=(int)(System.currentTimeMillis()/1000);
@@ -1471,18 +1476,18 @@ public class INFO extends ProcessorModule {
             // gives us the next full hour based on realtime
             int hours=curtime/3600;
             hours++;
-            return(""+(hours*3600));
+            return ""+(hours*3600);
         } else if (cmd.equals("NEXTDAY")) {
             // gives us the next full day based on realtime (00:00)
             int days=curtime/(3600*24);
             days++;
-            return(""+((days*(3600*24))-3600));
+            return ""+((days*(3600*24))-3600);
         } else if (cmd.equals("TODAY")) {
             // gives us the next full day based on realtime (00:00)
             int days=curtime/(3600*24);
-            return(""+((days*(3600*24))-3600));
+            return ""+((days*(3600*24))-3600);
         } else if (cmd.equals("NEXTTIME")) {
-            // gives us the next full day at time definedd based on realtime 
+            // gives us the next full day at time definedd based on realtime
             int days=curtime/(3600*24);
             if (tok.hasMoreTokens()) {
                 String timestring=tok.nextToken();
@@ -1494,14 +1499,14 @@ public class INFO extends ProcessorModule {
                         int hours=Integer.parseInt(hourstring)*3600;
                         int min=Integer.parseInt(minstring)*60;
                         int total=(days*3600*24)+hours+min;
-                        return(""+(total-7200));
+                        return ""+(total-7200);
                     } catch (Exception e) {
-                        log.error("Error in NEXTTIME time part make sure its 00:00 format");    
-                    }    
+                        log.error("Error in NEXTTIME time part make sure its 00:00 format");
+                    }
                 }
             }
-            return(""+(days*(3600*24)));
-        }    
-        return("");
+            return ""+(days*(3600*24));
+        }
+        return "";
     }
 }
