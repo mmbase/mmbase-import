@@ -21,14 +21,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @author Daniel Ockeloen
- *
- * base implemenation and support class for all the email handlers
+ * Base implemenation and support class for all the email handlers
  * normally you extend this class for implementing a new mailtype
+ *
+ * @author Daniel Ockeloen
+ * @version $Id: EmailHandler.java,v 1.3 2003-07-08 17:27:47 michiel Exp $
  */
 public class EmailHandler {
 
-    // logger
     private static Logger log = Logging.getLoggerInstance(EmailHandler.class);
 
     /**
@@ -53,8 +53,10 @@ public class EmailHandler {
         String osubject = subject;
 
         // get To of the mail (to field + related users + related users in groups
-        Vector toUsers = getAttachedUsers(node);
-        log.info("USERS=" + toUsers);
+        List toUsers = getAttachedUsers(node);
+        if (log.isDebugEnabled()) {
+            log.debug("USERS=" + toUsers);
+        }
 
         // get From of the mail
         String from = node.getStringValue("from");
@@ -67,11 +69,11 @@ public class EmailHandler {
         String obody = body;
 
         // loop all the users we need to mail
-        Enumeration e = toUsers.elements();
-        while (e.hasMoreElements()) {
+        Iterator i = toUsers.iterator();
+        while (i.hasNext()) {
 
             // get the next user we need to email
-            String to_one = (String)e.nextElement();
+            String to_one = (String)i.next();
 
             // mmbase number of the user
             String to_number = null;
@@ -160,26 +162,27 @@ public class EmailHandler {
 
         // commit the changes to the cloud
         node.commit();
-        return (node);
+        return node;
     }
 
     /**
      * get the To header if its not set directly
      * try to obtain it from related objects.
      */
-    private static Vector getTo(MMObjectNode node) {
-        Vector toUsers = new Vector();
+    private static List getTo(MMObjectNode node) {
+        List toUsers = new ArrayList();
         String to = node.getStringValue("to");
-        if (to != null)
-            toUsers.addElement(to);
+        if (to != null) {
+            toUsers.add(to);
+        }
         return toUsers;
     }
 
     /**
      * get the email addresses of related people
      */
-    private static Vector getAttachedUsers(MMObjectNode node) {
-        Vector toList = getTo(node);
+    private static List getAttachedUsers(MMObjectNode node) {
+        List toList = getTo(node);
         toList = getAttachedUsers(node, toList);
 
         Vector rels = node.getRelatedNodes("groups");
@@ -192,16 +195,17 @@ public class EmailHandler {
         }
 
         if (toList.size() > 0) {
-            return (toList);
+            return toList;
         } else {
-            return (null);
+            return null;
         }
     }
 
     /**
      * get the email addresses of related people
+     * @todo can this not return a List?
      */
-    private static Vector getAttachedUsers(MMObjectNode node, Vector toList) {
+    private static List getAttachedUsers(MMObjectNode node, List toList) {
         // try and find related users
         Vector rels = node.getRelatedNodes("users");
         if (rels != null) {
@@ -210,11 +214,11 @@ public class EmailHandler {
                 MMObjectNode pnode = (MMObjectNode)enum.nextElement();
                 String to = "" + pnode.getNumber() + "," + pnode.getStringValue("email");
                 if (!toList.contains(to)) {
-                    toList.addElement(to);
+                    toList.add(to);
                 }
             }
         }
-        return (toList);
+        return toList;
     }
 
     private static String getUrlExtern(String absoluteUrl, String params, String usernumber) {
@@ -243,16 +247,16 @@ public class EmailHandler {
             // this is weird needs to be checked
             //e.printStackTrace();
         }
-        return ("");
+        return "";
     }
 
     private static String stripToOneLine(String input) {
-        String result = "";
+        StringBuffer result = new StringBuffer();
         StringTokenizer tok = new StringTokenizer(input, ",\n\r");
         while (tok.hasMoreTokens()) {
-            result += tok.nextToken();
+            result.append(tok.nextToken());
         }
-        return result;
+        return result.toString();
     }
 
     /**
@@ -262,19 +266,19 @@ public class EmailHandler {
     */
     private static String html2plain(String input) {
         // define the result string
-        String result = "";
+        StringBuffer result = new StringBuffer();
 
         // setup a tokenizer on all returns and linefeeds so
         // we can remove them
         StringTokenizer tok = new StringTokenizer(input, "\n\r");
         while (tok.hasMoreTokens()) {
             // add the content part stripped of its return/linefeed
-            result += tok.nextToken();
+            result.append(tok.nextToken());
         }
 
         // now use the html br and p tags to insert
         // the wanted returns 
-        StringObject obj = new StringObject(result);
+        StringObject obj = new StringObject(result.toString());
         obj.replace("<br/>", "\n");
         obj.replace("<br />", "\n");
         obj.replace("<BR/>", "\n");
@@ -285,10 +289,9 @@ public class EmailHandler {
         obj.replace("<p/>", "\n\n");
         obj.replace("<p />", "\n\n");
         obj.replace("<P>", "\n\n");
-        result = obj.toString();
 
         // return the coverted body
-        return result;
+        return obj.toString();
     }
 
 }
