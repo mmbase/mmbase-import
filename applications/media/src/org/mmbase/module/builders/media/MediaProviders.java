@@ -21,25 +21,30 @@ import java.util.*;
  * (or extensions) must be related to it. Those will perform the actual task of creating an URL.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.6 2003-01-07 09:06:33 michiel Exp $
+ * @version $Id: MediaProviders.java,v 1.7 2003-01-08 22:23:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MediaProviders.class.getName());
 
-    public static final String FUNCTION_URLS = "urls";
+    public final static int STATE_ON  = 1;
+    public final static int STATE_OFF = 2;
 
-    protected List getURLs(MMObjectNode provider, List arguments) {
+    /**
+     * A MediaProvider can provide one or more URL's for every source
+     * @returns A List of ResponseInfo's
+     */
+
+    public List getURLs(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         List result = new ArrayList();
         // todo: consider posrel
         Iterator composers =  provider.getRelatedNodes("mediaurlcomposers").iterator();
 
-        arguments.add(0, provider);
         while (composers.hasNext()) {
             MMObjectNode composer = (MMObjectNode) composers.next();
-            result.add(composer.getFunctionValue(MediaURLComposers.FUNCTION_URL, arguments));
+            MediaURLComposers bul = (MediaURLComposers) composer.parent; // cast everytime, because it can be extended
+            result.addAll(bul.getResponseInfos(composer, provider, source, fragment, info));
         }
-        arguments.remove(0);
 
         return result;
 
@@ -53,14 +58,11 @@ public class MediaProviders extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new ArrayList();
             Map info = (Map) super.executeFunction(node, "info", empty);
-            info.put(FUNCTION_URLS, "(source, fragment, info) A list of all possible URLs to this provider/source/fragment (Really MediaURLComposer.ResponseInfo's)");
             if (args == null || args.size() == 0) {
                 return info;
             } else {
                 return info.get(args.get(0));
             }   
-        } else if (function.equals(FUNCTION_URLS)) {
-            return getURLs(node, args);
         }
         return super.executeFunction(node, function, args);
     }

@@ -41,7 +41,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.21 2003-01-07 22:31:18 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.22 2003-01-08 22:23:07 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -55,29 +55,6 @@ public class MediaSources extends MMObjectBuilder {
     public static final String FUNCTION_CODEC       = "codec";
     public static final String FUNCTION_MIMETYPE    = "mimetype";
 
-    // Formats
-    public final static int    RA_FORMAT        = 2;
-    public final static int    RM_FORMAT        = 6;
-    public final static String FORMATS_RESOURCE = "org.mmbase.module.builders.media.resources.formats";
-    // store also in array, for quick access (in init).
-    private static String[] formats;
-
-    static {
-        ResourceBundle formatsBundle = ResourceBundle.getBundle(FORMATS_RESOURCE,  Locale.ENGLISH, MediaSources.class.getClassLoader());
-        int size = 0;
-        for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements(); e.nextElement()) size++;
-        formats = new String[size];    
-        for (Enumeration e = formatsBundle.getKeys(); e.hasMoreElements();) {
-            String key = (String) e.nextElement();
-            int index = Integer.parseInt(key) - 1; 
-            if (index >= 0 && index <= size) {
-                formats[index] = formatsBundle.getString(key);
-            } else {
-                log.error("Configuration error, the media formats were not numbered right");
-            }
-        }
-    }
-
     
     // Codecs
     public final static int VORBIS_CODEC = 1;
@@ -87,7 +64,7 @@ public class MediaSources extends MMObjectBuilder {
     public final static int DIVX_CODEC   = 5;
     
     // Status
-    public final static int DONE   = 3; // jikes
+    public final static int    DONE   = 3; // jikes
     public final static String STATUS_RESOURCE = "org.mmbase.module.builders.media.resources.states";
     
     public final static int MONO = 1;
@@ -122,7 +99,7 @@ public class MediaSources extends MMObjectBuilder {
     };
     */
     
-    private Map mimeMapping;
+    private static Map mimeMapping = null;
 
     public boolean init() {
         boolean result = super.init();
@@ -149,6 +126,7 @@ public class MediaSources extends MMObjectBuilder {
             }
         }
         */
+        if (mimeMapping == null)
         {        
             File mimeMappingFile = new File(MMBaseContext.getConfigPath() + File.separator + "media" + File.separator + "mimemapping.xml");            
             log.service("Reading " + mimeMappingFile);
@@ -313,7 +291,7 @@ public class MediaSources extends MMObjectBuilder {
      * @return the content type
      */    
     String getMimeType(MMObjectNode source) { // package because it is used in URLResolver
-        String format = getFormat(source);
+        String format = getFormat(source).toString();
         if(format==null || format.equals("")) {
             format="*";
         }
@@ -374,8 +352,15 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * used in the editors
      */
-    public String getGUIIndicator(MMObjectNode node) {
-        return node.getStringValue("url");
+    public String getGUIIndicator(MMObjectNode source) {
+        List urls = getSortedURLs(source, null, null);
+        if (urls.size() == 0) return "[could not compose URL]";
+        ResponseInfo ri = (ResponseInfo) urls.get(0);
+        if (ri.isAvailable()) {
+            return "<a href='" + ri.getURL() + "'>" + Format.get(source.getIntValue("format")) + "</a>";
+        } else {
+            return "[<a href='" + ri.getURL() + "'>" + Format.get(source.getIntValue("format")) + "</a>]";
+        }
     }
     
     public int getSpeed(MMObjectNode node) {
@@ -389,8 +374,8 @@ public class MediaSources extends MMObjectBuilder {
     /**
      * The format field is an integer, this function returns a string-presentation
      */
-    protected String getFormat(MMObjectNode source) {
-        return convertNumberToFormat(source.getIntValue("format"));
+    protected Format getFormat(MMObjectNode source) {
+        return Format.get(source.getIntValue("format"));
     }
 
     /**
@@ -412,7 +397,7 @@ public class MediaSources extends MMObjectBuilder {
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("absoluteurl", "(<??>)");
             info.put("urlresult", "(<??>) ");
-            info.put(FUNCTION_URLS, "(fragment, info) A list of all possible URLs to this source/fragment (Really MediaURLComposer.ResponseInfo's)");
+            info.put(FUNCTION_URLS, "(fragment) A list of all possible URLs to this source/fragment (Really MediaURLComposer.ResponseInfo's)");
             info.put(FUNCTION_FORMAT, "() Shorthand for gui(format)");
             info.put(FUNCTION_CODEC, "() Shorthand for gui(codec)");
             info.put(FUNCTION_MIMETYPE, "() Returns the mime-type for this source");
@@ -424,13 +409,30 @@ public class MediaSources extends MMObjectBuilder {
                 return info.get(args.get(0));
             } 
         } else if (FUNCTION_URLS.equals(function)) {
-            return getURLs(node, args);
+            MMObjectNode fragment;
+            if (args == null || args.size() == 0) {
+                fragment = null;
+            } else if (args.size() == 1) {
+                Object f = args.get(0);
+                if (f instanceof MMObjectNode) { 
+                    fragment = (MMObjectNode) f;
+                } else if (f instanceof org.mmbase.bridge.Node) {
+                    fragment = getNode(((org.mmbase.bridge.Node) f).getNumber());
+                } else if (f instanceof String) {
+                    fragment = getNode((String) f);
+                } else {
+                    throw new IllegalArgumentException("Argument of function " + FUNCTION_URLS + " must be a Node");
+                }                
+            } else {
+                throw new IllegalArgumentException("Function " + FUNCTION_URLS + " has 0 or 1 arguments");                
+            }
+            return getURLs(node, fragment, null);
         } else if (FUNCTION_AVAILABLE.equals(function)) {
             Iterator providers = getProviders(node).iterator();
             while (providers.hasNext()) {
                 // if one of the providers is online, then this source is availabe.                
                 MMObjectNode provider = (MMObjectNode) providers.next();
-                if (provider.getIntValue("state") == 1) return Boolean.TRUE;
+                if (provider.getIntValue("state") == MediaProviders.STATE_ON) return Boolean.TRUE;
             }
             return Boolean.FALSE;            
         } else if (FUNCTION_FORMAT.equals(function)) {
@@ -465,11 +467,13 @@ public class MediaSources extends MMObjectBuilder {
                     return getCodec(node);
                 } else if (args.get(0).equals("format")) {
                     return getFormat(node);
+                } else if (args.get(0).equals("")) {
+                    return super.executeFunction(node, function, args); // call getGUIIndicoato
                 } else {
                     return node.getStringValue((String) args.get(0));
                 }            
             } 
-        } else {
+        } else { 
             String arg = null;
             if (args != null && args.size() > 0) {
                 arg = (String) args.get(0);
@@ -535,17 +539,24 @@ public class MediaSources extends MMObjectBuilder {
      * @author mm
      */
 
-    protected List getURLs(MMObjectNode source, List arguments) {
+    public List getURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
         List result = new ArrayList();
 
-        arguments.add(0, source); // add source itself as first argument.
         Iterator i = getProviders(source).iterator();
         while (i.hasNext()) {
             MMObjectNode provider = (MMObjectNode) i.next();
-            result.addAll((List) provider.getFunctionValue("urls", arguments));
+            MediaProviders bul = (MediaProviders) provider.parent; // cast everytime, because it can be extended
+            result.addAll(bul.getURLs(provider, source, fragment, info));
         }
-        arguments.remove(0); // remove it again, to leave the argument unchanged.
         return result;
+    }
+    /**
+     * @author mm
+     */
+    protected List getSortedURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
+        List urls = getURLs(source, fragment, info);
+        Collections.sort(urls, MediaSourceFilter.getInstance());
+        return urls;
     }
 
     /**
@@ -571,7 +582,7 @@ public class MediaSources extends MMObjectBuilder {
             if (dot > 0) {
                 String extension = url.substring(dot + 1);
                 log.service("format was unset, trying to autodetect by using 'url' field with extension '" + extension);
-                node.setValue("format", convertFormatToNumber(extension));
+                node.setValue("format", Format.get(extension).toInt());
             }            
         }
     }
@@ -596,6 +607,7 @@ public class MediaSources extends MMObjectBuilder {
      * @param format the format number
      * @return the format
      */
+    /*
     protected static String convertNumberToFormat(int format) {
         if (format >= formats.length+1 || format < 1) { 
             return "undefined";
@@ -603,18 +615,16 @@ public class MediaSources extends MMObjectBuilder {
             return formats[format-1];
         }
     }
+    */
     
     /*
      * @scope private (and use it in checkFields)
      */
+    /*
     public static int convertFormatToNumber(String format) {
-        format = format.toLowerCase();
-        for (int i = 0; i < formats.length; i++) {
-            if(format.equals(formats[i])) return i+1;
-        }
-        log.error("Cannot convert format ("+format+") to number");
-        return -1;
+
     }
+    */
 
     /*
      * @scope private (and use it in checkFields)
@@ -639,5 +649,5 @@ public class MediaSources extends MMObjectBuilder {
             case DIVX_CODEC: return "divx";
             default: return "Undefined";
         }
-    }
+   }
 }

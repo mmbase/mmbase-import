@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.19 2003-01-08 08:47:10 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.20 2003-01-08 22:23:07 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -86,12 +86,24 @@ public class MediaFragments extends MMObjectBuilder {
             log.debug("The builder mediasources is retrieved.");
         }
         
-        mediaSourceFilter = new MediaSourceFilter();
+        mediaSourceFilter = MediaSourceFilter.getInstance();
 
         // deprecated:
         retrieveClassificationInfo();
 
         return result;
+    }
+
+    /**
+     * Would something like this be feasible to translate a List to a Map?
+     *
+     */
+    protected Map translateURLArguments(List arguments, Map info) {
+        if (info == null) info = new HashMap();
+        if (arguments != null) {
+            if (arguments.size() == 1) info.put("format", arguments.get(0));
+        }
+        return info;
     }
         
     /**
@@ -104,7 +116,7 @@ public class MediaFragments extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new Vector();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("url", "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
+            info.put(FUNCTION_URL, "(<format>)  Returns the 'best' url for this fragment. Hashtable can be filled with speed/channel/ or other info to evalute the url.");
             info.put("longurl", "(<format>) ");
             info.put(FUNCTION_URLS, "(info) A list of all possible URLs to this fragment (Really MediaURLComposer.ResponseInfo's)");
             info.put(FUNCTION_PARENT, "() Returns the 'parent' MMObjectNode of the parent or null");
@@ -119,9 +131,9 @@ public class MediaFragments extends MMObjectBuilder {
                 return info.get(args.get(0));
             }            
         } else if (FUNCTION_URLS.equals(function)) {
-            return getURLs(node, args);
+            return getURLs(node, translateURLArguments(args, null));
         } else if (FUNCTION_SORTEDURLS.equals(function)) {
-            return getSortedURLs(node, args);
+            return getSortedURLs(node, translateURLArguments(args, null));
         } else if (FUNCTION_SUBFRAGMENT.equals(function)) {
             return new Boolean(isSubFragment(node));
         } else if (FUNCTION_PARENT.equals(function)) {
@@ -142,7 +154,7 @@ public class MediaFragments extends MMObjectBuilder {
             }
         } else if (FUNCTION_URL.equals(function)) {
             try {
-                return getURL(node, args);
+                return getURL(node, translateURLArguments(args, null));
             } catch (java.net.MalformedURLException e) {
                 return "";
             }
@@ -184,16 +196,14 @@ public class MediaFragments extends MMObjectBuilder {
      * @param node the mediapart node
      * @return the title of the mediapart
      */
-    /*
     public String getGUIIndicator(MMObjectNode node) {
-        String url = node.getFunctionValue("showurl", null).toString();
+        String url = node.getFunctionValue(FUNCTION_URL, null).toString();
         if (! "".equals(url)) {
             return "<a href=\"" + url + "\" alt=\"\" >" + node.getStringValue("title") + "</a>";
         } else {
             return "[" + node.getStringValue("title") + "]";
         }        
     }
-    */
     
     /**
      * Retrieves the url with URI information of the mediasource that matches best.
@@ -203,7 +213,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, etc.)
      * @return the url of the audio file
      */
-    private String getLongURL(MMObjectNode mediaFragment, Map info) {
+    protected String getLongURL(MMObjectNode mediaFragment, Map info) {
         log.debug("Getting longurl");
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
         if(mediaSource==null) {
@@ -220,21 +230,20 @@ public class MediaFragments extends MMObjectBuilder {
      *
      * @author mm
      */
-    protected List getURLs(MMObjectNode fragment, List arguments) {
+    protected List getURLs(MMObjectNode fragment, Map info) {
         List result = new ArrayList();
 
-        arguments.add(0, fragment);
         Iterator i = getSources(fragment).iterator();
         while (i.hasNext()) {
             MMObjectNode source = (MMObjectNode) i.next();
-            result.addAll((List) source.getFunctionValue("urls", arguments));
+            MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
+            result.addAll(bul.getURLs(source, fragment, info));
         }
-        arguments.remove(0);
         return result;        
     }   
 
-    protected List getSortedURLs(MMObjectNode fragment, List args) {
-        List urls =  getURLs(fragment, args);
+    protected List getSortedURLs(MMObjectNode fragment, Map info) {
+        List urls =  getURLs(fragment, info);
         Collections.sort(urls, mediaSourceFilter);
         return urls;
     }
@@ -248,14 +257,11 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, preferred format)
      * @return the url of the audio file
      */
-    protected URL getURL(MMObjectNode fragment, List args) throws java.net.MalformedURLException  {
+    protected URL getURL(MMObjectNode fragment, Map info) throws java.net.MalformedURLException  {
         log.debug("Getting url of a fragment.");        
-        List urls = getSortedURLs(fragment, args);
-        if (args.size() == 1) { // explicitely request format, in any case honor that!
-            Collections.sort(urls, new org.mmbase.util.media.FormatComparator((String)args.get(0)));
-        }
+        List urls = getSortedURLs(fragment, info);
         if (urls.size() > 0) {
-            return ((ResponseInfo)urls.get(0)).getURL();
+            return ((ResponseInfo) urls.get(0)).getURL();
         } else {
             return new URL(""); //no sources 
         }
@@ -282,7 +288,7 @@ public class MediaFragments extends MMObjectBuilder {
         if (log.isDebugEnabled()) {
             log.debug("mediasourcefilter " + mediaSourceFilter + " info " + info);
         }
-        List urls = getSortedURLs(fragment, new ArrayList()); // todo: should use info
+        List urls = getSortedURLs(fragment, info); 
         if(urls.size() == 0) {
             log.error("No matching media source found by media fragment (" + fragment.getIntValue("number") + ")");
             return null;
