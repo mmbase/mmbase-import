@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.39 2002-07-03 07:06:48 pierre Exp $
+ * @version $Id: Wizard.java,v 1.40 2002-07-05 07:49:50 pierre Exp $
  *
  */
 public class Wizard {
@@ -483,7 +483,7 @@ public class Wizard {
 
         // find the current step and, if appliccable, the next and previous ones.
         Utils.createAndAppendNode(wizardnode, "curform", formid);
-        
+
 
 
         Node step = Utils.selectSingleNode(wizardSchema, "./steps/step[@form-schema='" + formid + "']");
@@ -880,8 +880,8 @@ public class Wizard {
         // calculate minoccurs and maxoccurs
         int minoccurs = Integer.parseInt(Utils.getAttribute(fieldlist, "minoccurs", "0"));
         int nrOfItems = datalist.getLength();
-       
-        int maxoccurs = -1;       
+
+        int maxoccurs = -1;
         String maxstr = Utils.getAttribute(fieldlist, "maxoccurs", "*");
         if (!maxstr.equals("*")) maxoccurs = Integer.parseInt(maxstr);
 
@@ -953,11 +953,11 @@ public class Wizard {
             // and now, do the recursive tric! All our fields inside need to be processed.
             createPreHtmlForm(newitem, item, datacontext);
 
-            // finally, see if we need to place some commands here        
-            if (/* nrOfItems > minoccurs && you should be able to replace!*/  hiddenCommands.indexOf("|delete-item|") == -1) { 
+            // finally, see if we need to place some commands here
+            if (/* nrOfItems > minoccurs && you should be able to replace!*/  hiddenCommands.indexOf("|delete-item|") == -1) {
                 addSingleCommand(newitem,"delete-item", datacontext);
             }
-            
+
             if (orderby!=null) {
                 if (dataindex > 0 && hiddenCommands.indexOf("|move-up|") == -1){
                     addSingleCommand(newitem,"move-up", datacontext,
@@ -980,10 +980,10 @@ public class Wizard {
 
         // works likes this:
         //  If the minoccurs or maxoccurs condiditions are not satisfied, in the 'wizard.xml'
-        //  to the form the 'invalidlist' attribute is filled with the name of the guilty list. By wizard.xsl then this value 
+        //  to the form the 'invalidlist' attribute is filled with the name of the guilty list. By wizard.xsl then this value
         //  is copied to the html.
         //
-        //  validator.js/doValidateForm returns invalid as long as this invalid list attribute of the html form is not an 
+        //  validator.js/doValidateForm returns invalid as long as this invalid list attribute of the html form is not an
         // emptry string.
         if (log.isDebugEnabled()) log.debug("minoccurs:" + minoccurs + " maxoccurs: " + maxoccurs + " items: " + nrOfItems);
         if ((nrOfItems > maxoccurs && maxoccurs != -1 )|| ( nrOfItems < minoccurs) ) { // form cannot be valid in that case
@@ -1604,6 +1604,7 @@ public class Wizard {
         }
         String required = Utils.selectSingleNodeText(con, "required", "false");
         String guiname = Utils.selectSingleNodeText(con, "guiname", "");
+        String maxlength = Utils.selectSingleNodeText(con, "maxlength", "-1");
 
         // dttype?
         String ftype = Utils.getAttribute(fielddef, "ftype", null);
@@ -1677,7 +1678,7 @@ public class Wizard {
 
         // process requiredness
         //
-        String dtrequired = Utils.getAttribute(fieldnode, "dtrequired", null);
+        String dtrequired = Utils.getAttribute(fielddef, "dtrequired", null);
         if (required.equals("true")) {
             // should be required (according to MMBase)
             dtrequired="true";
@@ -1686,7 +1687,34 @@ public class Wizard {
         // store new attributes in fielddef
         Utils.setAttribute(fielddef, "ftype", ftype);
         Utils.setAttribute(fielddef, "dttype", dttype);
-        if (dtrequired!=null) Utils.setAttribute(fielddef, "dtrequired", dtrequired);
+        if (dtrequired!=null) {
+            Utils.setAttribute(fielddef, "dtrequired", dtrequired);
+        }
+
+        // process min/maxlength for strings
+        if (dttype.equals("string") || dttype.equals("html")) {
+            String dtminlength = Utils.getAttribute(fielddef, "dtminlength", null);
+            if (dtminlength==null) {
+                // manually set minlength if required is true
+                if ("true".equals(dtrequired)) {
+                    Utils.setAttribute(fielddef, "dtminlength", "1");
+                }
+            }
+            String dtmaxlength = Utils.getAttribute(fielddef, "dtmaxlength", null);
+            if (dtmaxlength==null) {
+                int maxlen=-1;
+                try {
+                    maxlen=Integer.parseInt(maxlength);
+                } catch(NumberFormatException e) {}
+                // manually set maxlength if given
+                // ignore sizes smaller than 1 and larger than 255
+                if ((maxlen>0) && (maxlen<256)) {
+                    Utils.setAttribute(fielddef, "dtmaxlength", ""+maxlen);
+                }
+            }
+
+        }
+
     }
 
     /**
