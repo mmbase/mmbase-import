@@ -86,7 +86,8 @@ public interface Cloud {
      * @throws RelationManagerNotFoundException  if the specified relation
      *                                           manager could not be found
      */
-    public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
+    public RelationManager getRelationManager(String sourceManagerName,
+            String destinationManagerName, String roleName);
 
     /**
      * Returns all relation managers available in this cloud.
