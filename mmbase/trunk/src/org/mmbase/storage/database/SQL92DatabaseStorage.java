@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.8 2003-05-02 08:38:56 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.9 2003-05-02 14:24:55 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -161,7 +161,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      */
     protected String createSQL(String tableName, String fields, String parentTableName, String parentFields) {
         if (!supportsExtendedTables() && (parentFields != null) && (! "".equals(parentFields))) {
-            if (fields == null) {
+            if (fields == null || "".equals(fields)) {
                 fields = parentFields;
             } else {
                 fields = parentFields + ", " + fields;
