@@ -83,7 +83,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
      */
 
     protected void fillVars() throws JspTagException {    
-        if (jspvar != null) {
+        if (jspvar != null && node != null) {
             pageContext.setAttribute(jspvar, node);
         }
         if (id != null) {
