@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  *
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.29 2003-04-07 19:46:22 michiel Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.30 2003-04-09 09:04:24 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -75,7 +75,7 @@ public class XMLEntityResolver implements EntityResolver {
         publicIDtoResource.put("-//MMBase/ DTD module config 1.0//EN",  new Resource(XMLModuleReader.class,   "module_1_0.dtd"));
         publicIDtoResource.put("-//MMBase//DTD util config 1.0//EN",    new Resource(org.mmbase.util.xml.UtilReader.class, "util_1_0.dtd"));
         publicIDtoResource.put("-//MMBase/DTD database config 1.1//EN", new Resource(XMLDatabaseReader.class, "database_1_1.dtd"));
-        publicIDtoResource.put("-//MMBase/DTD application config 1.1//EN", new Resource(XMLApplicationReader.class, "application_1_1.dtd"));
+        publicIDtoResource.put("-//MMBase//DTD application config 1.1//EN", new Resource(XMLApplicationReader.class, "application_1_1.dtd"));
         publicIDtoResource.put("-//MMBase/DTD application config 1.0//EN", new Resource(XMLApplicationReader.class, "application_1_0.dtd"));
         publicIDtoResource.put("-//MMBase//DTD builder transactions 1.0//EN", new Resource(org.mmbase.module.TransactionHandler.class,    "transactions_1_0.dtd"));
         publicIDtoResource.put(XMLBasicReader.PUBLICID_ERROR, new Resource(XMLBasicReader.class,    "error_1_0.dtd"));
