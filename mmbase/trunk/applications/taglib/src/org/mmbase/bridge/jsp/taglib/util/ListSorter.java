@@ -19,7 +19,7 @@ import java.util.*;
  * A helper class for Lists, to implement an attribute 'comparator'
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListSorter.java,v 1.2 2003-09-10 11:16:10 michiel Exp $
+ * @version $Id: ListSorter.java,v 1.3 2003-12-05 15:19:10 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ListSorter  {
@@ -29,6 +29,8 @@ public class  ListSorter  {
         if (comparator != null) {
             if (comparator.equals("SHUFFLE")) {
                 Collections.shuffle(list);
+            }  else if (comparator.equals("REVERSE")) {
+                Collections.reverse(list);
             } else {
                 try {
                     Class claz = null;
