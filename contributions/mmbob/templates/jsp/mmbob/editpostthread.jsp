@@ -40,7 +40,7 @@
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart">
+<div class="bodypart" align="center">
 
 <mm:compare referid="ismoderator" value="false">
   <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="45%">

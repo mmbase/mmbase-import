@@ -45,7 +45,7 @@
 <div class="header">
 </div>
                                                                                               
-<div class="bodypart">
+<div class="bodypart" align="center">
 
 <mm:include page="path.jsp?type=$pathtype" />
 <mm:compare referid="feedback" value="none">
