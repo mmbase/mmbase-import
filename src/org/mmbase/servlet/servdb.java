@@ -38,7 +38,7 @@ import org.mmbase.util.logging.*;
  * @rename Servdb
  * @deprecation-used
  * @deprecated Shouldn't this servlet be split up? Servlet for images, servlet for xml's etc...
- * @version $Id: servdb.java,v 1.39 2002-03-05 15:36:58 michiel Exp $
+ * @version $Id: servdb.java,v 1.40 2002-04-12 08:56:05 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -98,6 +98,10 @@ public class servdb extends JamesServlet {
         if (sessions == null) {
             log.debug("Could not find session module, proceeding without sessions");
         }
+        // clear the status of images
+        // maybe this should be called elsewhere,
+        // and servlet-data depending classes should register?
+        AbstractImages.clear();
     }
 
     /**
@@ -244,10 +248,10 @@ public class servdb extends JamesServlet {
                         // ---
                         // img
                         // ---
-                       
+
                         Vector params = getParamVector(req);
                         if (params.size() > 1) {
-                            // template was included on URL                            
+                            // template was included on URL
                             log.debug("Using a template, precaching this image");
                             // this is an image number + template, cache the image, and go ahead
                             // with the number of the cached image.
@@ -258,8 +262,8 @@ public class servdb extends JamesServlet {
                                 params.add(new Integer(imageNumber));
                             }
                             if (log.isDebugEnabled()) log.debug("found image " + imageNumber);
-                        } 
-                        
+                        }
+
                         ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
                         cline.buffer   = icaches.getImageBytes(params);
                         cline.mimetype = icaches.getImageMimeType(params);
@@ -268,56 +272,56 @@ public class servdb extends JamesServlet {
 
                         // check point, plugin needed for mirror system
                         checkImgMirror(sp);
-                    } else if (req.getRequestURI().indexOf("xml")!=-1) {                        
+                    } else if (req.getRequestURI().indexOf("xml")!=-1) {
                         // ---
                         // xml
                         // ---
-                        
+
                         cline.buffer=getXML(getParamVector(req));
                         cline.mimetype="text/plain";
                         mimetype=cline.mimetype;
-                    } else if (req.getRequestURI().indexOf("dtd")!=-1) {                        
+                    } else if (req.getRequestURI().indexOf("dtd")!=-1) {
                         // ---
                         // dtd
                         // ---
-                        
+
                         cline.buffer=getDTD(getParamVector(req));
                         cline.mimetype="text/html";
                         mimetype=cline.mimetype;
-                    } else if (req.getRequestURI().indexOf("rastream")!=-1) {                        
+                    } else if (req.getRequestURI().indexOf("rastream")!=-1) {
                         // --------
                         // rastream
                         // --------
-                        
+
                         cacheReq = false;
                         log.debug("service(rastream)");
-                        
+
                         boolean other = (req.getRequestURI().indexOf("rastream2")!=-1);
-                        
+
                         // is it a audiopart or an episode ?
                         // ---------------------------------
-                        
+
                         Vector vec = getParamVector(req);
-                        
+
                         if (vec.contains("a(session)")) {
                             vec=addRAMSpeed(sp,vec,res);
                         }
-                        
+
                         if ( getParamValue("ea", vec)  != null ) {
                             log.debug("service(rastream): episode found");
-                            
+
                             if( playlists != null )
                                 cline.buffer = playlists.getRAMfile(vec);
                             else
                                 log.warn("service(rastream): WARNING: triggered playlists, but module not loaded!");
-                            
+
                         } else {
                             log.debug("service(rastream): rastream found");
                             long time = System.currentTimeMillis();
                             cline.buffer = getRAStream(vec,sp,res);
                             log.info("service(): getRAStreams(): took "+(System.currentTimeMillis()-time)+" ms.");
                         }
-                        
+
                         if (cline.buffer!=null) {
                             //debug("Buffer not null, returning stream");
                             cline.mimetype ="audio/x-pn-realaudio";
@@ -331,23 +335,23 @@ public class servdb extends JamesServlet {
                             res.setHeader("Location",ur+"?"+n);
                             return;
                         }
-                    } else if (req.getRequestURI().indexOf("rmstream")!=-1) {                        
+                    } else if (req.getRequestURI().indexOf("rmstream")!=-1) {
                         // --------
                         // rmstream
                         // --------
-                        
+
                         cacheReq = false;
                         log.debug("service(rastream)");
-                        
+
                         // is it a audiopart or an episode ?
                         // ---------------------------------
-                        
+
                         Vector vec = getParamVector(req);
-                        
+
                         if (vec.contains("a(session)")) {
                             vec=addRAMSpeed(sp,vec,res);
                         }
-                        
+
                         if ( getParamValue("ea", vec)  != null ) {
                             log.debug("service(rastream): episode found");
                             if( playlists != null )
@@ -358,7 +362,7 @@ public class servdb extends JamesServlet {
                             log.debug("service(rastream): rastream found");
                             cline.buffer=getRMStream(vec,sp,res);
                         }
-                        
+
                         if (cline.buffer!=null) {
                             //debug("Buffer not null, returning stream");
                             cline.mimetype="audio/x-pn-realaudio";
@@ -372,13 +376,13 @@ public class servdb extends JamesServlet {
                             res.setHeader("Location",ur+"?"+n);
                             return;
                         }
-                        // ---                        
-                                              
+                        // ---
+
                     } else if (req.getRequestURI().indexOf("playlist")!=-1) {
                         // --------
                         // playlist
                         // --------
-                        
+
                         // added to do enable Referer logging
                         ref=req.getHeader("Referer");
                         if (ref!=null && ref.indexOf("vpro.nl")==-1 && ref.indexOf("vpro.omroep.nl")==-1 && ref.indexOf(".58.169.")==-1) {
@@ -394,8 +398,8 @@ public class servdb extends JamesServlet {
                             // org.mmbase if (stats!=null) stats.countSimpleEvent("Desktop="+ref);
                         }
                         //debug("Playlist="+playlists);
-                        
-                        
+
+
                         if (playlists!=null) {
                             Vector vec=getParamVector(req);
                             vec=checkPostPlaylist(poster,sp,vec);
@@ -779,18 +783,18 @@ public class servdb extends JamesServlet {
             MMObjectNode node=null;
             try {
                 node=bul.getNode((String)params.elementAt(0));
-		if (node!=null) {
+        if (node!=null) {
                     String filename=node.getStringValue("filename");
                     if (filename!=null && !filename.equals("")) {
                         return(filename);
                     }
-		}
+        }
             } catch(Exception e) {
                 log.error("Failed to get attachment node for objectnumber "+(String)params.elementAt(0));
                 return null;
             }
-	}
-	return(null);
+    }
+    return(null);
     }
 
 

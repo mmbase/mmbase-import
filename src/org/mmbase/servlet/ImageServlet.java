@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.BufferedOutputStream;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.Date;
 
@@ -35,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * cache yourself. The cache() function of Images can be used for
  * this.
  *
- * @version $Id: ImageServlet.java,v 1.3 2002-03-25 15:38:51 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.4 2002-04-12 08:56:05 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -59,6 +60,12 @@ public class ImageServlet extends  MMBaseServlet {
         } else {
             originalImageExpires = new Integer(origExpires).intValue() * 1000;
         }
+        // make sure this servlet is known to process images
+        associate("image-processing",config.getServletName());
+        // clear the status of images
+        // maybe this should be called elsewhere,
+        // and servlet-data depending classes should register?
+        AbstractImages.clear();
     }
 
     /**
@@ -69,25 +76,23 @@ public class ImageServlet extends  MMBaseServlet {
     }
 
     /**
-     * Serves (cached) images. 
-     * 
+     * Serves (cached) images.
+     *
      */
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         AbstractImages icaches = (AbstractImages) mmbase.getMMObject("icaches");
         String query = req.getQueryString();
-        /* this would also be possible.
-           It would become easier to configure your front-proxy, because an img.db URL does not contain ? then anymore
         if (query == null) { // also possible to use /img.db/<number>
             query = new java.io.File(req.getRequestURI()).getName();
         }
-        */
+        log.info("Gonna do image "+query);
 
         Integer imageNumber = new Integer(query);
         Vector params = new Vector();
         params.add(imageNumber);
 
-        
+
         byte[] bytes   = icaches.getImageBytes(params);
         if (bytes == null) {
             res.sendError(res.SC_NOT_FOUND, "Cached image with number " + imageNumber + " does not exist, did you cache your image?");
@@ -104,7 +109,7 @@ public class ImageServlet extends  MMBaseServlet {
 
         if (icaches.getNode(imageNumber.intValue()).parent.getTableName().equals("icaches")) {
             // cached images never expire, they cannot change without receiving a new number, thus changing the URL.
-            Date never = new Date(System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000));         
+            Date never = new Date(System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000));
             // one year in future, this is considered to be sufficiently 'never'.
             res.setHeader("Expires", RFC1123.makeDate(never));
         } else { // 'images'
@@ -122,10 +127,10 @@ public class ImageServlet extends  MMBaseServlet {
 
         out.write(bytes, 0, filesize);
         out.flush();
-        out.close();        
+        out.close();
     }
-    
-    
+
+
 
     public String getServletInfo()  {
         return "Serves cached MMBase images.";
