@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.91 2004-11-26 16:15:19 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.92 2004-12-06 15:33:53 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -1361,28 +1361,20 @@ public class MMAdmin extends ProcessorModule {
     public void probeCall() throws SearchQueryException {
 
         if (restartwanted) {
-            System.exit(0);
+            System.exit(0);  // jikes
         }
         Versions ver = (Versions)mmb.getMMObject("versions");
         if (ver == null) {
             log.warn("Versions builder not installed, Can't auto deploy apps");
             return;
         }
-        String path = MMBaseContext.getConfigPath() + File.separator + "applications" + File.separator;
-        // new code checks all the *.xml files in builder dir
-        File bdir = new File(path);
-        if (bdir.isDirectory()) {
-            String files[] = bdir.list();
-            if (files == null)
-                return;
-            for (int i = 0; i < files.length; i++) {
-                String aname = files[i];
-                if (aname.endsWith(".xml")) {
-                    ApplicationResult result = new ApplicationResult(this);
-                    if (!installApplication(aname.substring(0, aname.length() - 4), -1, null, result, new HashSet(), true)) {
-                        log.error("Problem installing application : " + aname + ", cause: "+result.getMessage());
-                    }
-                }
+        ResourceLoader applicationLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("applications");
+        Iterator i = applicationLoader.getResourcePaths(ResourceLoader.XML_PATTERN, false).iterator();
+        while (i.hasNext()) {
+            String appResource = (String) i.next();
+            ApplicationResult result = new ApplicationResult(this);
+            if (!installApplication(appResource.substring(0, appResource.length() - 4), -1, null, result, new HashSet(), true)) {
+                log.error("Problem installing application : " + appResource + ", cause: "+result.getMessage());
             }
         }
         state = true;
