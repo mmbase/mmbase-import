@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.23 2003-06-23 14:24:49 kees Exp $
+ * @version $Id: NodeManager.java,v 1.24 2003-07-25 14:10:30 michiel Exp $
  */
 public interface NodeManager extends Node {
 
@@ -200,8 +200,29 @@ public interface NodeManager extends Node {
      *                      value.
      * @return              a list of nodes belonging to this node manager
      */
-    public NodeList getList(String constraints, String orderby,
-                            String directions);
+    public NodeList getList(String constraints, String orderby, String directions);
+
+
+    /**
+     * Perform a query and returns nodes of this node-manage.
+     *
+     * @throws IllegalArgumentException if query does not contain exactly one step describing this nodemanager
+     * @since MMBase-1.7
+     * @see #createQuery
+     */
+    public NodeList getList(NodeQuery query);
+
+
+    /**
+     * Creates a query for this NodeNanager. The nodemanager is added as a step, and also all (non
+     * byte array) fields are added.  The Query object get be used by getList on this nodeManager
+     * (return real nodes) or by getList of Cloud (returning clusternodes).
+     *
+     * @since MMBase-1.7
+     * @see #getList
+     */
+
+    public NodeQuery createQuery();
 
     /**
      * Retrieve info from a node manager based on a command string.
