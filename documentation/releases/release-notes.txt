@@ -65,8 +65,12 @@ General New Features:
 --------------------------
 Documentation New Features:
 --------------------------
-[1.6.2]
-- Chunked output
+
+[1.6.2] 
+
+- Chunked output. This takes very long. Put
+  docbook.stylesheet=xhtml/docbook.xsl in build.properties, for
+  old-style documentation
 
 [1.6.1]
 - Added first draft of a taglib tutorial.
@@ -77,7 +81,7 @@ MMCI New Features:
 ---------------------
 [1.6.2]
 - Inheritance support in getAllowed relations
-
+ 
 [1.6.1]
 [1.6.0]
 - Updated to MMCI 1.2.
@@ -217,6 +221,7 @@ Upgrade:
 [1.6.2]
 - Replace mmbase.jar
 - upgrade jsp-editors
+- upgrade log4j.jar to 1.2.8
 
 [1.6.1]
 - On a deployment server upgrading from 1.6.0 to 1.6.1 can be done by
