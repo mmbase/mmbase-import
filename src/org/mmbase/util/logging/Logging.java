@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @version $Id: Logging.java,v 1.23 2003-09-10 14:57:31 michiel Exp $
+ * @version $Id: Logging.java,v 1.24 2003-11-26 09:58:53 michiel Exp $
  */
 
 
@@ -269,7 +269,21 @@ public class Logging {
      *
      **/
     public static String stackTrace() {
-        return stackTrace(new Exception("logging.stacktrace"));
+        return stackTrace(-1);
+    } 
+
+    /**
+     * @since MMBase-1.7
+     */
+    public static String stackTrace(int max) {
+        Exception e = new Exception("logging.stacktrace");
+        /*
+        StackTraceElement[] stack = e.getStackTrace();
+        java.util.List stackList = new java.util.ArrayList(java.util.Arrays.asList(stack));
+        stackList.remove(0); // is Logging.stackTrace, which is hardly interesting
+        e.setStackTrace((StackTraceElement[])stackList.toArray());
+        */
+        return stackTrace(e, max);
     } 
 
     /**
@@ -294,10 +308,14 @@ public class Logging {
      */
     public static String stackTrace(Throwable e, int max) {
         StackTraceElement[] stackTrace = e.getStackTrace();
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(e.getMessage());
         for (int i = 0; i < stackTrace.length; i++) {
             if (i == max) break;
             buf.append("\n        at ").append(stackTrace[i]);
+        }
+        Throwable t = e.getCause();
+        if (t != null) {
+            buf.append(stackTrace(t, max));
         }
         return buf.toString();
     } 
