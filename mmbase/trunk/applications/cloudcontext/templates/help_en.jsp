@@ -47,6 +47,35 @@
     <tr><td class="parent">X</td><td class="text">Allowed by parents and self, you may not revoke</td></tr>
   </table>
 
+  <h2>Object model</h2>
+  <p>
+    The following object types are important for this security implementation.
+    <dl>
+      <dt>mmbaseranks</dt>
+      <dd>
+        The available 'ranks' are of this type. There is no specialized editor for this type. The
+        site administrator can add them with generic editors in the rare cases that it is necessary.
+      </dd>
+      <dt>mmbaseusers</dt>
+      <dd>
+        Every user account is stored in an mmbaseusers object, which contains e.g. username,
+        password (encrypted) and 'default security context' (the security context of new nodes of this
+        user).
+      </dd>
+      <dt>mmbasegroups</dt>
+      <dd>
+        Users and other groups can be grouped by linking them to mmbasegroups objects.
+      </dd>
+      <dt>mmbasecontexts</dt>
+      <dd>
+        Rights are created by linking 'security contexts' objects to mmbasegroups or mmbaseusers objects. 
+        Every node in the system is is associated with such a security context, which can be viewed
+        as the 'owner' of the node.
+      </dd>
+    </dl>
+    <img src="<mm:url page="${location}/images/Security.jpg" />" />
+  </p>
+
 </div>
 </mm:cloud>
 </mm:content>

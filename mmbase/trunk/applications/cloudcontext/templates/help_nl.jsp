@@ -55,6 +55,35 @@
     <tr><td class="parent">X</td><td class="text">Mag van de gevattende grope, en ook voor deze gebruiker/groep, en u kunt het niet verbieden.</td></tr>
   </table>
 
+  <h2>Object model</h2>
+  <p>
+    De volgende object-types zijn belangrijk voor deze security-implementatie.
+    <dl>
+      <dt>mmbaseranks</dt>
+      <dd>
+        Beschrijven de beschikbare rangen in het systeem. Er is hiervoor geen gespecialiseerde
+        editor beschikbaar. De administrator zal generieke editors gebruiken, als het nodig is.
+      </dd>
+      <dt>mmbaseusers</dt>
+      <dd>
+        Elke gebruikers-account wordt opgeslagen in een mmbaseusers object, wat bijv. de username,
+        het wachtwoord (gecodeerd) en de 'default security context' bevat (de security context die nieuwe
+        objecten van deze gebruiker hebben).
+      </dd>
+      <dt>mmbasegroups</dt>
+      <dd>
+        Gebruikers en andere groepen kunnen worden gegroepeerd door ze te relateren aan een mmbasegroups object.
+      </dd>
+      <dt>mmbasecontexts</dt>
+      <dd>
+        Rechten worden gecreëeerd door het leggen van relaties tussen 'security contexten' en
+        gebruikers en/of groepen. Elk mmbase object is geassocieerd met zo'n security context. De
+        security contexten kunnen gezien worden als de 'eigenaars'.
+      </dd>
+    </dl>
+    <img src="<mm:url page="${location}/images/Security.jpg" />" />
+  </p>
+
 </div>
 </mm:cloud>
 </mm:content>
