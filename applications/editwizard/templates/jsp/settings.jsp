@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.10 2002-05-17 13:31:53 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.11 2002-05-22 13:50:35 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -48,7 +48,9 @@
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
 Configurator configurator; // Fills the ewconfig if necessary.
 
-%><% boolean done=false; %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
+%><% boolean done=false;
+     Object closedObject=null;
+%><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
 
 log.trace("start of settings.jsp");
 // Add some header to make sure these pages are not cached anywhere.
@@ -115,7 +117,7 @@ if (request.getParameter("remove") != null) {
         // remove popupwizard
         // pass the result of the popupwizard to the calling wizard
         // (how do we do this ???)
-        ewconfig.subObjects.pop();
+        closedObject=ewconfig.subObjects.pop();
     }
     if (ewconfig.subObjects.size() == 0) {
         if (sessionKey.indexOf("|popup")>0) {
@@ -137,8 +139,9 @@ if (request.getParameter("remove") != null) {
         response.sendRedirect(response.encodeURL("list.jsp?proceed=true&sessionkey="+sessionKey));
         done=true;
     }
-
 }
+
+
 if (!done) {
     log.debug("Stack "            + ewconfig.subObjects);
     log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());

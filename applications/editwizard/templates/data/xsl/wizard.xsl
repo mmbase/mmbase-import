@@ -9,7 +9,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: wizard.xsl,v 1.14 2002-05-17 13:17:49 pierre Exp $
+  @version $Id: wizard.xsl,v 1.15 2002-05-22 13:50:35 pierre Exp $
   -->
 
 
@@ -197,7 +197,7 @@
         </xsl:when>
         <xsl:when test="@ftype='startwizard'">
            <xsl:if test="@inline='true'">
-          <nobr><a href="{$popuppage}&amp;inline=true&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >(start new wizard)</a>
+          <nobr><a href="{$popuppage}&amp;inline=true&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" >(start new wizard)</a>
           </nobr>
           </xsl:if>
            <xsl:if test="not(@inline='true')">
@@ -301,7 +301,6 @@
                 </td>
               </tr>
 
-
               <xsl:if test="command[@name='move-up']">
                 <span class="imagebutton" onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><img src="{$mediadir}up.gif" width="20" height="20" /></span>
               </xsl:if>
@@ -341,7 +340,7 @@
           </table>
         </xsl:when>
         <xsl:otherwise>
-          <table border="0" cellspacing="0" cellpadding="0" >
+          <table border="0" cellspacing="0" cellpadding="0" width="100%" >
             <tr>
               <td align="right" valign="top" xstyle="position:relative; top:0; left:0;">
                 <xsl:if test="@displaytype='audio'">
@@ -462,7 +461,7 @@
             <td align="right" valign="top" class="search" width="100%">
               <nobr>
            <xsl:if test="@inline='true'">
-                <a href="{$popuppage}&amp;inline=true&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" ><img src="{$mediadir}new.gif" border="0" /></a>
+                <a href="{$popuppage}&amp;inline=true&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" ><img src="{$mediadir}new.gif" border="0" /></a>
           </xsl:if>
            <xsl:if test="not(@inline='true')">
                 <a href="{$popuppage}&amp;inline=false&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}" target="_blank"><img src="{$mediadir}new.gif" border="0" /></a>
