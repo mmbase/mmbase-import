@@ -151,15 +151,23 @@ public interface NodeManager {
      *                      returned list should be sorted or <code>null</code>
      *                      if the order of the returned virtual nodes doesn't
      *                      matter.
-     * @param directions    A comma separated list of the values UP and DOWN
-     *                      indicating wether the sort on the
+     * @param directions    A comma separated list of values indicating wether
+     *                      to sort up (ascending) or down (descending) on the
      *                      corresponding field in the <code>orderby</code>
-     *                      parameter should be up (ascending) or down
-     *                      (descending) or <code>null</code> if sorting for all
-     *                      fields should be up. If less values are supplied
-     *                      then there are fields in the <code>orderby</code>
-     *                      parameter, the first value in the list is used for
-     *                      the remainig fields.
+     *                      parameter or <code>null</code> if sorting on all
+     *                      fields should be up.
+     *                      The value DOWN (case insensitive) indicates
+     *                      that sorting on the corresponding field should be
+     *                      down, all other values (including the
+     *                      empty value) indicate that sorting on the
+     *                      corresponding field should be up.
+     *                      If the number of values found in this parameter are
+     *                      less than the number of fields in the
+     *                      <code>orderby</code> parameter, all fields that
+     *                      don't have a corresponding direction value are
+     *                      sorted according to the last specified direction
+     *                      value.
+     * @return              a list of nodes belonging to this node manager
      */
     public NodeList getList(String constraints, String orderby,
                             String directions);
