@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.25 2004-09-30 17:19:49 pierre Exp $
+ * @version $Id: FileWatcher.java,v 1.26 2004-10-19 20:00:22 michiel Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -79,7 +79,7 @@ public abstract class FileWatcher {
      */
     private long delay = DEFAULT_DELAY;
 
-    private Set files = new HashSet();
+    private Set files = new LinkedHashSet();
     private Set fileSet = new FileSet(); // (automaticly) wraps 'files'.
     private Set removeFiles = new HashSet();
     private boolean stop = false;
@@ -147,7 +147,7 @@ public abstract class FileWatcher {
 
     /**
      * Returns a (modifiable) Set of all files (File object) of this FileWatcher. If you change it, you change the
-     * FileWatcher.
+     * FileWatcher. The order of the Set is predictable (backed by a {@link java.util.LinkedHashSet}).
      *
      * @since MMBase-1.8.
      */
@@ -404,7 +404,7 @@ public abstract class FileWatcher {
             if (!exists) {
                 // file does not exist. A change will be triggered
                 // once the file comes into existence
-                log.info("file :" + file.getAbsolutePath() + " did not exist (yet)");
+                log.debug("file :" + file.getAbsolutePath() + " did not exist (yet)");
                 lastModified = -1;
             } else {
                 lastModified = file.lastModified();
@@ -420,18 +420,18 @@ public abstract class FileWatcher {
         public boolean changed() {
             if (file.exists()) {
                 if (!exists) {
-                    log.info("file :" + file.getAbsolutePath() + " added");
+                    log.info("File " + file.getAbsolutePath() + " added");
                     return true;
                 } else {
                     boolean result = lastModified < file.lastModified();
                     if (result) {
-                        log.info("file :" + file.getAbsolutePath() + " changed");
+                        log.info("File " + file.getAbsolutePath() + " changed");
                     }
                     return result;
                 }
             } else {
                 if (exists) {
-                    log.info("file :" + file.getAbsolutePath() + " removed");
+                    log.info("File " + file.getAbsolutePath() + " removed");
                 }
                 return exists;
             }
