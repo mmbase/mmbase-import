@@ -458,7 +458,7 @@ public class Casting {
         }
 
         if (log.isDebugEnabled()) {
-            log.trace("using xml string:\n"+value);
+            log.trace("using xml string:\n" + value);
         }
         // add the header stuff...
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>";
@@ -478,13 +478,16 @@ public class Casting {
             DocumentBuilder documentBuilder = dfactory.newDocumentBuilder();
 
             // dont log errors, and try to process as much as possible...
-            org.mmbase.util.XMLErrorHandler errorHandler = new org.mmbase.util.XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
+            XMLErrorHandler errorHandler = new XMLErrorHandler(false, org.mmbase.util.XMLErrorHandler.NEVER);
             documentBuilder.setErrorHandler(errorHandler);
-            documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
+            documentBuilder.setEntityResolver(new XMLEntityResolver());
             // ByteArrayInputStream?
             // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
             Document doc = documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes("UTF-8")));
-            if(!errorHandler.foundNothing()) {
+            if (log.isDebugEnabled()) {
+                log.trace("parsed: " + convertXmlToString(null, doc));
+            }
+            if(! errorHandler.foundNothing()) {
                 throw new RuntimeException("xml invalid:\n"+errorHandler.getMessageBuffer()+"for xml:\n"+value);
             }
             return doc;
