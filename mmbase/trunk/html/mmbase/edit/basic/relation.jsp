@@ -57,6 +57,7 @@
         <%= relation.getFunctionValue("gui", null).toString() %>
     </td>
     <td class="navigate">
+        <% if (relation.mayDelete()) { %>
         <%-- delete the relation node, not sure about the node_type argument! --%>
         <a href='<mm:url page="commit_node.jsp" referids="backpage_cancel,backpage_ok">
             <mm:param name="node_number"><%=relation.getNumber() %></mm:param>
@@ -65,13 +66,15 @@
             </mm:url>' >
           <span class="delete"></span><span class="alt">x</span>
         </a>
-
+        <% } %>
+        <% if (relation.mayWrite()) { %>
         <%-- edit the relation --%>
         <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
             <mm:param name="node_number"><%=relation.getNumber()%></mm:param>
             </mm:url>' >
           <span class="select"></span><span class="alt">-&gt;</span>
         </a>
+        <% } %>
     </td>
     <td class="data">
         #<%=otherNode.getNumber()%>
