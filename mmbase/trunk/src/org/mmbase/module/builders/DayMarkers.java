@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.16 2001-03-13 11:40:16 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.17 2001-03-19 10:58:15 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -172,7 +172,7 @@ public class DayMarkers extends MMObjectBuilder {
 		if (con==null) { log.error("Could not get connection to database"); return(-1);} 
 		try {
 			Statement stmt=con.createStatement();
-			String query = "select mark, daycount from " + mmb.baseName + "_" + tableName + " where mark < "+ nodeNumber + " order by -daycount";
+			String query = "select mark, daycount from " + mmb.baseName + "_" + tableName + " where mark < "+ nodeNumber + " order by daycount desc";
 			// mark < in stead of mark = will of course only be used in database with are not on line always, such 
 			// that some days do not have a mark.
 			log.debug(query);
