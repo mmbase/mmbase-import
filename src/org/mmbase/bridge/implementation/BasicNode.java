@@ -1,4 +1,4 @@
-/*
+l/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.60 2002-06-04 17:01:46 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.61 2002-06-17 15:20:23 pierre Exp $
  */
 public class BasicNode implements Node {
 
@@ -211,7 +211,7 @@ public class BasicNode implements Node {
             // XXX: If you edit a node outside a transaction, but do not commit or cancel the edits,
             // the temporarynode will not be removed. This is left to be fixed (i.e.through a time out mechanism?)
             if ((action == ACTION_EDIT) ||
-                ((action == ACTION_DELETE) && (nodeManager instanceof BasicTransaction))) {
+                ((action == ACTION_DELETE) && (getCloud() instanceof BasicTransaction))) {
                 int id = getNumber();
                 String currentObjectContext = BasicCloudContext.tmpObjectManager.getObject(account,""+id, ""+id);
                 if (cloud instanceof BasicTransaction) {
@@ -347,7 +347,7 @@ public class BasicNode implements Node {
 
     public Element getXMLValue(String fieldName, Document tree) {
         Document doc = getXMLValue(fieldName);
-        if(doc==null) return null;        
+        if(doc==null) return null;
         return (Element) tree.importNode(doc.getDocumentElement(), true);
     }
 
@@ -402,7 +402,7 @@ public class BasicNode implements Node {
         }
         changed = false;
     }
-    
+
     public void delete() {
         delete(false);
     }
