@@ -30,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.29 2003-06-02 12:57:37 pierre Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.30 2003-06-12 09:47:19 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -873,7 +873,7 @@ public class WizardDatabaseConnector {
         if (node1.getNodeType()!=node2.getNodeType()) {
             return true;
         }
-        if (node1.getNodeType()==Node.TEXT_NODE) {
+        if ((node1.getNodeType()==Node.TEXT_NODE) || (node1.getNodeType()==Node.CDATA_SECTION_NODE)) {
             String s1 = node1.getNodeValue();
             String s2 = node2.getNodeValue();
             if (!s1.equals(s2)) return true;
