@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.49 2002-02-19 18:47:44 michiel Exp $
+ * @version $Id: MMBase.java,v 1.50 2002-03-10 14:35:26 kees Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -1030,6 +1030,9 @@ public class MMBase extends ProcessorModule  {
     /**
      * Retrieves the DTD base url.
      * This value is set using the configuration file.
+     * @deprecated keesj: This method is not used. Document type definitions
+     * should contain a fully qualified url.
+     * I think the author was thinking of a dtdpath wich makes sence
      * @return the dtd base as a <code>String</code>
      */
     public String getDTDBase() {
