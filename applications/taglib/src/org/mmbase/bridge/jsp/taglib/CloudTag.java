@@ -841,10 +841,10 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      *
      */
     public int doStartTag() throws JspTagException {
-        checkLocale();       
+        checkLocale();
+
         logon = logonatt != null ? StringSplitter.split(logonatt) : null;
         if (logon != null && logon.size() == 0) logon = null;
-
         if (checkReuse())     return evalBody(); 
         if (checkAnonymous()) return evalBody();
         if (checkAsis())      return evalBody();
@@ -866,6 +866,11 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (cloud != null) checkCloud();
         if (cloud == null) { 
             if (makeCloud() == SKIP_BODY) { // we did't have a cloud, or it was not a good one:
+                try {
+                    pageContext.getOut().print("Could not obtain a cloud, skipping body");
+                } catch (java.io.IOException e) {
+                    throw new JspTagException("Could not obtain a cloud, skipping body");
+                }
                 return SKIP_BODY;
             }
         }
