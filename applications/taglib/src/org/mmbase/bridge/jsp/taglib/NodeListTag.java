@@ -180,6 +180,9 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
     public void setMax(Integer max){
         this.max = max;
     } 
+    public void setMax(int max){        
+        this.max = new Integer(max);
+    } 
     
     /**
     * @param offset
