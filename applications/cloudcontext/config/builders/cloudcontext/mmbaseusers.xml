@@ -28,7 +28,6 @@
     <property name="encoding">MD5</property>
   </properties>
   <fieldlist>
-    <!-- field definition for field 4 : username -->
     <field>
       <gui>
         <guiname xml:lang="nl">Gebruiker</guiname>
@@ -38,7 +37,7 @@
       </gui>
       <editor>
         <positions>
-          <input>1</input><list>1</list><search>1</search>
+          <list>1</list>
         </positions>
       </editor>
       <db>
@@ -53,11 +52,6 @@
         <guiname xml:lang="en">Password</guiname>
         <guitype>password</guitype>
       </gui>
-      <editor>
-        <positions>
-          <input>2</input><list>-1</list><search>-1</search>
-        </positions>
-      </editor>
       <db>
         <name>password</name>
         <type state="persistent" size="32" notnull="true">STRING</type>
@@ -72,7 +66,7 @@
       </gui>
       <editor>
         <positions>
-          <input>3</input><list>3</list><search>3</search>
+          <list>2</list>
         </positions>
       </editor>
       <db>
@@ -89,7 +83,7 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input><list>5</list><search>5</search>
+          <list>3</list>
         </positions>
       </editor>
       <db>
