@@ -28,6 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
  * @since  MMBase-1.6
+ * @version $Id: SendMail.java,v 1.1.2.2 2004-04-23 13:00:10 pierre Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
@@ -35,6 +36,7 @@ public class SendMail extends AbstractSendMail {
     public static final String DEFAULT_MAIL_ENCODING="ISO-8859-1";
 
     public static String mailEncoding = DEFAULT_MAIL_ENCODING;
+
 
     private Session session;
 
