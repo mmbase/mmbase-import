@@ -23,7 +23,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -286,8 +286,9 @@ public class BasicSqlHandler implements SqlHandler {
             
             // Field alias.
             String fieldAlias = field.getAlias();
-            sb.append(" AS ").
-            append(getAllowedValue(fieldAlias));
+            sb.append(" AS '")
+            .append(getAllowedValue(fieldAlias))
+            .append("'");
             
             if (iFields.hasNext()) {
                 sb.append(",");
