@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.13 2003-02-25 09:46:18 vpro Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.14 2003-03-25 12:35:54 vpro Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1223,6 +1223,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     }
 
+    public Vector getRelatedNodes(String type, int search_type) { 
+        return getRelatedNodes(type, "insrel", search_type); 
+    }
+
     /**
      * If you query from this_node_type(type) (typex, insrel, typey where typex == typey) {
      *   if the insrel table is directional, use the multirelations.SEARCH_EITHER
@@ -1232,7 +1236,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * (huge) databases.
      * @since MMBase-1.6.2
      */
-    private Vector getRelatedNodes(String type, int search_type) {
+    public Vector getRelatedNodes(String type, String role, int search_type) {
+        log.debug("getRelatedNodes("+type+","+search_type+")");
+
         Vector result;
         MMObjectBuilder builder = (MMObjectBuilder) parent.mmb.getBuilder(type);
 
@@ -1252,6 +1258,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             // multilevel from table this.parent.name -> type
             Vector tables = new Vector();
             tables.add(parent.getTableName() + "1");
+            tables.add(role);
             tables.add(type + "2");
 
             // return type.number (and otype for sorting)
@@ -1273,6 +1280,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             vnode.add("" + getNumber());
 
             // retrieve the related nodes (these are virtual)
+
             Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
 
             if(v == null) v = new Vector();
@@ -1280,7 +1288,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
         } else {
             log.error("This type(" + type + ") is not a valid buildername!");
-            result = new Vector(); // return empty vectro
+            result = new Vector(); // return empty vector
         }
 
         if (log.isDebugEnabled()) {
@@ -1302,7 +1310,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     private List getRealNodes(Vector virtuals, String type) {
 
-        log.debug("Getting real nodes");
+        log.debug("getRealNodes("+virtuals.size()+","+type+"): Converting "+virtuals.size()+" virtual nodes to real MMObjectNodes");
         List            result  = new ArrayList();
 
         MMObjectNode    node    = null;
