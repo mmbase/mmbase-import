@@ -66,6 +66,7 @@ public class MultiConnection implements Connection
    */
    public void setLastSQL(String sql) {
 		lastSql=sql;
+		log.debug("SQL : "+sql);
 		state=CON_BUSY;
    }
 
