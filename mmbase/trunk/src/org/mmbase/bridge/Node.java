@@ -21,117 +21,148 @@ import java.util.List;
 public interface Node {
 
   	/**
-     * Retrieves the cloud where this node is part of.
+     * Returns the cloud this node belongs to.
      */
     public Cloud getCloud();
 
 	/**
-     * Retrieves the NodeManager of this node
+     * Returns the node manager of this node.
      */
     public NodeManager getNodeManager();
 	
 	/**
-     * Retrieves the node ID
+     * Returns the node ID.
      */
     public int getNodeID();
 	
 	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
+     * Sets the value of the specified field using an object.
+     * For example a field of type <code>int</code> can be set using an
+     * <code>Integer</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+	 * @param fieldname  the name of the field to be updated
+	 * @param value      the new value for the given field
 	 */
-	public void setValue(String attribute, Object value); 
+	public void setValue(String fieldname, Object value); 
 
 	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
+     * Sets the value of the specified field using an <code>int</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+	 * @param fieldname  the name of the field to be updated
+	 * @param value      the new value for the given field
 	 */
-	public void setIntValue(String attribute, int value); 
+	public void setIntValue(String fieldname, int value); 
 
 	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
+     * Sets the value of the specified field using a <code>float</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+	 * @param fieldname  the name of the field to be updated
+	 * @param value      the new value for the given field
 	 */
-	public void setFloatValue(String attribute, float value); 
+	public void setFloatValue(String fieldname, float value); 
 
 	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
+     * Sets the value of the specified field using a <code>double</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+	 * @param fieldname  the name of the field to be updated
+	 * @param value      the new value for the given field
 	 */
-	public void setDoubleValue(String attribute, double value); 
+	public void setDoubleValue(String fieldname, double value); 
 
 	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
+     * Sets the value of the specified field using a <code>byte array</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+	 * @param fieldname  the name of the field to be updated
+	 * @param value      the new value for the given field
 	 */
-	public void setByteValue(String attribute, byte[] value); 
+	public void setByteValue(String fieldname, byte[] value); 
 
 	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
+     * Sets the value of the specified field using a <code>long</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+	 * @param fieldname  the name of the field to be updated
+	 * @param value      the new value for the given field
 	 */
-	public void setLongValue(String attribute, long value); 
+	public void setLongValue(String fieldname, long value); 
 
-	/** 
-	 * Set the value of certain attribute
-	 * @param attribute name of field
-	 * @param value of attribute
-	 */
-	public void setStringValue(String attribute, String value); 
+    /** 
+     * Sets the value of the specified field using a <code>String</code>.
+     * This change will not be visible to the cloud until the commit method is
+     * called.
+     *
+     * @param fieldname  the name of the field to be updated
+     * @param value      the new value for the given field
+     */
+	public void setStringValue(String fieldname, String value); 
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public Object getValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as an object. For example a
+     * field of type <code>int</code> is returned as an <code>Integer</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public Object getValue(String fieldname);
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public int getIntValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as an <code>int</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public int getIntValue(String fieldname);
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public float getFloatValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as a <code>float</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public float getFloatValue(String fieldname);
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public long getLongValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as a <code>long</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public long getLongValue(String fieldname);
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public double getDoubleValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as a <code>double</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public double getDoubleValue(String fieldname);
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public byte[] getByteValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as a <code>byte array</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public byte[] getByteValue(String fieldname);
 
-	/** 
-	 * Retrieves the value of certain attribute
-	 * @param name of attribute you want 
-	 * @return value of attribute
-	 */
-	public String getStringValue(String fieldName);
+    /** 
+     * Returns the value of the specified field as a <code>String</code>.
+     *
+     * @param fieldname  the name of the field to be returned
+     * @return           the value of the specified field
+     */
+	public String getStringValue(String fieldname);
 
 	/**
 	* Commit the node to the database.

@@ -117,7 +117,7 @@ public interface NodeManager {
      * "email NOT LIKE '%.org'" (indication the email should end with .org)
      * "number NOT BETWEEN 99 AND 101"
      * "name NOT IN ('admin', 'anonymous')"
-     * <pre>
+     * </pre>
      *
      * Some special functions (not part of standard SQL, but most databases
      * support them) can be used like:
@@ -145,18 +145,18 @@ public interface NodeManager {
      *
      * @param constraints   Contraints to prevent nodes from being
      *                      included in the resulting list which would normally
-     *                      by included or null if no contraints should be
-     *                      applied .
+     *                      by included or <code>null</code> if no contraints
+     *                      should be applied .
      * @param orderby       A comma separated list of field names on which the
-     *                      returned list should be sorted or null if
-     *                      the order of the returned virtual nodes doesn't
+     *                      returned list should be sorted or <code>null</code>
+     *                      if the order of the returned virtual nodes doesn't
      *                      matter.
      * @param directions    A comma separated list of the values UP and DOWN
      *                      indicating wether the sort on the
      *                      corresponding field in the <code>orderby</code>
      *                      parameter should be up (ascending) or down
-     *                      (descending) or null if sorting for all fields
-     *                      should be up. If less values are supplied
+     *                      (descending) or <code>null</code> if sorting for all
+     *                      fields should be up. If less values are supplied
      *                      then there are fields in the <code>orderby</code>
      *                      parameter, the first value in the list is used for
      *                      the remainig fields.
