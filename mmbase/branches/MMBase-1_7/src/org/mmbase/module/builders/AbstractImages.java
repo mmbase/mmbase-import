@@ -19,7 +19,7 @@ import org.mmbase.util.functions.Parameters;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.24.2.2 2004-10-03 11:10:26 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.24.2.3 2004-10-03 11:14:24 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -75,13 +75,11 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                 if (value instanceof ByteFieldContainer) {
                     ByteFieldContainer bf = (ByteFieldContainer) value;                
                     if (bf.number == icacheNumber) {
-                        entries.remove();
                         removed.add(key);
                     }
                 } else if (value instanceof Integer) {
                     Integer i = (Integer) value;
                     if (i.intValue() == icacheNumber) {
-                        entries.remove();
                         removed.add(key);
                     }
                 }
