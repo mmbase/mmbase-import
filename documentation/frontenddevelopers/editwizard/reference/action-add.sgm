@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      'action type="add"' tag
 -->
 <section id="action-add">
@@ -9,7 +9,7 @@
 	</formalpara>
 	<formalpara>
 		<title>Usage</title>
-		<para>This tag defines how to create a new relation in a list, to an ovject supplied by one of the list commands. It is similar to <link linkend="action-create">action type="create"</link>, but it is used for the <link linkend="command-search">command type="search"</link> or <link linkend="command-wizard">command type="wizard"</link> tags.
+		<para>This tag defines how to create a new relation in a list, to an object supplied by one of the list commands. It is similar to <link linkend="action-create">action type="create"</link>, but it is used for the <link linkend="command-search">command type="search"</link> or <link linkend="command-wizard">command type="wizard"</link> tags.
 		</para>
 	</formalpara>
 	<para>Under the tag, you specify a <link linkend="relation">relation</link> tag, with the role and destinationtype attributes set to the type and role of the relation to create:
@@ -19,7 +19,7 @@
 </action>
 ]]></programlisting>
 	This action creates a 'author' relation to a people object. The wizard expects that the object is supplied by one of the list <link linkend="command">command</link> tags (a search command or a wizard command).</para>
-	<para>See the <link linkend="action-create">action type="create"</link> for infor on how to create a new related object in the list.</para>
+	<para>See the <link linkend="action-create">action type="create"</link> for information on how to create a new related object in the list.</para>
 	<formalpara>
 		<title>Required Attributes</title>
 		<para><variablelist>
@@ -41,7 +41,7 @@
 			<varlistentry>
 				<term><link linkend="relation">&lt;relation /&gt;</link></term>
 				<listitem>
-					<para>Specifies the type of relation to create in a list. It may also include additonal field and object tags for initialization of the object or creation of new objects to relate to.</para>
+					<para>Specifies the type of relation to create in a list. It may also include additional field and object tags for initialization of the object or creation of new objects to relate to.</para>
 				</listitem>
 			</varlistentry>
 		</variablelist></para>
@@ -56,7 +56,7 @@
 			<varlistentry>
 				<term><link linkend="list">&lt;list&gt;</link></term>
 				<listitem>
-					<para>A list of realted objects in a form.</para>
+					<para>A list of related objects in a form.</para>
 				</listitem>
 			</varlistentry>
 		</variablelist></para>

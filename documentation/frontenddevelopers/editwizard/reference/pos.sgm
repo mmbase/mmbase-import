@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      '$pos' variable
 -->
 <section id="pos">
@@ -7,7 +7,7 @@
 		<title>Usage</title>
 		<para>The $pos variable identifies the index of an object in a list of objects returned by the search command.</para>
 	</formalpara>
-	<para>The list of objects is inserted at the end of the list that called the search command. Some relations have fields whose values are initialized by tehw izard a sthey are inserted. In a few cases, the value inserted may be calculated based on values of the current list.	For isntance, the pos field of a posrel relation will often need to be filled with a sequentially increasing number.
+	<para>The list of objects is inserted at the end of the list that called the search command. Some relations have fields whose values are initialized by the wizard a they are inserted. In a few cases, the value inserted may be calculated based on values of the current list.	For instance, the pos field of a posrel relation will often need to be filled with a sequentially increasing number.
 	This can be done by including an xpath in the field tag of the relation's create action. For the posrel field, this can be:
 	</para>
 	<para><programlisting format="linespecific"><![CDATA[

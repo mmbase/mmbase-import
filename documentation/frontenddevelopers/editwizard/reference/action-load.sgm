@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      'action type="load"' tag
 -->
 <section id="action-load">
@@ -38,7 +38,7 @@
 	</relation>
 </action>
 ]]></programlisting>
-	This will load the 'pos' field of the posrel realtion, and the 'title' field of any related images. You can also continue to nest relations, such as the image related to an author related to a news item. This makes for more complex wizards, so in general you will not go more than one relation deep. 
+	This will load the 'pos' field of the posrel relation, and the 'title' field of any related images. You can also continue to nest relations, such as the image related to an author related to a news item. This makes for more complex wizards, so in general you will not go more than one relation deep. 
 	</para>
 	<para>If you do not specify a load action, the wizard by default loads the main object with all its (editable) fields. It will in that case not load any related objects.</para>
 	<note><para>You can only edit fields or list related objects if the wizard has loaded them. If you specify too few fields in your load action, you may not be able to access everything you want to edit. Likewise, specifying too much may make the wizard slow.</para>
@@ -74,7 +74,7 @@
 			<varlistentry>
 				<term><link linkend="relation">&lt;relation /&gt;</link></term>
 				<listitem>
-					<para>If given, the load action loads the realtiosna s specified, as well as the objects related to. Relations can contain field and object tags, which can further determine what is loaded by the wizard.</para>
+					<para>If given, the load action loads the relation as specified, as well as the objects related to. Relations can contain field and object tags, which can further determine what is loaded by the wizard.</para>
 				</listitem>
 			</varlistentry>
 		</variablelist></para>

@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      'action type="create"' tag
 -->
 <section id="action-create">
@@ -13,7 +13,7 @@
 		</para>
 	</formalpara>
 	<para>You define the data to be created by including a (nested) objectstructure in the body of the action tag.</para>
-	<para>Under a top-level tag, you specify an <link linkend="object">object</link> tag, with the type attribute set to the type og object that needs to be created.
+	<para>Under a top-level tag, you specify an <link linkend="object">object</link> tag, with the type attribute set to the type of object that needs to be created.
 	
 	<programlisting format="linespecific"><![CDATA[
 <action type="create" >
@@ -23,7 +23,7 @@
 	
 	This action creates an (empty, and unrelated) news object.</para>
 	<para>
-	You can make a more complex creation action by specifying fields that you want to initialize (asside from any initialization that is done by MMBase itself), or relations that you want to have made (such as linking to a specific archive):
+	You can make a more complex creation action by specifying fields that you want to initialize (aside from any initialization that is done by MMBase itself), or relations that you want to have made (such as linking to a specific archive):
 	<programlisting format="linespecific"><![CDATA[
 <action type="create" >
 	<object type="news" >
@@ -42,10 +42,10 @@
 		<object type="people" >
 			<field name="lastname">Supply lastname here</field>
 		</object>
-	</realtion>
+	</relation>
 </action>
 ]]></programlisting>
-	This will create a new 'people' object with ana initialized 'lastname' field, and create a relation to this object. 
+	This will create a new 'people' object with an initialized 'lastname' field, and create a relation to this object. 
 	There are a limited number of 'variables' that you can use when initializing the action. More info on this can be found in the <link linkend="field">field</link> tag reference.
 	</para>
 	<para>You use this action to define how to create a relation for a list <link linkend="command-insert">insert command</link>.  If you have a <link linkend="command-search">search</link> or a <link linkend="command-wizard">wizard</link> command tag, you should use an <link linkend="action-add">action type="add"</link> tag instead.</para>
@@ -71,13 +71,13 @@
 			<varlistentry>
 				<term><link linkend="object">&lt;object /&gt;</link> (top-level tag)</term>
 				<listitem>
-					<para>Specifies the type of object to create. It may also include additonal field and relation tags for initialization of the object or auto-linking to other objects.</para>
+					<para>Specifies the type of object to create. It may also include additional field and relation tags for initialization of the object or auto-linking to other objects.</para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
 				<term><link linkend="relation">&lt;relation /&gt;</link> (list-level tag)</term>
 				<listitem>
-					<para>Specifies the type of relation to create in a list. It may also include additonal field and object tags for initialization of the object or creation of new objects to relate to.</para>
+					<para>Specifies the type of relation to create in a list. It may also include additional field and object tags for initialization of the object or creation of new objects to relate to.</para>
 				</listitem>
 			</varlistentry>
 		</variablelist></para>
@@ -98,7 +98,7 @@
 			<varlistentry>
 				<term><link linkend="list">&lt;list&gt;</link> (list-level tag)</term>
 				<listitem>
-					<para>A list of realted objects in a form.</para>
+					<para>A list of related objects in a form.</para>
 				</listitem>
 			</varlistentry>
 		</variablelist></para>

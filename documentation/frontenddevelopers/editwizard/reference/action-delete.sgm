@@ -1,4 +1,4 @@
-<!-- Include file for the editwizard refernce docbook: 
+<!-- Include file for the editwizard reference docbook: 
      'action type="delete"' tag
 -->
 <section id="action-delete">
@@ -13,7 +13,7 @@
 		</para>
 	</formalpara>
 	<para>A top level tag defines an action for when a user issues a delete command from the wizard list page.
-	If you define a delete action, list pages will enable the user to remove an object from the MMBase cloud by showing a delete button or link. Not defining this action means the link does not show (thus, objects cannot be deleted if you do not provide the action). Optional childs of the action are a roll-over help-description for the link in the list, and a prompt for asking confirmation when the command is issued.
+	If you define a delete action, list pages will enable the user to remove an object from the MMBase cloud by showing a delete button or link. Not defining this action means the link does not show (thus, objects cannot be deleted if you do not provide the action). Optional children of the action are a roll-over help-description for the link in the list, and a prompt for asking confirmation when the command is issued.
 	</para>
 	<note><para>Unlike other actions, the top level delete action does not contain an objectstructure - the object deleted is always the current object and its relations. You cannot, for example, define a structure so that deleting the node will automatically delete any related nodes.</para>
 	</note>
@@ -49,7 +49,7 @@
 			<varlistentry>
 				<term><link linkend="description">&lt;description /&gt;</link> (top-level tag)</term>
 				<listitem>
-					<para>Descriptive tekst used as help tekst (often a rollover) for the 'delete' link in the wizard list. Only applicable to the top-level delete action.</para>
+					<para>Descriptive text used as help text (often a rollover) for the 'delete' link in the wizard list. Only applicable to the top-level delete action.</para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
@@ -62,7 +62,7 @@
 			<varlistentry>
 				<term><link linkend="prompt">&lt;prompt /&gt;</link> (top-level tag)</term>
 				<listitem>
-					<para>Tekst to prompt when asking confirmation when the command is issued. This allows you to give specific warnings. Only applicable to the top-level delete action.</para>
+					<para>Text to prompt when asking confirmation when the command is issued. This allows you to give specific warnings. Only applicable to the top-level delete action.</para>
 				</listitem>
 			</varlistentry>
 		</variablelist></para>
