@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.79 2002-11-12 14:28:36 pierre Exp $
+ * @version $Id: MMBase.java,v 1.80 2002-11-20 15:03:33 pierre Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -507,8 +507,9 @@ public class MMBase extends ProcessorModule  {
      *
      * @since MMBase-1.6
      * @param name The name of the builder to retrieve
-     * @return a <code>MMObjectBuilder</code> if found, <code>null</code> otherwise
+     * @return a <code>MMObjectBuilder</code> for the specified builder
      * @throws CircularReferenceException when circular reference is detected
+     * @throws BuilderConfigurationException if the builder config file does not exist
      */
     public MMObjectBuilder getBuilder(String name) throws CircularReferenceException {
         MMObjectBuilder builder=getMMObject(name);
