@@ -51,11 +51,14 @@
     </mm:list>
 </di:hasrole>
 
-<mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
-    <mm:import id="mayeditentries" reset="true">true</mm:import>
-</mm:list>
+<di:hasrole role="teacher" inverse="true">
+     <mm:compare referid="typeof" value="1" inverse="true">
+          <mm:list nodes="$user" path="people,portfolios,folders" constraints="folders.number=$currentfolder" max="1">
+              <mm:import id="mayeditentries" reset="true">true</mm:import>
+           </mm:list>
+     </mm:compare>
+</di:hasrole>
 </mm:isgreaterthan>
-
 
 <mm:import id="mayeditfolders">false</mm:import>
 <mm:compare referid="user" value="$myuser">
@@ -157,6 +160,7 @@
 <mm:import id="currentportfoliotype"><mm:field name="type"/></mm:import>
 <mm:remove referid="currentportfolioisopen"/>
 
+<mm:isgreaterthan referid="user" value="0">
 <mm:compare referid="currentportfoliotype" value="0">
 
 <%-- folder is open --%>
@@ -185,6 +189,8 @@
 <a href="<mm:treefile page="index.jsp" objectlist="$includePath" referids="$referids,contact?"><mm:param name="typeof">1</mm:param></mm:treefile>">Assessment portfolio</a><br/>
 
 </mm:compare>
+</mm:isgreaterthan>
+
 <mm:compare referid="currentportfoliotype" value="2">
 
 <%-- folder is open --%>
@@ -367,7 +373,7 @@
         <di:table maxitems="10">
 
           <di:row>
-            <di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"></input></di:headercell>
+            <mm:compare referid="mayeditentries" value="true"><di:headercell><input type="checkbox" onclick="selectAllClicked(this.form, this.checked)"/></di:headercell></mm:compare>
             <di:headercell><fmt:message key="TYPE" /></di:headercell>
             <di:headercell><fmt:message key="TITLE" /></di:headercell>
             <di:headercell><fmt:message key="REACTIONS"/></di:headercell>
@@ -417,7 +423,9 @@
             </mm:field>
 
             <di:row>
-              <di:cell><input type="checkbox" name="ids" value="<mm:field name="number"/>"></input></di:cell>
+              <mm:compare referid="mayeditentries" value="true">
+                <di:cell><input type="checkbox" name="ids" value="<mm:field name="number"/>"></input></di:cell>
+              </mm:compare>
 
               <mm:remove referid="link"/>
               <mm:import id="link"><a href="<mm:treefile page="/portfolio/showitem.jsp" objectlist="$includePath" referids="$referids">
