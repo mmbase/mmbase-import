@@ -245,10 +245,12 @@ public class BasicBundle implements BundleInterface {
 		// step 3
 		step=getNextInstallStep();
 		step.setUserFeedBack("updating mmbase registry ..");
+		/* temp to test progressbar
 		try {
 			Thread.sleep(3000);
 		} catch (Exception f) {
 		}
+		*/
 		updateRegistryUninstalled();
 		step.setUserFeedBack("updating mmbase registry ... done");
 
