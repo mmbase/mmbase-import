@@ -1,11 +1,11 @@
 <%@page language="java" contentType="text/html;charset=UTF-8"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"   prefix="mm"
-%><%@include file="settings.jsp"
-%><%@include file="import.jsp" %>
+%><%@include file="import.jsp" %><%@include file="settings.jsp"
+%>
 <mm:import id="url">edit_user.jsp</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
- <h1><%=m.getString("create_user")%></h1>
+<h1><%=m.getString("create_user")%></h1>
 
  <%@include file="you.div.jsp" %>
 
