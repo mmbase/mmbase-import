@@ -27,14 +27,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageLookup.java,v 1.5 2004-11-26 19:58:28 michiel Exp $
+ * @version $Id: DatabaseStorageLookup.java,v 1.6 2004-12-03 14:57:55 pierre Exp $
  */
 public class DatabaseStorageLookup extends DocumentReader {
 
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageLookup.class);
 
     private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH_FALLBACK = "/org/mmbase/storage/implementation/database/resources/lookup.xml";
-    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH     = "databases/lookup.xml";
+    private static String DATABASE_STORAGE_LOOKUP_RESOURCE_PATH     = "storage/databases/lookup.xml";
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_DATABASE_STORAGE_LOOKUP_1_0 = "-//MMBase//DTD storage config 1.0//EN";
