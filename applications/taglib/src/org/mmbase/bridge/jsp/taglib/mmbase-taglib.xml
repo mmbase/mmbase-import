@@ -2473,6 +2473,16 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         result of getRequestURI.
     </info>
     </attribute>
+    <attribute>
+      <name>escapeamps</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+          Wether or not to escape &amp;'s in the query
+          string. According to XHTML is must. But perhaps you don't
+          want XHTML but something else. Default it is true.
+    </info>
+    </attribute>
     <example>
     &lt;mm:url page="codesamples/index.jsp"&gt;
         &lt;mm:param name="page" value="home" /&gt;
