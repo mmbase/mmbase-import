@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesSender.java,v 1.7 2004-02-09 13:24:22 pierre Exp $
+ * @version $Id: MultiCastChangesSender.java,v 1.8 2004-02-18 15:03:13 keesj Exp $
  */
 public class MultiCastChangesSender implements Runnable {
 
@@ -142,6 +142,9 @@ public class MultiCastChangesSender implements Runnable {
             data = chars.getBytes();
             dp = new DatagramPacket(data, data.length, ia,mport);
             try {
+                if (log.isDebugEnabled()) {
+                    log.debug("SEND=>" + new String(chars));
+                }
                 ms.send(dp, (byte)1);
             } catch (IOException e) {
                 log.error("can't send message");
