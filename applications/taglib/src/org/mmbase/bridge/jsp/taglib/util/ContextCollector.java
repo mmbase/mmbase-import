@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.util;
 
 import org.mmbase.bridge.jsp.taglib.ContextProvider;
+import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
 
 
 import java.util.*;
@@ -22,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.9 2004-12-10 19:05:36 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.10 2005-01-04 13:44:43 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
@@ -54,9 +55,11 @@ public class  ContextCollector  {
                 parent.unRegister(key);
             }
         }
+
+        contextContainer.release();
+
         // now, put the new stuff in:
         parent.registerAll(contextContainer);
-
      
         // remember what was ours:
         collector.putAll(contextContainer);       
@@ -69,7 +72,7 @@ public class  ContextCollector  {
 
     private class Container extends StandaloneContextContainer {
         Container(ContextContainer parent) {
-            super(null, parent);
+            super(((ContextReferrerTag) ContextCollector.this.parentTag).getPageContext(), null, parent);
         }
         public void unRegister(String key) throws JspTagException {
             super.unRegister(key);

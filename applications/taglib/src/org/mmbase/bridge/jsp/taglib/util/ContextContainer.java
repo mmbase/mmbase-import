@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.25 2004-12-10 20:25:11 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.26 2005-01-04 13:44:43 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -102,12 +102,18 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      */
     protected abstract Map getBacking();
 
+    /**
+     * @since MMBase-1.8
+     */
+    public abstract void release();
+
     public Set entrySet() {
         return getBacking().entrySet();
     }
 
-    private String id;
-    protected ContextContainer parent;
+    private   final String id;
+    protected final ContextContainer parent;
+    protected final PageContext pageContext;
 
     /**
      * Since a ContextContainer can contain other ContextContainer, it
@@ -115,9 +121,10 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      * has an id.
      */
 
-    public ContextContainer(String i, ContextContainer p) {
+    public ContextContainer(PageContext pc, String i, ContextContainer p) {        
         id = i;
         parent = p;
+        pageContext = pc;
     }
 
 
