@@ -12,6 +12,27 @@
 <mm:import externid="search"     from="parameters" />
 <mm:import externid="maylink"    from="parameters" />
 
+<!-- if no previous search, clear all search values -->
+<mm:notpresent referid="search">
+    <mm:write value="" session="_search_form_minage" />
+    <mm:write value="" session="_search_form_maxage" />
+    <mm:context>
+        <!--clear all search field values -->
+        <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+            <mm:fieldinfo type="name">
+              <mm:write value="" session="search_form_$_" />
+            </mm:fieldinfo>
+        </mm:fieldlist>
+    </mm:context>
+</mm:notpresent>
+
+<!-- import search age and store in session -->
+
+<mm:import externid="_search_form_minage" ></mm:import>
+<mm:write referid="_search_form_minage" session="_search_form_minage" />
+<mm:import externid="_search_form_maxage" ></mm:import>
+<mm:write referid="_search_form_maxage" session="_search_form_maxage" />
+
 <%-- you can configure 'hide_search' to hide the search functionality --%>
 <%-- mm:compare referid="config.hide_search" value="false" --%>
 <mm:context>
@@ -22,28 +43,31 @@
             <tr align="left">
              <td width="20%"><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></td>
              <td width="100%"><mm:fieldinfo type="searchinput" /></td>
+             <!-- import field search value and store in session -->
+             <mm:fieldinfo type="name">
+                <mm:write referid="search_form_$_" session="search_form_$_" />
+             </mm:fieldinfo>
            </tr>
         </mm:fieldlist>
          <tr align="left">
             <td width="20%"><%=m.getString("search.minage")%></td>
-            <td width="100%"><input type ="text" class="small" size="80" name="_search_form_minage" /></td>
+            <td width="100%"><input type ="text" class="small" size="80" name="_search_form_minage" value="<mm:write referid="_search_form_minage" />" /></td>
          </tr>
          <tr align="left">
             <td width="20%"><%=m.getString("search.maxage")%></td>
-            <td width="100%"><input type ="text" class="small" size="80" name="_search_form_maxage" /></td>
+            <td width="100%"><input type ="text" class="small" size="80" name="_search_form_maxage" value="<mm:write referid="_search_form_maxage" />" /></td>
          </tr>
         <tr>
            <td colspan="2"><input class="search" type ="submit" name="search" value="<%=m.getString("search")%>" /></td>
         </tr>
       </table>
   </form>
+  
 </mm:context>
 <%-- /mm:compare --%>
 
 <%-- ordered to search with form button 'search'. Following are some tricks to get the where right.--%>    
 <mm:present referid="search">
-  <mm:import externid="_search_form_minage" />
-  <mm:import externid="_search_form_maxage" />
   <mm:import id="minage_constraint" />
   <mm:import id="maxage_constraint" />
   <mm:isnotempty referid="_search_form_minage">
@@ -60,14 +84,29 @@
      <mm:remove referid="maxage_constraint" />
      <mm:import id="daycount_constraint2"> [daycount] <=  <mm:write referid="_search_form_maxage" jspvar="min" vartype="integer"><%=(int)(System.currentTimeMillis()/(1000*60*60*24)) - min.intValue()%></mm:write></mm:import>
      <mm:listnodes type="daymarks" constraints="$daycount_constraint2" max="1" orderby="daycount" directions="DOWN">
-        <mm:import id="maxage_constraint"><mm:isnotempty referid="minage_constraint"> AND </mm:isnotempty> [number] >= <mm:field name="mark" /></mm:import>
+        <mm:import id="maxage_constraint"> [number] >= <mm:field name="mark" /></mm:import>
      </mm:listnodes>
      <mm:notpresent referid="maxage_constraint">
        <mm:import id="maxage_constraint" /><!-- no contraint -->
      </mm:notpresent>    
   </mm:isnotempty>
 
-  <mm:import id="where"><mm:context><mm:fieldlist id="search_form" nodetype="$node_type" type="search"><mm:fieldinfo type="usesearchinput"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent><mm:write /></mm:isnotempty></mm:fieldinfo></mm:fieldlist><mm:write referid="minage_constraint"><mm:isnotempty><mm:present referid="notfirst"> AND <mm:import id="notfirst">yes</mm:import></mm:present><mm:write /></mm:isnotempty></mm:write><mm:write referid="maxage_constraint"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:write /></mm:isnotempty></mm:write></mm:context></mm:import>
+  <mm:import id="where"><mm:context
+    ><mm:fieldlist id="search_form" nodetype="$node_type" type="search"
+      ><mm:fieldinfo type="usesearchinput"><mm:isnotempty
+        ><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent
+        ><mm:write 
+      /></mm:isnotempty></mm:fieldinfo
+    ></mm:fieldlist
+    ><mm:write referid="minage_constraint"><mm:isnotempty
+      ><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent
+      ><mm:write 
+    /></mm:isnotempty></mm:write
+    ><mm:write referid="maxage_constraint"><mm:isnotempty
+      ><mm:present referid="notfirst"> AND </mm:present
+      ><mm:write 
+    /></mm:isnotempty></mm:write
+  ></mm:context></mm:import>
     <!-- -everything on one line, to avoid pollution of $where with spaces.
          -context is used to avoid pollution of current context with used id's. --> 
              
