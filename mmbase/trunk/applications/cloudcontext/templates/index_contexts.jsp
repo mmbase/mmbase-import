@@ -9,43 +9,35 @@
 </head>
 <mm:import externid="offset">0</mm:import>
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
-<mm:import externid="group" vartype="list" />
-<mm:import id="nodetype">mmbasegroups</mm:import>
+<mm:import externid="context" vartype="list" />
+<mm:import id="nodetype">mmbasecontexts</mm:import>
 <mm:import id="fields">name,description,owner</mm:import>
 <body>
- <h1>Administrate groups</h1>
+ <h1>Administrate contexts</h1>
 
  <%@include file="you.div.jsp" %>
 
  <div id="navigate">
    <p><a href="<mm:url page="index.jsp" />">Users</a></p>
-   <p class="current"><a href="<mm:url />">Groups</a></p>
-   <p><a href="<mm:url page="index_contexts.jsp" />">Contexts</a></p>
+   <p><a href="<mm:url page="index_groups.jsp" />">Groups</a></p>
+   <p class="current"><a href="<mm:url page="index_contexts.jsp" />">Contexts</a></p>
    <p><a target="_new" href="<mm:url page="help.jsp" />">Help</a></p>
  </div>
  
   <p class="action">
-    <a href="<mm:url page="create_group.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create group"  /></a>
+    <a href="<mm:url page="create_context.jsp" />"><img src="images/mmbase-new-40.gif" alt="+" tooltip="create context"  /></a>
   </p>
  
-   <mm:notpresent referid="group">
+   <mm:notpresent referid="context">
      <%@include file="search.form.jsp" %>
      
-     <table summary="Groups">
+     <table summary="Contexts">
 
      <mm:listnodescontainer id="cc" type="$nodetype">
 
      <%@include file="search.jsp" %>
     
-     <mm:listnodes id="basegroups" orderby="name">
-       <%-- 
-       <mm:countrelations type="mmbasegroups" searchdir="source" role="contains">
-          <mm:isgreaterthan value="0">
-             <mm:removeitem />
-          </mm:isgreaterthan>
-      </mm:countrelations>
-       --%>
-     </mm:listnodes>
+
 
      <tr><mm:fieldlist nodetype="$nodetype"  fields="$fields">
         <th><mm:fieldinfo type="guiname" /></th>
@@ -53,13 +45,13 @@
        <th />
      </tr>
      
-     <mm:listnodes id="currentgroup" referid="basegroups">
+     <mm:listnodes id="currentcontext">
       <tr <mm:even>class="even"</mm:even> >
       <mm:fieldlist fields="$fields">
          <td><mm:fieldinfo type="guivalue" /></td>
       </mm:fieldlist>
       <td class="commands">
-         <a href="<mm:url referids="currentgroup@group" />"><img src="images/mmbase-edit.gif" alt="Wijzigen" title="Wijzigen" /></a>
+         <a href="<mm:url referids="currentcontext@context" />"><img src="images/mmbase-edit.gif" alt="Wijzigen" title="Wijzigen" /></a>
       </td>
       </tr>
      </mm:listnodes>
@@ -67,10 +59,10 @@
     </mm:listnodescontainer>
     </table>
    </mm:notpresent>
-   <mm:present referid="group">
-     <mm:stringlist referid="group">
-      <mm:node id="currentgroup"  number="$_">
-          <%@include file="group.div.jsp" %>
+   <mm:present referid="context">
+     <mm:stringlist referid="context">
+      <mm:node number="$_">
+          <%@include file="context.div.jsp" %>
       </mm:node>
      </mm:stringlist>
    </mm:present>

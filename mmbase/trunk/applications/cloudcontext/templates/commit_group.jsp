@@ -18,6 +18,57 @@
     <mm:fieldlist type="edit">
     <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="useinput" /></td></tr>
     </mm:fieldlist>
+    <mm:import externid="_parentgroups" vartype="list" jspvar="parentgroups" /> 
+    <mm:import externid="_childgroups" vartype="list" jspvar="childgroups" /> 
+    <tr>
+     <td>Parent Groups</td>
+     <td>
+     <mm:listrelations type="mmbasegroups" role="contains" searchdir="source">
+       <mm:relatednode jspvar="group">
+         <%= group.getNumber() %>
+        <% if (! parentgroups.contains("" + group.getNumber())) { %>
+          <mm:import id="deleteparent" />
+        <% } %>
+       </mm:relatednode>
+       <mm:present referid="deleteparent">
+        <mm:deletenode />
+       </mm:present>
+     </mm:listrelations>
+     <mm:unrelatednodes id="unrelated" type="mmbasegroups" />   
+     <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
+     <mm:stringlist referid="_parentgroups">              
+       <mm:node id="parentgroup" number="$_" jspvar="group">
+         <% if (unrelated.contains(group)) { %>
+              <mm:createrelation source="parentgroup" destination="group" role="contains" />
+         <% } %>
+        </mm:node>
+     </mm:stringlist>
+     </mm:write>
+     </td>     
+     <td>Child Groups</td>
+     <td>
+     <mm:listrelations type="mmbasegroups" role="contains" searchdir="destination">
+       <mm:relatednode jspvar="group">
+         <%= group.getNumber() %>
+        <% if (! childgroups.contains("" + group.getNumber())) { %>
+          <mm:import id="deletechild" />
+        <% } %>
+       </mm:relatednode>
+       <mm:present referid="deletechild">
+        <mm:deletenode />
+       </mm:present>
+     </mm:listrelations>
+     <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
+     <mm:stringlist referid="_childgroups">              
+       <mm:node id="childgroup" number="$_" jspvar="group">
+         <% if (unrelated.contains(group)) { %>
+              <mm:createrelation source="group" destination="childgroup" role="contains" />
+         <% } %>
+        </mm:node>
+     </mm:stringlist>
+     </mm:write>
+     </td>
+    </tr>
     <mm:import externid="createcontext" /> 
     <mm:present referid="createcontext">
       <mm:import externid="contextname" /> 
@@ -44,9 +95,7 @@
    </table>
    </mm:node>
 
-  <mm:write referid="group" jspvar="group" vartype="node">
- <% response.sendRedirect("index_groups.jsp?group=" + group.getNumber()); %>
-  </mm:write>
+ <% response.sendRedirect("index_groups.jsp"); %>
   </mm:cloud>
   </body>
 </html>
