@@ -20,15 +20,17 @@ import java.net.*;
 /**
  * Provides the functionality to create URL's (or URI's) for a certain
  * fragment, source, provider combination.
-  <pre>
+ *
+ * This servlet mapping is supposed:
+  <pre><![CDATA[
  <servlet-mapping>
     <servlet-name>mediafragment</servlet-name>
     <url-pattern>/mediafragment.*</url-pattern>
   </servlet-mapping>
-  </pre>
+]]></pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.5 2003-02-05 12:00:09 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.6 2003-02-05 15:15:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
