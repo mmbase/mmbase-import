@@ -9,11 +9,12 @@
     <%-- forums, threads, messages --%>
 
     <%-- search forums --%>
-	    <mm:list path="forums" constraints="<%= searchConstraints("forums.name", request) %>">
+	    <mm:list nodes="$user" path="people,classes,forums" constraints="<%= searchConstraints("forums.name", request) %>">
 	    <tr>
 		<td class="listItem"><di:translate id="forum">Forum</di:translate></td>
 		<td class="listItem">
 		<a href="<mm:treefile page="/forum/forum.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="class"><mm:field name="classes.number"/></mm:param>
 		    <mm:param name="forum"><mm:field name="forums.number"/></mm:param>
 		    </mm:treefile>"><mm:field name="forums.name"/></a>
 		</td>
@@ -21,22 +22,24 @@
 	    </mm:list>
 	    
 	<%-- search threads --%>
-	    <mm:list path="forums,forumthreads" constraints="<%= searchConstraints("forumthreads.name", request) %>">
+	    <mm:list nodes="$user" path="people,classes,forums,forumthreads" constraints="<%= searchConstraints("forumthreads.name", request) %>">
 		<tr>
 		    <td class="listItem"><di:translate id="thread">Thread</di:translate></td>
 		    <td class="listItem">
 		    <a href="<mm:treefile page="/forum/thread.jsp" objectlist="$includePath" referids="$referids">
-		    <mm:param name="forum"><mm:field name="forums.number"/></mm:param>
+	             <mm:param name="class"><mm:field name="classes.number"/></mm:param>
+	            <mm:param name="forum"><mm:field name="forums.number"/></mm:param>
 		    <mm:param name="thread"><mm:field name="forumthreads.number"/></mm:param>
 		    </mm:treefile>"><mm:field name="forums.name"/> &gt; <mm:field name="forumthreads.name"/></a></td>
 		</tr>
 	    </mm:list>
 
 	<%-- search messages --%>
-	    <mm:list path="forums,forumthreads,forummessages" constraints="<%= searchConstraints("CONCAT(forummessages.title, forummessages.body)", request) %>">
+	    <mm:list nodes="$user" path="people,classes,forums,forumthreads,forummessages" constraints="<%= searchConstraints("CONCAT(forummessages.title, forummessages.body)", request) %>">
 	    <tr>
 		<td class="listItem"><di:translate id="message">Message</di:translate></td>
 		<td class="listItem"><a href="<mm:treefile page="/forum/thread.jsp" objectlist="$includePath" referids="$referids">
+                    <mm:param name="class"><mm:field name="classess.number"/></mm:param>
 		    <mm:param name="forum"><mm:field name="forums.number"/></mm:param>
 		    <mm:param name="thread"><mm:field name="forumthreads.number"/></mm:param>
 		    </mm:treefile>"><mm:field name="forums.name"/> &gt; <mm:field name="forumthreads.name"/> &gt;  <mm:field name="forummessages.title"/></a></td>
