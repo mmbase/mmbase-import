@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.2 2003-05-23 12:05:14 michiel Exp $
+ * @version $Id: Users.java,v 1.3 2003-05-23 16:13:53 michiel Exp $
  * @since MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -170,7 +170,7 @@ public class Users extends MMObjectBuilder {
      * @javadoc
      */
     public String getDefaultContext(MMObjectNode node)  {
-        return node.getStringValue("defaultcontext");
+        return node.getNodeValue("defaultcontext").getStringValue("name");
     }
 
     /**
