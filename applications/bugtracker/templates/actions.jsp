@@ -1,12 +1,8 @@
 
 <mm:import externid="action" />
 <mm:present referid="action">
-<mm:cloud logon="admin" pwd="dontusesvp">
+<mm:cloud logon="admin" pwd="nietgebruikenaub">
 
-<mm:remove referid="portal" />
-<mm:remove referid="page" />
-<mm:import externid="portal" jspvar="portal" />
-<mm:import externid="page" jspvar="page2" />
 
 
 <mm:compare value="sendaccountinfo" referid="action">

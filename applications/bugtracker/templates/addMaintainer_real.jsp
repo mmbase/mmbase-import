@@ -29,7 +29,7 @@
 		<td>
 			<select name="maintainer">
 
-				<mm:list path="users,groups" nodes="-1" constraints="groups.name='BugTrackerCommitors'">
+				<mm:list path="users,groups"  constraints="groups.name='BugTrackerCommitors'">
 				<option value="<mm:field name="users.number" />"><mm:field name="users.firstname" /> <mm:field name="users.lastname" />
 				</mm:list>
 				&nbsp;

@@ -5,8 +5,12 @@
 ><%@include file="/includes/getids.jsp" 
 %><%@include file="/includes/header.jsp"
 
-%><td colspan="2" valign="top">
-<mm:include page="/development/bugtracker/fullview_real.jsp" />
+%>
+
+<mm:import externid="base">/development/bugtracker</mm:import>
+
+<td colspan="2" valign="top">
+<mm:include  referids="base" page="fullview_real.jsp" />
 
 </td>
 <%@include file="/includes/footer.jsp"
