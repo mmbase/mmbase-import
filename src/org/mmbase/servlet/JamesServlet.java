@@ -1,12 +1,3 @@
-/*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
 package org.mmbase.servlet;
 
 // import the needed packages
@@ -177,13 +168,28 @@ public class JamesServlet extends HttpServlet {
 	}
 
 
+	private static int servletCount;
+	private static Object servletCountLock = new Object();
+	private static int printCount;
+	
+	public void decRefCount() {
+		synchronized (servletCountLock) { servletCount--; }
+	}
+	
+	public void incRefCount() {
+		int curCount;
+		synchronized (servletCountLock) { servletCount++; curCount=servletCount; }
+		printCount++;
+		if ((printCount & 15)==0) System.out.println("Running servlets: "+curCount);
+	}
+	
     public void init(ServletConfig config) throws ServletException {
-	super.init(config);
-	init();
+		super.init(config);
+		init();
     }
 
     public void init() {
-	ServletConfig sc=getServletConfig();
+		ServletConfig sc=getServletConfig();
         ServletContext sx=sc.getServletContext();
         MMBaseContext.setServletContext(sx);
     }

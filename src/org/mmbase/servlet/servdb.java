@@ -1,12 +1,3 @@
-/*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
 package org.mmbase.servlet;
 
 import java.lang.*;
@@ -104,6 +95,8 @@ public class servdb extends JamesServlet {
 
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
     {
+		incRefCount();
+		try {
 		scanpage sp = getscanpage( req, res );
 
 		boolean isInternal = sp.isInternalVPROAddress();
@@ -455,6 +448,7 @@ public class servdb extends JamesServlet {
 					}
 			}
 		}
+		} finally { decRefCount(); }
 	}
 
 	private final void setHeaders(HttpServletRequest req,HttpServletResponse res,int len) {
