@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.6 2003-02-27 16:29:14 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.7 2003-02-27 16:38:46 michiel Exp $
  */
 public class TypeRelTest extends TestCase {
 
@@ -123,13 +123,14 @@ public class TypeRelTest extends TestCase {
             fail("Should not have allowed unidirection relation the other way");
         } catch (BridgeException e) {
         }
+    }
+
+    public void testUnidirectionRelationCreate() {
+
+        RelationManagerList rml2 = cloud.getRelationManagers(urlsManager, newsManager, UNIDIRROLE);
+        assertTrue("Found the relations also the other way around, but it is unidirectional", rml2.size() == 0);
 
 
-
-        RelationManagerList rm2 = cloud.getRelationManagers(urlsManager, newsManager, UNIDIRROLE);
-        assertTrue("Found the relations also the other way around, but it is unidirectional", rm2.size() == 0);
-
-        RelationManager rm = rml1.getRelationManager(0);
     }
 
     public void testInheritanceRelations() {
