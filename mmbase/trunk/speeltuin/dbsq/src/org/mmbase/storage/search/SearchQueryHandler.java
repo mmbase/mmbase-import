@@ -40,7 +40,7 @@ public interface SearchQueryHandler {
      * @see SearchQuery#getOffset 
      */
     int FEATURE_OFFSET = 2;
-
+    
     /**
      * Gets the level at which a feature is supported for a query 
      * by this handler. This is one of either:

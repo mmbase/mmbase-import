@@ -97,13 +97,13 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 results.add(node);
             }
         } catch (Exception e) {
-            // something went wrong print it to the logs
-            // TODO: implement toString() method for query.
+            // Something went wrong, log exception 
+            // and rethrow as SearchQueryException.
             log.error("Query failed:" + query);
             log.error(Logging.stackTrace(e));
-            return null;
+            throw new SearchQueryException(query.toString());
         } finally {
-            mmbase.closeConnection(con,stmt);
+            mmbase.closeConnection(con, stmt);
         }
         return results;
     }

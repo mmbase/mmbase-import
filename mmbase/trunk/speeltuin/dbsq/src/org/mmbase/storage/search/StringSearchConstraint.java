@@ -45,12 +45,12 @@ public interface StringSearchConstraint extends FieldConstraint {
      */
     int getMatchType();
 
-    int SEARCH_TYPE_WORD_ORIENTED = 0;
-    int SEARCH_TYPE_PHRASE_ORIENTED = 0;
-    int SEARCH_TYPE_PROXIMITY_ORIENTED = 0;
-    int MATCH_TYPE_LITERAL = 0;
-    int MATCH_TYPE_FUZZY = 0;
-    int MATCH_TYPE_SYNONYM = 0;
-    int PARAM_FUZZYNESS = 0;
-    int PARAM_PROXIMITY_LIMIT = 0;
+    int SEARCH_TYPE_WORD_ORIENTED = 1;
+    int SEARCH_TYPE_PHRASE_ORIENTED = 2;
+    int SEARCH_TYPE_PROXIMITY_ORIENTED = 3;
+    int MATCH_TYPE_LITERAL = 1;
+    int MATCH_TYPE_FUZZY = 2;
+    int MATCH_TYPE_SYNONYM = 3;
+    int PARAM_FUZZYNESS = 1;
+    int PARAM_PROXIMITY_LIMIT = 2;
 }
