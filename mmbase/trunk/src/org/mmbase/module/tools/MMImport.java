@@ -1,11 +1,11 @@
 /* -*- tab-width: 4; -*-
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools;
 
@@ -20,48 +20,50 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The module which provides access to the multimedia database
- * it creates, deletes and gives you methods to keep track of
+ * The module provides access to the multimedia database.
+ * It creates, deletes and gives you methods to keep track of
  * multimedia objects. It does not give you direct methods for
- * inserting and reading them thats done by other objects
+ * inserting and reading them, that's done by other objects.
  *
+ * @deprecated not used anymore (?)
  * @author Daniel Ockeloen
+ * @version $Id: MMImport.java,v 1.8 2004-10-11 11:08:51 pierre Exp $
  */
 public class MMImport extends ProcessorModule {
-    
+
     private static Logger log = Logging.getLoggerInstance(MMImport.class.getName());
-    
+
     MMBase mmb=null;
-    
+
     public void init() {
         mmb=(MMBase)getModule("MMBASEROOT");
     }
-    
-    
+
+
     /**
      */
     public MMImport() {
     }
-    
+
     /**
      * Generate a list of values from a command to the processor
      */
-    public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    public Vector  getList(PageContext sp,StringTagger tagger, String value) {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-            
+
         }
         return(null);
     }
-    
+
     /**
      * Execute the commands provided in the form values
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+    public boolean process(PageContext sp, Hashtable cmds,Hashtable vars) {
         String cmdline,token;
-        
+
         for (Enumeration h = cmds.keys();h.hasMoreElements();) {
             cmdline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
@@ -72,11 +74,11 @@ public class MMImport extends ProcessorModule {
         }
         return(false);
     }
-    
+
     /**
      *	Handle a $MOD command
      */
-    public String replace(scanpage sp, String cmds) {
+    public String replace(PageContext sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -85,10 +87,10 @@ public class MMImport extends ProcessorModule {
         }
         return("No command defined");
     }
-    
+
     public void maintainance() {
     }
-    
+
     public void doImportXML(Hashtable cmds, Hashtable vars) {
         String importdir=(String)vars.get("importdir")+".xml";
         String importtype=(String)vars.get("importtype");
@@ -97,7 +99,7 @@ public class MMImport extends ProcessorModule {
             importXML(body,vars);
         }
     }
-    
+
     private void importXML(String body,Hashtable vars) {
         // get one xml file
         int pos=body.indexOf("<?xml");
@@ -117,39 +119,39 @@ public class MMImport extends ProcessorModule {
             log.info("MMImport item "+(count++));
         }
     }
-    
+
     private void parseOneXML(String body,Hashtable vars) {
         StringTokenizer tok = new StringTokenizer(body,"\n\r");
         String xmlline=tok.nextToken();
         String docline=tok.nextToken();
-        
-        
+
+
         String builderline=tok.nextToken();
         String endtoken="</"+builderline.substring(1);
-        
-        
+
+
         MMObjectBuilder bul=mmb.getMMObject(builderline.substring(1,builderline.length()-1));
         if (bul!=null) {
             MMObjectNode node=bul.getNewNode("import");
             // weird way
             String nodedata=body.substring(body.indexOf(builderline)+builderline.length());
             nodedata=nodedata.substring(0,nodedata.indexOf(endtoken));
-            
+
             int bpos=nodedata.indexOf("<");
             while (bpos!=-1) {
                 String key=nodedata.substring(bpos+1);
                 key=key.substring(0,key.indexOf(">"));
                 String begintoken="<"+key+">";
                 endtoken="</"+key+">";
-                
+
                 String value=nodedata.substring(nodedata.indexOf(begintoken)+begintoken.length());
                 value=value.substring(0,value.indexOf(endtoken));
-                
+
                 // set the node
                 if (!key.equals("number") && !key.equals("otype") && !key.equals("owner")) {
                     node.setValue( key, node.getDBType(key), value);
                 }
-                
+
                 nodedata=nodedata.substring(nodedata.indexOf(endtoken)+endtoken.length());
                 bpos=nodedata.indexOf("<");
             }
@@ -158,8 +160,8 @@ public class MMImport extends ProcessorModule {
             log.warn("Import illegal builder");
         }
     }
-    
-    
+
+
     public String loadFile(String filename) {
         try {
             File sfile = new File(filename);

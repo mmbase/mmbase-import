@@ -35,9 +35,10 @@ import javax.servlet.http.*;
 /**
  * @javadoc
  *
+ * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.86 2004-06-01 15:33:52 michiel Exp $
+ * @version $Id: MMAdmin.java,v 1.87 2004-10-11 11:08:51 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
@@ -118,7 +119,7 @@ public class MMAdmin extends ProcessorModule {
      * Generate a list of values from a command to the processor
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger tagger, String value) throws ParseException {
+    public Vector getList(PageContext sp, StringTagger tagger, String value) {
         String line = Strip.DoubleQuote(value, Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line, "-\n\r");
         if (tok.hasMoreTokens()) {
@@ -176,14 +177,14 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    private boolean checkAdmin(scanpage sp, String cmd) {
+    private boolean checkAdmin(PageContext sp, String cmd) {
         return checkUserLoggedOn(sp, cmd, true);
     }
 
     /**
      * @javadoc
      */
-    private boolean checkUserLoggedOn(scanpage sp, String cmd, boolean adminonly) {
+    private boolean checkUserLoggedOn(PageContext sp, String cmd, boolean adminonly) {
 
         // check if the we are using jsp, and logged on as user with rank is admin, this means that
         // there is some user with rank Administrator in the session...
@@ -204,29 +205,14 @@ public class MMAdmin extends ProcessorModule {
             }
         }
 
-        // no? try the 'classic' way.
-
-        String user = null;
-        try {
-            user = HttpAuth.getAuthorization(sp.req, sp.res, "www", "Basic");
-        } catch (javax.servlet.ServletException ex) {}
-
-
-
-
-        boolean authorized = (user != null) && (!adminonly || "admin".equals(user));
-        if (!authorized) {
-            lastmsg = "Unauthorized access : " + cmd + " by " + user;
-            log.info(lastmsg);
-        }
-        return authorized;
+        return false;
     }
 
     /**
      * Execute the commands provided in the form values
      * @javadoc
      */
-    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageContext sp, Hashtable cmds, Hashtable vars) {
         String cmdline, token;
 
         for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
@@ -352,7 +338,7 @@ public class MMAdmin extends ProcessorModule {
      * Handle a $MOD command
      * @javadoc
      */
-    public String replace(scanpage sp, String cmds) {
+    public String replace(PageContext sp, String cmds) {
         if (!checkUserLoggedOn(sp, cmds, false)) return "";
         StringTokenizer tok = new StringTokenizer(cmds, "-\n\r");
         if (tok.hasMoreTokens()) {
@@ -1146,7 +1132,7 @@ public class MMAdmin extends ProcessorModule {
                 // if 'inactive' in the config/builder path, fail
                 String path = mmb.getBuilderPath(name, "");
                 if (path != null) {
-                    result.error("The builder '" + name + "' was already on our system, but inactive." + 
+                    result.error("The builder '" + name + "' was already on our system, but inactive." +
                                  "To install this application, make the builder '" + path + name + ".xml ' active");
                     continue;
                 }
@@ -2355,7 +2341,7 @@ public class MMAdmin extends ProcessorModule {
 
     class ApplicationResult {
 
-        protected StringBuffer resultMessage; 
+        protected StringBuffer resultMessage;
         protected boolean success;
         protected MMAdmin adminModule;
 

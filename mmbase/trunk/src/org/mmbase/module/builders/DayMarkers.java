@@ -24,13 +24,13 @@ import org.mmbase.util.logging.*;
 /**
  * Daymarkers are used to calculate the age of MMBase objects.
  * Every day a daymarker is added to the daymarks table. Such an entry
- * consists of a daycount (number of days from 1970), and a count 
- * (current object number of that day). 
+ * consists of a daycount (number of days from 1970), and a count
+ * (current object number of that day).
  *
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: DayMarkers.java,v 1.32 2004-06-15 21:01:42 robmaris Exp $
+ * @version $Id: DayMarkers.java,v 1.33 2004-10-11 11:08:47 pierre Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -86,7 +86,7 @@ public class DayMarkers extends MMObjectBuilder {
                 smallestMark = mark.getIntValue("number");
                 smallestDay  = mark.getIntValue("daycount");
             }
-            
+
             if (smallestDay == 0) {
                 smallestDay = currentDay();
                 createMarker();
@@ -248,7 +248,7 @@ public class DayMarkers extends MMObjectBuilder {
                 sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
                 query.setMaxNumber(1);
                 resultList = getNodes(query);
-                
+
                 if (resultList.size() > 0) {
                     MMObjectNode markNode = (MMObjectNode) resultList.get(0);
                     int mark     = markNode.getIntValue("mark");
@@ -350,17 +350,17 @@ public class DayMarkers extends MMObjectBuilder {
     }
 
     /**
-     * Scan. Known tokens are: 
+     * Scan. Known tokens are:
      * COUNT-X gets an object number of X days after 1970
      * COUNTAGE-X gets an object number of X days old
-     * COUNTMONTH-X gets an object number of X months after 1970 
+     * COUNTMONTH-X gets an object number of X months after 1970
      * COUNTNEXTMONTH-X gets an object number of X+1 months after 1970
      * COUNTPREVMONTH-X gets an object number of X-1 months after 1970
      * COUNTPREVDELTAMONTH-X-Y gets an object number of X-Y months after 1970
      * COUNTNEXTDELTAMONTH-X-Y gets an object number of X+Y months after 1970
      * TIMETOOBJECTNUMBER gets an object number of X seconds after 1970
      **/
-    public String replace(scanpage sp, StringTokenizer command) {
+    public String replace(PageContext sp, StringTokenizer command) {
         String rtn="";
         int ival;
         if (command.hasMoreTokens()) {
@@ -417,7 +417,7 @@ public class DayMarkers extends MMObjectBuilder {
         return ival;
     }
 
-    /** 
+    /**
      * get a Calendar
      * @param months number of months from 1970
      * @return calendar with date specified in months from 1970

@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @application Mail
  * @deprecated use the Mail application code instead
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.27 2004-10-09 13:54:12 pierre Exp $
+ * @version $Id: Email.java,v 1.28 2004-10-11 11:08:47 pierre Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -83,10 +83,6 @@ public class Email extends MMObjectBuilder {
     // number of emails send sofar since startup
     private int numberofmailsend=0;
 
-    // ref to sessions module needed to parse pages
-    private static sessionsInterface sessions=null;
-
-
     /**
      * init
      */
@@ -94,8 +90,7 @@ public class Email extends MMObjectBuilder {
         super.init ();
         // start the EmailSendProbe
         sendprobe=new EmailSendProbe(this);
-        // obtain the session module
-        sessions=(sessionsInterface)Module.getModule("SESSION");
+
         return true;
     }
 
@@ -502,7 +497,7 @@ public class Email extends MMObjectBuilder {
     /**
      * some stat calls used by the email admin tool
      */
-    public String replace(scanpage sp, StringTokenizer tok) {
+    public String replace(PageContext sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("DBQUEUED")) return ""+getNumberOfQueued();
@@ -518,7 +513,7 @@ public class Email extends MMObjectBuilder {
     /**
      * some list commands for the email admin tool
      */
-    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) {
+    public Vector getList(PageContext sp, StringTagger tagger, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("MEMTASKS")) return getMemTasks();

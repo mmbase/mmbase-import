@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @application XSL or Tools
  * @move org.mmbase.util.xml
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLConvert.java,v 1.10 2004-10-04 14:11:53 pierre Exp $
+ * @version $Id: XSLConvert.java,v 1.11 2004-10-11 11:08:45 pierre Exp $
  */
 public class XSLConvert extends ProcessorModule {
 
@@ -47,14 +47,14 @@ public class XSLConvert extends ProcessorModule {
      *
      * NOT IMPLEMENTED FOR XSLConvert
      */
-    public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    public Vector  getList(PageContext sp,StringTagger tagger, String value) {
         return null;
     }
 
     /**
      * Execute the commands provided in the form values
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+    public boolean process(PageContext sp, Hashtable cmds,Hashtable vars) {
         return false;
     }
 
@@ -67,7 +67,7 @@ public class XSLConvert extends ProcessorModule {
     *  - xmlPath is the path relative to mmbase.config and,
     *  - xslFile is xsl file located in the subdirectory xslt of mmbase.config.
     */
-    public String replace(scanpage sp, String cmds) {
+    public String replace(PageContext sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         int count = tok.countTokens();
         String[] argv = new String[count];
