@@ -19,146 +19,186 @@ import org.mmbase.module.builders.*;
 
 
 /**
- * The StateManager class is a utility object for the Generic Editor Structure
- * wich connects to the MMEdit module.
+ * The StateManager class maintains a list of EditStates for users logged on to MMbase through SCAN.
+ * It provides the states so a user can browse the SCAN editors and edit objects, letting the server remember the change history.
+ * Changes to the state are made either by calling a replace ($MOD) command, or by processing parameters passed to a SCAN page.
+ * State info (such as the current editnode number) can be retrieved using $MOD.
  * 
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.14 2003-07-03 13:15:11 pierre Exp $
+ * @version $Id: StateManager.java,v 1.15 2003-07-03 14:29:32 pierre Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
-	
-	public MMBase mmBase; // Reference to the mmBase module
-	Hashtable editStates; // HashTable with editstates indexed by usernames
 
-	// Logger
-	private static Logger log = Logging.getLoggerInstance(StateManager.class.getName());
-	
-	/**
-	 * Initialises the connection to mmBase and initialises the StateManager
-	 */ 
-	public StateManager(MMBase mmBase) {
-		this.mmBase = mmBase;
-		editStates = new Hashtable();		
-	}
+    // Logger
+    private static Logger log = Logging.getLoggerInstance(StateManager.class.getName());
+    
+    /**
+     * Reference to the MMBase module.
+     */ 
+    public MMBase mmBase;
 
-	/**
-	 * Loads all previously pesistified editstates from the database
-	 */
-	public void initUserStates() {
-	}
+    /**
+     * Username to EditState mappings.
+     * Each user has an editstate, stored in the statemanager.
+     * @scope private
+     */ 
+    Hashtable editStates; // HashTable with editstates indexed by usernames
 
-	/**
-	 * The EditState contains all the information an editor needs to
-	 * configure the editing fields for a certain object. A new EditState is
-	 * created if the user is unknown.
-	 */
-	public EditState getEditState(String user) {
-		EditState result;
+    /**
+     * Initialises the StateManager, by creating a new (empty) map of editstates.
+     * @param mmBase reference to the MMBase module
+     */ 
+    public StateManager(MMBase mmBase) {
+        this.mmBase = mmBase;
+        editStates = new Hashtable();       
+    }
 
-		result = (EditState)editStates.get(user);
-		if (result == null) {
-			result = new EditState(user,mmBase);
-			editStates.put(user, result);
-		}
+    /**
+     * Loads all previously persistified editstates from the database.
+     * @deprecated-now removed per 1.7, does not do anything, and is never called
+     */
+    public void initUserStates() {
+    }
 
-		return result;
-	}
+    /**
+     * Retrieves the EditState for a user, or creates a new one if the user did not yet have an EditState assigned.
+     * The EditState contains status information for a specific user (which node is being edited, for instance).
+     * EditStates are associated by username. They are kept in memory as long as teh StateManager is. 
+     * @param user the user for which to retrieve an EditState object
+     * @return the EditState objevt associated with this user
+     */
+    public EditState getEditState(String user) {
+        EditState result = (EditState)editStates.get(user);
+        if (result == null) {
+            result = new EditState(user,mmBase);
+            editStates.put(user, result);
+        }
+        return result;
+    }
 
-	/**
-     * This method is the entry point for the mmEdit object to signal 
-	 * the statemanager that the user has gone to another section in an 
-	 * editor.
-	 */
-	public String replace(scanpage sp, StringTokenizer commands) {
-		String token;
-		String userName=HttpAuth.getRemoteUser(sp);
-	
-		if (userName==null) return "StateManager-> not logged in";	
-		EditState state = getEditState(userName);
-  	//	log.debug("STATE="+state);
+    /**
+     * Handle a $MOD command.
+     * This generally replaces the command in the SCAN page with the value returned by the command.<br />
+     * Commands include:
+     * <ul>
+     *  <li>SETBUILDER : ??? </li>
+     *  <li>GETBUILDER : ??? </li>
+     *  <li>DELBUILDER : ??? </li>
+     *  <li>CLEARBUILDERS : ??? </li>
+     *  <li>ADDRELATION : ??? </li>
+     *  <li>SETHTMLVALUE : ??? </li>
+     *  <li>GETHTMLVALUE : ??? </li>
+     *  <li>SETEDITNODE : ??? </li>
+     *  <li>GETEDITNODE : ??? </li>
+     *  <li>GETEDITSRCDUTCHNAME : ??? </li>
+     *  <li>GETEDITDSTDUTCHNAME : ??? </li>
+     *  <li>GETEDITSRCNAME : ??? </li>
+     *  <li>GETEDITDSTNAME : ??? </li>
+     *  <li>GETEDITSRCNODE : ??? </li>
+     *  <li>GETEDITDSTNODE : ??? </li>
+     *  <li>GETEDITSRCGUIINDICATOR : ??? </li>
+     *  <li>GETEDITDSTGUIINDICATOR : ??? </li>
+     *  <li>NEWNODE : ??? </li>
+     *  <li>NEWINSNODE : ??? </li>
+     *  <li>REMOVENODE : ??? </li>
+     *  <li>REMOVEEDITOR : ??? </li>
+     *  <li>ISCHANGED : ??? </li>
+     * </ul>
+     */
+    public String replace(scanpage sp, StringTokenizer commands) {
+        String token;
+        
+        // Retrieve the username.
+        // Or at least, that is the intention.
+        // What this method REALLY does is authenticate the user (even if he was authenticated before).
+        // Depending on the system you use this can drastically slow down the editors.
+        String userName=HttpAuth.getRemoteUser(sp);
+        if (userName==null) return "StateManager-> not logged in";
+        
+        // obtain an editstate for the user
+        EditState state = getEditState(userName);
 
-		if (commands.hasMoreTokens()) {
-			token = commands.nextToken();
-			if (token.equals("SETBUILDER")) {
-				if (commands.hasMoreTokens()) {
-					state.setBuilder(commands.nextToken());
-					if (commands.hasMoreTokens()) {
-						state.setHtmlValue("JOINNODE",commands.nextToken());
-					} else {
-						state.setHtmlValue("JOINNODE","");
-					}
-				}
-			} else if (token.equals("GETBUILDER")) {
-					return state.getBuilderName();
-			} else if (token.equals("DELBUILDER")) {
-					state.popState();
-			} else if (token.equals("CLEARBUILDERS")) {
-					state.clear();
-			} else if (token.equals("ADDRELATION")) {
-					state.addRelation(userName);
-			} else if (token.equals("SETHTMLVALUE")) {
-					state.setHtmlValue(commands.nextToken(),commands.nextToken());
-			} else if (token.equals("GETHTMLVALUE")) {
-					return state.getHtmlValue(commands.nextToken());
-			} else if (token.equals("SETEDITNODE")) {
-					state.setEditNode(commands.nextToken(),userName);
-			} else if (token.equals("GETEDITNODE")) {
-					return ""+state.getEditNodeNumber();
-			} else if (token.equals("GETEDITSRCDUTCHNAME")) {
-					return state.getEditNodeSrcDutchName();
-			} else if (token.equals("GETEDITDSTDUTCHNAME")) {
-					return state.getEditNodeDstDutchName();
-			} else if (token.equals("GETEDITSRCNAME")) {
-					return state.getEditNodeSrcName();
-			} else if (token.equals("GETEDITDSTNAME")) {
-					return state.getEditNodeDstName();
-			} else if (token.equals("GETEDITSRCNODE")) {
-					return ""+state.getEditNodeSrcNumber();
-			} else if (token.equals("GETEDITDSTNODE")) {
-					return ""+state.getEditNodeDstNumber();
-			} else if (token.equals("GETEDITSRCGUIINDICATOR")) {
-					return state.getEditNodeSrcGuiIndicator();
-			} else if (token.equals("GETEDITDSTGUIINDICATOR")) {
-					return state.getEditNodeDstGuiIndicator();
-			} else if (token.equals("NEWNODE")) {
-					state.NewNode(userName);
-			} else if (token.equals("NEWINSNODE")) {
-					newInsNode(state,userName,commands);
-			} else if (token.equals("REMOVENODE")) {
-					state.removeNode();
-			} else if (token.equals("REMOVEEDITOR")) {
-					state.popState();
-			} else if (token.equals("ISCHANGED")) {
-					if (state.isChanged()) {
-						return "YES";
-					} else {
-						return "NO";
-					}
-			}
-			return "";
-		}
+        if (commands.hasMoreTokens()) {
+            token = commands.nextToken();
+            if (token.equals("SETBUILDER")) {
+                if (commands.hasMoreTokens()) {
+                    state.setBuilder(commands.nextToken());
+                    if (commands.hasMoreTokens()) {
+                        state.setHtmlValue("JOINNODE",commands.nextToken());
+                    } else {
+                        state.setHtmlValue("JOINNODE","");
+                    }
+                }
+            } else if (token.equals("GETBUILDER")) {
+                    return state.getBuilderName();
+            } else if (token.equals("DELBUILDER")) {
+                    state.popState();
+            } else if (token.equals("CLEARBUILDERS")) {
+                    state.clear();
+            } else if (token.equals("ADDRELATION")) {
+                    state.addRelation(userName);
+            } else if (token.equals("SETHTMLVALUE")) {
+                    state.setHtmlValue(commands.nextToken(),commands.nextToken());
+            } else if (token.equals("GETHTMLVALUE")) {
+                    return state.getHtmlValue(commands.nextToken());
+            } else if (token.equals("SETEDITNODE")) {
+                    state.setEditNode(commands.nextToken(),userName);
+            } else if (token.equals("GETEDITNODE")) {
+                    return ""+state.getEditNodeNumber();
+            } else if (token.equals("GETEDITSRCDUTCHNAME")) {
+                    return state.getEditNodeSrcDutchName();
+            } else if (token.equals("GETEDITDSTDUTCHNAME")) {
+                    return state.getEditNodeDstDutchName();
+            } else if (token.equals("GETEDITSRCNAME")) {
+                    return state.getEditNodeSrcName();
+            } else if (token.equals("GETEDITDSTNAME")) {
+                    return state.getEditNodeDstName();
+            } else if (token.equals("GETEDITSRCNODE")) {
+                    return ""+state.getEditNodeSrcNumber();
+            } else if (token.equals("GETEDITDSTNODE")) {
+                    return ""+state.getEditNodeDstNumber();
+            } else if (token.equals("GETEDITSRCGUIINDICATOR")) {
+                    return state.getEditNodeSrcGuiIndicator();
+            } else if (token.equals("GETEDITDSTGUIINDICATOR")) {
+                    return state.getEditNodeDstGuiIndicator();
+            } else if (token.equals("NEWNODE")) {
+                    state.NewNode(userName);
+            } else if (token.equals("NEWINSNODE")) {
+                    newInsNode(state,userName,commands);
+            } else if (token.equals("REMOVENODE")) {
+                    state.removeNode();
+            } else if (token.equals("REMOVEEDITOR")) {
+                    state.popState();
+            } else if (token.equals("ISCHANGED")) {
+                    if (state.isChanged()) {
+                        return "YES";
+                    } else {
+                        return "NO";
+                    }
+            }
+            return "";
+        }
 
-		return "Command not defined (StateManager)";
-	}
+        return "Command not defined (StateManager)";
+    }
 
 
     /**
-    * Creates a new Node, depending on the builder name (or relation name) specified in the StringTokenizer.
-    * This method is used to create relation nodes
-    * @param ed Editstate in which to add the new node.
-    * @param userName User who becomes owner of the new node
-    * @param tok Tokens used to configure the node. The next three tokens should be:
-    *	<ul>
-    *	<li> The number of the node to link FROM </li>
-    *	<li> The number of the node to link TO</li>
-    *	<li> The name of the builder to use or relation to add (determines type of node and/or relation)</li>
-    *       </ul>
-    * @return Always true. If the addition was successful, a new node has been added to the EditState object.
-    **/
-
+     * Creates a new Node, depending on the builder name (or relation name) specified in the StringTokenizer.
+     * This method is used to create relation nodes
+     * @param ed Editstate in which to add the new node.
+     * @param userName User who becomes owner of the new node
+     * @param tok Tokens used to configure the node. The next three tokens should be:
+     *   <ul>
+     *   <li> The number of the node to link FROM </li>
+     *   <li> The number of the node to link TO</li>
+     *   <li> The name of the builder to use or relation to add (determines type of node and/or relation)</li>
+     *       </ul>
+     * @return Always true. If the addition was successful, a new node has been added to the EditState object.
+     */
     boolean newInsNode(EditState ed,String userName,StringTokenizer tok) {
         try {
             String tmp=tok.nextToken();
@@ -171,7 +211,7 @@ public class StateManager implements CommandHandlerInterface {
 
             int rtype=-1;
 
-        	// tests if the 'builder' specified is actually a relationname.
+            // tests if the 'builder' specified is actually a relationname.
             // If so, the number of the relation in RelDef is obtained,
             // and the name of the builder to use is determined (if explicitly given)).
 
@@ -207,9 +247,9 @@ public class StateManager implements CommandHandlerInterface {
                 rtype=mmBase.getTypeRel().getAllowedRelationType(bul.getNodeType(n1),bul.getNodeType(n2));
             }
 
-		    // assign rtype. Note that rtype is only set if it is actually known.
-		    // in rare cases, rtype can be -1. This happens if the relationname specified is the name of a
-		    // relationbuilder for which no relation definition with the same name is defined.
+            // assign rtype. Note that rtype is only set if it is actually known.
+            // in rare cases, rtype can be -1. This happens if the relationname specified is the name of a
+            // relationbuilder for which no relation definition with the same name is defined.
             if (rtype!=-1) {
                 node.setValue("rnumber",rtype);
             }
@@ -222,195 +262,206 @@ public class StateManager implements CommandHandlerInterface {
     }
 
 
-	/**
-	* setSearchVals
-	*/
-	boolean setSearchValues(EditState ed, Hashtable vars) { 
-		String varline;
-		ed.clearSearchValues();
-		for (Enumeration h=vars.keys();h.hasMoreElements();) {
-			varline=(String)h.nextElement();	
-			StringTokenizer tok = new StringTokenizer(varline,"-\n\r");
-				String var=tok.nextToken();	
-				if (var.equals("STATE")) var=tok.nextToken();	
-				if (var.equals("SEARCHVALUE")) {
-					String key=tok.nextToken();	
-					String keyval=(String)vars.get("STATE-SEARCHVALUE-"+key);	
-					ed.setSearchValue(key,keyval);	
-				}
-		}
-		MMObjectBuilder bul=ed.getBuilder();
-		ed.setSelectionQuery(createSelectionQuery(ed.getSearchValues(),bul));
-		return true;
-	}
+    /**
+     * setSearchVals
+     * @javadoc
+     */
+    boolean setSearchValues(EditState ed, Hashtable vars) { 
+        String varline;
+        ed.clearSearchValues();
+        for (Enumeration h=vars.keys();h.hasMoreElements();) {
+            varline=(String)h.nextElement();    
+            StringTokenizer tok = new StringTokenizer(varline,"-\n\r");
+                String var=tok.nextToken(); 
+                if (var.equals("STATE")) var=tok.nextToken();   
+                if (var.equals("SEARCHVALUE")) {
+                    String key=tok.nextToken(); 
+                    String keyval=(String)vars.get("STATE-SEARCHVALUE-"+key);   
+                    ed.setSearchValue(key,keyval);  
+                }
+        }
+        MMObjectBuilder bul=ed.getBuilder();
+        ed.setSelectionQuery(createSelectionQuery(ed.getSearchValues(),bul));
+        return true;
+    }
 
+    /**
+     * @javadoc
+     */
+    String createSelectionQuery(Hashtable skeys,MMObjectBuilder bul) {
+        String where="MMNODE ",key,val;
+        String name=bul.getTableName();
+            for (Enumeration h=skeys.keys();h.hasMoreElements();) {
+                key=(String)h.nextElement();    
+                val=(String)skeys.get(key); 
+                    if (val!=null && !val.equals("")) {
+                    // val to lower for search
+                    val=val.toLowerCase();
+                    if (key.equals("maxage")) {
+                        int ival=30;
+                        try {
+                            ival=Integer.parseInt(bul.getSearchAge());
+                        } catch(Exception e) {}
+                        try {
+                            ival=Integer.parseInt(val);
+                        } catch(Exception e) {}
+                        DayMarkers daym=(DayMarkers)bul.mmb.getMMObject("daymarks");
+                        int mark=daym.getDayCountAge(ival);
+                        if (where.equals("MMNODE ")) {
+                            where+=name+".number=G"+mark;
+                        } else {
+                            where+="+"+name+".number=G"+mark;
+                        }
+                    } else {
+                        if (where.equals("MMNODE ")) {
+                            where+=name+"."+key+"==*"+val+"*";
+                        } else {
+                            where+="+"+name+"."+key+"==*"+val+"*";
+                        }
+                    }
+                }
+            }
 
-	String createSelectionQuery(Hashtable skeys,MMObjectBuilder bul) {
-		String where="MMNODE ",key,val;
-		String name=bul.getTableName();
-			for (Enumeration h=skeys.keys();h.hasMoreElements();) {
-				key=(String)h.nextElement();	
-				val=(String)skeys.get(key);	
-					if (val!=null && !val.equals("")) {
-					// val to lower for search
-					val=val.toLowerCase();
-					if (key.equals("maxage")) {
-						int ival=30;
-						try {
-							ival=Integer.parseInt(bul.getSearchAge());
-						} catch(Exception e) {}
-						try {
-							ival=Integer.parseInt(val);
-						} catch(Exception e) {}
-						DayMarkers daym=(DayMarkers)bul.mmb.getMMObject("daymarks");
-						int mark=daym.getDayCountAge(ival);
-						if (where.equals("MMNODE ")) {
-							where+=name+".number=G"+mark;
-						} else {
-							where+="+"+name+".number=G"+mark;
-						}
-					} else {
-						if (where.equals("MMNODE ")) {
-							where+=name+"."+key+"==*"+val+"*";
-						} else {
-							where+="+"+name+"."+key+"==*"+val+"*";
-						}
-					}
-				}
-			}
+        return where;
+    }
 
-		return where;
-	}
+    /**
+     * An object has been selected and the EditState of the specific user
+     * is updated.
+     * @deprecated-now removed per 1.7, does not do anything, and is never called
+     */
+    void updateSelectedObject(String user, String objectID) {
+    }
 
-	/**
-	 * An object has been selected and the EditState of the specific user
-	 * is updated.
-	 */
-	void updateSelectedObject(String user, String objectID) {
-	}
+    /**
+     * A field has been selected to edit and the EditState for the specific 
+     * user is updated.
+     * @deprecated-now removed per 1.7, does not do anything, and is never called
+     */
+    void updateEditField(String user, String fieldName) {
+    }
 
-	/**
-	 * A field has been selected to edit and the EditState for the specific 
-	 * user is updated.
-	 */
-	void updateEditField(String user, String fieldName) {
-	}
+    /**
+     * a new relation has been initiated and the EditState for the specific 
+     * user is updated.
+     * @deprecated-now removed per 1.7, does not do anything, and is never called
+     */ 
+    void initLink(String user, String objectType) {
+    }
 
-	/**
-	 * a new relation has been initiated and the EditState for the specific 
-	 * user is updated.
-	 */ 
-	void initLink(String user, String objectType) {
-	}
+    /**
+     * List commands
+     * @javadoc
+     */
+    public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws org.mmbase.module.ParseException {
+        String token;
+        String userName=HttpAuth.getRemoteUser(sp);
+        EditState state = getEditState(userName);
+        Vector result = new Vector();
+        
+        if (command.hasMoreTokens()) {
+            token = command.nextToken();
+            if (token.equals("GETOPENBUILDERS")) {  
+                return getOpenBuilders(state,args);     
+            }
+        }
+        result.addElement("No List command defined (FieldEditor)");
+        return result;
+    }   
 
-	/**
-	 * List commands
-	 */
-	public Vector getList(scanpage sp, StringTagger args, StringTokenizer command) throws org.mmbase.module.ParseException {
-		String token;
-		String userName=HttpAuth.getRemoteUser(sp);
-		EditState state = getEditState(userName);
-		Vector result = new Vector();
-		
-		if (command.hasMoreTokens()) {
-			token = command.nextToken();
-			if (token.equals("GETOPENBUILDERS")) {	
-				return getOpenBuilders(state,args);		
-			}
-		}
-		result.addElement("No List command defined (FieldEditor)");
-		return result;
-	}	
+    /**
+     * The hook that passes all form related pages to the correct handler
+     * @javadoc
+     */
+    public boolean process(scanpage sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
+        String token;
+        String userName=HttpAuth.getRemoteUser(sp);
+        EditState state = getEditState(userName);
 
-	/**
-	 * The hook that passes all form related pages to the correct handler
-	 */
-	public boolean process(scanpage sp, StringTokenizer command,Hashtable cmds, Hashtable vars) {
+        String cmd,cmdline;
+        for (Enumeration h=cmds.keys();h.hasMoreElements();) {
+            cmdline=(String)h.nextElement();    
+            StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
+            if (tok.hasMoreTokens()) {
+                cmd=tok.nextToken(); // read away dummy STATE-
+                cmd=tok.nextToken();    
+                if (cmd.equals("SETSEARCHVALUES")) return setSearchValues(state,vars);
+                if (cmd.equals("REMOVENODE")) {
+                    String qw=(String)cmds.get("STATE-REMOVENODE"); 
+                    if (qw.equals("YES")) { 
+                        // delete the relations to this node and
+                        // the node itself
+                        state.removeRelations();
+                        state.removeNode();
+                        state.setHtmlValue("Chooser","select");
+                        state.setHtmlValue("Work","empty");
+                    }
+                } else 
+                if (cmd.equals("REMOVERELATION")) {
+                    String qw=(String)cmds.get("STATE-REMOVERELATION"); 
+                    if (qw.equals("YES")) { 
+                        state.removeNode();
+                        state.popState();
+                        state.setHtmlValue("Chooser","realFieldEdit");
+                        state.setHtmlValue("Work","empty");
+                    }
+                } else 
+                if (cmd.equals("NEXTFIELD")) {
+                    String currentfield=(String)cmds.get("STATE-NEXTFIELD");    
+                    state.setHtmlValue("Work","nextfield");
+                    MMObjectBuilder bul=state.getBuilder();
+                    FieldDefs ndefs=bul.getNextField(currentfield);
+                    if (ndefs!=null) {
+                        state.setHtmlValue("NEXTFIELD",""+ndefs.getGUIType()+".shtml?"+ndefs.getDBName()+"+"+ndefs.getGUIName(state.getLanguage()));
+                    } else {
+                        state.setHtmlValue("NEXTFIELD","empty.shtml");
+                    }
+                } else 
+                if (cmd.equals("SETHTMLVALUE")) {
+                    String field=tok.nextToken();
+                    String value=(String)cmds.get("STATE-SETHTMLVALUE-"+field); 
+                    state.setHtmlValue(field,value);
+                }
+            }
+        }
+        return false;
+    }
 
-		String token;
-		String userName=HttpAuth.getRemoteUser(sp);
-		EditState state = getEditState(userName);
+    /**
+     * @javadoc
+     */
+    public Vector getOpenBuilders(EditState state,StringTagger args) {
+        Vector results=new Vector();
+        Vector nodes=state.getEditStates();
+        EditStateNode node;
+        MMObjectNode curnode=state.getEditNode(); // problem
+        for (Enumeration h=nodes.elements();h.hasMoreElements();) {
+            node=(EditStateNode)h.nextElement();    
+            results.addElement(node.getDutchBuilderName());
+            if (curnode==node.getEditNode()) {
+                results.addElement("a");
+            } else { 
+                results.addElement("n");
+            }
+        }
+        args.setValue("ITEMS","2");
+        return results;
+    }
 
-		String cmd,cmdline;
-		for (Enumeration h=cmds.keys();h.hasMoreElements();) {
-			cmdline=(String)h.nextElement();	
-			StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
-			if (tok.hasMoreTokens()) {
-				cmd=tok.nextToken(); // read away dummy STATE-
-				cmd=tok.nextToken();	
-				if (cmd.equals("SETSEARCHVALUES")) return setSearchValues(state,vars);
-				if (cmd.equals("REMOVENODE")) {
-					String qw=(String)cmds.get("STATE-REMOVENODE");	
-					if (qw.equals("YES")) {	
-						// delete the relations to this node and
-						// the node itself
-						state.removeRelations();
-						state.removeNode();
-						state.setHtmlValue("Chooser","select");
-						state.setHtmlValue("Work","empty");
-					}
-				} else 
-				if (cmd.equals("REMOVERELATION")) {
-					String qw=(String)cmds.get("STATE-REMOVERELATION");	
-					if (qw.equals("YES")) {	
-						state.removeNode();
-						state.popState();
-						state.setHtmlValue("Chooser","realFieldEdit");
-						state.setHtmlValue("Work","empty");
-					}
-				} else 
-				if (cmd.equals("NEXTFIELD")) {
-					String currentfield=(String)cmds.get("STATE-NEXTFIELD");	
-					state.setHtmlValue("Work","nextfield");
-					MMObjectBuilder bul=state.getBuilder();
-					FieldDefs ndefs=bul.getNextField(currentfield);
-					if (ndefs!=null) {
-						state.setHtmlValue("NEXTFIELD",""+ndefs.getGUIType()+".shtml?"+ndefs.getDBName()+"+"+ndefs.getGUIName(state.getLanguage()));
-					} else {
-						state.setHtmlValue("NEXTFIELD","empty.shtml");
-					}
-				} else 
-				if (cmd.equals("SETHTMLVALUE")) {
-					String field=tok.nextToken();
-					String value=(String)cmds.get("STATE-SETHTMLVALUE-"+field);	
-					state.setHtmlValue(field,value);
-				}
-			}
-		}
-		return false;
-	}
+    /**
+     * Retrieves the EditState for a user, or creates a new one if the user did not yet have an EditState assigned.
+     * @deprecated-now removed per 1.7, use getEditState() instead.  
+     * @param user the user for which to retrieve an EditState object
+     * @return the EditState objevt associated with this user
+     */
+    public EditState getState(String user) {
+        EditState result;
 
-	public Vector getOpenBuilders(EditState state,StringTagger args) {
-		Vector results=new Vector();
-		Vector nodes=state.getEditStates();
-		EditStateNode node;
-		MMObjectNode curnode=state.getEditNode(); // problem
-		for (Enumeration h=nodes.elements();h.hasMoreElements();) {
-			node=(EditStateNode)h.nextElement();	
-			results.addElement(node.getDutchBuilderName());
-			if (curnode==node.getEditNode()) {
-				results.addElement("a");
-			} else { 
-				results.addElement("n");
-			}
-		}
-		args.setValue("ITEMS","2");
-		return results;
-	}
-
-	/**
-	 * The EditState contains all the information an editor needs to
-	 * configure the editing fields for a certain object. A new EditState is
-	 * created if the user is unknown.
-	 */
-	public EditState getState(String user) {
-		EditState result;
-
-		result = (EditState)editStates.get(user);
-		if (result == null) result = new EditState(user,mmBase);
-		
-		return result;
-	}
+        result = (EditState)editStates.get(user);
+        if (result == null) result = new EditState(user,mmBase);
+        
+        return result;
+    }
 
 }
 
