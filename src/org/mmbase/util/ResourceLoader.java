@@ -97,7 +97,7 @@ When you want to place a configuration file then you have several options, wich 
  * <p>For property-files, the java-unicode-escaping is undone on loading, and applied on saving, so there is no need to think of that.</p>
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: ResourceLoader.java,v 1.12 2005-02-11 09:49:59 keesj Exp $
+ * @version $Id: ResourceLoader.java,v 1.13 2005-03-16 10:14:10 michiel Exp $
  */
 public class ResourceLoader extends ClassLoader {
 
@@ -418,11 +418,11 @@ public class ResourceLoader extends ClassLoader {
     /**
      * If name starts with '/' or 'mm:/' the 'parent' resourceloader is used. 
      *
-     * Otherwise the name is resolved relatively. (For the root ResourceLoader that it the same as starting with /)
+     * Otherwise the name is resolved relatively. (For the root ResourceLoader that is the same as starting with /)
      *
      * {@inheritDoc}
      */
-    public URL findResource(final String name) {
+    protected URL findResource(final String name) {
         try {
             if (name.startsWith("/")) {
                 return newURL(PROTOCOL + ":" + name);
@@ -660,11 +660,9 @@ public class ResourceLoader extends ClassLoader {
             // on a real xslt or lots of code.
             serializer.transform(source, streamResult);
         } catch (final TransformerException te) {
-            throw new IOException(te.getMessage()) {
-                    public Throwable getCause() {
-                        return te;
-                    }
-                };
+            IOException io = new IOException(te.getMessage());
+            io.initCause(te);
+            throw io;
         }
     }
 
@@ -1421,6 +1419,8 @@ public class ResourceLoader extends ClassLoader {
                                 }
                             }
                         } catch (IOException ioe) {
+                        } finally {
+                            reader.close();
                         }
                     } else {
                         
