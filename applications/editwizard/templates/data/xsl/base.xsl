@@ -6,8 +6,10 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.6 2002-05-17 12:45:40 pierre Exp $
+  @version $Id: base.xsl,v 1.7 2002-05-27 21:34:50 michiel Exp $
   -->
+  <xsl:import href="xsl/prompts.xsl" />
+
   <xsl:output
     method="xml"
     version="1.0"

@@ -5,11 +5,10 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.9 2002-05-27 15:07:46 pierre Exp $
+  @version $Id: list.xsl,v 1.10 2002-05-27 21:34:50 michiel Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
-  <xsl:import href="xsl/prompts.xsl" />
 
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>

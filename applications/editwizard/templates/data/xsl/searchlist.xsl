@@ -9,12 +9,10 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: searchlist.xsl,v 1.6 2002-05-27 09:26:33 pierre Exp $
+  @version $Id: searchlist.xsl,v 1.7 2002-05-27 21:34:50 michiel Exp $
   -->
 
-
   <xsl:import href="baselist.xsl" />
-  <xsl:import href="xsl/prompts.xsl" />
   <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
   <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
@@ -22,7 +20,7 @@
     <span class="pagenav">
       <xsl:choose>
         <xsl:when test="page[@previous='true']">
-          <a class="pagenav" title="{$tooltip_previous}{@currentpage-1}" href="{$listpage}&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);"><xsl:call-template name="prompt_previous" /></a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+          <a class="pagenav" title="{$tooltip_previous}{@currentpage-1}" href="{$listpage}&amp;popup=true&amp;start={page[@previous='true']/@start}" onclick="return dobrowse(this);"><xsl:call-template name="prompt_previous" /></a><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="prompt_previous" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
@@ -33,7 +31,7 @@
 
       <xsl:choose>
         <xsl:when test="page[@next='true']">
-          <a class="pagenav" title="{$tooltip_next}{@currentpage+1}" href="{$listpage}&amp;start={page[@next='true']/@start}" onclick="return dobrowse(this);"><xsl:call-template name="prompt_next" /></a>
+          <a class="pagenav" title="{$tooltip_next}{@currentpage+1}" href="{$listpage}&amp;popup=true&amp;start={page[@next='true']/@start}" onclick="return dobrowse(this);"><xsl:call-template name="prompt_next" /></a>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="prompt_next" />
@@ -43,7 +41,7 @@
   </xsl:template>
 
   <xsl:template match="page">
-    <a class="pagenav" title="{$tooltip_goto}{position()}" href="{$listpage}&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a><xsl:text> </xsl:text>
+    <a class="pagenav" title="{$tooltip_goto}{position()}" href="{$listpage}&amp;popup=true&amp;start={@start}" onclick="return dobrowse(this);"><xsl:value-of select="position()" /></a><xsl:text> </xsl:text>
   </xsl:template>
 
 
