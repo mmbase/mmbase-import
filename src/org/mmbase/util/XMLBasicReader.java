@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.21 2002-10-07 17:20:58 michiel Exp $
+ * @version $Id: XMLBasicReader.java,v 1.22 2002-10-25 13:10:54 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -69,6 +69,9 @@ public class XMLBasicReader  {
     public XMLBasicReader(InputSource source, Class resolveBase) {
         this(source, VALIDATE, resolveBase);
     }
+    public XMLBasicReader(String source, Class resolveBase) {
+        this(new InputSource("file:///" + source), VALIDATE, resolveBase);
+    }
     public XMLBasicReader(InputSource source) {
         this(source, VALIDATE);
     }
@@ -88,11 +91,9 @@ public class XMLBasicReader  {
             if(dbuilder == null) throw new RuntimeException("failure retrieving document builder");
             if (log.isDebugEnabled()) log.debug("Reading " + source.getSystemId());
             document = dbuilder.parse(source);
-        }
-        catch(org.xml.sax.SAXException se) {
+        } catch(org.xml.sax.SAXException se) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + Logging.stackTrace(se));
-        }
-        catch(java.io.IOException ioe) {
+        } catch(java.io.IOException ioe) {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
@@ -159,6 +160,10 @@ public class XMLBasicReader  {
             documentBuilder = createDocumentBuilder(VALIDATE);
         }
         return documentBuilder;
+    }
+
+    public static DocumentBuilder getDocumentBuilder(Class refer) {
+        return createDocumentBuilder(VALIDATE, new XMLErrorHandler(), new XMLEntityResolver(VALIDATE, refer));
     }
 
     /**

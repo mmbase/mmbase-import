@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.12 2002-10-11 15:14:42 michiel Exp $
+ * @version $Id: Cache.java,v 1.13 2002-10-25 13:12:38 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
 
@@ -96,7 +96,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
     */
     private static FileWatcher configWatcher = new FileWatcher (true) {
             protected void onChange(File file) {
-                configReader = new XMLBasicReader(file.getAbsolutePath());
+                configReader = new XMLBasicReader(file.getAbsolutePath(), Cache.class);
                 configure(configReader);
             }
         };
@@ -106,7 +106,7 @@ abstract public class Cache extends LRUHashtable implements SizeMeasurable  {
         File configFile = new File(MMBaseContext.getConfigPath() + File.separator + "caches.xml");
         if (configFile.exists()) {
             configWatcher.add(configFile);
-            configReader = new XMLBasicReader(configFile.getAbsolutePath());
+            configReader = new XMLBasicReader(configFile.getAbsolutePath(), Cache.class);
             // configure(configReader); never mind, no cache are present on start up
         } else {
             log.warn("No cache configuration file " + configFile + " found");

@@ -27,6 +27,7 @@ import org.mmbase.util.logging.*;
 import org.mmbase.cache.xslt.*;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.util.XMLErrorHandler;
+import org.mmbase.util.XMLEntityResolver;
 
 /**
  * This class contains static utility methods used by the editwizard.
@@ -38,7 +39,7 @@ import org.mmbase.util.XMLErrorHandler;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.25 2002-10-07 08:20:55 michiel Exp $
+ * @version $Id: Utils.java,v 1.26 2002-10-25 13:15:32 michiel Exp $
  */
 public class Utils {
 
@@ -49,7 +50,7 @@ public class Utils {
      * @return     a DocumentBuilder.
      */
     public static DocumentBuilder getDocumentBuilder(boolean validate) {
-	return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate, new XMLErrorHandler(validate, XMLErrorHandler.ERROR));
+	return org.mmbase.util.XMLBasicReader.getDocumentBuilder(validate, new XMLErrorHandler(validate, XMLErrorHandler.ERROR), new XMLEntityResolver(validate, Utils.class));
     }
 
     /**

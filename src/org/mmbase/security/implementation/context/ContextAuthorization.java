@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: ContextAuthorization.java,v 1.22 2002-08-30 14:02:52 eduard Exp $
+ * @version $Id: ContextAuthorization.java,v 1.23 2002-10-25 13:09:53 michiel Exp $
  */
 public class ContextAuthorization extends Authorization {
     private static Logger   log = Logging.getLoggerInstance(ContextAuthorization.class.getName());
@@ -53,7 +53,7 @@ public class ContextAuthorization extends Authorization {
             // clear the cache of user default contexts
             userDefaultContexts.clear();
             // reload the security xml document
-            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(in);
+            document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
             getGlobalAllowedOperations();
         } catch(org.xml.sax.SAXException se) {
             log.error("error parsing file :"+configFile);

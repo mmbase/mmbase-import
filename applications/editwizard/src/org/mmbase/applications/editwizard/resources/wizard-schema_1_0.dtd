@@ -1,0 +1,93 @@
+<!ELEMENT action ( object | relation  | prompt | description )* >
+<!ATTLIST action type NMTOKEN #REQUIRED >
+
+<!ELEMENT command ( prompt?, search-filter* ) >
+<!ATTLIST command name NMTOKEN #REQUIRED >
+<!ATTLIST command age NMTOKEN #IMPLIED >
+<!ATTLIST command fields CDATA #IMPLIED >
+<!ATTLIST command filterrequired NMTOKEN #IMPLIED >
+<!ATTLIST command inline NMTOKEN #IMPLIED >
+<!ATTLIST command nodepath CDATA #IMPLIED >
+<!ATTLIST command objectnumber NMTOKEN #IMPLIED >
+<!ATTLIST command wizardname CDATA #IMPLIED >
+<!ATTLIST command orderby CDATA #IMPLIED >
+<!ATTLIST command command NMTOKEN #IMPLIED >
+<!ATTLIST command startnodes CDATA #IMPLIED >
+
+<!ELEMENT default ( #PCDATA ) >
+
+<!ELEMENT field ( #PCDATA | optionlist | prompt | description | prefix | postfix )* >
+<!ATTLIST field dtmaxlength NMTOKEN #IMPLIED >
+<!ATTLIST field dtminlength NMTOKEN #IMPLIED >
+<!ATTLIST field dtrequired NMTOKEN #IMPLIED >
+<!ATTLIST field fdatapath CDATA #IMPLIED >
+<!ATTLIST field ftype NMTOKEN #IMPLIED >
+<!ATTLIST field name NMTOKEN #IMPLIED >
+<!ATTLIST field rows NMTOKEN #IMPLIED >
+<!ATTLIST field inline NMTOKEN #IMPLIED >
+<!ATTLIST field wizardname CDATA #IMPLIED >
+
+<!ELEMENT prefix ( #PCDATA ) >
+<!ELEMENT postfix ( #PCDATA ) >
+
+<!ELEMENT fieldset ( prompt?, field+ ) >
+
+<!ELEMENT form-schema ( field | list | subtitle | title )* >
+<!ATTLIST form-schema id NMTOKEN #IMPLIED >
+
+<!ELEMENT item ( title | description | field | fieldset | list )* >
+<!ATTLIST item displaytype NMTOKEN #IMPLIED >
+<!ATTLIST item displaymode NMTOKEN #IMPLIED >
+
+<!ELEMENT list ( title | description | action | command | item | title )* >
+<!ATTLIST list maxoccurs CDATA #IMPLIED >
+<!ATTLIST list minoccurs NMTOKEN #IMPLIED >
+<!ATTLIST list extends CDATA #IMPLIED >
+<!ATTLIST list fdatapath CDATA #IMPLIED >
+<!ATTLIST list destination NMTOKEN #IMPLIED >
+<!ATTLIST list hidecommand NMTOKEN #IMPLIED >
+<!ATTLIST list orderby CDATA #IMPLIED >
+<!ATTLIST list ordertype CDATA #IMPLIED >
+<!ATTLIST list role NMTOKEN #IMPLIED >
+<!ATTLIST list type NMTOKEN #IMPLIED >
+<!ATTLIST list fields CDATA #IMPLIED >
+<!ATTLIST list include CDATA #IMPLIED >
+
+<!ELEMENT lists ( optionlist ) >
+
+<!ELEMENT name ( #PCDATA ) >
+
+<!ELEMENT object ( field | relation )* >
+<!ATTLIST object type NMTOKEN #IMPLIED >
+
+<!ELEMENT query EMPTY >
+<!ATTLIST query xpath CDATA #REQUIRED >
+
+<!ELEMENT option ( #PCDATA ) >
+<!ATTLIST option id NMTOKEN #REQUIRED >
+
+<!ELEMENT optionlist ( option* | query ) >
+<!ATTLIST optionlist name NMTOKEN #IMPLIED >
+<!ATTLIST optionlist select NMTOKEN #IMPLIED >
+<!ATTLIST optionlist optionid CDATA #IMPLIED >
+<!ATTLIST optionlist optioncontent CDATA #IMPLIED >
+
+<!ELEMENT prompt ( #PCDATA ) >
+
+<!ELEMENT relation ( field | object )* >
+<!ATTLIST relation destination CDATA #IMPLIED >
+<!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
+<!ATTLIST relation role NMTOKEN #IMPLIED >
+
+<!ELEMENT search-fields ( #PCDATA ) >
+
+<!ELEMENT search-filter ( name, search-fields, default? ) >
+
+<!ELEMENT subtitle ( #PCDATA ) >
+
+<!ELEMENT title ( #PCDATA ) >
+
+<!ELEMENT description ( #PCDATA ) >
+
+<!ELEMENT wizard-schema ( title, action+, lists?, form-schema+ ) >
+<!ATTLIST wizard-schema id NMTOKEN #IMPLIED >
