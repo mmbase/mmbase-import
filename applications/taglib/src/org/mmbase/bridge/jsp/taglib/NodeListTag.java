@@ -33,7 +33,8 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* ListTag, provides functionality for listing objects stored in MMBase
+* NodeListTag, provides functionality for listing objects stored in MMBase
+*
 * @author Kees Jongenburger
 **/
 public class NodeListTag extends AbstractNodeProviderTag implements BodyTag ,ListItemInfo{
@@ -369,6 +370,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag ,Lis
             return EVAL_BODY_TAG;
         } else {
             try {
+                BodyContent bodyOut = getBodyContent();
                 bodyOut.writeOut(bodyOut.getEnclosingWriter());
             } catch (IOException ioe){
                 throw new JspTagException(ioe.toString());
