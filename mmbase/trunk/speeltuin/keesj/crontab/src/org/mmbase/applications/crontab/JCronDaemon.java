@@ -18,31 +18,83 @@ public class JCronDaemon implements Runnable {
     
     private static JCronDaemon jCronDaemon;
     private Thread cronThread;
-    private Set jCronEntries;
+    private Set cronEntries;
+    private Set removedCronEntries;
+    private Set addedCronEntries;
 
     /**
      * JCronDaemon is a Singleton. This makes the one instance and starts the Thread.
      */
     private JCronDaemon() {
-        jCronEntries = Collections.synchronizedSet(new HashSet());
+        cronEntries        = Collections.synchronizedSet(new HashSet());
+        removedCronEntries = Collections.synchronizedSet(new HashSet());
+        addedCronEntries   = Collections.synchronizedSet(new HashSet());
         start();
     }
+
+    /**
+     * Finds in given set the JCronEntry with the given id.
+     * @return a JCronEntry if found, <code>null</code> otherwise.
+     */
+    protected static JCronEntry getById(Set set, String id) {
+        Iterator i = set.iterator();
+        while (i.hasNext()) {
+            JCronEntry entry = (JCronEntry) i.next();
+            if (entry.getId().equals(id)) return entry;
+        }
+        return null;
+    }
+
+    /**
+     * Adds the given JCronEntry to this daemon. If a 
+     * @throws RuntimeException If an entry with the same id is present already (unless it is running and scheduled for removal already)
+     */
     
     public void add(JCronEntry entry){
-        if (jCronEntries.contains(entry)) {
-            throw new RuntimeException("There is an entry  " + entry + " already");
+        JCronEntry containing = getById(cronEntries, entry.getId());
+        if (containing != null) {
+            if (removedCronEntries.contains(containing)) {
+                addedCronEntries.add(entry);
+                return;
+            } else {
+                throw new RuntimeException("There is an entry  " + entry + " already");
+            }
+        } else {
+            addEntry(entry);
         }
+     
+    }
+    /**
+     * Actually adds, no checks for 'removedEntries' and so on.
+     */
+    protected void addEntry(JCronEntry entry) {   
         entry.init();
-        jCronEntries.add(entry);
+        cronEntries.add(entry);
         log.info("Added to JCronDaemon " + entry);
     }
 
+    /**
+     * Remove the given JCronEntry from this daemon. If the entry is currently running, it will be
+     * postponed until this job is ready.
+     */
     public void remove(JCronEntry entry){
-        jCronEntries.remove(entry);
+        if (! entry.isAlive()) {
+            removeEntry(entry);
+        } else {
+            // it is alive, only schedule for removal.
+            removedCronEntries.add(entry);
+        }
+    }
+
+    /**
+     * Actually removes, nor checks for removedEntries' and so on.
+     */
+    protected void removeEntry(JCronEntry entry) {
+        cronEntries.remove(entry);
         entry.stop();
         log.info("Removed from JCronDaemon " + entry);
     }
-    
+
     /** 
      * Starts the daemon, which you might want to do if you have stopped if for some reason. The
      * daemon is already started on default.
@@ -61,8 +113,8 @@ public class JCronDaemon implements Runnable {
     public void stop(){
         log.info("Stopping JCronDaemon");
         cronThread.interrupt();
-        cronThread=  null;
-        Iterator i = jCronEntries.iterator();
+        cronThread = null;
+        Iterator i = cronEntries.iterator();
         while(i.hasNext()) {
             JCronEntry entry = (JCronEntry) i.next();
             entry.stop();
@@ -87,30 +139,53 @@ public class JCronDaemon implements Runnable {
     public void run() {
         Thread thisThread = Thread.currentThread();
 
-        while(thisThread == cronThread){
-                    
+        while(thisThread == cronThread) { // run is stopped, by setting cronThread to null.
+            
             long now  = System.currentTimeMillis();
             long next = (now + 60 * 1000 ) / 60000 * 60000; // next minute, rounded to minute
 
             try {
                 Thread.sleep(next - now); // sleep until  next minute
+
+                Date currentMinute = new Date(next);
+                
+                
+                log.debug("Checking for " + currentMinute);
+
+                // remove jobs which were scheduled for removal
+                Iterator z = removedCronEntries.iterator();
+                while (z.hasNext()) {
+                    JCronEntry entry = (JCronEntry) z.next();
+                    if (entry.isAlive()) {
+                        log.service("Job " + entry + " still running, so could not yet be removed");
+                    } else {
+                        removeEntry(entry);
+                        z.remove();
+                        JCronEntry added = getById(addedCronEntries, entry.getId());
+                        if (added != null) {
+                            addEntry(added);
+                            addedCronEntries.remove(added);
+                        }
+                    }
+                }
+                // start jobs which need starting on this minute
+                z = cronEntries.iterator();
+                while (z.hasNext()) {
+                    JCronEntry entry = (JCronEntry) z.next();
+                    if (entry.mustRun(currentMinute)) {
+                        if (entry.kick()) {
+                            log.debug("started " + entry);
+                        } else {
+                            log.warn("Job " + entry + " still running, so not restarting it again.");
+                        }
+                    } else {
+                        log.trace("skipped " + entry);
+                    }
+                }
             } catch (InterruptedException ie) {
                 log.info("Interrupted: " + ie.getMessage());
-            }
-            Date currentMinute = new Date(next);
-
-            Iterator z = jCronEntries.iterator();
-            while (z.hasNext()) {
-                JCronEntry entry = (JCronEntry) z.next();
-                if (entry.mustRun(currentMinute)) {
-                    if (entry.kick()) {
-                        log.debug("started " + entry);
-                    } else {
-                        log.warn("Job " + entry + " still running, so not restarting it again.");
-                    }
-                } else {
-                    log.trace("skipped " + entry);
-                }
+            } catch  (Throwable t) {
+                log.error(t.getClass().getName() + " " + t.getMessage());
             }
         }
     }
