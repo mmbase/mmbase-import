@@ -109,7 +109,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <target name="init" depends="">
     <available property="src.available"           file="${project.source.dir}/src"/>
-    <available property="documentation.available" file="${project.build.dir}/documentation" />
+    <available property="documentation.available" file="${project.documentation.dir}" />
 
     <available property="examples.available"      file="${project.examples.dir}"/>
     <available property="templates.available"     file="${project.templates.dir}"/>
@@ -324,7 +324,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
 
   <target name="documentation.rawhtml" depends="init" if="do.generate.documentation">
     <copy todir="${project.build.dir}/documentation" includeEmptyDirs="false" >
-      <fileset dir="${project.source.dir}/documentation">
+      <fileset dir="${project.documentation.dir}">
         <include name="**/*.html"/>
       </fileset>
     </copy>
