@@ -131,6 +131,8 @@ strong
 	margin: 0 0 20px 150px;
 }
 
+.relatedpages { margin: 0 0 10px 150px; }
+
 #footer
 {
 	font-size: 10px;
@@ -556,14 +558,25 @@ textarea {
 .resultcomment { color: #666; }
 /* end search*/
 
-/* warning trickered by user action */
+/* warning (bad) and message (good) trickered by user action */
 .warning
 {
 	border-style: double;
 	border-color: #C03;
 	border-width: 2px;
 	background-color: #F99;
-	margin: 6px;
+	margin: 15px 6px 6px 6px;
+	padding: 10px;
+	width: 60%;
+}
+
+.message
+{
+	border-style: double;
+	border-color: #360;
+	border-width: 2px;
+	background-color: #CFC;
+	margin: 15px 6px 6px 6px;
 	padding: 10px;
 	width: 60%;
 }
