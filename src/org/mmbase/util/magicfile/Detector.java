@@ -46,7 +46,7 @@ import org.mmbase.util.logging.*;
  *<br>
  * Not supported by magic file:<br>
  * - StarOffice<br>
- * @version $Id: Detector.java,v 1.1.2.1 2003-01-21 12:16:50 kees Exp $
+ * @version $Id: Detector.java,v 1.1.2.2 2003-01-29 13:30:56 michiel Exp $
  */
 
 public class Detector {
@@ -90,7 +90,7 @@ public class Detector {
 	    if (childList.size() == 0) {
 		log.debug("Hm. level = " + level + ", but childList is empty");
 	    } else {
-		((Detector)childList.get(childList.size() - 1)).addChild(detector, level - 1);
+		((Detector) childList.get(childList.size() - 1)).addChild(detector, level - 1);
 	    }
 	}
     }
@@ -271,21 +271,23 @@ public class Detector {
 	    log.warn("TEST STRING LENGTH");
 	    return false;
 	}
-	String compare = lithmusString.substring(offset,offset+test.length());
-	xString = compare;
-	int n;
-	log.debug("test string = '"+test+"' ("+message+")");
-	n = compare.compareTo(test);
-	switch (testComparator) {
-	case '=': return n == 0;
-	case '>':
-	    hasX = true;
-	    return n > 0;
-	case '<':
-	    hasX = true;
-	    return n < 0;
-	}
-	return false;
+        if (lithmusString.length() >= offset + test.length()) {
+            String compare = lithmusString.substring(offset, offset + test.length());
+            xString = compare;
+            int n;
+            log.debug("test string = '"+test+"' ("+message+")");
+            n = compare.compareTo(test);
+            switch (testComparator) {
+            case '=': return n == 0;
+            case '>':
+                hasX = true;
+                return n > 0;
+            case '<':
+                hasX = true;
+                return n < 0;
+            }
+        }
+        return false;
     }
 
     /**
