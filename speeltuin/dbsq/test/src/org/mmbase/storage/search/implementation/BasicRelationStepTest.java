@@ -11,7 +11,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class BasicRelationStepTest extends TestCase {
     
@@ -64,6 +64,19 @@ public class BasicRelationStepTest extends TestCase {
      */
     public void tearDown() throws Exception {}
     
+    /** Test of setCheckedDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
+    public void testSetCheckedDirectionality() {
+        // Default is false.
+        assertTrue(!instance.getCheckedDirectionality());
+        
+        instance.setCheckedDirectionality(true);
+        assertTrue(instance.getCheckedDirectionality());
+        
+        BasicRelationStep result = instance.setCheckedDirectionality(false);
+        assertTrue(!instance.getCheckedDirectionality());
+        assertTrue(result == instance);
+    }
+    
     /** Test of setDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
     public void testSetDirectionality() {
        // Default is RelationStep.DIRECTIONS_BOTH.
@@ -82,6 +95,12 @@ public class BasicRelationStepTest extends TestCase {
             = instance.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
        assertTrue(instance.getDirectionality() == RelationStep.DIRECTIONS_DESTINATION);
        assertTrue(result == instance);
+    }
+    
+    /** Test of getCheckedDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
+    public void testGetCheckedDirectionality() {
+        // Same as:
+        testSetCheckedDirectionality();
     }
     
     /** Test of getDirectionality method, of class org.mmbase.storage.search.implementation.BasicRelationStep. */
