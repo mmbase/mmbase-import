@@ -39,7 +39,7 @@
 			class.
 	 -->
   	<authorization class="org.mmbase.security.Authorization" url="" />
-    	<!--   	<authorization class="org.mmbase.security.implementation.OwnerAuthorization" url="" /> -->
+    	<!--   	<authorization class="org.mmbase.security.implementation.OwnerAuthorization" url="../accounts.properties" /> -->
 
 	<!--
             shared secret:
