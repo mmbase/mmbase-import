@@ -307,7 +307,7 @@ public class MediaSources extends MMObjectBuilder {
                     try {
                         return bundle.getString(val);
                     } catch (java.util.MissingResourceException e) {
-                        return bundle.getString("undefined");
+                        return val;
                     }
                 } else if (args.get(0).equals("channels")) {
                     int val = node.getIntValue("channels");
@@ -384,11 +384,42 @@ public class MediaSources extends MMObjectBuilder {
      * @param mediasource the mediasource
      * @return All mediaproviders related to the given mediasource
      */
-    public Vector getMediaProviders(MMObjectNode mediasource) {
+    public List getMediaProviders(MMObjectNode mediasource) {
         log.debug("mediasource "+mediasource.getStringValue("number"));
         return mediasource.getRelatedNodes("mediaproviders");
     }
     
+
+    private void checkFields(MMObjectNode node) {
+        if (log.isDebugEnabled()) {
+            log.debug("format: " + node.getValue("format"));
+        }
+        if (node.getValue("format") == null) {
+            String url = node.getStringValue("url");
+            int dot = url.lastIndexOf('.');
+            if (dot > 0) {
+                String extension = url.substring(dot + 1);
+                log.service("format was unset, trying to autodetect by using 'url' field with extension '" + extension);
+                node.setValue("format", convertFormatToNumber(extension));
+            }            
+        }
+    }
+
+    /**
+     * The commit can be used to automaticly fill unfilled fields. For
+     * example the format can well be guessed by the URL.
+     * @todo which of commit,insert must be overriden?
+     */ 
+
+    public boolean commit(MMObjectNode node) {
+        checkFields(node);     
+        return super.commit(node);
+    }
+    public int insert(String owner, MMObjectNode node) {
+        checkFields(node);
+        return super.insert(owner, node);
+    }
+
     /**
      * converting format number to string representation
      * @param format the format number
@@ -402,6 +433,9 @@ public class MediaSources extends MMObjectBuilder {
         }
     }
     
+    /*
+     * @scope private (and use it in checkFields)
+     */
     public static int convertFormatToNumber(String format) {
         format = format.toLowerCase();
         for (int i = 0; i < formats.length; i++) {
@@ -411,6 +445,9 @@ public class MediaSources extends MMObjectBuilder {
         return -1;
     }
 
+    /*
+     * @scope private (and use it in checkFields)
+     */
     public static int convertCodecToNumber(String codec) {
         codec = codec.toLowerCase();
         if(codec.equals("vorbis")) return VORBIS_CODEC;

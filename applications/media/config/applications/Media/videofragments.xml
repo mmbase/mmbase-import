@@ -1,72 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<videofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021122141550">
-	<node number="276" owner="admin">
-		<start>1361647</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>-1</stop>
-		<title>Het weer</title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="274" owner="admin">
-		<start>1796</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body>asfd</body>
-		<stop>2892</stop>
-		<title>Eerste item</title>
-		<subtitle>asdf</subtitle>
-		<intro>sdfsafasfdasfd</intro>
-	</node>
-
-	<node number="253" owner="michiel">
+<videofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+	<node number="124" owner="admin">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
 		<body></body>
 		<stop>-1</stop>
-		<title>18 november</title>
+		<title>Noorderlicht</title>
 		<subtitle></subtitle>
 		<intro></intro>
 	</node>
 
-	<node number="248" owner="michiel">
-		<start>-1</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>-1</stop>
-		<title>Journaal van maandag 20 uur</title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="243" owner="michiel">
-		<start>46892</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>879750</stop>
-		<title>Eerste item</title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="242" owner="michiel">
-		<start>0</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>44596</stop>
-		<title>De introductie</title>
-		<subtitle></subtitle>
-		<intro>Een leuk programma dat Noordrelicht.</intro>
-	</node>
-
-	<node number="239" owner="admin">
+	<node number="122" owner="admin">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
@@ -77,13 +22,68 @@
 		<intro></intro>
 	</node>
 
-	<node number="237" owner="admin">
+	<node number="120" owner="michiel">
+		<start>0</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>44596</stop>
+		<title>De introductie</title>
+		<subtitle></subtitle>
+		<intro>Een leuk programma dat Noordrelicht.</intro>
+	</node>
+
+	<node number="118" owner="michiel">
+		<start>46892</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>879750</stop>
+		<title>Eerste item</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="116" owner="michiel">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
 		<body></body>
 		<stop>-1</stop>
-		<title>Noorderlicht</title>
+		<title>Journaal van maandag 20 uur</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="114" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>18 november</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="112" owner="admin">
+		<start>37515</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body>asfd</body>
+		<stop>39707</stop>
+		<title>Eerste item</title>
+		<subtitle>asdf</subtitle>
+		<intro>sdfsafasfdasfd</intro>
+	</node>
+
+	<node number="110" owner="admin">
+		<start>51481</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>52380</stop>
+		<title>Het weer</title>
 		<subtitle></subtitle>
 		<intro></intro>
 	</node>

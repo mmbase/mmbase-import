@@ -1,45 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<audiofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021122141550">
-	<node number="292" owner="michiel">
-		<start>-1</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>-1</stop>
-		<title></title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="291" owner="michiel">
-		<start>102773</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>842376</stop>
-		<title>De rest</title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="290" owner="michiel">
-		<start>0</start>
-		<length>-1</length>
-		<class>-1</class>
-		<body></body>
-		<stop>101768</stop>
-		<title>Intro</title>
-		<subtitle></subtitle>
-		<intro></intro>
-	</node>
-
-	<node number="283" owner="michiel">
+<audiofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
+	<node number="108" owner="michiel">
 		<start>-1</start>
 		<length>-1</length>
 		<class>-1</class>
 		<body></body>
 		<stop>-1</stop>
 		<title>Radio Bergeijk</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="102" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title></title>
 		<subtitle></subtitle>
 		<intro></intro>
 	</node>
