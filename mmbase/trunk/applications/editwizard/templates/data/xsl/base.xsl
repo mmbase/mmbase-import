@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.17 2002-08-14 21:02:28 michiel Exp $
+  @version $Id: base.xsl,v 1.18 2002-08-21 11:43:55 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -15,9 +15,9 @@
     version="1.0"
     encoding="utf-8"
     omit-xml-declaration="no"
-    standalone="no"
-    doctype-public="-//W3C//DTD HTML 4.0 Transitional//"
-    indent="no"
+    standalone="yes"
+    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//"
+    indent="yes"
     />
 
   <xsl:param name="ew_context"></xsl:param><!-- The web-application's context -->
@@ -50,7 +50,7 @@
 
   <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" /></xsl:param>
   
-  <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
+  <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
   <xsl:variable name="popuppage">wizard.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
 

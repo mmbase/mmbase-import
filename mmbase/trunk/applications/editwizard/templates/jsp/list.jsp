@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.24 2002-08-14 21:03:41 michiel Exp $
+     * @version  $Id: list.jsp,v 1.25 2002-08-21 11:43:31 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -14,18 +14,53 @@
 
 log.trace("list.jsp");
 
-Config.ListConfig listConfig=null; // stores the configuration specific for this list.
 
-if (ewconfig.subObjects.size() > 0) {
-    Object o = ewconfig.subObjects.peek();
-    if (o instanceof Config.ListConfig) {
-        listConfig= (Config.ListConfig)o;
+Config.ListConfig listConfig = null; // stores the configuration specific for this list.
+Config.SubConfig    top = null;
+
+if (! ewconfig.subObjects.empty()) {
+    top  = (Config.SubConfig) ewconfig.subObjects.peek();
+    if (! popup) { 
+        log.debug("This is not a popup");
+        if (top instanceof Config.ListConfig) {
+            listConfig = (Config.ListConfig) top;
+        } else {
+            log.debug("not a list on the stack?");
+        }
+    
+    } else {
+        log.debug("this is a popup");
+        Stack stack = (Stack) top.popups.get(popupId);
+        if (stack == null) {
+            log.debug("no configuration found for popup list");
+            stack = new Stack();
+            top.popups.put(popupId, stack);
+            listConfig = null;
+        } else {
+            if (stack.empty()) {
+                log.error("Empty stack?");
+            } else {
+                listConfig = (Config.ListConfig) stack.peek();
+            }
+        }
+    }
+} else {
+    log.debug("nothing found on stack");
+    if (popup) {
+        throw new WizardException("Popup without parent");
     }
 }
+
 if (listConfig==null) {
     listConfig = configurator.createList();
-    log.trace("List, push on Stack.");
-    ewconfig.subObjects.push(listConfig);
+    if (! popup) {       
+        if (log.isDebugEnabled()) log.trace("putting new list on the stack for list " + listConfig.title);
+        ewconfig.subObjects.push(listConfig);
+    } else {
+        if (log.isDebugEnabled()) log.trace("putting new list in popup map  for list " + listConfig.title);
+        Stack stack = (Stack) top.popups.get(popupId);
+        stack.push(listConfig);
+    }
 }
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
@@ -183,6 +218,8 @@ log.trace("Create document");
 
 org.w3c.dom.Node docel = doc.getDocumentElement();
 
+log.trace("hoi");
+
 String mainManager=mainObjectName;
 if (mainManager.charAt(mainManager.length()-1)<='9') mainManager=mainManager.substring(0,mainManager.length()-1);
 
@@ -250,6 +287,7 @@ params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
+params.put("popupid",  popupId);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
@@ -263,7 +301,7 @@ params.put("ew_path", new File(request.getServletPath()).getParentFile().getPare
 log.trace("Doing the transformation for " + listConfig.template);
 Utils.transformNode(doc, listConfig.template, ewconfig.uriResolver, out, params);
 
-log.trace("ready");
+if (log.isDebugEnabled()) log.trace("ready: " + ewconfig.subObjects);
 
 %><%!
 
