@@ -61,10 +61,6 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
 
     void addParameter(String key, Object value) throws JspTagException {
         extraParameters.put(key, value);
-        if (helper.getJspvar() != null) {
-            helper.setValue(getUrl());        
-            helper.setJspvar(pageContext);  
-        }
     }
 
    
@@ -74,12 +70,6 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
         if (page == null) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             page = req.getRequestURI();
-        }
-
-        String show = getUrl();
-        if (helper.getJspvar() != null) {
-            helper.setValue(getUrl());        
-            helper.setJspvar(pageContext);  
         }
         return EVAL_BODY_TAG;
     }
@@ -126,6 +116,8 @@ public class UrlTag extends ContextReferrerTag  implements Writer {
             helper.overrideWrite(true); // because Url tag can have subtags (param), default writing even with body seems sensible
         }
         helper.setValue(getUrl());
+        helper.setJspvar(pageContext);  
+        
         if (getId() != null) {
             getContextTag().register(getId(), helper.getValue());
         }
