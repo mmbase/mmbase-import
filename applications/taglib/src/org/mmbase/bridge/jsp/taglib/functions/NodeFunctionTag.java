@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeFunctionTag.java,v 1.2 2004-02-11 20:40:12 keesj Exp $
+ * @version $Id: NodeFunctionTag.java,v 1.3 2004-07-10 12:16:47 nico Exp $
  */
 public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider, FunctionContainerReferrer {
 
@@ -69,7 +69,7 @@ public class NodeFunctionTag extends AbstractFunctionTag implements NodeProvider
             node = (Node) value;
         } else {
             // depend on 'convert' of BasicNodeList, ugly ugly
-            NodeList list = getCloud().getCloudContext().createNodeList();
+            NodeList list = getProviderCloudVar().getCloudContext().createNodeList();
             list.add(value);
             node = list.getNode(0);
             
