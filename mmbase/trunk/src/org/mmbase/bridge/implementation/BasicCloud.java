@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.80 2002-12-02 09:49:22 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.81 2003-02-19 20:23:52 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -297,22 +297,18 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
      * @return the requested RelationManager
      */
     RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
-        Enumeration e =cloudContext.mmb.getTypeRel().search(
-                  "WHERE snumber="+sourceManagerId+" AND dnumber="+destinationManagerId+" AND rnumber="+roleId);
-        if (!e.hasMoreElements()) {
-            e =cloudContext.mmb.getTypeRel().search(
-                  "WHERE dnumber="+sourceManagerId+" AND snumber="+destinationManagerId+" AND rnumber="+roleId);
-        }
-        if (e.hasMoreElements()) {
-            MMObjectNode node=(MMObjectNode)e.nextElement();
-            return new BasicRelationManager(node,this);
+        Set set = new HashSet(cloudContext.mmb.getTypeRel().getAllowedRelations(sourceManagerId, destinationManagerId, roleId));
+        set.addAll(cloudContext.mmb.getTypeRel().getAllowedRelations(destinationManagerId, sourceManagerId, roleId));
+        if (set.size() > 0) {
+            return new BasicRelationManager((MMObjectNode) set.iterator().next(), this);
         } else {
+            log.error("hmm?");
             return null; // calling method throws exception
         }
     }
 
     public RelationManager getRelationManager(int number) throws NotFoundException {
-        MMObjectNode n =cloudContext.mmb.getTypeDef().getNode(number);
+        MMObjectNode n = cloudContext.mmb.getTypeDef().getNode(number);
         if (n==null) {
             throw new NotFoundException("Relation manager with number "+number+" does not exist.");
         }
@@ -892,7 +888,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
         // are treated as the 'same' cloud. This may change in future implementations
         return (o instanceof Cloud) &&
-               cloudContext.equals(((Cloud)o).getCloudContext());
+            cloudContext.equals(((Cloud)o).getCloudContext());
     }
 
 }
