@@ -196,7 +196,7 @@
 		<gui>
 			<guiname xml:lang="nl">Lengte</guiname>
 			<guiname xml:lang="en">Length</guiname>
-			<guitype>string</guitype>
+			<guitype>long</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
