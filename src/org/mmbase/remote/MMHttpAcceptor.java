@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width:4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.14 2001-03-29 13:17:55 install Exp $
+$Id: MMHttpAcceptor.java,v 1.15 2001-04-11 15:31:23 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2001/03/29 13:17:55  install
+Rob added shared secret checks
+
 Revision 1.13  2001/03/26 13:00:12  vpro
 Davzev: Changed exception error debug in getNode.
 
@@ -37,16 +40,17 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  *
- * @version $Revision: 1.14 $ $Date: 2001-03-29 13:17:55 $
+ * @version $Revision: 1.15 $ $Date: 2001-04-11 15:31:23 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 
-    private String  classname   = getClass().getName();
-    private boolean debug       = true;
-    private void debug(String msg) { if (debug) System.out.println(classname +":"+ msg);}
+    private static Logger log = Logging.getLoggerInstance(MMHttpAcceptor.class.getName()); 
 
 	Thread kicker = null;
 
@@ -63,7 +67,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	public MMHttpAcceptor(String servername,String remoteHost,int remotePort) {
 		this.remoteHost=remoteHost;
 		this.remotePort=remotePort;
-		if (debug) debug("MMHttpAcceptor("+servername+","+remoteHost+","+remotePort+"): Creating and initializing");
+		if (log.isDebugEnabled()) {
+            log.debug("MMHttpAcceptor("+servername+","+remoteHost+","+remotePort+"): Creating and initializing");
+        }
 		init();
 	}
 
@@ -91,16 +97,20 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 					//serversocket.setSoTimeout(Integer.MAX_VALUE);
 					okeonport=true;
 				} catch (Exception e) {
-					debug("start():bind failed  on port :"+port);
+					log.error("start():bind failed  on port :"+port);
 					port=port+((trycount++)*10);
 				}
 			}
-			if (okeonport) {
-				debug("start():ok bind on port :"+port);
+			if (okeonport) {                
+                if (log.isDebugEnabled()) {
+                    log.debug("start():ok bind on port :"+port);
+                }
 			} else {
-				debug("start():ALL BINDS from 8080 to 9080 failed ");
+				log.error("start():ALL BINDS from 8080 to 9080 failed ");
 			}
-			if (debug) debug("start(): Creating and starting a new Thread.");
+			if (log.isDebugEnabled()) {
+                log.debug("start(): Creating and starting a new Thread.");
+            }
 			kicker = new Thread(this,"MMHttpAcceptor");
 			kicker.start();
 		}
@@ -126,8 +136,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 				kicker.setPriority(Thread.NORM_PRIORITY+1);  
 				doWork();
 			} catch(Exception e) {
-				debug("Error: ");
-				e.printStackTrace();
+				log.error("Error: " + Logging.stackTrace(e));
 			}
 		}
 	}
@@ -146,7 +155,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 				* Do what is wanted and close the connect
 				* without hogging your host machine down.
 			 	*/
-				if (debug) debug("doWork(): Accepting client request and creating new MMHttpHandler.");
+				if (log.isDebugEnabled()) {
+                    log.debug("doWork(): Accepting client request and creating new MMHttpHandler.");
+                }
 				clientsocket=serversocket.accept();
 				
 				new MMHttpHandler(clientsocket,listeners);
@@ -155,9 +166,8 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 				* This only to catch the exception caused by
 				* closing the socket
 				*/
-				debug("AcceptError");
-				e.printStackTrace();
-					try {Thread.sleep(2*1000);} catch (InterruptedException g){}
+				log.error("AcceptError " + Logging.stackTrace(e));
+                try {Thread.sleep(2*1000);} catch (InterruptedException g){}
 				continue;
 			}
 
@@ -168,7 +178,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	}
 
 	public synchronized boolean commitNode(String nodename,String tableName,String xml) {
-		if (debug) debug("commitNode("+nodename+","+tableName+","+xml+"): xml.length():"+xml.length());
+        if (log.isDebugEnabled()) {
+            log.debug("commitNode("+nodename+","+tableName+","+xml+"): xml.length():"+xml.length());
+        }
 		String line=null;
 		Socket connect;
 		BufferedInputStream in=null;
@@ -179,15 +191,17 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		String name="xmlnode";
 		String url="/remoteXML.db";
 
-		//System.out.println("DO POST ON : "+xml);
+		//log.debug("DO POST ON : "+xml);
 		try {
-			if (debug) debug("commitNode: Posting "+tableName+" node "+nodename+" in XML format to "+remoteHost+":"+remotePort+" using POST "+url+" HTTP/1.1\r\n");
+			if (log.isDebugEnabled()) {
+                log.debug("commitNode: Posting "+tableName+" node "+nodename+" in XML format to "+remoteHost+":"+remotePort+" using POST "+url+" HTTP/1.1\r\n");
+            }
 			connect=new Socket(remoteHost,remotePort);
 			try {
 				out=new PrintStream(connect.getOutputStream());
 			} catch (Exception e) {
-				debug("PrintStream failure");
-				e.printStackTrace();
+				log.error("PrintStream failure");
+				log.error(Logging.stackTrace(e));
 			}
 
 			body=name+"="+xml.replace(' ','+');
@@ -220,7 +234,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			}
 			*/
 		} catch(Exception e) {
-			debug("Error connecting to object host : "+e);
+			log.error("Error connecting to object host : "+e);
 		}	
 		return(true);
 	}
@@ -230,7 +244,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	 * @return true, always
 	 */
 	public boolean addListener(String buildername,String nodename,RemoteBuilder serv) {
- 		if (debug) debug("addListener("+buildername+","+nodename+","+serv+"): Adding remote builder ref to listeners hashtable key:"+nodename);
+        if (log.isDebugEnabled()) {
+            log.debug("addListener("+buildername+","+nodename+","+serv+"): Adding remote builder ref to listeners hashtable key:"+nodename);
+        }
 		listeners.put(nodename,serv);	
 		return(true);
 	}
@@ -243,7 +259,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 	 * @return true, always
 	 */
 	public boolean getNode(String nodename,String tableName) {
- 		if (debug) debug("getNode("+nodename+","+tableName+"): Request for node and store it");
+        if (log.isDebugEnabled()) {
+            log.debug("getNode("+nodename+","+tableName+"): Request for node and store it");
+        }
 
 		// connects to the server to obtain this node in xml
 		// and parse it back to a node
@@ -254,7 +272,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
  
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
-			if (debug) debug("getNode("+nodename+","+tableName+"): Requesting "+tableName+" node "+nodename+" in XML format from "+remoteHost+":"+remotePort+" using GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
+            if (log.isDebugEnabled()) {
+                log.debug("getNode("+nodename+","+tableName+"): Requesting "+tableName+" node "+nodename+" in XML format from "+remoteHost+":"+remotePort+" using GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
+            }
 			out.print("GET /remoteXML.db?"+tableName+"+"+nodename+"+"+proto+"+"+host+"+"+sport+" HTTP/1.1\r\n");
 			out.print("Pragma: no-cache\r\n");
 			out.print("User-Agent: org.mmbase\r\n");
@@ -262,10 +282,14 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			out.flush();
 			DataInputStream in=new DataInputStream(connect.getInputStream());
 			String line=readline(in);
-			if (debug) debug("getNode("+nodename+","+tableName+"): Return value received on GET request:"+line);
+            if (log.isDebugEnabled()) {
+                log.debug("getNode("+nodename+","+tableName+"): Return value received on GET request:"+line);
+            }
 			if (line!=null && !line.equals("")) {
 				if (line.indexOf("200 OK")!=-1) {
-					if (debug) debug("getNode("+nodename+","+tableName+"): Reading XML data from header of requested file");
+                    if (log.isDebugEnabled()) {
+                        log.debug("getNode("+nodename+","+tableName+"): Reading XML data from header of requested file");
+                    }
 					Hashtable headers=readHeaders(in);
 					try {
 						int len=Integer.parseInt((String)headers.get("Content-Length"));
@@ -273,21 +297,23 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 						String xml=new String(buffer,0,0,buffer.length);
 						RemoteBuilder serv=(RemoteBuilder)listeners.get(nodename);
 						if (serv==null) return(true);
-						if (debug) debug("getNode("+nodename+","+tableName+"): Saving XML data as Hashtable with key value pairs");
+                        if (log.isDebugEnabled()) {
+                            log.debug("getNode("+nodename+","+tableName+"): Saving XML data as Hashtable with key value pairs");
+                        }
 						serv.gotXMLValues(xml);
 					} catch(Exception e) {
-	 					debug("getNode("+nodename+","+tableName+"): ERROR: while reading XML data from header.");
-						e.printStackTrace();
+	 					log.error("getNode("+nodename+","+tableName+"): while reading XML data from header.");
+						log.error(Logging.stackTrace(e));
 					}
 				} else {
-					debug("getNode(): Error expected 200 OK got: "+line);
+					log.error("getNode(): Error expected 200 OK got: "+line);
 				}
 			} else {
-				debug("getNode(): Error nothing received from server");
+				log.error("getNode(): Error nothing received from server");
 			}
 			connect.close();
 		} catch(Exception e) { 
-			debug("getNode() general failure"); e.printStackTrace();
+			log.error("getNode() general failure" + Logging.stackTrace(e));
 		}
 		return(true);
 	}
@@ -316,7 +342,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		try {
 			return(InetAddress.getLocalHost().getHostName());
 		} catch(Exception e) {
-			debug("getLocalHost(): ERROR"); e.printStackTrace();
+			log.error("getLocalHost(): " + Logging.stackTrace(e));
 			return("");
 		}
 	}
@@ -385,13 +411,13 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("(readContentLength) -> can't read post msg from client");
+                log.error("(readContentLength) -> can't read post msg from client");
             }
         return(buffer);
     }
 
 	public String toString()
 	{
-		return classname + "(): remoteHost("+this.remoteHost+"), remotePort("+remotePort+")";
+		return this.getClass().getName() + "(): remoteHost("+this.remoteHost+"), remotePort("+remotePort+")";
 	}
 }

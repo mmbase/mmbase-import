@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -17,12 +17,16 @@ import java.applet.*;
 
 import org.mmbase.remote.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @version  3 Okt 1999
  * @author Daniel Ockeloen
  */
 public class MMCounter extends RemoteBuilder {
+
+    private static Logger log = Logging.getLoggerInstance(MMCounter.class.getName()); 
 
 	AudioClip audioclip;
 
@@ -40,7 +44,7 @@ public class MMCounter extends RemoteBuilder {
 		try {
 		audioclip = Applet.newAudioClip(new URL("http://openbox.vpro.nl/1.aif"));
 		} catch(Exception e) {
-			e.printStackTrace();
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -70,10 +74,13 @@ public class MMCounter extends RemoteBuilder {
 		commit();
 		
 		// do the work
+        /* michiel: nothing happens here! Away with it.
 		for (int i=0;i<40;i++) {
 			for (int j=0;j<10000000;j++) { }
 			System.out.print(".");
 		}
+        */
+        log.debug("in doUp");
 
 		// decode and add one to devdata 
 		int count=getIntValue("devdata");
@@ -92,10 +99,13 @@ public class MMCounter extends RemoteBuilder {
 		commit();
 		
 		// do the work
+        /* michiel: nothing happens here! Away with it.
 		for (int i=0;i<40;i++) {
 			for (int j=0;j<10000000;j++) { }
 			System.out.print("+");
 		}
+        */
+        log.debug("in doDown");
 
 		// decode and add one to devdata 
 		int count=getIntValue("devdata");

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width:4 ; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpHandler.java,v 1.9 2001-03-29 13:17:55 install Exp $
+$Id: MMHttpHandler.java,v 1.10 2001-04-11 15:31:23 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2001/03/29 13:17:55  install
+Rob added shared secret checks
+
 Revision 1.8  2001/03/26 15:31:04  vpro
 Davzev: Fixed request handling by reading the remaining lines of request data
 sent with a request. If you don't read out remaining lines the client could get
@@ -34,16 +37,17 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  *
- * @version $Revision: 1.9 $ $Date: 2001-03-29 13:17:55 $
+ * @version $Revision: 1.10 $ $Date: 2001-04-11 15:31:23 $
  * @author Daniel Ockeloen
  */
 public class MMHttpHandler implements Runnable {
 
-    private String  classname   = getClass().getName();
-    private boolean debug       = true;
-    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+    private static Logger log = Logging.getLoggerInstance(MMHttpHandler.class.getName()); 
 
 	Thread kicker = null;
 
@@ -54,7 +58,9 @@ public class MMHttpHandler implements Runnable {
 	public final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
 
 	public MMHttpHandler(Socket clientsocket,Hashtable listeners) {
-		if (debug) debug("MMHttpHandler("+clientsocket+","+listeners+"): Created, initializing..");
+        if (log.isDebugEnabled()) {
+            log.debug("MMHttpHandler("+clientsocket+","+listeners+"): Created, initializing..");
+        }
 		this.clientsocket=clientsocket;
 		this.listeners=listeners;
 		init();
@@ -70,11 +76,11 @@ public class MMHttpHandler implements Runnable {
 	public void start() {
 		/* Start up the main thread */
 		if (kicker == null) {
-			debug("start(): Creating and starting new Thread.");
+			log.info("start(): Creating and starting new Thread.");
 			kicker = new Thread(this,"MMHttpHandler");
 			kicker.start();
 		} else {
-			debug("start(): No create needed, thread already up and running, name:"+kicker.getName());
+			log.info("start(): No create needed, thread already up and running, name:"+kicker.getName());
 		}
 	}
 	
@@ -96,7 +102,9 @@ public class MMHttpHandler implements Runnable {
 				
 				if (tok.hasMoreTokens()) {
 					String method=tok.nextToken();
-					if (debug) debug("run(): Got method: "+method);
+                    if (log.isDebugEnabled()) {
+                        log.debug("run(): Got method: "+method);
+                    }
 					if (method.equals("GET"))
 						doGet(tok,in,out);
 					if (method.equals("POST")) 
@@ -105,18 +113,24 @@ public class MMHttpHandler implements Runnable {
 			}
 			// Read all remaining data that was sent with request.
 			line = in.readLine();
-			if (debug) debug("run: Reading lines of remaining data sent with request value: "+line);
+            if (log.isDebugEnabled()) {
+                log.debug("run: Reading lines of remaining data sent with request value: "+line);
+            }
 			while (line.equals("")) {
 				line = in.readLine();
-				if (debug) debug("run: Reading lines of remaining data sent with request value: "+line);
+                if (log.isDebugEnabled()) {
+                    log.debug("run: Reading lines of remaining data sent with request value: "+line);
+                }
 			}
 
 			// Close socket.
-			if (debug) debug("run: Closing socket.");
-			clientsocket.close();	
+            if (log.isDebugEnabled()) {
+                log.debug("run: Closing socket.");
+            }
+            clientsocket.close();	
 		} catch(Exception e) {
-			debug("run(): ERROR: exception: "+e);
-			e.printStackTrace();
+			log.error("run(): exception: "+e);
+			log.error(Logging.stackTrace(e));
 		}
 	}
 
@@ -131,24 +145,30 @@ public class MMHttpHandler implements Runnable {
 		if (tok.hasMoreTokens()) {
 			String requestUrl=tok.nextToken();
 			int filePos = requestUrl.indexOf(REMOTE_REQUEST_URI_FILE);
-			if (filePos!=-1){
-				if (debug) debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
+			if (filePos!=-1){               
+                if (log.isDebugEnabled()) {
+                    log.debug("doGet: Found requestURI file "+REMOTE_REQUEST_URI_FILE);
+                }
 				int queryPos = requestUrl.indexOf("?");
 				if (queryPos!=-1){
 					String queryString=requestUrl.substring(queryPos+1); //+1 ='?' char.
-					if (debug) debug("doGet: Retrieved querystring: "+queryString);
+                    if (log.isDebugEnabled()) {
+                        log.debug("doGet: Retrieved querystring: "+queryString);
+                    }
 					doXMLSignal(queryString);
 					statusCode = "200 OK";
 				} else {
-					debug("doGet: ERROR: No querystring: "+requestUrl);
+				    log.error("doGet: No querystring: "+requestUrl);
 					statusCode = "400 Bad Request"; 
 				}
 			}else {
-				debug("doGet: WARNING: unknown requesturl:"+requestUrl);
+                log.warn("doGet: WARNING: unknown requesturl:"+requestUrl);
 				statusCode = "404 Not Found"; 
 			}
 		}
-		if (debug) debug("doGet: Returning "+statusCode);
+        if (log.isDebugEnabled()) {
+            log.debug("doGet: Returning "+statusCode);
+        }
 		out.println(statusCode);
 		out.flush();
 	}
@@ -160,7 +180,9 @@ public class MMHttpHandler implements Runnable {
 	 * @param queryString Contains the service reference, buildername and changetype.
 	 */
 	void doXMLSignal(String queryString) {
-		if (debug) debug("doXMLSignal("+queryString+"): Getting info from queryString");
+        if (log.isDebugEnabled()) {
+            log.debug("doXMLSignal("+queryString+"): Getting info from queryString");
+        }
 
 		StringTokenizer tok=new StringTokenizer(queryString,"+ \n\r\t");
 		if (tok.hasMoreTokens()) {
@@ -171,14 +193,14 @@ public class MMHttpHandler implements Runnable {
 					String ctype=tok.nextToken();
 					RemoteBuilder serv=(RemoteBuilder)listeners.get(serviceRef);
 					if (serv==null) {
-						debug("doXMLSignal("+queryString+"): ERROR: no remote builder found for service reference:"+serviceRef);
+						log.error("doXMLSignal("+queryString+"): no remote builder found for service reference:"+serviceRef);
 					} else {
-						debug("doXMLSignal("+queryString+"): Send nodeRemoteChanged signal to notify service that it's state has changed.");
+						log.info("doXMLSignal("+queryString+"): Send nodeRemoteChanged signal to notify service that it's state has changed.");
 						serv.nodeRemoteChanged(serviceRef,builderName,ctype);
 					}
-				} else debug("doXMLSignal("+queryString+"): ERROR: no 'ctype' found!");
-			} else debug("doXMLSignal("+queryString+"): ERROR: no 'buildername' found!");
-		} else debug("doXMLSignal("+queryString+"): ERROR: no 'service reference' found!");
+				} else log.error("doXMLSignal("+queryString+"): no 'ctype' found!");
+			} else log.error("doXMLSignal("+queryString+"): no 'buildername' found!");
+		} else log.error("doXMLSignal("+queryString+"): no 'service reference' found!");
 	}
 
 	void doPost(StringTokenizer tok, DataInputStream in, PrintStream out) {
@@ -195,19 +217,21 @@ public class MMHttpHandler implements Runnable {
     				Hashtable posted=readPostUrlEncoded(buffer);
 					statusCode = "200 OK";
 				} catch(Exception e) { 
-					debug("doPost(): ERROR: could not handle post!"); 
-					e.printStackTrace(); 
+					log.error("doPost(): could not handle post!"); 
+					log.error(Logging.stackTrace(e));
 					statusCode = "400 Bad Request, error during reading posted content";
 				}
 			} else {
-				debug("doPost(): ERROR: No 'Content-length' specified in this post!");
+				log.error("doPost(): No 'Content-length' specified in this post!");
 				statusCode = "411 Length Required"; 
 			}
 		} else {
-			debug("doPost(): ERROR: 'Content-type' is: "+header+", should be : "+CONTENT_TYPE);
+			log.error("doPost(): 'Content-type' is: "+header+", should be : "+CONTENT_TYPE);
 			statusCode = "415 Unsupported Media Type"; 
 		}
-		if (debug) debug("doPost: Returning "+statusCode);
+        if (log.isDebugEnabled()) {
+            log.debug("doPost: Returning "+statusCode);
+        }
 		out.println(statusCode);
 		out.flush();
 	}
@@ -246,8 +270,8 @@ public class MMHttpHandler implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                debug("readContentLength("+len+"): ERROR: can't read post msg from client");
-				e.printStackTrace();
+                log.error("readContentLength("+len+"): can't read post msg from client");
+				log.error(Logging.stackTrace(e));
             }
         return(buffer);
     }
@@ -307,7 +331,7 @@ public class MMHttpHandler implements Runnable {
                         letter=(char)Integer.parseInt(mimestr.substring(i+1,i+3),16);
                         mimestr=mimestr.substring(0,i)+letter+mimestr.substring(i+3);
                     } catch (Exception e) {
-						e.printStackTrace();
+						log.error(Logging.stackTrace(e));
                     }
                     i++;
                 }

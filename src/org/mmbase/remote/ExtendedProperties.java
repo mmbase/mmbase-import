@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -11,19 +11,19 @@ package org.mmbase.remote;
 
 import java.io.*;
 import java.util.*;
+
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
 * This is a flexible Properties version, it can handle saving of Properties with
 * the comments that will stay in your file.   
 * @author Jan van Oosterom
 * @version 28-Oct-1996
 */
-public class ExtendedProperties extends Properties
-{
-	private String 	classname 	= getClass().getName();
-	private boolean debug		= false;
+public class ExtendedProperties extends Properties {
 
-	private void debug( String msg ) { if( debug ) System.out.println( classname +":"+ msg ); }
-	
+    private static Logger log = Logging.getLoggerInstance(ExtendedProperties.class.getName()); 
 
 	/**
 	* the prefix of the comment in the Properties file.
@@ -43,7 +43,7 @@ public class ExtendedProperties extends Properties
 		try {
 			getProps(filename);  
 		} catch (IOException e) {
-			debug("ExtendedProperties("+filename+"): ERROR: Failed to load the ExtendedProperties for: "+ filename);	
+			log.error("ExtendedProperties("+filename+"): Failed to load the ExtendedProperties for: "+ filename);	
 		}
     }
 
@@ -65,7 +65,7 @@ public class ExtendedProperties extends Properties
 		try {
 			getProps(filename);  
 		} catch (IOException e) {
-			debug("readProperties("+filename+"): ERROR: Failed to load the ExtendedProperties from: "+ filename);	
+			log.error("readProperties("+filename+"): Failed to load the ExtendedProperties from: "+ filename);	
 		}
 		ExtendedProperties propsToReturn = new ExtendedProperties();
 		Enumeration e = keys();
@@ -91,7 +91,7 @@ public class ExtendedProperties extends Properties
 		try {
 			save(filename);
 		} catch (IOException ioe) {	
-			debug("saveProperties("+filename+","+propsToSave.toString()+"): ERROR: Fail to save the ExtendedProperties to: " + filename+" : "+ioe);
+			log.error("saveProperties("+filename+","+propsToSave.toString()+"): Fail to save the ExtendedProperties to: " + filename+" : "+ioe);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class ExtendedProperties extends Properties
 		} else {
 			//whichProp is not available in this Property list
 			// ROB UIT GEZET
-			//System.out.println("ExtendedProperties.getParsedProperty: " + whichProp + " not found." );
+			//log.debug("ExtendedProperties.getParsedProperty: " + whichProp + " not found." );
 			return null;
 		}	
 	}	
@@ -130,7 +130,7 @@ public class ExtendedProperties extends Properties
         	bufferedInputStream.close();
 		} catch (FileNotFoundException e ) {
 			// ROB UIT GEZET
-			//System.out.println("ExtendedProperties:: file " + filename + " niet gevonden");
+			//log.debug("ExtendedProperties:: file " + filename + " niet gevonden");
 		}
     }
 	
@@ -332,7 +332,7 @@ public class ExtendedProperties extends Properties
                 	if (line != null) lines= lines + line + "\n";
                 } 
 				catch(Exception e) {
-					debug("EOF!");
+					log.debug("EOF!");
 				}
              } while (line != null);
 		
@@ -357,7 +357,9 @@ public class ExtendedProperties extends Properties
 		Enumeration names = propertyNames();
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
-			debug("showContents(): " +name + "=" + getProperty(name));
+            if (log.isDebugEnabled()) {
+                log.debug("showContents(): " +name + "=" + getProperty(name));
+            }
 		}
         
 	}

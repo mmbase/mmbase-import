@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.13 2001-03-15 16:15:58 vpro Exp $
+$Id: g2encoders.java,v 1.14 2001-04-11 15:31:22 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2001/03/15 16:15:58  vpro
+Davzev: Removed setValue to print what remotebuilder is doing when busy working, cause it distored communication between mmbase and remotebuilders.
+
 Revision 1.12  2001/03/14 16:42:02  vpro
 Davzev: Added setValue to print what remotebuilder is doing when busy working.
 
@@ -37,15 +40,18 @@ import java.util.*;
 import org.mmbase.remote.*;
 import org.mmbase.service.interfaces.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.13 $ $Date: 2001-03-15 16:15:58 $
+ * @version $Revision: 1.14 $ $Date: 2001-04-11 15:31:22 $
  */
 public class g2encoders extends RemoteBuilder {
-	private boolean debug = true;
-	private g2encoderInterface impl;
 
+    private static Logger log = Logging.getLoggerInstance(g2encoders.class.getName()); 
+
+	private g2encoderInterface impl;
 	// Destination path where encoded files will be filed under.
 	// Has to move to props file but at least the mkdir is done on the remote side.
 	public final static String DST_PATH = "/data/audio/ra/";
@@ -56,14 +62,16 @@ public class g2encoders extends RemoteBuilder {
 	 * @param servicefile the servicefile that contains the config. 
 	 */
 	public void init(MMProtocolDriver con,String servicefile) {
-		if (debug) debug("init: Initializing, getting config."); 
+		if (log.isDebugEnabled()) {
+            log.debug("init: Initializing, getting config."); 
+        }
 		super.init(con,servicefile);
 		// the node was loaded allready so check what the state was
 		// and put us in ready/waiting state
 		String state=getStringValue("state");
 		getConfig();
 		if (!state.equals("waiting")) {
-			debug("init: WARNING: State: "+state+"!=waiting, resetting it to waiting!"); 
+			log.warn("init: State: "+state+"!=waiting, resetting it to waiting!"); 
 			// maybe add 'what' happened code ? but for now
 			// just put the service on waiting state
 			setValue("state","waiting");
@@ -79,7 +87,9 @@ public class g2encoders extends RemoteBuilder {
 	 * @param ctype a String with the node change type.
 	 */
 	public void nodeRemoteChanged(String serviceRef,String buildername,String ctype) {		
-		if (debug) debug("nodeRemoteChanged: Calling nodeChanged");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeRemoteChanged: Calling nodeChanged");
+        }
 		nodeChanged(serviceRef,buildername,ctype);
 	}
 
@@ -91,7 +101,9 @@ public class g2encoders extends RemoteBuilder {
 	 * @param ctype a String with the node change type.
 	 */
 	public void nodeLocalChanged(String serviceRef,String buildername,String ctype) {		
-		if (debug) debug("nodeLocalChanged: Calling nodeChanged");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeLocalChanged: Calling nodeChanged");
+        }
 		nodeChanged(serviceRef,buildername,ctype);
 	}
 
@@ -103,25 +115,27 @@ public class g2encoders extends RemoteBuilder {
 	 * @param ctype the node changetype.
 	 */
 	public void nodeChanged(String serviceRef,String buildername,String ctype) {		
-		if (debug) debug("nodeChanged("+serviceRef+","+buildername+","+ctype+") Getting "+buildername+" node "+serviceRef+" to find out what to do.");
+		if (log.isDebugEnabled()) {
+            log.debug("nodeChanged("+serviceRef+","+buildername+","+ctype+") Getting "+buildername+" node "+serviceRef+" to find out what to do.");
+        }
 		// Gets the node by requesting it from the mmbase space through remotexml.
 		getNode(); 
 				
 		String state=getStringValue("state");
-		debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state("+state+")");
+		log.info("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state("+state+")");
 		if (state.equals("version")) {
-			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): doVersion()");
+			log.info("nodeChanged("+serviceRef+","+buildername+","+ctype+"): doVersion()");
 			doVersion();
 		} else if (state.equals("encode")) {
 			// All encoded files are filed under objectnr subdirectory.
-			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state:"+state+", first make subdir");
+			log.info("nodeChanged("+serviceRef+","+buildername+","+ctype+"): state:"+state+", first make subdir");
 			doMakeDir(); 
 			// Start the encoding process.
 			doEncode();
 		} else if (state.equals("busy")) {
-			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): "+buildername+" RemoteBuilder named "+getStringValue("name")+" is "+state);
+			log.info("nodeChanged("+serviceRef+","+buildername+","+ctype+"): "+buildername+" RemoteBuilder named "+getStringValue("name")+" is "+state);
 		} else {
-			debug("nodeChanged("+serviceRef+","+buildername+","+ctype+"): ERROR unknown state: "+state+", ignoring it");
+			log.error("nodeChanged("+serviceRef+","+buildername+","+ctype+"): unknown state: "+state+", ignoring it");
 		}
 	}
 
@@ -132,21 +146,26 @@ public class g2encoders extends RemoteBuilder {
 	 * @param subdir The directory filename.
 	 */
 	private void doMakeDir() {
-		debug("doMakeDir: Getting subdir tag from info field.");
+        if (log.isDebugEnabled()) {
+            log.debug("doMakeDir: Getting subdir tag from info field.");
+        }
 		String subdir=null;
 		StringTagger cmdTagger = new StringTagger(getStringValue("info"));
-		if (cmdTagger.containsKey("subdir"))
+		if (cmdTagger.containsKey("subdir")) {
 			subdir = (String) cmdTagger.Value("subdir");
-		else
-			debug("doMakeDir: ERROR no 'subdir' key in info field.");
+		} else {
+			log.error("doMakeDir: no 'subdir' key in info field.");
+        }
 
 		File file = new File(DST_PATH+"/"+subdir);
 		try {
 			if (file.mkdir())
-				if (debug) debug("doMakeDir: Directory "+subdir+" created in "+DST_PATH);
+				if (log.isDebugEnabled()) {
+                    log.debug("doMakeDir: Directory "+subdir+" created in "+DST_PATH);
+                }
 		} catch (Exception f) {
-			debug("doMakeDir: ERROR making directory "+subdir+" in "+DST_PATH);
-			f.printStackTrace();
+		    log.error("doMakeDir: making directory "+subdir+" in "+DST_PATH);
+			log.error(Logging.stackTrace(f));
 		}
 	}
 
@@ -154,7 +173,9 @@ public class g2encoders extends RemoteBuilder {
 	 * Gets the version information from the g2encoder.
 	 */
 	private void doVersion() {
-		if (debug) debug("doVersion: Setting state to busy and get the version info.");
+		if (log.isDebugEnabled()) {
+            log.debug("doVersion: Setting state to busy and get the version info.");
+        }
 		setValue("state","busy");
 		commit();
 	
@@ -167,7 +188,9 @@ public class g2encoders extends RemoteBuilder {
 		}
 
 		// signal that we are done
-		if (debug) debug("doVersion: Setting state to waiting and return.");
+		if (log.isDebugEnabled()) {
+            log.debug("doVersion: Setting state to waiting and return.");
+        }
 		setValue("state","waiting");
 		commit();
 	}
@@ -178,7 +201,9 @@ public class g2encoders extends RemoteBuilder {
 	 * Encoding result information is saved in the nodes info field.
 	 */
 	private void doEncode() {
-		if (debug) debug("doEncode: Setting state to busy and start encoding.");
+        if (log.isDebugEnabled()) {
+            log.debug("doEncode: Setting state to busy and start encoding.");
+        }
 		setValue("state","busy");
 		commit();
 	
@@ -186,15 +211,19 @@ public class g2encoders extends RemoteBuilder {
 
 		if (impl!=null) {
 			String cmds=getStringValue("info");
-			if (debug) debug("doEncode(): starting impl.doEncode("+cmds+")");
+            if (log.isDebugEnabled()) {
+                log.debug("doEncode(): starting impl.doEncode("+cmds+")");
+            }
 		    setValue("info",impl.doEncode(cmds));	
 		} else {
-			debug("doEncode: ERROR, implementation reference is null, filling info with error info.");
+			log.error("doEncode implementation reference is null, filling info with error info.");
 			setValue("info","result=err reason=nocode");	
 		}
 
 		// signal that we are done
-		if (debug) debug("doEncode: Setting state to waiting and return.");
+        if (log.isDebugEnabled()) {
+            log.debug("doEncode: Setting state to waiting and return.");
+        }
 		setValue("state","waiting");
 		commit();
 	}
@@ -204,13 +233,15 @@ public class g2encoders extends RemoteBuilder {
 	 */
 	void getConfig() {
 		String implClassName=(String)props.get("implementation");
-		if (debug) debug("getConfig(): loading("+implClassName+")");
+        if (log.isDebugEnabled()) {
+            log.debug("getConfig(): loading("+implClassName+")");
+        }
 		try {
 			Class newclass=Class.forName(implClassName);
 			impl = (g2encoderInterface)newclass.newInstance();
 		} catch (Exception f) {
-			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
-			f.printStackTrace();
+			log.error("getConfig(): Can't load class("+implClassName+")");
+			log.error(Logging.stackTrace(f));
 		}
 	}
 
