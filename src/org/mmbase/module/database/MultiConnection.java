@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.34 2004-05-06 12:34:46 keesj Exp $
+ * @version $Id: MultiConnection.java,v 1.35 2004-07-30 16:57:34 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -111,7 +111,7 @@ public class MultiConnection implements Connection {
      * createStatement returns an SQL Statement object
      */
     public Statement createStatement() throws SQLException {
-        MultiStatement s=new MultiStatement(this, con.createStatement());
+        MultiStatement s = new MultiStatement(this, con.createStatement());
         return s;
     }
     
@@ -140,6 +140,33 @@ public class MultiConnection implements Connection {
         return con.nativeSQL(query);
     }
     
+
+    /**
+     * Tries to fix the this connection, if it proves to be broken. It is supposed to be broken if
+     * the query "SELECT 1" does yield an exception. 
+     * This method is meant to be called in the catch after trying to use the connection.
+     * 
+     * @return <code>true</code> if connection was broken and successfully repaired. <code>false</code> if connection was not broken.
+     * @throws SQLException If connection is broken and no new one could be obtained.
+     * 
+     * @since MMBase-1.7.1
+     */
+
+    protected boolean checkAfterException() throws SQLException {
+        try {
+            // check wether connection is still functional 
+            Statement s = createStatement();
+            s.executeQuery("SELECT 1"); // if this goes wrong too it can't be the query
+        } catch (SQLException isqe) {
+             // so, connection must be broken.
+            log.service("Found broken connection, will try to fix it.");
+            // get a temporary new one for this query
+            parent.replaceConnection(this);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * If "autoCommit" is true, then all subsequent SQL statements will
      * be executed and committed as individual transactions.  Otherwise
@@ -149,7 +176,15 @@ public class MultiConnection implements Connection {
      * By default new connections are initialized with autoCommit "true".
      */
     public void setAutoCommit(boolean enableAutoCommit) throws SQLException {
-        con.setAutoCommit(enableAutoCommit);
+        try {
+            con.setAutoCommit(enableAutoCommit);
+        } catch (SQLException sqe) {
+            if (checkAfterException()) {
+                con.setAutoCommit(enableAutoCommit);
+            } else {
+                throw sqe;
+            }
+        }
     }
     
     
@@ -173,6 +208,8 @@ public class MultiConnection implements Connection {
     public void rollback() throws SQLException {
         con.rollback();
     }
+
+
     
 
     /**
@@ -192,18 +229,18 @@ public class MultiConnection implements Connection {
      */
     public void close() throws SQLException {        
         long time = System.currentTimeMillis() - getStartTimeMillis();
-        
-        if (time < 5000) {  //  ok, you can switch on query logging with setting logging of this class on debug
+        long maxLifeTime = parent.getMaxLifeTime();
+        if (time < maxLifeTime / 24) {  //  ok, you can switch on query logging with setting logging of this class on debug
             if (log.isDebugEnabled()) {
                 log.debug(getLogSqlMessage(time));
             }
-        } else if (time < 30000) {     // 5 s is too long, but perhaps that's still ok.
+        } else if (time < maxLifeTime / 4) {     // maxLifeTime / 24 (~ 5 s) is too long, but perhaps that's still ok.
             if (log.isServiceEnabled()) {
                 log.service(getLogSqlMessage(time));
             }
-        } else if (time < 60000) {   // over 30 s, that too is good to know
+        } else if (time < maxLifeTime / 2) {   // over maxLifeTime / 4 (~ 30 s), that too is good to know
             log.info(getLogSqlMessage(time));
-        } else {                      // query took more than 60 s, that's worth a warning
+        } else {                      // query took more than maxLifeTiem / 2 (~ 60 s), that's worth a warning
             log.warn(getLogSqlMessage(time));
         }
 
@@ -387,8 +424,8 @@ public class MultiConnection implements Connection {
     /**
      * createStatement returns an SQL Statement object
      */
-    public Statement createStatement(int i,int y) throws SQLException {
-        return new MultiStatement(this,con.createStatement(i,y));
+    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
+        return new MultiStatement(this, con.createStatement(resultSetType, resultSetConcurrency));
     }
     
     /**
@@ -473,9 +510,8 @@ public class MultiConnection implements Connection {
      * @return a new Statement object
      * @since MMBase 1.5, JDBC 1.4
      */
-    public Statement createStatement(int type, int concurrency, int holdability)
-    throws SQLException {
-        return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
+    public Statement createStatement(int type, int concurrency, int holdability) throws SQLException {
+        return new MultiStatement(this,con.createStatement(type, concurrency, holdability));
     }
     
     /**
