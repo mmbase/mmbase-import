@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.49 2002-07-18 15:21:13 michiel Exp $
+  @version $Id: wizard.xsl,v 1.50 2002-07-18 15:54:40 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -778,14 +778,16 @@
 
 
   <xsl:template name="stepbutton">
-    a:<xsl:variable name="schemaid" select="@form-schema" />      
+    <span class="step-info">
+    <xsl:variable name="schemaid" select="@form-schema" />      
       <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
         titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"> 
       <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
       <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
       <xsl:call-template name="prompt_step" />
       </a>
-      <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
+      <xsl:value-of select="/*/form[@id=$schemaid]/title" />
+    </span>
   </xsl:template>
 
   <xsl:template name="searchage">
