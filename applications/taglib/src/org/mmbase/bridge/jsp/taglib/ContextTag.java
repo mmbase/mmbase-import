@@ -100,7 +100,8 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             getContextProvider().getContainer().register(getId(), container);
         }
         log.debug("out");
-        return EVAL_BODY_INCLUDE;
+        // return EVAL_BODY_INCLUDE; does not work in orion 1.6, tomcat < 4.1.19
+        return EVAL_BODY_BUFFERED;
     }
 
     private ContextProvider getParentContext() throws JspTagException {
@@ -242,7 +243,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
 
     }
 
-    /*
+    // just to serve lousy app-server which do not support EVAL_BODY_INCLUDE
     public int doAfterBody() throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("after body of context " + getId());
@@ -257,7 +258,7 @@ public class ContextTag extends ContextReferrerTag implements ContextProvider {
             throw new JspTagException(ioe.toString());
         }
     }
-    */
+
 
 }
 
