@@ -1,11 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.0/docbookx.dtd">
 <article>
   <articleinfo>
     <title>Running MMBase in your organization</title>
 
     <date>2002-08</date>
 
-    <edition>$Id: mmbase4managers.xml,v 1.7 2003-07-27 17:47:53 henk Exp $</edition>
+    <edition>$Id: mmbase4managers.xml,v 1.8 2004-02-17 10:40:32 gerard Exp $</edition>
 
     <authorgroup>
       <author>
@@ -321,7 +323,7 @@
       <para>To gain more insight in the actual layering of the architecture,
       an graphical overview of the architecture is provided.</para>
 
-      <graphic fileref="media/architecture.png" />
+      <graphic fileref="../general/media/architecture.png" />
 
       <para>In the above picture, the green components are plugin-like parts
       of MMBase. By using a common set of access points and negotiating the
