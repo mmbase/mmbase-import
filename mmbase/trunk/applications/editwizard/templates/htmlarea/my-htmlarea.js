@@ -146,7 +146,9 @@ function doCheckHtml() {
       updateValue(editor);
       // editwizard validation
       // It is possible to save a wizard when multiple htmlareas are not validated yet.
-      validator.validate(editor._textArea);
+      if (requiresValidation(editor._textArea)) {
+        validator.validate(editor._textArea);
+      }
     }
   }
 }
