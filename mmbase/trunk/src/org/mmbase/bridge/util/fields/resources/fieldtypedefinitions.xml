@@ -9,7 +9,7 @@
   It could define default values, possible values, default sort orders etc etc.
 
   @author Michiel Meeuwissen
-  @version $Id: fieldtypedefinitions.xml,v 1.1 2004-02-18 17:14:30 michiel Exp $
+  @version $Id: fieldtypedefinitions.xml,v 1.2 2004-09-17 09:29:26 michiel Exp $
 -->
 
 <!--
@@ -23,6 +23,14 @@
 
   
   <fieldtype id="string">
+    <specialization id="lastmodifier">
+      <commitprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+      </commitprocessor>
+      <setprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModifier</class>
+      </setprocessor>
+    </specialization>
     <specialization id="md5password">
       <setprocessor>
         <class>org.mmbase.util.transformers.MD5</class>
@@ -35,6 +43,29 @@
       <getprocessor>
         <class>org.mmbase.util.transformers.UpperCaser</class>
       </getprocessor>
+    </specialization>
+  </fieldtype>
+
+  <fieldtype id="byte">
+    <commitprocessor>
+      <class>org.mmbase.bridge.util.fields.MimeTypeFinder</class>
+      <class>org.mmbase.bridge.util.fields.FileNameFinder</class>
+    </commitprocessor>
+    <specialization id="concertblocksimporter">
+      <setprocessor>
+        <class>nl.omroep.radio4.ConcertblokkenProcessor</class>
+      </setprocessor>
+    </specialization>
+  </fieldtype>
+
+  <fieldtype id="datetime">
+    <specialization id="lastmodified">
+      <commitprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModified</class>
+      </commitprocessor>
+      <setprocessor>
+        <class>org.mmbase.bridge.util.fields.LastModified</class>
+      </setprocessor>
     </specialization>
   </fieldtype>
 
