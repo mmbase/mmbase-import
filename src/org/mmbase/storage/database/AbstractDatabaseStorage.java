@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: AbstractDatabaseStorage.java,v 1.2 2002-11-07 12:30:38 pierre Exp $
+ * @version $Id: AbstractDatabaseStorage.java,v 1.3 2002-11-08 10:20:16 pierre Exp $
  */
 public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
 
@@ -782,7 +782,7 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
     /**
      * Registers the change to a node.
-     * Clears the change status of a ndoe, then broadcasts changes to the
+     * Clears the change status of a node, then broadcasts changes to the
      * node's parent builder. If the node is a relation, it also updates the relationcache and
      * broadcasts these changes to the relation' s source and destination.
      * @todo should pass Transaction!
