@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.38 2002-07-02 21:14:57 michiel Exp $
+ * @version $Id: Wizard.java,v 1.39 2002-07-03 07:06:48 pierre Exp $
  *
  */
 public class Wizard {
@@ -1166,7 +1166,7 @@ public class Wizard {
             // binaries are stored differently
             if (getBinary(did)!=null) {
                 Utils.setAttribute(datanode, "href", did);
-                Utils.storeText(datanode,"YES");
+                Utils.storeText(datanode,getBinaryName(did));
             }
             ok = true;
         } else {  // default behavior: store content as text
