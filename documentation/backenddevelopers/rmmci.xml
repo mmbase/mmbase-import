@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.9 2003-02-28 08:52:49 kees Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.10 2003-05-12 21:20:09 kees Exp $</edition>
 
     <authorgroup>
       <author>
@@ -36,7 +36,7 @@
     <section>
       <title>What is RMMCI?</title>
 
-      <para>To be able to understand RMMCI some basic knoledge about java,
+      <para>To be able to understand RMMCI some basic knowledge about java,
       MMBase and the MMBase Cloud Interface is required. Lets try to do this
       in a few line. MMBase is a object / relation object management system.
       Object instances in MMBase are known as nodes. They Are much like other
@@ -84,8 +84,11 @@
 
     <section>
       <title>Server setup</title>
-      <para>edit WEB-INF/config/rmmci.xml and change the status to active. restart MMBase</para>
+
+      <para>edit WEB-INF/config/rmmci.xml and change the status to active.
+      restart MMBase</para>
     </section>
+
     <section>
       <title>Using BeanShell</title>
 
@@ -112,6 +115,38 @@ for (x =0 ; x &#60; list.size() ; x++){
     </section>
   </section>
 
+    <section>
+      <title>RMI over HTTP</title>
+
+      <para>If your application has to be accessed via the internet your
+      probably need to use the HTTP protocol for communication between the
+      client and server. While again this is not very good for performance it
+      is possible. MMBase provides a servlet that acts a a HTTP to rmi gateway
+      servlet org.mmbase.servlet.rmi.RMIHandlerServlet (it is a drop in
+      replacement for the java-rmi.cgi provided with the java jdk) . make the
+      servlet available under the /cgi-bin/java-rmi.cgi servlet mapping</para>
+
+      <programlisting><![CDATA[
+  <servlet>
+    <servlet-name>javarmi</servlet-name>
+    <description>java http rmi gateway</description>
+    <servlet-class>org.mmbase.servlet.rmi.RMIHandlerServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>javarmi</servlet-name>
+    <url-pattern>/cgi-bin/java-rmi.cgi</url-pattern>
+    </servlet-mapping> ]]></programlisting>
+
+      <para>In your client code to force RMI over HTTP add the following lines:</para>
+
+      <programlisting>java.rmi.server.RMISocketFactory.setSocketFactory(new
+      sun.rmi.transport.proxy.RMIHttpToCGISocketFactory());</programlisting>
+
+      <para>now access the cloud via a rmi url
+	      <programlisting>ContextProvider.getCloudContext(&#34;rmi://myhost:1111/remotecontet&#34;);</programlisting></para>
+    </section>
   <section>
     <title>RMMCI implementation details</title>
 
@@ -143,9 +178,9 @@ for (x =0 ; x &#60; list.size() ; x++){
       <para>The MMCI interface provides access to the MMBase cloud. The MMCI
       interface is defined in the package org.mmbase.bridge. Examples of such
       definitions are the <ulink
-	      url="http://www.mmbase.org/api/builds/last/api/org/mmbase/bridge/Cloud.html">org.mbase.bridge.Cloud</ulink>
+      url="http://www.mmbase.org/api/builds/last/api/org/mmbase/bridge/Cloud.html">org.mbase.bridge.Cloud</ulink>
       and the <ulink
-	      url="http://www.mmbase.org/api/builds/last/api/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink>
+      url="http://www.mmbase.org/api/builds/last/api/org/mmbase/bridge/Node.html">org.mmbase.bridge.Node</ulink>
       interface. Depending on your configuration a security model is chosen.
       the MMCI implementation (LocalContext) interfaces with the core MMBase
       classes.</para>
@@ -325,6 +360,12 @@ public class RemoteCloud_Impl implements Cloud  {
     <title>When RMMCI/RMI doesn&#39;t work</title>
 
     <section>
+      <title>java compatibility</title>
+
+      <para>Sun has been very smart and decided that with java 1.4 it was a good idea to change the way objects are serialized.
+	      The result is that rmi will only work if the client and server run the same java version @#$%%^</para>
+    </section>
+    <section>
       <title>Installing server side</title>
 
       <para>To get RMI working on the server some mmbase configurations are
@@ -452,6 +493,7 @@ os  : Linux/2.2.19-7.0.8
 jdk  : 1.3.0/Java HotSpot(TM) Client VM
       </screen>
     </section>
+
 
     <section>
       <title>TODO</title>
