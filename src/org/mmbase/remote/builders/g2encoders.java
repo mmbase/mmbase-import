@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: g2encoders.java,v 1.8 2001-02-15 15:27:29 vpro Exp $
+$Id: g2encoders.java,v 1.9 2001-02-19 10:10:11 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2001/02/15 15:27:29  vpro
+Davzev: Added, changed debug and moved the mkdir from local to remote side.
+
 */
 package org.mmbase.remote.builders;
 
@@ -25,7 +28,7 @@ import org.mmbase.service.interfaces.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.8 $ $Date: 2001-02-15 15:27:29 $
+ * @version $Revision: 1.9 $ $Date: 2001-02-19 10:10:11 $
  */
 public class g2encoders extends RemoteBuilder {
 	private boolean debug = true;
@@ -86,7 +89,7 @@ public class g2encoders extends RemoteBuilder {
 	 * @param subdir The directory filename.
 	 */
 	private void doMakeDir() {
-		debug("doMakeDir: disabled");
+		debug("doMakeDir: Getting subdir tag from info field.");
 		String subdir=null;
 		StringTagger cmdTagger = new StringTagger(getStringValue("info"));
 		if (cmdTagger.containsKey("subdir"))
