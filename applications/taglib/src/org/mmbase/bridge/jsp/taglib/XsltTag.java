@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 import  org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +22,7 @@ import javax.xml.transform.Source;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.13 2004-11-17 20:39:04 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.14 2004-12-17 15:37:11 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -88,8 +89,9 @@ public class XsltTag extends ContextReferrerTag  {
                     xsltString +
                     "\n</xsl:stylesheet>";
             }
-            Source src = new StreamSource(new java.io.StringReader(totalString));
-            //src.setSystemId("string:" + xsltString.hashCode());
+            StreamSource src = new StreamSource(new java.io.StringReader(totalString));
+            String publicId = ((HttpServletRequest)pageContext.getRequest()).getRequestURL().append('/').append(((long) xsltString.hashCode() & 0xffff)).toString();
+            src.setPublicId(publicId);
             formatter.setXsltSource(src);
         }
         formatter = null;
