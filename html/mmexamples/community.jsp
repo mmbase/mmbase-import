@@ -80,7 +80,7 @@ A community can be a forum or a chat.
 The image on the right shows the homepage of the community-example.
 This example shows you the basic features of the community application.
       </td>
-      <td><a href="share/images/mynews_manual.jpg" target="img"><img src="share/images/community_manual.jpg" width="300" alt="community manual" /></a></td>
+      <td><a href="share/images/community_manual.jpg" target="img"><img src="share/images/community_manual.jpg" width="300" alt="community manual" /></a></td>
      </tr>
   </table>
 </body>
