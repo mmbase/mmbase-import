@@ -37,7 +37,7 @@ import org.mmbase.cache.NodeCache;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.115 2003-11-26 17:51:11 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.116 2004-01-06 10:51:20 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -112,9 +112,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     /**
      * Vector which stores the keys of the fields that were changed
      * since the last commit.
-     * @scope private
+     * @scope private, and should be a Set, not a Vector
      */
-    public Vector changed=new Vector();
+    public Vector changed = new Vector();
 
     /**
      * Pointer to the parent builder that is responsible for this node.
@@ -237,7 +237,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return <code>true</code> if the commit was succesfull, <code>false</code> is it failed
      */
     public boolean commit() {
-        return parent.commit (this);
+        return parent.commit(this);
     }
 
     /**
@@ -500,7 +500,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return always <code>true</code>
      */
     public boolean setValue(String fieldName,boolean fieldValue) {
-        return setValue(fieldName,new Boolean(fieldValue));
+        return setValue(fieldName, new Boolean(fieldValue));
     }
 
     /**
@@ -513,7 +513,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @return always <code>true</code>
      */
     public boolean setValue(String fieldName,int fieldValue) {
-        return setValue(fieldName,new Integer(fieldValue));
+        return setValue(fieldName, new Integer(fieldValue));
     }
 
     /**
@@ -526,7 +526,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @return always <code>true</code>
      */
     public boolean setValue(String fieldName,long fieldValue) {
-        return setValue(fieldName,new Long(fieldValue));
+        return setValue(fieldName, new Long(fieldValue));
     }
 
     /**
@@ -539,7 +539,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *  @return always <code>true</code>
      */
     public boolean setValue(String fieldName,double fieldValue) {
-        return setValue(fieldName,new Double(fieldValue));
+        return setValue(fieldName, new Double(fieldValue));
     }
 
     /**
@@ -618,7 +618,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     //
     private void setUpdate(String fieldName) {
         // obtain the type of field this is
-        int state=getDBState(fieldName);
+        int state = getDBState(fieldName);
 
         // add it to the changed vector so we know that we have to update it
         // on the next commit
@@ -626,7 +626,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             changed.add(fieldName);
         }
         // is it a memory only field ? then send a fieldchange
-        if (state==0) sendFieldChangeSignal(fieldName);
+        if (state == 0) sendFieldChangeSignal(fieldName);
     }
 
     /**
@@ -950,9 +950,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
-     * Return all the names of fields that were changed.
+     * Return the names of all persistent fields that were changed.
      * Note that this is a direct reference. Changes (i.e. clearing the vector) will affect the node's status.
      * @param a <code>Vector</code> containing all the fieldNames
+     * @todo  Should it not return a (unmodifiable) Collection or a Set?
+     * @todo  Should this function not be replaced by a more generic 'isChanged(String fieldName)'?
      */
     public Vector getChanged() {
         return changed;
@@ -963,11 +965,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return <code>true</code> if changes have been made, <code>false</code> otherwise
      */
     public boolean isChanged() {
-        if (changed.size()>0) {
-            return true;
-        } else {
-            return false;
-        }
+        return changed.size() > 0;
     }
 
     /**
@@ -977,7 +975,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return always <code>true</code>
      */
     public boolean clearChanged() {
-        changed = new Vector();
+        changed.clear();
         return true;
     }
 
@@ -988,7 +986,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      */
     public void delPropertiesCache() {
         synchronized(properties_sync) {
-            properties=null;
+            properties = null;
         }
     }
 
