@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.8 2000-06-20 09:32:46 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.9 2000-06-20 14:32:26 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/06/20 09:32:46  wwwtech
+fixed otype first run bug for xml config
+
 Revision 1.7  2000/06/20 08:49:16  wwwtech
 better config loading
 
@@ -74,7 +77,7 @@ import org.xml.sax.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.8 $ $Date: 2000-06-20 09:32:46 $
+* @$Revision: 1.9 $ $Date: 2000-06-20 14:32:26 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -204,7 +207,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			value=value.substring(pos+1,value.length()-1);
 			like=true;
 		}
-		System.out.println("fieldname="+fieldname+" type="+dbtype);
+		//System.out.println("fieldname="+fieldname+" type="+dbtype);
 		if (dbtype.equals("var") || dbtype.equals("varchar")) {
 			switch (operatorChar) {
 			case '=':
@@ -942,7 +945,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			type="INTEGER";
 		}
 
+		System.out.println("BBBB1="+name+" "+type);
 		String result=name+" "+matchType(type,size,notnull);
+		System.out.println("BBBB2="+name+" "+type+" "+result);
 		if (notnull) result+=" "+parser.getNotNullScheme();
 		return(result);
 	}	
