@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.23 2002-06-11 22:28:03 michiel Exp $
+  @version $Id: wizard.xsl,v 1.24 2002-06-12 07:34:49 michiel Exp $
   -->
 
   <xsl:import href="base.xsl" />
@@ -288,8 +288,15 @@
           </span>
 
         </xsl:when>
+        <xsl:when test="@ftype='realposition'">
+       <span style="width:128; height:168;" >
+          <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
+              <xsl:apply-templates select="@*" />
+            </input><input type="button" value="get" onClick="document.forms['form'].{@fieldname}.value = document.embeddedplayer.GetPosition();" />
+</span>
+        </xsl:when>
         <xsl:otherwise>
-          <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
+          <input type="text" name="{@fieldname}" value="{value}" class="width400" onkeyaup="validate_validator(event);" onblur="validate_validator(event);">
             <xsl:apply-templates select="@*" />
           </input>
         </xsl:otherwise>
