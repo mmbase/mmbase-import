@@ -45,7 +45,6 @@ package org.mmbase.util;
  * cause a copy to be made. <p>
  *
  * @see     String
- * @see     java.io.ByteArrayOutputStream
  * @version 1.28, 14 Feb 1996
  * @author  Arthur van Hoff
  */

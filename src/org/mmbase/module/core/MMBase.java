@@ -124,7 +124,7 @@ public class MMBase extends ProcessorModule  {
     /**
     * A thread object that gets activated by MMbase.
     * It activates every X seconds and takes this signal to call all the
-    * builders probeCalls, using the callback {@link #ProbeRun} method in MMbase.
+    * builders probeCalls, using the callback {@link #doProbeRun} method in MMBase.
     */
     MMBaseProbe probe;
 

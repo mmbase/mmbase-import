@@ -69,7 +69,7 @@ public class InsRel extends MMObjectBuilder {
      * If the field cannot be found, a <em>"Warning: No dir field. Directionality support turned off."</em> warning message is issued.
      * @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
      *         caught and logged.
-     * @see usesdir
+     * @see #usesdir
      */
     public boolean init() {
         boolean res=super.init();
@@ -184,7 +184,7 @@ public class InsRel extends MMObjectBuilder {
      * @param src Identifying number of the object to find the relations of.
      * @return If succesful, an <code>Enumeration</code> listing the relations.
      *         If no relations exist, the method returns <code>null</code>.
-     * @see getRelationsVector
+     * @see #getRelationsVector(int)
      */
     public Enumeration getRelations(int src) {
         return getRelations(src,-1);
@@ -196,7 +196,7 @@ public class InsRel extends MMObjectBuilder {
      * @param rnumber The number of the relation definition (role) to filter on
      * @return If succesful, an <code>Enumeration</code> listing the relations.
      *         If no relations exist, the method returns <code>null</code>.
-     * @see getRelationsVector
+     * @see #getRelationsVector(int,int)
      */
     public Enumeration getRelations(int src, int rnumber) {
         Vector re=getRelationsVector(src,rnumber);
@@ -503,7 +503,7 @@ public class InsRel extends MMObjectBuilder {
     * @param n2 Number of the destination node
     * @param r  Number of the relation definition
     * @return A <code>boolean</code> indicating success when the relation exists, failure if it does not.
-    * @deprecated Use {@link TypeRel.reldefCorrect} instead
+    * @deprecated Use {@link TypeRel#reldefCorrect} instead
     */
     public boolean reldefCorrect(int n1,int n2, int r) {
         return mmb.getTypeRel().reldefCorrect(n1,n2,r);

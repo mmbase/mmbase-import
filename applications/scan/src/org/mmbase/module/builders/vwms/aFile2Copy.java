@@ -14,7 +14,7 @@ import java.lang.String;
 /**
  * An object that holds information needed for the transfer of a file.
  * This is used with the CAHE PAGE mechanism, which copies calculated pages to a mirror server.
- * File2Copy objects are handled by the {@link #FileCopier} class.
+ * File2Copy objects are handled by the {@link FileCopier} class.
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)

@@ -373,7 +373,7 @@ public class scancache extends Module implements scancacheInterface {
      * @param key URL of the page to store
      * @param value the page content to store
      * @param int cachetype only needed for cachepool "PAGE".
-     *        If 0, no file transfer is performed. Otherwise the {@link NetFileServ} builder is
+     *        If 0, no file transfer is performed. Otherwise the {@link NetFileSrv} builder is
      *        invoked to start the VWM that handles the transfer.
      * @param mimeType the page's mime type, only needed for cachepool "PAGE"
      * @return the page's old content as a string, or <code>null</code> if no entry was found

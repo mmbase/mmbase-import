@@ -160,7 +160,7 @@ public class MMObjectNode {
 
     /**
      * Check and make last changes before calling {@link #commit} or {@link #insert}.
-     * This method is called by the editor. This differs from {@link #precommit}, which is called by the database system
+     * This method is called by the editor. This differs from {@link MMObjectBuilder#preCommit}, which is called by the database system
      * <em>during</em> the call to commit or insert.
      * @param ed Contains the current edit state (editor info). The main function of this object is to pass
      *        'settings' and 'parameters' - value pairs that have been the during the edit process.

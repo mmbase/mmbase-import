@@ -18,7 +18,7 @@ import java.io.*;
  * Object for storing file information.
  * Stores content and lastmodified date.
  * Does not store filename, so association should eb done manually.
- * Used by the {@link scancache} module.
+ * Used by the {@link org.mmbase.module.scancache} module.
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)

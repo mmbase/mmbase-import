@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  */
 public class TypeRel extends MMObjectBuilder {
 
-    private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName()); 
+    private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName());
 
 	/**
 	 * Cache, holds the last 128 verified type-relation nodes
@@ -41,7 +41,7 @@ public class TypeRel extends MMObjectBuilder {
 	 * This is needed to make sure that a relation is correctly inserted.
 	 */
 	private Hashtable relDefCorrectCache=new Hashtable(10);
-	
+
 	/**
 	* Constructor for the TypeRel builder
 	*/
@@ -63,7 +63,7 @@ public class TypeRel extends MMObjectBuilder {
         artCache.remove(""+snumber+" "+dnumber);
         return result;
     }
-	
+
     /**
     * Remove a node from the cloud.
     * @param node The node to remove.
@@ -76,7 +76,7 @@ public class TypeRel extends MMObjectBuilder {
         relDefCorrectCache.remove(""+snumber+" "+dnumber+" "+rnumber);
         artCache.remove(""+snumber+" "+dnumber);
     }
-	
+
 	/**
 	*  Retrieves all relations which are 'allowed' for a specified node, that is,
 	*  where the node is either allowed to be the source, or to be the destination (but where the
@@ -102,7 +102,7 @@ public class TypeRel extends MMObjectBuilder {
 	    // only check when directionality field exist?
 	    // -> makes sure older code works the same, maybe remove later
 	    if (!InsRel.usesdir) return e;
-	
+
 	    Vector result= new Vector();
     	while (e.hasMoreElements()) {
 	        MMObjectNode node=(MMObjectNode)e.nextElement();
@@ -118,7 +118,7 @@ public class TypeRel extends MMObjectBuilder {
     	}
 	    return(result.elements());
 	}
-	
+
 	/**
 	*  Retrieves all relations which are 'allowed' for a specified node, that is,
 	*  where the node is either allowed to be the source, or to be the destination (but where the
@@ -166,7 +166,7 @@ public class TypeRel extends MMObjectBuilder {
         }
         return -1;
     }
-	
+
 	/**
 	*  Retrieves all reldef node numbers for relations which are 'allowed' between two specified nodes.
 	*  @param n1 The number of the first objectnode (the source)
@@ -200,7 +200,7 @@ public class TypeRel extends MMObjectBuilder {
 		}
 		return(result);
 	}
-	
+
 	/**
 	*  Retrieves all relations which are 'allowed' between two specified nodes.
 	*  @param n1 The first objectnode (the source)
@@ -304,7 +304,7 @@ public class TypeRel extends MMObjectBuilder {
 			return false;
 		}
 	}
-	
+
 	/**
     *  Retrieves all relations which are 'allowed' between two specified nodes.
     *  @param snum The first objectnode type (the source)

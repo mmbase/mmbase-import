@@ -163,7 +163,7 @@ public class SortedVector extends java.util.Vector {
     /**
      * See if an object is in the SortedVector
      * This should be contains(Object) but that one is final.
-     * @see java.lang.Vector
+     * @see java.util.Vector
      */
 
     public boolean has(Object newObject) {
@@ -175,7 +175,7 @@ public class SortedVector extends java.util.Vector {
      * This uses binary search. As usual this should be a overide
      * of an existing method but that one is final.
      * In this case indexOf(Object,int) in Vector.
-     * @see java.lang.Vector
+     * @see java.util.Vector
      */
     public int find(Object newObject) {
         int low,med,high,which=0;
