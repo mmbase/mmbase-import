@@ -18,15 +18,6 @@
   <body>
     <mm:import externid="offset" vartype="Integer" jspvar="offset">0</mm:import>
     <mm:import externid="max" vartype="Integer" jspvar="max">20</mm:import>
-    <table class="objectlist">
-      <tr>
-        <td class="editprecol">&nbsp;</td>
-        <mm:fieldlist type="list" nodetype="$nodetype">
-        <mm:first><mm:import id="columns"><mm:size jspvar="cols" vartype="Integer"><%=cols.intValue()+1%></mm:size></mm:import></mm:first> 
-        <td class="editcol"><mm:fieldinfo type="guiname" /></td>
-        </mm:fieldlist>
-      </tr>
-           
 <mm:import externid="search_age" />
 <mm:import id="age_constraint" />
 <mm:isnotempty referid="search_age">
@@ -55,7 +46,7 @@
  int listsize = 0;
  int showsize = 0;
 %>
-<mm:write referid="constraint" vartype="String" jspvar="constraints">        
+<mm:write referid="constraint" vartype="String" jspvar="constraints">
       <%
           if (constraints!=null && !constraints.equals("")) {
             search = constraints;
@@ -67,7 +58,7 @@
           showsize = listsize-offset.intValue();
           if (max.intValue() < showsize) showsize=max.intValue();
 %>
-         <tr><td colspan="<mm:write referid="columns" />" >
+    <mm:import id="pagenumbers">
             Weergave <%=offset.intValue()+1%> t/m <%=offset.intValue()+showsize%> van <%=listsize%>
             <% if (showsize < listsize) {
             %>
@@ -76,14 +67,17 @@
                 <a href="<mm:url page="listobjects.jsp" >
                            <mm:param name="offset"><%=offset.intValue()<max.intValue() ? 0 : offset.intValue()-max.intValue()%></mm:param>
                          </mm:url>">&lt;&lt;</a>&nbsp;
-              <% } %>
-              <% for (int pg = 0; pg <listsize; pg+=max.intValue()) {
+              <% } 
+                 for (int pg = 0; pg <listsize; pg+=max.intValue()) {
                      int pagenr = (pg / max.intValue()) + 1;
-              %>
+                     if (offset.intValue() >= pg && offset.intValue() < pg+max.intValue()) {
+              %>[<%=pagenr%>]&nbsp;
+              <%     } else { %>
                 <a href="<mm:url page="listobjects.jsp" >
                            <mm:param name="offset"><%=pg%></mm:param>
                          </mm:url>">[<%=pagenr%>]</a>&nbsp;
-              <% } 
+              <%     }
+                 } 
                  if (offset.intValue()+showsize < listsize) { %>
                 &nbsp;<a href="<mm:url page="listobjects.jsp" >
                            <mm:param name="offset"><%=offset.intValue()+max.intValue()%></mm:param>
@@ -91,7 +85,16 @@
               <% } %>
               </td></tr></table>
             <%  } %>
-         </td></tr>
+    </mm:import>
+    <mm:write referid="pagenumbers" />
+    <table class="objectlist">
+      <tr>
+        <td class="editprecol">&nbsp;</td>
+        <mm:fieldlist type="list" nodetype="$nodetype">
+        <mm:first><mm:import id="columns"><mm:size jspvar="cols" vartype="Integer"><%=cols.intValue()+1%></mm:size></mm:import></mm:first> 
+        <td class="editcol"><mm:fieldinfo type="guiname" /></td>
+        </mm:fieldlist>
+      </tr>
 <%          
           for (int i = offset.intValue(); i < offset.intValue()+showsize; i++) {
             Node node = nl.getNode(i);
@@ -118,32 +121,8 @@
       </mm:context>
       <% } %>
 </mm:write>      
-         <tr><td colspan="<mm:write referid="columns" />" >
-            Weergave <%=offset.intValue()+1%> t/m <%=offset.intValue()+showsize%> van <%=listsize%>
-            <% if (showsize < listsize) {
-            %>
-              <table><tr><td>
-              <% if (offset.intValue()>0) { %>
-                <a href="<mm:url page="listobjects.jsp" >
-                           <mm:param name="offset"><%=offset.intValue()<max.intValue() ? 0 : offset.intValue()-max.intValue()%></mm:param>
-                         </mm:url>">&lt;&lt;</a>&nbsp;
-              <% } %>
-              <% for (int pg = 0; pg <listsize; pg+=max.intValue()) {
-                     int pagenr = (pg / max.intValue()) + 1;
-              %>
-                <a href="<mm:url page="listobjects.jsp" >
-                           <mm:param name="offset"><%=pg%></mm:param>
-                         </mm:url>">[<%=pagenr%>]</a>&nbsp;
-              <% } 
-                 if (offset.intValue()+showsize < listsize) { %>
-                &nbsp;<a href="<mm:url page="listobjects.jsp" >
-                           <mm:param name="offset"><%=offset.intValue()+max.intValue()%></mm:param>
-                         </mm:url>">&gt;&gt;</a>
-              <% } %>
-              </td></tr></table>
-            <%  } %>
-         </td></tr>
      </table>
+    <mm:write referid="pagenumbers" />
   </body>
   </mm:cloud>
 </html>
