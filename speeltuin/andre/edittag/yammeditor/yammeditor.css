@@ -1,0 +1,163 @@
+body
+{
+	background-color: #EEEEFF;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, sans-serif;
+	font-size: 0.85em;
+	color: #003;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	border: 1px solid #ccc;
+	padding: 5px;
+	margin: 4px 0px 4px 0px;
+	background-color: #EFEFEF;
+	font-weight: bold;
+}
+
+img
+{
+	display: inline;
+	border: 0;
+}
+
+.inline { display: inline; }
+
+.yammbutton
+{
+	display: inline;
+	float: left;
+	margin: 0px 6px 0px 2px;
+}
+
+a
+{
+	color: #900;
+	text-decoration: none;
+}
+
+a:visited
+{
+	color: #003333;
+	text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+/* header stuff */
+#header
+{
+	padding: 5px;
+	margin: 0 0 15px 0;
+	background: #CCEB6F;
+	height: 20px;
+	font-size: 1.2em;
+}
+
+#titles { float: left; }
+#startnodes { float: right; }
+
+/* end header stuff */
+#content
+{
+	float: left;
+	width: 63%;
+	background: #E7E6DE;
+	padding: 5px;
+}
+
+/* sidebar stuff */
+#sidebar
+{
+	margin-left: 65%;
+	background: #F7FAEF;
+	padding: 5px;
+}
+
+.path
+{
+	margin: 0px 0px 4px 0px;
+	background: #E7E6DE;
+	border: 1px solid #ccc;
+	font-weight: bold;
+	padding: 2px;
+	display: block;
+}
+
+.rel
+{
+	margin: 0px 0px 4px 0px;
+	padding: 2px;
+	display: block;
+}
+
+.gui
+{
+	float: left;
+	padding: 2px;
+}
+
+.editbutton
+{
+	float: left;
+	margin: 0 4px 0 0;
+}
+
+.buttons
+{
+	float: left;
+	margin: 0 4px 0 0;
+	display: block;
+}
+
+/* end sidebar stuff*/
+#footer
+{
+	clear: both;
+	padding: 5px;
+	background: #CCEB6F;
+	font-size: 0.8em;
+}
+
+/* un-editable field */
+.fieldguivalue
+{
+	background-color: #fff;
+	border-color: #999;
+	border-width: 1px;
+	border-style: dotted;
+	padding: 2px;
+	width: 518px;
+	font-size: 0.85em;
+}
+
+.small
+{
+	font-family: Monaco, "Courier New", monospaced;
+	font-size: 0.8em;
+	width: 520px;
+}
+
+textarea
+{
+	font-family: Monaco, "Courier New", monospaced;
+	font-size: 0.8em;
+	width: 520px;
+}
+
+.formbutton
+{
+	font-size: 1em;
+	width: 100px;
+}
+
+.message
+{
+	background: #CCEB6F;
+	border-color: #C00;
+	border-width: 2px;
+	border-style: dotted;
+	padding: 5pt;
+	margin: 5pt 15% 5pt 15%;
+	width: 70%;
+}
