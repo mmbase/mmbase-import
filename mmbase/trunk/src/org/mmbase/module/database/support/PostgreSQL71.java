@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.10 2002-04-16 14:59:57 michiel Exp $
+ * @version $Id: PostgreSQL71.java,v 1.11 2002-04-17 08:22:38 pierre Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -148,7 +148,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
         MultiConnection con = null;
         Statement stmt = null;
-        
+
         // now update create the object table, with the auto update thignie
         String sql = "CREATE TABLE "+objectTableName()+" (";
         // primary key will mean that and unique and not null...
@@ -181,7 +181,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             return false;
         }
     }
-    
+
     private boolean createSequence() {
         //  CREATE SEQUENCE autoincrement INCREMENT 1
         MultiConnection con = null;
@@ -208,7 +208,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             } catch(Exception other) {}
             return false;
         }
-        return true;    
+        return true;
     }
 
     public String getDisallowedField(String allowedfield) {
@@ -250,13 +250,13 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     public boolean create(MMObjectBuilder bul) {
         log.debug("create");
 
-        
+
         Vector sfields = bul.sortedDBLayout;
         if(sfields == null) {
             log.error("sfield was null for builder with name :" + bul);
             return false;
         }
-        // make copy, so changes on the var will not affect the builder        
+        // make copy, so changes on the var will not affect the builder
         sfields = new Vector(sfields);
 
         // when not a number field, add it... strange that it sometimes happens
@@ -291,15 +291,15 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         }
 
         String sql = "CREATE TABLE " + mmb.baseName+"_"+bul.getTableName() + "(" + fieldList + ")";
-        
+
         // create the sql statement...
-        if(getInheritTableName(bul) != null) {        
+        if(getInheritTableName(bul) != null) {
             sql += " INHERITS ( " + mmb.baseName+"_"+getInheritTableName(bul)+" ) ;";
         }
         else {
             // this one doesnt inherit anything, thus must be the object table?? :p
             if(!createSequence()) return false;
-            sql += ";";                        
+            sql += ";";
         }
         log.debug("gonna create a new table with statement: " + sql);
 
@@ -332,17 +332,17 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private String getInheritTableName(MMObjectBuilder bul) {
         // object table _must_ always be the top builder....
         if(bul.getTableName().equals("object")) return null;
-        
+
         // builder extends something,... return it....
         if(bul.getParentBuilder() != null) {
             return bul.getParentBuilder().getTableName();
-        }               
-        
+        }
+
         // fallback to the old code...
         log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use <builder ... extends=\"object\"> in " + bul.getTableName() + ".xml");
-                
-        if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) return "insrel";        
-        
+
+        if(bul instanceof InsRel && !bul.getTableName().equals("insrel")) return "insrel";
+
         return "object";
     }
 
@@ -352,15 +352,15 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             // our top table, all fields must be created
             return false;
         }
-        
+
         if(bul.getParentBuilder() != null) {
             // if parent builder has the field, it is inherited..
             return bul.getParentBuilder().getField(fieldname) != null;
         }
-        
+
         // old fallback code...
         log.warn("falling back to old inherit code for postgreslq, define a object.xml, and use <builder ... extends=\"object\"> in " + bul.getTableName() + ".xml");
-                
+
         // normally we inherited from object..
         if(fieldname.equals("number")) return true;
         if(fieldname.equals("owner")) return true;
@@ -410,10 +410,10 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         // would be something like : fieldname FIELDTYPE NOT NULL KEY "
         // first get our thingies...
         String  fieldName = getAllowedField(def.getDBName());
-        
+
         // again an hack for number field thing...
         if(getNumberString().equals(fieldName)) {
-            return getNumberString()+" INTEGER PRIMARY KEY \t-- the unique identifier for objects\n";     
+            return getNumberString()+" INTEGER PRIMARY KEY \t-- the unique identifier for objects\n";
         }
         boolean fieldRequired = def.getDBNotNull();
         boolean fieldUnique = def.isKey();
@@ -454,7 +454,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             // result += " REFERENCES " + mmb.baseName + "_object" + " ON DELETE CASCADE ";
         }
         // add in comment the gui stuff... nicer when reviewing database..
-        result += "\t-- " + def.getGUIName("en")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.GUIType+"')\n";
+        result += "\t-- " + def.getGUIName("en")+"(name: '"+def.getGUIName()+"' gui-type: '"+def.getGUIType()+"')\n";
         return result;
     }
 
