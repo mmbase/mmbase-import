@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.7 2003-06-18 14:15:39 michiel Exp $
+ * @version $Id: Users.java,v 1.8 2003-06-26 20:58:48 michiel Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -36,7 +36,7 @@ public class Users extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(Users.class.getName());
 
 
-    public final static String FIELD_STATE     = "state";
+    public final static String FIELD_STATUS     = "status";
     public final static String STATES_RESOURCE = "org.mmbase.security.states";
 
     protected static Cache rankCache = new Cache(20) {
@@ -152,8 +152,8 @@ public class Users extends MMObjectBuilder {
         Enumeration enumeration = searchWithWhere(" username = '" + userName + "'"); 
         while(enumeration.hasMoreElements()) {
             MMObjectNode node = (MMObjectNode) enumeration.nextElement();
-            if (getField(FIELD_STATE) != null) {
-                if (node.getIntValue(FIELD_STATE) == -1) {
+            if (getField(FIELD_STATUS) != null) {
+                if (node.getIntValue(FIELD_STATUS) == -1) {
                     throw new SecurityException("account for '" + userName + "' is blocked");
                 }
             }
