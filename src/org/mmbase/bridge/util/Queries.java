@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.12 2003-12-02 12:32:26 michiel Exp $
+ * @version $Id: Queries.java,v 1.13 2003-12-02 13:05:14 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -429,6 +429,43 @@ public class Queries {
         }
         return result;
 
+    }
+
+    /**
+     * Add startNodes as a String
+     * @return the new constraint
+     */
+    public static Constraint  addStartNodes(Query query, String startNodes) {
+        SortedSet startNodeSet = new TreeSet();
+
+        Iterator nodes = StringSplitter.split(startNodes).iterator();
+        while (nodes.hasNext()) {
+            String node = (String) nodes.next();
+            Integer nodeNumber;
+            try {
+                nodeNumber = new Integer(node);
+            } catch (NumberFormatException nfe) {
+                nodeNumber = new Integer(query.getCloud().getNode(node).getNumber());
+            }
+            startNodeSet.add(nodeNumber);
+        }
+        Step firstStep = (Step) query.getSteps().get(0);
+        StepField firstStepField = query.createStepField(firstStep, "number");
+
+        Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);
+
+        Constraint constraint = query.getConstraint();
+        if (constraint != null) {
+            log.debug("compositing constraint");
+            Constraint compositeConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+            query.setConstraint(compositeConstraint);
+        } else {
+            query.setConstraint(newConstraint);
+        }
+
+        return newConstraint;
+        
+        
     }
 
     /**

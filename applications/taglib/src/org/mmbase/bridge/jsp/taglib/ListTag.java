@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.39 2003-12-02 12:33:27 michiel Exp $
+ * @version $Id: ListTag.java,v 1.40 2003-12-02 13:05:15 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -170,7 +170,6 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             return setReturnValues(nodes, true);
         } else {   // container found!
             if (path != Attribute.NULL ||
-                nodes != Attribute.NULL ||
                 search != Attribute.NULL
                 ) {
                 throw new JspTagException("search, path and nodes attributes not supported within a container.");
@@ -187,6 +186,10 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             query.setDistinct(searchDistinct);
             if (fields != Attribute.NULL) {
                 Queries.addFields(query, fields.getString(this));
+            }
+
+            if (nodes != Attribute.NULL) {
+                Queries.addStartNodes(query, nodes.getString(this));
             }
 
             NodeList nodes = getCloud().getList(query);
