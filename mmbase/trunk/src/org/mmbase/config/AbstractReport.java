@@ -26,17 +26,8 @@ import org.mmbase.util.logging.Logging;
 /**
  * @author Case Roole, cjr@dds.nl
  * 
- * $Id: AbstractReport.java,v 1.5 2001-07-16 10:08:07 jaco Exp $
+ * $Id: AbstractReport.java,v 1.6 2002-12-03 22:05:58 michiel Exp $
  *
- * $Log: not supported by cvs2svn $
- * Revision 1.4  2001/07/09 12:30:02  jaco
- * jaco: Changed old method for retrieving mmbase.config and mmbase.htmlroot with new method.
- *
- * Revision 1.3  2001/04/10 11:02:07  michiel
- * michiel: new logging system
- *
- * Revision 1.2  2000/10/07 17:06:07  case
- * cjr: Added checking of mmbase JVM options and some minor bugfixes
  *
  */
 public abstract class AbstractReport implements ReportInterface {
@@ -114,6 +105,7 @@ public abstract class AbstractReport implements ReportInterface {
      * @param path Full path to XML file
      * 
      * @return Hashtable with the key/value pairs or an empty Hashtable if something went wrong.
+     * @duplicate A lot of very familiar code from other classes, which depends on Xerces, even.
      */
     protected Hashtable getPropertiesFromXML(String path) {
 	XMLProperties xmlReader = new XMLProperties();
@@ -156,6 +148,7 @@ public abstract class AbstractReport implements ReportInterface {
 
     /**
      * @return String with '<' and '>' converted to respectively &lt; and &gt;
+     * @duplicate Can be found for example in Config module too.
      */
     protected String htmlEntities(String s) {
         StringBuffer res = new StringBuffer();
@@ -185,9 +178,9 @@ public abstract class AbstractReport implements ReportInterface {
 	}
 
 	String res = "";
-	Vector fatalList = pr.getFatalList();
+	List fatalList = pr.getFatalList();
 	for (int j=0;j<fatalList.size();j++) {
-	    ErrorStruct fatalerror = (ErrorStruct)fatalList.elementAt(j);
+	    ErrorStruct fatalerror = (ErrorStruct)fatalList.get(j);
 	    int lineno = fatalerror.getLineNumber();
 	    int col = fatalerror.getColumnNumber();
 	    String msg = fatalerror.getMessage();
