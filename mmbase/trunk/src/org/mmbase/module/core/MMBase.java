@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.115 2004-06-28 21:36:34 michiel Exp $
+ * @version $Id: MMBase.java,v 1.116 2004-07-08 17:25:24 michiel Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -509,6 +509,23 @@ public class MMBase extends ProcessorModule {
         return getDatabase().created(baseName + "_object");
     }
 
+
+    /**
+     * @since MMBase-1.7.1
+     */
+    private MMObjectBuilder loadRootBuilder() {
+        if (rootBuilder != null) return rootBuilder;
+        try {
+            rootBuilder = loadBuilder("object");
+        } catch (BuilderConfigurationException e) {
+            // object builder was not defined -
+            // builder is optional, so this is not an error
+            rootBuilder = null;
+        }
+
+        return rootBuilder;
+    }
+
     /**
      * Create a new database.
      * The database created is based on the baseName provided in the configuration file.
@@ -526,18 +543,13 @@ public class MMBase extends ProcessorModule {
 
         getDatabase();
 
-        rootBuilder = null;
-        try {
-            rootBuilder = loadBuilder("object");
-        } catch (BuilderConfigurationException e) {
-            // object builder was not defined -
-            // builder is optional, so this is not an error
-        }
-        if (rootBuilder != null) {
+        if (loadRootBuilder() != null) {
             rootBuilder.init();
         } else {
+            // if no rootbuilder defined (no object.xml)
             database.createObjectTable(baseName);
         }
+
         return true;
     }
 
@@ -667,7 +679,8 @@ public class MMBase extends ProcessorModule {
      * @since MMBase1,6
      */
     public MMObjectBuilder getRootBuilder() {
-        if (rootBuilder == null) {
+        if (loadRootBuilder() == null) {
+            log.info("No object.xml found, taking defaults.");
             // instantiate a virtual 'object' builder if none is specified
             rootBuilder = new MMObjectBuilder();
             rootBuilder.setMMBase(this);
@@ -1067,6 +1080,8 @@ public class MMBase extends ProcessorModule {
         // first load the core builders
         // remarks:
         //  - If nodescaches inactive, in init of typerel reldef nodes are created wich uses InsRel.oType, so typerel must be started after insrel and reldef. (bug #6237)
+
+        loadRootBuilder(); // loads object.xml if present.
 
         TypeDef = (TypeDef)loadCoreBuilder("typedef");
         RelDef = (RelDef)loadCoreBuilder("reldef");
