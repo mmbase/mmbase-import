@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.183 2003-08-06 19:43:06 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.184 2003-08-07 17:26:01 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -570,6 +570,28 @@ See mmexamples/taglib for more elaborated examples.
         <value>...</value>
         <info>All possible values are defined in taglibcontent.xml</info>
       </possiblevalue>
+    </attribute>
+  </taginterface>
+  <taginterface>
+    <name>container</name>
+    <info>
+       Container tags can be referrenced by container-refferers.
+    </info>
+    <since>MMBase-1.7</since>
+  </taginterface>
+  <taginterface>
+    <name>containerreferrer</name>
+    <info>
+  
+    </info>
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>container</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Refer to the container with this id.
+      </info>
     </attribute>
   </taginterface>
   <tag>
@@ -3374,6 +3396,7 @@ like the parameter list or the session (where ever it is available) --&gt;
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <extends>listreferrer</extends>
+    <extends>containerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.SizeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
@@ -4100,6 +4123,7 @@ The 0 is just counter, which starts at 0 on every page.
   <tag>
     <name>functioncontainer</name>
     <see tag="function" />
+    <extends>container</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.FunctionContainerTag</tagclass>
     <info>
       Surrounds a function tag, provides a container for parameters and function results.
@@ -4122,9 +4146,19 @@ The 0 is just counter, which starts at 0 on every page.
 
       </info>
     </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+         Id for reference by subtags and reuse.
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>listcontainer</name>
+    <extends>container</extends>
+    <extends>containerreferrer</extends>
     <see tag="list" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.ListContainerTag</tagclass>
     <info>
@@ -4139,9 +4173,18 @@ The 0 is just counter, which starts at 0 on every page.
 
       </info>
     </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+         Id for reference by subtags and reuse.
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>constraint</name>
+    <extends>containerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListConstraintTag</tagclass>
@@ -4174,6 +4217,7 @@ The 0 is just counter, which starts at 0 on every page.
   </tag>
   <tag>
     <name>ageconstraint</name>
+    <extends>containerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListAgeConstraintTag</tagclass>
@@ -4208,6 +4252,7 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>maxnumber</name>
+    <extends>containerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListMaxNumberTag</tagclass>
@@ -4227,6 +4272,7 @@ The 0 is just counter, which starts at 0 on every page.
 
   <tag>
     <name>offset</name>
+    <extends>containerreferrer</extends>
     <see tag="listnodescontainer" />
     <see tag="listcontainer" />
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListOffsetTag</tagclass>
@@ -4253,6 +4299,7 @@ The 0 is just counter, which starts at 0 on every page.
       
     </info>
     <since>MMBase-1.7</since>
+
   </tag>
 
 
@@ -4287,6 +4334,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>writer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
+    <extends>containerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListPreviousBatchesTag</tagclass>
     <info>
       
@@ -4311,7 +4359,7 @@ The 0 is just counter, which starts at 0 on every page.
     <extends>writer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
-
+    <extends>containerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListNextBatchesTag</tagclass>
     <info>
       
@@ -4325,6 +4373,20 @@ The 0 is just counter, which starts at 0 on every page.
 
       </info>
     </attribute>
+  </tag>
+
+
+  <tag>
+    <name>removeitem</name>
+    <type>mmbase.list</type>
+    <extends>listreferrer</extends>
+    <extends>contextreader</extends>
+
+    <tagclass>org.mmbase.bridge.jsp.taglib.RemoveItemTag</tagclass>
+    <info>
+      Remove the current item from the surrounding list. Of course this has only effect when the list is 'reused' (with referid).
+    </info>
+    <since>MMBase-1.7</since>
   </tag>
 
 
