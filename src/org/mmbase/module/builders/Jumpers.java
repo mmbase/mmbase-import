@@ -26,6 +26,19 @@ public class Jumpers extends MMObjectBuilder {
 	LRUHashtable jumpCache = new LRUHashtable(1000);
 
 	
+	private static String jumperNotFoundURL = "/index.html"; 
+
+	public boolean init() {
+		super.init();
+
+		String tmp;
+		tmp=getInitParameter("JumperNotFoundURL");
+		if (tmp!=null) {
+			jumperNotFoundURL = tmp;
+		}
+		return(true);
+	}
+
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		if (field.equals("url")) {
 			String url=node.getStringValue("url");
@@ -51,7 +64,6 @@ public class Jumpers extends MMObjectBuilder {
 		}
 	}
 
-	private static String jumperNotFoundURL = "/index.html"; 
 											 
 	public String getJump(String key) {
 		String url = null;
