@@ -26,9 +26,11 @@ public class XMLApplicationReader  {
 
     Document document;
     DOMParser parser;
-
+    private String filename;
 
     public XMLApplicationReader(String filename) {
+	
+	this.filename=filename;
 
 	File file = new File(filename);
        	if(!file.exists()) {
@@ -393,4 +395,8 @@ public class XMLApplicationReader  {
 	}
 	return(null);
     }
+
+    	public String getFileName() {
+		return(filename);
+	}
 }
