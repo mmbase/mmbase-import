@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.19 2003-09-03 19:32:45 michiel Exp $
+ * @version $Id: Query.java,v 1.20 2003-09-16 18:48:53 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -46,6 +46,8 @@ public interface Query extends SearchQuery, Cloneable {
 
     /**
      * Sets the alias to the given step.
+     * @param alias The alias which must be given to the step. If it is "" an alias should be
+     * generated. 'null' removes the alias.
      */
     void setAlias(Step step, String alias);
 
