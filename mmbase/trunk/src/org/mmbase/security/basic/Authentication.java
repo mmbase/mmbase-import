@@ -1,6 +1,5 @@
 package org.mmbase.security.basic;
 
-//import org.mmbase.security.UserContext;
 import org.mmbase.util.ExtendedProperties;
 
 import org.mmbase.util.logging.Logger;
@@ -65,7 +64,7 @@ public class Authentication extends org.mmbase.security.Authentication {
             return null;
          }
         String neededPass = (String) accounts.get(userContext.get("username"));
-        if (((String)userContext.get("password")).compareTo(neededPass) != 0) {
+        if (!neededPass.equals(userContext.get("password"))) {
             log.debug("username/password combination invalid(in userContext values user:'"+
                       userContext.get("username") + "' password:'" +
                       userContext.get("password") + "')");

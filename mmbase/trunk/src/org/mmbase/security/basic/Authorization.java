@@ -48,19 +48,26 @@ public class Authorization extends org.mmbase.security.Authorization {
     }
 
     public boolean check(UserContext user, int nodeNumber, Operation operation) {
-	log.debug("checking user: " + user.getIdentifier() + " operation: " + operation.getInt() + " node: " + nodeNumber);
+	log.debug("checking user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber);
         boolean permitted = true;
         if(manager.getActive()) {
+	    // if we are admin, everything is permitted....
+    	    org.mmbase.security.basic.UserContext u = (org.mmbase.security.basic.UserContext) user;	    
+	    if(u.isAdmin()) {
+	    	log.debug("user admin has always all rights..");
+	    	return true;
+	    }
+	    permitted = ! u.isAnonymous();
             switch(operation.getInt()) {
                 case Operation.CREATE_INT:
                     // say we may always create, if we are authenticated.
-                    permitted = true;
-		    if (permitted) log.debug("user was logged in thus could create new node");
-		    else log.debug("user was not logged in thus could NOT create new node");
+
+    	    	    // permitted already set well..
                     break;
                 case Operation.LINK_INT:
                     // nah, we always except links from other nodes.....
-                    permitted = true;
+		    
+    	    	    // permitted already set well..
                     break;
                 case Operation.READ_INT:
                     // nah, we may always view other nodes.,....
@@ -75,6 +82,7 @@ public class Authorization extends org.mmbase.security.Authorization {
                     String ownerName = node.getStringValue("owner");
                     if(ownerName.equals("bridge")) {
                         // was created by the bridge, we can take this one....
+                        log.debug("record was from bridge... hihi we take it...");
                         permitted = true;
                     }
                     else {
@@ -90,7 +98,7 @@ public class Authorization extends org.mmbase.security.Authorization {
         if (permitted) {
             log.debug("operation was permitted");
         } else {
-            log.info(" user: " + user.getIdentifier() + " operation: " + operation.getInt() + " node: " + nodeNumber  + "   operation was NOT permitted");
+            log.info(" user: " + user.getIdentifier() + " operation: " + operation + " node: " + nodeNumber  + "   operation was NOT permitted");
         }
         return permitted;
     }
