@@ -17,11 +17,11 @@
         $MOD-MMBASE-FIELD-$PARAM2-month(timestampsec)
         $MOD-MMBASE-FIELD-$PARAM2-year(timestampsec)
      </p>
-     </mmcommunity:getinfo>
+     
      <p>$MOD-MMBASE-FIELD-$PARAM2-html(body)^</p>
      &nbsp;
 </td></tr>
-<IF $MOD-communityprc-$PARAM1-ISOPEN^=Nreadonly>
+<IF $MOD-communityprc-CHANNEL-$PARAM1-ISOPEN^=Nreadonly>
 <tr>
 <td class="data">Post reply</td>
 <td class="navigate" align="right"><a href="createmessage.shtml?$PARAM1+$PARAM2" ><img src="../../../share/community/images/next.gif" alt="reply" border="0" align="left" /></a></td>
@@ -55,5 +55,4 @@
 </tr>
 
 </table>
-</mm:cloud>
 </body></html>
