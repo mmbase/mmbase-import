@@ -79,11 +79,34 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 									"mmbase say [text]\n"+
 									"mmbase question [text]\n"+
 									"mmbase answer to question [number] is [text]\n"+
-									"mmbase tell [person] about [subject] (not implemented yet)\n");
+									"mmbase tell [person|all] about [subject]\n");
 				}
 
 				if(secondToken.equals("tell")) {
-					com.sendPrivate(im.getFromNick(),"the tell command isn't implemented yet");
+ 					String person = "";
+                    String subject = "";
+                    String result="";
+
+                    person=st.nextToken();
+                    st.nextToken(); //about
+                    subject=st.nextToken();
+
+                    Enumeration g = questions.search("WHERE title like '%"+subject+"%'");
+                    if (g.hasMoreElements()) { //just take the first match
+                        MMObjectNode questionNode=(MMObjectNode)g.nextElement();
+                        Vector a = questionNode.getRelatedNodes("answers");
+                        Enumeration aa = a.elements();
+                        while (aa.hasMoreElements()) {
+                            MMObjectNode answerNode=(MMObjectNode)aa.nextElement();
+                            result+=answerNode.getStringValue("title")+"\n";
+                            System.out.println(answerNode.getStringValue("title"));
+                        }
+                    }
+					if(person.equals("all") || person.equals("everybody")) {
+                    	com.sendPublic(result);
+					} else {
+                    	com.sendPrivate(person,result);
+					}
 				}
 
 				if(secondToken.equals("answer")) {
@@ -99,6 +122,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 							antwoord+=st.nextToken()+" ";
 						}
 						addAnswerToQuestion(number, antwoord);
+						com.sendPublic(im.getFromNick() +" thank you for your answer");
 					} catch (Exception e) {
 						com.sendPrivate(im.getFromNick(),"Syntax of message is wrong, it should be mmbase answer to question x is ...");
 					}
