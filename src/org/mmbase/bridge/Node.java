@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.29 2002-04-03 11:19:26 eduard Exp $
+ * @version $Id: Node.java,v 1.30 2002-04-05 11:47:04 eduard Exp $
  */
 public interface Node {
 
@@ -266,6 +266,16 @@ public interface Node {
      */
 
     public Element getXMLValue(String fieldName, Document tree);    
+
+    /**
+     * Set's the value of the specified field as a <code>dom.Element</code>
+     *
+     * @param fieldName  the name of the field to be returned
+     * @param value      the DOM Document to has to be set, if not correct doc-type, 
+     *                   system will try to convert it to the wanted type.
+     * @since MMBase-1.6
+     */
+    public void setXMLValue(String fieldName, Document value);
 
     /**
      * Checks whether this node has any relations.

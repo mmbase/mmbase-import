@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.70 $ $Date: 2002-04-03 14:53:41 $
+ * @version $Revision: 1.71 $ $Date: 2002-04-05 11:47:07 $
  */
 
 public class MMObjectNode {
@@ -572,11 +572,10 @@ public class MMObjectNode {
         if (!(o instanceof Document)) {
             //do conversion from string to Document thing...
             log.warn("Field " + fieldName + " did not contain a Document, but a " + o.getClass().getName());
-            // o = convertStringToXml(fieldName,  getStringValue(fieldName));
-            // if(o != null) {
-            //    values.put(fieldName, o);
-            // }
-            return null;
+            o = convertStringToXml(fieldName,  getStringValue(fieldName));
+            if(o != null) {
+                values.put(fieldName, o);
+            }
         }
         return (Document) o;
     }

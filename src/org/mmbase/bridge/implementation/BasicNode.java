@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.54 2002-04-03 11:19:26 eduard Exp $
+ * @version $Id: BasicNode.java,v 1.55 2002-04-05 11:47:04 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -341,15 +341,23 @@ public class BasicNode implements Node {
     }
 
     public Document getXMLValue(String fieldName) {
-        return getXMLValue(nodeManager.getField(fieldName));
+        return noderef.getXMLValue(fieldName);
     }
 
 
     public Element getXMLValue(String fieldName, Document tree) {
-        return getXMLValue(nodeManager.getField(fieldName), tree);
+        Document doc = getXMLValue(fieldName);
+        if(doc==null) return null;        
+        return (Element) tree.importNode(doc.getDocumentElement(), true);
     }
 
-    Element getXMLValue(Field field, Document tree) {
+    public void setXMLValue(String fieldName, Document value) {
+        // do conversion, if needed from doctype 'incoming' to doctype 'needed'
+        org.mmbase.bridge.util.xml.DocumentConverter dc = new org.mmbase.bridge.util.xml.DocumentConverter(noderef.parent.getField(fieldName).getDBDocType());
+        setValue(fieldName, dc.convert(value, cloud));
+    }
+
+/*    Element getXMLValue(Field field, Document tree) {
         // create the field
         Element fieldElem = tree.createElement("field");
 
@@ -385,11 +393,12 @@ public class BasicNode implements Node {
         // do some additional thingies...
         return sophisticateField(field, fieldElem);
     }
-
+*/
+/*
     Document getXMLValue(Field field) {
         return noderef.getXMLValue(field.getName());
     }
-
+*/
 
     public void commit() {
         if (isnew) {
@@ -595,7 +604,7 @@ public class BasicNode implements Node {
         } else {
             return getRelations(rolenr);
         }
-    };
+    }
 
     public RelationList getRelations(String role, String nodeManager) {
         if (nodeManager==null) return getRelations(role);
@@ -617,19 +626,19 @@ public class BasicNode implements Node {
             }
         }
         return getRelations(rolenr,otype);
-    };
+    }
 
     public boolean hasRelations() {
         return getNode().hasRelations();
-    };
+    }
 
     public int countRelations() {
         return getRelations().size();
-    };
+    }
 
     public int countRelations(String type) {
         return getRelations(type).size();
-    };
+    }
 
     public NodeList getRelatedNodes() {
         Vector relvector=new Vector();
@@ -643,7 +652,7 @@ public class BasicNode implements Node {
             }
         }
         return new BasicNodeList(relvector,cloud);
-    };
+    }
 
     public NodeList getRelatedNodes(String type) {
         Vector relvector=new Vector();
@@ -665,7 +674,7 @@ public class BasicNode implements Node {
 
     public int countRelatedNodes(String type) {
         return getNode().getRelationCount(type);
-    };
+    }
 
     public StringList getAliases() {
         Vector aliasvector=new Vector();
@@ -677,7 +686,7 @@ public class BasicNode implements Node {
             }
         }
         return new BasicStringList(aliasvector);
-    };
+    }
 
     public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
@@ -730,16 +739,16 @@ public class BasicNode implements Node {
                 }
             }
         }
-    };
+    }
 
     public void deleteAlias(String aliasName) {
         deleteAliases(aliasName);
-    };
+    }
 
     public Relation createRelation(Node destinationNode, RelationManager relationManager) {
         Relation relation = relationManager.createRelation(this,destinationNode);
         return relation;
-    };
+    }
 
 
     /**
@@ -846,7 +855,7 @@ public class BasicNode implements Node {
      * fit to be used in this classe's 'toXML'.
      *
      */
-
+/*
     Element sophisticateField(Field type, Element field) {
 
         String fieldName = type.getName(); //or : String fieldName = field.getAttribute("name");
@@ -948,5 +957,5 @@ public class BasicNode implements Node {
         }
         return field;
     }
-
+*/
 }
