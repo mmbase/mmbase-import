@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.34 2000-12-05 18:29:08 vpro Exp $
+$Id: scanparser.java,v 1.35 2000-12-06 12:25:36 vpro Exp $
 
 $Log: not supported by cvs2svn $
 Revision 1.33  2000/11/23 14:50:43  install
@@ -125,7 +125,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.34 $ $Date: 2000-12-05 18:29:08 $
+ * @$Revision: 1.35 $ $Date: 2000-12-06 12:25:36 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -783,14 +783,14 @@ public class scanparser extends ProcessorModule {
 		}
 	}
 
-	// Still have to do something for making reload possible.
-	// did I got the orginel or a copy of session and sp?
 	/**
-	 * When the part contains the tag <CACHE HENK> look if the part is cached.
+	 * Returns the cached part when the part contains the tag <CACHE HENK> and the page is not exprired and reload is off
+	 * else a null wil be returned.
 	 */ 
 	private String handlePartCache(String filename, String part, sessionInfo session,scanpage sp) throws ParseException
 	{		
 		if (part == null) return null;
+		if (sp.reload) return null;
 
 		/* Test if cache HENK is used in this page or not.
 		 */
@@ -816,7 +816,7 @@ public class scanparser extends ProcessorModule {
 		 * Parse it and put it in the cache.
 		 */
 		try
-		{	result = handle_line(part,session,sp);
+		{	result = handle_line(part.substring(end + 1),session,sp);
 		}
 		catch (Exception e)
 		{		String errorMsg = "Error in part "+filename;				
