@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.99 2004-10-25 08:08:37 pierre Exp $
+ * @version $Id: Images.java,v 1.100 2004-11-11 17:14:26 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -253,7 +253,7 @@ public class Images extends AbstractImages {
                 imageConvertParams.put(key, params.get(key));
             }
         }
-        imageConvertParams.put("configfile", getConfigFile());
+        imageConvertParams.put("configfile", getConfigResource());
     }
 
     private ImageConvertInterface loadImageConverter(String classname) {

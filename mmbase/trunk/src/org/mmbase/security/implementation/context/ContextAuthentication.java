@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.15 2004-04-19 16:38:59 michiel Exp $
+ * @version $Id: ContextAuthentication.java,v 1.16 2004-11-11 17:10:33 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
@@ -62,25 +62,25 @@ public class ContextAuthentication extends Authentication {
 
     protected void load() {
         if (log.isDebugEnabled()) {
-            log.debug("using: '" + configFile + "' as config file for context-authentication");
+            log.debug("using: '" + configResource + "' as config file for context-authentication");
         }
 
         try {
-            InputSource in = new InputSource(new FileInputStream(configFile));
+            InputSource in = MMBaseCopConfig.securityLoader.getInputSource(configResource);
             document = org.mmbase.util.XMLBasicReader.getDocumentBuilder(this.getClass()).parse(in);
         } catch(org.xml.sax.SAXException se) {
-            log.error("error parsing file :"+configFile);
-            String message = "error loading configfile :'" + configFile + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
+            log.error("error parsing file :"+configResource);
+            String message = "error loading configfile :'" + configResource + "'("+se + "->"+se.getMessage()+"("+se.getMessage()+"))";
             log.error(message);
             log.error(Logging.stackTrace(se));
             throw new SecurityException(message);
         } catch(java.io.IOException ioe) {
-            log.error("error parsing file :"+configFile);
+            log.error("error parsing file :"+configResource);
             log.error(Logging.stackTrace(ioe));
-            throw new SecurityException("error loading configfile :'"+configFile+"'("+ioe+")" );
+            throw new SecurityException("error loading configfile :'"+configResource+"'("+ioe+")" );
         }
         if (log.isDebugEnabled()) {
-            log.debug("loaded: '" +  configFile + "' as config file for authentication");
+            log.debug("loaded: '" +  configResource + "' as config file for authentication");
             log.debug("going to load the modules...");
         }
 
