@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE log4j:configuration SYSTEM "jar:file:/bigdisk/dev/lib/test/log4j.jar!/org/apache/log4j/xml/log4j.dtd" [
-         <!ENTITY logger   "org.mmbase.util.logging.log4j.Log4jImpl" >
-         <!ENTITY priority "org.mmbase.util.logging.log4j.Log4jPriority" >
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" [
+         <!ENTITY mmlevel "org.mmbase.util.logging.log4j.Log4jLevel" >
          <!ENTITY logdir   "/bigdisk/dev/logs/mmbase/" >
 ]>
 
@@ -22,43 +21,43 @@
 <!-- appenders -->
 <!-- This file is rather slow, because of code information, use it -->
 <!-- only during debugging, or in classes which are not performance -->
-<!-- critical -->
-<appender name="logfile" class="org.apache.log4j.FileAppender" >
+  <!-- critical -->
+  <appender name="logfile" class="org.apache.log4j.FileAppender" >
     <param name="File"   value="&logdir;mmtest.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
 	    <param name="ConversionPattern" value="%d %-5p %c{4} %M.%L %x - %m%n" />
     </layout>
-</appender>
-
-
-<appender name="securityfile" class="org.apache.log4j.FileAppender" >
+  </appender>
+  
+  
+  <appender name="securityfile" class="org.apache.log4j.FileAppender" >
     <param name="File"   value="&logdir;mmtestsecurity.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
-         <param name="ConversionPattern" value="%d %-5p %c{4} %M.%L %x - %m%n" />
+      <param name="ConversionPattern" value="%d %-5p %c{4} %M.%L %x - %m%n" />
     </layout>
-</appender>
-
-<!-- categories -->
-
-<!-- base category for all MMBase classes -->
-<category name="org.mmbase" class ="&mmlogger;">
-<!-- nothing special -->
-</category>
-
-<category name="org.mmbase.security" class ="&mmlogger;" additivity="false" >
-  <priority class="&priority;" value ="info" />
-  <appender-ref ref="securityfile" />
-</category>
-
-<category name="STDERR" class ="&mmlogger;">
+  </appender>
+  
+  <!-- categories -->
+  
+  <!-- base logger for all MMBase classes -->
+  <logger name="org.mmbase">
+    <!-- nothing special -->
+  </logger>
+  
+  <logger name="org.mmbase.security" additivity="false" >
+    <level class="&mmlevel;" value ="info" />
+    <appender-ref ref="securityfile" />
+  </logger>
+  
+  <logger name="STDERR">
     <priority class="&priority;" value ="debug" />	
-</category>
-
-<root>
-    <priority class="&priority;" value ="info" />
+  </logger>
+  
+  <root>
+    <level class="&mmlevel;" value="info" />
    	<appender-ref ref="logfile" />
-</root>
-
+  </root>
+  
 </log4j:configuration>
