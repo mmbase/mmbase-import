@@ -1,4 +1,4 @@
-t/*
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.35 2003-05-12 11:59:29 pierre Exp $
+ * @version $Id: TypeDef.java,v 1.36 2003-05-13 08:15:33 michiel Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
