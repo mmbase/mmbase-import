@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import org.mmbase.bridge.*;
 
 import java.io.IOException;
@@ -38,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.11 2003-11-06 16:23:22 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.12 2003-11-11 22:02:33 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -54,46 +52,72 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         return "mmbase";
     }
 
+    
+
     /**
      * Remove session information from query object, and returns session-name (or null)
      */
-    protected String readQuery(StringBuffer query, HttpServletResponse res) throws IOException  {
-        String sessionName = "cloud_" + getCloudName();
-        if (query.toString().indexOf("session=") >= 0) { 
+    final protected QueryParts readQuery(HttpServletRequest req, HttpServletResponse res) throws IOException  {
+        String q = req.getQueryString();
+        String query;
+        if (q == null) { 
+            // also possible to use /attachments/[session=abc+]<number>/filename.pdf
+            //query = new StringBuffer(req.getRequestURI());
+            Matcher m = FILE_PATTERN.matcher(req.getRequestURI());
+            if (! m.matches()) {
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL");
+                return null;
+           }
+            query = m.group(1);
+            
+        } else {
+            // attachment.db?[session=abc+]number
+            query = q;
+        }
+
+        String sessionName = null; // "cloud_" + getCloudName();
+        String nodeNumber;
+        if (query.startsWith("session=")) { 
             // indicated the session name in the query: session=<sessionname>+<nodenumber>
             
-            int plus = query.toString().indexOf("+", 8);
+            int plus = query.indexOf("+", 8);
             if (plus == -1) {
-                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Malformed URL");
+                res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Malformed URL");
                 return null;
             }
-            sessionName = query.toString().substring(8, plus);
-            query.delete(0, plus + 1);                            
+            sessionName = query.substring(8, plus);
+            nodeNumber  = query.substring(plus + 1);
+        } else {
+            nodeNumber  = query;
         }
-        return sessionName;
+        return new QueryParts(sessionName, nodeNumber);
     }
 
-    protected Cloud getCloud(HttpServletRequest req, HttpServletResponse res, StringBuffer query) throws IOException {
-
+    final protected Cloud getCloud(HttpServletRequest req, HttpServletResponse res, QueryParts qp) throws IOException {
         log.debug("getting a cloud");
         // trying to get a cloud from the session
         Cloud cloud = null;
          HttpSession session = req.getSession(false); // false: do not create a session, only use it
         if (session != null) { // there is a session
             log.debug("from session");
-            String sessionName = readQuery(query, res);
-            if (sessionName == null) return null;
-            cloud = (Cloud) session.getAttribute(sessionName); 
-        } 
-        if (cloud == null) {
-            // try anonymous
-            try {
-                cloud = ContextProvider.getDefaultCloudContext().getCloud(getCloudName());
-            } catch (org.mmbase.security.SecurityException e) {
-                log.debug("could not generate anonymous cloud");
-                // give it up
-                cloud = null;
+            String sessionName = qp.getSessionName();
+            if (sessionName != null) {
+                cloud = (Cloud) session.getAttribute(sessionName); 
+            } else { // desperately searching for a cloud, perhaps someone forgot to specify 'session_name' to enforce using the session?
+                cloud = (Cloud) session.getAttribute("cloud_" + getCloudName()); 
             }
+        } 
+        return cloud;
+    }
+
+    final protected Cloud getAnonymousCloud() {
+        Cloud cloud;
+        try {
+            cloud = ContextProvider.getDefaultCloudContext().getCloud(getCloudName());
+        } catch (org.mmbase.security.SecurityException e) {
+            log.debug("could not generate anonymous cloud");
+            // give it up
+            cloud = null;
         }
         return cloud;
     }
@@ -104,50 +128,40 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      * This is convenient, and also ensures that all this kind of servlets work uniformely.
      */
      
-    protected Node getNode(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String q = req.getQueryString();
-        StringBuffer query;
-        if (q == null) { 
-            // also possible to use /attachments/[session=abc+]<number>/filename.pdf
-            //query = new StringBuffer(req.getRequestURI());
-            Matcher m = FILE_PATTERN.matcher(req.getRequestURI());
-            if (! m.matches()) {
-                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Malformed URL");
+    final protected Node getNode(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        try {
+            QueryParts query = readQuery(req, res);
+            if (query == null) return null;
+            if (log.isDebugEnabled()) { 
+                log.debug("query : " + query);
+            }
+            
+            Cloud c = getAnonymousCloud(); // first try anonymously always, because then session has not to be used
+
+            String nodeNumber = query.getNodeNumber();
+            
+            if (! c.hasNode(nodeNumber)) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node '" + nodeNumber + "' does not exist");
                 return null;
             }
-            query = new StringBuffer(m.group(1));
             
-        } else {
-            // attachment.db?[session=abc+]number
-            query = new StringBuffer(q);
-        }
-
-        if (log.isDebugEnabled()) { 
-            log.debug("query : " + query);
-        }
-        Cloud c = getCloud(req, res, query);
-        if (c == null) return null;
-        Node node = null;
-        try {
-            String qs = query.toString();
-            if (c.hasNode(qs)) {
-                node = c.getNode(qs);
-            } else {
-                // perhaps simply no session/expired session.
-                if (readQuery(query, res) == null) return null;
-                qs = query.toString();
-                if (c.hasNode(qs)) {
-                    node = c.getNode(qs);
-                } else {                    
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND, "Node " + query + " does not exist" );
-                }
+            if (! c.mayRead(nodeNumber)) { // node may not be read by anonymous, try with a 'real' cloud now
+                c = getCloud(req, res, query);
             }
-        } catch (org.mmbase.security.SecurityException e) {
-            res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied: " + e.toString());
+            if (c == null)  { // cannot find any cloud what-so-ever, 
+                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot find or create cloud '" + getCloudName() + "'");
+                return null; 
+            }        
+            
+            if (! c.mayRead(nodeNumber)) { // still not allowed? Give it up.
+                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Permission denied for node '" + nodeNumber + "'");
+                return null;
+            }
+            return c.getNode(nodeNumber);
         } catch (Exception e) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND, "Problem with Node " + query + " : " + e.toString());
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.toString());           
+            return null;
         }
-        return node;
     }
 
     /**
@@ -170,5 +184,21 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         log = Logging.getLoggerInstance(BridgeServlet.class);
     }
 
+    final class QueryParts {
+        private String sessionName;
+        private String nodeNumber;
+        QueryParts(String sn, String nm) {
+            sessionName = sn;
+            nodeNumber  = nm;
+        }
+        String getSessionName() { return sessionName; }
+        String getNodeNumber() { return nodeNumber; }
+
+        public  String toString() {
+            return sessionName == null ? nodeNumber : "session=" + sessionName + "+" + nodeNumber;
+        }
+                   
+                   
+    }
 
 }
