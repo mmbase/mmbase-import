@@ -8,7 +8,7 @@
 	</mm:notpresent>
 <table width="100%" border="0" cellspacing="0" cellpadding="4" class="table-search">
 	<tr>
-	  <td bgcolor="#CCCCCC" align="center"><img src="img/mmbase-search-40.gif" alt="Search" width="42" height="40" border="0" /></td>
+	  <td bgcolor="#CCCCCC" align="center"><img src="img/mmbase-search.gif" alt="Search" width="21" height="20" border="0" /></td>
 	  <td bgcolor="#CCCCCC" class="title-s">Search node of type <b><mm:nodeinfo nodetype="$ntype" type="guitype" /></b> (<%= ntype %>)</td>
 	</tr>
 	<tr valign="top">

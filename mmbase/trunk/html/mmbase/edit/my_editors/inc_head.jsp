@@ -1,11 +1,11 @@
 <mm:import externid="conf_max" jspvar="conf_max" vartype="String">10</mm:import>
 <mm:import externid="o" jspvar="ofs_str" vartype="String">0</mm:import>
 <mm:import externid="conf_days" jspvar="conf_days" vartype="String">99</mm:import>
+<mm:import externid="conf_list" jspvar="conf_list" vartype="String">editable</mm:import>
 <% // Set and get some values
 int max = Integer.parseInt(conf_max);
 int ofs = Integer.parseInt(ofs_str);
 %>
-
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-transitional.dtd">
@@ -30,8 +30,7 @@ int ofs = Integer.parseInt(ofs_str);
 	</td>
 	<td align="right">
 	<form action="edit_object.jsp" method="post">
-	  <div class="top-links"><input type="text" name="nr" size="12" maxlength="255" /><br />
-	  Insert node number or alias to edit</div>
+	  <div class="top-left">edit node #<br /><input type="text" name="nr" size="8" maxlength="255" /></div>
 	</form>
 	</td>
   </tr><tr bgcolor="#CCCCCC"> 

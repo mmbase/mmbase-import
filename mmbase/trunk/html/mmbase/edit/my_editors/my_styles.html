@@ -14,24 +14,28 @@
     <td><div class="top-title">my_editors - Dit onderdeel heet</div>
       <a class="top-links" href="index.jsp">home</a> - <a class="top-links" href="help.jsp">help</a> 
       - je bent ingelogd als flip (rank: basic user) - <a href="logoff.jsp">log off</a></td>
+    <td align="right">
+	<form action="edit_object.jsp" method="post">
+	  <div class="top-left">edit node #<br /><input type="text" name="nr" size="8" maxlength="255" /></div>
+	</form>
+    </td>
   </tr>
   <tr bgcolor="#CCCCCC"> 
-    <td colspan="2">&nbsp; <a href="index.jsp">editors</a> &gt; news &gt; image</td>
+    <td colspan="3">&nbsp; <a href="index.jsp">editors</a> &gt; news &gt; image</td>
   </tr>
 </table>
 <div style="margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px;">
-<h2>Koppen met tekst: 18</h2>
+  <h2>Heading: 18</h2>
+  
+  <h4>Text, just text in another heading</h4>
+  <p>My friends, each of you is a single cel in the great body of the
+  State. And today, that great body has purged itself of parasites. We
+  have triumphed over the unprincipled dissemination of facts. The thugs
+  and wreckers have been cast out. And the poisenous weeds of
+  disinformation have been consigned to the dustbin of history. Let each
+  and every cell rejoice!</p>
 
-  <h4>Hier de tekst in een paragraaf. Een gewone paragraaf.</h4>
-<p>My friends, each of you is a single cel in the great body of the
-State. And today, that great body has purged itself of parasites. We
-have triumphed over the unprincipled dissemination of facts. The thugs
-and wreckers have been cast out. And the poisenous weeds of
-disinformation have been consigned to the dustbin of history. Let each
-and every cell rejoice!</p>
-
-  <p class="message">Hier de tekst in een paragraaf. Een <strong>gewone</strong> 
-    paragraaf.</p>
+  <p class="message">Text in a message. A <strong>warning</strong> of some kind.</p>
 
   <p>For today we celebrate the first glorious anniversary of the Information 
     Purification Directive! We have created, for the first time in all history, 
@@ -40,11 +44,18 @@ and every cell rejoice!</p>
     is a <a href="#">more powerfull weapon</a> than any fleet or army on Earth! 
     We are one people. With one will. One resolve. One cause. Our enemies shall 
     talk themselves to death. And we will bury them with their own confusion</p>
+    
+    <ul>
+      <li>List item 1</li>
+      <li>List item 2</li>
+      <li>List item 4</li>
+      <li>List item 3 (it's an unordered list :-)</li>
+    </ul>
 
 <form action="page.jsp" method="post">
-    <table class="table-form" border="1" cellspacing="0" cellpadding="3">
-      <tr> 
-        <td colspan="2" class="table-kop">Nog een kop erbij bovenaan de tabel</td>
+    <table class="table-form" border="0" cellspacing="0" cellpadding="3">
+      <tr bgcolor="#CCCCCC"> 
+          <td>&nbsp;</td><td class="table-kop">Table heading</td>
       </tr>
       <tr> 
         <td align="right" class="name">Naam</td>
@@ -65,7 +76,7 @@ and every cell rejoice!</p>
       </tr>
     </table>
     <p>&nbsp;</p>
-    <table class="table-form" cellspacing="0" cellpadding="3" border="1">
+    <table class="table-form" cellspacing="0" cellpadding="3" border="0">
       <tr> 
         <td align="right"><b>Naam</b></td>
         <td>Waarde. Wat?</td>
