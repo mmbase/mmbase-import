@@ -221,7 +221,6 @@ Upgrade:
 [1.6.2]
 - Replace mmbase.jar
 - upgrade jsp-editors
-- upgrade log4j.jar to 1.2.8
 
 [1.6.1]
 - On a deployment server upgrading from 1.6.0 to 1.6.1 can be done by
