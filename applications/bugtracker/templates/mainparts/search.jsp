@@ -72,7 +72,7 @@
 	<td width="50">
 	<select name="sarea">
 		<option value="">any</option>
-		<mm:listnodes type="areas">
+		<mm:listnodes type="areas" orderby="areas.name">
 		<option <mm:field name="number"><mm:compare value="$sarea">selected="selected"</mm:compare>  value="<mm:write />" </mm:field>><mm:field name="substring(name,15,.)" />
 		</mm:listnodes>
 	</select>
