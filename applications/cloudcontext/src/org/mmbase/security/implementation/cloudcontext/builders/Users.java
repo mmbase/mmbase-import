@@ -27,12 +27,12 @@ import org.mmbase.storage.search.*;
  * This MMObjectBuilder implementation belongs to the object type
  * 'mmbaseusers' It contains functionality to MD5 encode passwords,
  * and so on.
- * 
+ *
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Users.java,v 1.18 2003-11-19 16:41:00 michiel Exp $
+ * @version $Id: Users.java,v 1.19 2003-12-01 17:29:41 pierre Exp $
  * @since  MMBase-1.7
  */
 public class Users extends MMObjectBuilder {
@@ -118,15 +118,15 @@ public class Users extends MMObjectBuilder {
                 if (ranks.size() == 0) {
                     log.debug("No ranks related to this user");
                     rank = Rank.ANONYMOUS;
-                } else {        
+                } else {
                     Ranks rankBuilder = Ranks.getBuilder();
                     rank = rankBuilder.getRank((MMObjectNode) ranks.get(0));
                 }
             }
             rankCache.put(userNode, rank);
-        } 
+        }
         return rank;
-    }        
+    }
 
     /**
      * Notify the cache that the rank of user node changed
@@ -144,10 +144,10 @@ public class Users extends MMObjectBuilder {
             if (node.getIntValue(FIELD_STATUS) >= 0) {
                 if (originalValue != null && ! originalValue.equals(value)) {
                     node.values.put(field, value);
-                    log.warn("Cannot change username (unless account is blocked)"); 
+                    log.warn("Cannot change username (unless account is blocked)");
                     return false; // hmm?
                 }
-            } 
+            }
         } else if(field.equals(FIELD_PASSWORD)) {
             Object value = node.values.get(field);
             if (originalValue != null && ! originalValue.equals(value)) {
@@ -167,7 +167,7 @@ public class Users extends MMObjectBuilder {
 
     /**
      * Gets the usernode and check its credential (password only, currently)
-     * 
+     *
      * @return the authenticated user, or null
      * @throws SecurityException
      */
@@ -188,19 +188,23 @@ public class Users extends MMObjectBuilder {
         if (user == null) {
             log.debug("username: '" + userName + "' --> USERNAME NOT CORRECT");
             return null;
-        } 
+        }
 
 
         if (encode(password).equals(user.getStringValue(FIELD_PASSWORD))) {
             if (log.isDebugEnabled()) {
                 log.debug("username: '" + userName + "' password: '" + password + "' found in node #" + user.getNumber());
             }
-            if (getField(FIELD_STATUS) != null && getRank(user).getInt() < Rank.ADMIN.getInt()) {
-                if (user.getIntValue(FIELD_STATUS) == -1) {
+            if (getField(FIELD_STATUS) != null) {
+                Rank userRank = getRank(user);
+                if (userRank == null) {
+                    userRank = Rank.ANONYMOUS;
+                    log.warn("rank for '" + userName + "' is unknown or not registered, using anonymous.");
+                }
+                if (userRank.getInt() < Rank.ADMIN.getInt() && user.getIntValue(FIELD_STATUS) == -1) {
                     throw new SecurityException("account for '" + userName + "' is blocked");
                 }
             }
-
             return user;
         } else {
             if (log.isDebugEnabled()) {
@@ -220,12 +224,12 @@ public class Users extends MMObjectBuilder {
             StepField sf        = nsq.getField(getField("username"));
             Constraint cons = new BasicFieldValueConstraint(sf, userName);
             nsq.setConstraint(cons);
-            try { 
+            try {
                 Iterator i = getNodes(nsq).iterator();
                 if(i.hasNext()) {
                     user = (MMObjectNode) i.next();
                 }
-                
+
                 if(i.hasNext()) {
                     log.warn("Found more users with username '" + userName + "'");
                 }
@@ -244,7 +248,7 @@ public class Users extends MMObjectBuilder {
     }
 
     /**
-     * UserName must be unique, check it also here (to throw nicer exceptions)    
+     * UserName must be unique, check it also here (to throw nicer exceptions)
      */
     public int insert(String owner, MMObjectNode node) {
         int res = super.insert(owner, node);
@@ -253,7 +257,7 @@ public class Users extends MMObjectBuilder {
         StepField sf        = nsq.getField(getField("username"));
         Constraint cons = new BasicFieldValueConstraint(sf, userName);
         nsq.setConstraint(cons);
-        try { 
+        try {
             Iterator i = getNodes(nsq).iterator();
             while(i.hasNext()) {
                 MMObjectNode n = (MMObjectNode) i.next();
@@ -262,7 +266,7 @@ public class Users extends MMObjectBuilder {
                 throw new SecurityException("Cannot insert user '" + userName + "', because there is already is a user with that name");
             }
         } catch (SearchQueryException sqe) {
-            throw new SecurityException("Cannot insert user '" + userName + "', because check-query failed:" + sqe.getMessage() ,sqe );            
+            throw new SecurityException("Cannot insert user '" + userName + "', because check-query failed:" + sqe.getMessage() ,sqe );
         }
         userCache.clear();
         return res;
@@ -304,7 +308,7 @@ public class Users extends MMObjectBuilder {
         }
         log.debug("original node #" + mmobjectnode.getNumber() + ": " + mmobjectnode.hashCode() + " current node #" + mmobjectnode1.getNumber() + " : " + mmobjectnode1.hashCode());
 
-               
+
         if (mmobjectnode1 == mmobjectnode) {
             return true;
         } else {
@@ -326,7 +330,7 @@ public class Users extends MMObjectBuilder {
         node.setValue(FIELD_PASSWORD, "");
 
         setUniqueValue(node, FIELD_USERNAME, "user");
-        
+
     }
 
 
@@ -340,7 +344,7 @@ public class Users extends MMObjectBuilder {
         if (function.equals("info")) {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("gui", "(status..) Gui representation of this object.");            
+            info.put("gui", "(status..) Gui representation of this object.");
             if (args == null || args.size() == 0) {
                 return info;
             } else {
@@ -349,7 +353,7 @@ public class Users extends MMObjectBuilder {
         } else if (args != null && args.size() > 0) {
             if (function.equals("gui")) {
                 String field = (String) args.get(0);
-                
+
                 if (FIELD_STATUS.equals(field)) {
                     // THIS KIND OF STUFF SHOULD BE AVAILEBLE IN MMOBJECTBUILDER.
                     String val = node.getStringValue(field);
