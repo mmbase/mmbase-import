@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: XmlHandler.java,v 1.3 2003-08-15 19:38:00 michiel Exp $
+ * @version $Id: XmlHandler.java,v 1.4 2003-11-25 21:31:55 michiel Exp $
  */
 
 public class XmlHandler extends StringHandler {
@@ -45,7 +45,9 @@ public class XmlHandler extends StringHandler {
             // the wrap attribute is not valid in XHTML, but it is really needed for netscape < 6
             buffer.append("<textarea wrap=\"soft\" rows=\"10\" cols=\"80\" class=\"big\"  name=\"");
             buffer.append(prefix(field.getName()));
-            buffer.append("\">");
+            buffer.append("\"");
+            addExtraAttributes(buffer);
+            buffer.append(">");
             if (node != null) {
                 try {
                     // get the XML from this thing....

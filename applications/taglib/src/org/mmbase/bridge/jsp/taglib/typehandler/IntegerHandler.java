@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logger;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: IntegerHandler.java,v 1.18 2003-11-07 14:11:25 michiel Exp $
+ * @version $Id: IntegerHandler.java,v 1.19 2003-11-25 21:31:55 michiel Exp $
  */
 
 public class IntegerHandler extends AbstractTypeHandler {
@@ -61,15 +61,18 @@ public class IntegerHandler extends AbstractTypeHandler {
             buffer.append(prefix(field.getName()));
             buffer.append("\"");
             if (value) {
-                buffer.append(" checked");
+                buffer.append(" checked=\"checked\" ");
             }
+            addExtraAttributes(buffer);
             buffer.append(" />\n");
             return buffer.toString();
         } else if (guiType.equals("types")) {
             log.warn("Guitype 'types' is deprecated. Use 'typedef' instead.");
             buffer.append("<select name=\"");
             buffer.append(prefix(field.getName()));
-            buffer.append("\">\n");
+            buffer.append("\"");
+            addExtraAttributes(buffer);
+            buffer.append(">\n");
             int value = 0;
             if (node != null) {
                 value = node.getIntValue(field.getName());
@@ -110,7 +113,9 @@ public class IntegerHandler extends AbstractTypeHandler {
             log.warn("Guitype 'reldefs' is deprecated. Use 'reldef' instead.");
             buffer.append("<select name=\"");
             buffer.append(prefix(field.getName()));
-            buffer.append("\">\n");
+            buffer.append("\"");
+            addExtraAttributes(buffer);
+            buffer.append(">\n");
             int value = 0;
             if (node != null) {
                 value = node.getIntValue(field.getName());
