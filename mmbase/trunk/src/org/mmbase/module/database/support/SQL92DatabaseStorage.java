@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.1 2002-04-08 12:21:32 pierre Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.2 2002-04-09 15:38:03 pierre Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -638,7 +638,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return the parent table or null if it has no parent
      */
     protected String getParentTableName(MMObjectBuilder builder) {
-        if (!builder.getTableName().equals("object")) return null;
+        if (builder.getTableName().equals("object")) return null;
         MMObjectBuilder parent=getParentBuilder(builder);
         if (parent!=null) {
             return parent.getTableName();
@@ -700,8 +700,9 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             }
         }
         String tableName=builder.getFullTableName();
-        String sqlcreate= createSQL(tableName,createfields,
-                                    getFullTableName(getParentTableName(builder)),parentfields);
+        String parentTableName=getParentTableName(builder);
+        if (parentTableName!=null) parentTableName=getFullTableName(parentTableName);
+        String sqlcreate= createSQL(tableName,createfields,parentTableName,parentfields);
         boolean exists=((DatabaseTransaction)trans).executeUpdate(sqlcreate);
         if (exists) existingTables.add(tableName);
         return exists;
