@@ -428,8 +428,8 @@ builddate=${builddate}
   <!-- =================================================================== -->
   <!-- apply patch to convert the mmbase classes to support java 1.4       -->
   <!-- =================================================================== -->
-  <target name="java14patch">
-    	<patch patchfile="java14.patch" strip="1" backups="no"/>
+  <target name="java14patch" depends="init">
+    	<patch patchfile="java14.patch" strip="0" backups="no"/>
   </target>
 
   <target name="startcompile" />
