@@ -2,34 +2,34 @@
 <news exportsource="mmbase://127.0.0.1/test_db/mm" timestamp="20020214102415">
   <node number="6375" owner="system" alias="codings">
 	<body>
-dutch: Café tweeëntwintig
+Dutch: Café tweeëntwintig
 
-hebrew: דשךצ
+Hebrew: דשךצ
 
-russian: перестойка
+Russian: перестойка
 
 esperanto: Eĥoŝanĝo ĉiuĵaŭde
 
-czech: Jiři Šimek
+Czech: Jiři Šimek
 
-japanese: 寛治
+Japanese: 寛治
 
-greek: παντα ρει
+Greek: παντα ρει
 
-korean:ㅐ먈갬
+Korean:ㅐ먈갬
 
-ipa: hʉ xaːt ɚt met ɨ?
+IPA: hʉ xaːt ɚt met ɨ?
 
 euro: € 2,50
 
-french: cœr de lion
+French: cœr de lion
 
 CP1252: €‚ƒ„…†‡ˆ‰Š‹ŒŽ‘’“”•–—˜™š›œžŸ
 
 </body>
 	<title>UTF-8 / coding test article</title>
 	<subtitle>Café tweeëntwintig, Jiři Šimek, перестойка, 寛治</subtitle>
-	<intro>In the subtitle we find latin-1, latin-2, russion, and japanese/chinese. In the body, we find even more.</intro>
+	<intro>In the subtitle we find latin-1, latin-2, Russian, and Japanese/Chinese. In the body, we find even more.</intro>
   </node>
 </news>
 
