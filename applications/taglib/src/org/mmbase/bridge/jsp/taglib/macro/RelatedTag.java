@@ -22,12 +22,14 @@ import org.mmbase.bridge.jsp.taglib.NodeProvider;
 public class RelatedTag extends ListTag {
 
     private String parentNodeId = null;
+    private String relatedNodesString=null;
+    private String relatedPathString=null;
 
     /**
      * Override original ListTag method.
      */
     public void setNodes(String nodes) throws JspTagException {
-        throw new JspTagException("Nodes is not a supported attribute for the related tag");
+        relatedNodesString=parseNodes(nodes);
     }
 
     /**
@@ -37,16 +39,27 @@ public class RelatedTag extends ListTag {
         parentNodeId=node;
     }
 
+    /**
+     * Override original ListTag method.
+     * @param type a comma separated list of nodeManagers
+     */
+    public void setPath(String path) throws JspTagException {
+        this.relatedPathString = getAttributeValue(path);
+    }
+
     public int doStartTag() throws JspTagException {
         NodeProvider nodeProvider;
         nodeProvider = (NodeProvider)findParentTag("org.mmbase.bridge.jsp.taglib.NodeProvider",
                                                    parentNodeId);
         Node node=nodeProvider.getNodeVar();
         nodesString=node.getStringValue("number");
+        if (relatedNodesString!=null) {
+           nodesString+=","+relatedNodesString;
+        }
         String nodeType=node.getNodeManager().getName();
         // adapt the path to include the (needed) starting nodemanager name
-        // The nodemanager will be referrable as nodemanager0 
-        pathString= nodeType+"0,"+pathString;   
+        // The nodemanager will be referrable as nodemanager0
+        pathString= nodeType+"0,"+relatedPathString;
         return super.doStartTag();
     }
 }
