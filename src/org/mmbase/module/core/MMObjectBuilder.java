@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.230 2003-05-23 12:20:26 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.231 2003-05-23 16:49:42 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -82,6 +82,7 @@ public class MMObjectBuilder extends MMTable {
     //       field, language, session, response, request) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
 
     };
+
 
 
     /**
@@ -2224,10 +2225,10 @@ public class MMObjectBuilder extends MMTable {
      * @return the field's type.
      */
     public int getDBState(String fieldName) {
-        if (fields==null) return FieldDefs.DBSTATE_UNKNOWN;
-        FieldDefs node=getField(fieldName);
-        if (node==null) return FieldDefs.DBSTATE_UNKNOWN;
-        return node.getDBState();
+        if (fields == null) return FieldDefs.DBSTATE_UNKNOWN;
+        FieldDefs field = getField(fieldName);
+        if (field == null) return FieldDefs.DBSTATE_UNKNOWN;
+        return field.getDBState();
     }
 
     /**
@@ -2264,7 +2265,13 @@ public class MMObjectBuilder extends MMTable {
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
     public String getGUIIndicator(String field, MMObjectNode node) {
-        return null;
+        FieldDefs fieldDef = getField(field);
+        if (fieldDef.getDBType() == FieldDefs.TYPE_NODE && ! field.equals("number")) {
+            MMObjectNode otherNode = node.getNodeValue(field);
+            return otherNode.parent.getGUIIndicator(otherNode);
+        } else {
+            return null;
+        }
     }
 
 
