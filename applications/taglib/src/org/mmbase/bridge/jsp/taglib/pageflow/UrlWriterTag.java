@@ -9,18 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import java.util.*;
-import java.io.*;
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.util.Referids;
-
+import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
-
-import org.mmbase.util.transformers.Url;
-import org.mmbase.util.transformers.CharTransformer;
 
 import org.mmbase.util.Casting;
 
@@ -33,23 +25,31 @@ import org.mmbase.util.logging.Logging;
  * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.3 2004-12-13 18:24:40 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.4 2005-01-03 18:03:12 michiel Exp $
  * @since MMBase-1.8
  */
 
-public class UrlWriterTag extends UrlTag  implements org.mmbase.bridge.jsp.taglib.Writer {
+public class UrlWriterTag extends UrlTag  implements Writer {
+
+    private static final Logger log = Logging.getLoggerInstance(UrlWriterTag.class);
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
-        helper.setValue(new Object() {
+        helper.setValue(
+                        new Comparable() {
                             final UrlWriterTag t = UrlWriterTag.this;
                             public String toString() {
                                 try {
-                                    return t.getUrl();  
+                                    String string = t.getUrl();
+                                    log.info("Getting value " + string + " because " + Logging.stackTrace(10));
+                                    return string;  
                                 } catch (JspTagException e){
                                     throw new RuntimeException(e);
                                 }
                                 
+                            }
+                            public int compareTo(Object o) {
+                                return toString().compareTo(Casting.toString(o));
                             }
                         });
         return EVAL_BODY;
@@ -57,14 +57,13 @@ public class UrlWriterTag extends UrlTag  implements org.mmbase.bridge.jsp.tagli
 
 
     public int doEndTag() throws JspTagException {
-        helper.overrideWrite(false);
-
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), getUrl(false, false));  // write it as cleanly as possible in the context.
         } 
-        doAfterBodySetValue();
+        helper.doEndTag();
         extraParameters = null;
-        return helper.doEndTag();
+        return javax.servlet.jsp.tagext.BodyTagSupport.EVAL_PAGE;
+        
     }
 
     public int doAfterBody() throws JspException {
