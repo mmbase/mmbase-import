@@ -468,7 +468,7 @@ public class CDTracks extends MMObjectBuilder {
 			val=getHTML(val);
 			return(val);
 		} 
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 

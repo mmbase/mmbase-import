@@ -24,6 +24,11 @@ import org.mmbase.module.builders.*;
  */
 public class EncodeHandler implements Runnable {
 
+	private String 	classname = getClass().getName();
+	private boolean debug = false;
+	private void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
+
+
 	Thread kicker = null;
 	EncodeCop parent;
 	MMObjectNode node;
@@ -129,49 +134,97 @@ public class EncodeHandler implements Runnable {
 		System.out.println("EncodeHandler g2encoder started");
 
 		g2encoders bul=(g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");	
-		MMObjectNode g2node=bul.getNode(2483396);
-		if (!g2node.getStringValue("state").equals("waiting")) {
-			g2node=bul.getNode(2477342);
-		}
-		if (g2node.getStringValue("state").equals("waiting")) {
-			node.setValue("status",2);
-			node.commit();
 
-			int id=node.getIntValue("id");	
+		// MMObjectNode g2node=bul.getNode(2483396);
+		// MMObjectNode g2node=bul.getNode(2496582);
 
-			// hack should move to the real encoder to create the dir ?
+		int 	number	= -1;
+		String snumber = bul.getNumberFromName("noise1");
+		MMObjectNode g2node	= null;
 
-			File file = new File("/data/audio/ra/"+id);
-			try {
-				if (file.mkdir()) {
-				}
-			} catch (Exception f) {
+		if( snumber != null && !snumber.equals(""))
+		{	
+			try
+			{
+				number = Integer.parseInt( snumber );	
+				if( number > 0 )
+				{
+					g2node=bul.getNode(number);
+					if( g2node != null )
+					{
+						if (!g2node.getStringValue("state").equals("waiting")) {
+							snumber = bul.getNumberFromName("beep1");
+							if( snumber != null && !snumber.equals(""))
+							{
+								try
+								{	
+									number=Integer.parseInt( snumber );
+									if( number > 0 )
+									{
+										g2node=bul.getNode(number);
+										if( g2node == null )
+										{
+											debug("doG2Encode(): ERROR: snumber("+snumber+"), number("+number+") no node found for beep1!");
+										}
+
+									} else debug("doG2Encode(): ERROR: snumber("+snumber+"), number("+number+") not a good nodenumber for beeep1!");
+									
+								} catch( NumberFormatException e ){
+									debug("doG2Encode(): ERROR: number("+snumber+") not a real number for beep1!");
+								}
+							} else debug("doG2Encode(): ERROR: no number("+snumber+") found for beep1!");
+						}
+					} else debug("doG2Encode(): ERROR: no node found for this number("+number+") for noise1)!");	
+				} else debug("doG2Encode(): ERROR: snumber("+snumber+"), number("+number+") not a good nodenumber for noise1!");	
+			} catch( NumberFormatException e ) {
+				debug("doG2Encode(): ERROR: number("+snumber+") not a real number!");	
 			}
+		} else debug("doG2Encode(): ERROR: no number("+snumber+") found for noise1!");	
+
+
+		if( g2node != null )
+		{
+			if (g2node.getStringValue("state").equals("waiting")) {
+				node.setValue("status",2);
+				node.commit();
 	
-			String params="inputname=/data/audio/wav/"+id+".wav outputname=/data/audio/ra/"+id+"/surestream.rm sureStream=true encodeAudio=true forceOverwrite=true audioFormat=\"stereo music\"";
-			g2node.setValue("info",params);
-			g2node.setValue("state","encode");
-			g2node.commit();	
-
-			boolean changed=false;
-			MMObjectNode newnode=null;
-			while (!changed) {	
-				parent.Vwms.mmb.mmc.waitUntilNodeChanged(g2node);
-
-				newnode=bul.getNode(g2node.getIntValue("number"));
-
-				System.out.println("NEWNODE="+newnode);
-				String state=newnode.getStringValue("state");
-				if (state.equals("waiting")||state.equals("error")) changed=true;
+				int id=node.getIntValue("id");	
+	
+				// hack should move to the real encoder to create the dir ?
+	
+				File file = new File("/data/audio/ra/"+id);
+				try {
+					if (file.mkdir()) {
+					}
+				} catch (Exception f) {
+				}
+		
+				String params="inputname=/data/audio/wav/"+id+".wav outputname=/data/audio/ra/"+id+"/surestream.rm sureStream=true encodeAudio=true forceOverwrite=true audioFormat=\"stereo music\"";
+				g2node.setValue("info",params);
+				g2node.setValue("state","encode");
+				g2node.commit();	
+	
+				boolean changed=false;
+				MMObjectNode newnode=null;
+				while (!changed) {	
+					parent.Vwms.mmb.mmc.waitUntilNodeChanged(g2node);
+	
+					newnode=bul.getNode(g2node.getIntValue("number"));
+	
+					debug("NEWNODE="+newnode);
+					String state=newnode.getStringValue("state");
+					if (state.equals("waiting")||state.equals("error")) changed=true;
+				}
+	
+				// asume all went oke for now
+				node.setValue("url","F=/"+id+"/surestream.rm H1=station.vpro.nl");
+				node.setValue("status",3);
+				node.setValue("cpu","twohigh");
+				node.commit();
 			}
-
-			// asume all went oke for now
-			node.setValue("url","F=/"+id+"/surestream.rm H1=station.vpro.nl");
-			node.setValue("status",3);
-			node.setValue("cpu","twohigh");
-			node.commit();
+			debug("doG2Encode(): EncodeHandler done ");
 		}
-		System.out.println("EncodeHandler done ");
+		else debug("doG2Encode(): ERROR: No encoders found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 	}
 
 	public MMObjectNode addRawAudio(int id, int status, int format, int speed, int channels) {

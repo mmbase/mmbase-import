@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
-	$Id: MultiRelations.java,v 1.5 2000-03-09 10:07:14 wwwtech Exp $
+	$Id: MultiRelations.java,v 1.6 2000-03-20 13:17:30 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/03/09 10:07:14  wwwtech
+	Rico: Fixed multirelations so where clauses can contain similar tablenames ie like program and subprogram. This would go wrong with the old version
+	
 	Revision 1.4  2000/03/08 14:20:26  wwwtech
 	Rico: zapped several old unused methods
 	
@@ -35,7 +38,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.5 2000-03-09 10:07:14 wwwtech Exp $
+ * @version $Id: MultiRelations.java,v 1.6 2000-03-20 13:17:30 wwwtech Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -136,6 +139,8 @@ public class MultiRelations extends MMObjectBuilder {
 				node.prefix="";
 				return(o);
 			}
+		} else {
+			super.getValue(node,fieldName);
 		}
 		return(null);
 	}
@@ -239,7 +244,7 @@ public class MultiRelations extends MMObjectBuilder {
 					fieldname=rd.getColumnName(i);	
 					fieldtype=rd.getColumnTypeName(i);	
 					node=database.decodeDBnodeField(node,fieldtype,fieldname,rs,i,prefix);
-					//if (debug) debug("Node="+node);
+					if (debug) debug("Node="+node);
 				}
 				// clear the changed signal
 				//node.clearChanged(); // huh ?

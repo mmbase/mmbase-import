@@ -22,7 +22,7 @@ import org.mmbase.util.*;
 public class Jumpers extends MMObjectBuilder {
 
 	private String classname = getClass().getName();
-	private boolean debug = false;
+	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 
 	LRUHashtable jumpCache = new LRUHashtable(1000);

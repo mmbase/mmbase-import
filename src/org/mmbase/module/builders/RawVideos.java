@@ -206,7 +206,7 @@ public class RawVideos extends MMObjectBuilder {
 				default	: return ("onbepaald");
 			}
 		}
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 

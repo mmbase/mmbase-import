@@ -1,6 +1,6 @@
 /*
 
-$Id: MMServers.java,v 1.5 2000-03-13 10:41:11 wwwtech Exp $
+$Id: MMServers.java,v 1.6 2000-03-20 13:17:29 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/13 10:41:11  wwwtech
+Rico: increased service timeout to 15 minutes
+
 Revision 1.4  2000/03/07 16:54:37  wwwtech
 Rico: added extra debug
 
@@ -34,7 +37,7 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.5 $ $Date: 2000-03-13 10:41:11 $
+ * @version $Revision: 1.6 $ $Date: 2000-03-20 13:17:29 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -92,7 +95,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 			String tmp=""+(now-then)+"sec";
 			return(tmp);
 		}
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 	public void probeCall() {
