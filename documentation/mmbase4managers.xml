@@ -1,9 +1,5 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<?xml-stylesheet type="text/css"
-href="file:/C:/xxe/css/docbook.css"
-?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
-"file:/C:/xxe/dtd/docbook/docbookx.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article
 ><title
 >Running MMBase in your organization (a.k.a. MMBase for managers)<revhistory
