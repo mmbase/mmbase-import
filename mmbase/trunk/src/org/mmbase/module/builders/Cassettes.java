@@ -49,6 +49,6 @@ public class Cassettes extends MMObjectBuilder {
 	}
 
 	public String getDefaultUrl(int src) {
-		return("/winkel/cassettes.shtml?"+src);
+		return("/winkel/cassette.shtml?"+src);
 	}
 }
