@@ -192,7 +192,7 @@ public class RelDef extends MMObjectBuilder {
 	try {
 	    con=mmb.getConnection();
 	    stmt=con.createStatement();
-	    ResultSet rs=stmt.executeQuery("select number from "+getFullTableName()+" where sname='"+name+"'");
+	    ResultSet rs=stmt.executeQuery("select "+mmb.getDatabase().getNumberString()+" from "+getFullTableName()+" where sname='"+name+"'");
 	    if (rs.next()) {
 		int i=rs.getInt(1);
 		return i;
