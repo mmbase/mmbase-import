@@ -209,6 +209,38 @@ public class MediaSources extends MMObjectBuilder {
         return  serverObj.toString();
     }
 
+    /**
+     * create a new mediasource, and relate it with specified mediafragment.
+     *
+     * @param mediafragment the media fragment to which this source belongs
+     * @param format the format of the source (Real, Mp3)
+     * @param channels stereo/mono
+     * @param owner creator of the new object
+     * @return the new <code>MediaSource</code>
+     */
+    public MMObjectNode createSource(MMObjectNode mediafragment, int status, int format, int speed, int channels, String owner) {
+        // creating media source
+        MMObjectNode source = getNewNode(owner);
+        source.setValue("status",status);
+        source.setValue("format",format);
+        source.setValue("speed",speed);
+        source.setValue("channels",channels);
+        source.insert(owner);
+        
+        // creating relation between media source and media fragment
+        MMObjectNode insrel = mmb.getInsRel().getNewNode("MediaSync");
+        insrel.setValue("snumber", source.getIntValue("number"));
+        insrel.setValue("dnumber", mediafragment.getIntValue("number"));
+        insrel.setValue("rnumber", mmb.getInsRel().oType);
+        int ret = insrel.insert(owner);
+        if(ret<0) {
+            log.error("Cannot create relation between mediafragment and mediasource "+insrel);
+        } else {
+            log.debug("created "+insrel);
+        }
+        
+        return source;
+    }
 
 
     /**
