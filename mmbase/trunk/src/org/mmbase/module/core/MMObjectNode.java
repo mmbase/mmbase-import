@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.65 $ $Date: 2002-03-20 11:06:51 $
+ * @version $Revision: 1.66 $ $Date: 2002-03-20 11:20:12 $
  */
 
 public class MMObjectNode {
@@ -1262,7 +1262,7 @@ public class MMObjectNode {
             String conversion = parent.getInitParameter(propertyName);
             if(conversion == null) {                
                 conversion = "MMXF_POOR";
-                log.warn("didnt know how to convert a string to xml for xml field: '" + fieldName + "' using the default: '" + conversion + "'");
+                log.warn("property: '"+propertyName+"' for builder: '"+parent.getTableName()+"' was not set, converting string to xml for field: '" + fieldName + "' using the default: '" + conversion + "'.");
             }
             value = org.mmbase.util.Encode.decode(conversion, (String) value);
         }        
