@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -19,11 +19,17 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Daniel Ockeloen
  * @version 12 Mar 1997
  */
 public class RawVideos extends MMObjectBuilder {
+
+    private static Logger log = Logging.getLoggerInstance(RawVideos.class.getName()); 
+
  	public boolean replaceCache=true;
 
 	public RawVideos() {
@@ -40,7 +46,7 @@ public class RawVideos extends MMObjectBuilder {
 		m.mmobjs.put(tableName,this);
 		if (getMachineName().equals("station") || getMachineName().equals("noise") || getMachineName().equals("beep") || getMachineName().equals("sjouw")) {
 		} else {
-			System.out.println("RawVideos -> Probe NOT started for rawvideos");
+			log.error("RawVideos -> Probe NOT started for rawvideos");
 		}
 	}
 */
@@ -154,7 +160,7 @@ public class RawVideos extends MMObjectBuilder {
 		videos=search("WHERE id="+id);
 		while(videos.hasMoreElements()) {
 			node=(MMObjectNode)videos.nextElement();
-			System.out.println("RawVideos -> Zapping "+node.getIntValue("number")+","+node.getStringValue("url"));
+			log.info("Zapping "+node.getIntValue("number")+","+node.getStringValue("url"));
 			removeRelations(node);
 			removeNode(node);
 			zapPhysical(node);
@@ -241,14 +247,14 @@ public class RawVideos extends MMObjectBuilder {
 
 		f=new File(path,name);
 		if (f.isDirectory()) {
-			System.out.println("Removing dir "+f.getPath());
+			log.info("Removing dir "+f.getPath());
 			if (!f.delete()) {
-				System.out.println("Can't delete directory "+f.getPath());
+				log.error("Can't delete directory "+f.getPath());
 			}
 		} else {
-			System.out.println("Removing file "+f.getPath());
+			log.info("Removing file "+f.getPath());
 			if (!f.delete()) {
-				System.out.println("Can't delete file "+f.getPath());
+				log.error("Can't delete file "+f.getPath());
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -17,10 +17,16 @@ import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  */
 
 public class Statistics extends MMObjectBuilder {
+
+    private static Logger log = Logging.getLoggerInstance(Statistics.class.getName()); 
+    
 	LRUHashtable shadowsCache=new LRUHashtable(250);
 	int saveDelay=0;
 	boolean processingDirty=false;
@@ -53,19 +59,19 @@ public class Statistics extends MMObjectBuilder {
 	/**
 	*/
 	public Hashtable getShadows (String number) {
-		//System.out.println ("=====> ENTER: getShadows (" + number + ")");
+		//log.info("=====> ENTER: getShadows (" + number + ")");
 
 		Hashtable hh = (Hashtable)(shadowsCache.get (number));
 	
 		if (hh == null) {
-			//System.out.println ("=====> Shadows NOT in cache, getting them from database.");
+			//log.info("=====> Shadows NOT in cache, getting them from database.");
 			Vector shadows = ((StatisticsShadow)mmb.getMMObject ("sshadow")).searchVector("parent=E"+number);
 			hh = vector2hashtable (shadows);
-			//System.out.println ("=====> Got shadows from database: " + hh);
+			//log.info("=====> Got shadows from database: " + hh);
 			shadowsCache.put (number, hh);
-		} //else System.out.println ("=====> Found shadows in cache: " + hh);
+		} //else log.info("=====> Found shadows in cache: " + hh);
 	
-		//System.out.println ("=====> LEAVE: getShadows ()");
+		//log.info("=====> LEAVE: getShadows ()");
 	
 		return (hh);
 	}
@@ -74,11 +80,11 @@ public class Statistics extends MMObjectBuilder {
 	/**
 	*/
 	public void delShadows (String number) {
-		//System.out.println ("=====> ENTER: delShadows (" + number + ")");
+		//log.info("=====> ENTER: delShadows (" + number + ")");
 		Hashtable hh = (Hashtable)(shadowsCache.get (number));
 	
 		if (hh != null) {
-			//System.out.println ("=====> Deleting shadows of parent " + number + " from cache.");
+			//log.info("=====> Deleting shadows of parent " + number + " from cache.");
 			shadowsCache.remove(number);
 		}
 	}
@@ -140,7 +146,7 @@ public class Statistics extends MMObjectBuilder {
 	 *
  	*/
 	public synchronized String setCount (String number, int incr) {
-		// System.out.println("Number=" + number + ", increase=" + incr);
+		// log.info("Number=" + number + ", increase=" + incr);
 
 		try {
 		MMObjectNode stats = getNode (number);
@@ -169,14 +175,14 @@ public class Statistics extends MMObjectBuilder {
 			int curSliceBegin = stats.getIntValue ("timeslice");
 			int hits          = stats.getIntValue ("count");
 	
-			// System.out.println("Current statistics begin is " + (statsStart + curSliceBegin));
-			// System.out.println("Hit came on time " + hitTime);
+			// log.info("Current statistics begin is " + (statsStart + curSliceBegin));
+			// log.info("Hit came on time " + hitTime);
 	
 			if ((nrOfSlices < 1) || ((hitTime >= statsStart + curSliceBegin) && (hitTime < (statsStart + curSliceBegin + interval)))) { // This statistics-node has no shadow-statistics OR hit falls in current slice
 				hits += incr;
 				stats.setValue ("count", hits);
 				if (!dirty.contains(stats)) dirty.addElement(stats);
-				// System.out.println("Increased node " + number + " to " + hits);
+				// log.info("Increased node " + number + " to " + hits);
 				return ("");
 			}
 			int curSliceNr = (curSliceBegin / interval) % nrOfSlices;
@@ -191,7 +197,7 @@ public class Statistics extends MMObjectBuilder {
 				MMObjectNode nowSlice = getSlice (number,curSliceNr);
 	
 				if (nowSlice == null) { // Node doesn't exist, so we have to make it
-					// System.out.println("Slice " + curSliceNr + " doesn't exist yet... making it");
+					// log.info("Slice " + curSliceNr + " doesn't exist yet... making it");
 					StatisticsShadow ssbuild = ((StatisticsShadow)mmb.getMMObject ("sshadow"));
 					nowSlice = ssbuild.getNewNode ("logger");
 					nowSlice.setValue ("parent", java.lang.Integer.parseInt (number));
@@ -204,14 +210,14 @@ public class Statistics extends MMObjectBuilder {
 					int id = ssbuild.insert ("logger", nowSlice); 
 					delShadows(number);
 				} else {
-					// System.out.println("Changing values of existing slice " + curSliceNr);
+					// log.info("Changing values of existing slice " + curSliceNr);
 					nowSlice.setValue ("start", curSliceBegin);
 					nowSlice.setValue ("stop", curSliceBegin + interval - 1);
 					nowSlice.setValue ("count", stats.getIntValue ("count"));
 					if (!dirty.contains(nowSlice)) dirty.addElement(nowSlice);
 				}
 			} 
-			// else System.out.println("Current stats have no hits, so no need to store it");
+			// else log.info("Current stats have no hits, so no need to store it");
 	
 			/*--------------------------------------------------------------
 			 * Update the "current" statistics.
@@ -243,17 +249,17 @@ public class Statistics extends MMObjectBuilder {
 				MMObjectNode s = getSlice (number,fillSliceNr);
 	
 				if (s != null) { // Node exists in database, so we have to reset it to new values
-					//System.out.println("Resetting values of slice " + fillSliceNr + " (new begin = " + fillSliceBegin + ")");
+					//log.info("Resetting values of slice " + fillSliceNr + " (new begin = " + fillSliceBegin + ")");
 					resetShadow (s, fillSliceBegin, fillSliceBegin + interval - 1);
 					if (!dirty.contains (s)) dirty.addElement (s);
 				} 
-				// else System.out.println("Skipping slice " + fillSliceNr + ", begin should have been " + fillSliceBegin);
+				// else log.info("Skipping slice " + fillSliceNr + ", begin should have been " + fillSliceBegin);
 			}
 	
 			return ("");		
 		}
 		/* else */
-		//System.out.println("No Stats node");
+		//log.info("No Stats node");
 		return (null);
 		} catch(Exception re) {
 			re.printStackTrace();
@@ -294,12 +300,12 @@ public class Statistics extends MMObjectBuilder {
 			// If node exists, check its slice-number of the node found with the requested slice-number
 			if (node != null) tmp = node.getIntValue ("slicenumber");
 	
-			//if (tmp == -1) debug ("Slice " + slice + " is not available");
-			//else debug ("Slice " + slice + " Tmp " + tmp + " (hashed)");
+			//if (tmp == -1) log.debug("Slice " + slice + " is not available");
+			//else log.debug("Slice " + slice + " Tmp " + tmp + " (hashed)");
 	
 			return node;
 		} else {
-			//debug ("getSlice didn't get a Hashtable from getShadows");
+			//log.debug("getSlice didn't get a Hashtable from getShadows");
 			return(null);
 		}
 	}
@@ -328,7 +334,7 @@ public class Statistics extends MMObjectBuilder {
 			// Process the (copied) dirty elements
 			if (proc!=null) {
 				MMObjectNode node;
-				// System.out.println("Stats -> Updating "+proc.size()+" nodes");
+				// log.info("Stats -> Updating "+proc.size()+" nodes");
 				while (proc.size()>0) {
 					node=(MMObjectNode)proc.elementAt(0);
 					node.commit();
@@ -338,7 +344,7 @@ public class Statistics extends MMObjectBuilder {
 			}
 			processingDirty=false;
 		} else {
-			System.out.println("Stats -> CheckDirty while Processing");
+			log.info("CheckDirty while Processing");
 		}
 	}
 

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -18,15 +18,21 @@ import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.builders.Properties;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Rico Jansen
  */
 
 public class MediaCheck extends Vwm {
-boolean firstprobe=true;
+
+    private static Logger log = Logging.getLoggerInstance(MediaCheck.class.getName()); 
+
+    boolean firstprobe=true;
 
 	public MediaCheck() {
-		System.out.println("VWM MediaCheck loaded");
+		log.info("VWM MediaCheck loaded");
 	}
 
 	public boolean performTask(MMObjectNode node) {
@@ -40,8 +46,8 @@ boolean firstprobe=true;
 				doMediaCheck(node);
 				rtn=true;
 			} catch (Exception e) {
-				System.out.println("MediaCheck exception"+e);
-				e.printStackTrace();
+				log.error("exception " + e);
+				log.error(Logging.stackTrace(e));
 				rtn=false;
 			}
 		}
