@@ -95,10 +95,11 @@ MMCI (bridge) New Features:
 -------------------
 Taglib New Features:
 -------------------
+[1.7.2]
+- #6582 Wish: lacking support for 'relativetime' guitype
 [1.7.1]
 - #6441 container attribute missing on function-tags.
 - #6510 mm:relatednodes missing path attribute (also fixed for mm:listnodes)
-
 [1.7.0]
 - Content-Tag, which provides default escaping behaviour,
   postprocessing functionality, and content-type information. 
@@ -131,11 +132,14 @@ Taglib New Features:
 -------------------------
 Editwizards New Features:
 -------------------------
+[1.7.2]
+- Extending the (search)list of the editwizards to show more than 10
+  pages and to show more paging information (i.e. number of items on
+  page and number of pages found). 
 [1.7.1]
 - You can now use radiobuttons if you use the ftype 'radio' (like an
   enum), and checkboxes (for values 1/0) if you use the ftype
-  "checkbox". 
-
+  "checkbox".
 [1.7.0]
 - Multilevel queries can be used to fill optionlists
 
@@ -159,6 +163,13 @@ Generic Bug Fixes:
 [1.7.2]
 - #6254 searchquery Fieldaliases converted to lowercase in result of aggregating query. 
 - #6570 Multicast does not refresh reldef and oalias caches 
+- #6583 code does not check key == null
+- #6578 does not implement nodeRemoteChanged
+- EmailSendProbe: mailtime now may be null. Rewrote deprecated
+  search() method to searchQuery and added constraint to match
+  null-values.
+- Imagemagic: Make ImageMagick read text from a temporary file to make non-ASCII
+  characters work on Windows. 
 [1.7.1]
 - #6566 CKeyNumberCache not invalidated on 'remote' servers. 
 - #6548 'blob converting' tool is not synchronized, can run more than once.   	
@@ -279,6 +290,9 @@ Editwizard Bug Fixes:
 [1.7.2]
 - #6574 LIKE constraint in search-command does not work 
 - #6573 New XSLs ignore 'prompt' s of search command
+- #6580 Can't use quotes in editwizard search
+- #6577 images in editwizard must always be uploaded (also
+        attachments?) added fix for attachments 
 
 [1.7.1] 
 - #6420 List in list, subitems are not loaded on add. Also remove, readd doesn't work.
