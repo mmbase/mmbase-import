@@ -50,7 +50,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.181.2.12 2003-02-13 17:44:47 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.181.2.13 2003-02-14 08:59:34 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
     
@@ -254,16 +254,16 @@ public class MMObjectBuilder extends MMTable {
      */
     private int maxNodesFromQuery = -1;
 
-	/**
-	* Max length of a query, informix = 32.0000 so we assume a bit less for other databases
-	*/
-	private static final int MAX_QUERY_SIZE = 20000;
-
+    /**
+     * Max length of a query, informix = 32.0000 so we assume a bit less for other databases
+     */
+    private static final int MAX_QUERY_SIZE = 20000;
+    
     /**
      * The string that can be used inside the builder.xml as property,
      * to define the maximum number of nodes to return.
      */
-    private static String  MAX_NODES_FROM_QUERY_PROPERY = "max-nodes-from-query";
+    private static String  MAX_NODES_FROM_QUERY_PROPERTY = "max-nodes-from-query";
     
     /**
      * Constructor.
@@ -348,13 +348,13 @@ public class MMObjectBuilder extends MMTable {
         checkAddTmpField("_exists");
         
         // get property dof maximum number of queries..
-        String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERY);
+        String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERTY);
         if(property != null) {
             try {
                 maxNodesFromQuery = Integer.parseInt(property);
                 log.debug(getTableName() + " returns no more than " + maxNodesFromQuery + " records from a query.");
             } catch(NumberFormatException nfe) {
-                log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
+                log.warn("property:" + MAX_NODES_FROM_QUERY_PROPERTY + " contained an invalid integer value:'" + property +"'(" + nfe + ")");
             }
         }
         return true;
