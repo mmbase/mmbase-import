@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.188 2003-08-12 07:59:38 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.189 2003-08-12 17:10:20 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4288,6 +4288,16 @@ The 0 is just counter, which starts at 0 on every page.
       Surrounds a function tag, provides a container for parameters and function results.
     </info>
     <since>MMBase-1.7</since>
+    <attribute>
+      <name>argumentsdefinition</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Fully qualified name of the Argument[] constant defining the arguments of this
+        function. This is probably a temporary solution, because principally it should be possible
+        to obtain this information using only the name of the function.
+      </info>
+    </attribute>
   </tag>
   <tag>
     <name>listnodescontainer</name>
