@@ -108,7 +108,7 @@ public class Controller {
      * @return List of (virtual) MMObjectNode-objects representing the available forums
      *
      */
-    public List getForums() {
+    public static List getForums() {
         List list = new ArrayList();
         VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
 
