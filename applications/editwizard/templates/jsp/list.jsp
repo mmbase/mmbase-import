@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.9 2002-05-17 11:10:54 michiel Exp $
+     * @version  $Id: list.jsp,v 1.10 2002-05-27 09:26:38 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -210,7 +210,7 @@ int currentpage = new Double(Math.floor((start / len))).intValue();
 
 org.w3c.dom.Node pages = doc.createElement("pages");
 Utils.setAttribute(pages, "count", pagecount+"");
-Utils.setAttribute(pages, "currentpage", currentpage+ "");
+Utils.setAttribute(pages, "currentpage", (currentpage+1)+ "");
 docel.appendChild(pages);
 
 if (pagecount>maxpages) {
