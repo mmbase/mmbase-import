@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.66 $ $Date: 2002-03-20 11:20:12 $
+ * @version $Revision: 1.67 $ $Date: 2002-03-21 12:42:45 $
  */
 
 public class MMObjectNode {
@@ -268,7 +268,11 @@ public class MMObjectNode {
         // if we have an XML-dbtype field, we always have to store it inside an Element.
         if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
             log.debug("im called far too often");
-            fieldValue = convertStringToXml(fieldName, (String) fieldValue);
+            Document doc = convertStringToXml(fieldName, (String) fieldValue);
+            if(doc != null) {
+                // store the document inside the field.. much faster...
+                fieldValue = doc;
+            }
         }
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
@@ -539,11 +543,12 @@ public class MMObjectNode {
         }        
         if (!(o instanceof Document)) {
             // do conversion from string to Document thing...
-            // This is still checking code... hope that this will never occur, but im not sure of it...
-            log.warn("Strange, i expected that the field would contain an xml object");
-            o = convertStringToXml(fieldName,  getStringValue(fieldName));
-            // since it wasnt a document, store the Document in the field variable..            
-            values.put(fieldName, o);
+            // log.warn("Strange, i expected that the field would contain an xml object");                        
+            // o = convertStringToXml(fieldName,  getStringValue(fieldName));
+            // if(o != null) {
+            //    values.put(fieldName, o);
+            // }
+            return null;
         }
         return (Document) o;
     }
@@ -1254,19 +1259,65 @@ public class MMObjectNode {
     }
     
     private Document convertStringToXml(String fieldName, String value) {
-        log.debug("converting from string to xml");
+        // when no bytes.. the this function will return null...
+        if(value==null || value.length() <= 0) {
+            log.debug("field was empty");
+            return null;
+        }
+                
+        // value = value.trim();
+        if (value.startsWith("<")) { 
+            // removing doc-headers if nessecary
 
-        // not XML, make it XML, when conversion specified, use it...
-        if (value.indexOf("<") != 0) { 
+            // remove all the <?xml stuff from beginning if there.... 
+            //  <?xml version="1.0" encoding="utf-8"?>
+            if(value.startsWith("<?xml")) {
+                // strip till next ?>
+                int stop = value.indexOf("?>");
+                if(stop > 0) {
+                    value = value.substring(stop + 2).trim();
+                    log.debug("removed <?xml part");
+                }
+                else {
+                    throw new RuntimeException("no ending ?> found in xml:\n" + value);
+                }
+            }
+            else {
+                log.debug("no <?xml thingie found");
+            }
+            
+            // remove all the <!DOCTYPE stuff from beginning if there.... 
+            // <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+            if(value.startsWith("<!DOCTYPE")) {
+                // strip till next >
+                int stop = value.indexOf(">");
+                if(stop > 0) {
+                    value = value.substring(stop + 1).trim();
+                    log.debug("removed <!DOCTYPE part");
+                }
+                else {
+                    throw new RuntimeException("no ending > found in xml:\n" + value);
+                }                
+            }
+            else {
+                log.debug("no <!DOCTYPE thingie found");
+            }            
+        }
+        else {
+            // not XML, make it XML, when conversion specified, use it...
             String propertyName = fieldName + ".xmlconversion";
             String conversion = parent.getInitParameter(propertyName);
             if(conversion == null) {                
-                conversion = "MMXF_POOR";
+                conversion = "MMXF_POOR";                
                 log.warn("property: '"+propertyName+"' for builder: '"+parent.getTableName()+"' was not set, converting string to xml for field: '" + fieldName + "' using the default: '" + conversion + "'.");
             }
+            log.debug("converting the string to something else using conversion: " + conversion);
             value = org.mmbase.util.Encode.decode(conversion, (String) value);
         }        
         
+        if (log.isDebugEnabled()) { 
+            log.trace("using xml string:\n"+value);
+        }    
         // add the header stuff...
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
         String doctype = parent.getField(fieldName).getDBDocType();
@@ -1293,9 +1344,6 @@ public class MMObjectNode {
             documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
             // ByteArrayInputStream?
             // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
-            if (log.isDebugEnabled()) { 
-                log.debug("string -> xml:\n" + value);
-            }
             Document doc = documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding())));
             if(!errorHandler.foundNothing()) {
                 throw new RuntimeException("xml for field with name: '"+fieldName+"' invalid:\n"+errorHandler.getMessageBuffer()+"for xml:\n"+value);
@@ -1321,6 +1369,13 @@ public class MMObjectNode {
     
     private String convertXmlToString(String fieldName, Document xml) {
         log.debug("converting from xml to string");
+        
+        // check for null values
+        if(xml == null) {
+            log.debug("field was empty");
+            // string with null isnt allowed in mmbase...
+            return "";            
+        }
         
         // check if we are using the right DOC-type for this field....
         String doctype = parent.getField(fieldName).getDBDocType();
