@@ -4,7 +4,7 @@
    <articleinfo>
     <title>Documentation Overview</title>
     <date>3 December 2002</date>
-    <edition>$Id: index.xml,v 1.34 2003-07-24 12:59:13 rob Exp $</edition>
+    <edition>$Id: index.xml,v 1.35 2003-07-24 13:42:26 rob Exp $</edition>
     <legalnotice>
       <para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
       <para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -103,22 +103,16 @@
       </listitem>
       <listitem>
         <para>
-          <ulink url="informationanalysts/relations.html" id="relations">
-            MMBase relations
-          </ulink>
-          <ulink url="informationanalysts/relations.pdf" id="relations.pdf">
-           (pdf)
-          </ulink>
+          MMBase relations
+          (<ulink url="informationanalysts/relations.html" id="relations">HTML</ulink>, 
+          <ulink url="informationanalysts/relations.pdf" id="relations.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="informationanalysts/applications.html" id="applications">
-            Applications documentation
-          </ulink>
-          <ulink url="informationanalysts/applications.pdf" id="applications.pdf">
-           (pdf)
-          </ulink>
+          Applications documentation
+          (<ulink url="informationanalysts/applications.html" id="applications">HTML</ulink>, 
+          <ulink url="informationanalysts/applications.pdf" id="applications.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
@@ -127,22 +121,16 @@
       </listitem>
       <listitem>
         <para>
-          <ulink url="administrators/security-framework.html" id="securityframework">
-            The MMBase Security Framework
-          </ulink>
-          <ulink url="administrators/security-framework.pdf" id="securityframework.pdf">
-           (pdf)
-          </ulink>
+          The MMBase Security Framework
+          (<ulink url="administrators/security-framework.html" id="securityframework">HTML</ulink>, 
+          <ulink url="administrators/security-framework.pdf" id="securityframework.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="administrators/context-security.html" id="securitycontext">
-            Installing and using Context Security
-          </ulink>
-          <ulink url="administrators/context-security.pdf" id="securitycontext.pdf">
-           (pdf)
-          </ulink>
+          Installing and using Context Security
+          (<ulink url="administrators/context-security.html" id="securitycontext">HTML</ulink>, 
+          <ulink url="administrators/context-security.pdf" id="securitycontext.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
@@ -156,32 +144,23 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="backenddevelopers/codingstandards.html" id="codingstandards">
-            MMBase Coding Standards
-          </ulink>
-          <ulink url="backenddevelopers/codingstandards.pdf" id="codingstandards.pdf">
-           (pdf)
-          </ulink>
+          MMBase Coding Standards
+          (<ulink url="backenddevelopers/codingstandards.html" id="codingstandards">HTML</ulink>, 
+          <ulink url="backenddevelopers/codingstandards.pdf" id="codingstandards.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="backenddevelopers/rmmci.html" id="rmmci">
-            Remote MMBase Cloud Interface
-          </ulink>
-          <ulink url="backenddevelopers/rmmci.pdf" id="rmmci.pdf">
-           (pdf)
-          </ulink>
+          Remote MMBase Cloud Interface
+          (<ulink url="backenddevelopers/rmmci.html" id="rmmci">HTML</ulink>, 
+          <ulink url="backenddevelopers/rmmci.pdf" id="rmmci.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="backenddevelopers/storage.html" id="storage">
-            Storage layer
-          </ulink>
-          <ulink url="backenddevelopers/storage.pdf" id="storage.pdf">
-           (pdf)
-          </ulink>
+          Storage layer
+          (<ulink url="backenddevelopers/storage.html" id="storage">HTML</ulink>, 
+          <ulink url="backenddevelopers/storage.pdf" id="storage.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
@@ -190,12 +169,9 @@
       </listitem>
       <listitem>
         <para>
-          <ulink url="backenddevelopers/dbsq.html" id="dbsqintro">
-            SearchQuery introduction
-          </ulink>
-          <ulink url="backenddevelopers/dbsq.pdf" id="dbsqintro.pdf">
-           (pdf)
-          </ulink>
+          SearchQuery introduction
+          (<ulink url="backenddevelopers/dbsq.html" id="dbsqintro">HTML</ulink>, 
+          <ulink url="backenddevelopers/dbsq.pdf" id="dbsqintro.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
@@ -205,39 +181,29 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="frontenddevelopers/taglib/taglib-tutorial.html" id="taglibtutorial">
-            Taglib Tutorial
-          </ulink>
-          <ulink url="frontenddevelopers/taglib/taglib-tutorial.pdf" id="taglibtutorial.pdf">
-           (pdf)
-          </ulink>
+          Taglib Tutorial
+          (<ulink url="frontenddevelopers/taglib/taglib-tutorial.html" id="taglibtutorial">HTML</ulink>, 
+          <ulink url="frontenddevelopers/taglib/taglib-tutorial.pdf" id="taglibtutorial.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="frontenddevelopers/taglib/include.html" id="includedocs">
-            MMBase Include / TreeInclude / LeafInclude
-          </ulink>
-          <ulink url="frontenddevelopers/taglib/include.pdf" id="includedocs.pdf">
-            (pdf)
-          </ulink>
+          MMBase Include / TreeInclude / LeafInclude
+          (<ulink url="frontenddevelopers/taglib/include.html" id="includedocs">HTML</ulink>, 
+          <ulink url="frontenddevelopers/taglib/include.pdf" id="includedocs.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="frontenddevelopers/editwizard/editwizard-doc.html" id="editwizarddoc">
-            Editwizards
-          </ulink>
-          <ulink url="frontenddevelopers/editwizard/editwizard-doc.pdf" id="editwizarddoc.pdf">
-           (pdf)
-          </ulink>
+          Editwizards
+          (<ulink url="frontenddevelopers/editwizard/editwizard-doc.html" id="editwizarddoc">HTML</ulink>, 
+          <ulink url="frontenddevelopers/editwizard/editwizard-doc.pdf" id="editwizarddoc.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="frontenddevelopers/editwizard/editwizard-reference.html" id="editwizardreference">
-            Editwizard Syntax Reference
-          </ulink>
+          Editwizard Syntax Reference
+          (<ulink url="frontenddevelopers/editwizard/editwizard-reference.html" id="editwizardreference">HTML</ulink>)
           <!--
           <ulink url="frontenddevelopers/editwizard/editwizard-reference.pdf" id="editwizardreference.pdf">
            (pdf)
@@ -247,55 +213,56 @@
       </listitem>
       <listitem>
         <para>
-          <ulink url="frontenddevelopers/dovexmlapi.html" id="dovexmlapi">
-            Dove XML API
-          </ulink>
-          <ulink url="frontendevelopers/dovexmlapi.pdf" id="dovexmlapi.pdf">
-           (pdf)
-          </ulink>
+          Dove XML API
+          (<ulink url="frontenddevelopers/dovexmlapi.html" id="dovexmlapi">HTML</ulink>, 
+          <ulink url="frontendevelopers/dovexmlapi.pdf" id="dovexmlapi.pdf">PDF</ulink>)
         </para>
       </listitem>
       <listitem>
-        <para>MMBase taglib reference (<ulink url="reference/taglib/toc.html" id="taglibreferencejsp">JSP</ulink> <ulink url="reference/mmbase-taglib.html" id="taglibreferencehtml">HTML</ulink>) </para>
+        <para>MMBase taglib reference 
+	(<ulink url="reference/taglib/toc.html" id="taglibreferencejsp">JSP</ulink>,  
+	<ulink url="reference/mmbase-taglib.html" id="taglibreferencehtml">HTML</ulink>) 
+	</para>
       </listitem>
       <listitem>
-        <para>MMBase community taglib reference (<ulink url="reference/community-taglib/toc.html" id="taglibcommunityjsp">JSP</ulink> <ulink url="reference/mmcommunity-taglib.html" id="taglibcommunityhtml">HTML</ulink>)</para>
+        <para>MMBase community taglib reference 
+	(<ulink url="reference/community-taglib/toc.html" id="taglibcommunityjsp">JSP</ulink> 
+	<ulink url="reference/mmcommunity-taglib.html" id="taglibcommunityhtml">HTML</ulink>)
+	</para>
       </listitem>
       <listitem>
-        <para><ulink url="frontenddevelopers/builders/index.html" id="standardbuilders">MMBase standard builders</ulink></para>
+        <para>
+         MMBase standard builders
+	(<ulink url="frontenddevelopers/builders/index.html" id="standardbuilders">HTML</ulink>)
+        </para>
       </listitem>
       <listitem>
-        <para><ulink url="mmci/api/index.html" id="bridgeapi">Bridge (MMCI) API documentation</ulink></para>
+        <para>
+        Bridge (MMCI) API documentation
+        (<ulink url="mmci/api/index.html" id="bridgeapi">HTML</ulink>)</para>
       </listitem>
       <listitem>
         <!-- old format (mmdocs) documentation -->
-        <para><ulink url="frontenddevelopers/SCAN1_0.html" id="veryoldanddeprecatedscan">SCAN</ulink></para>
+        <para>
+        SCAN
+        (<ulink url="frontenddevelopers/SCAN1_0.html" id="veryoldanddeprecatedscan">HTML</ulink>)</para>
       </listitem>
       <listitem>
         <para>XML Importer (TCP 2.0)</para>
         <para>
-          <ulink url="frontenddevelopers/xmlimporter/overview.html" id="xmlimporteroverview">
-            Overview
-          </ulink>
-          <ulink url="frontenddevelopers/xmlimporter/overview.pdf" id="xmlimporteroverview.pdf">
-           (pdf)
-          </ulink>
+          Overview
+          (<ulink url="frontenddevelopers/xmlimporter/overview.html" id="xmlimporteroverview">HTML</ulink>, 
+          <ulink url="frontenddevelopers/xmlimporter/overview.pdf" id="xmlimporteroverview.pdf">PDF</ulink>)
         </para>
         <para>
-          <ulink url="frontenddevelopers/xmlimporter/quickstart.html" id="xmlimporterquickstart">
-            Quick start
-          </ulink>
-          <ulink url="frontenddevelopers/xmlimporter/quickstart.pdf" id="xmlimporterquickstart.pdf">
-           (pdf)
-          </ulink>
+          Quick start
+          (<ulink url="frontenddevelopers/xmlimporter/quickstart.html" id="xmlimporterquickstart">HTML</ulink>, 
+          <ulink url="frontenddevelopers/xmlimporter/quickstart.pdf" id="xmlimporterquickstart.pdf">PDF</ulink>)
         </para>
         <para>
-          <ulink url="frontenddevelopers/xmlimporter/cookbook.html" id="xmlimportercookbook">
-            Cook Book
-          </ulink>
-          <ulink url="frontenddevelopers/xmlimporter/cookbook.pdf" id="xmlimportercookbook.pdf">
-           (pdf)
-          </ulink>
+          Cook Book
+          (<ulink url="frontenddevelopers/xmlimporter/cookbook.html" id="xmlimportercookbook">HTML</ulink>, 
+          <ulink url="frontenddevelopers/xmlimporter/cookbook.pdf" id="xmlimportercookbook.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
@@ -305,12 +272,9 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="managers/mmbase4managers.html" id="mmbase4managers">
-            Running MMBase in your organization
-          </ulink>
-          <ulink url="managers/mmbase4managers.pdf" id="mmbase4managers.pdf">
-           (pdf)
-          </ulink>
+          Running MMBase in your organization
+          (<ulink url="managers/mmbase4managers.html" id="mmbase4managers">HTML</ulink>, 
+          <ulink url="managers/mmbase4managers.pdf" id="mmbase4managers.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
@@ -320,22 +284,16 @@
     <itemizedlist>
       <listitem>
         <para>
-          <ulink url="modules/images-and-attachments.html" id="imagesandattachments">
-            Images and Attachments
-          </ulink>
-          <ulink url="modules/images-and-attachments.pdf" id="imagesandattachments.pdf">
-           (pdf)
-          </ulink>
+          Images and Attachments
+          (<ulink url="modules/images-and-attachments.html" id="imagesandattachments">HTML</ulink>, 
+          <ulink url="modules/images-and-attachments.pdf" id="imagesandattachments.pdf">PDF</ulink>)
 					Everything (?)  about these kind of things in MMBase.</para>
       </listitem>
       <listitem>
         <para>
-          <ulink url="modules/i18n.html" id="i18n">
-            MMBase Internationalization and Localization
-          </ulink>
-          <ulink url="modules/i18n.pdf" id="i18n.pdf">
-           (pdf)
-          </ulink>
+          MMBase Internationalization and Localization
+          (<ulink url="modules/i18n.html" id="i18n">HTML</ulink>, 
+          <ulink url="modules/i18n.pdf" id="i18n.pdf">PDF</ulink>)
         </para>
       </listitem>
     </itemizedlist>
