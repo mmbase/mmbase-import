@@ -65,14 +65,14 @@
     with the MMBase content management system, enables page designers in
     developing web pages that retrieve their content from the MMBase system.
     After reading this tutorial and working your way through the examples we
-    hope that share our enthusiasm for the MMBase system and the possibilites
+    hope that share our enthusiasm for the MMBase system and the possibilities
     it offers to page designers.</para>
 
     <section>
       <title>Who should read this tutorial?</title>
 
       <para>This tutorial is aimed at page designers who develop websites
-      using MMBase as the underlying content management system. To succesful
+      using MMBase as the underlying content management system. To successful
       complete this tutorial, you must be proficient with HTML and JSP
       concepts like tags and tag libraries.</para>
     </section>
@@ -87,7 +87,7 @@
 
       <para>To edit your pages you&#39;ll need at least some breed of editor.
       The tutorial makes no assumptions on your tooling. You can edit your
-      pages with your favorite editor, however the tutorial doesn&#39;t
+      pages with your favourite editor, however the tutorial doesn&#39;t
       elaborate on using specific tools for page editing.</para>
     </section>
 
@@ -200,7 +200,7 @@
     content management system, your pages will need access to the content that
     is stored in MMBase. Content in MMBase is stored in a cloud. Within the
     cloud you&#39;ll find nodes. The nodes are the actual pieces of content in
-    MMBase. Nodes are organized in content types and relations between content
+    MMBase. Nodes are organised in content types and relations between content
     types. For example, if you define that every news item you publish on your
     website would contain the news text and an image, then you would have two
     content types in your cloud: content type &#34;news&#34; and content type
@@ -347,7 +347,7 @@
         <para>To make your content portable between databases, you can use
         aliases to refer to your nodes, in stead of absolute numerical node
         numbers. As you transfer content between databases it&#39;s not
-        garanteed that nodes receive the same number, while they always keep
+        guaranteed that nodes receive the same number, while they always keep
         an assigned alias. Usage of aliases will also make your JSP&#39;s
         better readable.</para>
       </tip>
@@ -359,7 +359,7 @@
       is linked to our magazine, or we can use an id which contains the node
       number or the alias as its value. From the previous paragraph we know
       that our magazine has a default alias of &#34;default.mags&#34;.
-      We&#39;ll use that to access it in our JSP. Add the follwing to our JSP:</para>
+      We&#39;ll use that to access it in our JSP. Add the following to our JSP:</para>
 
       <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
 
@@ -563,7 +563,7 @@
       each news node found by MMBase. It would be nice though, if these values
       were presented with a heading for each column. We want this heading to
       appear just once before MMBase start writing out the first news node. To
-      support this behavior, MMBase has a tag &#60;mm:first&#62; that fires
+      support this behaviour, MMBase has a tag &#60;mm:first&#62; that fires
       upon the first entry in the list.</para>
 
       <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
@@ -658,7 +658,7 @@
 &#60;/mm:cloud&#62;</programlisting>
 
       <para>The construction of the URL to access the content of the news
-      items may seem a bit obscure and needs some additonal explanation. First
+      items may seem a bit obscure and needs some additional explanation. First
       we start creation of a default URL by using the &#60;a&#62; tag. In
       stead of hardcoding our &#34;href&#34;, we use data from MMBase by
       letting MMBase create the URL use by using the &#60;mm:url&#62; tag.
@@ -699,7 +699,7 @@
     about this technique.</para>
 
     <warning>
-      <para>When developing new pages you should be very carefull with using
+      <para>When developing new pages you should be very careful with using
       an error page. Where you want elegant error messages once your website
       is in production, you will surely enjoy the full error message when you
       are developing your JSP-templates.</para>
@@ -729,7 +729,7 @@
     and the &#60;mm:import&#62; tags retrieves it again.</para>
 
     <para>Next we use the &#60;mm:node&#62; tag to be able to process the news
-    item that we wish to display. Remeber that by using the $ directive we
+    item that we wish to display. Remember that by using the $ directive we
     don&#39;t actually use that value as the node id, but are referring to a
     variable with that name inside the context.</para>
 
@@ -787,7 +787,7 @@
     a write-tag is a writer too).</para>
 
     <para>But in this case, the write-tag does not have a body, so it writes
-    the field. The whole excercise was only done to avoid writing empty
+    the field. The whole exercise was only done to avoid writing empty
     h3-tags to the page if by change the subtitle field of the news items is
     empty. As you saw, this happens because those h3 tags are inside the
     isnotempty-tag too, so will be skipped if the parent writer tag (the
@@ -969,13 +969,13 @@
       </listitem>
 
       <listitem>
-        <para>Integrate MMBase Tag Library with your favorite page design tool
+        <para>Integrate MMBase Tag Library with your favourite page design tool
         like Macromedia DreamWeaver,</para>
       </listitem>
 
       <listitem>
         <para>Explore the MMBase Tag Library reference guide where all tags
-        are documented and supplied with addtional samples you can try out.</para>
+        are documented and supplied with additional samples you can try out.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -993,7 +993,7 @@
       <para>The first tag which we encountered was the &#39;cloud&#39; tag.
       Every tag that wraps functionality needing a cloud must be inside such a
       cloud tag. Those tags are named &#39;cloudreferrers&#39; (see the taglib
-      referrence for an overview of all cloud referrers).</para>
+      reference for an overview of all cloud referrers).</para>
 
       <para>The cloud tag itself of course then is a &#39;CloudProvider&#39;.
       That seems a bit silly at first, because perhaps you cannot think of
@@ -1016,7 +1016,7 @@
       <para>These relatednodes tags are of course also node providers. They
       provide nodes, based on the reference to another node.</para>
 
-      <para>For node referrer tags it does not matter which tag excactly is
+      <para>For node referrer tags it does not matter which tag exactly is
       the node provider, they only search for the abstract thing which is a
       &#39;node provider&#39;. That&#39;s why a field-tag can be used inside a
       node-tag or a nodelist-tag and so on.</para>
@@ -1060,7 +1060,7 @@
 
       <para>The &#39;id&#39; attributes of tags are also used for something
       else. Namely to construct &#39;taglib variables&#39; about which we will
-      ellaborate in the section <xref endterm="taglibvars.title"
+      elaborate in the section <xref endterm="taglibvars.title"
       linkend="taglibvars" />.</para>
 
       <para>But first we will tell a bit about another very basic
@@ -1202,8 +1202,8 @@
     <section>
       <title>The context tag</title>
 
-      <para>Every mmbase taglib page implicitely has a context of its own, but
-      you can also explicitely define contextes.</para>
+      <para>Every mmbase taglib page implicitly has a context of its own, but
+      you can also explicitly define contexts.</para>
 
       <para>You must know that a context can only contain one instance of a
       variable with a certain name. You will get an error message if you do
@@ -1328,7 +1328,7 @@
 
       <para>We have seen the most natural way to put something in the
       &#39;context&#39;, which is using an &#39;id&#39; on some tag. Putting
-      explicitely something in the context could therefore be done like this:
+      explicitly something in the context could therefore be done like this:
       <programlisting>
 &#60;mm:write value=&#34;hello world&#34; id=&#34;hello&#34; write=&#34;false&#34; /&#62;
 </programlisting></para>
@@ -1375,7 +1375,7 @@
       writer, because that will often also introduce a context tag (when you
       are in a list), and things get a bit messy. So, you can also use the
       $_-variable which is the equivalent of &#60;mm:write /&#62;, but then
-      inside an ttribute. <programlisting>
+      inside an attribute. <programlisting>
 &#60;mm:listnodes type=&#34;news&#34;&#62;
   &#60;mm:field name=&#34;title&#34;&#62;
     &#60;mm:listnodes type=&#34;news&#34; constraints=&#34;title LIKE &#39;$_&#39;&#34;&#62; 
@@ -1392,7 +1392,7 @@
 
     <para>Sometimes the MMBase taglib will not provide enough functionality.
     Since a taglib is always used in a JSP page (this is not so per
-    definition, but practicly, this is always so), it would be only logical to
+    definition, but in practice, this is always so), it would be only logical to
     implement the more complicated things in Java.</para>
 
     <para>For this to be possible most MMBase tags (I think the exceptions are
@@ -1411,11 +1411,11 @@
     declared, which can be inconvenient because then normally you will have to
     cast to the desired type.</para>
 
-    <para>Therefore the tags to which this applies (most noticably all
+    <para>Therefore the tags to which this applies (most noticeably all
     &#39;writer&#39; tags) also feature the &#39;vartype&#39; attribute.
     <programlisting>
 &#60;mm:field name=&#34;size&#34; jspvar=&#34;size&#34; vartype=&#34;float&#34;&#62;
-  Size of the object: &#60;%= size.floatValue() * 1000 %&#62; milimeters.
+  Size of the object: &#60;%= size.floatValue() * 1000 %&#62; millimetres.
 &#60;/mm:field&#62;
 </programlisting></para>
 
@@ -1426,7 +1426,7 @@
 
     <para>The &#39;import&#39; tag is the only tag which does not create the
     jsp-variable in its body (because that is used already for something
-    else). The jspvar of an import tag is availabe <emphasis>after</emphasis>
+    else). The jspvar of an import tag is available <emphasis>after</emphasis>
     the tag. So the import tag provides you a way to create global
     jsp-variables on your page. Global variables are considered bad practice.</para>
   </section>
