@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
  * @author Eduard Witteveen
- * @version $Id: PostgreSQL71.java,v 1.18 2002-10-08 19:04:35 michiel Exp $
+ * @version $Id: PostgreSQL71.java,v 1.19 2002-10-09 09:37:35 michiel Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -301,18 +301,11 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             log.error("sfield was null for builder with name :" + bul);
             return false;
         }
-        // make copy, so changes on the var will not affect the builder
-        sfields = new Vector(sfields);
-
-        // when not a number field, add it... strange that it sometimes happens
-        if(!sfields.contains(getNumberString())) {
-            sfields.add(getNumberString());
-        }
 
         String fieldList=null;
         // process all the fields..
-        for (Enumeration e=sfields.elements();e.hasMoreElements();) {
-            String name=(String)e.nextElement();
+        for (Enumeration e = sfields.elements();e.hasMoreElements();) {
+            String name=((FieldDefs)e.nextElement()).getDBName();
             FieldDefs def = bul.getField(name);
             if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                 // also add explicit the number string to extending table's, this way an index _could_ be created on extending stuff..
@@ -327,7 +320,9 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
                     }
                 }
                 else {
-                    log.trace("field: '" + name + "' from builder: '" + bul.getTableName() + "' is inherited field");
+                    if (log.isDebugEnabled()) {
+                        log.trace("field: '" + name + "' from builder: '" + bul.getTableName() + "' is inherited field");
+                    }
                 }
             }
         }
@@ -633,7 +628,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
             int j=0;
             for (Enumeration e= ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();e.hasMoreElements();) {
-                String key = (String)e.nextElement();
+                String key = ((FieldDefs) e.nextElement()).getDBName();
                 int DBState = node.getDBState(key);
                 if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) )  {
                     if (log.isDebugEnabled()) log.trace("DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
@@ -683,7 +678,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 
         // Append the DB elements to the fieldAmounts String.
         while(fieldLayout.hasMoreElements()) {
-            String key = (String)fieldLayout.nextElement();
+            String key = ((FieldDefs) fieldLayout.nextElement()).getDBName();
             String fieldName = getAllowedField(key);
             int DBState = node.getDBState(key);
             if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT) || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
