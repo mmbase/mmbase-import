@@ -43,7 +43,7 @@ public class Casting {
         if (o instanceof String) {
             return (String)o;
         }
-        if (o == null) {
+        if (o == null || o == MMObjectNode.VALUE_NULL) {
             return "";
         }
         return toStringBuffer(new StringBuffer(), o).toString();
@@ -99,11 +99,13 @@ public class Casting {
      * @since MMBase-1.7
      */
     public static List toList(Object o) {
-        if (o == null)
+        if (o == null) {
             return new ArrayList();
-        if (o instanceof List)
+        } else if (o instanceof List) {
             return (List)o;
-        return StringSplitter.split(toString(o));
+        } else {
+            return StringSplitter.split(toString(o));
+        }
     }
 
     /**
@@ -144,6 +146,8 @@ public class Casting {
         if (obj instanceof byte[]) {
             // was allready unmapped so return the value
             return (byte[])obj;
+        } else if (obj == null || obj == MMObjectNode.VALUE_NULL) {            
+            return new byte[] {};
         } else {
             return toString(obj).getBytes();
         }
