@@ -421,7 +421,7 @@ one or more examplevalue tags is you want to give some example values.
     </info>
     <attribute>
       <name>type</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
@@ -467,6 +467,15 @@ one or more examplevalue tags is you want to give some example values.
       <rtexprvalue>true</rtexprvalue>
     </attribute>
     <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		Reuses a previously defined list. In this way you can use the
+		same result more than once.
+      </info>
+    </attribute>
+    <attribute>
       <name>jspvar</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -490,15 +499,6 @@ one or more examplevalue tags is you want to give some example values.
       not needed to prefix the fieldnames with a nodemanager name.
       By default, the node used is that of the parent node tag.
     </info>
-    <attribute>
-      <name>number</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-        The number attribute overrides the default node for a related tag,
-        using instead retrieving the node from the cloud using the attribute.
-      </info>
-    </attribute>
     <attribute>
       <name>node</name>
       <required>false</required>
@@ -556,6 +556,21 @@ one or more examplevalue tags is you want to give some example values.
       <name>id</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+	  <info>
+		A nodelist can have an id. It can be used in two
+		ways. 'NodeReferrer' tags like 'FieldTag' can use it to refer
+		to a parent, and it will also be used as a key in the
+		Context. 
+      </info>
+    </attribute>
+    <attribute>
+      <name>referid</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+		Reuses a previously defined list. In this way you can use the
+		same result more than once.
+      </info>
     </attribute>
     <attribute>
       <name>jspvar</name>
@@ -1083,11 +1098,13 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       `referid' is used.
       </p>
       <p>
-      If some attribute wants to use the value of an object in
-      the context, and it is an attribute which can refer to the
-      context, then you can use something like
-      ${&lt;context-id;&gt;.&lt;object-id&gt;}. The value of a context
-      variable can be written to the page with the `write' tag.
+      If some attribute wants to use the value of an object in the
+      context, and it is an attribute which can refer to the context,
+      then you can use something like
+      ${&lt;context-id;&gt;.&lt;object-id&gt;}. The 'context-id' is
+      optional when you are in the same context. The value of a
+      context variable can be written to the page with the `write'
+      tag.
       </p>
       <p>
       And finally there are some attributes which can only refer. For
@@ -1863,7 +1880,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
     <info>
 	This is a list which can only live under a NodeProvider. It has to
-	be an id, which can be used with the write tag in the body.
+	have an id, which can be used with the write tag in the body.
     </info>
     <attribute>
         <name>id</name>
