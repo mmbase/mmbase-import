@@ -19,14 +19,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Implementation of UserContext (the security presentation of a User). 
+ * Implementation of UserContext (the security presentation of a User).
  * Most implementation is delegated to the Users builder.
  *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.6 2003-08-13 10:39:17 michiel Exp $
- * @see    org.mmbase.security.implementation.cloudcontext.builders.Users; 
+ * @version $Id: User.java,v 1.7 2003-09-23 13:15:27 pierre Exp $
+ * @see    org.mmbase.security.implementation.cloudcontext.builders.Users;
  */
 public class User extends UserContext implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(User.class);
@@ -85,7 +85,7 @@ public class User extends UserContext implements MMBaseObserver {
         return (node != null) && Users.getBuilder().isValid(node);
     }
 
-   
+
     public SortedSet getGroups() {
         return Groups.getBuilder().getGroups(node.getNumber());
     }

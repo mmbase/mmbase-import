@@ -22,11 +22,11 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * Groups of users. A group can also contain other groups. Containing
  * is arranged by the 'containsrel' relations type.
- * 
+ *
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.10 2003-09-22 11:51:53 michiel Exp $
+ * @version $Id: Groups.java,v 1.11 2003-09-23 13:15:27 pierre Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
@@ -66,7 +66,7 @@ public class Groups extends MMObjectBuilder {
         }
         return contains(group,  user.getNode());
     }
-    
+
     protected boolean contains(MMObjectNode containingGroup, MMObjectNode groupOrUser)  {
         return contains(containingGroup, groupOrUser.getNumber());
     }
@@ -98,16 +98,16 @@ public class Groups extends MMObjectBuilder {
             while(e.hasMoreElements()) {
                 MMObjectNode relation    = (MMObjectNode) e.nextElement();
                 int source = relation.getIntValue("snumber");
-                //assert(source.parent instanceof Groups);               
+                //assert(source.parent instanceof Groups);
                 if (source  == containedObject) continue; // only search 'up', so number must represent destination.
-                
+
                 if (containingGroup == source) { // the found source is the requested group, we found it!
                     log.trace("yes!");
                     result = Boolean.TRUE;
                     break;
                 } else if (recurse != null) { // recursively call on groups
                     log.trace("recursively");
-                    if (! recurse.contains(new Integer(source))) { 
+                    if (! recurse.contains(new Integer(source))) {
                         recurse.add(new Integer(source));
                         if (contains(containingGroupNode, source, recurse)) {
                             result = Boolean.TRUE;
@@ -128,7 +128,10 @@ public class Groups extends MMObjectBuilder {
             Iterator  nodes = getNodes(new NodeSearchQuery(this)).iterator();
             while (nodes.hasNext()) {
                 MMObjectNode group = (MMObjectNode) nodes.next();
-                if (contains(group, containedObject, null)) result.add(new Integer(group.getNumber()));
+                if (contains(group, containedObject)) {
+                    result.add(new Integer(group.getNumber()));
+                } else {
+                }
             }
         } catch (org.mmbase.storage.search.SearchQueryException sqe) {
             log.error(sqe.toString());
