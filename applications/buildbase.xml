@@ -44,9 +44,9 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="project.extra.path" value="" />
 
-  <property name="project.package" value="org/mmbase" />
-  <property name="project.main.class"        value="${project.package}/Version" />
-
+  <property name="project.package"      value="org/mmbase" />
+  <property name="project.main.class"   value="org/mmbase/Version" />
+  <property name="project.comment"      value="The ${project.name} package for the MBase Content Managment System" />
 
   <property name="source.dir"   location="../.." />
   <property name="build.dir"    value="${source.dir}/build" /><!-- mmbase build dir -->
@@ -161,8 +161,8 @@ Create a build.xml with a DOCTYPE like this:
       <attribute name="Main-Class" value="${project.main.class}" />
       <section name="${project.package}">
         <attribute name="Vendor" value="MMBase Community" />
-        <attribute name="URL" value="http://${project.name}.mmbase.org" />
-        <attribute name="Comment" value="The MMBase Content Managment System" />
+        <attribute name="URL" value="http://wwww.mmbase.org/${project.name}" />
+        <attribute name="Comment" value="${project.comment}" />
         <attribute name="Version" value="${distro}.${version}" />
         <attribute name="Distribution" value="${distro}" />
         <attribute name="Build-by"     value="${ant.version}" />
