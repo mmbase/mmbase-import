@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.14 2002-07-26 17:20:24 michiel Exp $
+ * @version  $Id: editwizard.jsp,v 1.15 2002-08-02 12:20:09 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -107,6 +107,12 @@ function doSearch(el, cmd, sessionkey) {
     var searchterm = document.forms[0].elements["searchterm_" + cmd].value+"";
 
     searchterm = searchterm.toLowerCase();
+
+    var filterrequired = el.getAttribute("filterrequired");
+    if (filterrequired=="true" && searchterm=="") {
+        alert("Search filter required");
+        return;
+    }
 
     // recalculate age
     var oneday = 24 * 60 * 60;
