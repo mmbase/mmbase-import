@@ -76,9 +76,9 @@
 </tr>
 <tr>
 <%
-    Module config=LocalContext.getCloudContext().getModule("config");
-    if (config!=null) {
-        String check=config.getInfo("CHECK-applications-"+app);
+    Module mmconfig=LocalContext.getCloudContext().getModule("config");
+    if (mmconfig!=null) {
+        String check=mmconfig.getInfo("CHECK-applications-"+app);
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
  <td class="data">XML-check</td>

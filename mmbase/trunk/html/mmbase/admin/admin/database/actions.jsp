@@ -28,9 +28,9 @@
 <tr><td>&nbsp;</td></tr>
 
 <%
-    Module config=LocalContext.getCloudContext().getModule("config");
-    if (config!=null) {
-        String check=config.getInfo("CHECK-databases-"+database);
+    Module mmconfig=LocalContext.getCloudContext().getModule("config");
+    if (mmconfig!=null) {
+        String check=mmconfig.getInfo("CHECK-databases-"+database);
 %>
 <form action="../config/details.jsp" method="POST" target="_xml">
 <tr align="left">
