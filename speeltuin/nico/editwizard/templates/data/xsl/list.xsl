@@ -7,7 +7,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: list.xsl,v 1.1 2003-11-30 19:53:27 nico Exp $
+    @version $Id: list.xsl,v 1.2 2003-12-14 16:20:55 nico Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -40,7 +40,7 @@
   <xsl:variable name="BodyOnLoad">window.focus();</xsl:variable>
 
   <xsl:template name="javascript">
-    <script language="javascript" src="{$javascriptdir}list.js">
+    <script type="text/javascript" src="{$javascriptdir}list.js">
       <xsl:comment>help IE</xsl:comment>
     </script>
   </xsl:template>
@@ -60,18 +60,14 @@
 
   <xsl:template name="title">
     <td>
-      <nobr>
         <xsl:value-of select="$title" />
-      </nobr>
     </td>
   </xsl:template>
 
   <xsl:template name="subtitle">
     <td>
       <div title="{$tooltip_edit_list}">
-        <nobr>
           <xsl:call-template name="prompt_edit_list" />
-        </nobr>
       </div>
     </td>
   </xsl:template>
