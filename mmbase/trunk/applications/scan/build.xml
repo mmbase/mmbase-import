@@ -3,7 +3,7 @@
  [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
 >
 
-<project name="MMBase SCAN legacy stuff" default="jar" basedir=".">
+<project name="MMBase SCAN legacy stuff" default="package" basedir=".">
   <property name="project.name"   value="scan" />
   <property name="project.package"   value="org/mmbase/applications/scan" />
   <property name="project.target.templates.dir" value="../" /><!-- scan stuff _must_ be in root -->
