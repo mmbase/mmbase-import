@@ -18,7 +18,7 @@
      <% Runtime runtime = Runtime.getRuntime(); %>
      <mm:import externid="gc" />
 		<mm:present referid="gc">
-		  <%runtime.gc();%>
+		  <% // runtime.gc();%>
         </mm:present>    
 		  <%
         long freeMemory = runtime.freeMemory();
@@ -46,14 +46,14 @@
 #
 # Memory useage for <mm:write referid="thisserver" />
 #
-Target[<mm:write referid="thisserver" />_memory]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=memory&gc=true"`
+Target[<mm:write referid="thisserver" />_memory]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=memory"`
 Title[<mm:write referid="thisserver" />_memory]: <mm:write referid="thisserver" /> memory usage
-MaxBytes[<mm:write referid="thisserver" />_memory]: 500000000
+MaxBytes[<mm:write referid="thisserver" />_memory]: 50000000000
 Options[<mm:write referid="thisserver" />_memory]:  integer, gauge, nopercent
 kilo[<mm:write referid="thisserver" />_memory]: 1024
 Ylegend[<mm:write referid="thisserver" />_memory]: memory usage
-LegendO[<mm:write referid="thisserver" />_memory]: &nbsp;total :
-LegendI[<mm:write referid="thisserver" />_memory]: &nbsp;used :
+LegendO[<mm:write referid="thisserver" />_memory]: total :
+LegendI[<mm:write referid="thisserver" />_memory]: used :
 ShortLegend[<mm:write referid="thisserver" />_memory]: Bytes
 PageTop[<mm:write referid="thisserver" />_memory]: <h1><mm:write referid="thisserver" /> memory information</h1>
 
@@ -73,11 +73,11 @@ Target[<mm:write referid="thisserver" />_<%=cache.getName()%>]: `/usr/bin/wget -
 Title[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <mm:write referid="thisserver" /> <%=cache.getName()%>
 MaxBytes[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 100000000
 Options[<mm:write referid="thisserver" />_<%=cache.getName()%>]:  integer, nopercent
-kilo[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 1024
-Ylegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests
-LegendO[<mm:write referid="thisserver" />_<%=cache.getName()%>]: &nbsp;total :
-LegendI[<mm:write referid="thisserver" />_<%=cache.getName()%>]: &nbsp;hits :
-ShortLegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests/s
+kilo[<mm:write referid="thisserver" />_<%=cache.getName()%>]: 1000
+Ylegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests / s
+LegendO[<mm:write referid="thisserver" />_<%=cache.getName()%>]: hits :
+LegendI[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests :
+ShortLegend[<mm:write referid="thisserver" />_<%=cache.getName()%>]: requests / s
 PageTop[<mm:write referid="thisserver" />_<%=cache.getName()%>]: <h1><mm:write referid="thisserver" /> <%=cache.getName()%> information</h1>
 
  <% } %>
