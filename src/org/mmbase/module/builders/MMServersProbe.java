@@ -14,7 +14,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Daniel Ockeloen
- * @version $Id: MMServersProbe.java,v 1.12 2003-05-03 09:48:08 kees Exp $
+ * @version $Id: MMServersProbe.java,v 1.13 2004-01-28 14:45:57 daniel Exp $
  */
 public class MMServersProbe implements Runnable {
 
@@ -63,6 +63,11 @@ public class MMServersProbe implements Runnable {
                                 doWork();
                         } catch(Exception e) {
                                 log.error("Exception in mmservers thread!" + Logging.stackTrace(e));
+                        	try { 
+					Thread.sleep(60*1000);
+		        	} catch (InterruptedException f) {
+               	 			log.debug(f.toString());
+            			}
                         }
                 }
         }
@@ -92,11 +97,11 @@ public class MMServersProbe implements Runnable {
 
                 while (kicker != null) {
                         parent.probeCall();
-                        try {
-                Thread.sleep(probeInterval);
-            } catch (InterruptedException e) {
-                log.debug(e.toString());
-            }
+                        try { 
+				Thread.sleep(probeInterval);
+		        } catch (InterruptedException e) {
+               	 		log.debug(e.toString());
+            		}
                 }
         }
 
