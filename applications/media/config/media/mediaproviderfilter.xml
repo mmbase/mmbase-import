@@ -13,14 +13,15 @@
 		<!-- filter>nl.vpro.mmbase.util.media.OmroepFilter</filter -->
 	</chain>
 
-	<!-- The filerOnHost filter can be used when you want to redirect certain domains
-	to certain mediaproviders. user="*" is a default, when no filter matches the provider
-	specified by this dfault filter will be used.
+	<!-- 
+    The filterOnHost filter can be used when you want to redirect certain domains
+	  to certain mediaproviders. user="*" is a default, when no filter matches the provider
+	  specified by this dfault filter will be used.
 	-->
 	<filterOnHost>
-		<hostfilter user="*"         provider="streams.omroep.nl" />
-		<hostfilter user="*.es"      provider="streams.omroep.es" />
-		<hostfilter user="*.vpro.nl" provider="streams.vpro.nl" />
+		<hostfilter user="*"         provider="streams"      />
+		<hostfilter user="*.es"      provider="es-streams"   />
+		<hostfilter user="*.vpro.nl" provider="vpro-streams" />
 	</filterOnHost>
 
 	<!-- The sortProviders filter will order the providers in a list from most wanted to use
@@ -29,8 +30,8 @@
 	still multiple providers left.
 	-->
 	<sortProviders>
-		<provider host="streams.omroep.nl" />
-		<provider host="streams.vpro.nl" />
+		<provider host="streams" />
+		<provider host="play" />
 	</sortProviders>
 	
 </mediaproviderfilter>

@@ -51,6 +51,7 @@
 
     <!-- needed to let relatenodes types="mediaframents" work -->
     <relation from="pools"           to="mediafragments"  type="related" />
+    <relation from="audiofragments"  to="mediasources"    type="related" />
 
   </allowedrelationlist>
 

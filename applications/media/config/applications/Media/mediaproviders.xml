@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
 	<node number="134" owner="admin">
-		<rooturl>cgi.omroep.nl</rooturl>
+		<host>cgi.omroep.nl</host>
 		<state>1</state>
 		<name>play</name>
 		<info>Play cgi script</info>
@@ -9,7 +9,7 @@
 	</node>
 
 	<node number="132" owner="admin">
-		<rooturl>cgi.omroep.nl/cgi-bin/streams</rooturl>
+		<host>cgi.omroep.nl</host>
 		<state>1</state>
 		<name>streams</name>
 		<info>Streams CGI script.</info>

@@ -60,13 +60,13 @@ public class MediaFragments extends MMObjectBuilder {
     public boolean init() {
         if(initDone) return super.init();
         log.service("Init of media-fragments");
-       
-        initDone = true;       
-        boolean result = super.init();
-              
-        // Retrieve a reference to the MediaSource builder
-        mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
+        initDone = true;  // because of inheritance we do init-protections
 
+        boolean result = super.init();
+        
+        // Retrieve a reference to the MediaSource builder
+
+        mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
         
         if(mediaSourceBuilder == null) {
             log.error("Builder mediasources is not loaded.");
@@ -87,12 +87,12 @@ public class MediaFragments extends MMObjectBuilder {
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) { 
-            log.debug("executeFunction  " + function + "(" + args + ") on" + node);
+            log.debug("executeFunction  " + function + "(" + args + ") on " + node);
         }
         if (function.equals("info")) {
             List empty = new Vector();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
-            info.put("showurl", "(<format>) ");
+            info.put("showurl", "(<format>, <item>) ");
             info.put("longurl", "(<format>) ");
             info.put("urlresult", "(<??>) ");
             info.put("gui", "(state|channels|codec|format|..) Gui representation of this object.");
@@ -139,12 +139,12 @@ public class MediaFragments extends MMObjectBuilder {
     }
     
     /**
-     * Will show the title in the editors
+     * Will show the title (clickable if possible)
      * @param node the mediapart node
      * @return the title of the mediapart
      */
     public String getGUIIndicator(MMObjectNode node) {
-        String url = node.getStringValue("showurl");
+        String url = node.getFunctionValue("showurl", null).toString();
         if (! "".equals(url)) {
             return "<a href=\"" + url + "\" alt=\"\" >" + node.getStringValue("title") + "</a>";
         } else {
@@ -153,7 +153,7 @@ public class MediaFragments extends MMObjectBuilder {
     }
     
     /**
-     * retrieves the url with URI information of the mediasource that matches best.
+     * Retrieves the url with URI information of the mediasource that matches best.
      * (e.g. pnm://www.mmbase.org/test/test.ra?start+10:10.2&title=Ikeol
      *
      * @param mediaFragment the media fragment
@@ -171,7 +171,7 @@ public class MediaFragments extends MMObjectBuilder {
     }
       
     /**
-     * retrieves the url (e.g. pnm://www.mmbase.org/music/test.ra) of the 
+     * Retrieves the url (e.g. pnm://www.mmbase.org/music/test.ra) of the 
      * mediasource that matches best.
      *
      * @param mediaFragment the media fragment
@@ -223,11 +223,11 @@ public class MediaFragments extends MMObjectBuilder {
     }
     
     /**
-     * if a mediafragment is coupled to another mediafragment instead of being directly
+     * If a mediafragment is coupled to another mediafragment instead of being directly
      * coupled to mediasources, the mediafragment is a subfragment.
      * @return true if the mediafragment is coupled to another fragment, false otherwise.
      */
-    public boolean isSubFragment(MMObjectNode mediafragment) {
+    protected boolean isSubFragment(MMObjectNode mediafragment) {
         int mediacount = mediafragment.getRelationCount("mediasources");        
         return (mediacount == 0 && mediafragment.getRelationCount("mediafragments") > 0);
     }
@@ -237,7 +237,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param mediafragment sub media fragment
      * @return the parent media fragment
      */
-    public MMObjectNode getParentFragment(MMObjectNode mediafragment) {
+    protected MMObjectNode getParentFragment(MMObjectNode mediafragment) {
         Enumeration e = mediafragment.getRelatedNodes("mediafragments").elements();
         
         if(!e.hasMoreElements()) {
@@ -259,7 +259,10 @@ public class MediaFragments extends MMObjectBuilder {
             if (log.isDebugEnabled()) log.debug("mediafragment "+mediafragment.getNumber()+ " is a subfragment");
             mediafragment = getParentFragment(mediafragment);
         }
-        Vector mediasources = mediafragment.getRelatedNodes("mediasources");
+        List mediasources = mediafragment.getRelatedNodes("mediasources");
+        if (mediasources == null) {
+            log.warn("Could not get related nodes of type mediasources");
+        }
         if (log.isDebugEnabled()) log.debug("Mediafragment contains "+mediasources.size()+" mediasources");
         
         return mediasources;

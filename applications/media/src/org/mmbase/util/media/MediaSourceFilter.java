@@ -153,22 +153,22 @@ public class MediaSourceFilter {
     public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {
         
         List mediaSources = mediaFragmentBuilder.getMediaSources(mediaFragment);
-        if( mediaSources == null ) {
-            log.warn("mediaFragment "+mediaFragment.getStringValue("title")+" does not have media sources");
+        
+        if (mediaSources == null || mediaSources.size() == 0) {
+            log.warn("mediaFragment " + mediaFragment.getStringValue("title") + " does not have media sources");
         }
         
         // passing the mediasources through al the filters
         for (Iterator i = filterChain.iterator(); i.hasNext();) {
             String filter = (String) i.next();
-            log.debug("Using filter " + filter);
+            if (log.isDebugEnabled()) log.debug("Using filter " + filter);
             if(filter.equals("preferredSource")) {
                 mediaSources = getPreferredSource(mediaSources, info);
             } else {
-                MediaSourceFilterInterface mpfi = (MediaSourceFilterInterface)externFilters.get(filter);
+                MediaSourceFilterInterface mpfi = (MediaSourceFilterInterface) externFilters.get(filter);
                 mediaSources = mpfi.filterMediaSource(mediaSources, mediaFragment, info);
             }
-        }
-        
+        }        
         return  takeOneMediaSource(mediaSources);
     }
     

@@ -217,12 +217,12 @@ public class MediaSources extends MMObjectBuilder {
         
         // Find the provider for the url
         MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, info);
-        if(mediaProvider==null) {
+        if(mediaProvider == null) {
             log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
-            return null;
+            return mediasource.getStringValue("url"); // perhhasp it was absolute?
         }
         
-        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
+        if (log.isDebugEnabled()) log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
         // Get the protocol and the hostinfomation of the provider.
         String providerinfo = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl")+ mediaProvider.getStringValue("rootpath");
         return providerinfo+mediaUrlComposer.getURL(mediasource, info);
@@ -269,18 +269,13 @@ public class MediaSources extends MMObjectBuilder {
     public int getChannels(MMObjectNode node) {
         return node.getIntValue("channels");
     }
-    
-    
-    public String getGUIIndicator(String field, MMObjectNode node) {
-        return "" + getValue(node, "str("+field+")");
-    }
-    
+        
     /**
      * return some human readable strings
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) { 
-            log.debug("executeFunction  " + function + "(" + args + ") on" + node);
+            log.debug("executeFunction  " + function + "(" + args + ") on medisources " + node);
         }
         if (function.equals("info")) {
             List empty = new Vector();
