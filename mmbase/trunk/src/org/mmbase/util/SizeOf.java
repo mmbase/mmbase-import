@@ -24,6 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: SizeOf.java,v 1.9 2004-09-30 17:19:49 pierre Exp $
  */
 public class SizeOf {
     private static Logger log = Logging.getLoggerInstance(SizeOf.class.getName());

@@ -15,6 +15,10 @@ import org.mmbase.util.logging.*;
  * keeps param makers alive (needs to be checked if used and if it can't be
  * combined in URLEscape).
  * The only difference with URLEscape is that the plus-sign ('+') is escaped.
+ *
+ * @deprecated use Encode
+ * @author vpro
+ * @version $Id: URLParamEscape.java,v 1.5 2004-09-30 17:19:50 pierre Exp $
  */
 public class URLParamEscape {
 

@@ -12,6 +12,10 @@ import org.mmbase.util.logging.*;
 
 /**
  * Escapes and Unescapes undesirable characters using % (URLEncoding)
+ *
+ * @deprecated use Encode
+ * @author vpro
+ * @version $Id: URLEscape.java,v 1.5 2004-09-30 17:19:50 pierre Exp $
  */
 public class URLEscape {
 
@@ -22,8 +26,7 @@ public class URLEscape {
      * List for all ASCII characters whether it can be part of an
      * URL line.
      */
-    static boolean isacceptable[] =
-    {
+    static boolean isacceptable[] = {
         false, false, false, false, false, false, false, false,    //  !"#$%&'
         false, false, true, true, true, true, true, false,         // ()*+,-./
         true, true, true, true, true, true, true, true,            // 01234567

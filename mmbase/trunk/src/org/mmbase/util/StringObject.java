@@ -44,10 +44,12 @@ package org.mmbase.util;
  * the buffer is marked as shared. Any further changes to the buffer will
  * cause a copy to be made. <p>
  *
+ * @deprecated use StringBuffer
+ * @license Sun license
  * @see     String
  * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
- * @version $Id: StringObject.java,v 1.6 2003-03-07 09:31:15 pierre Exp $
+ * @version $Id: StringObject.java,v 1.7 2004-09-30 17:19:50 pierre Exp $
  */
 
 public final class StringObject {
