@@ -13,7 +13,8 @@
 		<A HREF="index.shtml?$PARAM2"><IMG SRC="images/pijl2.gif" BORDER="2" ALT="Back"></A>
 	</TD>
 	<TD BGCOLOR="#00425A" COLSPAN="1">
-		<FONT COLOR="#000000" FACE="Arial,Helvetica">
+		<!-- <FONT COLOR="#000000" FACE="Arial,Helvetica">-->
+		<FONT COLOR="#FFFFFF" FACE="Arial,Helvetica">
 		<B>Back to news overview</B>
 		</FONT>	
 	</TD>

@@ -15,7 +15,6 @@
 	<TD WIDTH="30"></TD>
 	<TD BGCOLOR="#00425A" COLSPAN="1">
 		<FONT COLOR="#42BDAD" FACE="Arial,Helvetica"> 
-		<PART parts/people.shtml?$PARAM1>
 		$MOD-MMBASE-FIELD-$PARAM1-html_intro<BR><BR>
 		<B>( <A HREF="article.shtml?$PARAM1+$PARAM2">Read complete article</A> )</B>
 	</FONT>
