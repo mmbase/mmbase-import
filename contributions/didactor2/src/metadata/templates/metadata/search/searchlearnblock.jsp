@@ -8,8 +8,8 @@
 
 <%-- search classes --%>
 <mm:import externid="learnblock"/>
-<mm:list nodes="$learnblock" path="learnblocks,learnobjects,metadata">
-<mm:import jspvar="metaValue" reset="true" vartype="String"><mm:field name="metadata.value"/></mm:import>
+<mm:list nodes="$learnblock" path="learnblocks,learnobjects,metadata,metavalue">
+<mm:import jspvar="metaValue" reset="true" vartype="String"><mm:field name="metavalue.value"/></mm:import>
 <%
 try {
     metaValue=metaValue.toUpperCase();
