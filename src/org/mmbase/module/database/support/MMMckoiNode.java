@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.5 2002-04-18 14:42:59 pierre Exp $
+ * @version $Id: MMMckoiNode.java,v 1.6 2002-05-27 10:50:09 eduard Exp $
  */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 
@@ -121,6 +121,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
         // int type=node.getDBType(prefix+fieldname);
         int type=node.getDBType(prefix+fieldname);
         switch (type) {
+            case FieldDefs.TYPE_XML:
             case FieldDefs.TYPE_STRING:
                 String tmp=rs.getString(i);
                 if (tmp==null) {
@@ -205,7 +206,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
             value=value.substring(pos+1,value.length()-1);
             like=true;
         }
-        if (dbtype==FieldDefs.TYPE_STRING) {
+        if (dbtype==FieldDefs.TYPE_STRING || dbtype==FieldDefs.TYPE_XML) {
             switch (operatorChar) {
             case '=':
             case 'E':
@@ -665,6 +666,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
             else if (type==FieldDefs.TYPE_DOUBLE) stmt.setDouble(currentParameter,node.getDoubleValue(key));
             else if (type==FieldDefs.TYPE_LONG) stmt.setLong(currentParameter,node.getLongValue(key));
             else if (type==FieldDefs.TYPE_STRING) setDBText(currentParameter,stmt,node.getStringValue(key));
+            else if (type==FieldDefs.TYPE_XML) setDBText(currentParameter,stmt,node.getStringValue(key));
             else if (type==FieldDefs.TYPE_BYTE) setDBByte(currentParameter,stmt,node.getByteValue(key));
             else stmt.setString(currentParameter,node.getStringValue(key));
                     currentParameter++;
@@ -944,7 +946,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
             stmt.setDouble(i, node.getDoubleValue(key));
         } else if (type==FieldDefs.TYPE_LONG) {
             stmt.setLong(i, node.getLongValue(key));
-        } else if (type==FieldDefs.TYPE_STRING) {
+        } else if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
             String tmp=node.getStringValue(key);
             if (tmp!=null) {
                 setDBText(i, stmt,tmp);
@@ -1586,6 +1588,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                         case FieldDefs.TYPE_BYTE:
                             setDBByte(dbpos,stmt2,new byte[0]);
                             break;
+                        case FieldDefs.TYPE_XML:
                         case FieldDefs.TYPE_STRING:
                             setDBText(dbpos,stmt2,new String());
                             break;
@@ -1609,6 +1612,7 @@ public class MMMckoiNode implements MMJdbc2NodeInterface {
                         case FieldDefs.TYPE_BYTE:
                             setDBByte(dbpos,stmt2,(byte[])o);
                             break;
+                        case FieldDefs.TYPE_XML:
                         case FieldDefs.TYPE_STRING:
                             if (o instanceof byte[]) {
                                 String s=new String((byte[])o);
