@@ -113,7 +113,7 @@ public class RelDef extends MMObjectBuilder {
 
 	/**
 	 * Searches for the relationnummber by finding a reldef where the sname or dname is equal to buildername.
-	 * It's recommented to use getGuessedByNames instead, because it's possible to have multiple reldefs with
+	 * It's recommented to use getRelNrByName instead, because it's possible to have multiple reldefs with
 	 * the same sname or dname.
 	 */
  	public int getGuessedByName(String buildername) {
@@ -135,7 +135,7 @@ public class RelDef extends MMObjectBuilder {
 	 * When there's no match found in this order a search with swapped sname and dname will be done.
 	 * If no match is found the result will be -1.
 	 */
-	public int getGuessedByNames(String sname, String dname)
+	public int getRelNrByName(String sname, String dname)
 	{	Enumeration e = search("WHERE sname='" + sname + "' AND dname='" + dname + "'");
 		if (!e.hasMoreElements()) e = search("WHERE sname='" + dname + "' AND dname='" + sname + "'");
 
