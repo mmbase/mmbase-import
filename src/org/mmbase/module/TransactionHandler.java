@@ -104,13 +104,13 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			parse(null, is, uti);
 		} catch (TransactionHandlerException t) {
 			// Register the exception
-  			sessions.setValue (session, "TRANSACTIONEXCEPTION",t.transactionException); 
+  			sessions.setValue (session, "TRANSACTIONOPERATOR",t.transactionException); 
   			sessions.setValue (session, "TRANSACTIONID",t.transactionId); 
-  			sessions.setValue (session, "OBJECTEXCEPTION",t.objectException); 
+  			sessions.setValue (session, "OBJECTOPERATOR",t.objectException); 
   			sessions.setValue (session, "OBJECTID",t.objectId); 
-  			sessions.setValue (session, "FIELDEXCEPTION",t.fieldException); 
-  			sessions.setValue (session, "FIELDID",t.fieldId); 
-  			sessions.setValue (session, "TRANSACTIONHANDLEREXCEPTION",t.toString()); 
+  			sessions.setValue (session, "FIELDOPERATOR",t.fieldException); 
+  			sessions.setValue (session, "FIELDNAME",t.fieldId); 
+  			sessions.setValue (session, "TRANSACTIONERROR",t.toString()); 
 			if(_debug) { 
 				debug(t.transactionException,0);
 				debug(t.transactionId,0);
