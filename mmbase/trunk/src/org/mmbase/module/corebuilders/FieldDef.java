@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: FieldDef.java,v 1.5 2000-03-30 13:11:41 wwwtech Exp $
+	$Id: FieldDef.java,v 1.6 2000-04-15 21:10:34 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/03/30 13:11:41  wwwtech
+	Rico: added license
+	
 	Revision 1.4  2000/03/29 10:46:33  wwwtech
 	Rob: Licenses changed
 	
@@ -27,6 +30,7 @@ import java.util.*;
 import java.sql.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.*;
+import org.mmbase.module.database.support.*;
 
 /**
  * FieldDef, one of the meta stucture nodes it is used to define the
@@ -35,7 +39,7 @@ import org.mmbase.module.database.*;
  *
  *
  * @author Daniel Ockeloen
- * @version $Id: FieldDef.java,v 1.5 2000-03-30 13:11:41 wwwtech Exp $
+ * @version $Id: FieldDef.java,v 1.6 2000-04-15 21:10:34 wwwtech Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 
@@ -59,6 +63,16 @@ public class FieldDef extends MMObjectBuilder {
  	* insert a new object, normally not used (only subtables are used)
  	*/
  	public int insert(String owner,MMObjectNode node) {
+		MMJdbc2NodeInterface database = mmb.getDatabase();
+
+		if (database!=null) {
+			int number=database.fielddefInsert(mmb.baseName,oType,owner,node);
+			return(number);
+		} else {
+			System.out.println("Problem FieldDef can't get to database convertor (jdbc2mmbase)");
+			return(-1);
+		}
+		/*
  		int dbtable=node.getIntValue("dbtable");
  		String dbname=node.getStringValue("dbname");
  		String dbtype=node.getStringValue("dbtype");
@@ -111,6 +125,7 @@ public class FieldDef extends MMObjectBuilder {
  			return(-1);
  		}
  		return(number);
+		*/
  	}
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
