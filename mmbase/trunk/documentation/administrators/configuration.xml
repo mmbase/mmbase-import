@@ -6,7 +6,7 @@
     <articleinfo>
     <title>MMBase Configuration documentation</title>
     <date>4 december 2002</date>
-    <edition>$Id: configuration.xml,v 1.14 2002-12-05 21:14:54 michiel Exp $</edition>
+    <edition>$Id: configuration.xml,v 1.15 2003-02-24 19:56:35 kees Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -340,7 +340,7 @@
      node.insert("admin");
 
      // or nicer, with the bridge:
-     Cloud cloud = LocalContext.getCloudContext().getCloud("mmbase"));
+     Cloud cloud = ContextProvider.getCloudContext("local").getCloud("mmbase"));
      NodeManager images = cloud.getNodeManager("episode");
      Node node = images.createNode();
      node.setField("title", "TEST");
@@ -415,9 +415,9 @@
   <properties>  
     <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
     <property name="driver">org.gjt.mm.mysql.Driver</property>
-    <property name="url">jdbc:mysql://localhost/$DBM?user=mmbase&amp;password=abcdef</property>
-    <property name="user">url</property>
-    <property name="password">url</property>
+    <property name="url">jdbc:mysql://localhost/$DBM</property>
+    <property name="user">mmbaseuser</property>
+    <property name="password">mmbasepasswd</property>
     <property name="database">bbol2_db</property>
     <property name="host">localhost</property>
     <property name="port">3306</property>
