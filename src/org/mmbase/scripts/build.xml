@@ -887,6 +887,7 @@ Change directory to ${build.dir}/orion and run:
     </chmod>
     <copy file="${mmbase.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${xalan.jar}" todir="${build.dir}/tomcat/lib"/>
+    <copy file="${xml-apis.jar}" todir="${build.dir}/tomcat/lib"/>
     <copy file="${xerces.jar}" todir="${build.dir}/tomcat/lib"/>
     <!--    xalan and xerces provide the functionality which is also provided by
     	    the tomcat/lib/parser.jar and lib/jaxp.jar.. but newer
