@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 /**
  * WorkerPostHandler handles all the PostInformation
  *
- * @version $Id: HttpPost.java,v 1.14.2.1 2003-04-02 14:34:28 vpro Exp $
+ * @version $Id: HttpPost.java,v 1.14.2.2 2003-04-02 14:57:41 vpro Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Rob Vermeulen
@@ -61,7 +61,7 @@ public class HttpPost {
     /**
      * maxFileSize for a property
      */
-    private int maxFileSize = 1*1024*1024; // 1 Mb
+    private int maxFileSize = 4*1024*1024; // 1 Mb
 
     /**
      * Some postparameters are decoded to disk
