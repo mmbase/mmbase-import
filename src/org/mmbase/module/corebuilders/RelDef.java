@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.33 2004-01-14 13:23:20 michiel Exp $
+ * @version $Id: RelDef.java,v 1.34 2004-09-02 10:40:56 pierre Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -183,7 +183,7 @@ public class RelDef extends MMObjectBuilder {
         }
         if (bulname == null) {
             return "insrel";
-        } else { 
+        } else {
             return bulname;
         }
     }
@@ -196,7 +196,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        return (String) rnumberCache.get(new Integer(node.getNumber()));    
+        return (String) rnumberCache.get(new Integer(node.getNumber()));
     }
 
 
@@ -349,10 +349,10 @@ public class RelDef extends MMObjectBuilder {
                 switch (node.getIntValue("dir")) {
                 case DIR_BIDIRECTIONAL:
                     return "bidirectional";
-                    
+
                 case DIR_UNIDIRECTIONAL:
                     return "unidirectional";
-                    
+
                 default:
                     return "unknown";
                 }
@@ -505,6 +505,33 @@ public class RelDef extends MMObjectBuilder {
             res=getNumberByName(dname+"/"+sname);
         }
         return res;
+    }
+
+    /**
+     * Called when a remote node is changed.
+     * If a node is changed or newly created, this adds the new or updated role (sname and dname) to the
+     * cache.
+     * @todo Old roles are cuerrently not cleared or removed - which means that they may remain
+     * useable for some time after the actual role is deleted or renamed.
+     * This because old role information is no longer available when this call is made.
+     * @since MMBase-1.7
+     * @param machine Name of the machine that changed the node.
+     * @param number Number of the changed node as a <code>String</code>
+     * @param builder type of the changed node
+     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
+     * @return always <code>true</code>
+     */
+    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
+        if (machine.equals(getTableName())) {
+            if (ctype.equals("c") || ctype.equals("n")) {
+                // should remove roles referencing this number from relCache here
+                addToCache(getNode(number));
+            } else if (ctype.equals("d")) {
+                rnumberCache.remove(new Integer(Integer.parseInt(number)));
+                // should remove roles referencing this number from relCache here
+            }
+        }
+        return super.nodeRemoteChanged(machine, number, builder, ctype);
     }
 }
 
