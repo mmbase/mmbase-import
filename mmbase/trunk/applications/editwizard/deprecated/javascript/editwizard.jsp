@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.2 2004-02-18 09:55:36 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.3 2004-03-03 13:13:00 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -421,7 +421,7 @@ function doCancel() {
 function saveHtmlAreas() {
     for (var i = 0; i < htmlAreas.length; i++) {
       var editor = htmlAreas[i];
-      editor._textArea.value = editor.getHTML();
+      if(editor._textArea) editor._textArea.value = editor.getHTML();
     }
 }
 
