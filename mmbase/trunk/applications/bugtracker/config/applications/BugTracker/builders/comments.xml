@@ -1,185 +1,80 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.0//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder maintainer="mmbase.org" version="0">
-  <!-- Builder configuration for comments -->
-  <!-- Status of the builder: active or inactive -->
-  <status>active</status>
-  <!-- Classname of the builder.
-This is a optional tag, it names the classfile to use for this builder
-Providing an alternate buidler class allows you to add or change support routines. -->
-  <classfile>Dummy</classfile>
-  <!-- The default maximum age of objects in a search
-used by some MMBase editors to limit the results of a search -->
-  <searchage>14</searchage>
-  <!-- Names defines the different names used in user visible parts
-Singular names are used when talking about one object (Url,Person) and plurar when talking about multiple objects (Urls, people).
-Names can be provided in various languages. -->
-  <names>
-    <!-- singular names per language as defined by ISO 639 -->
-    <singular xml:lang="en">Comment</singular>
-    <singular xml:lang="us">Comment</singular>
-    <!-- plural names per language as defined by ISO 639 -->
-    <plural xml:lang="en">Comments</plural>
-    <plural xml:lang="us">Comments</plural>
-  </names>
-  <!-- Descriptions are ment to provide some additional clarification to an object.
-They are useful for GUI editors to provide helptexts.
-Descriptions can be provided in various languages. -->
-  <descriptions>
-    <description xml:lang="en">Comments</description>
-    <description xml:lang="us">Comments</description>
-  </descriptions>
-  <!-- decsription per language as defined by ISO 639 -->
-  <!-- You can define properties to be used by the classfile.
-Properties are entered using name/value pairs.
-The actual properties available differ by class. -->
-  <properties/>
-  <!-- defines the different fields in this object
-Depending on the database, the order of the fields may be important.
-Once defined, it is a good practice to keep the same order.
-This counts especially when you convert buidler configurations using builder inheritance. -->
-  <fieldlist>
-    <!-- field definition for field 1 : number -->
-    <field>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="fr">Objet</guiname>
-        <guiname xml:lang="nl">Object</guiname>
-        <guiname xml:lang="en">Object</guiname>
-        <guiname xml:lang="us">Object</guiname>
-        <guitype>integer</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>-1</input>
-          <!-- position in the list area of the editor -->
-          <list>10</list>
-          <!-- position in the search area of the editor -->
-          <search>10</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>number</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true" key="true">INTEGER</type>
-      </db>
-    </field>
-    <!-- field definition for field 3 : owner -->
-    <field>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="fr">Propri!ire</guiname>
-        <guiname xml:lang="nl">Eigenaar</guiname>
-        <guiname xml:lang="en">Owner</guiname>
-        <guiname xml:lang="us">Owner</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>-1</input>
-          <!-- position in the list area of the editor -->
-          <list>11</list>
-          <!-- position in the search area of the editor -->
-          <search>11</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>owner</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="12" notnull="true" key="false">STRING</type>
-      </db>
-    </field>
-    <!-- field definition for field 4 : title -->
-    <field>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="fr">Titre</guiname>
-        <guiname xml:lang="nl">Titel</guiname>
-        <guiname xml:lang="en">Title</guiname>
-        <guiname xml:lang="us">Title</guiname>
-        <guitype>string</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>1</input>
-          <!-- position in the list area of the editor -->
-          <list>1</list>
-          <!-- position in the search area of the editor -->
-          <search>1</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>title</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="255" notnull="true" key="false">STRING</type>
-      </db>
-    </field>
-    <!-- field definition for field 5 : body -->
-    <field>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="fr">Texte</guiname>
-        <guiname xml:lang="nl">Tekst</guiname>
-        <guiname xml:lang="en">Text</guiname>
-        <guiname xml:lang="us">Text</guiname>
-        <guitype>field</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>4</input>
-          <!-- position in the list area of the editor -->
-          <list>-1</list>
-          <!-- position in the search area of the editor -->
-          <search>4</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>body</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" size="64000" notnull="false" key="false">STRING</type>
-      </db>
-    </field>
-    <!-- field definition for field 6 : posttime -->
-    <field>
-      <!-- gui related -->
-      <gui>
-        <guiname xml:lang="en">posttime</guiname>
-        <guitype>eventtime</guitype>
-      </gui>
-      <!-- editor related -->
-      <editor>
-        <positions>
-          <!-- position in the input area of the editor -->
-          <input>6</input>
-          <!-- position in the list area of the editor -->
-          <list>-1</list>
-          <!-- position in the search area of the editor -->
-          <search>6</search>
-        </positions>
-      </editor>
-      <!-- database related -->
-      <db>
-        <!-- name of the field in the database -->
-        <name>posttime</name>
-        <!-- MMBase datatype and demands on it -->
-        <type state="persistent" notnull="true" key="false">INTEGER</type>
-      </db>
-    </field>
-  </fieldlist>
+<?xml version="1.0"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!-- comments -->
+<builder version="0" name="comments" maintainer="mmbase.org" extends="object">
+    <classfile>Dummy</classfile>
+    <searchage>14</searchage>
+    <names>
+        <singular xml:lang="en">Comment</singular>
+        <singular xml:lang="us">Comment</singular>
+        <plural xml:lang="en">Comments</plural>
+        <plural xml:lang="us">Comments</plural>
+    </names>
+    <descriptions>
+        <description xml:lang="en">Comments</description>
+        <description xml:lang="us">Comments</description>
+    </descriptions>
+    <properties/>
+    <fieldlist>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Titel</guiname>
+                <guiname xml:lang="fr">Titre</guiname>
+                <guiname xml:lang="en">Title</guiname>
+                <guiname xml:lang="us">Title</guiname>
+                <guitype>string</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>title</name>
+                <type size="255" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="nl">Tekst</guiname>
+                <guiname xml:lang="fr">Texte</guiname>
+                <guiname xml:lang="en">Text</guiname>
+                <guiname xml:lang="us">Text</guiname>
+                <guitype>field</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>4</input>
+                    <list>-1</list>
+                    <search>4</search>
+                </positions>
+            </editor>
+            <db>
+                <name>body</name>
+                <type size="64000" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guiname xml:lang="en">posttime</guiname>
+                <guitype>eventtime</guitype>
+            </gui>
+            <editor>
+                <positions>
+                    <input>6</input>
+                    <list>-1</list>
+                    <search>6</search>
+                </positions>
+            </editor>
+            <db>
+                <name>posttime</name>
+                <type key="false" state="persistent" notnull="false">INTEGER</type>
+            </db>
+        </field>
+    </fieldlist>
 </builder>
