@@ -8,7 +8,7 @@
        String url = "/login/mmaccount.jsp?message=" + URLEncoder.encode("Password has been changed.");
        config.getServletContext().getRequestDispatcher(url).forward(request, response);
     } else {
-       AccountHandler.changeEmail(cloud, request, response);
+       AccountHandler.changeEmail(cloud, request);
        String url = "/login/mmaccount.jsp?message=" + URLEncoder.encode("Email address has been changed.");
        config.getServletContext().getRequestDispatcher(url).forward(request, response);
        response.sendRedirect(url);
