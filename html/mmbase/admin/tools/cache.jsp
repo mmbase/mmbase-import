@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase" method="asis">
+<mm:cloud jspvar="cloud" method="http" rank="administrator">
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
 <head>
@@ -10,7 +10,7 @@
 <link rel="stylesheet" type="text/css" href="../css/mmbase.css" />
 </head>
 <body class="basic" >
-
+<!-- <%= cloud.getUser().getIdentifier()%>/<%=  cloud.getUser().getRank()%> -->
 <table summary="email test" width="93%" cellspacing="1" cellpadding="3" border="0">
 
 <mm:import externid="active" from="parameters" />
