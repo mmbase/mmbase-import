@@ -57,8 +57,8 @@ public class BasicCloud implements Cloud, Cloneable {
     // parent Cloud, if appropriate
     protected BasicCloud parentCloud=null;
 
-    // Authorization
-    private Authorization authorization = null;
+    // MMBaseCop
+    MMBaseCop mmbaseCop = null;
 
     // User context
     protected BasicUser userContext = null;
@@ -77,7 +77,7 @@ public class BasicCloud implements Cloud, Cloneable {
             name = cloud.name+"."+cloudName;
         }
         description = cloud.description;
-        authorization = cloud.authorization;
+        mmbaseCop = cloud.mmbaseCop;
 
         userContext = cloud.userContext;
         account= cloud.account;
@@ -91,15 +91,13 @@ public class BasicCloud implements Cloud, Cloneable {
         MMBase mmb = this.cloudContext.mmb;
 
         // do authentication.....
-        MMBaseCop mmbaseCop = mmb.getMMBaseCop();
+        mmbaseCop = mmb.getMMBaseCop();
+	
         if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");
 	org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if ( uc == null ) throw new BasicBridgeException("login invalid");
 	userContext = new BasicUser(mmbaseCop, uc);
         // end authentication...
-
-        // get authorization
-        authorization = mmbaseCop.getAuthorization();
 
         // other settings of the cloud...
         typedef = mmb.getTypeDef();
@@ -366,7 +364,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @return <code>true</code> if acces sis granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return authorization.check(userContext.getUserContext(),nodeID,operation);
+        return mmbaseCop.getAuthorization().check(userContext.getUserContext(),nodeID,operation);
     }
 
     /**
@@ -375,7 +373,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node on which to check the operation
     */
     void assert(Operation operation, int nodeID) {
-        authorization.assert(userContext.getUserContext(),nodeID,operation);
+        mmbaseCop.getAuthorization().assert(userContext.getUserContext(),nodeID,operation);
     }
 
     /**
@@ -383,7 +381,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node to init
     */
     void createSecurityInfo(int nodeID) {
-        authorization.create(userContext.getUserContext(),nodeID);
+        mmbaseCop.getAuthorization().create(userContext.getUserContext(),nodeID);
     }
 
     /**
@@ -391,7 +389,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node to init
     */
     void removeSecurityInfo(int nodeID) {
-        authorization.remove(userContext.getUserContext(),nodeID);
+        mmbaseCop.getAuthorization().remove(userContext.getUserContext(),nodeID);
     }
 
     /**
@@ -399,7 +397,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node to init
     */
     void updateSecurityInfo(int nodeID) {
-        authorization.update(userContext.getUserContext(),nodeID);
+        mmbaseCop.getAuthorization().update(userContext.getUserContext(),nodeID);
     }
 
     public NodeList getList(String startNodes, String nodePath, String fields,
@@ -487,20 +485,20 @@ public class BasicCloud implements Cloud, Cloneable {
      * set the Context of the current Node
      */
     void setContext(int nodeNumber, String context) {
-    	authorization.setContext(userContext.getUserContext(), nodeNumber, context);
+    	mmbaseCop.getAuthorization().setContext(userContext.getUserContext(), nodeNumber, context);
     }
 
     /**
      * get the Context of the current Node
      */
     String getContext(int nodeNumber) {
-    	return authorization.getContext(userContext.getUserContext(), nodeNumber);
+    	return mmbaseCop.getAuthorization().getContext(userContext.getUserContext(), nodeNumber);
     }
 
     /**
      * get the Contextes which can be set to this specific node
      */
     StringList getPossibleContexts(int nodeNumber) {
-    	return new BasicStringList(authorization.getPossibleContexts(userContext.getUserContext(), nodeNumber));
+    	return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
     }
 }
