@@ -68,6 +68,7 @@ public class MMBase extends ProcessorModule  {
 	public static String multicasthost=null;
 	public static int multicastport=-1;
 	private String language="us";
+	String cookieDomain=null;
 
 
 
@@ -106,7 +107,6 @@ public class MMBase extends ProcessorModule  {
 			host=tmp;
 		}
 
-
 		tmp=getInitParameter("MULTICASTPORT");
 		if (tmp!=null && !tmp.equals("")) {
 			try {
@@ -117,6 +117,11 @@ public class MMBase extends ProcessorModule  {
 		tmp=getInitParameter("MULTICASTHOST");
 		if (tmp!=null && !tmp.equals("")) {
 			multicasthost=tmp;
+		}
+
+		tmp=getInitParameter("COOKIEDOMAIN");
+		if (tmp!=null && !tmp.equals("")) {
+			cookieDomain=tmp;
 		}
 
    		sendmail=(SendMailInterface)getModule("sendmail");
@@ -249,6 +254,11 @@ public class MMBase extends ProcessorModule  {
 			MultiConnection con=jdbc.getConnection(jdbc.makeUrl());
 			return(con);
 		} catch (SQLException e) {
+			debug("Can't get a JDBC connection (database error)"+e);
+			e.printStackTrace();
+			return(null);
+		} catch (Exception e) {
+			debug("Can't get a JDBC connection (JDBC module error)"+e);
 			e.printStackTrace();
 			return(null);
 		}
@@ -367,6 +377,10 @@ public class MMBase extends ProcessorModule  {
 
 	public String getHost() {
 		return(host);
+	}
+
+	public String getCookieDomain() {
+		return(cookieDomain);
 	}
 
 	public boolean addRemoteObserver(String type,MMBaseObserver obs) {
