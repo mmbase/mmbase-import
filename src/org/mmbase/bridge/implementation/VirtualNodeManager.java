@@ -32,27 +32,27 @@ public class VirtualNodeManager extends BasicNodeManager {
         for (Enumeration e = node.values.keys(); e.hasMoreElements(); ) {
             String fieldName=(String)e.nextElement();
             Object value = node.values.get(fieldName);
-            int fieldType = FieldType.FIELDTYPE_UNKNOWN;
+            int fieldType = Field.FIELDTYPE_UNKNOWN;
             if (value instanceof String) {
-                fieldType = FieldType.FIELDTYPE_STRING;
+                fieldType = Field.FIELDTYPE_STRING;
             }
             if (value instanceof Integer) {
-                fieldType = FieldType.FIELDTYPE_INTEGER;
+                fieldType = Field.FIELDTYPE_INTEGER;
             }
             if (value instanceof  byte[]) {
-                fieldType = FieldType.FIELDTYPE_BYTE;
+                fieldType = Field.FIELDTYPE_BYTE;
             }
             if (value instanceof  Float) {
-                fieldType = FieldType.FIELDTYPE_FLOAT;
+                fieldType = Field.FIELDTYPE_FLOAT;
             }
             if (value instanceof  Double) {
-                fieldType = FieldType.FIELDTYPE_DOUBLE;
+                fieldType = Field.FIELDTYPE_DOUBLE;
             }
             if (value instanceof  Long) {
-                fieldType = FieldType.FIELDTYPE_LONG;
+                fieldType = Field.FIELDTYPE_LONG;
             }
-            FieldDefs fd= new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType,-1, FieldType. FIELDSTATE_VIRTUAL);
-            FieldType ft = new BasicFieldType(fd,this);
+            FieldDefs fd= new FieldDefs(fieldName, "field", -1, -1, fieldName, fieldType,-1, Field. FIELDSTATE_VIRTUAL);
+            Field ft = new BasicField(fd,this);
             fieldTypes.put(fieldName,ft);
         }
     }
