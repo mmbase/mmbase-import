@@ -19,7 +19,7 @@
   <siteDirectory>/home/maven/site/mmbase</siteDirectory>
   <distributionDirectory>/home/maven/site/mmapps/jars/</distributionDirectory>
   <repository>
-    <connection>scm:cvs:pserver:guest@www.mmbase.org:/usr/local/cvs:mmbase-core</connection>
+    <connection>scm:cvs:pserver:guest@cvs.mmbase.org:/var/cvs:mmbase-core</connection>
     <url>http://www.mmbase.org/viewcvs/</url>
   </repository>
   <versions>
