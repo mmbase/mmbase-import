@@ -64,6 +64,11 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         Would that be a problem of this tag?
 
     */
+    private static final int METHOD_UNSET = -1;
+    private static final int METHOD_HTTP = 0;
+    private static final int METHOD_ASIS = 1;
+    private static final int METHOD_ANONYMOUS = 2;
+    private static final int METHOD_LOGOUT = 3;
 
     private static Logger log = Logging.getLoggerInstance(CloudTag.class.getName());
 
@@ -78,7 +83,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
     
     private String authenticate = "name/password"; 
     
-    private String method = null; // how to log on, method can eg be 'http'.
+    private int method = METHOD_UNSET; // how to log on, method can eg be 'http'.
     private String logon = null;  
     private String pwd = null;
 
@@ -118,8 +123,18 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         }
     }
     
-    public void setMethod(String m){
-        this.method = m;
+    public void setMethod(String m) throws JspTagException {
+        if ("http".equals(m)) {
+            method = METHOD_HTTP;
+        } else if ("asis".equals(m)) {
+            method = METHOD_ASIS;
+        } else if ("anonymous".equals(m)) {
+            method = METHOD_ANONYMOUS;
+        } else if ("logout".equals(m)) {
+            method = METHOD_LOGOUT;
+        } else {
+            throw new JspTagException("Unknown value for 'method'  attribute (" + m + ")");
+        }
     }
     
     public Cloud getCloudVar() {
@@ -136,6 +151,12 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
     
     public Node getNode(String id) throws JspTagException {
         throw new JspTagException("Cannot get Nodes directly from Cloud (use a context tag)");
+    }
+    public Object getObject(String id) throws JspTagException {
+        throw new JspTagException("Cannot get Objects directly from Cloud (use a context tag)");
+    }
+    public byte[] getBytes(String id) throws JspTagException {
+        throw new JspTagException("Cannot get bytes directly from Cloud (use a context tag)");
     }
 
     public String getId() {
@@ -193,10 +214,10 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         // first check if we need an anonymous cloud,
         // in which case we don't want to use the session. Pages get
         // better chachable then.
-        if ( (method == null && logon == null) || 
-             "anonymous".equals(method)) { // anonymous cloud:
+        if ( (method == METHOD_UNSET && logon == null) || 
+              method == METHOD_ANONYMOUS) { // anonymous cloud:
             log.debug("Implicitely requested anonymous cloud. Not using session");
-            setAnonymousCloud(cloudName);
+            setAnonymousCloud(cloudName);            
             return EVAL_BODY_TAG;
         }
         
@@ -207,7 +228,12 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
 
         log.debug("startTag " + cloud);
 
-        if ("asis".equals(method)) {
+        if (method == METHOD_LOGOUT) {
+            log.debug("request to log out, put an anonymous cloud in the session");
+            logon = null; cloud = null;
+        }
+
+        if (method == METHOD_ASIS) {
             // this is handy. 'logon' will be ignored, the cloud is as is was in the session
             log.debug("requested the cloud 'as is'");
             logon = null;   // that means in practice, to ignore the logon name.  
@@ -234,10 +260,10 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                 }
             } else 
             */
-            if (logon == null && method != null) { 
+            if (logon == null && method != METHOD_UNSET) { 
                 // authorisation was requested, but not indicated for whom 
                 log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());                
-                if (cloud.getUser().getRank().equals("anonymous")) { // so it simply may not be anonymous
+                if (cloud.getUser().getRank().equals(Rank.ANONYMOUS.toString())) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
                     session.removeAttribute("cloud_" + cloudName);
@@ -258,7 +284,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
         if (cloud == null) { // we did't have a cloud, or it was not a good one:
             log.debug("logging on the cloud...");
             // check how to log on:
-            if ("http".equals(method)) {
+            if (method == METHOD_HTTP) {
                 log.debug("with http");
                 // find logon, password with http authentication       
                 String username = null;
@@ -308,15 +334,14 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
                     cloud = getDefaultCloudContext().getCloud(cloudName, authenticate, user);
                 } catch (BridgeException e) { 
                     // did not succeed, so problably the password was wrong.
-                    if ( "http".equals(method)) { // give a deny, people can retry the password then.
+                    if (method == METHOD_HTTP) { // give a deny, people can retry the password then.
                         return deny("<h2>This page requires authentication</h2>");                    
                      } else { // strange, no method given, password wrong (or missing), that's really wrong.
                         throw new JspTagException("Logon of user " + logon + " failed." + 
                             (pwd == null ? " (no password given)" : " (wrong password)"));
                     }
                 }
-            } else { 
-                // I think this part is unreachable now.
+            } else {          
                 log.debug("no login given, creating anonymous cloud");
                 // no logon, create an anonymous cloud.
                 setAnonymousCloud(cloudName);
