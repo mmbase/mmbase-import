@@ -16,15 +16,16 @@
 <mm:import externid="search" />
 <mm:import externid="page" />
 
-<mm:url id="thisurl" referids="node_type,search?,page?" write="false" escapeamps="false">
+<mm:url referids="node_type,search?,page?" id="thisurl" write="false">
   <mm:present referid="search">
     <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
       <mm:fieldinfo type="reusesearchinput" />
     </mm:fieldlist>
   </mm:present>
 </mm:url>
-<mm:write referid="thisurl" vartype="string" jspvar="url">
-<%   push(urlStack, "home", url);  %>
+
+<mm:write referid="thisurl" vartype="string" jspvar="url"><%-- in context it is not url-encoded --%>
+ <%  push(urlStack, "home", url);  %>
 </mm:write>
 
 <table summary="node editors" width="100%" class="super">
