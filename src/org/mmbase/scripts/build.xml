@@ -594,9 +594,11 @@ Change directory to ${build.dir}/orion and run:
                 <include name="applications/CloudSecurity.xml"/>
                 <include name="applications/CloudSecurity/**"/>
                 
-                <!-- the modules we definitly need -->
-                <include name="modules/jdbc.xml"/>
-                <include name="modules/mmbaseroot.xml"/>
+                <!-- the modules we definitly need -->                    
+                <include name="modules/mmbaseroot.xml"/><!-- tells things about mmbase instantion -->
+                <include name="modules/jdbc.xml"/><!-- tells things about jdbc connecion -->
+                <include name="modules/mmadmin.xml"/><!-- to load applications, mmadmin isnt uses further in war -->
+                
                 
                 <!-- the builders we definitly need -->
                 <include name="builders/core/**"/>
