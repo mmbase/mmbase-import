@@ -13,9 +13,9 @@
      <h3><mm:field name="title"/></h3>
      <mm:field name="body" escape="p"/>
    </mm:relatednodes>
-   <mm:relatednodes type="documentation" orderby="title" directions="down"  id="docnr">
+   <mm:relatednodes type="documentation" orderby="title" directions="down"  id="relateddocnr">
      <mm:first><ul></mm:first>
-     <li><a href="<mm:url referids="portal,page,docnr" />"><mm:field name="title"/></a></li>
+     <li><a href="<mm:url referids="portal,page,relateddocnr@docnr" />"><mm:field name="title"/></a></li>
      <mm:last></ul></mm:last>
    </mm:relatednodes>
   </mm:node>
