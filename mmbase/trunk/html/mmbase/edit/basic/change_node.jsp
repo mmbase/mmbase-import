@@ -33,7 +33,7 @@
     <mm:fieldlist id="my_form" type="edit">
       <tr>
         <td class="data"><em><mm:fieldinfo type="guiname" /></em> <small>(<mm:fieldinfo type="name" />)</small></td>
-        <td class="listdata" colspan="2"><mm:fieldinfo type="${showtype}" />&nbsp;</td>
+        <td class="listdata" colspan="2"><mm:fieldinfo type="$showtype" />&nbsp;</td>
       </tr>
     </mm:fieldlist>
     <mm:maychangecontext>
@@ -61,12 +61,12 @@
 	 </mm:maychangecontext>
 <tr>
 <td colspan="3" class="buttons">
-<mm:maydelete>
-   <input class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
-   <input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" />
-</mm:maydelete>
-<input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
 <input class="submit"   type ="submit" name="ok" value="<%=m.getString("ok")%>" />
+<input class="submit"   type ="submit" name="cancel" value="<%=m.getString("cancel")%>" />
+<mm:maydelete>
+   <input class="submit"   type ="submit" name="delete" value="<%=m.getString("delete")%>" />
+   <input class="submit"   type ="submit" name="deleterelations"   value="<%=m.getString("change_node.deletewith")%>" />
+</mm:maydelete>
 </td>
 </tr>
 <tr><td colspan="3" class="search"><hr /></td></tr>
