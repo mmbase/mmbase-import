@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
+import org.mmbase.bridge.Node;
 
 /**
  * Produces a url to 'img.db'. Using this tag makes your pages more
@@ -21,7 +22,6 @@ import javax.servlet.jsp.JspTagException;
  **/
 
 public class ImageTag extends NodeReferrerTag  implements Writer {
-
 
     private String template = null;
     protected WriterHelper helper = new WriterHelper(); 
@@ -46,7 +46,12 @@ public class ImageTag extends NodeReferrerTag  implements Writer {
     
     public int doStartTag() throws JspTagException {  
         javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-        String page = req.getContextPath() + "/img.db?" + getNode().getNumber() + (template != null ? "+" + template : "");
+
+        Node node = getNode();
+        if (! "images".equals(node.getNodeManager().getName())) {
+            throw new JspTagException("Found parent node is not of type 'images'. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
+        }
+        String page = req.getContextPath() + "/img.db?" + node.getNumber() + (template != null ? "+" + template : "");
         helper.setValue(page);
         helper.setJspvar(pageContext);  
         if (getId() != null) {
