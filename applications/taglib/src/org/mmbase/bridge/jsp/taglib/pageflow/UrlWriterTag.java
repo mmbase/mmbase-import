@@ -29,10 +29,12 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * A Tag to produce an URL with parameters. It can use 'context' parameters easily.
+ * True write version of mm:url (named mm:link). Meaning that in it's body ${_} is available (and that the body is evaluated).
+ * Can be used with EL. ${_} is only evaluated when used.
  *
  * @author Michiel Meeuwissen
- * @version $Id: UrlWriterTag.java,v 1.1 2004-12-10 20:25:11 michiel Exp $
+ * @version $Id: UrlWriterTag.java,v 1.2 2004-12-10 20:27:23 michiel Exp $
+ * @since MMBase-1.8
  */
 
 public class UrlWriterTag extends UrlTag  implements org.mmbase.bridge.jsp.taglib.Writer {
