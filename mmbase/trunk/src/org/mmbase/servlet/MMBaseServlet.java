@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.12 2002-08-26 17:14:52 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.13 2002-09-13 09:18:08 vpro Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -64,7 +64,7 @@ public class MMBaseServlet extends  HttpServlet {
     /**
      * Hashtable containing currently running servlets
      */
-    private static Map runningServlets = new Hashtable();
+    private static Hashtable runningServlets = new Hashtable();
     /**
      * Toggle to print running servlets to log.
      * @javadoc Not clear, I don't understand it.
@@ -342,9 +342,8 @@ public class MMBaseServlet extends  HttpServlet {
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
                 if (curCount > 0) {
                     log.info("Running servlets: "+curCount);
-                    for(Iterator i = runningServlets.values().iterator(); i.hasNext();) {
-                        log.info(i.next());
-                    }
+                    for(Enumeration e=runningServlets.elements(); e.hasMoreElements();)
+                        log.info(e.nextElement());
                 }// curCount>0
             }
         }
