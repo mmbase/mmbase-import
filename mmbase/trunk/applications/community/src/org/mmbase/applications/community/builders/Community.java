@@ -66,6 +66,31 @@ public class Community extends MMObjectBuilder {
      *
      * @param community The community node of which to open all the channels.
      */
+    public void openAllCommunities() {
+        //ensure the communitybuilder is initialized.
+        init();
+        if (channelBuilder == null) {
+            log.error("No channel builder");
+            return;
+        }
+        for (Enumeration communities=search(null); communities.hasMoreElements(); ) {
+            MMObjectNode community = (MMObjectNode)communities.nextElement();
+            Enumeration relatedChannels = mmb.getInsRel().getRelated(community.getNumber(), channelBuilder.oType);
+            while (relatedChannels.hasMoreElements()) {
+                MMObjectNode channel=(MMObjectNode)relatedChannels.nextElement();
+                int open=channel.getIntValue("open");
+                if ((open==channelBuilder.OPEN) || (open==channelBuilder.WANT_OPEN)) {
+                    channelBuilder.open(channel,community);
+                }
+            }
+        }
+    }
+
+    /**
+     * Opens all the channels that are connected to this community
+     *
+     * @param community The community node of which to open all the channels.
+     */
     public void openAllChannels(MMObjectNode community) {
         if (channelBuilder == null) {
             log.error("No channel builder");
