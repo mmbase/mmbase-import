@@ -22,7 +22,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.1 2003-11-21 14:27:29 michiel Exp $
+ * @version $Id: Parameters.java,v 1.2 2003-11-21 14:58:38 michiel Exp $
  * @see Parameter
  */
 
@@ -83,6 +83,14 @@ public class Parameters extends AbstractList implements List  {
         }
     }
     
+
+    public Class[] toClassArray() {
+        Class[] array = new Class[definition.length];
+        for (int i = 0; i < definition.length; i++) {
+            array[i] = definition[i].getType();
+        }
+        return array;        
+    }
 
     /**
      * Adds the definitions to a List. Resolves the Attribute.Wrapper's (recursively).

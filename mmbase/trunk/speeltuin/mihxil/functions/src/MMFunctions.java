@@ -16,7 +16,7 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
 
-import java.net.*;
+import java.lang.reflect.*;
 import java.io.*;
 import java.util.*;
 
@@ -150,9 +150,15 @@ public class MMFunctions extends ProcessorModule {
                             }
                             
                         }
+                        Class implementor = Class.forName(classname);
                         
+                        Parameter[] def = (Parameter[]) paramList.toArray(new Parameter[0]);
+                        Parameters temp = new Parameters(def);
+
+                        Method m = implementor.getMethod(methodname, temp.toClassArray());
                         
-                        ReflectionFunction fun = new ReflectionFunction(name, (Parameter[]) paramList.toArray(new Parameter[0]), Class.forName(returntype), Class.forName(classname), methodname);
+                        ReflectionFunction fun = new ReflectionFunction(name, def, new ReturnType(Class.forName(returntype), "bla bla"), m);
+
 
                         
                         for (Enumeration n2 = reader.getChildElements(a,"field");n2.hasMoreElements();) {
@@ -169,6 +175,8 @@ public class MMFunctions extends ProcessorModule {
                     }
                 } catch  (ClassNotFoundException cnfe) {
                     log.error(cnfe.getMessage());
+                } catch  (NoSuchMethodException nsme) {
+                    log.error(nsme.getMessage());
                 }
 	    }
         } else {
