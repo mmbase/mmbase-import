@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><mm:content type="text/css">
 
-<mm:import id="myeditors">/mmexamples/jsp/my_editors/img/</mm:import>
+<mm:import id="myeditors">../../my_editors/img/</mm:import>
 @import url(base.css);
 
 span.select:before   { content: url(<mm:url page="${myeditors}mmbase-right.gif" />);  }
