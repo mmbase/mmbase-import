@@ -6,12 +6,15 @@
     String objectnumber = request.getParameter("objectnumber");
     String inline = request.getParameter("inline");
 
+    String parentFid = request.getParameter("fid");
+    String parentDid = request.getParameter("did");
+
     if (wizardname!=null && objectnumber!=null && !wizardname.equals("") && !objectnumber.equals("") && wizardname.indexOf("|")==-1) {
         if ("true".equals(inline)) {
-            response.sendRedirect(response.encodeURL("wizard.jsp?proceed=true&wizard="+wizardname+"&sessionkey="+ewconfig.sessionKey+"&objectnumber="+objectnumber));
+            response.sendRedirect(response.encodeURL("wizard.jsp?fid="+parentFid+"&did="+parentDid+"&proceed=true&wizard="+wizardname+"&sessionkey="+ewconfig.sessionKey+"&objectnumber="+objectnumber));
         } else {
             String sessionkey = wizardname + "|popup" + new java.util.Date().getTime();
-            response.sendRedirect(response.encodeURL("wizard.jsp"+ewconfig.sessionId+"?wizard="+wizardname+"&sessionkey="+sessionkey+"&objectnumber="+objectnumber+"&referrer="+ewconfig.backPage));
+            response.sendRedirect(response.encodeURL("wizard.jsp?wizard="+wizardname+"&sessionkey="+sessionkey+"&objectnumber="+objectnumber+"&referrer="+ewconfig.backPage));
         }
     } else {
         throw new WizardException("Could not start a popup wizard because no wizardname and objectnumber are applied."+
