@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Vector;
 import java.util.Iterator;
 /**
  *
@@ -61,6 +62,7 @@ public class Encode {
             register("org.mmbase.util.transformers.Base64");
             register("org.mmbase.util.transformers.Xml");
             register("org.mmbase.util.transformers.Url");
+            register("org.mmbase.util.transformers.Sql");
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             System.err.println(e.toString());
@@ -257,7 +259,9 @@ public class Encode {
             System.out.println("   use: java org.mmbase.util.Encode [encode|decode] <coding> [string]\n\n");
             System.out.println("On default it encodes and gets the string from STDIN\n\n"); 
             System.out.println("possible decoding are");
-            Iterator i = possibleEncodings().iterator();
+            Vector v = new Vector(possibleEncodings());
+            java.util.Collections.sort(v);
+            Iterator i = v.iterator();
             while (i.hasNext()) {
                 String enc = (String)i.next();
                 System.out.println(enc + "   " + ((Config)encodings.get(enc)).info);
