@@ -262,8 +262,8 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getTableName().equals(
-                    constraint.getField().getStep().getTableName())
+                && getField().getStep().getAlias().equals(
+                    constraint.getField().getStep().getAlias())
                 && searchType == constraint.getSearchType()
                 && matchType == constraint.getMatchType()
                 && parameters == constraint.parameters
@@ -275,10 +275,7 @@ public class BasicStringSearchConstraint extends BasicFieldConstraint implements
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107)
-        + (isCaseSensitive()? 0: 73)
-        + 79 * getField().getFieldName().hashCode()
-        + 83 * getField().getStep().getTableName().hashCode()
+        return super.hashCode()
         + 117 * searchType
         + 127 * matchType
         + 131 * parameters.hashCode()

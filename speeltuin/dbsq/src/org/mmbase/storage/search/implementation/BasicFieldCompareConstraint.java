@@ -8,13 +8,13 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint 
 implements FieldCompareConstraint {
     
     /** The operator. */
-    private int operator = 0;
+    private int operator = FieldValueConstraint.EQUAL;
     
     /**
      * Constructor.
@@ -25,8 +25,6 @@ implements FieldCompareConstraint {
      */
     protected BasicFieldCompareConstraint(StepField field) { 
         super(field);
-        // Operator defaults to equal.
-        operator = FieldValueConstraint.EQUAL;
     }
     
     /**
@@ -72,8 +70,8 @@ implements FieldCompareConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getTableName().equals(
-                    constraint.getField().getStep().getTableName())
+                && getField().getStep().getAlias().equals(
+                    constraint.getField().getStep().getAlias())
                 && operator == constraint.operator;
         } else {
             return false;
@@ -82,10 +80,7 @@ implements FieldCompareConstraint {
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107)
-        + (isCaseSensitive()? 0: 73)
-        + 79 * getField().getFieldName().hashCode()
-        + 83 * getField().getStep().getTableName().hashCode()
+        return super.hashCode()
         + 113 * operator;
     }
 }

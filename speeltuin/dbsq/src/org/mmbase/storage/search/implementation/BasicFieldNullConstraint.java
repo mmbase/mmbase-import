@@ -6,7 +6,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicFieldNullConstraint extends BasicFieldConstraint 
 implements FieldNullConstraint {
@@ -29,8 +29,8 @@ implements FieldNullConstraint {
             return isInverse() == constraint.isInverse()
                 && isCaseSensitive() == constraint.isCaseSensitive()
                 && getField().getFieldName().equals(constraint.getField().getFieldName())
-                && getField().getStep().getTableName().equals(
-                    constraint.getField().getStep().getTableName());
+                && getField().getStep().getAlias().equals(
+                    constraint.getField().getStep().getAlias());
         } else {
             return false;
         }
@@ -38,10 +38,7 @@ implements FieldNullConstraint {
     
     // javadoc is inherited
     public int hashCode() {
-        return (isInverse()? 0: 107)
-        + (isCaseSensitive()? 0: 73)
-        + 79 * getField().getFieldName().hashCode()
-        + 83 * getField().getStep().getTableName().hashCode();
+        return super.hashCode();
     }
 
     // javadoc is inherited

@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -685,6 +685,81 @@ public class BasicSqlHandlerTest extends TestCase {
         + "OR (m_i.m_number=insrel.m_snumber AND pools.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
         + "ORDER BY m_imageTitle ASC,name ASC,rnumber ASC"));
+        
+        // Aggregated query.
+        query = new BasicSearchQuery(true);
+        step1 = query.addStep(images);
+        BasicAggregatedField field4a = query.addAggregatedField(
+        step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_COUNT);
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "COUNT(m_images.m_title) AS m_title "
+        + "FROM " + prefix + "m_images m_images"));
+        
+        field4a.setAggregationType(
+        AggregatedField.AGGREGATION_TYPE_COUNT_DISTINCT);
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "COUNT(DISTINCT m_images.m_title) AS m_title "
+        + "FROM " + prefix + "m_images m_images"));
+        
+        field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MIN);
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "MIN(m_images.m_title) AS m_title "
+        + "FROM " + prefix + "m_images m_images"));
+        
+        field4a.setAggregationType(AggregatedField.AGGREGATION_TYPE_MAX);
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "MAX(m_images.m_title) AS m_title "
+        + "FROM " + prefix + "m_images m_images"));
+        
+        field4a.setAlias("maxTitle");
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "MAX(m_images.m_title) AS maxTitle "
+        + "FROM " + prefix + "m_images m_images"));
+        
+        BasicAggregatedField field4b = query.addAggregatedField(
+        step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT);
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "MAX(m_images.m_title) AS maxTitle,"
+        + "COUNT(m_images.m_number) AS m_number "
+        + "FROM " + prefix + "m_images m_images"));
+        
+        field4b.setAggregationType(AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "MAX(m_images.m_title) AS maxTitle,"
+        + "m_images.m_number AS m_number "
+        + "FROM " + prefix + "m_images m_images "
+        + "GROUP BY m_number"));
+
+        field4b.setAlias("imageNumber");
+        sb.setLength(0);
+        instance.appendQueryBodyToSql(sb, query, instance);
+        strSql = sb.toString();
+        assert(strSql, strSql.equals(
+        "MAX(m_images.m_title) AS maxTitle,"
+        + "m_images.m_number AS imageNumber "
+        + "FROM " + prefix + "m_images m_images "
+        + "GROUP BY imageNumber"));
     }
     
     /** Test of appendConstraintToSql method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
