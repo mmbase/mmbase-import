@@ -48,6 +48,8 @@ public class Mail {
     public Mail(String to, String from) {
         this.to=to;
         this.from=from;
+        headers.put("To", to);
+        headers.put("From", from);
     }
 
     /**
