@@ -37,8 +37,8 @@
         You can install the MyNews application by going to ADMIN -> APPLICATIONS
       </mm:notpresent>
       <mm:present referid="mynewsIsPresent">
-        <mm:url id="url" page="/mmexamples/jsp/mynews/index.jsp" write="false" />
-        This url will show the MyNew magazine: <a href="<mm:write referid="url" />" target="mynews"><mm:write referid="url" /></a>
+        <mm:url id="url" page="mynews/" write="false" />
+        This url will show the MyNews magazine: <a href="<mm:write referid="url" />"><mm:write referid="url" /></a>
       </mm:present>
       <br /><br />
     </td>
