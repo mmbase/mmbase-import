@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeRel.java,v 1.25 2002-04-09 07:02:43 kees Exp $
+ * @version $Id: TypeRel.java,v 1.26 2002-05-06 09:05:55 pierre Exp $
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
@@ -126,7 +126,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             if (str.toUpperCase().equals("TRUE") || str.toUpperCase().equals("YES")) memTableActive=true;
             else memTableActive=false;
         }
-        log.info("Memory Table usage for getAllowedRelations is "+memTableActive);
+        log.debug("Memory Table usage for getAllowedRelations is "+memTableActive);
 
         if (memTableActive && relationTypes.size()==0 && memTableCount==1) {
             readRelationTypes();
@@ -150,7 +150,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         
         log.debug("Reading in relation types");
         // Find all typerel nodes
-        alltypes=search("WHERE 1=1");
+        alltypes=search("");
         while(alltypes.hasMoreElements()) {
             // For every reltype node :
             reltype=(MMObjectNode)alltypes.nextElement();
@@ -293,18 +293,18 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      */
     public Enumeration getAllowedRelations(int snum, int dnum) {
         Enumeration e,f;
-        long l1,l2;
+        // long l1,l2;
 
-        l1=System.currentTimeMillis();
+        // l1=System.currentTimeMillis();
         if (memTableActive && memTableDone) {
             f = getAllowedRelationsTable(snum,dnum);
         } else {
             e = search("WHERE (snumber="+snum+" AND dnumber="+dnum+") OR (dnumber="+snum+" AND snumber="+dnum+")");
-               f=clearDirectedRelations(e, snum);
+            f=clearDirectedRelations(e, snum);
             if (log.isDebugEnabled()) f=printEnum(f);
         }
-        l2=System.currentTimeMillis();
-        log.info("Time : "+(l2-l1));
+        // l2=System.currentTimeMillis();
+        // log.debug("Time : "+(l2-l1));
         return(f);
     }
 
@@ -548,7 +548,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
             } else if (ctype.equals("n")) {
                 addRelationType(Integer.parseInt(number));
             } else {
-                log.info("Unknown type received "+ctype);
+                log.warn("Unknown type received "+ctype);
             }
         }
         return(true);
@@ -626,7 +626,7 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         MMObjectNode node;
         node=getNode(number);
         if (node!=null) addRelationType(node);
-        else log.info("Node "+number+" doesn't exist");
+        else log.error("Node "+number+" doesn't exist");
     }
 
     /**
