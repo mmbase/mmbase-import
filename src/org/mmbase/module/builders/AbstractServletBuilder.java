@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.5 2002-06-30 20:12:23 michiel Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.6 2002-06-30 21:12:05 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -180,23 +180,35 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
 
     protected Object executeFunction(MMObjectNode node, String function, String field) {
         if (function.equals("servletpath")) {
-            String context = null;
-            if (field.startsWith("/")) { // hack to be able to supply the context, should be superflouous.
-                int pos = field.indexOf('/', 1);
-                context = field.substring(0, pos);
-                field = field.substring(pos + 1);
+
+            log.debug("getting servletpath with args " + field);
+            Vector args = getFunctionParameters(field);
+            log.debug("parsed " + args);
+
+            String session = "";
+            if(args.size() > 0){                
+                session = (String) args.remove(0);
+            }            
+            String f = "";
+            if(args.size() > 0 ){
+                f = (String) args.remove(0);
+            }            
+            String context = null; // hack to be able to supply the context, should be superflouous.
+            if (args.size() > 0) {
+                context = (String) args.remove(0);
             }
             String servlet;
-            if (context == null) {
+            if (context == null) { // context argument is the last, for easy removal later
                 servlet = getServletPath();
             } else {
                 servlet = getServletPath(context, null);
             }
-
-            if ("".equals(field)) {
+            if (usesBridgeServlet & !session.equals("")) servlet += "session=" + session + "+";
+            
+            if ("".equals(f)) {
                 return servlet;
             } else {
-                return servlet + node.getStringValue(field);
+                return servlet + node.getStringValue(f);
             }
         } else if (function.equals("servletpathof")) { 
             // you should not need this very often, only when you want to serve a node with the 'wrong' servlet this can come in handy.
