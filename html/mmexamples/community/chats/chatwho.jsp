@@ -1,6 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ taglib uri="http://www.mmbase.org/mmcommunity-taglib-1.0"
-		       //prefix="mmcommunity" 
+%><%@ taglib uri="http://www.mmbase.org/mmcommunity-taglib-1.0" prefix="mmcommunity" 
 %><html><head><script language="JavaScript">
 window.setInterval("call()", 10000, "JavaScript");
 function call(){location="chatwho.jsp"; }</script>
