@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * immediately.
  *
  * @author David van Zeventer
- * @version $Id: MediaParts.java,v 1.8 2002-02-20 10:43:26 pierre Exp $
+ * @version $Id: MediaParts.java,v 1.9 2002-04-19 09:20:42 pierre Exp $
  */
 public abstract class MediaParts extends MMObjectBuilder {
 
@@ -166,7 +166,7 @@ public abstract class MediaParts extends MMObjectBuilder {
         while (e.hasMoreElements()) {
             rawNode = (MMObjectNode)e.nextElement();
             if (log.isDebugEnabled()) {
-                debug("removeRaws: Removing rawobject " + rawNode.getIntValue("number"));
+                log.debug("removeRaws: Removing rawobject " + rawNode.getIntValue("number"));
             }
             builder.removeNode(rawNode);
         }
@@ -246,8 +246,9 @@ public abstract class MediaParts extends MMObjectBuilder {
      * @return a String with the Url to the file or null.
      */
     String getUrlFromCache(scanpage sp,int number,int userSpeed,int userChannels) {
-        if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 )
-            debug("getUrlFromCache: "+urlCache.getStats());
+        if ( ((urlCache.getHits()+urlCache.getMisses()) % 100) == 0 ) {
+            log.debug("getUrlFromCache: "+urlCache.getStats());
+        }
         String url = null;
         int key = number;
         url = (String) urlCache.get(new Integer(key));
@@ -259,21 +260,21 @@ public abstract class MediaParts extends MMObjectBuilder {
                 log.debug("getUrlFromCache: doGetUrl returns null, no cache put returning null");
                 return null;
             } else if (url.charAt(0)=='r') {
-                    urlCache.put(new Integer(key),url);
-                    if (log.isDebugEnabled()) {
-                        log.debug("getUrlFromCache: Cached VALUE: " + url + ", KEY:" + key);
-                    }
-                    return url;
+                urlCache.put(new Integer(key),url);
+                if (log.isDebugEnabled()) {
+                    log.debug("getUrlFromCache: Cached VALUE: " + url + ", KEY:" + key);
+                }
+                return url;
             } else if (url.charAt(0)=='p') {
-                    int pos = 0;
-                    StringBuffer urlsb = new StringBuffer(url);
-                    pos = url.indexOf(".ra");
-                    String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
-                    urlCache.put(new Integer(key),cachedUrl);
-                    if (log.isDebugEnabled()) {
-                        log.debug("getUrlFromCache: Cached VALUE: " + cachedUrl + ", KEY:" + key);
-                    }
-                    return url; //Return original result url from method doGetUrl.
+                int pos = 0;
+                StringBuffer urlsb = new StringBuffer(url);
+                pos = url.indexOf(".ra");
+                String cachedUrl = ""+urlsb.replace((pos-4),pos,"%%_%");
+                urlCache.put(new Integer(key),cachedUrl);
+                if (log.isDebugEnabled()) {
+                    log.debug("getUrlFromCache: Cached VALUE: " + cachedUrl + ", KEY:" + key);
+                }
+                return url; //Return original result url from method doGetUrl.
             } else {
                 log.info("getUrlFromCache: Invalid Url string: " + url + " , returning null");
                 return null;
