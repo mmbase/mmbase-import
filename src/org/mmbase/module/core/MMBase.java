@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.68 2002-08-21 06:35:06 michiel Exp $
+ * @version $Id: MMBase.java,v 1.69 2002-09-24 10:42:48 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -444,8 +444,7 @@ public class MMBase extends ProcessorModule  {
      * @return <code>true</code> if the database exists and is accessible, <code>false</code> otherwise.
      */
     boolean checkMMBase() {
-        if (database==null) database=getDatabase();
-        return database.created(baseName+"_object");
+        return getDatabase().created(baseName+"_object");
     }
 
     /**
@@ -463,7 +462,11 @@ public class MMBase extends ProcessorModule  {
     boolean createMMBase() {
         log.debug(" creating new multimedia base : "+baseName);
         Vector v;
-        database=getDatabase();
+
+	// why are we giving our member variable it's own value here?
+        // database=getDatabase();
+	getDatabase();
+
         MMObjectBuilder objekt=null;
         try {
             objekt=loadBuilder("object");
@@ -1190,17 +1193,52 @@ public class MMBase extends ProcessorModule  {
      */
     public MMJdbc2NodeInterface getDatabase() {
         if (database==null) {
-            try {
-                String databasename = getInitParameter("DATABASE");
-                String path = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename + ".xml";
-                XMLDatabaseReader dbdriver = new XMLDatabaseReader(path);
+	    String databasename = getInitParameter("DATABASE");
+	    if(databasename == null){
+		// databasename was null, try to guess it from the classname of the connection.
+		String ccn = getDirectConnection().getClass().getName();
+		// the way to determine this should be in a configuration...
+		// this should for be a classname, with a string that is fed to
+		// the connection, and the result that this connection returns 
+		// to see what kinda version is running behind the jdbc interface.
+		if(ccn.startsWith("org.gjt.mm.mysql")) databasename = "mysql";
+		else if(ccn.startsWith("org.mysql")) databasename = "mysql";
+		else if(ccn.startsWith("org.postgresql")) databasename = "postgresql71";
+		else if(ccn.startsWith("org.hsql")) databasename = "hypersonic";
+		else if(ccn.startsWith("org.hsqldb")) databasename = "hsqldb";
+		else {	     
+		    String fallback = "sql92";
+		    databasename = fallback;
+		    log.warn("could not detect the database type, will use the fallback:" + databasename);
+		}
+		log.info("Auto detected database type:" + databasename+ ", add '<property name=\"database\">"+databasename+"</property>' to mmbaseroot.xml, to override.");
+	    }
+	    // use the correct databas-xml
+	    String path = MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename + ".xml";
+	    XMLDatabaseReader dbdriver = new XMLDatabaseReader(path);	    
+	    try {                
                 Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
-                log.info("Loaded database support class: " + newclass.getName());
                 database = (MMJdbc2NodeInterface) newclass.newInstance();
-                database.init(this, dbdriver);
-            } catch(Exception e) {
-                log.error(Logging.stackTrace(e));
-            }
+	    }
+	    catch(ClassNotFoundException cnfe){
+	        String msg = "class not found:\n" + Logging.stackTrace(cnfe);
+		log.error(msg);
+		throw new RuntimeException(msg);
+	    }
+	    catch(InstantiationException ie) {
+	        String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
+		log.error(msg);
+		throw new RuntimeException(msg);
+	    }
+	    catch(IllegalAccessException iae) {
+	        String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
+		log.error(msg);
+		throw new RuntimeException(msg);
+	    }
+	    // print information about our database connection..	    
+	    log.info("Using class: '"+database.getClass().getName()+"' with config: '"+path+"'." );
+	    // init the database..
+	    database.init(this, dbdriver);
         }
         return database;
     }
