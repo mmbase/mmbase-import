@@ -1025,7 +1025,7 @@ public class MMObjectBuilder extends MMTable {
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
-                Builder thisbuilder = mmb.getBuilder(bul);
+                MMObjectBuilder thisbuilder = mmb.getBuilder(bul);
                 String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
                 log.debug("query : " + query );
                 ResultSet rs = stmt.executeQuery(query);
