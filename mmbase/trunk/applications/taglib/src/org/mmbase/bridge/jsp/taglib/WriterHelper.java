@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.48 2004-06-03 17:08:51 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.49 2004-10-15 18:35:23 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -423,7 +423,8 @@ public class WriterHelper extends BodyTagSupport {
                 log.debug("Using escaper " + escaper);
             }
             if (escaper != null) {
-                return  escaper.transform(new StringReader(Casting.toString(value)), w);
+                w.write(escaper.transform(Casting.toString(value)));
+                return w;
             } else {
                 return  Casting.toWriter(w, value);
             }
