@@ -21,6 +21,7 @@ Applications build file
   <property name="download.dir" value="${build.dir}/download" />
   <property name="expand.dir"   value="${download.dir}/expanded" />
   <property name="download.zip" value="mmbase-downloads.zip"  />
+  <property name="mmbase.jar"    value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
 
   <property name="applications.build.dir" location="./build" />
 
@@ -42,6 +43,7 @@ Applications build file
         <include name="**/*.jar" />
       </fileset>
     </copy>
+    <copy todir="${applications.build.dir}/jars" file="${mmbase.jar}" />
   </target>
 
   <target name="mmbase">
