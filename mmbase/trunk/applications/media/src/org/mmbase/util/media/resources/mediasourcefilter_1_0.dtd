@@ -1,9 +1,0 @@
-<!-- Author Rob Vermeulen (VPRO) -->
-<!ELEMENT mediasourcefilter (chain, filterConfigs?)>
-
-<!ELEMENT chain (filter+)>
-<!ELEMENT filter (#PCDATA)>
-
-<!ENTITY % configs ""><!-- default no configs, add them in the DOCTYPE of mediasourcefilter.xml -->
-
-<!ELEMENT filterConfigs (%configs;)>
