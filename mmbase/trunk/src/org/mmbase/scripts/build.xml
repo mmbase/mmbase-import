@@ -813,6 +813,56 @@ Change directory to ${build.dir}/orion and run:
   </target>
 
 
+    <!-- =================================================================== -->
+    <!-- Install MMBase on top of Tomcat and PostSQL                         -->
+    <!-- =================================================================== -->
+    <target name="tomcat.postgresql"
+    	  description="Install MMBase on top of Tomcat and PostgreSQL"
+          depends="tomcat,get.postgresql">
+	
+	<!-- 
+	    replace the following things in mmbaseroot.xml : 
+	    	<property name="database">mysql</property> 
+	    	    into: <property name="database">postgresql71</property>    	    	    
+	-->  
+    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/mmbaseroot.xml"
+             token="&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;"
+             value="&lt;property name=&quot;database&quot;&gt;postgresql71&lt;/property&gt;"/>	
+	<!-- 
+	    replace the following things in jdbc.xml : 
+		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
+	    	    into: <property name="url">jdbc:postgresql://$HOST:$PORT/$DBM</property>
+    	    	<property name="user">url</property>
+		    into: <property name="user"></property> with value: ${database.user}
+    	    	<property name="password">url</property>
+		    into: <property name="password"></property> with value: ${database.password}
+		<property name="driver">org.gjt.mm.mysql.Driver</property>
+		    into: <property name="driver">org.postgresql.Driver</property>
+		 <property name="port">3306</property>
+		    into: <property name="port">5432</property>
+	-->  	
+    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
+             value="&lt;property name=&quot;url&quot;&gt;jdbc:postgresql://$HOST:$PORT/$DBM&lt;/property&gt;"/>
+	     
+    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;"
+             value="&lt;property name=&quot;user&quot;&gt;${database.user}&lt;/property&gt;"/>
+	     
+    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;"
+             value="&lt;property name=&quot;password&quot;&gt;${database.password}&lt;/property&gt;" />
+	     
+    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;"             
+	     value=" &lt;property name=&quot;driver&quot;&gt;org.postgresql.Driver&lt;/property&gt;"/>
+	     
+    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
+             token="&lt;property name=&quot;port&quot;&gt;3306&lt;/property&gt;"
+             value="&lt;property name=&quot;port&quot;&gt;5432&lt;/property&gt;"/>
+    	<copy file="${postgresql.jar}" todir="${build.dir}/tomcat/lib"/>
+    </target>
+
   <!-- =================================================================== -->
   <!-- Install MMBase on top of Orion without database                     -->
   <!-- =================================================================== -->
