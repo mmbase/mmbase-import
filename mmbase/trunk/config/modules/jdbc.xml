@@ -103,7 +103,7 @@
 		<!--
 		name="connections",  mmbase does its own database connection pooling
 		(keeping connections to the database open over several database
-		query's, to speed up query's by not logging in and closing
+		queries, to speed up queries by not logging in and closing
 		the connection on every qeury). 'connections' allows you to set
 		the number of connections mmbase keeps open to the database.
 		-->
@@ -140,13 +140,13 @@
 		<property name="port">0</property>
 
 		<!--
-		name="querys", mmbase will replace these connections every x query's
+		name="queries", mmbase will replace these connections every x queries
 		because alot of the databases drivers, jdbc drivers etc etc have
-		memory leaks or other possible problems. with 'querys' you can set
+		memory leaks or other possible problems. with 'queries' you can set
 		the number that will be done per connection before it gets replaced
 		with a new connection.
 		-->
-		<property name="querys">256</property>
+		<property name="queries">256</property>
 
 		<!--
 		sometime connections take a long time, every now and then the
