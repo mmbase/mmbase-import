@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMOORel2Node.java,v 1.3 2000-05-15 14:47:48 wwwtech Exp $
+$Id: MMOORel2Node.java,v 1.4 2000-07-20 08:14:02 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/05/15 14:47:48  wwwtech
+Rico: fixed double close() bug in getDBText en getDBBtye()
+
 Revision 1.2  2000/04/17 09:58:07  wwwtech
 Removed some debug for informix install
 
@@ -57,7 +60,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.3 $ $Date: 2000-05-15 14:47:48 $
+* @$Revision: 1.4 $ $Date: 2000-07-20 08:14:02 $
 */
 public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -253,6 +256,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		return(bytes);
 	}
 
+	/* temp removed daniel
 	public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
 		String result="";
 		where=where.substring(7);
@@ -290,6 +294,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 		return(result);
 	}
+	*/
 
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
 		String result="";
@@ -437,6 +442,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 	* @param node The current node that's to be inserted.
 	* @return The DBKey number for this node, or -1 if an error occurs.
 	*/
+	/* temp removed daniel.
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
 		int number=node.getIntValue("number");
 		if (number==-1) number=getDBKey();
@@ -511,6 +517,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		if (debug) debug("INSERTED="+node);
 		return(number);	
 	}
+	*/
 
 	
 	/**
@@ -552,6 +559,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 	/**
 	* set prepared statement field i with value of key from node
 	*/
+	/* temp removed daniel
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
 		throws SQLException
 	{
@@ -576,11 +584,13 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 		}
 	}
+	*/
 
 
 	/**
 	* commit this node to the database
 	*/
+	/* temp removed daniel.
 	public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
 		//  precommit call, needed to convert or add things before a save
 		bul.preCommit(node);
@@ -645,6 +655,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		}
 		return(true);
 	}
+	*/
 
 
 	/**
@@ -653,7 +664,7 @@ public class MMOORel2Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 	public void removeNode(MMObjectBuilder bul,MMObjectNode node) {
 		java.util.Date d=new java.util.Date();
 		int number=node.getIntValue("number");
-		if (debug) debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
+		// temp removed (daniel) despre. if (debug) debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
 		if (debug) debug("removeNode(): SAVECOPY "+node.toString());
 		Vector rels=bul.getRelations_main(number);
 		if (rels!=null && rels.size()>0) {

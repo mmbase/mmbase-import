@@ -26,7 +26,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.14 $ $Date: 2000-07-03 14:53:09 $
+* @$Revision: 1.15 $ $Date: 2000-07-20 08:13:30 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -43,6 +43,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		name="informix";
 		if (debug) debug("MMInformix42Node: Processing ...");
 
+		/* removed new version
 		typesmap.put("int",new Integer(TYPE_INTEGER));
 		typesmap.put("varchar",new Integer(TYPE_STRING));
 		typesmap.put("lvarchar",new Integer(TYPE_STRING));
@@ -55,6 +56,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		typesmap.put("clob",new Integer(TYPE_TEXT));
 		typesmap.put("byte",new Integer(TYPE_BLOB));
 		typesmap.put("blob",new Integer(TYPE_BLOB));
+		*/
 	}
 
 	/* 
@@ -189,6 +191,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	*         @param node The current node that's to be inserted.
 	*         @return The DBKey number for this node, or -1 if an error occurs.
 	*/
+	/* removed to compile by overriding for new version, daniel
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
 		if (debug) debug("Method: insert()");
 	
@@ -294,11 +297,13 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		if (debug) debug("INSERTED="+node);
 		return(number);
 	}
+	*/
 
 	/**
 	* Method : setValuePreparedStatement
 	*          set prepared statement field i with value of key from node
 	*/
+	/* removed by overriding for new version, Daniel
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i) throws SQLException {
 		if (debug) debug("Method: setValuePreparedStatement()");
 
@@ -330,11 +335,13 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			}
 		}
 	}
+	*/
 
 	/*
 	* Method: decodeDBnodeField
 	*         
 	*/
+	/* removed with new one untested (in NNSQL92), daniel
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
 		try {
 			
@@ -372,6 +379,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		}
 		return(node);
 	}
+	*/
 
 	/*
 	* Method: getDBText
@@ -442,6 +450,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* Method: getMMNodeSearch2SQL
 	*
 	*/
+	/* removed to compile for new version, daniel.
 	public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
 		if (debug) debug("Method: getMMNodeSearch2SQL()");
                 String result="";
@@ -480,6 +489,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 }
                 return(result);
 	}
+	*/
 
 	/*
 	* Method: parseFieldPart
@@ -646,6 +656,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* Method: commit
         *         commit this node to the database
         */
+	/* removed to compile for new version, daniel
         public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
 		if (debug) debug("Method: commit()");
                 //  precommit call, needed to convert or add things before a save
@@ -711,6 +722,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                 }
                 return(true);
         }
+	*/
 
         /**
 	* Method: removeNode
@@ -720,7 +732,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		if (debug) debug("Method: removeNode()");
                 java.util.Date d=new java.util.Date();
                 int number=node.getIntValue("number");
-                if (debug) debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
+                // temp removed (daniel) despr. if (debug) debug("removeNode(): delete from "+mmb.baseName+"_"+bul.tableName+" where number="+number+" at "+d.toGMTString());
                 if (debug) debug("removeNode(): SAVECOPY "+node.toString());
                 Vector rels=bul.getRelations_main(number);
                 if (rels!=null && rels.size()>0) {

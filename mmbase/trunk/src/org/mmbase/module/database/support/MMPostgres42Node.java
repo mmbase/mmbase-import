@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMPostgres42Node.java,v 1.9 2000-05-02 10:20:51 wwwtech Exp $
+$Id: MMPostgres42Node.java,v 1.10 2000-07-20 08:14:41 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/05/02 10:20:51  wwwtech
+Rico: include large object support from Carlo E. Prelz
+
 Revision 1.8  2000/04/15 20:40:03  wwwtech
 fixes for informix and split in sql92
 
@@ -48,7 +51,7 @@ import org.mmbase.module.corebuilders.InsRel;
 import org.mmbase.util.*;
 
 // PostgreSQL largeobject support
-import postgresql.largeobject.*;
+// temp, removed by daniel (should be in a better packages and cvs) import postgresql.largeobject.*;
 
 
 /**
@@ -58,19 +61,20 @@ import postgresql.largeobject.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.9 $ $Date: 2000-05-02 10:20:51 $
+* @$Revision: 1.10 $ $Date: 2000-07-20 08:14:41 $
 */
 public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-	private LargeObjectManager lobj=null;
+	// temp removed, private LargeObjectManager lobj=null;
 	MMBase mmb;
 
 	public MMPostgres42Node() {
 	}
 
+	/* temp removed
 	public void init(MMBase mmb) {
 		Connection c=null;
 		this.mmb=mmb;
@@ -88,6 +92,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			e.printStackTrace();
 		}			
 	}
+	*/
 
 	public boolean create(MMObjectBuilder bul,String tableName) {
 		// Note that builder is null when tableName='object'
@@ -170,6 +175,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	}
 
 
+	/* temp removed, daniel
 	public String getMMNodeSearch2SQL(String where,MMObjectBuilder bul) {
 		String result="";
 		where=where.substring(7);
@@ -206,6 +212,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		}
 		return(result);
 	}
+	*/
 
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
 		String result="";
@@ -321,6 +328,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	/**
 	* get byte of a database blob
 	*/
+	/* temp removed, daniel
 	public byte[] getDBByte(ResultSet rs,int idx) {
 		byte[] bytes=null;
 		try {
@@ -334,6 +342,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		}
 		return(bytes);
 	}
+	*/
 
 	/**
 	* get text of a database blob
@@ -365,6 +374,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	* @param node The current node that's to be inserted.
 	* @return The DBKey number for this node, or -1 if an error occurs.
 	*/
+	/* temp removed, daniel
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
 		int number=node.getIntValue("number");
 		// did the user supply a number allready, ifnot try to obtain one
@@ -511,6 +521,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		//System.out.println("INSERTED="+node);
 		return(number);	
 	}
+	*/
 
 
 	public int insertRootNode(MMObjectBuilder bul) {
@@ -576,6 +587,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	/**
 	* set byte array in database
 	*/
+	/* temp removed, daniel
 	public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
 		try {
 			int oid=lobj.create(LargeObjectManager.READ|LargeObjectManager.WRITE);
@@ -587,10 +599,12 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 			e.printStackTrace();
 		}
 	}
+	*/
 
 	/**
 	* commit this node to the database
 	*/
+	/* temp removed daniel
 	public boolean commit(MMObjectBuilder bul,MMObjectNode node) {
 		//  precommit call, needed to convert or add things before a save
 		bul.preCommit(node);
@@ -654,6 +668,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 		}
 		return(true);
 	}
+	*/
 
 
 	/**
@@ -778,6 +793,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 	/**
 	* set prepared statement field i with value of key from node
 	*/
+	/* temp removed daniel.
 	private void setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String key, int i)
 		throws SQLException
 	{
@@ -805,6 +821,7 @@ public class MMPostgres42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
 				stmt.setString(i, "");
 		}
 	}
+	*/
 
 
  	/**
