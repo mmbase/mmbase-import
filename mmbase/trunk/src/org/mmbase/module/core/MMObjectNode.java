@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.58 $ $Date: 2002-02-26 13:38:46 $
+ * @version $Revision: 1.59 $ $Date: 2002-02-26 16:21:25 $
  */
 
 public class MMObjectNode {
@@ -1323,12 +1323,11 @@ public class MMObjectNode {
         // Depending on the gui type choose conversion....    
         if (value.indexOf("<") != 0) { // not XML, make it XML
             // for the moment only mmxf is supported.
-                
+            if (log.isDebugEnabled()) { 
+                log.debug("field was not xml, trying to convert " + value);
+            }
             // MMXF_POOR, this is the rich format we use, it is little less rich then MMXF_RICH...                                
             value = org.mmbase.util.Encode.decode("MMXF_POOR", (String) value);
-            if (log.isDebugEnabled()) { 
-                log.debug("field was not XML, converted to " + value);
-            }
         }        
         
         /////////////////////////////////////////////
@@ -1338,6 +1337,9 @@ public class MMObjectNode {
             
             // if no header,... attach it...
             if(value.indexOf("<?xml") != 0) {
+                if(log.isDebugEnabled()) {
+                    log.debug("adding doctype and header, for mmxf thing");
+                }
                 String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
                 String xmlDocType = "<!DOCTYPE mmxf PUBLIC \"//MMBase - mmxf//\" \"http://www.mmbase.org/dtd/mmxf.dtd\">";
                 value = xmlHeader + "\n" + xmlDocType + "\n" + value;
@@ -1349,10 +1351,6 @@ public class MMObjectNode {
             log.warn("At this moment, the only guitype which can be used with the database type xml, is 'mmxf' guitype '"+parent.getField(fieldName).getGUIType()+"' is not supported(from builder:" + parent.getTableName() + ")");            
         }
         
-        if (log.isDebugEnabled()) { 
-            log.debug("converting the followin xml: \n" + value);
-        }                        
-    	
         try {                
             // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
             // or ask it from BasicReader ?
@@ -1362,7 +1360,10 @@ public class MMObjectNode {
             documentBuilder.setErrorHandler(new org.mmbase.util.XMLErrorHandler());
             documentBuilder.setEntityResolver(new org.mmbase.util.XMLEntityResolver());
             // ByteArrayInputStream?
-            // Yes, in contradiction to what one would think, XML are bytes, rather then characters.                
+            // Yes, in contradiction to what one would think, XML are bytes, rather then characters.
+            if (log.isDebugEnabled()) { 
+                log.debug("string -> xml:\n" + value);
+            }                                                
             return documentBuilder.parse(new java.io.ByteArrayInputStream(value.getBytes(parent.mmb.getEncoding()))).getDocumentElement();
         }
         catch(javax.xml.parsers.ParserConfigurationException pce) {
@@ -1388,10 +1389,15 @@ public class MMObjectNode {
             javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
             //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
             javax.xml.transform.Transformer serializer = tfactory.newTransformer();
+            // for now, we save everything in ident form, this since it makes debugging a little bit more handy            
             serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-            serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
+            // store as less as possible, otherthings should be resolved from gui-type
+            serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
             java.io.StringWriter str = new java.io.StringWriter();
             serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
+            if (log.isDebugEnabled()) { 
+                log.debug("xml -> string:\n" + str.toString());
+            }                                    
             return str.toString();
         }
         catch(javax.xml.transform.TransformerConfigurationException tce) {
