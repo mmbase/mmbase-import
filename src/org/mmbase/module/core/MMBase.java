@@ -25,6 +25,7 @@ import org.mmbase.module.database.MultiConnection;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 
 import org.mmbase.security.MMBaseCop;
+import org.mmbase.storage.implementation.database.JDBC2NodeWrapper;
 import org.mmbase.storage.search.SearchQueryException;
 
 import org.mmbase.storage.Storage;
@@ -41,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.96 2003-08-20 09:17:55 pierre Exp $
+ * @version $Id: MMBase.java,v 1.97 2003-08-21 10:01:15 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1260,53 +1261,62 @@ public class MMBase extends ProcessorModule {
      */
     public MMJdbc2NodeInterface getDatabase() {
         if (database == null) {
-            File databaseConfig = null;
-            String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
-            String databasename = getInitParameter("DATABASE");
-            if (databasename == null) {
-                DatabaseLookup lookup =
-                    new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
-                if (jdbc == null)
-                    throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
-                try {
-                    // dont use the getDirectConnection, upon failure, it will loop,....
-                    databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
-                } catch (java.sql.SQLException sqle) {
-                    log.error(sqle);
-                    log.error(Logging.stackTrace(sqle));
-                    throw new RuntimeException("error retrieving an connection to the database:" + sqle);
-                }
+            // check if there is a storagemanagerfactory specified
+            String factoryClassName = getInitParameter("storagemanagerfactory");
+            if (factoryClassName!=null) {
+                // if so, instantiate the support class wrapper for the storage layer
+                database = new JDBC2NodeWrapper();
+                // print information about our database connection..
+                log.info("Using class: '" + database.getClass().getName() + "'.");
+                database.init(this,null);
             } else {
-                // use the correct databas-xml
-                databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+                File databaseConfig = null;
+                String databaseConfigDir = MMBaseContext.getConfigPath() + File.separator + "databases" + File.separator;
+                String databasename = getInitParameter("DATABASE");
+                if (databasename == null) {
+                    DatabaseLookup lookup =
+                        new DatabaseLookup(new File(databaseConfigDir + "lookup.xml"), new File(databaseConfigDir));
+                    if (jdbc == null)
+                        throw new RuntimeException("Could not retrieve jdbc module, is it loaded?");
+                    try {
+                        // dont use the getDirectConnection, upon failure, it will loop,....
+                        databaseConfig = lookup.getDatabaseConfig(jdbc.getDirectConnection(jdbc.makeUrl()));
+                    } catch (java.sql.SQLException sqle) {
+                        log.error(sqle);
+                        log.error(Logging.stackTrace(sqle));
+                        throw new RuntimeException("error retrieving an connection to the database:" + sqle);
+                    }
+                } else {
+                    // use the correct databas-xml
+                    databaseConfig = new File(databaseConfigDir + databasename + ".xml");
+                }
+                // get our config...
+                XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
+                try {
+                    Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
+                    database = (MMJdbc2NodeInterface)newclass.newInstance();
+                } catch (ClassNotFoundException cnfe) {
+                    String msg = "class not found:\n" + Logging.stackTrace(cnfe);
+                    log.error(msg);
+                    throw new RuntimeException(msg);
+                } catch (InstantiationException ie) {
+                    String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
+                    log.error(msg);
+                    throw new RuntimeException(msg);
+                } catch (IllegalAccessException iae) {
+                    String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
+                    log.error(msg);
+                    throw new RuntimeException(msg);
+                }
+                // print information about our database connection..
+                log.info("Using class: '" + database.getClass().getName() + "' with config: '" + databaseConfig + "'.");
+                // init the database..
+                database.init(this, dbdriver);
             }
-            // get our config...
-            XMLDatabaseReader dbdriver = new XMLDatabaseReader(databaseConfig.getPath());
-            try {
-                Class newclass = Class.forName(dbdriver.getMMBaseDatabaseDriver());
-                database = (MMJdbc2NodeInterface)newclass.newInstance();
-            } catch (ClassNotFoundException cnfe) {
-                String msg = "class not found:\n" + Logging.stackTrace(cnfe);
-                log.error(msg);
-                throw new RuntimeException(msg);
-            } catch (InstantiationException ie) {
-                String msg = "error instanciating class:\n" + Logging.stackTrace(ie);
-                log.error(msg);
-                throw new RuntimeException(msg);
-            } catch (IllegalAccessException iae) {
-                String msg = "illegal acces on class:\n" + Logging.stackTrace(iae);
-                log.error(msg);
-                throw new RuntimeException(msg);
-            }
-            // print information about our database connection..
-            log.info("Using class: '" + database.getClass().getName() + "' with config: '" + databaseConfig + "'.");
-            // init the database..
-            database.init(this, dbdriver);
-        }
+        }        
         return database;
     }
 
-    
     /**
      * @since MMBase-1.7
      */
