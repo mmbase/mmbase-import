@@ -8,35 +8,63 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.module;
- 
 
 import java.util.Date;
 
 /**
  * Class cacheline
- * 
+ *
+ * @application cache [utility]
  * @javadoc
- * @rename Cacheline
-  */
+ * @rename CacheLine
+ * @move org.mmbase.cache
+ * @author  $Author: pierre $
+ * @version $Revision: 1.8 $
+ */
 
 public class cacheline {
 
-	public Date lastmod;
-	public byte buffer[]=null;
-	public int filesize;
-	public String mimetype;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public Date lastmod;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public byte buffer[]=null;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public int filesize;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String mimetype;
 
-	public cacheline(int len) {
-		buffer = new byte[len];
-		filesize=len;
-	}
+    /**
+     * @javadoc
+     */
+    public cacheline(int len) {
+        buffer = new byte[len];
+        filesize=len;
+    }
 
-	public cacheline() {
-	}
+    /**
+     * @javadoc
+     */
+    public cacheline() {
+    }
 
-	public String toString() {
-		String s = new String(buffer);
-		return mimetype+","+lastmod+","+filesize+","+buffer.length+", "+s;
-	}
+    /**
+     * @javadoc
+     */
+    public String toString() {
+        String s = new String(buffer);
+        return mimetype+","+lastmod+","+filesize+","+buffer.length+", "+s;
+    }
 }
 
