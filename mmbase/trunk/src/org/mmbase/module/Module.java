@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.15 $ $Date: 2000-06-22 15:29:19 $
+ * @version $Revision: 1.16 $ $Date: 2000-07-12 08:19:42 $
  */
 public abstract class Module {
 
@@ -234,26 +234,27 @@ public abstract class Module {
 	public void maintainance() {
 	}
 
-	/**
-	* getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
-	* which is set when servscan is loaded.
-	* Fixed on 22 December 1999 by daniel & davzev.
-	* @param ext A String containing the extension.
-	* @return The mimetype.
-	*/
-	public String getMimeType(String ext) {
-		// org.mmbase return((String)mimetypes.get(ext));
+    /**
+    * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
+    * which is set when servscan is loaded.
+    * Fixed on 22 December 1999 by daniel & davzev.
+    * @param ext A String containing the extension.
+    * @return The mimetype.
+    */
+    public String getMimeType(String ext) {
+        // org.mmbase return((String)mimetypes.get(ext));
+        return getMimeTypeFile("dummy."+ext);
+    }
 
-		ServletContext sx=MMBaseContext.getServletContext();
-		// Since sx.getMimeType wants a file.ext String, we call it as "dummy."+ext
-		String mimetype=sx.getMimeType("dummy."+ext);
-		// System.out.println("Module::getMimeType: The mimetype= "+mimetype);
-		if (mimetype==null) {
-			debug("getMimeType("+ext+"): WARNING: Can't find mimetype retval=null -> setting mimetype to default text/html");
-			mimetype="text/html";
-		}
-		return(mimetype);
-	}
+    public String getMimeTypeFile(String filename) {
+        ServletContext sx=MMBaseContext.getServletContext();
+        String mimetype=sx.getMimeType(filename);
+        if (mimetype==null) {
+            debug("getMimeType("+filename+"): WARNING: Can't find mimetype retval=null -> setting mimetype to default text/html");
+            mimetype="text/html";
+        }
+        return(mimetype);
+    }
 
 
 	public static synchronized  Hashtable loadModulesFromDisk() {
