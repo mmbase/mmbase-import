@@ -1875,15 +1875,15 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.ImageTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.StringWriterTEI</teiclass>
     <info>
-     <p>
-     Returns an URL to the image servlet. This is a NodeReferrer and
-     consequently has to live as a child of a (image) node.
-    </p>
-    <p>
-        Using this tag makes your pages more
-        portable to other system, and hopefully less sensitive for future
-        changes in how the image servlet works.
-    </p>
+	  <p>
+		Returns an URL to the image servlet. This is a NodeReferrer
+		and consequently has to live as a child of a (image) node.
+	  </p>
+	  <p>
+        Using this tag makes your pages more portable to other system,
+        and hopefully less sensitive for future changes in how the
+        image servlet works.
+	  </p>
     </info>
     <attribute>
         <name>template</name>
@@ -1891,11 +1891,39 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         <rtexprvalue>true</rtexprvalue>
         <refercontext>true</refercontext>
     <info>
-        A 'transformation' template.
+		<p>
+		  A 'transformation' template.
+		</p>
+		<p>
+		  In the font option, mm: stands
+		  for 'mmbase configuration directory'. In this way it is easy
+		  to make sure that fonts are available.
+		</p>
     </info>
-    <examplevalue>
+	  <examplevalue>
         <value>s(100x100)</value>
-    </examplevalue>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(200x200!)+font(mm:fonts/Arial.ttf)+fill(ffffff)+pointsize(20)+gravity(NorthEast)+text(0,20,'MM Base')</value>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(180)+modulate(120,0)+gamma(1/1/2)+bordercolor(8c9c23)+border(10x0)</value>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(200)+fill(ffffff)+circle(20,20 30,30)"</value>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(200x200!)+part(100,100,150,150)</value>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(200)+fill(ffffff)+draw(rectangle 100,100 150,150)+dia+flipx</value>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(200)+colorizehex(f01010)</value>
+	  </examplevalue>
+	  <examplevalue>
+        <value>s(200)+f(gif)+paint(10)</value>
+	  </examplevalue>	  
     </attribute>
   </tag>
   <tag>
