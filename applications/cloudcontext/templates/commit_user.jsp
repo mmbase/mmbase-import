@@ -67,7 +67,7 @@
 
 <% } catch (org.mmbase.storage.StorageException se) { %>
 <p>
-  Error. Perhap you tried to create a user with known user name?
+  Error. Perhaps you tried to create a user with known user name?
 </p>
 <p>
    Storage error <%= se.getMessage() %>.
