@@ -21,13 +21,13 @@ import org.mmbase.util.logging.*;
  * access, such as obtaining relations or determining age of a node.
  *
  * @author Pierre van Rooden
- * @version $Id: VirtualNode.java,v 1.5 2003-03-10 11:50:34 pierre Exp $
+ * @version $Id: VirtualNode.java,v 1.6 2004-02-24 17:44:02 michiel Exp $
  */
 public class VirtualNode extends MMObjectNode {
     /**
      * Logger routine
      */
-    private static Logger log = Logging.getLoggerInstance(VirtualNode.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(VirtualNode.class);
 
     /**
      * Main contructor.
