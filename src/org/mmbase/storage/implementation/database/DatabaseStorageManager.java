@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.13 2003-09-04 13:59:00 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.14 2003-09-05 11:05:56 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1196,7 +1196,9 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public boolean exists(MMObjectBuilder builder) throws StorageException {
-        return exists((String)factory.getStorageIdentifier(builder));
+        boolean result = exists((String)factory.getStorageIdentifier(builder));
+        if (result) { verify(builder); }
+        return result;
     }
 
     /**
@@ -1245,6 +1247,143 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public int size() throws StorageException {
         return size(factory.getMMBase().getRootBuilder());
+    }
+
+    /**
+     * Guess the (mmbase) type in storage using the JDNC type.
+     * Because a JDBC type can represent more than one mmbase Type,
+     * the current type is also passed - if the current type matches, that type
+     * is returned, otherwise the method returns the closest matching MMBase type.
+     */
+    protected int getJDBCtoMMBaseType(int jdbcType, int mmbaseType) {
+        switch (jdbcType) {
+            case Types.INTEGER: ;
+            case Types.SMALLINT: ;
+            case Types.TINYINT: ;
+            case Types.BIGINT: ;
+                if (mmbaseType == FieldDefs.TYPE_INTEGER ||
+                    mmbaseType == FieldDefs.TYPE_LONG ||
+                    mmbaseType == FieldDefs.TYPE_NODE) {
+                    return mmbaseType;
+                } else {
+                    return FieldDefs.TYPE_INTEGER;
+                }
+            case Types.FLOAT: ;
+            case Types.REAL: ;
+            case Types.DOUBLE : ;
+            case Types.NUMERIC : ;
+            case Types.DECIMAL : ;
+                if (mmbaseType == FieldDefs.TYPE_FLOAT ||
+                    mmbaseType == FieldDefs.TYPE_DOUBLE) {
+                    return mmbaseType;
+                } else {
+                    return FieldDefs.TYPE_DOUBLE;
+                }
+            case Types.BINARY : ;
+            case Types.LONGVARBINARY : ;
+            case Types.VARBINARY : ;
+            case Types.BLOB : ;
+                if (mmbaseType == FieldDefs.TYPE_BYTE ||
+                    mmbaseType == FieldDefs.TYPE_STRING ||
+                    mmbaseType == FieldDefs.TYPE_XML) {
+                    return mmbaseType;
+                } else {
+                    return FieldDefs.TYPE_BYTE;
+                }
+            case Types.CHAR : ;
+            case Types.CLOB : ;
+            case Types.LONGVARCHAR : ;
+            case Types.VARCHAR : ;
+                if (mmbaseType == FieldDefs.TYPE_STRING ||
+                    mmbaseType == FieldDefs.TYPE_XML)  {
+                    return mmbaseType;
+                } else {
+                    return FieldDefs.TYPE_STRING;
+                }
+            default:
+                return FieldDefs.TYPE_UNKNOWN;
+        }
+    }
+
+    /**
+     * Tests whether a builder and the table present in the database match.
+     */
+    public void verify(MMObjectBuilder builder) throws StorageException {
+        try {
+            getActiveConnection();
+            String tableName = (String)factory.getStorageIdentifier(builder);
+            DatabaseMetaData metaData = activeConnection.getMetaData();
+            ResultSet res = metaData.getColumns(null, null, tableName, null);
+            // get column information
+            Map columns = new HashMap();
+            while (res.next()) {
+                Map colInfo = new HashMap();
+                colInfo.put("DATA_TYPE", new Integer(res.getInt("DATA_TYPE")));
+                colInfo.put("TYPE_NAME", res.getString("TYPE_NAME"));
+                colInfo.put("COLUMN_SIZE", new Integer(res.getInt("COLUMN_SIZE")));
+                colInfo.put("NULLABLE", new Boolean(res.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
+                columns.put(res.getString("COLUMN_NAME"),colInfo);
+            }
+            // iterate through fields and check all fields present
+            int pos = 0;
+            List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
+            for (Iterator i = builderFields.iterator(); i.hasNext();) {
+                FieldDefs field = (FieldDefs)i.next();
+                if (field.inStorage()) {
+                    pos++;
+                    Object id = field.getStorageIdentifier();
+                    Map colInfo = (Map)columns.get(id);
+                    if ((colInfo == null)) {
+                        log.error("VERIFY: Field " + field.getDBName() + " does NOT exist in storage!");
+                    } else {
+                        // compare type
+                        int curtype = field.getDBType();
+                        int type = getJDBCtoMMBaseType(((Integer)colInfo.get("DATA_TYPE")).intValue(), curtype);
+                        if (type != curtype) {
+                            log.error("VERIFY: Field " + field.getDBName() + " mismatch : type defined as " +
+                                FieldDefs.getDBTypeDescription(curtype) + ", but in storage " +
+                                FieldDefs.getDBTypeDescription(type) +
+                                " ("+colInfo.get("TYPE_NAME")+")");
+                        } else {
+                            boolean nullable = ((Boolean)colInfo.get("NULLABLE")).booleanValue();
+                            if (nullable == field.getDBNotNull()) {
+                                // only correct if storage is more restrictive
+                                if (!nullable) {
+                                    field.setDBNotNull(!nullable);
+                                    log.warn("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
+                                } else {
+                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable);
+                                }
+                            }
+                            // compare size
+                            int size = ((Integer)colInfo.get("COLUMN_SIZE")).intValue();
+                            int cursize = field.getDBSize();
+                            if (cursize != -1 && size != cursize) {
+                                if (size < cursize || cursize <= 255) {
+                                    // only correct if storage is more restrictive
+                                    field.setDBSize(size);
+                                    log.warn("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size + " (value corrected for this session)");
+                                } else if (cursize <= 255) {
+                                    // ignore the size difference for large fields (blobs or texts) if
+                                    // the storage size is larger than that defined for the builder
+                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size);
+                                }
+                            }
+                        }
+                        columns.remove(id);
+                    }
+                }
+            }
+            // if any are left, these fields were removed!
+            for (Iterator i = columns.keySet().iterator(); i.hasNext();) {
+                String column = (String)i.next();
+                log.warn("VERIFY: Column " + column + " in Storage but not defined!");
+            }
+        } catch (Exception e) {
+            throw new StorageException(e.getMessage());
+        } finally {
+            releaseActiveConnection();
+        }
     }
 
     // javadoc is inherited
