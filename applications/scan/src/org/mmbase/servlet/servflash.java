@@ -83,10 +83,8 @@ public class servflash extends JamesServlet {
                 }    
             }
             log.service("END Parsing FLASH page");
-            
-            finally { 
-                decRefCount(req); 
-            }
+        } finally { 
+            decRefCount(req); 
         }
     }
 }
