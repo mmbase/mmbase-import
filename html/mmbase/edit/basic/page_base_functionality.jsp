@@ -71,6 +71,7 @@ if (urlStack == null) {
   <mm:import id="liststyle"   externid="mmjspeditors_liststyle" from="parameters,cookie,this">short</mm:import>  
   <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
   <mm:import id="lang"        externid="mmjspeditors_language"  from="parameters,cookie,this" ><%=LocalContext.getCloudContext().getDefaultLocale().getLanguage()%></mm:import>
+  <mm:import id="country"     externid="mmjspeditors_country"   from="parameters,cookie,this" />
   <mm:import id="method"      externid="mmjspeditors_method"    from="parameters,cookie,this" >loginpage</mm:import>
   <mm:import id="session"     externid="mmjspeditors_session"   from="parameters,cookie,this">mmbase_editors_cloud</mm:import>
   <mm:import externid="batches" from="parameters,this" >30</mm:import>
@@ -79,10 +80,9 @@ if (urlStack == null) {
 <mm:write referid="config" session="mmeditors_config" />
 
 <% java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
-   java.util.Locale locale = null; %>
-<mm:write referid="config.lang" jspvar="lang" vartype="string">
+%>
+<mm:locale language="$config.lang" country="$config.country" jspvar="locale">
 <%
-  locale  =  new java.util.Locale(lang, "");
   m = java.util.ResourceBundle.getBundle("org.mmbase.jspeditors.editors", locale);
 %>
-</mm:write>
+</mm:locale>
