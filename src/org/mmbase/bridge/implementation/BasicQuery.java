@@ -25,7 +25,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.33 2004-02-16 17:27:03 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.34 2004-02-17 09:43:42 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -267,6 +267,18 @@ public class BasicQuery implements Query  {
             }
             return step;
         }
+    }
+
+    public void removeFields() {
+        query.removeFields();
+        explicitFields.clear();
+        Iterator i = implicitFields.iterator();
+        while (i.hasNext()) {
+            BasicStepField sf = (BasicStepField) i.next();
+            Step addedStep = sf.getStep();
+            query.addField(addedStep, sf.getFieldDefs());
+        }
+        
     }
 
     
