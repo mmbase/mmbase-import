@@ -99,7 +99,11 @@ public class NodeWriter{
 		    // add directionality if used					
 			if (InsRel.usesdir) {
 			    int dir=node.getIntValue("dir");
-				write(" dir=\""+dir+"\"");
+			    if (dir==1) {
+				    write(" dir=\"unidirectional\"");
+			    } else {
+				    write(" dir=\"bidirectional\"");
+			    }
 			}
 
 			write(">\n");
