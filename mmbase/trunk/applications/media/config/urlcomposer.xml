@@ -2,12 +2,19 @@
 <!DOCTYPE urlcomposer SYSTEM "http://www.mmbase.org/dtd/urlcomposer_1_0.dtd">
 
 <urlcomposer>
+    <!-- Maybe in a later stage we can define her things according to the creation 
+        of urls (real, media player, etc.)
+        -->
 
-	<!-- This will arrange the mimetype mapping according to the format/codec. You can
-		use wildcards to map all formats to a certain mime type.
+	<!-- This will arrange the mimetype mapping according to the format/codec. 
+		You can use wildcards, the most strict mapping will have priority. 
+		i.e. format"ogg" codec="vorbis" will be prefered to format="*" codec="*"
 		-->
 	<mimemapping>
-		<map format="ra" codec="surestream">audio/x-pn-realaudio</map>
+		<map format="ra" codec="*">audio/x-pn-realaudio</map>
+		<map format="rm" codec="*">application/x-pn-realmedia</map>
+		<map format="ogg" codec="vorbis">audio/x-vorbis</map>
+		<map format="ogg" codec="*">application/x-ogg</map>
 		<map format="*" codec="*">audio/x-pn-realaudio</map>
 
 	</mimemapping>
