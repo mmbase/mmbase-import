@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.6 2003-06-18 20:03:55 michiel Exp $
+ * @version $Id: NodeBreaker.java,v 1.7 2004-02-09 13:24:20 pierre Exp $
  */
 public class NodeBreaker implements Runnable {
 
@@ -71,6 +71,7 @@ public class NodeBreaker implements Runnable {
         expirationtimes.add(new Long(expireTime));
         if (kicker == null) {
             kicker = new Thread(this,"NodeBreaker");
+            kicker.setDaemon(true);
             kicker.start();
         }
    }

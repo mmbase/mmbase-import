@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesReceiver.java,v 1.8 2004-02-06 16:16:40 michiel Exp $
+ * @version $Id: MultiCastChangesReceiver.java,v 1.9 2004-02-09 13:24:22 pierre Exp $
  */
 public class MultiCastChangesReceiver implements Runnable {
 
@@ -89,6 +89,7 @@ public class MultiCastChangesReceiver implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"MulticastReceiver");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }

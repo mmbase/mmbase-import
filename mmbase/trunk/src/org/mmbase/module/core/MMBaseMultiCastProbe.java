@@ -15,7 +15,7 @@ package org.mmbase.module.core;
  * @javadoc
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseMultiCastProbe.java,v 1.6 2003-03-04 14:19:02 nico Exp $
+ * @version $Id: MMBaseMultiCastProbe.java,v 1.7 2004-02-09 13:24:22 pierre Exp $
  */
 public class MMBaseMultiCastProbe implements Runnable {
 
@@ -85,7 +85,8 @@ public class MMBaseMultiCastProbe implements Runnable {
     public void start() {
         /* Start up the main thread */
         if (kicker == null) {
-            kicker = new Thread(this,"MMBaseProbe");
+            kicker = new Thread(this,"MMBaseMultiCastProbe");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }

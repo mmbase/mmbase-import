@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesSender.java,v 1.6 2003-03-04 14:19:00 nico Exp $
+ * @version $Id: MultiCastChangesSender.java,v 1.7 2004-02-09 13:24:22 pierre Exp $
  */
 public class MultiCastChangesSender implements Runnable {
 
@@ -89,6 +89,7 @@ public class MultiCastChangesSender implements Runnable {
         /* Start up the main thread */
         if (kicker == null) {
             kicker = new Thread(this,"MulticastSender");
+            kicker.setDaemon(true);
             kicker.start();
         }
     }
