@@ -10,7 +10,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.17 2004-02-02 12:36:10 michiel Exp $
+    @version $Id: searchlist.xsl,v 1.18 2004-05-09 09:55:04 nico Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -198,7 +198,7 @@
 
   <xsl:template match="field">
     <td>
-      <xsl:value-of select="." disable-output-escaping="yes" />
+			<xsl:call-template name="writeCurrentField" />
     </td>
   </xsl:template>
 
