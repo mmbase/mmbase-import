@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.53 2002-05-15 19:06:35 michiel Exp $
+ * @version $Id: Images.java,v 1.54 2002-05-24 13:25:58 eduard Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -81,7 +81,9 @@ public class Images extends AbstractImages {
 
         ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
         if(bul==null) {
-            log.error("Error: Place icaches in objects.def before images");
+            String msg = "builder with name icache wasnt loaded";
+            log.error(msg);
+            throw new RuntimeException(msg);
         }
         // Startup parrallel converters
         ireqprocessors=new ImageRequestProcessor[MaxConcurrentRequests];
