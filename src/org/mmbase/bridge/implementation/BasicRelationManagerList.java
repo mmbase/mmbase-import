@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * A list of relation managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationManagerList.java,v 1.9 2002-10-03 12:28:11 pierre Exp $
+ * @version $Id: BasicRelationManagerList.java,v 1.10 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicRelationManagerList extends BasicNodeManagerList implements RelationManagerList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationManagerList.class.getName());
@@ -31,28 +31,22 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
         super();
     }
 
-    BasicRelationManagerList(Collection c, BasicCloud cloud) {
+    BasicRelationManagerList(Collection c, Cloud cloud) {
         super(c,cloud);
     }
 
-    protected Object validate(Object o) throws ClassCastException {
+    protected Object validate(Object o) throws ClassCastException,IllegalArgumentException {
         if (o instanceof MMObjectNode) {
-            return o;
+            MMObjectBuilder bul=((MMObjectNode) o).getBuilder();
+            if ((bul instanceof org.mmbase.module.corebuilders.TypeRel) ||
+                (bul instanceof org.mmbase.module.corebuilders.RelDef)) {
+                return o;
+            } else {
+                throw new IllegalArgumentException("requires a relationmanager (typerel or reldef) node");
+            }
         } else {
             return (RelationManager)o;
         }
-    }
-
-    /**
-     *
-     */
-    public Object convert(Object o, int index) {
-        if (o instanceof RelationManager) {
-            return o;
-        }
-        RelationManager rm = new BasicRelationManager((MMObjectNode)o,cloud);
-        set(index, rm);
-        return rm;
     }
 
     /**
@@ -68,6 +62,13 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
     public RelationManagerIterator relationManagerIterator() {
         return new BasicRelationManagerIterator(this);
     };
+
+    /**
+     *
+     */
+    public RelationManagerList subRelationManagerList(int fromIndex, int toIndex) {
+        return new BasicRelationManagerList(subList(fromIndex, toIndex),cloud);
+    }
 
     public class BasicRelationManagerIterator extends BasicNodeManagerIterator implements RelationManagerIterator {
 

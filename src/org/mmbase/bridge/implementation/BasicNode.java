@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.71 2002-10-07 09:52:31 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.72 2002-10-15 15:28:29 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -105,8 +105,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param node the MMObjectNode to base the node on
      * @param Cloud the cloud to which this node belongs
      */
-    BasicNode(MMObjectNode node, BasicCloud cloud) {
-        this.cloud=cloud;
+    BasicNode(MMObjectNode node, Cloud cloud) {
+        this.cloud=(BasicCloud)cloud;
         noderef=node;
         init();
     }
@@ -117,8 +117,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @param nodeManager the node manager to create the node with
      * @param id the id of the node in the temporary cloud
      */
-    BasicNode(MMObjectNode node, NodeManager nodeManager, int id) {
-        this.nodeManager = nodeManager;
+    BasicNode(MMObjectNode node, Cloud cloud, int id) {
+        this.cloud=(BasicCloud)cloud;
         noderef = node;
         temporaryNodeId = id;
         isnew = true;
@@ -271,15 +271,15 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
-            
+
             if (action == ACTION_CREATE) {
                 String message;
-                message = "This node cannot be added. It was not correctly " + 
+                message = "This node cannot be added. It was not correctly " +
                           "instantiated (internal error).";
                 log.error(message);
                 throw new BridgeException(message);
             }
-            
+
 
             // when editing a temporary node id must exist (otherwise create one)
             // This also applies if you remove a node in a transaction (as the transction manager requires a temporary node)
@@ -391,9 +391,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         MMObjectNode noderes=noderef.getNodeValue(attribute);
         if (noderes!=null) {
             if (noderes.getBuilder() instanceof InsRel) {
-                return new BasicRelation(noderes,cloud.getNodeManager(noderes.getBuilder().getTableName()));
+                return new BasicRelation(noderes,cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             } else {
-                return new BasicNode(noderes,cloud.getNodeManager(noderes.getBuilder().getTableName()));
+                return new BasicNode(noderes,cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
         } else {
             return null;
@@ -642,7 +642,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 }
             }
         }
-        return new BasicRelationList(relvector,cloud,cloud.getNodeManager(relbuilder.getTableName()));
+        return new BasicRelationList(relvector,cloud.getNodeManager(relbuilder.getTableName()));
     }
 
     public RelationList getRelations(String role) {
