@@ -7,15 +7,24 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
+/*
+$Id: Queue.java,v 1.5 2000-12-19 13:33:38 vpro Exp $
+
+$Log: not supported by cvs2svn $
+*/
 package org.mmbase.remote;
 
 import java.util.*;
 import java.lang.*;
 
+/**
+ * @version $Revision: 1.5 $ $Date: 2000-12-19 13:33:38 $
+ * @author ?
+ */
 public class Queue {
 
 	private String classname = getClass().getName();
-	private boolean debug = false;
+	private boolean debug = true;
 	private void debug(String msg) { if (debug) System.out.println(classname +":"+ msg);}
 
 	QueueElement head,tail;
