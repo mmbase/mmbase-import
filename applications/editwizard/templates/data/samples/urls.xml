@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<wizard-schema id="empty">
+  <title>Default URL editwizard</title>
+  
+  <action type="load">
+  </action>
+  
+  <action type="create">
+    <object type="urls">
+      <field name="url" ftype="string">http://</field>
+      <field name="name" ftype="string">A nice name</field>
+      <field name="description" ftype="string" />
+    </object>
+  </action>
+  
+  <form-schema id="step">
+    <title>URL</title>
+    <field name="url" ftype="string">
+      <prompt>URL</prompt>
+    </field>
+    <field name="name" ftype="string">
+      <prompt>Name</prompt>
+    </field>
+    <field name="description" ftype="string">
+      <prompt>Description</prompt>
+    </field>
+        
+  </form-schema>
+</wizard-schema>
