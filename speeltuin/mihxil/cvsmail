@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  Michiel Meeuwissen - november 2002.
-#  $Id: cvsmail,v 1.16 2002-11-08 20:19:22 michiel Exp $
+#  $Id: cvsmail,v 1.17 2002-11-08 20:22:03 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -16,8 +16,9 @@ my $basedir     = "/home/michiel/";
 my $toaddress   = "cvs\@mmbase.org";
 my $cvs         = "/usr/local/bin/cvs";
 
-if ($files == undef) {
-  exit 1;
+if (! defined $files) {
+    print "Needs three arguments\n";
+    exit 1;
 }
 
 my @files = split(" ", $files);
