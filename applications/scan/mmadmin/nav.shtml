@@ -1,54 +1,96 @@
-<TABLE width=90% cellspacing=0 cellpadding=3 border=2>
+<PROCESSOR MMBASE>
+
+<HTML>
+<HEAD>
+<STYLE TYPE="text/css"><!--
+	a { text-decoration: none }
+	font { font-size: 15px }-->
+</STYLE>
+
+
+<TITLE>MMBASE</TITLE>
+</HEAD>
+
+<BODY bgcolor="#00425A" TEXT="#000000" LINK="#000000" ALINK="#000000" VLINK="#000000">
+
+<table cellpadding=0 cellspacing=0 BORDER=0 WIDTH="90%">
 <TR>
+
+<TD WIDTH="50">
+<img src="beeld/logo-green.gif" BORDER=0>
+</TD>
+<TD WIDTH="450" BORDER=0>
+	&nbsp;&nbsp;
+
+	<A HREF="/mmadmin/index.shtml?1+servers" TARGET="_top">
 	<IF $PARAM1==1>
-	<TD BGCOLOR="#DDDDFF">
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>SERVERS</B></FONT>
 	<ELSE>
-	<TD BGCOLOR="#FFFFFF">
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>SERVERS</B></FONT>
 	</IF>
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/index.shtml"><B>Servers</B></A>
-	</TD>
+	</A>
+
+	&nbsp;&nbsp;
+
+	<A HREF="/mmadmin/index.shtml?2+builders" TARGET="_top">
 	<IF $PARAM1==2>
-	<TD BGCOLOR="#DDDDFF">
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>BUILDERS</B></FONT>
 	<ELSE>
-	<TD BGCOLOR="#FFFFFF">
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>BUILDERS</B></FONT>
 	</IF>
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/builders.shtml"><B>Builders</B></A>
-	</TD>
-	<!--
-	<IF $PARAM1==3>
-	<TD BGCOLOR="#DDDDFF">
-	<ELSE>
-	<TD BGCOLOR="#FFFFFF">
+	</A>
 	</IF>
+	
+	&nbsp;&nbsp;
+
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/wizards.shtml"><B>Wizards</B></A>
-	</TD>
-	-->
+	<A HREF="/mmadmin/index.shtml?4+applications" TARGET="_top">
 	<IF $PARAM1==4>
-	<TD BGCOLOR="#DDDDFF">
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>APPLICATIONS</B></FONT>
 	<ELSE>
-	<TD BGCOLOR="#FFFFFF">
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>APPLICATIONS</B></FONT>
 	</IF>
+	</A>
+
+	&nbsp;&nbsp;
+
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/applications.shtml"><B>Applications</B></A>
-	</TD>
+	<A HREF="/mmadmin/index.shtml?5+modules" TARGET="_top">
 	<IF $PARAM1==5>
-	<TD BGCOLOR="#DDDDFF">
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>MODULES</B></FONT>
 	<ELSE>
-	<TD BGCOLOR="#FFFFFF">
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>MODULES</B></FONT>
 	</IF>
+	</A>
+
+	&nbsp;&nbsp;
+
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/export.shtml"><B>Export</B></A>
-	</TD>
+	<A HREF="/mmadmin/index.shtml?6+databases" TARGET="_top">
 	<IF $PARAM1==6>
-	<TD BGCOLOR="#DDDDFF">
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>DATABASES</B></FONT>
 	<ELSE>
-	<TD BGCOLOR="#FFFFFF">
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>DATABASES</B></FONT>
 	</IF>
+	</A>
+
+
+	&nbsp;&nbsp;
+
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<CENTER><A HREF="/mmadmin/import.shtml"><B>Import</B></A>
-	</TD>
+	<A HREF="/mmadmin/index.shtml?7+docs" TARGET="_top">
+	<IF $PARAM1==7>
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>DOCS</B></FONT>
+	<ELSE>
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>DOCS</B></FONT>
+	</IF>
+	</A>
+	<IMG SRC="beeld/wit.gif" WIDTH="800" HEIGHT="1" ALIGN="top">
+</TD>
 </TR>
 </TABLE>
+
+
+
+</BODY>
+</HTML>
