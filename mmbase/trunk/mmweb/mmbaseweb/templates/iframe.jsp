@@ -8,7 +8,7 @@
   <iframe id="miframe" onload="calcIframeHeight();" 
 	src="<mm:field name="urls.url"/>" title="<mm:field name="urls.name" />" 
 	width="100%" height="90%" frameborder="0"><a href="<mm:field name="urls.url"/>"
-	target="_blank"><mm:field name="urls.name" /></a></iframe>
+	target="_blank"><mm:field name="urls.name" /></a></iframe><br />
 </mm:list>
 </div>
 <%@ include file="/includes/alterfooter.jsp" %>
