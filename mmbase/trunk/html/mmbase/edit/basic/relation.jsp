@@ -4,7 +4,13 @@
  <% RelationManagerIterator relIterator = node.getNodeManager().getAllowedRelations((NodeManager) null, null, source ? "destination" : "source").relationManagerIterator(); 
    while(relIterator.hasNext()) {
       RelationManager relationManager = relIterator.nextRelationManager();
-      NodeManager otherManager =  source ? relationManager.getDestinationManager() : relationManager.getSourceManager();
+      NodeManager otherManager;
+      try {
+         otherManager = source ? relationManager.getDestinationManager() : relationManager.getSourceManager();
+      } catch (NotFoundException e) {
+        continue;
+      }
+
       String      role         =  source ? relationManager.getForwardRole()        : relationManager.getReciprocalRole();
       String      guirole      =  source ? relationManager.getForwardGUIName()     : relationManager.getReciprocalGUIName();
       %>
