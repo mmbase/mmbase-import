@@ -18,8 +18,13 @@
     <nobr>
 
     <input type="button" value="{$button_current} {$thisprompt}"    onClick="document.forms['form'].elements['{@fieldname}'].value = getPosition();" />
-    <input type="button" value="{$button_start} {$thisprompt}"      onClick="document.forms['form'].elements['{@fieldname}'].value = 0;" />
-    <input type="button" value="{$button_end}  {$thisprompt}"       onClick="document.forms['form'].elements['{@fieldname}'].value = getLength();" />
+     <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
+      <input type="button" value="{$button_start} {$thisprompt}"      onClick="document.forms['form'].elements['{@fieldname}'].value = 0;" />
+    </xsl:if>
+     <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
+       <input type="button" value="{$button_end}  {$thisprompt}"       onClick="document.forms['form'].elements['{@fieldname}'].value = getLength();" />
+    </xsl:if>
+
 
      <xsl:if test="following::field[@ftype='realposition']">
        <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
