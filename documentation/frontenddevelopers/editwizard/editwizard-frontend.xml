@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Front end</title>
 		<date>2004-01-05</date>
-		<edition>$Id: editwizard-frontend.xml,v 1.1 2004-01-12 22:13:01 nico Exp $</edition>
+		<edition>$Id: editwizard-frontend.xml,v 1.2 2004-01-18 12:18:23 nico Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Nico</firstname>
@@ -117,7 +117,7 @@
 	<section id="example2">
 		<title>Example 2: new fieldtype</title>
 		<para>Adding a logo is not so hard to do, but what if you have your own fieldtype (wizard definition schema attribute ftype)? Maybe, you want your fieldtype represented as a checkbox, radio button or dropdown box. This involves graphical representation, client-side initialisation and validation.</para>
-		<para>The first thing we have to do for this is overriding the fieldintern template of the wizard.xsl (See the first example). This template calls all the ftype templates to generate the graphical representation.</para>
+		<para>The first thing we have to do for this is overriding the ftype-unknown template of the wizard.xsl (See the first example). This template calls templates for unknown ftypes to generate the graphical representation.</para>
 		<programlisting format="linespecific">
 		<![CDATA[
 <?xml version="1.0" encoding="utf-8" ?>
@@ -131,20 +131,17 @@
    <!-- Import original stylesheet -->
    <xsl:import href="ew:xsl/wizard.xsl"/>
 
-  <xsl:template name="fieldintern">
-    <xsl:apply-templates select="prefix" />
-
+  <xsl:template name="ftype-unknown">
     <xsl:choose>
-      ...
       <xsl:when test="@ftype=&apos;my_ftype&apos;">
       	<xsl:call-template name="ftype-my-ftype"/>
       </xsl:when>
-      ...
+      <xsl:otherwise>
+      	<xsl:call-template name="ftype-other"/>
+      </xsl:otherwise>
     </xsl:choose>
-    
-    <xsl:apply-templates select="postfix" />
   </xsl:template>
-
+  
   <xsl:template name="ftype-my-ftype">
     <input type="checkbox" name="{@fieldname}" value="{value}" id="{@fieldname}">
       <xsl:apply-templates select="@*" />
