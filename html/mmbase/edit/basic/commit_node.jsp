@@ -59,7 +59,7 @@
     <mm:import externid="_my_form_change_context" />
     <mm:import externid="_my_form_context" />
 
-    <mm:node referid="node_number">
+    <mm:node referid="node_number" notfound="skip">
         <!-- handle the form -->
         <mm:maywrite>
             <mm:fieldlist id="my_form" type="edit">
