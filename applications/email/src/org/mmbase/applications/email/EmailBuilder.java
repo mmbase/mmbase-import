@@ -11,12 +11,12 @@ package org.mmbase.applications.email;
 
 import java.util.*;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.core.*;
 
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 
-import org.mmbase.util.*;
 import org.mmbase.util.functions.Parameter;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -67,10 +67,6 @@ public class EmailBuilder extends MMObjectBuilder {
     static String usersEmailField;
     static String groupsBuilder;
 
-
-    // number of emails send sofar since startup
-    private int numberofmailsend = 0;
-
     // reference to the sendmail module
     private static SendMailInterface sendmail;
 
@@ -84,7 +80,7 @@ public class EmailBuilder extends MMObjectBuilder {
         super.init ();
 
         // get the sendmail module
-        sendmail = (SendMailInterface) mmb.getModule("sendmail");
+        sendmail = (SendMailInterface) Module.getModule("sendmail");
 
         // start the email nodes expire handler, deletes
         // oneshot email nodes after the defined expiretime
@@ -201,7 +197,7 @@ public class EmailBuilder extends MMObjectBuilder {
 
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailstatus")), new Integer(STATE_DELIVERED)));
         cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailtype")),   new Integer(TYPE_ONESHOT)));
-        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new Long(age)).setOperator(FieldValueConstraint.LESS));
+        cons.addChild(new BasicFieldValueConstraint(query.getField(getField("mailedtime")), new Long(age)).setOperator(FieldCompareConstraint.LESS));
         query.setConstraint(cons);
         try {
             return getNodes(query);

@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging;
 
-import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.packaging.providerhandlers.*;
@@ -18,7 +17,6 @@ import org.mmbase.applications.packaging.bundlehandlers.*;
 import org.mmbase.module.builders.Versions;
 import org.mmbase.storage.search.SearchQueryException;
 
-import java.io.File;
 import java.util.*;
 
 /**
@@ -86,7 +84,7 @@ public class BundleManager {
         Object o = bundles.get(id);
         if (o != null) {
             BundleContainer bc = (BundleContainer)o;
-            ProviderInterface provider = (ProviderInterface)ProviderManager.get(wp);
+            ProviderInterface provider = ProviderManager.get(wp);
             if (provider != null) {
                 BundleInterface b = bc.getVersion(wv,provider);
                 if (b != null) {

@@ -10,18 +10,16 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * The resources builder can be used by {@link org.mmbase.util.ResourceLoader} to load resources from
  * (configuration files, classes, resourcebundles).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Resources.java,v 1.1 2004-11-11 16:42:07 michiel Exp $
+ * @version $Id: Resources.java,v 1.2 2005-01-30 16:46:38 nico Exp $
  * @since   MMBase-1.8
  */
 public class Resources extends Attachments {
-    private static final Logger log = Logging.getLoggerInstance(Resources.class);
 
     // these should perhaps be configurable:
     public static final String    RESOURCENAME_FIELD  = "name";

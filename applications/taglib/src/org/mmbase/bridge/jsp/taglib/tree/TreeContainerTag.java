@@ -17,18 +17,15 @@ import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.util.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Container cognate for TreeTag
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7.1
- * @version $Id: TreeContainerTag.java,v 1.2 2004-07-26 20:18:02 nico Exp $
+ * @version $Id: TreeContainerTag.java,v 1.3 2005-01-30 16:46:38 nico Exp $
  */
 public class TreeContainerTag extends RelatedNodesContainerTag implements NodeQueryContainer, ContainerReferrer { // extending from relatednodescontainer only for the attributes
-
-    private static final Logger log = Logging.getLoggerInstance(TreeContainerTag.class);
 
     protected Attribute maxDepth    = Attribute.NULL;
     protected Attribute container   = Attribute.NULL;

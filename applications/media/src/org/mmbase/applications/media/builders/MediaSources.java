@@ -10,15 +10,10 @@
 package org.mmbase.applications.media.builders;
 
 import java.util.*;
-import java.net.URL;
-import java.net.URLConnection;
-import java.io.*;
 
-import org.mmbase.applications.media.cache.URLCache;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 
-import org.mmbase.util.*;
 
 import org.mmbase.util.functions.*;
 import org.mmbase.util.logging.Logger;
@@ -40,7 +35,7 @@ import org.mmbase.applications.media.Codec;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.32 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: MediaSources.java,v 1.33 2005-01-30 16:46:39 nico Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -398,7 +393,7 @@ public class MediaSources extends MMObjectBuilder {
      */
 
     public void addProvider(MMObjectNode source, String providername, String owner) {
-        MMObjectBuilder providers = (MMObjectBuilder) mmb.getMMObject("mediaproviders");
+        MMObjectBuilder providers = mmb.getMMObject("mediaproviders");
        
 	/** should be used in 1.7	
         NodeSearchQuery query = new NodeSearchQuery(providers);

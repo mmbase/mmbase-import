@@ -13,7 +13,7 @@ import java.util.*;
 
 import org.mmbase.module.core.*;
 import org.mmbase.storage.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.util.HashCodeUtil;
 
 /**
  * One of the core objects. It is not itself a builder, but is used by builders. Defines one field
@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.42 2004-12-20 17:54:44 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.43 2005-01-30 16:46:38 nico Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -64,8 +64,6 @@ public class FieldDefs implements Comparable, Storable {
     public final static int ORDER_EDIT   = 1;
     public final static int ORDER_LIST   = 2;
     public final static int ORDER_SEARCH = 3;
-
-    private static final Logger log = Logging.getLoggerInstance(FieldDefs.class);
 
     private final static String[] DBSTATES = {
         "unknown", "virtual", "unknown", "persistent", "system"
@@ -568,7 +566,7 @@ public class FieldDefs implements Comparable, Storable {
     }
 
     /**
-     * {@inheritDoc}
+     * @see java.lang.Object#equals(java.lang.Object)
      * @since MMBase-1.7
      */
     public boolean equals(Object o) {
@@ -589,6 +587,23 @@ public class FieldDefs implements Comparable, Storable {
         }
     }
 
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, name);
+        result = HashCodeUtil.hashCode(result, type);
+        result = HashCodeUtil.hashCode(result, state);
+        result = HashCodeUtil.hashCode(result, notNull);
+        result = HashCodeUtil.hashCode(result, isKey);
+        result = HashCodeUtil.hashCode(result, parent);
+        result = HashCodeUtil.hashCode(result, storageType);
+        result = HashCodeUtil.hashCode(result, pos);
+        return result;
+    }
+    
     /**
      * Whether this FieldDefs object is equal to another for storage purposes (so, ignoring gui and documentation fields)
      * @since MMBase-1.7
@@ -732,13 +747,6 @@ public class FieldDefs implements Comparable, Storable {
             } else {
                 return 0;
             }
-        }
-
-        /**
-         * Tests whether two Comparators are the same
-         */
-        public boolean equals(Object o) {
-            return (o == this);
         }
     }
 

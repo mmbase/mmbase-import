@@ -6,23 +6,20 @@
  */
 package org.mmbase.applications.packaging.packagehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.InstallManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * JavaJarPackage, Handler for installing jar files

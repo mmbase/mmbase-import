@@ -12,7 +12,6 @@ package org.mmbase.util.xml;
 import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.corebuilders.FieldDefs;
-import org.mmbase.util.logging.*;
 
 import org.w3c.dom.*;
 
@@ -25,12 +24,9 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.16 2003-04-11 11:05:52 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.17 2005-01-30 16:46:36 nico Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
-
-    // logger
-    private static Logger log = Logging.getLoggerInstance(BuilderWriter.class.getName());
 
     /**
      * If true, the builder will expand when writing.

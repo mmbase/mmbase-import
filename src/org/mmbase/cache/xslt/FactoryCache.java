@@ -17,21 +17,15 @@ import javax.xml.transform.TransformerFactory;
 import java.io.File;
 import java.net.URL;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-
 /**
  * A cache for XSL Transformer Factories.  There is one needed for
  * every directory, or more precisely, for every instance of
  * org.mmbase.util.xml.URIResolver.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FactoryCache.java,v 1.6 2004-11-11 17:41:51 michiel Exp $
+ * @version $Id: FactoryCache.java,v 1.7 2005-01-30 16:46:38 nico Exp $
  */
 public class FactoryCache extends Cache {
-
-    private static final Logger log = Logging.getLoggerInstance(FactoryCache.class);
 
     private static int cacheSize = 50;
     private static FactoryCache cache;

@@ -17,7 +17,7 @@ import org.mmbase.storage.search.*;
  * The field alias is not set on default.
  *
  * @author Rob van Maris
- * @version $Id: BasicStepField.java,v 1.13 2004-12-23 17:31:05 pierre Exp $
+ * @version $Id: BasicStepField.java,v 1.14 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class BasicStepField implements StepField {
@@ -105,7 +105,7 @@ public class BasicStepField implements StepField {
             if (value2 instanceof Number) {
                 Number number1 = (Number) value1;
                 Number number2 = (Number) value2;
-                return number1.doubleValue() == number2.doubleValue();
+                return Double.doubleToLongBits(number1.doubleValue()) == Double.doubleToLongBits(number2.doubleValue());
             } else {
                 return false;
             }

@@ -9,21 +9,16 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.logging.*;
-
-
 /**
  * The TEI class for Field (type) Providers.
  * In fact a simplified version of WriterTEI (can only provide Field an FieldValue).
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldProviderTEI.java,v 1.3 2004-09-17 09:22:30 pierre Exp $
+ * @version $Id: FieldProviderTEI.java,v 1.4 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 
 public class FieldProviderTEI extends WriterTEI {
-
-    private static final Logger log = Logging.getLoggerInstance(FieldProviderTEI.class);
 
     protected String defaultType() {
         return "field";

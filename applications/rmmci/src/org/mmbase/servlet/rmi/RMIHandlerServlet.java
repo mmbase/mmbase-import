@@ -101,15 +101,14 @@ public class RMIHandlerServlet extends MMBaseServlet {
                     returnClientError(res, "invalid command: " + command);
                 }
             } catch (ServletClientException e) {
-                returnClientError(res, "client error: " +
-                e.getMessage());
-                e.printStackTrace();
+                log.debug(e.getMessage(), e);
+                returnClientError(res, "client error: " + e.getMessage());
             } catch (ServletServerException e) {
-                returnServerError(res, "internal server error: " +
-                e.getMessage());
-                e.printStackTrace();
+                log.debug(e.getMessage(), e);
+                returnServerError(res, "internal server error: " + e.getMessage());
             }
         } catch (Exception e) {
+            log.debug(e.getMessage(), e);
             returnServerError(res, "internal error: " +  e.getMessage() + " " + Logging.stackTrace(e));
         }
     }

@@ -13,7 +13,6 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.WriterReferrer;
 
-import org.mmbase.util.Casting;
 import org.mmbase.bridge.Node;
 import javax.servlet.jsp.JspTagException;
 
@@ -28,7 +27,7 @@ import java.math.BigDecimal;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.36 2005-01-04 10:28:11 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.37 2005-01-30 16:46:38 nico Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {

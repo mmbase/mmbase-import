@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.security;
 
 import java.util.Map;
-import org.mmbase.security.SecurityException;
 
 /**
  *  This class is a abstract implementation of the Authentication.
@@ -19,7 +18,7 @@ import org.mmbase.security.SecurityException;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.22 2004-03-26 15:48:26 michiel Exp $
+ * @version $Id: Authentication.java,v 1.23 2005-01-30 16:46:34 nico Exp $
  */
 public abstract class Authentication extends Configurable {
 

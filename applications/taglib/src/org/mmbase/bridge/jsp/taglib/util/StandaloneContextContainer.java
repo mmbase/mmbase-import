@@ -9,28 +9,28 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.util;
 
-import org.mmbase.bridge.jsp.taglib.*;
-import javax.servlet.jsp.JspTagException;
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import javax.servlet.jsp.PageContext;
-import javax.servlet.http.*;
 
-import java.util.*;
-
+import org.mmbase.bridge.jsp.taglib.ContextTag;
 import org.mmbase.util.Casting;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.4 2005-01-06 20:24:33 michiel Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.5 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.8
  **/
 
 public class StandaloneContextContainer extends ContextContainer {
 
-    private static final Logger log = Logging.getLoggerInstance(StandaloneContextContainer.class);    
     private static final int SCOPE = PageContext.PAGE_SCOPE;
 
     /**

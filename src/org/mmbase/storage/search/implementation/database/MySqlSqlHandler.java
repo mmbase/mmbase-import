@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search.implementation.database;
 
-import java.util.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: MySqlSqlHandler.java,v 1.9 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: MySqlSqlHandler.java,v 1.10 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -119,6 +118,8 @@ public class MySqlSqlHandler extends BasicSqlHandler implements SqlHandler {
             case FieldValueDateConstraint.DAY_OF_WEEK:
                 datePartFunction = "DAYOFWEEK";
                 break;
+            default:
+                log.debug("Unknown datePart " + datePart);
         }
         if (datePartFunction != null) {
             sb.append(datePartFunction);

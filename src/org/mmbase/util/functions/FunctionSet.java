@@ -9,18 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.functions;
 
-import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
 import java.util.*;
-import java.util.jar.*;
-import java.lang.reflect.*;
-
-import org.mmbase.util.logging.*;
-import org.mmbase.module.core.*;
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.implementation.*;
-
 
 /**
  * The implementation of one set ('namespace') of functions. Objects of this type are managed by {@link org.mmbase.util.functions.FunctionSets}.
@@ -31,7 +20,6 @@ import org.mmbase.bridge.implementation.*;
  * @since MMBase-1.8
  */
 public class FunctionSet {
-    private static final Logger log = Logging.getLoggerInstance(FunctionSet.class);
 
     private String name, status, version, description;
 

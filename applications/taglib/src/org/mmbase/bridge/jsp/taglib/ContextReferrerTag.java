@@ -10,14 +10,12 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.GenericResponseWrapper;
 
 import java.util.Locale;
 
@@ -28,7 +26,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.63 2004-12-10 20:25:11 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.64 2005-01-30 16:46:35 nico Exp $
  * @see ContextTag
  */
 
@@ -326,7 +324,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      */
 
     final public TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
-        TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
+        TagSupport cTag = (TagSupport) findAncestorWithClass(this, clazz);
         if (cTag == null) {
             if (exception) {
                 throw new JspTagException ("Could not find parent of type " + clazz.getName());
@@ -343,7 +341,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
                 log.debug(" with id ("  + tagId + ")");
             }
             while (! tagId.equals(cTag.getId())) {
-                cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
+                cTag = (TagSupport) findAncestorWithClass(cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
                         throw new JspTagException ("Could not find parent Tag of type " + clazz.getName() + " with id " + tagId);

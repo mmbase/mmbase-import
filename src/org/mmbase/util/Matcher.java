@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * Values in between indicate the level of partial matchings.
  * @deprecated-now: not used anywhere
  * @author vpro
- * @version $Id: Matcher.java,v 1.5 2004-09-30 08:52:16 pierre Exp $
+ * @version $Id: Matcher.java,v 1.6 2005-01-30 16:46:35 nico Exp $
  */
 public class Matcher {
 
@@ -44,11 +44,11 @@ public class Matcher {
         int matchedWords=0;
 
         while (st1.hasMoreElements()) {
-            String wordFirstString = (String)st1.nextToken();
+            String wordFirstString = st1.nextToken();
             st2 = new StringTokenizer(secondString,"\".,:!? \n\t");
 
             while (st2.hasMoreTokens()) {
-                String wordSecondString = (String)st2.nextToken();
+                String wordSecondString = st2.nextToken();
                 //log.debug("matching "+wordFirstString+" ?= "+wordSecondString);
                 if (wordFirstString.equals(wordSecondString)) {
                     matchedWords++;
@@ -61,6 +61,6 @@ public class Matcher {
                     "secondString = "+secondString+"\n"+
                     "matchedWords = "+matchedWords);
         }
-        return (float)matchedWords/(((float)numberOffWordsFirstString+(float)numberOffWordsSecondString)/2);
+        return matchedWords/(((float)numberOffWordsFirstString+(float)numberOffWordsSecondString)/2);
     }
 }

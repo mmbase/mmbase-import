@@ -8,27 +8,22 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.jsp.taglib;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTag;
 
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.Node;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 /**
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.15 2004-06-30 17:51:54 michiel Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.16 2005-01-30 16:46:35 nico Exp $ 
  */
-
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
-
-    private static final Logger log = Logging.getLoggerInstance(RelatedNodeTag.class);
 
     private Attribute listRelationsId = Attribute.NULL;
 

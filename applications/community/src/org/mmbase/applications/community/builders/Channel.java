@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.25 2004-10-25 08:08:33 pierre Exp $
+ * @version $Id: Channel.java,v 1.26 2005-01-30 16:46:36 nico Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -330,7 +330,7 @@ public class Channel extends MMObjectBuilder {
         Integer highseqObj = (Integer)openChannels.get(channelnr);
         if (highseqObj != null) {
             // The highest sequence is kept track of in the openChannels table.
-            newHighseq = ((Integer)highseqObj).intValue() + 1;
+            newHighseq = highseqObj.intValue() + 1;
             openChannels.put(channelnr, new Integer(newHighseq));
             return newHighseq;
         }

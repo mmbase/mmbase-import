@@ -9,14 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.gui.html;
 
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.mmbase.module.ParseException;
-import org.mmbase.module.core.*;
-import org.mmbase.module.builders.*;
+import org.mmbase.module.core.ClusterBuilder;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.corebuilders.FieldDefs;
-
-import org.mmbase.util.*;
+import org.mmbase.util.HttpAuth;
+import org.mmbase.util.StringTagger;
+import org.mmbase.util.scanpage;
 
 /**
  * The ObjectSelector class offers the functionality to search for objects
@@ -26,7 +32,7 @@ import org.mmbase.util.*;
  * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.19 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.20 2005-01-30 16:46:39 nico Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 

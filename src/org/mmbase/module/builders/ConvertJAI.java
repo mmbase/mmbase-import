@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Martijn Houtman (JAI fix)
- * @version $Id: ConvertJAI.java,v 1.10 2004-03-05 12:16:34 pierre Exp $
+ * @version $Id: ConvertJAI.java,v 1.11 2005-01-30 16:46:38 nico Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
 
@@ -54,7 +54,7 @@ public class ConvertJAI implements ImageConvertInterface {
      * @javadoc
      */
     public byte[] convertImage(byte[] input,List commands) {
-        String cmd,format;
+        String format;
         byte[] pict=null;
         try {
             ByteArraySeekableStream bin=new ByteArraySeekableStream(input);
@@ -147,7 +147,6 @@ public class ConvertJAI implements ImageConvertInterface {
      * @javadoc
      */
     private PlanarImage doConvertCommands(PlanarImage img,List params) {
-        StringBuffer cmdstr=new StringBuffer();
         String key,cmd,type;
         int pos,pos2;
         Iterator t = params.iterator();
@@ -258,8 +257,8 @@ public class ConvertJAI implements ImageConvertInterface {
         }
         ParameterBlock params = new ParameterBlock();
         params.addSource(inImg);
-        params.add((float)sx);  // x scale
-        params.add((float)sy);  // y scale
+        params.add(sx);  // x scale
+        params.add(sy);  // y scale
         params.add(0F);         // x trans
         params.add(0F);         // y trans
         params.add(interp);     // interpolation method
@@ -311,7 +310,6 @@ public class ConvertJAI implements ImageConvertInterface {
      * @return the transformed image
      */
     protected static PlanarImage border(PlanarImage inImg, int xpadding,int ypadding) {
-        Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
         ParameterBlock params = new ParameterBlock();
         params.addSource(inImg);
         params.add(xpadding);         // leftPad
@@ -332,7 +330,6 @@ public class ConvertJAI implements ImageConvertInterface {
      * @return the transformed image
      */
     protected static PlanarImage flop(PlanarImage inImg) {
-        Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
         ParameterBlock params = new ParameterBlock();
         params.addSource(inImg);
         params.add(TransposeDescriptor.FLIP_HORIZONTAL);         // flip over X
@@ -347,7 +344,6 @@ public class ConvertJAI implements ImageConvertInterface {
      * @return the transformed image
      */
     protected static PlanarImage flip(PlanarImage inImg) {
-        Interpolation interp = Interpolation.getInstance(Interpolation.INTERP_NEAREST);
         ParameterBlock params = new ParameterBlock();
         params.addSource(inImg);
         params.add(TransposeDescriptor.FLIP_VERTICAL);         // flip over Y

@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.util.HashCodeUtil;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import java.util.*;
@@ -25,7 +26,7 @@ import java.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Rank.java,v 1.12 2003-07-08 09:28:44 michiel Exp $
+ * @version $Id: Rank.java,v 1.13 2005-01-30 16:46:34 nico Exp $
  */
 public final class Rank implements Comparable {
     private static Logger log = Logging.getLoggerInstance(Rank.class);
@@ -147,6 +148,17 @@ public final class Rank implements Comparable {
         }
     }
 
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        int result = 0;
+        result = HashCodeUtil.hashCode(result, rank);
+        result = HashCodeUtil.hashCode(result, description);
+        return result;
+    }
+    
     /**
      * @since MMBase-1.6.4
      */

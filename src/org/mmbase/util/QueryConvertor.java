@@ -18,6 +18,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.search.CompositeConstraint;
 import org.mmbase.storage.search.Constraint;
+import org.mmbase.storage.search.FieldCompareConstraint;
 import org.mmbase.storage.search.FieldValueConstraint;
 import org.mmbase.storage.search.implementation.BasicCompositeConstraint;
 import org.mmbase.storage.search.implementation.BasicFieldValueConstraint;
@@ -43,7 +44,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  * @move org.mmbase.storage.search.util
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.26 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.27 2005-01-30 16:46:35 nico Exp $
  */
 public class QueryConvertor {
 
@@ -333,26 +334,26 @@ class DBQuery  extends ParseItem {
                 case DBConditionItem.EQUAL:
                     if (fieldType == FieldDefs.TYPE_STRING
                         || fieldType == FieldDefs.TYPE_XML) {
-                        fieldValueConstraint.setOperator(FieldValueConstraint.LIKE);
+                        fieldValueConstraint.setOperator(FieldCompareConstraint.LIKE);
                     } else {
-                        fieldValueConstraint.setOperator(FieldValueConstraint.EQUAL);
+                        fieldValueConstraint.setOperator(FieldCompareConstraint.EQUAL);
                     }
                     break;
 
                 case DBConditionItem.GREATER:
-                    fieldValueConstraint.setOperator(FieldValueConstraint.GREATER);
+                    fieldValueConstraint.setOperator(FieldCompareConstraint.GREATER);
                     break;
 
                 case DBConditionItem.SMALLER:
-                    fieldValueConstraint.setOperator(FieldValueConstraint.LESS);
+                    fieldValueConstraint.setOperator(FieldCompareConstraint.LESS);
                     break;
 
                 case DBConditionItem.GREATEREQUAL:
-                    fieldValueConstraint.setOperator(FieldValueConstraint.GREATER_EQUAL);
+                    fieldValueConstraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
                     break;
 
                 case DBConditionItem.SMALLEREQUAL:
-                    fieldValueConstraint.setOperator(FieldValueConstraint.LESS_EQUAL);
+                    fieldValueConstraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
                     break;
 
                 default:
@@ -475,6 +476,8 @@ class DBConditionItem extends ParseItem {
             break;
         case 's':
             operator = SMALLEREQUAL;
+            break;
+        default:
             break;
         }
     }
@@ -687,6 +690,8 @@ class DBLogicalOperator extends ParseItem {
                 break;
             case OR:
                 result.append(" OR ");
+                break;
+            default:
                 break;
         }
     }

@@ -6,26 +6,24 @@
  */
 package org.mmbase.applications.packaging.packagehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.module.corebuilders.TypeDef;
+import org.mmbase.module.corebuilders.TypeRel;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 /**
  * DisplayHtmlPackage, Handler for html packages
@@ -229,7 +227,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
 
             // retrieve builder info
             int builder = -1;
-            if (mmb.getRelDef().usesbuilder) {
+            if (RelDef.usesbuilder) {
                 // if no 'builder' attribute is present (old format), use source name as builder name
                 if (buildername == null) {
                     buildername = source;
@@ -262,7 +260,6 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
      * @return         Description of the Return Value
      */
     private boolean installAllowedRelations(JarFile jf, ExtendedDocumentReader reader, installStep step) {
-        MMBase mmb = MMBase.getMMBase();
         for (Enumeration ns = reader.getChildElements("cloudmodel.allowedrelationlist", "relation");
                 ns.hasMoreElements(); ) {
             Element n = (Element) ns.nextElement();
@@ -421,7 +418,7 @@ public class CloudModelPackage extends BasicPackage implements PackageInterface 
                 node.setValue("dir", dir);
                 node.setValue("sguiname", sguiname);
                 node.setValue("dguiname", dguiname);
-                if (reldef.usesbuilder) {
+                if (RelDef.usesbuilder) {
                     // if builder is unknown (falsely specified), use the InsRel builder
                     if (builder <= 0) {
                         builder = mmb.getInsRel().oType;

@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @since MMBase 1.8
  * @author Pierre van Rooden
- * @version $Id: PageInfo.java,v 1.1 2004-10-25 08:08:40 pierre Exp $
+ * @version $Id: PageInfo.java,v 1.2 2005-01-30 16:46:35 nico Exp $
  */
 public class PageInfo {
     /**

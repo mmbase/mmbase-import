@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.50 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: Queries.java,v 1.51 2005-01-30 16:46:39 nico Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -673,6 +673,9 @@ abstract public class Queries {
                     break;
                 case Field.TYPE_DATETIME:
                     value = new Date((long) 1000 * Integer.parseInt("" + value));
+                    break;
+                default:
+                    log.debug("Unknown type " + type);
                     break;
                 }
                 set.add(value);

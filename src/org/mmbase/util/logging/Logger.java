@@ -55,7 +55,7 @@ public interface Logger {
     
     /**
      * Logs the message m with trace priority. For detailled debugging. 
-     * @see #debug
+     * @see #debug(Object)
      */
     void trace(Object m);
 

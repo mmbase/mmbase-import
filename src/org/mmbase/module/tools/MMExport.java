@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @deprecated not used anymore (?)
  * @author Daniel Ockeloen
- * @version $Id: MMExport.java,v 1.9 2004-10-25 08:08:39 pierre Exp $
+ * @version $Id: MMExport.java,v 1.10 2005-01-30 16:46:35 nico Exp $
  */
 public class MMExport extends ProcessorModule {
 
@@ -49,13 +49,13 @@ public class MMExport extends ProcessorModule {
      * Generate a list of values from a command to the processor
      */
     public Vector  getList(PageInfo sp,StringTagger tagger, String value) {
-        String line = Strip.DoubleQuote(value,Strip.BOTH);
-        StringTokenizer tok = new StringTokenizer(line,"-\n\r");
-        if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
-            //if (cmd.equals("OBJECTS")) return(doObjects(req,tagger));
-
-        }
+//        String line = Strip.DoubleQuote(value,Strip.BOTH);
+//        StringTokenizer tok = new StringTokenizer(line,"-\n\r");
+//        if (tok.hasMoreTokens()) {
+//            String cmd=tok.nextToken();
+//            //if (cmd.equals("OBJECTS")) return(doObjects(req,tagger));
+//
+//        }
         return(null);
     }
 
@@ -102,7 +102,7 @@ public class MMExport extends ProcessorModule {
         String buildername=(String)vars.get("builder");
         String exportdir=(String)vars.get("exportdir")+".xml";
 
-        MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(buildername);
+        MMObjectBuilder bul=mmb.getMMObject(buildername);
         if (log.isDebugEnabled()) {
             log.debug(" "+buildername+" "+exportdir+" "+bul);
         }

@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.138 2005-01-10 17:28:09 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.139 2005-01-30 16:46:36 nico Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -275,7 +275,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     protected void edit(int action) {
         if (account == null) {
             account = cloud.getAccount();
-        } else if (account != cloud.getAccount()) {
+        } else if (!account.equals(cloud.getAccount())) {
             throw new BridgeException("User context changed. Cannot proceed to edit this node .");
         }
         if (nodeManager instanceof VirtualNodeManager) {
@@ -950,6 +950,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 Queries.addConstraint(query, query.createConstraint(sourceConstraint, CompositeConstraint.LOGICAL_OR, destinationConstraint));
                 break;
             }
+            default:
+                log.debug("Unknown relation direction" + dir);
+                break;
             }
             return Queries.count(query);
         } else {

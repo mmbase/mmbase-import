@@ -10,11 +10,12 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging.bundlehandlers;
 
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
+import java.io.BufferedInputStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.jar.JarFile;
+
+import org.mmbase.applications.packaging.providerhandlers.ProviderInterface;
 
 /**
  * Interface for all the bundle handlers

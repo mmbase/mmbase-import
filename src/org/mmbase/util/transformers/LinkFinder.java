@@ -10,13 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.transformers;
 
 import java.util.*;
-import java.io.*;
 import java.util.regex.*;
-import org.mmbase.util.WrappedFileWatcher;
-import org.mmbase.util.xml.UtilReader;
-
-import org.mmbase.util.logging.*;
-
 
 /**
  * Finds links in the Character String, and makes them 'clickable' for HTML (using a-tags). This
@@ -29,7 +23,6 @@ import org.mmbase.util.logging.*;
  */
 
 public class LinkFinder extends RegexpReplacer {
-    private static final Logger log = Logging.getLoggerInstance(LinkFinder.class);
 
     protected static Map urlPatterns = new LinkedHashMap();
     

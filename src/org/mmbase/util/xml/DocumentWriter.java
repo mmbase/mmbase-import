@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: DocumentWriter.java,v 1.5 2004-05-06 12:34:42 keesj Exp $
+ * @version $Id: DocumentWriter.java,v 1.6 2005-01-30 16:46:36 nico Exp $
  */
 abstract public class DocumentWriter extends DocumentReader {
 
@@ -310,7 +310,7 @@ abstract public class DocumentWriter extends DocumentReader {
     /**
      * Generates the document and returns it as a string.
      */
-    public String writeToString() throws IOException, TransformerException {
+    public String writeToString() throws TransformerException {
         StringWriter strw=new StringWriter(500);
         write(new StreamResult(strw));
         return strw.toString();
@@ -328,7 +328,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * Generates the document and store it in the given stream.
      * @param out the output stream where the configuration is to be stored
      */
-    public void writeToStream(OutputStream out) throws IOException, TransformerException {
+    public void writeToStream(OutputStream out) throws TransformerException {
         write(new StreamResult(out));
     }
 
@@ -336,7 +336,7 @@ abstract public class DocumentWriter extends DocumentReader {
      * Generates the document and writes it to the result object.
      * @param result the StreamResult object where to store the configuration'
      */
-    public void write(StreamResult result) throws IOException, TransformerException {
+    public void write(StreamResult result) throws TransformerException {
         Document doc=getDocument();
         TransformerFactory tfactory = TransformerFactory.newInstance();
         tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));

@@ -13,21 +13,16 @@ import java.util.Map;
 
 import org.mmbase.security.Rank;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * Support for authentication method 'class' for 'basic' authentication.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: ClassLoginModule.java,v 1.2 2004-04-20 11:03:51 michiel Exp $
+ * @version $Id: ClassLoginModule.java,v 1.3 2005-01-30 16:46:37 nico Exp $
  * @since   MMBase-1.8
  */
 public class ClassLoginModule implements LoginModule {
-    private static Logger log = Logging.getLoggerInstance(ClassLoginModule.class);
 
     private Map ranks;
-    
 
     public void load(Map properties) {
         ranks = properties;

@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @application Tools
  * @author Daniel Ockeloen
- * @version $Id: MMEvents.java,v 1.16 2004-10-08 12:23:54 pierre Exp $
+ * @version $Id: MMEvents.java,v 1.17 2005-01-30 16:46:38 nico Exp $
  */
 public class MMEvents extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(MMEvents.class.getName());
@@ -77,38 +77,38 @@ public class MMEvents extends MMObjectBuilder {
 
     public Object getValue(MMObjectNode node,String field) {
         if (field.indexOf("time_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(5));
+            int str=node.getIntValue(field.substring(5));
             return(DateSupport.getTime(str));
         } else if (field.equals("time(start)")) {
             node.prefix="mmevents.";
-            int str=(int)node.getIntValue("start");
+            int str=node.getIntValue("start");
             node.prefix="";
             return(DateSupport.getTime(str));
         } else if (field.equals("time(stop)")) {
             node.prefix="mmevents.";
-            int str=(int)node.getIntValue("stop");
+            int str=node.getIntValue("stop");
             node.prefix="";
             return(DateSupport.getTime(str));
         } else if (field.indexOf("timesec_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(8));
+            int str=node.getIntValue(field.substring(8));
             return(DateSupport.getTimeSec(str));
         } else if (field.indexOf("longmonth_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(10));
+            int str=node.getIntValue(field.substring(10));
             return(datestrings.longmonth[DateSupport.getMonthInt(str)]);
         } else if (field.indexOf("month_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(6));
+            int str=node.getIntValue(field.substring(6));
             return(datestrings.month[DateSupport.getMonthInt(str)]);
         } else if (field.indexOf("weekday_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(8));
+            int str=node.getIntValue(field.substring(8));
             return(datestrings.longday[DateSupport.getWeekDayInt(str)]);
         } else if (field.indexOf("shortday_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(8));
+            int str=node.getIntValue(field.substring(8));
             return(datestrings.day[DateSupport.getWeekDayInt(str)]);
         } else if (field.indexOf("day_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(4));
+            int str=node.getIntValue(field.substring(4));
             return(""+DateSupport.getDayInt(str));
         } else if (field.indexOf("year_")!=-1) {
-            int str=(int)node.getIntValue(field.substring(5));
+            int str=node.getIntValue(field.substring(5));
             return(DateSupport.getYear(str));
         }
         return(super.getValue(node,field));

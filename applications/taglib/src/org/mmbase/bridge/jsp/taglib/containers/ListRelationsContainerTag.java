@@ -15,26 +15,20 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ListRelationsContainerTag.java,v 1.5 2004-07-26 20:18:01 nico Exp $
+ * @version $Id: ListRelationsContainerTag.java,v 1.6 2005-01-30 16:46:34 nico Exp $
  */
 public class ListRelationsContainerTag extends NodeReferrerTag implements QueryContainer {
-
-
-    private static final Logger log = Logging.getLoggerInstance(ListRelationsContainerTag.class);
 
     private Query   query        = null;
     private NodeQuery   relatedQuery        = null;
     private Attribute type       = Attribute.NULL;
     private Attribute role       = Attribute.NULL;
     private Attribute searchDir  = Attribute.NULL;
-
-
 
     /**
      * @param type a nodeManager

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @application SCAN or Tools (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.7 2004-10-12 11:17:44 pierre Exp $
+ * @version $Id: RelativeTime.java,v 1.8 2005-01-30 16:46:35 nico Exp $
  */
 public class RelativeTime {
 
@@ -127,10 +127,10 @@ public class RelativeTime {
         int m  = getMinutes(timeValue);
         int s  = getSeconds(timeValue);
         int ms = getMillis(timeValue);
-        if (testTimeValue(h,HOUR_POS)==false) h = -1;
-        if (testTimeValue(m,MINUTE_POS)==false) m = -1;
-        if (testTimeValue(s,SECOND_POS)==false) s = -1;
-        if (testTimeValue(ms,MILLI_POS)==false) ms= -1;
+        if (!testTimeValue(h,HOUR_POS)) h = -1;
+        if (!testTimeValue(m,MINUTE_POS)) m = -1;
+        if (!testTimeValue(s,SECOND_POS)) s = -1;
+        if (!testTimeValue(ms,MILLI_POS)) ms= -1;
 
         //Setting milliseconds attribute to right format value.
         if (ms < 0) {
@@ -172,7 +172,6 @@ public class RelativeTime {
      */
     public static int convertTimeToInt(String time) {
         int result = 0;        //The amount of milliseconds that is to be returned.
-        int attrIntValue=0;
         String attrStrValues[] = new String[4];
 
         // Splice string value into time attribute tokens.
@@ -185,13 +184,13 @@ public class RelativeTime {
 
         // Test all time attribute values.
         for (int i=0; i<attrStrValues.length; i++) {
-            if ( testTimeValue(Integer.parseInt(attrStrValues[i]),i) == false ) {
+            if (!testTimeValue(Integer.parseInt(attrStrValues[i]),i)) {
                 return -1;
             }
         }
 
         // Convert hours,minutes and seconds to millis and adding them to result.
-        attrIntValue = Integer.parseInt(attrStrValues[HOUR_POS]);
+        int attrIntValue = Integer.parseInt(attrStrValues[HOUR_POS]);
         result += attrIntValue*3600*1000;
         attrIntValue = Integer.parseInt(attrStrValues[MINUTE_POS]);
         result += attrIntValue*60*1000;
@@ -331,7 +330,7 @@ public class RelativeTime {
                 e = testProps.keys();
                 while (e.hasMoreElements()) {
                     timeKey = (String)e.nextElement();
-                    timeValue = (int)convertTimeToInt(timeKey);
+                    timeValue = convertTimeToInt(timeKey);
                     log.info("convertTimeToInt using timeKey="+timeKey+" , timeValue="+timeValue+" in testProps? "+testProps.contains(new Integer(timeValue)));
                 }
             } else if (args[0].equals("convertTimeToInt2")) {

@@ -12,7 +12,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.mmbase.util.StringObject;
 import org.mmbase.util.ResourceLoader;
 
-import org.mmbase.module.core.MMBaseContext;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -21,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.26 2004-11-11 16:56:13 michiel Exp $
+ * @version $Id: XmlField.java,v 1.27 2005-01-30 16:46:37 nico Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -347,10 +346,6 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
     }
 
-    private static void handleParagraphs(StringObject obj, boolean leaveExtraNewLines) {
-        handleParagraphs(obj, leaveExtraNewLines, true);
-    }
-
     /**
      * Removes all new lines and space which are too much.
      */
@@ -547,7 +542,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         } catch (javax.xml.parsers.ParserConfigurationException pce) {
             throw new FormatException("[sax parser] not well formed xml: " + pce.toString());
         } catch (org.xml.sax.SAXException se) {
-            se.printStackTrace();
+            log.debug("", se);
             //throw new FormatException("[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")");
         } catch (java.io.IOException ioe) {
             throw new FormatException("[io] not well formed xml: " + ioe.toString());

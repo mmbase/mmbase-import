@@ -13,8 +13,6 @@ import org.mmbase.bridge.Query;
 import java.util.Set;
 import org.mmbase.security.implementation.cloudcontext.builders.*;
 import org.mmbase.security.*;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 
 /**
  * Implementation of Authorization. Most implementation is delegated to the Contexts builder.
@@ -22,12 +20,10 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Verify.java,v 1.10 2004-07-30 17:14:30 michiel Exp $
+ * @version $Id: Verify.java,v 1.11 2005-01-30 16:46:35 nico Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Contexts
  */
 public class Verify extends Authorization {
-    private static final Logger    log = Logging.getLoggerInstance(Verify.class);
-
     // javadoc inherited
     protected void load() {
     }
@@ -36,7 +32,7 @@ public class Verify extends Authorization {
     public void create(UserContext userContext, int nodeId) {
         User user = (User) userContext;
         // odd, getOwnerField is called in BasicNodeManager yet, so I wonder when this is called.
-        Contexts.getBuilder().setContext((User) user, nodeId, user.getOwnerField());
+        Contexts.getBuilder().setContext(user, nodeId, user.getOwnerField());
     }
 
     // javadoc inherited

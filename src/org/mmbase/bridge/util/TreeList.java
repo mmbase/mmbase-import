@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.11 2004-09-30 14:54:56 pierre Exp $
+ * @version $Id: TreeList.java,v 1.12 2005-01-30 16:46:39 nico Exp $
  * @since   MMBase-1.7
  */
 
@@ -267,7 +267,7 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         protected final boolean prepare(int index) {
 
             for (int i = nodeIterators.size(); i <= index; i++) {
-                NodeList nl = (NodeList)TreeList.this.getList(i);
+                NodeList nl = TreeList.this.getList(i);
                 NodeIterator iterator = null;
                 if (nl != null) {
                     iterator = nl.nodeIterator();
@@ -454,13 +454,12 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
      */
 
     protected static NodeQuery getQuery(String[] args) {
-        String startNodes = "";
         if (args.length == 0) {
             System.err.println("Usage" + TreeList.class.getName() + " startnode");
             System.exit(1);
         }
 
-        startNodes = args[0];
+        String startNodes = args[0];
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
 
         NodeManager object = cloud.getNodeManager("object");

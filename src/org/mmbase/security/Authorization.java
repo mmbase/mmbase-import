@@ -9,23 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.security.SecurityException;
 import org.mmbase.bridge.Query;
 import org.mmbase.storage.search.Constraint;
 import java.util.Set;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 /**
  * The abstract implementation of the Authorization. To make your own implementation of
  * authorization, you have to extend this class, and implement the abstract methods.
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Authorization.java,v 1.22 2004-07-29 15:12:45 michiel Exp $
+ * @version $Id: Authorization.java,v 1.23 2005-01-30 16:46:35 nico Exp $
  */
 public abstract class Authorization extends Configurable {
-    private static final Logger log = Logging.getLoggerInstance(Authorization.class);
 
     /**
      *	This method should be overrided by an extending class.

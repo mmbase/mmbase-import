@@ -13,22 +13,15 @@ package org.mmbase.bridge.implementation;
 import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of node managers
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManagerList.java,v 1.12 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicNodeManagerList.java,v 1.13 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicNodeManagerList extends BasicNodeList implements NodeManagerList {
-    private static Logger log = Logging.getLoggerInstance(BasicNodeManagerList.class.getName());
 
-    protected Cloud cloud;
-
-    /**
-     * ...
-     */
     BasicNodeManagerList() {
         super();
     }
@@ -70,7 +63,7 @@ public class BasicNodeManagerList extends BasicNodeList implements NodeManagerLi
      *
      */
     public NodeManagerList subNodeManagerList(int fromIndex, int toIndex) {
-        return new BasicNodeManagerList(subList(fromIndex, toIndex),cloud);
+        return new BasicNodeManagerList(subList(fromIndex, toIndex),null);
     }
 
     protected class BasicNodeManagerIterator extends BasicNodeIterator implements NodeManagerIterator {

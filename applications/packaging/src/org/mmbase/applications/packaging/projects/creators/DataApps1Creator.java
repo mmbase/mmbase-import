@@ -6,25 +6,31 @@
  */
 package org.mmbase.applications.packaging.projects.creators;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.projects.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.projects.creators.dataapptools.*;
-import org.mmbase.applications.packaging.projects.editors.cloudmodel.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.ProjectManager;
+import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.applications.packaging.packagehandlers.DataApps1Package;
+import org.mmbase.applications.packaging.projects.Project;
+import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.projects.packageStep;
+import org.mmbase.applications.packaging.projects.creators.dataapptools.Apps1DataWriter;
+import org.mmbase.applications.packaging.projects.editors.cloudmodel.Model;
+import org.mmbase.applications.packaging.projects.editors.cloudmodel.NeededBuilder;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.core.VirtualBuilder;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * DisplayHtmlPackage, Handler for html packages

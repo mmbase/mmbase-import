@@ -23,7 +23,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryAliasConstraintTag.java,v 1.6 2004-07-26 20:18:00 nico Exp $
+ * @version $Id: QueryAliasConstraintTag.java,v 1.7 2005-01-30 16:46:34 nico Exp $
  */
 public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 
@@ -91,9 +91,7 @@ public class QueryAliasConstraintTag extends CloudReferrerTag implements QueryCo
         }
         StepField stepField = query.createStepField(step, "number");
 
-        Constraint newConstraint = null;
-        
-        newConstraint = query.createConstraint(stepField, getAliases(name.getList(this)));
+        Constraint newConstraint = query.createConstraint(stepField, getAliases(name.getList(this)));
 
         if (newConstraint != null) {
             if (inverse.getBoolean(this, false)) {

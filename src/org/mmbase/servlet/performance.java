@@ -13,19 +13,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.mmbase.util.logging.*;
-
 /**
  * Performance Servlet is used as a basic Servlet to test whether the installation of succeeded.
  * It also does a very basic test to measure how fast the JVM is.
  *
  * @rename  Performance
  * @author  vpro
- * @version $Id: performance.java,v 1.13 2004-11-08 12:44:54 michiel Exp $
+ * @version $Id: performance.java,v 1.14 2005-01-30 16:46:36 nico Exp $
  */
 public class performance extends BridgeServlet {
-    // logging
-    private static Logger log;
 
     public static long INT_LOOP = 20000000;
     public static long STRING_LOOP = 2500000;
@@ -37,8 +33,6 @@ public class performance extends BridgeServlet {
      */
     public void init() throws ServletException {
         super.init();
-        // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(performance.class);
     }
 
     /**

@@ -6,24 +6,33 @@
  */
 package org.mmbase.applications.packaging.providerhandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.projects.creators.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.mmbase.applications.packaging.BundleManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.ShareManager;
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.Encode;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.xml.sax.InputSource;
 
 /**
  * HttpProvider, Handler for Http Providers. gets packages and bundles from

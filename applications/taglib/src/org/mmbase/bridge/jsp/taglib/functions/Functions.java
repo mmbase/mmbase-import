@@ -9,9 +9,11 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.functions;
 
-import java.util.*;
-import javax.servlet.jsp.JspTagException;
-import org.mmbase.bridge.*;
+import java.util.Collection;
+import java.util.Iterator;
+
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeList;
 import org.mmbase.util.Casting;
 
 /**
@@ -32,7 +34,7 @@ import org.mmbase.util.Casting;
 </mm:cloud>
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.8
- * @version $Id: Functions.java,v 1.3 2005-01-04 16:58:52 michiel Exp $
+ * @version $Id: Functions.java,v 1.4 2005-01-30 16:46:38 nico Exp $
  * @todo    EXPERIMENTAL
  */
 public class Functions {

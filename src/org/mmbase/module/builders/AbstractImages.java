@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders;
 
 import java.util.*;
-import java.io.ByteArrayInputStream;
 import org.mmbase.module.core.*;
 //import org.mmbase.util.ImageInfo;
 import org.mmbase.util.logging.*;
@@ -21,7 +20,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.30 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: AbstractImages.java,v 1.31 2005-01-30 16:46:38 nico Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -78,7 +77,6 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             Iterator entries  = entrySet().iterator();
             while (entries.hasNext()) {
                 Map.Entry entry = (Map.Entry) entries.next();
-                String key = (String) entry.getKey();
                 Object value = entry.getValue();
                 if (value instanceof ByteFieldContainer) {
                     ByteFieldContainer bf = (ByteFieldContainer) value;

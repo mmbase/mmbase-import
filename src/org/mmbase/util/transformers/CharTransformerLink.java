@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: CharTransformerLink.java,v 1.1 2004-10-15 18:30:50 michiel Exp $
+ * @version $Id: CharTransformerLink.java,v 1.2 2005-01-30 16:46:37 nico Exp $
  */
 
 public class CharTransformerLink implements Runnable {
@@ -32,7 +32,7 @@ public class CharTransformerLink implements Runnable {
     private boolean    closeWriter;
     private boolean    ready = false;
     
-    public CharTransformerLink(CharTransformer ct, Reader r, Writer w, boolean cw) throws IOException {
+    public CharTransformerLink(CharTransformer ct, Reader r, Writer w, boolean cw) {
         reader = r;
         writer = w;
         charTransformer = ct;

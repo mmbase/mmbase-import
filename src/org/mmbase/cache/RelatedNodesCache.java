@@ -12,7 +12,6 @@ package org.mmbase.cache;
 import java.util.*;
 
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * Query result cache used for getRelatedNodes from MMObjectNodes. Entries are invalidated on the
@@ -20,15 +19,13 @@ import org.mmbase.util.logging.*;
  * removed from the Node Cache itself.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodesCache.java,v 1.3 2003-08-29 12:12:27 keesj Exp $
+ * @version $Id: RelatedNodesCache.java,v 1.4 2005-01-30 16:46:37 nico Exp $
  * @see   org.mmbase.module.core.MMObjectNode#getRelatedNodes
  * @since MMBase-1.7
  */
 
 
 public class RelatedNodesCache extends QueryResultCache {
-
-    private static Logger log = Logging.getLoggerInstance(RelatedNodesCache.class);
 
     // There will be only one list cache, and here it is:
     private static RelatedNodesCache relatedNodesCache;

@@ -15,9 +15,7 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.module.core.MMBaseContext;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 
 
 // import org.mmbase.util.ConstantsBundle;
@@ -26,7 +24,7 @@ import org.w3c.dom.NamedNodeMap;
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.13 2004-06-03 15:57:34 michiel Exp $
+ * @version $Id: Format.java,v 1.14 2005-01-30 16:46:36 nico Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -234,6 +232,14 @@ public final class Format {   // final class!!
             return f.number == number;
         }
         return false;
+    }
+    
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return number;
     }
 }
     

@@ -10,21 +10,26 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.packaging.projects.creators;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.projects.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
-import java.io.*;
-import java.util.*;
-import java.util.jar.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.Person;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.projects.PackageDepend;
+import org.mmbase.applications.packaging.projects.Target;
+import org.mmbase.applications.packaging.projects.packageStep;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * BasicCreator, base class for creators 
@@ -519,8 +524,8 @@ public class BasicCreator implements CreatorInterface,Runnable {
    private boolean excludeFile(File tfile,String fullname,String excludestring) {
 	excludestring = excludestring.replace('/',File.separatorChar);
 	excludestring = excludestring.replace('\\',File.separatorChar);
-	String name=tfile.getName();
-	long length=tfile.length();
+
+    long length=tfile.length();
 	long lastmodified=tfile.lastModified();
 	long fileage=(System.currentTimeMillis()-lastmodified)/1000;
 	StringTokenizer tok =  new StringTokenizer(excludestring,",\n\r");
@@ -600,7 +605,6 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public void createDependsMetaFile(JarOutputStream jarfile,Target target) {
-	Date d=new Date();
 	String body="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 	body+="<!DOCTYPE packagedepends PUBLIC \"-//MMBase/DTD packagedepends config 1.0//EN\" \"http://www.mmbase.org/dtd/packagedepends_1_0.dtd\">\n";
 	body+="\t<packagedepends>\n";
@@ -753,46 +757,52 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
 
    public void addScreenshotFiles(JarOutputStream jarfile,Target target) {
-	try {
-      		JarEntry entry = new JarEntry("screenshots"+File.separator);
-        	jarfile.putNextEntry(entry);
-	} catch (Exception e) {
-		e.printStackTrace();
-		return;
-	}
+       try {
+            JarEntry entry = new JarEntry("screenshots" + File.separator);
+            jarfile.putNextEntry(entry);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
 
         for (Iterator i = target.getScreenshots().iterator(); i.hasNext();) {
-                String name=(String)i.next();
-                String filen=(String)i.next(); // not used here
-                String description=(String)i.next(); // not used here
-		String fn=target.getBaseDir()+"packaging"+File.separator+filen;
+            String name = (String) i.next();
+            String filen = (String) i.next(); // not used here
+            String description = (String) i.next(); // not used here
+            String fn = target.getBaseDir() + "packaging" + File.separator + filen;
 
-		String dfn=filen;
-        	packageStep step=getNextPackageStep();
-        	step.setUserFeedBack("added screenshot file : "+dfn+" ... done");
-        	byte[] buffer = new byte[1024];
-  		int bytesRead;
-     		try {
-      		FileInputStream file = new FileInputStream(fn);
-      		try {
-       			JarEntry entry = new JarEntry(dfn);
-       	         	jarfile.putNextEntry(entry);
-       			while ((bytesRead = file.read(buffer)) != -1) {
-       	 			jarfile.write(buffer, 0, bytesRead);
-       			}
-	        } catch (Exception e) {
-      		} finally {
-       		file.close();
-      		}
-	} catch (Exception e) {
-		e.printStackTrace();
-        	step.setUserFeedBack("added screenshot file : "+dfn+" ... error file not found");
+            String dfn = filen;
+            packageStep step = getNextPackageStep();
+            step.setUserFeedBack("added screenshot file : " + dfn + " ... done");
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            try {
+                FileInputStream file = new FileInputStream(fn);
+                try {
+                    JarEntry entry = new JarEntry(dfn);
+                    jarfile.putNextEntry(entry);
+                    while ((bytesRead = file.read(buffer)) != -1) {
+                        jarfile.write(buffer, 0, bytesRead);
+                    }
+                }
+                catch (Exception e) {
+                }
+                finally {
+                    file.close();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                step
+                        .setUserFeedBack("added screenshot file : " + dfn
+                                + " ... error file not found");
                 step.setType(packageStep.TYPE_ERROR);
-		return;
-	}
-        step.setUserFeedBack("added screenshot file : "+dfn+" ... done");
-	}
-   }
+                return;
+            }
+            step.setUserFeedBack("added screenshot file : " + dfn + " ... done");
+        }
+    }
 
   public String getRelatedPeopleXML(String type,String subtype,Target target) {
 	String result="\t<"+type+">\n";
@@ -947,8 +957,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public boolean decodeScreenshots(Target target) {
 	ExtendedDocumentReader reader=target.getReader();
-	ArrayList list=new ArrayList();
-        org.w3c.dom.Node n=reader.getElementByPath(prefix+".screenshots");
+    org.w3c.dom.Node n=reader.getElementByPath(prefix+".screenshots");
 	if (n!=null) {
        	org.w3c.dom.Node n2=n.getFirstChild();
       	while (n2!=null) {
@@ -977,8 +986,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public boolean decodeStarturls(Target target) {
 	ExtendedDocumentReader reader=target.getReader();
-	ArrayList list=new ArrayList();
-        org.w3c.dom.Node n=reader.getElementByPath(prefix+".starturls");
+    org.w3c.dom.Node n=reader.getElementByPath(prefix+".starturls");
 	if (n!=null) {
        	org.w3c.dom.Node n2=n.getFirstChild();
       	while (n2!=null) {
@@ -1064,8 +1072,7 @@ public class BasicCreator implements CreatorInterface,Runnable {
 
   public boolean decodePublishProvider(Target target) {
 	ExtendedDocumentReader reader=target.getReader();
-	ArrayList list=new ArrayList();
-        org.w3c.dom.Node n=reader.getElementByPath(prefix+".publishprovider");
+    org.w3c.dom.Node n=reader.getElementByPath(prefix+".publishprovider");
 	if (n!=null) {
         	NamedNodeMap nm=n.getAttributes();
         	if (nm!=null) {

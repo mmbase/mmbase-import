@@ -12,9 +12,6 @@ package org.mmbase.module.corebuilders;
 import java.io.*;
 import java.util.*;
 
-import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.dom.DOMSource;
 import org.xml.sax.InputSource;
 
 import org.mmbase.module.core.*;
@@ -34,7 +31,7 @@ import org.mmbase.util.xml.BuilderReader;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: TypeDef.java,v 1.51 2004-12-24 14:26:24 daniel Exp $
+ * @version $Id: TypeDef.java,v 1.52 2005-01-30 16:46:38 nico Exp $
  */
 public class TypeDef extends MMObjectBuilder {
 
@@ -48,8 +45,6 @@ public class TypeDef extends MMObjectBuilder {
     private static final Logger log = Logging.getLoggerInstance(TypeDef.class);
     // Directory where new builder configuration files are deployed by default
     String defaultDeploy = null;
-    // if true, auto-deploying builders (and saving configfiles) is possible
-    private boolean autoDeploy = true;
 
     /**
      * Number-to-name cache.
@@ -723,32 +718,6 @@ public class TypeDef extends MMObjectBuilder {
             mmb.getBuilderLoader().storeDocument(path, doc);
         } catch (java.io.IOException ioe) {
             log.error("Could not store builder configuration " + ioe.getMessage());
-        }
-    }
-
-    /**
-     *  documents may not be null!
-     */
-    private boolean compareDocuments(org.w3c.dom.Document a, org.w3c.dom.Document b) {
-        try {
-            //make a string from the XML
-            TransformerFactory tfactory = TransformerFactory.newInstance();
-            Transformer serializer = tfactory.newTransformer();
-            // maybe some better code?
-            StringWriter asw = new StringWriter();
-            serializer.transform(new DOMSource(a), new StreamResult(asw));
-            StringWriter bsw = new StringWriter();
-            serializer.transform(new DOMSource(b), new StreamResult(bsw));
-            // compare the 2 document-strings
-            return asw.toString().equals(bsw.toString());
-        } catch (TransformerConfigurationException tce) {
-            String message = tce.toString() + " " + Logging.stackTrace(tce);
-            log.error(message);
-            throw new RuntimeException(message);
-        } catch (TransformerException te) {
-            String message = te.toString() + " " + Logging.stackTrace(te);
-            log.error(message);
-            throw new RuntimeException(message);
         }
     }
 

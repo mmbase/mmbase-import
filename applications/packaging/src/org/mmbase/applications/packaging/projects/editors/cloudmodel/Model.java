@@ -6,22 +6,23 @@
  */
 package org.mmbase.applications.packaging.projects.editors.cloudmodel;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.projects.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * DisplayHtmlPackage, Handler for html packages
@@ -544,7 +545,7 @@ public class Model {
 	body+="\t</names>\n";
 	body+="\t<!-- <descriptions> small description of the builder for human reading -->\n";
 	body+="\t<descriptions>\n";
-	HashMap de=nb.getDescriptions();
+	Map de=nb.getDescriptions();
 	Iterator dek=de.keySet().iterator();
 	while (dek.hasNext()) {
 		String key=(String)dek.next();

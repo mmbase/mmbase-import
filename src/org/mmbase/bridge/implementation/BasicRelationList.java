@@ -13,34 +13,23 @@ package org.mmbase.bridge.implementation;
 import java.util.Collection;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.logging.*;
 
 /**
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.14 2003-03-21 17:45:06 michiel Exp $
+ * @version $Id: BasicRelationList.java,v 1.15 2005-01-30 16:46:36 nico Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
-    private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
 
-    /**
-     * ...
-     */
     BasicRelationList() {
         super();
     }
 
-    /**
-     * ...
-     */
     BasicRelationList(Collection c, Cloud cloud) {
         super(c,cloud);
     }
 
-    /**
-     * ...
-     */
     BasicRelationList(Collection c, NodeManager nodemanager) {
         super(c,nodemanager);
     }

@@ -64,8 +64,9 @@ public class Log4jLevel extends Level {
         switch(i) {
         case TRACE_INT:   return Log4jLevel.TRACE;
         case SERVICE_INT: return Log4jLevel.SERVICE;
+        default:
+            return Level.toLevel(i);
         }
-        return Level.toLevel(i);
     }
     
     public static Priority[] getAllPossibleLog4jPriorities() {
@@ -74,14 +75,14 @@ public class Log4jLevel extends Level {
    
     public static Level toLog4jLevel(String sArg) { // needed?
         Level result;
-        result = (Level) Level.toLevel(sArg, null);
+        result = Level.toLevel(sArg, null);
         if (result != null) {
             return result;
         }
         String s = sArg.toUpperCase();
         if (s.equals("SERVICE")) return SERVICE;
         if (s.equals("TRACE"))   return TRACE;
-        return (Level) DEBUG;
+        return DEBUG;
     }
 
 }

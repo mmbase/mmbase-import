@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * and receiving of messages.
  *  
  * @author Nico Klasens
- * @version $Id: SharedStorage.java,v 1.1 2004-10-09 10:51:06 nico Exp $
+ * @version $Id: SharedStorage.java,v 1.2 2005-01-30 16:46:36 nico Exp $
  */
 public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
 
@@ -289,7 +289,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
                     checkWaitingNodes(id);
                 }
             } catch(Throwable t) {
-                log.equals(Logging.stackTrace(t));
+                log.error(Logging.stackTrace(t));
             }
             
         }

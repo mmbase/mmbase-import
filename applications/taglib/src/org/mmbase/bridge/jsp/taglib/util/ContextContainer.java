@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.28 2005-01-20 10:31:37 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.29 2005-01-30 16:46:36 nico Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -212,7 +212,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
      */
     private boolean simpleContainsKey(String key, boolean checkParent) {
         boolean result = getBacking().containsKey(key);
-        if (result == false && checkParent && parent != null) {
+        if (!result && checkParent && parent != null) {
             result = parent.simpleContainsKey(key, true);
         }
         return result;
@@ -661,7 +661,7 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         return findAndRegister(pageContext, id, id);
     }
     public String findAndRegisterString(PageContext pageContext, String id) throws JspTagException {
-        return (String) findAndRegisterString(pageContext, id, true);
+        return findAndRegisterString(pageContext, id, true);
     }
 
     public String findAndRegisterString(PageContext pageContext, String id, boolean check) throws JspTagException {

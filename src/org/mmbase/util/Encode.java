@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.19 2004-03-20 00:01:55 michiel Exp $
+ * @version $Id: Encode.java,v 1.20 2005-01-30 16:46:35 nico Exp $
  **/
 public class Encode {
 
@@ -73,8 +73,7 @@ public class Encode {
             register("org.mmbase.util.transformers.LinkFinder");
             register("org.mmbase.util.transformers.Censor");
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            System.err.println(e.toString());
+            log.warn("", e);
         }
     }
 
@@ -109,9 +108,8 @@ public class Encode {
      * Add new transformation types. Feed it with a class name (which
      * must implement Transformer)
      *
-     * @param String a class name.
+     * @param clazz a class name.
      */
-
     public static void register(String clazz) {
         if (! registered.contains(clazz)) { // if already registered, do nothing.
             log.info("registering encode class " + clazz);
@@ -123,7 +121,7 @@ public class Encode {
                         // Instantiate it, just once, to call the method 'transformers'
                         // In this way we find out what this class can do.
                         ConfigurableTransformer transformer = (ConfigurableTransformer) atrans.newInstance();                       
-                        Map newencodings = (Map) transformer.transformers();
+                        Map newencodings = transformer.transformers();
                         encodings.putAll(newencodings); // add them all to our encodings.
                     } else {
                         log.debug("Non configurable");
@@ -175,7 +173,7 @@ public class Encode {
     /**
      *	This function will decode a given string to it's decoded variant.
      *  @see #encode
-     *	@param	decoding    a string that describes which decoding should be used.
+     *	@param	encoding    a string that describes which decoding should be used.
      *	@param	toDecode    a string which is the value which should be encoded.
      *	@return     	    a string which is the encoded representation of toEncode
      *	    	    	    with the given encoding
@@ -279,7 +277,7 @@ public class Encode {
         try {
             org.mmbase.module.core.MMBaseContext.init(System.getProperty("mmbase.config"), false);
         } catch (Exception e) {
-            System.err.println(e.toString());
+            log.warn(e);
         }
         String coding = null;
         boolean decode = false;

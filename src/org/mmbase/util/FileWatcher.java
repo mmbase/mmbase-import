@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
  * @since  MMBase-1.4
- * @version $Id: FileWatcher.java,v 1.26 2004-10-19 20:00:22 michiel Exp $
+ * @version $Id: FileWatcher.java,v 1.27 2005-01-30 16:46:35 nico Exp $
  */
 public abstract class FileWatcher {
     private static Logger log = Logging.getLoggerInstance(FileWatcher.class);
@@ -249,10 +249,21 @@ public abstract class FileWatcher {
     }
 
     public boolean equals(Object o) {
-        if (!(o instanceof FileWatcher))
-            return false;
-        FileWatcher f = (FileWatcher)o;
-        return this.getClass().equals(f.getClass()) && this.files.equals(f.files);
+        if (o == this) return true;
+        if (o == null) return false;
+        if (getClass().equals(o.getClass())) {
+            FileWatcher f = (FileWatcher)o;
+            return this.files.equals(f.files);
+        }
+        return false;
+    }
+    
+    
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        return files == null ? 0 : files.hashCode();
     }
 
     /**
@@ -462,7 +473,7 @@ public abstract class FileWatcher {
                 FileEntry fe = (FileEntry)o;
                 return file.equals(fe.file);
             } else if (o instanceof File) {
-                return file.equals((File)o);
+                return file.equals(o);
             }
             return false;
         }

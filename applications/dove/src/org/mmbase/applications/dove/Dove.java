@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.59 2004-12-23 15:55:27 pierre Exp $
+ * @version $Id: Dove.java,v 1.60 2005-01-30 16:46:39 nico Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -148,7 +148,7 @@ public class Dove extends AbstractDove {
             }
         } else {
             while (field != null) { // select all child tags, should be 'field'
-                String fname = (String)field.getAttribute(ELM_NAME);
+                String fname = field.getAttribute(ELM_NAME);
                 if ((fname == null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR, "name required for field",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
@@ -224,15 +224,15 @@ public class Dove extends AbstractDove {
      */
     protected void addRelationNodes(Element relation, Element out, org.mmbase.bridge.Node nd) {
         int thisNumber=nd.getNumber();
-        String role=(String)relation.getAttribute(ELM_ROLE);
+        String role=relation.getAttribute(ELM_ROLE);
         if ("".equals(role)) role=null;
-        String destinationType=(String)relation.getAttribute(ELM_DESTINATIONTYPE);
+        String destinationType = relation.getAttribute(ELM_DESTINATIONTYPE);
         if (("".equals(destinationType)) || (destinationType==null)) {
-            destinationType=(String)relation.getAttribute(ELM_DESTINATION);
+            destinationType = relation.getAttribute(ELM_DESTINATION);
         }
         if ("".equals(destinationType)) destinationType=null;
         int searchDir=0;
-        String searchDirs=(String)relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
+        String searchDirs = relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
         if("destination".equals(searchDirs)) {
             searchDir=1;
         } else if("source".equals(searchDirs)) {
@@ -740,7 +740,7 @@ public class Dove extends AbstractDove {
                                 Element field = getFirstElement(node, FIELD);
                                 nodepath = nodepath.replace('/', ',');
                                 while (field != null) {
-                                    String fname=(String)field.getAttribute(ELM_NAME);
+                                    String fname = field.getAttribute(ELM_NAME);
                                     if (!fields.equals(""))
                                         fields += ",";
                                     fields += fname;
@@ -805,37 +805,37 @@ public class Dove extends AbstractDove {
                         Map values = new HashMap();
                         if (isRelation) {
                             if (isOriginal) {
-                                originalRelations.put((String)node.getAttribute(ELM_NUMBER),values);
+                                originalRelations.put(node.getAttribute(ELM_NUMBER),values);
                             } else {
-                                newRelations.put((String)node.getAttribute(ELM_NUMBER),values);
+                                newRelations.put(node.getAttribute(ELM_NUMBER),values);
                             }
                         } else {
                             if (isOriginal) {
-                                originalNodes.put((String)node.getAttribute(ELM_NUMBER),values);
+                                originalNodes.put(node.getAttribute(ELM_NUMBER),values);
                             } else {
-                                newNodes.put((String)node.getAttribute(ELM_NUMBER),values);
+                                newNodes.put(node.getAttribute(ELM_NUMBER),values);
                             }
                         }
                         if (! isOriginal) {
-                            values.put("_status",(String)node.getAttribute(ELM_STATUS));
+                            values.put("_status",node.getAttribute(ELM_STATUS));
                         }
 
-                        String context = (String)node.getAttribute(ELM_CONTEXT);
+                        String context = node.getAttribute(ELM_CONTEXT);
                         if (context!=null && !context.equals("")) {
                             values.put("_context",context);
                         }
 
                         if (isRelation) {
-                            String role=node.getAttribute(ELM_ROLE);
+                            String role = node.getAttribute(ELM_ROLE);
                             if (role!=null) values.put("_role",role);
 
-                            String source=node.getAttribute(ELM_SOURCE);
+                            String source = node.getAttribute(ELM_SOURCE);
                             if (source!=null) values.put("_source",source);
 
-                            String destination=node.getAttribute(ELM_DESTINATION);
+                            String destination = node.getAttribute(ELM_DESTINATION);
                             if (destination!=null) values.put("_destination",destination);
                         } else {
-                            String type=node.getAttribute(ELM_TYPE);
+                            String type = node.getAttribute(ELM_TYPE);
                             if (type!=null) values.put("_otype",type);
                         }
                         Element field = getFirstElement(node);
@@ -971,9 +971,7 @@ public class Dove extends AbstractDove {
                 if ((originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
                     String originalValue = (String)originalValues.get(key);
-                    String mmbaseValue = null;
-                    int type = node.getNodeManager().getField(key).getType();
-                        mmbaseValue = node.getStringValue(key);
+                    String mmbaseValue = node.getStringValue(key);
                     if ((originalValue != null) && !originalValue.equals(mmbaseValue)) {
                         // give error node was changed in cloud
                         Element err = addContentElement(ERROR, "Node was changed in the cloud, node number : " + alias + " field name " + key + " value found: " + mmbaseValue + "value expected: " + originalValue, out);

@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import org.mmbase.security.SecurityException;
 import java.util.Map;
 
 /**
@@ -17,7 +16,7 @@ import java.util.Map;
  * UserContext object. So every attempt to log in will succeed.
  *
  * @author Eduard Witteveen
- * @version $Id: NoAuthentication.java,v 1.7 2003-11-26 20:50:49 michiel Exp $
+ * @version $Id: NoAuthentication.java,v 1.8 2005-01-30 16:46:34 nico Exp $
  * @see UserContext
  */
 final public class NoAuthentication extends Authentication {

@@ -24,7 +24,6 @@ import org.mmbase.security.Operation;
 import org.mmbase.util.PageInfo;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.functions.Function;
-import org.mmbase.util.functions.Parameters;
 import org.mmbase.util.logging.*;
 import org.mmbase.cache.NodeListCache;
 
@@ -39,7 +38,7 @@ import org.mmbase.cache.NodeListCache;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNodeManager.java,v 1.86 2005-01-25 12:45:18 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.87 2005-01-30 16:46:36 nico Exp $
 
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
@@ -331,7 +330,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
 
 
     public NodeList getList(String constraints, String sorted, String directions) {
-        MMObjectBuilder builder = getMMObjectBuilder();
+//        MMObjectBuilder builder = getMMObjectBuilder();
 
         // begin of check invalid search command
         /*

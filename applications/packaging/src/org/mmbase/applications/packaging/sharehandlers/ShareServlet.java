@@ -6,25 +6,35 @@
  */
 package org.mmbase.applications.packaging.sharehandlers;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.RandomAccessFile;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.util.*;
-import org.mmbase.servlet.*;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.sharehandlers.*;
 
-import java.io.*;
-
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
+import org.mmbase.applications.packaging.BundleManager;
+import org.mmbase.applications.packaging.InstallManager;
+import org.mmbase.applications.packaging.PackageManager;
+import org.mmbase.applications.packaging.ProviderManager;
+import org.mmbase.applications.packaging.ShareManager;
+import org.mmbase.applications.packaging.bundlehandlers.BundleContainer;
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.packagehandlers.PackageContainer;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -47,7 +57,7 @@ public class ShareServlet extends BridgeServlet {
     public static final int DEFAULT_MAX_PARAMETER_SIZE = 4 * 1024 * 1024;//4 MB
     public static final int DEFAULT_MAX_IN_MEMORY_PARAMETER_SIZE =4 * 1024 * 1024; // 2 MB
 
-    private int maxRequestSize = DEFAULT_MAX_REQUEST_SIZE;
+//    private int maxRequestSize = DEFAULT_MAX_REQUEST_SIZE;
     private int maxParameterSize = DEFAULT_MAX_PARAMETER_SIZE;
     private int maxInMemoryParameterSize = DEFAULT_MAX_IN_MEMORY_PARAMETER_SIZE;
     private String uploadDir = "/tmp/";
@@ -86,8 +96,8 @@ public class ShareServlet extends BridgeServlet {
             String id = req.getParameter("id");
             String version = req.getParameter("version");
 
-            String user = req.getParameter("user");
-            String password = req.getParameter("password");
+//            String user = req.getParameter("user");
+//            String password = req.getParameter("password");
 
             // check if its a package, if not cont. for bundle check
             PackageContainer p = (PackageContainer) PackageManager.getPackage(id);
@@ -138,7 +148,7 @@ public class ShareServlet extends BridgeServlet {
         String filename = getPostParameter("filename");
         String account = getPostParameter("account");
         String password = getPostParameter("password");
-        String sharepassword = getPostParameter("sharepassword");
+//        String sharepassword = getPostParameter("sharepassword");
 	
 	// check the account and password
 	ShareUser user = ShareManager.getShareUser(account);
@@ -215,9 +225,9 @@ public class ShareServlet extends BridgeServlet {
 
         if (req.getHeader("Content-length") != null || req.getHeader("Content-Length") != null) {
             postbuffer = readContentLength(req);
-            String line = (String)req.getHeader("Content-type");
+            String line = req.getHeader("Content-type");
             if (line == null) {
-                line = (String)req.getHeader("Content-Type");
+                line = req.getHeader("Content-Type");
             }
 
             if (line != null) {
@@ -368,7 +378,7 @@ public class ShareServlet extends BridgeServlet {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
                 v = new Vector();
-                v.addElement((byte[])obj); // Add the first one
+                v.addElement(obj); // Add the first one
                 v.addElement(value); // Then add the current one
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {
@@ -492,7 +502,7 @@ public class ShareServlet extends BridgeServlet {
             obj = postinfo.get(name);
             if (obj instanceof byte[]) {
                 v = new Vector();
-                v.addElement((byte[])obj); // Add the first one
+                v.addElement(obj); // Add the first one
                 v.addElement(value); // Then the one given
                 postinfo.put(name, v);
             } else if (obj instanceof Vector) {

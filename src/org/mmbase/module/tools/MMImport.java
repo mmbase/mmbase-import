@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @deprecated not used anymore (?)
  * @author Daniel Ockeloen
- * @version $Id: MMImport.java,v 1.9 2004-10-25 08:08:39 pierre Exp $
+ * @version $Id: MMImport.java,v 1.10 2005-01-30 16:46:35 nico Exp $
  */
 public class MMImport extends ProcessorModule {
 
@@ -53,7 +53,6 @@ public class MMImport extends ProcessorModule {
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
-
         }
         return(null);
     }
@@ -125,10 +124,8 @@ public class MMImport extends ProcessorModule {
         String xmlline=tok.nextToken();
         String docline=tok.nextToken();
 
-
         String builderline=tok.nextToken();
         String endtoken="</"+builderline.substring(1);
-
 
         MMObjectBuilder bul=mmb.getMMObject(builderline.substring(1,builderline.length()-1));
         if (bul!=null) {

@@ -11,9 +11,6 @@ package org.mmbase.util;
 
 import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * StringTagger, Creates a object with tags and fields from a String.
  * Its ideal for name-value pairs and name-value pairs with multivalues.
@@ -24,12 +21,9 @@ import org.mmbase.util.logging.Logging;
  * @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: StringTagger.java,v 1.16 2004-09-30 17:19:50 pierre Exp $
+ * @version $Id: StringTagger.java,v 1.17 2005-01-30 16:46:35 nico Exp $
  */
 public class StringTagger implements Map {
-
-    // logger
-    private static Logger log = Logging.getLoggerInstance(StringTagger.class);
 
     /**
      * The name-value pairs where the value is a single string

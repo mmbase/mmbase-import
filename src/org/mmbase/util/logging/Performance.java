@@ -85,8 +85,6 @@ public class Performance {
     static double doCaseDelayed(Logger log) {
         int j = 0;
         int i;
-        Thread currentThread = Thread.currentThread();
-
         try {
         // Warming up makes the results better reproducable.
         for (i = 0; i < warmingup; i++) {
@@ -115,7 +113,7 @@ public class Performance {
             log.trace("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");            
             if(j++ == burstLen) {
                 j = 0;               
-                currentThread.sleep(delaytime);
+                Thread.sleep(delaytime);
             }
         }
 

@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.54 2004-11-11 18:32:19 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.55 2005-01-30 16:46:38 nico Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -150,7 +150,7 @@ public class IncludeTag extends UrlTag {
                 if (encoding == null && contentType != null) { // take a default based on the content type
                     encoding = GenericResponseWrapper.getDefaultEncoding(contentType);
                 }
-                if (encoding == GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding. 
+                if (encoding.equals(GenericResponseWrapper.TEXT_XML_DEFAULT_CHARSET)) { // if content-type is text/xml the body should be US-ASCII, which we will ignore and evalute the body. See comments in GenericResponseWrapper#getDefaultEncoding. 
                     encoding = GenericResponseWrapper.getXMLEncoding(allBytes); // Will detect if body is XML, and set encoding to something if it is, otherwise, remains null.
                 }
 

@@ -9,10 +9,7 @@ See http://www.MMBase.org/license
  */
 package org.mmbase.util;
 
-// general
 import java.io.*;
-import java.util.*;
-
 
 /**
  * Like {@link java.io.OutputStreamWriter} but it tries to autodetect the encoding of the
@@ -25,7 +22,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: EncodingDetectingOutputStreamWriter.java,v 1.1 2005-01-27 23:31:13 michiel Exp $
+ * @version $Id: EncodingDetectingOutputStreamWriter.java,v 1.2 2005-01-30 16:46:35 nico Exp $
  * @todo  Is it named correctly?
  */
 public class EncodingDetectingOutputStreamWriter extends Writer {

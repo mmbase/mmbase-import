@@ -15,7 +15,6 @@ import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.ResourceLoader;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -28,7 +27,7 @@ import org.xml.sax.InputSource;
  * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: XMLNodeReader.java,v 1.29 2004-12-20 12:14:53 michiel Exp $
+ * @version $Id: XMLNodeReader.java,v 1.30 2005-01-30 16:46:35 nico Exp $
  */
 public class XMLNodeReader extends XMLBasicReader {
     private static final Logger log = Logging.getLoggerInstance(XMLNodeReader.class);

@@ -6,26 +6,26 @@
  */
 package org.mmbase.applications.packaging.packagehandlers;
 
-import org.mmbase.bridge.*;
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
-import org.mmbase.module.builders.Versions;
-import org.mmbase.applications.packaging.*;
-import org.mmbase.applications.packaging.util.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Vector;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.util.jar.*;
-import java.util.zip.*;
-
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.applications.packaging.util.ExtendedDocumentReader;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.util.XMLEntityResolver;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 /**
  * DisplayHtmlPackage, Handler for html packages

@@ -14,10 +14,6 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Node;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
-
 /**
  * A tag which is a 'NodeReferrerTag's can be the child of a
  * NodeProvider tag, which supplies a 'Node' to its child tags. For
@@ -25,12 +21,10 @@ import org.mmbase.util.logging.Logging;
  * NodeProviderTag and therefore would be a NodeReferrerTag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: NodeReferrerTag.java,v 1.16 2004-09-14 17:55:13 michiel Exp $ 
+ * @version $Id: NodeReferrerTag.java,v 1.17 2005-01-30 16:46:35 nico Exp $ 
  */
 
 public abstract class NodeReferrerTag extends CloudReferrerTag {	
-
-    private static final Logger log = Logging.getLoggerInstance(NodeReferrerTag.class); 
 
     protected Attribute parentNodeId = Attribute.NULL;
 

@@ -39,11 +39,10 @@ import org.mmbase.util.logging.Logging;
  *
  * @application SCAN - the cookie code is specific for SCAN
  * @author vpro
- * @version $Id: JamesServlet.java,v 1.46 2004-10-01 08:41:47 pierre Exp $
+ * @version $Id: JamesServlet.java,v 1.47 2005-01-30 16:46:39 nico Exp $
  */
 
 public class JamesServlet extends MMBaseServlet {
-    private static Logger log;
     protected static Logger pageLog;
 
     /**
@@ -52,7 +51,6 @@ public class JamesServlet extends MMBaseServlet {
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(JamesServlet.class);
         pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
     }
 

@@ -17,14 +17,14 @@ import org.mmbase.storage.search.*;
  * The tested operation is equality, unless it is explicitly set.
  *
  * @author Rob van Maris
- * @version $Id: BasicFieldCompareConstraint.java,v 1.5 2003-03-10 11:50:54 pierre Exp $
+ * @version $Id: BasicFieldCompareConstraint.java,v 1.6 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 public class BasicFieldCompareConstraint extends BasicFieldConstraint 
 implements FieldCompareConstraint {
     
     /** The operator. */
-    private int operator = FieldValueConstraint.EQUAL;
+    private int operator = FieldCompareConstraint.EQUAL;
     
     /**
      * Constructor.
@@ -47,14 +47,14 @@ implements FieldCompareConstraint {
     public BasicFieldCompareConstraint setOperator(int operator) {
         
         // Test for defined operator value.
-        if (operator < FieldValueConstraint.LESS
-        || operator > FieldValueConstraint.LIKE) {
+        if (operator < FieldCompareConstraint.LESS
+        || operator > FieldCompareConstraint.LIKE) {
             throw new IllegalArgumentException(
             "Invalid operator value: " + operator );
         }
         
         // Test "LIKE" operator only used with string type field.
-        if (operator == FieldValueConstraint.LIKE
+        if (operator == FieldCompareConstraint.LIKE
         && getField().getType() != FieldDefs.TYPE_STRING
         && getField().getType() != FieldDefs.TYPE_XML) {
             throw new IllegalArgumentException(

@@ -13,8 +13,6 @@ import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
 import org.w3c.dom.Element;
 
 /**
@@ -32,11 +30,9 @@ import org.w3c.dom.Element;
  * @application SCAN
  * @deprecated not used anywhere
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.10 2004-10-01 08:41:11 pierre Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.11 2005-01-30 16:46:39 nico Exp $
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
-
-    private static Logger log = Logging.getLoggerInstance(XMLMMLanguageReader.class.getName());
 
     Hashtable languageList; // Hashtable from languagecode to Hashtables with dictionaries
 

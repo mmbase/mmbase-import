@@ -9,8 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.functions.Parameters;
-import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
 
@@ -23,7 +21,7 @@ import org.mmbase.bridge.Cloud;
  * like what its name is.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: CloudInfoTag.java,v 1.3 2005-01-03 18:03:46 michiel Exp $ 
+ * @version $Id: CloudInfoTag.java,v 1.4 2005-01-30 16:46:35 nico Exp $ 
  * @since   MMBase-1.8
  */
 

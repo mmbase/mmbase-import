@@ -14,6 +14,7 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.logging.*;
 import java.util.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.text.FieldPosition;
 
@@ -21,7 +22,7 @@ import java.text.FieldPosition;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.43 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.44 2005-01-30 16:46:35 nico Exp $
  * @since MMBase-1.7
  */
 
@@ -30,7 +31,7 @@ public class BasicSqlHandler implements SqlHandler {
     private static final Logger log = Logging.getLoggerInstance(BasicSqlHandler.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final FieldPosition dontcareFieldPosition = new FieldPosition(SimpleDateFormat.YEAR_FIELD);
+    private static final FieldPosition dontcareFieldPosition = new FieldPosition(DateFormat.YEAR_FIELD);
 
     /** MMBase instance. */
     protected MMBase mmbase;
@@ -367,7 +368,7 @@ public class BasicSqlHandler implements SqlHandler {
                 } else {
                     // otherwise use equals, which is a LOT faster in some cases
                     sbNodes.append("=");
-                    sbNodes.append((Integer) nodes.first());
+                    sbNodes.append(nodes.first());
                 }
             }
 
@@ -718,7 +719,7 @@ public class BasicSqlHandler implements SqlHandler {
 
                 // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
-                if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
+                if (fieldCompareConstraint.getOperator() != FieldCompareConstraint.LIKE) {
                     sb.append(overallInverse? "NOT (": "");
                 }
 
@@ -735,31 +736,31 @@ public class BasicSqlHandler implements SqlHandler {
                     appendField(sb, step, fieldName, multipleSteps);
                 }
                 switch (fieldCompareConstraint.getOperator()) {
-                case FieldValueConstraint.LESS:
+                case FieldCompareConstraint.LESS:
                     sb.append("<");
                     break;
 
-                case FieldValueConstraint.LESS_EQUAL:
+                case FieldCompareConstraint.LESS_EQUAL:
                     sb.append("<=");
                     break;
 
-                case FieldValueConstraint.EQUAL:
+                case FieldCompareConstraint.EQUAL:
                     sb.append("=");
                     break;
 
-                case FieldValueConstraint.NOT_EQUAL:
+                case FieldCompareConstraint.NOT_EQUAL:
                     sb.append("<>");
                     break;
 
-                case FieldValueConstraint.GREATER:
+                case FieldCompareConstraint.GREATER:
                     sb.append(">");
                     break;
 
-                case FieldValueConstraint.GREATER_EQUAL:
+                case FieldCompareConstraint.GREATER_EQUAL:
                     sb.append(">=");
                     break;
 
-                case FieldValueConstraint.LIKE:
+                case FieldCompareConstraint.LIKE:
                     if (overallInverse) {
                         sb.append(" NOT");
                     }
@@ -785,7 +786,6 @@ public class BasicSqlHandler implements SqlHandler {
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
                     Step step2 = field2.getStep();
-                    String tableAlias2 = field2.getStep().getAlias();
                     if (useLower(fieldCompareConstraint) && isRelevantCaseInsensitive(fieldConstraint)) {
                         // case insensitive
                         sb.append("LOWER(");
@@ -802,7 +802,7 @@ public class BasicSqlHandler implements SqlHandler {
                 }
                 // Negate by leading NOT, unless it's a LIKE constraint,
                 // in which case NOT LIKE is used.
-                if (fieldCompareConstraint.getOperator() != FieldValueConstraint.LIKE) {
+                if (fieldCompareConstraint.getOperator() != FieldCompareConstraint.LIKE) {
                     sb.append(overallInverse? ")": "");
                 }
             } else {

@@ -23,21 +23,16 @@ import org.mmbase.module.builders.Images;
 
 import org.mmbase.security.Rank;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
-
 /**
  * Produces an url to the image servlet mapping. Using this tag makes
  * your pages more portable to other system, and hopefully less
  * sensitive for future changes in how the image servlet works.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ImageTag.java,v 1.52 2005-01-12 12:21:34 andre Exp $
+ * @version $Id: ImageTag.java,v 1.53 2005-01-30 16:46:35 nico Exp $
  */
 
 public class ImageTag extends FieldTag {
-
-    private static final Logger log = Logging.getLoggerInstance(ImageTag.class);
 
     private static Boolean makeRelative = null;
     private Attribute template = Attribute.NULL;
@@ -59,7 +54,6 @@ public class ImageTag extends FieldTag {
 
         // some servlet implementation's 'init' cannot determin this theirselves, help them a little:
         HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
-        String context = req.getContextPath();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
          */
@@ -69,8 +63,7 @@ public class ImageTag extends FieldTag {
             // the user is not anonymous!
             // Need to check if node is readable by anonymous.
             // in that case URLs can be simpler
-            CloudTag ct = null;
-            ct = (CloudTag) findParentTag(CloudTag.class, null, false);
+            CloudTag ct = (CloudTag) findParentTag(CloudTag.class, null, false);
             if (ct != null) {
                 CloudContext cc = ct.getDefaultCloudContext();
                 try {

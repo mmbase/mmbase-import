@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.83 2005-01-27 12:44:11 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.84 2005-01-30 16:46:39 nico Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -659,7 +659,7 @@ public class DatabaseStorageManager implements StorageManager {
             byte[] buffer = new byte[fileSize];
             if (fileSize > 0) {
                 FileInputStream byteStream = new FileInputStream(binaryFile);
-                int len = byteStream.read(buffer, 0, fileSize);
+                byteStream.read(buffer, 0, fileSize);
                 byteStream.close();
             }
             return buffer;
@@ -1001,6 +1001,8 @@ public class DatabaseStorageManager implements StorageManager {
                     node.storeValue(field.getDBName(),new Long(storeValue));
                     break;
                 }
+                default:
+                    break;
             }
         }
     }
@@ -1242,7 +1244,6 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             // get a builders fields
             List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
-            List fields = new ArrayList();
             StringBuffer fieldNames = null;
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 FieldDefs field = (FieldDefs)f.next();
@@ -1288,7 +1289,6 @@ public class DatabaseStorageManager implements StorageManager {
             MMObjectBuilder builder = node.getBuilder();
             // get a builders fields
             List builderFields = builder.getFields(FieldDefs.ORDER_CREATE);
-            List fields = new ArrayList();
             StringBuffer fieldNames = null;
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 FieldDefs field = (FieldDefs)f.next();
@@ -1476,7 +1476,6 @@ public class DatabaseStorageManager implements StorageManager {
         StringBuffer createIndices = new StringBuffer();
         StringBuffer createFieldsAndIndices = new StringBuffer();
         StringBuffer createCompositeIndices = new StringBuffer();
-        List compositeIndices = new ArrayList();
         // obtain the parentBuilder
         MMObjectBuilder parentBuilder = builder.getParentBuilder();
         Scheme rowtypeScheme;
@@ -1676,9 +1675,7 @@ public class DatabaseStorageManager implements StorageManager {
         if (scheme != null) {
             StringBuffer indices = new StringBuffer();
             List fields = builder.getFields(FieldDefs.ORDER_CREATE);
-            List compositeIndices = new ArrayList();
             // obtain the parentBuilder
-            MMObjectBuilder parentBuilder = builder.getParentBuilder();
             for (Iterator f = fields.iterator(); f.hasNext();) {
                 FieldDefs field = (FieldDefs)f.next();
                 if (isPartOfBuilderDefinition(field) && !"number".equals(field.getDBName()) && field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
@@ -1740,7 +1737,6 @@ public class DatabaseStorageManager implements StorageManager {
 
     // javadoc is inherited
     public void create() throws StorageException {
-        MMBase mmbase = factory.getMMBase();
         create(factory.getMMBase().getRootBuilder());
         createSequence();
     }

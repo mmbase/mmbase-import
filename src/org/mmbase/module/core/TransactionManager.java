@@ -19,7 +19,7 @@ import org.mmbase.security.*;
 /**
  * @javadoc
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.27 2004-06-23 12:30:32 pierre Exp $
+ * @version $Id: TransactionManager.java,v 1.28 2005-01-30 16:46:36 nico Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -33,7 +33,6 @@ public class TransactionManager implements TransactionManagerInterface {
     public static final int I_EXISTS_NOLONGER = 2;
 
     private TemporaryNodeManagerInterface tmpNodeManager;
-    private MMBaseCop mmbaseCop = null;
     private MMBase mmbase;
     protected Map transactions = new HashMap();
     protected TransactionResolver transactionResolver;
@@ -42,7 +41,7 @@ public class TransactionManager implements TransactionManagerInterface {
         this.mmbase = mmbase;
         this.tmpNodeManager = tmpn;
         transactionResolver = new TransactionResolver(mmbase);
-        mmbaseCop = mmbase.getMMBaseCop();
+        mmbase.getMMBaseCop();
     }
 
     synchronized protected Collection getTransaction(String transactionName) throws TransactionManagerException {
@@ -198,8 +197,6 @@ public class TransactionManager implements TransactionManagerInterface {
             return true;
         }
 
-        MMObjectBuilder bul = mmbase.getMMObject("typedef");
-        boolean okay = false;
         int[] nodestate = new int[nodes.size()];
         int[] nodeexist = new int[nodes.size()];
         String username = findUserName(user),exists;
@@ -335,7 +332,7 @@ public class TransactionManager implements TransactionManagerInterface {
         }
 
         // check for failures
-        okay=true;
+        boolean okay=true;
         i = 0;
         for (Iterator nodeIterator = nodes.iterator(); nodeIterator.hasNext(); i++) {
             MMObjectNode node = (MMObjectNode)nodeIterator.next();

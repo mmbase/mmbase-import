@@ -10,13 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.builders;
 
-import org.mmbase.applications.media.cache.URLCache;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.urlcomposers.URLComposerFactory;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.XMLBasicReader;
-import org.w3c.dom.*;
 import java.util.*;
 import java.lang.reflect.Method;
 
@@ -26,7 +23,7 @@ import java.lang.reflect.Method;
  * be online/offline.
  *
 * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.12 2004-10-11 11:36:08 pierre Exp $
+ * @version $Id: MediaProviders.java,v 1.13 2005-01-30 16:46:39 nico Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {

@@ -6,14 +6,14 @@
  */
 package org.mmbase.applications.packaging.providerhandlers;
 
-import java.util.jar.*;
-import java.io.*;
-import org.mmbase.applications.packaging.packagehandlers.*;
-import org.mmbase.applications.packaging.bundlehandlers.*;
-import org.mmbase.applications.packaging.providerhandlers.*;
-import org.mmbase.applications.packaging.installhandlers.*;
-import org.mmbase.applications.packaging.projects.*;
-import org.mmbase.applications.packaging.projects.creators.*;
+import java.io.BufferedInputStream;
+import java.util.jar.JarFile;
+
+import org.mmbase.applications.packaging.bundlehandlers.BundleInterface;
+import org.mmbase.applications.packaging.installhandlers.installStep;
+import org.mmbase.applications.packaging.packagehandlers.PackageInterface;
+import org.mmbase.applications.packaging.projects.packageStep;
+import org.mmbase.applications.packaging.projects.creators.CreatorInterface;
 
 /**
  * Interface for all the provider handlers

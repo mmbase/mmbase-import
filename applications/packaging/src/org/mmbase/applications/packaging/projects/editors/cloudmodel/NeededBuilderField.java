@@ -6,16 +6,13 @@
  */
 package org.mmbase.applications.packaging.projects.editors.cloudmodel;
 
-import java.util.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- */
 public class NeededBuilderField {
-        private static Logger log = Logging.getLoggerInstance(NeededBuilderField.class);
-	HashMap descriptions = new HashMap();
-	HashMap guinames = new HashMap();
+
+    Map descriptions = new HashMap();
+	Map guinames = new HashMap();
 	String guitype;
 	int editorinputpos = -1;
 	int editorlistpos = -1;
@@ -112,7 +109,7 @@ public class NeededBuilderField {
 		descriptions.put(language,description);
 	}
 
-	public HashMap getDescriptions() {
+	public Map getDescriptions() {
 		return descriptions;
 	}
 
@@ -132,7 +129,7 @@ public class NeededBuilderField {
 		guinames.put(language,description);
 	}
 
-	public HashMap getGuiNames() {
+	public Map getGuiNames() {
 		return guinames;
 	}
 
