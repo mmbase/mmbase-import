@@ -25,9 +25,11 @@ import org.mmbase.util.logging.*;
 import javax.xml.parsers.*;
 import javax.xml.transform.*;
 import org.mmbase.bridge.Node;
+import java.util.*;
+import java.io.Writer;
 
 public class Casting {
-    private static Logger log = Logging.getLoggerInstance(Casting.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Casting.class.getName());
 
     /**
      * Get a value of a certain field.  The value is returned as a
@@ -37,23 +39,58 @@ public class Casting {
      * @return the field's value as a <code>String</code>
      */
     public static String toString(Object o) {
-        // try to get the value from the values table
-        if (o != null) {
-            if (o instanceof byte[]) {
-                return new String((byte[])o);
-            } else if(o instanceof MMObjectNode) {
-                //
-                return ""+((MMObjectNode)o).getNumber();
-            } else if(o instanceof Node) {
-                return ""+((Node)o).getNumber();
-            } else if (o instanceof Document) {
-                // doctype unknown.
-                return convertXmlToString(null, (Document) o );
-            } else {
-                return "" + o;
+        if (o == null) return "";
+        return toStringBuffer(new StringBuffer(), o).toString();
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public static StringBuffer toStringBuffer(StringBuffer buffer, Object o) {
+        try {
+            toWriter(new StringBufferWriter(buffer), o);
+        } catch (java.io.IOException e) {}
+        return buffer;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public static Writer toWriter(Writer writer, Object o) throws java.io.IOException {
+        if (o == null) return writer;
+        if (o instanceof byte[]) {
+            writer.write(new String((byte[])o));
+        } else if(o instanceof MMObjectNode) {
+            writer.write("" + ((MMObjectNode)o).getNumber());
+        } else if(o instanceof Node) {
+            writer.write("" + ((Node)o).getNumber());
+        } else if (o instanceof Document) {
+            // doctype unknown.
+            writer.write(convertXmlToString(null, (Document) o ));
+        } else if (o instanceof List) {
+            Iterator i = ((List) o).iterator();
+            boolean hasNext = i.hasNext();
+            while (i.hasNext()) {
+                toWriter(writer, i.next());
+                hasNext = i.hasNext();
+                if (hasNext) {
+                    writer.write(",");
+                }
             }
+        } else {
+            writer.write("" + o);
         }
-        return "";
+        return writer;
+
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+    public static List toList(Object o) {
+        if (o == null) return new ArrayList();
+        if (o instanceof List) return (List) o;
+        return StringSplitter.split(toString(o));
     }
 
     /**
@@ -491,6 +528,7 @@ public class Casting {
             throw new RuntimeException(message);
         }
     }
+
 
 
 }
