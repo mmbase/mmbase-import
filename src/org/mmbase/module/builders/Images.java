@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.45 2001-10-04 10:44:07 eduard Exp $
+ * @version $Id: Images.java,v 1.46 2001-10-08 13:24:25 michiel Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -78,16 +78,14 @@ public class Images extends MMObjectBuilder {
 
     public String getGUIIndicator(MMObjectNode node) {
         int num = node.getNumber();
-        if(num == -1) {
-            log.error("node not found:" + node);
-            throw new RuntimeException("node not found");
+        if (num == -1 ) {   // img.db cannot handle uncommited images..
+            return null; // ObjectBuilder itself will handle this case.
         }
         // NOTE that this has to be configurable instead of static like this
         String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db";
         String image      = servlet + "?" + num;
-        String imagethumb = servlet + "?" + num + "+s(100x60)";
+        String imagethumb = image   + "+s(100x60)";
         String title      = node.getStringValue("title");
-
         return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"" + title + "\" /></a>");
     }
 
@@ -96,11 +94,10 @@ public class Images extends MMObjectBuilder {
     }
 
     public String getGUIIndicator(String field, MMObjectNode node) {
-        if (field.equals("handle")) {
+        if (field.equals("handle")) { 
             int num = node.getNumber();
-            if(num == -1) {
-                log.error("node not found:" + node);
-                throw new RuntimeException("node not found");
+            if(num == -1) { // img.db cannot handle uncommited images..
+                return null;
             }
             // NOTE that this has to be configurable instead of static like this
             String servlet    = MMBaseContext.getHtmlRootUrlPath() + "img.db";
@@ -109,7 +106,7 @@ public class Images extends MMObjectBuilder {
 
             return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"*\" /></a>");
         }
-        // otherfields can be handled by the gui function...
+        // other fields can be handled by the gui function...
         return null;
     }
 
