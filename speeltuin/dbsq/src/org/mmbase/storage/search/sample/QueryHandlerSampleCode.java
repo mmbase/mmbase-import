@@ -16,7 +16,7 @@ import org.mmbase.storage.search.implementation.database.*;
  * <code>pools</code>.
  *
  * @author  Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since MMBase-1.7
  */
 public class QueryHandlerSampleCode {
@@ -34,30 +34,29 @@ public class QueryHandlerSampleCode {
             System.exit(1);
         }
         MMBaseContext.init(args[0], true);
+        MMBase mmbase = MMBase.getMMBase();
         
         // Sql handler that generates SQL strings.
         SqlHandler sqlHandler = new BasicSqlHandler(new java.util.HashMap());
         
-        // Basic queryhandler, supports ANSI SQL92 standard.
+        /* Several ways to get a queryhandler instance:
+         1) Create a basic queryhandler, that supports (just) the 
+            ANSI SQL92 standard:
         SearchQueryHandler handler = new BasicQueryHandler(sqlHandler);
-        
-        MMBase mmbase = MMBase.getMMBase();
+         2) Get the database support class, that is configured for the 
+            specific database used:
+        SearchQueryHandler handler = mmbase.getDatabase();
+         */
+
+        // Queryhandler provided by databaselayer:
+        SearchQueryHandler handler = mmbase.getDatabase();
+
         MMObjectBuilder pools = mmbase.getBuilder("pools");
         MMObjectBuilder images = mmbase.getBuilder("images");
         InsRel insrel = mmbase.getInsRel();
         
         // EXAMPLE 1: query retrieving real nodes (of type pools).
-        BasicSearchQuery query1 = new BasicSearchQuery();
-        BasicStep step1a = query1.addStep(pools);
-        // Add all persistent pools fields to the query.
-        Iterator iFields1 = pools.getFields().iterator();
-        while (iFields1.hasNext()) {
-            FieldDefs field = (FieldDefs) iFields1.next();
-            if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT
-                    || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
-                query1.addField(step1a, field);
-            }
-        }
+        NodeSearchQuery query1 = new NodeSearchQuery(pools);
         
 /* 
  Query equivalent to:
