@@ -1,10 +1,11 @@
 <%@ include file="page_base.jsp"
-%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
-<mm:write referid="style" />
+%><mm:content language="$config.lang" expires="0" type="text/html">
+<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+<mm:write referid="style" escape="none" />
 <title><%= m.getString("change_node.change")%></title>
 </head>
 <body class="basic" onLoad="document.change.elements[0].focus();">
-<p><%= toHtml(urlStack, request) %></p>
+<p class="crumbpath"><%= toHtml(urlStack, request) %></p>
 <mm:context id="change_node">
 <mm:import externid="node_number" required="true" from="parameters"/>
 <!-- We use two forms to avoid uploading stuff when not needed, because we cancel or only delete.-->
@@ -39,6 +40,11 @@
   <mm:nodeinfo type="gui" />:
   <%=m.getString("Node")%> <mm:field name="number" /> <%=m.getString("oftype")%> <mm:nodeinfo type="guinodemanager"  />
   ( <mm:nodeinfo type="nodemanager" /> )
+
+    <a href="<mm:url page="navigate.jsp" referids="node_number" />">
+      <span class="tree"></span><span class="alt">[tree]</span>
+     </a>
+     </td>
   </th></tr>
     <mm:fieldlist id="my_form" type="edit" fields="owner">
       <tr>
@@ -82,3 +88,4 @@
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>
+</mm:content>

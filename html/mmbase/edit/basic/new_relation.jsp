@@ -1,5 +1,6 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+%><mm:content type="text/html" language="$config.lang" expires="0">
+<mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
 <mm:context id="new_relation">
 
 <mm:import externid="node"               required="true" />
@@ -9,11 +10,11 @@
 <mm:import externid="create_relation"    required="false" />
 
 <mm:notpresent referid="create_relation">
-   <mm:write referid="style" />
+   <mm:write referid="style" escape="none" />
    <title><%=m.getString("new_relation.new")%></title>
    </head>
    <body class="basic" onLoad="document.search.elements[0].focus();">
-<p><%= toHtml(urlStack, request) %></p>
+<p class="crumbpath"><%= toHtml(urlStack, request) %></p>
    <mm:import externid="to_page"><mm:url referids="role_name,node_type,node,direction">
                                  <mm:param name="create_relation">yes</mm:param>  
                                  </mm:url></mm:import>
@@ -85,10 +86,10 @@
     </mm:compare>
     
 	<mm:present referid="annotate">    
-        <mm:write referid="style" />
+        <mm:write referid="style" escape="none" />
         </head>
         <body class="basic" onLoad="document.new.elements[4].focus();">
-          <p><%= toHtml(urlStack, request) %></p>
+          <p class="crumbpath"><%= toHtml(urlStack, request) %></p>
         <form name="new" method="post" action='<mm:url referids="node,node_number,node_type,role_name,direction" />' >
         <input type="hidden" name="create_relation" value="yes" />
         <table class="edit" summary="node editor" width="93%"  cellspacing="1" cellpadding="3" border="0">
@@ -108,7 +109,7 @@
 	 <mm:notpresent referid="annotate">
 	   <!-- do the redirect to the page where we want to go to... -->
 	   <META HTTP-EQUIV="refresh" content="0; url=<mm:url  page="${redirectTo}" />">
-       <mm:write referid="style" />
+       <mm:write referid="style" escape="none" />
 	   </head>
        <body class="basic">
        <h1>Redirecting</h1>
@@ -127,7 +128,7 @@
        </mm:context></mm:fieldlist>
     </mm:node>
 	<META HTTP-EQUIV="refresh" content="0; url=<mm:url page="${redirectTo}" />">	
-    <mm:write referid="style" />
+    <mm:write referid="style" escape="none" />
 	</head>
     <body>
     <h1>Redirecting</h1>
@@ -140,3 +141,4 @@
 </mm:context>
 <%@ include file="foot.jsp"  %>
 </mm:cloud>
+</mm:content>
