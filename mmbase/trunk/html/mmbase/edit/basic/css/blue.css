@@ -8,14 +8,14 @@
 
 
 body.basic { 
-       background-color: #aaa;
-       margin-top: 1em;
-       color: #004; 
+  background-color: #aaa;
+  margin-top: 1em;
+  color: #004; 
 }
 
 body.navigationbar {
-      background-color: #004;
-      color: white;
+  background-color: #004;
+  color: white;
 }
 
 a {
