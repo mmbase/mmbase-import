@@ -9,7 +9,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
- * @version $Id: JCronEntry.java,v 1.8 2004-04-07 10:50:00 michiel Exp $
+ * @version $Id: JCronEntry.java,v 1.9 2004-04-19 14:30:52 michiel Exp $
  */
 
 public class JCronEntry {
@@ -75,7 +75,7 @@ public class JCronEntry {
             return false;
         } else {
             count++;
-            thread = new Thread(jCronJob, "JCronJob " + toString());
+            thread = new CronThread(jCronJob, "JCronJob " + toString());
             thread.setDaemon(true);            
             thread.start();
             return true;
@@ -165,6 +165,24 @@ public class JCronEntry {
         JCronEntry other = (JCronEntry) o;
         return id.equals(other.id) && name.equals(other.name) && className.equals(other.className) && cronTime.equals(other.cronTime);
         
+    }
+
+    private class CronThread extends Thread {
+        CronThread(Runnable run, String name) {
+            super(run, name);
+        }
+
+        /**
+         * Overrides run of Thread to catch and log all exceptions. Otherwise they go through to app-server.
+         */
+        public void run() {
+            try {
+                super.run();
+            } catch (Throwable t) {
+                log.error("Error during cron-job " + JCronEntry.this + " : " + t.getMessage());
+            }
+        }
+
     }
 
 }
