@@ -70,7 +70,6 @@ NetComponents can be found at:
   <property name="javadoc.packages" value="org.mmbase.*"/>
   <property name="distro"      value="MMBase 1.6.0"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="mmbase.jar" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="source-config.dir" location="${source.dir}/config"/>
   <property name="source-html.dir" location="${source.dir}/html"/>
   <property name="source-documentation.dir" location="${source.dir}/documentation" />
@@ -82,6 +81,7 @@ NetComponents can be found at:
   <property name="web.dir" value="${webapp.dir}/WEB-INF"/>
   <property name="release.lib.dir" value="${web.dir}/lib"/>
   <property name="compile.lib.dir" value="${build.dir}/lib"/>
+  <property name="mmbase.jar" value="${release.lib.dir}/mmbase.jar"/>
 
   <target name="init" depends="check.dir.all">
     <tstamp/>
@@ -557,8 +557,8 @@ Version: ${distro}.${version}
 Distribution: ${distro}
 </echo>
     
-
-    <jar jarfile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"
+    <mkdir dir="${release.lib.dir}" />
+    <jar jarfile="${mmbase.jar}"
          basedir="${build.dir}/classes"
 	     includes="org/mmbase/**"
 	     manifest="${build.dir}/manifest.mf" >
