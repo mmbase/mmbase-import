@@ -26,7 +26,7 @@ import org.mmbase.storage.search.implementation.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Groups.java,v 1.12 2003-09-23 13:33:02 michiel Exp $
+ * @version $Id: Groups.java,v 1.13 2003-11-27 08:32:22 pierre Exp $
  * @see ContainsRel
  */
 public class Groups extends MMObjectBuilder {
@@ -61,9 +61,6 @@ public class Groups extends MMObjectBuilder {
      * @todo This could perhaps be just as logicly be implemented in Users rather than Groups (and groups becomes Dummy).
      */
     public boolean contains(MMObjectNode group, User user)  {
-        if (log.isDebugEnabled()) {
-            log.debug("Checking if user " + user + " is contained by group " + group + "(" + group.getNumber() + ")");
-        }
         return contains(group,  user.getNode());
     }
 
@@ -84,9 +81,6 @@ public class Groups extends MMObjectBuilder {
      */
     protected boolean contains(MMObjectNode containingGroupNode, int containedObject, Set recurse) {
         int containingGroup = containingGroupNode.getNumber();
-        if (log.isDebugEnabled()) {
-            log.debug("Checking if user/group " + containedObject + " is contained by group " + containingGroupNode + "(" + containingGroup + ")");
-        }
         String key = "" + containingGroup + "/" + containedObject;
         Boolean result = (Boolean) containsCache.get(key);
 
