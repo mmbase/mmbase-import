@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.155 2002-09-30 15:52:42 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.156 2002-09-30 16:19:00 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -378,6 +378,7 @@ public class MMObjectBuilder extends MMTable {
             // do we really wanna catch our exceptions here? no need here, since not in throw clause..
             String msg = "Failure(" + e + ") inserting node:\n" + node;
             log.error(msg);
+            log.error(Logging.stackTrace(e));
             throw new RuntimeException(msg);
         }
     }
