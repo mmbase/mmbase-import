@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.11 2002-06-17 10:49:47 eduard Exp $
+ * @version $Id: BasicNodeList.java,v 1.12 2002-06-17 11:52:12 eduard Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
@@ -47,16 +47,18 @@ public class BasicNodeList extends BasicList implements NodeList {
             return o;
         }
         MMObjectNode coreNode = (MMObjectNode) o;
-        Node node = null;
         MMObjectBuilder coreBuilder = coreNode.getBuilder();
-        NodeManager nodeManager = cloud.getNodeManager(coreBuilder.getTableName());
+        Node node = null;
+        if(nodemanager == null)  {            
+            nodemanager = cloud.getNodeManager(coreBuilder.getTableName());
+        }
         if(coreBuilder instanceof InsRel) {
             // we are an relation,.. this means we have to create a relation..
-            node = new BasicRelation(coreNode, nodeManager);
+            node = new BasicRelation(coreNode, nodemanager);
         }
         else {
             // 'normal' node
-            node = new BasicNode(coreNode, nodeManager);
+            node = new BasicNode(coreNode, nodemanager);
         }
         set(index, node);
         return node;
