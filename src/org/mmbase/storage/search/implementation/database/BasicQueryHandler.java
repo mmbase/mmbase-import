@@ -12,6 +12,7 @@ package org.mmbase.storage.search.implementation.database;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
+import org.mmbase.bridge.NodeQuery;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
@@ -27,7 +28,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.10 2003-08-27 21:45:39 michiel Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.11 2003-09-02 20:10:37 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -65,6 +66,8 @@ public class BasicQueryHandler implements SearchQueryHandler {
         String sqlString = null;
         MultiConnection con = null;
         Statement stmt = null;
+
+        boolean multipleSteps = steps.size() > 1;
         
 //        // Flag, set if offset must be supported by skipping results.
 //        boolean mustSkipResults = 
@@ -135,7 +138,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
             con = mmbase.getConnection();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
-            
             try {
 //                // Skip results to provide weak support for offset.
 //                if (mustSkipResults) {
@@ -152,7 +154,11 @@ public class BasicQueryHandler implements SearchQueryHandler {
                     MMObjectNode node = null;
                     if (builder instanceof ClusterBuilder) {
                         // Cluster nodes.
-                        node = new ClusterNode(builder, steps.size());
+                        if (query instanceof NodeQuery) { // hmm
+                            node = new ClusterNode(mmbase.getBuilder(((NodeQuery)query).getNodeStep().getTableName()), 1);
+                        } else {
+                            node = new ClusterNode(builder, steps.size());
+                        }
                     } else if (builder instanceof ResultBuilder) {
                         // Result nodes.
                         node = new ResultNode((ResultBuilder) builder);
@@ -165,13 +171,14 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         String prefix;
                         if (builder instanceof ClusterBuilder) {
                             fieldName = fields[i].getFieldName();
-                           
                             prefix = fields[i].getStep().getAlias();
+
 
                             // if steps happens to lack an alias, make sure that it still might work:
                             // (will for example go ok for 'node' clusterresults (containing only fields of one step))
-                            if (prefix == null) {
-                                prefix = ""; // fields[i].getStep().getTableName() + '.';
+                            if (! multipleSteps || prefix == null) {
+                                
+                                prefix = fields[i].getStep().getTableName() + '.';
                             } else {
                                 prefix += '.';
                             }
@@ -189,7 +196,6 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         // TODO: (later) use alternative to decodeDBnodeField, to
                         // circumvent the code in decodeDBnodeField that tries to
                         // reverse replacement of "disallowed" fieldnames.
-
                         database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
                     }
                     if (builder instanceof ClusterBuilder) {
