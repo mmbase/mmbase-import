@@ -27,9 +27,10 @@ import org.mmbase.module.ProcessorModule;
  * RemoteMMCI is a MMBase module that starts a Remote Method Invocation
  * registry and binds a remote MMCI to the server. Look a rmmci.xml for configuration
  * options. Note in the configuration of mmbaseroot.xml the host should be a valid
- * host address.
+ * host address if the RMIRegistryServer in rmmci.xml is no set.
  * @Author Kees Jongenburger <keesj@framfab.nl>
- * @version $Id: RemoteMMCI.java,v 1.2 2001-11-16 11:09:47 kees Exp $
+ * @version $Id: RemoteMMCI.java,v 1.3 2002-01-09 13:20:31 kees Exp $
+ * @since MMBase-1.5
  */
 public class RemoteMMCI extends ProcessorModule {
     
@@ -46,6 +47,7 @@ public class RemoteMMCI extends ProcessorModule {
      */
     public static final String DEFAULT_BIND_NAME = "remotecontext";
     
+
     /**
      * Method called by MMBase at startup
      * it calls the createRemoteMMCI based on the rmmci.xml configuration
@@ -69,28 +71,14 @@ public class RemoteMMCI extends ProcessorModule {
             log.warn("missing port init param, using (default)=("+ registryPort +")");
         }
         
-        String bindNameParam = getInitParameter("bindname");
-        if (bindNameParam != null){
-            bindName = bindNameParam;
-        } else {
-            log.warn("missing bindname init param, using (default)=("+ bindName +")");
-        }
-        createRemoteMMCI(registryPort,bindName);
-    }
-    
-    
-    
-    /**
-     * This method creates the RMI registry at a specific port and binds a new RemoteContext
-     * @param registryPort the registry port to start the RMI registry
-     * @param bindName the name of the object (aka remotecontext)
-     */
-    private void createRemoteMMCI(int registryPort,String bindName){
-        try {
+        //read the rmi server host from the configuration
+        String host  = getInitParameter("RMIRegistryServer");
+        //if RMIRegistryServer is null or "" use the mmbaseroot.xml host
+        if (host == null || host.equals("")){
             try {
                 // load MMBase and make sure it is started first
                 ProcessorModule mmbase = (ProcessorModule)getModule("MMBASEROOT",true);
-                String host = mmbase.getInitParameter("host");
+                host = mmbase.getInitParameter("host");
                 log.debug("using host FROM MMBASEROOT " + host);
                 java.net.InetAddress.getByName(host);
                 System.setProperty("java.rmi.server.hostname",host);
@@ -98,13 +86,44 @@ public class RemoteMMCI extends ProcessorModule {
                 log.warn("property host in mmbaseroot.xml is not set correctly.");
                 log.warn("Chances are big the Remote MMCI will nog work");
             }
-            
-            // Start up the registry, this sloud be optional to be able to run a single
-            // registry for multiple mmbase clouds
-            Registry reg = java.rmi.registry.LocateRegistry.createRegistry(registryPort);
-            
-            
-            log.debug("Create the remote context");
+        } else {
+	    log.debug("RemoteMMCI is using the RMIRegistryServer{"+host +"} as hostname to create/connect to the RMI registry");
+        }
+
+        String bindNameParam = getInitParameter("bindname");
+        if (bindNameParam != null){
+            bindName = bindNameParam;
+        } else {
+            log.warn("missing bindname init param, using (default)=("+ bindName +")");
+        }
+        createRemoteMMCI(host,registryPort,bindName);
+    }
+    
+    
+    
+    /**
+     * This method creates or locates the RMI registry at a specific port and host and binds a new RemoteContext
+     * @param registryPort the registry port to start the RMI registry
+     * @param bindName the name of the object (aka remotecontext)
+     */
+    private void createRemoteMMCI(String host,int registryPort,String bindName){
+        //System.setSecurityManager (new RMISecurityManager ());
+        try {
+            Registry reg = null;
+	    try {
+		//Note that a getRegistry call does not actually make a connection to the remote host. 
+		//It simply creates a local reference to the remote registry and will succeed even if 
+		//no registry is running on the remote host. Therefore, a subsequent method invocation 
+		//to a remote registry returned as a result of this method may fail. 
+		reg = java.rmi.registry.LocateRegistry.getRegistry(host,registryPort);
+		//try if the registry is running
+		reg.list();
+                //if no RemoteException is thrown we are probabely ok
+                log.debug("using an existing RMI registry");
+	    } catch (RemoteException rex){
+             	reg = java.rmi.registry.LocateRegistry.createRegistry(registryPort);
+		log.debug("creating a new RMI registry");
+	    } 
             
             // Create the Database object
             //interface RemoteCloudContext ... implemented by RemoteCloudContext_Rmi .. using LocalContext
@@ -117,6 +136,7 @@ public class RemoteMMCI extends ProcessorModule {
             log.info("Module RemoteMMCI Running on tcp (port,name)=("+ registryPort +","+ bindName +")");
         } catch (java.rmi.RemoteException rex) {
             log.fatal("RMI Registry not started because of exception {" + rex.getMessage() + "}");
+	    return;
         }
     }
 }
