@@ -195,7 +195,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
 
     public void setLoginpage(String loginpage) throws JspTagException {
-        this.loginpage = loginpage;
+        this.loginpage = getAttributeValue(loginpage);
     }
 
     /**
