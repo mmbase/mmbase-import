@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeCop.java,v 1.7 2000-03-30 13:11:36 wwwtech Exp $
+$Id: EncodeCop.java,v 1.8 2000-06-05 10:56:55 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/30 13:11:36  wwwtech
+Rico: added license
+
 Revision 1.6  2000/03/29 11:04:45  wwwtech
 Rob: Licenses changed
 
@@ -31,12 +34,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 
 import nl.vpro.mmbase.util.media.audio.*;
-import nl.vpro.mmbase.util.media.audio.cdtracks.*;
+//import nl.vpro.mmbase.util.media.audio.cdtracks.*;
 import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.7 $ $Date: 2000-03-30 13:11:36 $
+ * @version $Revision: 1.8 $ $Date: 2000-06-05 10:56:55 $
  */
 
 public class EncodeCop extends Vwm implements MMBaseObserver {
@@ -54,12 +57,15 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	
 	public boolean probeCall() {
 		debug("probeCall(): Adding observers");
+
+		Vwms.mmb.addLocalObserver("audioparts",this);
+		Vwms.mmb.addRemoteObserver("audioparts",this);
+
 		Vwms.mmb.addLocalObserver("rawaudios",this);
 		Vwms.mmb.addRemoteObserver("rawaudios",this);
+
 		Vwms.mmb.addLocalObserver("g2encoders",this);
 		Vwms.mmb.addRemoteObserver("g2encoders",this);
-		Vwms.mmb.addLocalObserver("cdtracks",this);
-		Vwms.mmb.addRemoteObserver("cdtracks",this);
 		return(true);
 	}
 
@@ -76,9 +82,10 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 	public boolean nodeChanged(String number,String builder, String ctype) {
 		if( debug ) debug("nodeChanged("+number+","+builder+","+ctype+")");
 		if (ctype.equals("c") || ctype.equals("n")) {
+			if (builder.equals("audioparts")) audiopartsChanged(number,ctype);	
 			if (builder.equals("g2encoders")) encoderChanged(number,ctype);	
 			if (builder.equals("rawaudios")) rawaudioChanged(number,ctype);	
-			if (builder.equals("cdtracks")) cdtracksChanged(number,ctype);	
+			// if (builder.equals("cdtracks")) cdtracksChanged(number,ctype);	
 		}
 		return(true);
 	}
@@ -135,6 +142,23 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		}
 		return(true);
 	}
+
+	public boolean audiopartsChanged(String number,String ctype) {
+		if( debug ) debug("audiopartsChanged("+number+","+ctype+")");
+		if (ctype.equals("n")) {
+			AudioParts bul=(AudioParts)Vwms.mmb.getMMObject("audioparts");
+			if (bul!=null) {
+				MMObjectNode node=bul.getNode(number);
+				if( node.getIntValue("source") == AudioParts.AUDIOSOURCE_CD ) {
+					EncoderHandlers.addElement( new EncodeHandler(this,"newcdtrack",node) );
+				}
+			} else {
+				debug("audiopartsChanged(): no reference could be make to cdtracks");
+			}
+		}
+		return(true);
+	}
+
 
 	private EncodeHandler getEncodeHandler( int number ) {
 		Enumeration 	e 		= EncoderHandlers.elements();

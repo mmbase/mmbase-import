@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeHandler.java,v 1.10 2000-03-30 13:11:36 wwwtech Exp $
+$Id: EncodeHandler.java,v 1.11 2000-06-05 10:56:56 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/03/30 13:11:36  wwwtech
+Rico: added license
+
 Revision 1.9  2000/03/29 11:04:45  wwwtech
 Rob: Licenses changed
 
@@ -40,12 +43,12 @@ import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
 
 import nl.vpro.mmbase.util.media.audio.*;
-import nl.vpro.mmbase.util.media.audio.cdtracks.*;
+// import nl.vpro.mmbase.util.media.audio.cdtracks.*;
 import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.10 $ $Date: 2000-03-30 13:11:36 $
+ * @version $Revision: 1.11 $ $Date: 2000-06-05 10:56:56 $
  */
 public class EncodeHandler implements Runnable {
 
@@ -126,11 +129,12 @@ public class EncodeHandler implements Runnable {
 			MMObjectNode wavnode=addRawAudio(id,RawAudioDef.STATUS_ONDERWEG,RawAudioDef.FORMAT_WAV,RawAudioDef.WAV_MAXSPEED,2); 
 
 			// setup the player & start the player  
-			debug("doNewCdtrack(): found playernode("+playernode+")");
+			String stracknr = (String) node.getValue("info");
+
+			debug("doNewCdtrack(): found playernode("+node+"), tracknr("+stracknr+")");
 			playernode.setValue("state","record");
-			playernode.setValue("info","tracknr="+node.getIntValue("tracknr")+" id="+id);
+			playernode.setValue("info","tracknr="+stracknr+" id="+id);
 			playernode.commit();
-		
 
 			boolean changed=false;
 			MMObjectNode newnode=null;

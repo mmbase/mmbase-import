@@ -58,9 +58,9 @@ private JudasURLpusher pusher=null;
 		Vwms.mmb.addLocalObserver("episodes",this);
 		Vwms.mmb.addRemoteObserver("episodes",this);
 
-		// add groups
-		Vwms.mmb.addLocalObserver("groups",this);
-		Vwms.mmb.addRemoteObserver("groups",this);
+		// add groups, temp disabled
+		// Vwms.mmb.addLocalObserver("groups",this);
+		// Vwms.mmb.addRemoteObserver("groups",this);
 
 		// add groups
 		Vwms.mmb.addLocalObserver("mmevents",this);
@@ -101,17 +101,25 @@ private JudasURLpusher pusher=null;
 	
 		// checks for 3voor12
 		if (builder.equals("news")) {
-			get3voor12news(inumber);
+			// get3voor12news(inumber);
+			// new 3voor12
+			get3voor12_zapcentral(inumber,ctype);
 		} else if (builder.equals("episodes")) {
 			get3voor12episodes(inumber);
 		} else if (builder.equals("audioparts")) {
-			get3voor12audioparts(inumber,ctype);
-			get3voor12cdtracks(inumber);
-		} else if (builder.equals("groups")) {
-			get3voor12groups(inumber);
+			// get3voor12audioparts(inumber,ctype);
+			// get3voor12cdtracks(inumber);
+			// new 3voor12
+			get3voor12_zapcentral(inumber,ctype);
+		} else if (builder.equals("groups")) { // temp disabled
+			//get3voor12groups(inumber);
+			// new 3voor12
+			get3voor12_zapcentral(inumber,ctype);
 		} else if (builder.equals("mmevents")) {
-			get3voor12mmeventsAgenda(inumber);
-			get3voor12mmeventsMagazine(inumber);
+			// get3voor12mmeventsAgenda(inumber);
+			// get3voor12mmeventsMagazine(inumber);
+			// new 3voor12
+			get3voor12_zapcentral(inumber,ctype);
 		}
 
 		// checks for programs/episodes
@@ -713,6 +721,109 @@ private JudasURLpusher pusher=null;
 				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?6";
 				addURL(url);
 			}
+		}
+	}
+
+	/* New 3voor12 site */
+
+	private void get3voor12_zapcentral(int number,String ctype) {
+		MMObjectNode node;
+		Vector tables=new Vector();
+		tables.addElement("maps");
+		tables.addElement("programs");
+		tables.addElement("news");
+		tables.addElement("mmevents");
+		Vector fields=new Vector();
+		fields.addElement("maps.number");
+		Vector ordervec=new Vector();
+		Vector dirvec=new Vector();
+
+		boolean doAdd=false;
+		int daymark10;
+		int daymark35;
+
+		if (ctype.equals("d")) return;
+
+		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		daymark10=daymarks.getDayCountAge(10);
+		daymark35=daymarks.getDayCountAge(35);
+		int cur=(int)(DateSupport.currentTimeMillis()/1000);
+		int cur2=(int)(System.currentTimeMillis()/1000);
+		
+
+		if (!doAdd) {
+			/* 2534202 (portal)  epsisodes */
+			tables=new Vector();
+			tables.addElement("portals");
+			tables.addElement("maps");
+			tables.addElement("programs");
+			tables.addElement("episodes");
+			tables.addElement("bcastrel");
+			tables.addElement("mmevents");
+			fields=new Vector();
+			fields.addElement("portals.number");
+			debug("event check datesupport");
+			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND episodes.number>"+daymark35+" AND mmevents.number>"+daymark35+" AND (mmevents.stop>"+(cur-10*60)+" AND mmevents.stop<"+(cur+10*60)+") OR (mmevents.start>"+(cur-10*60)+" AND mmevents.start<"+(cur+10*60)+")",ordervec,dirvec);
+			debug("result "+vec);
+			if (vec.size()>0) {
+				doAdd=true;
+				addURL("/3voor12/shows/shows.shtml?2534202");
+			}
+		}
+
+		if (!doAdd) {
+			/* maps,programs,news,mmevents 2584688 (map) 3voor12 magazine*/
+			tables=new Vector();
+			tables.addElement("maps");
+			tables.addElement("programs");
+			tables.addElement("news");
+			tables.addElement("mmevents");
+			fields=new Vector();
+			fields.addElement("maps.number");
+			debug("map news check");
+			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where maps.number=2584688 AND news.number>"+daymark10+"",ordervec,dirvec);
+			debug("result "+vec);
+			if (vec.size()>0) {
+				doAdd=true;
+			}
+		}
+
+		if (!doAdd) {
+			/* programs,groups,audioparts 2584508 (program) */
+			tables=new Vector();
+			tables.addElement("programs");
+			tables.addElement("groups");
+			tables.addElement("audioparts");
+			fields=new Vector();
+			fields.addElement("programs.number");
+			debug("group track check");
+			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where programs.number=2635958 AND audioparts.number>"+daymark10+"",ordervec,dirvec);
+			debug("result "+vec);
+			if (vec.size()>0) {
+				doAdd=true;
+			}
+		}
+
+		if (!doAdd) {
+			/* maps,programs,news,mmevents 2635958 Speciale aankondigingen */
+			tables=new Vector();
+			tables.addElement("maps");
+			tables.addElement("programs");
+			tables.addElement("news");
+			tables.addElement("mmevents");
+			fields=new Vector();
+			fields.addElement("maps.number");
+			debug("map news check specials");
+			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where maps.number=2635958 AND news.number>"+daymark10+"",ordervec,dirvec);
+			debug("result "+vec);
+			if (vec.size()>0) {
+				doAdd=true;
+			}
+		}
+
+		if (doAdd) {
+			addURL("/3voor12/zapcentral.shtml?");
 		}
 	}
 
