@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.40 2002-07-05 07:49:50 pierre Exp $
+ * @version $Id: Wizard.java,v 1.41 2002-07-05 10:09:37 pierre Exp $
  *
  */
 public class Wizard {
@@ -1642,8 +1642,6 @@ public class Wizard {
             //
             dttype = xmlSchemaType;
         }
-        // switch old 'upload' to 'binary'
-        if ("upload".equals(dttype)) dttype="binary";
 
         if (ftype==null) {
             // import guitype or ftype
@@ -1651,24 +1649,46 @@ public class Wizard {
             //
             ftype=guitype;
         }
-        // switch old 'upload' to 'binary'
-        if ("upload".equals(ftype)) ftype="binary";
 
-        if (ftype==null) {
-            // no ftype defined? Hmm.. Maybe the constraints can help.
-            if (dttype.equals("date") || dttype.equals("datetime") || dttype.equals("time")) {
-                // make it a date.
-                ftype="date";
+        // backward compatibility.
+        // switch old 'upload' to 'binary'
+        // The old format used the following convention:
+        //  ftype="upload" + dttype="image"  ->  upload an image
+        //  ftype="upload" + dttype="upload"  -> upload a file
+        //  ftype="image"  -> display an image
+        // The new format usesd 'binary' a s a dftytype,a nd 'image' or 'file' as a ftype,
+        // as follows:
+        //  ftype="image" + dttype="binary"  ->  upload an image
+        //  ftype="file" + dttype="binary"  -> upload a file
+        //  ftype="image" + dttype="data" -> display an image
+        //  ftype="file" + dttype="data" -> display a link to a file
+        // code below changes old format wizards to the new format.
+        if ("upload".equals(ftype)) {
+            if ("image".equals(dttype)) {
+                ftype="image";
+                dttype="binary";
             } else {
-                // no ftype is given in the wizard schema.
-                ftype="line";
+                ftype="file";
+                dttype="binary";
             }
+        } else if ("image".equals(ftype)) {
+            // check if dttype is binary, else set to data
+            if (!"binary".equals(dttype)) dttype="data";
         }
 
-        // remove illegal combinations
-        if (!ftype.equals("date") && !ftype.equals("data") && dttype.equals("date")) {
-            // datatype is date, but no valid ftype is given. We'd better adjust.
-            ftype = "date";
+        // in the old format, ftype was date, while dttype was date,datetime, or time
+        // In the new format, this is reversed (dttype contains the base datatype,
+        // ftype the format in which to enter it)
+        if (dttype.equals("date") || dttype.equals("time") || dttype.equals("datetime")) {
+            ftype=dttype;
+            dttype="datetime";
+        }
+
+        // in the old format, 'html' could also be assigned to dttype
+        // in the new format this is an ftype (the dttype is string)
+        if (dttype.equals("html")){
+            ftype="html";
+            dttype="string";
         }
 
         // add guiname as prompt
