@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.131 2004-10-12 10:55:20 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.132 2004-10-25 11:50:04 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -511,7 +511,8 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             if (fieldValue instanceof byte[]) {
                 string = "byte array of size " + ((byte[])fieldValue).length;
             } else {
-                string = Casting.toString(fieldValue).substring(0, 200);
+                string = Casting.toString(fieldValue);
+                if (string.length()>200) string = string.substring(0, 200);
             }
             log.debug("Setting " + fieldName + " to " +  string);
         }
