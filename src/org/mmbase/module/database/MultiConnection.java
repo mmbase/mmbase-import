@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.13 2002-04-26 13:43:49 mark Exp $
+ * @version $Id: MultiConnection.java,v 1.14 2002-05-08 15:28:28 vpro Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -62,7 +62,7 @@ public class MultiConnection implements Connection {
      */
     String lastSql;
 
-    private int startTimeMillis=0;
+    private long startTimeMillis=0;
     private int usage=0;
     public int state=0;
 
@@ -177,7 +177,7 @@ public class MultiConnection implements Connection {
      * Close connections
      */
     public void close() throws SQLException {
-        log.debug("SQL querytimer measures " + ((int)System.currentTimeMillis() - getStartTimeMillis()) + " mSec for query: " + getLastSQL());
+        log.debug("SQL querytimer measures " + ((int)(System.currentTimeMillis() - getStartTimeMillis())) + " mSec for query: " + getLastSQL());
         state=CON_FINISHED;
         parent.putBack(this);
     }
@@ -284,7 +284,7 @@ public class MultiConnection implements Connection {
      */
     public void claim() {
         usage++;
-	startTimeMillis = (int)System.currentTimeMillis();
+	    startTimeMillis = System.currentTimeMillis();
     }
 
     /**
@@ -305,13 +305,13 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public int getStartTime() {
-        return (int)startTimeMillis/1000;
+        return (int)(startTimeMillis/1000);
     }
 
     /**
      * @javadoc
      */
-    public int getStartTimeMillis()
+    public long getStartTimeMillis()
     {
         return startTimeMillis;
     }
