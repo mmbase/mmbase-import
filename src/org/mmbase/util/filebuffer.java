@@ -12,33 +12,33 @@ package org.mmbase.util;
 import java.util.Date;
 
 /**
- * Class filebuffer
- * 
+ * Class filebuffer. Used by servdb.
+ *
  * @javadoc
- * @rename Filebuffer
-  */
-
+ * @rename FileBuffer
+ * @version $Id: filebuffer.java,v 1.5 2004-09-29 14:29:25 pierre Exp $
+ */
 public class filebuffer {
 
-	public Date lastmod;
-	public byte data[]=null;
-	public Object obj;
-	public int filesize=0;
-	public String mimesuper;
-	public String mimesub;
-	public String mimetype;
+    public Date lastmod;
+    public byte data[] = null;
+    public Object obj;
+    public int filesize = 0;
+    public String mimesuper;
+    public String mimesub;
+    public String mimetype;
 
-	public filebuffer(Object o) {
-		obj=o;
-	}
+    public filebuffer(Object o) {
+        obj = o;
+    }
 
-	public filebuffer(byte[] data) {
-		this.data=data;
-	}
+    public filebuffer(byte[] data) {
+        this.data = data;
+    }
 
-	public filebuffer(int len) {
-		data = new byte[len];
-		filesize=len;
-	}
+    public filebuffer(int len) {
+        data = new byte[len];
+        filesize = len;
+    }
 }
 

@@ -25,8 +25,9 @@ import org.mmbase.util.logging.Logging;
 * and calls the abstract function generate which will be
 * implemented in a HTMLElement
 *
+* @application SCAN
 * @author Jan van Oosterom
-* @version $Id: HTMLElement.java,v 1.7 2003-03-07 08:50:30 pierre Exp $
+* @version $Id: HTMLElement.java,v 1.8 2004-09-29 14:29:24 pierre Exp $
 *
 */
 public abstract class HTMLElement {

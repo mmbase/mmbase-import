@@ -20,8 +20,9 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @javadoc
+ * @application Config
  * @author  Case Roole, cjr@dds.nl
- * @version $Id: BuilderReport.java,v 1.6 2003-07-21 12:19:05 pierre Exp $
+ * @version $Id: BuilderReport.java,v 1.7 2004-09-29 14:26:49 pierre Exp $
  */
 public class BuilderReport extends AbstractReport {
 

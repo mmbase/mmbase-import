@@ -22,8 +22,9 @@ import java.util.*;
  * <li>String rows        : if not null the HTML tag ROWS=rows is added </li>
  * </ul>
  *
+ * @application SCAN
  * @author Jan van Oosterom
- * @version $Id: HTMLElementTextArea.java,v 1.5 2003-03-07 08:50:34 pierre Exp $
+ * @version $Id: HTMLElementTextArea.java,v 1.6 2004-09-29 14:29:25 pierre Exp $
  */
 public class HTMLElementTextArea  extends HTMLElement {
     // Note: more appropriate would be to extend from HTMLElementText

@@ -20,9 +20,11 @@ import org.w3c.dom.Document;
 
 /**
  * Class XMLParseResult
- * 
+ *
  * @javadoc
  * @duplicate Same code appears in module/Config
+ * @application Config
+ * @version $Id: XMLParseResult.java,v 1.8 2004-09-29 14:26:50 pierre Exp $
  */
 
 class XMLParseResult {

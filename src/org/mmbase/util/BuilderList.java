@@ -27,9 +27,10 @@ import org.w3c.dom.Document;
 
 /**
  * Gives an xml-representation of a dir structure with builders
+ * Used by the build script to create documentation for builders.
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.5 2003-03-04 13:28:50 nico Exp $
+ * @version $Id: BuilderList.java,v 1.6 2004-09-29 14:29:22 pierre Exp $
  */
 public class BuilderList {
     // logger not used at the moment
