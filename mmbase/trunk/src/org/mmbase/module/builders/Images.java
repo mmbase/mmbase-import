@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.64 2002-11-01 13:51:10 pierre Exp $
+ * @version $Id: Images.java,v 1.65 2003-02-18 10:37:02 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -158,7 +158,7 @@ public class Images extends AbstractImages {
 
     // called by init..used to retrieve all settings
     private void getImageConvertParams(Hashtable params) {
-        String key;
+        String key; 
         for (Iterator e=params.keySet().iterator();e.hasNext();) {
             key=(String)e.next();
             if (key.startsWith("ImageConvert.")) {
@@ -543,25 +543,28 @@ public class Images extends AbstractImages {
      * @param node The object to change
      */
     protected void determineImageType(MMObjectNode node) {
-        String itype="";
-        try {
-            MagicFile magicFile = MagicFile.getInstance();
-            String mimetype=magicFile.getMimeType(node.getByteValue("handle"));
-            if (!mimetype.equals(MagicFile.FAILED)) {
-                // determine itype
-                if (mimetype.startsWith("image/")) {
-                    itype=mimetype.substring(6);
-                    log.info("set itype to "+itype);
+        String itype = node.getStringValue("itype");
+        if (itype == null || itype.equals("")) {
+            itype = "";
+            try {
+                MagicFile magicFile = MagicFile.getInstance();
+                String mimetype=magicFile.getMimeType(node.getByteValue("handle"));
+                if (!mimetype.equals(MagicFile.FAILED)) {
+                    // determine itype
+                    if (mimetype.startsWith("image/")) {
+                        itype=mimetype.substring(6);
+                        log.info("set itype to "+itype);
+                    } else {
+                        log.warn("Mimetype "+mimetype+" is not an image type");
+                    }
                 } else {
-                    log.warn("Mimetype "+mimetype+" is not an image type");
+                    log.warn(MagicFile.FAILED);
                 }
-            } else {
-                log.warn(MagicFile.FAILED);
+            } catch (Exception e) {
+                log.warn("Error while determining image mimetype : "+Logging.stackTrace(e));
             }
-        } catch (Exception e) {
-            log.warn("Error while determining image mimetype : "+Logging.stackTrace(e));
+            node.setValue("itype",itype);
         }
-        node.setValue("itype",itype);
     }
 
     /**
@@ -587,6 +590,7 @@ public class Images extends AbstractImages {
         // look if we need to invalidate the image cache...
         boolean imageCacheInvalid = node.getChanged().contains("handle");
         if(imageCacheInvalid) {
+            node.setValue("itype", "");
             determineImageType(node);
         }
         // do the commit
