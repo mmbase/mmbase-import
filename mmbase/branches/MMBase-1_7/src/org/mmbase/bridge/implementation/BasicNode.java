@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.123.2.1 2004-04-13 13:29:33 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.123.2.2 2004-05-07 13:18:36 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -858,13 +858,61 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
-        BasicQuery count = (BasicQuery) cloud.createAggregatedQuery();
-        count.addStep(nodeManager);
-        Step step = count.addRelationStep(otherNodeManager, role, direction, false).getPrevious();
-        count.addNode(step, this);
-        count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        Node result = (Node) cloud.getList(count).get(0);
-        return result.getIntValue("number");
+        if (otherNodeManager == null || otherNodeManager.getName().equals("object")) {
+            // can be done on only insrel, which is often much quicker.
+            NodeManager insrel;
+            if (role != null) {
+                insrel = cloud.getRelationManager(role);
+            } else {
+                insrel = cloud.getNodeManager("insrel");
+            }
+            NodeQuery query = insrel.createQuery();
+
+            if (insrel instanceof BasicRelationManager) {
+                MMObjectNode relDefNode = ((BasicRelationManager) insrel).relDefNode;
+                if (relDefNode != null) {
+                    StepField rnumber = query.getStepField(insrel.getField("rnumber"));
+                    query.setConstraint(query.createConstraint(rnumber, new Integer(relDefNode.getNumber())));
+                }
+            }
+            
+            int dir = RelationStep.DIRECTIONS_BOTH;
+            if (direction != null) {
+                dir = ClusterBuilder.getSearchDir(direction);
+            }
+            
+            StepField snumber = query.getStepField(insrel.getField("snumber"));
+            StepField dnumber = query.getStepField(insrel.getField("dnumber"));
+
+            Integer number = new Integer(getNumber());
+                                                   
+            switch(dir) {
+            case RelationStep.DIRECTIONS_DESTINATION: {
+                Queries.addConstraint(query, query.createConstraint(snumber, number));
+                break;
+            }
+            case RelationStep.DIRECTIONS_SOURCE: {
+                Queries.addConstraint(query, query.createConstraint(dnumber, number));
+                break;
+            }
+            case RelationStep.DIRECTIONS_BOTH:
+            case RelationStep.DIRECTIONS_EITHER: {
+                Constraint sourceConstraint = query.createConstraint(snumber, number);
+                Constraint destinationConstraint = query.createConstraint(dnumber, number);
+                Queries.addConstraint(query, query.createConstraint(sourceConstraint, CompositeConstraint.LOGICAL_OR, destinationConstraint));
+                break;
+            }                
+            }
+            return Queries.count(query);
+        } else {
+            BasicQuery count = (BasicQuery) cloud.createAggregatedQuery();
+            count.addStep(nodeManager);
+            Step step = count.addRelationStep(otherNodeManager, role, direction, false).getPrevious();
+            count.addNode(step, this);
+            count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
+            Node result = (Node) cloud.getList(count).get(0);
+            return result.getIntValue("number");
+        }
     }
 
 
