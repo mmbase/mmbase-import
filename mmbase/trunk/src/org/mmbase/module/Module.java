@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module;
 
@@ -34,36 +34,34 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.52 2004-03-26 14:59:20 michiel Exp $
+ * @version $Id: Module.java,v 1.53 2004-04-14 08:06:00 pierre Exp $
  */
 public abstract class Module {
-
     private static final Logger log = Logging.getLoggerInstance(Module.class);
-    
+
     static Map modules;
-    static ModuleProbe mprobe;
-    
+
     String moduleName = null;
     Hashtable state = new Hashtable();
     Hashtable mimetypes;
     Hashtable properties;
     String maintainer;
     int    version;
-    
+
     // startup call.
     private boolean started = false;
-    
+
     public Module() {
         String startedAt = (new Date(System.currentTimeMillis())).toString();
         state.put("Start Time", startedAt);        
     }
-    
+
     public final void setName(String name) {
         if (moduleName == null) {
             moduleName = name;
         }
     }
-    
+
     /**
      * Starts the module.
      * This module calls the {@link #init()} of a module exactly once.
@@ -79,7 +77,7 @@ public abstract class Module {
             started = true;
         }
     }
-    
+
     /**
      * Returns whether the module has started (has been initialized or is in
      * its initialization fase).
@@ -87,7 +85,7 @@ public abstract class Module {
     public final boolean hasStarted() {
         return started;
     }
-    
+
     /**
      * Initializes the module.
      * Init must be overridden to read the environment variables it needs.
@@ -96,7 +94,7 @@ public abstract class Module {
      * more than once. You should not call init() directly, call startModule() instead.
      */
     public abstract void init();
-    
+
     /**
      * prepares the module when loaded.
      * Onload must be overridden to execute methods that need to be performed when the module
@@ -106,7 +104,7 @@ public abstract class Module {
      * @scope protected
      */
     public abstract void onload();
-    
+
     /**
      * Shuts down the module. This method is called by shutdownModules.
      *
@@ -115,9 +113,9 @@ public abstract class Module {
     protected void shutdown() {
         // on default, nothing needs to be done.
     }
-    
-    
-    
+
+
+
     /**
      * state, returns the state hashtable that is/can be used to debug. Should
      * be overridden when live state should be done.
@@ -125,7 +123,7 @@ public abstract class Module {
     public Hashtable state() {
         return state;
     }
-    
+
     /**
      * Sets an init-parameter key-value pair
      */
@@ -134,7 +132,7 @@ public abstract class Module {
             properties.put(key,value);
         }
     }
-    
+
     /**
      * Gets an init-parameter  key-value pair
      */
@@ -151,7 +149,7 @@ public abstract class Module {
         }
         return null;
     }
-    
+
     /**
      * Returns the properties to the subclass.
      */
@@ -161,21 +159,21 @@ public abstract class Module {
         return null;
         //return Environment.getProperties(this,propertytable);
     }
-    
+
     /**
      * Returns one propertyvalue to the subclass.
      */
     protected String getProperty(String name, String var) {
         return "";
     }
-    
+
     /**
      * Gets own modules properties
      */
     public Hashtable getInitParameters() {
         return properties;
     }
-    
+
     /**
      * Returns an iterator of all the modules that are currently active.
      * This function <code>null</code> if no attempt has the modules have (not) yet been to loaded.
@@ -189,7 +187,7 @@ public abstract class Module {
             return modules.values().iterator();
         }
     }
-    
+
     /**
      *  Returns the name of the module
      * @return the module name
@@ -197,20 +195,20 @@ public abstract class Module {
     public final String getName() {
         return moduleName; // org.mmbase
     }
-    
+
     /**
      * provide some info on the module
      */
     public String getModuleInfo() {
         return "No module info provided";
     }
-    
+
     /**
      * maintainance call called by the admin module every x seconds.
      */
     public void maintainance() {
     }
-    
+
     /**
      * getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
      * which is set when servscan is loaded.
@@ -232,7 +230,7 @@ public abstract class Module {
         }
         return mimeType;
     }
-    
+
     /**
      * Calls shutdown of all registered modules.
      *
@@ -248,9 +246,9 @@ public abstract class Module {
         }
         modules = null;
     }
-    
-    
-    
+
+
+
     public static synchronized final void startModules() {
         // call the onload to get properties
         log.service("Starting modules " + modules.keySet());
@@ -284,7 +282,7 @@ public abstract class Module {
             }
         }
     }
-    
+
     /**
      * Retrieves a reference to a Module.
      * This call does not ensure that the requested module has been initialized.
@@ -324,7 +322,7 @@ public abstract class Module {
                     }
                     startModules();
                     // also start the maintaince thread that calls all modules 'maintanance' method every x seconds
-                    mprobe = new ModuleProbe(modules);
+                    new ModuleProbe();
                 }
             }
         }
@@ -333,11 +331,10 @@ public abstract class Module {
         if (obj == null) { // try case sensitivily as well?
             obj = modules.get(name);
         }
-        
         if (obj != null) {
             // make sure the module is started, as this method could
             // have been called from the init() of another Module
-            if (startOnLoad) { 
+            if (startOnLoad) {
                 ((Module) obj).startModule();
             }
             return obj;
@@ -345,19 +342,19 @@ public abstract class Module {
             return null;
         }
     }
-    
+
     public String getMaintainer() {
         return maintainer;
     }
-    
+
     public void setMaintainer(String m) {
         maintainer = m;
     }
-    
+
     public void setVersion(int v) {
         version = v;
     }
-    
+
     public int getVersion() {
         return version;
     }
@@ -367,7 +364,6 @@ public abstract class Module {
      * @return A HashTable with <module-name> --> Module-instance
      * @scope  private (only called from getModule)
      */
-    
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
         File dir = new File(MMBaseContext.getConfigPath(), "modules");
@@ -424,5 +420,5 @@ public abstract class Module {
         }
         return results;
     }
-    
+
 }
