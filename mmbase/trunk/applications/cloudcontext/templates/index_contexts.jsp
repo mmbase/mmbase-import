@@ -6,7 +6,7 @@
 <mm:import id="url">index_contexts.jsp</mm:import>
 
 <mm:import externid="offset">0</mm:import>
-<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+<mm:cloud loginpage="login.jsp"  rank="$rank">
 <mm:import externid="context" vartype="list" />
 <mm:import externid="search" />
 <mm:import id="nodetype">mmbasecontexts</mm:import>

@@ -5,8 +5,7 @@
 <mm:content language="$language">
 <mm:import externid="group" required="true" />
 
-<mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
-
+<mm:cloud loginpage="login.jsp" jspvar="cloud" rank="$rank">
 
 <mm:compare referid="group" value="new">
   <mm:remove referid="group" />
@@ -21,30 +20,34 @@
     <mm:fieldlist type="edit" fields="owner">
       <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
+
     <mm:import externid="_parentgroups" vartype="list" jspvar="parentgroups" />
     <mm:import externid="_childgroups" vartype="list" jspvar="childgroups" />
+
      <mm:listrelations type="mmbasegroups" role="contains" searchdir="source">
-       <mm:relatednode jspvar="parentgroup">
-        <% if (! parentgroups.contains("" + parentgroup.getNumber())) { %>
+       <mm:relatednode id="oldparentgroup" jspvar="oldparentgroup">
+        <% if (! parentgroups.contains("" + oldparentgroup.getNumber())) { %>
           <mm:import id="deleteparent" />
-        <% } %>
+       <% } %>
        </mm:relatednode>
        <mm:present referid="deleteparent">
-        <mm:deletenode />
+         <mm:deletenode />
        </mm:present>
      </mm:listrelations>
+
      <mm:unrelatednodes id="unrelated" type="mmbasegroups" />
+
      <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
-     <mm:stringlist referid="_parentgroups">
-       <mm:node id="parentgroup" number="$_" jspvar="parentgroup">
-         <% if (unrelated.contains(parentgroup)) { %>
-              <mm:createrelation source="parentgroup" destination="group" role="contains" />
-         <% } %>
-        </mm:node>
-     </mm:stringlist>
+       <mm:stringlist referid="_parentgroups">
+         <mm:node id="newparentgroup" number="$_" jspvar="newparentgroup">
+           <% if (unrelated.contains(newparentgroup)) { %>
+             <mm:createrelation source="newparentgroup" destination="group" role="contains" />
+           <% } %>
+         </mm:node>
+       </mm:stringlist>
      </mm:write>
      <mm:listrelations type="mmbasegroups" role="contains" searchdir="destination">
-       <mm:relatednode jspvar="childgroup">
+       <mm:relatednode id="childgroup" jspvar="childgroup">
         <% if (! childgroups.contains("" + childgroup.getNumber())) { %>
           <mm:import id="deletechild" />
         <% } %>
@@ -55,9 +58,9 @@
      </mm:listrelations>
      <mm:write referid="unrelated" jspvar="unrelated" vartype="list">
      <mm:stringlist referid="_childgroups">
-       <mm:node id="childgroup" number="$_" jspvar="childgroup">
-         <% if (unrelated.contains(childgroup)) { %>
-              <mm:createrelation source="group" destination="childgroup" role="contains" />
+       <mm:node id="newchildgroup" number="$_" jspvar="newchildgroup">
+         <% if (unrelated.contains(newchildgroup)) { %>
+              <mm:createrelation source="group" destination="newchildgroup" role="contains" />
          <% } %>
         </mm:node>
      </mm:stringlist>
