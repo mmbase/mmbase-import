@@ -373,8 +373,12 @@ NetComponents can be found at:
     </copy>
 
     <available property="log4j2.in.classpath"
-	           classpathref="compile"
+	       classpathref="compile"
                classname="org.apache.log4j.Logger" />
+
+    <available property="informix.in.classpath"
+               classpathref="compile"
+               classname="com.informix.jdbc.IfxCblob" />
 
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
@@ -390,7 +394,7 @@ NetComponents can be found at:
       <exclude name="org/mmbase/bridge/remote/**"/>
       <exclude name="org/mmbase/util/logging/log4j/**" if="log4j2.in.classpath" />
       <exclude name="org/mmbase/util/logging/log4j2/**" unless="log4j2.in.classpath" />
-
+      <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
     <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
@@ -419,8 +423,8 @@ NetComponents can be found at:
     <!-- Logger ensures version > 1.2 -->
     <available property="junit.in.classpath"
                classname="junit.runner.BaseTestRunner"/>
-    <available property="postgresql.in.classpath"
-               classname="org.postgresql.jdbc2.Statement"/>
+    <available property="informix.in.classpath" 
+               classname="com.informix.jdbc.IfxCblob"/>
     <!-- check directory structure -->
     <available property="dir.src.present"
                file="${source-src.dir}"/>
@@ -504,11 +508,11 @@ NetComponents can be found at:
     <echo message=""/>
   </target>
 
-  <target name="check.optional.postgresql" depends="init.compile.cust"
-          unless="postgresql.in.classpath">
+  <target name="check.optional.informix" depends="init.compile.cust"
+          unless="informix.in.classpath">
     <echo message=""/>
-    <echo message="Warning: Missing optional package PostgreSQL."/>
-    <echo message="PostgreSQL support for MMBase will not be compiled,"/> 
+    <echo message="Warning: Missing optional package com.informix.jdbc."/>
+    <echo message="Informix support for MMBase will not be compiled,"/>
     <echo message="but MMBase will run without this package though."/>
     <echo message=""/>
   </target>
@@ -516,8 +520,7 @@ NetComponents can be found at:
   <target name="check.package.all"
           depends="check.needed.xerces,check.needed.servlet,
                    check.optional.xalan,check.optional.jai,check.optional.log4j,
-                   check.optional.junit,check.optional.postgresql"/>
-
+                   check.optional.junit,check.optional.informix"/>
 
   <!-- =================================================================== -->
   <!-- Clean the compiled classes                                          -->
