@@ -16,6 +16,7 @@ import org.mmbase.bridge.implementation.BasicQuery;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.legacy.ConstraintParser;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
@@ -25,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.33 2004-04-26 14:13:56 michiel Exp $
+ * @version $Id: Queries.java,v 1.34 2004-05-14 22:18:38 robmaris Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -277,7 +278,8 @@ abstract public  class Queries {
     }
 
     /**
-     * Adds a 'legacy' constraint to the query. Alreading existing constraints remain ('AND' is used)
+     * Adds a 'legacy' constraint to the query, i.e. constraint(s) represented
+     * by a string. Alreading existing constraints remain ('AND' is used)
      * @return the new constraint, or null if nothing changed added.
      */
     public static Constraint addConstraints(Query query, String constraints) {
@@ -293,7 +295,8 @@ abstract public  class Queries {
         if (constraints.substring(0, 5).equalsIgnoreCase("WHERE")) {
             constraints = constraints.substring(5).trim();
         }
-        Constraint newConstraint = query.createConstraint(constraints);
+        // (Try to) parse constraints string to Constraint object.
+        Constraint newConstraint = new ConstraintParser(query).toConstraint(constraints);
         addConstraint(query, newConstraint);
         return newConstraint;
     }
