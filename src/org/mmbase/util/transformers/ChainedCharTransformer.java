@@ -60,40 +60,40 @@ public class ChainedCharTransformer extends AbstractCharTransformer implements C
     public Writer transform(Reader startReader, Writer endWriter) {
         try {
             Reader r = null; 
-            Writer w = endWriter;
-            ListIterator i = charTransformers.listIterator(charTransformers.size());
-            CharTransformer ct = null;
+            Writer  w = endWriter;  
             boolean closeWriterAfterUse = false;
-            List threads = new ArrayList();
+
+            List threads = new ArrayList();          
+            CharTransformer ct = null;
+
+            ListIterator i = charTransformers.listIterator(charTransformers.size());
             while (i.hasPrevious()) {         
                 ct = (CharTransformer) i.previous();
                 if (i.hasPrevious()) { // needing a new Thread!
                     r = new PipedReader();
+
                     Thread thread =  new TransformerLink(ct, r, w, closeWriterAfterUse);
                     thread.setDaemon(true);
                     if (log.isDebugEnabled()) log.debug("instantiated new tread " + thread);
                     threads.add(thread);
+
+                    w = new PipedWriter((PipedReader) r);  
                     closeWriterAfterUse = true;
-                    w = new PipedWriter((PipedReader) r);
+
                     thread.start();
-                } else {
-                    r = startReader;
+                } else { 
+                    ct.transform(startReader, w);
+                    if (closeWriterAfterUse) {
+                        w.flush();
+                        w.close();
+                    }
                 }
             }
-            // assert(r == startReader);
-            if (ct != null) {
-                ct.transform(startReader, w);
-                if (w != endWriter) {
-                    w.flush();
-                    w.close();
-                }
-
-                // wait until all threads are ready, because only then this transformation is actually ready
-                Iterator ti = threads.iterator();
-                while (ti.hasNext()) {
-                    Thread t = (Thread) ti.next();
-                    t.join();
-                }
+            // wait until all threads are ready, because only then this transformation is actually ready
+            Iterator ti = threads.iterator();
+            while (ti.hasNext()) {
+                Thread t = (Thread) ti.next();
+                t.join();
             }
         } catch (IOException e) {
             log.error(e.toString());
