@@ -308,7 +308,7 @@ one or more examplevalue tags is you want to give some example values.
         </info>
       </possiblevalue>
       <possiblevalue>
-        <value>asIs</value>
+        <value>asis</value>
         <info>
           Ignore the 'logon' attribute and reuse the cloud as
           it is in the session.
@@ -350,7 +350,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <info>This tag can be used to call getInfo from Module (can also be done with mod) and NodeManager.</info>
     <bodycontent>JSP</bodycontent>
     <attribute>
-        <name>nodeManager</name>
+        <name>nodemanager</name>
         <required>false</required>
 	<rtexprvalue>true</rtexprvalue>
     </attribute>
@@ -451,7 +451,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
-    <name>addAlias</name>
+    <name>addalias</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.AddAliasTag</tagclass>
     <info>
       Lives in a NodeProvider. Adds the bodycontent as an alias to the node.
@@ -467,7 +467,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
-    <name>listCondition</name>
+    <name>listcondition</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
     <info>
     Must be used in the body of a list tag. And the body of itself
@@ -569,7 +569,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </info>
   </tag>
   <tag>
-    <name>createRelation</name>
+    <name>createrelation</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateRelationTag</tagclass>
     <info>
     Creates a relation between two nodes.
@@ -600,18 +600,18 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <example>
 &lt;mm:cloud&gt;
 &lt;mm:transaction id="my_transaction"&gt;
-&lt;mm:createNode type="news" id="my_news"&gt;
-   &lt;mm:setField name="title"&gt;Todays news&lt;/mm:setField&gt;
-   &lt;mm:setField name="subtitle"&gt;There happened a lot today&lt;/mm:setField&gt;
-&lt;/mm:createNode&gt;
+&lt;mm:createnode type="news" id="my_news"&gt;
+   &lt;mm:setfield name="title"&gt;Todays news&lt;/mm:setfield&gt;
+   &lt;mm:setfield name="subtitle"&gt;There happened a lot today&lt;/mm:setfield&gt;
+&lt;/mm:createnode&gt;
 &lt;mm:node number="1808" id="my_author" /&gt;
-&lt;mm:createRelation role="author" source="my_author" destination="my_news" /&gt;
+&lt;mm:createrelation role="author" source="my_author" destination="my_news" /&gt;
 &lt;/mm:transaction&gt;
 &lt;/mm:cloud&gt;
     </example>
   </tag>
   <tag>
-    <name>createNode</name>
+    <name>createnode</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
@@ -644,7 +644,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
-    <name>setField</name>
+    <name>setfield</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
     <info>
       Changes the field 'name' from node 'node' (can also be
@@ -697,7 +697,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </examplevalue>
     </attribute>
     <attribute>
-      <name>commitOnClose</name>
+      <name>commitonclose</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
@@ -741,7 +741,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
-    <name>deleteNode</name>
+    <name>deletenode</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.DeleteNodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
