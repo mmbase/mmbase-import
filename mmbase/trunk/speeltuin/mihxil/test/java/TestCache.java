@@ -93,7 +93,7 @@ public class TestCache {
             show("emptier");
             
         }
-        show("Should 'f'");
+        show("Should contain only 'f'");
 
 
         cache.setSize(50);
@@ -117,6 +117,7 @@ public class TestCache {
                 System.out.println("ERROR");
             }
         }
+        System.out.println("getStats gave: " + cache.getStats());
         try {
             cache.setSize(-1);
         } catch (Throwable t) {
@@ -131,7 +132,19 @@ public class TestCache {
                 System.out.println("ERROR");
             }
         }
-     
+
+        cache.setSize(50);
+        cache.setActive(false);
+
+        System.out.println("Testing with inactive cache");
+        for(int i = 0; i < 1000; i ++) {
+            String test = "" + (char) rnd.nextInt(256);
+            if (! test.toUpperCase().equals(cache.get(test))) {
+                System.out.println("ERROR");
+            }
+        }
+        show("should still be empty");
+
         
     } 
     
