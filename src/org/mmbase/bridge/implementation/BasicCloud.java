@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.76.2.1 2002-11-18 12:28:29 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.76.2.2 2002-11-27 09:55:40 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -696,7 +696,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         Integer hash = null; // result hash for cache
         Vector resultlist=null; // result vector
         // check multilevel cache if needed
-        if (multilevelCache.isActive()) {
+       if (multilevelCache.isActive()) {
             hash = multilevelCache.calcHashMultiLevel(tagger);
             resultlist = (Vector) multilevelCache.get(hash);
         }
@@ -704,14 +704,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (resultlist==null) {
             log.debug("result list is null, getting from database");
             resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+       	    // store result in cache if needed
+            if (hash != null && resultlist != null) {
+            	multilevelCache.put(hash, resultlist, tables, tagger);
+            }
         }
-        // store result in cache if needed
-        if (hash != null && resultlist != null) {
-            multilevelCache.put(hash, resultlist, tables, tagger);
-            // why is it cloned?
-            resultlist = (Vector) resultlist.clone();
-        }
+
         if (resultlist != null) {
+            // clone Vector, since the resultlist may
+            // be altered based on security settings
+            resultlist = (Vector) resultlist.clone();
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
             for (int i=resultlist.size()-1; i>=0; i--) {
