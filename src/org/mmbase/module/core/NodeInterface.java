@@ -9,88 +9,123 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.module.core;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 /**
+ * Describes an object in the cloud.
  *
  * @author Rob Vermeulen
+ * @author Pierre van Rooden
  */
 public interface NodeInterface {
+
+  	/**
+     * Retrieves the cloud where this node is part of.
+     */
+    public CloudInterface getCloud();
+
+	/**
+     * Retrieves the type of this node
+     */
+    public NodeTypeInterface getNodeType();
+	
+	/**
+     * Retrieves the node ID
+     */
+    public int getNodeID();
 	
 	/** 
-	 * set value of certain attribute
+	 * Set the value of certain attribute
 	 * @param attribute name of field
 	 * @param value of attribute
 	 */
 	public void setValue(String attribute, String value); 
 
 	/** 
-	 * get value of certain attribute
+	 * Retrieves the value of certain attribute
 	 * @param name of attribute you want 
 	 * @return value of attribute
 	 */
-	public String getValue(String attribute);
+	public Object getValue(String fieldName);
 
 	/**
-	 * commit the Node to the database
+	 * Commit the node to the database
 	 */
 	public void commit();
 
 	/**
-	 * removes the Node
+	 * Removes the Node
 	 */
 	public void remove(); 
 
 	/**
-	 * converts Node to string
+	 * Converts the node to a string
 	 */
 	 public String toString();
 
 	/**
-	 * removes all relations of Node
+	 * Removes all relations of the node
 	 */
 	public void removeRelations();
 
 	/**
- 	 * removes all relations of certain type
+ 	 * Removes all relations of certain type of this node
 	 * @param type of relation
 	 */
 	public void removeRelations(String type);
 
 	/**
-	 * gets all relations of Node
+	 * Retrieve all relations of this node
 	 * @return all relations of Node
 	 */
-	public Enumeration getRelations();
+	public Iterator getRelations();
 
 	/**
-	 *gets all relations of certain type
+	 *gets all relations of a certain type
 	 * @param type of relation
 	 * @return all relations of the Node of a certain type
 	 */
-	public Enumeration getRelations(String type);
+	public Iterator getRelations(String type);
 	
 	/**
-	 * count the relations attached to the Node
+	 * Count the relations attached to the Node
 	 * @return number of relations
 	 */
-	public Integer countRelations();
+	public int countRelations();
 
 	/**
-	 * count the relations of a specific type attached to the Node 
+	 * Count the relations of a specific type attached to the Node 
 	 * @return number of relations of a specific type
 	 */
 	public Integer countRelations(String type);
 
 	/**
-	 * get all related Nodes
+	 * Retrieve all related Nodes
 	 * @return all related Nodes
 	 */
-	public Enumeration getRelatedNodes();
+	public Iterator getRelatedNodes();
 
 	/**
-	 * get all related Nodes of a certain type
-	 * @return all related Nodes of a certain type
+	 * Retrieve all related nodes of a certain type
+	 * @return all related nodes of a certain type
 	 */
-	public Enumeration getRelatedNodes(String type);
+	public Iterator getRelatedNodes(String type);
+
+	/**
+     * Retrieves the aliases of this node
+     * @return an Iterator with the alias anmes
+     */
+    public Iterator getAliases();
+
+	/**
+     * Add an alias for this node
+     * @param aliasName the name of the alias (need to be unique)
+     */
+    public void addAlias(String aliasName);
+
+    /**
+     * Remove an alias of this node
+     * @param aliasName the name of the alias
+     */
+    public void removeAlias(String aliasName);
 }
