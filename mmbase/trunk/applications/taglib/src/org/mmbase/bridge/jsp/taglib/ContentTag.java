@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.10 2003-05-27 15:24:41 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.11 2003-08-11 15:27:14 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -53,8 +53,7 @@ public class ContentTag extends LocaleTag  {
     static {
         try {
             log = Logging.getLoggerInstance(ContentTag.class);
-            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", 
-                                                               "taglibcontent_1_0.dtd", ContentTag.class);
+            org.mmbase.util.XMLEntityResolver.registerPublicID("-//MMBase//DTD taglibcontent 1.0//EN", "taglibcontent_1_0.dtd", ContentTag.class);
             initialize();
         } catch (Exception e) {
             log.error(e.toString());

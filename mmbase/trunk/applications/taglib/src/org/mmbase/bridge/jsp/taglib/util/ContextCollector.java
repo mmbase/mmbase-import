@@ -19,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * A helper class for Lists, to implement ContextProvider.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextCollector.java,v 1.1 2003-08-08 13:30:03 michiel Exp $
+ * @version $Id: ContextCollector.java,v 1.2 2003-08-11 15:27:31 michiel Exp $
  * @since MMBase-1.7
  */
 public class  ContextCollector  {
@@ -32,7 +32,7 @@ public class  ContextCollector  {
         collector        = new HashMap();
     }
 
-    public ContextContainer getContainer() {
+    public ContextContainer getContextContainer() {
         return contextContainer;
     }
 

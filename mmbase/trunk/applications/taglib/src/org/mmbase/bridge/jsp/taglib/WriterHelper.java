@@ -13,6 +13,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.io.StringReader;
 
+import java.util.*;
+
 import org.mmbase.util.StringSplitter;
 import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
@@ -27,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.33 2003-08-01 15:45:21 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.34 2003-08-11 15:27:24 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -214,11 +216,11 @@ public class WriterHelper extends BodyTagSupport {
         switch (vartype) {
             // these accept a value == null (meaning that they are empty)
         case TYPE_LIST:
-            if (v instanceof java.lang.String) {
+            if (v instanceof String || v == null) {
                 if (! "".equals(v)) {
                     value = StringSplitter.split((String) v);
                 } else {
-                    value = new java.util.Vector();
+                    value = new ArrayList();
                 }
                 setJspvar();
                 return;
@@ -227,17 +229,16 @@ public class WriterHelper extends BodyTagSupport {
             if (v == null) {
                 // if a vector is requested, but the value is not present,
                 // make a vector of size 0.
-                value = new java.util.Vector();
-            }
-            if (! (v instanceof java.util.Vector)) {
+                value = new Vector();
+            } else if (! (v instanceof Vector)) {
                 // if a vector is requested, but the value is not a vector,
-                if (! (v instanceof java.util.Collection)) {
+                if (! (v instanceof Collection)) {
                     // not even a Collection!
                     // make a vector of size 1.
-                    value = new java.util.Vector();
-                    ((java.util.Vector)value).add(v);
+                    value = new Vector();
+                    ((Vector)value).add(v);
                 } else {
-                    value = new java.util.Vector((java.util.Collection)v);
+                    value = new Vector((Collection)v);
                 }
             } else {
                 value = v;
@@ -255,9 +256,9 @@ public class WriterHelper extends BodyTagSupport {
 
         if (noImplicitList) {
             // Take last of list if vartype defined not to be a list:
-            if (v instanceof java.util.List) {
+            if (v instanceof List) {
                 if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
-                    java.util.List l = (java.util.List) v;
+                    List l = (List) v;
                     if (l.size() > 0) {
                         v = l.get(l.size() - 1);
                     } else {
@@ -305,7 +306,7 @@ public class WriterHelper extends BodyTagSupport {
             }
             break;
         case TYPE_DATE:
-            if (! (v instanceof java.util.Date)) {
+            if (! (v instanceof Date)) {
                 value = Casting.toDate(v);
                 setJspvar();
                 return;

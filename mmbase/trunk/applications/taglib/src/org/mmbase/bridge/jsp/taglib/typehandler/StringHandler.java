@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.13 2003-08-08 12:11:12 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.14 2003-08-11 15:27:30 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -90,7 +90,7 @@ public class StringHandler extends AbstractTypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException {
         // do the xml decoding thing...
         String fieldName = field.getName();
-        String fieldValue =  (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
+        String fieldValue =  (String) context.getContextProvider().getContextContainer().find(context.getPageContext(), prefix(fieldName));
         fieldValue = context.encode(fieldValue, field);
         if (fieldValue != null) {
             node.setValue(fieldName,  fieldValue);

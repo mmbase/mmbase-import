@@ -18,12 +18,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 import java.util.*;
+
 /**
  * A very simple tag to check if the value of a certain context
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CompareTag.java,v 1.25 2003-07-28 13:02:23 michiel Exp $
+ * @version $Id: CompareTag.java,v 1.26 2003-08-11 15:27:27 michiel Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {
@@ -50,7 +51,7 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             log.debug("comparing " + (v1 != null ? v1.getClass().getName() : "") + "'" + v1 + "' to " + (v2 != null ? v2.getClass().getName() : "")+ "'" + v2 + "'");
         }
 
-        // TODO this is a bit oddly implemented, perhaps using org.mmbase.util.Casting
+        // TODO this is a bit oddly implemented, perhaps using org.mmbase.util.Casting, or 'equals' after all.
         try {
             return v1.compareTo(v2) == 0; // (cannot use 'equals' because BigDecimal then also compares scale, which doesn't interest us too much).
         } catch (Throwable e) {
@@ -75,6 +76,9 @@ public class CompareTag extends PresentTag implements Condition, WriterReferrer 
             if (compare1 == null) compare1 = "";
         } else {
             compare1 = getObject(getReferid());
+        }
+        if (compare1 instanceof Boolean) {
+            compare1 = compare1.toString();
         }
 
         if (! (compare1 instanceof Comparable)) {

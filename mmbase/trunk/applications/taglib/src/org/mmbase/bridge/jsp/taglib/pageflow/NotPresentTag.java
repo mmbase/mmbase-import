@@ -16,13 +16,13 @@ import javax.servlet.jsp.JspTagException;
  *
  * @see PresentTag
  * @author Michiel Meeuwissen
- * @version $Id: NotPresentTag.java,v 1.10 2003-07-21 08:07:29 michiel Exp $
+ * @version $Id: NotPresentTag.java,v 1.11 2003-08-11 15:27:28 michiel Exp $
  */
 
 public class NotPresentTag extends PresentTag {
 
     public int doStartTag() throws JspTagException {
-        if ((! getContextProvider().getContainer().isPresent(getReferid())) != getInverse()) {
+        if ((! getContextProvider().getContextContainer().isPresent(getReferid())) != getInverse()) {
             return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
