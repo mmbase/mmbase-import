@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.10 2000-06-28 14:44:58 daniel Exp $
+$Id: FieldDefs.java,v 1.11 2000-07-12 13:29:05 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.10  2000/06/28 14:44:58  daniel
+Daniel.. added method to get all GUINames
+
 Revision 1.9  2000/06/20 09:28:25  wwwtech
 new fielddefs for xml config
 
@@ -47,7 +50,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.10 $ $Date: 2000-06-28 14:44:58 $
+ * @$Revision: 1.11 $ $Date: 2000-07-12 13:29:05 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -65,6 +68,7 @@ public class FieldDefs  {
 	public int	  GUIPos;
 	public int	  DBState=-1;
 	public boolean	  DBNotNull=false;
+	public boolean	  isKey=false;
 	public int    DBPos;
 	public int    DBSize=-1;
 	public int SearchAge=30;
@@ -140,6 +144,10 @@ public class FieldDefs  {
 		return (DBState);
 	}
 
+	public boolean isKey() {
+		return (isKey);
+	}
+
 	public int getGUISearch() {
 		return (GUISearch);
 	}
@@ -153,6 +161,6 @@ public class FieldDefs  {
 	}
 
 	public String toString() {
-		return("DEF GUIName="+getGUIName()+" GUIType="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize);
+		return("DEF GUIName="+getGUIName()+" GUIType="+GUIType+" Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+" DBname="+DBName+" DBType="+DBType+" DBSTATE="+DBState+" DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+" isKey="+isKey);
 	}
 }
