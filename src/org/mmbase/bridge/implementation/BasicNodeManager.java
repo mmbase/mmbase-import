@@ -33,7 +33,7 @@ import org.mmbase.storage.search.legacy.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.59 2003-07-25 14:10:30 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.60 2003-08-05 19:08:27 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class);
@@ -174,7 +174,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             if (plurality==1) {
                 return builder.getSingularName(cloud.getLocale().getLanguage());
             } else {
-                 return builder.getPluralName(cloud.getLocale().getLanguage());
+                return builder.getPluralName(cloud.getLocale().getLanguage());
             }
         }
         return getName();
@@ -209,16 +209,62 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     /**
+     * Based on NodeSearchQuery
      *
      * @since MMBase-1.7
      */
-    protected NodeList getList(NodeSearchQuery query) {
+    protected NodeList getSecureList(NodeQuery query) {
+
+        Authorization auth = cloud.mmbaseCop.getAuthorization();
+        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+
+        if (query instanceof BasicQuery) {
+            BasicQuery bquery = (BasicQuery) query;
+            if (bquery.isSecure()) {
+                checked = true;
+            } else {
+                Authorization.QueryCheck check = auth.check(cloud.userContext.getUserContext(), query, Operation.READ);
+                bquery.setSecurityConstraint(check);
+                checked = bquery.isSecure();
+            }
+        }
+
         List resultList;
         try {
-            resultList = builder.getNodes(query); // result with all MMObjectNodes (without security)
+            resultList = builder.getNodes((NodeSearchQuery)((BasicNodeQuery) query).getQuery()); // result with all MMObjectNodes (without security)
         } catch (SearchQueryException sqe) {
             throw new BridgeException(sqe);
         }
+
+        BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
+        if (! checked) {
+            log.debug("checking read rights");
+            list.autoConvert = false;
+
+            ListIterator i = list.listIterator();
+            while (i.hasNext()) {
+                if (!cloud.check(Operation.READ, ((MMObjectNode)i.next()).getNumber())) {
+                    i.remove();
+                }
+            }
+        }
+        list.setProperty("query", query);
+        list.autoConvert = true;
+        return list;
+
+    }
+
+
+    /**
+     * Based on multi-level query. Returns however 'normal' nodes based on the last step.
+     *
+     * @since MMBase-1.7
+     */
+    protected NodeList getLastStepList(Query query) {
+
+        // add all fields
+        List resultList = cloud.getList(query);
+
 
         log.debug("checking read rights");
         BasicNodeList list = new BasicNodeList(resultList, this); // also makes a copy
@@ -237,8 +283,12 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     }
 
     public NodeList getList(NodeQuery query) {
-        query.markUsed();
-        return getList( (NodeSearchQuery)((BasicNodeQuery) query).getQuery());
+        if (query instanceof BasicNodeQuery) {
+            query.markUsed();
+            return getSecureList(query);
+        } else {
+            return getLastStepList(query);
+        }
 
     }
 
@@ -300,7 +350,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             }
         }
 
-        NodeList list = getList(query);
+        NodeList list = getList(new BasicNodeQuery(this, query));
         list.setProperty("constraints", constraints);
         list.setProperty("orderby",     sorted);
         list.setProperty("directions",  directions);
