@@ -18,7 +18,7 @@
 
 <p class="action">
   <mm:maycreate type="mmbasegroups">
-    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" tooltip="create group"  /></a>
+    <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_group.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" tooltip="create group"  /></a>
   </mm:maycreate>
   <mm:maycreate type="mmbasegroups" inverse="true">
     You are not allowed to create new groups.
@@ -28,9 +28,9 @@
 <mm:notpresent referid="group">
   <%@include file="search.form.jsp" %>
 
-  <table summary="Groups">   
-    <mm:listnodescontainer id="cc" type="$nodetype">     
-      <%@include file="search.jsp" %>      
+  <table summary="Groups">
+    <mm:listnodescontainer id="cc" type="$nodetype">
+      <%@include file="search.jsp" %>
 
       <tr>
         <mm:fieldlist nodetype="$nodetype"  fields="$fields">
@@ -38,7 +38,7 @@
         </mm:fieldlist>
         <th />
       </tr>
-     
+
       <mm:listnodes id="currentgroup">
         <tr <mm:even>class="even"</mm:even> >
         <mm:fieldlist fields="$fields">
@@ -58,7 +58,7 @@
         </td>
       </tr>
     </mm:listnodes>
-    
+
   </mm:listnodescontainer>
 </table>
 </mm:notpresent>

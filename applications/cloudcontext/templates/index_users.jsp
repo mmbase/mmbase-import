@@ -12,32 +12,32 @@
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
   <mm:import externid="search" />
   <mm:import id="nodetype">mmbaseusers</mm:import>
-  
+
   <%@include file="you.div.jsp" %>
   <mm:import id="current">users</mm:import>
   <%@include file="navigate.div.jsp" %>
-  
+
    <p class="action">
-	 <mm:maycreate type="mmbaseusers">
-	   <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new-40.gif" />" alt="+" title="create user"  /></a>
-	 </mm:maycreate>
-	 <mm:maycreate type="mmbaseusers" inverse="true">
-	   You are not allowed to create new users.
-	 </mm:maycreate>
+     <mm:maycreate type="mmbaseusers">
+       <a href="<mm:url referids="parameters,$parameters"><mm:param name="url">create_user.jsp</mm:param></mm:url>"><img src="<mm:url page="${location}images/mmbase-new.gif" />" alt="+" title="create user"  /></a>
+     </mm:maycreate>
+     <mm:maycreate type="mmbaseusers" inverse="true">
+       You are not allowed to create new users.
+     </mm:maycreate>
    </p>
-   
+
    <%@include file="search.form.jsp" %>
 
    <table summary="Users">
-	 
+
    <mm:listnodescontainer type="$nodetype">
-	 
-	 <mm:import externid="offset">0</mm:import>
-	 <mm:offset value="$offset" />
-	 <mm:maxnumber value="10" />
-	 <%@include file="search.jsp" %>
-	 
-	 <tr>
+
+     <mm:import externid="offset">0</mm:import>
+     <mm:offset value="$offset" />
+     <mm:maxnumber value="10" />
+     <%@include file="search.jsp" %>
+
+     <tr>
        <th><mm:present referid="extrauserlink">
           <mm:include  page="$extrauserlink" />
          </mm:present>
@@ -54,10 +54,10 @@
                       </mm:compare>
                      <mm:compare value="DOWN">
                        <mm:param name="directions">UP</mm:param>
-					 </mm:compare>
-				   </mm:write>
+                     </mm:compare>
+                   </mm:write>
                  </mm:compare>
-			   </mm:fieldinfo>                
+               </mm:fieldinfo>
                <mm:fieldlist  nodetype="mmbaseusers" fields="$fields"><mm:fieldinfo type="reusesearchinput" /></mm:fieldlist>
             </mm:url>' ><mm:fieldinfo type="guiname" /></a>
          </th>
@@ -65,7 +65,7 @@
        <th><%@include file="pager.jsp" %></th>
      </tr>
 
-     
+
     <mm:sortorder field="$orderby" direction="$directions" />
      <mm:listnodes id="user">
       <tr <mm:even>class="even"</mm:even> >
@@ -79,7 +79,7 @@
           <mm:nodeinfo type="gui" />
         </mm:relatednodes>
       </td>
-  
+
       <mm:fieldlist fields="$fields">
          <td><mm:fieldinfo type="guivalue" /></td>
       </mm:fieldlist>

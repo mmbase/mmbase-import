@@ -16,6 +16,6 @@
     <tr><td>&nbsp;</td><td><input type="submit" name="create" value="<%=m.getString("submit")%>" /></td></tr>
 </table>
 </form>
-</mm:cloud>  
-<a href="<mm:url referids="parameters,$parameters" page="." />">Back</a>
+</mm:cloud>
+<a href="<mm:url referids="parameters,$parameters" page="." ><mm:param name="url">index_contexts.jsp</mm:param></mm:url>">Back</a>
 </mm:content>
