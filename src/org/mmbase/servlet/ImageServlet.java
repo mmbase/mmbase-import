@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.Date;
 
-import org.mmbase.module.builders.AbstractImages;
-
-import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.bridge.Node;
 
 import org.mmbase.util.RFC1123;
 
@@ -33,21 +31,15 @@ import org.mmbase.util.logging.Logging;
 /**
  * ImageServlet handles cached images. You have to put them in the
  * cache yourself. The cache() function of Images can be used for
- * this.
+ * this. An URL can be gotten with cachepath().
  *
- * @version $Id: ImageServlet.java,v 1.7 2002-06-27 16:01:18 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.8 2002-06-28 21:10:10 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
-public class ImageServlet extends  MMBaseServlet {
+public class ImageServlet extends BridgeServlet {
     private static Logger log;
     private long originalImageExpires;
-
-    /**
-     */
-    public ImageServlet() {
-        super();
-    }
 
     public void init() throws ServletException {
         super.init();
@@ -55,16 +47,12 @@ public class ImageServlet extends  MMBaseServlet {
         String origExpires = getInitParameter("expire");
         if (origExpires == null) {
             // default: one hour
-            originalImageExpires = 60*60*1000;
+            originalImageExpires = 60 * 60 * 1000;
         } else {
             originalImageExpires = new Integer(origExpires).intValue() * 1000;
         }
         // make sure this servlet is known to process images
         associate("images", getServletName());
-        // clear the status of images
-        // maybe this should be called elsewhere,
-        // and servlet-data depending classes should register?
-        AbstractImages.clear();
     }
 
     /**
@@ -75,47 +63,49 @@ public class ImageServlet extends  MMBaseServlet {
     }
 
     /**
-     * Serves (cached) images.
+     * Serves images (and cached images).
      *
      */
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        AbstractImages icaches = (AbstractImages) mmbase.getMMObject("icaches");
-        String query = req.getQueryString();
-        if (query == null) { // also possible to use /img.db/<number>
-            query = new java.io.File(req.getRequestURI()).getName();
-        }
+        Node node = getNode(req, res);
 
-        Integer imageNumber = new Integer(query);
-        Vector params = new Vector();
-        params.add(imageNumber);
+        if (node == null) return;
 
-
-        byte[] bytes   = icaches.getImageBytes(params);
+        byte[] bytes   = node.getByteValue("handle");
         if (bytes == null) {
-            res.sendError(res.SC_NOT_FOUND, "Cached image with number " + imageNumber + " does not exist, did you cache your image?");
+            res.sendError(res.SC_NOT_FOUND, "Node with number " + node.getNumber() + " does contain a handle field.");
             return;
+
         }
         int    filesize = bytes.length;
 
-        res.setContentType(icaches.getImageMimeType(params));
+        res.setContentType(node.getStringValue("mimetype()"));
         res.setContentLength(filesize);
 
         String now  = RFC1123.makeDate(new Date());
         res.setHeader("Date", now);
 
-
-        if (icaches.getNode(imageNumber.intValue()).parent.getTableName().equals("icaches")) {
+        String fileName;
+        if (node.getNodeManager().getName().equals("icaches")) {
+            fileName = getCloud().getNode(node.getIntValue("id")).getStringValue("title");
             // cached images never expire, they cannot change without receiving a new number, thus changing the URL.
             Date never = new Date(System.currentTimeMillis() + (long) (365.25 * 24 * 60 * 60 * 1000));
             // one year in future, this is considered to be sufficiently 'never'.
             res.setHeader("Expires", RFC1123.makeDate(never));
+            
         } else { // 'images'
+            fileName = node.getStringValue("title"); 
             // images themselves can expire,  the expiration time is set in init-param 'expire'.
             Date later =  new Date(System.currentTimeMillis() + originalImageExpires);
             res.setHeader("Expires", RFC1123.makeDate(later));
         }
-        BufferedOutputStream out=null;
+        if (fileName == null || fileName.equals("")) fileName="image_from_mmbase";
+
+        res.setHeader("Content-Disposition", "inline; filename=\"" + fileName  + "." + node.getStringValue("format()") + "\"");
+
+
+        BufferedOutputStream out = null;
         try {
             out = new BufferedOutputStream(res.getOutputStream());
         } catch (java.io.IOException e) {
