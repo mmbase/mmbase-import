@@ -13,11 +13,40 @@
   <!-- <scheme>
         Defines the strings for the different scheme database
         statements.
+				These schemes use parameters {0}, {1}, etc... to indicate names and values that
+				need be integrated in these schemes. this allwos you to place optimization code specific to 
+				a database in a scheme without breaking the statements.
     -->
 	<scheme>
+	  <!-- create scheme
+				 Defines a statement for creating a non-extended table.
+				 Parameters:
+		     {0} the name of the table name to create.
+				 {1} the list of field definitions (seperated by commas)
+		-->
   	<create>CREATE TABLE {0} ({1})</create>
+	  <!-- not-null scheme
+				 Defines the code for creating a non-nullable field
+				 Parameters:
+		     {0} the name of the  field to create.
+				 {1} the field type definitions (i.e. varchar(30))
+				 NOTE: if you ommit this scheme all fields are nullable
+		-->
     <not-null>{0} {1} NOT NULL</not-null>
+	  <!-- not-null scheme
+				 Defines the code for creating a field that is a primary key
+		     {0} the name of the  field to create.
+				 {1} the field type definitions (i.e. int(11))
+				 NOTE: if you ommit this scheme no primary keys are created
+		-->
     <primary-key>{0} {1} NOT NULL, PRIMARY KEY ({0})</primary-key>
+	  <!-- not-null scheme
+				 Defines the code for creating a field that is also a unique secondary key
+				 Parameters:
+		     {0} the name of the  field to create.
+				 {1} the field type definitions (i.e. int(11))
+				 NOTE: if you ommit this scheme no secondary keys are created
+		-->
     <key>{0} {1} NOT NULL, UNIQUE ({0})</key>
   </scheme>
   <!-- <mapping>
