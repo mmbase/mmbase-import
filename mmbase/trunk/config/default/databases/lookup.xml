@@ -88,6 +88,11 @@
   <!-- hsqldb -->
   <filter database-config="hsqldb">
     <driver-class>org.hsqldb.</driver-class>
+    <driver-major-version condition="equals">1</driver-major-version>
+  </filter>
+
+  <filter database-config="hsqldb">
+    <driver-class>org.hsqldb.</driver-class>
   </filter>
 
   <!-- when no rules, then it will always be used when no previous rules apply -->
