@@ -10,6 +10,7 @@
     <mm:write cookie="mmjspeditors_style"     referid="style_sheet" />
     <mm:write cookie="mmjspeditors_liststyle" referid="liststyle"   />
     <mm:write cookie="mmjspeditors_language"  referid="lang"         />
+    <mm:write cookie="mmjspeditors_country"   referid="country"         />
     <mm:write cookie="mmjspeditors_method"    referid="method"       />
     <mm:write cookie="mmjspeditors_session"   referid="session"      />
     <mm:write cookie="mmjspeditors_indexoffset"   referid="indexoffset"      />
@@ -85,6 +86,21 @@
             </mm:aliaslist>
             <mm:notpresent referid="found">
               <option value="<mm:write referid="config.lang" />" selected="selected"><mm:locale language="$config.lang" jspvar="loc"><%= loc.getDisplayLanguage(loc)%></mm:locale></option>
+            </mm:notpresent>
+          </select>
+        </td>        
+      </tr>
+      <tr>
+        <td><%= m.getString("config.country") %></td>  
+        <td>
+          <input type="text" size="30" name="mmjspeditors_country" value="<mm:write referid="config.country" />" />
+          <select name="countries" onChange="document.forms['config'].elements['mmjspeditors_country'].value = document.forms['config'].elements['countries'].value;">
+            <mm:import id="countries" vartype="list">NL,BE,US,GB,CA,ES,DE,FR,CN,JP</mm:import>
+            <mm:aliaslist referid="countries">
+              <option value="<mm:write />" <mm:compare referid2="config.country"><mm:import id="foundcountry" />selected="selected"</mm:compare>><mm:locale language="$config.lang" country="$_" jspvar="loc"><%= loc.getDisplayCountry(loc)%></mm:locale></option>
+            </mm:aliaslist>
+            <mm:notpresent referid="foundcountry">
+              <option value="<mm:write referid="config.country" />" selected="selected"><mm:locale language="$config.lang" country="$config.country" jspvar="loc"><%= loc.getDisplayCountry(loc)%></mm:locale></option>
             </mm:notpresent>
           </select>
         </td>        
