@@ -14,13 +14,13 @@ package org.mmbase.bridge.jsp.taglib;
  * to access a parent tag using a String id
  *
  * @author Kees Jongenburger
- * @version $Id: TagIdentifier.java,v 1.3 2003-06-06 10:03:10 pierre Exp $ 
+ * @version $Id: TagIdentifier.java,v 1.4 2004-01-14 19:20:10 michiel Exp $ 
  */
 
 public interface TagIdentifier {
-	/**
-	* @return the String id the the tag. Id is is a user defined
-	* identifier
-	**/
-	public String getId();	
+    /**
+     * @return the String id the the tag. Id is is a user defined
+     * identifier
+     */
+    public String getId();	
 }
