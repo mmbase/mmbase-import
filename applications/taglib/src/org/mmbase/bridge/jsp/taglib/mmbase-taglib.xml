@@ -2366,11 +2366,12 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     <example>
 &lt;mm:listnodes type="list"&gt;
-	&lt;mm:field name="title" /&gt;
-	&lt;mm:aliaslist&gt; has alias with name &lt;mm:field name="name" /&gt;
-			&lt;/mm:aliaslist&gt;&lt;br/&gt;
+  &lt;mm:field name="title" /&gt;
+  has the following aliases:
+  &lt;mm:aliaslist&gt; 
+     &lt;mm:write /&gt; &lt;mm:last inverse="true"&gt;,&lt;/mm:last&gt;
+  &lt;/mm:aliaslist&gt;&lt;br/&gt;
 &lt;/mm:listnodes&gt;
-note: name of alias is not returned ???
   </example>
   </tag>
   <tag>
