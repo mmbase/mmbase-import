@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* A base class for tags which provide a node (And some fields).
+* The TEI class for NodeProviders.
 *
 * @author Michiel Meeuwissen
 **/
@@ -69,7 +69,7 @@ public class NodeProviderTEI extends TagExtraInfo {
             if (fieldsString == null) {
                 fields = new Vector();
             } else {
-                fields  = stringSplitter(fieldsString, ",");
+                fields  = AbstractNodeProviderTag.stringSplitter(fieldsString, ",");
             }
         }
         
@@ -97,7 +97,7 @@ public class NodeProviderTEI extends TagExtraInfo {
             // michiel: I think we should deprecate also this.
             
             // log.debug("will set " + getSimpleReturnValueName(id, field));
-            variableInfo[j++] = new VariableInfo(getSimpleReturnValueName(id, field),
+            variableInfo[j++] = new VariableInfo(AbstractNodeProviderTag.getSimpleReturnValueName(id, field),
                                                  "java.lang.String",
                                                  true,
                                                  VariableInfo.NESTED);
@@ -118,34 +118,4 @@ public class NodeProviderTEI extends TagExtraInfo {
         return variableInfo;
     }
         
-    /**
-    * simple util method to split comma separated values
-    * to a vector
-    * @param string the string to split
-    * @param delimiter
-    * @return a Vector containing the elements, the elements are also trimed
-    **/
-    protected Vector stringSplitter(String string,String delimiter){
-        Vector retval = new Vector();
-        StringTokenizer st = new StringTokenizer(string, delimiter);
-        while(st.hasMoreTokens()){
-            retval.addElement(st.nextToken().trim());
-        }
-        return retval;
-    }
-    
-    protected Vector stringSplitter(String string) {
-        return stringSplitter(string, ",");
-    }
-    
-
-    private String getSimpleReturnValueName(String id, String fieldName){
-        String field = fieldName.replace('.','_');
-        if (id != null && ! "".equals(id)) {
-            field = id + "_" + field;
-        }
-        return field;
-    }
-
-    
 }

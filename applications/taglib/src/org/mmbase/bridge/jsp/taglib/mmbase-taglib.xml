@@ -260,7 +260,7 @@ one or more examplevalue tags is you want to give some example values.
   <tag>
     <name>cloud</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.CloudTag</teiclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.CloudTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>The cloud tag initializes the cloud to use.</info>
     <attribute>
