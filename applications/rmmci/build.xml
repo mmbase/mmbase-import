@@ -130,7 +130,7 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Clean the remote-classes                                            -->
   <!-- =================================================================== -->
-  <target name="clean" depends="init">
+  <target name="clean">
     <delete failonerror="false" dir="build/src"/>
   </target>
 </project>
