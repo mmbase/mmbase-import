@@ -43,7 +43,7 @@ public class TypeDef extends MMObjectBuilder {
     /**
      * List of known builders.
      */
-    private Vector typedefsLoaded = new Vector();	// Contains the names of all active builders
+    private Vector typedefsLoaded = new Vector();    // Contains the names of all active builders
 
     /**
      * Constructor
@@ -171,7 +171,6 @@ public class TypeDef extends MMObjectBuilder {
         }
         return result;
     }
-
 
     /**
      * Obtain the buildername of the requested type
@@ -342,7 +341,6 @@ public class TypeDef extends MMObjectBuilder {
         return rtn;
     }
 
-
     /**
      * @javadoc
      */
@@ -379,7 +377,7 @@ public class TypeDef extends MMObjectBuilder {
     }
 
     protected Object executeFunction(MMObjectNode node, String function, List args) {
-        log.debug("executefunction of typdef");
+        log.debug("executefunction of typedef");
         if (function.equals("info")) {
             List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
@@ -407,6 +405,4 @@ public class TypeDef extends MMObjectBuilder {
             return super.executeFunction(node, function, args);
         }
     }
-
-
 }
