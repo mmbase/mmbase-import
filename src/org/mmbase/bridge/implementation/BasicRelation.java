@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 
+import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
@@ -20,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.27 2003-03-04 13:44:37 nico Exp $
+ * @version $Id: BasicRelation.java,v 1.28 2003-03-17 08:47:03 michiel Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -122,11 +123,11 @@ public class BasicRelation extends BasicNode implements Relation {
         if (relationManager==null) {
             int stypenum=mmb.getTypeRel().getNodeType(snum);
             int dtypenum=mmb.getTypeRel().getNodeType(dnum);
+            if (log.isDebugEnabled()) {
+                log.debug(stypenum + ", " + dtypenum + ", " + getNode().getIntValue("rnumber"));
+            }
 
-            log.info(stypenum+" ,"+stypenum+","+getNode().getIntValue("rnumber"));
-
-            relationManager=cloud.getRelationManager(stypenum,dtypenum,
-                                getNode().getIntValue("rnumber"));
+            relationManager=cloud.getRelationManager(stypenum,dtypenum, getNode().getIntValue("rnumber"));
         }
         return relationManager;
     }

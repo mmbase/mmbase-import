@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.83 2003-03-06 13:53:57 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.84 2003-03-17 08:47:03 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -183,7 +183,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
-            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber, e);
+            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber,e);
         }
         if (node==null) {
             throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
@@ -301,7 +301,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (set.size() > 0) {
             return new BasicRelationManager((MMObjectNode) set.iterator().next(), this);
         } else {
-            log.error("hmm?");
+            log.error("Relation " + sourceManagerId + "/" + destinationManagerId + "/" + roleId + " does not exist");
             return null; // calling method throws exception
         }
     }
@@ -843,7 +843,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
-             throw new NotFoundException("Something went wrong while getting node with number " + nodenumber, e);
+             throw new NotFoundException("Something went wrong while getting node with number " + nodenumber,e);
         }
         if (node==null) {
             throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
