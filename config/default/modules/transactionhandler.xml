@@ -23,7 +23,7 @@
 	<!-- signal = if something goes wrong it will be printed
 	     secure = the mallanous transaction will not be executed
 	  -->
-    <property name="security">secure</property>
+    <property name="security">signal</property>
   </properties>
 
 </module>
