@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: CommunityPrc.java,v 1.9 2003-06-18 20:03:55 michiel Exp $
+ * @version $Id: CommunityPrc.java,v 1.10 2004-01-07 15:11:19 pierre Exp $
  */
 
 public class CommunityPrc extends ProcessorModule {
@@ -58,6 +58,8 @@ public class CommunityPrc extends ProcessorModule {
 
     private MMBase mmb;
 
+    private boolean active = false;
+
     /**
      * Create a Community module instance.
      */
@@ -65,17 +67,33 @@ public class CommunityPrc extends ProcessorModule {
     }
 
     /**
-     * Initailize the communit.
-     * Makes sure MMBase starts first (as it needs a refernce to its builders).
+     * Initialize the community.
+     * Makes sure MMBase starts first (as it needs a reference to its builders).
      */
     public void init() {
-        log.info("Start MMBase before community");
         // load MMBase and make sure it is started first
         mmb = (MMBase)getModule("MMBASEROOT", true);
-        messageBuilder = (Message)mmb.getMMObject("message");
-        channelBuilder = (Channel)mmb.getMMObject("channel");
-        communityBuilder = (Community)mmb.getMMObject("community");
-        initializeTreeBuilder();
+        activate();
+    }
+
+    /**
+     * Initialize the community and activate it if all builders are present.
+     */
+    public boolean activate() {
+        if (!active) {
+            messageBuilder = (Message)mmb.getMMObject("message");
+            if (messageBuilder != null && messageBuilder.activate()) {
+                communityBuilder = (Community)mmb.getMMObject("community");
+                if (communityBuilder != null && communityBuilder.activate()) {
+                    channelBuilder = (Channel)mmb.getMMObject("channel");
+                    if (channelBuilder != null && channelBuilder.activate()) {
+                        initializeTreeBuilder();
+                        active = true;
+                    }
+                }
+            }
+        }
+        return active;
     }
 
     /**
@@ -102,17 +120,19 @@ public class CommunityPrc extends ProcessorModule {
      * @return the result value as a <code>String</code>
      */
     public String replace(scanpage sp, String cmds) {
-        StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
-        if (tok.hasMoreTokens()) {
-            String cmd = tok.nextToken();
-            if (cmd.equals("MESSAGE")) {
-                return messageBuilder.replace(sp, tok);
-            }
-            if (cmd.equals("CHANNEL")) {
-                return channelBuilder.replace(sp, tok);
-            }
-            if (cmd.equals("COMMUNITY")) {
-                return communityBuilder.replace(sp, tok);
+        if (activate()) {
+            StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
+            if (tok.hasMoreTokens()) {
+                String cmd = tok.nextToken();
+                if (cmd.equals("MESSAGE")) {
+                    return messageBuilder.replace(sp, tok);
+                }
+                if (cmd.equals("CHANNEL")) {
+                    return channelBuilder.replace(sp, tok);
+                }
+                if (cmd.equals("COMMUNITY")) {
+                    return communityBuilder.replace(sp, tok);
+                }
             }
         }
         return "";
@@ -138,25 +158,26 @@ public class CommunityPrc extends ProcessorModule {
      */
     public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
         boolean result = false;
+        if (activate()) {
+            String token;
+            for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
+                String key = (String)h.nextElement();
+                StringTokenizer tok = new StringTokenizer(key , "-\n\r");
 
-        String token;
-        for (Enumeration h = cmds.keys(); h.hasMoreElements();) {
-            String key = (String)h.nextElement();
-            StringTokenizer tok = new StringTokenizer(key , "-\n\r");
-
-            token = tok.nextToken();
-            if (token.equals("MESSAGE")) {
-                if (tok.hasMoreElements()) {
-                    token = tok.nextToken();
-                    /* $MOD-MESSAGE-POST- */
-                    if (token.equals("POST")) {
-                        doPostProcess(sp, cmds, vars);
-                    } else if (token.equals("UPDATE")) {
-                        doUpdateProcess(sp, cmds,vars);
+                token = tok.nextToken();
+                if (token.equals("MESSAGE")) {
+                    if (tok.hasMoreElements()) {
+                        token = tok.nextToken();
+                        /* $MOD-MESSAGE-POST- */
+                        if (token.equals("POST")) {
+                            doPostProcess(sp, cmds, vars);
+                        } else if (token.equals("UPDATE")) {
+                            doUpdateProcess(sp, cmds,vars);
+                        }
                     }
                 }
+                result = true;
             }
-            result = true;
         }
         return result;
     }
@@ -314,9 +335,11 @@ public class CommunityPrc extends ProcessorModule {
      * @return a <code>Vector</code> that contains the list values
      */
     public Vector getList(scanpage sp, StringTagger params, String command) throws ParseException {
-        if (command.equals("TREE")) return messageBuilder.getListMessages(params);
-        if (command.equals("WHO")) return channelBuilder.getListUsers(params);
-        if (command.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(params);
+        if (activate()) {
+            if (command.equals("TREE")) return messageBuilder.getListMessages(params);
+            if (command.equals("WHO")) return channelBuilder.getListUsers(params);
+            if (command.equals("TEMPORARYRELATIONS")) return getListTemporaryRelations(params);
+        }
         return null;
     }
 

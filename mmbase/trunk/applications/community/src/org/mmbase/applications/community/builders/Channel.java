@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Channel.java,v 1.19 2003-11-21 13:37:56 robmaris Exp $
+ * @version $Id: Channel.java,v 1.20 2004-01-07 15:11:19 pierre Exp $
  */
 
 public class Channel extends MMObjectBuilder {
@@ -105,6 +105,8 @@ public class Channel extends MMObjectBuilder {
     private NodeBreaker chatboxConnections = null;
     // default chat owner
     private String tOwner = "system";
+    // indicates whether this builder has been activated for the community application
+    private boolean active = false;
 
     /**
      * This Hashtable contains all open channels with their highest sequence
@@ -133,8 +135,8 @@ public class Channel extends MMObjectBuilder {
      * Creates references to other required builders and relation roles.
      * <br />
      * Also opens all channels whose <code>open</code> field is set to {@link #OPEN} or
-     * {@link #WANT_OPEN}. This step can be skipped, to speed up startup of the server, 
-     * by specifying the property <code>open-channels-on-startup</code> in the 
+     * {@link #WANT_OPEN}. This step can be skipped, to speed up startup of the server,
+     * by specifying the property <code>open-channels-on-startup</code> in the
      * Channel builder configuration, and setting it to <code>false</code>.
      */
     public boolean init() {
@@ -150,26 +152,43 @@ public class Channel extends MMObjectBuilder {
         if ((defaultUserType==null) || (defaultUserType.length()==0)){
             defaultUserType="chatter";
         }
-        
-        // open-channels-on-startup property:
-        String strOpenChannelsOnStartup = getInitParameter("open-channels-on-startup");
-        boolean openChannelsOnStartup = !"false".equals(strOpenChannelsOnStartup);            
-        
-        // get message builder
-        messageBuilder   = (Message)   mmb.getMMObject("message");
-        // get community object type
-        communityBuilder = (Community) mmb.getMMObject("community");
-        // obtain temporary node manager
-        tmpNodeManager = new TemporaryNodeManager(mmb);
-        // create relation breaker for maintaining temporary relations
-        chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
 
-        // Open all channels, unless the configuration specifies not to.
-        if (openChannelsOnStartup) {
-            openChannels();
-        }
-
+        activate();
         return result;
+    }
+
+    /**
+     * Activates the channel builder for the community application by associating it with other
+     * community builders and opening all communities.
+     * @return true if activation worked
+     */
+    public boolean activate() {
+        if (!active) {
+            // get message builder
+            messageBuilder   = (Message) mmb.getMMObject("message");
+            // get community object type
+            communityBuilder = (Community) mmb.getMMObject("community");
+            if (messageBuilder == null|| communityBuilder == null) {
+                // obtain temporary node manager
+                tmpNodeManager = new TemporaryNodeManager(mmb);
+                // create relation breaker for maintaining temporary relations
+                chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
+                active = true;
+                try {
+                    // open-channels-on-startup property:
+                    String strOpenChannelsOnStartup = getInitParameter("open-channels-on-startup");
+                    boolean openChannelsOnStartup = !"false".equals(strOpenChannelsOnStartup);
+                    // Open all channels, unless the configuration specifies not to
+                    if (openChannelsOnStartup) {
+                        openChannels();
+                    }
+                } catch (Exception e) {
+                    // opening all channels may throw an error if the community is not properly installed
+                    active = false;
+                }
+            }
+        }
+        return active;
     }
 
     /**
