@@ -15,10 +15,10 @@
 <!ATTLIST open id CDATA #REQUIRED>
 <!ATTLIST open commit (true | false) "true">
 
-<!ELEMENT commit (EMPTY) >
+<!ELEMENT commit EMPTY >
 <!ATTLIST commit id CDATA #REQUIRED>
 
-<!ELEMENT delete (EMPTY) >
+<!ELEMENT delete EMPTY >
 <!ATTLIST delete id CDATA #REQUIRED>
 
 <!-- OBJECTS -->
@@ -35,18 +35,18 @@
 <!ELEMENT openObject (setField*)>
 <!ATTLIST openObject id CDATA #REQUIRED>
 
-<!ELEMENT deleteObject (EMPTY) >
+<!ELEMENT deleteObject EMPTY >
 <!ATTLIST deleteObject id CDATA #REQUIRED>
 
 <!ELEMENT accessObject (setField*)>
 <!ATTLIST accessObject mmbaseId CDATA #REQUIRED>
 <!ATTLIST accessObject id CDATA  #IMPLIED>
 
-<!ELEMENT markObjectDelete (EMPTY)>
+<!ELEMENT markObjectDelete EMPTY >
 <!ATTLIST markObjectDelete mmbaseId CDATA #REQUIRED>
 <!ATTLIST markObjectDelete deleteRelations (true | false) "false">
 
 <!-- FIELDS -->
-<!ELEMENT setField #PCDATA >
+<!ELEMENT setField (#PCDATA) >
 <!ATTLIST setField name CDATA #REQUIRED>
 <!ATTLIST setField url CDATA #IMPLIED>
