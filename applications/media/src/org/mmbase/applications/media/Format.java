@@ -12,13 +12,13 @@ package org.mmbase.applications.media;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import java.util.*;
-import org.mmbase.util.ConstantsBundle;
+// import org.mmbase.util.ConstantsBundle;
 
 /**
  * Makes the 'Format' constants available.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Format.java,v 1.10 2003-07-04 17:23:40 michiel Exp $
+ * @version $Id: Format.java,v 1.11 2003-07-06 13:23:28 michiel Exp $
  * @since MMBase-1.7
  */
 // See http://www.javaworld.com/javaworld/jw-07-1997/jw-07-enumerated.html
@@ -97,7 +97,9 @@ public final class Format {   // final class!!
     
     public String getGUIIndicator(Locale locale) {
         try {
-            return  ConstantsBundle.get(RESOURCE, this.getClass(), number, locale);
+            ResourceBundle m = ResourceBundle.getBundle(RESOURCE, locale);
+            return m.getString("" + number);
+            // return  ConstantsBundle.get(RESOURCE, this.getClass(), number, locale);
         } catch (Exception e) {
             return "UNKNOWN";
         }
