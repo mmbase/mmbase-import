@@ -44,7 +44,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
   <mm:import externid="postingid" />
   
   <mm:notpresent referid="noedit">

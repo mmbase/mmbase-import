@@ -35,7 +35,7 @@
                                                                                               
 <div class="bodypart">
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
   <tr><th colspan="3" align="left" ><mm:write referid="mlg_Add_moderator_for" /> : <mm:node number="$postareaid"><mm:field name="name" /></mm:node>
   
   </th></tr>

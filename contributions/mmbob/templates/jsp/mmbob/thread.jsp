@@ -57,7 +57,7 @@
 <div class="bodypart">
 
 <mm:include page="path.jsp?type=postthread" />
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%" align="center">
                         <tr><th colspan="2" align="left">
                                         <mm:compare referid="image_logo" value="" inverse="true">
                                         <center><img src="<mm:write referid="image_logo" />" width="100%" ></center>
@@ -65,7 +65,7 @@
 			</th>
 			</tr>
 </table>
-<table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%">
+<table cellpadding="0" cellspacing="0" style="margin-top : 10px;" width="95%" align="center" align="center">
 	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
 			(<mm:field name="pagecount" />) 
@@ -76,7 +76,7 @@
 	</td></tr>
 </table>
 
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 5px;" width="95%" align="center">
   		  <mm:nodelistfunction set="mmbob" name="getPostings" referids="forumid,postareaid,postthreadid,posterid,page">
 		  <mm:first>
 			<tr><th width="25%" align="left"><mm:write referid="mlg_Member"/></th><th align="left"><mm:write referid="mlg_Topic"/>: <mm:field name="subject" /></th></tr>
@@ -199,7 +199,7 @@
 </table>
 
 
-<table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%">
+<table cellpadding="0" cellspacing="0" style="margin-top : 2px;" width="95%" align="center">
 	<tr><td align="left"><b><mm:write referid="mlg_Pages"/>
    	 	  <mm:nodefunction set="mmbob" name="getPostThreadNavigation" referids="forumid,postareaid,postthreadid,page">
 			<mm:field name="navline" />
@@ -213,7 +213,7 @@
 <mm:compare referid="threadstate" value="closed" inverse="true">
 
 <mm:compare referid="guestwritemodetype" value="open">
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
+<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%" align="center">
    <a name="reply" />
   <tr><th colspan="3"><mm:write referid="mlg_Fast_reply"/></th></tr>
   <form action="<mm:url page="thread.jsp" referids="forumid,postareaid,postthreadid,page" />#reply" method="post" name="posting">
