@@ -111,7 +111,7 @@ public class CloudTest extends BridgeTest {
         try {
             NodeList nodeList;
             nodeList = cloud.getList("" + bbNode.getNumber(), "aa,bb", "aa.bytefield", "", "", "", "", false);
-            fail("Should raise a BridgeException");
+            fail("Should raise a BridgeException, but gave following list: " + nodeList);
         } catch (BridgeException e) {}
     }
 
@@ -143,7 +143,7 @@ public class CloudTest extends BridgeTest {
         try {
             NodeList nodeList;
             nodeList = cloud.getList(null, "aa,bb", null, "", "", "", "", false);
-            fail("Should raise a BridgeException");
+            fail("Should raise a BridgeException, but returned: " + nodeList);
         } catch (BridgeException e) {}
     }
 
@@ -151,7 +151,7 @@ public class CloudTest extends BridgeTest {
         try {
             NodeList nodeList;
             nodeList = cloud.getList(null, "aa,bb", "", "", "", "", "", false);
-            fail("Should raise a BridgeException");
+            fail("Should raise a BridgeException, but returned: " + nodeList);
         } catch (BridgeException e) {}
     }
 
@@ -159,7 +159,7 @@ public class CloudTest extends BridgeTest {
         try {
             NodeList nodeList;
             nodeList = cloud.getList(null, "aa,bb", "x", "", "", "", "", false);
-            fail("Should raise a BridgeException");
+            fail("Should raise a BridgeException, but returned: " + nodeList);
         } catch (BridgeException e) {}
     }
 
