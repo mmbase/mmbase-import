@@ -16,7 +16,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Storable.java,v 1.3 2003-09-01 13:29:45 pierre Exp $
+ * @version $Id: Storable.java,v 1.4 2003-09-08 17:06:12 pierre Exp $
  */
 public interface Storable {
 
@@ -36,10 +36,24 @@ public interface Storable {
     public Object getStorageIdentifier() throws StorageException;
 
     /**
-     * Returns whether an object is kept in the storage (iow: is persistent).
+     * Returns whether an object is defined in the storage.
      * Virtual fields or builders should return <code>false</code>.
+     *
      * @return <code>true</code> if the object is kept in the storage
      */
     public boolean inStorage();
+
+    /**
+     * Retrieves the storage type. The meaning of this type is dependent
+     * on the storage implementation.
+     */
+    public int getStorageType();
+
+    /**
+     * Sets the storage type. This method is called by the storage layer when first loading a builder.
+     * The meaning of this type is dependent on the storage implementation.
+     * @param value the value to set
+     */
+    public void setStorageType(int value);
 
 }

@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.36 2003-09-04 11:04:12 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.37 2003-09-08 17:06:12 pierre Exp $
  * @see    org.mmbase.bridge.Field
  */
 public class FieldDefs implements Comparable, Storable {
@@ -81,6 +81,7 @@ public class FieldDefs implements Comparable, Storable {
 
     private MMObjectBuilder parent = null;
     private Object storageIdentifier = null;
+    private int     storageType = TYPE_UNKNOWN;
 
     /**
      * Constructor for default FieldDefs.
@@ -539,8 +540,12 @@ public class FieldDefs implements Comparable, Storable {
                " isKey=" + isKey + " DBDocType=" + docType;
     }
 
-    // Storable interaces
+    // Storable interfaces
 
+    /**
+     * {@inheritDoc}
+     * @since MMBase 1.7
+     */
     public Object getStorageIdentifier() throws StorageException {
         // determine the storage identifier from the name
         if (storageIdentifier == null) {
@@ -549,8 +554,28 @@ public class FieldDefs implements Comparable, Storable {
         return storageIdentifier;
     }
 
+    /**
+     * {@inheritDoc}
+     * @since MMBase 1.7
+     */
     public boolean inStorage() {
-        return (state == DBSTATE_PERSISTENT) || (state == DBSTATE_SYSTEM);
+        return (state == DBSTATE_PERSISTENT || state == DBSTATE_SYSTEM);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase 1.7
+     */
+    public int getStorageType() {
+        return storageType;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since MMBase 1.7
+     */
+    public void setStorageType(int value) {
+        storageType = value;
     }
 
     /**
