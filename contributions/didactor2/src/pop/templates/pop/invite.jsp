@@ -28,7 +28,7 @@ Alvast bedankt voor je reactie,
 Met vriendelijke groet, <mm:node number="$user"><mm:field name="firstname"/> <mm:field name="lastname"/></mm:node></textarea></td>
           </tr>
         </table>
-        <input type="submit" value="versturen">
-        <input type="submit" value="terug" onClick="inviteform.command.value='continue'">
+        <input type="submit" class="formbutton" value="versturen">
+        <input type="submit" class="formbutton" value="terug" onClick="inviteform.command.value='continue'">
       </form>
 </div>

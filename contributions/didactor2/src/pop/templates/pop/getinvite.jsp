@@ -25,8 +25,8 @@
             <td><textarea name="feedback2" cols="50" rows="5"></textarea></td>
           </tr>
         </table>
-        <input type="submit" value="versturen">
-        <input type="submit" value="terug" onClick="givefeedbackform.command.value='no'">
+        <input type="submit" class="formbutton" value="versturen">
+        <input type="submit" class="formbutton" value="terug" onClick="givefeedbackform.command.value='no'">
       </form>
     </mm:list>
   </mm:listcontainer>
