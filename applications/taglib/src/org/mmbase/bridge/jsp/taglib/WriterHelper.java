@@ -11,8 +11,10 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
+import java.io.StringReader;
 
-import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.util.StringSplitter;
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
@@ -368,16 +370,16 @@ public class WriterHelper extends BodyTagSupport {
             return w;
         }
         if (useEscaper || escape != Attribute.NULL) {
-            ContentTag.Escaper escaper;
-            if (escape != Attribute.NULL) {
-                escaper = ContentTag.getEscaper(escape.getString(thisTag));
+            CharTransformer escaper;
+            if (! escape.getString(thisTag).equals("")) {
+                escaper = ContentTag.getCharTransformer(escape.getString(thisTag));
             } else {
-                escaper = thisTag.getContentTag().getEscaper();
+                escaper = thisTag.getContentTag().getWriteEscaper();
             }
             if (log.isDebugEnabled()) {
                 log.debug("Using escaper " + escaper);
             }
-            return  escaper.transform(value.toString(), w);
+            return  escaper.transform(new StringReader(value.toString()), w);
         } else {
             w.write(value.toString());
             return w;
