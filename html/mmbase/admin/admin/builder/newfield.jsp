@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String builder = request.getParameter("builder"); %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
 <html xmlns="http://www.w3.org/TR/xhtml">
@@ -18,7 +18,7 @@
 <%=header("Administrate Builder "+builder+", Add Field")%>
 <table summary="new builder field properties" width="93%" cellspacing="1" cellpadding="3">
 <tr align="left">
- <th class="header" colspan="3">Add New Field to Builder <%=builder%></td>
+ <th class="header" colspan="3">Add New Field to Builder <%=builder%></th>
 </tr>
 <tr>
  <td class="multidata" colspan="3">
@@ -33,9 +33,9 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-<th class="header">Field Property</td>
-  <th class="header">Value</td>
-  <th class="header">Explain</td>
+<th class="header">Field Property</th>
+  <th class="header">Value</th>
+  <th class="header">Explain</th>
 </tr>
 
 <form action="actions.jsp" method="POST">
@@ -110,7 +110,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="actions.jsp?builder=<%=builder%>"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="actions.jsp?builder=<%=builder%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>

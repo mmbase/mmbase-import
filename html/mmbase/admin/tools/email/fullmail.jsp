@@ -15,8 +15,7 @@
 
 <mm:node number="<%=request.getParameter("msg")%>" id="msg">
 <tr align="left">
-  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0
-</td>
+  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <tr>
   <td class="multidata" colspan="4">Full email content</td>
@@ -25,8 +24,8 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-  <td class="header">Mail property</td>
-  <td class="header">Value</td>
+  <th class="header">Mail property</th>
+  <th class="header">Value</th>
 </tr>
 <tr>
   <td class="data">Title</td>
@@ -81,7 +80,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-  <td class="header" colspan="2">Body</td>
+  <th class="header" colspan="2">Body</th>
 </tr>
 <tr>
   <td class="multidata" colspan="2"><mm:field name="html(body)" /></td>
@@ -92,7 +91,7 @@
 </mm:node>
 
 <tr>
-<td class="navigate"><a href="../email.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../email.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" >Return to Email Monitor</td>
 </tr>
 </table>

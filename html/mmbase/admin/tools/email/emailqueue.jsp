@@ -21,8 +21,7 @@
 %>
 
 <tr align="left">
-  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0
-</td>
+  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <% if (email==null) { %>
 <tr>
@@ -41,10 +40,10 @@
 </td>
 </tr>
 <tr>
-  <td class="header">second to mail</td>
-  <td class="header">to</td>
-  <td class="header">from</td>
-  <td class="header">subject</td>
+  <th class="header">second to mail</th>
+  <th class="header">to</th>
+  <th class="header">from</th>
+  <th class="header">subject</th>
 </tr>
 
 <%
@@ -66,7 +65,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../email.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../email.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Email Monitor</td>
 </tr>
 </table>

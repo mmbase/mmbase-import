@@ -21,8 +21,7 @@
 %>
 
 <tr align="left">
-  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0
-</td>
+  <th class="header" colspan="4">Dynamic & Timed Email System - Queue Monitor - v1.0</th>
 </tr>
 <% if (email==null) { %>
 <tr>
@@ -62,7 +61,7 @@
 <tr>
   <td class="data">Show first 500 entry's of the queue</td>
   <td class="navigate">
-    <a href="email/emailqueue.jsp"><img src="../images/pijl.gif" alt="next" border="0" align="right"></a>
+    <a href="email/emailqueue.jsp"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
   </td>
 </tr>
 
@@ -71,7 +70,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../default.jsp" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to home page</td>
 </tr>
 </table>

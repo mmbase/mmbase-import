@@ -1,7 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <%@page import="org.mmbase.bridge.*" %>
 <%@page import="java.util.*" %>
-<mm:cloud name="mmbase">
+<mm:cloud name="mmbase" method="http" logon="admin">
 <% String builder = request.getParameter("builder");
    String field = request.getParameter("field");
 %>
@@ -31,7 +31,7 @@
 %>
 <table summary="builder field properties" width="93%" cellspacing="1" cellpadding="3">
 <tr align="left">
- <th class="header" colspan="4">Description of <%=builder%> field <%=field%></td>
+ <th class="header" colspan="4">Description of <%=builder%> field <%=field%></th>
 </tr>
 <tr>
  <td class="multidata" colspan="4"><%=msg%>&nbsp;</td>
@@ -40,10 +40,10 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-<th class="header">Property</td>
-  <th class="header">Value</td>
-  <th class="header">Explain</td>
-  <th class="header">Change</td>
+<th class="header">Property</th>
+  <th class="header">Value</th>
+  <th class="header">Explain</th>
+  <th class="header">Change</th>
 </tr>
 <tr>
   <td class="data">Name</td>
@@ -51,7 +51,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#dbname">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=dbname&name=Name"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -60,7 +60,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#dbmmbasetype">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=dbmmbasetype&name=Type"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -69,7 +69,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#dbstate">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=dbstate&name=State"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -78,7 +78,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#dbnotnull">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=dbnotnull&name=Required"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -87,7 +87,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#dbkey">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=dbkey&name=Unique/Key"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -96,17 +96,17 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#dbsize">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=dbsize&name=Size"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-  <th class="header">Editor Property</td>
-  <th class="header">Value</td>
-  <th class="header">Explain</td>
-  <th class="header">Change</td>
+  <th class="header">Editor Property</th>
+  <th class="header">Value</th>
+  <th class="header">Explain</th>
+  <th class="header">Change</th>
 </tr>
 
 <tr>
@@ -115,7 +115,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#editorinput">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=editorinput&name=Input"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -124,7 +124,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#editorlist">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=editorlist&name=List"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <tr>
@@ -133,17 +133,17 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#editorsearch">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=editorsearch&name=Search"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-  <th class="header">GUI Property</td>
-  <th class="header">Value</td>
-  <th class="header">Explain</td>
-  <th class="header">Change</td>
+  <th class="header">GUI Property</th>
+  <th class="header">Value</th>
+  <th class="header">Explain</th>
+  <th class="header">Change</th>
 </tr>
 <tr>
   <td class="data">GUI&nbsp;Type</td>
@@ -151,7 +151,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#guitype">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=guitype&name=GUI&nbsp;Type"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 
@@ -167,7 +167,7 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#guiname">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=guiname&name=Field&nbsp;Name&nbsp;for&nbsp;ISO&nbsp;639&nbsp;<%=name.getStringValue("item1")%>&country=<%=name.getStringValue("item2")%>"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 <% } %>
@@ -178,16 +178,16 @@
   <td class="linkdata"><a href="/mmdocs/config/builders.html#newguiname">explain</a></td>
   <td class="navigate">
     <a href="setfieldproperty.jsp?builder=<%=builder%>&field=<%=field%>&cmd=newguiname&name=New&nbsp;Field&nbsp;Name"
-    ><img src="../../images/pijl.gif" alt="change" border="0" align="right" /></a>
+    ><img src="../../images/change.gif" alt="change" border="0" align="right" /></a>
   </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <tr align="left">
-  <th class="header">Remove Field</td>
-  <th class="header">Check</td>
-  <th class="header" colspan="2">Confirm</td>
+  <th class="header">Remove Field</th>
+  <th class="header">Check</th>
+  <th class="header" colspan="2">Confirm</th>
 </tr>
 
 <form action="actions.jsp" method="POST">
@@ -211,7 +211,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="actions.jsp?builder=<%=builder%>"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="actions.jsp?builder=<%=builder%>"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data" colspan="3">Return to Builder Administration</td>
 </tr>
 </table>

@@ -13,7 +13,7 @@
 <body class="basic" >
 <table summary="server actions" width="93%" cellspacing="1" cellpadding="3">
 <tr align="left">
-  <th class="header" colspan="2" >Administrate Server: <%=server%></td>
+  <th class="header" colspan="2" >Administrate Server: <%=server%></th>
 </tr>
 <tr>
   <td class="multidata" colspan="2">
@@ -26,8 +26,8 @@
 <tr><td><br /></td></tr>
 <form action="result.jsp" method="POST">
 <tr align="left">
-  <th class="header">Action</td>
-  <th class="header">Confirm</td>
+  <th class="header">Action</th>
+  <th class="header">Confirm</th>
 </tr>
 <tr>
   <td class="data">Restart Server</td>
@@ -42,7 +42,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td class="navigate"><a href="../servers.jsp"><img src="../../images/pijl2.gif" alt="back" border="0" align="left" /></td>
+<td class="navigate"><a href="../servers.jsp"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
 <td class="data">Return to Server Overview</td>
 </tr>
 </table>
