@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.87 2003-05-07 12:18:00 pierre Exp $
+  @version $Id: wizard.xsl,v 1.88 2003-05-09 07:47:05 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -174,10 +174,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-        <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+        <a href="{$ew_context}/rastreams.db?{@field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-        <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+        <a href="{$ew_context}/rmstreams.db?{@field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 
@@ -580,7 +580,7 @@
           <tr>
             <td>          
               <!-- the image -->
-              <img src="{node:function($cloud, string(field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
+              <img src="{node:function($cloud, string(@field/@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" />
             </td>
             <td colspan="2">
               <xsl:if test="field|fieldset">
@@ -677,19 +677,22 @@
        -->
   <xsl:template match="list">
     <td colspan="2" class="listcanvas">
-      
       <div title="{description}">
-	<xsl:choose>
-	  <xsl:when test="@status='invalid'">
-	    <xsl:attribute name="class">notvalid</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="@status='invalid'">
+						<xsl:attribute name="class">notvalid</xsl:attribute>
           </xsl:when>
-          <xsl:otherwise>
-	    <xsl:attribute name="class">subhead</xsl:attribute>
+	        <xsl:otherwise>
+						<xsl:attribute name="class">subhead</xsl:attribute>
           </xsl:otherwise>
-	</xsl:choose>
+				</xsl:choose>
         <nobr><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="title" /></xsl:call-template></nobr>
       </div>
+		  <xsl:call-template name="listitems" />			
+  </td>
+	</xsl:template><!-- list -->
 
+  <xsl:template name="listitems">
       <!-- show the item's of the list like that -->
       <xsl:if test="item">
         <table class="itemlist"><!-- three columns -->       
@@ -723,12 +726,12 @@
                   <!-- other search-possibilities are given in the xml -->
                   <select 
                     name="searchfields_{../command[@name='add-item']/@cmd}"   class="searchpossibilities"
-                    onChange="form['searchterm_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('default'); ">
+                    onChange="form['searchterm_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('default'); form['searchtype_{../command[@name='add-item']/@cmd}'].value = this[this.selectedIndex].getAttribute('searchtype');">
                     >
                     <xsl:choose>
                       <xsl:when test="search-filter">
                         <xsl:for-each select="search-filter">
-                          <option value="{search-fields}" default="{default}">
+                          <option value="{search-fields}" default="{default}" searchtype="{search-fields/@search-type}">
                             <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="name" /></xsl:call-template>
                             </option>
                         </xsl:for-each>
@@ -738,9 +741,12 @@
                         <option value="title"><xsl:call-template name="prompt_search_title" /></option>
                       </xsl:otherwise>
                     </xsl:choose>
-                    <!-- always search on owner too -->
-                    <option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
+                    <!-- always search on owner and number too -->
+                    <option value="number" searchtype="equals" ><xsl:call-template name="prompt_search_number" /></option>
+                    <option value="owner" searchtype="like"><xsl:call-template name="prompt_search_owner" /></option>
                   </select>
+                  <input type="hidden" name="searchtype_{../command[@name='add-item']/@cmd}" 
+                    value="{search-filter[1]/search-fields/@searchtype}" />
                   <input 
                     type="text" name="searchterm_{../command[@name='add-item']/@cmd}" 
                     value="{search-filter[1]/default}" class="search" 
@@ -824,10 +830,7 @@
             </table>
           </xsl:if>
         </xsl:if>
-
-        </td>
-
-    </xsl:template><!-- list -->
+    </xsl:template><!-- listitems -->
       
           
     <xsl:template name="savebutton">
