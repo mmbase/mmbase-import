@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * The collection of clouds, and modules within a Java Virtual Machine.
+ * The collection of clouds and modules within a Java Virtual Machine.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -51,13 +51,13 @@ public interface CloudContext {
 	 * Returns the cloud with the specified name, with authentication
     	 *
 	 * @param name                     the name of the cloud to be returned
-	 * @param application	    	   the type of authentication, which should be 
+	 * @param authenticationtype   	   the type of authentication, which should be 
 	 * 	    	    	    	   used by the authentication implementation.
 	 * @param loginInfo 	    	    the user related login information.
 	 * @return                         the requested cloud
     	 * @throws CloudNotFoundException  if the specified cloud could not be found
 	 */
-	public Cloud getCloud(String name, String application, HashMap loginInfo);
+	public Cloud getCloud(String name, String authenticationtype, HashMap loginInfo);
 	
 	/**
 	 * Returns the names of all the clouds known to the system
