@@ -44,7 +44,7 @@ public class TestCache {
 
 
     public static void main (String[] args) throws Exception {
-
+        System.out.println("getStats gave: " + cache.getStats());
         System.out.println("getting once some things:");
         cache.get("a");
         cache.get("b");

@@ -11,6 +11,8 @@ import org.mmbase.util.swing.xml.parse.*;
 import javax.swing.text.*;
 import java.util.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Base class for XML Document (to use in EditorKits). 
  *
@@ -26,8 +28,10 @@ import java.util.*;
 
 abstract public class XMLDocument extends DefaultStyledDocument {
   
+
+    private static Logger log = Logging.getLoggerInstance(XMLDocument.class.getName());
     private void debug(String d) {
-        System.out.println("LOG XMLDocument " + d);
+        log.info("XMLDocument " + d);
     }
 
     public XMLDocument(StyleContext s) {
