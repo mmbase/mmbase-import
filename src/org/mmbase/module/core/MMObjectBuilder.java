@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.191 2002-12-04 12:18:00 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.192 2002-12-04 12:33:14 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1964,6 +1964,8 @@ public class MMObjectBuilder extends MMTable {
      * @vpro replace with a way to sort nodes.
      * @param rs The resultset containing the nodes
      * @return The SortedVector which holds the data
+     * @deprecated Use {@link getNodes(NodeSearchQuery) 
+     *             getNodes(NodeSearchQuery} to perform a node search.
      */
     public SortedVector readSearchResults(ResultSet rs, SortedVector sv) {
         try {
