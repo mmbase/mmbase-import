@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.76 2002-10-29 15:27:32 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.77 2002-11-18 12:24:17 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -120,17 +120,13 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         mmbaseCop = mmb.getMMBaseCop();
 
         if (mmbaseCop == null) {
-            String message;
-            message = "Couldn't find the MMBaseCop.";
+            String message = "Couldn't find the MMBaseCop.";
             log.error(message);
             throw new BridgeException(message);
         }
         org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);
         if (uc == null) {
-            String message;
-            message = "Login invalid (login-module: " + application + ")";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Login invalid (login-module: " + application + ")");
         }
         userContext = new BasicUser(mmbaseCop, uc);
         // end authentication...
@@ -187,11 +183,8 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
         } catch (RuntimeException e) {
-            String message;
-            message = "Something went wrong while getting node with number " + nodenumber + " (does it exist?)\n" + Logging.stackTrace(e);
-
-            log.error(message);
-            throw new NotFoundException(message);
+            log.error("Something went wrong while getting node with number " + nodenumber + "\n" + Logging.stackTrace(e));
+            throw new NotFoundException("Something went wrong while getting node with number " + nodenumber);
         }
         if (node==null) {
             throw new NotFoundException("Node with number '" + nodenumber + "' does not exist.");
@@ -459,11 +452,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
                   if (overwrite) {
                       oldtransaction.cancel();
                   } else {
-                      String message;
-                      message = "Transaction with name " + name
-                                + "already exists.";
-                      log.error(message);
-                      throw new AlreadyExistsException(message);
+                      throw new AlreadyExistsException("Transaction with name " + name + "already exists.");
                   }
               }
         }
@@ -655,10 +644,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (nodePath != null && (!nodePath.trim().equals(""))) {
             pars+=" TYPES='"+nodePath+"'";
         } else {
-            String message;
-            message = "No nodePath specified.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("No nodePath specified.");
         }
 
         if (fields == null) fields = "";
@@ -757,10 +743,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             return list;
 
         } else {
-            String message;
-            message = "Parameters are invalid :" + pars + " - " + constraints;
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Parameters are invalid :" + pars + " - " + constraints);
         }
     }
 

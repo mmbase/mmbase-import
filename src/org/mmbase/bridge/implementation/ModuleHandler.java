@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @author Rob Vermeulen
- * @version $Id: ModuleHandler.java,v 1.18 2002-11-01 09:34:11 pierre Exp $
+ * @version $Id: ModuleHandler.java,v 1.19 2002-11-18 12:24:18 pierre Exp $
  */
 public class ModuleHandler implements Module, Comparable {
     private static Logger log = Logging.getLoggerInstance(ModuleHandler.class.getName());
@@ -99,10 +99,7 @@ public class ModuleHandler implements Module, Comparable {
         if (mmbase_module instanceof ProcessorInterface) {
             return ((ProcessorInterface)mmbase_module).replace(BasicCloudContext.getScanPage(req, resp),command);
         } else {
-            String message;
-                message = "getInfo() is not supported by this module.";
-                log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("getInfo() is not supported by this module.");
         }
     }
 
@@ -129,10 +126,7 @@ public class ModuleHandler implements Module, Comparable {
                 ((ProcessorInterface)mmbase_module).process(BasicCloudContext.getScanPage(req, resp),cmds,partab);
                 if (auxparameters!=null) auxparameters.putAll(partab);
         } else {
-            String message;
-                message = "process() is not supported by this module.";
-                log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("process() is not supported by this module.");
         }
     }
 
@@ -161,16 +155,12 @@ public class ModuleHandler implements Module, Comparable {
                 }
                 return new BasicNodeList(v,tempNodeManager);
             } catch (Exception e) {
-                String message;
-                message = e.getMessage() + " " + Logging.stackTrace(e);
+                String message = e.getMessage() + " " + Logging.stackTrace(e);
                 log.error(message);
                 throw new BridgeException(message);
             }
         } else {
-            String message;
-            message = "getInfo() is not supported by this module.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("getList() is not supported by this module.");
         }
     }
 

@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Pierre van Rooden
- * @version $Id: BasicTransaction.java,v 1.10 2002-01-31 10:05:12 pierre Exp $
+ * @version $Id: BasicTransaction.java,v 1.11 2002-11-18 12:24:18 pierre Exp $
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
     private static Logger log = Logging.getLoggerInstance(BasicTransaction.class.getName());
@@ -56,8 +56,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 // We solved this here, but this should really be handled in the Transactionmanager.
                 transactionContext = BasicCloudContext.transactionManager.create(account, account+"_"+transactionName);
             } catch (TransactionManagerException e) {
-                String message;
-                message = e.getMessage();
+                String message = e.getMessage();
                 log.error(message);
                 throw new BridgeException(message);
             }
@@ -66,10 +65,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public boolean commit() {
         if (transactionContext==null) {
-            String message;
-            message = "No valid transaction : " + name;
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("No valid transaction : " + name);
         }
         // if this is a transaction within a transaction (theoretically possible)
         // leave the committing to the 'parent' transaction
@@ -82,8 +78,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
                 // return false;
-                String message;
-                message = e.getMessage();
+                String message = e.getMessage();
                 log.error(message);
                 throw new BridgeException(message);
             }
@@ -97,10 +92,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
 
     public void cancel() {
         if (transactionContext==null) {
-            String message;
-            message = "No valid transaction : " + name;
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("No valid transaction : " + name);
         }
         // if this is a transaction within a transaction (theoretically possible)
         // call the 'parent' transaction to cancel everything
@@ -112,8 +104,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
                 BasicCloudContext.transactionManager.cancel(userContext.getUserContext(), transactionContext);
             } catch (TransactionManagerException e) {
                 // do we drop the transaction here or delete the trans context?
-                String message;
-                message = e.getMessage();
+                String message = e.getMessage();
                 log.error(message);
                 throw new BridgeException(message);
             }
@@ -132,8 +123,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         try {
             BasicCloudContext.transactionManager.addNode(transactionContext, account,currentObjectContext);
         } catch (TransactionManagerException e) {
-            String message;
-            message = e.getMessage();
+            String message = e.getMessage();
             log.error(message);
             throw new BridgeException(message);
         }
@@ -147,8 +137,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         try {
             BasicCloudContext.transactionManager.removeNode(transactionContext,account,currentObjectContext);
         } catch (TransactionManagerException e) {
-            String message;
-            message = e.getMessage();
+            String message = e.getMessage();
             log.error(message);
             throw new BridgeException(message);
         }
@@ -162,8 +151,7 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         try {
             BasicCloudContext.transactionManager.deleteObject(transactionContext,account,currentObjectContext);
         } catch (TransactionManagerException e) {
-            String message;
-            message = e.getMessage();
+            String message = e.getMessage();
             log.error(message);
             throw new BridgeException(message);
         }

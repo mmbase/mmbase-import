@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.78 2002-11-18 11:40:34 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.79 2002-11-18 12:24:17 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -192,8 +192,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     protected MMObjectNode getNode() {
         if (noderef==null) {
-            String message;
-            message = "Node is invalidated or removed.";
+            String message = "Node is invalidated or removed.";
             log.error(message);
             throw new BridgeException(message);
         }
@@ -240,17 +239,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (account==null) {
             account = cloud.getAccount();
         } else if (account != cloud.getAccount()) {
-            String message;
-            message = "User context changed. Cannot proceed to edit this "
-                + "node .";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("User context changed. Cannot proceed to edit this node .");
         }
         if (nodeManager instanceof VirtualNodeManager) {
-            String message;
-            message = "Cannot make edits to a virtual node.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Cannot make edits to a virtual node.");
         }
 
         int realnumber=noderef.getNumber();
@@ -273,9 +265,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             // this should not occur (hence internal error notice), but we test it anyway.
 
             if (action == ACTION_CREATE) {
-                String message;
-                message = "This node cannot be added. It was not correctly " +
-                          "instantiated (internal error).";
+                String message = "This node cannot be added. It was not correctly instantiated (internal error).";
                 log.error(message);
                 throw new BridgeException(message);
             }
@@ -308,19 +298,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public void setValue(String attribute, Object value) {
         edit(ACTION_EDIT);
         if ("number".equals(attribute) || "otype".equals(attribute) || "owner".equals(attribute)
-            //|| "snumber".equals(attribute) || "dnumber".equals(attribute) || "rnumber".equals(attribute)
             ) {
-            String message;
-            message = "Not allowed to change field " + attribute + ".";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Not allowed to change field " + attribute + ".");
         }
         if (this instanceof Relation) {
             if ("rnumber".equals(attribute)) {
-                String message;
-                message = "Not allowed to change field " + attribute + ".";
-                log.error(message);
-                throw new BridgeException(message);
+                throw new BridgeException("Not allowed to change field " + attribute + ".");
             } else if ("snumber".equals(attribute)
                     || "dnumber".equals(attribute)) {
                 BasicRelation relation = (BasicRelation)this;
@@ -334,10 +317,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     protected void _setValue(String attribute, Object value) {
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
-            String message;
-            message = "Can't change unknown field " + attribute + ".";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Can't change unknown field " + attribute + ".");
         }
         changed = true;
     }
@@ -523,10 +503,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             } else {
                 // option unset, fail if any relations exit
                 if(getNode().hasRelations()) {
-                    String message;
-                    message = "This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.";
-                    log.error(message);
-                    throw new BridgeException(message);
+                    throw new BridgeException("This node (" + getNode().getNumber() + ") cannot be deleted. It still has relations attached to it.");
                 }
             }
             // remove aliases
@@ -603,14 +580,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         deleteRelations(-1);
     }
 
-    public void deleteRelations(String type) {
+    public void deleteRelations(String type) throws NotFoundException {
         RelDef reldef=mmb.getRelDef();
         int rType=reldef.getNumberByName(type);
         if (rType==-1) {
-            String message;
-            message = "Cannot find relation type.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException("Relation with role : "+type+" does not exist.");
         } else {
             deleteRelations(rType);
         }
@@ -668,24 +642,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return getRelations(role, (String)null);
     }
 
-    public RelationList getRelations(String role, String nodeManager) {
+    public RelationList getRelations(String role, String nodeManager) throws NotFoundException {
         int otype=-1;
         if (nodeManager!=null) {
             otype=mmb.getTypeDef().getIntValue(nodeManager);
             if (otype==-1) {
-                String message = "NodeManager " + nodeManager + " does not exist.";
-                log.error(message);
-                throw new BridgeException(message);
+                throw new NotFoundException("NodeManager " + nodeManager + " does not exist.");
             }
         }
         int rolenr=-1;
         if (role!=null) {
             rolenr=mmb.getRelDef().getNumberByName(role);
             if (rolenr==-1) {
-                String message;
-                message = "Relation type " + role + " does not exist.";
-                log.error(message);
-                throw new BridgeException(message);
+                throw new NotFoundException("Relation with role " + role + " does not exist.");
             }
         }
         return getRelations(rolenr,otype);
@@ -805,11 +774,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             String aliasContext=BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName,account,"a"+temporaryNodeId, ""+temporaryNodeId);
             ((BasicTransaction)cloud).add(aliasContext);
         } else if (isnew) {
-            String message;
-            message = "Cannot add alias to a new node that has not been "
-                + "committed.";
-            log.error(message);
-            throw new BridgeException(message);
+            throw new BridgeException("Cannot add alias to a new node that has not been committed.");
         } else {
             if (! getNode().getBuilder().createAlias(getNumber(), aliasName)) {
                 Node otherNode = cloud.getNode(aliasName);
@@ -926,7 +891,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     /**
      * Reverse the buffers, when changed and not stored...
      */
-    protected void finalize() throws BridgeException {
+    protected void finalize() {
         // When not commit-ed or cancelled, and the buffer has changed, the changes must be reversed.
         // when not done it results in node-lists with changes which are not performed on the database...
         // This is all due to the fact that Node doesnt make a copy of MMObjectNode, while editing...
@@ -936,14 +901,6 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             if(!(cloud instanceof Transaction)) {
                 // cancel the modifications...
                 cancel();
-                // The big question is, why did he throw an exeption over here? well there is no otherway to check if it was used in the
-                // proper way.
-                // Well in my opinion the working of the system should not depend on the fact if the garbage collecter remove's this object.
-                // This since it is not defined when the finalize method is called
-                // To bad only that nobody will ever see this exceptions :(
-                String msg = "After modifications to the node, either the method commit or cancel must be called\nnode #" + getNumber() + "(" + noderef + ")";
-                log.error(msg);
-                throw new BridgeException(msg);
             }
         }
     }
