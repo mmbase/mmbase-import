@@ -44,7 +44,7 @@ public class OAlias extends MMObjectBuilder {
 
 		node=(MMObjectNode)numbercache.get(name);
 		if (node==null) {
-			Enumeration e=search("WHERE name='"+name+"'");
+			Enumeration e=search("name=='"+name+"'");
 			if (e.hasMoreElements()) {
 				node=(MMObjectNode)e.nextElement();
 				rtn=node.getIntValue("destination");
@@ -59,7 +59,7 @@ public class OAlias extends MMObjectBuilder {
 
 	public String getAlias(int number) {
 		MMObjectNode node;
-		Enumeration e=search("WHERE destination="+number);
+		Enumeration e=search("destination=="+number);
 		if (e.hasMoreElements()) {
 			node=(MMObjectNode)e.nextElement();
 			return(node.getStringValue("name"));
