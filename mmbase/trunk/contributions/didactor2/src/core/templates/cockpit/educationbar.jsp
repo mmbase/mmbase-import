@@ -7,7 +7,7 @@
 </mm:present>
 
   <%// Refresh button %>
-  <iframe width="200" height="25" frameborder="0" marginheight="0" marginwidth="0" scrolling="0" src="../../cockpit/refresh_of_tree.jsp"/>
+  <%-- <iframe width="200" height="25" frameborder="0" marginheight="0" marginwidth="0" scrolling="0" src="../../cockpit/refresh_of_tree.jsp"/> --%>
 
   <div class="educationMenubarNav">
   <mm:present referid="education">
