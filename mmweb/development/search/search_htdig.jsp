@@ -9,6 +9,7 @@
 <form id="searchform" action="<mm:url />">
  <input type="hidden" name="exclude" value="testing" />
  <input type="text" name="keywords" value="<mm:write referid="keywords"/>" />
+ <input type="submit" name="zoeken" value="Search" />
  <select name="restrict" onChange="document.forms.searchform.submit();">
    <option value="">full site</option>
    <option value="mmdocs" <mm:compare referid="restrict" value="mmdocs">selected="true"</mm:compare>>in documentation</option>
@@ -21,8 +22,7 @@
   <mm:stringlist referid="sortList">
    <option value="<mm:write/>" <mm:compare referid2="sort">selected="selected"</mm:compare>><mm:write/></option>
   </mm:stringlist>
- </select><br />
- <input type="submit" name="zoeken" value="Search" />
+ </select>
 </form>
 
 <mm:present referid="keywords">
@@ -31,10 +31,12 @@
 	<mm:xslt>
   <xsl:output method="html" encoding="ISO-8859-1"/>
   <xsl:template match="htdig">
+    <div id="results">
     <xsl:apply-templates select="search"/>
-    <div id="results"><ul>
+     <ul>
       <xsl:apply-templates select="result"/>
-    </ul></div>
+    </ul>
+    </div>
   </xsl:template>
   <xsl:template match="result">
     <li class="result">
@@ -49,12 +51,14 @@
   </xsl:template>
 
   <xsl:template match="search">
-    <div class="documentXYZ">Documents <xsl:value-of select="firstdisplayed"/> - <xsl:value-of select="lastdisplayed"/> of <xsl:value-of select="matches"/> </div>
-    <xsl:apply-templates select="pagelist"/>
+    <div class="documentXYZ">
+	  Documents <xsl:value-of select="firstdisplayed"/> - <xsl:value-of select="lastdisplayed"/> of <xsl:value-of select="matches"/>
+	  <xsl:apply-templates select="pagelist"/>
+	</div>
   </xsl:template>
 
   <xsl:template match="pagelist">
-    <table>
+    <table border="0" cellspacing="0" cellpadding="4">
       <tr>
         <xsl:for-each select="page">
           <td>
@@ -63,7 +67,7 @@
                 <xsl:apply-templates select="a" mode="pagelist"/>
               </xsl:attribute>
               <xsl:value-of select="position()"/>
-            </a> -
+            </a>
           </td>
         </xsl:for-each>
       </tr>
