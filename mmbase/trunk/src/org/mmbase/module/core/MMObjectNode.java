@@ -82,8 +82,10 @@ public class MMObjectNode {
 
     /*
     * Tests whether the data in a node is valid (throws an exception if this is not the case).
+    * @throws org.mmbase.module.core.InvalidDataException
+    *   If the data was unrecoverably invalid (the references did not point to existing objects)
     */
-	public void testValidData() throws InValidDataException {
+	public void testValidData() throws InvalidDataException {
 	  parent.testValidData(this);
 	};
  	
