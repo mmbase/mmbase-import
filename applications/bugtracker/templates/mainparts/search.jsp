@@ -180,7 +180,7 @@
   </mm:write>
 
   <mm:size id="total" write="false" />
-  <mm:write value="${+$total/15 + 1}" vartype="integer" id="lastpage" write="false" />
+  <mm:write value="$[+$total/15 + 1]" vartype="integer" id="lastpage" write="false" />
 
   <mm:offset value="$noffset" />
   <mm:maxnumber value="15" />
@@ -241,7 +241,7 @@
          <mm:isgreaterthan value="15">
            <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="0" /></mm:url>" alt="first page" title="first page"><img src="<mm:url page="images/arrow-left.png" />" border="0" /></a>
          </mm:isgreaterthan>
-         <mm:write id="previouspage" value="${+ $noffset - 15}" vartype="integer" write="false" />
+         <mm:write id="previouspage" value="$[+ $noffset - 15]" vartype="integer" write="false" />
          <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$previouspage" /></mm:url>" alt="previous page" title="previous page"><img src="<mm:url page="images/arrow-left.png" />" border="0" /></a>
        </mm:isgreaterthan>
      </mm:write>
@@ -260,7 +260,7 @@
 	  No bugs found in MMBase (ok, not the one you are looking for)
         </mm:compare>
 	<mm:compare value="0" inverse="true">
-	  <mm:index offset="1" />: <mm:write value="${+ $noffset + 1}" vartype="integer" /> - <mm:write value="${+ $noffset + $lastindex}" vartype="integer" /> / <mm:write />
+	  <mm:index offset="1" />: <mm:write value="$[+ $noffset + 1]" vartype="integer" /> - <mm:write value="$[+ $noffset + $lastindex]" vartype="integer" /> / <mm:write />
         </mm:compare>
      </mm:write>
   </td>
@@ -273,11 +273,11 @@
 
   </td>
   <td colspan="1" class="listpaging">
-     <mm:write value="${+ $noffset + 15}" vartype="integer">
+     <mm:write value="$[+ $noffset + 15]" vartype="integer">
        <mm:islessthan value="$total">
          <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$_" /></mm:url>" alt="next page" title="next page"><img src="<mm:url page="images/arrow-right.png" />" border="0" /></a>
-         <mm:islessthan value="${+ $total - 15}">
-           <mm:write id="lastoffset" value="${+ ($lastpage  - 1) * 15}" vartype="integer" write="false" />
+         <mm:islessthan value="$[+ $total - 15]">
+           <mm:write id="lastoffset" value="$[+ ($lastpage  - 1) * 15]" vartype="integer" write="false" />
            <a href="<mm:url referid="pagingurl"><mm:param name="noffset" value="$lastoffset" /></mm:url>" alt="last page" title="last page"><img src="<mm:url page="images/arrow-right.png" />" border="0" /></a>
          </mm:islessthan>
        </mm:islessthan>
