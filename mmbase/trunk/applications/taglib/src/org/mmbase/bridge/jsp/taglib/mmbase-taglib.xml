@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.192 2003-08-15 19:36:41 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.193 2003-08-18 12:44:06 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4364,6 +4364,37 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
   </tag>
   <tag>
+    <name>relatedcontainer</name>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainer</extends>
+    <extends>nodereferrer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.RelatedContainerTag</tagclass>
+    <info>
+      Surrounds a list tag and  provides a query object.
+    </info>
+    <see tag="related" />
+    <see tag="listcontainer" />
+    <see tag="nodelistcontainerreferrer" />
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>path</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+
+      </info>
+    </attribute>
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+         Id for reference by subtags and reuse.
+      </info>
+    </attribute>
+  </tag>
+
+  <tag>
     <name>constraint</name>
     <type>mmbase.list</type>
     <extends>nodelistcontainerreferrer</extends>
@@ -4506,6 +4537,34 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <info>
         An integer.
+      </info>
+    </attribute>
+  </tag>
+
+  <tag>
+    <name>sortorder</name>
+    <type>mmbase.list</type>
+    <extends>nodelistcontainerreferrer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.NodeListSortOrderTag</tagclass>
+    <info>
+        
+    </info>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <see tag="list" attribute="orderby" />    
+    <since>MMBase-1.7</since>
+    <attribute>
+      <name>field</name>
+      <required>true</required>
+      <info>
+        
+      </info>
+    </attribute>
+    <attribute>
+      <name>direction</name>
+      <required>false</required>
+      <info>
+        
       </info>
     </attribute>
   </tag>

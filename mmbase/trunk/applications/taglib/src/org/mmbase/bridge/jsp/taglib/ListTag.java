@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.containers.ListContainerTag;
+import org.mmbase.bridge.jsp.taglib.containers.*;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.NodeList;
@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.30 2003-07-29 17:08:08 michiel Exp $ 
+ * @version $Id: ListTag.java,v 1.31 2003-08-18 12:44:06 michiel Exp $ 
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -37,7 +37,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
     protected Attribute distinct = Attribute.NULL;
     protected Attribute search   = Attribute.NULL;
     protected Attribute fields   = Attribute.NULL;
-    protected Attribute container = Attribute.NULL; // not yet implemented
+    protected Attribute container = Attribute.NULL;
 
     /**
      * @param fields a comma separated list of fields of the nodes.
@@ -46,6 +46,11 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         this.fields = getAttribute(fields);
     }
 
+
+
+    public void setContainer(String c) throws JspTagException {
+        container = getAttribute(c);
+    }
 
 
     /**
@@ -105,6 +110,11 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         return (String) path.getValue(this);
     }
 
+
+    protected NodeListContainer getListContainer() throws JspTagException {
+        return (NodeListContainer) findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
+    }
+
     /**
      * Performs the search
      */
@@ -113,7 +123,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
-        ListContainerTag c = (ListContainerTag) findParentTag(ListContainerTag.class, (String) container.getValue(this), false);
+        NodeListContainer c = getListContainer();
 
 
         if (c == null) {
@@ -154,6 +164,17 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
                                                 searchDistinct);
             return setReturnValues(nodes, true);
         } else {   // container found!
+            if (constraints != Attribute.NULL || 
+                orderby != Attribute.NULL || 
+                directions != Attribute.NULL || 
+                fields != Attribute.NULL || 
+                path != Attribute.NULL || 
+                nodes != Attribute.NULL  || 
+                distinct != Attribute.NULL ||
+                search != Attribute.NULL) {
+                throw new JspTagException("Extra attributes not supported in container-referrer use");
+                // (some of these could be implemented)
+            }
             Query query = (Query) c.getQuery();
             NodeList nodes = getCloud().getList(query);
             return setReturnValues(nodes, true);

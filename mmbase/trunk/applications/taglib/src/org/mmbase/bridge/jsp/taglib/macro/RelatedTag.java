@@ -16,6 +16,7 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.ListTag;
 import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.containers.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,10 +27,10 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  * @author Jacco de Groot
  * @author Pierre van Rooden
- * @version $Id: RelatedTag.java,v 1.21 2003-05-13 12:10:11 kees Exp $
+ * @version $Id: RelatedTag.java,v 1.22 2003-08-18 12:44:07 michiel Exp $
  */
 public class RelatedTag extends ListTag {
-    private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(RelatedTag.class);
 
     protected Node getBaseNode() throws JspTagException {
         if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
@@ -49,6 +50,10 @@ public class RelatedTag extends ListTag {
      */
     protected String getPath() throws JspTagException {
         return getBaseNode().getNodeManager().getName() + "0," + path.getString(this);
+    }
+
+    protected NodeListContainer getListContainer() throws JspTagException {
+        return (NodeListContainer) findParentTag(RelatedContainerTag.class, (String) container.getValue(this), false);
     }
 
 }
