@@ -1,0 +1,485 @@
+diff -rc mmbase_jdbc2/src/org/mmbase/bridge/BridgeException.java mmbase_jdbc3/src/org/mmbase/bridge/BridgeException.java
+*** mmbase_jdbc2/src/org/mmbase/bridge/BridgeException.java	2003-05-01 11:24:27.000000000 +0200
+--- mmbase_jdbc3/src/org/mmbase/bridge/BridgeException.java	2003-05-01 11:24:26.000000000 +0200
+***************
+*** 22,28 ****
+   */
+  public class BridgeException extends RuntimeException {
+  
+-     private Throwable cause=null;
+  
+      /**
+       * Constructs a <code>BridgeException</code> with <code>null</code> as its
+--- 22,27 ----
+***************
+*** 52,61 ****
+       * @since  MMBase-1.6
+       */
+      public BridgeException(Throwable cause) {
+!         super(cause==null ? null : org.mmbase.util.logging.Logging.stackTrace(cause));
+!         initCause(cause);
+!         // 1.4 code:
+!         // super(cause);
+      }
+  
+      /**
+--- 51,57 ----
+       * @since  MMBase-1.6
+       */
+      public BridgeException(Throwable cause) {
+!         super(cause);
+      }
+  
+      /**
+***************
+*** 68,109 ****
+       * @since  MMBase-1.6
+       */
+      public BridgeException(String message, Throwable cause) {
+!         super(message);
+!         initCause(cause);
+!         // 1.4 code:
+!         // super(message,cause);
+!     }
+! 
+!     /**
+!      * Sets the cause of the exception.
+!      *
+!      * @return the cause of the error
+!      * @since  MMBase-1.6
+!      */
+!     public Throwable initCause(Throwable cause) {
+!         if (cause==this) {
+!           throw new IllegalArgumentException("A throwable cannot be its own cause"); 
+!         }
+!         if (this.cause!=null) {
+!           throw new IllegalStateException("A cause can be set at most once"); 
+!         }
+!         this.cause=cause;
+!         return cause;
+!         // 1.4 code:
+!         // return super.initCause(cause);
+!     }
+! 
+!     /**
+!      * Returns the cause of the exception.
+!      *
+!      * @return the cause of the exception
+!      * @since  MMBase-1.6
+!      */
+!     public Throwable getCause() {
+!         return cause;
+!         // 1.4 code:
+!         // return super.getCause();
+      }
+  
+-     
+  }
+--- 64,70 ----
+       * @since  MMBase-1.6
+       */
+      public BridgeException(String message, Throwable cause) {
+!         super(message,cause);
+      }
+  
+  }
+Only in mmbase_jdbc2/src/org/mmbase/bridge: remote
+Only in mmbase_jdbc2/src/org/mmbase: bridgetest
+Only in mmbase_jdbc2/src/org/mmbase: hitlisted
+diff -rc mmbase_jdbc2/src/org/mmbase/module/database/MultiConnection.java mmbase_jdbc3/src/org/mmbase/module/database/MultiConnection.java
+*** mmbase_jdbc2/src/org/mmbase/module/database/MultiConnection.java	2003-05-01 11:24:28.000000000 +0200
+--- mmbase_jdbc3/src/org/mmbase/module/database/MultiConnection.java	2003-05-01 11:24:27.000000000 +0200
+***************
+*** 390,397 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public void setHoldability(int holdability) throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         con.setHoldability(holdability);
+      }
+      
+      /**
+--- 390,396 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public void setHoldability(int holdability) throws SQLException {
+!         con.setHoldability(holdability);
+      }
+      
+      /**
+***************
+*** 401,408 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public int getHoldability() throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.getHoldability();
+      }
+      
+      /**
+--- 400,406 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public int getHoldability() throws SQLException {
+!         return con.getHoldability();
+      }
+      
+      /**
+***************
+*** 412,419 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public Savepoint setSavepoint() throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.setSavepoint();
+      }
+      
+      /**
+--- 410,416 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public Savepoint setSavepoint() throws SQLException {
+!         return con.setSavepoint();
+      }
+      
+      /**
+***************
+*** 424,431 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public Savepoint setSavepoint(String name) throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.setSavepoint(name);
+      }
+      
+      /**
+--- 421,427 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public Savepoint setSavepoint(String name) throws SQLException {
+!         return con.setSavepoint(name);
+      }
+      
+      /**
+***************
+*** 435,442 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public void rollback(Savepoint savepoint) throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         con.rollback(savepoint);
+      }
+      
+      /**
+--- 431,437 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public void rollback(Savepoint savepoint) throws SQLException {
+!         con.rollback(savepoint);
+      }
+      
+      /**
+***************
+*** 446,453 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         con.releaseSavepoint(savepoint);
+      }
+      
+      /**
+--- 441,447 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public void releaseSavepoint(Savepoint savepoint) throws SQLException {
+!         con.releaseSavepoint(savepoint);
+      }
+      
+      /**
+***************
+*** 464,471 ****
+       */
+      public Statement createStatement(int type, int concurrency, int holdability)
+      throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //        return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
+      }
+      
+      /**
+--- 458,464 ----
+       */
+      public Statement createStatement(int type, int concurrency, int holdability)
+      throws SQLException {
+!         return new MultiStatement(this,con.createStatement(type, concurrency,holdability));
+      }
+      
+      /**
+***************
+*** 484,491 ****
+      public PreparedStatement prepareStatement(String sql, int type, int concurrency, int holdability)
+      throws SQLException {
+          setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.prepareStatement(sql, type, concurrency, holdability);
+      }
+      
+      /**
+--- 477,483 ----
+      public PreparedStatement prepareStatement(String sql, int type, int concurrency, int holdability)
+      throws SQLException {
+          setLastSQL(sql);
+!         return con.prepareStatement(sql, type, concurrency, holdability);
+      }
+      
+      /**
+***************
+*** 504,511 ****
+      public CallableStatement prepareCall(String sql, int type, int concurrency, int holdability)
+      throws SQLException {
+          setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.prepareCall(sql, type, concurrency, holdability);
+      }
+      
+      /**
+--- 496,502 ----
+      public CallableStatement prepareCall(String sql, int type, int concurrency, int holdability)
+      throws SQLException {
+          setLastSQL(sql);
+!         return con.prepareCall(sql, type, concurrency, holdability);
+      }
+      
+      /**
+***************
+*** 519,526 ****
+       */
+      public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
+          setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.prepareStatement(sql, autoGeneratedKeys);
+      }
+      
+      /**
+--- 510,516 ----
+       */
+      public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
+          setLastSQL(sql);
+!         return con.prepareStatement(sql, autoGeneratedKeys);
+      }
+      
+      /**
+***************
+*** 535,542 ****
+       */
+      public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
+          setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.prepareStatement(sql, columnIndexes);
+      }
+      
+      /**
+--- 525,531 ----
+       */
+      public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
+          setLastSQL(sql);
+!         return con.prepareStatement(sql, columnIndexes);
+      }
+      
+      /**
+***************
+*** 551,569 ****
+       */
+      public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
+          setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+!         //         return con.prepareStatement(sql, columnNames);
+      }
+      
+-     /**
+-      * Inner Class for the sole us of enabling the code to compile using jdk 1.3 or lower.
+-      * In order to compile using jdk1.4 and JDBC 3.0, you need to comment this class out.
+-      * @deprecated this inner class may be removed or commented-out in future releases.
+-      *              do not use!
+-      * @since MMBase 1.5
+-      */
+-     private class Savepoint {
+-     }
+  }
+  
+  
+--- 540,548 ----
+       */
+      public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
+          setLastSQL(sql);
+!         return con.prepareStatement(sql, columnNames);
+      }
+      
+  }
+  
+  
+diff -rc mmbase_jdbc2/src/org/mmbase/module/database/MultiStatement.java mmbase_jdbc3/src/org/mmbase/module/database/MultiStatement.java
+*** mmbase_jdbc2/src/org/mmbase/module/database/MultiStatement.java	2003-05-01 11:24:28.000000000 +0200
+--- mmbase_jdbc3/src/org/mmbase/module/database/MultiStatement.java	2003-05-01 11:24:27.000000000 +0200
+***************
+*** 264,271 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public boolean getMoreResults(int current) throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.getMoreResults(current);
+      }
+  
+      /**
+--- 264,270 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public boolean getMoreResults(int current) throws SQLException {
+!          return s.getMoreResults(current);
+      }
+  
+      /**
+***************
+*** 274,281 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public ResultSet getGeneratedKeys() throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.getGeneratedKeys();
+      }
+  
+      /**
+--- 273,279 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public ResultSet getGeneratedKeys() throws SQLException {
+!          return s.getGeneratedKeys();
+      }
+  
+      /**
+***************
+*** 288,295 ****
+       */
+      public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
+          parent.setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.executeUpdate(sql, autoGeneratedKeys);
+      }
+  
+      /**
+--- 286,292 ----
+       */
+      public int executeUpdate(String sql, int autoGeneratedKeys) throws SQLException {
+          parent.setLastSQL(sql);
+!         return s.executeUpdate(sql, autoGeneratedKeys);
+      }
+  
+      /**
+***************
+*** 302,309 ****
+       */
+      public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
+          parent.setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.executeUpdate(sql, columnIndexes);
+      }
+  
+      /**
+--- 299,305 ----
+       */
+      public int executeUpdate(String sql, int[] columnIndexes) throws SQLException {
+          parent.setLastSQL(sql);
+!         return s.executeUpdate(sql, columnIndexes);
+      }
+  
+      /**
+***************
+*** 316,323 ****
+       */
+      public int executeUpdate(String sql, String[] columnNames) throws SQLException {
+          parent.setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.executeUpdate(sql, columnNames);
+      }
+  
+      /**
+--- 312,318 ----
+       */
+      public int executeUpdate(String sql, String[] columnNames) throws SQLException {
+          parent.setLastSQL(sql);
+!          return s.executeUpdate(sql, columnNames);
+      }
+  
+      /**
+***************
+*** 330,337 ****
+       */
+      public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
+          parent.setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.execute(sql, autoGeneratedKeys);
+      }
+  
+      /**
+--- 325,331 ----
+       */
+      public boolean execute(String sql, int autoGeneratedKeys) throws SQLException {
+          parent.setLastSQL(sql);
+!         return s.execute(sql, autoGeneratedKeys);
+      }
+  
+      /**
+***************
+*** 344,351 ****
+       */
+      public boolean execute(String sql, int[] columnIndexes) throws SQLException {
+          parent.setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.execute(sql, columnIndexes);
+      }
+  
+      /**
+--- 338,344 ----
+       */
+      public boolean execute(String sql, int[] columnIndexes) throws SQLException {
+          parent.setLastSQL(sql);
+!          return s.execute(sql, columnIndexes);
+      }
+  
+      /**
+***************
+*** 358,365 ****
+       */
+      public boolean execute(String sql, String[] columnNames) throws SQLException {
+          parent.setLastSQL(sql);
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.execute(sql, columnNames);
+      }
+  
+      /**
+--- 351,357 ----
+       */
+      public boolean execute(String sql, String[] columnNames) throws SQLException {
+          parent.setLastSQL(sql);
+!          return s.execute(sql, columnNames);
+      }
+  
+      /**
+***************
+*** 368,375 ****
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public int getResultSetHoldability() throws SQLException {
+!         throw new UnsupportedOperationException("only available in JDBC 1.4");
+! //         return s.getResultSetHoldability();
+      }
+  
+  }
+--- 360,366 ----
+       * @since MMBase 1.5, JDBC 1.4
+       */
+      public int getResultSetHoldability() throws SQLException {
+!          return s.getResultSetHoldability();
+      }
+  
+  }
