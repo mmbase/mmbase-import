@@ -18,6 +18,9 @@ import org.mmbase.bridge.*;
 import java.io.IOException;
 
 import java.util.*;
+
+import org.mmbase.util.StringObject;
+
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -35,13 +38,14 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.3 2002-06-30 20:15:52 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.4 2002-08-14 20:56:03 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public abstract class BridgeServlet extends  MMBaseServlet {
+
+
     private static Logger log;
-    private Cloud cloud;
 
     /**
      * Returns known functions which can be performed with bridge-functionality
@@ -53,10 +57,38 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         return "mmbase";
     }
 
-    private Cloud getCloud() {
-        if (! cloud.getUser().isValid()) { 
-            log.debug("Cloud was invalid, making new one");
-            cloud = LocalContext.getCloudContext().getCloud(getCloudName());
+    private Cloud getCloud(HttpServletRequest req, HttpServletResponse res, StringObject query) throws IOException {
+
+        log.debug("getting a cloud");
+        // trying to get a cloud from the session
+        Cloud cloud = null;
+        HttpSession session = req.getSession(false); // false: do not create a session, only use it
+        if (session != null) { // there is a session
+            log.debug("from session");
+            String sessionName = "cloud_" + getCloudName();
+            if (query.indexOf("session=") >= 0) { 
+                // indicated the session name in the query: session=<sessionname>+<nodenumber>
+                
+                int plus = query.indexOf("+", 8);
+                if (plus == -1) {
+                    res.sendError(res.SC_NOT_FOUND, "Malformed URL");
+                    return null;
+                }
+                sessionName = query.toString().substring(8, plus);
+                log.info("deleting until   " + plus);
+                query.delete(0, plus + 1);                            
+            } 
+            cloud = (Cloud) session.getAttribute(sessionName); 
+        } 
+        if (cloud == null) {
+            // try anonymous
+            try {
+                cloud = LocalContext.getCloudContext().getCloud(getCloudName());
+            } catch (org.mmbase.security.SecurityException e) {
+                log.debug("could not generate anonymous cloud");
+                // give it up
+                cloud = null;
+            }
         }
         return cloud;
 
@@ -69,39 +101,20 @@ public abstract class BridgeServlet extends  MMBaseServlet {
      */
      
     protected Node getNode(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String query = req.getQueryString();        
-        if (query == null) { // also possible to use /attachments/<number>
-            query = new java.io.File(req.getRequestURI()).getName();
-        }
-
-        Cloud c;
-
-        // trying to get a cloud from the session
-        HttpSession session = req.getSession(false); // false: do not create a session, only use it
-        if (session != null) { // there is a session
-            String sessionName = "cloud_" + getCloudName();
-            if (query.startsWith("session=")) { // indicated the session name in the query: session=<sessionname>+<nodenumber>
-                int plus = query.indexOf('+', 8);
-                if (plus == -1) {
-                    res.sendError(res.SC_NOT_FOUND, "Malformed URL");
-                    return null;
-                }
-                sessionName = query.substring(8, plus);
-                query = query.substring(plus + 1);                            
-            } 
-            c = (Cloud) session.getAttribute(sessionName); 
-
-            // not found, simply take anonymous.
-            if (c == null) c = getCloud();
-
+        String q = req.getQueryString();
+        StringObject query;
+        if (q == null) { // also possible to use /attachments/<number>
+            query = new StringObject(new java.io.File(req.getRequestURI()).getName());
         } else {
-            // no session, take anonymous.
-            c = getCloud();
+            query = new StringObject(q);
         }
 
+        log.debug("query : " + query);
+        Cloud c = getCloud(req, res, query);
+        if (c == null) return null;
         Node node = null;
         try {
-            node = c.getNode(query);
+            node = c.getNode(query.toString());
         } catch (org.mmbase.bridge.NotFoundException e) {
             res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist");
         } catch (org.mmbase.security.SecurityException e) {
@@ -130,7 +143,6 @@ public abstract class BridgeServlet extends  MMBaseServlet {
     public void init() throws ServletException {
         super.init();
         log = Logging.getLoggerInstance(BridgeServlet.class.getName());
-        cloud = LocalContext.getCloudContext().getCloud(getCloudName());
     }
 
 
