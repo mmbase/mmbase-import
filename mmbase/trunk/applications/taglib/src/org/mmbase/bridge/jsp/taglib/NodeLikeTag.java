@@ -34,7 +34,6 @@ abstract public class NodeLikeTag extends MMTaglib {
     private static Logger log = Logging.getLoggerInstance(NodeLikeTag.class.getName());
 
     private   Node   node;        
-    protected String type   = "NODE";
     protected String fields = "";
 
 
@@ -100,7 +99,7 @@ abstract public class NodeLikeTag extends MMTaglib {
         //size +1 since we return every variable + one hashTable
         //for every iteration
         //variableInfo =    new VariableInfo[fields.size() + 1];
-        variableInfo =    new VariableInfo[(fields.size()) + 1];
+        variableInfo =    new VariableInfo[(fields.size())];
         int j = 0;
         for (int i = 0 ; i < fields.size(); i++){
             String field = (String)fields.elementAt(i);
@@ -121,10 +120,6 @@ abstract public class NodeLikeTag extends MMTaglib {
                                                  VariableInfo.NESTED);            
             */
         }
-        variableInfo[j] = new VariableInfo(id +  type, // a field cannot be named 'node'.
-                                           "org.mmbase.bridge.Node",
-                                           true,
-                                           VariableInfo.NESTED);
 	return variableInfo;
     }
 
@@ -141,7 +136,6 @@ abstract public class NodeLikeTag extends MMTaglib {
             //pageContext.setAttribute(getPrefix() + "item"+(j++) ,
             //                         "" + node.getValue(field));
         }
-        pageContext.setAttribute(getId() + type, node);
     }
 
     

@@ -52,29 +52,43 @@ public class FieldTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         
         Node node;
-
+        NodeLikeTag nodeLikeTag;
+        Class nodeLikeTagClass;
         try {
-            if (parentNodeId == null) { // take it from the tag directly above
-                NodeLikeTag nodeLike = 
-                    (NodeLikeTag) findAncestorWithClass((Tag)this,
-                                                        Class.forName("org.mmbase.bridge.jsp.taglib.NodeLikeTag"));
-                if (nodeLike == null) {
-                    throw new JspException ("Could nog find parent node");
-                }
-                node = nodeLike.getNode();
-            } else {
-                // search the node with this id...                
-                node = (Node) pageContext.getAttribute(parentNodeId + type);
-            }
-        
+            nodeLikeTagClass = Class.forName("org.mmbase.bridge.jsp.taglib.NodeLikeTag");
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspException (e.toString());
+            throw new JspException ("Could not found NodeLikeTag class");  
+        }
+        
+        nodeLikeTag = (NodeLikeTag) findAncestorWithClass((Tag)this, nodeLikeTagClass); 
+        if (nodeLikeTag == null) {
+            throw new JspException ("Could not find parent node");  
+        }
+
+        if (parentNodeId != null) { // search further, if necessary
+            while (nodeLikeTag.getId() != parentNodeId) {
+                nodeLikeTag = (NodeLikeTag) findAncestorWithClass((Tag)nodeLikeTag, nodeLikeTagClass);            
+                if (nodeLikeTag == null) {
+                    throw new JspException ("Could not find parent with id " + parentNodeId);  
+                }
+            }
+        }
+
+        node = nodeLikeTag.getNode();
+        if (node == null) {
+            throw new JspException ("Parent of field did not  set node");  
+        }
+
+        String field = "" + node.getValue(name);
+
+        if (field == null) {
+            throw new JspException ("Could not find field " + name);  
         }
         log.debug("tadaaam " + node.getValue("gui()"));
         try {
             BodyContent bodyOut = getBodyContent();
             bodyOut.clearBody();
-            bodyOut.print(node.getValue(name));
+            bodyOut.print(field);
             bodyOut.writeOut(bodyOut.getEnclosingWriter());
         } catch (java.io.IOException e) {
             throw new JspException (e.toString());            
