@@ -54,7 +54,9 @@ On your filesystem in the directory /mmexamples/jsp/mynews you will find the tem
 You can install the MyNews application by going to ADMIN -> APPLICATIONS
             </mm:notpresent>
             <mm:present referid="mynewsIsPresent">
-              This url will show the MyNews magazine: <A HREF="/jspmynews" TARGET="mynews">http://yourhost:port/jspmynews</A>
+                    
+              <mm:url id="url" page="/mmexamples/jsp/mynews/index.jsp" write="false" />
+              This url will show the MyNew magazint: <A HREF="<mm:write referid="url" />" TARGET="community"><mm:write referid="url" /></A>
             </mm:present>
 
 			<BR><BR>
