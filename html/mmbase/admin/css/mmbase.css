@@ -12,6 +12,8 @@ body.navigationbar {
     margin-left: 0em;
 }
 
+form  { margin: 0em; }
+
 a:link { color: white; }
 a:visited { color: #42BDAD; }
 a:active { color: yellow; }
