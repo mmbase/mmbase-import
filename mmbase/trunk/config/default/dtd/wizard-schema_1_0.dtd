@@ -64,7 +64,7 @@
 
 <!ELEMENT prompt ( #PCDATA ) >
 
-<!ELEMENT relation ( field | object )* ) >
+<!ELEMENT relation ( field | object )* >
 <!ATTLIST relation destination NMTOKEN #IMPLIED >
 <!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST relation role NMTOKEN #IMPLIED >
