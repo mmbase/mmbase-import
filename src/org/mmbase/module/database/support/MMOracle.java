@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @version 09 Mar 2001
- * @$Revision: 1.14 $ $Date: 2002-11-14 16:31:19 $
+ * @$Revision: 1.15 $ $Date: 2002-11-21 09:50:03 $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
    
@@ -67,16 +67,20 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
    }
    
    public void init(MMBase mmb,XMLDatabaseReader parser) {
-      this.mmb=mmb;
-      this.parser=parser;
-      
-      typeMapping=parser.getTypeMapping();
-      disallowed2allowed=parser.getDisallowedFields();
-      allowed2disallowed=getReverseHash(disallowed2allowed);
-      // map the default types
-      mapDefaultFields(disallowed2allowed);
-      // Check if the numbertable exists, if not one will be created.
-      checkNumberTable();
+       this.mmb=mmb;
+       this.parser=parser;
+       
+       typeMapping=parser.getTypeMapping();
+       disallowed2allowed=parser.getDisallowedFields();
+       allowed2disallowed=getReverseHash(disallowed2allowed);
+       // map the default types
+       mapDefaultFields(disallowed2allowed);
+       
+       // Instantiate and initialize sql handler.
+       super.init(disallowed2allowed, parser);
+       
+       // Check if the numbertable exists, if not one will be created.
+       checkNumberTable();
    }
    
    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
