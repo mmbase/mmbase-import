@@ -17,7 +17,7 @@ package org.mmbase.util;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: Casting.java,v 1.37 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Casting.java,v 1.38 2005-03-02 23:05:59 michiel Exp $
  */
 
 import java.util.*;
@@ -31,6 +31,7 @@ import org.mmbase.bridge.ContextProvider;
 import org.mmbase.bridge.util.NodeWrapper;
 import org.mmbase.bridge.util.MapNode;
 import org.mmbase.module.core.*;
+import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.transformers.XmlField;
 import org.mmbase.util.logging.*;
 
@@ -183,60 +184,74 @@ public class Casting {
         if (o instanceof Writer) {
             return writer;
         }
-        Object s = wrapToString(o);
+        Object s = wrap(o, null);
         writer.write(s.toString());
         return writer;
     }
 
     /**
-     * Does not yet really cast the object to String, but only wraps it in an object with a toString as we desire. Casting can now be done with
+     * Wraps it in an object with a toString as we desire. Casting can now be done with
      * toString() on the resulting object.
      *
-     * This is used to make JSTL en EL behave similarly as mmbase taglib when writing objects to the page (taglib calls Casting, but they of course don't).
+     * This is used to make JSTL en EL behave similarly as mmbase taglib when writing objects to the
+     * page (taglib calls Casting, but they of course don't).
      *
      * @todo  Not everything is wrapped (and can be unwrapped) already.
      * @since MMBase-1.8
      */
 
-    public static Object wrapToString(final Object o) {
+    public static Object wrap(final Object o, final CharTransformer escaper) {
         if (o == null || o == MMObjectNode.VALUE_NULL) {
-            return "";
+            return escape(escaper, "");
         } else if (o instanceof Node) {
             return new MapNode((Node)o) {
+                    public Object getValue(String fieldName) {
+                        return escape(escaper, super.getStringValue(fieldName));
+                    }
                     public String toString() {
-                        return "" + node.getNumber();
+                        return escape(escaper, "" + node.getNumber());
                     }
                 };
         } else if (o instanceof MMObjectNode) {
             // don't know how to wrap
-            return "" + ((MMObjectNode)o).getNumber();
+            return escape(escaper, "" + ((MMObjectNode)o).getNumber());
         } else if (o instanceof Date) {
             return new java.util.Date(((Date)o).getTime()) {
                     public String toString() {
+                        String r;
                         if (getTime()  != -1) { // datetime not set
-                            return ISO_8601_UTC.format((Date)o);
+                            r = ISO_8601_UTC.format((Date)o);
                         } else {
-                            return "";
+                            r = "";
                         }
+                        return escape(escaper, r);
                     }
                 };
         } else if (o instanceof Document) {
             // don't know how to wrap
-            return convertXmlToString(null, (Document)o);
+            return escape(escaper, convertXmlToString(null, (Document)o));
         } else if (o instanceof List) {
-            return new ListWrapper((List) o);
+            return new ListWrapper((List) o, escaper);
         } else if (o instanceof byte[]) {
             try {
-                return new String((byte[])o, MMBase.getMMBase().getEncoding());
+                return escape(escaper, new String((byte[])o, MMBase.getMMBase().getEncoding()));
             } catch (java.io.UnsupportedEncodingException uee) {
                 // should never happen
                 log.error(uee);
                 return o;
             }
         } else {
-            return o;
+            return escape(escaper, "" + o);
         }
 
+    }
+
+    private static String escape(CharTransformer escaper, String string) {
+        if (escaper != null) {
+            return escaper.transform(string);
+        } else {
+            return string;
+        }
     }
     /**
      * When you want to undo the wrapping, this method can be used.
@@ -827,10 +842,12 @@ public class Casting {
 
     public static class ListWrapper extends AbstractList{
         private final List list;
-        ListWrapper (List l) {
+        private final CharTransformer escaper;
+        ListWrapper (List l, CharTransformer e) {
             list = l;
+            escaper = e;
         }
-        public Object get(int index) { return list.get(index); }
+        public Object get(int index) { return escape(escaper, "" + list.get(index)); }
         public int size() { return list.size(); }
         public Object set(int index, Object value) { return list.set(index, value); }
         public void add(int index, Object value) { list.add(index, value); }
