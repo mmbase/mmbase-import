@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *             StorageManager implementation.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMOracle.java,v 1.19 2004-06-15 21:19:39 robmaris Exp $
+ * @version $Id: MMOracle.java,v 1.20 2004-06-16 08:29:32 michiel Exp $
  */
 public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -962,8 +962,8 @@ public class MMOracle extends MMSQL92Node implements MMJdbc2NodeInterface {
          con=mmb.getConnection();
          stmt=con.createStatement();
          ResultSet rs=stmt.executeQuery("SELECT count(*) FROM "+tableName);
+         int i=-1;
          try {
-             int i=-1;
              while(rs.next()) {
                 i=rs.getInt(1);
              }
