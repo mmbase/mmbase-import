@@ -63,7 +63,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.253 2003-12-17 20:43:12 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.254 2003-12-21 13:26:35 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2657,11 +2657,10 @@ public class MMObjectBuilder extends MMTable {
      * perhaps we need something like this
      * @since MMBase-1.7
      */
-    /*
-    public Parameters getFunctionParameters(String function) {
-
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MMObjectBuilder.class, function);
     }
-    */
+
 
 
     /**
