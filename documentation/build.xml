@@ -100,6 +100,7 @@
       <fileset dir="${documentation.src.dir}" >
         <include name="style/*.css"/>
         <include name="style/*.png"/>
+        <include name="style/*.ico"/>
       </fileset>
     </copy>
   </target>
@@ -161,6 +162,7 @@
           failonerror="no">
       <jvmarg value="-Dmmbase.config=${source-config.dir}" />
       <jvmarg value="-Djava.endorsed.dirs=${build.dir}/lib" />
+      <!-- jvmarg value="-Dusecache=false" /-->
       <jvmarg value="-mx200m" />
       <classpath>        
         <pathelement path="${build.dir}/classes" />
