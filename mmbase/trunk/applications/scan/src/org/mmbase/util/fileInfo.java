@@ -15,13 +15,24 @@ import java.util.*;
 import java.io.*;
 
 /**
- * The module which provides access to a filesystem residing in
- * a database
+ * Object for storing file information.
+ * Stores content and lastmodified date.
+ * Does not store filename, so association should eb done manually.
+ * Used by the {@link scancache} module.
  *
  * @author Daniel Ockeloen
+ * @author Pierre van Rooden (javadocs)
+ * @version 10 Apr 2001
  */
 public class fileInfo {
-	public String value;
-	public int time;
+    /**
+     * Content of the file
+     */
+    public String value;
+
+    /**
+     * Last Modified Date of the file
+     */
+    public int time;
 }
 
