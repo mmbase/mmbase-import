@@ -5,7 +5,7 @@
   title red)
 
   @author Michiel Meeuwissen   
-  @version $Id: 2xhtml.xslt,v 1.4 2002-06-24 14:05:37 michiel Exp $
+  @version $Id: 2xhtml.xslt,v 1.5 2002-06-25 15:42:27 michiel Exp $
   @since  MMBase-1.6
   
 -->
@@ -39,12 +39,12 @@
       </p>
   </xsl:template>
 
-   <xsl:template match = "mmxf:section" >
-     <xsl:if test="count(ancestor::mmxf:section)=0"><h3><font color="red"><xsl:value-of select="@mmxf:title" /></font></h3></xsl:if>
-     <xsl:if test="count(ancestor::mmxf:section)=1"><p><b><xsl:value-of select="@mmxf:title" /></b></p></xsl:if>
-     <xsl:if test="count(ancestor::mmxf:section)=2"><p><xsl:value-of select="@mmxf:title" /></p></xsl:if>
-     <xsl:if test="count(ancestor::mmxf:section)>2"><xsl:value-of select="@mmxf:title" /><br /></xsl:if>
- 	 <xsl:apply-templates select = "mmxf:section|mmxf:p" />
+   <xsl:template match = "section" >
+     <xsl:if test="count(ancestor::section)=0"><h3><font color="red"><xsl:value-of select="@title" /></font></h3></xsl:if>
+     <xsl:if test="count(ancestor::section)=1"><p><b><xsl:value-of select="@title" /></b></p></xsl:if>
+     <xsl:if test="count(ancestor::section)=2"><p><xsl:value-of select="@title" /></p></xsl:if>
+     <xsl:if test="count(ancestor::section)>2"><xsl:value-of select="@title" /><br /></xsl:if>
+ 	 <xsl:apply-templates select = "section|p" />
    </xsl:template>
 
 </xsl:stylesheet>
