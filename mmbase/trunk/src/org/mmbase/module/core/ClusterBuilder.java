@@ -22,22 +22,27 @@ import org.mmbase.util.logging.*;
 import org.mmbase.bridge.NodeQuery; //jikes!
 
 /**
- * ClusterBuilder is a builder which creates 'virtual' nodes.
- * This class replaces {@link org.mmbase.module.builders.MultiRelations}.
- * <br />
- * The nodes are build out of a set of fields from different nodes, combined through a complex query,
- * which is in turn based on the relations that exist between nodes.<br />
- * The builder supplies a method to retrieve these virtual nodes: {@link
- * #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
- * searchMultiLevelVector()}.
- * Other public methods in this builder function to handle the requests for data obtained from this particular node.
- * Individual nodes in a 'cluster' node can be retrieved by calling the getNodeValue() method, with the builder name
- * of the needed node as parameter value.
+ * The builder for {@link ClusterNode clusternodes}.
+ * <p>
+ * Provides these methods to retrieve clusternodes: 
+ * <ul>
+ *      <li>{@link #getClusterNodes(SearchQuery) getClusterNodes(SearchQuery)}
+ *          to retrieve clusternodes using a <code>SearchQuery</code> (recommended).
+ *      <li>{@link #getMultiLevelSearchQuery(List,List,String,List,String,List,List,int)
+ *          getMultiLevelSearchQuery()} as a convenience method to create a <code>SearchQuery</code>
+ *      <li>{@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
+ *          searchMultiLevelVector()} to retrieve clusternodes using a constraint string.
+ * </ul>
+ * <p>
+ * Individual nodes in a 'cluster' node can be retrieved by calling the node's 
+ * {@link MMObjectNode#getNodeValue(String) getNodeValue()} method, using 
+ * the builder name (or step alias) as argument.
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.53 2003-11-27 16:15:15 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.54 2003-12-01 14:42:40 robmaris Exp $
+ * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -258,27 +263,13 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Return all the objects that match the searchkeys.
-     * @param snode The number of the node to start the search with. The node has to be present in the first table
-     *      listed in the tables parameter.
-     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
-     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
-     *      Examples: 'people.lastname'
-     * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
-     * @param tables The builder chain. A list containing builder names.
-     *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
-     *      a relation builder by placing the name of the builder between two builders to search.
-     *      Example: company,people or typedef,authrel,people.
-     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
-     *      The syntax is either sql (if preceded by "WHERE') or
-     *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
-     * @param orderVec the fieldnames on which you want to sort.
-     * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
-     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
-     *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
-     * @return a <code>Vector</code> containing all matching nodes
+     * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
+     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER)},
+     * where <code>snodes</code> contains just the number specified by <code>snode</code>.
+     *
+     * @see #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
      */
-    public Vector searchMultiLevelVector(
+   public Vector searchMultiLevelVector(
         int snode,
         Vector fields,
         String pdistinct,
@@ -292,25 +283,10 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Return all the objects that match the searchkeys.
-     * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
-     *      listed in the tables parameter.
-     * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
-     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
-     *      Examples: 'people.lastname'
-     * @param pdistinct 'YES' indicates the records returned need to be distinct. Any other value indicates double values can be returned.
-     * @param tables The builder chain. A list containing builder names.
-     *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
-     *      a relation builder by placing the name of the builder between two builders to search.
-     *      Example: company,people or typedef,authrel,people.
-     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
-     *      The syntax is either sql (if preceded by "WHERE') or
-     *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
-     * @param orderVec the fieldnames on which you want to sort.
-     * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
-     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
-     *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
-     * @return a <code>Vector</code> containing all matching nodes
+     * Same as {@link #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
+     * searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER)}.
+     *
+     * @see #searchMultiLevelVector(Vector,Vector,String,Vector,String,Vector,Vector,int)
      */
     public Vector searchMultiLevelVector(
         Vector snodes,
@@ -325,6 +301,10 @@ public class ClusterBuilder extends VirtualBuilder {
 
     /**
      * Return all the objects that match the searchkeys.
+     * The constraint must be in one of the formats specified by {@link 
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     * QueryConvertor#setConstraint()}.
+     *
      * @param snodes The numbers of the nodes to start the search with. These have to be present in the first table
      *      listed in the tables parameter.
      * @param fields The fieldnames to return. This should include the name of the builder. Fieldnames without a builder prefix are ignored.
@@ -335,9 +315,10 @@ public class ClusterBuilder extends VirtualBuilder {
      *      The search is formed by following the relations between successive builders in the list. It is possible to explicitly supply
      *      a relation builder by placing the name of the builder between two builders to search.
      *      Example: company,people or typedef,authrel,people.
-     * @param where The constraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
-     *      The syntax is either sql (if preceded by "WHERE') or
-     *      Examples: "WHERE people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
+     * @param where The constraint, must be in one of the formats specified by {@link 
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     *        QueryConvertor#setConstraint()}.
+     *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
      * @param orderVec the fieldnames on which you want to sort.
      * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
      *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
@@ -1159,32 +1140,33 @@ public class ClusterBuilder extends VirtualBuilder {
     /**
      * Creates search query that selects all the objects that match the
      * searchkeys.
+     * The constraint must be in one of the formats specified by {@link 
+     * org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     * QueryConvertor#setConstraint()}.
      *
-     * @param snodes The numbers of the nodes to start the search with.
+     * @param snodes <code>null</code> or a list of numbers 
+     *        of nodes to start the search with.
      *        These have to be present in the first table listed in the
-     *        tables parameter.
-     * @param fields The fieldnames to return.
-     *        These should be formatted as <em>stepalias.field</em>.
-     *        Examples: 'people.lastname'
-     * @param pdistinct 'YES' indicates the records returned need to be
-     *        distinct.
+     *        tables parameter. 
+     * @param fields List of fieldnames to return.
+     *        These should be formatted as <em>stepalias.field</em>,
+     *        e.g. 'people.lastname'
+     * @param pdistinct 'YES' if the records returned need to be
+     *        distinct (ignoring case).
      *        Any other value indicates double values can be returned.
-     * @param tables The builder chain.
-     *        A list containing builder names.
+     * @param tables The builder chain, a list containing builder names.
      *        The search is formed by following the relations between
      *        successive builders in the list.
      *        It is possible to explicitly supply a relation builder by
      *        placing the name of the builder between two builders to search.
      *        Example: company,people or typedef,authrel,people.
-     * @param where The constraint.
-     *        This is in essence a SQL where clause, using the NodeManager
-     *        names from the nodes as tablenames.
-     *        The syntax is either sql (if preceded by "WHERE') or
-     *        Examples: "WHERE people.email IS NOT NULL",
-     *        "(authrel.creat=1) and (people.lastname='admin')"
-     * @param sortFields the fieldnames on which you want to sort.
-     * @param directions A list of values containing, for each field in the
-     *        order parameter, a value indicating whether the sort is
+     * @param where The constraint, must be in one of the formats specified by {@link 
+     *        org.mmbase.util.QueryConvertor#setConstraint(BasicSearchQuery,String) 
+     *        QueryConvertor#setConstraint()}.
+     *        E.g. "WHERE news.title LIKE '%MMBase%' AND news.title > 100"
+     * @param sortFields <code>null</code> or a list of  fieldnames on which you want to sort.
+     * @param directions <code>null</code> or a list of values containing, for each field in the
+     *        <code>sortFields</code> parameter, a value indicating whether the sort is
      *        ascending (<code>UP</code>) or descending (<code>DOWN</code>).
      *        If less values are supplied then there are fields in order,
      *        the first value in the list is used for the remaining fields.
@@ -1194,7 +1176,6 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the resulting search query.
      * @since MMBase-1.7
      */
-    // TODO RvM: update javadoc
     public BasicSearchQuery getMultiLevelSearchQuery(
         List snodes,
         List fields,
