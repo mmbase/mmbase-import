@@ -677,7 +677,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <example>
 &lt;mm:cloud&gt;
 &lt;mm:transaction id="my_transaction"&gt;
-&lt;mm:createnode type="news" id="my_news"&gt;
+&lt;mm:createnode nodemanager="news" id="my_news"&gt;
    &lt;mm:setfield name="title"&gt;Todays news&lt;/mm:setfield&gt;
    &lt;mm:setfield name="subtitle"&gt;There happened a lot today&lt;/mm:setfield&gt;
 &lt;/mm:createnode&gt;
