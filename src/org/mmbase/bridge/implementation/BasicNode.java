@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.108 2003-11-19 13:03:10 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.109 2003-11-19 17:25:49 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -203,7 +203,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @return the underlying MMObjectNode
      * @throws NotFoundException if no node was specified. This generally means the
      */
-    protected MMObjectNode getNode() throws NotFoundException {
+    protected final MMObjectNode getNode() throws NotFoundException {
         return noderef;
     }
 
@@ -752,9 +752,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
 
     public int countRelatedNodes(NodeManager otherNodeManager, String role, String direction) {
-        Query count = cloud.createAggregatedQuery();
+        BasicQuery count = (BasicQuery) cloud.createAggregatedQuery();
         count.addStep(nodeManager);
-        Step step = count.addRelationStep(otherNodeManager, role, direction).getPrevious();
+        Step step = count.addRelationStep(otherNodeManager, role, direction, false).getPrevious();
         count.addNode(step, this);
         count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
         Node result = (Node) cloud.getList(count).get(0);
@@ -797,8 +797,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         ListIterator li = mmnodes.listIterator();
         while (li.hasNext()) {
             MMObjectNode node = (MMObjectNode)li.next();
-            if (!cloud.check(Operation.READ, node.getNumber()))
+            if (!cloud.check(Operation.READ, node.getNumber())) {
                 li.remove();
+            }
         }
         if (nodeManager != null) {
             return new BasicNodeList(mmnodes, nodeManager);
@@ -831,12 +832,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     public void createAlias(String aliasName) {
         edit(ACTION_EDIT);
         if (cloud instanceof Transaction) {
-            String aliasContext =
-                BasicCloudContext.tmpObjectManager.createTmpAlias(
-                    aliasName,
-                    account,
-                    "a" + temporaryNodeId,
-                    "" + temporaryNodeId);
+            String aliasContext = BasicCloudContext.tmpObjectManager.createTmpAlias(aliasName, account, "a" + temporaryNodeId, "" + temporaryNodeId);
             ((BasicTransaction)cloud).add(aliasContext);
         } else if (isnew) {
             throw new BridgeException("Cannot add alias to a new node that has not been committed.");
