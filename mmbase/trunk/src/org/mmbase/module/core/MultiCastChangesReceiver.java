@@ -25,6 +25,10 @@ import org.mmbase.util.*;
  */
 public class MultiCastChangesReceiver implements Runnable {
 
+	final static boolean debug=true;
+	private String classname = getClass().getName();
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	
 	Thread kicker = null;
 	MMBaseMultiCast parent=null;
 	Queue nodesToSpawn;
@@ -93,14 +97,16 @@ public class MultiCastChangesReceiver implements Runnable {
 								if (!ctype.equals("s")) {
 									parent.handleMsg(machine,vnr,id,tb,ctype);
 								} else {
-									String xml=tok.nextToken("");	
-									parent.commitXML(machine,vnr,id,tb,ctype,xml);
-								}
-							}
-						}
-					}
-				}
-			}
+									if (tok.hasMoreTokens()) {
+										String xml=tok.nextToken("");	
+										parent.commitXML(machine,vnr,id,tb,ctype,xml);
+									} else debug ("doWork("+chars+"): ERROR: 'xml' could not be extracted from this string!");
+								} 
+							} else debug ("doWork("+chars+"): ERROR: 'ctype' could not be extracted from this string!");
+						} else debug ("doWork("+chars+"): ERROR: 'tb' could not be extracted from this string!");
+					} else debug ("doWork("+chars+"): ERROR: 'id' could not be extracted from this string!");
+				} else debug ("doWork("+chars+"): ERROR: 'vnr' could not be extracted from this string!"); 
+			} else debug ("doWork("+chars+"): ERROR: 'machine' could not be extracted from this string!");
 		}
 	}
 }
