@@ -168,7 +168,7 @@ public class scancache extends Module implements scancacheInterface {
 	* try to put a cacheline in cache, returns old one if available
 	* in all other cases returns null.
 	*/
-	public String newput(String poolName,HttpServletResponse res, String key,String value) {
+	public String newput(String poolName,HttpServletResponse res, String key,String value, String mimeType) {
 		LRUHashtable pool=(LRUHashtable)pools.get(poolName);
 		if (pool==null) {
 
@@ -211,7 +211,7 @@ public class scancache extends Module implements scancacheInterface {
 
 
 	// temp hack for asis
-	public String newput2(String poolName,String key,String value,int cachetype) {
+	public String newput2(String poolName,String key,String value,int cachetype, String mimeType) {
 		LRUHashtable pool=(LRUHashtable)pools.get(poolName);
 		if (pool==null) {
 
