@@ -39,7 +39,7 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.16 2004-11-26 19:58:28 michiel Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.17 2004-12-03 14:57:55 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -235,7 +235,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                 if (databaseName.endsWith(".xml")) {
                     databaseResourcePath = databaseName;
                 } else {
-                    databaseResourcePath = "databases/" + databaseName + ".xml";
+                    databaseResourcePath = "storage/databases/" + databaseName + ".xml";
                 }
             } else {
                 // otherwise, search for supported drivers using the lookup xml
