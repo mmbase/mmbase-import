@@ -10,6 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.CloudContext;
+import org.mmbase.bridge.LocalContext;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -30,6 +32,7 @@ import org.mmbase.util.logging.Logging;
 public abstract class CloudReferrerTag extends BodyTagSupport {
 	
     private static Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
+    private static CloudContext cloudContext;
 
     /**
     * This method tries to find an ancestor object of type CloudTag
@@ -41,17 +44,16 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     *
     */
 	
-    public CloudTag findCloudTag(String id) throws JspTagException {
+    public CloudProvider findCloudProvider(String id) throws JspTagException {
 
         Class cloudClass;
         try {
-            cloudClass = Class.forName("org.mmbase.bridge.jsp.taglib.CloudTag");
-
+            cloudClass = Class.forName("org.mmbase.bridge.jsp.taglib.CloudProvider");
         } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find CloudTag class");  
+            throw new JspTagException ("Could not find CloudProvider class");  
         }
 
-        CloudTag cloud = (CloudTag) findAncestorWithClass((Tag)this, cloudClass); 
+        CloudProvider cloud = (CloudProvider) findAncestorWithClass((Tag)this, cloudClass); 
         if (cloud == null) {
             throw new JspTagException ("Could not find parent cloud");  
         }
@@ -60,7 +62,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
 
         if (id != null) { // search further, if necessary
             while (cloud.getId() != id) {
-                cloud = (CloudTag) findAncestorWithClass((Tag)cloud, cloudClass);            
+                cloud = (CloudProvider) findAncestorWithClass((Tag)cloud, cloudClass);            
                 if (cloud == null) {
                     throw new JspTagException ("Could not find parent with id " + id);  
                 }
@@ -75,8 +77,8 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
      *
      */
 
-    public CloudTag findCloudTag() throws JspTagException {
-        return findCloudTag(null);
+    public CloudProvider findCloudProvider() throws JspTagException {
+        return findCloudProvider(null);
     }
     
     /**
@@ -85,7 +87,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     **/
 
     public Cloud getDefaultCloud() throws JspTagException {
-        return findCloudTag().getCloud();
+        return findCloudProvider().getCloudVar();
     }
 
     /**
@@ -97,7 +99,17 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     **/
 
     public Cloud getPageCloud() throws JspTagException {
-        return findCloudTag().getCloud();
+        return findCloudProvider().getCloudVar();
+    }
+
+    /**
+    * @return the default cloud context 
+    **/
+    public CloudContext getDefaultCloudContext(){
+        if (cloudContext == null){
+            cloudContext=LocalContext.getCloudContext();
+        } 
+        return cloudContext;
     }
 
 }
