@@ -15,6 +15,7 @@ import org.mmbase.bridge.Node;
 
 import org.mmbase.bridge.jsp.taglib.ListTag;
 import org.mmbase.bridge.jsp.taglib.util.StringSplitter;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -24,33 +25,20 @@ import org.mmbase.util.logging.Logging;
  */
 public class RelatedTag extends ListTag {
     private static Logger log = Logging.getLoggerInstance(RelatedTag.class.getName());
-    private String relatedPathString=null;
 
-    /**
-     * Override original ListTag method.
-     * @param type a comma separated list of nodeManagers
-     */
-    public void setPath(String path) throws JspTagException {
-        if (log.isDebugEnabled()) log.debug("setting path to " + path);
-        this.relatedPathString = getAttributeValue(path);
-    }
-
-    public int doStartTag() throws JspTagException {
-        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
-        if (superresult != NOT_HANDLED) {
-            return superresult;
-        }
-        Node node;
-        if (nodesString != null && !nodesString.equals("")) {
-            node = getCloud().getNode((String)StringSplitter.split(nodesString, ",").get(0));
+    protected Node getBaseNode() throws JspTagException {
+        if (nodes != Attribute.NULL && ! nodes.getString(this).equals("")) {
+            return getCloud().getNode((String)StringSplitter.split(nodes.getString(this), ",").get(0));
         } else {
-            node = getNode();
-            searchNodes = node.getStringValue("number");
+            return getNode();
         }
-        String nodeType=node.getNodeManager().getName();
-        // adapt the path to include the (needed) starting nodemanager name
-        pathString= nodeType + "," + relatedPathString;
-        log.debug("pathString " + pathString);
-        return super.doStartTag();
     }
+
+    protected String getSearchNodes() throws JspTagException {
+        return (nodes == Attribute.NULL || nodes.getString(this).equals("")) ? "" + getNode().getNumber() : nodes.getString(this);
+    }
+    protected String getPath() throws JspTagException {
+        return getBaseNode().getNodeManager().getName() + "," + path.getString(this);
+    }
+
 }

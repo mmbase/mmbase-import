@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import java.io.IOException;
+import java.io.File;
 
 import java.util.*;
 
@@ -40,7 +41,9 @@ import org.mmbase.util.logging.Logging;
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
     /*
         keesj: This class is full of ugly authentication code
-        we should create an authenticationFactory. An other problem
+        we should create an authenticationFactory. 
+
+        An other problem
         is that the "HTTP-authentication" has nothing to do
         with sessions. this is the reason why MMEdtiors do not
         work well when 2 users are logged in using the same user/passwd combination.
@@ -48,7 +51,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         maybe it is good idea to bind a HTTP-authentication to a HTTP-session
 
         One other question we should have answer to is if the tags are created once and reused
-        or are created for every page etc...
+       or are created for every page etc...
 
         michiel: I don't really know if this is so very ugly. It does
         make some sense to me. After all, the Cloud takes care for the
@@ -549,6 +552,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             if (cloud == null) {
                 setAnonymousCloud();
             }
+            if (cloud != null) checkValid();
+            checkCloud();
             return true;
         }
         return false;
@@ -731,15 +736,39 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     private int denyLoginPage(String reason) throws JspTagException {
         try {
-            String referrerpage = request.getRequestURI();
-            String referrer=referrerpage;
+
+            String toFile = loginpage.getString(this);
+
+            // find this page relative to login-page
+            String referrerpage = new File(request.getRequestURI()).getName();
+
+            if (1 == 0) {
+                
+
+                String toDir     = new File(toFile).getParent();
+                if (toDir == null)  toDir = ".";
+                File servletPath = new File(request.getServletPath());
+
+                String thisDir = servletPath.getParent();
+                if (thisDir == null) thisDir = ".";                
+
+                String thisFile = servletPath.getName();
+
+
+                if (toDir.startsWith("/")) {
+                    referrerpage = org.mmbase.util.UriParser.makeRelative(toDir, thisDir) + "/" + thisFile;
+                } else {
+                    referrerpage = org.mmbase.util.UriParser.makeRelative(thisDir + "/" + toDir, toDir) + "/" +  thisFile;
+                }
+            }
+            StringBuffer referrer = new StringBuffer(referrerpage);
             if(request.getQueryString() != null) {
-                referrer += "?" + request.getQueryString();
+                referrer.append("?" + request.getQueryString());
             }
             //reference = org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", reference);
-            RequestDispatcher rd=request.getRequestDispatcher(loginpage.getString(this));
+            RequestDispatcher rd=request.getRequestDispatcher(toFile);
             request.setAttribute("referrerpage",referrerpage);
-            request.setAttribute("referrer",referrer);
+            request.setAttribute("referrer",referrer.toString());
             request.setAttribute("reason",reason);
             rd.forward(request,response);
             return SKIP_BODY;
@@ -846,7 +875,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             // no logon, create an anonymous cloud.
             setAnonymousCloud();
         }
-
+        checkCloud(); // perhaps the just created cloud does not satifisfy other conditions? (rank)
         if (cloud == null) { // stil null, give it up then...
             log.debug("Could not create Cloud.");
             // throw new JspTagException("Could not create cloud (even not anonymous)");
@@ -881,7 +910,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         if (logon != null && logon.size() == 0) logon = null;
         if (checkReuse())     return evalBody();
         if (checkAnonymous()) return evalBody();
-        if (checkAsis())      return evalBody();
+        if (checkAsis()) {
+            if (cloud == null) {
+                return SKIP_BODY;
+            } else {
+                return evalBody();
+            }
+        }
         setupSession();
         if(log.isDebugEnabled()) log.debug("startTag " + cloud);
         if (checkLogoutLoginPage()) {

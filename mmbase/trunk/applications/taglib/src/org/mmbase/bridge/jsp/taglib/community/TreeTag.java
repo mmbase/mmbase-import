@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -25,74 +26,68 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen
  **/
 public class TreeTag extends AbstractNodeListTag {
+
+   
     //this class is growing to big..
     private static Logger log = Logging.getLoggerInstance(TreeTag.class.getName());
 
-    private String thread=null;
-    private Vector fieldlist=null;
-    private int maxdepth=-1;
-    private int startafternode=-1;
-    private int startaftersequence=-1;
-    private String type="message";
-    private String opentag=null;
-    private String closetag=null;
+    private Attribute thread   = Attribute.NULL;
+    private Attribute fieldlist= Attribute.NULL;
+    private Attribute  maxdepth= Attribute.NULL;
+    private Attribute  startafternode = Attribute.NULL;
+    private Attribute  startaftersequence = Attribute.NULL;
+    private Attribute  type = Attribute.NULL;
+    private Attribute  opentag = Attribute.NULL;
+    private Attribute  closetag = Attribute.NULL;
 
     protected Module community = null;
 
     public void setThread(String thread) throws JspTagException {
-        this.thread=getAttributeValue(thread);
+        this.thread = getAttribute(thread);
     }
 
-    public void setType(String type) {
-        this.type=type;
+    public void setType(String type) throws JspTagException {  // not used
+        this.type = getAttribute(type);
+    }
+    protected String getType() throws JspTagException {
+        if (type == Attribute.NULL) return "message";
+        return type.getString(this);
     }
 
-    public void setFields(String fields) {
-        //super.setFields(fields);
-        fieldlist= new Vector();
-        StringTokenizer st = new StringTokenizer(fields, ",");
+    public void setFields(String fields) throws JspTagException {
+        fieldlist = getAttribute(fields);
+    }
+    protected List getFields() throws JspTagException {
+        List res = new Vector();
+        StringTokenizer st = new StringTokenizer(fieldlist.getString(this), ",");
         while(st.hasMoreTokens()){
-            fieldlist.addElement(st.nextToken().trim());
+            res.add(st.nextToken().trim());
         }
+        return res;
     }
 
-    private void setDefaultFields(){
+    private void setDefaultFields() throws JspTagException {
         setFields("number,listhead,depth,listtail,subject,timestamp,replycount,info");
     }
 
     public void setMaxdepth(String maxdepth) throws JspTagException {
-        String m = getAttributeValue(maxdepth);
-        try {
-            this.maxdepth=Integer.parseInt(m);
-        } catch (NumberFormatException e) {
-            throw new JspTagException ("Attribute maxdepth should be a number");
-        }
+        this.maxdepth = getAttribute(maxdepth);
     }
 
     public void setStartafternode(String startafternode) throws JspTagException {
-        String s = getAttributeValue(startafternode);
-        try {
-            this.startafternode=Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            throw new JspTagException ("Attribute startafternode should be a number");
-        }
+        this.startafternode = getAttribute(startafternode);
     }
 
     public void setStartaftersequence(String startaftersequence) throws JspTagException {
-        String s = getAttributeValue(startaftersequence);
-        try {
-            this.startaftersequence=Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            throw new JspTagException ("Attribute startaftersequence should be a number");
-        }
+        this.startaftersequence=getAttribute(startaftersequence);
     }
 
-    public void setOpentag(String tag){
-        this.opentag=tag;
+    public void setOpentag(String tag) throws JspTagException {
+        this.opentag=getAttribute(tag);
     }
 
-    public void setClosetag(String tag){
-        this.closetag=tag;
+    public void setClosetag(String tag) throws JspTagException {
+        this.closetag=getAttribute(tag);
     }
 
     /**
@@ -113,18 +108,19 @@ public class TreeTag extends AbstractNodeListTag {
             params.put("CLOUD",cloud);
         } catch (JspTagException e) {}
 
-        if (orderby != null)       params.put("SORTFIELDS", orderby);
-        if (directions != null)    params.put("SORTDIRS", directions);
-        if (maxdepth >- 1)         params.put("MAXDEPTH", "" + maxdepth);
-        if (offset > 0)            params.put("FROMCOUNT", "" + offset);
-        if (max > -1)              params.put("MAXCOUNT", "" + max);
-        if (startafternode>-1) {
-            params.put("STARTAFTERNODE",""+startafternode);
-        } else if (startaftersequence>-1) {
-            params.put("STARTAFTERSEQUENCE",""+startaftersequence);
+
+        if (orderby != Attribute.NULL)     params.put("SORTFIELDS", orderby.getString(this));
+        if (directions != Attribute.NULL)  params.put("SORTDIRS", directions.getString(this));
+        if (maxdepth   != Attribute.NULL)  params.put("MAXDEPTH", "" + maxdepth.getString(this));
+        if (offset != Attribute.NULL)     params.put("FROMCOUNT", "" + offset.getInt(this, 0));
+        if (max     != Attribute.NULL)     params.put("MAXCOUNT", max.getString(this));
+        if (startafternode != Attribute.NULL) {
+            params.put("STARTAFTERNODE", startafternode.getString(this));
+        } else if (startaftersequence != Attribute.NULL) {
+            params.put("STARTAFTERSEQUENCE",startaftersequence.getString(this));
         }
-        if (opentag!=null) params.put("OPENTAG",opentag);
-        if (closetag!=null) params.put("CLOSETAG",closetag);
+        if (opentag!= Attribute.NULL) params.put("OPENTAG",opentag.getString(this));
+        if (closetag!= Attribute.NULL) params.put("CLOSETAG",closetag.getString(this));
         NodeList nodes = community.getList("TREE",params,pageContext.getRequest(),pageContext.getResponse());
         
         return setReturnValues(nodes,false);
