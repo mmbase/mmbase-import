@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: ConvertImageMagick.java,v 1.15 2001-06-25 14:33:03 vpro Exp $
+	$Id: ConvertImageMagick.java,v 1.16 2001-10-16 15:10:05 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.15  2001/06/25 14:33:03  vpro
+	Wilbert added filter(filtertype) option to select used resize filters
+	
 	Revision 1.14  2001/06/18 15:06:01  vpro
 	Davzev: Added convert cmd colorizehex(rrggbb) in hex.
 	
@@ -67,7 +70,7 @@ import org.mmbase.util.logging.*;
  * Converts Images using image magick.
  *
  * @author Rico Jansen
- * @version $Id: ConvertImageMagick.java,v 1.15 2001-06-25 14:33:03 vpro Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.16 2001-10-16 15:10:05 vpro Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -75,6 +78,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
 	// Currenctly only ImageMagick works, this are the default value's
 	private static String ConverterRoot = "/usr/local/"; 
 	private static String ConverterCommand = "bin/convert";
+	private static int colorizeHexScale = 100;
 
 	/** This function initalises this class
 		* @param params a <code>Hashtable</code> of <code>String</string>s containing informationn, this should contina the key's  
@@ -98,7 +102,17 @@ public class ConvertImageMagick implements ImageConvertInterface {
 		File checkConvCom = new File(command);
 		if(!checkConvCom.exists()) System.err.println("images.xml(ConvertImageMagick): ImageConvert.ConverterCommand("+ConverterCommand+"), "+command+" does not exist");
 		// Cant do more checking then this, i think....
-	
+		
+		tmp=(String)params.get("ImageConvert.ColorizeHexScale");
+		if (tmp!=null) {
+			try {
+				colorizeHexScale = Integer.parseInt(tmp);
+			}
+			catch (NumberFormatException e) {
+				log.error("Property ImageConvert.ColorizeHexScale should be an integer: "+e.toString());
+			}
+		}
+			
 		log.info("Root="+ConverterRoot);
 		log.info("Command="+ConverterCommand);
 	}
@@ -182,9 +196,9 @@ public class ConvertImageMagick implements ImageConvertInterface {
 					if (hex.length()==6) {
 						log.debug("Hex is :"+hex);
 						// Byte.decode doesn't work correctly.
-						int r = 100 - Math.round(100*Integer.parseInt(hex.substring(0,2),16)/255.0f);
-						int g = 100 - Math.round(100*Integer.parseInt(hex.substring(2,4),16)/255.0f);
-						int b = 100 - Math.round(100*Integer.parseInt(hex.substring(4,6),16)/255.0f);
+						int r = colorizeHexScale - Math.round(colorizeHexScale*Integer.parseInt(hex.substring(0,2),16)/255.0f);
+						int g = colorizeHexScale - Math.round(colorizeHexScale*Integer.parseInt(hex.substring(2,4),16)/255.0f);
+						int b = colorizeHexScale - Math.round(colorizeHexScale*Integer.parseInt(hex.substring(4,6),16)/255.0f);
 						log.debug("Calling colorize with r:"+r+" g:"+g+" b:"+b);
 						cmds.addElement("-colorize "+r+"/"+g+"/"+b);
 					}
