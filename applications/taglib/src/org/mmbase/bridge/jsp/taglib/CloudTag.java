@@ -9,15 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
 import sun.misc.BASE64Decoder;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Cloud;
+import org.mmbase.bridge.BridgeException;
 import org.mmbase.security.Rank; // hmm.
 
 import org.mmbase.util.logging.Logger;
@@ -197,7 +201,7 @@ public class CloudTag extends MMTaglib implements BodyTag{
             // do the MMCI cloud logging on
             if (logon != null) {
                 log.debug("Username found. logging in");
-                User user = getDefaultCloudContext().getNewUser();
+                HashMap user = new HashMap();
                 user.put("username", logon);
                 user.put("password", pwd);
                 try {
@@ -223,7 +227,7 @@ public class CloudTag extends MMTaglib implements BodyTag{
                 log.debug("Could not create Cloud.");
                 throw new JspTagException("Could not create cloud.");           
     	    } else {
-    	        session.setAttribute("cloud_"+cloudName, cloud);
+    	        session.setAttribute("cloud_" + cloudName, cloud);
     	    }
         }        
         setPageCloud(cloud);
