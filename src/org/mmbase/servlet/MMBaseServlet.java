@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.11 2002-06-30 19:58:18 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.12 2002-08-26 17:14:52 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -126,25 +126,27 @@ public class MMBaseServlet extends  HttpServlet {
             servletInstanceCount+=1;
         }
         if (initialize) {
-            log.service("Reading servlet mappings");
             // used to determine the accurate way to access a servlet
             try {
                 // get config and do stuff.
                 String path = MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
+                log.service("Reading servlet mappings from " + path);
                 XMLBasicReader webDotXml = new XMLBasicReader(path, false);
                 Enumeration mappings = webDotXml.getChildElements("web-app","servlet-mapping");
                 while (mappings.hasMoreElements()) {
-                    Element mapping = (Element)mappings.nextElement();
-                    Element servName = webDotXml.getElementByPath(mapping,"servlet-mapping.servlet-name");
+                    Element mapping = (Element) mappings.nextElement();
+                    Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
                     String name = webDotXml.getElementValue(servName);
                     if (!(name.equals(""))) {
                         Element urlPattern=webDotXml.getElementByPath(mapping, "servlet-mapping.url-pattern");
                         String pattern=webDotXml.getElementValue(urlPattern);
                         if (!(pattern.equals(""))) {
-                            List ls = (List)servletMappings.get(servName);
-                            if (ls == null) ls = new Vector();
+                            List ls = (List) servletMappings.get(servName);
+                            if (ls == null) { 
+                                ls = new Vector();
+                                servletMappings.put(name, ls);
+                            }
                             ls.add(pattern);
-                            servletMappings.put(name, ls);
                         }
                     }
                 }
@@ -172,18 +174,23 @@ public class MMBaseServlet extends  HttpServlet {
     }
 
     /**
-     * Gets all the mappings for a given servlet
+     * Gets all the mappings for a given servlet. So, this is a method to obtain info from web.xml.
+     * 
      * @param servletName the name of the servlet
      * @return the list of servlet mappings for this servlet, or null if there are none
      */
     public static List getServletMappings(String servletName) {
-        List ls=(List)servletMappings.get(servletName);
+        List ls = (List) servletMappings.get(servletName);
         return ls;
     }
 
     /**
-     * Gets all the mappings for a given association
-     * Use this to find out how to call a servlet to handle a certain type of operation or data (i.e 'images');
+     * Gets all the mappings for a given association. 
+     *
+     * Use this to find out how to call a servlet to handle a certain
+     * type of operation or data (i.e 'images', 'attachments').
+     * 
+     *
      * @param topic the topic that deidentifies the type of association
      * @return the list of servlet mappings associated with the topic, or null if there are none
      */
@@ -199,7 +206,11 @@ public class MMBaseServlet extends  HttpServlet {
     /**
      * Gets the name of the servlet that performs actions associated with the
      * the given keyword.
-     * Use this to find a servlet to handle a certain type of operation or data (i.e 'image-processing');
+     *    
+     * Use this to find a servlet to handle a certain type of
+     * operation or data (i.e 'imageservlet', 'myimageservlet',
+     * 'images');
+     *
      * @param topic the topic that deidentifies the type of association
      * @return the name of the servlet associated with the topic, or null if there is none
      */
