@@ -42,16 +42,16 @@ public class BuilderOval extends Object {
 			fm=g.getFontMetrics(namefont);
 			recalc();
 		}
-		g.setColor(Color.yellow);
+		g.setColor(parent.getObjectColor());
 		g.fillOval(x-(dx/2),y-(dy/2),dx,dy);
 		if (active) {
-			g.setColor(Color.red);
+			g.setColor(parent.getActiveColor());
 		} else {
-			g.setColor(Color.black);
+			g.setColor(parent.getLineColor());
 		}
 		g.drawOval(x-(dx/2),y-(dy/2),dx,dy);
 		g.setFont(namefont);
-		g.setColor(Color.black);
+		g.setColor(parent.getTextColor());
 		g.drawString(name,x-(fx/2),y+(fy/2)-(fl/2));
 
 		if (debug) {
@@ -105,5 +105,9 @@ public class BuilderOval extends Object {
 
 	public int getY() {
 		return(y);
+	}
+
+	public int getFontSize() {
+		return(size);
 	}
 }

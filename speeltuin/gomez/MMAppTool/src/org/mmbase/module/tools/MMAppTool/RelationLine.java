@@ -31,9 +31,9 @@ public class RelationLine extends Object {
 
 	public void paint(Graphics g) {
 		if (active) {
-			g.setColor(Color.red);
+			g.setColor(parent.getActiveColor());
 		} else {
-			g.setColor(Color.black);
+			g.setColor(parent.getLineColor());
 		}
 		g.drawLine(fb.getX(),fb.getY(),tb.getX(),tb.getY());
 		//g.drawLine(fb.getX()+1,fb.getY()+1,tb.getX()+1,tb.getY()+1);

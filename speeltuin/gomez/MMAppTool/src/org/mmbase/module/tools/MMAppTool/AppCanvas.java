@@ -21,10 +21,17 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 	private Display parent;
 	private Vector builders=new Vector();
 	private Vector relations=new Vector();
+	private Vector relationsources=new Vector();
 	private Image offScreenImage; 
         private Graphics offScreenGraphics; 
         private Dimension offScreenSize; 
 	private BuilderOval db;
+	private int textsize=15;
+	private Color bgcolor=new Color(0,0,255);
+	private Color activecolor=new Color(255,0,0);
+	private Color linecolor=new Color(0,0,0);
+	private Color textcolor=new Color(0,0,0);
+	private Color objectcolor=new Color(255,255,0);
 
 	public AppCanvas(Display parent) {
 		this.parent=parent;
@@ -53,14 +60,14 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
               offScreenSize = d; 
               offScreenGraphics = offScreenImage.getGraphics(); 
           }
-          offScreenGraphics.setColor(Color.blue); 
+          offScreenGraphics.setColor(bgcolor); 
           offScreenGraphics.fillRect(0, 0, d.width, d.height); 
           paint(offScreenGraphics); 
           theG.drawImage(offScreenImage, 0, 0, null);
       }
 
 	public void paint(Graphics g) {
-		setBackground(Color.blue);
+		setBackground(getBackGroundColor());
 
 		// draw the Relations
 		for (Enumeration e=relations.elements();e.hasMoreElements();) {
@@ -76,27 +83,24 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 	}
 
 	public void setApplication(XMLApplicationReader app) {
-		int startx=50;
-		int starty=50;
+		Random rnd=new Random();
 		
 		// takes all the info out of a reader
 		// and sets up the display objects;
 		builders=new Vector();		
-		Vector wb=app.getNeededBuilders();
+		Vector wb=app.getDataSources();
 		for (Enumeration e=wb.elements();e.hasMoreElements();) {
 			Hashtable bset=(Hashtable)e.nextElement();
-			String name=(String)bset.get("name");
-			String maintainer=(String)bset.get("maintainer");
-			String version=(String)bset.get("version");
+			String name=(String)bset.get("builder");
+			//String maintainer=(String)bset.get("maintainer");
+			//String version=(String)bset.get("version");
 			//System.out.println("maintainer=\""+maintainer+"\" version=\""+version+"\">"+name+"</builder>");
 
-			BuilderOval b=new BuilderOval(this,name,15,startx,starty);
+			int rx=40+Math.abs(rnd.nextInt()%(600));
+			int ry=40+Math.abs(rnd.nextInt()%(400));
+			//System.out.println("rx="+rx+" ry="+ry);
+			BuilderOval b=new BuilderOval(this,name,textsize,rx,ry);
 			builders.addElement(b);
-			if (startx==starty) {
-				startx+=150;
-			} else {
-				starty+=50;
-			}
 		}
 
 		// create the relatons between the builders
@@ -159,4 +163,50 @@ public class AppCanvas extends Canvas implements MouseMotionListener {
 		}
 		return(null);
 	}
+
+	public void setLineColor(Color c) {
+		linecolor=c;
+	}
+
+	public Color getLineColor() {
+		return(linecolor);
+	}
+
+	public Color getBackGroundColor() {
+		return(bgcolor);
+	}
+
+	public void setBackGroundColor(Color c) {
+		bgcolor=c;
+	}
+
+	public Color getActiveColor() {
+		return(activecolor);
+	}
+
+	public void setActiveColor(Color c) {
+		activecolor=c;
+	}
+
+	public Color getTextColor() {
+		return(textcolor);
+	}
+
+	public void setTextColor(Color c) {
+		textcolor=c;
+	}
+
+	public Color getObjectColor() {
+		return(objectcolor);
+	}
+
+	public void setObjectColor(Color c) {
+		objectcolor=c;
+	}
+
+	public Vector getBuilderOvals() {
+		return(builders);
+	}
+
+
 }
