@@ -6,29 +6,27 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.10 2002-05-27 09:26:38 pierre Exp $
+     * @version  $Id: list.jsp,v 1.11 2002-05-28 14:02:07 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
     log.trace("list.jsp");
 
-Config.ListConfig listConfig; // stores the configuration specific for this list.
+Config.ListConfig listConfig=null; // stores the configuration specific for this list.
 
-if ("true".equals(request.getParameter("popup"))) {
-    log.trace("This is a popup list viewer. Don't  push on Stack.");
-    listConfig = configurator.createList();
-} else {
-    if (ewconfig.subObjects.size() > 0) {
-        listConfig = (Config.ListConfig) ewconfig.subObjects.peek();
-    } else {
-        listConfig = configurator.createList();
-        log.trace("List, push on Stack.");
-        ewconfig.subObjects.push(listConfig);
+if (ewconfig.subObjects.size() > 0) {
+    Object o = ewconfig.subObjects.peek();
+    if (o instanceof Config.ListConfig) {
+        listConfig= (Config.ListConfig)o;
     }
 }
+if (listConfig==null) {
+    listConfig = configurator.createList();
+    log.trace("List, push on Stack.");
+    ewconfig.subObjects.push(listConfig);
+}
 
-
-configurator.config(listConfig); // configure the thing, that means, look to the parameters.
+configurator.config(listConfig); // configure the thing, that means, look at the parameters.
 
 // decide what kind of query: multilevel or single?
 boolean multilevel = listConfig.nodePath.indexOf(",") > -1;
@@ -225,22 +223,19 @@ for (int i=0; i<pagecount && i<maxpages; i++) {
     Utils.setAttribute(pagenode, "next",  (i==currentpage+1)+"");
     pages.appendChild(pagenode);
 }
-String url = response.encodeURL("list.jsp?instanceName=" + ewconfig.sessionKey);
 
 log.trace("Setting xsl parameters");
 java.util.Map params = new java.util.Hashtable();
 if (ewconfig.wizard != null) params.put("wizard", ewconfig.wizard);
 params.put("start",String.valueOf(start));
 params.put("len",String.valueOf(len));
-params.put("url", url);
+params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid", ewconfig.sessionId);
 params.put("deletable", deletable+"");
 params.put("creatable", creatable+"");
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
-//if (settings_ewconfig.get("type") != null) params.put("type", settings_ewconfig.get("type"));
-//XXX: new param1
 if (title != null) params.put("wizardtitle", title);
 if (listConfig.title != null) params.put("title", listConfig.title);
 params.put("username", cloud.getUser().getIdentifier());
