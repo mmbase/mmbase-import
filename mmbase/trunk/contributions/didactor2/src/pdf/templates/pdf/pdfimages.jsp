@@ -15,9 +15,12 @@
    <mm:import id="imnum" reset="true"><mm:field name="images.number"/></mm:import>
    <mm:node number="$imnum">
   
-      <td valign="top" width="100%" height="100%">
+      <td valign="top" width="100%">
+      <table>
+        <tr><td>
       <mm:field name="title"/>
-      <br/>
+        </td></tr>
+        <tr><td>
        <mm:isgreaterthan referid="imwidth" value="0">
           <mm:isgreaterthan referid="imheight" value="0">
             <mm:import id="template" reset="true">s(<mm:write referid="imwidth"/>x<mm:write referid="imheight"/>)</mm:import>
@@ -35,9 +38,11 @@
       </mm:islessthan>
 
       
-        <br/>
-        
-      <mm:field name="description"/>
+        </td></tr>
+        <tr><td>
+        <mm:field name="description"/>
+        </td></tr>
+     </table>
      </td>
     </mm:node>
     </mm:related>
@@ -50,15 +55,18 @@
     <mm:compare referid="imagelayout" value="1">
       <table width="100%">
   <mm:related path="sizerel,images" orderby="sizerel.pos">
-        <tr>
-       <td valign="top" width="100%" height="100%">
- 
+
    <mm:import id="imwidth" reset="true"><mm:field name="sizerel.width"/></mm:import>
    <mm:import id="imheight" reset="true"><mm:field name="sizerel.height"/></mm:import>
    <mm:import id="imnum" reset="true"><mm:field name="images.number"/></mm:import>
    <mm:node number="$imnum">
+        <tr>
+       <td valign="top" width="100%">
+ 
       <mm:field name="title"/>
-      <br/>
+      </td>
+      </tr>
+      <tr><td width="100%">
        <mm:isgreaterthan referid="imwidth" value="0">
        <mm:isgreaterthan referid="imheight" value="0">
        <mm:import id="template" reset="true">s(<mm:write referid="imwidth"/>x<mm:write referid="imheight"/>)</mm:import>
@@ -76,14 +84,12 @@
       </mm:islessthan>
              
        
-        <br/>
+        </td></tr>
+        <tr><td width="100%">
         
       <mm:field name="description"/>
-        <br/>
+        </td></tr>
      </mm:node>
-        </td>
-        </tr>
- 
     </mm:related>
    </table>
     </mm:compare>
