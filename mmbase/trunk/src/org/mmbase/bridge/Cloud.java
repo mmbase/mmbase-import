@@ -146,7 +146,7 @@ public interface Cloud {
     /**
      * Logs off a user. Resets the user's context to 'anonymous'.
      */
-    public void logoff();
+    // public void logoff();
 
     /**
      * Returns the name of this cloud.
