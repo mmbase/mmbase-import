@@ -25,8 +25,7 @@
       <descriptions>
         <description xml:lang="en">
           The format/mimetype of this source.  This is an integer
-          corresponding to the
-          org.mmbase.module.builders.modules.media.resources.format
+	  corresponding to the org.mmbase.applications.media.resources.format
           resource.
         </description>
         <description xml:lang="nl">
