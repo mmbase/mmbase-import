@@ -4,47 +4,48 @@
   <articleinfo>
     <title>MMBase Crontab</title>
 
-		<date>2004-09-23</date>
+    <date>2004-09-23</date>
 
-		<edition>$Id: crontab.xml,v 1.1 2004-09-23 12:39:14 michiel Exp $</edition>
+    <edition>$Id: crontab.xml,v 1.2 2004-09-23 13:18:24 keesj Exp $</edition>
 
-		<authorgroup>
-			<author>
-				<firstname>Michiel</firstname>
-				<surname>Meeuwissen</surname>
-			</author>
-		</authorgroup>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+      </author>
+    </authorgroup>
 
-		<legalnotice>
-			<para>This software is OSI Certified Open Source Software. OSI Certified
-			is a certification mark of the Open Source Initiative.</para>
+    <legalnotice>
+      <para>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</para>
 
-			<para>The license (Mozilla version 1.0) can be read at the MMBase site.
-			See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
-		</legalnotice>
-	</articleinfo>
+      <para>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <ulink url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink></para>
+    </legalnotice>
+  </articleinfo>
 
-	<section id="introduction">
-		<title>Introduction</title>
-		<para>
+  <section id="introduction">
+    <title>Introduction</title>
+    <para>
       The crontab functionality is of course heavily inspired by UNIX' crontab. This means that you
       can schedule jobs with it. You specify when it must run by a string like: "*/3 5-23 * * *"
       which means every three minutes, but not during the night, or "0 7 * * *" which means every
       day at 7 am.
     </para>
-	</section>
+  </section>
 
-	<section id="installation">
-		<title>Installation</title>
-		<para>
+  <section id="installation">
+    <title>Installation</title>
+    <para>
       To install the MMBase crondaemon, you have to place mmbase-crontab.jar and either install the
-      module (crontab.xml) or deploy the MMBaseCronTab application (with the cronjobs builder).
+      crontab module (crontab.xml) or deploy the MMBaseCronTab application (with the cronjobs builder). 
+      Both can be used a the same time.
     </para>
-	</section>
+  </section>
 
-	<section id="configuration">
-		<title>Configuration</title>
-		<para>
+  <section id="configuration">
+    <title>Configuration</title>
+    <para>
       You specify what must be run by the class-name of a class implementing 'Runnable', or optionally,
       implementing the specialized interface CronJob. The CronJob interface extends Runnable but also
       alows for code to be run when the con-daemon stops or when it starts (a String can be provided for
@@ -62,6 +63,6 @@
       We refer to the <ulink url="http://www.rt.com/man/crontab.5.html">UNIX' manual page</ulink>
       for the schedule time format.
     </para>
-	</section>
+  </section>
 
 </article>
