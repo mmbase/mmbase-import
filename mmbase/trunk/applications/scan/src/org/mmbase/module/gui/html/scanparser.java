@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.32 2000-11-21 16:40:05 vpro Exp $
+$Id: scanparser.java,v 1.33 2000-11-23 14:50:43 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.32  2000/11/21 16:40:05  vpro
+davzev: Added code to method do_part that forbids parting with filepaths that contain .. parent directory files.
+
 Revision 1.31  2000/11/20 13:37:50  install
 Rob changed TRANSCATION tag to lower case
 
@@ -119,7 +122,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.32 $ $Date: 2000-11-21 16:40:05 $
+ * @$Revision: 1.33 $ $Date: 2000-11-23 14:50:43 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -473,13 +476,13 @@ public class scanparser extends ProcessorModule {
 		newbody=new StringBuffer();
 		postcmd=-1;
 
-		while ((precmd=body.indexOf("<transaction",postcmd))!=-1) {
+		while ((precmd=body.indexOf("<transactions",postcmd))!=-1) {
 			newbody.append(body.substring(postcmd+1,precmd));
-			prepostcmd=precmd+12;
+			prepostcmd=precmd+13;
 			if ((postcmd=body.indexOf('>',precmd))!=-1) {
-				end_pos2=body.indexOf("</transaction>",prepostcmd);
+				end_pos2=body.indexOf("</transactions>",prepostcmd);
 				if (end_pos2!=-1) {
-					postcmd=end_pos2+14;
+					postcmd=end_pos2+16;
 					try {
 						newbody.append(do_transaction(body.substring(precmd,postcmd),session,sp));
 					} catch(Exception e) {
