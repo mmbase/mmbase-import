@@ -27,7 +27,7 @@
     <tr>
      <td>Groups</td>
      <td>
-      <select name="groups" size="4" multiple="multiple">
+      <select name="_groups" size="4" multiple="multiple">
         <mm:relatednodes type="mmbasegroups">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:relatednodes>
@@ -38,9 +38,9 @@
      </td>
     </tr>
     <tr>
-     <td>Ranks</td>
+     <td>Rank</td>
      <td>
-      <select name="rank" size="4">
+      <select name="_rank" size="4">
         <mm:relatednodes type="mmbaseranks">
          <option selected="selected" value="<mm:field name="number" />"><mm:nodeinfo type="gui" /></option>
         </mm:relatednodes>
