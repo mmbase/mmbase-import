@@ -13,6 +13,7 @@ import java.util.*;
 import java.sql.*;
 import java.io.File;
 import java.text.NumberFormat;
+import java.text.DateFormat;
 import java.net.URLEncoder;
 
 import org.mmbase.util.*;
@@ -47,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.165 2002-10-09 15:11:20 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.166 2002-10-10 19:52:34 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1830,6 +1831,7 @@ public class MMObjectBuilder extends MMTable {
         }
     }
 
+
     /**
      * What should a GUI display for this node/field combo.
      * Default is null (indicating to display the field as is)
@@ -1840,6 +1842,24 @@ public class MMObjectBuilder extends MMTable {
      */
     public String getGUIIndicator(String field, MMObjectNode node) {
         return null;
+    }
+
+
+    /**
+     * The GUIIndicator can depend on the locale. Override this function
+     * @since MMBase-1.6
+     */
+    protected String getLocaleGUIIndicator(Locale locale, String field, MMObjectNode node) {
+        return getGUIIndicator(field, node);
+    }
+
+
+    /**
+     * The GUIIndicator can depend on the locale. Override this function
+     * @since MMBase-1.6
+     */
+    protected String getLocaleGUIIndicator(Locale locale, MMObjectNode node) {
+        return getGUIIndicator(node);
     }
 
 
@@ -2121,7 +2141,37 @@ public class MMObjectBuilder extends MMTable {
             } catch(Exception e) {
                 log.error("Evaluating smartpath for "+node.getNumber()+" went wrong " + e.toString());
             }
-        } 
+        } else if (function.equals("gui")) {
+            if (log.isDebugEnabled()) log.debug("GUI of builder with " + arguments);
+            if (arguments == null || arguments.size() == 0) {
+                return getGUIIndicator(node);
+            } else {
+                String rtn;
+                String field = (String) arguments.get(0);
+                Locale locale = null;
+                if (arguments.size() <= 2) { // support for login info not needed
+                    rtn = getGUIIndicator(field, node);
+                } else {
+                    locale = new Locale((String) arguments.get(2), "");
+                    if (null == field || "".equals(field)) {
+                        rtn = getLocaleGUIIndicator(locale, node);
+                    } else {
+                        rtn = getLocaleGUIIndicator(locale, field, node);
+                    }
+                }
+                
+                if (rtn == null) {
+                    FieldDefs fdef = getField(field);
+                    if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
+                        if (locale == null) locale = new Locale(mmb.getLanguage(), "");
+                        rtn = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, locale).format(new java.util.Date((long) node.getIntValue(field) * 1000));
+                    } else {
+                        rtn = node.getStringValue(field);
+                    }
+                }
+                return rtn;
+            }
+        }
         
         String field;
         if (arguments.size() == 0) {
@@ -2203,22 +2253,6 @@ public class MMObjectBuilder extends MMTable {
              double val = node.getDoubleValue(field);
              NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
              return  "" + nf.format(val);
-        } else if (function.equals("gui")) {
-            if (field.equals("")) {
-                return getGUIIndicator(node);
-            } else {
-                String val =  getGUIIndicator(field, node);
-                if (val == null) {
-                    FieldDefs fdef = getField(field);
-                    if (fdef != null && "eventtime".equals(fdef.getGUIType())) { // do something reasonable for this
-                        val = new java.text.SimpleDateFormat().format(new java.util.Date((long) node.getIntValue(field) * 1000));
-                    } else {
-                        val = node.getStringValue(field);
-                    }
-                }
-            return val; 
-            }
-
         } else {
             // old manner: parsing list from string. That is ugly.
             return getObjectValue(node, field);
