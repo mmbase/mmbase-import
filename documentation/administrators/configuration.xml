@@ -5,7 +5,7 @@
 		<articleinfo>
 		<title>MMBase Configuration documentation</title>
 		<date>2002-12-04</date>
-		<edition>$Id: configuration.xml,v 1.21 2004-02-05 14:05:22 pierre Exp $</edition>
+		<edition>$Id: configuration.xml,v 1.22 2004-02-17 12:58:38 gerard Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Michiel</firstname>
@@ -388,7 +388,7 @@
 					</programlisting>
 				</example>
 			So using this the configuration of the database is totally left to the application server.
-			<note>If you plan to use a application server datasource with the new storage layer, you can also configure this in mmbaseroot.xml. In that case, you do not need the JDBC module, and can set it to inactive. See the <ulink url="../backenddevelopers/storage/index.html">storage documentation</ulink> for details.</note>
+			<note><para>If you plan to use a application server datasource with the new storage layer, you can also configure this in mmbaseroot.xml. In that case, you do not need the JDBC module, and can set it to inactive. See the <ulink url="../backenddevelopers/storage/index.html">storage documentation</ulink> for details.</para></note>
 		 </para>
 	</section>
 	<section id="logging">
