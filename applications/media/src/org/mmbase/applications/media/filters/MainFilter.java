@@ -108,8 +108,8 @@ public class MainFilter implements Filter {
             try {
                 Class newclass = Class.forName(clazz);
                 Filter filter = (Filter) newclass.newInstance();
-                if (filter instanceof URLComposerComparator) {
-                    chainComp.add((URLComposerComparator) filter);
+                if (filter instanceof ComparatorFilter) {
+                    chainComp.add((ComparatorFilter) filter);
                 } else {
                     if (chainComp.size() > 0) { 
                         filters.add(chainComp);
