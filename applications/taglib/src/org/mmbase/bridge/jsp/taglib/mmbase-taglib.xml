@@ -5,9 +5,10 @@ This "enhanced" tld file will be converted to a "normal" tld and a html file.
 To convert this file to a standard .tld file you need  an xslt engine like xalan:
 java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2tld.xslt  > mmbase-taglib.tld
 
-To convert this file to html documentation you need  an xslt engine:
+The html-documentation is made in the same manner.
 java org.apache.xalan.xslt.Process -Q -IN mmbase-taglib.xml -XSL xml2html.xslt
 
+Another possibility is 'xsltproc'.
 
 The following additional tags are possible between <tag> and </tag>:
 
@@ -1376,6 +1377,15 @@ user hostname:  &lt;mm:info module="info" command="USER-HOSTNAME" /&gt;
         <value>throw|throwexception</value>
         <info>Throw an exception if the node is not found</info>
       </possiblevalue>
+      <possiblevalue>
+        <value>null|providenull</value>
+        <info>
+          Will not throw an exception, but will evaluate the body,
+          simply providing 'null' as node. This will probably lead to
+          other (less clear) exceptions. But if you prefer it that
+          way, it is possible. Use on own risk!
+        </info>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>element</name>
@@ -2575,6 +2585,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
         compile it together with your page. So in that aspect it is
         much different from this tag, which "includes" a stand-alone
         page.
+      </p>
+      <p>
+        See <a
+        href="http://java.sun.com/products/jsp/tags/10/tags.html">JSP
+        Syntax Reference</a>
       </p>
     </info>
     <attribute>
