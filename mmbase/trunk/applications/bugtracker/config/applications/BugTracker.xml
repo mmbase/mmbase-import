@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
-<!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
-<application name="BugTracker" maintainer="submarine.nl" version="1" auto-deploy="false">
+<!DOCTYPE application PUBLIC "-//MMBase//DTD application config 1.1//EN" "http://www.mmbase.org/dtd/application_1_1.dtd">
+<application name="BugTracker" maintainer="submarine.nl" version="1" auto-deploy="true">
+	<requirements>
+		<requires name="Resources" maintainer="mmbase.org" version="1" />
+	</requirements>
 	<neededbuilderlist>
 		<builder maintainer="mmbase.org" version="1">pools</builder>
 		<builder maintainer="mmbase.org" version="1">bugreports</builder>
