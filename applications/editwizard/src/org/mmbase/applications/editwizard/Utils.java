@@ -38,7 +38,7 @@ import org.mmbase.util.XMLErrorHandler;
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.23 2002-10-04 23:23:19 michiel Exp $
+ * @version $Id: Utils.java,v 1.24 2002-10-04 23:25:14 michiel Exp $
  */
 public class Utils {
 
@@ -181,14 +181,9 @@ public class Utils {
      * @return     The value of the attribute. Returns the defaultvalue if none exists.
      */
     public static String getAttribute(Node node, String name, String defaultvalue) {
-        //   try {
-            Node n = node.getAttributes().getNamedItem(name);
-            if (n == null) return defaultvalue;
-            return n.getNodeValue();
-            // } catch (Exception e) {
-            // log.warn(Logging.stackTrace(e));
-            // return defaultvalue;
-            //  }
+        Node n = node.getAttributes().getNamedItem(name);
+        if (n == null) return defaultvalue;
+        return n.getNodeValue();
     }
 
     /**
@@ -221,18 +216,15 @@ public class Utils {
      * @return     The value of the containing textnode. If no textnode present, defaultvalue is returned.
      */
     public static String getText(Node node, String defaultvalue) {
-        //      try {
-            if ((node.getNodeType()==Node.TEXT_NODE) ||
-                (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
-                return node.getNodeValue();
-            }
-            Node childnode=node.getFirstChild();
-            if ((childnode!=null) &&(childnode.getNodeType()==Node.TEXT_NODE)) {
-                return childnode.getNodeValue();
-            }
-            //   } catch (Exception e) {
-            //  log.warn(e.getMessage());
-            // }
+        
+        if ((node.getNodeType()==Node.TEXT_NODE) ||
+            (node.getNodeType()==Node.ATTRIBUTE_NODE)) {
+            return node.getNodeValue();
+        }
+        Node childnode=node.getFirstChild();
+        if ((childnode!=null) &&(childnode.getNodeType()==Node.TEXT_NODE)) {
+            return childnode.getNodeValue();
+        }
         return defaultvalue;
     }
 
