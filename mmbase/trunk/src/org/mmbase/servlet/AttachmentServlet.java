@@ -17,7 +17,7 @@ import org.mmbase.bridge.Node;
  * 'handle'.  Also the fields 'filename', 'mimetype' and 'title' can be taken into consideration by
  * this servlet and preferably the node has also those fields.
   *
- * @version $Id: AttachmentServlet.java,v 1.6 2002-07-24 19:43:18 michiel Exp $
+ * @version $Id: AttachmentServlet.java,v 1.7 2002-11-06 22:04:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  * @see HandleServlet
@@ -47,7 +47,7 @@ public class AttachmentServlet extends HandleServlet {
         if (mimeType == null || mimeType.equals("")) { 
             // mime-type missing, try to suppose that this is an image node, which has the mimetype
             // as a function.
-            mimeType = node.getStringValue("mimetype()"); 
+            mimeType = node.getFunctionValue("mimetype", null).toString(); 
             if (mimeType == null || mimeType.equals("")) { 
                 return super.getMimeType(node);
             }

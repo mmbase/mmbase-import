@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * supposed. All this is only done if there was a session active at all. If not, or the session
  * variable was not found, that an anonymous cloud is used.
  *
- * @version $Id: BridgeServlet.java,v 1.5 2002-08-15 14:44:45 michiel Exp $
+ * @version $Id: BridgeServlet.java,v 1.6 2002-11-06 22:04:16 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -113,9 +113,11 @@ public abstract class BridgeServlet extends  MMBaseServlet {
         if (c == null) return null;
         Node node = null;
         try {
-            node = c.getNode(query.toString());
-        } catch (org.mmbase.bridge.NotFoundException e) {
-            res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist");
+            if (c.hasNode(query.toString())) {
+                node = c.getNode(query.toString());
+            } else {
+                res.sendError(res.SC_NOT_FOUND, "Node " + query + " does not exist" );  // or session was expired
+            }
         } catch (org.mmbase.security.SecurityException e) {
             res.sendError(res.SC_FORBIDDEN, "Permission denied: " + e.toString());
         } catch (Exception e) {
