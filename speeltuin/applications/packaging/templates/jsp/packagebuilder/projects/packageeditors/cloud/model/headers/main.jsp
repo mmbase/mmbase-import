@@ -5,30 +5,14 @@
 		<td align="middle" width="30%">
 		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
 		<mm:param name="editor" value="neededbuilders" />
-		</mm:url>">NeededBuilders</a>
+		</mm:url>">Builders</a>
 		</td>
 	</mm:compare>
 	<mm:compare referid="editor" value="neededbuilders">
 		<th align="middle" width="30%">
 		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
 		<mm:param name="editor" value="neededbuilders" />
-		</mm:url>">NeededBuilders</a>
-		</th>
-	</mm:compare>
-
-	<!-- NeededRelDefs -->
-	<mm:compare referid="editor" value="neededreldefs" inverse="true">
-		<td align="middle" width="30%">
-		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
-		<mm:param name="editor" value="neededreldefs" />
-		</mm:url>">NeededRelDefs</a>
-		</td>
-	</mm:compare>
-	<mm:compare referid="editor" value="neededreldefs">
-		<th align="middle" width="30%">
-		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
-		<mm:param name="editor" value="neededreldefs" />
-		</mm:url>">NeededRelDefs</a>
+		</mm:url>">Builders</a>
 		</th>
 	</mm:compare>
 
@@ -37,14 +21,31 @@
 		<td align="middle" width="30%">
 		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
 		<mm:param name="editor" value="allowedrelations" />
-		</mm:url>">AllowedRelations</a>
+		</mm:url>">Defined Relations</a>
 		</td>
 	</mm:compare>
 	<mm:compare referid="editor" value="allowedrelations">
 		<th align="middle" width="30%">
 		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
 		<mm:param name="editor" value="allowedrelations" />
-		</mm:url>">AllowedRelations</a>
+		</mm:url>">Defined Relations</a>
+		</th>
+	</mm:compare>
+
+
+	<!-- NeededRelDefs -->
+	<mm:compare referid="editor" value="neededreldefs" inverse="true">
+		<td align="middle" width="30%">
+		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
+		<mm:param name="editor" value="neededreldefs" />
+		</mm:url>">Relation Types</a>
+		</td>
+	</mm:compare>
+	<mm:compare referid="editor" value="neededreldefs">
+		<th align="middle" width="30%">
+		<a href="<mm:url page="editcloud.jsp" referids="main,sub,id,package,name,prefix@modelfilename">
+		<mm:param name="editor" value="neededreldefs" />
+		</mm:url>">Relation Types</a>
 		</th>
 	</mm:compare>
   </tr>
