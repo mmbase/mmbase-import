@@ -1,4 +1,5 @@
-<%@include file="header.jsp" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@include file="header.jsp" %><html xmlns="http://www.w3.org/1999/xhtml">
   <mm:cloud name="mmbase" method="http" jspvar="cloud">
   <%  Stack states = (Stack)session.getValue("mmeditors_states");
       Properties state = (Properties)states.peek();
