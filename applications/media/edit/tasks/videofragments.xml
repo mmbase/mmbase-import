@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-    <!ENTITY providers  SYSTEM "parts/providers.xml" >
-    <!ENTITY fragments "videofragments" >
-    <!ENTITY sources   "videosources" >
-    <!ENTITY addsources SYSTEM   "parts/sources.xml" >
-    <!ENTITY basefragments SYSTEM "basefragments.xml">
-    <!ENTITY sourcefields SYSTEM "parts/videofields.xml" >
+    <!ENTITY providers     SYSTEM "parts/providerslist.xml" >
+    <!ENTITY fragments     "videofragments" >
+    <!ENTITY sources       "videosources" >
+    <!ENTITY guitype       "video" >
+    <!ENTITY addsources    SYSTEM "parts/sourceslist.xml" >
+    <!ENTITY basefragments SYSTEM "parts/basefragments.xml">
+    <!ENTITY sourcefields  SYSTEM "parts/videofields.xml" >
 ]
 >
 

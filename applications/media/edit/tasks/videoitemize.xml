@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
  [
-   <!ENTITY itemize      SYSTEM "parts/itemize.xml">
-   <!ENTITY itemizebase  SYSTEM "itemize.xml">
-   <!ENTITY publishtimes SYSTEM "parts/publishtimes.xml">
+   <!ENTITY itemizelist  SYSTEM "parts/itemizelist.xml">
+   <!ENTITY itemizebase  SYSTEM "parts/baseitemize.xml">
+   <!ENTITY publishtimes SYSTEM "parts/publishtimeslist.xml">
    <!ENTITY fragments    "videofragments">
   ]
 >

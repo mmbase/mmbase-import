@@ -1,3 +1,8 @@
+<!-- 
+  Base for audio and video fragments.
+  Included in audiofragments and videofragments.
+-->
+
 
 	<action type="create">
 		<object type="&fragments;">
