@@ -9,19 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.transformers.ByteToCharTransformer;
-import org.mmbase.util.transformers.CharTransformer;
-import org.mmbase.util.transformers.Config;
-import org.mmbase.util.transformers.Transformer;
+import org.mmbase.util.transformers.*;
+
+
 /**
  *
  * Class to convert from/to a string (byte[]) from/to a encoded string (byte[])
@@ -52,7 +47,7 @@ import org.mmbase.util.transformers.Transformer;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.15 2003-03-07 09:31:13 pierre Exp $
+ * @version $Id: Encode.java,v 1.16 2003-05-07 21:27:12 michiel Exp $
  **/
 public class Encode {
 
@@ -98,7 +93,9 @@ public class Encode {
                 throw new IllegalArgumentException("encoding: '" + encoding + "' could not be instantiated");
             } catch (IllegalAccessException ex) {
             }
-            trans.configure(e.config);
+            if (trans instanceof ConfigurableTransformer) {
+                ((ConfigurableTransformer) trans).configure(e.config);
+            }
         } else {
             throw new IllegalArgumentException("encoding: '" + encoding + "' unknown");
         }
@@ -118,21 +115,23 @@ public class Encode {
             log.info("registering encode class " + clazz);
             try {
                 Class atrans = Class.forName(clazz);
-                Class trans  = Class.forName("org.mmbase.util.transformers.Transformer");
-
-                if(trans.isAssignableFrom(atrans)) { // make sure it is of the right type.
-                    // Instantiate it, just once, to call the method 'transformers'
-                    // In this way we find out what this class can do.
-                    Object transformer = atrans.newInstance();
-                    java.lang.reflect.Method transformers = atrans.getMethod("transformers", new Class [] {});
-                    Map newencodings = (Map) transformers.invoke(transformer, new Object[] {});
-                    encodings.putAll(newencodings); // add them all to our encodings.
-
+                if(Transformer.class.isAssignableFrom(atrans)) { // make sure it is of the right type.
+                    if (ConfigurableTransformer.class.isAssignableFrom(atrans)) {
+                        log.debug("A configurable transformer");
+                        // Instantiate it, just once, to call the method 'transformers'
+                        // In this way we find out what this class can do.
+                        ConfigurableTransformer transformer = (ConfigurableTransformer) atrans.newInstance();                       
+                        Map newencodings = (Map) transformer.transformers();
+                        encodings.putAll(newencodings); // add them all to our encodings.
+                    } else {
+                        log.debug("Non configurable");
+                        encodings.put(clazz, new Config(atrans, -1, clazz));
+                    }
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
                     // same string to identify a transformation.
 
                 } else {
-                    throw new IllegalArgumentException("The class " + clazz + " does not implement " + trans.getName());
+                    throw new IllegalArgumentException("The class " + clazz + " does not implement " + Transformer.class.getName());
                 }
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(e.toString());
@@ -168,6 +167,7 @@ public class Encode {
         Encode e = new Encode(encoding);
         return e.encode(bytes);
     }
+
 
     /**
      *	This function will decode a given string to it's decoded variant.
@@ -266,7 +266,7 @@ public class Encode {
      * @return An String representing the coding that is currently used.
      */
     public String getEncoding() {
-        return trans.getEncoding();
+        return trans.toString();
     }
     /**
      * Invocation of the class from the commandline for testing.
