@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.32 2004-03-02 12:46:34 michiel Exp $
+ * @version $Id: Queries.java,v 1.32.2.1 2004-04-26 14:12:31 pierre Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -311,7 +311,7 @@ public class Queries {
             log.debug("compositing constraint");
             Constraint compConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
             query.setConstraint(compConstraint);
-            return compConstraint;
+            return newConstraint;
         } else {
             query.setConstraint(newConstraint);
             return newConstraint;
