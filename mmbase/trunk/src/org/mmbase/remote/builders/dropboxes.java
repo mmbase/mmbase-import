@@ -19,13 +19,12 @@ import org.mmbase.service.interfaces.*;
 
 
 /**
- * @version $Revision: 1.5 $ $Date: 2000-11-27 12:52:35 $ 
+ * @version $Revision: 1.6 $ $Date: 2001-01-05 14:12:33 $ 
  * @author Daniel Ockeloen
  */
 public class dropboxes extends RemoteBuilder {
 	private boolean debug = true;
 	private dropboxInterface impl;
-	private String classname;
 	StringTagger tagger;
 
 	public void init(MMProtocolDriver con,String servicefile) {
@@ -109,11 +108,14 @@ public class dropboxes extends RemoteBuilder {
 		commit();
 	}
 
+	/**
+	 * Loads the implemention for the dropboxes service using the properties.
+	 */
 	void getConfig() {
-		classname=(String)props.get("implementation");
-		if( debug ) debug("getConfig(): impl("+classname+")");
+		String implClassName=(String)props.get("implementation");
+		if( debug ) debug("getConfig(): impl("+implClassName+")");
 		try {
-			Class newclass=Class.forName(classname);
+			Class newclass=Class.forName(implClassName);
 			impl = (dropboxInterface)newclass.newInstance();
 			String tmp=(String)props.get("directory");
 			impl.setDir(tmp);
@@ -122,7 +124,7 @@ public class dropboxes extends RemoteBuilder {
 			tmp=(String)props.get("wwwpath");
 			impl.setWWWPath(tmp);
 		} catch (Exception f) {
-			debug("getConfig(): ERROR: Can't load class("+classname+")");
+			debug("getConfig(): ERROR: Can't load class("+implClassName+")");
 		}
 	}
 
