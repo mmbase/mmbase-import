@@ -45,8 +45,9 @@ package org.mmbase.util;
  * cause a copy to be made. <p>
  *
  * @see     String
- * @version 1.28, 14 Feb 1996
+ * @author Johannes Verelst (bugfix)
  * @author  Arthur van Hoff
+ * @version $Id: StringObject.java,v 1.5 2002-03-01 14:00:43 pierre Exp $
  */
 
 public final class StringObject {
@@ -521,7 +522,7 @@ public final class StringObject {
         while (pos!=-1) {
             delete(pos,oldstr.length());
             insert(pos,newstr);
-            pos=indexOf(oldstr,pos+oldstr.length());
+            pos=indexOf(oldstr,pos+newstr.length());
         }
         return this;
     }
