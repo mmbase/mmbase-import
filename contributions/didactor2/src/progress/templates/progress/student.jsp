@@ -63,7 +63,7 @@
 
 <di:hasrole role="teacher">
 <div style="float: right">
-<a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>">Terug naar overzicht</a>
+<a href="<mm:treefile page="/progress/index.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/progress/gfx/back.gif"  objectlist="$includePath" referids="$referids"/>" alt="Terug naar overzicht"/></a>
 </div>
 </di:hasrole>
  
