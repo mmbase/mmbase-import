@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.bridge.jsp.taglib.TaglibException;
 import org.mmbase.bridge.NotFoundException;
 import java.net.*;
@@ -31,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.48.2.4 2004-08-02 17:21:16 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.48.2.5 2005-03-15 16:46:31 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -54,6 +55,8 @@ public class IncludeTag extends UrlTag {
 
     private Attribute encodingAttribute = Attribute.NULL;
 
+    private   Attribute  attributes       = Attribute.NULL;
+
     /**
      * Test whether or not the 'cite' parameter is set
      */
@@ -67,6 +70,13 @@ public class IncludeTag extends UrlTag {
 
     protected boolean getCite() throws JspTagException {
         return cite.getBoolean(this, false);
+    }
+
+    /**
+     * @since MMBase-1.7.4
+     */
+    public void setAttributes(String a) throws JspTagException {
+        attributes = getAttribute(a);
     }
 
     public int doStartTag() throws JspTagException {
@@ -200,6 +210,15 @@ public class IncludeTag extends UrlTag {
                 }                
             }
         } 
+
+        if (attributes != Attribute.NULL) {
+            Iterator i = Referids.getReferids(attributes, this).entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry) i.next();
+                req.setAttribute((String) entry.getKey(), entry.getValue());
+            }
+            
+        }
          
         // Orion bug fix.
         req.getParameterMap();
