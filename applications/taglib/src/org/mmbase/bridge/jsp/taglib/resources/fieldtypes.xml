@@ -7,14 +7,17 @@
   <fieldtype id="integer">
     <class>org.mmbase.bridge.jsp.taglib.typehandler.IntegerHandler</class>
   </fieldtype>
-  <fieldtype id="byte">
-    <class>org.mmbase.bridge.jsp.taglib.typehandler.ByteHandler</class>
+  <fieldtype id="long">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.LongHandler</class>
   </fieldtype>
   <fieldtype id="float">
     <class>org.mmbase.bridge.jsp.taglib.typehandler.FloatHandler</class>
   </fieldtype>
-  <fieldtype id="long">
-    <class>org.mmbase.bridge.jsp.taglib.typehandler.LongHandler</class>
+  <fieldtype id="double">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.DoubleHandler</class>
+  </fieldtype>
+  <fieldtype id="byte">
+    <class>org.mmbase.bridge.jsp.taglib.typehandler.ByteHandler</class>
   </fieldtype>
   <fieldtype id="xml">
     <class>org.mmbase.bridge.jsp.taglib.typehandler.XmlHandler</class>
