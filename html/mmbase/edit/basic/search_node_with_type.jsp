@@ -74,8 +74,8 @@
         </mm:maydelete>
         &nbsp;
      </td>    
-     <td class="navigate">
-    <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink && sn.mayLink())) { %>
+     <td class="navigate">  
+    <% if(sn.mayWrite() || sn.mayDelete() || sn.mayChangeContext() || (mayLink)) { %>
             <a href="<mm:url page="$to_page" referids="node_number" />">
                       <img src="images/select.gif" alt="[change]" width="20" height="20" border="0" align="right"/>
             </a>
