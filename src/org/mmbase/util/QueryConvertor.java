@@ -42,7 +42,7 @@ import org.mmbase.storage.search.legacy.ConstraintParser;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: QueryConvertor.java,v 1.20 2003-03-10 11:51:10 pierre Exp $
+ * @version $Id: QueryConvertor.java,v 1.21 2003-07-28 14:42:05 pierre Exp $
  */
 public class QueryConvertor {
 
@@ -378,10 +378,10 @@ class DBQuery  extends ParseItem {
  * parameter passed to the constructor :<br />
  * '=='' or '=E' to '='<br />
  * '=N' to '<>'<br />
- * '=G' to '>'<br />
- * '=g' to '>='<br />
- * '=S' to '<'<br />
- * '=s' to '<='<br />
+ * '=G' to '&gt;'<br />
+ * '=g' to '&gt;='<br />
+ * '=S' to '&lt;'<br />
+ * '=s' to '&lt;='<br />
  * It also wraps string values with the SQL lower() function, and uses LIKE
  * when wildcards are used in a stringvalue.
  *
