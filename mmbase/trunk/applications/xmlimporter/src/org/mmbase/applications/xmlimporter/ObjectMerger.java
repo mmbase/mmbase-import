@@ -14,7 +14,6 @@
 package org.mmbase.applications.xmlimporter;
 
 import java.util.*;
-import org.mmbase.applications.xmlimporter.*;
 
 /**
  * This interface provides methods to customize the way objects
@@ -22,7 +21,7 @@ import org.mmbase.applications.xmlimporter.*;
  *
  * @author Rob van Maris: Finalist IT Group
  * @since MMBase-1.5
- * @version $Id: ObjectMerger.java,v 1.2 2002-02-27 16:54:26 pierre Exp $
+ * @version $Id: ObjectMerger.java,v 1.3 2003-03-04 13:27:08 nico Exp $
  */
 public interface ObjectMerger {
 

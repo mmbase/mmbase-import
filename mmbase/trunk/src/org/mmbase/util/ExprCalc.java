@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.util;
-import java.lang.*;
+
 import java.util.*;
 import org.mmbase.util.logging.*;
 
@@ -120,9 +120,10 @@ public class ExprCalc {
         if (MCode==MC_SYMB && MSymb=='('
             ||  MCode==MC_SYMB && MSymb==')'
             ||  MCode==MC_EOT) {
+                
         } else {
           log.error("ExprCalc-> Error");
-	}
+	   }
         return tmp;
     }
 

@@ -11,10 +11,8 @@ package org.mmbase.applications.editwizard;
 
 import org.mmbase.bridge.Cloud;
 import java.util.*;
-import java.io.*;
 import org.mmbase.applications.dove.Dove;
 import org.mmbase.util.logging.*;
-import org.mmbase.bridge.ContextProvider;
 import org.w3c.dom.*;
 
 
@@ -32,7 +30,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.25 2003-02-24 20:41:46 kees Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.26 2003-03-04 13:27:10 nico Exp $
  *
  */
 public class WizardDatabaseConnector {

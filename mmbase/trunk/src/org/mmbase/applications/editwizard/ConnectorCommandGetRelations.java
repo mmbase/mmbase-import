@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
-import java.util.Vector;
 import org.w3c.dom.*;
 
 /**
@@ -17,7 +16,7 @@ import org.w3c.dom.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: ConnectorCommandGetRelations.java,v 1.4 2002-03-18 17:13:07 eduard Exp $
+ * @version $Id: ConnectorCommandGetRelations.java,v 1.5 2003-03-04 13:27:09 nico Exp $
  */
 
 public class ConnectorCommandGetRelations extends ConnectorCommand {
