@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.10 2003-07-31 11:49:36 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.11 2003-07-31 16:26:03 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -43,7 +43,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     protected StorageManagerFactory factory;
 
     /**
-     * The datasource through which to access the database. 
+     * The datasource through which to access the database.
      */
     protected DataSource dataSource;
 
@@ -52,7 +52,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * This member is set by {!link #getActiveConnection()} and unset by {@link releaseActiveConnection()}
      */
     protected Connection activeConnection;
-    
+
     /**
      * <code>true</code> if a transaction has been started.
      * This member is for state maitenance and may be true even if the storage does not support transactions
@@ -65,18 +65,18 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * to the highest (most secure) transaction isolation level available.
      */
     protected int transactionIsolation = Connection.TRANSACTION_NONE;
-    
+
     /**
      * Pool of changed nodes in a transaction
      */
     protected Map changes;
-    
+
     /**
      * Constructor
      */
     public DatabaseStorageManager() {
     }
-    
+
     public double getVersion() {
         return 1.0;
     }
@@ -96,7 +96,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * Obtains an active connection, opening a new one if needed. 
+     * Obtains an active connection, opening a new one if needed.
      * This method sets and then returns the {@link #activeConnection} member.
      * If an active connection was allready open, and the manager is in a database transaction, that connection is returned instead.
      * Otherwise, the connection is closed before a new one is opened.
@@ -117,7 +117,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * Safely closes the active connection.
      * If a transaction has been started, the connection is not closed.
-     */    
+     */
     protected void releaseActiveConnection() {
         if (!(inTransaction && factory.supportsTransactions()) && activeConnection != null) {
             try {
@@ -129,7 +129,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             activeConnection = null;
         }
     }
-    
+
     /**
      * Starts a transaction on this StorageManager instance.
      * All commands passed to the instance will be treated as being in this transaction.
@@ -165,7 +165,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             throw new StorageException("No transaction started.");
         } else {
             inTransaction = false;
-            if (factory.supportsTransactions()) { 
+            if (factory.supportsTransactions()) {
                 try {
                     activeConnection.commit();
                 } catch (SQLException se) {
@@ -180,9 +180,9 @@ public abstract class DatabaseStorageManager implements StorageManager {
 
     /**
      * Cancels any transaction that was started and rollback changes.
-     * If transactions are not supported by the database, nothing really happens (as changes are allready committed), 
+     * If transactions are not supported by the database, nothing really happens (as changes are allready committed),
      * but the code continues as if it has (through in that case it will return false).
-     * @return <code>true</code> if changes were rolled back, <code>false</code> if the transaction was 
+     * @return <code>true</code> if changes were rolled back, <code>false</code> if the transaction was
      * canceled but rollback could not take place.
      * @throws StorageException if a transaction is not currently active, or a database error occurred
      */
@@ -207,8 +207,8 @@ public abstract class DatabaseStorageManager implements StorageManager {
 
     /**
      * Commits the change to a node.
-     * If the manager is in a transaction (and supports it), the change is stored in a 
-     * {@link Changes} object (to be committed after the transaction ends). 
+     * If the manager is in a transaction (and supports it), the change is stored in a
+     * {@link Changes} object (to be committed after the transaction ends).
      * Otherwise it directly commits and broadcasts the changes
      * @param node the node to register
      * @param change the type of change: "n": new, "c": commit, "d": delete, "r" : relation changed
@@ -238,7 +238,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         try {
             MMObjectBuilder builder = node.getBuilder();
             Scheme scheme = factory.getScheme(Schemes.GET_TEXT_DATA, Schemes.GET_TEXT_DATA_DEFAULT);
-            String query = scheme.format(new Object[] { builder, field, builder.getField("number"), node });
+            String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
@@ -272,7 +272,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
 
     /**
      * Determine whether a filed (i.e. large text or a blob) should be shortened or not.
-     * A 'shortened' field contains a placeholder text ('$SHORTED') to indicate that the field is expected to be of large size 
+     * A 'shortened' field contains a placeholder text ('$SHORTED') to indicate that the field is expected to be of large size
      * and should be retrieved by an explicit call to {@link #getStringValue(MMObjectNode, FieldDefs) or.
      * {@link #getBinaryValue(MMObjectNode, FieldDefs).
      * The default implementation returns <code>true</code> for binaries, and <code>false</code> for other
@@ -299,7 +299,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         } else try {
             MMObjectBuilder builder = node.getBuilder();
             Scheme scheme = factory.getScheme(Schemes.GET_BINARY_DATA, Schemes.GET_BINARY_DATA_DEFAULT);
-            String query = scheme.format(new Object[] { builder, field, builder.getField("number"), node });
+            String query = scheme.format(new Object[] { this, builder, field, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
@@ -347,7 +347,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             }
         }
     }
-   
+
     /**
      * Defines how binary (blob) data files must look like.
      * @param node the node the binary data belongs to
@@ -415,7 +415,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * @throws StorageException if an error occurred during insert
      */
     public int insert(MMObjectNode node) throws StorageException {
-        // assign a new number if the node has not yet been assigned one 
+        // assign a new number if the node has not yet been assigned one
         if (node.getNumber() == -1) {
             node.setValue("number", createKey());
         }
@@ -471,7 +471,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.INSERT_NODE, Schemes.INSERT_NODE_DEFAULT);
             try {
-                String query = scheme.format(new Object[] { builder, fieldNames.toString(), fieldValues.toString(), builder.getField("number"), node });
+                String query = scheme.format(new Object[] { this, builder, fieldNames.toString(), fieldValues.toString() });
                 getActiveConnection();
                 PreparedStatement ps = activeConnection.prepareStatement(query);
                 for (int fieldNumber = 1; fieldNumber < fields.size(); fieldNumber++) {
@@ -549,7 +549,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         if (fields.size() > 0) {
             Scheme scheme = factory.getScheme(Schemes.UPDATE_NODE, Schemes.UPDATE_NODE_DEFAULT);
             try {
-                String query = scheme.format(new Object[] { builder, setFields.toString(), builder.getField("number"), node });
+                String query = scheme.format(new Object[] { this, builder, setFields.toString(), builder.getField("number"), node });
                 getActiveConnection();
                 PreparedStatement ps = activeConnection.prepareStatement(query);
                 for (int fieldNumber = 1; fieldNumber < fields.size(); fieldNumber++) {
@@ -570,7 +570,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Store the value of a field in a prepared statement
      * @todo Note that this code contains some code that should really be implemented in FieldDefs.
      * In particular, casting should be done in FieldDefs. It is also useful if the FieldDefs object
-     * would have setStorageType()/getStorageType() methods, so we can accurately determine the type to 
+     * would have setStorageType()/getStorageType() methods, so we can accurately determine the type to
      * enter, or whether Blobs/Clobs should be used, etc.
      * @param statement the prepared statement
      * @param index the index of the field in the prepared statement
@@ -680,7 +680,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 statement.setNull(index, java.sql.Types.INTEGER);
             }
         } else {
-            // retrieve node as a numeric value                    
+            // retrieve node as a numeric value
             statement.setInt(index, value.getIntValue(field.getDBName()));
         }
     }
@@ -747,7 +747,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     public void delete(MMObjectNode node) throws StorageException {
         delete(node,node.getBuilder());
     }
-    
+
     /**
      * Delete a node from a specific builder
      * This method makes it easier to implement relational databses, where you may need to remove the node
@@ -762,7 +762,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
         try {
             Scheme scheme = factory.getScheme(Schemes.DELETE_NODE, Schemes.DELETE_NODE_DEFAULT);
-            String query = scheme.format(new Object[] { builder, builder.getField("number"), node });
+            String query = scheme.format(new Object[] { this, builder, builder.getField("number"), node });
             getActiveConnection();
             Statement s = activeConnection.createStatement();
             s.executeUpdate(query);
@@ -785,7 +785,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
             getActiveConnection();
-            String query = scheme.format(new Object[] { builder, builder.getField("number"), new Integer(number)});
+            String query = scheme.format(new Object[] { this, builder, builder.getField("number"), new Integer(number)});
             Statement s = activeConnection.createStatement();
             return getNode(s.executeQuery(query), builder);
         } catch (SQLException se) {
@@ -794,7 +794,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
             releaseActiveConnection();
         }
     }
-    
+
     /**
      * Attempts to return a single Node from the resultset of a query.
      * You can use this method to iterate through a query, creating multiple nodes, provided the resultset still contains
@@ -812,7 +812,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
                 // iterate through all a builder's fields, and retrieve the value for that field
                 // Note that if we would do it the other way around (iterate through the recordset's fields)
                 // we might get inconsistencies if we 'remap' fieldnames that need not be mapped.
-                // this also guarantees the number field is set first, which we  may need when retrieving blobs  
+                // this also guarantees the number field is set first, which we  may need when retrieving blobs
                 // from disk
                 for (Iterator i = builder.getFields(FieldDefs.ORDER_CREATE).iterator(); i.hasNext(); ) {
                     FieldDefs field = (FieldDefs)i.next();
@@ -877,8 +877,8 @@ public abstract class DatabaseStorageManager implements StorageManager {
         try {
             getActiveConnection();
             MMBase mmbase = factory.getMMBase();
-            String query = scheme.format(new Object[] { mmbase, 
-                                                        mmbase.getTypeDef().getField("number"), 
+            String query = scheme.format(new Object[] { this,mmbase,
+                                                        mmbase.getTypeDef().getField("number"),
                                                         new Integer(number)});
             Statement s = activeConnection.createStatement();
             ResultSet result = s.executeQuery(query);
@@ -898,7 +898,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Returns the parent builder of the specifed builder.
      * If the value is null, the builder either has no parent, or its builder is the
      * "object" table, but there was no builder created for this low-level table.
-     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder 
+     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder
      *       configuration files. It should be moved to MMObjectBuilder
      * @param builder the builder to find the parent of
      * @return the parent builder or null if it cannot be determined
@@ -913,7 +913,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
 
     /**
      * Tests whether the specified field is a member of the given builder
-     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder 
+     * @todo This code is needed for older systems that do not have an 'object' builder, or that use old builder
      *       configuration files. It should be moved to MMObjectBuilder.
      * @param builder the builder to find the parent of
      * @param field the field to test
@@ -945,6 +945,8 @@ public abstract class DatabaseStorageManager implements StorageManager {
         StringBuffer createFields = new StringBuffer();
         StringBuffer createIndices = new StringBuffer();
         StringBuffer createFieldsAndIndices = new StringBuffer();
+        StringBuffer createCompositeIndices = new StringBuffer();
+        List compositeIndices = new ArrayList();
         // obtain the parentBuilder
         // TODO: add fall-back code so parentBuilder is NOT null!
         // maybe do this in MMObjectBuilder???
@@ -955,43 +957,61 @@ public abstract class DatabaseStorageManager implements StorageManager {
         } else {
             parentTableName = (String)factory.getStorageIdentifier();
         }
-        
+
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
             // persistent field? ( use inStorage() )
             boolean storefield = field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM;
             // skip binary fields when values are written to file
             storefield = storefield && field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORE_BINARY_AS_FILE);
-            // also, if the database is OO, skip fields that are in the parent builder 
+            // also, if the database is OO, skip fields that are in the parent builder
             storefield = storefield &&  !factory.hasOption(Attributes.SUPPORTS_INHERITANCE) || !hasField(parentBuilder, field);
             // convert a fielddef to a field SQL createdefinition
             if (storefield) {
-                String fieldDef = getFieldDefinition(builder, field);
-                String indexDef = getIndexDefinition(builder, field);
+                String fieldDef = getFieldDefinition(field);
                 if (createFields.length() > 0) createFields.append(", ");
                 createFields.append(fieldDef);
+                // test on composite indices
+                if (field.isKey() && factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
+                    compositeIndices.add(field);
+                } else {
+                    // test on other indices
+                    String indexDef = getIndexDefinition(field);
+                    if (indexDef != null) {
+                        if (createIndices.length() > 0) createIndices.append(", ");
+                        createIndices.append(indexDef);
+                        if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
+                        createFieldsAndIndices.append(fieldDef+" "+indexDef);
+                    }
+                }
+            }
+            if (compositeIndices.size()>0) {
+                // test on other indices
+                String indexDef = getCompositeIndexDefinition(compositeIndices);
                 if (indexDef != null) {
-                    if (createIndices.length() > 0) createIndices.append(", ");
-                    createIndices.append(indexDef);
-                    if (createFieldsAndIndices.length() > 0) createFieldsAndIndices.append(", ");
-                    createFieldsAndIndices.append(fieldDef+" "+indexDef);
+                    if (createCompositeIndices.length() > 0) createCompositeIndices.append(", ");
+                    createCompositeIndices.append(indexDef);
                 }
             }
         }
-
         try {
             getActiveConnection();
             // create a rowtype, if a scheme has been given
             // Note that creating a rowtype is optional
             Scheme scheme = factory.getScheme(Schemes.CREATE_ROW_TYPE);
             if (scheme!=null) {
-                String query = scheme.format(new Object[] { builder, createFields.toString(), parentTableName });
+                String query = scheme.format(new Object[] { this, builder, createFields.toString(), parentTableName });
                 Statement s = activeConnection.createStatement();
                 s.executeUpdate(query);
             }
             // create the table
             scheme = factory.getScheme(Schemes.CREATE_TABLE);
-            String query = scheme.format(new Object[] { builder, createFields.toString(), createIndices.toString(), createFieldsAndIndices.toString(), parentTableName });
+            String query = scheme.format(new Object[] { this, builder,
+                                                        createFields.toString(),
+                                                        createIndices.toString(),
+                                                        createFieldsAndIndices.toString(),
+                                                        createCompositeIndices.toString(),
+                                                        parentTableName });
             Statement s = activeConnection.createStatement();
             s.executeUpdate(query);
         } catch (SQLException se) {
@@ -1002,13 +1022,17 @@ public abstract class DatabaseStorageManager implements StorageManager {
     }
 
     /**
-     * @javadoc
+     * Creates a fielddefinition, of the format '[fieldname] [fieldtype] NULL' or
+     * '[fieldname] [fieldtype] NOT NULL' (depending on whether the field is nullable).
+     * The fieldtype is taken from the type mapping in the factory.
+     * @param field the field
+     * @return teh typedefiniton as a String
+     * @throws StorageException if the field type cannot be mapped
      */
-    protected String getFieldDefinition(MMObjectBuilder builder, FieldDefs field) throws StorageException {
-        // create the type maopping to search for
+    protected String getFieldDefinition(FieldDefs field) throws StorageException {
+        // create the type mapping to search for
         String typeName = field.getDBTypeDescription();
         int size = field.getDBSize();
-        
         TypeMapping mapping = new TypeMapping();
         mapping.name = typeName;
         mapping.setFixedSize(size);
@@ -1016,7 +1040,13 @@ public abstract class DatabaseStorageManager implements StorageManager {
         List typeMappings = factory.getTypeMappings();
         int found = typeMappings.indexOf(mapping);
         if (found > -1) {
-            return ((TypeMapping)typeMappings.get(found)).getType(size);
+            String fieldDef = factory.getStorageIdentifier(field)+" "+((TypeMapping)typeMappings.get(found)).getType(size);
+            if (field.getDBNotNull()) {
+                fieldDef += " NOT NULL";
+            } else {
+                fieldDef += " NULL";
+            }
+            return fieldDef;
         } else {
             throw new StorageException("Type for field "+field.getDBName()+": "+typeName+" ("+size+") undefined.");
         }
@@ -1025,20 +1055,36 @@ public abstract class DatabaseStorageManager implements StorageManager {
     /**
      * @javadoc
      */
-    protected String getIndexDefinition(MMObjectBuilder builder, FieldDefs field) throws StorageException {
-        Scheme scheme = null; 
+    protected String getIndexDefinition(FieldDefs field) throws StorageException {
+        Scheme scheme = null;
         if (field.getDBName().equals("number")) {
             scheme = factory.getScheme(Schemes.CREATE_PRIMARY_KEY, Schemes.CREATE_PRIMARY_KEY_DEFAULT);
         } else if (field.isKey()) {
-            // secondary keys should really be pooled and turned into one key...
-            // i.o.w we have to collect these together rather than appying the scheme all at once.
-            // perhaps make this configurable though a complexkey property or something...
             scheme = factory.getScheme(Schemes.CREATE_SECONDARY_KEY);
         } else if (field.getDBType() == FieldDefs.TYPE_NODE) {
             scheme = factory.getScheme(Schemes.CREATE_FOREIGN_KEY);
         }
         if (scheme != null) {
-            return scheme.format(new Object[]{ builder, field, field, factory.getMMBase()} ); 
+            return scheme.format(new Object[]{ this, field.getParent(), field, field, factory.getMMBase()} );
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @javadoc
+     */
+    protected String getCompositeIndexDefinition(List fields) throws StorageException {
+        Scheme scheme = factory.getScheme(Schemes.CREATE_SECONDARY_KEY);
+        if (scheme != null) {
+            StringBuffer indices = new StringBuffer();
+            for (Iterator i = fields.iterator(); i.hasNext();) {
+                FieldDefs field = (FieldDefs)i.next();
+                if (indices.length() > 0) indices.append(", ");
+                indices.append(factory.getStorageIdentifier(field));
+            }
+            MMObjectBuilder builder = ((FieldDefs)fields.get(0)).getParent();
+            return scheme.format(new Object[]{ this, builder, builder.getTableName()+"_key", indices.toString(), factory.getMMBase()} );
         } else {
             return null;
         }
@@ -1076,7 +1122,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Determine if a storage element exists for storing the given builder's objects
      * @param builder the builder to check
      * @return <code>true</code> if a storage element exists
-     * @throws StorageException if an error occurred while querying the storage 
+     * @throws StorageException if an error occurred while querying the storage
      */
     public boolean created(MMObjectBuilder builder) throws StorageException {
         return hasTable(builder.getFullTableName());
@@ -1086,7 +1132,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Determine if the basic storage elements exist
      * Basic storage elements include the 'object' storage (where all objects and their types are registered).
      * @return <code>true</code> if basic storage elements exist
-     * @throws StorageException if an error occurred while querying the storage 
+     * @throws StorageException if an error occurred while querying the storage
      */
     abstract public boolean created() throws StorageException;
 
@@ -1100,7 +1146,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
 
     /**
      * Return the total number of objects in the storage
-     * @return the number of objects 
+     * @return the number of objects
      * @throws StorageException if the basic storage elements do not exist
      */
     abstract public int size();
