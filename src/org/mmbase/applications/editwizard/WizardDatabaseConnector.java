@@ -32,7 +32,7 @@ import org.w3c.dom.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: WizardDatabaseConnector.java,v 1.18 2002-07-05 20:42:32 michiel Exp $
+ * @version $Id: WizardDatabaseConnector.java,v 1.19 2002-07-17 11:28:07 pierre Exp $
  *
  */
 public class WizardDatabaseConnector {
@@ -254,6 +254,7 @@ public class WizardDatabaseConnector {
      * @return   The resulting node with the objectdata.
      */
     public Node getDataRaw(String objectnumber, NodeList restrictions) throws Exception {
+
         // fires getData command and places result in targetNode
         ConnectorCommandGetData cmd = new ConnectorCommandGetData(objectnumber, restrictions);
         fireCommand(cmd);
@@ -265,8 +266,6 @@ public class WizardDatabaseConnector {
             throw new Exception("Could not fire getData command for object " + objectnumber);
         }
     }
-
-
 
     public void getRelations(Node targetNode, String objectnumber) throws Exception {
         getRelations(targetNode, objectnumber, null);
@@ -362,16 +361,14 @@ public class WizardDatabaseConnector {
             // does this field already exist?
             Node datafield = Utils.selectSingleNode(objectNode, "field[@name='"+fieldname+"']");
             String value=Utils.getText(field);
-            if ((value!=null) && value.startsWith("{")) {
-                // if you add a list of items, the order of the list may be of import.
-                // the variable {$pos} is used to make that distinction
-                int pos=value.indexOf("{$pos}");
-                if (pos>=0) {
-                    value=value.substring(0,pos)+createorder+value.substring(pos+6);
-                }
-                Node parent=data.getDocumentElement();
-                value=Utils.selectSingleNodeText(parent,value.substring(1,value.length()-1),"");
-            }
+            // if you add a list of items, the order of the list may be of import.
+            // the variable $pos is used to make that distinction
+            params.put("pos",createorder+"");
+            Node parent=data.getDocumentElement();
+log.info("parent="+parent.toString());
+            value=Utils.transformAttribute(parent,value,false,params);
+            params.remove("pos");
+            if (value==null) value="";
             if (datafield!=null) {
                 // yep. fill-in
                 Utils.storeText(datafield, value, params); // place param values inside if needed
@@ -428,7 +425,7 @@ public class WizardDatabaseConnector {
      * @return The resulting object(tree) node.
      */
     public Node createObject(Document data, Node targetParentNode, Node objectDef, Map params, int createorder) throws WizardException {
- 
+
         String objecttype = Utils.getAttribute(objectDef, "type");
 
         if (log.isDebugEnabled()) log.debug("Create object of type " + objecttype);
@@ -442,11 +439,10 @@ public class WizardDatabaseConnector {
         if (nodename.equals("action")) {
             NodeList objectdefs = Utils.selectNodeList(objectDef, "object|relation");
             Node firstobject=null;
-            //for (int i=objectdefs.getLength()-1; i>=0; i--) {
-                for (int i=0; i<objectdefs.getLength(); i++) {
-                    firstobject=createObject(data,targetParentNode, objectdefs.item(i), params);
-                }
-                return firstobject;
+            for (int i=0; i<objectdefs.getLength(); i++) {
+                firstobject=createObject(data,targetParentNode, objectdefs.item(i), params);
+            }
+            return firstobject;
         }
 
         if (nodename.equals("relation")) {
@@ -473,34 +469,17 @@ public class WizardDatabaseConnector {
         for (int i=0; i<relations.getLength(); i++) {
             Node relation = relations.item(i);
             String dnumber = Utils.getAttribute(relation, "destination", null);
-            dnumber=Utils.transformAttribute(targetParentNode, dnumber, false, params);
-            Node inside_object = null;
-            Document tempobjectholder=null;
-            if (dnumber==null) {
-                // no dnumber given! let's just create the object definition inside first.
-                Node inside_objectdef = Utils.selectSingleNode(relation, "object");
-                if (inside_objectdef==null) {
-                    // no destination is given AND no object to-be-created-new is placed.
-                    // so, no destination should be added...
-                    tempobjectholder = Utils.parseXML("<object number=\"\" type=\"" + Utils.getAttribute(relation, "destinationtype", "") + "\" disposable=\"true\"/>");
-                    inside_object = tempobjectholder.getDocumentElement();
-                } else {
-                    tempobjectholder = Utils.parseXML("<tmpdata/>");
-                    inside_object = createObject(data,tempobjectholder.getDocumentElement(), inside_objectdef, params);
-                    dnumber = Utils.getAttribute(inside_object, "number");
-                }
-            }
-
+            dnumber=Utils.transformAttribute(data.getDocumentElement(), dnumber, false, params);
             String role="related";
             String snumber="";
             Node relationNode = null;
-
+            Node inside_object = null;
             try {
                 // create the relation now we can get all needed params
                 role = Utils.getAttribute(relation, "role", "related");
                 snumber = Utils.getAttribute(objectNode, "number");
+                // dnumber can be null
                 relationNode = getNewRelation(objectNode, role, snumber, dnumber);
-
                 fillObjectFields(data,targetParentNode,relation,relationNode,params,createorder);
 
                 tagDataNode(relationNode);
@@ -508,6 +487,27 @@ public class WizardDatabaseConnector {
             } catch (Exception e) {
                 log.error("Could NOT create relation in createObject. Role="+role+", snumber="+snumber+", destination="+dnumber);
                 return null;
+            }
+
+            if (dnumber==null) {
+                // no dnumber given! create the object
+                Node inside_objectdef = Utils.selectSingleNode(relation, "object");
+                if (inside_objectdef==null) {
+                    // no destination is given AND no object to-be-created-new is placed.
+                    // so, no destination should be added...
+//                    tempobjectholder = Utils.parseXML("<object number=\"\" type=\"" + Utils.getAttribute(relation, "destinationtype", "") + "\" disposable=\"true\"/>");
+//                    inside_object = tempobjectholder.getDocumentElement();
+                    inside_object=data.createElement("object");
+                    ((Element)inside_object).setAttribute("number","");
+                    ((Element)inside_object).setAttribute("type",Utils.getAttribute(relation, "destinationtype", ""));
+                    ((Element)inside_object).setAttribute("disposable","true");
+                } else {
+//                    tempobjectholder = Utils.parseXML("<tmpdata/>");
+                    inside_object = createObject(data,relationNode, inside_objectdef, params);
+                    dnumber = Utils.getAttribute(inside_object, "number");
+                    ((Element)relationNode).setAttribute("destination",dnumber);
+                }
+                relationNode.appendChild(inside_object);
             }
 
             try {
@@ -519,8 +519,8 @@ public class WizardDatabaseConnector {
                     Utils.setAttribute(inside_object, "already-exists", "true");
                 } else {
                     // we already have it. Let's copy/clone and place it.
-                    inside_object = relationNode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
-                    relationNode.appendChild(inside_object);
+//                    inside_object = relationNode.getOwnerDocument().importNode(inside_object.cloneNode(true), true);
+//                    relationNode.appendChild(inside_object);
                 }
             } catch (Exception e) {
                 log.error("Could NOT place inside object in createObject. Message: "+e.getMessage());

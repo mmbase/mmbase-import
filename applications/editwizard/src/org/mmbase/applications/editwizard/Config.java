@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.editwizard;
 
 import java.util.Stack;
+import java.util.HashMap;
 import java.io.File;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.applications.editwizard.SecurityException;
@@ -24,10 +25,13 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.13 2002-07-10 11:54:01 pierre Exp $
+ * @version $Id: Config.java,v 1.14 2002-07-17 11:28:07 pierre Exp $
  */
 
 public class Config {
+
+    // logging
+    private static Logger log = Logging.getLoggerInstance(Wizard.class.getName());
 
     // protocol string to test referrer pages
     private final static String PROTOCOL = "http://";
@@ -42,6 +46,14 @@ public class Config {
     static public abstract class SubConfig {
         public String wizard;
         public String page;
+        public HashMap attributes=new HashMap();
+
+        public void setAttribute(String name, String value) {
+            if (value!=null) {
+log.info("storing "+name+" :"+value);
+                attributes.put(name,value);
+            }
+        }
     }
 
     static public class WizardConfig extends SubConfig {
@@ -168,7 +180,7 @@ public class Config {
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
             config(wizard); // determine the objectnumber and assign the wizard name.
-            wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard.wizard, wizard.objectNumber, cloud);
+            wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, wizard, cloud);
             wizard.wiz.setSessionId(config.sessionId);
             wizard.wiz.setSessionKey(config.sessionKey);
             wizard.wiz.setReferrer(config.backPage);

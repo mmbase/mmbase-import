@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.48 2002-07-16 17:40:09 michiel Exp $
+ * @version $Id: Wizard.java,v 1.49 2002-07-17 11:28:07 pierre Exp $
  *
  */
 public class Wizard {
@@ -44,18 +44,20 @@ public class Wizard {
     // This object will be used the revolve URI's, for example those of XSL's and XML's.
     private URIResolver uriResolver = null;
 
+    // the editwizard context path
     private String context = null;
 
     // schema / session data
     private String name;
+
+    // the result objectnumber (the number of the object after a commit)
+    // this value is only assigned after COMMIT is called - otherwise it reurns null
     private String objectNumber;
 
     // the wizard (file) name. Eg.: samples/jumpers will choose the file $path/samples/jumpers.xml
     private String wizardName;
 
-    /**
-     * @javadoc
-     */
+    // the (possibly temporary) number of the main object
     private String dataId;
 
     // stores the current formid
@@ -126,7 +128,8 @@ public class Wizard {
      * Make sure a valid path is supplied.
      * Use initialize() to really startup the wizard and start communicating with mmbase
      *
-     * @param uri  With the help of this URIResolverthe wizard schema's and the xsl's will be loaded
+     * @param context the editwizard context path
+     * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
      */
     protected Wizard(String c, URIResolver uri) throws WizardException {
         context = c;
@@ -140,25 +143,60 @@ public class Wizard {
     }
 
     /**
-     * Constructor. Setup initial variables. No connection to mmbase is made yet.
-     * Make sure a valid path is supplied.
-     * Use initialize() to really startup the wizard and start communicating with mmbase
+     * Constructor. Setup initial variables and connects to mmbase to load the data structure.
      *
-     * @param uri  With the help of this URIResolverthe wizard schema's and the xsl's will be loaded
+     * @deprecated use Wizard(String, URIResolver, Config.WizardConfig, Cloud)
+     * @param context the editwizard context path
+     * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
+     * @param wizardname name of teh wizard
+     * @param dataid the objectnumber
+     * @param cloud the Cloud to use
      */
     public Wizard(String context, URIResolver uri, String wizardname, String dataid, Cloud cloud)  throws WizardException, SecurityException {
         this(context, uri);
-        initialize(wizardname, dataid, cloud);
+        Config.WizardConfig wizardConfig = new Config.WizardConfig();
+        wizardConfig.wizard=wizardname;
+        wizardConfig.objectNumber=dataid;
+        initialize(wizardConfig, cloud);
+    }
+
+    /**
+     * Constructor. Setup initial variables and connects to mmbase to load the data structure.
+     *
+     * @param context the editwizard context path
+     * @param uri  the URIResolver with which the wizard schema's and the xsl's will be loaded
+     * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
+     * @param cloud the Cloud to use
+     */
+    public Wizard(String context, URIResolver uri, Config.WizardConfig wizardConfig, Cloud cloud)  throws WizardException, SecurityException {
+        this(context, uri);
+        initialize(wizardConfig, cloud);
     }
 
     /**
      * Creates a connection to MMBase using a {@link WizardDatabaseConnector}.
      * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
      *
+     * @deprecated use initialize(Config.WizardConfig, Cloud)
      * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
      * @param dataid the dataid (objectNumber) of the main object what is used by the editwizard
+     * @param cloud the Cloud to use
      */
     public void initialize(String wizardname, String dataid, Cloud cloud) throws WizardException, SecurityException {
+        Config.WizardConfig wizardConfig = new Config.WizardConfig();
+        wizardConfig.wizard=wizardname;
+        wizardConfig.objectNumber=dataid;
+        initialize(wizardConfig, cloud);
+    }
+
+    /**
+     * Creates a connection to MMBase using a {@link WizardDatabaseConnector}.
+     * Also loads the wizard schema, and creates a work document using {@link #loadWizard()}.
+     *
+     * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
+     * @param cloud the Cloud to use
+     */
+    public void initialize(Config.WizardConfig wizardConfig, Cloud cloud) throws WizardException, SecurityException {
         // initialize database connector
         databaseConnector = new WizardDatabaseConnector();
         databaseConnector.setUserInfo(cloud);
@@ -167,7 +205,7 @@ public class Wizard {
         // add username to variables
         variables.put("username", cloud.getUser().getIdentifier());
         // actually load the wizard
-        loadWizard(wizardname, dataid);
+        loadWizard(wizardConfig);
     }
 
     public void setSessionId(String s) {
@@ -244,25 +282,36 @@ public class Wizard {
     }
 
     /**
+     * Stores configuration variables as attributes in the variabless set.
+     * @param wizardConfig the config with the parameters
+     */
+    protected void storeConfigurationAttributes(Config.WizardConfig wizardConfig) {
+log.info("Store attributes");
+        variables.put("wizardname", wizardName);
+        if (dataId != null) variables.put("objectnumber", dataId);
+        // set attributes from config
+        for (Iterator i = wizardConfig.attributes.entrySet().iterator(); i.hasNext();) {
+            Map.Entry en = (Map.Entry)i.next();
+log.info("Store attribute "+en.getKey().toString()+"/"+en.getValue().toString());
+            variables.put(en.getKey().toString(),en.getValue().toString());
+        }
+    }
+
+    /**
      * Loads the wizard schema, and a work document, and fills it with initial data.
      *
-     * @param wizardname the wizardname which the wizard will use. Eg.: samples/jumpers
-     * @param dataid the dataid (objectNumber) of the main object what is used by the editwizard
+     * @param wizardConfig the class containing the configuration parameters (i.e. wizard name and objectnumber)
      */
-    protected void loadWizard(String wizardname, String di) throws WizardException, SecurityException {
+    protected void loadWizard(Config.WizardConfig wizardConfig) throws WizardException, SecurityException {
+        if (wizardConfig.wizard == null) throw new WizardException("Wizardname may not be null");
+        wizardName=wizardConfig.wizard;
+        dataId=wizardConfig.objectNumber;
 
-        if (wizardname == null) throw new WizardException("Wizardname may not be null");
-        // if (di         == null) throw new WizardException("ObjectNumber may not be null");
-        wizardName = wizardname;
-        dataId = di;
         File wizardSchemaFile = uriResolver.resolveToFile(wizardName + ".xml");
         wizardStylesheetFile = uriResolver.resolveToFile("xsl/wizard.xsl");
 
         // store variables so that these can be used in the wizard schema
-        variables.put("wizardname", wizardname);
-        if (dataId != null) variables.put("objectnumber", dataId);
-        // TODO: dataId == null only means that this wizard object is being abused in list.jsp
-        //       should not allow this kind of hackery.
+        storeConfigurationAttributes(wizardConfig);
 
         // load wizard schema
         loadSchema(wizardSchemaFile);    // expanded filename of the wizard
@@ -272,7 +321,8 @@ public class Wizard {
 
         // If the given dataid=new, we have to create a new object first, given
         // by the object definition in the schema.
-        // If dataid equals null, we don't need to do anything. Wizard will not be used to show or save data; just to load schema information.
+        // If dataid equals null, we don't need to do anything. Wizard will not be used to show or save data;
+        // just to load schema information.
         if (dataId != null) {
             if (dataId.equals("new")){
                 log.debug("Creating new xml");
@@ -313,7 +363,7 @@ public class Wizard {
             }
         }
 
-        // initialize a editor session
+        // initialize an editor session
         if (currentFormId == null){currentFormId = determineNextForm("first");}
     }
 
@@ -359,8 +409,6 @@ public class Wizard {
             throw new WizardException(e.toString() + ":" + Logging.stackTrace(e));
         }
     }
-
-    /////////////////////////////////////
 
     /**
      * Internal method which is used to store the passed values. this method is called by processRequest.
@@ -1072,7 +1120,6 @@ public class Wizard {
             // if no objectnumber is found, assign the number of the current field.
             // exception is when the direct parent is a form.
             // in that case, we are editting the current object, so instead asign new
-
             // note: this latter does not take into account fieldsets!
             if (objectNumber == null) {
                 if (form.getNodeName().equals("form")) {
@@ -1116,9 +1163,8 @@ public class Wizard {
         if (ftype.equals("relation")) {
             theValue = Utils.getAttribute(newfield, "destination");
         }
-
-
         if (theValue == null) theValue="";
+
         Node value = form.getOwnerDocument().createElement("value");
         Utils.storeText(value, theValue);
         newfield.appendChild(value);
@@ -1464,7 +1510,7 @@ public class Wizard {
                     log.debug("orig: " +     Utils.stringFormatted(originalData));
                     log.debug("new orig: " + Utils.stringFormatted(data));
                 }
-                
+
                 Element results = databaseConnector.put(originalData, data, binaries);
                 NodeList errors = Utils.selectNodeList(results,".//error");
                 if (errors.getLength() > 0){
@@ -1474,14 +1520,14 @@ public class Wizard {
                     }
                     throw new WizardException(errorMessage);
                 }
-                // find the (new) objectNumber and store it. 
+                // find the (new) objectNumber and store it.
                 String oldnumber = Utils.selectSingleNodeText(data, ".//object/@number", null); // select the 'most outer' object.
                 if (log.isDebugEnabled()) {
                     log.trace("results : " + results);
                     log.debug("found old number " + oldnumber);
                 }
 
-                // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this 
+                // in the result set the new objects are just siblins, so the new 'wizard number' must be found with this
                 // xpath
                 String newnumber = Utils.selectSingleNodeText(results,".//object[@oldnumber='" + oldnumber + "']/@number", null);
                 log.debug("found new wizard number " + newnumber);
