@@ -10,6 +10,17 @@
   </context-param>
   -->  
 
+  <!-- uncomment this and fill in the right value if you want to relocate your user or config directory
+  <context-param>
+    <param-name>user.dir</param-name>
+    <param-value>$WEBROOT</param-value>
+  </context-param>
+  <context-param>
+    <param-name>mmbase.config</param-name>
+    <param-value>WEB-INF/config</param-value>
+  </context-param>
+  -->  
+
   <!-- Filter for jumpers
    Uncomment this code if you want to activate the jumpers filter.
    You need to install the jumpers builder first
