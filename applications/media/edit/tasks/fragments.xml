@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
+<!DOCTYPE wizard-schema PUBLIC "-//MMBase/DTD editwizard 1.0//EN" "http://www.mmbase.org/dtd/wizard-schema_1_0.dtd"
+ [
+    <!ENTITY formats SYSTEM "formats.xml">
+  ]
+>
 <wizard-schema id="media">
 	<title>Media editor</title>
 
@@ -14,8 +19,8 @@
 		<relation destination="mediasources" role="posrel" />
 		<relation destination="mediafragments" role="parent" />
 	</action>
-	
-  <list include="tasks/formats.xml" />
+
+  &formats;
 
 	<form-schema id="basics">
 		<title>MediaEditor</title>
@@ -59,16 +64,26 @@
     <title>Itemize</title>
 		<list role="parent" destination="mediafragments" minoccurs="0" maxoccurs="*" orderby="field[@name='start']">
       <title>Items</title>       
-      <item>
-         <fieldset>
-        <field name="title" />
-        <field name="stop"  ftype="realposition" />
-        <field name="start" ftype="realposition" />
-        </fieldset>
+      <item>          
+        <field name="title">
+           <prompt>
+             item
+           </prompt>
+        </field>
+        <field name="start"  ftype="realposition">
+          <prompt>
+            start
+          </prompt>
+        </field>
+        <field name="stop" ftype="realposition">
+          <prompt>
+            stop
+          </prompt>
+        </field>
       </item>
 		
-			<action type="create" destinationtype="mediafragments">
-				<relation  role="parent">
+			<action type="create">
+				<relation  role="parent"  destinationtype="mediafragments">
           <object type="mediafragments" />
         </relation>
 			</action>
