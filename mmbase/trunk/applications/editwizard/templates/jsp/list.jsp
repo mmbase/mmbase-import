@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.28 2002-10-29 11:05:51 michiel Exp $
+     * @version  $Id: list.jsp,v 1.29 2002-11-05 09:59:40 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -87,17 +87,19 @@ String numberField = null;
 StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");
 String mainObjectName =null;
 
-
-
+// Check if the number field was specified
 while (stok.hasMoreTokens()) {
     String token = stok.nextToken();
     fieldList.add(token);
-    int nrpos=token.indexOf(".number");
-    if (nrpos > -1) {
+    int nrpos = token.indexOf(".number");
+    if (nrpos > -1) { // specified as <table>.number
         numberField = token;
         mainObjectName = token.substring(0,nrpos);
+    } else {
+        if (token.indexOf("number") == 0 && numberField == null) { // specified as number
+            numberField = token;
+        }
     }
-    if (token.indexOf("number") > -1 && numberField == null) numberField=token;
 }
 
 int nodecount=0;
