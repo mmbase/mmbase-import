@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.9 2002-05-17 13:17:50 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.10 2002-05-17 13:31:53 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -132,9 +132,7 @@ if (request.getParameter("remove") != null) {
             response.sendRedirect(refer);
         }
         done=true;
-    }
-
-    if (ewconfig.subObjects.peek() instanceof Config.ListConfig) {
+    } else if (ewconfig.subObjects.peek() instanceof Config.ListConfig) {
         log.debug("Redirecting to list");
         response.sendRedirect(response.encodeURL("list.jsp?proceed=true&sessionkey="+sessionKey));
         done=true;
