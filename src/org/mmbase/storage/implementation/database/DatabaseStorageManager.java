@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.79 2004-09-30 14:54:57 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.80 2004-10-21 10:02:43 marcel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -1987,7 +1987,13 @@ public class DatabaseStorageManager implements StorageManager {
                     Object id = field.getStorageIdentifier();
                     Map colInfo = (Map)columns.get(id);
                     if ((colInfo == null)) {
-                        log.error("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual.");
+
+                        // bug #6609, marcel
+                        if((field!=null) && (field.getDBName()!=null) && (field.getDBName().equals(id))) 
+                            log.error("VERIFY: Field '" + field.getDBName() + "' of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
+                        else 
+                            log.error("VERIFY: Field '" + field.getDBName() + "' (mapped to field '"+id+"') of builder '" + builder.getTableName() + "' does NOT exist in storage! Field will be considered virtual");
+
                         // set field to virtual so it will not be stored -
                         // prevents future queries or statements from failing
                         field.setDBState(FieldDefs.DBSTATE_VIRTUAL);
