@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.2 2002-05-15 16:45:33 michiel Exp $
+ * @version $Id: Cache.java,v 1.3 2002-05-15 19:00:57 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable {
 
@@ -136,6 +136,14 @@ abstract public class Cache extends LRUHashtable {
         Cache old = (Cache) caches.put(cache.getName(), cache);
         configure(configFile, cache.getName());
         return old;
+    }
+
+    /**
+     * Puts this cache in the caches repository.
+     */
+
+    public Cache putCache() {
+        return putCache(this);
     }
 
     /**
