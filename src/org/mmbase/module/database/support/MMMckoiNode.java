@@ -13,6 +13,7 @@ import java.util.*;
 import java.io.*;
 import java.sql.*;
 
+import org.mmbase.storage.database.UnsupportedDatabaseOperationException;
 import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Marcel Maatkamp
- * @version $Id: MMMckoiNode.java,v 1.7 2002-06-17 13:12:00 pierre Exp $
+ * @version $Id: MMMckoiNode.java,v 1.8 2002-09-16 15:07:29 pierre Exp $
  */
 public class MMMckoiNode implements MMJdbc2NodeInterface {
 

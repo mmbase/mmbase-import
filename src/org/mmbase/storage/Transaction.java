@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database;
+package org.mmbase.storage;
 
 /**
  * MMBase transaction object.
@@ -17,7 +17,7 @@ package org.mmbase.module.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Transaction.java,v 1.1 2002-04-08 12:21:30 pierre Exp $
+ * @version $Id: Transaction.java,v 1.1 2002-09-16 15:07:33 pierre Exp $
  */
 public interface Transaction {
 

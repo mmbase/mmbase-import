@@ -7,13 +7,17 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database.support;
+package org.mmbase.storage.database;
 
 import java.io.File;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
+import org.mmbase.module.database.JDBCInterface;
+
 import org.mmbase.module.database.*;
+import org.mmbase.module.database.support.*;
+import org.mmbase.storage.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
@@ -24,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Support2Storage.java,v 1.2 2002-04-17 10:29:28 pierre Exp $
+ * @version $Id: Support2Storage.java,v 1.1 2002-09-16 15:07:38 pierre Exp $
  */
 public abstract class Support2Storage implements DatabaseStorage, MMJdbc2NodeInterface {
 

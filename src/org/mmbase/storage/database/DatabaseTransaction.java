@@ -7,12 +7,14 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module.database.support;
+package org.mmbase.storage.database;
 
 import java.sql.*;
 import java.util.*;
 
-import org.mmbase.module.database.*;
+import org.mmbase.module.database.JDBCInterface;
+        
+import org.mmbase.storage.*;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.corebuilders.FieldDefs;
@@ -26,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.2 2002-04-17 10:29:27 pierre Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.1 2002-09-16 15:07:36 pierre Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
