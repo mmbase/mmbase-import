@@ -58,10 +58,10 @@
 <input type="hidden" name="action" value="addproject" />
 <tr>    
         <td width="200">
-	<input style="width: 98%" name="newprojectname">	
+	<input style="width: 90%" name="newprojectname"><img src="<mm:write referid="image_help" />"  valign="middle" title="Name the project for example 'myproject'" />
         </td>
         <td>    
-	<input style="width: 99%" name="newprojectpath">	
+	<input style="width: 95%" name="newprojectpath"><img src="<mm:write referid="image_help" />"  valign="middle" title="path of the packaging.xml file,example /usr/me/myproject/packaging.xml" />
 	</td>
 </tr>
 <tr>    
