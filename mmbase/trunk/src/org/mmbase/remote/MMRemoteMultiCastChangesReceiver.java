@@ -24,20 +24,16 @@ import java.io.*;
 public class MMRemoteMultiCastChangesReceiver implements Runnable {
 
     private String  classname   = getClass().getName();
-    private boolean debug       = false;
+    private boolean debug       = RemoteBuilder.debug;
+    private void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
-    private void debug( String msg ) {
-        if( debug )
-            System.out.println( classname +":"+ msg );
-    }
-
-	Thread kicker = null;
-	MMRemoteMultiCast parent=null;
-	Queue nodesToSpawn;
-	InetAddress ia;
-	MulticastSocket ms;
-	int mport;
-	int dpsize;
+	Thread 				kicker = null;
+	MMRemoteMultiCast 	parent=null;
+	Queue 				nodesToSpawn;
+	InetAddress 		ia;
+	MulticastSocket 	ms;
+	int 				mport;
+	int 				dpsize;
 
 	public MMRemoteMultiCastChangesReceiver(MMRemoteMultiCast parent,Queue nodesToSpawn) {
 		this.parent=parent;
@@ -69,7 +65,7 @@ public class MMRemoteMultiCastChangesReceiver implements Runnable {
 		try {
 			doWork();
 		} catch (Exception e) {
-			System.out.println("MultiCastChangesReceiver -> ");
+			debug("run(): ERROR:" + e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -94,15 +90,17 @@ public class MMRemoteMultiCastChangesReceiver implements Runnable {
 								ctype=tok.nextToken();	
 								if (!ctype.equals("x")) {
 									parent.handleMsg(machine,vnr,id,tb,ctype);
-								} else {	
-									String xml=tok.nextToken("");	
-									parent.handleXML(machine,vnr,id,tb,ctype,xml);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+								} else {
+									if( tok.hasMoreTokens() ) {
+										String xml=tok.nextToken("");	
+										parent.handleXML(machine,vnr,id,tb,ctype,xml);
+									} else { debug("doWork("+chars+"): '' not defined!"); } 
+								} 
+							} else { debug("doWork("+chars+"): 'ctype' not defined!"); } 
+						} else { debug("doWork("+chars+"): 'tb' not defined!"); } 
+					} else { debug("doWork("+chars+"): 'id' not defined!"); } 
+				} else { debug("doWork("+chars+"): 'vnr' not defined!"); } 
+			} else { debug("doWork("+chars+"): 'machine' not defined!"); } 
+		} 
 	}
 }

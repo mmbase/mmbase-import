@@ -24,12 +24,8 @@ import java.io.*;
 public class MMRemoteMultiCastChangesSender implements Runnable {
 
     private String  classname   = getClass().getName();
-    private boolean debug       = false;
-
-    private void debug( String msg ) {
-        if( debug )
-            System.out.println( classname +":"+ msg );
-    }
+    private boolean debug       = RemoteBuilder.debug;
+    private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	Thread kicker = null;
 	MMRemoteMultiCast parent=null;
@@ -80,12 +76,12 @@ public class MMRemoteMultiCastChangesSender implements Runnable {
 				ms = new MulticastSocket();
 				ms.joinGroup(ia);
 			} catch(Exception e) {
-				System.out.println("MMRemoteMultiCast -> ");
+				debug("run(): ERROR: " + e.toString());
 				e.printStackTrace();
 			}
 			doWork();
 		} catch (Exception e) {
-			System.out.println("MMRemoteMultiCastChangesSender -> ");
+			debug("run(): ERROR: " + e.toString());
 			e.printStackTrace();
 		}
 	}
@@ -97,7 +93,7 @@ public class MMRemoteMultiCastChangesSender implements Runnable {
 		try {
 		while(kicker!=null) {
 			chars=(String)nodesTosend.get();
-			System.out.println("Sending -> "+chars);
+			debug("run():sending("+chars+")");
 			parent.incount++;
 			data = new byte[chars.length()];
 			chars.getBytes(0,chars.length(), data, 0);		
@@ -105,11 +101,12 @@ public class MMRemoteMultiCastChangesSender implements Runnable {
 			try {
 				ms.send(dp, (byte)1);
 			} catch (IOException e) {
-				System.out.println("MMRemoteMulticast -> can't send message");
+				debug("doWork(): ERROR: Can't send message!" + e.toString());
 				e.printStackTrace();
 			}
 		}
 		} catch(Exception e) {
+			debug("doWork(): ERROR: " + e.toString());
 			e.printStackTrace();
 		}
 	}
