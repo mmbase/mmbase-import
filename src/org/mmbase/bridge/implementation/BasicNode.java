@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.106 2003-10-13 08:34:24 keesj Exp $
+ * @version $Id: BasicNode.java,v 1.107 2003-11-10 16:41:35 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -346,10 +346,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     // Protected method to be able to set rnumber when creating a relation.
     protected void _setValue(String attribute, Object value) {
-        String result =
-            BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, attribute, value);
+        String result = BasicCloudContext.tmpObjectManager.setObjectField(account, "" + temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
-            throw new BridgeException("Can't change unknown field " + attribute + ".");
+            throw new BridgeException("Can't change unknown field '" + attribute + "'.");
         }
         changed = true;
     }
@@ -570,7 +569,8 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public String toString() {
-        return getNode().toString();
+        //return getNode().toString() + "(" + getNode().getClass().getName() + ")";
+        return getNode().toString(); 
     }
 
     /**
