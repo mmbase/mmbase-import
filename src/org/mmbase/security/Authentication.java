@@ -21,19 +21,25 @@ import org.mmbase.util.logging.Logging;
  *  To make your own implementation of authentication, you have to extend this class.
  *
  * @author Eduard Witteveen
- * @version $Id: Authentication.java,v 1.18 2003-07-09 10:03:11 michiel Exp $
+ * @version $Id: Authentication.java,v 1.19 2003-09-26 13:00:17 michiel Exp $
  */
 public abstract class Authentication extends Configurable {
-    private static Logger log = Logging.getLoggerInstance(Authentication.class);
+
+
+    private static final Logger log = Logging.getLoggerInstance(Authentication.class);
 
     /**
      *  This method will verify the login, and give a UserContext back if everything
      *  was valid.
-     *	@param manager The class that created this instance.
-     *	@param configPath The url which contains the config information for.
-     *	                  the authorization.
+     *	@param application A String that further specifies the login method (one implementation could handle more then one methods)
+     *                     A typical value might be 'username/password'.
+
+     *	@param loginInfo   A Map containing the credentials or other objects which might be used to obtain them (e.g. request/response objects)
+
      *	@param parameters a list of optional parameters, may also be null
+     *
      *	@return <code>null</code When not valid a (maybe new) UserContext when valid.
+     *
      *	@exception org.mmbase.security.SecurityException When something strang happend
      */
     public abstract UserContext login(String application, Map loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException;
