@@ -17,7 +17,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.7 2002-07-17 14:13:43 michiel Exp $
+ * @version $Id: BasicField.java,v 1.8 2002-07-24 10:59:47 pierre Exp $
  */
 public class BasicField implements Field {
 
@@ -57,7 +57,11 @@ public class BasicField implements Field {
         return field.getDBSize();
     }
 
-    /**
+    public boolean isRequired() {
+        return field.getDBNotNull();
+    }
+    
+   /**
     * Compares two fields, and returns true if they are equal.
     * @param o the object to compare it with
     */
