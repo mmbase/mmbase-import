@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.15 2004-02-23 18:59:34 pierre Exp $
+ * @version $Id: Community.java,v 1.16 2004-08-23 14:26:01 michiel Exp $
  */
 
 public class Community extends MMObjectBuilder {
@@ -36,7 +36,7 @@ public class Community extends MMObjectBuilder {
     public static final String STR_FORUM = "forum";
 
     //logger
-    private static Logger log = Logging.getLoggerInstance(Community.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(Community.class);
 
     private Channel channelBuilder;
     private MMObjectBuilder mapBuilder;
