@@ -15,6 +15,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media.video.videoparts;
 
 import	java.util.*; 
+import java.net.URLEncoder;
 
 import	org.mmbase.module.core.*;
 import	org.mmbase.util.*;
@@ -209,7 +210,10 @@ public class VideoPartDef
 		if( result != null ) {
 
 			if( title != null && !title.equals("") ) {
+				
 				//result += "?title=\""+title+"\"";
+				//result += "?title="+MediaUtils.plusToProcent20(URLEncoder.encode(title)); //URLEncode value.
+				//Our realserver can't handle URLEncoded strings, aargh.
 				result += "?title="+title;
 			} else {
 				//result += "?title=\"\"";
