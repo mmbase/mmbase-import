@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.97 2003-08-21 10:01:15 pierre Exp $
+ * @version $Id: MMBase.java,v 1.98 2003-08-21 17:26:55 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -299,7 +299,7 @@ public class MMBase extends ProcessorModule {
         // This prevents recursion if MMBase.getMMBase() is called while
         // this method is run
         mmbaseroot = this;
-        
+
         // is there a basename defined in MMBASE.properties ?
         String tmp = getInitParameter("BASENAME");
         if (tmp != null) {
@@ -612,10 +612,38 @@ public class MMBase extends ProcessorModule {
     /**
      * Returns a reference to the Object builder.
      * The Object builder is the builder from which all other builders eventually extend.
-     * @return the <code>Object</code> builder if defined, <code>null</code> otherwise
+     * If the builder is not defined in the MMbase configuration, the system creates one.
+     * @return the <code>Object</code> builder.
      * @since MMBase1,6
      */
     public MMObjectBuilder getRootBuilder() {
+        if (rootBuilder == null) {
+            // instantiate a virtual 'object' builder if none is specified
+            rootBuilder = new MMObjectBuilder();
+            rootBuilder.setMMBase(this);
+            rootBuilder.setTableName("object");
+            Vector xmlfields = new Vector();
+            // number field  (note: state = 'system')
+            FieldDefs def=new FieldDefs("Object","integer",10,10,"number",FieldDefs.TYPE_INTEGER,1,FieldDefs.DBSTATE_SYSTEM);
+            def.setDBPos(1);
+            def.setDBNotNull(true);
+            def.setParent(rootBuilder);
+            xmlfields.add(def);
+            // otype field
+            def=new FieldDefs("Type","integer",-1,-1,"otype",FieldDefs.TYPE_INTEGER,-1,FieldDefs.DBSTATE_SYSTEM);
+            def.setDBPos(2);
+            def.setDBNotNull(true);
+            def.setParent(rootBuilder);
+            xmlfields.add(def);
+            // owner field
+            def=new FieldDefs("Owner","string",11,11,"owner",FieldDefs.TYPE_STRING,-1,FieldDefs.DBSTATE_SYSTEM);
+            def.setDBSize(12);
+            def.setDBPos(3);
+            def.setDBNotNull(true);
+            def.setParent(rootBuilder);
+            xmlfields.add(def);
+            rootBuilder.setXMLValues(xmlfields);
+        }
         return rootBuilder;
     }
 
@@ -1032,7 +1060,7 @@ public class MMBase extends ProcessorModule {
                 log.error("Something went wrong while initializing builder " + fbul.getTableName());
                 log.error("Builder will be removed from active builder list");
                 log.error(Logging.stackTrace(ex));
-                bi.remove();                
+                bi.remove();
             }
         }
 
@@ -1211,6 +1239,10 @@ public class MMBase extends ProcessorModule {
                 MMObjectBuilder parent = parser.getParentBuilder();
                 if (parent != null) {
                     bul.setParentBuilder(parent);
+                } else if ((bul instanceof InsRel) && !objectname.equals("insrel")) {
+                    bul.setParentBuilder(getInsRel());
+                } else if (!objectname.equals("object")) {
+                    bul.setParentBuilder(getRootBuilder());
                 }
 
                 Hashtable descriptions = parser.getDescriptions();
@@ -1313,7 +1345,7 @@ public class MMBase extends ProcessorModule {
                 // init the database..
                 database.init(this, dbdriver);
             }
-        }        
+        }
         return database;
     }
 
@@ -1426,7 +1458,7 @@ public class MMBase extends ProcessorModule {
                     ver.setInstalledVersion(buildername, "builder", maintainer, version);
                 }
             } catch (SearchQueryException e) {
-            	log.warn(Logging.stackTrace(e));
+                log.warn(Logging.stackTrace(e));
             }
 
         }
