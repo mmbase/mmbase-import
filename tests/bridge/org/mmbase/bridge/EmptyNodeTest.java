@@ -69,45 +69,57 @@ public class EmptyNodeTest extends NodeTest {
     }
     public void testGetDoubleValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assertTrue(node.getDoubleValue(fieldTypes[i] + "field") == -1);
+            double value = node.getDoubleValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as double did not return -1, but " + value,
+                        value == -1);
         }
     }
 
     public void testGetFloatValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assertTrue(node.getFloatValue(fieldTypes[i] + "field") == -1);
+            float value = node.getFloatValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as float did not return -1, but " + value,
+                        value == -1);
         }
     }
 
     public void testGetIntValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assertTrue(node.getIntValue(fieldTypes[i] + "field") == -1);
+            int value = node.getIntValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as integer did not return -1, but " + value,
+                        value == -1);
         }
     }
 
     public void testGetLongValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assertTrue(node.getLongValue(fieldTypes[i] + "field") == -1);
+            long value = node.getLongValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as long did not return -1, but " + value,
+                        value == -1);
         }
     }
 
     public void testGetStringValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
-            assertTrue("".equals(node.getStringValue(fieldTypes[i] + "field")));
+            String value = node.getStringValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as string did not return an empty string, but " + value,
+                        "".equals(value));
         }
     }
+
     public void testGetXMLValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Document value = node.getXMLValue(fieldTypes[i] + "field");
-            assertTrue("KNOWN bug. Empty XML Field not null (as javadoc sais it should) but '" + value + "'", value == null); 
+            assertTrue("KNOWN bug. Empty XML Field not null (as javadoc sais it should) but '" + value + "'", value == null);
         }
     }
 
     public void testGetNodeValue() {
         for (int i = 0; i < fieldTypes.length; i++) {
             Node value = node.getNodeValue(fieldTypes[i] + "field");
-            assertTrue("KNOWN bug. Empty Node Field not null  but '" + value + "'", value == null); 
-        }
+            assertTrue("KNOWN bug?. Empty " + fieldTypes[i] + " field queried as Node did not return null, but " + value,
+                        value == null);
+       }
     }
 
 }
