@@ -71,6 +71,9 @@ You must use the -m option to tell what you have changed, this is
 called the log message. That way other people can see what you have done.
 The command looks like this 'cvs commit -m "log message" hello.java'
 If you don't specify a file it commits the current directory-tree.
+Watch out the commit is by default recursive, if you want to
+restrict it to the currenct directory use the -l flag
+(eg. cvs commit -m 'blah' -l)
 
 Getting a new version from the repository.
 
