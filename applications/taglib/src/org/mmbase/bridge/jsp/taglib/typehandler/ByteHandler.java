@@ -18,6 +18,11 @@ import java.util.List;
 import java.util.ArrayList;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+import org.mmbase.util.Arguments;
+import org.mmbase.module.core.MMObjectBuilder;
+import javax.servlet.jsp.PageContext;
+
+
 
 
 /**
@@ -27,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * @since  MMBase-1.6
  */
 public class ByteHandler extends AbstractTypeHandler {
-    private static Logger log = Logging.getLoggerInstance(ByteHandler.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ByteHandler.class);
     /**
      * Constructor for ByteHandler.
      * @param context
@@ -40,10 +45,13 @@ public class ByteHandler extends AbstractTypeHandler {
      * @see TypeHandler#htmlInput(Node, Field, boolean)
      */
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
-        List args = new ArrayList();
-        args.add("");
-        args.add(context.getSessionName());
-        args.add(context.getCloud().getLocale().getLanguage());
+        Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
+        args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
+        args.set("language", context.getCloud().getLocale().getLanguage());
+        args.set("session",  context.getSessionName());
+        PageContext pc = context.getContextTag().getPageContext();
+        args.set("response", pc.getResponse());
+        args.set("request",  pc.getRequest());
         return  (node != null ? node.getFunctionValue("gui", args).toString() : "") +
                  "<input type=\"" + (search ? "text" : "file") + "\" name=\"" + prefix(field.getName()) + "\" />";
     }
