@@ -1,18 +1,25 @@
 /*
 
+$Id: Module.java,v 1.2 2000-02-24 12:34:43 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
+
 package org.mmbase.module;
 
 import java.lang.*;
 import java.net.*;
 import java.util.*;
 import java.io.*;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
@@ -23,9 +30,12 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version 26 Nov 1996
+ * @version $Revision: 1.2 $ $Date: 2000-02-24 12:34:43 $
  */
 public abstract class Module {
+
+	private static String   classname   = "mm.org.mmbase.module.Module"; // getClass().getName();
+	private static void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	private Object SecurityObj;
 	private String moduleName=null;
@@ -85,7 +95,7 @@ public abstract class Module {
 			String value=(String)properties.get(key);
 			return(value);
 		} else {
-			System.out.println("Module -> getInitParameters called before they where loaded");	
+			debug("getInitParameters("+key+"): No properties found, called before they where loaded");
 		}
 		return(null);
 	}
@@ -224,18 +234,32 @@ public abstract class Module {
 	public void maintainance() {
 	}
 
-
+	/**
+	* getMimeType: Returns the mimetype using ServletContext.getServletContext which returns the servlet context
+	* which is set when servscan is loaded.
+	* Fixed on 22 December 1999 by daniel & davzev.
+	* @param ext A String containing the extension.
+	* @return The mimetype.
+	*/
 	public String getMimeType(String ext) {
 		// org.mmbase return((String)mimetypes.get(ext));
-		return("image/jpeg");
+
+		ServletContext sx=MMBaseContext.getServletContext();
+		// Since sx.getMimeType wants a file.ext String, we call it as "dummy."+ext
+		String mimetype=sx.getMimeType("dummy."+ext);
+		// System.out.println("Module::getMimeType: The mimetype= "+mimetype);
+		if (mimetype==null) {
+			debug("getMimeType("+ext+"): WARNING: Can't find mimetype retval=null -> setting mimetype to default text/html");
+			mimetype="text/html";
+		}
+		return(mimetype);
 	}
 
 
 	public static synchronized final Hashtable loadModulesFromDisk() {
 		Class newclass;
 
-
-		System.out.println("MMBASE -> mmbase.config="+System.getProperty("mmbase.config"));
+		debug("loadModulesFromDisk(): mmbase.config="+System.getProperty("mmbase.config"));
 		mmbaseconfig=System.getProperty("mmbase.config");
 		MMBaseContext.setConfigPath(mmbaseconfig);
 
@@ -257,12 +281,12 @@ public abstract class Module {
 		for (Enumeration e=mods.keys();e.hasMoreElements();) {
 			String key=(String)e.nextElement();
 			String value=(String)mods.get(key);
-			//System.out.println("MODULE="+key+" VAL="+value);
+			if( debug ) debug("loadModulesFromDisk(): MODULE="+key+" VAL="+value);
 
 			// try starting the module and give it its properties
 			try {
 				newclass=Class.forName(value);
-				//System.out.println("Module -> Loaded load class : "+newclass);
+				if( debug ) debug("loadModulesFromDisk(): Loaded load class : "+newclass);
 				Object mod = newclass.newInstance();
 				if (mod!=null) {
 					results.put(key,mod);
@@ -275,11 +299,11 @@ public abstract class Module {
 					// extra check to load propertie files from weird places (security reasons for example)
 					String tmp=System.getProperty("mmbase.mod_"+key);
 					if (tmp!=null) {
-						System.out.println("Reading "+key+" mod file from : "+tmp);
+						debug("Reading "+key+" mod file from : "+tmp);
 						filename=tmp;
 					}	
 					Hashtable modprops = Reader.readProperties(filename);
-					//System.out.println("MOD "+key+" "+modprops);
+					//debug("loadModulesFromDisk(): MOD "+key+" "+modprops);
 					if (modprops!=null) {
 						((Module)mod).properties=modprops;	
 					}
@@ -292,37 +316,37 @@ public abstract class Module {
 	}
 
 	public static synchronized final void startModules() {
-
 		// call the onload to get properties
+		if( debug ) debug("startModules(): onloading modules("+modules+")");
 		for (Enumeration e=modules.elements();e.hasMoreElements();) {
 			Module mod=(Module)e.nextElement();
-			//System.out.println("ONLOAD THE MOD="+mod);
+			if( debug ) debug("startModules(): modules.onload("+mod+")");
 			try {
 				mod.onload();		
 			} catch (Exception f) {
-				System.out.println("mod not found");
+				debug("startModules(): ERROR: modules("+mod+") not found to 'onload'!");
 				f.printStackTrace();
 			}
 		}
 
 		// so now really give em their init
+		debug("startModules(): init the modules("+modules+")");
 		for (Enumeration e=modules.elements();e.hasMoreElements();) {
 			Module mod=(Module)e.nextElement();
-			if (debug) System.out.println("INIT THE MOD="+mod);
+			if (debug) debug("startModules(): mod.init("+mod+")");
 			try {
 				mod.init();		
 			} catch (Exception f) {
-				System.out.println("mod not found");
+				debug("startModules(): module("+mod+") not found to 'init'!");
 				f.printStackTrace();
 			}
 		}
 	}
 
 	public static final Object getModule(String name) {
-
 		// are the modules loaded yet ? if not load them
 		if (modules==null) {
-			//System.out.println("Modules still NULL calling to startup");
+			debug("getModule("+name+"): Modules not loaded, loading them..");
 			modules=loadModulesFromDisk();
 			startModules();
 			// also start the maintaince thread that calls all modules every x seconds
@@ -334,7 +358,7 @@ public abstract class Module {
 		if (obj!=null) {
 			return(obj);
 		} else {
-			System.out.println("Module-> no module loaded with name : "+name);
+			debug("getModule("+name+"): ERROR: No module loaded with this name!");
 			return(null);
 		}
 	}	
