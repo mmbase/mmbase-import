@@ -26,9 +26,10 @@ Create a build.xml with a DOCTYPE like this:
   <property file="../../build.properties" />
   <property file="build.properties" />
   <property name="build.compiler" value="modern" />
-  <property name="optimize" value="on" />
-  <property name="debug" value="off" />
-  <property name="deprecation" value="on" />
+  <property name="optimize"       value="on" />
+  <property name="debug"          value="off" />
+  <property name="deprecation"    value="on" />
+  
 
   <property name="applications.dir"   location=".." />
   <property name="project.source.dir" location="." />
@@ -43,6 +44,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="project.documentation.dir" value="${project.source.dir}/documentation" />
 
   <property name="project.extra.path" value="" />
+  <property name="project.extra.path2" value="" />
 
   <property name="project.package"      value="org/mmbase" />
   <property name="project.main.class"   value="org/mmbase/Version" />
@@ -89,6 +91,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="test.class"   value="${project.name}test.Test" />
   <property name="test.arg"     value="" />
+  <property name="test.jvmarg"     value="-Dmmbase.config=${mmbase.config}" />
 
   <property name="project.jar.dir" value="${project.build.dir}" />
   <property name="project.zip.dir" value="${project.build.dir}" />
@@ -129,12 +132,13 @@ Create a build.xml with a DOCTYPE like this:
 
     <tstamp/>
     <mkdir dir="${project.build.dir}"/>
-    <property name="name" value="${project.name}"/>
-    <property name="version" value="${DSTAMP}"/>
-    <property name="distro"  value="1.7.0"/>
-    <property name="zip.prefix"
-              value="mmbase-1.7.0-${version}-${project.name}" />
-    <property name="project.zip" value="${project.zip.dir}/${zip.prefix}.zip" />
+    <property name="name"            value="${project.name}"/>
+    <!--property name="builddate"       value="${DSTAMP}"/>
+    <property name="zip.prefix"      value="mmbase-${builddate}-${project.name}" /-->
+
+    <property name="zip.name"      value="mmbase-${version}-${project.name}" /-->
+    
+    <property name="project.zip"     value="${project.zip.dir}/${zip.prefix}.zip" />
   </target>
 
 
@@ -152,7 +156,7 @@ Create a build.xml with a DOCTYPE like this:
   </target>
 
   <target name="jar.check" depends="jar.uptodatecheck" if="jar.uptodate">
-    <echo message="${project.jar} is up-to-date" />
+    <echo message="${project.jar} is up-to-date (${project.source.dir}/src/** ${jar.uptodate})" />
   </target>
 
   <target name="jar" description="Create the MMBase project jar file" 
@@ -286,7 +290,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
            excludes="${compile.excludes}"
 
       >
-   <classpath id="compile.classpath">
+      <classpath id="compile.classpath">
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
@@ -294,6 +298,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
       </classpath>
       <include name="**/*.java"/>
     </javac>
@@ -355,6 +360,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
       </classpath>
     </javadoc>
   </target>
@@ -399,25 +405,23 @@ web-app/*                All kind of templates. They problably can (need?) to be
   </target>
 
 
-  <target name="test" depends="jar">   
+  <target name="test" depends="compile">   
     <ant dir="${tests.source.dir}"   target="jar" />
     <java classname="${test.class}"
       classpathref="run.classpath"
       fork="true"
       failonerror="yes">
-      <jvmarg value="-Dmmbase.config=${mmbase.config}" />
+      <jvmarg value="${test.jvmarg}" />
       <arg    value="${test.arg}" />
       <classpath id="run.classpath">
-        <fileset dir="${build.dir}/lib">
-          <include name="servlet.jar"/>
-        </fileset>
-        <fileset dir="${project.build.dir}">
-          <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
-          <include name="*.jar"/>
-          <include name="*.zip"/>
-        </fileset>
+        <pathelement path="${mmbase.jar}" />
+        <pathelement path="${servlet.jar}" />
+        <pathelement path="${xalan.jar}" />
+        <pathelement path="${mail.jar}" />
+        <pathelement path="${activation.jar}" />
+        <pathelement path="${project.build.dir}/classes" />
+        <pathelement path="${project.extra.path}" />
+        <pathelement path="${project.extra.path2}" />
         <fileset dir="${tests.lib}">
           <include name="*.jar"/>
           <include name="*.zip"/>
