@@ -46,7 +46,7 @@
   <property name="documentation.builders.language" value="en" />
   <property name="documentation.temp.dir" value="${documentation.build.dir}/temp" />
   <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
-  <property name="docbook.stylesheet" value="xhtml/docbook.xsl" />
+  <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />
   <property name="documentation.docbook.html.stylesheet" 
             value="${download.dir}/${docbook-xsl.version}/${docbook.stylesheet}" />
   <property name="documentation.docbook.fo.stylesheet" 
@@ -85,6 +85,7 @@
 
   <!-- copy all the images and resources -->
   <target name="documentation.resources" depends="style.copy">
+    <!-- echo file="${documentation.build.dir}/applications.xml" append="false" /-->
     <copy todir="${documentation.dest.dir}/" >
       <fileset dir="${documentation.xml-source.dir}" >
         <exclude name="**/*.xml"/>
