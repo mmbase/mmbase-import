@@ -11,7 +11,7 @@
  <mm:import externid="referrer">../search.jsp</mm:import>
   <form name="config" method="post">
   <table class="edit" summary="streammager configuration">  
-   <tr><td>Language</td>  
+   <tr><td><%=m.getString("language")%></td>  
          <td><nobr><input type="text" size="5" name="lang" value="<mm:write referid="config.lang" />" />
               <select name="languages" onChange="document.forms['config'].elements['lang'].value = document.forms['config'].elements['languages'].value;">
            <mm:import id="langs" vartype="list">en,nl</mm:import>
@@ -24,23 +24,24 @@
          </select></nobr>
          </td>
      </tr>
-     <tr><td>Quality</td>  
+     <tr><td><%=m.getString("quality")%></td>  
          <td>
           <select name="quality">
            <mm:write referid="config.quality">
-             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>>Any</option>
-             <option value="sb"  <mm:compare value="sb">selected="selected"</mm:compare>>Small band</option>
-             <option value="bb" <mm:compare value="bb">selected="selected"</mm:compare>>Broad band</option>
+             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>><%=m.getString("any")%></option>
+             <option value="sb"  <mm:compare value="sb">selected="selected"</mm:compare>><%=m.getString("smallband")%></option>
+             <option value="bb" <mm:compare value="bb">selected="selected"</mm:compare>><%=m.getString("broadband")%></option>
            </mm:write>
          </select>
          </td></tr>
-     <tr><td>Player</td>  
+     <tr><td><%=m.getString("player")%></td>  
          <td>
           <select name="player">
            <mm:write referid="config.player">
-             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>>Any</option>
+             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>><%=m.getString("any")%></option>
              <option value="wm"  <mm:compare value="wm">selected="selected"</mm:compare>>window media player</option>
              <option value="real" <mm:compare value="real">selected="selected"</mm:compare>>real player</option>
+             <option value="qt" <mm:compare value="qt">selected="selected"</mm:compare>>quick time player</option>
            </mm:write>
          </select>
          </td></tr>

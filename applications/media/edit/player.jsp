@@ -10,8 +10,6 @@
 <title>[ STREAM ]</title>
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
-<link href="style/wizard.css" type="text/css" rel="stylesheet" />
-<link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 </head>
 <mm:cloud>
@@ -19,27 +17,20 @@
 
 <%-- determin which player to use --%>
 <mm:write referid="config.player">
-  <mm:compare value="wm" inverse="true"><%-- ram ? --%>
-      <mm:field name="format(ram)">
-         <mm:compare value="wmp">
-            <mm:write id="player" value="wm" write="false" />
-         </mm:compare>
-         <mm:compare value="wmp" inverse="true">
-            <mm:write id="player" value="real" write="false" />
-         </mm:compare>
-      </mm:field>
+  <mm:compare value="any">
+    <%@ include file="config/realplayer.jsp" %>
+  </mm:compare>
+  <mm:compare value="real">
+    <%@ include file="config/realplayer.jsp" %>
   </mm:compare>
   <mm:compare value="wm">
-      <mm:field name="format(wmp)">
-         <mm:compare value="ram">
-            <mm:write id="player" value="real" write="false" />
-         </mm:compare>
-         <mm:compare value="ram" inverse="true">
-            <mm:write id="player" value="wm" write="false" />
-         </mm:compare>
-      </mm:field>
+    <%@ include file="config/wmplayer.jsp" %>
+  </mm:compare>
+  <mm:compare value="qt">
+    <%@ include file="config/qtplayer.jsp" %>
   </mm:compare>
 </mm:write>
+
 
 <body id="<mm:write referid="player" />">
 
@@ -70,7 +61,7 @@
          </mm:compare>
          <mm:compare value="wm">
             <object              
-              id="embeddedplayer"
+              id="embeddedplayer" width="260" height="300" 
               classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95"
               codebase="http://activex.microsoft.com/activex/	controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
               standby="Loading Microsoft Windows Media Player components..."
@@ -89,6 +80,18 @@
       </embed>
     </object>
     </mm:compare>
+    <mm:compare value="qt">
+         <object id="embeddedplayer"
+                 classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="260" height="300" 
+                 codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+                 <param name="SRC" VALUE="<mm:field id="source" name="url(mov)" />" > 
+                 <param name="AUTOPLAY" VALUE="true">
+                 <param name="CONTROLLER" VALUE="true">
+                 <embed src="<mm:field name="url(mov)" />" width="260" height="300" autoplay="true"
+                        controller="true"
+                        name="embeddedplayer"
+                        pluginspage="http://www.apple.com/quicktime/download/"> </embed> </object>
+     </mm:compare>
          </mm:write>
        </td>
     <td valign="top" background="images/movie_right.gif" width="35"></td>
@@ -107,19 +110,17 @@
 				</map>
 </td>
 </mm:compare>
-<mm:compare value="wm">
+<mm:compare value="real" inverse="true">
     <td valign="top" background="images/movie_down.gif" height="27">&nbsp;</td>
 </mm:compare>
 </mm:write>
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
-<!--
 preferred player: <mm:write referid="config.player"><mm:write /><mm:isempty>No preference</mm:isempty></mm:write><br />
 used source:      <mm:write referid="source" /> <br />
 used player:      <mm:write referid="player" /><br />
 mimetype:      <mm:field name="mimetype()" /><br />
--->
 </mm:node>
 </mm:cloud>
 </body>
