@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.module.community;
+package org.mmbase.applications.community.modules;
 
 import java.util.*;
 
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: NodeBreaker.java,v 1.5 2003-03-10 11:50:29 pierre Exp $
+ * @version $Id: NodeBreaker.java,v 1.6 2003-06-18 20:03:55 michiel Exp $
  */
 public class NodeBreaker implements Runnable {
 

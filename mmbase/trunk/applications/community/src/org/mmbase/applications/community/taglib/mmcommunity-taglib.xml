@@ -1,7 +1,7 @@
 <!--
   This "enhanced" tld file will be converted to a "normal" tld and a html file.
 
-  version: $Id: mmcommunity-taglib.xml,v 1.7 2003-06-06 10:03:15 pierre Exp $
+  version: $Id: mmcommunity-taglib.xml,v 1.8 2003-06-18 20:03:58 michiel Exp $
   see: ../mmbase-taglib.xml
 -->
 <taglib>
@@ -25,7 +25,7 @@
   </tagtypes>
   <tag>
     <name>tree</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.TreeTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.TreeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>The tree tag provides a syntax to list messages in a channel or a thread, providing means to easily build a tree-like structure.</info>
@@ -164,7 +164,7 @@
 
   <tag>
     <name>who</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.WhoTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.WhoTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>The who tag provides a syntax to list users connected to a channel.</info>
@@ -246,8 +246,8 @@
 
   <tag>
     <name>getinfo</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.GetInfoTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.community.GetInfoTEI</teiclass>
+    <tagclass>org.mmbase.applications.community.taglib.GetInfoTag</tagclass>
+    <teiclass>org.mmbase.applications.community.taglib.GetInfoTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>The getinfo tag provides a syntax to retrieve data from the multipurpose info field from a message object.</info>
     <attribute>
@@ -283,7 +283,7 @@
 
   <tag>
     <name>setinfo</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.SetInfoTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.SetInfoTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The setinfo tag provides a syntax to store data in the multipurpose info field from a message object.
         The new value is formed by the content of the tag's body.</info>
@@ -318,8 +318,8 @@
 
   <tag>
     <name>post</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.PostTag</tagclass>
-    <teiclass>org.mmbase.bridge.jsp.taglib.community.PostTEI</teiclass>
+    <tagclass>org.mmbase.applications.community.taglib.PostTag</tagclass>
+    <teiclass>org.mmbase.applications.community.taglib.PostTEI</teiclass>
     <bodycontent>JSP</bodycontent>
     <info>The post tag provides a syntax to post messages.
         The post attributes are stored in mm:setfield tags in the tag's body.</info>
@@ -342,7 +342,7 @@
 
   <tag>
     <name>update</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.UpdateTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.UpdateTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>The update tag provides a syntax to change old messages.
         The post attributes are stored in mm:setfield tags in the tag's body.</info>
@@ -363,7 +363,7 @@
 
   <tag>
     <name>delete</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.DeleteTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.DeleteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which removes threads.
@@ -412,7 +412,7 @@
 
   <tag>
     <name>deleteall</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.DeleteAllTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.DeleteAllTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which removes all threads for  a channel.
@@ -461,7 +461,7 @@
 
   <tag>
     <name>channel</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.ChannelTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.ChannelTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which opens or closes a channel.
@@ -540,7 +540,7 @@
 
   <tag>
     <name>community</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.CommunityTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.CommunityTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which attempts to open or closes all channels of a community.
@@ -615,7 +615,7 @@
 
   <tag>
     <name>testchannel</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.TestChannelTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.TestChannelTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which tests the status of a channel.
@@ -708,7 +708,7 @@
 
   <tag>
     <name>log</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.LogTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.LogTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which turns on logging of a channel.
@@ -790,7 +790,7 @@
 
   <tag>
     <name>stoplog</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.StopLogTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.StopLogTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which turns off logging of a channel.
@@ -848,7 +848,7 @@
 
   <tag>
     <name>connection</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.community.ConnectionTag</tagclass>
+    <tagclass>org.mmbase.applications.community.taglib.ConnectionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
       A tag which manages the conenction of a user to a channel.

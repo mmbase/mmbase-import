@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 
-package org.mmbase.module.builders;
+package org.mmbase.applications.community.builders;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Community.java,v 1.9 2003-06-18 19:32:28 michiel Exp $
+ * @version $Id: Community.java,v 1.10 2003-06-18 20:03:54 michiel Exp $
  */
 
 public class Community extends MMObjectBuilder {
