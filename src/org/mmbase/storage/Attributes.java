@@ -15,18 +15,9 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.1 2003-08-21 09:59:27 pierre Exp $
+ * @version $Id: Attributes.java,v 1.2 2003-08-22 12:34:47 pierre Exp $
  */
 public final class Attributes {
-
-    /**
-     * Attribute: <code>defaultStorageIdentifierPrefix</code>.
-     * When the storage manager encounters a disallowed fieldname for which no replacement is created,
-     * it attempts to create a replacement fieldname by prefixing the field with the value set in this property.
-     * If this property is not set, the manager will instead issue a StoragException, explaining the fieldname is disallowed
-     * By default this attribute is not set.
-     */
-    public static final String DISALLOWED_FIELD_PREFIX = "defaultStorageIdentifierPrefix";
 
     /**
      * Option: <code>disallowed-fields-case-sensitive</code>.
@@ -63,7 +54,7 @@ public final class Attributes {
     public static final String STORAGE_IDENTIFIER_CASE = "storage-identifier-case";
 
     /**
-     * Atribute: <code>default-storage-identifier-prefix</code>.
+     * Attribute: <code>default-storage-identifier-prefix</code>.
      * A default prefix to place in front of diallowedf fieldnames to make them suitabel for use in a storage layer.
      * By default, this option is not set.
      */
