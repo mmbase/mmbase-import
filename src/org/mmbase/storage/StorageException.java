@@ -14,9 +14,9 @@ package org.mmbase.storage;
  *
  * @since  MMBase-1.7
  * @author Pierre van Rooden
- * @version $Id: StorageException.java,v 1.6 2003-11-18 14:58:33 michiel Exp $
+ * @version $Id: StorageException.java,v 1.7 2004-01-12 14:59:52 pierre Exp $
  */
-public class StorageException extends Exception {
+public class StorageException extends RuntimeException {
 
     //javadoc is inherited
     public StorageException() {
