@@ -21,18 +21,20 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * @javadoc
+ * A ImageRequest Processor is a daemon Thread which can handle image transformations. Normally a few of these are started. 
+ * Each one contains a Queue of Image request jobs it has to do, which is constantly watched for new jobs.
+ *
  * @author Rico Jansen
- * @version $Id: ImageRequestProcessor.java,v 1.13 2003-09-08 11:53:38 vpro Exp $
+ * @version $Id: ImageRequestProcessor.java,v 1.14 2004-01-20 20:51:51 michiel Exp $
+ * @see ImageRequest
  */
 public class ImageRequestProcessor implements Runnable {
     
-    private static Logger log = Logging.getLoggerInstance(ImageRequestProcessor.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(ImageRequestProcessor.class);
     private static int idCounter =0;
     private int processorId;
-    private Thread kicker=null;
     
-    private MMObjectBuilder images;
+    private MMObjectBuilder icaches;
     private ImageConvertInterface convert;
     private Queue queue;
     private Map table;
@@ -40,8 +42,8 @@ public class ImageRequestProcessor implements Runnable {
     /**
      * @javadoc
      */
-    public ImageRequestProcessor(MMObjectBuilder images, ImageConvertInterface convert, Queue queue, Map table) {
-        this.images = images;
+    public ImageRequestProcessor(MMObjectBuilder icaches, ImageConvertInterface convert, Queue queue, Map table) {
+        this.icaches = icaches;
         this.convert = convert;
         this.queue = queue;
         this.table = table;
@@ -50,34 +52,21 @@ public class ImageRequestProcessor implements Runnable {
     }
     
     /**
-     * @javadoc
+     * Starts the thread for this ImageRequestProcessor.
      */
-    public void start() {
-        if (kicker == null) {
-            kicker = new Thread(this, "ImageConvert["+processorId +"]");
-            kicker.setDaemon(true);
-            kicker.start();
-        }
+    protected void start() {
+        Thread kicker = new Thread(this, "ImageConvert[" + processorId +"]");
+        kicker.setDaemon(true);
+        kicker.start();
     }
     
-    /**
-     * @javadoc
-     */
-    public void stop() {
-        /* Stop thread */
-        kicker.interrupt();
-        kicker = null;
-    }
     
-    /**
-     * @javadoc
-     */
+    // javadoc inherited (from Runnable)
     public void run() {
-        ImageRequest req;
         try {
-            while(kicker!=null) {
+            while(true) {
                 log.debug("Waiting for request");
-                req=(ImageRequest)queue.get();
+                ImageRequest req = (ImageRequest) queue.get();
                 log.debug("Starting request");
                 processRequest(req);
                 log.debug("Done with request");
@@ -88,33 +77,31 @@ public class ImageRequestProcessor implements Runnable {
     }
     
     /**
-     * @javadoc
+     * Takes an ImageRequest object and calls setOutput on it (after having determined that).
+     * @param req The ImageRequest wich must be executed.
      */
     private void processRequest(ImageRequest req) {
-        List params;
-        String ckey;
-        byte[] picture,inputpicture;
-        int id;
-        
-        inputpicture = req.getInput();
-        params = req.getParams();
-        ckey = req.getKey();
-        id = req.getId();
+
+        byte[] picture;
+        byte [] inputpicture = req.getInput();
+        List params = req.getParams();
+        String ckey = req.getKey();
+        int      id = req.getId();
         
         if (inputpicture == null || inputpicture.length == 0) {
             if (log.isDebugEnabled()) log.debug("processRequest : input is empty : " + id);
             picture = null;
         } else {
             if (log.isDebugEnabled()) log.debug("processRequest : Converting : " + id);
-            picture=convert.convertImage(inputpicture, params);
+            picture = convert.convertImage(inputpicture, params);
             if (picture != null) {
-                MMObjectNode newnode=images.getNewNode("imagesmodule");
-                newnode.setValue("ckey", ckey);
-                newnode.setValue("id", id);
-                newnode.setValue("handle", picture);
-                newnode.setValue("filesize", picture.length);
-                int i=newnode.insert("imagesmodule");
-                if (i<0) {
+                MMObjectNode newNode = icaches.getNewNode("imagesmodule");
+                newNode.setValue("ckey", ckey);
+                newNode.setValue("id", id);
+                newNode.setValue("handle", picture);
+                newNode.setValue("filesize", picture.length);
+                int i = newNode.insert("imagesmodule");
+                if (i < 0) {
                     log.warn("processRequest: Can't insert cache entry id=" + id + " key=" + ckey);
                 }
             } else {
@@ -124,7 +111,9 @@ public class ImageRequestProcessor implements Runnable {
             if (log.isDebugEnabled()) log.debug("processRequest : converting done : " + id);
         }
         synchronized (table){
-            if (log.isDebugEnabled()) log.debug("Setting output " + id);
+            if (log.isDebugEnabled()) {
+                log.debug("Setting output " + id + " (" + req.count() + " times requested now)");
+            }
             req.setOutput(picture);
             if (log.isDebugEnabled()) log.debug("Removing key " + id);
             table.remove(ckey);
