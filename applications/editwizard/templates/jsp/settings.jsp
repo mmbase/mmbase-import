@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.8 2002-05-17 11:11:43 michiel Exp $
+     * @version  $Id: settings.jsp,v 1.9 2002-05-17 13:17:50 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -27,7 +27,7 @@
         // which parameters to use to configure a list page
         public void config(Config.ListConfig c) {
             c.title       = getParam("title", c.title);
-            c.template    = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));           
+            c.template    = ewconfig.uriResolver.resolveToFile(getParam("template", "xsl/list.xsl"));
             c.startNodes  = getParam("startnodes", c.startNodes);
             c.nodePath    = getParam("nodepath", c.nodePath);
             c.fields      = getParam("fields", c.fields);
@@ -48,7 +48,7 @@
 Config ewconfig = null;    // Stores the current configuration for the wizard as whole, so all open lists and wizards are stored in this struct.
 Configurator configurator; // Fills the ewconfig if necessary.
 
-%><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
+%><% boolean done=false; %><mm:log jspvar="log"><%  // Will log to category: org.mmbase.PAGE.LOGTAG.<context>.<path-to-editwizard>.jsp.<list|wizard>.jsp
 
 log.trace("start of settings.jsp");
 // Add some header to make sure these pages are not cached anywhere.
@@ -72,10 +72,9 @@ String sessionKey = request.getParameter("sessionkey");
 if (sessionKey == null) sessionKey = "editwizard";
 
 // proceed with the current wizard only if explicitly stated,
-// if this page is a popup, or if this page is a debug page
+// or if this page is a debug page
 
 boolean proceed = "true".equals(request.getParameter("proceed")) ||
-//                  "true".equals(request.getParameter("popup")) ||
                   (request.getRequestURI().endsWith("debug.jsp"));
 
 // Look if there is already a configuration in the session.
@@ -104,7 +103,6 @@ if (request.getParameter("logout") != null) {
     response.sendRedirect(refer);
     return;
 }
-
 ewconfig.sessionKey = sessionKey;
 configurator = new Configurator(request, response, ewconfig);
 
@@ -113,19 +111,43 @@ if (request.getParameter("remove") != null) {
 
     log.debug("Removing top object requested from " + configurator.getBackPage());
 
-    if(ewconfig.subObjects.size() > 0) ewconfig.subObjects.pop();
-    if (! refer.startsWith("http:")) {
-        refer = response.encodeURL(request.getContextPath() + refer);
+    if(ewconfig.subObjects.size() > 0) {
+        // remove popupwizard
+        // pass the result of the popupwizard to the calling wizard
+        // (how do we do this ???)
+        ewconfig.subObjects.pop();
     }
-    log.debug("Redirecting to " + refer);
-    response.sendRedirect(refer);
-    return;
+    if (ewconfig.subObjects.size() == 0) {
+        if (sessionKey.indexOf("|popup")>0) {
+        // a separate running popup, so remove sessiondata
+            session.removeAttribute(sessionKey);
+%>
+<html><script language="javascript">window.close();</script></html>
+<%
+        } else {
+            if (! refer.startsWith("http:")) {
+                refer = response.encodeURL(request.getContextPath() + refer);
+            }
+            log.debug("Redirecting to " + refer);
+            response.sendRedirect(refer);
+        }
+        done=true;
+    }
+
+    if (ewconfig.subObjects.peek() instanceof Config.ListConfig) {
+        log.debug("Redirecting to list");
+        response.sendRedirect(response.encodeURL("list.jsp?proceed=true&sessionkey="+sessionKey));
+        done=true;
+    }
+
 }
+if (!done) {
+    log.debug("Stack "            + ewconfig.subObjects);
+    log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());
 
-log.service("Doing for wizard " + ewconfig.wizard);
-log.debug("Stack "            + ewconfig.subObjects);
-log.debug("URIResolver "      + ewconfig.uriResolver.getPrefixPath());
+    log.service("end of settings.jsp");// meaning that the rest of the list/wizard page will be done (those include setting.jsp).
+}
+%></mm:log><%
+    if (done) return;
+%>
 
-log.service("end of settings.jsp");// meaning that the rest of the list/wizard page will be done (those include setting.jsp).
-
-%></mm:log>
