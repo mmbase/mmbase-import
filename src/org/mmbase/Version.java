@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Version.java,v 1.16 2002-06-03 15:05:40 michiel Exp $
+ * @version $Id: Version.java,v 1.17 2002-11-18 13:35:42 michiel Exp $
  */
 public class Version {
    
@@ -42,7 +42,7 @@ public class Version {
      * Returns the minor version number of this MMBase.
      * @since MMBase-1.6
      */
-    public static int     getMinor()  { return 6; }    
+    public static int     getMinor()  { return 7; }    
 
     /**
      * Returns the patch level numer of this MMBase.
