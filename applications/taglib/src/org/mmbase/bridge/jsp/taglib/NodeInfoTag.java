@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.util.Arguments;
+import org.mmbase.util.functions.Parameters;
 import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
@@ -23,7 +23,7 @@ import org.mmbase.bridge.NodeManager;
  * like what its nodemanager is.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeInfoTag.java,v 1.26 2003-11-19 16:57:42 michiel Exp $ 
+ * @version $Id: NodeInfoTag.java,v 1.27 2003-12-18 11:55:31 michiel Exp $ 
  */
 
 public class NodeInfoTag extends NodeReferrerTag implements Writer {
@@ -110,7 +110,7 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             if (ct != null) {
                 sessionName = ct.getSessionName();
             }
-            Arguments args = new Arguments(MMObjectBuilder.GUI_ARGUMENTS);
+            Parameters args = new Parameters(MMObjectBuilder.GUI_PARAMETERS);
             args.set("field", ""); // lot of function implementations would not stand 'null' as field name value
             args.set("language", getCloud().getLocale().getLanguage());
             args.set("session",  sessionName);
