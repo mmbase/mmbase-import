@@ -5,16 +5,16 @@
      * wizard.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: wizard.jsp,v 1.1 2002-04-19 19:52:08 michiel Exp $
+     * @version  $Id: wizard.jsp,v 1.2 2002-04-22 14:37:34 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
 
     Config.WizardConfig wizardConfig = null;
-if (config.subObjects.size() > 0) {
-    if (config.subObjects.peek() instanceof Config.WizardConfig) {
+if (ewconfig.subObjects.size() > 0) {
+    if (ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
         log.debug("checking configuration");
-        wizardConfig = (Config.WizardConfig) config.subObjects.peek();
+        wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
         Config.WizardConfig checkConfig = new Config.WizardConfig();
         configurator.config(checkConfig);
         if (wizardConfig.objectNumber != null && wizardConfig.objectNumber.equals(checkConfig.objectNumber)) {
@@ -31,7 +31,7 @@ if (wizardConfig == null) {
     log.trace("creating new wizard");
     wizardConfig =  configurator.createWizard(cloud);
     log.trace("putting new wizard on the stack for object " + wizardConfig.objectNumber);
-    config.subObjects.push(wizardConfig);
+    ewconfig.subObjects.push(wizardConfig);
 }
 
 if (wizardConfig.wiz.mayBeClosed()) {
@@ -39,7 +39,7 @@ if (wizardConfig.wiz.mayBeClosed()) {
     response.sendRedirect(response.encodeURL("wizard.jsp?remove=true"));
 } else {
     log.trace("Send html back");
-    wizardConfig.wiz.writeHtmlForm(out, config.wizard);
+    wizardConfig.wiz.writeHtmlForm(out, ewconfig.wizard);
 }    
 %>
 </mm:log></mm:cloud>
