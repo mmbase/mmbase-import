@@ -16,7 +16,7 @@
 
 <!ELEMENT default ( #PCDATA ) >
 
-<!ELEMENT field ( #PCDATA | optionlist | prompt | prefix | postfix )* >
+<!ELEMENT field ( #PCDATA | optionlist | prompt | description | prefix | postfix )* >
 <!ATTLIST field dtmaxlength NMTOKEN #IMPLIED >
 <!ATTLIST field dtminlength NMTOKEN #IMPLIED >
 <!ATTLIST field dtrequired NMTOKEN #IMPLIED >
