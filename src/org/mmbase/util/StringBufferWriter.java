@@ -14,73 +14,71 @@ import java.io.*;
 
 /**
  * Oddly enough, Java does not provide this itself. Code is nearly identical to java.io.StringWriter.
+ * @see java.io.StringWriter
  *
-
  * @author	Michiel Meeuwissen
  * @since	MMBase-1.7
- * @see         java.io.StringWriter
+ * @version $Id: StringBufferWriter.java,v 1.2 2004-09-30 17:19:49 pierre Exp $
  */
-
 public class StringBufferWriter extends Writer {
 
-    protected StringBuffer buf;
+    protected StringBuffer buffer;
 
     /**
      * Create a new stringbufferwriter
      */
     public StringBufferWriter(StringBuffer buffer) {
-	buf = buffer;
-	lock = buf;
+        buffer = buffer;
+        lock = buffer;
     }
-
 
     /**
      * Write a single character.
      */
     public void write(int c) {
-	buf.append((char) c);
+        buffer.append((char) c);
     }
 
     /**
      * Write a portion of an array of characters.
      *
-     * @param  cbuf  Array of characters
-     * @param  off   Offset from which to start writing characters
-     * @param  len   Number of characters to write
+     * @param  charArray  Array of characters
+     * @param  offset   Offset from which to start writing characters
+     * @param  length   Number of characters to write
      */
-    public void write(char cbuf[], int off, int len) {
-        if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-            ((off + len) > cbuf.length) || ((off + len) < 0)) {
+    public void write(char charArray[], int offset, int length) {
+        if ((offset < 0) || (offset > charArray.length) || (length < 0) ||
+            ((offset + length) > charArray.length) || ((offset + length) < 0)) {
             throw new IndexOutOfBoundsException();
-        } else if (len == 0) {
+        } else if (length == 0) {
             return;
         }
-        buf.append(cbuf, off, len);
+        buffer.append(charArray, offset, length);
     }
 
     /**
      * Write a string.
      */
     public void write(String str) {
-	buf.append(str);
+        buffer.append(str);
     }
 
     /**
      * Write a portion of a string.
      *
      * @param  str  String to be written
-     * @param  off  Offset from which to start writing characters
-     * @param  len  Number of characters to write
+     * @param  offset  Offset from which to start writing characters
+     * @param  length  Number of characters to write
      */
-    public void write(String str, int off, int len)  {
-	buf.append(str.substring(off, off + len));
+    public void write(String str, int offset, int length)  {
+        buffer.append(str.substring(offset, offset + length));
     }
 
     /**
      * Return the buffer's current value as a string.
      */
     public String toString() {
-	return buf.toString();
+        return buffer.toString();
     }
 
     /**
@@ -89,13 +87,13 @@ public class StringBufferWriter extends Writer {
      * @return StringBuffer holding the current buffer value.
      */
     public StringBuffer getBuffer() {
-	return buf;
+        return buffer;
     }
 
     /**
      * Flush the stream.
      */
-    public void flush() { 
+    public void flush() {
     }
 
     /**

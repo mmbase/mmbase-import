@@ -14,18 +14,18 @@ import java.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-
 /**
-* StringTagger, Creates a object with tags and fields from a String.
-* Its ideal for name-value pairs and name-value pairs with multivalues.
-* It also provides support for quoted values, and recognizes values that are 'function' calls with
-* their own parameter list (allowing to ignore any tokens within these lists when parsing).
-*
-* @author Daniel Ockeloen
-* @author Pierre van Rooden
-* @version $Id: StringTagger.java,v 1.15 2004-05-06 12:34:30 keesj Exp $
-* @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
-*/
+ * StringTagger, Creates a object with tags and fields from a String.
+ * Its ideal for name-value pairs and name-value pairs with multivalues.
+ * It also provides support for quoted values, and recognizes values that are 'function' calls with
+ * their own parameter list (allowing to ignore any tokens within these lists when parsing).
+ *
+ * @application SCAN
+ * @code-conventions Some methods (Values, Value etc) have wrong names (and are duplicating Map methods btw)
+ * @author Daniel Ockeloen
+ * @author Pierre van Rooden
+ * @version $Id: StringTagger.java,v 1.16 2004-09-30 17:19:50 pierre Exp $
+ */
 public class StringTagger implements Map {
 
     // logger
