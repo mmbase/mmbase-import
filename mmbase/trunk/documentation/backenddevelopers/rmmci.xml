@@ -7,7 +7,7 @@
 
     <date>2001</date>
 
-    <edition>$Id: rmmci.xml,v 1.14 2003-07-01 14:37:00 johannes Exp $</edition>
+    <edition>$Id: rmmci.xml,v 1.15 2003-10-04 12:15:21 keesj Exp $</edition>
 
     <authorgroup>
       <author>
@@ -112,7 +112,41 @@ list = cloud.getNodeManager(&#34;mmservers&#34;).getList(null,null,null);
 for (x =0 ; x &#60; list.size() ; x++){
   print(list.getNode(x).getStringValue(&#34;host&#34;));
 }</programlisting>
-    </section>
+	</section>
+	<section>
+      <title>BeanShell, a more realistic example</title>
+	 <para>The previous example of course is not very usefull. Here we wil show how to use rmmci so that mmbase can recieve mail on a unix box. with unix you can forward your mail to a program this is usualy done with a .forward file. here is content of my example .forward file
+	 </para>
+	 <programlisting>|/home/keesj/mmbasemail.sh</programlisting>
+	 <para>and here the content of mmbasemail.sh</para>
+	 <programlisting>
+#!/bin/sh
+//bin/sh -c "exec /usr/local/java/bin/java -classpath /home/keesj/bsh-2.0b1.jar bsh.Interpreter $0 $*"; exit
+addClassPath("/home/keesj/rmmci.jar");
+
+import org.mmbase.bridge.*;
+
+HashMap user = new HashMap();
+user.put("username","admin");
+user.put("password","admin2k");
+
+Cloud cloud = ContextProvider.getCloudContext("rmi://127.0.0.1:1111/remotecontext").getCloud("mmbase","name/password",user);
+
+NodeManager nodeManager = cloud.getNodeManager("news");
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringBuffer sb = new StringBuffer();
+String line = null;
+
+while(  (line = br.readLine()) != null){
+		  	sb.append(line);
+		  	sb.append("\n");
+}
+
+Node node = nodeManager.createNode();
+node.setStringValue("body",sb.toString());
+node.commit();
+	 </programlisting>
+	 </section>
   </section>
 
     <section>
