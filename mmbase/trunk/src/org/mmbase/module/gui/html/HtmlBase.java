@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.38 2001-03-09 10:10:47 pierre Exp $
+	$Id: HtmlBase.java,v 1.39 2001-03-12 09:00:12 pierre Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.38  2001/03/09 10:10:47  pierre
+	pierre: adapted mmeditor classes to new relations system and added logging
+	
 	Revision 1.37  2000/12/10 16:00:55  daniel
 	moved a error msg
 	
@@ -144,7 +147,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.38 2001-03-09 10:10:47 pierre Exp $
+ * @version $Id: HtmlBase.java,v 1.39 2001-03-12 09:00:12 pierre Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -880,6 +883,25 @@ public class HtmlBase extends ProcessorModule {
 		Vector snodes=tagger.Values("NODE");
 		if ((snodes==null) || (snodes.size()==0)) throw new MultiLevelParseException("No NODE specified. Use NODE=\"-1\" to specify no node");
 		String distinct=tagger.Value("DISTINCT");
+		String searchdirs=tagger.Value("SEARCH");
+		int searchdir = MultiRelations.SEARCH_EITHER;
+		if (searchdirs!=null) {
+		    searchdirs = searchdirs.toUpperCase();
+    		if ("DESTINATION".equals(searchdirs)) {
+    		    log.debug("DESTINATION");
+                searchdir = MultiRelations.SEARCH_DESTINATION;
+		    } else if ("SOURCE".equals(searchdirs)) {
+    		    log.debug("SOURCE");
+                searchdir = MultiRelations.SEARCH_SOURCE;
+	    	} else if ("BOTH".equals(searchdirs)) {
+    		    log.debug("BOTH");
+                searchdir = MultiRelations.SEARCH_BOTH;
+    		} else if ("ALL".equals(searchdirs)) {
+    		    log.debug("ALL");
+                searchdir = MultiRelations.SEARCH_ALL;
+		    }
+		}
+		
 
 		tagger.setValue("ITEMS",""+fields.size());				
 
@@ -907,7 +929,7 @@ public class HtmlBase extends ProcessorModule {
 				dbdir=new Vector();
 				dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
 			}
-			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir);
+			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir,searchdir);
 			results=new Vector();
 			for (e=nodes.elements();e.hasMoreElements();) {
 				node=(MMObjectNode)e.nextElement();
@@ -959,6 +981,8 @@ public class HtmlBase extends ProcessorModule {
 		obj=tagger.Values("NODE");
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
 		obj=tagger.Value("DISTINCT");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Value("SEARCH");
 	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
 
 		return(new Integer(hash));
