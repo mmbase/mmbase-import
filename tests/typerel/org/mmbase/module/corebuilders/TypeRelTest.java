@@ -8,13 +8,14 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.3 2003-03-13 10:53:38 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.4 2003-03-21 13:04:32 michiel Exp $
  */
 public class TypeRelTest extends org.mmbase.tests.BridgeTest {
 
     static protected String  UNIDIR_ROLE = "unidirectionalrelation";
     static protected String  BIDIR_ROLE  = "bidirectionalrelation";
     static protected String  INH_ROLE    =  "inheritancerelation";
+    static protected String  MULTILEVEL_ROLE    =  "multileveltestrelation";
     static protected String  OTHER_ROLE   = "this_role_does_not_exist";
     static protected String  RELATED_ROLE   = "related";
 
@@ -330,6 +331,47 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
     }
 
 
+    public void testMultiLevelQuery() {      
+        Node reldef = createRelDefNode(MULTILEVEL_ROLE, 2);
+        Node typerel = typeRelManager.createNode();
+        typerel.setNodeValue("snumber", objectManager);
+        typerel.setNodeValue("dnumber", urlsManager);
+        typerel.setNodeValue("rnumber", reldef);
+        typerel.commit();
+        createdNodes.add(typerel);
+
+        RelationManager rm = newsManager.getAllowedRelations(urlsManager, MULTILEVEL_ROLE, DESTINATION).getRelationManager(0);
+        Relation r = rm.createRelation(url, news);
+        r.commit();
+        createdNodes.add(r);
+
+        NodeList nl = cloud.getList(null, // startnodes
+                                    "news," + MULTILEVEL_ROLE + ",urls", // path
+                                    "",   // fields
+                                    null, // constraints
+                                    null, // orderby
+                                    null, // directions
+                                    null, // searchDir
+                                    false // distinct
+                                    );
+       
+        assertTrue(nl.size() == 1);
+        //System.out.println("news," + MULTILEVEL_ROLE + ",object");
+        NodeList nl2 = cloud.getList(null, // startnodes
+                                    "news," + MULTILEVEL_ROLE + ",object", // path
+                                    "",   // fields
+                                    null, // constraints
+                                    null, // orderby
+                                    null, // directions
+                                    null, // searchDir
+                                    false // distinct
+                                    );
+        //System.out.println(nl2);
+        assertTrue(nl2.size() == 1);
+
+    }
+
+
 
     public void testClearUpMess() {
         //        System.out.println("Clearing up the mess");
@@ -372,7 +414,8 @@ public class TypeRelTest extends org.mmbase.tests.BridgeTest {
             createdNodes.add(news);
             
             url = urlsManager.createNode();
-            url.setValue("url", "http://url");
+            url.setValue("url", "http://test.mmbase.org");
+            url.setValue("name", "test url");
             url.commit();
             createdNodes.add(url);
 
