@@ -7,6 +7,12 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+
+/* 
+	$Id: HtmlBase.java,v 1.4 2000-03-08 14:53:30 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module.gui.html;
 
 import java.lang.*;
@@ -35,12 +41,15 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
+ * @version $Id: HtmlBase.java,v 1.4 2000-03-08 14:53:30 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
 	private String classname = getClass().getName();
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
+	private int multilevel_cachesize=128;
+	private LRUHashtable multilevel_cache;
 
 	MMBase mmb=null;
 
@@ -63,7 +72,6 @@ public class HtmlBase extends ProcessorModule {
 	String databasename;
 
 	public Hashtable mmobjs=new Hashtable();
-	//DBMaccessInterface cinebase;
 	String machineName="unknown";
 	sessionsInterface sessions;
 
@@ -75,6 +83,9 @@ public class HtmlBase extends ProcessorModule {
 		mmb=(MMBase)getModule("MMBASEROOT");		
 		debug("init(): mmbase="+mmb);
 		// is there a basename defined in MMBASE.properties ?
+
+		// get size from properties
+		multilevel_cache=new LRUHashtable(multilevel_cachesize);
 	}
 
 
@@ -759,13 +770,14 @@ public class HtmlBase extends ProcessorModule {
 	}
 
 	public Vector doMultiLevel(scanpage sp, StringTagger tagger) {
-		String result=null;
+		String result=null,fieldname;
 		Object tmp;
 		MMObjectNode node;
-		int snode=-1;
-		int onode=-1;
-		Vector results=new Vector(); 
-		Vector wherevector=null;
+		int snode=-1,onode=-1;
+		Integer hash;
+		Vector results=null,nodes,wherevector=null;
+		Enumeration e,f;
+
 		Vector type=tagger.Values("TYPE");
 		Vector dbsort=tagger.Values("DBSORT");
 		Vector dbdir=tagger.Values("DBDIR");
@@ -773,62 +785,79 @@ public class HtmlBase extends ProcessorModule {
 		Vector fields=tagger.Values("FIELDS");
 		Vector snodes=tagger.Values("NODE");
 		String distinct=tagger.Value("DISTINCT");
+
+		tagger.setValue("ITEMS",""+fields.size());
+
+		hash=calcHashMultiLevel(tagger);
+		results=(Vector)multilevel_cache.get(hash);
 	
-
-		// fix in types needed because of a problem with VPRO site will be
-		// removed soon ! it remaps (programs,episodes,mmevents,bcastrel to
-		// programs,episodes,bcastrel,mmevents)
-		type=fixVPROTypesBug(sp, type);
-		
-        MultiRelations bul=(MultiRelations)mmb.getMMObject("multirelations");
-//        debug("MULBUL="+bul);
-
-		long begin=(long)System.currentTimeMillis(),len;
-		
-		// strip the fields of their function codes so we can query the needed
-		// fields (teasers.number,shorted(episodes.title)
-		Vector cleanfields=removeFunctions(fields);
-		// now we have (teasers.number,episodes.title);
-
-		Vector nodes;
-		if (dbdir==null) {
-			dbdir=new Vector();
-			dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
+		if (results==null) {
+			if (debug) debug("doMultiLevel cache MISS "+hash);
+	        MultiRelations bul=(MultiRelations)mmb.getMMObject("multirelations");
+			long begin=(long)System.currentTimeMillis(),len;
+			
+	
+			// strip the fields of their function codes so we can query the needed
+			// fields (teasers.number,shorted(episodes.title)
+			Vector cleanfields=removeFunctions(fields);
+			// now we have (teasers.number,episodes.title);
+	
+			if (dbdir==null) {
+				dbdir=new Vector();
+				dbdir.addElement("UP"); // UP == ASC , DOWN =DESC
+			}
+	
 			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir);
-		} else {
-			nodes=bul.searchMultiLevelVector(snodes,cleanfields,distinct,type,where,dbsort,dbdir);
-
-		}
-
-		Enumeration e=nodes.elements();
-
-		for (;e.hasMoreElements();) {
-			node=(MMObjectNode)e.nextElement();
-			Enumeration f=tagger.Values("FIELDS").elements();
-			for (;f.hasMoreElements();) {
-				// hack hack this is way silly Strip needs to be fixed
-				String fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
-				result=getNodeStringValue(node,fieldname);
-				if (result!=null && !result.equals("null")) {
-    				results.addElement(result); 
-				} else {
-    				results.addElement(""); 
+			results=new Vector();
+			for (e=nodes.elements();e.hasMoreElements();) {
+				node=(MMObjectNode)e.nextElement();
+				for (f=fields.elements();f.hasMoreElements();) {
+					// hack hack this is way silly, StringTagger needs to be fixed
+					fieldname=Strip.DoubleQuote((String)f.nextElement(),Strip.BOTH);
+					result=getNodeStringValue(node,fieldname);
+					if (result!=null && !result.equals("null")) {
+	    				results.addElement(result); 
+					} else {
+	    				results.addElement(""); 
+					}
 				}
 			}
-		}
-
-		tagger.setValue("ITEMS",""+tagger.Values("FIELDS").size());
-
-		long end=(long)System.currentTimeMillis();
-		len=(end-begin);
-		if (len>200) {
-			if (debug) {
+	
+			multilevel_cache.put(hash,results);
+			long end=(long)System.currentTimeMillis();
+			len=(end-begin);
+			if (len>200) {
 				debug("doMultilevel("+type+")="+(len)+" ms URI for page("+sp.req_line+")");
-			} else {
-				debug("doMultilevel("+type+")="+(len)+" ms for page("+sp.req_line+")");
 			}
+		} else {
+			if (debug) debug("doMultiLevel cache HIT  "+hash);
 		}
 		return(results);
+	}
+
+	/**
+	 * Belongs to doMultiLevel
+	 */
+	private Integer calcHashMultiLevel(StringTagger tagger) {
+		int hash=1;
+		Object obj;
+
+		obj=tagger.Values("TYPE");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Values("DBSORT");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Values("DBDIR");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Value("WHERE");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Values("FIELDS");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Values("NODE");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+		obj=tagger.Value("DISTINCT");
+	    hash = 31*hash + (obj==null ? 0 : obj.hashCode());
+
+		return(new Integer(hash));
 	}
 
 
@@ -984,21 +1013,4 @@ public class HtmlBase extends ProcessorModule {
 		}	
 	}
 
-	private Vector fixVPROTypesBug(scanpage sp, Vector type) {
-		try {
-			if (type.size()>3) {
-				String last=(String)type.elementAt(3);
-				if (last.equals("bcastrel\"")) {
-					debug("fixVPROTypesBug("+sp.req_line+"): fixing type("+last+")");
-					// a relation as last ? can never be good so lets claim its the bug
-					type.setElementAt("bcastrel",2);
-					type.setElementAt("mmevents\"",3);
-					debug("fixVPROTypesBug("+sp.req_line+"): fixed("+type+")");
-				}		
-			}
-		} catch(Exception e) {
-
-		}
-		return(type);
-	}
 }
