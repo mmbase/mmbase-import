@@ -64,6 +64,32 @@ MMBase running, you must do the following:
 
 Some final notes:
 =================
+Scan: 
+Scan has been 'turned off' by default in this release because it has
+been deprecated. It can be used and this is what needs to be done to
+get it working:
+
+ - Make the following MMBase modules active:
+    * calc (math)
+    * info (system info commands)
+    * mmbase (basic SCAN commands)
+    * mmedit (for the SCAN editors)
+    * mmlanguage (prompts for the SCAN editors)
+    * scanparser (essential parser)
+    * session (maintain user info)
+ - Optionally, you can activate the modules:
+    * scancache (caching of SCAN pages)
+    * transactionhandler (transactions through xml)
+
+ - In the web.xml, add the SCAN servlet (scanserv). Also add the
+   mapping for SCAN pages (*.shtml).
+   The default web.xml of MMBase contains example code which you can
+   uncomment. 
+ - Restart your server.
+
+To make a module active, find the modulename.xml file in the modules
+directory of the MMBase configuration. In the file, change the
+'status' from inactive to active, and save the file.
 
 Jikes:
 If you'd like to develop jsp and taglib pages at a usable speed it is
