@@ -6,6 +6,7 @@
 %><%@ include file="/includes/alterheader.jsp" %>
 
 <div id="pagecontent">
+<div id="textcontent">
 <mm:import externid="dir" jspvar="dir" />
 
 <h2><mm:write referid="dir" /></h2>
@@ -40,6 +41,6 @@ void showDir(File baseDir, String dirName, javax.servlet.jsp.JspWriter out) thro
 <mm:url id="back" referids="portal,page" page="index.jsp" write="false" />
 <%@ include file="/includes/backbutton.jsp" %>
 
-</div>
+</div></div>
 <%@ include file="/includes/alterfooter.jsp" %>
 </mm:cloud>
