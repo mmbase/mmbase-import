@@ -3,12 +3,12 @@
 <builder name="mmbaseusers" maintainer="www.mmbase.org" version="1" extends="object">
   <classfile>org.mmbase.security.implementation.cloudcontext.builders.Users</classfile>
   <names>
-    <singular xml:lang="en">MMBase User</singular>
-    <singular xml:lang="nl">MMBase Gebruiker</singular>
-    <singular xml:lang="eo">MMBase-uzulo</singular>
-    <plural xml:lang="en">MMBase Users</plural>
-    <plural xml:lang="nl">MMBase Gebruikers</plural>
-    <plural xml:lang="eo">MMBase-uzuloj</plural>
+    <singular xml:lang="en">Security Account</singular>
+    <singular xml:lang="nl">Security account</singular>
+    <singular xml:lang="eo">Sekureca uzulo</singular>
+    <plural xml:lang="en">Security Users</plural>
+    <plural xml:lang="nl">Security gebruikers</plural>
+    <plural xml:lang="eo">Sekurecaj uzuloj</plural>
   </names>
   <descriptions>
     <description xml:lang="en">
@@ -30,9 +30,9 @@
   <fieldlist>
     <field>
       <gui>
-        <guiname xml:lang="nl">Gebruiker</guiname>
+        <guiname xml:lang="nl">Account</guiname>
         <guiname xml:lang="eo">Uzulo</guiname>
-        <guiname xml:lang="en">UserName</guiname>
+        <guiname xml:lang="en">Account</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>

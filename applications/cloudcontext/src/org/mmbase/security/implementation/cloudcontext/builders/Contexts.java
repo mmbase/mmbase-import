@@ -32,12 +32,12 @@ import org.mmbase.util.*;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Contexts.java,v 1.20 2003-09-22 11:51:53 michiel Exp $
+ * @version $Id: Contexts.java,v 1.21 2003-09-22 17:19:58 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.Verify; 
  * @see    org.mmbase.security.Authorization; 
  */
 public class Contexts extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(Contexts.class);
+    private static final Logger log = Logging.getLoggerInstance(Contexts.class);
 
     /**
      *
@@ -94,6 +94,9 @@ public class Contexts extends MMObjectBuilder {
     protected static Map  invalidableObjects = new HashMap();
 
     private boolean readAll = false;
+    private boolean allContextsPossible = true; // if you want to use security for workflow, then you want this to be false
+
+
     private int     maxContextsInQuery = DEFAULT_MAX_CONTEXTS_IN_QUERY;
 
 
@@ -103,6 +106,9 @@ public class Contexts extends MMObjectBuilder {
     public boolean init() {
         String s = (String) getInitParameters().get("readall");
         readAll = "true".equals(s);
+
+        s = (String) getInitParameters().get("allcontextspossible");
+        allContextsPossible = ! "false".equals(s);
 
         s = (String) getInitParameters().get("maxcontextsinquery");
         if (! "".equals(s) && s != null) {
@@ -610,7 +616,16 @@ public class Contexts extends MMObjectBuilder {
             return new HashSet();  // why?
         }
         
-        List possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", ClusterBuilder.SEARCH_DESTINATION);
+        List possibleContexts;
+        if (allContextsPossible) {
+            try {
+                possibleContexts = getNodes(new NodeSearchQuery(this));
+            } catch (SearchQueryException sqe) {
+                throw new SecurityException(sqe);
+            }
+        } else {
+            possibleContexts = getContextNode(node).getRelatedNodes("mmbasecontexts", "allowed", ClusterBuilder.SEARCH_DESTINATION);
+        }
 
         Set hashSet = new HashSet();
         Iterator i = possibleContexts.iterator();
