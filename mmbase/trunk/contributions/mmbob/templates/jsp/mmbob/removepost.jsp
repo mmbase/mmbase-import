@@ -37,6 +37,7 @@
 <div class="bodypart">
 
 <mm:node referid="postingid">
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="75%" align="center">
   <tr><th width="25%" align="left"><mm:write referid="mlg_Member" /></th><th align="left"><mm:write referid="mlg_Topic"/> : <mm:field name="subject" /></th></tr>
   <mm:import id="tdvar">listpaging</mm:import>
@@ -47,7 +48,7 @@
     <td class="<mm:write referid="tdvar" />" align="right">
     </td>
   </tr>
- 
+ <mm:nodefunction set="mmbob" name="getPosting" referids="forumid,postareaid,postthreadid,postingid,posterid,imagecontext"> 
   <td class="<mm:write referid="tdvar" />" valign="top" align="left">
     <p>
       <b><mm:field name="poster" /></b>
@@ -56,13 +57,14 @@
 
   <td class="<mm:write referid="tdvar" />" valign="top" align="left">
     <mm:field name="edittime"><mm:compare value="-1" inverse="true">** <mm:write referid="mlg_last_time_edited"/> **<mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
-                                                                                                
-               <mm:formatter xslt="xslt/posting2xhtmlLight.xslt">
-                <mm:function referids="imagecontext,themeid" name="escapesmilies">
-                <mm:write/>
-                </mm:function>
-              </mm:formatter>
-                                                                                                
+
+
+  <mm:import id="tmpid" reset="true"><mm:field name="id"/></mm:import>
+  <mm:compare referid="postingid" referid2="tmpid">
+     <mm:field name="body" />
+  </mm:compare>
+</mm:nodefunction>
+                                                              
     <br /><br /><br /><br /><br />
   </td>
  </tr>
