@@ -17,6 +17,7 @@ to have the following sub directory's:
 
   config          (the MMBase CVS config module)
   html            (the MMBase CVS html module)
+  documentation   (the MMBase CVS documentation module)
   src/org/mmbase  (the MMBase CVS mmbase module)
 
 The build.dir will have the following sub directory's:
@@ -38,6 +39,9 @@ Ant
 
 This build file is tested with Ant 1.4. See <http://jakarta.apache.org/> for
 more information about the Ant build tool.
+
+The optional.jar of ant is needed it you want to use the 'documentation' target, on which e.g. the
+war target is dependent.
 
 
 Automated downloads
@@ -1340,7 +1344,7 @@ Version: MMBase build ${version}
     <style 
       basedir="${source-documentation.dir}" 
       destdir="${mmdocs.dir}/html"      
-      style="${expand.dir}/${docbook-xsl.version}/html/docbook.xsl"
+      style="${expand.dir}/${docbook-xsl.version}/xhtml/docbook.xsl"
       >
       <include name="**/*.xml" />
     </style>
