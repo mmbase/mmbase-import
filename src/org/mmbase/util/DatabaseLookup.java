@@ -38,9 +38,9 @@ public class DatabaseLookup {
      */
     public DatabaseLookup(File lookupConfig, File databaseConfigPath) {
 	this.databaseConfigPath = databaseConfigPath;
-
         try {
-            InputSource in = new InputSource(new FileInputStream(lookupConfig));
+            InputSource in = new InputSource(new FileInputStream(lookupConfig.getAbsoluteFile()));
+            in.setSystemId("file://" + lookupConfig.getAbsoluteFile());
             document = XMLBasicReader.getDocumentBuilder(DatabaseLookup.class).parse(in);
         } catch(org.xml.sax.SAXException se) {
             String message = "error loading configfile :'" + lookupConfig + "'" + Logging.stackTrace(se);
@@ -60,6 +60,8 @@ public class DatabaseLookup {
 	// process all the filters and when we have a match, return the result!
         String xpath = "/database-filters/filter";
         log.debug("gonna execute the query:" + xpath );
+
+        log.service("Found database: " + databaseInformation(connection));
         NodeIterator found;
         try {
             found = org.apache.xpath.XPathAPI.selectNodeIterator(document, xpath);
