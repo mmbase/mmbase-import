@@ -36,7 +36,7 @@ Applications build file
   <target name="all16" depends="init,media,bugtracker,email" />
 
   <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all" depends="init,all16,cloudcontext,editwizard,dove,xmlimporter,community,rmmci,aselect" />
+  <target name="all" depends="init,all16,cloudcontext,editwizard,dove,xmlimporter,community,rmmci" />
 
 
   <target name="jars" depends="all">
@@ -60,6 +60,7 @@ Applications build file
   <target name="aselect" depends="mmbase">
      <ant dir="aselect"      target="package" />
   </target>
+
 
   <target name="bugtracker">
      <ant dir="bugtracker"      target="package" />
