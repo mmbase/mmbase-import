@@ -27,7 +27,7 @@ public class NodeManagerTest extends org.mmbase.tests.BridgeTest {
 
     public void setUp() {
         // Create a test node.
-        cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase");
+        cloud = getCloud();
         node = cloud.getNodeManager("aa").createNode();
         byte[] bytes = {72,101,108,108,111,32,119,111,114,108,100,33};
         node.setByteValue("bytefield", "100".getBytes());
