@@ -161,4 +161,17 @@ public class VirtualBuilder extends MMObjectBuilder {
         return null;
     }
 
+    /**
+     * Performs some necessary postprocessing on nodes retrieved from a 
+     * search query.
+     * Since virtual nodes are not real nodes, this method is empty, 
+     * overriding the behaviour defined in 
+     * {@link org.mmbase.module.core.MMObjectBuilder#processSearchResults(List)
+     * MMObjectBuilder}.
+     * 
+     * @param results The (virtual) nodes.
+     */
+    protected void processSearchResults(List results) {
+        // empty!
+    }
 }
