@@ -27,14 +27,21 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.52 2002-04-12 08:53:00 pierre Exp $
+ * @version $Id: Images.java,v 1.53 2002-05-15 19:06:35 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private LRUHashtable templateCacheNumberCache = new LRUHashtable(500);
+    private org.mmbase.cache.Cache templateCacheNumberCache = new org.mmbase.cache.Cache(500) {  
+        public String getName()        { return "CkeyNumberCache"; }
+        public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
+        };
+
+    public Images() {
+        templateCacheNumberCache.putCache();
+    }
 
     ImageConvertInterface imageconvert=null;
     Hashtable ImageConvertParams = new Hashtable();
