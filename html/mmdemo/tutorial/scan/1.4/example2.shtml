@@ -1,0 +1,5 @@
+<LIST OBJECTS TYPE="urls" FIELDS="number,url,description" WHERE="url=='*.nl*'">
+	Url : $ITEM2 ($ITEM1)<BR>
+	Description : $ITEM3
+	<HR>
+</LIST>
