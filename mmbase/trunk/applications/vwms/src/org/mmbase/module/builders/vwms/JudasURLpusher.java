@@ -87,7 +87,7 @@ public class JudasURLpusher implements Runnable {
 				if (prilist.size()>0) {
 					do {
 						priurl=(PriorityURL)prilist.firstElement();
-						debug("PriURL : "+priurl);
+						if (debug) debug("PriURL : "+priurl);
 						if (priurl.getPriority()==PriorityURL.MAX_PRIORITY) {
 							parent.pushReload(priurl.getURL());
 							prilist.removeElementAt(0);
