@@ -34,7 +34,7 @@ import org.mmbase.util.logging.*;
  * </ul>
  *
  * @author Rob van Maris
- * @version $Id: PostgreSqlSqlHandler.java,v 1.6 2003-12-11 13:05:27 michiel Exp $
+ * @version $Id: PostgreSqlSqlHandler.java,v 1.7 2004-11-30 14:06:55 pierre Exp $
  * @since MMBase-1.7
  */
 public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
@@ -104,6 +104,38 @@ public class PostgreSqlSqlHandler extends BasicSqlHandler implements SqlHandler 
     }
     */
 
+    /**
+     * @javadoc
+     */
+    protected void appendDateField(StringBuffer sb, Step step, String fieldName, boolean multipleSteps, int datePart) {
+        String datePartFunction = null;
+        switch (datePart) {
+            case FieldValueDateConstraint.CENTURY:
+                datePartFunction = "CENTURY";
+                break;
+            case FieldValueDateConstraint.QUARTER:
+                datePartFunction = "QUARTER";
+                break;
+            case FieldValueDateConstraint.WEEK:
+                datePartFunction = "WEEK";
+                break;
+            case FieldValueDateConstraint.DAY_OF_YEAR:
+                datePartFunction = "DAYOFYEAR";
+                break;
+            case FieldValueDateConstraint.DAY_OF_WEEK:
+                datePartFunction = "DAYOFWEEK";
+                break;
+        }
+        if (datePartFunction != null) {
+            sb.append("EXTRACT(");
+            sb.append(datePartFunction);
+            sb.append(" FROM ");
+            appendField(sb, step, fieldName, multipleSteps);
+            sb.append(")");
+        } else {
+            super.appendDateField(sb, step, fieldName, multipleSteps, datePart);
+        }
+    }
 
 
     // javadoc is inherited
