@@ -281,7 +281,14 @@ public class TypeDef extends MMObjectBuilder {
 		}
 	}
 
-	public Vector  getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
+	/** 
+	 * gives all active Builders.
+	 */
+	public Vector activeBuilders() {
+		return typedefsLoaded;
+	}
+
+	public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
 		System.out.println("Tataaaaa");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
