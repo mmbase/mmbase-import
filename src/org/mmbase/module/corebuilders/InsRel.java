@@ -149,11 +149,13 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* get relation(s) for a MMObjectNode
+	* get MMObjectNodes related to a specified MMObjectNode
+	* @param sourceNode this is the source MMObjectNode 
+	* @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
 	*/
-	public Enumeration getRelated(String s,String wtype) {
+	public Enumeration getRelated(String sourceNode,String wtype) {
 		try {
-			int src=Integer.parseInt(s);
+			int src=Integer.parseInt(sourceNode);
 			int otype=mmb.TypeDef.getIntValue(wtype);
 			return(getRelated(src,otype));
 		} catch(Exception e) {}
@@ -162,7 +164,9 @@ public class InsRel extends MMObjectBuilder {
 
 
 	/**
-	* get relation(s) for a MMObjectNode
+	* get MMObjectNodes related to a specified MMObjectNode
+	* @param src this is the number of the source MMObjectNode 
+	* @param wtype Specifies the type of the nodes you want to have e.g. wtype="pools"
 	*/
 	public Enumeration getRelated(int src,String wtype) {
 		try {
