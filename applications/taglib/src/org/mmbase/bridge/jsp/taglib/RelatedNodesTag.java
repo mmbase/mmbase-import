@@ -37,7 +37,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
     public void setType(String type) throws JspTagException {
         typeString = getAttributeValue(type);
     }
-
+    
     /**
      * Performs the search
      */
@@ -57,8 +57,13 @@ public class RelatedNodesTag extends AbstractNodeListTag {
              || 
              (sortedString != null && !sortedString.equals(""))
              ) {
+
+            if (typeString == null) {
+                throw new JspTagException("Contraints attribute can only be given in combination with type attribute");
+            } 
             NodeManager manager = getCloudProviderVar().getNodeManager(typeString);
-            NodeList initialnodes = node.getRelatedNodes(typeString);
+            NodeList    initialnodes = node.getRelatedNodes(typeString);
+            
             String where = null;
             for (NodeIterator i = initialnodes.nodeIterator(); i.hasNext(); ) {
                 Node n = i.nextNode();
@@ -73,7 +78,7 @@ public class RelatedNodesTag extends AbstractNodeListTag {
             } else {
                 where = "number in (" + where + ")";
                 if (whereString!=null) where= "(" + whereString + ") AND " + where;
-                nodes = manager.getList(where,sortedString,directionString);
+                nodes = manager.getList(where, sortedString, directionString);
             }
         } else {
             if (typeString==null) {
