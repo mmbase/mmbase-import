@@ -16,7 +16,7 @@
  <%@include file="you.div.jsp" %>
  <%@include file="navigate.div.jsp" %>
   
-  <form action="commit_user.jsp" method="post">
+  <form action="<mm:url page="<mm:url page="commit_user.jsp" />" method="post">
    <table>
     <mm:fieldlist type="edit" fields="owner">
     <tr><td><mm:fieldinfo type="guiname" /></td><td colspan="3"><mm:fieldinfo type="input" /></td></tr>
@@ -61,6 +61,6 @@
 
    </mm:node>
   </mm:cloud>
-  <a href=".">Terug</a>
+  <a href="<mm:url page="." />">Back</a>
 </body>
 </html>

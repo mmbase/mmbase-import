@@ -18,7 +18,7 @@
  <%@include file="you.div.jsp" %>
 
 
-  <form action="commit_group.jsp" method="post">
+  <form action="<mm:url page="commit_group.jsp" />"method="post">
    <table>
     <mm:createnode id="newnode" type="mmbasegroups" makeuniques="true">
     <mm:fieldlist type="edit">
@@ -39,7 +39,7 @@
    </table>
    </form>
   </mm:cloud>
-  <a href=".">Terug</a>
+  <a href="<mm:url page="." />">Back</a>
 
   </body>
 </html>
