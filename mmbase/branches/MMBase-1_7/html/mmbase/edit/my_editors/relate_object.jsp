@@ -105,7 +105,6 @@
   <td width="80%" valign="top">
   	<!-- ### Search form -->
 	<mm:notpresent referid="rnr">
-	  <a name="search"></a>
 	  <%@ include file="inc_searchform.jsp" %>
 	</mm:notpresent>
   </td>
