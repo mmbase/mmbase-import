@@ -4,130 +4,102 @@
   <%@include file="login.jsp" %>
 <mm:node number="$user">
 
-<form action="<mm:url referids="parameters,$parameters"/>" method="POST">
-<table width="99%" cellspacing="0" cellpadding="0" class="list" style="margin-top : 10px;">
+<form action="<mm:url referids="parameters,$parameters"/>" method="post">
+<table class="list" style="margin-top : 10px;">
 
-<tr>
-	<th>
-	Type
-	<B/th>
-	<th>
-	Priority
-	</th>
-	<th>
-	Version
-	</th>
-</tr>
+<tr><th>Type</th><th>Priority</th><th>Version</th></tr>
 <tr>
 		<td>
-			<SELECT NAME="newbtype">
-				<OPTION VALUE="1">bug
-				<OPTION VALUE="2">wish
-				<OPTION VALUE="3">docbug
-				<OPTION VALUE="4">docwish
-			</SELECT>
+			<select name="newbtype">
+				<option value="1">bug</option>
+				<option value="2">wish</option>
+				<option value="3">docbug</option>
+				<option value="4">docwish</option>
+			</select>
 		</td>
 		<td>
-			<SELECT NAME="newbpriority">
-				<OPTION VALUE="1">high
-				<OPTION VALUE="2" SELECTED>medium
-				<OPTION VALUE="3">low
-			</SELECT>
+			<select name="newbpriority">
+				<option value="1">high</option>
+				<option value="2" selected="selected">medium</option>
+				<option value="3">low</option>
+			</select>
 		</td>
 		<td>
-			<INPUT NAME="newversion" VALUE="1.7.0" SIZE="10">
+			<input name="newversion" value="1.7.0" size="10">
 		</td>
 </tr>
 </table>
-<table width="99%" cellspacing="0" cellpadding="0" class="list" style="margin-top : 10px;">
+<table  class="list" style="margin-top : 10px;">
 <tr>
-	<th>
-	Area
-	</th>
+	<th>Area</th>
 </tr>
 <tr>
 		<td>
 		<mm:import id="noareas" />
 		<mm:node number="BugTracker.Start">
-		<SELECT NAME="newarea">
+		<select name="newarea">
    
 			<mm:relatednodescontainer type="areas">
         <mm:sortorder field="name" direction="up"/>
 			  <mm:relatednodes>
 			  <mm:first><mm:remove referid="noareas" /></mm:first>
-			    <OPTION VALUE="<mm:field name="number" />"
+			    <option value="<mm:field name="number" />"
     			<mm:field name="name">
-    			<mm:compare value="Misc">SELECTED</mm:compare>
-    			</mm:field>
-  			><mm:field name="substring(name,15,.)" />
+      			<mm:compare value="Misc">selected="selected"</mm:compare>
+    			</mm:field>><mm:field name="substring(name,15,.)" /></option>
 			</mm:relatednodes>
 			</mm:relatednodescontainer>
-		</SELECT>
+		</select>
 		</mm:node>
 		</td>
 </tr>
 </table>
-<table width="99%" cellspacing="0" cellpadding="0" class="list" style="margin-top : 10px;">
+<table class="list" style="margin-top : 10px;">
 
 <tr>
-	<th>
-	Issue : give the issue in one line 
-	</th>
+	<th>Issue : give the issue in one line </th>
 </tr>
 <tr>
-		<td>
-			<input style="width: 100%" name="newissue">
+    <td>
+ <input style="width: 100%" name="newissue" />
 		</td>
 </tr>
 
 </table>
-<table width="99%" cellspacing="0" cellpadding="0" class="list" style="margin-top : 10px;">
+<table  class="list" style="margin-top : 10px;">
 <tr>
-	<th>
-	Description : Describe the issue as complete as possible
-	</th>
+	<th>Description : Describe the issue as complete as possible </th>
 </tr>
 <tr>
 		<td>
-			<textarea name="newdescription" style="width: 100%" rows="15" wrap></textarea>
+			<textarea name="newdescription" style="width: 100%" rows="15" wrap="wrap"></textarea>
 		</td>
 </tr>
 </table>
-<table width="99%" cellspacing="0" cellpadding="0" class="list" style="margin-top : 10px;">
+<table  class="list" style="margin-top : 10px;">
 
 <tr>
-	<th colspan="3">
-	Name this bug will be submitted under
-	</th>
+	<th colspan="3">Name this bug will be submitted under </th>
 </tr>
 <tr>
 		<td>
-			<p />
 			<input name="submitter" type="hidden" value="<mm:field name="number" />">
-			&nbsp;&nbsp;
-			<mm:field name="firstname" />
-			<mm:field name="lastname" />
-			 ( <mm:field name="email" /> )
-			
+			<mm:field name="firstname" /> <mm:field name="lastname" /> ( <mm:field name="email" /> )
 		</td>
 		<td>
-			<p />
-			<CENTER>
 			<mm:present referid="noareas" inverse="true">
-				<input type="hidden" name="action" value="newbug">
-				<INPUT TYPE="submit" VALUE="SUBMIT REPORT">
+				<input type="hidden" name="action" value="newbug" />
+				<input type="submit" value="submit report" />
 			</mm:present>
-			</form>
+			</form><!-- hmm -->
 			<mm:present referid="noareas">
 				No areas defined, admin needs to add areas !
 			</mm:present>
 		</td>
 		<td>
 			<p />
-      <form action="<mm:url referids="parameters,$parameters"/>" method="GET">
-			<CENTER>
-				<INPUT TYPE="submit" VALUE="CANCEL">
-       </CENTER>
+      <form action="<mm:url referids="parameters,$parameters"/>" method="post">
+				<input type="submit" value="cancel" />
 			</form>
 		</td>
 </tr>
