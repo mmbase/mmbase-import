@@ -24,9 +24,10 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Implements the parsing and generating of dynamic flash files
+ * @application Flash
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.20 2003-05-23 10:57:33 pierre Exp $
+ * @version $Id: MMFlash.java,v 1.21 2004-10-01 08:43:44 pierre Exp $
  */
 public class MMFlash extends Module {
 
@@ -436,7 +437,7 @@ public class MMFlash extends Module {
                 }
                 String src=(String)rep.get("src");
                 if (src!=null) {
-                    // bad way to test for MMBase images! 
+                    // bad way to test for MMBase images!
                     if (src.startsWith("/img.db?")) {
                         String result=mapImage(src.substring(8),tempFiles);
                         part+=" \""+result+"\"";

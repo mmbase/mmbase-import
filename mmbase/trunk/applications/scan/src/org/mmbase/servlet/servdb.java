@@ -28,11 +28,12 @@ import org.mmbase.util.logging.*;
  * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
  * With servscan it provides the communication between the clients browser and the MMBase space.
  *
+ * @application SCAN (depends from JamesServlet)
  * @rename Servdb
  * @deprecation-used
  * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead. Needs a better implementation that
  *             captures things that now do not work in ImageServlet
- * @version $Id: servdb.java,v 1.56 2004-09-29 10:34:59 pierre Exp $
+ * @version $Id: servdb.java,v 1.57 2004-10-01 08:41:48 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {

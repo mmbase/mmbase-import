@@ -21,8 +21,12 @@ import org.w3c.dom.*;
  * The start node is identified either an alias or a combination of buildername and where clause.
  * This class can be used to easily retrive these parameters.
  *
+ * @application Applications
+ * @move org.mmbase.util.xml
+ * @rename ContextDepthReader
+ * @duplicate extend from org.mmbase.util.xml.DocumentReader
  * @author Daniel Ockeloen
- * @version $Id: XMLContextDepthReader.java,v 1.7 2003-07-04 13:03:30 keesj Exp $
+ * @version $Id: XMLContextDepthReader.java,v 1.8 2004-10-01 08:41:10 pierre Exp $
  */
 public class XMLContextDepthReader {
 

@@ -29,8 +29,10 @@ import org.w3c.dom.Element;
  * - no check whether the input file exists
  * - doesn't read when the xml:lang attribute is absent, but doesn't generate an error either
  *
+ * @application SCAN
+ * @deprecated not used anywhere
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.9 2004-02-09 13:50:35 pierre Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.10 2004-10-01 08:41:11 pierre Exp $
  */
 public class XMLMMLanguageReader extends XMLBasicReader {
 

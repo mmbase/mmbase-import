@@ -21,10 +21,10 @@ import org.xml.sax.SAXParseException;
 /**
  * Provides ErrorHandler methods for checking xml files by Config module
  *
+ * @application Config
  * @author cjr@dds.nl
- * @version $Id: XMLCheckErrorHandler.java,v 1.4 2003-02-10 23:44:37 nico Exp $
+ * @version $Id: XMLCheckErrorHandler.java,v 1.5 2004-10-01 08:41:10 pierre Exp $
  */
-
 public class XMLCheckErrorHandler implements ErrorHandler {
 
     private static Logger log = Logging.getLoggerInstance(XMLCheckErrorHandler.class.getName());
@@ -38,15 +38,15 @@ public class XMLCheckErrorHandler implements ErrorHandler {
         fatallist   = new Vector();
         resultlist  = new Vector();
     }
-    
+
     public void warning(SAXParseException ex) throws SAXException {
         log.debug("warn");
         ErrorStruct err = new ErrorStruct("warning", ex.getLineNumber(), ex.getColumnNumber(), ex.getMessage());
         warninglist.add(err);
         resultlist.add(err);
-        
+
     }
-    
+
     public void error(SAXParseException ex) throws SAXException{
         log.debug("error");
         ErrorStruct err = new ErrorStruct("error", ex.getLineNumber(), ex.getColumnNumber(), ex.getMessage());
@@ -64,15 +64,15 @@ public class XMLCheckErrorHandler implements ErrorHandler {
     public List getWarningList() {
         return warninglist;
     }
-    
+
     public List getErrorList() {
         return errorlist;
     }
-    
+
     public List getFatalList() {
         return fatallist;
     }
-    
+
     public List getResultList() {
         return resultlist;
     }

@@ -30,12 +30,12 @@ import org.mmbase.util.logging.Logging;
  * also use JSP for a more traditional parser system.
  *
  * @application SCAN
- * @rename Servscan
+ * @rename ServSCAN
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
  * @author Rob Vermeulen
- * @version $Id: servscan.java,v 1.37 2004-09-29 10:34:59 pierre Exp $
+ * @version $Id: servscan.java,v 1.38 2004-10-01 08:41:49 pierre Exp $
  */
 public class servscan extends JamesServlet {
     private static Logger log;

@@ -18,9 +18,10 @@ import java.util.*;
  * This object handles cache multilevel tag cache requests.
  *
  * @javadoc
+ * @application SCAN
  * @deprecated use org.mmbase.cache.MultilevelCacheHandler
  * @author Daniel Ockeloen
- * @version $Id: MultilevelCacheHandler.java,v 1.4 2003-03-07 08:50:24 pierre Exp $
+ * @version $Id: MultilevelCacheHandler.java,v 1.5 2004-10-01 08:43:46 pierre Exp $
  */
 public class MultilevelCacheHandler extends LRUHashtable {
 

@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.269 2004-06-28 21:36:34 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.270 2004-10-01 08:45:17 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -87,7 +87,7 @@ public class MMObjectBuilder extends MMTable {
 
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter("field",    String.class),
-        Parameter.LANGUAGE, 
+        Parameter.LANGUAGE,
         new Parameter("session",  String.class),
         Parameter.RESPONSE,
         Parameter.REQUEST,
@@ -737,7 +737,7 @@ public class MMObjectBuilder extends MMTable {
 
         // change is in database, caches can be invalidated immediately
         QueryResultCache.invalidateAll(this);
-    }      
+    }
 
     /**
      * Removes the syncnodes to this node. This is logical, but also needed to maintain database
@@ -1119,13 +1119,13 @@ public class MMObjectBuilder extends MMTable {
             if (builderName == null) {
                 log.error("The nodetype name of node #" + number + " could not be found (nodetype # " + nodeType + "), taking 'object'");
                 builderName = "object";
-                
+
                 //return null; Used to return null in MMBase < 1.7.0, but that gives troubles, e.g. that the result not gets cached.
             }
             builder = mmb.getBuilder(builderName);
             if (builder == null) {
                 log.warn("Node #" + number + "'s builder " + builderName + "(" + nodeType + ") is not loaded, taking 'object'.");
-                builder = mmb.getBuilder("object");                
+                builder = mmb.getBuilder("object");
                 //return null; Used to return null in MMBase < 1.7.0, but that gives troubles, e.g. that the result not gets cached.
             }
         }
@@ -2209,7 +2209,7 @@ public class MMObjectBuilder extends MMTable {
                     typedefNode = getNode(otype);
                 } catch (Exception e) {
                     log.error("Exception during conversion of nodelist to right types.  Nodes (" + nodes + ") of current type " + otype + " will be skipped. Probably the database is inconsistent. Message: " + e.getMessage());
-                    
+
                     continue;
                 }
                 if(typedefNode == null) {
@@ -2228,7 +2228,7 @@ public class MMObjectBuilder extends MMTable {
                     continue;
                 }
                 Iterator converted = builder.getNodes(nodes).iterator();
-                
+
                 while(converted.hasNext()) {
                     MMObjectNode current = (MMObjectNode) converted.next();
                     convertedNodes.put(new Integer(current.getNumber()), current);
@@ -2738,7 +2738,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.7
      */
     public Parameter[] getParameterDefinition(String function) {
-    	//keesj: why not this.getClass()?
+        //keesj: why not this.getClass()?
         return org.mmbase.util.functions.NodeFunction.getParametersByReflection(MMObjectBuilder.class, function);
     }
 
@@ -2848,7 +2848,7 @@ public class MMObjectBuilder extends MMTable {
                         locale = new Locale(language, "");
                     }
                 } else {
-                    if (language != null && (! locale.getLanguage().equals(language))) { // odd, but well, 
+                    if (language != null && (! locale.getLanguage().equals(language))) { // odd, but well,
                         locale = new Locale(language, locale.getCountry());
                     }
                 }
@@ -3041,6 +3041,7 @@ public class MMObjectBuilder extends MMTable {
      * Returns the path to use for TREEPART, TREEFILE, LEAFPART and LEAFFILE.
      * The system searches in a provided base path for a filename that matches the supplied number/alias of
      * a node (possibly extended with a version number). See the documentation on the TREEPART SCAN command for more info.
+     * @move maybe to a different SmartPathFunction class?
      * @param documentRoot the root of the path to search
      * @param path the subpath of the path to search
      * @param nodeNumber the numbve ror alias of the node to filter on
@@ -3053,8 +3054,7 @@ public class MMObjectBuilder extends MMTable {
         File dir = new File(documentRoot+path);
         if (version!=null) nodeNumber+="."+version;
         String[] matches = dir.list( new SPartFileFilter( nodeNumber ));
-        if ((matches == null) || (matches.length <= 0))
-        {
+        if ((matches == null) || (matches.length == 0)) {
             return null;
         }
         return path + matches[0] + File.separator;

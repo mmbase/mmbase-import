@@ -29,10 +29,10 @@ import org.mmbase.util.logging.*;
  *  and the form will be mailed.
  *
  * @javadoc
- * @application Email?
+ * @application SCAN (depends from JamesServlet). Also depends on Email.
  * @deprecated Abstract and not used anywhere.
  * @author  marmaa@vpro.nl (Marcel Maatkamp)
- * @version $Id: SimpleFormToMailServlet.java,v 1.10 2004-09-29 10:34:59 pierre Exp $
+ * @version $Id: SimpleFormToMailServlet.java,v 1.11 2004-10-01 08:41:48 pierre Exp $
  */
 public abstract class SimpleFormToMailServlet extends JamesServlet {
     static Logger log = Logging.getLoggerInstance(performance.class.getName());

@@ -21,7 +21,9 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * Check XML documents against their DTD's and be as pretty as possible about errors
  *
+ * @deprecated not used anywhere
  * @author Cees Roele
+ * @version $Id: XMLChecker.java,v 1.7 2004-10-01 08:41:10 pierre Exp $
  */
 public class XMLChecker {
 

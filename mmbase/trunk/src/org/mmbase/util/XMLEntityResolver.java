@@ -30,10 +30,12 @@ import org.xml.sax.SAXException;
 /**
  * Take the systemId and converts it into a local file, using the MMBase config path
  *
+ * @move org.mmbase.util.xml
+ * @rename EntityResolver
  * @todo remove manual Transactionhandler Public ID registration
  * @author Gerard van Enk
  * @author Michiel Meeuwissen
- * @version $Id: XMLEntityResolver.java,v 1.38 2004-05-06 12:34:31 keesj Exp $
+ * @version $Id: XMLEntityResolver.java,v 1.39 2004-10-01 08:41:11 pierre Exp $
  */
 public class XMLEntityResolver implements EntityResolver {
 
@@ -44,7 +46,6 @@ public class XMLEntityResolver implements EntityResolver {
     private static Map publicIDtoResource = new Hashtable();
     // This maps public id's to classes which are know to be able to parse this XML's.
     // The package of these XML's will also contain the resources with the DTD.
-
 
     /**
      * Container for dtd resources information

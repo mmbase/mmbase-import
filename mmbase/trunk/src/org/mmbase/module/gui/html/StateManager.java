@@ -23,37 +23,38 @@ import org.mmbase.module.builders.*;
  * It provides the states so a user can browse the SCAN editors and edit objects, letting the server remember the change history.
  * Changes to the state are made either by calling a replace ($MOD) command, or by processing parameters passed to a SCAN page.
  * State info (such as the current editnode number) can be retrieved using $MOD.
- * 
+ *
+ * @application SCAN
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.16 2003-07-04 14:38:46 pierre Exp $
+ * @version $Id: StateManager.java,v 1.17 2004-10-01 08:43:46 pierre Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
 
     // Logger
     private static Logger log = Logging.getLoggerInstance(StateManager.class.getName());
-    
+
     /**
      * Reference to the MMBase module.
-     */ 
+     */
     public MMBase mmBase;
 
     /**
      * Username to EditState mappings.
      * Each user has an editstate, stored in the statemanager.
      * @scope private
-     */ 
+     */
     Hashtable editStates; // HashTable with editstates indexed by usernames
 
     /**
      * Initialises the StateManager, by creating a new (empty) map of editstates.
      * @param mmBase reference to the MMBase module
-     */ 
+     */
     public StateManager(MMBase mmBase) {
         this.mmBase = mmBase;
-        editStates = new Hashtable();       
+        editStates = new Hashtable();
     }
 
     /**
@@ -66,7 +67,7 @@ public class StateManager implements CommandHandlerInterface {
     /**
      * Retrieves the EditState for a user, or creates a new one if the user did not yet have an EditState assigned.
      * The EditState contains status information for a specific user (which node is being edited, for instance).
-     * EditStates are associated by username. They are kept in memory as long as teh StateManager is. 
+     * EditStates are associated by username. They are kept in memory as long as teh StateManager is.
      * @param user the user for which to retrieve an EditState object
      * @return the EditState objevt associated with this user
      */
@@ -115,7 +116,7 @@ public class StateManager implements CommandHandlerInterface {
         // Depending on the system you use this can drastically slow down the editors.
         String userName=HttpAuth.getRemoteUser(sp);
         if (userName==null) return "StateManager-> not logged in";
-        
+
         // obtain an editstate for the user
         EditState state = getEditState(userName);
 
@@ -265,18 +266,18 @@ public class StateManager implements CommandHandlerInterface {
      * setSearchVals
      * @javadoc
      */
-    boolean setSearchValues(EditState ed, Hashtable vars) { 
+    boolean setSearchValues(EditState ed, Hashtable vars) {
         String varline;
         ed.clearSearchValues();
         for (Enumeration h=vars.keys();h.hasMoreElements();) {
-            varline=(String)h.nextElement();    
+            varline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(varline,"-\n\r");
-                String var=tok.nextToken(); 
-                if (var.equals("STATE")) var=tok.nextToken();   
+                String var=tok.nextToken();
+                if (var.equals("STATE")) var=tok.nextToken();
                 if (var.equals("SEARCHVALUE")) {
-                    String key=tok.nextToken(); 
-                    String keyval=(String)vars.get("STATE-SEARCHVALUE-"+key);   
-                    ed.setSearchValue(key,keyval);  
+                    String key=tok.nextToken();
+                    String keyval=(String)vars.get("STATE-SEARCHVALUE-"+key);
+                    ed.setSearchValue(key,keyval);
                 }
         }
         MMObjectBuilder bul=ed.getBuilder();
@@ -291,8 +292,8 @@ public class StateManager implements CommandHandlerInterface {
         String where="MMNODE ",key,val;
         String name=bul.getTableName();
             for (Enumeration h=skeys.keys();h.hasMoreElements();) {
-                key=(String)h.nextElement();    
-                val=(String)skeys.get(key); 
+                key=(String)h.nextElement();
+                val=(String)skeys.get(key);
                     if (val!=null && !val.equals("")) {
                     // val to lower for search
                     val=val.toLowerCase();
@@ -333,7 +334,7 @@ public class StateManager implements CommandHandlerInterface {
     }
 
     /**
-     * A field has been selected to edit and the EditState for the specific 
+     * A field has been selected to edit and the EditState for the specific
      * user is updated.
      * @deprecated-now removed per 1.7, does not do anything, and is never called
      */
@@ -341,10 +342,10 @@ public class StateManager implements CommandHandlerInterface {
     }
 
     /**
-     * a new relation has been initiated and the EditState for the specific 
+     * a new relation has been initiated and the EditState for the specific
      * user is updated.
      * @deprecated-now removed per 1.7, does not do anything, and is never called
-     */ 
+     */
     void initLink(String user, String objectType) {
     }
 
@@ -357,16 +358,16 @@ public class StateManager implements CommandHandlerInterface {
         String userName=HttpAuth.getRemoteUser(sp);
         EditState state = getEditState(userName);
         Vector result = new Vector();
-        
+
         if (command.hasMoreTokens()) {
             token = command.nextToken();
-            if (token.equals("GETOPENBUILDERS")) {  
-                return getOpenBuilders(state,args);     
+            if (token.equals("GETOPENBUILDERS")) {
+                return getOpenBuilders(state,args);
             }
         }
         result.addElement("No List command defined (FieldEditor)");
         return result;
-    }   
+    }
 
     /**
      * The hook that passes all form related pages to the correct handler
@@ -379,15 +380,15 @@ public class StateManager implements CommandHandlerInterface {
 
         String cmd,cmdline;
         for (Enumeration h=cmds.keys();h.hasMoreElements();) {
-            cmdline=(String)h.nextElement();    
+            cmdline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
             if (tok.hasMoreTokens()) {
                 cmd=tok.nextToken(); // read away dummy STATE-
-                cmd=tok.nextToken();    
+                cmd=tok.nextToken();
                 if (cmd.equals("SETSEARCHVALUES")) return setSearchValues(state,vars);
                 if (cmd.equals("REMOVENODE")) {
-                    String qw=(String)cmds.get("STATE-REMOVENODE"); 
-                    if (qw.equals("YES")) { 
+                    String qw=(String)cmds.get("STATE-REMOVENODE");
+                    if (qw.equals("YES")) {
                         // delete the relations to this node and
                         // the node itself
                         state.removeRelations();
@@ -395,18 +396,18 @@ public class StateManager implements CommandHandlerInterface {
                         state.setHtmlValue("Chooser","select");
                         state.setHtmlValue("Work","empty");
                     }
-                } else 
+                } else
                 if (cmd.equals("REMOVERELATION")) {
-                    String qw=(String)cmds.get("STATE-REMOVERELATION"); 
-                    if (qw.equals("YES")) { 
+                    String qw=(String)cmds.get("STATE-REMOVERELATION");
+                    if (qw.equals("YES")) {
                         state.removeNode();
                         state.popState();
                         state.setHtmlValue("Chooser","realFieldEdit");
                         state.setHtmlValue("Work","empty");
                     }
-                } else 
+                } else
                 if (cmd.equals("NEXTFIELD")) {
-                    String currentfield=(String)cmds.get("STATE-NEXTFIELD");    
+                    String currentfield=(String)cmds.get("STATE-NEXTFIELD");
                     state.setHtmlValue("Work","nextfield");
                     MMObjectBuilder bul=state.getBuilder();
                     FieldDefs ndefs=bul.getNextField(currentfield);
@@ -415,10 +416,10 @@ public class StateManager implements CommandHandlerInterface {
                     } else {
                         state.setHtmlValue("NEXTFIELD","empty.shtml");
                     }
-                } else 
+                } else
                 if (cmd.equals("SETHTMLVALUE")) {
                     String field=tok.nextToken();
-                    String value=(String)cmds.get("STATE-SETHTMLVALUE-"+field); 
+                    String value=(String)cmds.get("STATE-SETHTMLVALUE-"+field);
                     state.setHtmlValue(field,value);
                 }
             }
@@ -435,11 +436,11 @@ public class StateManager implements CommandHandlerInterface {
         EditStateNode node;
         MMObjectNode curnode=state.getEditNode(); // problem
         for (Enumeration h=nodes.elements();h.hasMoreElements();) {
-            node=(EditStateNode)h.nextElement();    
+            node=(EditStateNode)h.nextElement();
             results.addElement(node.getDutchBuilderName());
             if (curnode==node.getEditNode()) {
                 results.addElement("a");
-            } else { 
+            } else {
                 results.addElement("n");
             }
         }
@@ -449,7 +450,7 @@ public class StateManager implements CommandHandlerInterface {
 
     /**
      * Retrieves the EditState for a user, or creates a new one if the user did not yet have an EditState assigned.
-     * @deprecated-now removed per 1.7, use getEditState() instead.  
+     * @deprecated-now removed per 1.7, use getEditState() instead.
      * @param user the user for which to retrieve an EditState object
      * @return the EditState objevt associated with this user
      */
@@ -458,7 +459,7 @@ public class StateManager implements CommandHandlerInterface {
 
         result = (EditState)editStates.get(user);
         if (result == null) result = new EditState(user,mmBase);
-        
+
         return result;
     }
 
