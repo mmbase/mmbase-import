@@ -6,3 +6,4 @@
 <!ELEMENT default (#PCDATA)>
 <!ELEMENT urlcomposer (#PCDATA)>
 <!ATTLIST urlcomposer format  NMTOKEN #REQUIRED >
+<!ATTLIST urlcomposer protocol  NMTOKEN #IMPLIED >

@@ -27,7 +27,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.5 2003-02-05 11:41:25 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.6 2003-02-05 15:05:27 michiel Exp $
  */
 
 public class URLComposer  {
@@ -61,7 +61,18 @@ public class URLComposer  {
     } 
 
     /**
+     * Returns true. This can be overridden if the URLComposer not
+     * always can do it's job. It this returns false it is (can be?)
+     * taken from consideration.
+     */
+    
+    public boolean canCompose() {
+        return true;
+    }
+
+    /**
      * Extension will normally create URL's differently. They override this function.
+     *
      */
 
     protected StringBuffer getURLBuffer() {

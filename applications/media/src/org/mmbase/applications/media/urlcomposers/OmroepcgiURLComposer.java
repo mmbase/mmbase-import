@@ -21,12 +21,12 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: OmroepcgiURLComposer.java,v 1.1 2003-02-04 17:43:33 michiel Exp $
+ * @version $Id: OmroepcgiURLComposer.java,v 1.2 2003-02-05 15:05:27 michiel Exp $
  * @since MMBase-1.7
  */
 public class OmroepcgiURLComposer extends RamURLComposer {
     
-    private static Logger log = Logging.getLoggerInstance(OmroepcgiRAMURLComposer.class.getName());
+    private static Logger log = Logging.getLoggerInstance(OmroepcgiURLComposer.class.getName());
 
     public OmroepcgiURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
@@ -40,7 +40,11 @@ public class OmroepcgiURLComposer extends RamURLComposer {
         
         return format;
     }
-    
+
+    public boolean canCompose() {
+        return provider.getStringValue("host").equals("cgi.omroep.nl");
+    }
+
     private int removePrefix(String url, StringBuffer args) {
         int lastSlash = url.lastIndexOf('/');
         String existingPrefix = url.substring(lastSlash + 1, lastSlash + 4);
@@ -58,7 +62,6 @@ public class OmroepcgiURLComposer extends RamURLComposer {
         StringBuffer args = new StringBuffer(source.getStringValue("url"));
         
         if (rootpath.startsWith("/cgi-bin")) {
-            host = "cgi.omroep.nl";
             removePrefix(url, args);
         }
                       
