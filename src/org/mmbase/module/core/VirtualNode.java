@@ -73,7 +73,7 @@ public class VirtualNode extends MMObjectNode {
      * @return empty <code>Enumeration</code>
      */
     public Enumeration getRelations() {    
-        return new java.util.Vector().elements();
+        return new java.util.Vector(0).elements();
     }
 
     /**
