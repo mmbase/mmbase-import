@@ -3,7 +3,7 @@
 <mm:import externid="type" />
 <mm:import externid="scope">none</mm:import>
 <%-- agenda is only valid in the 'provider' scope --%>
-<!-- TODO use translate tag for use of more languages -->
+<%-- TODO use translate tag for use of more languages --%>
 <mm:compare referid="scope" value="provider">
   <mm:cloud loginpage="/login.jsp" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>

@@ -3,7 +3,7 @@
 <mm:import externid="type" />
 <mm:import externid="scope">none</mm:import>
 <%-- forum is only valid in the 'education' scope --%>
-<!-- TODO use translate tag for use of more languages -->
+<%-- TODO use translate tag for use of more languages --%>
 <mm:compare referid="scope" value="education">
   <mm:cloud loginpage="/login.jsp" jspvar="cloud">
   <%@include file="/shared/setImports.jsp" %>
