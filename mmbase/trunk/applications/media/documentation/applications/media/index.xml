@@ -5,7 +5,7 @@
     <articleinfo>
         <title>Media project documentation</title>
         <date>2002-12-17</date>
-        <edition>$Id: index.xml,v 1.5 2003-07-25 11:38:57 henk Exp $</edition>
+        <edition>$Id: index.xml,v 1.6 2003-09-08 15:02:18 vpro Exp $</edition>
         <authorgroup>
             <author>
                 <firstname>Michiel</firstname>
@@ -276,18 +276,6 @@
         </para>
         <para>
             If you have any questions/comments, regarding to the media project, please sent an email to media@mmbase.org.
-        </para>
-    </section>
-    <section id="Appendix A">
-        <title>Appendix A : Case VPRO</title>
-        <para>
-        This VPRO case will show the filters, url composers, and some templates used by the vpro
-        </para>
-    </section>
-    <section id="Appendix B">
-        <title>Appendix B : The Streaming Manager</title>
-        <para>
-
         </para>
     </section>
 </article>
