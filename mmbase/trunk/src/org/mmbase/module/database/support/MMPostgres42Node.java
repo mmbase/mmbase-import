@@ -1,13 +1,10 @@
 /*
-$Id: MMPostgres42Node.java,v 1.2 2000-03-20 15:40:03 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: MMPostgres42Node.java,v 1.3 2000-03-29 10:44:51 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/03/20 15:40:03  wwwtech
+davzev: Changed insert method, now insert will be done depending on DBState.
+
 */
 package org.mmbase.module.database.support;
 
@@ -28,7 +25,7 @@ import org.mmbase.util.*;
 *
 * @author Carlo E. Prelz
 * @version 6 Mar 2000
-* @$Revision: 1.2 $ $Date: 2000-03-20 15:40:03 $
+* @$Revision: 1.3 $ $Date: 2000-03-29 10:44:51 $
 */
 public class MMPostgres42Node implements MMJdbc2NodeInterface {
 
@@ -364,7 +361,7 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 			t.printStackTrace();
 		}
 		if(bul.sortedDBLayout!=null) {
-			/* $Id: MMPostgres42Node.java,v 1.2 2000-03-20 15:40:03 wwwtech Exp $
+			/* $Id: MMPostgres42Node.java,v 1.3 2000-03-29 10:44:51 wwwtech Exp $
 			// This was the original code, can be deleted.
 			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
 				if (tmp.equals("")) {
@@ -394,7 +391,7 @@ public class MMPostgres42Node implements MMJdbc2NodeInterface {
 				}
 			}	
 
-			/* $Id: MMPostgres42Node.java,v 1.2 2000-03-20 15:40:03 wwwtech Exp $
+			/* $Id: MMPostgres42Node.java,v 1.3 2000-03-29 10:44:51 wwwtech Exp $
 			// This was the original code, can be deleted.
 			try {
 				stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");

@@ -1,16 +1,10 @@
 /*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
-/*
-	$Id: FieldDef.java,v 1.3 2000-03-07 09:20:41 wwwtech Exp $
+	$Id: FieldDef.java,v 1.4 2000-03-29 10:46:33 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.3  2000/03/07 09:20:41  wwwtech
+	Rico: Changed fielddef to use a specific insert, this must be changed in future to support ORDMS, see typedef for hints how
+	
 	Revision 1.2  2000/02/25 12:52:15  wwwtech
 	Rico: removed the insert method.
 	
@@ -29,7 +23,7 @@ import org.mmbase.module.database.*;
  *
  *
  * @author Daniel Ockeloen
- * @version $Id: FieldDef.java,v 1.3 2000-03-07 09:20:41 wwwtech Exp $
+ * @version $Id: FieldDef.java,v 1.4 2000-03-29 10:46:33 wwwtech Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 

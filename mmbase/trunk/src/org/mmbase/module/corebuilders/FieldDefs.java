@@ -1,13 +1,10 @@
 /*
-$Id: FieldDefs.java,v 1.3 2000-03-20 14:23:27 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: FieldDefs.java,v 1.4 2000-03-29 10:46:34 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/20 14:23:27  wwwtech
+davzev: Added constant DBSTATE_SYSTEM=3
+
 Revision 1.2  2000/03/17 14:53:42  wwwtech
 davzev: Added DBSTATE constants
 
@@ -23,7 +20,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.3 $ $Date: 2000-03-20 14:23:27 $
+ * @$Revision: 1.4 $ $Date: 2000-03-29 10:46:34 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;

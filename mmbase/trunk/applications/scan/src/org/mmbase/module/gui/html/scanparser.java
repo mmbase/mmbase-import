@@ -1,13 +1,10 @@
 /*
-$Id: scanparser.java,v 1.8 2000-03-27 15:08:33 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: scanparser.java,v 1.9 2000-03-29 10:42:20 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/03/27 15:08:33  wwwtech
+Rico: removed references to PAGE / AREA
+
 Revision 1.7  2000/03/10 14:15:19  wwwtech
 Wilbert: Added  to retrieve number of parameters querystring in method do_param()
 
@@ -41,7 +38,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.8 $ $Date: 2000-03-27 15:08:33 $
+ * @$Revision: 1.9 $ $Date: 2000-03-29 10:42:20 $
  */
 public class scanparser extends ProcessorModule {
 

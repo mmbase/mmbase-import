@@ -1,17 +1,11 @@
-/*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
 
 /* 
-	$Id: HtmlBase.java,v 1.12 2000-03-29 10:07:49 wwwtech Exp $
+	$Id: HtmlBase.java,v 1.13 2000-03-29 10:42:19 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.12  2000/03/29 10:07:49  wwwtech
+	Wilbert Removed TSEARCH from getList
+	
 	Revision 1.11  2000/03/21 15:42:55  wwwtech
 	Wilbert changed use of teaser builder to use of typedef builder where possible to get nodes
 	
@@ -65,7 +59,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.12 2000-03-29 10:07:49 wwwtech Exp $
+ * @version $Id: HtmlBase.java,v 1.13 2000-03-29 10:42:19 wwwtech Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
