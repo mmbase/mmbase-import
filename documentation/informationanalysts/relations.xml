@@ -3,8 +3,8 @@
 <article>
   <articleinfo>
     <title>Relations in MMBase</title>
-    <date>16 april 2003</date>
-    <edition>$Id: relations.xml,v 1.2 2003-04-28 09:53:47 kees Exp $</edition>
+    <date>14 may 2003</date>
+    <edition>$Id: relations.xml,v 1.3 2003-05-14 12:56:57 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -25,42 +25,91 @@
   </articleinfo>
   <section>
     <title>Relations in MMBase</title>
-    <para>MMBase is an object oriented content management system. I.e. text, images and other content is stored in objects, objects are connected by relations, relations are objects themselves. The most basic relation is the relation that can be used to connect two objects, but the relation itself does not contain any content. This relation which does not contain any additional information is called &quot;related&quot;. Often it is not enough to make a relation between two objects. For instance, when adding news items to a magazine one also needs a way of telling in which sequence the newsitems should occure. In MMBase one can use the &quot;posrel&quot; relation for this purpose. The &quot;posrel&quot; not only connects two objects, but it also allows you to store an integer value in this relation. To this end you use the &quot;pos&quot; field of the relation. In general, you can create relations with whatever fields you need for your content model. For instance, when connecting employees to departments one can use a relation which contains an extra String field to store information on the function(s) an employee has in his/her department(s). The MyCompany example application contains the rolerel which does just that.</para>
-    <para>This document provides information on how to create and use relations. Relations are made in four steps:</para>
+    <para>
+      MMBase is an object oriented content management system. I.e. text, images and other content
+      are stored in objects, objects are connected by relations, relations are objects
+      themselves. The most basic relation is these relation that can be used to connect two objects,
+      but the relation itself does not contain any content. This relation which does not contain any
+      additional information is normally called &quot;related&quot;. Often it is not enough to make
+      a relation between two objects. For instance, when adding news items to a magazine one also
+      needs a way of telling in which sequence the newsitems should occure. In MMBase one can use
+      the &quot;posrel&quot; relation for this purpose. The &quot;posrel&quot; not only connects two
+      objects, but it also allows you to store an integer value in this relation. To this end you
+      use the &quot;pos&quot; field of the relation. In general, you can create relations with
+      whatever fields you need for your content model. For instance, when connecting employees to
+      departments one can use a relation which contains an extra String field to store information
+      on the function(s) an employee has in his/her department(s). The MyCompany example application
+      contains the rolerel which does just that.
+    </para>
+    <para>
+      This document provides information on how to create and use relations. Before you can actually
+      start creating relations between MMBase objects, you must assert that this relation can be understood by MMBase. 
+      This means that you must assert the following three things.
+    </para>
     <orderedlist>
       <listitem>
-        <para>Create a builder with the fields that are necessary in the relation</para>
+        <para>
+          Create an relation object type ('builder') with the fields that are necessary in the
+          relation. If a suitable object type already exist, then you can immediately go to the next
+          step.
+        </para>
       </listitem>
       <listitem>
-        <para>Add the relation to the list of relation definitions (reldef)</para>
+        <para>
+          Assign a `role' to the relation in the list of relation definitions (`reldef'). The same
+          builder could be assigned to more than one role. Normally the role 'related' exists and is
+          assigned to the base relation object type (`insrel'). The role 'posrel' is normally
+          assigned to a relation object type `posrel' which exteneds the base relation type insrel.
+        </para>
       </listitem>
       <listitem>
-        <para>Enter the source-relation-destination information into the list of relations types (typerel)</para>
-      </listitem>
-      <listitem>
-        <para>Create relations</para>
+        <para>
+          It must be defined wich source-type/role/destination-type combinations are allowed by
+          MMBase. You do this by entering`typrel' entries. You can define e.g. here that relations
+          from `news' to `people' with the role `author' is possible.          
+        </para>
       </listitem>
     </orderedlist>
-    <para>The following image provides a graphical representation of these steps. In the sections that follow the details of each step will be described.</para>
+    <para>
+      The following image provides a graphical representation of these steps. In the sections that
+      follow the details of each step will be described.</para>
     <screenshot>
       <graphic fileref="media/relations.png"/>
     </screenshot>
     <para>This document assumes that you are familiar with the following concepts:</para>
     <orderedlist>
       <listitem>
-        <para>objects and builders. If not, please read the &quot;Builder configuration file &quot; in the &quot;Administrators &quot; section.</para>
+        <para>
+          Objects and and object types (`builders'). If not, please read the &quot;Builder
+          configuration file &quot; in the &quot;Administrators &quot; section.
+        </para>
       </listitem>
       <listitem>
-        <para>applications. If not, please read the &quot;Application &quot; manual in the &quot;Administrators &quot; section.</para>
+        <para>
+          Applications. If not, please read the &quot;Application &quot; manual in the &quot;Administrators &quot; section.
+        </para>
       </listitem>
     </orderedlist>
   </section>
   <section>
-    <title>Create a builder with the fields that are necessary in the relation</title>
-    <para>Like normal objects, relations to are defined by builders. We will have a closer look at two standard builders used for constructing relations: insrel.xml and posrel.xml.</para>
+    <title>
+      Creating a relation object type with the fields that are necessary in the
+      relation
+    </title>
+    <para>
+      Like normal objects, relations are of a certain type (`are created by a certain builder'). We
+      will have a closer look at two standard object type definitions used for relations: insrel
+      (defined in insrel.xml) and posrel (defined in posrel.xml).
+    </para>
     <section>
-      <title>The insrel.xml builder.</title>
-      <para>The insrel.xml builder is used to store relations between source objects and destination objects. Have a look at the insrel.xml builder in /config/builders/core/. The insrel.xml builder differs from builder of regular objects in the following ways.</para>
+      <title>The base relation type (insrel)</title>
+      <para>
+        The insrel.xml builder definition defines the base type for relation objects. A relation
+        object connects to other objects witch each other. One of the other objects is named the
+        source and the other is the destination.  Have a look at the insrel.xml builder in
+        /config/builders/core/. The insrel.xml builder differs from builders of regular objects in
+        the following ways.
+      </para>
       <orderedlist>
         <listitem>
           <para>&lt;classfile&gt;org.mmbase.module.corebuilders.InsRel&lt;/classfile&gt;</para>
@@ -68,62 +117,108 @@
         </listitem>
         <listitem>
           <para>&lt;field&gt; snumber</para>
-          <para>Objectnumber of this relation's source object</para>
+          <para>Object number of this relation's source object</para>
         </listitem>
         <listitem>
           <para>&lt;field&gt;'dnumber</para>
-          <para>Objectnumber of this relation's destination object</para>
+          <para>Object number of this relation's destination object</para>
         </listitem>
         <listitem>
           <para>&lt;field&gt; rnumber</para>
-          <para>You can use a single builder to define a number of relations with different names as we will see in the next session. For each relation MMBase has to keep track on which builder the relation is based. The rnumber field contains the objectnumber of the builder which is used for this relation.</para>
+          <para>
+            Reference to the 'role' object of reldef (see next section).
+          </para>
+            <!--
+          <para>
+            You can use a single builder to define a number of relations with different names as we
+            will see in the next session. For each relation MMBase has to keep track on which
+            builder the relation is based. The rnumber field contains the objectnumber of the
+            builder which is used for this relation.
+          </para>
           <note>
-            <para>Each builder in MMBase has a unique objectnumber assigned to it. Use the MMeditors to view the objectnumbers of the builders in your MMBase installation by listing the objects of type &quot;typedef &quot;</para>
+            <para>
+              Since also a object type is an object in MMBase also the objechas a unique
+              objectnumber assigned to it. Use the MMeditors to view the objectnumbers of the
+              builders in your MMBase installation by listing the objects of type &quot;typedef
+              &quot;
+            </para>
           </note>
+          -->
         </listitem>
         <listitem>
           <para>&lt;field&gt; dir</para>
-          <para>Directionality of this relation, can be uni or bi-directional (0 or 1).</para>
+          <para>
+            Directionality of this relation, can be uni or bi-directional (0 or 1). This can
+            possibly override the same value which was associated with the role object, but is
+            mainly present here too, to make the SQL queries perform better (because no direct
+            connection to the reldef table is needed then).
+          </para>
         </listitem>
       </orderedlist>
     </section>
     <section>
       <title>The posrel.xml builder.</title>
-      <para>Have a look at the posrel.xml builder in the MyNews application. The posrel.xml builder extends the insrel.xml builder with the field 'pos'. When connecting two objects by using the posrel relations, you can use this pos field to store an integer value. The posrel relation also uses the Insrel class for some additional functionality.</para>
-      <para>By extending the insrel.xml builder with more and different field, you can construct whatever relation you like to use.</para>
+      <para>
+        Have a look at the posrel.xml builder in the MyNews application. The posrel.xml builder
+        extends the insrel.xml builder with the field 'pos'. When connecting two objects by using
+        the posrel relations, you can use this pos field to store an integer value. The posrel
+        relation also uses the Insrel class for some additional functionality.
+      </para>
+      <para>
+        By extending the insrel.xml builder with more and different field, you can construct
+        whatever relation you like to use.
+      </para>
     </section>
   </section>
   <section>
-    <title>Add the relation to the list of relation definitions (reldef)</title>
-    <para>In the previous section we saw what a builder for a relation looks like. You can use these builders to create relations. To this end you define a relation as an object of type reldef. In the reldef you have to set the following fields.</para>
+    <title>Assign a role to the in the list of relation definitions (reldef)</title>
+    <para>
+      In the previous section we saw what a builder for a relation looks like. You can use these
+      builders to create relations. Every relation instance also has a certain role. The existing
+      roles are defined in the 'reldef' table.  In this reldef object type you have to set the
+      following fields.
+    </para>
     <orderedlist>
       <listitem>
-        <para>source</para>
-        <para>the name of the relation as seen from the target object</para>
+        <para>role (sname)</para>
+        <para>the role which is assigned</para>
       </listitem>
       <listitem>
-        <para>target</para>
-        <para>the name of the relation as seen from the source object</para>
+        <para>target-role (dname)</para>
+        <para>
+          The role as seen from the destination node. This can be used in combination with the role,
+          to further specify it.
+        </para>
       </listitem>
       <listitem>
         <para>dir</para>
-        <para>whether the relation is visible both from the source and the target (bidirectional) or the relation is only visible from the source (unidirectional)</para>
+        <para>
+          Wether the relation is visible both from the source and the target (bidirectional) or the
+          relation is only visible from the source (unidirectional)
+        </para>
       </listitem>
       <listitem>
         <para>sguiname</para>
-        <para>an alternative name of the relation as seen from the target, which is used in the mmeditors</para>
+        <para>
+          The name of the source node in this role. This can be used in editors.
+        </para>
       </listitem>
       <listitem>
         <para>dguiname</para>
-        <para>an alternative name of the relation as seen from the source, which is used in the mmeditors</para>
+        <para>
+          The name of the destination node in this role. This can be used in editors.
+        </para>
       </listitem>
       <listitem>
         <para>builder</para>
-        <para>the builder which defines the data and functionality stored in the relation</para>
+        <para>
+          The builder which defines the data to store the relation, and optionally adds some
+          specific functionality to it (by the java class).
+        </para>
       </listitem>
     </orderedlist>
     <example>
-      <title>Definition of relations (reldef)</title>
+      <title>Roles (reldef)</title>
       <screenshot>
         <graphic fileref="media/reldef.jpg"/>
       </screenshot>
