@@ -537,6 +537,10 @@ Mijn gegevens:
           <td>Telefoonnummer:</td>
           <td><mm:field name="telephone"/></td>
         </tr>
+        <tr>
+          <td style="vertical-align: top">Opmerkingen:</td>
+          <td><mm:field name="remarks" escape="p"/></td>
+        </tr>
       </table>
     <td>
       <mm:node number="$myuser">
@@ -576,9 +580,9 @@ Mijn gegevens:
     <td>
       <table class="Font">
         <mm:node number="$user">
-          <mm:fieldlist fields="initials,firstname,lastname,address,zipcode,city,telephone">
+          <mm:fieldlist fields="initials,firstname,lastname,address,zipcode,city,telephone,remarks">
             <tr>
-              <td><mm:fieldinfo type="guiname"/></td>
+              <td style="vertical-align: top"><mm:fieldinfo type="guiname"/></td>
               <td><mm:fieldinfo type="input"/></td>
             </tr>
           </mm:fieldlist>

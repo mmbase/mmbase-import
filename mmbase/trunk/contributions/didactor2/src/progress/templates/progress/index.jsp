@@ -47,7 +47,6 @@
 <mm:node number="$education">
 <b><mm:field name="name" write="true"/></b>
 <table class="font">
-
 <% List tests = new ArrayList(); %>
 <mm:relatednodescontainer type="learnobjects" role="posrel">
     <mm:sortorder field="posrel.pos" direction="up"/>
@@ -60,14 +59,7 @@
      </mm:compare>
     </mm:tree>
 </mm:relatednodescontainer>
-<% int testCounter = 0;
-   int startAt = 0;
-   Iterator testIterator = tests.iterator();
-   while (testIterator.hasNext()) {
-       String testNum = (String) testIterator.next();
-        if (testCounter  % 20 == 0) { 
-            startAt = testCounter;
-            %>
+<mm:import id="startAt" externid="startAt" jspvar="sStartAt" vartype="Integer">0</mm:import>
 <tr>
 <th></th>
     <mm:node number="progresstextbackground">
@@ -80,9 +72,21 @@
       <th>
         <img src="<mm:image template="font(mm:fonts/didactor.ttf)+fill(000000)+pointsize(10)+gravity(NorthEast)+text(0,5,'Tijd ingelogd')+rotate(90)"/>">
     </th>
-    </mm:node>    
-<%
-        }
+    </mm:node>
+<% int testCounter = 0;
+   int startAt = sStartAt.intValue();
+   boolean showPrevLink = false;
+   if (startAt > 0) {
+       showPrevLink = true;
+   }
+   boolean showNextLink = false;
+   Iterator testIterator = tests.iterator();
+   while (testIterator.hasNext()) {
+       if ( testCounter++ > startAt + 20) {
+           showNextLink = true;
+           break;
+       }
+       String testNum = (String) testIterator.next();
         %>
        <mm:node number="<%= testNum %>">
         <mm:field name="name" jspvar="name" vartype="String">
@@ -92,10 +96,8 @@
          <mm:node number="progresstextbackground">
          <th><img src="<mm:image template="$template"/>"></th>
          </mm:node>
-        </mm:node>
-     <% if (  ++testCounter  % 20 == 0 || !testIterator.hasNext()) { %>
-         </tr>
-        <mm:import id="startAt" reset="true"><%= startAt %></mm:import>
+    </mm:node>
+<% } %>
    <mm:node referid="class">
         <mm:relatednodes type="people">
             <mm:import id="studentnumber" reset="true"><mm:field name="number"/></mm:import>
@@ -106,14 +108,18 @@
             </di:hasrole>
         </mm:relatednodes>
     </mm:node>
-<%
-        }
-    
-  }
-%>
+
 </table>
-
-
+<% if (showNextLink) { %>
+<span style="float: right"><a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="startAt"><%= startAt + 20 %></mm:param>
+</mm:treefile>">Volgende 20</a></span>
+<% }
+   if (showPrevLink) { %>
+<a href="<mm:treefile  page="/progress/index.jsp" objectlist="$includePath" referids="$referids">
+    <mm:param name="startAt"><%= startAt - 20 %></mm:param>
+</mm:treefile>">Vorige 20</a>
+<% } %>
  </div>
 </div>
 </mm:node>

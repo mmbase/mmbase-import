@@ -5,6 +5,8 @@
 <mm:cloud loginpage="/login.jsp" jspvar="cloud">
 	<%@include file="/shared/setImports.jsp" %>
         
+    <mm:import id="scope" externid="scope"/>
+    <mm:compare referid="scope" value="provider">
 	<mm:import id="roleId" jspvar="roleId" />
 	<mm:remove referid="roleId" />
 
@@ -63,6 +65,6 @@
       </mm:compare> --%>
     </di:hasrole>
 
-
+    </mm:compare>
 </mm:cloud>
 </mm:content>
