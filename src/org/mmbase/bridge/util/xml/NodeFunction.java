@@ -46,7 +46,7 @@ import org.apache.xpath.XPathAPI;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.1 2002-04-02 13:34:25 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.2 2002-04-02 17:08:07 michiel Exp $
  * @since   MMBase-1.6
  */
 public  class NodeFunction {
@@ -69,9 +69,13 @@ public  class NodeFunction {
      */
     public static String function(String cloudName, String number, String function) {
         log.debug("calling base");
-        Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);        
-        Node node = cloud.getNode(number);
-        return node.getStringValue(function);
+        try {
+            Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);        
+            Node node = cloud.getNode(number);            
+            return node.getStringValue(function);
+        } catch (BridgeException e) {
+            return "could not execute " + function + " on node " + number + "(" + e.toString() + ")";
+        }
     }
     /**
      * It can be handy to supply a whole node, it will search for the field 'number' itself.
