@@ -23,7 +23,7 @@ import java.util.*;
  *
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TreeList.java,v 1.7 2004-02-26 22:09:28 michiel Exp $
+ * @version $Id: TreeList.java,v 1.8 2004-06-17 11:35:50 johannes Exp $
  * @since   MMBase-1.7
  */
 
@@ -89,13 +89,6 @@ public class TreeList extends AbstractSequentialBridgeList implements NodeList {
         RelationStep step = newQuery.addRelationStep(nodeManager, role, searchDir);
         Step nextStep = step.getNext();
 
-        // make sure it is uniquely sorted (this should happen later, I think)
-        {
-            StepField sf1 = newQuery.createStepField(step, "number");
-            newQuery.addSortOrder(sf1, SortOrder.ORDER_DESCENDING);
-            StepField sf2 = newQuery.createStepField(nextStep, "number");
-            newQuery.addSortOrder(sf2, SortOrder.ORDER_DESCENDING);
-        }
 
         // make sure every step has a unique alias
         newQuery.setAlias(step, step.getTableName() + (numberOfSteps - 1));

@@ -22,6 +22,7 @@ import org.mmbase.bridge.jsp.taglib.util.*;
 import org.mmbase.bridge.jsp.taglib.debug.TimerTag;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
+import org.mmbase.storage.search.SortOrder;
 
 import org.mmbase.util.logging.*;
 
@@ -47,7 +48,7 @@ import org.mmbase.util.logging.*;
 </pre>
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeTag.java,v 1.6 2004-03-24 00:59:02 michiel Exp $
+ * @version $Id: TreeTag.java,v 1.7 2004-06-17 11:35:50 johannes Exp $
  */
 public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, QueryContainerReferrer  {
     private static final Logger log = Logging.getLoggerInstance(TreeTag.class);
@@ -77,6 +78,8 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     protected Attribute role        = Attribute.NULL;
     protected Attribute searchDir   = Attribute.NULL;
     protected Attribute maxDepth    = Attribute.NULL;
+    protected Attribute orderField  = Attribute.NULL;
+    protected Attribute orderDirection = Attribute.NULL;
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -95,6 +98,32 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
     public void setMaxdepth(String md) throws JspTagException {
         maxDepth = getAttribute(md);
     }
+    public void setOrderby(String md) throws JspTagException {
+        orderField = getAttribute(md);
+    }
+    public void setDirection(String md) throws JspTagException {
+        orderDirection = getAttribute(md);
+    }
+
+    private int getDirection() throws JspTagException {
+        String dir = orderDirection.getString(this).toUpperCase();
+        int order = 0;
+        if (dir.equals("")) {
+            order = SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("UP")) {
+            order = SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("DOWN")) {
+            order = SortOrder.ORDER_DESCENDING;
+        } else if (dir.equals("ASCENDING")) {
+            order = SortOrder.ORDER_ASCENDING;
+        } else if (dir.equals("DESCENDING")) {
+            order = SortOrder.ORDER_DESCENDING;
+        } else {
+            throw new JspTagException("Unknown sort-order '" + dir + "'");
+        }
+        return order;
+    }
+
 
     public Stack getShrinkStack() {
         return shrinkStack;
@@ -160,13 +189,13 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
                 throw new JspTagException("Context variable " + getReferid() + " is not a TreeList");
             }
             if (nodeManager != Attribute.NULL) {
-                throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
+                throw new JspTagException("'type' attribute does not make sense with 'referid' attribute");
             }
             if (role != Attribute.NULL) {
-                throw new JspTagException("'offset' attribute does not make sense with 'referid' attribute");
+                throw new JspTagException("'role' attribute does not make sense with 'referid' attribute");
             }
             if (searchDir!= Attribute.NULL) {
-                throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
+                throw new JspTagException("'searchdir' attribute does not make sense with 'referid' attribute");
             }
 
             if (getReferid().equals(getId())) { // in such a case, don't whine
@@ -177,7 +206,14 @@ public class TreeTag extends AbstractNodeProviderTag implements TreeProvider, Qu
             NodeQueryContainer c = (NodeQueryContainer) findParentTag(NodeQueryContainer.class, (String) container.getValue(this), false);
             if (c == null) throw new JspTagException("Could not find surrounding NodeQuery");
             NodeQuery query = c.getNodeQuery();
-            tree = new GrowingTreeList(query, new GrowingTreeList.PathElement(getCloud().getNodeManager(nodeManager.getString(this)), role.getString(this), searchDir.getString(this)), maxDepth.getInt(this, 5));
+            tree = new GrowingTreeList(query, 
+                new GrowingTreeList.PathElement(
+                        getCloud().getNodeManager(nodeManager.getString(this)), 
+                        role.getString(this), 
+                        searchDir.getString(this),
+                        orderField.getString(this),
+                        getDirection()),
+                maxDepth.getInt(this, 5));
 
         }
         iterator = tree.treeIterator();
