@@ -10,41 +10,31 @@
     <action type="load">
         <relation destination="learnobjects" role="posrel" />
         <relation destination="mmevents" role="related" />
-        <relation destination="metadata" role="related">
-          <object type="metadata">
-           <relation destination="metalangstring" role="posrel">
-              <object type="metalangstring">
-                <field name="number"/>
-                <field name="language"/>
-                <field name="value"/>
-              </object>
-            </relation>
-           <relation destination="metadate" role="posrel">
-              <object type="metadate">
-                <field name="number"/>
-                <field name="value"/>
-              </object>
-            </relation>
-           <relation destination="metavocabulary" role="posrel">
-              <object type="metavocabulary">
-                <field name="number"/>
-                <field name="value"/>
-              </object>
-            </relation>
-            <relation destination="metadefinition" role="related">
-              <object type="metadefinition">
-                <relation destination="metavocabulary" role="related"/>
-              </object>
-            </relation>
-            </object>
+        <relation destination="competencies" role="needcomp" />
+        <relation destination="competencies" role="developcomp" />
+        <relation destination="preassessments" role="related" />
+        <relation destination="postassessments" role="related" />
+        <relation destination="paragraphs" role="posrel">
+           <object>
+              <relation destination="attachments" role="posrel" />
+              <relation destination="images" role="pos2rel" />
+           </object>
         </relation>
     </action>
 
     <action type="delete" />
 
+    <lists>
+       <optionlist include="paragraphs/images_position.xml" />
+       <optionlist include="paragraphs/boolean.xml" />
+    </lists>
+
+
     <steps>
         <step form-schema="step1" />
-        <!-- step form-schema="step2" / -->
+        <step form-schema="step2" />
+        <step form-schema="step3" />
+        <step form-schema="step4" />
     </steps>
 
     <form-schema id="step1">
@@ -65,9 +55,9 @@
            them since they don't have the 'learnobject' type; it generates:
              <list destination="learnobjects" fdatapath="relation[@role='posrel' and object/@type='learnobjects']" ...
 
-           Workaround: use fdatapath. 
+           Workaround: use fdatapath.
              fortunately the only posrel we have is to learnobjects, so this is a bit of an ugly hack
-        
+
            Note: the 'wizard.xsl' file depends on the title being "Bijbehorende leerobjecten" in order to
            select the correct JSP for finding learnobjects. DO NOT CHANGE THIS TITLE!
         -->
@@ -78,7 +68,7 @@
                     <prompt>Naam</prompt>
                     <description>Naam van het leerobject</description>
                 </field>
-            	<field fdatapath="field[@name='pos']" ftype="data">
+               <field fdatapath="field[@name='pos']" ftype="data">
                   <prompt>Positie</prompt>
                   <description>Positie van het leerobject in de lijst</description>
                 </field>
@@ -91,7 +81,7 @@
             </action>
 
             <command name="startwizard" inline="true" wizardname="learnblocks" objectnumber="new">
-              <prompt>Nieuw leerblok 
+              <prompt>Nieuw leerblok
               </prompt>
             </command>
 
@@ -106,7 +96,7 @@
             <command name="startwizard" inline="true" wizardname="tests" objectnumber="new">
               <prompt>Nieuwe toets</prompt>
             </command>
-            <command name="search" nodepath="learnobjects" fields="name" age="7" orderby="number" directions="down" >
+            <command name="search" nodepath="learnobjects" fields="name" age="-1" orderby="number" directions="down" >
                 <prompt>Zoeken naar leerobjecten</prompt>
                 <search-filter>
                     <name>Naam bevat</name>
@@ -118,79 +108,56 @@
 
         <!-- we need a new list because there can be only one search command per list -->
         <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
-            <title>Zoeken op tekenreeks</title>
+            <title>Zoeken op metadata</title>
             <item displaytype="none"></item>
- 
+
             <action type="create">
                 <relation role="posrel" destinationtype="learnobjects">
                   <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
                 </relation>
             </action>
+             <command name="search" nodepath="metadata,learnobjects" fields="learnobjects.name,metadata.value" age="-1" orderby="learnobjects.number" directions="down" >
 
-
-             <command name="search" nodepath="metalangstring,metadata,learnobjects" fields="learnobjects.name,metalangstring.value" age="7" orderby="learnobjects.number" directions="down" >
                 <prompt>Zoeken naar leerobjecten op metadata</prompt>
                 <search-filter>
-                    <name>Metadata tekenreeks bevat</name>
-                    <search-fields>metalangstring.value</search-fields>
-                </search-filter>
-           </command>           
-        </list>
-
-        <!-- we need a new list because there can be only one search command per list -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
-            <title>Zoeken op vocabulair</title>
-            <item displaytype="none"></item>
- 
-            <action type="create">
-                <relation role="posrel" destinationtype="learnobjects">
-                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-                </relation>
-            </action>
-
-
-             <command name="search" nodepath="metavocabulary,metadata,learnobjects" fields="learnobjects.name,metavocabulary.value" age="7" orderby="learnobjects.number" directions="down" >
-                <prompt>Zoeken naar leerobjecten op metadata</prompt>
-                <search-filter>
-                    <name>Metadata vocabulair bevat</name>
-                    <search-fields>metavocabulary.value</search-fields>
+                    <name>Metadata</name>
+                    <search-fields>metadata.value</search-fields>
                 </search-filter>
            </command>
-           
         </list>
 
-        <!-- we need a new list because there can be only one search command per list -->
-        <list minoccurs="0" maxoccurs="*" ordertype="number" orderby="field[@name='pos']" fdatapath="relation[@role='posrel']">
-            <title>Zoeken op datum (YYYY-MM-DD HH:MM:SS)</title>
-            <item displaytype="none"></item>
- 
-            <action type="create">
-                <relation role="posrel" destinationtype="learnobjects">
-                  <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-                </relation>
-            </action>
-
-
-             <command name="search" nodepath="metadate,metadata,learnobjects" fields="learnobjects.name,metadate.value" age="7" orderby="learnobjects.number" directions="down" >
-                <prompt>Zoeken naar leerobjecten op metadata</prompt>
-                <search-filter>
-                    <name>Metadata datum bevat</name>
-                    <search-fields>FROM_UNIXTIME(metadate.value)</search-fields>
-                </search-filter>
-           </command>
-           
-        </list>
 
 
 
         <list role="related" extends="list/online.xml" />
     </form-schema>
 
+
     <form-schema id="step2">
-        <title>Metadata invoeren</title>
-        <list extends="list/metadatalangstring.xml"/>
-        <list extends="list/metadatadate.xml"/>
-        <list extends="list/metadatavocabulary.xml"/>
+        <title>Alineas invoeren</title>
+        <field name="name" ftype="data"/>
+        <field name="showtitle" ftype="enum">
+           <prompt xml:lang="nl">Titel laten zien</prompt>
+           <prompt xml:lang="en">Show title</prompt>
+           <optionlist select="boolean"></optionlist>
+        </field>
+        <list extends="paragraphs/add_paragraphs_posrel.xml"/>
+    </form-schema>
+
+
+    <form-schema id="step3">
+        <title>Competenties invoeren</title>
+        <field name="name" ftype="data"/>
+        <list extends="list/needcompetencies.xml"/>
+        <list extends="list/developcompetencies.xml"/>
+    </form-schema>
+
+
+    <form-schema id="step4">
+        <title>Assessments invoeren</title>
+        <field name="name" ftype="data"/>
+        <list extends="list/preassessments.xml"/>
+        <list extends="list/postassessments.xml"/>
     </form-schema>
 
 </wizard-schema>
