@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  *
  * @rename Scanparser
   * @author Daniel Ockeloen
- * @$Revision: 1.53 $ $Date: 2001-12-21 15:26:40 $
+ * @$Revision: 1.54 $ $Date: 2002-01-07 13:27:20 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -728,7 +728,13 @@ public class scanparser extends ProcessorModule {
 		 * Parse it and put it in the cache.
 		 */
 		try	{
-			result = handle_line(part.substring(end + 1),session,sp);
+			// Parse everything before the cache henk tag
+			result = "";
+			if (start>11) {
+				result = handle_line(part.substring(0,start-11),session,sp);
+			}
+			// Parse everything after the cache henk tag
+			result += handle_line(part.substring(end + 1),session,sp);
 		} catch (Exception e) {
 			String errorMsg = "Error in part "+filename;
 			errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
@@ -2110,9 +2116,12 @@ public class scanparser extends ProcessorModule {
     }
 }
 /*
-$Id: scanparser.java,v 1.53 2001-12-21 15:26:40 vpro Exp $
+$Id: scanparser.java,v 1.54 2002-01-07 13:27:20 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.53  2001/12/21 15:26:40  vpro
+davzev: Fixed bug in method handlePartCache, that handles the caching of a part.
+
 Revision 1.52  2001/12/14 09:33:23  pierre
 pierre: Cleaning project:
 added @javadoc and @rename tags, and License statement where needed
