@@ -16,13 +16,11 @@
     <singular xml:lang="nl">DagMarkeerder</singular>
     <singular xml:lang="fr">RepèreDeJour</singular>
     <singular xml:lang="en">DayMarker</singular>
-    <singular xml:lang="us">DayMarker</singular>
     <singular xml:lang="eo">Tagmarkilo</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="fr">RepèresDeJour</plural>
     <plural xml:lang="nl">DagMarkeerders</plural>
     <plural xml:lang="en">DayMarkers</plural>
-    <plural xml:lang="us">DayMarkers</plural>
     <plural xml:lang="eo">Tagmarkiloj</plural>
   </names>
 
@@ -34,7 +32,6 @@
     <description xml:lang="fr">L'objet de Daycount sont employer à pour savoir l'age d'un objet</description>
     <description xml:lang="nl">DagTeller houd de leeftijd van objecten bij</description>
     <description xml:lang="en">Daycount object used to keep track of ages of objects</description>
-    <description xml:lang="us">Daycount object used to keep track of ages of objects</description>
     <description xml:lang="eo">Per tagmarkilo eblas trovi la aĝon de objekto</description>
   </descriptions>
 
@@ -58,7 +55,6 @@
         <guiname xml:lang="fr">RepèreDeJour</guiname>
         <guiname xml:lang="nl">DagMarker</guiname>
         <guiname xml:lang="en">DayMarker</guiname>
-        <guiname xml:lang="us">DayMarker</guiname>
         <guiname xml:lang="eo">Tagnombro</guiname>
         <guitype>integer</guitype>
       </gui>
@@ -89,7 +85,6 @@
         <guiname xml:lang="fr">Repère</guiname>
         <guiname xml:lang="nl">Mark</guiname>
         <guiname xml:lang="en">Mark</guiname>
-        <guiname xml:lang="us">Mark</guiname>
         <guiname xml:lang="eo">Marko</guiname>
         <guitype>integer</guitype>
       </gui>

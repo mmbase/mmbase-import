@@ -6,15 +6,11 @@
   <searchage>14</searchage>
 
   <names>
-	 <!-- singles per language  as defined by RFC xxx -->
-	 <singular xml:lang="us">Cached image</singular>
 	 <singular xml:lang="en">Cached image</singular>
 	 <singular xml:lang="nl">Gecached plaatje</singular>
 	 <singular xml:lang="fr">Image Antémémoire</singular>
 	 <singular xml:lang="eo">Kaŝmemorita Bildo</singular>
 
-	 <!-- multiple per language  as defined by RFC xxx -->
-	 <plural xml:lang="us">Cached images</plural>
 	 <plural xml:lang="en">Cached images</plural>
 	 <plural xml:lang="nl">Gecachte plaatjes</plural>
 	 <plural xml:lang="fr">Images antémémoire</plural>
@@ -26,7 +22,6 @@
   -->
   <descriptions>
 	 <!-- descriptions per language  as defined by RFC xxx -->
-	 <description xml:lang="us">Caching table for rendered images</description>
 	 <description xml:lang="en">Caching table for rendered images</description>
 	 <description xml:lang="nl">Caching tabel voor bewerkte plaatjes</description>
 	 <description xml:lang="us">Cachant la table pour rendues des images</description>
@@ -43,7 +38,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">Ckey</guiname>
 		  <guiname xml:lang="en">Ckey</guiname>
 		  <guiname xml:lang="nl">Ckey</guiname>
 		  <guiname xml:lang="fr">Ckey</guiname>
@@ -74,7 +68,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">ID</guiname>
 		  <guiname xml:lang="en">ID</guiname>
 		  <guiname xml:lang="nl">ID</guiname>
 		  <guiname xml:lang="fr">ID</guiname>
@@ -105,7 +98,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">Image</guiname>
 		  <guiname xml:lang="en">Image</guiname>
 		  <guiname xml:lang="nl">Plaatje</guiname>
 		  <guiname xml:lang="fr">Image</guiname>
@@ -136,7 +128,6 @@
 	 <field>
 		<!-- gui related -->
 		<gui>
-		  <guiname xml:lang="us">Size</guiname>
 		  <guiname xml:lang="en">Size</guiname>
 		  <guiname xml:lang="nl">Grootte</guiname>
 		  <guiname xml:lang="fr">Taille</guiname>
