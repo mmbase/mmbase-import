@@ -12,6 +12,7 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import java.sql.*;
 import org.mmbase.util.*;
+import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.database.*;
@@ -41,17 +42,28 @@ public class InsRel extends MMObjectBuilder {
      */
     public static boolean usesdir = true;
 
-    public String classname = getClass().getName();
-
     /**
      * Hold the relnumber to use when creating a node of this builder.
      */
     public int relnumber=-1;
 
-    /** Cache system, holds the relations from the 25
+    /** 
+     *  Cache system, holds the relations from the 25
      *  most used relations
      */
-    private LRUHashtable relatedCache=new LRUHashtable(25);
+
+    private Cache relatedCache = new Cache(25) {  
+        public String getName()        { return "RelatedCache"; }
+        public String getDescription() { return "Cache for Related Nodes"; }
+        };
+
+
+    /* perhaps this would be nice?
+    private Cache relationsCache = new Cache(25) {  
+        public String getName()        { return "RelationsCache"; }
+        public String getDescription() { return "Cache for Relations"; }
+        };
+    */
 
     /**
      * Logger routine
@@ -59,9 +71,11 @@ public class InsRel extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(InsRel.class.getName());
 
     /**
-     * empty constructor needed for autoload
+     * needed for autoload
      */
     public InsRel() {
+        relatedCache.putCache();
+        // relationsCache.putCache();
     }
 
     /**
