@@ -240,28 +240,30 @@ public class ContextAuthorization extends Authorization {
 	    	log.error("error executing query: '"+defaultNodeXPath+"' on file: '"+configFile+"'" );
 	    	log.error( Logging.stackTrace(te));
 	    	throw new java.lang.SecurityException("error executing query: '"+defaultNodeXPath+"' on file: '"+configFile+"'");
-	    }	    
-	    NamedNodeMap nnm = foundDefaultNode.getAttributes();
-	    Node defaultContextNode = nnm.getNamedItem("default");
-	    String defaultContext = defaultContextNode.getNodeValue();
-            if (log.isDebugEnabled()) {
-            	log.debug("context with name: " + context + " uses the default context: " + defaultContext);	
+	    }
+            if (foundDefaultNode != null) {
+                NamedNodeMap nnm = foundDefaultNode.getAttributes();
+                Node defaultContextNode = nnm.getNamedItem("default");
+                String defaultContext = defaultContextNode.getNodeValue();
+                if (log.isDebugEnabled()) {
+                    log.debug("context with name: " + context + " uses the default context: " + defaultContext);
+                }
+                // now do the same query with the default context...
+                xpath = "/config/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/contains";
+                try {
+                    log.debug("gonna execute the query:" + xpath );	
+                    found = XPathAPI.selectNodeList(document, xpath);
+                }
+                catch(javax.xml.transform.TransformerException te) {
+                    log.error("error executing query: '"+xpath+"' ");
+                    log.error( Logging.stackTrace(te));
+                    throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
+                }
+                // add it to the plave thing, so that it can be used within the getPossibleUserContexes..
+                synchronized(replaceNotFound) {
+                    replaceNotFound.put(context, defaultContext);
+                }
             }
-	    // now do the same query with the default context...
-    	    xpath = "/config/contexts/context[@name='"+defaultContext+"']/operation[@type='"+operation+"']/contains";
-	    try {
-    	    	log.debug("gonna execute the query:" + xpath );	
-	    	found = XPathAPI.selectNodeList(document, xpath);
-	    }
-	    catch(javax.xml.transform.TransformerException te) {
-	    	log.error("error executing query: '"+xpath+"' ");
-	    	log.error( Logging.stackTrace(te));
-	    	throw new java.lang.SecurityException("error executing query: '"+xpath+"' ");
-	    }
-	    // add it to the plave thing, so that it can be used within the getPossibleUserContexes..
-	    synchronized(replaceNotFound) {
-	    	replaceNotFound.put(context, defaultContext);
-	    }
     	}
 	
     	HashSet allowedGroups = new HashSet();	    	
