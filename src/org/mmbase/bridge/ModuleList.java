@@ -10,33 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A list of modules
  *
  * @author Pierre van Rooden
  */
-public interface ModuleList {
+public interface ModuleList extends List {
 
 	/**
 	*
 	*/
-	public Module get(int index);
+	public Module getModule(int index);
 
 	/**
 	*
 	*/
-	public boolean isEmpty();
-	
-	/**
-	*
-	*/
-//	public ModuleIterator iterator();
+	public ModuleIterator moduleIterator();
 
-	/**
-	*
-	*/
-    public int size();
-		
 }

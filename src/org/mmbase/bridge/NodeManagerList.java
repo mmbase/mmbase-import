@@ -10,33 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A list of node managers
  *
  * @author Pierre van Rooden
  */
-public interface NodeManagerList {
+public interface NodeManagerList extends List {
 
 	/**
 	*
 	*/
-	public NodeManager get(int index);
+	public NodeManager getNodeManager(int index);
 
 	/**
 	*
 	*/
-	public boolean isEmpty();
-	
-	/**
-	*
-	*/
-//	public NodeManagerIterator iterator();
+	public NodeManagerIterator nodeManagerIterator();
 
-	/**
-	*
-	*/
-    public int size();
-		
 }

@@ -10,33 +10,23 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A list of clouds
  *
  * @author Pierre van Rooden
  */
-public interface CloudList {
+public interface CloudList extends List {
 
 	/**
 	*
 	*/
-	public Cloud get(int index);
+	public Cloud getCloud(int index);
 
 	/**
 	*
 	*/
-	public boolean isEmpty();
-	
-	/**
-	*
-	*/
-//	public CloudIterator iterator();
-
-	/**
-	*
-	*/
-    public int size();
+	public CloudIterator cloudIterator();
 		
 }

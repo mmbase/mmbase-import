@@ -21,8 +21,8 @@ import java.util.NoSuchElementException;
  */
 public class BasicNodeList extends BasicList implements NodeList {
 
-    private Cloud cloud;
-    NodeManager nodemanager=null;
+    protected Cloud cloud;
+    protected NodeManager nodemanager=null;
 
     /**
     * ...
@@ -40,7 +40,7 @@ public class BasicNodeList extends BasicList implements NodeList {
     /**
 	*
 	*/
-	public Node get(int index) {
+	public Object get(int index) {
     	Object o=getObject(index);
     	if (o instanceof Node) {
     	    return (Node)o;
@@ -55,37 +55,34 @@ public class BasicNodeList extends BasicList implements NodeList {
         return n;
 	}
 
-	public NodeList subList(int from, int max) {
-	    return new BasicNodeList(getObjects(from,max),cloud,nodemanager);
-	};
-	
+    /**
+	*
+	*/
+	public Node getNode(int index) {
+	    return (Node)get(index);
+	}
+
+    /**
+	*
+	*/
+	public NodeList subNodeList(int fromIndex, int toIndex) {
+	    return new BasicNodeList(subList(fromIndex, toIndex),cloud);
+	}
 	/**
 	*
 	*/
-	public NodeIterator iterator() {
+	public NodeIterator nodeIterator() {
 	    return new BasicNodeIterator(this);
 	};
 
-	public class BasicNodeIterator implements NodeIterator {
-	    NodeList list;
-	    int index=-1;
+	public class BasicNodeIterator extends BasicIterator implements NodeIterator {
 	
-	    BasicNodeIterator(NodeList list) {
-	        this.list = list;
+	    BasicNodeIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
-	    }
-	
-	    public Node next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index = list.size()+1;
-	            throw new NoSuchElementException("Node does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
+	    public Node nextNode() {
+	        return (Node)nextObject();
 	    }
 	
 	}

@@ -17,26 +17,20 @@ import java.util.Collection;
  *
  * @author Pierre van Rooden
  */
-public interface RelationList {
+public interface RelationList extends NodeList {
 
 	/**
 	*
 	*/
-	public Relation get(int index);
+	public Relation getRelation(int index);
 
 	/**
 	*
 	*/
-	public boolean isEmpty();
-	
-	/**
-	*
-	*/
-//	public Relation Iterator iterator();
+	public RelationIterator relationIterator();
 
-	/**
+    /**
 	*
 	*/
-    public int size();
-		
+	public RelationList subRelationList(int fromIndex, int toIndex);
 }

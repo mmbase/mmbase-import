@@ -34,37 +34,25 @@ public class BasicModuleList extends BasicList implements ModuleList {
     /**
 	*
 	*/
-	public Module get(int index) {
+	public Module getModule(int index) {
         return (Module)getObject(index);
 	}
 
 	/**
 	*
 	*/
-//	public ModuleIterator iterator() {
-//	    return new BasicModuleIterator(this);
-//	};
+	public ModuleIterator moduleIterator() {
+	    return new BasicModuleIterator(this);
+	};
 
-	public class BasicModuleIterator { // implements ModuleIterator {
-	    ModuleList list;
-	    int index=-1;
+	public class BasicModuleIterator extends BasicIterator implements ModuleIterator {
 	
-	    BasicModuleIterator(ModuleList list) {
-	        this.list = list;
+	    BasicModuleIterator(BasicList list) {
+	        super(list);
 	    }
 	
-	    public boolean hasNext() {
-	        return  index<(list.size()-1);
-	    }
-	
-	    public Module next() {
-	        index++;
-	        if (index>=list.size()) {
-	            index =list.size()+1;
-	            throw new NoSuchElementException("Module does not exits in this list");
-	        } else {
-    	        return list.get(index);
-    	    }
+	    public Module nextModule() {
+	        return (Module)nextObject();
 	    }
 	
 	}
