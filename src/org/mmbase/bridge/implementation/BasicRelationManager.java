@@ -48,7 +48,8 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
   	}
 
     /**
-    * Creates a new initialized relation node
+    * Creates a new initialized relation node.
+    * The returned node will not be visible in the cloud until the commit() method is called on this node.
     * @return a node of type <code>Relation</code>
     */
     public Node createNode() {

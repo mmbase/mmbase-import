@@ -316,10 +316,14 @@ public class BasicNode implements Node {
 	}
 
 	/**
-	 * Commit the node to the database.
-	 * This fails if the current node is not in edit mode.
-	 * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
-	 */
+	* Commit the node to the database.
+	* Makes this node and/or the changes made to this node visible to the cloud.
+    * If this method is called for the first time on this node it will make
+    * this node visible to the cloud, otherwise the modifications made to
+    * this node using the set methods will be made visible to the cloud.
+    * This action fails if the current node is not in edit mode.
+    * If the node is in a transaction, nothing happens - actual committing occurs through the transaction.
+	*/
 	public void commit() {
 	    Edit(ACTION_COMMIT);
 	    // ignore commit in transaction (transaction commits)
