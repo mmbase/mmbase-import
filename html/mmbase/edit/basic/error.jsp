@@ -10,11 +10,26 @@
 </head>
 <body class="basic">
   <h1>Sorry, an error happened</h1>
-  <h2><%= exception.getMessage() %></h2>
+
   Stacktrace:
+  <% java.util.Stack stack = new java.util.Stack();
+     Throwable e = exception;
+     while (e != null) {
+        stack.push(e);
+        e = e.getCause();
+     }
+        String intro = "";
+     while (! stack.isEmpty()) { 
+  Throwable t = (Throwable) stack.pop();
+  %>
+  
+  <h2><%= intro + "" + t.getClass().getName() + " : " + t.getMessage() %></h2>
   <pre>
-    <%= org.mmbase.util.logging.Logging.stackTrace(exception) %>
+    <%= org.mmbase.util.logging.Logging.stackTrace(t) %>
   </pre>
+  <% 
+
+     intro = "Wrapped in: ";   } %>
   <p class="navigate">Continue <a href="<%=response.encodeURL("search_node.jsp")%>"><span class="next"></span><span class="alt">[->]</span></a></p>
   
   <hr />
