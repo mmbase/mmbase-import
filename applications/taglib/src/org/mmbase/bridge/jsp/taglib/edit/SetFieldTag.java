@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
- * @version $Id: SetFieldTag.java,v 1.24 2003-08-27 21:33:40 michiel Exp $ 
+ * @version $Id: SetFieldTag.java,v 1.25 2003-09-16 10:10:54 michiel Exp $ 
  */
 
 public class SetFieldTag extends FieldTag { // but it is not a writer
@@ -50,6 +50,9 @@ public class SetFieldTag extends FieldTag { // but it is not a writer
         if (bodyContent != null) body = bodyContent.getString();
         // Get the new value from the body.
 
+        if (field == null) {
+            throw new JspTagException("Cannot set field '" + name.getString(this) + "' (it does not exist?)");
+        }
         int type = field.getType();
         if ((field != null) && (type == Field.TYPE_BYTE)) {
             // if the field type is a BYTE  thing, we expect a BASE64 encoded String...
