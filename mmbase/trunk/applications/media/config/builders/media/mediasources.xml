@@ -8,12 +8,10 @@
 <searchage>14</searchage>
 
 <names>
-	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="en">Media_source</singular>
+	<singular xml:lang="en">Media source</singular>
 	<singular xml:lang="nl">Mediabron</singular>
 
-	<!-- plural per language as defined by ISO 639 -->
-	<plural xml:lang="en">Media_sources</plural>
+	<plural xml:lang="en">Media sources</plural>
 	<plural xml:lang="nl">Mediabronnen</plural>
 </names>
 

@@ -6,12 +6,10 @@
 <classfile>org.mmbase.module.builders.media.MediaSources</classfile>
 
 <names>
-	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="en">Video_source</singular>
+	<singular xml:lang="en">Video source</singular>
 	<singular xml:lang="nl">Videobron</singular>
 
-	<!-- plural per language as defined by ISO 639 -->
-	<plural xml:lang="en">Video_sources</plural>
+	<plural xml:lang="en">Video sources</plural>
 	<plural xml:lang="nl">Videobronnen</plural>
 </names>
 

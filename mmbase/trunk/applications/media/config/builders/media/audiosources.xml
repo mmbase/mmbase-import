@@ -9,11 +9,11 @@
 
 <names>
 	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="en">Audio_source</singular>
+	<singular xml:lang="en">Audio source</singular>
 	<singular xml:lang="nl">Audiobron</singular>
 
 	<!-- plural per language as defined by ISO 639 -->
-	<plural xml:lang="en">Audio_sources</plural>
+	<plural xml:lang="en">Audio sources</plural>
 	<plural xml:lang="nl">Audiobronnen</plural>
 </names>
 

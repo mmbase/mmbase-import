@@ -9,11 +9,11 @@
 <names>
 	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="nl">Audiofragment</singular>
-	<singular xml:lang="en">Audio_fragment</singular>
+	<singular xml:lang="en">Audio fragment</singular>
 
 	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="nl">Audiofragmenten</plural>
-	<plural xml:lang="en">Audio_fragments</plural>
+	<plural xml:lang="en">Audio fragments</plural>
 </names>
 
 <descriptions>
