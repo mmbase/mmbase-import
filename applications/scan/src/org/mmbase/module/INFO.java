@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.18 $ $Date: 2000-05-30 12:05:07 $
+ * @$Revision: 1.19 $ $Date: 2000-06-02 11:39:43 $
  */
 public class INFO extends ProcessorModule {
 
@@ -412,16 +412,25 @@ public class INFO extends ProcessorModule {
 			} 
 	
 			//MONTH
-			if (cmd.equals("MONTH")) {
+			if (cmd.equals("MONTH") || cmd.equals("SHORTMONTH")) {
+				int getmonth = calendar.get(Calendar.MONTH);
 				switch(whichname) {
 					case INFO.Not:
-						rtn=""+(d.getMonth()+1);
+						rtn=""+(++getmonth);
 						break;
 					case INFO.English:
-						rtn=DateStrings.longmonths[d.getMonth()];
+						if (cmd.equals("MONTH")) {
+							rtn=DateStrings.longmonths[getmonth];
+						} else {
+							rtn=DateStrings.months[getmonth];
+						}
 						break;
 					case INFO.Dutch:
-						rtn=DateStrings.Dutch_longmonths[d.getMonth()];
+						if (cmd.equals("MONTH")) {
+							rtn=DateStrings.Dutch_longmonths[getmonth];
+						} else {
+							rtn=DateStrings.Dutch_months[getmonth];
+						}
 						break;
 					default:
 						rtn="Plokta";
@@ -521,17 +530,25 @@ public class INFO extends ProcessorModule {
 
 			// DAY
 			if (cmd.equals("DAY") || cmd.equals("DAYOFMONTH")) return(""+calendar.get(Calendar.DAY_OF_MONTH));
-			if (cmd.equals("WEEKDAY") || cmd.equals("DAYOFWEEK")) {
+			if (cmd.equals("WEEKDAY") || cmd.equals("DAYOFWEEK") || cmd.equals("SHORTDAYOFWEEK")) {
 				int getday = calendar.get(Calendar.DAY_OF_WEEK);
 				switch(whichname) {
 					case INFO.Not:
 						rtn=""+getday;
 						break;
 					case INFO.English:
-						rtn=DateStrings.longdays[getday];
+						if(cmd.equals("SHORTDAYOFWEEK")) {
+							rtn=DateStrings.days[--getday];
+						} else {
+							rtn=DateStrings.longdays[--getday];
+						}
 						break;
 					case INFO.Dutch:
-						rtn=DateStrings.Dutch_longdays[getday];
+						if (cmd.equals("SHORTDAYOFWEEK")) {
+							rtn=DateStrings.Dutch_days[--getday];
+						} else {
+							rtn=DateStrings.Dutch_longdays[--getday];
+						}
 						break;
 					default:
 						rtn="Plokta";
