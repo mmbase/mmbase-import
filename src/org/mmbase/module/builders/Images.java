@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.56 2002-06-29 14:28:06 michiel Exp $
+ * @version $Id: Images.java,v 1.57 2002-06-30 19:30:13 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -120,13 +120,13 @@ public class Images extends AbstractImages {
     /**
      * @since MMBase-1.6
      */
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
             return null; // ObjectBuilder itself will handle this case.
         }
         // NOTE that this has to be configurable instead of static like this
-        String servlet    = getServletPath();
+        String servlet    = getServletPath() + sessionName;
         String imageThumb = servlet + node.getIntValue("cache(s(100x60))");
         String image      = servlet + node.getNumber();
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
@@ -135,8 +135,8 @@ public class Images extends AbstractImages {
     /**
      * @javadoc
      */
-    public String getGUIIndicator(MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, node.getStringValue("title"));
+    protected String getSGUIIndicator(MMObjectNode node, String session) {
+        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), session);
     }
 
     // called by init..used to retrieve all settings
