@@ -1302,6 +1302,7 @@ Build-compiler: ${build.compiler}
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-documentation.dir}" >
         <exclude name="**/*.xml"/>
+        <exclude name="**/*.sgm"/>
         <exclude name="**/*.xslt"/>
       </fileset>
     </copy>
