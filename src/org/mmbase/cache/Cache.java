@@ -27,7 +27,7 @@ import java.lang.reflect.*; // necessary for SizeOf
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.6 2002-08-09 13:50:46 michiel Exp $
+ * @version $Id: Cache.java,v 1.7 2002-08-09 14:03:30 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable {
 
@@ -305,7 +305,10 @@ abstract public class Cache extends LRUHashtable {
         }
 
         public static int sizeof(Map m) {
-            
+            int len = SZ_REF;
+            // walk and determin total size
+            // TO BE IMPLEMENTED
+            return len;
         }
         
         public static int sizeof(Object obj) {
