@@ -35,7 +35,7 @@ public class ReplysHandler extends Handler {
     private String inpostarea;
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(ReplysHandler.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(ReplysHandler.class); 
 
     public ReplysHandler(int generatecount, int delaytime, String inforum,String inpostarea) {
 	this.generatecount=generatecount;
