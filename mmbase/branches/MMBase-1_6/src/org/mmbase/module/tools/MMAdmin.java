@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.54.2.1 2002-11-25 08:46:42 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.54.2.2 2002-12-18 20:54:27 michiel Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1291,7 +1291,7 @@ public class MMAdmin extends ProcessorModule {
         }
         Vector results=new Vector();
 
-        String path=MMBaseContext.getConfigPath()+File.separator+"databases"+File.separator;
+        String path = MMBaseContext.getConfigPath()+File.separator+"databases"+File.separator;
         // new code checks all the *.xml files in builder dir
         File bdir = new File(path);
         if (bdir.isDirectory()) {
@@ -1302,7 +1302,7 @@ public class MMAdmin extends ProcessorModule {
                 if (aname.endsWith(".xml")) {
                     String name=aname;
                     String sname=name.substring(0,name.length()-4);
-                    XMLBuilderReader app=new XMLBuilderReader(path+aname,mmb);
+                    XMLDatabaseReader app = new XMLDatabaseReader(path + aname);
                     results.addElement(sname);
 
                     results.addElement("0");
