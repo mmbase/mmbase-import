@@ -18,9 +18,12 @@ import org.mmbase.module.corebuilders.*;
 /**
  * @author Daniel Ockeloen
  *
- * @version $Id: XMLBuilderWriter.java,v 1.8 2000-08-19 11:10:05 case Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.9 2000-08-29 20:47:05 daniel Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.8  2000/08/19 11:10:05  case
+ * cjr: Set encoding=iso-8859-1 so french (and whatnot) chars are allowed
+ *
  *
  */
 public class XMLBuilderWriter  {
@@ -109,7 +112,20 @@ public class XMLBuilderWriter  {
         body+="</descriptions>\n\n";
 
         // properties
-        // now empty !
+		body+="<!-- <properties>\n";
+     	body+="you can define properties to be used by the classfile (if used) it uses\n";
+     	body+="a key/value system. Its a optional tag.\n";
+		body+="-->\n";
+		body+="<properties>\n";
+        Hashtable props=bul.getInitParameters();
+        if (props!=null) {
+            for (Enumeration e=props.keys();e.hasMoreElements();) {
+                String name=(String)e.nextElement();
+				String value=(String)props.get(name);
+    			body+="\t<property name=\""+name+"\">"+value+"</property>";
+			}
+	    }
+		body+="</properties>\n\n";
 
         // fieldlists
         body+="<!-- <fieldlist>\n";
