@@ -353,6 +353,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                 break;
             case FORMAT_ESCAPEXMLPRETTY:
                 helper.setValue(Encode.encode("ESCAPE_XML", prettyXML(doc)));
+                // helper.setValue(prettyXML(doc));
                 break;
             // -- FORMAT_LIMIT_XML
             case FORMAT_ESCAPEXML:
@@ -433,7 +434,9 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         Templates cachedXslt = cache.getTemplates(xsl);
         if (cachedXslt == null) {
             try {
-                log.debug("getting for " + cwd);
+                if (log.isDebugEnabled()) {
+                    log.debug("getting for " + cwd);
+                }
                 cachedXslt = getFactory().newTemplates(xsl);
                 cache.put(xsl, cachedXslt);
             } catch (javax.xml.transform.TransformerConfigurationException e) {
@@ -448,7 +451,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         Map params = new HashMap();
         String context =  ((javax.servlet.http.HttpServletRequest)pageContext.getRequest()).getContextPath();
         params.put("formatter_requestcontext",  context);
-        // params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context)); // use node function
+        //params.put("formatter_imgdb", org.mmbase.module.builders.AbstractImages.getImageServletPath(context)); 
+        // use node function
         LocaleTag localeTag = (LocaleTag) findParentTag(org.mmbase.bridge.jsp.taglib.LocaleTag.class, null, false);
         Locale locale;
         if (localeTag != null) {
@@ -492,24 +496,10 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
          }
     }
 
-    private String prettyXML(Document doc) {
+    private String prettyXML(Document doc) throws JspTagException  {
         if ( log.isDebugEnabled() ) {
             log.trace("pretty XML " + doc);   
         }
-        try {
-            org.apache.xml.serialize.OutputFormat format = new org.apache.xml.serialize.OutputFormat(doc);
-            format.setIndenting(true);
-            format.setPreserveSpace(false);
-            format.setOmitXMLDeclaration(true);
-            format.setOmitDocumentType(true);
-            format.setIndent(2); 
-            java.io.StringWriter result = new java.io.StringWriter();
-            org.apache.xml.serialize.XMLSerializer prettyXML = new org.apache.xml.serialize.XMLSerializer(result, format);
-            prettyXML.serialize(doc);
-            return result.toString();
-        }
-        catch (Exception e) {
-            return e.toString();
-        }
+        return xslTransform(doc, "xslt/indentxml.xslt");
     }
 }
