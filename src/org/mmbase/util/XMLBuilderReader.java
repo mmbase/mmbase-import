@@ -162,7 +162,7 @@ public class XMLBuilderReader  {
 					String name2=n3.getNodeName();
 					if (name2.equals("name")) {
 						getGUIName(n3,def);
-					} if (name2.equals("type") || name2.equals("gype")) {
+					} if (name2.equals("type") || name2.equals("guitype")) {
 						def.GUIType=getGUIType(n3);
 					}
 					n3=n3.getNextSibling();
