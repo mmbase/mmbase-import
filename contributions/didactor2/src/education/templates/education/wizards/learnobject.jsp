@@ -8,7 +8,6 @@
  int depth = Integer.parseInt(request.getParameterValues("depth")[0]);
  String startnode = request.getParameterValues("startnode")[0];
  String parenttree = request.getParameterValues("parenttree")[0];
- System.err.println("Get request for depth " + depth);
 
  depth--;
  if (depth >= 0) {
