@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.13 2003-03-14 08:51:15 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.14 2003-06-05 09:37:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -260,7 +260,7 @@ public class MediaSources extends MMObjectBuilder {
             log.debug("executeFunction  " + function + "(" + args + ") on mediasources " + node);
         }
         if (function.equals("info")) {
-            List empty = new Vector();
+            List empty = new ArrayList();
             java.util.Map info = (java.util.Map) super.executeFunction(node, function, empty);
             info.put("absoluteurl", "(<??>)");
             info.put("urlresult", "(<??>) ");
@@ -316,7 +316,7 @@ public class MediaSources extends MMObjectBuilder {
             return getMimeType(node);
         } else if (args != null && args.size() > 0) {
             if (function.equals("gui")) {
-                if (args.get(0).equals("state")) {
+                if ("state".equals(args.get(0))) {
                     String val = node.getStringValue("state");
                     ResourceBundle bundle;
                     if (args.size() > 1) {
@@ -329,22 +329,22 @@ public class MediaSources extends MMObjectBuilder {
                     } catch (java.util.MissingResourceException e) {
                         return val;
                     }
-                } else if (args.get(0).equals("channels")) {
+                } else if ("channels".equals(args.get(0))) {
                     int val = node.getIntValue("channels");
                     switch(val) {
                         case MONO:   return "Mono";
                         case STEREO: return "Stereo";
                         default:     return "Undefined";
                     }
-                } else if (args.get(0).equals("codec")) {
+                } else if ("codec".equals(args.get(0))) {
                     return getCodec(node);
-                } else if (args.get(0).equals("format")) {
+                } else if ("format".equals(args.get(0))) {
                     Locale locale =  new Locale(mmb.getLanguage(), "");
                     if(args.size() > 1) {
                         locale = new Locale((String) args.get(1), "");
                     } 
                     return getFormat(node).getGUIIndicator(locale);
-                } else if (args.get(0).equals("")) {
+                } else if ("".equals(args.get(0))) {
                     return super.executeFunction(node, function, args); // call getGUIIndicoato
                 } else {
                     return node.getStringValue((String) args.get(0));
