@@ -34,21 +34,24 @@
     	 this way we can provide the url for several databases and you only need to
 	     set the above variables.
      	 -->
-		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
+	<!--    <property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property> -->
+        <property name="url">jdbc:mysql://$HOST:$PORT/$DBM</property>
 			
       	<!--
 	    name="user", what is the user we will use to login to the database, if set to 'url' it
     	will use one defined with the 'url' command above this is needed for several
 	    databases including mysql.
      	 -->
-		<property name="user">url</property>
+	<!--    <property name="user">url</property>    -->
+        <property name="user">username</property>
 		
       	<!--
 	    name="password", what is the password we will use to login to the database, if set
     	to 'url' it will use one defined with the 'url' command above this is needed
 	    for several databases including mysql.
      	 -->
-		<property name="password">url</property>
+        <!--    <property name="password">url</property>    -->
+        <property name="password">password</property>
 		
       	<!--
 	    name="supportclass>, the jdbc module will use this class to do database
@@ -73,29 +76,35 @@
 	    the number of connections mmbase keeps open to the database.
      	 -->
 		<property name="connections">20</property>
-		
-  	    <!--
-    	name="driver", defines the classname for the used jdbc driver this can be
-	    obtained from the documentation from the jdbc driver you use.
-      	-->	
-		<property name="driver">org.gjt.mm.mysql.Driver</property>
-		
+                
       	<!--
 	    name="host", what host will we connect to (that is running the database)
 	    when you run mmbase on the same machine as this mmbase node it can
     	be set to 'localhost'
   	    -->
-		<property name="host">localhost</property>
+		<property name="host">localhost</property>                
 		
+  	    <!--
+    	name="driver", defines the classname for the used jdbc driver this can be
+	    obtained from the documentation from the jdbc driver you use.
+      	-->	
+        <!-- 
+            MySQL:          org.gjt.mm.mysql.Driver (http://www.mysql.com/Downloads/Contrib/mm.mysql-2.0.4-bin.jar)
+            PostgreSQL:     org.postgresql.Driver   (http://jdbc.postgresql.org/download.html)
+            
+        -->
+		<property name="driver">org.gjt.mm.mysql.Driver</property>
+
       	<!--
 	    name="port" what port is this database engine running on ? you can find the is
     	your database manual or ask the database admin. default ports for
 	    supported databases are :
 
-    	 3306 for mysql.
- 	     -->
+            MySQL:          3306
+            PostgreSQL      5432
+        -->
 		<property name="port">3306</property>
-		
+						
       	<!--
 	    name="querys", mmbase will replace these connections every x query's
     	because alot of the databases drivers, jdbc drivers etc etc have
