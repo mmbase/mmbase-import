@@ -39,7 +39,7 @@ public class MediaUrlComposer {
     private static MediaSources mediaSourceBuilder = null;
     
     // Mime mapping
-    private static Hashtable mimeMapping = null;
+    private static Map         mimeMapping = null;
     
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -70,6 +70,7 @@ public class MediaUrlComposer {
      */
     private synchronized void readConfiguration(File configFile) {
         
+        log.service("Reading " + configFile);
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         mimeMapping = new Hashtable();
         
@@ -95,7 +96,7 @@ public class MediaUrlComposer {
         if(format==MediaSources.RM_FORMAT || format==MediaSources.RA_FORMAT) {
             url = createRealURL(mediafragment, mediasource, info);
         } else {
-            log.debug("Only readaudio/realmedia is supported");
+            log.warn("Only readaudio/realmedia is supported");
         }
         return url;
     }
