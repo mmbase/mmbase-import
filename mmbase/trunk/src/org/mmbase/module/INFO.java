@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.21 $ $Date: 2000-06-19 08:14:05 $
+ * @$Revision: 1.22 $ $Date: 2000-07-22 22:00:33 $
  */
 public class INFO extends ProcessorModule {
 
@@ -36,7 +36,15 @@ public class INFO extends ProcessorModule {
 
 
 	public void init() {
-		documentroot=System.getProperty("mmbase.htmlroot");
+
+		String dtmp=System.getProperty("mmbase.mode");
+		if (dtmp!=null && dtmp.equals("demo")) {
+			String curdir=System.getProperty("user.dir");
+			documentroot=curdir+"/default-web-app/";
+		} else {
+			documentroot=System.getProperty("mmbase.htmlroot");
+		}
+
 		// org.mmbase super.init();
 		rnd=new RandomPlus();
 	}
