@@ -14,7 +14,7 @@
 <p>
 This page contains time tag examples. For information about the
 time tag attributes see the 
-<a href="<mm:url page="/mmdocs/mmbase-taglib.html#time" />">Taglib documentation</a>.
+<a href="<mm:url page="/mmdocs/reference/taglib/time.jsp" />">Taglib documentation</a>.
 </p>
 <mm:log />
 <table>
