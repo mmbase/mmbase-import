@@ -380,6 +380,10 @@ NetComponents can be found at:
                classpathref="compile.classpath"
                classname="com.informix.jdbc.IfxCblob" />
 
+    <available property="oracle.in.classpath"
+               classpathref="compile.classpath"
+               classname="oracle.jdbc.OracleDriver" />
+
     <available
       property="naming.in.classpath"
       classpathref="compile.classpath"
@@ -405,6 +409,7 @@ NetComponents can be found at:
       <exclude name="org/mmbase/module/JMSendMail.java"    unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="naming.in.classpath" />
       <exclude name="org/mmbase/module/database/Naming.java" unless="sqlconnection.in.classpath" />
+      <exclude name="org/mmbase/module/database/support/MMOracle.java" unless="oracle.in.classpath" />
       <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
