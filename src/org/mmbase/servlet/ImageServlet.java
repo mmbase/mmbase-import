@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  * cache yourself. The cache() function of Images can be used for
  * this.
  *
- * @version $Id: ImageServlet.java,v 1.2 2002-03-19 12:13:23 michiel Exp $
+ * @version $Id: ImageServlet.java,v 1.3 2002-03-25 15:38:51 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -86,10 +86,12 @@ public class ImageServlet extends  MMBaseServlet {
         Integer imageNumber = new Integer(query);
         Vector params = new Vector();
         params.add(imageNumber);
- 
+
+        
         byte[] bytes   = icaches.getImageBytes(params);
         if (bytes == null) {
-            throw new ServletException("Cached image with number " + imageNumber + " does not exist, did you cache your image?");
+            res.sendError(res.SC_NOT_FOUND, "Cached image with number " + imageNumber + " does not exist, did you cache your image?");
+            return;
         }
         int    filesize = bytes.length;
 
@@ -110,13 +112,14 @@ public class ImageServlet extends  MMBaseServlet {
             Date later =  new Date(System.currentTimeMillis() + originalImageExpires);
             res.setHeader("Expires", RFC1123.makeDate(later));
         }
-
         BufferedOutputStream out=null;
         try {
             out = new BufferedOutputStream(res.getOutputStream());
         } catch (java.io.IOException e) {
             log.error(Logging.stackTrace(e));
         }
+
+
         out.write(bytes, 0, filesize);
         out.flush();
         out.close();        
