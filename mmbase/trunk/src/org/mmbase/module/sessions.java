@@ -9,9 +9,12 @@ MMBase partners.
 */
 
 /*
- $Id: sessions.java,v 1.3 2000-03-09 16:21:29 wwwtech Exp $
+ $Id: sessions.java,v 1.4 2000-03-24 11:16:15 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.3  2000/03/09 16:21:29  wwwtech
+ Rico: fixed bug in sessions, when it would try to get the hostname out of the request when used by calcPage when no request is available
+
  Revision 1.2  2000/02/24 13:28:54  wwwtech
  Rico: added addSetValue for adding of sets of values to a session set
  so you can post a set of values to a session variable, fixed several debug messages (added
@@ -34,7 +37,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.3 2000-03-09 16:21:29 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.4 2000-03-24 11:16:15 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -203,52 +206,55 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 
 
 					// does the sid have any properties?
-	
-					Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
-					if (res.hasMoreElements()) {
-
-						// yes, is it a user?
-						// ------------------
-
-						// get the parent for this ID value
-						MMObjectNode snode = (MMObjectNode)res.nextElement();
-						id=snode.getIntValue("parent");
-						node=users.getNode(id);
-						if( node != null )
-						{
-							session.setNode(node);
-						}
-						else
-						{
-							debug("saveValue("+key+"): WARNING: node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
-						}
-
+					if (props==null || users==null) {
+						debug("Can't Save: One of the needed builders is not loaded either users or properties");
 					} else {
-						// ----------------------------------------------------------------------
-						// Server has given a cookie, but *now* we create a new user & properties
-						// ----------------------------------------------------------------------
-
-						debug("saveValue("+key+"): This is a new user("+sid+"), making database entry..");
+						Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
+						if (res.hasMoreElements()) {
 	
-						node = users.getNewNode ("system");
-						if( node != null ) 
-						{
-							node.setValue ("description","created for SID = "+sid);
-							id = users.insert ("system", node); 
-							node.setValue("number",id);
+							// yes, is it a user?
+							// ------------------
 	
-							// hier
-							// ----
-							MMObjectNode snode = props.getNewNode ("system");
-							snode.setValue ("parent",id);
-							snode.setValue ("ptype","string");
-							snode.setValue ("key","SID");
-							snode.setValue ("value",sid);
-							props.insert("system", snode); 
-							session.setNode(node);
+							// get the parent for this ID value
+							MMObjectNode snode = (MMObjectNode)res.nextElement();
+							id=snode.getIntValue("parent");
+							node=users.getNode(id);
+							if( node != null )
+							{
+								session.setNode(node);
+							}
+							else
+							{
+								debug("saveValue("+key+"): WARNING: node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
+							}
+	
+						} else {
+							// ----------------------------------------------------------------------
+							// Server has given a cookie, but *now* we create a new user & properties
+							// ----------------------------------------------------------------------
+	
+							debug("saveValue("+key+"): This is a new user("+sid+"), making database entry..");
+		
+							node = users.getNewNode ("system");
+							if( node != null ) 
+							{
+								node.setValue ("description","created for SID = "+sid);
+								id = users.insert ("system", node); 
+								node.setValue("number",id);
+		
+								// hier
+								// ----
+								MMObjectNode snode = props.getNewNode ("system");
+								snode.setValue ("parent",id);
+								snode.setValue ("ptype","string");
+								snode.setValue ("key","SID");
+								snode.setValue ("value",sid);
+								props.insert("system", snode); 
+								session.setNode(node);
+							}
+							else
+								debug("saveValue("+session+","+key+"): ERROR: No node("+id+") could be created for this user("+sid+")!");
 						}
-						else
-							debug("saveValue("+session+","+key+"): ERROR: No node("+id+") could be created for this user("+sid+")!");
 					}
 				} else {
 					id=node.getIntValue("number");	
