@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.122 2002-03-22 14:23:09 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.123 2002-03-26 12:34:13 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2326,7 +2326,6 @@ public class MMObjectBuilder extends MMTable {
         this.descriptions=e;
     }
 
-
     /**
      * Get description of the builder
      * @return the description text
@@ -2335,6 +2334,15 @@ public class MMObjectBuilder extends MMTable {
         return description;
     }
 
+    /**
+     * Gets description of the builder, using the specified language.
+     * @param lang The language requested
+     * @returns the descriptions in that language, or <code>null</code> if it is not avaialble
+     */
+    public String getDescription(String lang) {
+        if (descriptions==null) return null;
+        return (String)descriptions.get(lang);
+    }
 
     /**
      * Get descriptions of the builder
