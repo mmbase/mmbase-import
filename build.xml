@@ -420,7 +420,16 @@ builddate=${builddate}
   MultiConnection.java and MultiStatement.java (both in the &lt;org/mmbase/modules/database&gt;-dir): uncomment the methods for J2SE 1.4.
   BridgeException (in the &lt;org/mmbase/bridge&gt;-dir): replace code for exception chaining, and remove getCause()/initCause() dummy methods
   More information is provided in the javadocs in these files.
+  
+  or you can run the ant java14patch target and hope thad everything wil be done for you
 </echo>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- apply patch to convert the mmbase classes to support java 1.4       -->
+  <!-- =================================================================== -->
+  <target name="java14patch">
+    	<patch patchfile="java14.patch" strip="1" backups="no"/>
   </target>
 
   <target name="startcompile" />
