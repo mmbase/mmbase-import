@@ -40,6 +40,13 @@ import org.mmbase.util.logging.Logging;
  **/
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
+
+
+    private static int EVAL_BODY = EVAL_BODY_BUFFERED; 
+    // should be EVAL_BODY_INCLUDE. But 
+    // 1. Complete unsupported by orion 1.6.0
+    // 2. Buggy supported by tomcat < 4.1.19
+
     private static final int METHOD_UNSET = -1;
     private static final int METHOD_HTTP = 0;
     private static final int METHOD_ASIS = 1;
@@ -390,7 +397,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
     /**
      * If the 'cloud' member is set, and everything is ok, then this function is called in doStartTag()
-     * @return EVAL_BODY_INCLUDE or SKIP_BODY if cloud is null (which normally means that no anonymous is present)
+     * @return EVAL_BODY or SKIP_BODY if cloud is null (which normally means that no anonymous is present)
      */
 
     private int evalBody() throws JspTagException {
@@ -412,7 +419,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         // the surround context tag sometimes also want so server information from the cloud context.
         getContextTag().setCloudContext(cloud.getCloudContext());
 
-        return EVAL_BODY_INCLUDE;
+        return EVAL_BODY;
     }
 
     /**
@@ -631,7 +638,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * Sets logon and password using http-authentication in the Map argument.
      * @param uses A Map which will be passed to the security system.
      * @return SKIP_BODY if a deny was sent, the caller must not
-     * continue then. EVAL_BODY_INCLUDE  otherwise (can be ignored).
+     * continue then. EVAL_BODY  otherwise (can be ignored).
      */
 
     private final int doHTTPAuthentication(Map user) throws JspTagException {
@@ -684,7 +691,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         }
         user.put("username", logon.get(0));
         user.put("password", password);
-        return EVAL_BODY_INCLUDE;
+        return EVAL_BODY;
 
     }
 
@@ -692,7 +699,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
      * Sets logon-variables using the login page (with the loginpage attribute) in the Map argument.
      * @param uses A Map which will be passed to the security system,.
      * @return SKIP_BODY if a redirect was given (to the login page),
-     * the caller must not continue then. EVAL_BODY_INCLUDE  otherwise
+     * the caller must not continue then. EVAL_BODY  otherwise
      * (can be ignored).
      */
 
@@ -723,7 +730,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     log.debug("security info --> key:" + key + " value:" + value);
                 user.put(key, value);
             }
-            return EVAL_BODY_INCLUDE;
+            return EVAL_BODY;
         } else {
             // no command give, send redirect to specified login page
             return denyLoginPage(LOGINPAGE_DENYREASON_NEED);
@@ -787,43 +794,39 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         // did not succeed, so problably the password was wrong.
         if (getMethod() == METHOD_HTTP) { // give a deny, people can retry the password then.
             switch (reason) {
-                case DENYREASON_FAIL :
-                    return denyHTTP("<h2>This page requires authentication</h2>");
-                case DENYREASON_RANKTOOLOW :
-                    return denyHTTP(
-                        "<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
-                default :
-                    return denyHTTP("<h2>This page requires authentication</h2>");
+            case DENYREASON_FAIL :
+                return denyHTTP("<h2>This page requires authentication</h2>");
+            case DENYREASON_RANKTOOLOW :
+                return denyHTTP(
+                                "<h2>Rank too low for this page (must be at least " + getRank().toString() + ")</h2>");
+            default :
+                return denyHTTP("<h2>This page requires authentication</h2>");
             }
         } else if (loginpage != Attribute.NULL) {
             switch (reason) {
-                case DENYREASON_FAIL :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
-                case DENYREASON_RANKTOOLOW :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW);
-                default :
-                    return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
+            case DENYREASON_FAIL :
+                return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
+            case DENYREASON_RANKTOOLOW :
+                return denyLoginPage(LOGINPAGE_DENYREASON_RANKTOOLOW);
+            default :
+                return denyLoginPage(LOGINPAGE_DENYREASON_FAIL);
             }
         } else { // strange, no method given, password wrong (or missing), that's really wrong.
             switch (reason) {
-                case DENYREASON_FAIL :
-                    {
-                        if ("name/password".equals(getAuthenticate())) {
-                            throw new JspTagException(
-                                "Logon of with "
-                                    + logon.get(0)
-                                    + " failed."
-                                    + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
-                        } else {
-                            throw new JspTagException("Non name/password authentication failed");
-                        }
-                    }
-                case DENYREASON_RANKTOOLOW :
-                    {
-                        throw new JspTagException("Rank too low");
-                    }
-                default :
-                    throw new JspTagException("Denied for unknown reason");
+            case DENYREASON_FAIL: {
+                if ("name/password".equals(getAuthenticate())) {
+                    throw new JspTagException("Logon of with " + logon.get(0)
+                                              + " failed."
+                                              + (pwd == Attribute.NULL ? " (no password given)" : " (wrong password)"));
+                } else {
+                    throw new JspTagException("Non name/password authentication failed");
+                }
+            }
+            case DENYREASON_RANKTOOLOW : {
+                throw new JspTagException("Rank too low");
+            }
+            default :
+                throw new JspTagException("Denied for unknown reason");
             }
         }
     }
@@ -831,7 +834,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     /**
      * Performs logging in the bridge and sets the cloud variable, using the provided Map argument.
      *
-     * @return SKIP_BODY on fail and EVAL_BODY_INCLUDE otherwise.
+     * @return SKIP_BODY on fail and EVAL_BODY otherwise.
      *
      */
     private final int doLogin(Map user) throws JspTagException {
@@ -857,7 +860,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                     return deny(DENYREASON_RANKTOOLOW);
                 }
             }
-            return EVAL_BODY_INCLUDE;
+            return EVAL_BODY;
         } catch (BridgeException e) {
             if (log.isDebugEnabled()) {
                 log.debug("Failed to log in with " + user + " because " + e.toString());
@@ -867,7 +870,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
     }
     /**
      * Makes a logged-in cloud.
-     * @return SKIP_BODY if failed to do so. EVAL_BODY_INCLUDE  otherwise.
+     * @return SKIP_BODY if failed to do so. EVAL_BODY  otherwise.
      */
 
     private final int makeCloud() throws JspTagException {
@@ -907,7 +910,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 session.setAttribute(getSessionName(), cloud);
             }
         }
-        return EVAL_BODY_INCLUDE;
+        return EVAL_BODY;
     }
 
     /**
@@ -969,6 +972,19 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         //pwd = Attribute.NULL; // could not be right. Using cloud-tag twice in same page might not work then
 
         return evalBody();
+    }
+
+
+    // if EVAL_BODY == EVAL_BODY_BUFFERED
+    public int doAfterBody() throws JspTagException {
+        try {
+            if (bodyContent != null) {
+                bodyContent.writeOut(bodyContent.getEnclosingWriter());
+            }
+        } catch (IOException ioe){
+            throw new JspTagException(ioe.toString());
+        } 
+        return SKIP_BODY;        
     }
 
 }

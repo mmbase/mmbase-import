@@ -36,7 +36,7 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     // a node provider is a nodereferrer as well...
     // this is especially useful for some extended classes (like 'relatednodes').
     
-    private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AbstractNodeProviderTag.class);
     
     private   Node   node;        
     private   String jspvar = null;
