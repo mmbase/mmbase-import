@@ -4,8 +4,8 @@
 <mm:cloud name="mmbase" method="http" rank="administrator" jspvar="cloud">
 <html>
 <head>
-<title>MMBase Demo installation</title>
-<link rel="stylesheet" href="../css/mmbase.css" type="text/css">
+  <title>MMBase Demo installation</title>
+  <link rel="stylesheet" href="../style/default/css/mmbase.css" type="text/css" />
 </head>
 
 <body >
