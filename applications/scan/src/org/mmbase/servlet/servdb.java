@@ -113,7 +113,7 @@ public class servdb extends JamesServlet {
 
             boolean cacheReq=true;
 
-            // if (debug)
+            if (debug)
             {
                 String msg = "["+sp.getAddress();
 
