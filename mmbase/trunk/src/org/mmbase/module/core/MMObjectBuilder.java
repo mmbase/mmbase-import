@@ -1196,7 +1196,17 @@ public class MMObjectBuilder extends MMTable {
     * @param fieldname the name of the field to remove
     */
     public void removeField(String fieldname) {
+	FieldDefs def=getField(fieldname);
+	int dbpos=def.getDBPos();
         fields.remove(fieldname);
+	// move them all up one place
+        for (Enumeration e=fields.elements();e.hasMoreElements();) {
+            def=(FieldDefs)e.nextElement();
+	    int curpos=def.getDBPos();
+	    if (curpos>=dbpos) def.setDBPos(curpos-1);
+        }
+
+	
         sortedEditFields = null;
         sortedListFields = null;
         sortedFields = null;
