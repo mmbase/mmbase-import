@@ -16,6 +16,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.module.gui.html.EditState;
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.Casting;
 import org.mmbase.util.logging.*;
 import org.w3c.dom.Document;
@@ -31,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.123 2004-04-19 14:15:53 marcel Exp $
+ * @version $Id: MMObjectNode.java,v 1.124 2004-06-11 17:12:07 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -303,7 +304,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     /**
      * Sets the security context for this node
-     * @param user the user who changes the context the node.
+     * @param user the user who changes the context of the node.
      * @param context the new context
      * @param now if <code>true</code>, the context is changed instantly, otherwise it is changed
      *        after the node is send to storage.
@@ -315,6 +316,46 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
        } else {
            newContext = context;
        }
+    }
+
+    /**
+     * Returns the security context for this node
+     * @param user the user who requests the context of the node.
+     * @since MMBase-1.7.1
+     */
+    public String getContext(UserContext user) {
+        if (newContext != null) return newContext;
+        if (getNumber() < 0) return user.getOwnerField();
+        return parent.getMMBase().getMMBaseCop().getAuthorization().getContext(user, getNumber());
+    }
+
+    /**
+     * Returns the possible new security contexts for this node
+     * @param user the user who requests the context of the node.
+     * @since MMBase-1.7.1
+     */
+    public Set getPossibleContexts(UserContext user) {
+        if (getNumber() < 0) { 
+            // that's very hard, try it on a similar node, hoping that it is the same. This is a hack.
+            // The point is that SEcurity should not request node-numbers, but nodes.
+            NodeSearchQuery query = new NodeSearchQuery(parent);
+            FieldDefs fieldDefs = parent.getField("owner");
+            StepField field = query.getField(fieldDefs);
+            BasicFieldValueConstraint cons = new BasicFieldValueConstraint(field, getContext(user));
+            query.setMaxNumber(1);
+            try {
+                Iterator resultList = parent.getNodes(query).iterator();
+                if (resultList.hasNext()) {
+                    return ((MMObjectNode) resultList.next()).getPossibleContexts(user);
+                } 
+            } catch (SearchQueryException sqe) {
+                log.error(sqe.toString());
+            }
+            return new HashSet();
+        }
+        return parent.getMMBase().getMMBaseCop().getAuthorization().getPossibleContexts(user, getNumber());
+        
+        
     }
 
     /**
@@ -807,14 +848,21 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 b = parent.getShortedByte(fieldName, getNumber());
                 if (b == null) {
                     b = new byte[0];
+                } else {
+                    // we could in the future also leave it unmapped in the values
+                    // or make this programmable per builder ?                    
+                    storeValue(prefix + fieldName, b);
                 }
-                // we could in the future also leave it unmapped in the values
-                // or make this programmable per builder ?
-                storeValue(prefix + fieldName, b);
+
             } else {
                 if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
                     String s = getStringValue(fieldName);
-                    b = s.getBytes();
+                    try {
+                        b = s.getBytes(parent.getMMBase().getEncoding()); 
+                    } catch (java.io.UnsupportedEncodingException uee) {
+                        log.error(uee.getMessage());
+                        b = s.getBytes();
+                    }
                 } else {
                     b = new byte[0];
                 }
@@ -839,7 +887,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return the field's value as an <code>int</code>
      */
     public MMObjectNode getNodeValue(String fieldName) {
-        if (fieldName==null || fieldName.equals("number")) return this;
+        if (fieldName == null || fieldName.equals("number")) return this;
         return Casting.toNode(getValue(fieldName), parent);
     }
 
@@ -1503,7 +1551,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
     // Below Java 1.4
     if(virtuals.size() != result.size()) {
-        log.error("We lost a few nodes during conversion from virtualnodes("+virtuals.size()+") to realnodes("+result.size()+")");
+        log.error("We lost a few nodes during conversion from virtualnodes(" + virtuals.size() + ") to realnodes(" + result.size() + ")");
     }
 
     return result;
