@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.15 2002-10-03 12:29:07 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.16 2002-10-16 10:02:22 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -91,8 +91,17 @@ public interface NodeManager extends Node {
      *
      * @param name  the name of the field to be returned
      * @return      the field with the requested name
+     * @throws NotFoundException is the field does not exist
      */
-    public Field getField(String name);
+    public Field getField(String name) throws NotFoundException;
+
+    /**
+     * Tests whether the field with the specified name exists in this nodemanager.
+     *
+     * @param name  the name of the field to be returned
+     * @return      <code>true</code> if the field with the requested name exists
+     */
+    public boolean hasField(String fieldName);
 
     /**
      * Returns a list of nodes belonging to this node manager. Constraints can

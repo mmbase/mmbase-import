@@ -13,6 +13,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspTagException;
 
+import org.mmbase.bridge.NotFoundException;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.Field;
 
@@ -81,7 +82,11 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
 
     protected void setFieldVar(String n) throws JspTagException {
         if (n != null) {
-            field = getNodeVar().getNodeManager().getField(n);
+            try {
+                field = getNodeVar().getNodeManager().getField(n);
+            } catch (NotFoundException e) {
+                field = null;
+            }
             fieldName = n;
             if (getReferid() != null) {
                 throw new JspTagException ("Could not indicate both  'referid' and 'name' attribute");
@@ -176,7 +181,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
         helper.setBodyContent(bodyContent);
         if ((! "".equals(helper.getString()) && getReferid() != null)) {
             throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
-        }       
+        }
 
         return helper.doEndTag();
     }
