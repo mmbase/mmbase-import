@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.70 2004-09-17 09:48:16 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.71 2004-09-17 10:17:06 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -715,6 +715,8 @@ public class DatabaseStorageManager implements StorageManager {
             executeUpdate(query, node, fields);
         } catch (SQLException sqe) {
             while (true) {
+                Statement s = null;                
+                ResultSet rs = null; 
                 try {
                     s = activeConnection.createStatement();
                     rs = s.executeQuery("SELECT 1 FROM " + factory.getMMBase().getBuilder("object").getFullTableName() + " WHERE 1 = 0"); // if this goes wrong too it can't be the query
