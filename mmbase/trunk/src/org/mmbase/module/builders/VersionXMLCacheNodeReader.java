@@ -16,10 +16,19 @@ import javax.xml.parsers.DocumentBuilder;
 
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.logging.*;
+
 import org.w3c.dom.*;
 
+/**
+ * @javadoc
+ * @deprecated is this (cacheversionfile) used? seems obsolete now
+ * @author Daniel Ockeloen
+ * @version $Id: VersionXMLCacheNodeReader.java,v 1.4 2004-10-08 13:03:44 pierre Exp $
+ */
 public class VersionXMLCacheNodeReader {
 
+    private static Logger log = Logging.getLoggerInstance(VersionCacheNode.class.getName());
     Document document;
     Versions parent;
 
@@ -28,7 +37,7 @@ public class VersionXMLCacheNodeReader {
             DocumentBuilder db = XMLBasicReader.getDocumentBuilder(false);
             File file = new File(filename);
             if (!file.exists()) {
-                System.out.println("ERROR -> no cache version " + filename + " found)");
+                log.error("no cache version " + filename + " found)");
             }
             document = db.parse(file);
         } catch (Exception e) {
@@ -58,15 +67,15 @@ public class VersionXMLCacheNodeReader {
                         Node n3 = nm.getNamedItem("name");
                         if (n3 != null) {
                             String name = n3.getNodeValue();
-                            System.out.println("name = " + name);
-                            // find the node 
+                            if (log.isDebugEnabled()) log.debug("name = " + name);
+                            // find the node
                             MMObjectNode versionnode = null;
                             String query = "name=='" + name + "'+type=='cache'";
                             Enumeration b = parent.search(query);
                             if (b.hasMoreElements()) {
                                 versionnode = (MMObjectNode)b.nextElement();
                             }
-                            System.out.println("versionnode=" + versionnode);
+                            if (log.isDebugEnabled()) log.debug("versionnode=" + versionnode);
                             VersionCacheNode cnode = new VersionCacheNode(parent.mmb);
                             cnode.setVersionNode(versionnode);
 
@@ -118,7 +127,7 @@ public class VersionXMLCacheNodeReader {
                 n2 = n2.getNextSibling();
             }
         }
-        return (handlers);
+        return handlers;
     }
 
     /**
@@ -175,7 +184,7 @@ public class VersionXMLCacheNodeReader {
                 n2 = n2.getNextSibling();
             }
         }
-        return (results);
+        return results;
     }
 
 }
