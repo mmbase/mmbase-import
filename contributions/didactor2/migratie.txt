@@ -1,6 +1,13 @@
 
 Migratie issues
 
+2004-11-11
+
+Inlogtijden kloppen niet. De berekening is oplost, maar de tijden moeten gereset worden:
+stop de applicatie en draai de volgende SQL:
+
+    update mmb_classrel set onlinetime=0;
+
 
 2004-11-03
 

@@ -19,12 +19,11 @@
   <mm:constraint operator="equal" field="username" referid="username" />
   <mm:listnodes>
     <mm:first>
-      <mm:node>
-        <mm:field id="user" name="number" write="false" />
-      </mm:node>
+        <mm:node>
+            <mm:field id="user" name="number" write="false" />
+        </mm:node>
+       
     </mm:first>
-    <mm:field id="oldLastActivity" name="lastactivity" write="false"/>
-    <mm:setfield name="lastactivity"><%=System.currentTimeMillis()/1000%></mm:setfield>
   </mm:listnodes>
   <mm:notpresent referid="user">
     <mm:import id="user">0</mm:import>
