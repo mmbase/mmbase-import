@@ -246,7 +246,7 @@ public class scancache extends Module implements scancacheInterface {
                 if (((now-then)-interval)<0) {
                     if (value!=null) return value; // check should be done first...
                 } else {
-                    log.debug("get("+poolName+","+key+","+line+"): Wow its expired");
+                    log.debug("get("+poolName+","+key+","+line+"): Request is expired");
                     timepool.remove(poolName+key);
                     return null;
                 }
