@@ -62,6 +62,9 @@
             <a href="<mm:url page="community.jsp?action=readonly" referids="channel" />">Make channel read only</a><br />
         </mmcommunity:testchannel>
       </mm:compare>
+      <%--
+        The chat example is completely broken, so the link to it is disabled for now.
+        If you want to fix it, she's all yours.
       <mm:compare value="chatbox">
         <mmcommunity:testchannel condition="open">
             <a href="<mm:url page="chats/chats.jsp" referids="channel" />"><strong><mm:field name="html(title)" /></strong></a> is open<br />
@@ -78,6 +81,7 @@
             <a href="<mm:url page="community.jsp?action=open" referids="channel" />">Open channel</a><br />
         </mmcommunity:testchannel>
       </mm:compare>
+      --%>
       </mm:field>
         &nbsp;
      </li>
