@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.util.Iterator;
+import java.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
@@ -29,14 +29,14 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.16 2003-12-17 21:09:03 michiel Exp $
+ * @version $Id: OAlias.java,v 1.16.2.1 2004-09-02 14:52:03 pierre Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
 
     private static final Logger log = Logging.getLoggerInstance(OAlias.class);
 
-    // alias -> node-number (Integer) 
+    // alias -> node-number (Integer)
     private Cache numberCache = new Cache(128) {
         public String getName()        { return "AliasCache"; }
         public String getDescription() { return "Cache for node aliases"; }
@@ -69,7 +69,7 @@ public class OAlias extends MMObjectBuilder {
         if (nodeNumber == null) {
             try {
                 NodeSearchQuery query = new NodeSearchQuery(this);
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);      
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField("name")), name);
                 query.setConstraint(constraint);
                 Iterator i = getNodes(query).iterator();
                 if (i.hasNext()) {
@@ -79,7 +79,7 @@ public class OAlias extends MMObjectBuilder {
                     return rtn;
                 } else {
                     numberCache.put(name, NOT_FOUND);
-                    return -1;                
+                    return -1;
                 }
             } catch (SearchQueryException sqe) {
                 log.error(sqe.toString());
@@ -143,7 +143,7 @@ public class OAlias extends MMObjectBuilder {
      *
      * @since MMBase-1.7
      */
-    
+
     public void createAlias(String alias, int number) {
         MMObjectNode node = getNewNode("system");
         node.setValue("name", alias);
@@ -162,4 +162,32 @@ public class OAlias extends MMObjectBuilder {
         super.removeNode(node);
         numberCache.remove(name);
     }
+
+    /**
+     * {@inheritDoc}
+     * If a node is changed or newly created, this adds the new or updated alias to the
+     * cache.
+     * @since MMBase-1.7.1
+     */
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        if (builder.equals(getTableName())) {
+            if (ctype.equals("c") || ctype.equals("n")) {
+                // should remove aliasses referencing this number from numberCache here
+                MMObjectNode node = getNode(number);
+                numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
+            } else if (ctype.equals("d")) {
+                Integer n = new Integer(number);
+                Iterator i = numberCache.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    Object value = entry.getValue();
+                    if (n.equals(value)) {
+                        i.remove();
+                    }
+                }
+            }
+       }
+       return super.nodeRemoteChanged(machine, number, builder, ctype);
+    }
+
 }

@@ -42,7 +42,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.33 2004-01-14 13:23:20 michiel Exp $
+ * @version $Id: RelDef.java,v 1.33.2.1 2004-09-02 14:52:03 pierre Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -115,6 +115,23 @@ public class RelDef extends MMObjectBuilder {
     }
 
     /**
+     * @since MMBase-1.7.1
+     */
+    private void removeFromCache(int rnumber) {
+        Integer r = new Integer(rnumber);
+        Iterator i = relCache.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            Object value = entry.getValue();
+            if (r.equals(value)) {
+                i.remove();
+            }
+        }
+        rnumberCache.remove(r);
+    }
+
+
+    /**
      * Reads all relation definition names in an internal cache.
      * The cache is used by {@link #isRelationTable}
      * @return A <code>boolean</code> value, always success (<code>true</code>), as any exceptions are
@@ -183,7 +200,7 @@ public class RelDef extends MMObjectBuilder {
         }
         if (bulname == null) {
             return "insrel";
-        } else { 
+        } else {
             return bulname;
         }
     }
@@ -196,7 +213,7 @@ public class RelDef extends MMObjectBuilder {
      */
     public String getBuilderName(MMObjectNode node) {
         if (node == null) return "NULL";
-        return (String) rnumberCache.get(new Integer(node.getNumber()));    
+        return (String) rnumberCache.get(new Integer(node.getNumber()));
     }
 
 
@@ -213,13 +230,16 @@ public class RelDef extends MMObjectBuilder {
      * @return the builder
      */
     public InsRel getBuilder(MMObjectNode node) {
-        String bulname = getBuilderName(node);
-          InsRel bul=(InsRel)mmb.getMMObject(bulname);
-          if (bul==null) {
-              return mmb.getInsRel();
-          } else {
-              return bul;
-          }
+        String builderName = getBuilderName(node);
+        if (builderName == null) {
+            throw new RuntimeException("Node " + node + " has no builder?");
+        }
+        InsRel builder = (InsRel) mmb.getMMObject(builderName);
+        if (builder == null) {
+            return mmb.getInsRel();
+        } else {
+            return builder;
+        }
     }
 
     /**
@@ -274,7 +294,7 @@ public class RelDef extends MMObjectBuilder {
         String sname = node.getStringValue("sname");
         String dname = node.getStringValue("dname");
         if (getNumberByName(sname + '/' + dname) != -1) {
-            log.error("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
+            // log.error("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
             throw new RuntimeException("The reldef with sname=" + sname + " and dname=" + dname + " already exists");
         }
         int number = super.insert(owner,node);
@@ -307,15 +327,16 @@ public class RelDef extends MMObjectBuilder {
      public void removeNode(MMObjectNode node) {
         Enumeration e = mmb.getTypeRel().search("WHERE rnumber="+node.getNumber());
         if (e.hasMoreElements()) {
-            String typerels="#"+((MMObjectNode)e.nextElement()).getNumber();
+            String typerels = "#"+((MMObjectNode)e.nextElement()).getNumber();
             while (e.hasMoreElements()) {
-              typerels=typerels+", #"+((MMObjectNode)e.nextElement()).getNumber();
+              typerels = typerels + ", #"+((MMObjectNode)e.nextElement()).getNumber();
             }
             throw new RuntimeException("Cannot delete reldef node, it is referenced by typerels: "+typerels);
         }
+
         int i = mmb.getInsRel().count("WHERE rnumber=" + node.getNumber());
-        if (i>0) {
-            throw new RuntimeException("Cannot delete reldef node, it is still used in relations");
+        if (i > 0) {
+            throw new RuntimeException("Cannot delete reldef node, it is still used in " + i + " relations");
         }
         String name = node.getStringValue("sname");
         super.removeNode(node);
@@ -349,10 +370,10 @@ public class RelDef extends MMObjectBuilder {
                 switch (node.getIntValue("dir")) {
                 case DIR_BIDIRECTIONAL:
                     return "bidirectional";
-                    
+
                 case DIR_UNIDIRECTIONAL:
                     return "unidirectional";
-                    
+
                 default:
                     return "unknown";
                 }
@@ -505,6 +526,30 @@ public class RelDef extends MMObjectBuilder {
             res=getNumberByName(dname+"/"+sname);
         }
         return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     * Called when a remote node is changed.
+     * If a node is changed or newly created, this adds the new or updated role (sname and dname) to the
+     * cache.
+     * @todo Old roles are cuerrently not cleared or removed - which means that they may remain
+     * useable for some time after the actual role is deleted or renamed.
+     * This because old role information is no longer available when this call is made.
+     * @since MMBase-1.7.1
+     */
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        if (builder.equals(getTableName())) {
+            if (ctype.equals("c") || ctype.equals("n")) {
+                // should remove roles referencing this number from relCache here                
+                int rnumber = Integer.parseInt(number);
+                removeFromCache(rnumber);
+                addToCache(getNode(rnumber));
+            } else if (ctype.equals("d")) {
+                removeFromCache(Integer.parseInt(number));
+            }
+        }
+        return super.nodeRemoteChanged(machine, number, builder, ctype);
     }
 }
 
