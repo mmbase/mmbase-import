@@ -1,6 +1,8 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<%@ taglib uri="http://jakarta.apache.org/taglibs/request" prefix="req" %>
 <mm:cloud name="mmbase">
+	<mm:import externid ="deletenumber" />
+	<mm:import externid ="nodemanager" />
+	
 
 <html>
 
@@ -14,23 +16,24 @@
 
 <h1>List &amp; delete</h1>
 
-<req:existsparameter name="nodemanager">
-  <req:existsparameter name="deletenumber">
-    <mm:deletenode number='<%= request.getParameter("deletenumber") %>'/>
-  </req:existsparameter>
-</req:existsparameter>
+
+<mm:present referid="nodemanager">
+  <mm:present referid="deletenumber">
+    <mm:deletenode referid="deletenumber"/>
+  </mm:present>
+</mm:present>
 
 <table>
   <tr>
     <td valign="top">
       <mm:listnodes type="typedef" fields="name,description">
-        <a href="listdelete.jsp?nodemanager=<%=name%>"><%=name%></a><br>
+	<A HREF="listdelete.jsp?nodemanager=<mm:field name="name"/>"><mm:field name="name"/></A><BR>
       </mm:listnodes>
     </td>
     <td valign="top">
-      <req:existsparameter name="nodemanager">
+      <mm:present referid="nodemanager">
         <table>
-          <mm:listnodes type='<%=request.getParameter("nodemanager")%>' fields="number">
+          <mm:listnodes type="${nodemanager}" fields="number">
             <mm:first>
               <tr>
                 <mm:fieldlist type="list">
@@ -47,12 +50,12 @@
                 </td>
               </mm:fieldlist>
               <td>
-                <a href='listdelete.jsp?nodemanager=<%=request.getParameter("nodemanager")%>&deletenumber=<%=number%>'>delete</a>
+                <a href='listdelete.jsp?nodemanager=<mm:write referid="nodemanager"/>&deletenumber=<%=number%>'>delete</a>
               </td>
             </tr>
           </mm:listnodes>
         </table>
-      </req:existsparameter>
+      </mm:present>
     </td>
   </tr>
 </table>
