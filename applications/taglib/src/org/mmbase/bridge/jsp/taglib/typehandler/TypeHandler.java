@@ -14,13 +14,14 @@ import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Query;
 
 /**
  * @javadoc
  *
  * @author Gerard van de Looi
  * @since  MMBase-1.6
- * @version $Id: TypeHandler.java,v 1.2 2003-06-06 10:03:38 pierre Exp $
+ * @version $Id: TypeHandler.java,v 1.3 2003-07-28 20:01:19 michiel Exp $
  */
 
 public interface TypeHandler {
@@ -30,5 +31,10 @@ public interface TypeHandler {
     public String useHtmlInput(Node node, Field field) throws JspTagException;
 
     public String whereHtmlInput(Field field) throws JspTagException;
+
+    /**
+     * @since MMBase-1.7
+     */
+    public String whereHtmlInput(Field field, Query query) throws JspTagException;
 
 }

@@ -12,6 +12,7 @@ package org.mmbase.bridge.jsp.taglib.typehandler;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Field;
 import org.mmbase.bridge.Node;
+import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
 
 /**
@@ -20,7 +21,7 @@ import org.mmbase.bridge.jsp.taglib.FieldInfoTag;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.5 2003-06-06 10:03:34 pierre Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.6 2003-07-28 20:01:19 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -77,6 +78,10 @@ public abstract class AbstractTypeHandler implements TypeHandler {
         return "( [" + fieldName + "] =" + search + ")";
     }
 
+    public String whereHtmlInput(Field field, Query query) throws JspTagException {
+        // todo: implement..
+        throw new UnsupportedOperationException("Query version not yet implemented");
+    }
     /**
      * Puts a prefix before a name. This is used in htmlInput and
      * useHtmlInput, they need it to get a reasonably unique value for
