@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.14 2000-11-16 15:21:58 pierre Exp $
+$Id: FieldDefs.java,v 1.15 2000-12-16 20:42:42 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.14  2000/11/16 15:21:58  pierre
+pierre: added public static final TYPE_UNKNOWN
+
 Revision 1.13  2000/11/07 14:28:55  vpro
 Rico: removed TYPE_TEXT
 
@@ -59,7 +62,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.14 $ $Date: 2000-11-16 15:21:58 $
+ * @$Revision: 1.15 $ $Date: 2000-12-16 20:42:42 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -177,6 +180,26 @@ public class FieldDefs  {
 
 	public int getGUIPos() {
 		return (GUIPos);
+	}
+
+	public void setGUIName(String country,String value) {
+		GUINames.put(country,value);
+	}
+
+	public void setGUIType(String value) {
+		GUIType=value;
+	}
+
+	public void setGUIList(int value) {
+		GUIList=value;
+	}
+
+	public void setGUIPos(int value) {
+		GUIPos=value;
+	}
+
+	public void setGUISearch(int value) {
+		GUISearch=value;
 	}
 
 	public String toString() {
