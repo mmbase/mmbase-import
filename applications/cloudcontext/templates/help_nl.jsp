@@ -81,7 +81,7 @@
         security contexten kunnen gezien worden als de 'eigenaars'.
       </dd>
     </dl>
-    <img src="<mm:url page="${location}/images/Security.jpg" />" />
+    <img src="<mm:url page="${location}images/Security.jpg" />" />
   </p>
 
 </div>
