@@ -306,6 +306,12 @@ public class Target {
    }
 
    public boolean save() {
+        // check if the dirs are created, if not create them
+        String dirsp=basedir+path.substring(0,path.lastIndexOf(File.separator));
+        File dirs=new File(dirsp);
+        if (!dirs.exists()) {
+                dirs.mkdirs();
+        }
 	String body=creator.getXMLFile(this);
 	// write back to disk	
         File sfile = new File(basedir+getPath());
@@ -319,5 +325,15 @@ public class Target {
         }
         return true;
     }
+
+   public boolean hasSyntaxErrors() {
+	// performs several syntax checks to signal
+	// the users in the gui tools on possible problems
+	if (getDescription().equals("")) return true;
+	if (getMaintainer().equals("")) return true;
+	if (getDescription().equals("")) return true;
+	return false;
+   }
+    
 
 }

@@ -65,6 +65,7 @@ public class Controller {
 				virtual.setValue("name",t.getName());
 				virtual.setValue("type",t.getType());
 				virtual.setValue("path",t.getPath());
+				virtual.setValue("syntaxerrors",t.hasSyntaxErrors());
 				list.add(virtual);
 			}
 		}
@@ -85,6 +86,7 @@ public class Controller {
 				virtual.setValue("name",t.getName());
 				virtual.setValue("type",t.getType());
 				virtual.setValue("path",t.getPath());
+				virtual.setValue("syntaxerrors",t.hasSyntaxErrors());
 				list.add(virtual);
 			}
 		}
@@ -635,6 +637,7 @@ public class Controller {
                         MMObjectNode virtual = builder.getNewNode("admin");
 			virtual.setValue("name",p.getName());
 			virtual.setValue("path",p.getPath());
+			virtual.setValue("syntaxerrors",p.hasSyntaxErrors());
 			list.add(virtual);
 		}
 		return list;
