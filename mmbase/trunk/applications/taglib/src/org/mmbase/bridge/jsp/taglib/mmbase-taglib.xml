@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.196 2003-09-03 19:40:03 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.197 2003-09-05 16:32:37 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2965,6 +2965,32 @@ like the parameter list or the session (where ever it is available) --&gt;
     &lt;/mm:url&gt;
     generates: codesamples/index.jsp?page=home
     </example>
+  </tag>
+  <tag>
+    <name>redirect</name>
+    <type>util</type>
+    <extends>contextreferrer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.RedirectTag</tagclass>
+    <info>
+      <p>
+          As mm:url but redirects to the generated URL.
+      </p>
+     </info>
+     <since>MMBase-1.7</since>
+    <attribute>
+      <name>referids</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <see tag="url" attribute="referids" />
+    </attribute>
+    <attribute>
+      <name>page</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <see tag="url" attribute="page" />
+    </attribute>
   </tag>
   <tag>
     <name>image</name>
