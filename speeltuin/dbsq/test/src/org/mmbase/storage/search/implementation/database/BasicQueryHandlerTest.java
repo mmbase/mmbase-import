@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -36,8 +36,6 @@ public class BasicQueryHandlerTest extends TestCase {
     
     /** MMBase query. */
     private MMBase mmbase = null;
-    
-    /** Images builder, used as builder example. */
     
     /** Pools builder, used as builder example. */
     private MMObjectBuilder pools = null;
@@ -297,7 +295,7 @@ public class BasicQueryHandlerTest extends TestCase {
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_WEAK);
+        == SearchQueryHandler.SUPPORT_NONE);
         query.setMaxNumber(-1);
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
@@ -308,7 +306,7 @@ public class BasicQueryHandlerTest extends TestCase {
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_WEAK);
+        == SearchQueryHandler.SUPPORT_NONE);
         query.setOffset(0);
         assertTrue(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
