@@ -249,8 +249,6 @@
 		<translation language="nl" value="Stuur dit bericht door naar een ander lid" />
 		<translation language="df" value="Forward this message to another member" />
 	</keyword>
-	<keyword name="you have">
-	</keyword>
 	<keyword name="login">
 		<translation language="nl" value="inloggen" />
 		<translation language="df" value="login" />
