@@ -13,7 +13,7 @@ import org.mmbase.tests.*;
 /**
  * Test cases to test the creation of relations and the retrieval of them
  * @author Kees Jongenburger
- * @version $Id: RelationTest.java,v 1.4 2003-11-28 12:04:30 keesj Exp $
+ * @version $Id: RelationTest.java,v 1.5 2003-12-09 13:37:29 keesj Exp $
  */
 public class RelationTest extends BridgeTest {
 
@@ -65,7 +65,7 @@ public class RelationTest extends BridgeTest {
                 assertTrue("expected the bb node but got " + theOtherNode, theOtherNode.getNumber() == bbNode.getNumber());
             }
         }
-        
+
         {
             //folow the relation in  wrong direction
             NodeList aaRelatedList = aaFirstNode.getRelatedNodes("bb", "related", "source");
@@ -97,11 +97,26 @@ public class RelationTest extends BridgeTest {
             NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa", "related", "both");
             assertTrue("relation count should be 2 but is " + bbRelatedListSource.size() + " mmbase relatednodes(BOTH) does not work", bbRelatedListSource.size() == 2);
         }
-        
+
         {
             //try to get both the aa node from bb using "null"
             NodeList bbRelatedListSource = bbNode.getRelatedNodes("aa", "related", null);
             assertTrue("relation count should be 2 but is " + bbRelatedListSource.size() + " mmbase relatednodes() does not work", bbRelatedListSource.size() == 2);
+        }
+        {
+            try {
+                aaFirstNode.delete();
+                fail("Should raise a BridgeException");
+            } catch (BridgeException e) {};
+
+            try {
+                aaSecondNode.delete();
+                fail("Should raise a BridgeException");
+            } catch (BridgeException e) {};
+            
+            aaSecondNode.delete(true);
+            aaFirstNode.delete(true);
+            bbNode.delete();
         }
     }
 }
