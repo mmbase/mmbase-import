@@ -20,6 +20,8 @@
    		<frame src="nav.jsp?menu=<%=menu%>&submenu=<%=submenu%>" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
    		<% if (subcategory==null) { %>
 	  	  <frame src="<%=category%>/main.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
+        <% } else if (category.equals("demos")) { %>
+		  <frame src="/mmexamples/" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } else { %>
 		  <frame src="<%=category%>/<%=subcategory%>.jsp" name="main" scrolling="auto" marginwidth="1" marginheight="0" />
         <% } %>		
