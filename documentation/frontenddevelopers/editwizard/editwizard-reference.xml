@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"  [
-  <!ENTITY rf-origin  SYSTEM "reference/origin.sgm">
-  <!ENTITY rf-pos  SYSTEM "reference/pos.sgm">
-  <!ENTITY rf-action  SYSTEM "reference/action.sgm">
-  <!ENTITY rf-action-add  SYSTEM "reference/action-add.sgm">
-  <!ENTITY rf-action-create  SYSTEM "reference/action-create.sgm">
-  <!ENTITY rf-action-delete  SYSTEM "reference/action-delete.sgm">
-  <!ENTITY rf-action-load  SYSTEM "reference/action-load.sgm">
-  <!ENTITY rf-form-schema  SYSTEM "reference/form-schema.sgm">
-  <!ENTITY rf-list  SYSTEM "reference/list.sgm">
-  <!ENTITY rf-object  SYSTEM "reference/object.sgm">
-  <!ENTITY rf-step  SYSTEM "reference/step.sgm">
-  <!ENTITY rf-steps  SYSTEM "reference/steps.sgm">
-  <!ENTITY rf-wizard-schema  SYSTEM "reference/wizard-schema.sgm">
+	<!ENTITY rf-origin  SYSTEM "reference/origin.sgm">
+	<!ENTITY rf-pos  SYSTEM "reference/pos.sgm">
+	<!ENTITY rf-action  SYSTEM "reference/action.sgm">
+	<!ENTITY rf-action-add  SYSTEM "reference/action-add.sgm">
+	<!ENTITY rf-action-create  SYSTEM "reference/action-create.sgm">
+	<!ENTITY rf-action-delete  SYSTEM "reference/action-delete.sgm">
+	<!ENTITY rf-action-load  SYSTEM "reference/action-load.sgm">
+	<!ENTITY rf-form-schema  SYSTEM "reference/form-schema.sgm">
+	<!ENTITY rf-list  SYSTEM "reference/list.sgm">
+	<!ENTITY rf-object  SYSTEM "reference/object.sgm">
+	<!ENTITY rf-step  SYSTEM "reference/step.sgm">
+	<!ENTITY rf-steps  SYSTEM "reference/steps.sgm">
+	<!ENTITY rf-wizard-schema  SYSTEM "reference/wizard-schema.sgm">
 ] >
 <article class="specification">
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-reference.xml,v 1.7 2003-06-11 13:30:25 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.8 2003-06-12 17:23:04 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -51,7 +51,7 @@
 	<section id="introduction">
 		<title>Introduction</title>
 		<para>This reference describes the syntax of the wizards and how to access them using a browser.</para>
-  </section>
+	</section>
 	<section id="calling">
 		<title>Calling the Wizard Pages</title>
 		<para>This reference describes the wizard pages and how to call them from a html or jsp page.</para>
@@ -127,7 +127,7 @@
 					<listitem>
 						<para>The name of the main node type in a node path. The main node type designates the element in a list that you want to edit. By default, the wizard takes the last name in a node path as the main node type.</para>
 						<para>For instance, in the node path 'mags,news,publishtimes', the main node type recognized automatically will be 'publishtimes' - but it is more likely that we desire to edit the news element in this list. In this case, you can point out to the wizard to use the 'news' element of the list instead.</para>
-						<note><para>Available from MMBase 1.6.4 and up. Prior to 1.6.4, you can designate the main node type by adding the number field of that node type to the fields parameter (i.e: 'news.number,news.title,publistimes.date'). 
+						<note><para>Available from MMBase 1.6.4 and up. Prior to 1.6.4, you can designate the main node type by adding the number field of that node type to the fields parameter (i.e: 'news.number,news.title,publistimes.date').
 						This method still works in 1.6.4, but is discouraged as it is confusing.
 						</para></note>
 						<programlisting format="linespecific">main=news</programlisting>
@@ -252,11 +252,11 @@
 				<varlistentry>
 					<term>search</term>
 					<listitem>
-						<para>The serach parameter specified when the list should show a search box, and whether searching is mandatory. There are four possible values:</para>
+						<para>The search parameter specified when the list should show a search box, and whether searching is mandatory. There are four possible values:</para>
 						<para><emphasis>false</emphasis> turns searching off. If other parameters such as searchfields and serachvalue are given, the search is performed using those parameters but a serachbox is not displayed.</para>
 						<para><emphasis>true</emphasis> turns searching on, displaying a searchbox on top of the list, using defaults for parameters such as searchfields, if these are not specified.</para>
 						<para><emphasis>force</emphasis> is like TRUE, but searching (and showing a resultlist) is not performed until a serachvalue is specified. If no searchvalue is given, only the searchbox is displayed - no results are shown.</para>
-						<para><emphasis>auto</emphasis> makes searcing depdnend on teh presence of teh searcgfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para> 
+						<para><emphasis>auto</emphasis> makes searcing depdnend on teh presence of teh searcgfields parameter. If the searchfields parameter is given, a searchbox is shown. Otherwise, it is not. AUTO is the default value</para>
 						<note><para>Available from MMBase 1.6.4 and up</para></note>
 						<programlisting format="linespecific">search=true</programlisting>
 					</listitem>
@@ -275,6 +275,24 @@
 					<listitem>
 						<para>An optional title to use by the list. In general, you should specify this in the editwizard schema.</para>
 						<programlisting format="linespecific">title=News of The Week</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>proceed</term>
+					<listitem>
+						<para>System parameter, see the description at the wizard.jsp reference page for more info</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>replace</term>
+					<listitem>
+						<para>System parameter, see the description at the wizard.jsp reference page for more info</para>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>remove</term>
+					<listitem>
+						<para>System parameter, see the description at the wizard.jsp reference page for more info</para>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -302,7 +320,7 @@
 				<varlistentry>
 					<term>objectnumber</term>
 					<listitem>
-						<para>The number or alias of the object to edit. The object must exist. You can also supply the keyword 'new', which creates a new object instead of editing an existing one.</para> 
+						<para>The number or alias of the object to edit. The object must exist. You can also supply the keyword 'new', which creates a new object instead of editing an existing one.</para>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -326,7 +344,7 @@
 				<varlistentry>
 					<term>debug</term>
 					<listitem>
-						<para>If debug=true, the wizard will place additional information in the wizard page that allows for debugging of the application. This includes a link to a debug page that allows you to view the loaded object data and the wizard schema.</para>
+						<para>If debug=true, the wizard will place additional information in the wizard page that allows for debugging of the application. This includes a link to a debug page that allows you to view the loaded object data and the wizard schema. This link specifies parameters such as sessionkey and popupid as required.</para>
 						<programlisting format="linespecific">debug=true</programlisting>
 					</listitem>
 				</varlistentry>
@@ -340,10 +358,40 @@
 				<varlistentry>
 					<term>origin</term>
 					<listitem>
-						<para>A node alias or number, which will be passed to the underlying editwizard. The value can then be referenced in the editwizard schema using the {$origin} variable.
-						This can be used to create relations to nodes whose 'origin' is determined outside the wizard (i.e. in a complex search or determined through user preferences).
+						<para>A node alias or number. This value can be referenced in the editwizard schema using the {$origin} variable. This can be used to create relations to nodes whose 'origin' is determined outside the wizard (i.e. in a complex search or determined through user preferences).
 						</para>
 						<programlisting format="linespecific">origin=my_start_node</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>popupid</term>
+					<listitem>
+						<para>This parameter is passed by the system, you never pass it yourself. It is used to identify a 'popup' wizard. A popup wizard is a sub-wizard for the main wizard that, unlike an 'inline' sub-wizard, opens in a separate browser window. Because of this, it needs to seperately maintain its status (identified by the popupid). Once the task of a popup wizard ends, it's window is closed, and the parent wizard is refreshed.</para>
+						<note><para>You never pass this parameter by hand. They are provided by the &lt;command name="startwizard"&gt; and &lt;field ftype="startwizard"&gt; tags in a wizard schema. However, you migth need to pass the parameter in links if you override xsl stylesheets, and if you want to use the debug.jsp page to view a popup wizard's debug data, you need to know the value of this parameter.
+						</para></note>
+						<programlisting format="linespecific">popupid=my_id</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>proceed</term>
+					<listitem>
+						<para>This is a parameter passed by the system. It is used to indicate that the current wizard is still being processed, and therefor its data (stored in the user's session) should be kept an re-used by this call. Omitting this parameter (or passing it with the value false) causes all processed data to be removed, and replaced by a new wizard.</para>
+						<note><para>You never pass this parameter by hand, but you might need to pass it in links in overriding xsl stylesheets.</para></note>
+						<programlisting format="linespecific">popupid=my_id</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>replace</term>
+					<listitem>
+						<para>System parameter</para>
+						<note><para>You never pass this parameter by hand. It is used to by the wizard to pass state information.</para></note>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>remove</term>
+					<listitem>
+						<para>System parameter</para>
+						<note><para>You never pass this parameter by hand. It is used to by the wizard to pass state information.</para></note>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -366,6 +414,14 @@
 					<listitem>
 						<para>A key that identifies the 'session' of this wizard. See the wizard.jsp for more information.</para>
 						<programlisting format="linespecific">sessionkey=my_key</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>popupid</term>
+					<listitem>
+						<para>Specify this parameter to view a popup wizard's debug data (instead of the data displayed by the main wizard). See the popupid of the wizard.jsp for more info.
+						</para>
+						<programlisting format="linespecific">popupid=my_id</programlisting>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -393,7 +449,7 @@
 	</section>
 	<section id="syntaxreference">
 		<title>Syntax Reference</title>
-<!-- variables -->	
+<!-- variables -->
 &rf-origin;
 &rf-pos;
 <!-- tags -->
@@ -409,7 +465,7 @@
 &rf-steps;
 &rf-wizard-schema;
 
-	  </section>	
+		</section>
 		<section>
 			<title>Syntax reference</title>
 			<variablelist>
