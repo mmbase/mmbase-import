@@ -28,9 +28,9 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 *
 **/
-public class SequenceTag extends CloudReferrerTag implements CloudProvider {
+public class ContextTag extends CloudReferrerTag implements CloudProvider {
 
-    private static Logger log = Logging.getLoggerInstance(SequenceTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ContextTag.class.getName());
 
     private HashMap nodes = new HashMap();
       

@@ -555,12 +555,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </attribute>
   </tag>
   <tag>
-    <name>sequence</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.SequenceTag</tagclass>
+    <name>context</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.ContextTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>
       <p>
-      Groups node-tags. Tags inside a sequence tag can find each other's
+      Groups node-tags. Tags inside a context tag can find each other's
       providing Node. You need this for example when you create a
       relation.
       </p>
@@ -568,7 +568,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       In TCP this is called 'create'.
       </p>
       <p>
-      A Transaction is a sequence too, so normally it will suffice to
+      A Transaction is a context too, so normally it will suffice to
       use a transaction.
       </p>
     </info>
@@ -678,7 +678,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <bodycontent>JSP</bodycontent>
     <info>
      The transaction tag creates a transaction. A transaction is
-     a sequence too.
+     a context too.
     </info>
     <attribute>
       <name>id</name>
