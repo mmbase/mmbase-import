@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * This class makes a tag which can list strings.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StringListTag.java,v 1.15 2004-03-24 00:59:01 michiel Exp $ 
+ * @version $Id: StringListTag.java,v 1.16 2004-04-29 15:28:01 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -122,6 +122,9 @@ public class StringListTag extends NodeReferrerTag implements ListProvider, Writ
             }
             returnList = (List) o;
             truncateList();
+            if (getReferid().equals(getId())) { // in such a case, don't whine
+                getContextProvider().getContextContainer().unRegister(getId());
+            }
         } else {
             returnList = getList();
         }
