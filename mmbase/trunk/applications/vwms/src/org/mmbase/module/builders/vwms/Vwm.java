@@ -28,13 +28,13 @@ public class Vwm  implements VwmInterface,VwmProbeInterface,Runnable {
 	int sleeptime;
 
 	// name of this bot, set by its subclass
-	String name="Unknown";
+	protected String name="Unknown";
 
 	// what clients are using this vwm now
 	Vector clients = new Vector();
 
 	// its parent MMObjectBuilder that controlls all the Vwms
-	Vwms Vwms;
+	protected Vwms Vwms;
 
 	/*
 	* init this bot is called by Vwms
