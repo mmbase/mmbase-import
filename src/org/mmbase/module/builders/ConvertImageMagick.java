@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.38 2002-06-06 21:18:10 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.39 2002-06-07 09:54:51 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -416,8 +416,22 @@ public class ConvertImageMagick implements ImageConvertInterface {
         }
         try {
             log.debug("starting program");
-            Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]), 
-                                                  null, cwd);
+
+            // Can we please drop support for 1.2?
+
+            // If you set the working dir (not possible in 1.2), then
+            // it will be set to the mmbase fonts directory There you
+            // can then put your own 'type.mgk' to describe fonts. In
+            // that way it is easy to distribute the necesary fonts
+            // together with your application. That can be done in a
+            // OS generic way then.
+
+            if (cwd != null) {
+                log.warn("In JDK 1.2 the current working directory cannot be set in a RuntTime.exec call. You have used the '-font' option. Put type.mgk in $HOME/.magick/ if you want to use use defined fonts"); 
+            }
+            //Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]), null, cwd); // 1.3
+            Process p = Runtime.getRuntime().exec((String [])cmd.toArray(new String[0]));             // 1.2
+
             // in grabs the stuff coming from stdout from program...
             InputStream in = p.getInputStream();
             // err grabs the stuff coming from stderr from program...
