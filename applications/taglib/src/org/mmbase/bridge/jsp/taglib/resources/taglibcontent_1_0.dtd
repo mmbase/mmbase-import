@@ -1,0 +1,13 @@
+<!ELEMENT taglibcontent (escaper*, postprocessor*) >
+
+<!ELEMENT escaper  (class*) >
+<!ATTLIST escaper  id    CDATA  #REQUIRED > 
+<!ATTLIST escaper  type  CDATA  #IMPLIED > <!-- type equals id if not speficied -->
+
+<!ELEMENT postprocessor  (class*) >
+<!ATTLIST postprocessor  id    CDATA  #REQUIRED > 
+
+<!ELEMENT class      (#PCDATA) >      <!-- class of type CharTransformer -->
+<!ATTLIST class  config CDATA  #IMPLIED > 
+<!ATTLIST class  back   NMTOKEN  #IMPLIED >   <!-- if 'transformBack' must be used of CharTransformer -->
+
