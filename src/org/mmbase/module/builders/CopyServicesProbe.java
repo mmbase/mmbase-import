@@ -49,6 +49,7 @@ public class CopyServicesProbe implements Runnable {
 		/* Start up the main thread */
 		if (kicker == null) {
 			kicker = new Thread(this,"CopyServices");
+			kicker.setDaemon(true);
 			kicker.start();
 		}
 	}
@@ -58,17 +59,14 @@ public class CopyServicesProbe implements Runnable {
 	 */
 	public void stop() {
 		/* Stop thread */
-		kicker.setPriority(Thread.MIN_PRIORITY);  
-		kicker.suspend();
-		kicker.stop();
+		kicker.interrupt();
 		kicker = null;
 	}
 
 	/**
 	 * admin probe, try's to make a call to all the maintainance calls.
 	 */
-	public void run() {
-		kicker.setPriority(Thread.MIN_PRIORITY+1);  
+	public void run() {  
 		String from=node.getStringValue("from");
 		String to=node.getStringValue("to");
 		String fromroot=node.getStringValue("fromroot");
