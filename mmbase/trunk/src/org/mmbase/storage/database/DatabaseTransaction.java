@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: DatabaseTransaction.java,v 1.4 2003-05-02 20:25:45 michiel Exp $
+ * @version $Id: DatabaseTransaction.java,v 1.5 2003-05-05 13:29:50 michiel Exp $
  */
 public class DatabaseTransaction implements Transaction {
 
@@ -101,9 +101,9 @@ public class DatabaseTransaction implements Transaction {
     public boolean hasTable(String tableName) throws StorageException {
         boolean result=false;
         try {
-            DatabaseMetaData metaDeta=con.getMetaData();
-            ResultSet res=metaDeta.getTables(null,null,tableName,null);
-            result=res.next();
+            DatabaseMetaData metaDeta = con.getMetaData();
+            ResultSet res = metaDeta.getTables(null, null, tableName, null);
+            result = res.next();
         } catch (Exception e) {
             throw new StorageException(e.getMessage());
         }
@@ -114,15 +114,15 @@ public class DatabaseTransaction implements Transaction {
      * Queries the database metadata to obtain a list of tables following a specified pattern.
      * @param baseName the prefix (base name) of the names of the tables to look for
      * @throws StorageException when the metadata could not be retrieved
-     * @return a List of tablenames
+     * @return a Set of tablenames
      */
-    public List getTables(String baseName) throws StorageException {
-        List result=new Vector();
+    public Set getTables(String baseName) throws StorageException {
+        Set result = new HashSet();
         try {
             DatabaseMetaData metaDeta=con.getMetaData();
-            ResultSet res=metaDeta.getTables(null,null,baseName+metaDeta.getSearchStringEscape()+"_%",null);
+            ResultSet res = metaDeta.getTables(null, null, baseName + metaDeta.getSearchStringEscape() + "_%", null);
             while (res.next()) {
-                String tableName=res.getString("TABLE_NAME");
+                String tableName = res.getString("TABLE_NAME");
                 result.add(tableName);
             }
         } catch (Exception e) {
