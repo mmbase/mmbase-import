@@ -8,7 +8,8 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.logging;
-import java.util.StringTokenizer;
+import java.util.*;
+import org.apache.log4j.spi.LocationInfo;
 
 /**
  * A very simple implementation of Logger. It ignores everything below
@@ -28,16 +29,22 @@ import java.util.StringTokenizer;
 
 public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
 
-    private static ExceptionImpl root = new ExceptionImpl();
+    private String cat;
+    private static   Map instances = new HashMap();
+    protected static int exceptionLevel  = Level.WARN_INT;
 
-    protected static int  exceptionlevel = Level.WARN_INT;
-
-    private ExceptionImpl() {
-        // a Singleton class.
+    private ExceptionImpl(String c) {
+        cat = c;
     }
 
     public static  ExceptionImpl getLoggerInstance(String name) {
-        return root;
+        if (instances.containsKey(name)) {
+            return (ExceptionImpl) instances.get(name);
+        } else {
+            ExceptionImpl i = new ExceptionImpl(name);
+            instances.put(name, i);
+            return i;
+        }
     }
 
     /**
@@ -49,11 +56,11 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
    
     public static  void configure(String c) {
         if (c == null) {
-            return; // everything default
+           return; // everything default
         } else {
             StringTokenizer t    = new StringTokenizer(c, ","); 
             if (t.hasMoreTokens()) {
-                exceptionlevel = Level.toLevel(t.nextToken()).toInt();
+                exceptionLevel = Level.toLevel(t.nextToken()).toInt();
             }
             if (t.hasMoreTokens()) {
                 level = Level.toLevel(t.nextToken()).toInt();
@@ -63,10 +70,11 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
 
     protected final void log (String s, int l) {
         if (l >= level) {
-            System.out.println(s);
+            LocationInfo info = new LocationInfo(new Throwable(), AbstractSimpleImpl.class.getName());
+            System.out.println(info.getFileName() + ":" + info.getMethodName() + "." + info.getLineNumber() + ": " + s);
         }
-        if (l >= exceptionlevel) {
-            throw new LoggingException(s);
+        if (l >= exceptionLevel) {
+            throw new LoggingException(cat + ":" + s);
         }
     }
 
