@@ -19,19 +19,18 @@ import org.xml.sax.InputSource;
 
 /**
  * @javadoc
- * @application Flash
- * @author Daniel Ockeloen
- * @version $Id: XMLDynamicFlashReader.java,v 1.7 2004-10-01 08:43:44 pierre Exp $
+ * @version $Id: XMLDynamicFlashReader.java,v 1.8 2005-02-24 16:03:34 michiel Exp $
  */
+
 public class XMLDynamicFlashReader {
 
-    private static Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(XMLDynamicFlashReader.class);
 
     Document document;
 
     public XMLDynamicFlashReader(String filename) {
         try {
-            document = XMLBasicReader.getDocumentBuilder().parse(new java.io.File(filename));
+            document = XMLBasicReader.getDocumentBuilder(false).parse(new java.io.File(filename));
 
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
@@ -40,7 +39,7 @@ public class XMLDynamicFlashReader {
 
     public XMLDynamicFlashReader(CharArrayReader reader) {
         try {
-            document = XMLBasicReader.getDocumentBuilder().parse(new InputSource(reader));
+            document = XMLBasicReader.getDocumentBuilder(false).parse(new InputSource(reader));
         } catch (Exception e) {
             log.error(Logging.stackTrace(e));
         }

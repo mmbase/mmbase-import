@@ -24,14 +24,13 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * Implements the parsing and generating of dynamic flash files
- * @application Flash
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.21 2004-10-01 08:43:44 pierre Exp $
+ * @version $Id: MMFlash.java,v 1.22 2005-02-24 16:03:34 michiel Exp $
  */
 public class MMFlash extends Module {
 
-    static Logger log = Logging.getLoggerInstance(MMFlash.class.getName());
+    static final Logger log = Logging.getLoggerInstance(MMFlash.class);
 
     private String classname = getClass().getName();
     private boolean debug = false;
@@ -146,9 +145,9 @@ public class MMFlash extends Module {
 
             // check if file exists
             // --------------------
-            if (inp==null) {
-                log.error("Cannot find the sxf-file: '"+filename+"'!");
-                return(null);
+            if (inp == null) {
+                log.error("Cannot find the sxf-file: '" + filename + "'!");
+                return null;
             }
 
             sp.body = new String(inp);
@@ -437,7 +436,7 @@ public class MMFlash extends Module {
                 }
                 String src=(String)rep.get("src");
                 if (src!=null) {
-                    // bad way to test for MMBase images!
+                    // bad way to test for MMBase images! 
                     if (src.startsWith("/img.db?")) {
                         String result=mapImage(src.substring(8),tempFiles);
                         part+=" \""+result+"\"";
@@ -536,11 +535,9 @@ public class MMFlash extends Module {
 
     private byte[] generateSwtDebug(String filename) {
         Process p=null;
-        String s="",tmp="";
         DataInputStream dip= null;
         DataInputStream diperror= null;
         String command="";
-        PrintStream out=null;
         RandomAccessFile  dos=null;
 
         try {
@@ -548,8 +545,6 @@ public class MMFlash extends Module {
             p = (Runtime.getRuntime()).exec(command);
         } catch (Exception e) {
             log.error("could not execute command:'"+command+"'");
-            s+=e.toString();
-            out.print(s);
         }
         log.service("Executed command: "+command+" succesfull, now gonna parse");
         dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
@@ -590,11 +585,9 @@ public class MMFlash extends Module {
      */
     private void generateFlash(String scriptpath, String inputfile) {
         Process p=null;
-        String s="",tmp="";
         DataInputStream dip= null;
         DataInputStream diperror= null;
         String command="";
-        PrintStream out=null;
         RandomAccessFile  dos=null;
 
         try {
@@ -602,8 +595,6 @@ public class MMFlash extends Module {
             p = (Runtime.getRuntime()).exec(command);
         } catch (Exception e) {
             log.error("could not execute command:'"+command+"'");
-            s+=e.toString();
-            out.print(s);
         }
         log.debug("Executed command: "+command+" succesfull, now gonna parse");
         dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
