@@ -49,10 +49,6 @@ public class NodeTag extends NodeLikeTag implements BodyTag {
     }
     */
 
-    public void setType(String type){
-        this.type=type;    
-    }
-
     public int doStartTag() throws JspException{            
         Node node;
 
