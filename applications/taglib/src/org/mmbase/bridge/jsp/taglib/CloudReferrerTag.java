@@ -36,8 +36,6 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
 
     private static CloudContext cloudContext;
 
-    private CloudProvider cloudTag = null;
-
     private String cloudId = null; 
     // the id of the cloud to which we refer
     // not yet supported by CloudTag
@@ -75,10 +73,7 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
      */
 
     protected Cloud getCloud() throws JspTagException {
-        if (cloudTag == null) {
-            cloudTag = findCloudProvider();
-        }
-        return cloudTag.getCloudVar();
+        return findCloudProvider().getCloudVar();
     }
 
 
@@ -102,9 +97,9 @@ public abstract class CloudReferrerTag extends ContextReferrerTag {
         if (n instanceof Node) {
             log.debug("found a Node in Context");
             return (Node) n;
-        } else if (n instanceof String) {
+        } else if ((n instanceof String) || (n instanceof Number)) {
             log.debug("found a Node Number in Context");
-            return getCloud().getNode((String)n);
+            return getCloud().getNode(n.toString());
         } else {
             throw new JspTagException("Element " + referid + " from context " + contextId + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
         }
