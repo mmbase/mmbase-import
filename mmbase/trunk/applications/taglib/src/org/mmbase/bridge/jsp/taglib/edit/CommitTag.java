@@ -58,7 +58,7 @@ public class CommitTag extends CloudReferrerTag {
             Transaction trans = (Transaction) tt.getCloudVar();
             doAction(trans);
             if (tt.getId() != null) {
-                findContext().unRegister(tt.getId());
+                getContextTag().unRegister(tt.getId());
             }
         }
         return SKIP_BODY;    

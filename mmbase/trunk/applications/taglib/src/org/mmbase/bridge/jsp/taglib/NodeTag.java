@@ -65,8 +65,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         node = null;
         try {
             // try to find if already in context.
-            ContextTag cp = findContext();
-            node = cp.getNode(id);
+            node = getContextTag().getNode(id);
         } catch (JspTagException e) {
             //could not be found. No problem.
         }
@@ -87,8 +86,6 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
     
     
     public int doStartTag() throws JspTagException{            
-        
-        log.debug("pvd");
         if (node == null) {
             log.debug("node is null");
             if (number != null) { 
