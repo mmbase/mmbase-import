@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.41 2001-02-22 16:29:39 install Exp $
+$Id: scanparser.java,v 1.42 2001-03-08 18:43:23 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.41  2001/02/22 16:29:39  install
+Rob: Fixes bug in parsing TRANSACTION tag, bug solved by Remco van t Veer
+
 Revision 1.40  2001/02/16 09:22:15  pierre
 scanparser : fixed GOTO command
 
@@ -136,6 +139,8 @@ import org.mmbase.module.core.*;
 
 import org.mmbase.module.CounterInterface;
 
+import org.mmbase.util.logging.*;
+
 /**
  * scanpage is a container class it holds all objects needed per scan page
  * it was introduced to make servscan threadsafe but will probably in the future
@@ -143,13 +148,12 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.41 $ $Date: 2001-02-22 16:29:39 $
+ * @$Revision: 1.42 $ $Date: 2001-03-08 18:43:23 $
  */
 public class scanparser extends ProcessorModule {
 
-	private	String 	classname 	= getClass().getName();
-	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
-
+	private static Logger log =  Logging.getLoggerInstance(scanparser.class.getName()); 
+	
 	private static HTMLFormGenerator htmlgen=new HTMLFormGenerator();
 
 	public static scancacheInterface scancache=null;
@@ -178,14 +182,14 @@ public class scanparser extends ProcessorModule {
 				String curdir=System.getProperty("user.dir");
 				htmlroot=curdir+"/default-web-app/";
 			} else {
-				debug("ERROR: could not retrieve document root, use property (-D)mmbase.htmlroot=/my/html/root/dir !");
+				log.error("could not retrieve document root, use property (-D)mmbase.htmlroot=/my/html/root/dir !");
 			}
 		} else {
 			if (documentRoot.endsWith(File.separator)) {
 				documentRoot=documentRoot.substring(0,documentRoot.length()-1);
 			}
 			htmlroot=documentRoot+File.separatorChar;
-			debug("Using documentRoot : "+documentRoot);
+			log.debug("Using documentRoot : "+documentRoot);
 		}
 	}
 
@@ -380,7 +384,7 @@ public class scanparser extends ProcessorModule {
 	 */
 	public final String handle_line(String body,sessionInfo session,scanpage sp) throws ParseException {
 
-		if (debug) debug("handle_line(): scanparser-> debug 1");
+		if (log.isDebugEnabled()) log.debug("handle_line(): scanparser-> debug 1");
 		String part=null;
 		int qw_pos,qw_pos2,end_pos,end_pos2;
 		int precmd=0,postcmd=-1,prepostcmd=0;
@@ -391,7 +395,7 @@ public class scanparser extends ProcessorModule {
 			body=do_conditions(body,session,sp);
 		}
 
-		if (debug) debug("handle_line(): scanparser-> debug 2");
+		if (log.isDebugEnabled()) log.debug("handle_line(): scanparser-> debug 2");
 
 		// First find the processor (for the MACRO commands) 
 		part=finddocmd(body,"<PROCESSOR ",'>',8,session,sp);
@@ -403,7 +407,7 @@ public class scanparser extends ProcessorModule {
 		body=part;
 
 
-		if (debug) debug("handle_line(): scanparser-> debug 3");
+		if (log.isDebugEnabled()) log.debug("handle_line(): scanparser-> debug 3");
 		
 		// <LIST text1> text2 </LIST>
 		// The code below will hand text1 and text2 to the method do_list(text1, text2, session, sp)
@@ -418,7 +422,7 @@ public class scanparser extends ProcessorModule {
 					} catch(Exception e) {
 						String errorMsg = "Error in list: "+e.getMessage()+" in page "+sp.getUrl();
 						newbody.append(errorMsg);
-						debug("handle_line(): ERROR: do_list(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
+						log.debug("handle_line(): ERROR: do_list(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
 						e.printStackTrace();
 					}
 					postcmd=end_pos2+7;
@@ -506,7 +510,7 @@ public class scanparser extends ProcessorModule {
 					try {
 						newbody.append(do_transaction(body.substring(precmd,postcmd),session,sp));
 					} catch(Exception e) {
-						debug("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
+						log.error("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
 						e.printStackTrace();
 					}
 				} 
@@ -686,7 +690,7 @@ public class scanparser extends ProcessorModule {
 						newbody.append(partbody);
 						break;
 					default: 
-						debug("Woops broken case in method finddocmd");
+						log.fatal("Woops broken case in method finddocmd");
 						break;
 				}
 			} else {
@@ -717,10 +721,10 @@ public class scanparser extends ProcessorModule {
 		// Scan & Parse all $ attributes used in the tag.
 		String parsedPart = dodollar(part,session,sp);
 
-		if( debug ) debug("do_counter("+parsedPart+"): inserting tag in page.");
+		if( log.isDebugEnabled() ) log.debug("do_counter("+parsedPart+"): inserting tag in page.");
 		long time = System.currentTimeMillis();
 		result = counter.getTag(parsedPart, session, sp);
-		debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
+		log.debug("do_counter(): done inserting, took "+ (System.currentTimeMillis() - time ) + " ms.");
 
 		return result;
 	}
@@ -749,7 +753,7 @@ public class scanparser extends ProcessorModule {
 		if (filename.indexOf("..")>=0) {
 			sp.setParamsVector(oldparams);
 			sp.partlevel--;
-			debug("do_part: Usage of '..' in filepath not allowed!");
+			log.error("do_part: Usage of '..' in filepath not allowed!");
 			return("Usage of '..' in filepath not allowed!");
 		}
 
@@ -758,13 +762,13 @@ public class scanparser extends ProcessorModule {
  			String servletPath = sp.req.getServletPath();
  			//debug("do_part: filename:"+servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename);
  			filename = servletPath.substring(0,servletPath.lastIndexOf("/")+1)+filename;
- 			if (debug) debug("do_part: filename:"+filename);
+ 			if (log.isDebugEnabled()) log.debug("do_part: filename:"+filename);
  		}
  
 
 		// Test if we are going circular
 		if (sp.partlevel>8) {
-			debug("Warning more then "+sp.partlevel+" nested parts "+sp.req_line);
+			log.warn("Warning more then "+sp.partlevel+" nested parts "+sp.req_line);
 			if (sp.partlevel>14) throw new CircularParseException("Too many parts, level="+sp.partlevel+" URI "+sp.getUrl());
 		}
 
@@ -783,7 +787,7 @@ public class scanparser extends ProcessorModule {
 				if (paramline!=null) errorMsg += "?" + paramline;
 				errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
 				part = errorMsg;
-				debug("do_part(): "+errorMsg);
+				log.error("do_part(): "+errorMsg);
 				e.printStackTrace();
 			}
 	
@@ -847,7 +851,7 @@ public class scanparser extends ProcessorModule {
 		{		String errorMsg = "Error in part "+filename;				
 				errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
 				part = errorMsg;
-				debug("handlePartCache(): "+errorMsg);
+				log.error("handlePartCache(): "+errorMsg);
 				e.printStackTrace();
 		}
 		scancache.put("HENK", filename, result);
@@ -895,7 +899,7 @@ public class scanparser extends ProcessorModule {
 		// If null returned we're done and return bestFile
 		path = node.parent.getSmartPath(documentRoot, path, nodeNumber, getVersion(node.getName(), session));
 		if (path==null) {
-			if (debug) debug("getSmartFile: no dir found for node "+nodeNumber+". Returning "+bestFile);
+			if (log.isDebugEnabled()) log.debug("getSmartFile: no dir found for node "+nodeNumber+". Returning "+bestFile);
 			return bestFile;
 		}
 
@@ -915,8 +919,8 @@ public class scanparser extends ProcessorModule {
 		File f = new File(fileToCheck);
 		if (f.exists()) {
 			bestFile = newFileName;
-			if (debug) debug("Found and selecting " + newFileName + " as new best file");
-		} else if (debug) debug(fileToCheck + " not found, continuing search");
+			if (log.isDebugEnabled()) log.debug("Found and selecting " + newFileName + " as new best file");
+		} else if (log.isDebugEnabled()) log.debug(fileToCheck + " not found, continuing search");
 		
 		// If no more object numbers then return the bestFile so far else continue the travel
 		if (!nodes.hasMoreElements())
@@ -945,7 +949,7 @@ public class scanparser extends ProcessorModule {
 			throw new ParseException("PART or FILE expected after <"+cmdName);
 		args = args.substring(pos+1);
 		args = dodollar(args, session, sp);
-		if (debug) debug(cmdName+action+" "+args);
+		if (log.isDebugEnabled()) log.debug(cmdName+action+" "+args);
 		
 		boolean byALias=false;
 		if ((args.length()>=6) && args.substring(0,6).equals("ALIAS ")) {
@@ -1027,7 +1031,7 @@ public class scanparser extends ProcessorModule {
 			bestFile = getSmartFileName( path, builderPath, filename, bestFile, e, session, leaf, byALias);
 		
 		if (!args.equals("")) bestFile += "?"+args;
-		if (debug) debug(cmdName+action+" using "+bestFile);
+		if (log.isDebugEnabled()) log.debug(cmdName+action+" using "+bestFile);
 
 		if (action.equals("FILE"))
 			return bestFile;
@@ -1035,6 +1039,10 @@ public class scanparser extends ProcessorModule {
 		return do_part(bestFile, session, sp, addMarkers);
 	}
 
+	/**
+	 * @param in:  A string with the location of the to be parsed file
+	 * @param out: A html-page
+	 */
 	public final String getfile(String where) {
 		File scanfile=null;
 		int filesize,len=-1;
@@ -1057,12 +1065,19 @@ public class scanparser extends ProcessorModule {
 			len=scan.read(cline.buffer,0,filesize);
 			scan.close();
 		} catch(FileNotFoundException e) {
-			//give_404_error("getfile");
-			//debug("getfile("+where+"): error getfile servscan : "+scanfile.getName());
-	 	} catch(IOException e) {}
+			// give_404_error("getfile"); // does not seem to exist.
+			// not nice but, at least it does _something_ now:
+			rtn = "File " + where + " not found";
+			// perhaps better do not show, since it looks ugly in the editors, of which the help files normally are missing...
+			// but at least log:
+			log.error("file not found: getfile("+where+"): error getfile servscan : "+scanfile.getName());
+	 	} catch(IOException e) {
+			log.error("IOException: " + Logging.stackTrace(e));
+		}
 		if (len!=-1) {
 			rtn=new String(cline.buffer,0);
 		}
+		log.trace(rtn); // perhaps a little overkill
 		return(rtn);
 	}
 
@@ -1263,7 +1278,7 @@ public class scanparser extends ProcessorModule {
     private final String do_mod(scanpage sp,String part) {
         int index = part.indexOf('-');
         if (index == -1) {
-            debug("do_mod(): ERROR: part (no '-'): '" + part+"' ("+sp.getUrl()+")");
+            log.error("do_mod(): part (no '-'): '" + part+"' ("+sp.getUrl()+")");
             return "";
         } else {
             String moduleName = part.substring(0,index);
@@ -1271,7 +1286,7 @@ public class scanparser extends ProcessorModule {
 
             ProcessorInterface proc = getProcessor(moduleName);
             if (proc == null) {
-                debug("do_mod(): ERROR: no Processor(" + moduleName +") found for page("+sp.getUrl()+")");
+                log.error("do_mod(): no Processor(" + moduleName +") found for page("+sp.getUrl()+")");
                 return "";
             } else {
                 return proc.replace(sp, moduleCommand);
@@ -1294,7 +1309,7 @@ public class scanparser extends ProcessorModule {
 				Object obj = getModule (procName);
 				if (obj == null)
 				{
-					debug("getProcessor(): Not authorized or not a valid class name: " + procName);
+					log.error("getProcessor(): Not authorized or not a valid class name: " + procName);
 					return null; 
 				} else {
 					// debug(obj);
@@ -1309,7 +1324,7 @@ public class scanparser extends ProcessorModule {
 				}
 				else
 				{	
-					debug("getProcessor(): ERROR: not a valid Processor("+ procName+")");
+					log.error("getProcessor(): not a valid Processor("+ procName+")");
 					return null;	
 				}
 			}
@@ -1407,9 +1422,9 @@ public class scanparser extends ProcessorModule {
 				if( tmpprocessor==null )
 				{
 					if (sp.processor!=null)
-						debug("do_macro(): WARNING: No processor("+str+") found for page("+sp.getUrl()+"), but scanpage has one.");
+						log.warn("do_macro(): No processor("+str+") found for page("+sp.getUrl()+"), but scanpage has one.");
 					else
-						debug("do_macro(): ERROR: No processor("+str+") found for page("+sp.getUrl()+")");
+						log.error("do_macro(): No processor("+str+") found for page("+sp.getUrl()+")");
 				}
 			}
 		}
@@ -1421,7 +1436,7 @@ public class scanparser extends ProcessorModule {
 		} else if (sp.processor!=null) {
 			tokje=htmlgen.getHTMLElement(sp, sp.processor,cmds);
 		} else {
-			debug("do_macro(): ERROR: No processor() specified in page("+sp.getUrl()+")");
+			log.error("do_macro(): No processor() specified in page("+sp.getUrl()+")");
 			tokje="<B> No Processor specified in page </B><BR>";
 		}
 		return(tokje);
@@ -1570,7 +1585,7 @@ public class scanparser extends ProcessorModule {
 				}
 			}
 		} else {
-			debug("do_if(): ERROR: no end on if command");
+			log.error("do_if(): no end on if command");
 		}
 		return(body);
 	}
@@ -1815,7 +1830,7 @@ public class scanparser extends ProcessorModule {
 				// org.mmbase lastlistitem=curitem;
 			} else {
 				rtn.append(" Processor failed to process command <br>");
-				debug("do_list(): Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
+				log.error("do_list(): Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
 			}
 		} else {
 			rtn.append(" No Processor specified in page <br>");
@@ -1924,7 +1939,7 @@ public class scanparser extends ProcessorModule {
 				ltime1=ltime2;
 			} else {
 				rtn.append(" Processor failed to process command <br>");
-				debug("do_list(): ERROR: Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
+				log.error("do_list(): Processor failed to process command : "+cmd+" ("+sp.processor+") ("+tmpprocessor+")");
 			}
 		} else {
 			rtn.append(" No Processor specified in page <br>");
@@ -1938,8 +1953,8 @@ public class scanparser extends ProcessorModule {
 			scancache.put("HENK","/LISTS/"+oldcmd+template,rtn.toString());
 		}
 		ll2=System.currentTimeMillis();
-		if (debug && (ll2-ll1)>300) {
-			debug("do_list(): time("+(ll2-ll1)+" ms)");
+		if (log.isDebugEnabled() && (ll2-ll1)>300) {
+			log.debug("do_list(): time("+(ll2-ll1)+" ms)");
 		}
 		return(rtn.toString());
 	}
@@ -2031,12 +2046,12 @@ public class scanparser extends ProcessorModule {
 			if (sp.processor!=null) {
 				sp.processor.process(sp,proc_cmd,proc_var);
 			} else {
-				debug("do_proc_input(): ERROR: Processor("+part+") is not loaded in server for page("+sp.getUrl()+")");
+				log.error("do_proc_input(): Processor("+part+") is not loaded in server for page("+sp.getUrl()+")");
 			}
 		} else {
-			debug("do_proc_input(): No Processor specified : "+rq_line);
-			debug("do_proc_input(): proc_var="+proc_var);
-			debug("do_proc_input(): proc_cmd="+proc_cmd);
+			log.warn("do_proc_input(): No Processor specified : "+rq_line);
+			log.info("do_proc_input(): proc_var="+proc_var);
+			log.info("do_proc_input(): proc_cmd="+proc_cmd);
 			return;
 		}
 		return;	
@@ -2051,7 +2066,7 @@ public class scanparser extends ProcessorModule {
 
 	public synchronized String calcPage(String part2,scanpage sp,int cachetype) {
 
-		if (debug) debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+")");
+		if (log.isDebugEnabled()) log.debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+")");
 
 		try {
 			String filename,paramline=null;
@@ -2065,7 +2080,7 @@ public class scanparser extends ProcessorModule {
 				//((worker)req).setParamLine(paramline);
 				sp.setParamsLine(paramline);
 				if (sp.req_line==null) sp.req_line=filename;
-				if (debug) debug("calcPage(): setting paramline="+paramline);
+				if (log.isDebugEnabled()) log.debug("calcPage(): setting paramline="+paramline);
 			} else {
 				filename=part2;
 			}
@@ -2073,10 +2088,10 @@ public class scanparser extends ProcessorModule {
 				sp.mimetype=getMimeTypeFile(filename);
 			}
 			
-			if (debug) {	
-				debug("calcPage(): filename="+filename);
-				debug("calcPage(): paramline="+paramline);
-				debug("calcPage(): mimetype="+sp.mimetype);
+			if (log.isDebugEnabled()) {	
+				log.debug("calcPage(): filename="+filename);
+				log.debug("calcPage(): paramline="+paramline);
+				log.debug("calcPage(): mimetype="+sp.mimetype);
 			}
 			sp.body=getfile(filename);
 	
@@ -2102,7 +2117,7 @@ public class scanparser extends ProcessorModule {
 				return("");
 			}
 		} catch (Exception r) {
-			debug("calcPage("+part2+","+sp.getUrl()+","+cachetype+"): ERROR: "+r);
+			log.error("calcPage("+part2+","+sp.getUrl()+","+cachetype+"): "+r);
 			r.printStackTrace();
 			return("");
 		}
@@ -2122,7 +2137,7 @@ public class scanparser extends ProcessorModule {
 	Vector doMAlphaSort(Vector input,String sortonnumbers,int numberofitems) {
 
 		//SortedVector output = new SortedVector(new RowVectorCompare(sortonnumber));
-		if (debug) debug("doMAlphaSort: Sorting using MultiColCompare("+sortonnumbers+ ")");
+		if (log.isDebugEnabled()) log.debug("doMAlphaSort: Sorting using MultiColCompare("+sortonnumbers+ ")");
 		SortedVector output = new SortedVector(new MultiColCompare(sortonnumbers));
 		// first create vectors with numberofitems per vector
 		Enumeration einput=input.elements();
