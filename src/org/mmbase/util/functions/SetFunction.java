@@ -18,73 +18,61 @@ import java.util.*;
 import org.mmbase.util.logging.*;
 
 /**
- * Describing a function on a global set, giving access to the underlying executeFunction of the FunctionSet
+ * Describing a function from a global set.
  *
  * @author Michiel Meeuwissen
  * @author Daniel Ockeloen
- * @version $Id: SetFunction.java,v 1.1 2004-09-20 17:19:25 michiel Exp $
+ * @version $Id: SetFunction.java,v 1.2 2004-09-20 17:52:29 michiel Exp $
  * @since MMBase-1.8
  */
 public class SetFunction extends Function {
     private static final Logger log = Logging.getLoggerInstance(SetFunction.class);
 
     private String type       = "unknown";
-    private String classname  = "unknown";
-    private String methodname = "unknown";
+    private String className  = "unknown";
+    private String methodName = "unknown";
     private String description = "unknown";
     // private String returntype="unknown";
     private Class functionClass;
     private Method functionMethod;
     private Object functionInstance; 
-    private List params = new Vector();
+    private List params = new ArrayList();
 
 
     /**
-     * {@link org.mmbase.util.function.Function#getFunction(String, String)}
+     * {@link org.mmbase.util.function.FunctionFactory#getFunction(String, String)}
      */
     public static Function getFunction(String set, String name) {        
-	return FunctionSets.getFunction(set,name);
+	return FunctionSets.getFunction(set, name);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object getFunctionValue(Parameters arguments) {
-	if (functionMethod==null) {
-            if (!initFunction()) {
-                return null;
-            }
-	}
-		
-
-	Object arglist[] = new Object[arguments.size()];
-	try {
-
-            for (int i = 0; i<arguments.size(); i++) {
-                //log.info(arguments.get(i));
-                arglist[i] = arguments.get(i);
-            }	
-            
-            Object retobj = functionMethod.invoke(functionInstance,arglist);
-
-            return retobj;
-
-			
-	} catch(Exception e) {
-            log.error("function call : "+name);
-            log.error("functionMethod="+functionMethod);
-            log.error("functionInstance="+functionInstance);
-            log.error("arglist="+arglist.toString());
-            e.printStackTrace();
-	}
-
-	return null;
-    }
 
     SetFunction(String name, Parameter[] def, ReturnType returnType) {
         super(name, def, returnType);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getFunctionValue(Parameters arguments) {
+	if (functionMethod == null) {
+            if (!initFunction()) {
+                return null;
+            }
+	}		
+
+	try {
+            return functionMethod.invoke(functionInstance, arguments.toArray());			
+	} catch(Exception e) {
+            log.error("function call : " + name);
+            log.error("functionMethod="  + functionMethod);
+            log.error("functionInstance=" + functionInstance);
+            log.error("arglist=" + arguments);
+	}
+
+	return null;
+    }
 
     void setType(String type)   { 
         this.type = type;
@@ -101,55 +89,35 @@ public class SetFunction extends Function {
         this.name = name;
     }
 
-    void setClassName(String classname)   { 
-        this.classname = classname;
+    void setClassName(String className)   { 
+        this.className = className;
     }
 
-    void setMethodName(String methodname)   { 
-        this.methodname = methodname;
+    void setMethodName(String methodName)   { 
+        this.methodName = methodName;
     }
 
     /**
      * @javadoc
      */
     private  boolean initFunction() {
-        if (classname != null) {
+        if (className != null) {
             try {
-                functionClass = Class.forName(classname);
+                functionClass = Class.forName(className);
             } catch(Exception e) {
-                log.error("can't create an application function class : "+classname);
-                e.printStackTrace();
+                log.error("Can't create an application function class : " + className + " " + e.getMessage());
             }
 
             try {
                 functionInstance = functionClass.newInstance();
             } catch(Exception e) {
-                log.error("can't create an function instance : "+classname);
-                e.printStackTrace();
+                log.error("Can't create an function instance : " + className);
             }
 
-            Parameter[] pmd= getParameterDefinition();	
-            Class paramtypes[]= new Class[pmd.length];
-            for (int i=0;i<pmd.length;i++) {
-                paramtypes[i]=pmd[i].getType();
-            }
             try {
-                functionMethod = functionClass.getMethod(methodname,paramtypes);
+                functionMethod = functionClass.getMethod(methodName, getNewParameters().toClassArray());
             } catch(NoSuchMethodException f) {
-               f.printStackTrace();
-                String paramstring="";
-                /*
-                  e=params.elements();
-                  while (e.hasMoreElements()) {
-                  if (!paramstring.equals("")) paramstring+=",";
-                  FunctionParam p=(FunctionParam)e.nextElement();
-                  paramstring+=p.getType();
-                  paramstring+=" "+p.getName();
-					
-                  }
-                */
-                log.error("Function method  not found : "+classname+"."+methodname+"("+paramstring+")");
-                //f.printStackTrace();
+                log.error("Function method  not found : " + className + "." + methodName + "(" + getParameterDefinition()+")");
             }
         }
         return true;
