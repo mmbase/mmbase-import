@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * given).
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderTEI.java,v 1.9 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: NodeProviderTEI.java,v 1.10 2003-06-17 22:05:53 kees Exp $ 
  */
 
 public class NodeProviderTEI extends TagExtraInfo {
@@ -47,12 +47,6 @@ public class NodeProviderTEI extends TagExtraInfo {
         //in effect we have to parse the data twice
         //once here and onces specific attributes are set
         //maybe this can be done better I do not know
-        
-        
-        //The tag parameter fields defines what variables should be available
-        //within the body of the tag. 
-        //If an 'id' is defined as well (eg 'mynode') then this will be prefixed to the
-        //fieldnames: mynode_title.
         
         int nodeVariable = 0; 
         // Number of node-variables to be defined. 
