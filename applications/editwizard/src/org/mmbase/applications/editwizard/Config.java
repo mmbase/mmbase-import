@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.45 2003-12-08 12:16:24 michiel Exp $
+ * @version $Id: Config.java,v 1.46 2003-12-10 13:17:48 michiel Exp $
  */
 
 public class Config {
@@ -295,6 +295,8 @@ public class Config {
                 } else {
                     throw new WizardException("Unknown value for search parameter '" + searchString + "'");
                 }
+            } else {
+                log.debug("Search is null?");
             }
 
             /// what the heck is this.
@@ -445,6 +447,7 @@ public class Config {
                             }
                         }
                         searchFields = searchFieldsBuffer.toString();
+
                     } else {
                         // the list.jsp _does_ provide a cloud, but well, perhaps people have old list.jsp's?
                         throw new WizardException("Cannot auto-determin search-fields without a cloud (use a newer list.jsp");
@@ -473,7 +476,6 @@ public class Config {
         /**
          * Returns available attributes in a map, so they can be passed to the list stylesheet
          */
-        /*
         public Map getAttributes() {
             Map attributeMap = super.getAttributes();
             // mandatory attributes
@@ -497,7 +499,6 @@ public class Config {
 
             return attributeMap;
         }
-        */
     }
 
     /**
