@@ -42,7 +42,7 @@ public class TransformingReader extends PipedReader {
     private static final Logger log = Logging.getLoggerInstance(TransformingReader.class);
 
     private Reader in;
-    private Runnable link;
+    private CharTransformerLink link;
 
 
     public TransformingReader(Reader in, CharTransformer charTransformer)  {
@@ -51,12 +51,44 @@ public class TransformingReader extends PipedReader {
         PipedWriter w = new PipedWriter();
         try {            
             connect(w);
-            link = new ChainedCharTransformer.TransformerLink(charTransformer, in, w, true);
+            link = new CharTransformerLink(charTransformer, in, w, false);
             ChainedCharTransformer.executor.execute(link);          
         } catch (IOException ioe) {
-            log.error(ioe.getMessage());
+            log.error(ioe.getMessage() + Logging.stackTrace(ioe));
         }
     }
+    
+    public synchronized int read() throws IOException {
+        int result =  super.read();
+        if (result == -1) { // nothing to read any more, wait until transformation is ready.
+            waitReady();
+        }
+        return result;
+    }
+
+    public synchronized int read(char cbuf[], int off, int len)  throws IOException {
+        int result =  super.read(cbuf, off, len);
+        if (result == -1) {
+            waitReady();
+        }
+        return result;
+    }
+
+    /**
+     * Wait until the transformation is ready
+     */
+    protected void waitReady() {
+       try {
+           while (! link.ready()) {                
+               synchronized(link) { // make sure we have the lock
+                   link.wait();
+               }
+           }
+       } catch (InterruptedException ie) {
+           log.warn("" + ie);
+       }
+    }
+
 
 
     /**
@@ -65,12 +97,36 @@ public class TransformingReader extends PipedReader {
      */   
     public void close() throws IOException {   
         super.close();
-        synchronized(link) {
-        }
         in.close();
     }
    
    
+    // main for testing purposes
+    public static void main(String[] args) throws IOException {
+
+        String testString = "use argument to change this string";
+        if (args.length > 0) {
+            testString = args[0];
+        }
+        Reader in = new StringReader(testString);
+ 
+        ChainedCharTransformer t = new ChainedCharTransformer();
+        t.add(new UnicodeEscaper());
+        t.add(new UpperCaser());
+        t.add(new SpaceReducer());
+        t.add(new Trimmer());
+
+        BufferedReader reader = new BufferedReader(new TransformingReader(in, t));
+
+         while(true) {
+            String line = reader.readLine();
+            if (line == null) break;
+            System.out.println(line);
+         }
+
+    }
+
+
 
 }
 
