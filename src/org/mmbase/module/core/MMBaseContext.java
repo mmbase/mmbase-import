@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMBaseContext.java,v 1.20 2001-10-05 08:49:23 michiel Exp $
+$Id: MMBaseContext.java,v 1.21 2001-10-08 08:23:57 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.20  2001/10/05 08:49:23  michiel
+eduard/michiel (who am i?): orion tried to reinitialize, when we tried to access getResource in init. So it was moved to a later time.
+
 Revision 1.19  2001/10/04 10:44:08  eduard
 eduard : tried to fix the problem with the images builder trying to generate url's. This functionality should not be there, or the ServletRequest should be passed tru the builders. It can now work with multiple mmbase's and still generate a valid url with reference to valid servlet.
 
@@ -95,7 +98,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @$Revision: 1.20 $ $Date: 2001-10-05 08:49:23 $
+ * @$Revision: 1.21 $ $Date: 2001-10-08 08:23:57 $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -348,15 +351,15 @@ public class MMBaseContext {
         }
         if (!htmlRootInitialized) {
             // Init htmlroot.
-            htmlRoot = sx.getInitParameter("mmbase.htmlRoot");
+            htmlRoot = sx.getInitParameter("mmbase.htmlroot");
             if (htmlRoot == null) {
-                htmlRoot = System.getProperty("mmbase.htmlRoot");
+                htmlRoot = System.getProperty("mmbase.htmlroot");
             }
             if (htmlRoot == null) {
                 htmlRoot = sx.getRealPath("");
             }
             if (htmlRoot == null) {
-                String message = "Parameter mmbase.htmlRoot not set.";
+                String message = "Parameter mmbase.htmlroot not set.";
                 System.err.println(message);
                 throw new ServletException(message);
             } else {
@@ -367,7 +370,7 @@ public class MMBaseContext {
                     userDir = null;
                     configPath = null;
                     htmlRoot = null;
-                    String message = "Parameter mmbase.htmlRoot is not pointing "
+                    String message = "Parameter mmbase.htmlroot is not pointing "
                                      + "to a directory.";
                     System.err.println(message);
                     throw new ServletException(message);
@@ -376,7 +379,7 @@ public class MMBaseContext {
                         htmlRoot = htmlRoot.substring(0, htmlRoot.length() - 1);
                     }
                     htmlRootInitialized = true;
-                    log.info("mmbase.htmlRoot   : " + htmlRoot);
+                    log.info("mmbase.htmlroot   : " + htmlRoot);
                 }
             }
         }
@@ -416,11 +419,11 @@ public class MMBaseContext {
     }
 
     /**
-     * Returns a string representing the mmbase.htmlRoot parameter without a
+     * Returns a string representing the mmbase.htmlroot parameter without a
      * final <code>File.separator</code>. Before calling this method the
      * initHtmlRoot method should be called to make sure this parameter is set.
      *
-     * @return  the mmbase.htmlRoot parameter or <code>null</code> if not
+     * @return  the mmbase.htmlroot parameter or <code>null</code> if not
      *          initialized
      */
     public synchronized static String getHtmlRoot() {
