@@ -84,8 +84,9 @@ several MMBase-checkouts.
   <property name="build.documentation" value="false" />
   <property name="documentation.home"  value="${source.dir}/documentation" />
   <property name="documentation.builders.language" value="en" />
-  <property name="docbook.stylesheet" value="xhtml/chunk.xsl" />  <!-- try xhtml/docbook.xsl (in build.properties) if you don't like chunks -->
-
+  <!-- try xhtml/chunk.xsl (in build.properties) if you like chunks -->
+  <!-- property name="docbook.stylesheet" value="xhtml/chunk.xsl" /-->
+  <property name="docbook.stylesheet" value="xhtml/docbook.xsl" />
 
   <!-- applications related setting -->
   <property name="applications.home"  value="${source.dir}/applications" />
