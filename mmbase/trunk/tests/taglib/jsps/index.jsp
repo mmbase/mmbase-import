@@ -50,6 +50,10 @@
   <a href="<mm:url page="listcontainer.jsp" />">mm:listcontainer</a>
 </p>
 
+<p>
+  <a href="<mm:url page="vars.jsp" />">more vars</a>
+</p>
+
 <hr />
 <p>
   An alternative <a href="<mm:url page="caches.jsp" />">Caches overview</a>
