@@ -14,6 +14,7 @@ import org.mmbase.module.irc.communication.*;
 import org.mmbase.module.irc.communication.irc.tcpip.*;
 import java.util.Enumeration;
 import java.io.IOException;
+import org.mmbase.util.logging.*;
 
 /**
  * Eerste opzet : 1 class die connect naar server
@@ -24,9 +25,7 @@ public 	class 		IrcConnection
 		implements	CommunicationInterface
 
 {
-	private String		classname  	= getClass().getName();
-	private boolean		debug		= false;
-
+    private static Logger log = Logging.getLoggerInstance(IrcConnection.class.getName());
 	private	boolean		accepted	= false;
 	private boolean 	loggedin	= false;
 
@@ -48,7 +47,7 @@ public 	class 		IrcConnection
 		// if (debug) debug("connect( server("+server+"), name("+name+"), group("+group+"), password("+password+") ");
 		if (!connect( server, 6667))
 		{
-			debug("connect(): not accepted!");
+			log.debug("connect(): not accepted!");
 			return false;
 		}
 		// if (debug) debug("connect(): successfull!");
@@ -65,12 +64,13 @@ public 	class 		IrcConnection
 					// if( debug ) debug("connect(): waiting for signal login");
 					wait( 40000 ); // was ( 10000 );	
 				}
-				catch( InterruptedException e ) { debug( "connect(): Interrupted! " + e.toString() ); }
+				catch( InterruptedException e ) { 
+					log.error( "connect(): Interrupted! " + e.toString() ); 
+				}
 				// if( debug ) debug("End of wait");
 		
-				if( !isaccepted() )
-				{
-					debug("connect(): Connect not accepted. ["+tries+"/"+maxtries+"], retrying!");
+				if( !isaccepted() ) {
+					log.debug("connect(): Connect not accepted. ["+tries+"/"+maxtries+"], retrying!");
 					tries++;
 					if (tries>maxtries)
 						return false;
@@ -126,7 +126,7 @@ public 	class 		IrcConnection
 						}
 						catch( InterruptedException e )
 						{
-							debug("reconnect(): interrupted: " + e.toString() );
+							log.debug("reconnect(): interrupted: " + e.toString() );
 						}
 					}
 				}
@@ -149,11 +149,11 @@ public 	class 		IrcConnection
                 join( ircChannel.getServer(), ircChannel.getChannelName(), ircChannel.getChannelKey() );
 				if( ircChannel.waitJoin( 10000 ) ) 
 				{
-					debug("rejoin("+ircChannel.getChannelName()+"): successfull rejoin");
+					log.debug("rejoin("+ircChannel.getChannelName()+"): successfull rejoin");
 				}
 				else
 				{
-					debug("rejoin("+ircChannel.getChannelName()+"): could not rejoin, banned !?!?!");
+					log.debug("rejoin("+ircChannel.getChannelName()+"): could not rejoin, banned !?!?!");
 				}
 			}
         }
@@ -163,21 +163,21 @@ public 	class 		IrcConnection
 
 	public void send( String s ) 
 	{
-		if( debug ) debug("send("+s+")");	
+		log.debug("send("+s+")");	
 		super.send( s );
 	}
 
 	public void sendMessage( IrcMessage msg )
 	{
 		String line = msg.construct();
-		if (debug) debug("sendMessage("+line+")");
+		log.debug("sendMessage("+line+")");
 		send( line + '\n' );
 	}
 
 
 	public void sendPublic( String line )
     {
-        if (debug) debug("send("+line+")");
+        log.debug("send("+line+")");
 
         if( line!=null && !line.equals(""))
         {
@@ -188,18 +188,18 @@ public 	class 		IrcConnection
             }
             /*
             else
-                debug("send("+line+"): ERROR: Cannot send(no channel defined yet)");
+                log.error("send("+line+"): ERROR: Cannot send(no channel defined yet)");
             */
         }
         /*
         else
-            debug("send("+line+"): ERROR: want to send nothing!");
+            log.error("send("+line+"): ERROR: want to send nothing!");
         */
     }
 
     public void sendPrivate( String who, String line )
     {
-        if (debug) debug("sendPrivate("+who+","+line+")");
+        log.debug("sendPrivate("+who+","+line+")");
 
         if (line!=null && !line.equals(""))
         {
@@ -208,15 +208,15 @@ public 	class 		IrcConnection
                 send( who, line );
             }
             else
-                debug("sendPrivate("+who+","+line+"): ERROR: 'who' not specified!");
+                log.error("sendPrivate("+who+","+line+"): ERROR: 'who' not specified!");
         }
         else
-            debug("sendPrivate("+who+","+line+"): ERROR: want to send nothing!");
+            log.error("sendPrivate("+who+","+line+"): ERROR: want to send nothing!");
     }
 
     public void send( String who, String line )
     {
-        if (debug) debug("send("+who+","+line+")");
+        log.debug("send("+who+","+line+")");
 
         //debug("send("+who+","+line+")");
         if( who != null )
@@ -242,10 +242,10 @@ public 	class 		IrcConnection
                    privmsg( who, line );
             }
             else
-                debug("send("+who+","+line+"): ERROR: want to send nothing!");
+                log.error("send("+who+","+line+"): ERROR: want to send nothing!");
         }
         else
-            debug("send("+who+","+line+"): ERROR: Dont know who to send to!");
+            log.error("send("+who+","+line+"): ERROR: Dont know who to send to!");
     }
 
 	public void receive( String msg ) {
@@ -313,8 +313,7 @@ public 	class 		IrcConnection
 
         if (message != null)
         {
-			if (debug) 
-				debug("parseMessage("+message+")");
+			log.debug("parseMessage("+message+")");
 
             if( message.command() != null && message.command().equals("PING") )
 			{
@@ -336,13 +335,13 @@ public 	class 		IrcConnection
                         switch( number )
                         {
                             case    433: {  
-											if( debug ) debug("parseMessage(): Nick already known.. " + message.toString() +": reconnect!"); 
+											log.debug("parseMessage(): Nick already known.. " + message.toString() +": reconnect!"); 
 											// stopit(); 
 											break; 
 										 }
 
 											// accepted
-                            case    376: { 	if( debug ) debug("parseMessage(): 376 Signal that logged in"); 
+                            case    376: { 	log.debug("parseMessage(): 376 Signal that logged in"); 
 											accepted();
 											//debug("accepted("+isaccepted()+")") ; 
 											break; 
@@ -350,7 +349,7 @@ public 	class 		IrcConnection
 
 											// join channel
                             case    366: { 
-											if (debug) debug("Got 366: join channel");
+											log.debug("Got 366: join channel");
 											/* 
 											if(ircChannels.containsChannel( message.middle() )) 
 											{ 
@@ -364,7 +363,7 @@ public 	class 		IrcConnection
 					}
 					else
                     {
-                        debug("receiveMessage("+message.toString()+"): ERROR: Cannot convert("+message.command()+") to int!");
+                        log.error("receiveMessage("+message.toString()+"): ERROR: Cannot convert("+message.command()+") to int!");
                     }
 
                     // return sended line from user/server/channel etc
@@ -393,7 +392,7 @@ public 	class 		IrcConnection
 								{
 									if( checkstring("parseMessage("+message.toString()+")", "messsage.params()", message.params() ))
 									{
-										if (debug) debug("parseMessage(): "+message.command()+" accepted for channel("+message.params()+")");
+										log.debug("parseMessage(): "+message.command()+" accepted for channel("+message.params()+")");
 										if(ircChannels.containsChannel( message.params() )) 
 										{ 
 											ircChannels.getChannel( message.params() ).joined(); 
@@ -401,11 +400,11 @@ public 	class 		IrcConnection
 										}
 									}
 									else
-										debug("parseMessage("+message.toString()+"): "+message.command()+" accepted, but dunno what channel("+message.params()+")");
+										log.debug("parseMessage("+message.toString()+"): "+message.command()+" accepted, but dunno what channel("+message.params()+")");
 								} 
 							}
 							else
-								debug("parseMessage("+message.toString()+"): "+message.command()+" accepted, but dunno what("+message.middle()+")");
+								log.debug("parseMessage("+message.toString()+"): "+message.command()+" accepted, but dunno what("+message.middle()+")");
 						}
 						else
 						if( message.command().equals("PRIVMSG") )
@@ -415,13 +414,13 @@ public 	class 		IrcConnection
 						}	
 					}
 					else
-                    	debug("parseMessage("+message+"): ERROR: Unknown command!");
+                    	log.error("parseMessage("+message+"): ERROR: Unknown command!");
 				}
             }
         }
         /*
         else
-            debug("parseMessage(): ERROR: Empty message!");
+            log.error("parseMessage(): ERROR: Empty message!");
         */
 
         return(result);
@@ -517,12 +516,12 @@ public 	class 		IrcConnection
         boolean result = false;
         if( s == null )
         {
-            debug( method+"(): ERROR: string("+name+") is null!");
+            log.error( method+"(): ERROR: string("+name+") is null!");
         }
         else
         if( s.equals("") )
         {
-            debug( method+"(): ERROR: string("+name+") is empty!");
+            log.error( method+"(): ERROR: string("+name+") is empty!");
         }
         else
             result = true;
@@ -536,12 +535,12 @@ public 	class 		IrcConnection
 
         if( s == null )
         {
-            debug( method+"(): ERROR: string("+name+") is null!");
+            log.error( method+"(): ERROR: string("+name+") is null!");
         }
         else
         if( s.equals("") )
         {
-            debug( method+"(): ERROR: string("+name+") is empty!");
+            log.error( method+"(): ERROR: string("+name+") is empty!");
         }
         else
         {
@@ -565,12 +564,12 @@ public 	class 		IrcConnection
 
         if( s == null )
         {
-            debug( method+"(): ERROR: string("+name+") is null!");
+            log.error( method+"(): ERROR: string("+name+") is null!");
         }
         else
         if( s.equals("") )
         {
-            debug( method+"(): ERROR: string("+name+") is empty!");
+            log.error( method+"(): ERROR: string("+name+") is empty!");
         }
         else
         {
@@ -580,16 +579,10 @@ public 	class 		IrcConnection
             }
             catch( NumberFormatException e )
             {
-                debug( method+"(): ERROR: string("+name+") is not a number!");
+                log.error( method+"(): ERROR: string("+name+") is not a number!");
             }
         }
         return result;
 	}
 
-// -------------------------------------------------------------------
-
-	private void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );
-	}
 }

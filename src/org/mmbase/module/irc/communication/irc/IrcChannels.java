@@ -12,9 +12,11 @@ package org.mmbase.module.irc.communication.irc;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
+import org.mmbase.util.logging.*;
 
 public class IrcChannels
 {
+    private static Logger log = Logging.getLoggerInstance(IrcChannels.class.getName());
 	private String 		classname = getClass().getName();
 	private Hashtable	channels = null;
 
@@ -28,10 +30,10 @@ public class IrcChannels
 	public void addChannel( String server, String channelname )
 	{
 		if (channelname == null)
-			debug("addChannel("+channelname+"): ERROR: channelname is null!");
+			log.error("addChannel("+channelname+"): ERROR: channelname is null!");
 		else
 			if( channelname.equals(""))
-				debug("addChannel("+channelname+"): ERROR: channelname is empty!");
+				log.error("addChannel("+channelname+"): ERROR: channelname is empty!");
 			else
 				addChannel( new IrcChannel(server, channelname) );
 	}
@@ -40,18 +42,18 @@ public class IrcChannels
 	public void addChannel( IrcChannel channel )
 	{
 		if( channel==null )
-			debug("addChannel("+channel+"): ERROR: channel is null!");
+			log.error("addChannel("+channel+"): ERROR: channel is null!");
 		else
 			if (channel.getChannelName() == null)
-				debug("addChannel("+channel+"): ERROR: channel has invalid(null) name!");
+				log.error("addChannel("+channel+"): ERROR: channel has invalid(null) name!");
 			else
 				if( channel.getChannelName().equals(""))
-					debug("addChannel("+channel+"): ERROR: channel has invalid(empty) name!");
+					log.error("addChannel("+channel+"): ERROR: channel has invalid(empty) name!");
 				else
 					if (!containsChannel( channel ))
 						channels.put( channel.getChannelName(), channel);
 					else
-						debug("addChannel("+channel+"): WARNING: channel already in list!");
+						log.warn("addChannel("+channel+"): WARNING: channel already in list!");
 	}
 
 	public IrcChannel getChannel( String channelname )
@@ -59,15 +61,15 @@ public class IrcChannels
 		IrcChannel result = null;
 	
 		if( channelname == null )
-			debug("getChannel("+channelname+"): ERROR: channelname is null!");
+			log.error("getChannel("+channelname+"): ERROR: channelname is null!");
 		else
 			if( channelname.equals(""))
-				debug("getChannel("+channelname+"): ERROR: channelname is empty!");
+				log.error("getChannel("+channelname+"): ERROR: channelname is empty!");
 			else
 				if (channels.containsKey(channelname))
 					result = (IrcChannel) channels.get( channelname );
 				else
-					debug("getChannel("+channelname+"): ERROR: unknown channelname!");
+					log.error("getChannel("+channelname+"): ERROR: unknown channelname!");
 
 		return result;
 	}
@@ -84,7 +86,7 @@ public class IrcChannels
 			if (channelname != null && !channelname.equals(""))
 				result = channels.containsKey( channelname );
 			else
-				debug("containsChannel("+channelname+"): ERROR: Invalid channelname!");
+				log.error("containsChannel("+channelname+"): ERROR: Invalid channelname!");
 
 		return result;
 	}
@@ -97,15 +99,15 @@ public class IrcChannels
 	public void removeChannel( String channelname ) 
 	{
 		if( channelname == null )
-			debug("removeChannel("+channelname+"): ERROR: channelname is null!");
+			log.error("removeChannel("+channelname+"): ERROR: channelname is null!");
 		else
 			if( channelname.equals(""))
-				debug("removeChannel("+channelname+"): ERROR: channelname is empty!");
+				log.error("removeChannel("+channelname+"): ERROR: channelname is empty!");
 			else
 				if (containsChannel(channelname))
 					channels.remove( channelname );
 				else
-					debug("removeChannel("+channelname+"): ERROR: channel is not in list!");
+					log.error("removeChannel("+channelname+"): ERROR: channel is not in list!");
 	}
 
 
@@ -126,7 +128,7 @@ public class IrcChannels
 			}
 			else
 			{
-				debug("getCurrentChannel(null): ERROR: Channel is not in list!");
+				log.error("getCurrentChannel(null): ERROR: Channel is not in list!");
 			}
 		}
 		//debug("getCurrentChannel("+result+")");
@@ -157,11 +159,6 @@ public class IrcChannels
 	public Enumeration elements()
 	{
 		return channels.elements();
-	}
-
-	private void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );
 	}
 
 	public String toString()
