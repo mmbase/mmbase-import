@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.60 2002-07-04 09:45:58 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.61 2002-07-16 11:58:52 eduard Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -575,6 +575,19 @@ public class BasicCloud implements Cloud, Cloneable {
             String constraints, String orderby, String directions,
             String searchDir, boolean distinct) {
 
+        // begin of check invalid search command
+        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");        
+        // if(startNodes != null) startNodes = encoder.encode(startNodes);
+        // if(nodePath != null) nodePath = encoder.encode(nodePath);
+        // if(fields != null) fields = encoder.encode(fields);
+        if(orderby != null) orderby  = encoder.encode(orderby);
+        if(directions != null) directions  = encoder.encode(directions);
+        if(searchDir != null) searchDir  = encoder.encode(searchDir);
+        if(constraints != null && !validConstraints(constraints)) {
+            throw new BridgeException("invalid contrain:" + constraints);
+        }
+        // end of check invalid search command
+        
         String sdistinct="";
         int search = ClusterBuilder.SEARCH_BOTH;
         String pars ="";
@@ -709,4 +722,58 @@ public class BasicCloud implements Cloud, Cloneable {
         return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
     }
 
+    /** returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) */
+    boolean validConstraints(String contraints) {
+        // first remove all the escaped "'" ('' occurences) chars...                      
+        String remaining = contraints;
+        while(remaining.indexOf("''") != -1) {
+            int start = remaining.indexOf("''");
+            int stop = start + 2;
+            if(stop < remaining.length()) {
+                String begin = remaining.substring(0, start);
+                String end = remaining.substring(stop);
+                remaining = begin + end;
+            }
+            else {
+                remaining = remaining.substring(0, start);
+            }
+        }        
+        // assume we are not escaping... and search the string..
+        // Keep in mind that at this point, the remaining string could contain different information 
+        // than the original string. This doesnt matter for the next sequence...
+        // but it is important to realize!
+        while(remaining.length() > 0 && remaining.indexOf('\'') != -1) {                
+            // we still contain a "'"
+            int start = remaining.indexOf('\'');
+
+            // escaping started, but no stop
+            if(start == remaining.length())  {
+                log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints);
+                return false;
+            }
+            
+            String notEscaped = remaining.substring(0, start);
+            if(notEscaped.indexOf(';') != -1) {
+                log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nnot excaped:" + notEscaped);
+                return false;
+            }
+                        
+            int stop = remaining.substring(start + 1).indexOf('\'');
+            if(stop < 0) {
+                log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nlast escaping:" + remaining.substring(start + 1));
+                return false;
+            }
+            // we added one to to start, thus also add this one to stop...
+            stop = start + stop + 1;
+            
+            // when the last character was the stop of our escaping
+            if(stop == remaining.length())  {
+                return true;
+            }
+            
+            // cut the escaped part from the string, and continue with resting sting...
+            remaining = remaining.substring(stop + 1);
+        }
+        return true;
+    }
 }

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.31 2002-06-13 12:08:35 eduard Exp $
+ * @version $Id: BasicNodeManager.java,v 1.32 2002-07-16 11:58:52 eduard Exp $
  */
 public class BasicNodeManager implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -139,6 +139,17 @@ public class BasicNodeManager implements NodeManager, Comparable {
     }
 
     public NodeList getList(String constraints, String orderby, String directions) {
+
+        // begin of check invalid search command
+        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");        
+        if(orderby != null) orderby  = encoder.encode(orderby);
+        if(directions != null) directions  = encoder.encode(directions);
+        if(constraints != null && !cloud.validConstraints(constraints)) {
+            throw new BridgeException("invalid contrain:" + constraints);
+        }
+        // end of check invalid search command
+            
+    
         String where = null;
         if ((constraints != null) && (!constraints.trim().equals(""))) {
             where=cloud.convertClauseToDBS(constraints);
