@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.2 2002-03-26 15:19:22 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.3 2002-06-06 14:19:59 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -93,25 +93,25 @@ public class BuilderWriter extends DocumentWriter  {
         Element names=document.createElement("names");
         addComment("builder.names",root);
         root.appendChild(names);
-        // names.singularname
+        // names.singular
         Map datamap=builder.getSingularNames();
-        addComment("builder.singularname",root);
+        addComment("builder.singular",root);
         for (Iterator i=datamap.keySet().iterator(); i.hasNext();) {
             String language=(String)i.next();
             String name=(String)datamap.get(language);
             if ((parent==null) || !(name.equals(parent.getSingularName(language)))) {
-                Element elm=addContentElement("singularname",name,names);
+                Element elm=addContentElement("singular",name,names);
                 elm.setAttribute("xml:lang",language);
             }
         }
         // names.pluralname
         datamap=builder.getPluralNames();
-        addComment("builder.pluralname",root);
+        addComment("builder.plural",root);
         for (Iterator i=datamap.keySet().iterator(); i.hasNext();) {
             String language=(String)i.next();
             String name=(String)datamap.get(language);
             if ((parent==null) || !(name.equals(parent.getPluralName(language)))) {
-                Element elm=addContentElement("pluralname",name,names);
+                Element elm=addContentElement("plural",name,names);
                 elm.setAttribute("xml:lang",language);
             }
         }
@@ -153,7 +153,7 @@ public class BuilderWriter extends DocumentWriter  {
         Collections.sort(fields);
         for (Iterator f=fields.iterator(); f.hasNext();) {
             FieldDefs fielddef=(FieldDefs)f.next();
-            // skip otype, cannot occur in a buidler xml file (doh)
+            // skip otype, cannot occur in a builder xml file (doh)
             String fieldname=fielddef.getDBName();
             if (fieldname.equals("otype")) continue;
             FieldDefs parentField=null;
