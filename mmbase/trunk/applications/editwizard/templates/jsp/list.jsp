@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.32 2003-05-01 17:32:48 pierre Exp $
+     * @version  $Id: list.jsp,v 1.33 2003-05-07 12:18:01 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -309,6 +309,7 @@ params.put("deletable",  deletable+"");
 params.put("creatable",  creatable+"");
 params.put("cloud",  cloud);
 params.put("popupid",  popupId);
+if (multilevel) { params.put("objecttype",mainObjectName); }
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);

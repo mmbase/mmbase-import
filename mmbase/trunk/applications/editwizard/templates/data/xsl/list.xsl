@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <xsl:stylesheet 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
   version="1.0"
@@ -8,7 +8,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.26 2003-05-01 17:32:48 pierre Exp $
+  @version $Id: list.xsl,v 1.27 2003-05-07 12:18:00 pierre Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -34,7 +34,9 @@
 	<xsl:param name="searchdir"></xsl:param>
 	<xsl:param name="constraints"></xsl:param>
 	<xsl:param name="distinct"></xsl:param>
+	<xsl:param name="objecttype"></xsl:param>
 
+  <xsl:variable name="searchagetype">combobox</xsl:variable>
 	
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of list
@@ -52,7 +54,7 @@
     </body>
   </xsl:template>
 
-  <xsl:template name="title"><!-- The first row of the the body's table -->
+  <xsl:template name="title"><!-- The first row of the body's table -->
     <tr>
       <th colspan="2">
         <span class="title"><nobr>
@@ -81,37 +83,61 @@
 							</xsl:if>
 							<td valign="top">
 								<form action="list.jsp">
-									<span class="header">ZOEK <xsl:value-of select="$title"/>:</span>
+									<span class="header"><xsl:call-template name="prompt_search_list" /> <xsl:value-of select="$title"/>:</span>
 									<br/>
-									<select name="age" class="input" style="width:80px;">
-										<option value="1">
-											<xsl:if test="$age='1'">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>1 dag</option>
-										<option value="7">
-											<xsl:if test="$age='7'">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>1 week</option>
-										<option value="31">
-											<xsl:if test="$age='31'">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>1 maand</option>
-										<option value="365">
-											<xsl:if test="$age='365'">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>1 jaar</option>
-										<option value="-1">
-											<xsl:if test="$age='-1'">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>alles</option>
+									
+									<xsl:choose>
+									  <xsl:when test="$searchagetype='edit'">
+											<input type="text" style="width:80px;" name="age" class="age" value="{$age}" />
+										</xsl:when>
+									  <xsl:when test="$searchagetype='none'">
+										</xsl:when>
+										<xsl:otherwise>
+											<select name="age" class="input" style="width:80px;">
+												<option value="1">
+													<xsl:if test="$age='0'">
+														<xsl:attribute name="selected">selected</xsl:attribute>
+													</xsl:if><xsl:call-template name="age_now" /></option>
+												<option value="1">
+													<xsl:if test="$age='1'">
+														<xsl:attribute name="selected">selected</xsl:attribute>
+													</xsl:if><xsl:call-template name="age_day" /></option>
+												<option value="7">
+													<xsl:if test="$age='7'">
+														<xsl:attribute name="selected">selected</xsl:attribute>
+													</xsl:if><xsl:call-template name="age_week" /></option>
+												<option value="31">
+													<xsl:if test="$age='31'">
+														<xsl:attribute name="selected">selected</xsl:attribute>
+													</xsl:if><xsl:call-template name="age_month" /></option>
+												<option value="365">
+													<xsl:if test="$age='365'">
+														<xsl:attribute name="selected">selected</xsl:attribute>
+													</xsl:if><xsl:call-template name="age_year" /></option>
+												<option value="-1">
+													<xsl:if test="$age='-1'">
+														<xsl:attribute name="selected">selected</xsl:attribute>
+													</xsl:if><xsl:call-template name="age_any" /></option>
+											</select>
+										</xsl:otherwise>
+									</xsl:choose>
+									<select name="realsearchfield" style="width:100px;" >
+										<option value="{$searchfields}"><xsl:call-template name="prompt_search_title" /></option>
+										<xsl:if test="$objecttype=''">
+											<option value="number"><xsl:call-template name="prompt_search_number" /></option>
+											<option value="owner"><xsl:call-template name="prompt_search_owner" /></option>
+										</xsl:if>
+										<xsl:if test="$objecttype!=''">
+											<option value="{$objecttype}.number"><xsl:call-template name="prompt_search_number" /></option>
+											<option value="{$objecttype}.owner"><xsl:call-template name="prompt_search_owner" /></option>
+										</xsl:if>
 									</select>
 									<input type="hidden" name="proceed" value="true" />
 									<input type="hidden" name="sessionkey" value="{$sessionkey}" />
 									<input type="hidden" name="language" value="${language}" />
 									<input type="text" name="searchvalue" value="{$searchvalue}" class="input" style="width:200px;"/>
 									<input type="image" src="/editwizard/media/search.gif" width="20" height="20" align="absmiddle" alt="" hspace="2" border="0"/>
-									<br/>
-									<span class="onderschrift"> (leeftijd)<img src="/editwizard/media/nix.gif" width="45" height="1" alt="" border="0"/>(titel)</span>
+									<br/><span class="subscript"> (<xsl:call-template name="prompt_age" />)<img src="/editwizard/media/nix.gif" width="145" height="1" alt="" border="0"/>(<xsl:call-template name="prompt_search_term" />)</span>
 									<br/>
 								</form>
 							</td>
@@ -293,7 +319,7 @@
   <xsl:template match="list"><!-- this it the entry-point, I suppose -->
     <html>
       <head>
-        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" /><!-- We require doing everything in UTF-8 -->
+        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" /><!-- We require doing everything in UTF-8 -->
         <xsl:call-template name="style" />
         <xsl:call-template name="javascript" />
       </head>
