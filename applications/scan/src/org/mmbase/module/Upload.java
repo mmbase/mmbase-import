@@ -12,6 +12,7 @@ package org.mmbase.module;
 
 import java.util.*;
 import java.io.*;
+import java.net.*;
 
 import org.mmbase.module.builders.*;
 import org.mmbase.module.database.*;
@@ -27,46 +28,63 @@ import org.mmbase.util.*;
  */
 public class Upload extends ProcessorModule {
     private String classname = getClass().getName();
-    private boolean debug = false;
+    private boolean debug = true;
 	private void debug(String s) {
-		System.out.println(s);
+		System.out.println(classname+" "+s);
 	}
 
 	private Hashtable FilesInMemory = new Hashtable();
+	private String fileUploadDirectory = null;
 
 	public Upload() {}
 	public void onload(){}
-	public void init() {}
+	public void init() {
+		 fileUploadDirectory=getInitParameter("fileUploadDirectory");
+	}
 
+	/**
+	 * handle the uploaded bytestream.	
+	 */
     public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
-        if (debug) {
-            debug("CMDS="+cmds);
-            debug("VARS="+vars);
-        }
 
 		// Get the place where to store the file
-		// Currently implemented places are: mem://
-		// Other possible places to implement: file://
+		// Currently implemented places are: mem:// and file://
 		String filename = (String)cmds.get("file");
 
+		// Get the posted bytearray
+		byte[] bytes = null;
+		try {
+			bytes = sp.poster.getPostParameterBytes("file");
+		} catch (Exception e) {
+			debug("Upload postValue to large");
+		}
+
+		if(debug) debug("storing "+filename);
 		// Store in memory
 		if(filename.indexOf("mem://")!=-1) {
-			if(debug) debug("saving file at "+filename);
 
 			// Create file object in memory		
 			FileInfo fi = new FileInfo();
-			try {
-   		     	fi.bytes= sp.poster.getPostParameterBytes("file");
-       		    fi.name = sp.poster.getPostParameter("file_name");
-            	fi.type = sp.poster.getPostParameter("file_type");
-            	fi.size = sp.poster.getPostParameter("file_size");
-			} catch (Exception e) {
-				debug(e.toString());
-			}
+   	     	fi.bytes= bytes;
+       	    fi.name = sp.poster.getPostParameter("file_name");
+           	fi.type = sp.poster.getPostParameter("file_type");
+           	fi.size = sp.poster.getPostParameter("file_size");
 			FilesInMemory.put(filename,fi);
 			if(debug) debug("save in memory: "+fi.toString());
+			return true;
 		}
-		return true;
+		// Store at filesystem
+		if(filename.indexOf("file://")!=-1) {
+			String fname = filename.substring(7);
+			// If no filename is given the real filename will be used.
+			if (fname.equals("")) { 
+				fname = sp.poster.getPostParameter("file_name");
+			}
+			saveFile(fileUploadDirectory+fname,bytes);
+			if(debug) debug("saved to disk: "+filename);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -87,17 +105,70 @@ public class Upload extends ProcessorModule {
 	 * @param filename the name of the file, e.g. mem://filename
 	 */
 	public byte[] getFile(String filename) {
+		if(debug) debug("Upload -> getting "+filename);
 		// Is file located in memory?
 		if(filename.indexOf("mem://")!=-1) {
-			if(debug) debug("Upload -> received "+filename);
 			if(FilesInMemory.containsKey(filename)) {
-				if(debug) debug("Upload -> Contains "+filename);
 				FileInfo fi = (FileInfo)FilesInMemory.get(filename);
 				return fi.bytes;
 			}
 		}
+		if(filename.indexOf("http://")!=-1) {
+			return getHttp(filename);
+		}
 		return null;
 	}
+
+
+
+	/**
+	 * save bytearray to filesystem
+	 * @param filename name of the file
+	 * @param value the actual bytes you want to save
+	 */
+ 	private boolean saveFile(String filename,byte[] value) {
+        File file = new File(filename);
+        try {
+            FileOutputStream outputstream = new FileOutputStream(file);
+            outputstream.write(value);
+            outputstream.flush();
+            outputstream.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+            return(false);
+        }
+        return(true);
+    }
+
+
+	/** 
+	 * this method gets the requested http page
+	 */ 
+	private byte[] getHttp(String page) {
+        URL pageToGrab=null;
+        DataInputStream dis=null;
+
+        try {
+            pageToGrab = new URL(page);
+            dis = new DataInputStream(pageToGrab.openStream());
+        } catch (Exception e) {
+            if(debug) debug("Upload -> Cannot get page "+page);
+            return null;
+        }
+        StringBuffer tekst= new StringBuffer();
+        String get="";
+        while (true) {
+            try {
+                get = dis.readLine();
+                if (get==null) break;
+                tekst.append(get);
+            } catch (IOException io) {
+                break;
+            }
+        }
+        return tekst.toString().getBytes();
+    }
+
 
 	/*
 	 * a class to store an uploaded file into memory
