@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.8
- * @version $Id: ReloadableModule.java,v 1.2 2004-03-29 15:13:24 michiel Exp $
+ * @version $Id: ReloadableModule.java,v 1.3 2004-04-01 22:16:48 michiel Exp $
  */
 public abstract class ReloadableModule extends Module {
 
@@ -77,8 +77,8 @@ public abstract class ReloadableModule extends Module {
     
     /**
      * This method is called when the module should be reloaded. It happens on a change of the
-     * module's XML, but you can also call it from other places.
-     *
+     * module's XML, but you can also call it from other places. This default implementation is
+     * empty.
      */
     
     public void reload() {

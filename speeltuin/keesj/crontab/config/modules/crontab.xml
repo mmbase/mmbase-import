@@ -5,9 +5,9 @@
 
   <classfile>org.mmbase.applications.crontab.modules.JCrontabModule</classfile>
   <properties>  
-    <property name="1">
+    <property name="testjob">
       */1 5-23 * * *
-      org.mmbase.applications.crontab.TestCronJob2
+      org.mmbase.applications.crontab.TestCronJob
     </property>
   </properties>
  
