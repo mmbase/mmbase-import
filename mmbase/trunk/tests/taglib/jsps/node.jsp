@@ -291,6 +291,12 @@ using list tag: <br />
          <mm:field name="title" /> (should be 'Another news article (...)')<br />
        </mm:relatednodes>
      </mm:relatednodescontainer>
+
+     <mm:field name="number">
+       <mm:list nodes="$_"  path="news,sorted,urls" fields="urls.url">
+         22  related url (used list with nodes): <mm:field name="urls.url" /><br />
+       </mm:list>
+     </mm:field>
    </mm:node>
 </mm:list>
 
@@ -320,7 +326,7 @@ using list tag: <br />
   <mm:distinct />
   listcontainer: size <mm:size /> (should be 1) <br />
   Should follow the url:<br />
-  <mm:list fields="urls.number,urls.url">
+  <mm:list nodes="-1" fields="urls.number,urls.url">
     <mm:index /> url: <mm:field name="urls.url" /><br />
   </mm:list>
 </mm:listcontainer>
