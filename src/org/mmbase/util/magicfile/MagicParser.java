@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version $Id: MagicParser.java,v 1.4 2003-03-07 09:31:18 pierre Exp $
+ * @version $Id: MagicParser.java,v 1.5 2003-04-10 15:38:46 pierre Exp $
  * @todo NOT TESTED YET
  */
 
@@ -445,7 +445,7 @@ public class MagicParser implements DetectorProvider {
     public boolean toXML(File f) throws IOException {
         FileWriter writer = new FileWriter(f);
 
-        writer.write("<!DOCTYPE magic PUBLIC \"-//MMBase/Magic XML config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
+        writer.write("<!DOCTYPE magic PUBLIC \"-//MMBase//DTD magic config 1.0//EN\" \"http://www.mmbase.org/dtd/magic_1_0.dtd\">\n<magic>\n<info>\n<version>0.1</version>\n<author>cjr@dds.nl</author>\n<description>Conversion of the UNIX 'magic' file with added mime types and extensions.</description>\n</info>\n<detectorlist>\n");
         Iterator i = getDetectors().iterator();
         while (i.hasNext()) {
             ((Detector)i.next()).toXML(writer);
