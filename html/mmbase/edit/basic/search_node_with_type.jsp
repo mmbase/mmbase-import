@@ -66,7 +66,7 @@
         <mm:maydelete>
           <mm:countrelations>
             <mm:compare value="0">
-              <a href="<mm:url referids="node_type,node_number" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
+              <a href="<mm:url referids="node_type,node_number,page" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
                             <img src="images/delete.gif" alt="[delete]" width="20" height="20" border="0" align="right"/>
               </a>
             </mm:compare>
@@ -96,14 +96,14 @@
   <tr>
     <mm:isgreaterthan referid="page" value="0.5">
       <td class="navigate">
-            <a href='<mm:url referids="node,node_type,role_name"><mm:param name="page" value="${+$page-1}" /></mm:url>' >
+            <a href='<mm:url referids="node,node_type,role_name,search"><mm:param name="page" value="${+$page-1}" /></mm:url>' >
         <img src="images/previous.gif" alt="[<-previous page]" width="20" height="20" border="0" />
       </a>
         </td> 
     </mm:isgreaterthan>
     <mm:present referid="next_page">
       <td class="navigate">      
-            <a href='<mm:url referids="node,node_type,role_name"><mm:param name="page"  value="${+$page+1}" /></mm:url>' >
+            <a href='<mm:url referids="node,node_type,role_name,search"><mm:param name="page"  value="${+$page+1}" /></mm:url>' >
               <img src="images/next.gif" alt="[next page->]" width="20" height="20" border="0" align="right"/>
             </a>
       </td>
