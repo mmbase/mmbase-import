@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.96 2003-07-15 19:22:26 michiel Exp $
+  @version $Id: wizard.xsl,v 1.97 2003-09-17 09:36:33 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -171,10 +171,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-        <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+      <a href="{$ew_context}/rastreams.db?{field/@number}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-        <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+      <a href="{$ew_context}/rmstreams.db?{field/@number}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 
@@ -368,38 +368,54 @@
           <xsl:apply-templates select="value" mode="line" />
         </xsl:when>
         <xsl:when test="@ftype='line'">
-          <xsl:apply-templates select="value" mode="inputline" />
+          <xsl:if test="@maywrite!='false'">
+            <xsl:apply-templates select="value" mode="inputline" />
+          </xsl:if>
+          <xsl:if test="@maywrite='false'">
+            <span class="readonly">
+              <xsl:apply-templates select="value" mode="value" />
+            </span>
+          </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='text' or @ftype='html'">
-          <span>
-          <xsl:text disable-output-escaping="yes">&lt;textarea
-                name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>"
-                dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>"
-                ftype="</xsl:text><xsl:value-of select="@ftype" /><xsl:text>"
-                dtminlength="</xsl:text><xsl:value-of select="@dtminlength" /><xsl:text>"
-                dtmaxlength="</xsl:text><xsl:value-of select="@dtmaxlength" /><xsl:text>"
-                class="input" wrap="soft"
+          <xsl:if test="@maywrite!='false'">
+            <span>
+              <xsl:text disable-output-escaping="yes">&lt;textarea
+              name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>"
+              dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>"
+              ftype="</xsl:text><xsl:value-of select="@ftype" /><xsl:text>"
+              dtminlength="</xsl:text><xsl:value-of select="@dtminlength" /><xsl:text>"
+              dtmaxlength="</xsl:text><xsl:value-of select="@dtmaxlength" /><xsl:text>"
+              class="input" wrap="soft"
                 onkeyup="validate_validator(event);"
-                onblur="validate_validator(event);" </xsl:text>
-          <xsl:choose>
-            <xsl:when test="@cols">
-              <xsl:text>cols="</xsl:text><xsl:value-of select="@cols" /><xsl:text>"</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>cols="80"</xsl:text>
-            </xsl:otherwise></xsl:choose>
-          <xsl:choose>
-            <xsl:when test="@rows">
-              <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:text>rows="10"</xsl:text>
-            </xsl:otherwise></xsl:choose>
-          <xsl:apply-templates select="@*" />
-          <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of disable-output-escaping="yes" select="value" />
-          <xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
-            <xsl:apply-templates select="postfix" />
-          </span>
+              onblur="validate_validator(event);" </xsl:text>              
+              <xsl:choose>
+                <xsl:when test="@cols">
+                  <xsl:text>cols="</xsl:text><xsl:value-of select="@cols" /><xsl:text>"</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>cols="80"</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:choose>
+                <xsl:when test="@rows">
+                  <xsl:text>rows="</xsl:text><xsl:value-of select="@rows" /><xsl:text>"</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>rows="10"</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>
+              <xsl:apply-templates select="@*" />
+              <xsl:text disable-output-escaping="yes">&gt;</xsl:text><xsl:value-of disable-output-escaping="yes" select="value" />
+              <xsl:text disable-output-escaping="yes">&lt;/textarea&gt;</xsl:text>
+              <xsl:apply-templates select="postfix" />
+            </span>
+          </xsl:if>
+          <xsl:if test="@maywrite='false'">
+            <span class="readonly">
+              <xsl:value-of select="value" />
+            </span>
+          </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='relation' or @ftype='enum'">
           <select name="{@fieldname}" class="input" onchange="validate_validator(event);" onblur="validate_validator(event); ">
@@ -424,7 +440,7 @@
         <xsl:when test="@ftype='enumdata'">
           <xsl:if test="optionlist/option[@id=current()/value]">
             <xsl:apply-templates select="value" mode="line">              
-               <xsl:with-param name="val"><xsl:value-of select="optionlist/option[@id=current()/value]" /></xsl:with-param>
+            <xsl:with-param name="val"><xsl:value-of select="optionlist/option[@id=current()/value]" /></xsl:with-param>
             </xsl:apply-templates>            
           </xsl:if>
         </xsl:when>
@@ -465,6 +481,7 @@
           </div>
         </xsl:when>
         <xsl:when test="@ftype='startwizard'">
+          <xsl:if test="@maywrite!='false'">
           <nobr>
            <xsl:if test="@inline='true'">
                 <a href="javascript:doStartWizard('{../../@fid}','{../../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
@@ -477,41 +494,51 @@
                 <xsl:call-template name="prompt_edit_wizard" />
                 </a>
            </xsl:if>
-          </nobr>
+          </nobr>          
+        </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='image'">
-          <xsl:choose>
-            <xsl:when test="@dttype='binary' and not(upload)">
-              <div class="imageupload">
-                <div><input type="hidden" name="{@fieldname}" value="YES" />
-                  <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
-                  <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
-                  <xsl:call-template name="prompt_image_upload" />
-                  </a>
+          <xsl:if test="@maywrite!='false'">
+            <xsl:choose>
+              <xsl:when test="@dttype='binary' and not(upload)">
+                <div class="imageupload">
+                  <div>
+                    <input type="hidden" name="{@fieldname}" value="YES" />
+                    <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" /><br />
+                    <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);">
+                      <xsl:call-template name="prompt_image_upload" />
+                    </a>
+                  </div>
                 </div>
-              </div>
-            </xsl:when>
-            <xsl:when test="@dttype='binary' and upload">
-              <div class="imageupload"><input type="hidden" name="{@fieldname}" value="YES" />
-                <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128" />
-                <br />
+              </xsl:when>
+              <xsl:when test="@dttype='binary' and upload">
+                <div class="imageupload">
+                  <input type="hidden" name="{@fieldname}" value="YES" />
+                  <img src="{upload/path}" hspace="0" vspace="0" border="0" width="128" height="128" />
+                  <br />
+                  <span>
+                    <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text> (<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
+                  </span>
+                  <br />
+                  <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_image_upload" /></a>
+                </div>
+              </xsl:when>
+              <xsl:otherwise>
                 <span>
-                  <xsl:value-of select="upload/@name" /><xsl:text disable-output-escaping="yes" >&amp;nbsp;</xsl:text> (<xsl:value-of select="round((upload/@size) div 100) div 10" />K)
+                  <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
                 </span>
-                <br />
-                <a href="{$uploadpage}&amp;popupid={$popupid}&amp;did={@did}&amp;wizard={/wizard/@instance}&amp;maxsize={@dtmaxsize}" onclick="return doStartUpload(this);"><xsl:call-template name="prompt_image_upload" /></a>
-              </div>
-            </xsl:when>
-            <xsl:otherwise>
-          <span>
-            <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" title="{field[@name='description']}" /><br />
-          </span>
-            </xsl:otherwise>
-          </xsl:choose>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if>
+          <xsl:if test="@maywrite='false'">
+            <span class="readonly">
+              <img src="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',cache(', $imagesize, '))'))}" hspace="0" vspace="0" border="0" />
+            </span>
+          </xsl:if>
         </xsl:when>
         <xsl:when test="@ftype='file'">
           <xsl:choose>
-            <xsl:when test="@dttype='data'">
+            <xsl:when test="@dttype='data' or @maywrite='false'" >
               <a target="_blank" href="{node:function($cloud, string(@number), concat('servletpath(', $cloudkey, ',number)'))}"><xsl:call-template name="prompt_do_download" /></a>
             </xsl:when>
             <xsl:otherwise>
@@ -533,7 +560,14 @@
           <xsl:call-template name="realposition" />
         </xsl:when>
         <xsl:otherwise>
-          <xsl:apply-templates select="value" mode="inputline" />
+          <xsl:if test="@maywrite!='false'">
+            <xsl:apply-templates select="value" mode="inputline" />
+          </xsl:if>
+          <xsl:if test="@maywrite='false'">
+            <span class="readonly">
+              <xsl:apply-templates select="value" mode="value" />
+            </span>
+          </xsl:if>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:apply-templates select="postfix" />
@@ -552,7 +586,7 @@
     <xsl:for-each select="field|fieldset">
       <tr>
         <xsl:apply-templates select="." />
-       </tr>
+      </tr>
     </xsl:for-each>     
   </xsl:template>
 
@@ -644,16 +678,19 @@
   <xsl:template name="itembuttons">
     <xsl:call-template name="mediaitembuttons" />
     <xsl:if test="command[@name='delete-item']">
+      <xsl:if test="@maydelete!='false'">
         <span class="imagebutton" title="{$tooltip_remove}" onclick="doSendCommand('{command[@name='delete-item']/@cmd}');">
           <xsl:call-template name="prompt_remove" />
-        </span>
+        </span>        
+      </xsl:if>      
     </xsl:if>
-
-    <xsl:if test="command[@name='move-up']">
-          <span class="imagebutton" title="{$tooltip_up}" onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><xsl:call-template name="prompt_up" /></span>
-    </xsl:if>
-    <xsl:if test="command[@name='move-down']">
-          <span class="imagebutton" title="{$tooltip_down}" onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><xsl:call-template name="prompt_down" /></span>
+    <xsl:if test="@maywrite!='false'">
+      <xsl:if test="command[@name='move-up']">
+        <span class="imagebutton" title="{$tooltip_up}" onclick="doSendCommand('{command[@name='move-up']/@cmd}');"><xsl:call-template name="prompt_up" /></span>
+      </xsl:if>
+      <xsl:if test="command[@name='move-down']">
+        <span class="imagebutton" title="{$tooltip_down}" onclick="doSendCommand('{command[@name='move-down']/@cmd}');"><xsl:call-template name="prompt_down" /></span>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 
