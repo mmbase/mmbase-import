@@ -1836,6 +1836,32 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </attribute>
   </tag>
   <tag>
+    <name>include</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
+    <info>
+	  Does an include.
+    </info>
+    <attribute>
+        <name>referids</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    	<refercontext>true</refercontext>
+	<info>
+	Specify which parameters. A comma seperated list of context
+	variable id's.
+	</info>
+    </attribute>
+    <attribute>
+        <name>page</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<refercontext>true</refercontext>
+	<info>
+	The url to refer to.
+	</info>
+    </attribute>
+  </tag>
+  <tag>
     <name>param</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.ParamTag</tagclass>
     <info>
