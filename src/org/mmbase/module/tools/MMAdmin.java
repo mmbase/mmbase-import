@@ -856,9 +856,10 @@ public class MMAdmin extends ProcessorModule {
         }
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         // new code checks all the *.xml files in builder dir
-            File bdir = new File(path);
+        File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
+            if (files == null) return;
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
@@ -919,9 +920,10 @@ public class MMAdmin extends ProcessorModule {
 
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         // new code checks all the *.xml files in builder dir
-            File bdir = new File(path);
+        File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
+            if (files == null) return results;
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
@@ -974,7 +976,7 @@ public class MMAdmin extends ProcessorModule {
                 subpath=subpath+File.separator;
             }
             String files[] = bdir.list();
-
+            if (files == null) return results;        
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
@@ -1075,6 +1077,7 @@ public class MMAdmin extends ProcessorModule {
             File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
+            if (files == null) return results;
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
@@ -1108,9 +1111,10 @@ public class MMAdmin extends ProcessorModule {
 
         String path=MMBaseContext.getConfigPath()+File.separator+"databases"+File.separator;
         // new code checks all the *.xml files in builder dir
-            File bdir = new File(path);
+        File bdir = new File(path);
         if (bdir.isDirectory()) {
             String files[] = bdir.list();
+            if (files == null) return results;
             for (int i=0;i<files.length;i++) {
                 String aname=files[i];
                 if (aname.endsWith(".xml")) {
