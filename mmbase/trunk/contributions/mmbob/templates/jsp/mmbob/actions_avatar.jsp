@@ -73,6 +73,7 @@
       </mm:notpresent>     
  
       <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
+
     </mm:transaction>
   </mm:present>
 
@@ -103,8 +104,17 @@
       </mm:notpresent>  
    
       <mm:node id="avatarnode" referid="selectedavatarnumber"/>
-
-      <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
+      
+      <%-- check if this avatar allready exists in the given userset otherwise we don't need to relate it again--%>
+      <mm:import id="constraint">images.number = <mm:node referid="avatarnode"><mm:field name="number"/></mm:node></mm:import> 
+      <mm:node referid="userset">
+        <mm:related path="images" fields="images.number" constraints="$constraint" >
+          <mm:import id="avatarExists">true</mm:import>
+        </mm:related> 
+      </mm:node>  
+      <mm:notpresent referid="avatarExists">    
+        <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
+      </mm:notpresent>
 
       <mm:createrelation source="posternode" destination="avatarnode" role="rolerel">
         <mm:setfield name="role">avatar</mm:setfield>
