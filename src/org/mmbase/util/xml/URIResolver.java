@@ -40,7 +40,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.9 2002-11-11 21:56:52 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.10 2003-01-14 15:58:12 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.util.SizeMeasurable {
@@ -122,12 +122,14 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
         // URIResolvers  cannot be changed, the hashCode can already be calculated and stored.
 
         if (extraDirs.size() == 1) { // only mmbase config, cannot change
-            log.debug("getting hashCode " + cwd.hashCode());
+            if (log.isDebugEnabled()) log.debug("getting hashCode " + cwd.hashCode());
             hashCode = cwd.hashCode(); 
             // if only the cwd is set, then you alternatively use the cwd has hashCode is this way.
             // it this way in these case it is easy to avoid constructing an URIResolver at all.
         } else {
-            hashCode = (cwd.getAbsolutePath() + extraDirs.toString()).hashCode();
+            String help = cwd.getAbsolutePath() + extraDirs.toString(); 
+            hashCode = help.hashCode();
+            if (los.isDebugEnabled()) log.debug("getting hashCode " + hashCode + " based on '" + help + "'");
         }
     }
 
@@ -355,6 +357,9 @@ public class URIResolver implements javax.xml.transform.URIResolver, org.mmbase.
         }
         int getPrefixLength() {
             return prefixLength;
+        }
+        public String toString() {
+            return dir.toString();
         }
 
     }
