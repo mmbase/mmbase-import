@@ -45,7 +45,7 @@ public class BasicRelationManagerList extends BasicNodeManagerList implements Re
 	*
 	*/
 	public RelationManager getRelationManager(int index) {
-	    return (RelationManager) getObject(index);
+	    return (RelationManager) get(index);
 	}
 
 	/**
