@@ -11,10 +11,7 @@ package org.mmbase.util.transformers;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.mmbase.util.URLEscape;
+import java.util.*;
 import org.mmbase.util.URLParamEscape;
 
 
@@ -29,6 +26,14 @@ public class Url extends ConfigurableCharTransformer implements CharTransformer 
     
     public final static int ESCAPE       = 1;     
     public final static int PARAM_ESCAPE = 2;
+
+    public Url() {
+        super();
+    }
+
+    public Url(int conf) {
+        super(conf);
+    }
 
     /**
      * Used when registering this class as a possible Transformer
@@ -52,14 +57,14 @@ public class Url extends ConfigurableCharTransformer implements CharTransformer 
 
     public String transform(String r) {
         switch(to){
-        case ESCAPE:           return URLEscape.escapeurl(r);
+        case ESCAPE:           return java.net.URLEncoder.encode(r);
         case PARAM_ESCAPE:     return URLParamEscape.escapeurl(r);
         default: throw new UnknownCodingException(getClass(), to);
         }
     }
     public String transformBack(String r) {
         switch(to){
-        case ESCAPE:           return URLEscape.unescapeurl(r);
+        case ESCAPE:           return java.net.URLDecoder.decode(r);
         case PARAM_ESCAPE:     return URLParamEscape.unescapeurl(r);
         default: throw new UnknownCodingException(getClass(), to);
         }
