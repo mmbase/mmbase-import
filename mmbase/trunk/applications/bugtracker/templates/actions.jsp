@@ -42,11 +42,11 @@ password : <mm:write referid="password" />
         <mm:present referid="usernumber">
             <mm:write referid="account" cookie="ca" />
             <mm:write referid="password" cookie="cw" />
-		<mm:import id="message">login</mm:import>
+	    <mm:import id="message">login</mm:import>
         </mm:present>
         <mm:notpresent referid="usernumber">
-		<mm:import id="message">should have jumper</mm:import>
-    		<%response.sendRedirect("/development/bugtracker/changeUser.jsp?error=login&portal="+portal+"&page="+page2);%>
+	    <mm:import id="message">should have jumper</mm:import>
+    	    <%-- response.sendRedirect("/development/bugtracker/changeUser.jsp?error=login&portal="+portal+"&page="+page2); --%>
         </mm:notpresent>
 </mm:compare>
 
