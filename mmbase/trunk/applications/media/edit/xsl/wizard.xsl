@@ -84,10 +84,10 @@
   <!-- Media-items must be overridable, because there is no good generic sollution forewards compatible yet -->  
   <xsl:template name="mediaitembuttons">
     <xsl:if test="@displaytype='audio'">
-        <a target="left" href="{$referrerdir}audiovideo.jsp?source={@destination}&amp;language={$language}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
+        <a target="left" href="{$referrerdir}player.jsp?fragment={@destination}&amp;language={$language}" title="{$tooltip_audio}"><xsl:call-template name="prompt_audio" /></a>
     </xsl:if>
     <xsl:if test="@displaytype='video'">
-        <a target="left" href="{$referrerdir}audiovideo.jsp?source={@destination}&amp;language={$language}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
+        <a target="left" href="{$referrerdir}player.jsp?fragment={@destination}&amp;language={$language}" title="{$tooltip_video}"><xsl:call-template name="prompt_video" /></a>
     </xsl:if>
   </xsl:template>
 

@@ -75,7 +75,7 @@
               codebase="http://activex.microsoft.com/activex/	controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"
               standby="Loading Microsoft Windows Media Player components..."
               type="application/x-oleobject">
-              <param name="fileName" value="<mm:field id="source" name="url(asf)" />">
+              <param name="fileName" value="<mm:field id="source" name="url(wmf)" />">
               <param name="animationatStart" value="true">
               <param name="transparentatStart" value="true">
               <param name="autoStart" value="true">              
@@ -95,6 +95,8 @@
 </tr>
 <tr>
     <td valign="top" width="32" height="43"><img src="images/movie_down_left.gif" alt="" width="32" height="43" border="0"></td>
+<mm:write referid="player">
+<mm:compare value="real"><!-- use own controls for real -->
     <td height="43" align="center" valign="bottom" background="images/movie_down.gif"><img src="images/movie_knoppen.gif" alt="" width="160" height="38" border="0" usemap="#nav">
 				<map name="nav">
 				<area alt="terug" shape="circle" coords="16,25,10"  href="javascript:setPosition(0);" />
@@ -104,6 +106,11 @@
 				<area alt="vooruit" shape="circle" coords="145,25,10" href="javascript:setPosition(getLength());" /> 
 				</map>
 </td>
+</mm:compare>
+<mm:compare value="wm">
+    <td valign="top" background="images/movie_down.gif" height="27">&nbsp;</td>
+</mm:compare>
+</mm:write>
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
