@@ -30,7 +30,7 @@ import org.mmbase.util.FileWatcher;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.95 2003-07-07 16:56:42 michiel Exp $
+ * @version $Id: Wizard.java,v 1.96 2003-07-08 12:14:32 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -51,6 +51,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         nodeCache.putCache();
         fieldDataCache    = new FieldDataCache();
         fieldDataCache.putCache();
+        fieldDataCache.setActive(false);
     }
     /**
      * The cloud used to connect to MMBase
