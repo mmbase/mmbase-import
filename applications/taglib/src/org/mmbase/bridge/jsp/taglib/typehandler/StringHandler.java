@@ -25,7 +25,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.35 2005-01-30 16:46:39 nico Exp $
+ * @version $Id: StringHandler.java,v 1.36 2005-04-04 15:04:19 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -107,6 +107,7 @@ public class StringHandler extends AbstractTypeHandler {
                         buffer.append("</textarea>");
                     } 
                 } else { // not 'field' perhaps it's 'string'.
+                    String value;
                     if (guiType.indexOf("password") > -1) {
                         buffer.append("<input type =\"password\" class=\"small\" size=\"80\" ");
                         String opt = tag.getOptions();
@@ -114,16 +115,21 @@ public class StringHandler extends AbstractTypeHandler {
                             buffer.append("autocomplete=\"off\" ");
                         }
                         buffer.append("name=\"");
+                        if (guiType.indexOf("md5") > -1) {
+                            value = "";
+                        } else {
+                            value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
+                        }
                     } else {
                         buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
+                        
+                        value = node != null ? Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)) : "";
                     }
                     buffer.append(prefix(field.getName()));
                     buffer.append("\" ");
                     addExtraAttributes(buffer);
                     buffer.append(" value=\"");
-                    if (node != null) {
-                        buffer.append(Encode.encode("ESCAPE_XML_ATTRIBUTE_DOUBLE", tag.decode(node.getStringValue(field.getName()), node)));
-                    }
+                    buffer.append(value);
                     buffer.append("\" />");
                 }
             }
