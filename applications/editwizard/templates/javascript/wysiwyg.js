@@ -5,7 +5,7 @@
  * (c) Q42, 2001
  *
  * @since    MMBase-1.6
- * @version  $Id: wysiwyg.js,v 1.8 2002-08-12 08:12:05 michiel Exp $
+ * @version  $Id: wysiwyg.js,v 1.9 2003-03-05 11:45:55 pierre Exp $
  * @author   Kars Veling
  */
 
@@ -215,4 +215,6 @@ Wysiwyg.prototype.createEditBar = function () {
     div.innerHTML=s;
     document.body.appendChild(div);
     this.editBar=div;
+    this.editBar.style.visibility = 'hidden';
+    this.editBar.style.position = 'absolute';
 }
