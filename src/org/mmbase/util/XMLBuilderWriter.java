@@ -20,8 +20,7 @@ import org.mmbase.module.corebuilders.*;
 public class XMLBuilderWriter  {
 
     public static boolean writeXMLFile(String filename,MMObjectBuilder bul) {
-	System.out.println("STARTED XML WRITER ON : "+bul.getTableName());
-	String body="<builder maintainer=\""+bul.getMaintainer()+"\" version=\""+bul.getVersion()+"\" >\n\n";
+	String body="<builder maintainer=\""+bul.getMaintainer()+"\" version=\""+bul.getVersion()+"\">\n\n";
 
 	// status
 	body+="<!-- <status>\n";
