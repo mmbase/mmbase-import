@@ -10,6 +10,12 @@ public class TestCronJob2 extends BasicCronJob {
     public void run() {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
         log.info("found cloud " + cloud.getUser().getIdentifier() + "/" + cloud.getUser().getRank());        
+        try {
+            log.info("sleeping");
+            Thread.sleep(130 * 1000);
+            log.info("sleeped");
+        } catch (Exception e) {
+        }
 
     }
 
