@@ -225,7 +225,7 @@
     file of your web container configuration. The entry in your WEB.XML should
     reflect the following entry</para>
 
-    <programlisting>&#60;!-- MMbase tag library --&#62;
+    <programlisting>&#60;!-- MMBase tag library --&#62;
 &#60;taglib&#62;
   &#60;taglib-uri&#62;http://www.mmbase.org/mmbase-taglib-1.0&#60;/taglib-uri&#62;
   &#60;taglib-location&#62;/WEB-INF/mmbase-taglib.tld&#60;/taglib-location&#62;
