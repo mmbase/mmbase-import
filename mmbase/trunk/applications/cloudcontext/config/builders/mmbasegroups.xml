@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder name="mmbasegroups" maintainer="www.mmbase.org" version="1" extends="object">
+  <classfile>org.mmbase.security.implementation.cloudcontext.builders.Groups</classfile>
+  <names>
+    <singular xml:lang="en">MMBase Group</singular>
+    <singular xml:lang="nl">MMBase Groep</singular>
+    <plural xml:lang="en">MMBase Groups</plural>
+    <plural xml:lang="nl">MMBase Groepen</plural>
+  </names>
+  <descriptions>
+    <description xml:lang="en">MMBase security groups</description>
+    <description xml:lang="nl">MMBase groepen voor security</description>
+  </descriptions>
+  <fieldlist>
+    <!-- field definition for field 4 : name -->
+    <field>
+      <gui>
+        <guiname xml:lang="en">Name</guiname>
+        <guiname xml:lang="nl">Naam</guiname>
+        <guitype>string</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>1</input>
+          <list>1</list>
+          <search>1</search>
+        </positions>
+      </editor>
+      <db>
+        <name>name</name>
+        <type state="PERSISTENT" size="32" notnull="true" key="false">STRING</type>
+      </db>
+    </field>
+    <!-- field definition for field 4 : description -->
+    <field>
+      <gui>
+        <guiname xml:lang="en">Description</guiname>
+        <guiname xml:lang="nl">Omschrijving</guiname>
+        <guitype>field</guitype>
+      </gui>
+      <editor>
+        <positions>
+          <input>2</input>
+          <list>-1</list>
+          <search>2</search>
+        </positions>
+      </editor>
+      <db>
+        <name>description</name>
+        <type state="PERSISTENT" size="1024" notnull="true">STRING</type>
+      </db>
+    </field>
+  </fieldlist>
+</builder>
