@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.3 2002-08-21 17:25:53 michiel Exp $
+  @version $Id: prompts.xsl,v 1.4 2002-08-22 12:33:49 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -35,7 +35,7 @@
 <!-- prompts for a binary field (upload/download) -->
 <xsl:template name="prompt_file_upload">Bestand sturen</xsl:template>
 <xsl:template name="prompt_uploaded">gestuurd:</xsl:template>
-<xsl:template name="prompt_image_upload" >Stuur niewe afbeelding</xsl:template>
+<xsl:template name="prompt_image_upload" >Stuur nieuwe afbeelding</xsl:template>
 <xsl:template name="prompt_do_download">Huidig bestand bekijken</xsl:template>
 <xsl:template name="prompt_do_upload">Stuur nieuw bestand</xsl:template>
 <xsl:template name="prompt_no_file">Geen (nieuw) bestand.</xsl:template>
