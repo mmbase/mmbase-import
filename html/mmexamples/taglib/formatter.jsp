@@ -23,7 +23,19 @@
 	 <mm:createnode id="ok" type="news">
        <mm:setfield name="title">XML Test Node</mm:setfield>
        <mm:setfield name="subtitle">A nice example</mm:setfield>
-       <mm:setfield name="body">XML Test Node. _Don't_ forget to add some relations to this node (this is not done yet automaticly, an application must be created first)</mm:setfield>
+       <mm:setfield name="body">$An MMXF field can be divided in sections
+
+ _Don't_ forget to add some relations to this node (this is not done  yet automaticly, an application must be created first).
+
+- dogs
+- cats
+- mice
+
+$Section 2
+
+Be aware that this examples assume that the body of your news builder is of type XML.
+
+</mm:setfield>
      </mm:createnode>
      <mm:node referid="ok">
 			<mm:createalias>xmltest</mm:createalias>
@@ -89,7 +101,7 @@
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/xsltinline.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/xsltinline.jsp" %></td>
 </tr>
-<tr><td colspan="2">It can treat relations to the node too. We demonstrate here how the 'a' tags in the mmxf field are used. 'Descrel' relations are pointing to them, and we get links in the text like this. We have added a image and some urls to a paragraph as well.</td></tr>
+<tr><td colspan="2">It can treat relations to the node too. We demonstrate here how the 'a' tags in the mmxf field are used. 'Idrel' relations are pointing to them, and we get links in the text like this. We have added a image and some urls to a paragraph as well.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelations.jsp" /></mm:formatter></pre></td>
   <td width="50%"><%@include file="codesamples/shownoderelations.jsp" %></td>
