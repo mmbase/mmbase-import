@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -22,6 +22,10 @@ import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.database.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+
 //import org.mmbase.module.SMTP.*;
 
 /**
@@ -29,7 +33,8 @@ import org.mmbase.module.database.*;
  * @author Rico Jansen
  */
 public class Poll extends ProcessorModule  {
-	public final String CLASSNAME = getClass ().getName ();
+
+    private static Logger log = Logging.getLoggerInstance(Poll.class.getName()); 
 
 	private sessionsInterface	_sessions;
 	private MMBase 	_mmbase;
@@ -65,12 +70,6 @@ public class Poll extends ProcessorModule  {
 	}
 
 
-
-	private void debug (String msg) {
-		System.out.println (CLASSNAME + ": " + msg);
-	}
-
-
 	private String error (String msg) {
 		return "Error-> " + msg;
 	}
@@ -91,7 +90,7 @@ public class Poll extends ProcessorModule  {
 	 */
 	/*
     public void receivedEMail (EMail email) {
-        debug ("How nice, I received e-mail from '" + email.getHeader ("From") + "'");
+        log.debug("How nice, I received e-mail from '" + email.getHeader ("From") + "'");
 
 		EMail reply = new EMail ();
 		reply.setSenderHost ("twohigh.vpro.nl");
@@ -100,7 +99,7 @@ public class Poll extends ProcessorModule  {
 		reply.setHeader ("From", "poll@twohigh.vpro.nl");
 
         if (email.isMultiPart ()) {
-            debug ("Unable to handle this email 'cause it has multiple parts... :(");
+            log.debug("Unable to handle this email 'cause it has multiple parts... :(");
 
 			reply.setHeader ("Subject", "Couldn't handle your E-Mail.");
 			reply.setBody ("Sorry, but I was unable to handle your e-mail since it consisted of multiple parts.");
@@ -162,7 +161,7 @@ public class Poll extends ProcessorModule  {
 
 					if (cmd.equals ("ANSWERS")) 	result = listAnswers (tok, tagger);
 			else	if (cmd.equals ("ANSWERS2")) 	result = listAnswers2(tok, tagger);
-			else 	debug ("LIST could not be parsed correctly.");
+			else 	log.error ("LIST could not be parsed correctly.");
 		}
 		return result;
 	}
@@ -262,7 +261,7 @@ public class Poll extends ProcessorModule  {
 				else if (key.equals ("subtitle"))						vote.subtitle	= data.getStringValue( key );
                 else 													
 				{
-					debug("listAnswers2(): WARNING: While doing("+questionId+"): This key("+key+") is not implemented for sorting!");
+					log.warn("listAnswers2(): While doing(" + questionId + "): This key(" + key + ") is not implemented for sorting!");
 					vote.number		= data.getIntValue(key);
 				}
             }
@@ -310,7 +309,7 @@ public class Poll extends ProcessorModule  {
 
         tagger.setValue ("ITEMS", "" + select.size ());
 
-		debug("listAnswers2(): time("+(System.currentTimeMillis() - oldtime)+") ms. for items("+sorted.size()+")");
+        log.info("listAnswers2(): time("+(System.currentTimeMillis() - oldtime)+") ms. for items("+sorted.size()+")");
         return results;
     }
 
@@ -334,7 +333,7 @@ public class Poll extends ProcessorModule  {
 			if (token.equals("VOTE")) {
 				String voteFor =(String)cmds.get(cmdline);
 				if (voteFor != null) processVote (sp, voteFor);
-			} else debug ("unknown command : "+cmdline);
+			} else log.warn("unknown command : "+cmdline);
         }
 
 		
@@ -351,11 +350,13 @@ public class Poll extends ProcessorModule  {
 
 		if (tokens.hasMoreTokens ()) {
 			String qid = tokens.nextToken ();
-            debug("qid="+qid);
+            if (log.isDebugEnabled()) {
+                log.debug("qid=" + qid);
+            }
 
 			if (tokens.hasMoreTokens ()) {
 				String			aid		= tokens.nextToken ();
-                debug("aid="+aid);
+                log.debug("aid=" + aid);
 				MMObjectNode	relNode	= getRelation (qid, aid);
 
 				if (relNode != null) {
@@ -370,11 +371,11 @@ public class Poll extends ProcessorModule  {
 				}
 			}
 			else {
-				debug ("PRC-CMD-VOTE needs an Answer-number to do a vote.");
+				log.warn("PRC-CMD-VOTE needs an Answer-number to do a vote.");
 			}
 		}
 		else {
-			debug ("PRC-CMD-VOTE needs a Question-number and an Answer-number to do a vote.");
+			log.warn("PRC-CMD-VOTE needs a Question-number and an Answer-number to do a vote.");
 		}
 	}
 
@@ -578,7 +579,7 @@ public class Poll extends ProcessorModule  {
 
 		if (res == null) {
 			// Oops, the data wasn't in the cache... now we have to work...
-			//debug ("Retrieving relation-nodes of question " + questionId + " from database.");
+			//log.debug("Retrieving relation-nodes of question " + questionId + " from database.");
 
 			res					= new Vector ();
 			MultiConnection	con	= _mmbase.getConnection ();
@@ -598,12 +599,12 @@ public class Poll extends ProcessorModule  {
 				_cache.put (questionId + "_rels", res);
             }
             catch (SQLException e) {
-                debug ("SQLException while getting answers of question " + questionId);
-                e.printStackTrace ();
+                log.error("SQLException while getting answers of question " + questionId);
+                log.error(Logging.stackTrace(e));
             }
         }
         else {
-            //debug ("Found relation-nodes of question " + questionId + " in cache.");
+            //log.debug("Found relation-nodes of question " + questionId + " in cache.");
         }
 
         return res;
@@ -752,7 +753,7 @@ public class Poll extends ProcessorModule  {
 	/*
 	 */
 	private void saveUpdates () {
-		//debug ("Storing " + _updates.size () + " nodes in database.");
+		//log.debug("Storing " + _updates.size () + " nodes in database.");
 
 		while (_updates.size () > 0) {
 			MMObjectNode n = (MMObjectNode)_updates.elementAt (0);
@@ -768,7 +769,7 @@ public class Poll extends ProcessorModule  {
 			}
 		}
 
-		//debug ("Finished storing updates in database.");
+		//log.debug("Finished storing updates in database.");
 	}
 
 

@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -42,6 +42,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.database.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * The module which provides access to a filesystem residing in
  * a database
@@ -50,7 +53,9 @@ import org.mmbase.module.database.*;
  */
 public class Stats extends ProcessorModule implements StatisticsInterface {
 
-	private String classname = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(Stats.class.getName()); 
+    
+	//private String classname = getClass().getName();
 
 	MMBase mmbase;
 	Statistics bul;
@@ -69,7 +74,7 @@ public class Stats extends ProcessorModule implements StatisticsInterface {
 		bul=(Statistics)mmbase.getMMObject("statistics");
 		if( bul == null )
 		{
-			debug("init(): ******************** No bul created!!! *************************");
+			log.error("init(): ******************** No bul created!!! *************************");
 		}
 
 		if (probe==null) probe=new StatisticsProbe(this);
@@ -84,14 +89,6 @@ public class Stats extends ProcessorModule implements StatisticsInterface {
 
 	public void shutdown() {
 	}
-
-
-	/*
-	private void debug (String msg) {
-		// System.out.println ("Stats-> " + msg);
-	}
-	*/
-
 
 
 	/**
@@ -187,8 +184,8 @@ public class Stats extends ProcessorModule implements StatisticsInterface {
 	 * Execute the commands provided in the form values
 	 */
 	public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
-		System.out.println("CMDS="+cmds);
-		System.out.println("VARS="+vars);
+		log.info("CMDS="+cmds);
+		log.info("VARS="+vars);
 		return(false);
 	}
 
@@ -214,11 +211,11 @@ public class Stats extends ProcessorModule implements StatisticsInterface {
 				if (tok.hasMoreTokens()) {
 					String nodeStr=tok.nextToken();
 					if (nodeStr!=null) { 
-						//debug ("Setting counter...");
+						//log.debug ("Setting counter...");
 
 						String tmp = setCount (nodeStr, 1);
 
-						//debug ("Counter set.");
+						//log.debug ("Counter set.");
 
 						return tmp;
 					} else {
@@ -275,12 +272,12 @@ private MMObjectNode getSlice (String number,int slice) {
 		// If node exists, check its slice-number of the node found with the requested slice-number
 		if (node != null) tmp = node.getIntValue ("slicenumber");
 
-		//if (tmp == -1) debug ("Slice " + slice + " is not available");
-		//else debug ("Slice " + slice + " Tmp " + tmp + " (hashed)");
+		//if (tmp == -1) log.debug ("Slice " + slice + " is not available");
+		//else log.debug ("Slice " + slice + " Tmp " + tmp + " (hashed)");
 
 		return node;
 	} else {
-		//debug ("getSlice didn't get a Hashtable from getShadows");
+		//log.debug ("getSlice didn't get a Hashtable from getShadows");
 		return(null);
 	}
 }
@@ -354,18 +351,18 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 						}
 					}
 					else
-						debug("getAliasNumber("+alias+"), alias2("+alias2+"), w("+w+"): ERROR: Enumeration empty!");
+						log.error("getAliasNumber("+alias+"), alias2("+alias2+"), w("+w+"): Enumeration empty!");
 				}
 				else
-					debug("getAliasNumber("+alias+"), alias2("+alias2+"), bul("+bul+"): ERROR: Bul empty!");
+					log.error("getAliasNumber("+alias+"), alias2("+alias2+"), bul("+bul+"): Bul empty!");
 			}
 			else
 			{
-				debug("getAliasNumber("+alias+"), alias2("+alias2+"): ERROR: Null or empty from client!");
+				log.error("getAliasNumber("+alias+"), alias2("+alias2+"): Null or empty from client!");
 			}
 		}
 	} else {
-		System.out.println("Stats -> alias==null");
+		log.warn("Stats -> alias==null");
 	}
 	return(null);
 }
@@ -413,14 +410,14 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 					int curSliceBegin = stats.getIntValue ("timeslice");
 					int hits          = stats.getIntValue ("count");
 			
-					//debug ("Current statistics begin is " + (statsStart + curSliceBegin));
-					//debug ("Hit came on time " + hitTime);
+					//log.debug ("Current statistics begin is " + (statsStart + curSliceBegin));
+					//log.debug ("Hit came on time " + hitTime);
 			
 					if ((nrOfSlices < 1) || ((hitTime >= statsStart + curSliceBegin) && (hitTime < (statsStart + curSliceBegin + interval)))) { // This statistics-node has no shadow-statistics OR hit falls in current slice
 						hits += incr;
 						stats.setValue ("count", hits);
 						if (!dirty.contains(stats)) dirty.addElement(stats);
-						//debug ("Increased node " + number + " to " + hits);
+						//log.debug ("Increased node " + number + " to " + hits);
 						return ("");
 					}
 					int curSliceNr = (curSliceBegin / interval) % nrOfSlices;
@@ -435,7 +432,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 						MMObjectNode nowSlice = getSlice (number,curSliceNr);
 			
 						if (nowSlice == null) { // Node doesn't exist, so we have to make it
-							//debug ("Slice " + curSliceNr + " doesn't exist yet... making it");
+							//log.debug ("Slice " + curSliceNr + " doesn't exist yet... making it");
 							StatisticsShadow ssbuild = ((StatisticsShadow)mmbase.getMMObject ("sshadow"));
 							nowSlice = ssbuild.getNewNode ("logger");
 							nowSlice.setValue ("parent", java.lang.Integer.parseInt (number));
@@ -448,7 +445,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 							int id = ssbuild.insert ("logger", nowSlice); 
 							((Statistics)mmbase.getMMObject ("statistics")).delShadows(number);
 							} else {
-							//debug ("Changing values of existing slice " + curSliceNr);
+							//log.debug ("Changing values of existing slice " + curSliceNr);
 							nowSlice.setValue ("start", curSliceBegin);
 							nowSlice.setValue ("stop", curSliceBegin + interval - 1);
 							nowSlice.setValue ("count", stats.getIntValue ("count"));
@@ -457,7 +454,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 					} 
 					else 
 					{
-						//debug ("Current stats have no hits, so no need to store it");
+						//log.debug ("Current stats have no hits, so no need to store it");
 					}
 			
 					/*--------------------------------------------------------------
@@ -491,13 +488,13 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 						MMObjectNode s = getSlice (number,fillSliceNr);
 			
 						if (s != null) { // Node exists in database, so we have to reset it to new values
-							//debug ("Resetting values of slice " + fillSliceNr + " (new begin = " + fillSliceBegin + ")");
+							//log.debug ("Resetting values of slice " + fillSliceNr + " (new begin = " + fillSliceBegin + ")");
 							resetShadow (s, fillSliceBegin, fillSliceBegin + interval - 1);
 							if (!dirty.contains (s)) dirty.addElement (s);
 						} 
 						else 
 						{
-							debug ("Skipping slice " + fillSliceNr + ", begin should have been " + fillSliceBegin);
+							log.warn("Skipping slice " + fillSliceNr + ", begin should have been " + fillSliceBegin);
 						}
 					}
 				}
@@ -505,7 +502,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 			}
 			else
 			{
-				debug("");
+				log.debug(""); //??
 			}
 			/* else */
 			//debug ("No Stats node");
@@ -515,7 +512,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 		} 
 		catch(Exception re) 
 		{
-			re.printStackTrace();
+			log.error(Logging.stackTrace(re));
 			return("error");
 		}
 	}
@@ -541,7 +538,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 			// Process the (copied) dirty elements
 			if (proc!=null) {
 				MMObjectNode node;
-				System.out.println("Stats -> Updating "+proc.size()+" nodes");
+				log.info("Updating "+proc.size()+" nodes");
 				while (proc.size()>0) {
 					node=(MMObjectNode)proc.elementAt(0);
 					node.commit();
@@ -552,7 +549,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 			}
 			processingDirty=false;
 		} else {
-			System.out.println("Stats -> CheckDirty while Processing");
+			log.info("CheckDirty while Processing");
 		}
 	}
 
@@ -577,7 +574,7 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 		}
 		else
 		{
-			debug("NewStat("+name+","+description+","+timeslices+","+timeinterval+","+timeslice+","+data+","+inc+"): ERROR: Bul not defined!");
+			log.error("NewStat(" + name + "," + description + ","+ timeslices + "," + timeinterval + "," + timeslice + "," + data + ","+inc+"): Bul not defined!");
 		}
 	}
 
@@ -598,10 +595,5 @@ private void resetShadow (MMObjectNode n, int start, int stop) {
 	public boolean countSimpleEvent(String eventname) {
 		setAliasCount(eventname,1);
 		return(true);
-	}
-
-	private void debug( String msg ) 
-	{
-		System.out.println( classname +":"+ msg );
 	}
 }

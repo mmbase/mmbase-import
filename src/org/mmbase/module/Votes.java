@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -13,9 +13,13 @@ import java.util.Vector;
 import java.util.Enumeration;
 import org.mmbase.util.SortedVector;
 
-public 	class 		Votes
-{
-	private String classname = getClass().getName();
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
+public 	class Votes {
+
+    private static Logger log = Logging.getLoggerInstance(Votes.class.getName()); 
+
 	private	Vector votes;
 
 	public Votes()
@@ -46,7 +50,7 @@ public 	class 		Votes
 		else	if (what.equals("scaled"))		result = sortPercentage();
 		else
 		{
-			debug("sort("+what+"): ERROR: This is not a valid sort-criteria (sorting on number)");
+			log.error("sort("+what+"): This is not a valid sort-criteria (sorting on number)");
 			result = sortNumber();
 		}
 		return result;
@@ -79,10 +83,5 @@ public 	class 		Votes
 		Vector result = null;
 		result = SortedVector.SortVector( votes, new VotesCompareScaled() );
 		return result;
-	}
-
-	public void debug( String msg )
-	{
-		System.out.println( classname + ":" + msg );
 	}
 }
