@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
-import java.util.Map;
 import java.io.File;
 
 import org.mmbase.util.FileWatcher;
@@ -23,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.1 2003-07-09 07:25:06 michiel Exp $
+ * @version $Id: Configurable.java,v 1.2 2003-07-09 10:03:11 michiel Exp $
  * @since MMBase-1.7
  */
 abstract class Configurable {
