@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
-<builder maintainer="mmbase.org" version="0">
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder_1_0.dtd">
+<builder maintainer="mmbase.org" version="1" extends="object">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -29,8 +29,8 @@
 >-->
 <names>
 	<!-- singles per language as defined by ISO 639 -->
-	<singular xml:lang="nl">Groep</singular>
 	<singular xml:lang="fr">Groupe</singular>
+	<singular xml:lang="nl">Groep</singular>
 	<singular xml:lang="en">Group</singular>
 	<singular xml:lang="us">Group</singular>
 	<!-- multiple per language as defined by ISO 639 -->
@@ -44,8 +44,8 @@
 -->
 <descriptions>
 <!-- descriptions per language as defined by ISO 639  -->
-	<description xml:lang="nl">verschillende groepen van mensen</description>
 	<description xml:lang="fr">Diff¥nts types de groupes de personnes</description>
+	<description xml:lang="nl">verschillende groepen van mensen</description>
 	<description xml:lang="en">different types of groups of people</description>
 	<description xml:lang="us">different types of groups of people</description>
 </descriptions>
@@ -67,8 +67,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Object</guiname>
 			<guiname xml:lang="fr">Objet</guiname>
+			<guiname xml:lang="nl">Object</guiname>
 			<guiname xml:lang="en">Object</guiname>
 			<guiname xml:lang="us">Object</guiname>
 			<guitype>integer</guitype>
@@ -97,8 +97,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Eigenaar</guiname>
 			<guiname xml:lang="fr">Propri!ire</guiname>
+			<guiname xml:lang="nl">Eigenaar</guiname>
 			<guiname xml:lang="en">Owner</guiname>
 			<guiname xml:lang="us">Owner</guiname>
 			<guitype>string</guitype>
@@ -127,8 +127,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Naam</guiname>
 			<guiname xml:lang="fr">Nom</guiname>
+			<guiname xml:lang="nl">Naam</guiname>
 			<guiname xml:lang="en">Name</guiname>
 			<guiname xml:lang="us">Name</guiname>
 			<guitype>string</guitype>
@@ -157,8 +157,8 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Omschrijving</guiname>
 			<guiname xml:lang="fr">Description</guiname>
+			<guiname xml:lang="nl">Omschrijving</guiname>
 			<guiname xml:lang="en">Description</guiname>
 			<guiname xml:lang="us">Description</guiname>
 			<guitype>field</guitype>
