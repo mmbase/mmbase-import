@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.97 2003-06-27 13:00:01 nico Exp $
+ * @version $Id: BasicNode.java,v 1.98 2003-06-30 11:29:43 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -851,35 +851,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return relation;
     }
 
-    /**
-     * set the Context of the current Node
-     *
-     * @param context	    	    The context to which the current node should belong,
-     * @throws BridgeException      Dunno?
-     * @throws SecurityException    When not the approperate rights (change context)
-     */
+
+    // javadoc inherited (from Node)
     public void setContext(String context) {
         cloud.setContext(getNumber(), context);
     }
 
-    /**
-     * get the Context of the current Node
-     *
-     * @return the current context of the node
-     * @throws BridgeException      Dunno?
-     * @throws SecurityException    When not the approperate rights (read rights)
-     */
+    // javadoc inherited (from Node)
     public String getContext() {
         return cloud.getContext(getNumber());
     }
 
-    /**
-     * get the Contextes which can be set to this specific node
-     *
-     * @return the contextes from which can be chosen
-     * @throws BridgeException      Dunno?
-     * @throws SecurityException    When not the approperate rights (read rights)
-     */
+
+    // javadoc inherited (from Node)
     public StringList getPossibleContexts() {
         return new BasicStringList(cloud.getPossibleContexts(getNumber()));
     }
