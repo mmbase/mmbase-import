@@ -209,11 +209,9 @@ public class DiskProvider extends BasicProvider implements ProviderInterface {
                 BufferedInputStream in = new BufferedInputStream(jarFile.getInputStream(je));
                 BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(getImportPath() + ".temp_" + packageid + "_" + packageversion + ".mmp"));
                 int val;
-		log.info("START WRITE");
                 while ((val = in.read()) != -1) {
                     out.write(val);
                 }
-		log.info("END WRITE");
                 out.close();
             } catch (Exception e) {
                 log.error("can't load : " + path);
