@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
 * @author Pierre van Rooden
 * @version 18 Apr 2001
 */
-public class StringTagger {
+public class StringTagger implements Map {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(StringTagger.class.getName());
@@ -230,6 +230,121 @@ public class StringTagger {
         multitokens.put(name,Multi);
     }
 
+
+    // Map interface methods
+
+    /**
+     * Clears all data
+     */
+    public void clear() {
+        tokens.clear();
+        multitokens.clear();
+        startline="";
+    }
+
+    /**
+     * Checks whether a key exits.
+     */
+    public boolean containsKey (Object ob) {
+        return tokens.containsKey(ob);
+    }
+
+    /**
+     * Checks whether a value exits.
+     */
+    public boolean containsValue (Object ob) {
+        return tokens.containsValue(ob);
+    }
+
+    /**
+     *  returns all values
+     */
+    public Set entrySet() {
+        return tokens.entrySet();
+    }
+
+    /**
+     * Returns whether two objects are the same
+     * @param ob the key of the value to retrieve
+     */
+    public boolean equals(Object ob) {
+        return (ob instanceof Map) && (ob.hashCode()==this.hashCode());
+    }
+
+    /**
+     * Returns the value of a key as an Object.
+     * The value returned is a single, unseparated, string.<br>
+     * Use {@link Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * Use {@link Value} to get the first value as a String
+     * @param ob the key of the value to retrieve
+     */
+    public Object get(Object ob) {
+        return tokens.get(ob);
+    }
+
+    /**
+     *  Hashcode for sorting and comparing
+     */
+    public int hashCode() {
+        return multitokens.hashCode();
+    }
+
+    /**
+     * Checks whether the tagger is empty
+     */
+    public boolean isEmpty() {
+        return tokens.isEmpty();
+    }
+
+    /**
+     * Returns a Set of the name keys.
+     */
+    public Set keySet() {
+        return tokens.keySet();
+    }
+
+    /**
+     *  sets a value (for the Map interface).
+     */
+    public Object put(Object key, Object value) {
+        Object res=tokens.get(key);
+        setValue((String)key,(String)value);
+        return res;
+    }
+
+    /**
+     *  Manually sets a set of values (for the Map interface).
+     */
+    public void putAll(Map map) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     *  remove a value (for the Map interface).
+     */
+    public Object remove(Object key) {
+        Object res=tokens.get(key);
+        tokens.remove(key);
+        multitokens.remove(key);
+        return res;
+    }
+
+    /**
+     *  sets a value (for the Map interface).
+     */
+    public int size() {
+        return tokens.size();
+    }
+
+    /**
+     *  returns all values
+     */
+    public Collection values() {
+        return tokens.values();
+    }
+
+    // Custom methods
+
     /**
      * Returns a Enumeration of the name keys.
      */
@@ -277,24 +392,6 @@ public class StringTagger {
     }
 
     /**
-     * Checks whether a value for a key exits.
-     */
-    public boolean containsKey (Object ob) {
-        return tokens.containsKey(ob);
-    }
-
-    /**
-     * Returns the value of a key as an Object.
-     * The value returned is a single, unseparated, string.<br>
-     * Use {@link Values} to get a list of multi-values as a <code>Vector</code>.<br>
-     * Use {@link Value} to get the first value as a String
-     * @param ob the key of the value to retrieve
-     */
-    public Object get(Object ob) {
-        return tokens.get(ob);
-    }
-
-    /**
      * Returns the values as a Vector that contains
      * the separated values.<br>
      * Use {@link get} to get the list of values as a <code>String</code><br>
@@ -311,23 +408,6 @@ public class StringTagger {
      * @param token unused
      */
     public String ValuesString(String token) {
-        /*
-        Vector tmp=(Vector)multitokens.get(token);
-        if (tmp!=null) {
-            String tmp2="";
-            for (Enumeration e = tmp.elements();e.hasMoreElements();) {
-                if (tmp2.equals("")) {
-                    tmp2+=(String)e.nextElement();
-                } else {
-                    tmp2+=","+(String)e.nextElement();
-                }
-            }
-            tmp2 = Strip.DoubleQuote(tmp2,Strip.BOTH);
-            return tmp2;
-        } else {
-            return null;
-        }
-        */
         return startline;
     }
 
@@ -357,19 +437,19 @@ public class StringTagger {
 
     /**
      *  Manually sets a single value.
-     *  XXX: Does not set a value in the {@link #tokens} field.
      */
     public void setValue(String token,String val) {
         Vector newval=new Vector();
         newval.addElement(val);
+        tokens.put(token,newval);
         multitokens.put(token,newval);
     }
 
     /**
      *  Manually sets a multi-value value.
-     *  XXX: Does not set a value in the {@link #tokens} field.
      */
     public void setValues(String token,Vector values) {
+        tokens.put(token,values.toString());
         multitokens.put(token,values);
     }
 
@@ -380,10 +460,4 @@ public class StringTagger {
         StringTagger tag=new StringTagger(args[0]);
     }
 
-    /**
-     *  Hashcode for storting and comparing
-     */
-    public int hashCode() {
-        return multitokens.hashCode();
-    }
 }
