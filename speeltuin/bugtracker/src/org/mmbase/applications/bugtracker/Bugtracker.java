@@ -14,7 +14,7 @@ import java.util.*;
  * Bugtracker is the mail class for the bugtracker
  * it contains the root bugtracker category and information
  * about the maintainer of the bugtracker
- * @mmbase-application-name Bugtracker
+ * @mmbase-application-name BugtrackerApp
  *
  * @mmbase-nodemanager-name bugtracker
  * @mmbase-nodemanager-field name string 50
@@ -103,7 +103,7 @@ public class Bugtracker {
     }
     
     public String getVersion(){
-        return "$Id: Bugtracker.java,v 1.7 2002-11-13 20:35:51 kees Exp $";
+        return "$Id: Bugtracker.java,v 1.8 2002-11-13 21:38:18 kees Exp $";
     }
     
     public static void main(String argv[]) throws Exception{
