@@ -108,13 +108,24 @@ Build-java-version: ${ant.java.version}
 Build-compiler: ${build.compiler}
 </echo>
 
-    <jar jarfile="build/mmbase-rmmci.jar"
+    <jar jarfile="build/mmbase-rmmci-server.jar"
          manifest="build/rmmcitmp/manifest.mf"
     >
        <fileset dir="build/classes">
         <include name="org/mmbase/**"/>
        </fileset>
+    </jar>
+    <unjar src="../../build/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar" dest="build/rmmcitmp" />
+    <jar jarfile="build/rmmci.jar" manifest="build/rmmcitmp/manifest.mf" >
+       <fileset dir="build/classes">
+        <include name="org/mmbase/bridge/remote/*"/>
+        <include name="org/mmbase/bridge/remote/rmi/*Stub.class"/>
+        <include name="org/mmbase/bridge/remote/util/*"/>
+        <include name="org/mmbase/bridge/remote/implementation/*"/>
+       </fileset>
        <fileset dir="build/rmmcitmp">
+        <include name="org/mmbase/bridge/*"/>
+        <include name="org/mmbase/storage/search/SearchQuery.class"/>
         <include name="org/w3c/dom/Document.class"/>
         <include name="org/w3c/dom/Node.class"/>
         <include name="org/w3c/dom/Element.class"/>
