@@ -47,7 +47,7 @@ import org.mmbase.util.transformers.*;
  * @rename Encoder
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Encode.java,v 1.17 2003-05-09 12:19:39 kees Exp $
+ * @version $Id: Encode.java,v 1.18 2003-05-14 18:10:15 michiel Exp $
  **/
 public class Encode {
 
@@ -125,7 +125,8 @@ public class Encode {
                         encodings.putAll(newencodings); // add them all to our encodings.
                     } else {
                         log.debug("Non configurable");
-                        encodings.put(clazz, new Config(atrans, -1, clazz));
+                        Transformer transformer = (Transformer) atrans.newInstance();
+                        encodings.put(transformer.toString(), new Config(atrans, -1, "Transformer: " + clazz));
                     }
                     // TODO, perhaps there should be a check here, to make sure that no two classes use the
                     // same string to identify a transformation.
