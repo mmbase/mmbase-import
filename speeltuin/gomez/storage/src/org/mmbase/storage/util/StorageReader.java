@@ -21,6 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
+ * @version $Id: StorageReader.java,v 1.4 2003-07-23 14:11:34 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -186,7 +187,7 @@ public class StorageReader extends DocumentReader  {
      * @return disallowed fields as a map 
      */
     public Map getDisallowedFields() {
-        Map attributes = new HashMap();
+        Map disallowedFields = new HashMap();
         Element root = document.getDocumentElement();
         NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
         if (disallowedFieldsList.getLength()>0) {
@@ -196,15 +197,52 @@ public class StorageReader extends DocumentReader  {
             for (int i=0; i<fieldTagList.getLength(); i++) {
                 Element fieldTag = (Element)fieldTagList.item(i);
                 String fieldName = fieldTag.getAttribute("name");
-                // require an attribute name. 
+                // require a field name. 
                 // if not given, skip the option.
                 if (fieldName != null) {
                     if (casesensitive) fieldName = fieldName.toLowerCase(); 
                     String replacement = fieldTag.getAttribute("replacement");
-                    attributes.put(fieldName,replacement);
+                    disallowedFields.put(fieldName,replacement);
                 }
             }
         }
-        return attributes;
+        return disallowedFields;
+    }
+
+
+    /**
+     * Returns all type mappings.
+     * The mappings are returned in the order that they were given in the reader.
+     * Calling code should sort this list if they want to use TypoMapping fuzzy matching.
+     * @return a List of TypeMapping objects
+     */
+    public List getTypeMappings() {
+        List typeMappings = new ArrayList();
+        Element root = document.getDocumentElement();
+        NodeList typeMappingsTagList = root.getElementsByTagName("type-mappings");
+        if (typeMappingsTagList.getLength()>0) {
+            Element typeMappingsTag = (Element)typeMappingsTagList.item(0);
+            NodeList typeMappingTagList = typeMappingsTag.getElementsByTagName("type-mapping");
+            for (int i=0; i<typeMappingTagList.getLength(); i++) {
+                Element typeMappingTag = (Element)typeMappingTagList.item(i);
+                TypeMapping typeMapping = new TypeMapping();
+                typeMapping.name = typeMappingTag.getAttribute("type");
+                // require a type-mapping name (a MMBase type)
+                // if not given, skip the option.
+                if (typeMapping.name != null) {
+                    // obtain min/max values for sizes
+                    try {
+                        typeMapping.minSize = Integer.parseInt(typeMappingTag.getAttribute("min-size"));
+                    } catch (NumberFormatException nfe) {}
+                    try {
+                        typeMapping.maxSize = Integer.parseInt(typeMappingTag.getAttribute("max-size"));
+                    } catch (NumberFormatException nfe) {}
+                    // get the type to convert to
+                    typeMapping.type = typeMappingTag.getAttribute("type");
+                    typeMappings.add(typeMapping);
+                }
+            }
+        }
+        return typeMappings;
     }
 }
