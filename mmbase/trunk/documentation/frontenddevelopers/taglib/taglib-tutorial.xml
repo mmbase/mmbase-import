@@ -5,19 +5,15 @@
   <title>Creating webpages with the MMBase Tag Library</title>
 
   <articleinfo>
-    <date>august 2002</date>
-
     <copyright>
-      <year>2002</year>
-
-      <holder>MMBase Foundation</holder>
+      <year>This document is created under the Mozilla Public License</year>
     </copyright>
 
     <authorgroup>
       <author>
         <firstname>Rogier</firstname>
 
-        <surname>Schaaf</surname>
+        <surname>Schaaf (E-id! Internet Strategies B.V.)</surname>
       </author>
     </authorgroup>
 
@@ -29,11 +25,29 @@
 
         <revremark>First draft</revremark>
       </revision>
+
+      <revision>
+        <revnumber>0.2</revnumber>
+
+        <date>march 2003</date>
+
+        <revremark>Changed tutorial to use the MyNews application from the
+        MMBase distro.</revremark>
+      </revision>
+
+      <revision>
+        <revnumber>0.3</revnumber>
+
+        <date>Completed tutorial for MyNews application and reworked comments
+        from Documentation projectgroup.</date>
+      </revision>
     </revhistory>
 
     <abstract>
       <para>This document offers a tutorial for page designer who want to
-      build web pages using the MMBase Tag Library.</para>
+      build web pages using the MMBase Tag Library. Readers should be familiar
+      with JSP technologies, HTML and have an up-and-running instance of
+      MMBase available.</para>
     </abstract>
   </articleinfo>
 
@@ -41,7 +55,7 @@
     <title>Introduction</title>
 
     <para>In this tutorial we try to give page designers a hands-on overview
-    of the capabilities of the MMBase Tag Libraries. This technology, shipped
+    of the capabilities of the MMBase Tag Library. This technology, shipped
     with the MMBase content management system, enables page designers in
     developing web pages that retrieve their content from the MMBase system.
     After reading this tutorial and working your way through the examples we
@@ -61,14 +75,9 @@
       <title>What you need to complete this tutorial?</title>
 
       <para>This tutorial requires a working instance of MMBase with an empty
-      cloud available. The name of the cloud is [TODO: name of the cloud]. If
-      you don&#39;t have an MMBase instance available in your network, ask
-      your MMBase administrator to set one up for you.</para>
-
-      <para>Next you&#39;ll need sample content in the MMBase cloud to work
-      your way through the tutorial. The sample content is provided in a zip
-      file, together with this tutorial document. In the next chapter the
-      process of adding the sample content to the MMBase cloud is explained.</para>
+      cloud available. The name of the cloud is &#34;MMBase&#34;. If you
+      don&#39;t have an MMBase instance available in your network, ask your
+      MMBase administrator to set one up for you.</para>
 
       <para>To edit your pages you&#39;ll need at least some breed of editor.
       The tutorial makes no assumptions on your tooling. You can edit your
@@ -137,7 +146,7 @@
       <title>Getting help</title>
 
       <para>If you find a mistake in this tutorial, please inform us about it
-      [TODO: where, who?].</para>
+      at <link linkend="???">documentation@mmbase.org</link>.</para>
 
       <para>If you have additional questions please contact one of the
       companies that support MMBase. You will find a complete listing of
@@ -158,28 +167,24 @@
     that is shipped with the MMBase distribution. Before beginning this
     tutorial, make sure that you have the distribution of MMBase installed and
     running with the demo applications running as well. The MyNews application
-    uses the following cloud design. Take a minute to review this design as it
-    will be used throughout this tutorial.</para>
+    uses the following content model. Take a minute to review this design as
+    it will be used throughout this tutorial.</para>
 
     <figure>
-      <title></title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="media/cloud.jpg" />
-        </imageobject>
-      </mediaobject>
+      <mediaobject><imageobject><imagedata fileref="media/cloud.jpg"
+      format="JPEG"></imagedata></imageobject></mediaobject>
     </figure>
 
     <para>As you can see, the central item appears to be our news item. It has
     several relations to other content types within the cloud, some of them
-    showing a &#34;posrel&#34; attribute. These are special types of
-    relations. Normally when MMBase maintains a relation between two content
-    types, MMBase &#34;forgets&#34; the specific sequence in which the
-    relations where created. Sometimes it&#39;s necessary to maintain this
-    specific sequence. A posrel relation does just that. for further
-    information on MMBase relations and the usage of posrel, check [todo:
-    other source of info?].</para>
+    showing a &#34;posrel&#34; attribute.</para>
+
+    <para>These are special types of relations. Posrel relations offer the
+    possibility to add sequencing information on the relation. This way you
+    can set the sequence as each relation is added by using an integer
+    attribute. Note that setting the &#34;pos&#34; attribute of a posrel
+    relation is not done automatically. If you don&#39;t supply a value,
+    MMBase will set it to its default value being -1.</para>
   </section>
 
   <section>
@@ -193,7 +198,7 @@
     types. For example, if you define that every news item you publish on your
     website would contain the news text and an image, then you would have two
     content types in your cloud: content type &#34;news&#34; and content type
-    &#34;image&#34;. Furthermore you would define a relation between the
+    &#34;images&#34;. Furthermore you would define a relation between the
     content types news and image to support displaying images with newsitems.</para>
 
     <para>For a very basic website you&#39;ll need no more than a handful of
@@ -223,8 +228,8 @@
     by &#34;mm&#34;. The value for the uri attribute, in this case
     &#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; is the identification of
     the MMBase tag library and should correspond to the entry in the web.xml
-    file of your web container configuration. The entry in your WEB.XML should
-    reflect the following entry</para>
+    file of your web container configuration. Your WEB.XML should contain the
+    following entry:</para>
 
     <programlisting>&#60;!-- MMBase tag library --&#62;
 &#60;taglib&#62;
@@ -264,8 +269,10 @@
       magazine in it. The designers of the database have labelled this
       magazine with a default alias named &#34;default.mags&#34;. To use this
       default magazine we import it into our page by using the
-      &#60;mm:import&#62; tag. By importing the magazine into our page, the
-      node becomes available in our page. Add the following to your JSP:</para>
+      &#60;mm:import&#62; tag. The &#60;mm:import&#62; tag creates a special
+      environment, called a context. Into this context, the developer can
+      store variables and their values (Java developers can compare a context
+      to a Hashmap like structure).</para>
 
       <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
 
@@ -326,8 +333,9 @@
         <para>To make your content portable between databases, you can use
         aliases to refer to your nodes, in stead of absolute numerical node
         id&#39;s. As you transfer content between databases it&#39;s not
-        always garanteed that nodes receive the same id, while they always
-        keep an assigned alias.</para>
+        garanteed that nodes receive the same id, while they always keep an
+        assigned alias. Usage of aliases will also make your JSP&#39;s better
+        readable.</para>
       </tip>
 
       <para>To retrieve a node from MMBase you use the &#60;mm:node&#62; tag.</para>
@@ -344,18 +352,56 @@
 
 &#60;mm:import externid=&#34;magid&#34;&#62;default.mags&#60;/mm:import&#62;
 &#60;mm:cloud name=&#34;mmbase&#34;&#62;
-  &#60;mm:node number=&#34;$magid&#34; id=&#34;mag&#34;&#62;
+  &#60;mm:node number=&#34;$magid&#34;&#62;
   &#60;/mm:node&#62;
 &#60;/mm:cloud&#62;</programlisting>
 
-      <para>This entry accesses the node that was imported earlier into our
-      page. By importing a node into a page, you create a so called
-      &#34;context&#34; from which you can later retrieve nodes. In our
-      example, we imported the node into our context with id &#34;magid&#34;.
-      By using the $ directive, MMBase knows that the node is actually located
-      in our context and does not have to be loaded from the cloud. By adding
-      an explicit id, we make sure we can reference all fields inside our
-      magazine without any conflicts with other nodes.</para>
+      <para>Using the &#60;mm:node&#62; tag we actually are accessing the node
+      of which we imported the alias earlier into our page, using the
+      &#60;mm:import&#62; tag. By using the $ directive, MMBase knows that the
+      value between quotes is not an actual value of an alias, but an imported
+      variable within the context of this page.</para>
+
+      <para>This is quite a complex way of doing things. Another approach, if
+      our database would ever only contain one default magazine, would be to
+      lookup its node id in MMBase and refer it directly in our page. For
+      example, assume we one magazine in our database with id 210, we could
+      do:</para>
+
+      <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
+
+&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+  &#60;mm:node number=&#34;210&#34;&#62;
+  &#60;/mm:node&#62;
+&#60;/mm:cloud&#62;</programlisting>
+
+      <para>The obvious drawback of this structure is that the magazine id is
+      now hardcoded into our page, which means we can only show this specific
+      magazine. Another option would be to transfer in the node id through the
+      session or the request.</para>
+
+      <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
+
+&#60;%
+  String nodeId = (String) request.getAttribute(&#34;nodeId&#34;);
+%&#62;
+
+&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+  &#60;mm:node number=&#34;&#60;%nodeId%&#62;&#34;&#62;
+  &#60;/mm:node&#62;
+&#60;/mm:cloud&#62;</programlisting>
+
+      <para>For this to work you have to write a little Java scriptlet inside
+      your template and of course you have to have a preceding mechanism (for
+      example a screen where you present all available magazines, from which
+      the user can select one) that places the selected magazine into the
+      request.</para>
+
+      <para>These are all alternatives to the solution presented in the sample
+      MMBase application MyNews. Your actual choice depends on your
+      application needs and your personal liking. For this tutorial we will
+      stick to the default implementation as presented in the MMBase
+      distribution.</para>
     </section>
 
     <section>
@@ -389,7 +435,7 @@
     display fields from the default magazine. Create a table and within the
     table, create two rows. The first row displays the title and the subtitle
     of the default magazine. The second row display the intro and the body of
-    the magzine. Your page should now look something like the listing below.</para>
+    the magazine. Your page should now look something like the listing below.</para>
 
     <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
 
@@ -435,13 +481,10 @@
   <section>
     <title>Working with related nodes</title>
 
-    <para>Next we wish to display the news items that can be found in the
-    default magazine. Refer back to the content model we displayed earlier in
-    this tutorial. The related node from magazine is news. The relation is
-    special, while it&#39;s a posrel relation. For posrel relations MMBase
-    remembers the sequence in which the relations were added. As magazine
-    &#60;-&#62; news is a posrel relation, we&#39;ll receive the news nodes
-    from MMBase in the same sequence they were related to the magazine.</para>
+    <para>Next we want to display the news items that can be found in our
+    magazine. Refer back to the content model we displayed earlier in this
+    tutorial. One related node from magazine is news. As we have the magazine
+    available in our page, we should be able to access its related news nodes.</para>
 
     <section>
       <title>Retrieving the related nodes</title>
@@ -450,22 +493,22 @@
       the &#60;mm:related&#62; tag. Within this tag you can use several
       interesting options to control the way MMBase retrieves the related
       nodes. Refer to the full reference documentation to review all possible
-      options to control retrieval of related nodes. For now we&#39;ll have to
-      add the following entry to our JSP:</para>
+      options to control retrieval of related nodes. For now we add an entry
+      to our JSP where we tell MMBase to travel a path between our magazine
+      and its news using the posrel relation. As we are only interested in the
+      sequence of the relation and the title of each news item in our
+      magazine, we tell MMBase to only use the &#34;pos&#34; field from the
+      posrel relation and the title from the magazine node. We conclude by
+      telling MMBase to order all results by the value in the &#34;pos&#34;
+      field, thus retrieving each news node in same sequence as it was
+      entered.</para>
 
       <para><programlisting>&#60;mm:related path=&#34;posrel,news&#34; fields=&#34;posrel.pos,news.title&#34; orderby=&#34;posrel.pos&#34;&#62;</programlisting></para>
 
-      <para>The &#34;path&#34; option on this tag instructs MMBase to retrieve
-      the related nodes using the original positional sequence of the
-      relation, followed by accessing the news node {todo: is path here
-      necessary??]. The &#34;fields&#34; option defines the fields that MMBase
-      should use to match the results. Finally the &#34;orderby&#34; option
-      defines the order in which the resulting nodes are presented [todo: is
-      this necessary here??]</para>
-
-      <para>To add this tag to our JSP, we&#39;ll add a new row in our table,
-      and within that row we create a new table that gets populated by rows
-      with news from our magazine.</para>
+      <para>When you add the above entry, your JSP should now look something
+      like below. Note that we also added a &#60;tr&#62; &#60;/tr&#62; entry,
+      so that for each found related node from magazine to news, a new row in
+      our table will be created.</para>
 
       <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
 
@@ -499,13 +542,12 @@
   &#60;/mm:node&#62;
 &#60;/mm:cloud&#62;</programlisting>
 
-      <para>We&#39;ve now setup the basic structure that will create rows with
-      news nodes in our table for each related news node found by MMBase. It
-      would be nice though, if these values were presented with a heading for
-      each column. We want this heading to appear just once before MMBase
-      start writing out the first news node. To support this behavior, MMBase
-      has a tag &#60;mm:first&#62; that fires upon the first entry in a
-      collection.</para>
+      <para>We&#39;ve now setup the basic structure that will create rows for
+      each news node found by MMBase. It would be nice though, if these values
+      were presented with a heading for each column. We want this heading to
+      appear just once before MMBase start writing out the first news node. To
+      support this behavior, MMBase has a tag &#60;mm:first&#62; that fires
+      upon the first entry in the list.</para>
 
       <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
 
@@ -546,9 +588,10 @@
 &#60;/mm:cloud&#62;</programlisting>
 
       <para>To complete our JSP, we now have to add the title field followed
-      by an URL to next JSP that will display our actual news. Displaying the
-      title is achieved by using the &#60;mm:field&#62; tag again. Remember we
-      used this tag to display the some fields from the default magazine.</para>
+      by an URL to the next JSP that will display our actual news. Displaying
+      the title is achieved by using the &#60;mm:field&#62; tag again.
+      Remember we used this tag to display the some fields from the default
+      magazine.</para>
 
       <programlisting>&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
 
@@ -598,20 +641,303 @@
 &#60;/mm:cloud&#62;</programlisting>
 
       <para>The construction of the URL to access the content of the news
-      items deserves some additonal explanation. First we start creatio of a
-      default URL by using the &#60;a&#62; tag. In stead of hardcoding our
-      &#34;href&#34;, we use data from MMBase by letting MMBase create the URL
-      for use by using the &#60;mm:url&#62; tag. Read the full documentation
-      on this tag to get more information on the possibilities of this tag. In
-      this situation the URL is constructed to the JSP named
-      &#34;newsitem.jsp&#34;. Within the &#60;mm:url&#62; tag we use the
-      &#60;mm:param&#62; tag to pass necessary information to our
+      items may seem a bit obscure and needs some additonal explanation. First
+      we start creation of a default URL by using the &#60;a&#62; tag. In
+      stead of hardcoding our &#34;href&#34;, we use data from MMBase by
+      letting MMBase create the URL use by using the &#60;mm:url&#62; tag.
+      Read the full documentation on this tag to get more information on the
+      possibilities of this tag. In this situation the URL is pointing to the
+      JSP named &#34;newsitem.jsp&#34;. Within the &#60;mm:url&#62; tag we use
+      the &#60;mm:param&#62; tag to pass necessary information to our
       &#34;newsitem.jsp&#34;, namely the number or id of the newsitem we wish
       to read.</para>
 
       <para>The resulting URL will appear as follows in our browser:</para>
 
-      <programlisting>http://yourhostname/mmbase-webapp/mmexamples/jsp/mynews/newsitem.jsp?magid=default.mags&#38;newsid=59</programlisting>
+      <programlisting>http://yourhostname/mmbase-webapp/mmexamples/jsp/mynews/newsitem.jsp
+  ?magid=default.mags&#38;newsid=59</programlisting>
+
+      <para>When we run our JSP in our browser we should see the following
+      page appear:</para>
+
+      <graphic fileref="media/mynews.jpg" />
     </section>
+  </section>
+
+  <section>
+    <title>Constructing the newsitems page</title>
+
+    <para>We&#39;ve completed the first part of our sample application. Next
+    we will expand our sample application with a second page that&#39;s
+    capable of presenting the news item selected from the first page. First we
+    add some familiar stuff like the reference to the MMBase tag library. You
+    should incorporate this on every page, otherwise the MMBase tags will
+    definitely not work. In this page you see a new feature: the usage of an
+    error page. This has nothing to do with MMBase, but is a typical feature
+    of the JSP specs. Using an error page, you can create a more elegant way
+    to trap unforeseen situations. In stead of presenting the user with a
+    stack trace, we can now present an error page where we handle the error
+    more gracefully. Building the error page is not within the scope of this
+    tutorial, so please review the page yourself if you want to find out more
+    about this technique.</para>
+
+    <programlisting>&#60;%@page errorPage=&#34;error.jsp&#34; language=&#34;java&#34; contentType=&#34;text/html; charset=UTF-8&#34; %&#62;
+&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
+
+&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+  &#60;mm:import externid=&#34;newsid&#34; required=&#34;true&#34; /&#62;
+
+  &#60;html&#62;
+    &#60;head&#62;
+      &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;style.css&#34; /&#62;
+    &#60;/head&#62;
+
+    &#60;mm:node number=&#34;$newsid&#34;&#62;
+    &#60;/mm:node&#62;
+
+  &#60;/html&#62;
+&#60;/mm:cloud&#62;
+
+</programlisting>
+
+    <para>Above you see that, again, we open with the &#60;mm:cloud&#62; tag.</para>
+
+    <tip>
+      <para>Although the MMBase tag &#60;mm:cloud&#62; suggests that you can
+      name clouds anyway you want, you can only name your cloud
+      &#34;mmbase&#34;.</para>
+    </tip>
+
+    <para>Next, we import the id of the selected news item from the previous
+    page. This value was passed to our new page through the &#60;mm:param&#62;
+    tag and the &#60;mm:import&#62; tags retrieves it again.</para>
+
+    <para>Next we use the &#60;mm:node&#62; tag to be able to process the news
+    item that we wish to display. Remeber that by using the $ directive we
+    don&#39;t actually use that value as the node id, but are referring to a
+    variable with that name inside the context.</para>
+
+    <para>Next we&#39;ll add the title for our browser window and build the
+    basic table structure that will display our news item.</para>
+
+    <programlisting>&#60;%@page errorPage=&#34;error.jsp&#34; language=&#34;java&#34; contentType=&#34;text/html; charset=UTF-8&#34; %&#62;
+&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
+
+&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+  &#60;mm:import externid=&#34;newsid&#34; required=&#34;true&#34; /&#62;
+  &#60;mm:node number=&#34;$newsid&#34;&#62;
+ 
+    &#60;html&#62;
+      &#60;head&#62;
+        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;style.css&#34; /&#62;
+        &#60;title&#62;&#60;mm:field  name=&#34;title&#34;/&#62;&#60;/title&#62;
+      &#60;/head&#62;
+
+      &#60;body&#62;
+      &#60;center&#62;
+        &#60;table width=&#34;90%&#34; cellspacing=1 cellpadding=3 border=0&#62;
+          &#60;tr&#62;
+            &#60;th colspan=&#34;2&#34;&#62;  
+              &#60;h2&#62;&#60;mm:field  name=&#34;title&#34;/&#62;&#60;/h2&#62;
+                &#60;mm:field name=&#34;subtitle&#34;&#62;
+                  &#60;mm:isnotempty&#62;
+                    &#60;h3&#62;&#60;mm:write /&#62;&#60;/h3&#62;
+                  &#60;/mm:isnotempty&#62;
+                &#60;/mm:field&#62;
+            &#60;/th&#62;
+          &#60;/tr&#62;
+        &#60;/table&#62;
+      &#60;/center&#62;
+    &#60;/html&#62;
+  &#60;/mm:node&#62;
+&#60;/mm:cloud&#62;</programlisting>
+
+    <para>[todo: what does this &#60;mm:write&#62; and &#60;mm:isnoempty&#62;
+    construct do???&#62;</para>
+
+    <para>The next step is to complete our full news item in this page.</para>
+
+    <programlisting>&#60;%@page errorPage=&#34;error.jsp&#34; language=&#34;java&#34; contentType=&#34;text/html; charset=UTF-8&#34; %&#62;
+&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
+
+&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+  &#60;mm:import externid=&#34;newsid&#34; required=&#34;true&#34; /&#62;
+  &#60;mm:node number=&#34;$newsid&#34;&#62;
+ 
+    &#60;html&#62;
+      &#60;head&#62;
+        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;style.css&#34; /&#62;
+        &#60;title&#62;&#60;mm:field  name=&#34;title&#34;/&#62;&#60;/title&#62;
+      &#60;/head&#62;
+
+      &#60;body&#62;
+      &#60;center&#62;
+        &#60;table width=&#34;90%&#34; cellspacing=1 cellpadding=3 border=0&#62;
+          &#60;tr&#62;
+            &#60;th colspan=&#34;2&#34;&#62;  
+              &#60;h2&#62;&#60;mm:field  name=&#34;title&#34;/&#62;&#60;/h2&#62;
+                &#60;mm:field name=&#34;subtitle&#34;&#62;
+                  &#60;mm:isnotempty&#62;
+                    &#60;h3&#62;&#60;mm:write /&#62;&#60;/h3&#62;
+                  &#60;/mm:isnotempty&#62;
+                &#60;/mm:field&#62;
+            &#60;/th&#62;
+          &#60;/tr&#62;
+
+          &#60;tr&#62;
+            &#60;td width=&#34;30&#34;&#62;&#60;/td&#62;
+            &#60;td&#62;
+              &#60;b&#62;&#60;mm:field  name=&#34;intro&#34;/&#62;&#60;/b&#62;
+              &#60;p&#62;&#60;mm:field  name=&#34;html(body)&#34;/&#62;&#60;/p&#62;
+            &#60;/td&#62;
+          &#60;/tr&#62;
+
+
+        &#60;/table&#62;
+      &#60;/center&#62;
+    &#60;/html&#62;
+  &#60;/mm:node&#62;
+&#60;/mm:cloud&#62;</programlisting>
+
+    <para>This new code prints out the intro of the news item. As you can see
+    from the actual page, this intro appears in bold formatting to make it
+    stand out more. Next we write the body of the item. Notice that we use a
+    special function here called html(). This is a special MMBase functin that
+    allows for the creation of HTML from plain text. Refer to [todo] to get
+    more information on all available functions and their usage.</para>
+
+    <para>If we go back to our cloud design we know that any news item can be
+    related to quite a few other nodes of different types, like magazines and
+    authors. It&#39;s important to evaluate the design of your template, so
+    that you provide solutions for any possible related node. For example, it
+    would be a bad design if your model expresses a releation between a
+    picture and a news item while your template is not capable of displaying
+    the picture (unless ofcourse this is your explicit decision and your user
+    agrees with you).</para>
+
+    <para>From our cloud design it appears that any news item could possibly
+    have relations with attachments, images, people, URL&#39;s and MMEvents.
+    For this example we will support relations to images, authors (people) and
+    URL&#39;s. Other node types are ignored.</para>
+
+    <programlisting>&#60;%@page errorPage=&#34;error.jsp&#34; language=&#34;java&#34; contentType=&#34;text/html; charset=UTF-8&#34; %&#62;
+&#60;%@taglib uri=&#34;http://www.mmbase.org/mmbase-taglib-1.0&#34; prefix=&#34;mm&#34; %&#62;
+
+&#60;mm:cloud name=&#34;mmbase&#34;&#62;
+  &#60;mm:import externid=&#34;newsid&#34; required=&#34;true&#34; /&#62;
+  &#60;mm:node number=&#34;$newsid&#34;&#62;
+ 
+    &#60;html&#62;
+      &#60;head&#62;
+        &#60;link rel=&#34;stylesheet&#34; type=&#34;text/css&#34; href=&#34;style.css&#34; /&#62;
+        &#60;title&#62;&#60;mm:field  name=&#34;title&#34;/&#62;&#60;/title&#62;
+      &#60;/head&#62;
+
+      &#60;body&#62;
+      &#60;center&#62;
+        &#60;table width=&#34;90%&#34; cellspacing=1 cellpadding=3 border=0&#62;
+          &#60;tr&#62;
+            &#60;th colspan=&#34;2&#34;&#62;  
+              &#60;h2&#62;&#60;mm:field  name=&#34;title&#34;/&#62;&#60;/h2&#62;
+                &#60;mm:field name=&#34;subtitle&#34;&#62;
+                  &#60;mm:isnotempty&#62;
+                    &#60;h3&#62;&#60;mm:write /&#62;&#60;/h3&#62;
+                  &#60;/mm:isnotempty&#62;
+                &#60;/mm:field&#62;
+            &#60;/th&#62;
+          &#60;/tr&#62;
+
+          &#60;tr&#62;
+            &#60;td width=&#34;30&#34;&#62;&#60;/td&#62;
+            &#60;td&#62;
+              &#60;b&#62;&#60;mm:field  name=&#34;intro&#34;/&#62;&#60;/b&#62;
+              &#60;p&#62;&#60;mm:field  name=&#34;html(body)&#34;/&#62;&#60;/p&#62;
+            &#60;/td&#62;
+          &#60;/tr&#62;
+
+          &#60;mm:relatednodes type=&#34;images&#34; max=&#34;3&#34;&#62;
+            &#60;mm:first&#62;
+              &#60;tr&#62;
+                &#60;th colspan=&#34;2&#34;&#62;Related images&#60;/th&#62;
+              &#60;/tr&#62;
+            &#60;/mm:first&#62;
+            &#60;tr&#62;
+              &#60;td&#62;
+                &#60;img src=&#34;&#60;mm:image template=&#34;s(200)&#34; /&#62;&#34; alt=&#34;&#60;mm:field name=&#34;title&#34; /&#62;&#34; /&#62;
+                &#60;mm:last&#62;
+                  &#60;/td&#62;&#60;/tr&#62;
+                &#60;/mm:last&#62;
+          &#60;/mm:relatednodes&#62;
+
+          &#60;mm:relatednodes type=&#34;urls&#34;&#62;
+            &#60;mm:first&#62;
+              &#60;tr&#62;
+                &#60;th colspan=&#34;2&#34;&#62;Related urls&#60;/th&#62;
+              &#60;/tr&#62;
+            &#60;/mm:first&#62;
+            &#60;a href=&#34;&#60;mm:field name=&#34;url&#34;/&#62;&#34;&#62;&#60;mm:field name=&#34;description&#34;/&#62;&#60;/a&#62;
+            &#60;br/&#62;
+            &#60;mm:last&#62;
+              &#60;/td&#62;&#60;/tr&#62;
+            &#60;/mm:last&#62;
+          &#60;/mm:relatednodes&#62;
+
+          &#60;mm:relatednodes type=&#34;people&#34;&#62;
+            &#60;mm:first&#62;
+              &#60;tr&#62;
+                &#60;th colspan=&#34;2&#34;&#62;Authors&#60;/th&#62;
+              &#60;/tr&#62;
+            &#60;/mm:first&#62;
+            &#60;em&#62;&#60;mm:field name=&#34;firstname&#34; /&#62; &#60;mm:field name=&#34;lastname&#34; /&#62;&#60;/em&#62;
+            &#60;br /&#62;
+            &#60;mm:last&#62;
+              &#60;/td&#62;&#60;/tr&#62;
+            &#60;/mm:last&#62;
+          &#60;/mm:relatednodes&#62;
+        &#60;/table&#62;
+      &#60;/center&#62;
+    &#60;/html&#62;
+  &#60;/mm:node&#62;
+&#60;/mm:cloud&#62;</programlisting>
+
+    <para>Here we added the &#60;mm:relatednodes&#62; tag to support retrieval
+    of our relevant related nodes. Note the usage of the &#60;mm:last&#62; tag
+    to close the pending table row and column. Alternative layouts are also
+    possible, as this one somewhat obscures the indenting of your HTML
+    document and makes it more difficult to debug if you run into errors.</para>
+
+    <para>Remember that with the first page we used the &#60;mm:related&#62;
+    tag and not the &#60;mm:relatednodes&#62; tag. [todo: what&#39;s the
+    difference?]</para>
+
+    <para>After you completed this step, check your page in your development
+    environment. Your page should look something like below figure if all went
+    well.</para>
+
+    <graphic fileref="media/newsitem.jpg" />
+  </section>
+
+  <section>
+    <title>Next steps...</title>
+
+    <para>In this tutorial we showed how to build a sample MMBase application.
+    Obviously we have only tipped the possibilities that MMBase offers to page
+    designers. There are several things you can do from here:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Explore other sample applications shipped with the MMBase distro</para>
+      </listitem>
+
+      <listitem>
+        <para>Integrate MMBase Tag Library with your favorite page design tool
+        like Macromedia DreamWeaver.</para>
+      </listitem>
+
+      <listitem>
+        <para>Explore the MMBase Tag Library reference guide where all tags
+        are documented and supplied with addtional samples you can try out.</para>
+      </listitem>
+    </itemizedlist>
   </section>
 </article>
