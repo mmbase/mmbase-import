@@ -55,17 +55,22 @@
 <!ELEMENT object ( field | relation )* >
 <!ATTLIST object type NMTOKEN #IMPLIED >
 
+<!ELEMENT query EMPTY >
+<!ATTLIST query xpath CDATA #REQUIRED >
+
 <!ELEMENT option ( #PCDATA ) >
 <!ATTLIST option id NMTOKEN #REQUIRED >
 
-<!ELEMENT optionlist ( option* ) >
+<!ELEMENT optionlist ( option* | query ) >
 <!ATTLIST optionlist name NMTOKEN #IMPLIED >
 <!ATTLIST optionlist select NMTOKEN #IMPLIED >
+<!ATTLIST optionlist optionid CDATA #IMPLIED >
+<!ATTLIST optionlist optioncontent CDATA #IMPLIED >
 
 <!ELEMENT prompt ( #PCDATA ) >
 
 <!ELEMENT relation ( field | object )* >
-<!ATTLIST relation destination NMTOKEN #IMPLIED >
+<!ATTLIST relation destination CDATA #IMPLIED >
 <!ATTLIST relation destinationtype NMTOKEN #IMPLIED >
 <!ATTLIST relation role NMTOKEN #IMPLIED >
 
