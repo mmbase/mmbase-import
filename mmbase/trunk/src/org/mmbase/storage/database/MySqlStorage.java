@@ -16,61 +16,60 @@ import java.io.*;
 
 /**
  * MySQL is a typical Relational Database. This specific
- * implementation only adds hack to make it possible to store UTF-8 in
+ * implementation only adds hacks to make it possible to store UTF-8 in
  * your MySQL database (depends on the 'encoding' option in
  * mmbaseroot.xml)
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: MySqlStorage.java,v 1.1 2003-05-02 14:25:46 michiel Exp $
+ * @version $Id: MySqlStorage.java,v 1.2 2003-05-02 20:38:28 michiel Exp $
  */
 public class MySqlStorage extends RelationalDatabaseStorage {
-    /**
-     * Logging instance
-     */
     private static Logger log = Logging.getLoggerInstance(MySqlStorage.class.getName());
 
     public MySqlStorage() {
         super();
     }
 
-
     // For mysql some tricks to make it UTF-8 compatible are implemented here.
 
-    /**
-     * Get text of a database blob
-     * @javadoc
-     */
-    public String getDBText(ResultSet rs,int idx) {
-        String str=null;
+    
+    // javadoc inherited
+    public String getDBText(ResultSet rs, int idx) {
+        InputStream inp;
         try {
-            InputStream inp = rs.getBinaryStream(idx);
-            if ((inp==null) || rs.wasNull()) {
-                return("");
+            inp = rs.getBinaryStream(idx);
+            if ((inp == null) || rs.wasNull()) {
+                return "";
             }
-            int siz=inp.available(); // DIRTY
-            if (siz<=0) return("");
-            DataInputStream input=new DataInputStream(inp);
-            byte[] rawchars = new byte[siz];
-            input.readFully(rawchars);
-            str = new String(rawchars, mmb.getEncoding());
-            input.close(); // this also closes the underlying stream
-        } catch (Exception e) {
-            log.error("MMObjectBuilder -> MMMysql text  exception "+e);
+        } catch(SQLException e) {
+            log.error("MySqlStorage exception "+ e.toString());
             log.error(Logging.stackTrace(e));
             return "";
         }
-        return str;
+                
+        try {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            while (true) {
+                int c = inp.read();
+                if (c == -1) break;
+                bytes.write(c);
+            }
+            inp.close(); 
+            return  new String(bytes.toByteArray(), mmb.getEncoding());
+        } catch (IOException e) {
+            log.error("MySqlStorage exception "+ e.toString());
+            log.error(Logging.stackTrace(e));
+            return "";
+        }
     }
 
-    /**
-     * Set text array in database
-     * @javadoc
-     */
-    public void setDBText(int i, PreparedStatement stmt,String body) {
-        byte[] rawchars=null;
+
+    // javadoc inherited
+    public void setDBText(int i, PreparedStatement stmt, String body) {
+        byte[] rawchars = null;
         try {
-            rawchars=body.getBytes(mmb.getEncoding());
+            rawchars = body.getBytes(mmb.getEncoding());
         } catch (Exception e) {
             log.error("String contains odd chars");
             log.error(body);
@@ -78,7 +77,7 @@ public class MySqlStorage extends RelationalDatabaseStorage {
         }
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(rawchars);
-            stmt.setBinaryStream(i,stream,rawchars.length);
+            stmt.setBinaryStream(i, stream, rawchars.length);
             stream.close();
         } catch (Exception e) {
             log.error("Can't set ascii stream");
