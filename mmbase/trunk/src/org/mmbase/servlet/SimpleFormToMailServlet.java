@@ -29,10 +29,8 @@ import org.mmbase.module.*;
  * 	Post Servlet a example of how to use different Post methods
  */
 
-public abstract class SimpleFormToMailServlet extends HttpServlet 
+public abstract class SimpleFormToMailServlet extends JamesServlet 
 {
-	String classname = getClass().getName();
-	void debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 	private boolean debug = false;
 
 	SendMailInterface sendmail;
