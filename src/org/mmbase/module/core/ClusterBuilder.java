@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.12 2002-10-08 09:45:02 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.13 2002-10-08 13:58:34 michiel Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -829,7 +829,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a condition as a <code>String</code>
      */
     protected String getRelationString(Vector alltables, int searchdir, HashMap roles) {
-        StringBuffer result = new StringBuffer("");
+        StringBuffer result = new StringBuffer(40); // 40: reasonable size for the result
         TypeDef typedef = mmb.getTypeDef();
         TypeRel typerel = mmb.getTypeRel();
         InsRel insrel   = mmb.getInsRel();
@@ -844,17 +844,18 @@ public class ClusterBuilder extends VirtualBuilder {
 
 
         for (int i = 0; i < siz; i += 2) {
-            boolean desttosrc = false;
-            boolean srctodest = false;
-            if (! result.toString().equals("")) result.append(" AND ");
+            boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
+            boolean srctodest = false; // And from 'destination' to 'source'.
+
+            if (result.length() > 0) result.append(" AND ");
 
             {
-                Integer rnum = (Integer) roles.get((String) alltables.elementAt( i + 1));  // role ?
-                String src = getTableName((String) alltables.elementAt(i));                          // name of the source table
-                String dst = getTableName((String) alltables.elementAt(i + 2));                        // name of destination table
-                          
-                int s = typedef.getIntValue(src);                                // get the number of the source
-                int d = typedef.getIntValue(dst);                                // get the number of the destination
+                // the typedef number of the source-type
+                int s        = typedef.getIntValue(getTableName((String) alltables.elementAt(i)));
+                // role ?
+                Integer rnum = (Integer) roles.get((String) alltables.elementAt(i + 1)); 
+                // the typdef number of the destination-type
+                int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));  
                 
                 // check if  a definite rnumber was requested...
                 if (rnum != null) {
