@@ -9,11 +9,10 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
-import java.util.*;
 
+import java.util.Stack;
 import org.mmbase.bridge.*;
 
 /**
@@ -25,24 +24,35 @@ import org.mmbase.bridge.*;
 
 public abstract class MMTaglib extends TagExtraInfo implements Tag{
     /**
-     * static Cloud context
+     * static Cloud context 
      **/
     private static CloudContext cloudContext;
-    public static String DEFAULT_CLOUD_NAME = "mmbase";
-    private Cloud pageCloud;
+    public  static String DEFAULT_CLOUD_NAME = "mmbase";
+    private Cloud  pageCloud; 
 
-    
-    public MMTaglib(){
+
+
+    public MMTaglib() {
+    }
+
+    // michiel: all tags can have an attribute 'id'.
+    private String id;
+    public  void setId(String i){
+        id = i;
+    }   
+    protected String getId() {
+        if (id == null) return "";
+        return id;
     }
 
     /**
      * @return the default cloud context 
      **/
     public CloudContext getDefaultCloudContext(){
-    	if (cloudContext == null){
-	    cloudContext=LocalContext.getCloudContext();
+        if (cloudContext == null){
+        cloudContext=LocalContext.getCloudContext();
         } 
-	    return cloudContext;
+        return cloudContext;
     }
 
     /**
@@ -57,24 +67,25 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
      * @return the page cloud being the cloud set with the <mm:cloud> tag
      **/
     public Cloud getPageCloud(){
-	    if (pageCloud == null){
-    	    pageCloud = (Cloud)pageContext.getAttribute("cloud");
-    	    // fallback if CLOUD tag was not used
-    	    if (pageCloud==null) {
-    	        pageCloud=getDefaultCloudContext().getCloud(DEFAULT_CLOUD_NAME);
-    	        pageContext.setAttribute("cloud",pageCloud);
-    	    }
-    	}
-	    return pageCloud;
+        if (pageCloud == null){
+            pageCloud = (Cloud)pageContext.getAttribute("cloud");
+            // fallback if CLOUD tag was not used
+            if (pageCloud==null) {
+                pageCloud=getDefaultCloudContext().getCloud(DEFAULT_CLOUD_NAME);
+                pageContext.setAttribute("cloud",pageCloud);
+            }
+        }
+        return pageCloud;
     }
 
     /**
      * @return the page cloud being (used by the <mm:cloud> tag)
      **/
-    public void setPageCloud(Cloud cloud){
+    protected void setPageCloud(Cloud cloud){
         pageCloud=cloud;
         pageContext.setAttribute("cloud",cloud);
     }
+
 
     /**
      * method inherited from TagExtraInfo used to define
@@ -84,10 +95,10 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
      * get a change to implement it
      **/
     public  VariableInfo[] getVariableInfo(TagData data){
-	System.err.println("MMTaglib.getVariableInfo was called. this is can normaly not happend");
-	System.err.println("the cause is that in the tld file you declared the class that overrides");
-	System.err.println("this class to implement TagExtraInfo but did not create the function");
-	return null;
+        System.err.println("MMTaglib.getVariableInfo was called. this is can normaly not happen");
+        System.err.println("the cause is that in the tld file you declared the class that overrides");
+        System.err.println("this class to implement TagExtraInfo but did not create the function");
+        return null;
     };
 
 
@@ -121,14 +132,14 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
     int endTagReturnValue = Tag.EVAL_PAGE;
 
 
-	
+    
     /**
      * @return a value descbibing what to do after 
      * this method returns(SKIP_BODY|EVAL_BODY_INCLUDE|SKIP_PAGE|EVAL_PAGE) or
      * EVAL_BODY_TAG if the sub class implements BodyTag
      **/
     public int doEndTag() throws JspException{
-	return endTagReturnValue;
+    return endTagReturnValue;
     }
 
     /**
@@ -137,29 +148,29 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
      * EVAL_BODY_TAG if the sub class implements BodyTag
      **/
     public int doStartTag() throws JspException{
-	return startTagReturnValue;
+        return startTagReturnValue;
     }
 
 
     public void setPageContext(PageContext pageContext){
-	this.pageContext = pageContext;
+        this.pageContext = pageContext;
     }
 
     public void release() {
-	parent = null;
-	pageContext = null;
+        parent = null;
+        pageContext = null;
     }
-	
+    
     public Tag getParent(){
-	return parent;
+        return parent;
     }
 
     public void setParent(Tag parent){
-	this.parent = parent;
+        this.parent = parent;
     }
 
     public void setBodyContent(BodyContent bodyOut) {
-	this.bodyOut = bodyOut;
+        this.bodyOut = bodyOut;
     }
     // Default implementations for BodyTag methods as well
     // just in case a tag decides to implement BodyTag.
@@ -174,6 +185,6 @@ public abstract class MMTaglib extends TagExtraInfo implements Tag{
     }
 
     public int doAfterBody() throws JspException {
-	return SKIP_BODY;
+        return SKIP_BODY;
     }
 }
