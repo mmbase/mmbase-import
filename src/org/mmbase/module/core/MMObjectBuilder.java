@@ -11,22 +11,20 @@ package org.mmbase.module.core;
 
 import java.util.*;
 import java.sql.*;
-import java.io.*;
-import java.text.*;
+import java.io.File;
+import java.text.NumberFormat;
 import java.net.URLEncoder;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.ParseException;
-import org.mmbase.module.database.*;
-import org.mmbase.module.gui.html.*;
-import org.mmbase.module.builders.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.corebuilders.InsRel;
-import org.mmbase.module.database.support.*;
+import org.mmbase.module.database.StorageException;
 import org.mmbase.module.database.MultiConnection;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+
+import org.mmbase.module.builders.DayMarkers;
+import org.mmbase.module.corebuilders.*;
+
+import org.mmbase.module.gui.html.EditState;  // argh
 
 import org.mmbase.util.logging.*;
 
@@ -34,6 +32,7 @@ import org.mmbase.util.logging.*;
  * This class is the base class for all builders.
  * It offers a list of routines which are useful in maintaining the nodes in the MMBase
  * object cloud.
+ * <br />
  * Builders are the core of the MMBase system. They create, delete and search the MMObjectNodes.
  * Most manipulations concern nodes of that builders type. However, a number of retrieval routines extend
  * beyond a builders scope and work on the cloud in general, allowing some ease in retrieval of nodes.
@@ -48,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.135 2002-04-18 14:42:58 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.136 2002-04-19 09:32:14 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -60,6 +59,10 @@ public class MMObjectBuilder extends MMTable {
 
     // Default size of the temporary node cache
     public final static int TEMPNODE_DEFAULT_SIZE=1024;
+
+    // Default replacements for method getHTML()
+    public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
+    public final static String DEFAULT_EOL = "<br />";
 
     /**
      * The cache that contains the last X types of all requested objects
@@ -99,18 +102,6 @@ public class MMObjectBuilder extends MMTable {
      * Logger routine
      */
     private static Logger log = Logging.getLoggerInstance(MMObjectBuilder.class.getName());
-
-    /**
-     * If true, debug messages are send to the MMBase log
-     * @deprecated : use Logger routines instead
-     */
-    public boolean debug=false;
-
-    /**
-     * Sets debugging on or off
-     * @deprecated-now : use Logger routines instead
-     */
-    public void setDebug(boolean state) { debug=state; }
 
     /**
      * The current builder's object type
@@ -204,12 +195,6 @@ public class MMObjectBuilder extends MMTable {
     Vector localObservers = new Vector();
 
     /**
-     * Statistics buidler.
-     * @deprecated-now unused. Shoudln't be done in this class anyway
-     */
-    Statistics statbul;
-
-    /**
      * Full filename (path + buildername + ".xml") where we loaded the builder from
      * It is relative from the '/builders/' subdir
      */
@@ -222,12 +207,6 @@ public class MMObjectBuilder extends MMTable {
      * Reference to the builder that this builder extends.
      */
     private MMObjectBuilder parentBuilder = null;
-
-    /**
-     * actual classname
-     * @deprecated use getClass.getName()
-     */
-    private String classname = getClass().getName();
 
     // Version information for builder registration
     // Set with &lt;builder maintainer="mmbase.org" version="0"&gt; in the xml builder file
@@ -345,9 +324,6 @@ public class MMObjectBuilder extends MMTable {
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
-        // test with counting
-        statCount("insert");
-
         try {
             int n;
             n=database.insert(this,owner,node);
@@ -749,8 +725,6 @@ public class MMObjectBuilder extends MMTable {
      *       <code>MMObjectNode</code> containign the contents of the requested node.
      */
     public synchronized MMObjectNode getNode(int number, boolean usecache) {
-        // test with counting
-        statCount("getnode");
         if (number==-1) {
             log.warn(" ("+tableName+") nodenumber == -1");
             return null;
@@ -932,7 +906,6 @@ public class MMObjectBuilder extends MMTable {
      * @return A Vector which contains all nodes that were found
      */
     private int basicCount(String query) {
-        statCount("count");
         int nodecount=-1;
         MultiConnection con=null;
         Statement stmt=null;
@@ -1003,9 +976,6 @@ public class MMObjectBuilder extends MMTable {
      * @return A Vector which contains all nodes that were found
      */
     private Vector basicSearch(String query) {
-        // test with counting
-        statCount("search");
-
         MultiConnection con=null;
         Statement stmt=null;
         try {
@@ -1027,7 +997,7 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Rewturns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
+     * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
      */
@@ -1063,7 +1033,6 @@ public class MMObjectBuilder extends MMTable {
         return searchVector(where,sort).elements();
     }
 
-
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1075,7 +1044,6 @@ public class MMObjectBuilder extends MMTable {
         return searchVectorIn(where,sort,in).elements();
     }
 
-
     /**
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
@@ -1085,7 +1053,6 @@ public class MMObjectBuilder extends MMTable {
     public Enumeration searchIn(String where,String in) {
         return searchVectorIn(where,in).elements();
     }
-
 
     /**
      * Enumerate all the objects that match the searchkeys
@@ -1098,7 +1065,6 @@ public class MMObjectBuilder extends MMTable {
     public Enumeration search(String where,String sort,boolean direction) {
         return searchVector(where,sort,direction).elements();
     }
-
 
     /**
      * Enumerate all the objects that match the searchkeys
@@ -1127,7 +1093,6 @@ public class MMObjectBuilder extends MMTable {
         } else if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
 
@@ -1184,7 +1149,6 @@ public class MMObjectBuilder extends MMTable {
         } else if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
         // temp mapper hack only works in single order fields
@@ -1230,7 +1194,6 @@ public class MMObjectBuilder extends MMTable {
         } else if (where.indexOf("MMNODE")!=-1) {
             where=convertMMNode2SQL(where);
         } else {
-            //where=QueryConvertor.altaVista2SQL(where);
             where=QueryConvertor.altaVista2SQL(where,database);
         }
         if (directions == null) {
@@ -1354,6 +1317,7 @@ public class MMObjectBuilder extends MMTable {
      * Store the nodes in the resultset, obtained from a builder, in a sorted vector.
      * (Called by nl.vpro.mmbase.module.search.TeaserSearcher.createShopResult ?)
      * The nodes retrieved are added to the cache.
+     * @vpro replace with a way to sort nodes.
      * @param rs The resultset containing the nodes
      * @return The SortedVector which holds the data
      */
@@ -1477,8 +1441,6 @@ public class MMObjectBuilder extends MMTable {
             int curpos=def.getDBPos();
             if (curpos>=dbpos) def.setDBPos(curpos-1);
         }
-
-
         sortedEditFields = null;
         sortedListFields = null;
         sortedFields = null;
@@ -1777,20 +1739,11 @@ public class MMObjectBuilder extends MMTable {
             int curtime=node.getIntValue(field);
             // gives us the next full day based on time (00:00)
             int days=curtime/(3600*24);
-                rtn=""+((days*(3600*24))-3600);
-            // text convertion  functions
-        }
-
-                // functions that do not require a field
-                // These are more or like pseudo fields, like the age of a node.
-                // node.getAge("age()"); will work.
-
-                else if (function.equals("age")) {
-                        Integer val = new Integer(node.getAge());
-                        rtn = val.toString();
-                }
-                // text convertion  functions
-        else if (function.equals("wap")) {
+            rtn=""+((days*(3600*24))-3600);
+        } else if (function.equals("age")) {
+            Integer val = new Integer(node.getAge());
+            rtn = val.toString();
+        } else if (function.equals("wap")) {
             String val=node.getStringValue(field);
             rtn=getWAP(val);
         } else if (function.equals("html")) {
@@ -1830,16 +1783,16 @@ public class MMObjectBuilder extends MMTable {
                 String val=node.getStringValue((String)v.get(0));
                 int len=Integer.parseInt((String)v.get(1));
                 if (v.size()>2) {
-                        String filler=(String)v.get(2);
-                        rtn=substring(val,len,filler);
+                    String filler=(String)v.get(2);
+                    rtn=substring(val,len,filler);
                 } else {
-                        rtn=substring(val,len,null);
+                    rtn=substring(val,len,null);
                 }
             } catch(Exception e) {}
         } else if (function.equals("currency_euro")) {
              double val=node.getDoubleValue(field);
-                         NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
-                         rtn=""+nf.format(val);
+             NumberFormat nf = NumberFormat.getNumberInstance (Locale.GERMANY);
+             rtn=""+nf.format(val);
         } else if (function.equals("gui")) {
             String val=null;
             if (field.equals("")) {
@@ -1979,47 +1932,6 @@ public class MMObjectBuilder extends MMTable {
     public int getDBKey() {
         return mmb.getDBKey();
     }
-
-
-    /**
-     * set text array in database
-     */
-    /*
-    public void setDBText(int i, PreparedStatement stmt,String body) {
-        byte[] isochars=null;
-        try {
-                isochars=body.getBytes("ISO-8859-1");
-        } catch (Exception e) {
-                log.debug("setDBText(): String contains odd chars");
-                log.error(Logging.stackTrace(e));
-        }
-        try {
-                ByteArrayInputStream stream=new ByteArrayInputStream(isochars);
-                stmt.setAsciiStream(i,stream,isochars.length);
-                stream.close();
-        } catch (Exception e) {
-                log.error("setDBText(): Can't set ascii stream");
-                log.error(Logging.stackTrace(e));
-        }
-}
-    */
-
-
-    /**
-    * set byte array in database
-    */
-    /*
-    public void setDBByte(int i, PreparedStatement stmt,byte[] bytes) {
-        try {
-                ByteArrayInputStream stream=new ByteArrayInputStream(bytes);
-                stmt.setBinaryStream(i,stream,bytes.length);
-                stream.close();
-        } catch (Exception e) {
-                log.error("setDBByte(): Can't set byte stream");
-                log.error(Logging.stackTrace(e));
-        }
-}
-    */
 
     /**
      * Return the age of the node, determined using the daymarks builder.
@@ -2243,56 +2155,6 @@ public class MMObjectBuilder extends MMTable {
         mmb=m;
         database=mmb.getDatabase();
     }
-
-    /**
-     * Stores the fieldnames of a table in a vector, based on the current fields definition.
-     * The fields 'otype' and 'owner' become the first and second fieldnames.
-     * @param vec A vector with builder-creation commands, in the form 'dbname,guiname,guitype,guipos,guilist,guisearch,dbstate,dbname'
-     */
-    public void setDBLayout(Vector vec) {
-        sortedDBLayout=new Vector();
-        sortedDBLayout.addElement("otype");
-        sortedDBLayout.addElement("owner");
-        for (Enumeration e=vec.elements();e.hasMoreElements();) {
-            StringTokenizer tok = new StringTokenizer((String)e.nextElement(),",\n\r");
-            if(tok.hasMoreTokens()) {
-                String dbtype=tok.nextToken();
-                if(tok.hasMoreTokens()) {
-                    String guiname=tok.nextToken();
-                    if(tok.hasMoreTokens()) {
-                        String guitype=tok.nextToken();
-                        if(tok.hasMoreTokens()) {
-                            String guipos=tok.nextToken();
-                            if(tok.hasMoreTokens()) {
-                                String guilist=tok.nextToken();
-                                if(tok.hasMoreTokens()) {
-                                    String guisearch=tok.nextToken();
-                                    if(tok.hasMoreTokens()) {
-                                        String dbstate=tok.nextToken();
-                                        if(tok.hasMoreTokens()) {
-                                            String dbname=tok.nextToken();
-                                            if (!dbname.equals("number") && !dbname.equals("owner")) {
-                                                sortedDBLayout.addElement(dbname);
-                                            }
-                                        } else
-                                            log.error("setDBLayout(): 'dbname' not defined (while reading defines?)");
-                                    } else
-                                        log.error("setDBLayout(): 'dbstate' not defined (while reading defines?)");
-                                } else
-                                    log.error("setDBLayout(): 'guisearch' not defined (while reading defines?)");
-                            } else
-                                log.error("setDBLayout(): 'guilist' not defined (while reading defines?)");
-                        } else
-                            log.error("setDBLayout(): 'guipos' not defined (while reading defines?)");
-                    } else
-                        log.error("setDBLayout(): 'guitype' not defined (while reading defines?)");
-                } else
-                    log.error("setDBLayout(): 'guiname' not defined (while reading defines?)");
-            } else
-                log.error("setDBLayout(): 'dbname' not defined (while reading defines?)");
-        }
-    }
-
 
     /**
      * Stores the fieldnames of a table in a vector, based on the current fields definition.
@@ -2579,39 +2441,6 @@ public class MMObjectBuilder extends MMTable {
         return database.getDBText(rs,idx);
     }
 
-
-    /**
-     * Maintains statistics. Doesn't work. Needs the statistics builder.
-     * @deprecated-now unused. Shoudln't be done in this class anyway
-     * @param type the name of the type of action to keep the stats for.
-     */
-    private void statCount(String type) {
-        if (1==1) return; // problems with shadow nodes
-
-        if (statbul==null) statbul=(Statistics)mmb.getMMObject("statistics");
-        if (statbul!=null) {
-            if (statbul!=this && mmb.getMMObject("sshadow")!=this) {
-                String name=mmb.getMachineName()+"_"+type;
-                String nr=statbul.getAliasNumber(name);
-                if (nr!=null) {
-                    statbul.setCount(nr,1);
-                } else {
-                    MMObjectNode node=statbul.getNewNode("system");
-                    node.setValue("name",name);
-                    node.setValue("description","");
-                    node.setValue("count",1);
-                    node.setValue("timeslices",144);
-                    node.setValue("timeinterval",600);
-                    node.setValue("timesync",0);
-                    node.setValue("data","");
-                    node.setValue("start",0);
-                    node.setValue("timeslice",0);
-                    statbul.insert("system",node);
-                }
-            }
-        }
-    }
-
     /**
      * Tests whether a builder table is created.
      * XXX Should be moved to MMTable.
@@ -2669,21 +2498,6 @@ public class MMObjectBuilder extends MMTable {
     public boolean setValue(MMObjectNode node,String fieldname) {
         return true;
     }
-
-
-
-
-    /**
-     * Provides a way to simulate xml files as configuration.
-     * @deprecated will be removed
-     */
-    public Hashtable getXMLSetup() {
-        return null;
-    }
-
-    // Default replacements for method getHTML()
-    private final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
-    private final static String DEFAULT_EOL = "<br />";
 
     /**
      * Returns a HTML-version of a string.
@@ -2766,9 +2580,8 @@ public class MMObjectBuilder extends MMTable {
     protected String getURLEncode(String body) {
         String rtn="";
         if (body!=null) {
-                        rtn = URLEncoder.encode(body);
+            rtn = URLEncoder.encode(body);
         }
-                // log.debug("Returning URLEncoded string: "+rtn);
         return rtn;
     }
 
@@ -2796,11 +2609,6 @@ public class MMObjectBuilder extends MMTable {
      *		may be incorrect.
      */
     public void setXMLValues(Vector xmlfields) {
-        //sortedEditFields = null;
-        //sortedListFields = null;
-        //sortedFields = null;
-        //sortedDBLayout=new Vector();
-
         fields=new Hashtable();
 
         Enumeration enum = xmlfields.elements();
@@ -2896,16 +2704,6 @@ public class MMObjectBuilder extends MMTable {
      */
     public int getVersion() {
         return version;
-    }
-
-    /**
-     * Debugging routine,sends message to log
-     * @param msg the message to log
-     * @deprecated, use new logging system instead
-     */
-    protected void debug( String msg )
-    {
-        log.debug(msg );
     }
 
     /**
