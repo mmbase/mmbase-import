@@ -21,21 +21,20 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top.
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatComparator.java,v 1.1 2003-01-08 22:20:25 michiel Exp $
+ * @version $Id: ServerFormatComparator.java,v 1.2 2003-02-03 11:06:35 michiel Exp $
  */
 public class ServerFormatComparator extends  FormatComparator {
     private static Logger log = Logging.getLoggerInstance(ServerFormatComparator.class.getName());
 
-    public static String CONFIG_TAG = "preferredSource";
-    public static String SOURCE_TAG = "source";
-    public static String FORMAT_ATT = "format";
+    public static final String CONFIG_TAG = MediaSourceFilter.FILTERCONFIG_TAG + ".preferredSource";
+    public static final String FORMAT_ATT = "format";
 
     public  ServerFormatComparator() {};
 
     public void configure(XMLBasicReader reader, Element el) {
         preferredSources.clear();
         // reading preferredSource information    
-        for( Enumeration e = reader.getChildElements(reader.getElementByPath(el, MediaSourceFilter.FILTERCONFIGS_TAG + "." + CONFIG_TAG), SOURCE_TAG);e.hasMoreElements();) {
+        for( Enumeration e = reader.getChildElements(reader.getElementByPath(el, CONFIG_TAG));e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String format = reader.getElementAttributeValue(n3, FORMAT_ATT);
             preferredSources.add(Format.get(format));
