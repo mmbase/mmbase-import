@@ -12,14 +12,14 @@
 
 <mm:url page="change_node.jsp" id="purl" write="false" referids="node_number" />
 
-<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="node">
+<mm:node id="this_node" referid="node_number" notfound="skipbody" jspvar="thisNode">
 
 <% 
    if (urlStack.size() == 0) {
-      push(urlStack, "home", "search_node.jsp?node_type=" + node.getNodeManager().getName());
+      push(urlStack, "home", "search_node.jsp?node_type=" + thisNode.getNodeManager().getName());
    }
    if (urlStack.size() == 1) {
-       push(urlStack, "" + node.getNumber(), "change_node.jsp?node_number=" + node.getNumber());
+       push(urlStack, "" + thisNode.getNumber(), "change_node.jsp?node_number=" + thisNode.getNumber());
    }
  %>
 
