@@ -171,6 +171,7 @@ Ok, did not throw exception with 'reset'.<br />
  <br />
 <% } %>
 </p>
+
 <h2>Combo with lists</h2>
 <mm:import id="testlist" vartype="list">A,B,C,D,E,F</mm:import>
 
@@ -206,28 +207,31 @@ Ok, did not throw exception with id in a list (Does in 1.6)<br />
 <% } %>
 
 
+<%-- // catching exception in tomcat 5 (perhaps also 4?) goes wrong with lists. Having done this, 'writers' don't work any more.
 <% try { %>
 <mm:stringlist referid="testlist">
    <mm:write id="some_list_id" />
 </mm:stringlist>
  WRONG, should have thrown exception (id was used already).<br />
  <% } catch (Exception e) { %>
- Ok, did throw exception.<br />
+1.  Ok, did throw exception.<br />
 <% } %>
 
 <% try { %>
 <mm:stringlist referid="testlist">
-   <mm:write id="some_list_id" />
+    <mm:write id="some_list_id" />
 </mm:stringlist>
- WRONG, should have thrown exception (id was used already).<br />
- <% } catch (Exception e) { %>
- Ok, did throw exception.<br />
-<% } %>
+WRONG, should have thrown exception (id was used already).<br />
+<% } catch (Exception e) { %>
+2. Ok, did throw exception.<br />
+<% } %>    
 
+--%>
+<hr />
 <mm:stringlist referid="testlist">
- <mm:first>
-   <mm:remove referid="some_list_id" />
-</mm:first>
+  <mm:first>
+    <mm:remove referid="some_list_id" />
+  </mm:first>
 </mm:stringlist>
 
 <mm:present referid="some_list_id">
@@ -239,17 +243,17 @@ Ok, did not throw exception with id in a list (Does in 1.6)<br />
 
 <mm:import id="abcde" />
 
+
 <mm:present referid="abcde">
-afdlsk
+  Should show<br />
 </mm:present>
 <mm:notpresent referid="abcde">
-afdlsk
+  WRONG, should not show.<br />
 </mm:notpresent>
 
 
-
 <hr />
-This link should result an exception: <a href="<mm:url page="present.jsp" />">present.jsp</a><br />
+This link should result an exception xy: <a href="<mm:url page="present.jsp" />">present.jsp</a><br />
 <a href="<mm:url page="/mmexamples/taglib/showanypage.jsp"><mm:param name="page"><%=request.getServletPath()%></mm:param></mm:url>">Source of this page</a><br />
 <hr />
 </body>
