@@ -14,9 +14,9 @@ package org.mmbase.bridge.jsp.taglib;
  * For example the several NodeListTag's  provide a List.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: ListProvider.java,v 1.5 2003-08-05 18:42:55 michiel Exp $ 
+ * @version $Id: ListProvider.java,v 1.6 2003-08-07 17:17:39 michiel Exp $ 
  */
-public interface ListProvider extends ContextProvider {
+public interface ListProvider extends ContextProvider, org.mmbase.bridge.jsp.taglib.containers.NodeListContainerOrListProvider {
     /**
      * @return the size of the list
      *
@@ -49,4 +49,11 @@ public interface ListProvider extends ContextProvider {
      *
      */
     public boolean isChanged();
+
+    /**
+     * Removes the current item from the list.
+     * @since MMBase-1.7
+     */
+    public void remove();
+
 }
