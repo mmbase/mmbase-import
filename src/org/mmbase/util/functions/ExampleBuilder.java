@@ -19,17 +19,17 @@ import org.mmbase.util.logging.*;
  * and e.g. a jsp like this:
  * <code>
  * <pre>
- * <mm:listnodes type="pools" max="1">
- *   <mm:import id="max">100</mm:import>
- *   <mm:nodelistfunction referids="max" name="function1">
- *    -- <mm:field name="number" /><br />
- *    </mm:nodelistfunction>
- * </mm:listnodes>
+ * &lt;mm:listnodes type="pools" max="1"&gt;
+ *  &lt; mm:import id="max"&gt;100&lt;/mm:import&gt;
+ *   &lt;mm:nodelistfunction referids="max" name="function1"&gt;
+ *    -- &lt;mm:field name="number" /&gt;&lt;br /&gt;
+ *   &lt/mm:nodelistfunction&gt;
+ * &lt;/mm:listnodes&gt;
  * </pre>
  * </code>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.1 2004-02-09 17:58:05 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.2 2004-02-10 12:54:03 michiel Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.
