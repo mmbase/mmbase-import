@@ -43,7 +43,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.133 2004-12-15 09:34:31 pierre Exp $
+ * @version $Id: Wizard.java,v 1.134 2005-01-26 10:23:13 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -1954,7 +1954,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      *
      */
     public void processCommand(WizardCommand cmd) throws WizardException {
-        log.service("Processing command " + cmd);
+        log.debug("Processing command " + cmd);
         // processes the given command
         switch (cmd.getType()) {
         case WizardCommand.DELETE_ITEM: {
@@ -2172,11 +2172,11 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
             break;
         }
         case WizardCommand.SAVE : {
-            log.service("Wizard " + objectNumber + " will be saved (but not closed)");
+            log.debug("Wizard " + objectNumber + " will be saved (but not closed)");
         }
 
         case WizardCommand.COMMIT: {
-            log.service("Committing wizard " + objectNumber);
+            log.debug("Committing wizard " + objectNumber);
 
             // This command takes no parameters.
             if (log.isDebugEnabled()) {
