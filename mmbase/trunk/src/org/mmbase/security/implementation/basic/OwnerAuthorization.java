@@ -32,7 +32,7 @@ import java.io.IOException;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: OwnerAuthorization.java,v 1.12 2005-01-14 12:49:31 michiel Exp $
+ * @version $Id: OwnerAuthorization.java,v 1.13 2005-03-01 14:15:28 michiel Exp $
  */
 public class OwnerAuthorization extends Authorization {
 
@@ -111,7 +111,7 @@ public class OwnerAuthorization extends Authorization {
 
         // if we are admin, then everything is permitted as well....
         if(user.getRank() == Rank.ADMIN) {
-            log.debug("user admin has always all rights..");
+            log.trace("User with rank " + Rank.ADMIN + " always has all rights.");
             return true;
         }
 
