@@ -1,4 +1,4 @@
-README for maven-mmbase $Id: README.txt,v 1.2 2004-01-04 20:35:28 keesj Exp $
+README for maven-mmbase $Id: README.txt,v 1.3 2004-03-08 22:52:21 keesj Exp $
 
 RUNNING:
 download maven from http://maven.apache.org/
@@ -13,6 +13,10 @@ run the ant task in this directory
 
 goto the mmbase-core directory
 @>cd mmbase-core
+
+install some additional plugins:(sdocbook)
+maven -DartifactId=maven-sdocbook-plugin -DgroupId=maven-plugins -Dversion=1.3 plugin:download
+
 
 run maven
 @>maven site
