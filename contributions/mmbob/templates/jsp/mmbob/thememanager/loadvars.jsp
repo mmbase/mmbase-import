@@ -3,7 +3,7 @@
 <%-- use thememanager --%>
 <mm:present referid="thememanager">
 <%-- get the context of the thememanger, this is used to create urls --%>
-<mm:import id="context"><mm:url page="/thememanager"/></mm:import>
+<mm:import id="context"><mm:url page="/mmbase/thememanager"/></mm:import>
 <%-- set the imagecontext, this can be used if images are stored somewhere else --%>
 <mm:import id="imagecontext"><mm:write referid="context"/>/images</mm:import>
 <mm:import externid="forumid" id="tmpid" />
