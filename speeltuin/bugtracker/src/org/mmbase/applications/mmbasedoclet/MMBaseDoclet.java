@@ -4,9 +4,9 @@ import com.sun.javadoc.*;
 import java.util.*;
 import org.mmbase.applications.config.*;
 /**
- * MMBaseDoclet is a javadoc doclet to create MMBase an mmbase object model
+ * MMBaseDoclet is a javadoc doclet to create MMBase object models
  * based on javadoc comments in files in a package. The doclet introduces
- * a tags to the standard doclet. defined tags are:<BR>
+ * new tags.
  *<table BORDER="1" CELLPADDING="3" CELLSPACING="0" WIDTH="100%">
  *<tr BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
  *<td COLSPAN=3><font SIZE="+2">
@@ -80,13 +80,40 @@ import org.mmbase.applications.config.*;
  *<tr BGCOLOR="white" CLASS="TableRowColor">
  *<td ALIGN="right" VALIGN="top" WIDTH="1%"><font SIZE="-1">
  *<code>mmbase-relationmanager-name</code></font></td>
- *<td>defines the name of a node manager this should always be the first tag to use  when you are trying to define a nodemanager</td>
+ *<td>defines the name/role of a relation (related,authorrel)</td>
  *<td>required but not unique</td>
  *</tr>
+ *<tr BGCOLOR="white" CLASS="TableRowColor">
+ *<td ALIGN="right" VALIGN="top" WIDTH="1%"><font SIZE="-1">
+ *<code>mmbase-relationmanager-nodemanager</code></font></td>
+ *<td>defines what nodemanager MMBase should use to store it's relation data. for example
+ * by using the posrel node manager one aditional field "pos" is available. The field contains the name of the nodemanager. the nodemanager should extend the insrel node manager</td>
+ *<td>(default = "insrel")</td>
+ *</tr>
+ *<tr BGCOLOR="white" CLASS="TableRowColor">
+ *<td ALIGN="right" VALIGN="top" WIDTH="1%"><font SIZE="-1">
+ *<code>mmbase-relationmanager-source</code></font></td>
+ *<td>defines the source of the relation, this is the name of the nodemanager</td>
+ *<td>required</td>
+ *</tr>
+ *<tr BGCOLOR="white" CLASS="TableRowColor">
+ *<td ALIGN="right" VALIGN="top" WIDTH="1%"><font SIZE="-1">
+ *<code>mmbase-relationmanager-destination</code></font></td>
+ *<td>defines the destination of the relation, this is the name of the nodemanager</td>
+ *<td>required</td>
+ *</tr>
+ *<tr BGCOLOR="white" CLASS="TableRowColor">
+ *<td ALIGN="right" VALIGN="top" WIDTH="1%"><font SIZE="-1">
+ *<code>mmbase-relationmanager-directionality</code></font></td>
+ *<td>defines the directionalily of the relation. possible values are "bidirectional" and "unidirectional".</td>
+ *<td>(default = "bidirectional"</td>
+ *</tr>
+ *
+ *
  *</table>
  *
  * @author Kees Jongenburger
- * @version $Id: MMBaseDoclet.java,v 1.6 2002-06-28 20:12:58 kees Exp $
+ * @version $Id: MMBaseDoclet.java,v 1.7 2002-06-29 07:20:00 kees Exp $
  **/
 public class MMBaseDoclet{
     
@@ -100,7 +127,7 @@ public class MMBaseDoclet{
     private static void writeContents(ClassDoc[] classes) {
         //Vector nodeManagers = new Vector();
         //Vector relationManager = new Vector();
-        DocletApplicationConfiguration appconfig= new DocletApplicationConfiguration();
+        BasicApplicationConfiguration appconfig= new BasicApplicationConfiguration();
         for (int i=0; i < classes.length; i++) {
             //System.err.println("class: " +  classes[i].name() );
             Tag[] tags = classes[i].tags();
@@ -139,9 +166,9 @@ public class MMBaseDoclet{
         
     }
     
-    public static DocletNodeManagerConfiguration createNodeManagerConfiguration(Tag[] tags,int startIndex, int endIndex){
+    public static BasicNodeManagerConfiguration createNodeManagerConfiguration(Tag[] tags,int startIndex, int endIndex){
         
-        DocletNodeManagerConfiguration nodeManagerConfig = new DocletNodeManagerConfiguration();
+        BasicNodeManagerConfiguration nodeManagerConfig = new BasicNodeManagerConfiguration();
         
         for (int tagcount = startIndex ; tagcount <= endIndex;tagcount++){
             String name = tags[tagcount].name().substring("mmbase-nodemanager-".length() + 1);
@@ -167,9 +194,9 @@ public class MMBaseDoclet{
         return nodeManagerConfig;
     }
     
-    public static DocletRelationManagerConfiguration createRelationManagerConfiguration(Tag[] tags,int startIndex, int endIndex){
+    public static BasicRelationManagerConfiguration createRelationManagerConfiguration(Tag[] tags,int startIndex, int endIndex){
         
-        DocletRelationManagerConfiguration relationManagerConfig = new DocletRelationManagerConfiguration();
+        BasicRelationManagerConfiguration relationManagerConfig = new BasicRelationManagerConfiguration();
         
         //@mmbase-relationmanager-name: maintainer
         //@mmbase-relationmanager-nodemanager: insrel
@@ -199,7 +226,7 @@ public class MMBaseDoclet{
         
     }
     
-    public static DocletFieldConfiguration createFieldConfiguration(String data){
+    public static BasicFieldConfiguration createFieldConfiguration(String data){
         String name = "empty";
         String type = "STRING";
         String size = null;
@@ -214,6 +241,6 @@ public class MMBaseDoclet{
         if (st.hasMoreTokens()){
             size = st.nextToken();
         }
-        return new DocletFieldConfiguration(name,type,size);
+        return new BasicFieldConfiguration(name,type,size);
     }
 }

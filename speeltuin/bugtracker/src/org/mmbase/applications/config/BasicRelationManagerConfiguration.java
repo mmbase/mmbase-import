@@ -1,25 +1,18 @@
-/*
- * DocletRelationManagerConfiguration.java
- *
- * Created on June 13, 2002, 4:01 PM
- */
+package org.mmbase.applications.config;
 
-package org.mmbase.applications.mmbasedoclet;
-
-import org.mmbase.applications.config.*;
 /**
  *
- * @author  mmbase
+ * @author Kees Jongenburger
  */
-public class DocletRelationManagerConfiguration  implements RelationManagerConfiguration{
+public class BasicRelationManagerConfiguration  implements RelationManagerConfiguration{
     String name;
     String sourceNodeManagerName;
     String destinationNodeManagerName;
     String directionality="bidirectional";
     String nodeManagerName = "insrel";
     
-    /** Creates a new instance of DocletRelationManagerConfiguration */
-    public DocletRelationManagerConfiguration() {};
+    /** Creates a new instance of BasicRelationManagerConfiguration */
+    public BasicRelationManagerConfiguration() {};
     
     public void setName(String name){
         this.name = name;
