@@ -12,6 +12,7 @@ package org.mmbase.bridge.implementation;
 
 import java.util.*;
 
+
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.NodeList;
@@ -30,7 +31,7 @@ import org.w3c.dom.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.125 2004-05-03 14:55:15 keesj Exp $
+ * @version $Id: BasicNode.java,v 1.126 2004-05-03 15:52:14 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -292,9 +293,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         // check for the existence of a temporary node
         if (temporaryNodeId == -1) {
             // when committing a temporary node id must exist (otherwise fail).
+            /*
             if (action == ACTION_COMMIT) {
-                // throw new BasicBridgeException("This node cannot be comitted (not changed).");
+                throw new BasicBridgeException("This node cannot be comitted (not changed).");
             }
+            */
             // when adding a temporary node id must exist (otherwise fail).
             // this should not occur (hence internal error notice), but we test it anyway.
 
@@ -461,9 +464,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             case Field.TYPE_NODE:    return getNodeValue(fieldName);
             default:                 getNode().getValue(fieldName);
             }
-        } else {
+        } //else {
             //log.warn("Requesting value of unknown field '" + fieldName + "')");
-        }
+        //}
 
         return getNode().getValue(fieldName);
     }
