@@ -8,23 +8,13 @@
     </object>
   </action>
   
-  <action type="load">
-  </action>
-  
-  <steps>
-    <step form-schema="step1" />
-  </steps>
-  
   <form-schema id="step1">
     <title>Attachment upload</title>
-    <field name="title" ftype="line" dttype="string" dtminlength="1" dtmaxlength="255">
-    </field>
-    <field name="description" ftype="text" dttype="html" rows="4"><prompt>Beschrijving</prompt></field>
-    <field name="filename"><prompt>Filenaam</prompt></field>
-    <field name="mimetype" ftype="line"><prompt>Bestandstype</prompt></field>
-    <field name="size" ftype="data"><prompt>Bestandsgrootte</prompt></field>
-    <field name="handle" ftype="file">
-      <prompt>upload</prompt>
-    </field>
+    <field name="title" dtminlength="1"  />
+    <field name="description" dttype="html" rows="4" />
+    <field name="filename" />
+    <field name="mimetype" />
+    <field name="size" ftype="data" />
+    <field name="handle"  />
   </form-schema>  
 </wizard-schema>
