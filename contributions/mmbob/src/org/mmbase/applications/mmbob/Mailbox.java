@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logger;
 public class Mailbox {
  
     // logger
-    static private Logger log = Logging.getLoggerInstance(Mailbox.class.getName()); 
+    static private Logger log = Logging.getLoggerInstance(Mailbox.class); 
 
    private Node node;
    private Poster parent;
