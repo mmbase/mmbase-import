@@ -1,12 +1,12 @@
 <%@ page errorPage="exception.jsp" 
-%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@ page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException"
+%><%@ include file="settings.jsp"%><mm:cloud method="http" jspvar="cloud"><mm:log jspvar="log"><%@ page import="org.mmbase.bridge.*,javax.servlet.jsp.JspException,org.mmbase.applications.editwizard.Config"
 %><%@ page import="org.w3c.dom.Document"
 %><%
     /**
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.2 2002-04-22 14:37:34 michiel Exp $
+     * @version  $Id: list.jsp,v 1.3 2002-05-01 20:10:22 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -92,7 +92,7 @@ if (nodecount==0 || fieldcount==0) {
 if (listConfig.age==99999) listConfig.age=-1;
 if (listConfig.age >- 1) {
     // maxlistConfig.age is set. pre-query to find objectnumber
-    long daymarker = (new Date().getTime() / (60*60*24*1000)) - listConfig.age;
+    long daymarker = (new java.util.Date().getTime() / (60*60*24*1000)) - listConfig.age;
 
     NodeManager mgr = cloud.getNodeManager("daymarks");
 
