@@ -14,7 +14,7 @@
  <head>
     <%-- we are in the magazine node  we can ask for fields of this magazine --%>
     <title><mm:field  name="title"/></title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
  <body>
   <table width="90%" align="center">

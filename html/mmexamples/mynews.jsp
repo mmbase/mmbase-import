@@ -5,7 +5,7 @@
 <html>
 <head>
   <title>MMExamples - MyNews</title>
-  <link rel="stylesheet" type="text/css" href="../../css/mmbase.css" />
+  <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
 </head>
 <body>
   <table width="90%" align="center">

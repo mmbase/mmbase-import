@@ -7,7 +7,7 @@
 <html>
  <head>
    <title><mm:field  name="title" /></title>
-   <link rel="stylesheet" type="text/css" href="style.css" />
+   <link rel="stylesheet" type="text/css" href="<mm:url page="/mmbase/style/css/mmbase.css" />" />
  </head>
  <body>
   <center>
