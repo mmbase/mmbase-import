@@ -57,8 +57,8 @@
 	<properties>
 
 		<!-- <properties>
-		name="url"  defines the jdbc url mmbase will use to connect to your database
-		it can use the following vars
+		name="url"  defines the jdbc url MMBase will use to connect to your database.
+		It can use the following vars:
 
 		$HOST , set by <host>
 		$PORT , set by <port>
@@ -86,26 +86,26 @@
 		<property name="password"></property>
 
 		<!--
-		name="supportclass>, the jdbc module will use this class to do database
-		specific things to a connection (ie for informix it sets the lockmode)
+		name="supportclass"
+		The jdbc module will use this class to do database specific things to a connection (ie for informix it sets the lockmode)
 		-->
 		<property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
 
 		<!--
-		name="database", most database engines allow you to store multiple databases in one
-		engine we need to select the database root we want to use within this engine.
-		make sure you are using a 'empty' database when you start using mmbase to make
-		sure you don't create problems for other users of the database engine you are
-		using.
+		name="database",
+		Most database engines allow you to store multiple databases in one engine.
+		We need to select the database we want to use within this engine.
+		Make sure you are using a 'empty' database when you start using mmbase to
+		ensure you don't create problems for other users.
 		-->
 		<property name="database">mmbase</property>
 
 		<!--
-		name="connections",  mmbase does its own database connection pooling
-		(keeping connections to the database open over several database
-		queries, to speed up queries by not logging in and closing
-		the connection on every qeury). 'connections' allows you to set
-		the number of connections mmbase keeps open to the database.
+		name="connections"
+		MMBase does its own database connection pooling	(keeping connections to the database open
+		over several database queries, to speed up queries by not logging in and closing
+		the connection on every query). 'connections' allows you to set
+		the number of connections MMBase keeps open to the database.
 		-->
 		<property name="connections">20</property>
 
