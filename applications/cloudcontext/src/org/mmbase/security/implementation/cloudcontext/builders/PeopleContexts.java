@@ -14,12 +14,13 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 
 /**
- * Simple extension of Contexts. It overrides the concept of an 'own' node wich is on default only the mmbaseusers object.
- * This adds also the people nodes where the account field is the current account.
- *
+ * Simple extension of Contexts. It overrides the concept of an 'own' node wich is on default only
+ * the mmbaseusers object.  This adds also the people nodes where the 'account; field is the current
+ * account (either as a String field containing the user's identifier), or as a NODE field refering
+ * to the mmbaseusers node.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PeopleContexts.java,v 1.3 2004-07-30 17:11:35 michiel Exp $
+ * @version $Id: PeopleContexts.java,v 1.4 2004-07-30 17:24:59 michiel Exp $
  */
 public class PeopleContexts extends Contexts {
 
