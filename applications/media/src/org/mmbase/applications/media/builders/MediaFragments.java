@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.24 2003-07-28 08:43:36 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.25 2003-08-20 08:45:05 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -244,10 +244,12 @@ public class MediaFragments extends MMObjectBuilder {
         log.debug("Getting url of a fragment.");        
 	String key = URLCache.toKey(fragment, info);
         if(cache.containsKey(key)) {
-		log.debug("Cache hit, key = "+key);
-		return (String)cache.get(key);
+		log.service("Cache hit, key = "+key);
+		String url =  (String)cache.get(key);
+		log.service("Resolved url = "+url);
+		return url;
 	} else {
-		log.debug("No cache hit, key = "+key);
+		log.service("No cache hit, key = "+key);
 	}
 
 	Set cacheExpireObjects = new HashSet();
@@ -257,8 +259,9 @@ public class MediaFragments extends MMObjectBuilder {
             result = ((URLComposer) urls.get(0)).getURL();
         } 
 	// put result in cache
-	log.debug("Add to cache, key="+key);
+	log.service("Add to cache, key="+key);
 	cache.put(key,result,cacheExpireObjects);
+	log.service("Resolved url = "+result);
 	return result;
     }
 
@@ -432,9 +435,7 @@ public class MediaFragments extends MMObjectBuilder {
 			if(userChannels!=null) {
 				info.put("channels",""+userChannels);
 			}
-                    String url = getURL(media, info);
-		    log.debug("resolving url = "+url);
-                    return url;
+                    return url = getURL(media, info);
                 } else {
 			log.error("No mediafragment specified"); 
                     return null;

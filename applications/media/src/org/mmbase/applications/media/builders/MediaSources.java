@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.22 2003-08-13 14:52:37 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.23 2003-08-20 08:45:05 vpro Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -197,6 +197,8 @@ public class MediaSources extends MMObjectBuilder {
      * used in the editors
      */
     public String getGUIIndicator(MMObjectNode source) {
+	return ""+Format.get(source.getIntValue("format"))+"/"+source.getStringValue("bitrate")+"/"+source.getStringValue("channels");
+	/*
         List urls = getFilteredURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
         URLComposer ri = (URLComposer) urls.get(0);
@@ -209,10 +211,11 @@ public class MediaSources extends MMObjectBuilder {
         } else {
             return "[<a href='" + url + "'>" + Format.get(source.getIntValue("format")) + "</a>]";
         }
+	*/
     }
     
     public int getSpeed(MMObjectNode node) {
-        return node.getIntValue("speed");
+        return node.getIntValue("bitrate");
     }
     
     public int getChannels(MMObjectNode node) {
