@@ -99,9 +99,11 @@ public class AliasListTag extends NodeReferrerTag implements ListProvider, Write
             getContextProvider().getContainer().unRegister(getId());
         }
         helper.doAfterBody();
+
+        collector.putAll(container);
+        container.clear();
+
         if (returnValues.hasNext()){
-            collector.putAll(container);
-            container.clear();
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
