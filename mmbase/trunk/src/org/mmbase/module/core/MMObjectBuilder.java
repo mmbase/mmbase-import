@@ -51,7 +51,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.184 2002-11-26 11:20:30 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.185 2002-11-26 17:35:26 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -145,7 +145,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Detemines whether the cache need be refreshed?
      * Seems useless, as this value is never changed (always true)
-     * @see #readSearchResults
+     * @see #processSearchResults
      */
     public boolean REPLACE_CACHE=true;
 
@@ -1207,6 +1207,38 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
+     * Returns nodes matching a specified constraint. 
+     * The constraint is specified by a query that selects nodes of
+     * a specified type, which must be the nodetype corresponding 
+     * to this builder.
+     *
+     * @param query The query.
+     * @return The nodes.
+     * @throws IllegalArgumentException When the nodetype specified
+     *         by the query is not the nodetype corresponding to this builder.
+     * @since MMBase-1.7
+     */
+    public List getNodes(NodeSearchQuery query) 
+    throws SearchQueryException {
+        // Test if nodetype corresponds to builder.
+        if (query.getBuilder() != this) {
+            throw new IllegalArgumentException(
+            "Wrong builder for query on '" + query.getBuilder().getTableName()
+            + "'-table: " + this.getTableName());
+        }
+        
+        // TODO (later): implement maximum set by maxNodesFromQuery?
+        
+        // Execute query.
+        List results = mmb.getDatabase().getNodes(query, this);
+        
+        // Perform necessary postprocessing.
+        processSearchResults(results);
+
+        return results;
+    }
+    
+     /**
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
@@ -1520,182 +1552,211 @@ public class MMObjectBuilder extends MMTable {
      * @param rs The resultset containing the nodes
      * @return The vector which is to hold the data
      */
+    // TODO RvM: move this code to getList(String).
     private Vector readSearchResults(ResultSet rs) {
         Vector results = new Vector();
-	Map convert = new HashMap();
-	int convertCount = 0;
-	int convertedCount = 0;
-	int cacheGetCount = 0;
-	int cachePutCount = 0;
-
         try {
-	    for(int counter=0; rs.next(); counter++) {
-		// check if we are allowed to do this iteration...
-		if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
-		    // to much nodes found...
-		    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
-		    log.warn(msg);
-		    break;
-		}
-
-		// create the node from the record-set
+            for(int counter = 0; rs.next(); counter++) {
+                // check if we are allowed to do this iteration...
+                if(maxNodesFromQuery != -1 && counter >= maxNodesFromQuery) {
+                    // to much nodes found...
+                    String msg = "Maximum number of nodes protection, the query generated to much nodes, please define a query that is more specific(maximum:"+maxNodesFromQuery+" on builder:"+getTableName()+")";
+                    log.warn(msg);
+                    break;
+                }
+                
+                // create the node from the record-set
                 MMObjectNode node = new MMObjectNode(this);
                 ResultSetMetaData rd = rs.getMetaData();
                 for (int i=1;i<=rd.getColumnCount();i++) {
                     String fieldname = rd.getColumnName(i);
                     // node = mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
-		    mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
+                    mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i);
                 }
-		if(node.getNumber() < 0) {
-		    // never happend to me, and never should!
-		    log.error("invalid node found, node number was invalid:" + node.getNumber()+", database invalid?");
-		    // dont know what to do with this node,...
-		    // continue to the next one!
-		    continue;
-		}
-
-		Integer number = new Integer(node.getNumber());
-		boolean fromCache = false;
-		// only active when builder loaded (oType != -1)
-		// maybe we got the wrong node typeback, if so
-		// try to retrieve the correct node from the cache first
-		if(oType != -1 && oType != node.getOType()){
-		    // try to retrieve the correct node from the
-		    // nodecache
-		    MMObjectNode cachenode = (MMObjectNode) nodeCache.get(number);
-		    if(cachenode != null) {
-                        node=cachenode;
-			fromCache = true;
-			cacheGetCount ++;
-		    } else {
-			// add this node to the list of nodes that still need to
-			// be converted..
-			// we dont request the builder here, for this we need the
-			// typedef table, which could generate an additional query..
-			Integer otype = new Integer(node.getOType());
-			Set nodes = (Set) convert.get(otype);
-			// create an new entry for the type, if not yet there...
-			if(nodes == null) {
-			    nodes = new HashSet();
-			    convert.put(otype, nodes);
-			}
-			nodes.add(node);
-			convertCount ++;
-		    }
-		} else if (oType == node.getOType()) {
-		    MMObjectNode oldNode = (MMObjectNode)nodeCache.get(number);
-		    // when we want to use cache also for new found nodes
-		    // and cache may not be replaced, use the one from the
-		    // cache..
-		    if(!REPLACE_CACHE && oldNode != null) {
-			node = oldNode;
-			fromCache = true;
-			cacheGetCount++;
-		    }
-		} else {
-		    // skipping everything, our builder hasnt been started yet...
-		}
-
-		// add the result to the result vector
                 results.add(node);
+            }
+        } catch(java.sql.SQLException e) {
+            log.error(Logging.stackTrace(e));
+        }
+        
+        processSearchResults(results);
+        return results;
+    }
+    
+    /**
+     * Performs some necessary postprocessing on nodes retrieved from a 
+     * search query.
+     * This consists of the following actions:
+     * <ul>
+     * <li>Stores retrieved nodes in the {@link #nodeCache nodecache}, or
+     * <li>Replaces nodes by cached nodes (if cached node available, and 
+     *     {@link #REPLACE_CACHE REPLACE_CACHE} is set to false).
+     * <li>Replace partially retrieved nodes in the result by complete nodes.
+     *     Nodes are partially retrieved when their type is a inheriting type
+     *     of this builder's type, having additional fields. For these nodes
+     *     additional queries are performed to retrieve the complete nodes.
+     * <li>Removes nodes with invalid node number from the result.
+     * </ul>
+     * 
+     * @param results The nodes. After returning, partially retrieved nodes 
+     *        in the result are replaced <em>in place</em> by complete nodes.
+     */
+    private void processSearchResults(List results) {
+        Map convert = new HashMap();
+        int convertCount = 0;
+        int convertedCount = 0;
+        int cacheGetCount = 0;
+        int cachePutCount = 0;
+        
+        ListIterator iResults = results.listIterator();
+        while (iResults.hasNext()) {
+            MMObjectNode node = (MMObjectNode) iResults.next();
+        
+            Integer number = new Integer(node.getNumber());
+            if(number.intValue() < 0) {
+                // never happend to me, and never should!
+                log.error("invalid node found, node number was invalid:" + node.getNumber()+", database invalid?");
+                // dont know what to do with this node,...
+                // remove it from the results, continue to the next one!
+                iResults.remove();
+                continue;
+            }
+                
+            boolean fromCache = false;
+            // only active when builder loaded (oType != -1)
+            // maybe we got the wrong node typeback, if so
+            // try to retrieve the correct node from the cache first
+            if(oType != -1 && oType != node.getOType()){
+                // try to retrieve the correct node from the
+                // nodecache
+                MMObjectNode cachenode = (MMObjectNode) nodeCache.get(number);
+                if(cachenode != null) {
+                    node = cachenode;
+                    iResults.set(node);
+                    fromCache = true;
+                    cacheGetCount ++;
+                } else {
+                    // add this node to the list of nodes that still need to
+                    // be converted..
+                    // we dont request the builder here, for this we need the
+                    // typedef table, which could generate an additional query..
+                    Integer otype = new Integer(node.getOType());
+                    Set nodes = (Set) convert.get(otype);
+                    // create an new entry for the type, if not yet there...
+                    if (nodes == null) {
+                        nodes = new HashSet();
+                        convert.put(otype, nodes);
+                    }
+                    nodes.add(node);
+                    convertCount ++;
+                }
+            } else if (oType == node.getOType()) {
+                MMObjectNode oldNode = (MMObjectNode)nodeCache.get(number);
+                // when we want to use cache also for new found nodes
+                // and cache may not be replaced, use the one from the
+                // cache..
+                if(!REPLACE_CACHE && oldNode != null) {
+                    node = oldNode;
+                    iResults.set(node);
+                    fromCache = true;
+                    cacheGetCount++;
+                }
+            } else {
+                // skipping everything, our builder hasnt been started yet...
+            }
 
-		// we can add the node to the cache _if_
-		// it was not from cache already, and it
-		// is of the correct type..
-		if(!fromCache && oType == node.getOType()) {
-		    // can someone tell me what this has to do?
-		    // clear the changed signal
-		    node.clearChanged(); // huh?
-		    safeCache(number,node);
-		    cachePutCount++;
+            // we can add the node to the cache _if_
+            // it was not from cache already, and it
+            // is of the correct type..
+            if(!fromCache && oType == node.getOType()) {
+                // can someone tell me what this has to do?
+                // clear the changed signal
+                node.clearChanged(); // huh?
+                safeCache(number,node);
+                cachePutCount++;
+            }
+        }
+        
+        if(CORRECT_NODE_TYPES && convert.size() > 0){
+            // retieve the nodes from the builders....
+            // and put them into one big hashmap (integer/node)
+            // after that replace all the nodes in result, that
+            // were invalid.
+            Map convertedNodes = new HashMap();
+            
+            // process all the different types (builders)
+            Iterator types = convert.entrySet().iterator();
+            while(types.hasNext()){
+                Map.Entry typeEntry = (Map.Entry) types.next();
+                int otype = ((Integer)typeEntry.getKey()).intValue();
+                Set nodes = (Set) typeEntry.getValue();
+                MMObjectNode typedefNode = getNode(otype);
+                if(typedefNode == null) {
+                    // builder not known in typedef?
+                    // skip this builder and process to next one..
+                    // TODO: research: add incorrect node to node's cache?
+                    log.error("Could not find typdef node #"+otype);
+                    continue;
+                }
+                MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
+                if(builder == null) {
+                    // could not find the builder that was in typedef..
+                    // maybe it is not active?
+                    // TODO: research: add incorrect node's to node cache?
+                    log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
+                    continue;
+                }
+                Iterator i = nodes.iterator();
+                String numbers = null;
+                // TODO: research: is there an upper limit for a sql query?
+                while(i.hasNext()) {
+                    MMObjectNode current = (MMObjectNode)i.next();
+                    if(numbers == null) numbers = "" + current.getNumber();
+                    else numbers +=  ", " + current.getNumber();
+                }
+                if(numbers != null) {
+                    if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
+                    // now query the correct builder  for the missing nodes...
+                    // TODO RvM: use getNodes(NodeSearchQuery) instead.
+                    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
+                    while(enum.hasMoreElements()) {
+                        MMObjectNode current = (MMObjectNode)enum.nextElement();
+                        convertedNodes.put(new Integer(current.getNumber()), current);
+                    }
+                }
+                else throw new RuntimeException("how can the numbers string be null?");
+            }
+            
+            // insert all the corrected nodes that were found into the list..
+            for(int i=0; i<results.size(); i++) {
+                MMObjectNode current = (MMObjectNode) results.get(i);
+                Integer number = new Integer(current.getNumber());
+                if(convertedNodes.containsKey(number)) {
+                    // converting the node...
+                    results.set(i,  convertedNodes.get(number));
+                    convertedCount ++;
+                }
+                current = (MMObjectNode) results.get(i);
+                if(current.getNumber() < 0) {
+                    // never happend to me, and never should!
+                    throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());
                 }
             }
         }
-	catch(java.sql.SQLException e) {
-            log.error(Logging.stackTrace(e));
+        else if(convert.size() != 0) {
+            String msg = "we still need to convert " + convertCount + " of the " + results.size() + " nodes";
+            msg += "(number of different types:"+ convert.size()  +")";
+            log.warn(msg);
         }
-
-	if(CORRECT_NODE_TYPES && convert.size() > 0){
-	    // retieve the nodes from the builders....
-	    // and put them into one big hashmap (integer/node)
-	    // after that replace all the nodes in result, that
-	    // were invalid.
-	    Map convertedNodes = new HashMap();
-
-	    // process all the different types (builders)
-	    Iterator types = convert.entrySet().iterator();
-	    while(types.hasNext()){
-		Map.Entry typeEntry = (Map.Entry) types.next();
-		int otype = ((Integer)typeEntry.getKey()).intValue();
-		Set nodes = (Set) typeEntry.getValue();
-		MMObjectNode typedefNode = getNode(otype);
-		if(typedefNode == null) {
-		    // builder not known in typedef?
-		    // skip this builder and process to next one..
-		    // TODO: research: add incorrect node to node's cache?
-		    log.error("Could not find typdef node #"+otype);
-		    continue;
-		}
-		MMObjectBuilder builder = mmb.getBuilder(typedefNode.getStringValue("name"));
-		if(builder == null) {
-		    // could not find the builder that was in typedef..
-		    // maybe it is not active?
-		    // TODO: research: add incorrect node's to node cache?
-		    log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
-		    continue;
-		}
-		Iterator i = nodes.iterator();
-		String numbers = null;
-		// TODO: research: is there an upper limit for a sql query?
-		while(i.hasNext()) {
-		    MMObjectNode current = (MMObjectNode)i.next();
-		    if(numbers == null) numbers = "" + current.getNumber();
-		    else numbers +=  ", " + current.getNumber();
-		}
-		if(numbers != null) {
-		    if(log.isDebugEnabled()) log.debug("converting " + nodes.size() + " to type: " + builder.getTableName());
-		    // now query the correct builder  for the missing nodes...
-		    Enumeration enum = builder.searchWithWhere(mmb.getDatabase().getNumberString()+ " IN (" + numbers  + ")");
-		    while(enum.hasMoreElements()) {
-			MMObjectNode current = (MMObjectNode)enum.nextElement();
-			convertedNodes.put(new Integer(current.getNumber()), current);
-		    }
-		}
-		else throw new RuntimeException("how can the numbers string be null?");
-	    }
-
-	    // insert all the corrected nodes that were found into the list..
-	    for(int i=0; i<results.size(); i++) {
-		MMObjectNode current = (MMObjectNode) results.get(i);
-		Integer number = new Integer(current.getNumber());
-		if(convertedNodes.containsKey(number)) {
-		    // converting the node...
-		    results.set(i,  convertedNodes.get(number));
-		    convertedCount ++;
-		}
-		current = (MMObjectNode) results.get(i);
-		if(current.getNumber() < 0) {
-		    // never happend to me, and never should!
-		    throw new RuntimeException("invalid node found, node number was invalid:" + current.getNumber());
-		}
-	    }
-	}
-	else if(convert.size() != 0) {
-	    String msg = "we still need to convert " + convertCount + " of the " + results.size() + " nodes";
-	    msg += "(number of different types:"+ convert.size()  +")";
-	    log.warn(msg);
-	}
-	if(log.isDebugEnabled()) {
+        if(log.isDebugEnabled()) {
             log.debug("retrieved " + results.size() +
-                        " nodes, converted " + convertedCount +
-                        " of the " + convertCount +
-                        " invalid nodes(" + convert.size() +
-                        " types, " + cacheGetCount +
-                        " from cache, " + cachePutCount + " to cache)");
+            " nodes, converted " + convertedCount +
+            " of the " + convertCount +
+            " invalid nodes(" + convert.size() +
+            " types, " + cacheGetCount +
+            " from cache, " + cachePutCount + " to cache)");
         }
-	return results;
     }
-
 
     /**
      * Store the nodes in the resultset, obtained from a builder, in a sorted vector.
