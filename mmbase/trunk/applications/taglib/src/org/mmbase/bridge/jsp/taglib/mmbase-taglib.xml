@@ -242,6 +242,7 @@ one or more examplevalue tags is you want to give some example values.
       A writer is a tag that can produce output. Normally the default will be to write to the page,
       unless the tag has body.
     </info> 
+	<see>write</see>
     <attribute>
       <name>jspvar</name>
       <required>false</required>
@@ -1252,6 +1253,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>setfield</name>
+    <extends>contextwriter</extends>
     <extends>fieldreferrer</extends>
     <extends>nodereferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.SetFieldTag</tagclass>
@@ -1573,9 +1575,25 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
     <tagclass>org.mmbase.bridge.jsp.taglib.WriteTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
-    Can be used to create an jsp variable from a variable in the
-    context. Or, if the attribute `jspvar' is missing, to write the
-    value of a context variable to the page.
+	  <p>
+		The write tag is to `export' context variables to something
+		else. When you only specify what variable (with the `referid'
+		or `value' attribute), then this tag writes to the page
+		(therefore it is named `write'), unless it has a body, in
+		which case the information is simply available to other tags
+		in the body (like another write tag without attributes).
+	  </p>
+	  <p>
+		This is the behavior of `writer' tags, and this tag is the
+		most basic version of that. Being a `writer' tag it also
+		supports the `jspvar' attribute with which you can make a jsp
+		variable available in the body. 
+	  </p>
+	  <p>
+		In addition to this basic `writer' functionality, the `write'
+		tag itself can also write context variables to other storage
+		locations, like the session and in cookies.
+	  </p>
     </info>
     <see>import</see>
     <attribute>
@@ -1584,8 +1602,8 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
         <rtexprvalue>true</rtexprvalue>
     <refercontext>true</refercontext>
     <info>
-    The key of the variable to get. It it is missing (and value is
-    missing), then the parent Writer tag is written (if it exist).
+		The key of the variable to get. It it is missing (and value is
+		missing), then the parent Writer tag is written (if it exist).
     </info>
     </attribute>
     <attribute>
@@ -1594,7 +1612,11 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-	The value to write.
+		The value to write. In this you can use context variables with
+		"$", the advantage above this attribute above the referid
+		attribute is that you can combine variables and add some text
+		of your own. The disadvantages relate to complexitiy and
+		efficiency.
       </info>
     </attribute>
     <attribute>
