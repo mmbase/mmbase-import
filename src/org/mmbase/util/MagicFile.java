@@ -20,10 +20,10 @@ import org.mmbase.util.magicfile.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: MagicFile.java,v 1.12 2003-10-15 07:30:27 keesj Exp $
+ * @version $Id: MagicFile.java,v 1.13 2004-05-26 09:02:08 michiel Exp $
  */
 public class MagicFile {
-    private static Logger log = Logging.getLoggerInstance(MagicFile.class);
+    private static final Logger log = Logging.getLoggerInstance(MagicFile.class);
 
     public static final String FAILED = "Failed to determine type";
     // application/octet-stream?
@@ -134,6 +134,27 @@ public class MagicFile {
             }
         }
         return FAILED;
+    }
+
+    /**
+     * Given a mime-type string, this function tries to create a common extension for it.
+     * @return An extension (without the dot), or an empty string if the mime-type is unknown.
+     * @since MMBase-1.7.1
+     */
+
+    public String mimeTypeToExtension(String mimeType) {
+        Iterator i = getDetectors().iterator();
+        while (i.hasNext()) {
+            Detector detector = (Detector)i.next();
+            if (mimeType.equalsIgnoreCase(detector.getMimeType())) {
+                Iterator j = detector.getExtensions().iterator();
+                if (j.hasNext()) {
+                    String ex = (String)j.next();
+                    return ex;
+                }
+            }
+        }
+        return "";
     }
 
     public String getMimeType(byte[] data, String extension) {
