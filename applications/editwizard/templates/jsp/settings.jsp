@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.6 2002-05-16 15:59:57 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.7 2002-05-17 10:52:02 pierre Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
@@ -65,24 +65,24 @@ response.addHeader("Last-modified", now);
 //response.addHeader("Date",          now); // Jetty doesn't like if you set this.
 log.trace("done setting headers");
 
-// It is possible to specify an alternatvie 'instanceName'
-// The instanceName is used as a key for the session.
-String instanceName = request.getParameter("instanceName");
-if (instanceName == null) instanceName = "editwizard";
+// It is possible to specify an alternatvie 'sessionkey'
+// The sessionkey is used as a key for the session.
+String sessionKey = request.getParameter("sessionkey");
+if (sessionKey == null) sessionKey = "editwizard";
 
 // proceed with the current wizard only if explicitly stated,
 // if this page is a popup, or if this page is a debug page
 
-boolean proceed = "yes".equals(request.getParameter("proceed")) ||
-                  (request.getParameter("popup") != null) ||
+boolean proceed = "true".equals(request.getParameter("proceed")) ||
+//                  "true".equals(request.getParameter("popup")) ||
                   (request.getRequestURI().endsWith("debug.jsp"));
 
 // Look if there is already a configuration in the session.
-Object configObject = session.getAttribute(instanceName);
+Object configObject = session.getAttribute(sessionKey);
 if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) { // nothing (ok) in the session
     log.debug("creating new configuration (in session is " + configObject + ")");
     ewconfig = new Config();
-    session.setAttribute(instanceName, ewconfig);  // put it in the session
+    session.setAttribute(sessionKey, ewconfig);  // put it in the session
 } else {
     log.debug("using configuration from session");
     ewconfig = (Config) configObject;
@@ -95,7 +95,7 @@ if (request.getParameter("logout") != null) {
     // what to do if 'logout' is requested?
     // return to the deeped backpage and clear the session.
     log.debug("logout parameter given, clearing session");
-    session.removeAttribute(instanceName);
+    session.removeAttribute(sessionKey);
     log.debug("Redirecting to " + refer);
     if (! refer.startsWith("http:")) {
         refer = response.encodeURL(request.getContextPath() + refer);
@@ -104,25 +104,20 @@ if (request.getParameter("logout") != null) {
     return;
 }
 
-ewconfig.sessionKey = instanceName;
+ewconfig.sessionKey = sessionKey;
 configurator = new Configurator(request, response, ewconfig);
 
 // removing top page from the session
 if (request.getParameter("remove") != null) {
-    log.debug("Removing top object requested from " + request.getHeader("Referer"));
+
+    log.debug("Removing top object requested from " + configurator.getBackPage());
+
     if(ewconfig.subObjects.size() > 0) ewconfig.subObjects.pop();
-    String redir;
-    if (configurator.getBackPage().startsWith("http:")) {
-        redir = configurator.getBackPage();
-    } else {
-        redir = response.encodeURL(request.getContextPath() + configurator.getBackPage());
+    if (! refer.startsWith("http:")) {
+        refer = response.encodeURL(request.getContextPath() + refer);
     }
-    if ("true".equals(request.getParameter("popup"))) {
-        log.trace("This was a popup-wizard. Close it.");
-        out.write("<html><script language=\"javascript\">window.close();</script></html>");
-    }
-    log.debug("Redirecting to " + redir);
-    response.sendRedirect(redir);
+    log.debug("Redirecting to " + refer);
+    response.sendRedirect(refer);
     return;
 }
 
