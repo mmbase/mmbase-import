@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.264 2004-03-10 10:08:35 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.264.2.1 2004-05-07 13:22:45 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1341,8 +1341,7 @@ public class MMObjectBuilder extends MMTable {
         ModifiableQuery modifiedQuery = new ModifiableQuery(query);
         Step step = (Step) query.getSteps().get(0);
         FieldDefs numberFieldDefs = getField("number");
-        AggregatedField field = new BasicAggregatedField(
-            step, numberFieldDefs, AggregatedField.AGGREGATION_TYPE_COUNT);
+        BasicAggregatedField field = new BasicAggregatedField(step, numberFieldDefs, AggregatedField.AGGREGATION_TYPE_COUNT);
         List newFields = new ArrayList(1);
         newFields.add(field);
         modifiedQuery.setFields(newFields);
@@ -1350,11 +1349,11 @@ public class MMObjectBuilder extends MMTable {
 
         AggregatedResultCache cache = AggregatedResultCache.getCache();
 
-        List results = (List) cache.get(query);
+        List results = (List) cache.get(modifiedQuery);
         if (results == null) {
             // Execute query, return result.
             results = mmb.getDatabase().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
-            cache.put(query, results);
+            cache.put(modifiedQuery, results);
         }
         ResultNode result = (ResultNode) results.get(0);
         return result.getIntValue("number");
