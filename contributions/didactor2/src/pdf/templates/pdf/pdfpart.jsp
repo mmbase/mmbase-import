@@ -24,9 +24,9 @@
 
 <mm:node number="$number">
 <mm:nodeinfo type="type" id="node_type" jspvar="nodeType">
-<mm:field name="layout" jspvar="layout">
+<mm:import jspvar="layout" id="layout"><mm:field name="layout"/></mm:import>
 
-<% System.err.println("rendering node "+number+" of type "+nodeType+" at level "+level); %>
+<% System.err.println("rendering node "+number+" of type "+nodeType+" at level "+level+" with layout "+layout); %>
 <mm:compare referid="node_type" value="learnblocks">
     <mm:import id="display">1</mm:import>
 </mm:compare>
@@ -52,12 +52,15 @@
         text = text.replaceAll("(?<=[^>]\\s)+(width|height|style|align)=\\s*(\"[^\"]*\"|'[^']*'|\\S+)","");
         text = text.replaceAll("<(t[dh][^>]*)>","<$1 width=\"100%\">");
         
-        if (nodeType.equals("pages") && layout != null && ( "2".equals("layout") || "3".equals("layout"))) {
-            text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='50%'>");
-       }
-        else {
-            text = text.replaceAll("<table[^>]*>","<table border='1' valign='top' cellpadding='4' width='100%'>");
+/*        if (nodeType.equals("pages") && "2".equals(layout)) {
+            text = text.replaceAll("<table[^>]*>","<table border='1' cellpadding='4' width='50%' align='left'>");
         }
+        else if (nodeType.equals("pages") && "3".equals(layout)) {
+            text = text.replaceAll("<table[^>]*>","<table border='1' cellpadding='4' width='50%' align='right'>");
+        }
+        else { */
+            text = text.replaceAll("<table[^>]*>","<table border='1' cellpadding='4' width='100%'>");
+//        }
         text = text.replaceAll("<p\\s*/>","");
         text = text.replaceAll("<p\\s*>\\s*</p>\\s*","");
         text = text.replaceFirst("\\A\\s*","");
@@ -68,43 +71,41 @@
         if (!text.endsWith("</p>")) {
             text = text+"</p>";
         }
+
+        text = text.replaceAll("<p>\\s*<table","<table");
+        text = text.replaceAll("</table>\\s*</p>","</table>");
 //    System.err.println("Result: '"+text+"'");
 
-%><%= text %>  
+%>  
     <mm:compare referid="node_type" value="learnblocks">
        <%= text %>
     </mm:compare>
 
     <mm:compare referid="node_type" value="pages">
-        <mm:field name="layout" id="layout" write="false"/>
         <mm:field name="imagelayout" id="imagelayout" write="false"/>
 
 
         <mm:compare referid="layout" value="0">
         <%= text %>
-        <table width="100%"><tr>
         <%@include file="pdfimages.jsp"%>
-        </tr></table>
         </mm:compare>
         <mm:compare referid="layout" value="1">
-        <table  width="100%"><tr>
         <%@include file="pdfimages.jsp"%>
-        </tr></table>
         <%= text %>
         </mm:compare>
         <mm:compare referid="layout" value="2">
-        <table width="100%"><tr>
+        <table width="100%" height="100%"><tr>
+        <td width="100%" valign="top"><%= text %></td><td>
         <%@include file="pdfimages.jsp"%>
-        <td width="100%">
-        <%= text %>
-        </td></tr>
+        </td>
+        </tr>
+        </table>
         </mm:compare>
         <mm:compare referid="layout" value="3">
-        <table width="100%"><tr>
-        <%@include file="pdfimages.jsp"%>
-        <td width="100%">
-        <%= text %>
-        </td></tr>
+        <table width="100%" height="100%"><tr><td>
+        <%@include file="pdfimages.jsp"%></td>
+        <td width="100%" valign="top"><%= text %></td>
+        </tr>
         </table>
         </mm:compare>
 
@@ -198,7 +199,6 @@
     <% } %>
 
 </mm:present>
-</mm:field>
 </mm:nodeinfo>
 </mm:node>
 </mm:cloud>

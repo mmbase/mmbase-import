@@ -6,7 +6,8 @@
 <fmt:bundle basename="nl.didactor.component.education.EducationMessageBundle">
 <mm:import externid="number" required="true"/>
 <html>
-<head></head>
+<head><title></title>
+</head>
 <body>
 <mm:treeinclude page="/pdf/pdfpart.jsp" objectlist="$includePath" referids="$referids">
     <mm:param name="partnumber"><mm:write referid="number"/></mm:param>
