@@ -1,5 +1,6 @@
-<%@page errorPage="error.jsp"%>
-<%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<%@page errorPage="error.jsp"
+%><%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:content language="en" escaper="inline" postprocessor="reducespace">
 <%-- cloud tag --%>
 <mm:cloud>
 <html>
@@ -23,3 +24,4 @@
  </body>
 </html>
 </mm:cloud>
+</mm:content>
