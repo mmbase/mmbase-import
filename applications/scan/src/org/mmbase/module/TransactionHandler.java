@@ -20,14 +20,14 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 //import org.xml.sax.SAXException;
 
-import test.*;
+//import test.*;
 
 
 /**
  * TransactionHandler Module
  *
- * @author  $Author: vpro $ 
- * @version $Revision: 1.2 $ $Date: 2000-10-13 11:41:35 $
+ * @author  $Author: gerard $ 
+ * @version $Revision: 1.3 $ $Date: 2000-10-15 22:55:55 $
  */
  
 public class TransactionHandler 
@@ -55,7 +55,7 @@ public class TransactionHandler
 	 * handleTransaction is the method that is called externally
 	 * by scanparser. It is the start of the whole chain.
 	 */
- public void handleTransaction(
+    public void handleTransaction(
 		String template, 
 		sessionInfo session, 
 		scanpage sp) {
