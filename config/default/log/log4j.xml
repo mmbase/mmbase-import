@@ -43,10 +43,10 @@
 <log4j:configuration>
 
 <appender name="logfile" class="org.apache.log4j.FileAppender" >
-    <param name="File"   value="&logdir;mmlog4j.log" />
+    <param name="File"   value="&logdir;mmbase.log" />
     <param name="Append" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
-        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p - %m%n" />
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-7p - %c{1}: %m%n" />
     </layout>
 </appender>
 
