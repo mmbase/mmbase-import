@@ -19,6 +19,8 @@
   </mm:related>
   
   <mm:import externid="action" />  
+  <mm:import externid="email" />  
+  <mm:import externid="name" />  
   <mm:present referid="action">
 	<% int s = 0; %>
 	<mm:related path="posrel,urls" searchdir="destination">
@@ -37,6 +39,31 @@
 			<p><strong>If the download does not start you can use this link:<br />
 			<a href="<mm:field name="urls.url" />"><mm:field name="urls.url" /></a></strong></p>
 			<iframe src="<mm:field name="urls.url" />" width="1" height="1"></iframe>
+			
+			<mm:present referid="email">
+			<mm:cloud logon="site" password="przw2lsk1" method="pagelogon">
+			<mm:createnode type="email">
+			  <mm:setfield name="to">andre@mmbase.org</mm:setfield>
+			  <mm:setfield name="from"><mm:write referid="email" /></mm:setfield>
+			  <mm:setfield name="replyto"><mm:write referid="email" /></mm:setfield>
+			  <mm:setfield name="subject">Keep me posted on <mm:write referid="urlname" /></mm:setfield>
+<mm:setfield name="body">
+The following person downloaded '<mm:write referid="urlname" />'
+from the mmbase.org website and likes to be kept informed.
+
+Name:   <mm:write referid="name" />
+E-mail: <mm:write referid="email" />
+
+With kind regards,
+
+Your gentle download and e-mail form..
+
+</mm:setfield>
+			</mm:createnode>
+			</mm:cloud>
+			</mm:present>
+
+			
 		</mm:related>
 	<% } else { %>
 		<p class="warning">You must agree with the license(s)!</p>
@@ -65,6 +92,10 @@
 	  </tr>
 	  <mm:last></table></mm:last>
 	</mm:related>
+	<p><strong>Name</strong><br />
+	<input type="text" name="name" value="<mm:write referid="name" />" /><br />
+	<strong>E-mail addres</strong><br />
+	<input type="text" name="email" value="<mm:write referid="email" />" /></p>
 	<p><input type="submit" name="action" value="Download" /></p>
 	</form>
   </mm:notpresent>
