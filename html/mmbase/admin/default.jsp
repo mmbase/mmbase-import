@@ -64,6 +64,7 @@
 
 
       <tr><th class="header">Administration</th></tr>
+      <tr><td class="data"><a href="<mm:url page="admin/resourceedit.jsp" />">Resources</a></td></tr>
       <tr><td class="data"><a href="<mm:url page="admin/servers.jsp" />">Servers</a></td></tr>
       <tr><td class="data"><a href="<mm:url page="admin/builders.jsp" />">Builders</a></td></tr>
       <tr><td class="data"><a href="<mm:url page="admin/applications.jsp" />">Applications</a></td></tr>
