@@ -12,9 +12,12 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
+	$Id: TransactionResolver.java,v 1.3 2000-11-13 16:11:01 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/10/13 11:41:34  vpro
+	Rico: made it working
+	
 	Revision 1.1  2000/08/14 19:19:05  rico
 	Rico: added the temporary node and transaction support.
 	      note that this is rather untested but based on previously
@@ -24,7 +27,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
+ * @version $Id: TransactionResolver.java,v 1.3 2000-11-13 16:11:01 vpro Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -106,7 +109,7 @@ public class TransactionResolver {
 				}
 			}
 		}
-		debug("numbers "+numbers);
+
 		if (_debug) debug("nnodes "+nnodes);
 
 		// Get the numbers
@@ -120,6 +123,7 @@ public class TransactionResolver {
 			}
 			numbers.put(key,new Integer(number));
 		}
+		if (_debug) debug("numbers "+numbers);
 
 		// put numbers in the right place
 		for (Enumeration e=nnodes.keys();e.hasMoreElements();) {
@@ -127,9 +131,12 @@ public class TransactionResolver {
 			v=(Vector)nnodes.get(node);
 			for (Enumeration f=v.elements();f.hasMoreElements();) {
 				field=(String)f.nextElement();
+				if (_debug) debug("Field "+field);
 				tmpfield="_"+field;
 				key=node.getStringValue(tmpfield);
+				if (_debug) debug("Key "+key);
 				number=((Integer)numbers.get(key)).intValue();
+				if (_debug) debug("Number "+number);
 				node.setValue(field,number);
 			}
 		}
