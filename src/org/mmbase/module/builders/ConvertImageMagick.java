@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.25 2002-02-26 10:47:53 michiel Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.26 2002-02-27 10:39:14 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -169,7 +169,14 @@ public class ConvertImageMagick implements ImageConvertInterface {
      */
 
     protected String color(String c) {
-        return "#" + c.toLowerCase();  // obviously a little to simple now, because you cannot say 'blue' now.
+        if (c.charAt(0) == 'X') { // the # was mentioned but replaced by X in ImageTag
+            c = '#' + c.substring(1); // put it back.
+        }
+        if(c.length() == 6) { // obviously a little to simple now, because color names of 6 letters don't work now
+            return "#" + c.toLowerCase();  
+        } else {
+            return c.toLowerCase();
+        }
     }
 
     /**
@@ -180,7 +187,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
         if (a.equals("s"))            return "geometry";
         if (a.equals("r"))            return "rotate";
         if (a.equals("c"))            return "colors";
-        if (a.equals("t"))            return "transparency";
+        if (a.equals("t"))            return "transparent";
         if (a.equals("i"))            return "interlace";
         if (a.equals("q"))            return "quality";
         if (a.equals("mono"))         return "monochrome";
@@ -212,7 +219,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
             pos2=key.lastIndexOf(')');
             if (pos != -1 && pos2 != -1) {
                 type = key.substring(0,pos).toLowerCase();
-                cmd  = key.substring(pos+1, pos2);
+                cmd  = org.mmbase.util.Encode.decode("escape_url_param", key.substring(pos+1, pos2));
                 if (log.isDebugEnabled()) {
                     log.debug("getCommands(): type=" + type + " cmd=" + cmd);
                 }
@@ -246,19 +253,22 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     String g=tok.nextToken();
                     String b=tok.nextToken();
                     cmd = r+"/"+g+"/"+b;
-                } else if (type.equals("pen") || type.equals("transparency") || type.equals("fill") || type.equals("bordercolor")) {
+                } else if (type.equals("pen") || 
+                           type.equals("transparent") ||
+                           type.equals("fill") || 
+                           type.equals("bordercolor") ||
+                           type.equals("background") ||
+                           type.equals("box") ||
+                           type.equals("opaque") ||
+                           type.equals("stroke")
+                           ) {
+                    // rather sucks, because we have to maintain manually which options accept a color
                     cmd = color(cmd);
                 } else if (type.equals("text")) {
-                    StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-                    try {
-                        String x = tok.nextToken();
-                        String y = tok.nextToken();
-                        String te = org.mmbase.util.Encode.decode("escape_url_param", tok.nextToken());
-                        type = "draw";
-                        cmd = "text " + x + "," + y + " " + te;
-                    } catch (Exception e) {
-                        log.error(e.toString());
-                    }
+                    int firstcomma = cmd.indexOf(',');
+                    int secondcomma = cmd.indexOf(',', firstcomma);
+                    type = "draw";
+                    cmd = "text " + cmd.substring(0, secondcomma) + " " + cmd.substring(secondcomma +1).replace('\'', '"');
                 } else if (type.equals("font")) {
                     if (cmd.startsWith("mm:")) {
                         // recognize MMBase config dir, so that it is easy to put the fonts there.
@@ -266,9 +276,7 @@ public class ConvertImageMagick implements ImageConvertInterface {
                     }
                 } else if (type.equals("circle")) {
                     type = "draw";
-                    cmd  = "circle " + org.mmbase.util.Encode.decode("escape_url_param", cmd);
-                } else if (type.equals("draw")) {
-                    cmd  = org.mmbase.util.Encode.decode("escape_url_param", cmd);
+                    cmd  = "circle " + cmd;
                 } else if (type.equals("part")) {
                     StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
                     try {
