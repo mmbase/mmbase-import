@@ -3,69 +3,108 @@
  * Routines for reading and writing cookies
  *
  * @since    MMBase-1.6
- * @version  $Id: tools.js,v 1.5 2003-12-19 11:09:08 nico Exp $
+ * @version  $Id: tools.js,v 1.6 2004-03-11 15:11:21 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
 
+
+var COOKIE_ENTRY = "MMBase-EditWizard";
+var entryLen = COOKIE_ENTRY.length;
+var PAIR_SEP = "|";
+var SEP = ":";
+
 //function for reading a cookie
-function readCookie_general(theName, theDefault) {
+function readCookie_general(theWizard, theForm, theDefault) {
     try {
-        var theCookie = document.cookie + "|;";
-        var p = theCookie.indexOf("MMBase-EditWizard=");
-        if (p == -1) return theDefault;
-        theCookie = theCookie.substring(p, theCookie.indexOf(";", p)) + "|";
-        var pos = theCookie.indexOf(theName + ":");
-        if (pos == -1) return theDefault;
-        //alert("theCookie = " + theCookie);
-        theValue = unescape(theCookie.substring(pos+theName.length+1, theCookie.indexOf("|", pos)));
+        var theCookie = unescape(getValueForName(document.cookie, COOKIE_ENTRY, ";", "="));
+        if (theCookie == "")
+            return theDefault;
+        theValue = getValueForName(theCookie, theWizard + "-" + theForm, PAIR_SEP, SEP);
         //alert(theValue);
-        if (theValue == "") return theDefault;
-        else return theValue;
+        if (theValue == "")
+            return theDefault;
+        else
+            return theValue;
     } catch (e) {
-        //alert("Error in readCookie_general('" + theName + "', '" + theDefault + "'): " + e.description);
+        //alert("Error in readCookie_general('" + theWizard + "', '" + theForm + "', '" + theDefault + "'): " + e.description);
         return theDefault;
     }
 }
 
 //function for writing a cookie
-function writeCookie_general(theName, theValue) {
+function writeCookie_general(theWizard, theForm, theValue) {
     try {
-        //get the cookie
-        var theCookie = document.cookie;
-
-        //get the content of the cookie
-        if (theCookie != "") var theContent = theCookie.substring(theCookie.indexOf("=") + 2, theCookie.length - 1);
-        else var theContent = "";
-
+        var theContent = unescape(getValueForName(document.cookie, COOKIE_ENTRY, ";", "="));
         //split the content into name:value pairs
-        var cArray = theContent.split("|");
-
+        var cArray = theContent.split(PAIR_SEP);
         //make an associative name value array of them
         var nvs = new Array();
         for (var i=0; i<cArray.length; i++) {
-            if (cArray[i].substring(0, cArray[i].indexOf(":")) != "")
-                nvs[cArray[i].substring(0, cArray[i].indexOf(":"))] = cArray[i].substring(cArray[i].indexOf(":") + 1, cArray[i].length);
+            var name = cArray[i].substring(0, cArray[i].indexOf(SEP));
+            if (name != "")
+                nvs[name] = cArray[i].substring(cArray[i].indexOf(SEP) + 1, cArray[i].length);
         }
-
         //add the new cookie name/value pair
-        nvs[theName] = theValue;
-
+        nvs[theWizard + "-" + theForm] = theValue;
         //serialize it again
         var s = "";
-        for (var n in nvs) s += "|" + n + ":" + nvs[n];
-
+        for (var n in nvs)
+            s += "|" + n + ":" + nvs[n];
         //write the cookie
-
-		//var nextYear = new Date();
-        //nextYear.setFullYear(nextYear.getFullYear()+1);
-		//var c = "MMBase-EditWizard=" + s + "|; expires=" + nextYear.toGMTString() + "; path=/;";
-        var c = "MMBase-EditWizard=" + s + "|; path=/;"; 
+        // we don't set the expiredate to let the cookie expire when the browser is closed
+        var c = COOKIE_ENTRY + "=" + s + "; path=/;";
         document.cookie = c;
-
     } catch (e) {
-        alert("Error in writeCookie_general('" + theName + "', '" + theValue + "'): " + e.description);
+        alert("Error in writeCookie_general('" + theWizard + "-" + theForm + "', '" + theValue + "'): " + e.description);
     }
+}
+
+function clearCookie_general(theWizard) {
+    try {
+        var theContent = unescape(getValueForName(document.cookie, COOKIE_ENTRY, ";", "="));
+        //split the content into name:value pairs
+        var cArray = theContent.split(PAIR_SEP);
+        //make an associative name value array of them
+        var nvs = new Array();
+        for (var i=0; i<cArray.length; i++) {
+            var name = cArray[i].substring(0, cArray[i].indexOf(SEP));
+            if (name != "")
+                nvs[name] = cArray[i].substring(cArray[i].indexOf(SEP) + 1, cArray[i].length);
+        }
+        //serialize it again
+        var s = "";
+        for (var n in nvs) {
+            if (n.indexOf(theWizard) == -1)
+                s += "|" + n + ":" + nvs[n];
+        }
+        //write the cookie
+        // we don't set the expiredate to let the cookie expire when the browser is closed
+        var c = COOKIE_ENTRY + "=" + s + "; path=/;";
+        document.cookie = c;
+    } catch (e) {
+        alert("Error in clearCookie_general('" + theWizard + "'): " + e.description);
+    }
+}
+
+//Get value for name from the cookie
+function getValueForName(str, name, pairsep, sep) {
+    var search = name + sep;
+    var returnvalue = "";
+    if (str.length > 0) {
+        offset = str.indexOf(search);
+        // if cookie exists
+        if (offset != -1) { 
+            offset += search.length;
+            // set index of beginning of value
+            end = str.indexOf(pairsep, offset);
+            // set index of end of cookie value
+            if (end == -1)
+                end = str.length;
+            returnvalue = str.substring(offset, end);
+        }
+    }
+    return returnvalue;
 }
 
 function getDimensions() {
@@ -100,7 +139,7 @@ function findPosX(obj) {
     var curleft = 0;
     if (obj.offsetParent) {
         while (obj.offsetParent) {
-            curleft += obj.offsetLeft
+            curleft += obj.offsetLeft;
             obj = obj.offsetParent;
         }
     }
