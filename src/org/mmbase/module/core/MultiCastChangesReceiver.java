@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesReceiver.java,v 1.10 2004-02-11 20:43:22 keesj Exp $
+ * @version $Id: MultiCastChangesReceiver.java,v 1.11 2004-02-18 15:03:13 keesj Exp $
  */
 public class MultiCastChangesReceiver implements Runnable {
 
@@ -121,6 +121,9 @@ public class MultiCastChangesReceiver implements Runnable {
         StringTokenizer tok;
         while(kicker!=null) {
             chars=(String)nodesToSpawn.get();
+            if (log.isDebugEnabled()) {
+                log.debug("RECIEVE=>" + new String(chars));
+            }
             parent.spawncount++;
             tok=new StringTokenizer(chars,",");
             if (tok.hasMoreTokens()) {
