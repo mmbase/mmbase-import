@@ -164,47 +164,38 @@ public abstract class NodeTest extends BridgeTest {
     }
 
     public void testCreateAlias() {
-        try {
-            node.createAlias("node_alias");       
-            node.commit();
-            // look it up again
-            boolean found = false;
-            Iterator i = node.getAliases().iterator();
-            while (i.hasNext()) {
-                String alias = (String)i.next();
-                if ("node_alias".equals(alias)) found = true;
-            }        
-            assertTrue(found);
-        } catch (Exception e) {
-            fail(e.toString());
-        }
+        node.createAlias("node_alias");       
+        node.commit();
+        // look it up again
+        boolean found = false;
+        Iterator i = node.getAliases().iterator();
+        while (i.hasNext()) {
+            String alias = (String)i.next();
+            if ("node_alias".equals(alias)) found = true;
+        }        
+        assertTrue(found);
     }
     
     public void testSetContext() {
-        try {
-            String context = node.getContext();
-            String otherContext = context;
-            StringIterator possibleContexts = node.getPossibleContexts().stringIterator();
-            while (possibleContexts.hasNext()) {
-                String listContext = possibleContexts.nextString();              
-                if (! context.equals(listContext)){
-                    otherContext = listContext;
-                    break;
-                }
+        String context = node.getContext();
+        String otherContext = context;
+        StringIterator possibleContexts = node.getPossibleContexts().stringIterator();
+        while (possibleContexts.hasNext()) {
+            String listContext = possibleContexts.nextString();              
+            if (! context.equals(listContext)){
+                otherContext = listContext;
+                break;
             }
-            if (otherContext.equals(context)) {
-                System.err.println("TESTWARNING testSetContext: Could not find other context than " + context);
-            }
-
-            // set context to something different:
-            node.setContext(otherContext);
-
-            // now, the new context must be equal to otherContext
-            assertTrue(otherContext.equals(node.getContext()));
-
-        } catch (Exception e){
-            fail(e.toString());
         }
+        if (otherContext.equals(context)) {
+            System.err.println("TESTWARNING testSetContext: Could not find other context than " + context);
+        }
+        
+        // set context to something different:
+        node.setContext(otherContext);
+        
+        // now, the new context must be equal to otherContext
+        assertTrue("KNOWN - bug #6168:", otherContext.equals(node.getContext()));
         
     }
 
