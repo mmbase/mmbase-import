@@ -20,12 +20,28 @@ import java.io.FilenameFilter;
  */
 public class SPartFileFilter implements FilenameFilter {
 
+    /**
+     * The number to check on.
+     * Note: Should be a number, but this is not enforced.
+     */
     private String nodeNumber;
 
+    /**
+     * Creates the file filter.
+     * @param nodeNumber the number to filter on.
+     */
     public SPartFileFilter(String nodeNumber) {
         this.nodeNumber = nodeNumber;
     }
 
+    /**
+     * Checks whether a file has the node number in its file path.
+     * This checks on the exact number - so if the number to search on is '100',
+     * If the path contains a number  such as '1001' or '1100' it will return <code>false</code>.
+     * @param dir The directory as a File (unused in this filter)
+     * @param name The file name to check
+     * @return <code>true</code> if the number is in the path, <code>false</code> otherwise.
+     */
     public boolean accept(File dir, String name) {
         int pos = name.indexOf(nodeNumber);
         if (pos<0) return false;
@@ -43,5 +59,4 @@ public class SPartFileFilter implements FilenameFilter {
         }
         return true;
     }
-
 }

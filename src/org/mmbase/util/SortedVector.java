@@ -11,6 +11,7 @@ package org.mmbase.util;
 
 import java.util.Vector;
 import java.util.Enumeration;
+import org.mmbase.util.logging.*;
 
 /**
  * Class to store Objects in, in a Sorted manner
@@ -25,6 +26,10 @@ import java.util.Enumeration;
  */
 
 public class SortedVector extends java.util.Vector {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(SortedVector.class.getName());
+
     CompareInterface cmp=null;
     CompareInterface sortcmp=new SortableCompare();
     CompareInterface stringcmp=new StringCompare();
@@ -300,17 +305,17 @@ public class SortedVector extends java.util.Vector {
         v=new SortedVector(strc);
         for (int i=0;i<args.length;i++) {
             v.addBinSorted(args[i]);
-            System.out.println("V "+v);
+            log.info("V "+v);
         }
         /* See if find works */
-        System.out.println("Element "+args[0]+" at "+v.find(args[0])+" : "+v.has(args[0]));
+        log.info("Element "+args[0]+" at "+v.find(args[0])+" : "+v.has(args[0]));
 
         /* Normal String Qsort test */
         for (int i=0;i<args.length;i++) {
             vec.addElement(args[i]);
         }
-        System.out.println("V1 "+vec);
-        System.out.println("V2 "+SortVector(vec));
+        log.info("V1 "+vec);
+        log.info("V2 "+SortVector(vec));
 
 
         /* Qsort test through compare function */
@@ -318,8 +323,8 @@ public class SortedVector extends java.util.Vector {
         for (int i=0;i<args.length;i++) {
             v.addElement(args[i]);
         }
-        System.out.println("V1 "+vec);
-        System.out.println("V2 "+SortVector(vec));
+        log.info("V1 "+vec);
+        log.info("V2 "+SortVector(vec));
     }
 
 }

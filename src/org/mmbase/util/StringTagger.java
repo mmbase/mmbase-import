@@ -10,298 +10,380 @@ See http://www.MMBase.org/license
 package org.mmbase.util;
 
 import java.util.*;
+import org.mmbase.util.logging.*;
 
 /**
-* StringTagger, Creates a object with tags and fields from a String
-* its ideal for name value pairs and name value pairs with multi
-* values. It also provides support for quoted values.
+* StringTagger, Creates a object with tags and fields from a String.
+* Its ideal for name-value pairs and name-value pairs with multivalues.
+* It also provides support for quoted values, and recognizes values that are 'function' calls with
+* their own parameter list (allowing to ignore any tokens within these lists when parsing).
+*
+* @author Daniel Ockeloen
+* @author Pierre van Rooden
+* @version 18 Apr 2001
 */
 public class StringTagger {
 
-	private Hashtable tokens;
-	private Hashtable multitokens;
-	private char TagStart;
-	private char TagSeperator;
-	private char FieldSeperator;
-	private char QuoteChar;
-	private char FunctionOpen;
-	private char FunctionClose;
-	private String startline="";
+    // logger
+    private static Logger log = Logging.getLoggerInstance(StringTagger.class.getName());
 
-	/**
-	* Creates a StringTag for the given line.
-	*
-	* @param line : to be tagged line
-	* @param TagStart : Seperator for the Tags
-	* @param TagSeperator : Seperator inside the Tag (between name and value)
-	* @param FieldSeperator : Seperator inside the value 
-	* @param QuoteChar : Char used if a quoted value
-	* @param FunctionOpen char used to open a function parameter list
-	* @param FunctionClose char used to close a function parameter list
-	*
-	* Example : StringTagger("cmd=lookup names='Daniel Ockeloen, Rico Jansen'",' ','=',','\'')
-	*/
-	public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar,
-	                                 char FunctionOpen, char FunctionClose) {
-		this.TagStart=TagStart;
-		this.startline=line;
-		this.TagSeperator=TagSeperator;
-		this.FieldSeperator=FieldSeperator;
-		this.QuoteChar=QuoteChar;
-		this.FunctionOpen=FunctionOpen;
-		this.FunctionClose=FunctionClose;
-		tokens = new Hashtable();
-		multitokens = new Hashtable();
-		createTagger(line);
-	}
+    /**
+     * The name-value pairs where the value is a single string
+     */
+    private Hashtable tokens;
+    /**
+     * The name-value pairs where the value is a list of strings
+     */
+    private Hashtable multitokens;
+    /**
+     * Token used to separate tags (default a space).
+     */
+    private char TagStart;
+    /**
+     * Token used to separate the tag name from its value (default '=').
+     */
+    private char TagSeperator;
+    /**
+     * Token used to separate multiple values within a tag (default ',').
+     */
+    private char FieldSeperator;
+    /**
+     * Token used to indicate quoted values (default '\"').
+     */
+    private char QuoteChar;
+    /**
+     * Token used to indicate the start of a function parameter list (default '(').
+     */
+    private char FunctionOpen;
+    /**
+     * Token used to indicate the end of a function parameter list (default ')').
+     */
+    private char FunctionClose;
 
-	public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar) {
-		this(line, TagStart, TagSeperator,FieldSeperator, QuoteChar,'(',')');
-	}
+    /**
+     * The line that was parsed.
+     */
+    private String startline="";
 
-	public StringTagger(String line) {
-		this(line,' ','=',',','"','(',')');
-	}
+    /**
+     * Creates a StringTag for the given line.
+     * Example : StringTagger("cmd=lookup names='Daniel Ockeloen, Rico Jansen'",' ','=',','\'','('.')')
+     * @param line : to be tagged line
+     * @param TagStart : Seperator for the Tags
+     * @param TagSeperator : Seperator inside the Tag (between name and value)
+     * @param FieldSeperator : Seperator inside the value
+     * @param QuoteChar : Char used if a quoted value
+     * @param FunctionOpen char used to open a function parameter list
+     * @param FunctionClose char used to close a function parameter list
+     */
+    public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar,
+                                     char FunctionOpen, char FunctionClose) {
+        this.TagStart=TagStart;
+        this.startline=line;
+        this.TagSeperator=TagSeperator;
+        this.FieldSeperator=FieldSeperator;
+        this.QuoteChar=QuoteChar;
+        this.FunctionOpen=FunctionOpen;
+        this.FunctionClose=FunctionClose;
+        tokens = new Hashtable();
+        multitokens = new Hashtable();
+        createTagger(line);
+    }
 
-	void createTagger(String line) {
-		StringTokenizer tok2=new StringTokenizer(line+TagStart,""+TagSeperator+TagStart,true);
-		String part,tag,prevtok,tok;
-		boolean isTag,isPart,isQuoted;
+    /**
+     * Creates a StringTag for the given line.
+     * Uses default characters for the function parameter list tokens.
+     * Example : StringTagger("cmd=lookup names='Daniel Ockeloen, Rico Jansen'",' ','=',','\'')
+     * @param line : to be tagged line
+     * @param TagStart : Seperator for the Tags
+     * @param TagSeperator : Seperator inside the Tag (between name and value)
+     * @param FieldSeperator : Seperator inside the value
+     * @param QuoteChar : Char used if a quoted value
+     */
+    public StringTagger(String line, char TagStart, char TagSeperator,char FieldSeperator, char QuoteChar) {
+        this(line, TagStart, TagSeperator,FieldSeperator, QuoteChar,'(',')');
+    }
 
-		isTag=true;
-		isPart=false;
-		isQuoted=false;
-		prevtok="";
-		tag=part="";
-//		System.out.println("Tagger -> |"+TagStart+"|"+TagSeperator+"|"+QuoteChar+"|");
-		while(tok2.hasMoreTokens()) {
-			tok=tok2.nextToken();
-//			System.out.println("tagger tok ("+isTag+","+isPart+","+isQuoted+") |"+tok+"|"+prevtok+"|");
-			if (tok.equals(""+TagSeperator)) {
-				if (isTag) {
-					tag=prevtok;
-					isTag=false;
-				} else {
-					if (!isQuoted) {
-						splitTag(tag+TagSeperator+part);
-						isTag=true;
-						isPart=false;
-						part="";
-					} else {
-						part+=tok;
-					}
-				}
-			} else if (tok.equals(""+TagStart)) {
-				if (isPart) {
-					if (isQuoted) {
-						part+=tok;
-					} else {
-						if (!prevtok.equals(""+TagStart)) {
-							splitTag(tag+TagSeperator+part);
-							isTag=true;
-							isPart=false;
-							part="";
-						}
-					}
-					prevtok=tok;
-				}
-			} else {
-				if (!isTag) isPart=true;
-//				System.out.println("isTag "+isTag+" "+isPart);
-				if (isPart) {
-					if (isQuoted) {
-						// Check end quote
-						if (tok.charAt(tok.length()-1)==QuoteChar) {
-							isQuoted=false;
-						}
-						part+=tok;
-					} else {
-						if (tok.charAt(0)==QuoteChar && !(tok.charAt(tok.length()-1)==QuoteChar)) {
-							isQuoted=true;
-						}
-						part+=tok;
-					}
-				}
-//				System.out.println("isTag "+isTag+" "+isPart+" "+isQuoted);
-				prevtok=tok;
-			}
-		}
-	}
+    /**
+     * Creates a StringTag for the given line.
+     * Uses default characters for all tokens.
+     * @param line : to be tagged line
+     */
+    public StringTagger(String line) {
+        this(line,' ','=',',','"','(',')');
+    }
 
-	/**
-	* handles and splits the tokens up and if needed create multivalues
-	*/
-	void splitTag(String Tag) { 
-		int	tagPos=Tag.indexOf(TagSeperator);
-		String name=Tag.substring(0,tagPos);
-		String result=Tag.substring(tagPos+1);
-//		System.out.println("SplitTag |"+name+"|"+result+"|");
+    /**
+     * Parses the given line, and stores all value-pairs found in the
+     * {@link #tokens} and {@link #multitokens} fields.
+     * @param line : to be tagged line (why is this a parameter when it can eb retrieved from startline?)
+     */
+    void createTagger(String line) {
+        StringTokenizer tok2=new StringTokenizer(line+TagStart,""+TagSeperator+TagStart,true);
+        String part,tag,prevtok,tok;
+        boolean isTag,isPart,isQuoted;
 
-		if (result.length()>1 && result.charAt(0)==QuoteChar && result.charAt(result.length()-1)==QuoteChar) {
-			result=result.substring(1,result.length()-1);
-		}
-		tokens.put(name,result);
-		
-		StringTokenizer toks = new StringTokenizer(result,""+FieldSeperator+FunctionOpen+FunctionClose, true);
-		// If quoted, strip the " " from beginning and end ?
-		Vector Multi = new Vector();
-    	if(toks.hasMoreTokens()) {
-			String tokvalue="";
-	    	int nesting = 0;
-		    while (toks.hasMoreTokens()) {
-	    		String tok=toks.nextToken();
-		    	if (tok.equals(""+FieldSeperator)) {
-			        if (nesting==0) {
-			            Multi.addElement(tokvalue);
-			            tokvalue="";
-    			    } else {
-	    		        tokvalue+=tok;
-		    	    }
-			    } else if (tok.equals(""+FunctionOpen)) {
-			        nesting++;
-    			    tokvalue+=tok;
-	    		} else if (tok.equals(""+FunctionClose)) {
-		    	    nesting--;
-			        tokvalue+=tok;
-    			}
-	    		else {
-		    	    tokvalue+=tok;
-			    }
-		    }
-		    Multi.addElement(tokvalue);
-		}
-		multitokens.put(name,Multi);
-	}
+        isTag=true;
+        isPart=false;
+        isQuoted=false;
+        prevtok="";
+        tag=part="";
+//        log.debug("Tagger -> |"+TagStart+"|"+TagSeperator+"|"+QuoteChar+"|");
+        while(tok2.hasMoreTokens()) {
+            tok=tok2.nextToken();
+//            log.debug("tagger tok ("+isTag+","+isPart+","+isQuoted+") |"+tok+"|"+prevtok+"|");
+            if (tok.equals(""+TagSeperator)) {
+                if (isTag) {
+                    tag=prevtok;
+                    isTag=false;
+                } else {
+                    if (!isQuoted) {
+                        splitTag(tag+TagSeperator+part);
+                        isTag=true;
+                        isPart=false;
+                        part="";
+                    } else {
+                        part+=tok;
+                    }
+                }
+            } else if (tok.equals(""+TagStart)) {
+                if (isPart) {
+                    if (isQuoted) {
+                        part+=tok;
+                    } else {
+                        if (!prevtok.equals(""+TagStart)) {
+                            splitTag(tag+TagSeperator+part);
+                            isTag=true;
+                            isPart=false;
+                            part="";
+                        }
+                    }
+                    prevtok=tok;
+                }
+            } else {
+                if (!isTag) isPart=true;
+//                log.debug("isTag "+isTag+" "+isPart);
+                if (isPart) {
+                    if (isQuoted) {
+                        // Check end quote
+                        if (tok.charAt(tok.length()-1)==QuoteChar) {
+                            isQuoted=false;
+                        }
+                        part+=tok;
+                    } else {
+                        if (tok.charAt(0)==QuoteChar && !(tok.charAt(tok.length()-1)==QuoteChar)) {
+                            isQuoted=true;
+                        }
+                        part+=tok;
+                    }
+                }
+//                log.debug("isTag "+isTag+" "+isPart+" "+isQuoted);
+                prevtok=tok;
+            }
+        }
+    }
 
-	/**
-	* returns a Enumeration of the name keys
-	*/
-	public Enumeration keys() {
-		return(tokens.keys());
-	}
+    /**
+     * Handles and splits a tag in its component parts, and store the elemements in
+     * the {@link #tokens} and {@link #multitokens} fields.
+     * @param tag the string containing the tag
+     */
+    void splitTag(String tag) {
+        int    tagPos=tag.indexOf(TagSeperator);
+        String name=tag.substring(0,tagPos);
+        String result=tag.substring(tagPos+1);
+//        log.debug("SplitTag |"+name+"|"+result+"|");
 
-	/** 
-	 * toString
-	 */
-	public String toString() {
-		String content="[";
-		String key="";
-		for (Enumeration e = keys();e.hasMoreElements();) {
-			key=(String)e.nextElement();
-			content+="<"+key;
-			content+="="+Values(key);
-			content+=">";	
-		}
-		content+="]";
-		return content;
-	}
+        if (result.length()>1 && result.charAt(0)==QuoteChar && result.charAt(result.length()-1)==QuoteChar) {
+            result=result.substring(1,result.length()-1);
+        }
+        tokens.put(name,result);
 
-	/**
-	* returns a Enumeration of the values without multisplit
-	*/
-	public Enumeration elements() {
-		return(tokens.elements());
-	}
+        StringTokenizer toks = new StringTokenizer(result,""+FieldSeperator+FunctionOpen+FunctionClose, true);
+        // If quoted, strip the " " from beginning and end ?
+        Vector Multi = new Vector();
+        if(toks.hasMoreTokens()) {
+            String tokvalue="";
+            int nesting = 0;
+            while (toks.hasMoreTokens()) {
+                String tok=toks.nextToken();
+                if (tok.equals(""+FieldSeperator)) {
+                    if (nesting==0) {
+                        Multi.addElement(tokvalue);
+                        tokvalue="";
+                    } else {
+                        tokvalue+=tok;
+                    }
+                } else if (tok.equals(""+FunctionOpen)) {
+                    nesting++;
+                    tokvalue+=tok;
+                } else if (tok.equals(""+FunctionClose)) {
+                    nesting--;
+                    tokvalue+=tok;
+                }
+                else {
+                    tokvalue+=tok;
+                }
+            }
+            Multi.addElement(tokvalue);
+        }
+        multitokens.put(name,Multi);
+    }
 
-	/**
-	* returns a Enumeration of the values as Vectors that contain
-	* the seperated values
-	*/
-	public Enumeration multiElements(String token) {
-		Vector tmp=(Vector)multitokens.get(token);
-		if (tmp!=null) {
-			return(tmp.elements());
-		} else {
-			return(null);	
-		}	
-	}
+    /**
+     * Returns a Enumeration of the name keys.
+     */
+    public Enumeration keys() {
+        return tokens.keys();
+    }
 
-	/**
-	 */
-	public boolean containsKey (Object ob) {
-		return tokens.containsKey(ob);
-	}
+    /**
+     * toString
+     */
+    public String toString() {
+        String content="[";
+        String key="";
+        for (Enumeration e = keys();e.hasMoreElements();) {
+            key=(String)e.nextElement();
+            content+="<"+key;
+            content+="="+Values(key);
+            content+=">";
+        }
+        content+="]";
+        return content;
+    }
 
-	/**
-	 */
-	public Object get(Object ob) {
-		return tokens.get(ob);	
-	}
+    /**
+     * Returns a Enumeration of the values as String.
+     * The values returned are all single, unsepartated, strings.
+     * Use {@link multiElements} to get a list of multi-values.
+     */
+    public Enumeration elements() {
+        return tokens.elements();
+    }
 
-	/**
-	* returns the values as Vectors that contain
-	* the seperated values
-	*/
-	public Vector Values(String token) {
-		Vector tmp=(Vector)multitokens.get(token);
-		if (tmp!=null) {
-			return(tmp);
-		} else {
-			return(null);	
-		}	
-	}
+    /**
+     * Returns a Enumeration of the values as Vectors that contain
+     * the seperated values.
+     * Use {@link elements} to get a list of single, unseparated, values.
+     */
+    public Enumeration multiElements(String token) {
+        Vector tmp=(Vector)multitokens.get(token);
+        if (tmp!=null) {
+            return tmp.elements();
+        } else {
+            return null;
+        }
+    }
 
+    /**
+     * Checks whether a value for a key exits.
+     */
+    public boolean containsKey (Object ob) {
+        return tokens.containsKey(ob);
+    }
 
-	/**
-	* returns the values as String that contain
-	* the orig. String
-	*/
-	public String ValuesString(String token) {
-		/*
-		Vector tmp=(Vector)multitokens.get(token);
-		if (tmp!=null) {
-			String tmp2="";
-			for (Enumeration e = tmp.elements();e.hasMoreElements();) {
-				if (tmp2.equals("")) {
-					tmp2+=(String)e.nextElement();
-				} else {
-					tmp2+=","+(String)e.nextElement();
-				}
-			}
-    		tmp2 = Strip.DoubleQuote(tmp2,Strip.BOTH); 
-			return(tmp2);
-		} else {
-			return(null);	
-		}	
-		*/
-		return(startline);
-	}
+    /**
+     * Returns the value of a key as an Object.
+     * The value returned is a single, unseparated, string.<br>
+     * Use {@link Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * Use {@link Value} to get the first value as a String
+     * @param ob the key of the value to retrieve
+     */
+    public Object get(Object ob) {
+        return tokens.get(ob);
+    }
 
-	/**
-	* returns the value (first) as string
-	*/
-	public String Value(String token) {
-		String val;
-		Vector tmp=(Vector)multitokens.get(token);
-		if (tmp!=null && tmp.size()>0) {
-			val=(String)tmp.elementAt(0);
-			if (val!=null) {
-    			val = Strip.DoubleQuote(val,Strip.BOTH); // added stripping daniel
-				return(val);
-			} else {
-				return(null);	
-			}
-		} else {
-			return(null);	
-		}	
-	}
+    /**
+     * Returns the values as a Vector that contains
+     * the separated values.<br>
+     * Use {@link get} to get the list of values as a <code>String</code><br>
+     * Use {@link Value} to get the first value as a String
+     * @param token the key of the value to retrieve
+     */
+    public Vector Values(String token) {
+        Vector tmp=(Vector)multitokens.get(token);
+        return tmp;
+    }
 
+    /**
+     * Returns the original parsed line
+     * @param token unused
+     */
+    public String ValuesString(String token) {
+        /*
+        Vector tmp=(Vector)multitokens.get(token);
+        if (tmp!=null) {
+            String tmp2="";
+            for (Enumeration e = tmp.elements();e.hasMoreElements();) {
+                if (tmp2.equals("")) {
+                    tmp2+=(String)e.nextElement();
+                } else {
+                    tmp2+=","+(String)e.nextElement();
+                }
+            }
+            tmp2 = Strip.DoubleQuote(tmp2,Strip.BOTH);
+            return tmp2;
+        } else {
+            return null;
+        }
+        */
+        return startline;
+    }
 
-	public void setValue(String token,String val) {
-		Vector newval=new Vector();
-		newval.addElement(val);
-		multitokens.put(token,newval);
-	}
+    /**
+     * Returns the first value as a <code>String</code>.
+     * In case of a single value, it returns that value. In case of multiple values,
+     * it returns the
+     * Use {@link get} to get the list of values as a <code>String</code><br>
+     * Use {@link Values} to get a list of multi-values as a <code>Vector</code>.<br>
+     * @param token the key of the value to retrieve
+     */
+    public String Value(String token) {
+        String val;
+        Vector tmp=(Vector)multitokens.get(token);
+        if (tmp!=null && tmp.size()>0) {
+            val=(String)tmp.elementAt(0);
+            if (val!=null) {
+                val = Strip.DoubleQuote(val,Strip.BOTH); // added stripping daniel
+                return val;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 
-	public void setValues(String token,Vector values) {
-		multitokens.put(token,values);
-	}
+    /**
+     *  Manually sets a single value.
+     *  XXX: Does not set a value in the {@link #tokens} field.
+     */
+    public void setValue(String token,String val) {
+        Vector newval=new Vector();
+        newval.addElement(val);
+        multitokens.put(token,newval);
+    }
 
-	public static void main(String args[]) {
-		StringTagger tag=new StringTagger(args[0]);
-	}
+    /**
+     *  Manually sets a multi-value value.
+     *  XXX: Does not set a value in the {@link #tokens} field.
+     */
+    public void setValues(String token,Vector values) {
+        multitokens.put(token,values);
+    }
 
-	public int hashCode() {
-		return(multitokens.hashCode());
-	}
+    /**
+     *  For testing
+     */
+    public static void main(String args[]) {
+        StringTagger tag=new StringTagger(args[0]);
+    }
+
+    /**
+     *  Hashcode for storting and comparing
+     */
+    public int hashCode() {
+        return multitokens.hashCode();
+    }
 }
