@@ -8,7 +8,7 @@ import java.util.*;
  * JUnit tests for TypeRel
  *
  * @author  Michiel Meeuwissen 
- * @version $Id: TypeRelTest.java,v 1.8 2003-02-28 17:19:16 michiel Exp $
+ * @version $Id: TypeRelTest.java,v 1.9 2003-02-28 20:31:48 michiel Exp $
  */
 public class TypeRelTest extends TestCase {
 
@@ -34,6 +34,7 @@ public class TypeRelTest extends TestCase {
 
     static protected Node        news;
     static protected Node        url;
+    static protected Node        object;
     static protected Node        typerel;
 
     public TypeRelTest(String testName) {
@@ -81,14 +82,13 @@ public class TypeRelTest extends TestCase {
 
         // check if it can be found by cloud
         RelationManagerList rml = cloud.getRelationManagers(newsManager, urlsManager, BIDIR_ROLE);
-
         assertTrue(rml.size() > 0);          
         assertTrue(rml.contains(typerel));
     }
 
     public void testBidirectionalCloud2() {
         RelationManagerList rml = cloud.getRelationManagers(urlsManager, newsManager, BIDIR_ROLE);
-        assertTrue(rml.size() > 0);
+        assertTrue(rml.size() > 0);          
         assertTrue(rml.contains(typerel));
     }
 
@@ -151,12 +151,55 @@ public class TypeRelTest extends TestCase {
         RelationManagerList rml = urlsManager.getAllowedRelations();
         assertTrue(rml.contains(typerel));
     }
+
+
+        
+
+    public void testBidirectionalNode1() {
+        RelationManager rm = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, DESTINATION).getRelationManager(0);
+        Relation r = rm.createRelation(news, url);
+        r.commit();
+        createdNodes.add(r);
+        // no exception should have occured.
+    }
+
+    public void testBidirectionalNode2() {
+        RelationManager rm = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, DESTINATION).getRelationManager(0);
+        Relation r = rm.createRelation(url, news);
+        r.commit();
+        createdNodes.add(r);
+    }
+
+    public void testBidirectionalNode3() {
+        RelationManager rm = newsManager.getAllowedRelations(urlsManager, BIDIR_ROLE, DESTINATION).getRelationManager(0);
+        try {
+            Relation r = rm.createRelation(news, object);
+            r.commit();
+            createdNodes.add(r);
+            fail("Should not have been allowed");
+        } catch (BridgeException e) {
+        }
+        // no exception should have occured.
+    }
+
+
+    public void testBidirectionalNode4() {
+        // make sure it is the right direction now.
+        NodeList nl = news.getRelatedNodes(urlsManager, BIDIR_ROLE, null);
+        assertTrue("" + nl, nl.contains(url));
+    }        
+    public void testBidirectionalNode5() {
+        NodeList nl = url.getRelatedNodes(newsManager);
+        assertTrue(nl.contains(news));
+    }                   
+
+
     
     /*
      * Create unidirection relation type, and check if relationmanager in only one direction can be found.
      */
 
-    public void testUnidirectionalCloud() {
+    public void testUnidirectionalCloud1() {
         Node reldef = createRelDefNode(UNIDIR_ROLE, 1);
 
         typerel = typeRelManager.createNode();
@@ -239,20 +282,28 @@ public class TypeRelTest extends TestCase {
     public void testUnidirectionalNode1() {
         RelationManager rm = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, DESTINATION).getRelationManager(0);
         Relation r = rm.createRelation(news, url);
+        r.commit();
         createdNodes.add(r);
         // no exception should have occured.
     }
 
     public void testUnidirectionalNode2() {
         RelationManager rm = newsManager.getAllowedRelations(urlsManager, UNIDIR_ROLE, DESTINATION).getRelationManager(0);
-        try {
-            Relation r = rm.createRelation(url, news);
-            createdNodes.add(r);
-            fail("Should not have been allowed");
-        } catch (BridgeException e) {
-        }
+        Relation r = rm.createRelation(url, news);
+        r.commit();
+        createdNodes.add(r);
+                           
     }
 
+    public void testUnidirectionalNode3() {
+        // make sure it is the right direction now.
+        NodeList nl = news.getRelatedNodes(urlsManager, UNIDIR_ROLE, null);
+        assertTrue(nl.contains(url));
+    }        
+    public void testUnidirectionalNode4() {
+        NodeList nl = url.getRelatedNodes(newsManager, UNIDIR_ROLE, null);
+        assertFalse(nl.contains(news));
+    }                   
 
 
 
@@ -277,13 +328,13 @@ public class TypeRelTest extends TestCase {
 
 
     public void testClearUpMess() {
-        System.out.println("Clearing up the mess");
+        //        System.out.println("Clearing up the mess");
         NodeIterator i = createdNodes.nodeIterator();
-        while (i.hasNext()) { i.next();};
+        while (i.hasNext()) i.next(); // fast forward.
 
         while (i.hasPrevious()) {
             Node node = (Node) i.previous();
-            System.out.println("Deleting " + node);
+            System.out.print("D"); //eleting " + node);
             node.delete();
         }
     }
@@ -323,6 +374,10 @@ public class TypeRelTest extends TestCase {
             url.setValue("url", "http://url");
             url.commit();
             createdNodes.add(url);
+
+            object = objectManager.createNode();
+            object.commit();
+            createdNodes.add(object);
 
         }
     }
