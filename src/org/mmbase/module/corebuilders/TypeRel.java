@@ -32,12 +32,17 @@ public class TypeRel extends MMObjectBuilder {
 	* a core object, defined the allowed relations between different typedefs
 	* so for example images are allowed to be linked to groups etc etc
 	*/
+	public TypeRel() {
+	}
+
+	/*
 	public TypeRel(MMBase m) {
 		this.mmb=m;
 		this.tableName="typerel";
 		init();
 		m.mmobjs.put(tableName,this);
 	}
+	*/
 
 	
 

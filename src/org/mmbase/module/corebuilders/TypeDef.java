@@ -29,6 +29,10 @@ public class TypeDef extends MMObjectBuilder {
 	Hashtable descriptionCache;
 	public boolean broadcastChanges=false;
 
+	public TypeDef() {
+	}
+
+	/*
 	public TypeDef(MMBase m) {
 		this.mmb=m;
 		this.tableName="typedef";
@@ -42,6 +46,15 @@ public class TypeDef extends MMObjectBuilder {
 		if (!checkRootNode()) insertRootNode();
 		m.mmobjs.put(tableName,this);
 		readCache(); // read type info into the caches
+	}
+	*/
+
+	public boolean init() {
+		super.init();
+		if (!checkRootNode()) insertRootNode();
+		mmb.mmobjs.put(tableName,this);
+		readCache(); // read type info into the caches
+		return(true);
 	}
 
 
