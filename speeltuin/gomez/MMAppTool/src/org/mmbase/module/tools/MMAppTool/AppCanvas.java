@@ -13,6 +13,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import org.mmbase.util.*;
+import org.mmbase.util.xml.BuilderReader;
 
 /**
  * Class AppCanvas
@@ -241,7 +242,7 @@ public class AppCanvas extends Canvas implements MouseMotionListener,MouseListen
                 if (db!=null) {
                     String filename=app.getFileName();
                     filename=filename.substring(0,filename.length()-4)+"/builders/"+db.getName()+".xml";
-                    XMLBuilderReader bulapp=new XMLBuilderReader(filename);
+                    BuilderReader bulapp=new BuilderReader(filename);
                     openbuilder=new BuilderRect(this,db.getName(),bulapp,15,25,50);
                 }
             } else {
