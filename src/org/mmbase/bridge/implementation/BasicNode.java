@@ -14,6 +14,7 @@ import org.mmbase.bridge.util.xml.DocumentConverter;
 import java.util.*;
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.util.logging.*;
@@ -28,7 +29,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.99 2003-07-25 20:44:31 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.100 2003-08-06 19:41:36 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -706,12 +707,25 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public int countRelations() {
-        return getRelations().size();
+        return countRelatedNodes(cloud.getNodeManager("object"), null, RelationStep.DIRECTIONS_BOTH);
     }
 
     public int countRelations(String type) {
-        return getRelations(type).size();
+        //err
+        return countRelatedNodes(cloud.getNodeManager("object"), type, RelationStep.DIRECTIONS_BOTH); 
     }
+
+
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, int searchDir) {
+        Query count = cloud.createAggregatedQuery();
+        count.addStep(nodeManager);
+        Step step = count.addRelationStep(otherNodeManager, role, searchDir).getPrevious();
+        count.addNode(step, this);
+        count.addAggregatedField(step, nodeManager.getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
+        Node result = (Node) cloud.getList(count).get(0);
+        return result.getIntValue("number");
+    }
+
 
     public NodeList getRelatedNodes() {
         return getRelatedNodes("object", null, null);

@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.41 2003-06-30 11:29:42 michiel Exp $
+ * @version $Id: Node.java,v 1.42 2003-08-06 19:41:19 michiel Exp $
  */
 public interface Node {
 
@@ -512,6 +512,7 @@ public interface Node {
      */
     public int countRelations(String relationManager);
 
+
     /**
      * Returns all related nodes.
      * The returned nodes are not the nodes directly attached to this node (the
@@ -574,6 +575,7 @@ public interface Node {
      */
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir);
 
+
     /**
      * Returns the number of related nodes that have a specific node manager.
      * The counted nodes are not the nodes directly attached to this node (the
@@ -586,6 +588,14 @@ public interface Node {
      *                     manager
      */
     public int countRelatedNodes(String type);
+
+
+    /**
+     * @since MMBase-1.7
+     */
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, int searchDir);
+
+
 
     /**
      * Returns all aliases for this node.
