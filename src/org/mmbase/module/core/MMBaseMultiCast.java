@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Id: MMBaseMultiCast.java,v 1.16.2.1 2004-07-16 10:38:35 pierre Exp $
+ * @version $Id: MMBaseMultiCast.java,v 1.16.2.2 2004-07-16 11:23:35 pierre Exp $
  */
 public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
 
@@ -42,7 +42,7 @@ public class MMBaseMultiCast implements MMBaseChangeInterface,Runnable {
     /**
      * Time To Live for datapackets send by Multicast
      */
-    public static byte mTTL = 1;
+    public static int mTTL = 1;
 
     private static final Logger log = Logging.getLoggerInstance(MMBaseMultiCast.class);
 
