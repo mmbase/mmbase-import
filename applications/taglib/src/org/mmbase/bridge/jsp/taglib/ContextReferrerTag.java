@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.54 2004-03-19 23:16:18 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.55 2004-03-23 21:46:19 michiel Exp $
  * @see ContextTag
  */
 
@@ -32,9 +32,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     /**
      * EVAL_BODY is EVAL_BODY_INCLUDE or EVAL_BODY_BUFFERED. It wants to be EVAL_BODY_INCLUDE, but
-     * because that often not works, it on default it EVAL_BODY_BUFFERED. 
+     * because that often not works, it on default is EVAL_BODY_BUFFERED. 
      * 
      * This configurable constant might become deprecated, because it is a bit experimental.
+     *
      */
     public static int EVAL_BODY = -1;
     // should be EVAL_BODY_INCLUDE. But
