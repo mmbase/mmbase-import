@@ -254,6 +254,21 @@ Upgrade:
 Know Issues and Problems:
 ========================
 
+- If your app-server supports JSP2.0 (e.g. tomcat5 with a 'new' web.xml or resin 3), then the new EL
+  (Expression Language) syntax collides with the Expression language of mmbase taglib.
+
+  MMBase Taglib JSP's using the ${} syntax might not work then. Often the {} can be avoided,
+  otherwise the only option is to add <%@page isELIgnored="true" %> to the page.
+
+  The generic JSP-editors in /mmbase/edit/basic could not be fixed to work with and without EL. When
+  you want to use these editors in a EL environment isELIgnored must manually be added to
+  /mmbase/edit/basic/page_base_functionality.jsp (Unfortunately it cannot always be present, because
+  this setting can cause errors in a JSP1 environment).
+
+  The EL and MMBase Taglib expressions languages are actually very similar to each other. We will
+  try to make MMBase Taglib compatible (perhaps optionally so) with EL in a next release.
+
+
 - Orion doesn't support the final servlet api 2.3, because of this the
   jumpersFilter will not work. You will need to remove the following
   lines from <WEB-INF/web.xml>:
@@ -372,14 +387,17 @@ Java compilers
 
 ------------------
 Servlet engines /
-Applicationservers
+Application servers
 ------------------
+
+These are the applications servers on which MMBase was tested.
+
 - Tomcat 4.0.4
-- Orion 1.5.2, 1.5.4
-- Jetty 4.0.0
-- Resin 2.1.0, 2.1.8
 - Tomcat 4.1.12, 4.1.21
-- Tomcat 5.0.16
+- Tomcat 5.0.19
+- Orion 1.5.2, 1.5.4, 1.6.0, 2.0.3
+- Jetty 4.0.0
+- Resin 2.1.0, 2.1.8, 3.0.6
 
 ---------
 Databases
