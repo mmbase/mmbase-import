@@ -9,7 +9,7 @@
 
    @author   Eduard Witteveen
    @author   Michiel Meeuwissen
-   @version  $Id: nightly-build.xml,v 1.11 2003-04-09 19:46:42 michiel Exp $
+   @version  $Id: nightly-build.xml,v 1.12 2003-04-24 11:49:06 michiel Exp $
    @since    MMBase-1.6
    
 -->
@@ -124,7 +124,9 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <property name="buildscript.dir" value="${nbuild.dir}/cvs/mmbase"/>
   <property name="buildscript"     value="${buildscript.dir}/build.xml"/>   
   <property name="applicationsscript.dir" value="${buildscript.dir}/applications"/>   
-  <property name="applicationsscript"     value="${applicationsscript.dir}/build.xml"/>   
+  <property name="applicationsscript"    value="${applicationsscript.dir}/build.xml"/>   
+  <property name="testsscript.dir" value="${buildscript.dir}/tests"/>   
+  <property name="testsscript"     value="${testsscript.dir}/build.xml"/>   
   <property name="build.compiler"  value="classic" />	
   <property name="optimize"        value="off" /><!-- line numbers ?-->
   <property name="debug"           value="on" /> <!-- for nightly builds it is more or less logical to compile with debug = on -->	
@@ -167,7 +169,7 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
     <copy file="${mmbase.release.lib.dir}/mmbase.jar" tofile="${jarpackage.path}"/>
     <copy file="${build.dir}/mmbase/rmmci.jar"  tofile="${rmmcipackage.path}"/>
     <copy todir="${destination.dir}">
-        <fileset dir="${applications.build.dir}"/>
+      <fileset dir="${applications.build.dir}"/>
     </copy>
 
     <!-- the libs we used -->
@@ -199,11 +201,22 @@ nightly-build.xml  Used to generate all this with ant. You can download only thi
   <!-- clean for a new compile -->
   <target name="clean" depends="init.cvs" if="checkout.available">
     <ant antfile="${buildscript}" dir="${buildscript.dir}" target="clean" />
+    <ant antfile="${applicationsscript}" dir="${applicationsscript.dir}" target="clean" />
+    <ant antfile="${testsscript}" dir="${testsscript.dir}" target="clean" />
+    <delete>
+    	<fileset dir="${build.dir}">
+        <include name="**/*.zip"/>	  
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="run.tests" depends="cvs">
+    <ant antfile="${testsscript}" dir="${testsscript.dir}" target="run.all" />
   </target>
   
   <!-- ================================================================================
   The default target is 'full': do a nightly build.
-  --> 
-  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storedistro">
+  -->  
+  <target name="full" depends="clean,storesource,storebuild,storejavadocs,storedistro"> 
   </target>
 </project>
