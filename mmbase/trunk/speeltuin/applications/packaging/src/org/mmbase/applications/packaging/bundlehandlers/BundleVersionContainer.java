@@ -39,72 +39,71 @@ public class BundleVersionContainer  {
     private Hashtable bundles=new Hashtable();
 
     public BundleVersionContainer(BundleInterface b) {
-	bundles.put(b.getProvider(),b);
+        bundles.put(b.getProvider(),b);
     }
 
     public Object addBundle(BundleInterface b) {
-	Object o=bundles.put(b.getProvider(),b);
-	if (o!=null) {
-		return(o);
-	}
-	return(null);
+        Object o=bundles.put(b.getProvider(),b);
+        if (o!=null) {
+            return(o);
+        }
+        return(null);
     }
 
 
     public boolean removeBundle(BundleInterface b) {
-	bundles.remove(b.getProvider());
-	return true;
+        bundles.remove(b.getProvider());
+        return true;
     }
 
     public int getBundleCount() {
-	return bundles.size();
+        return bundles.size();
     }
 
     public Object get(ProviderInterface provider) {
-	Object o=bundles.get(provider);
-	if (o!=null) {
-		return(o);
-	}
-	return(null);
+        Object o = bundles.get(provider);
+        if (o != null) {
+            return o;
+        }
+        return null;
     } 
 
    public Enumeration getBundles() {
-	return bundles.elements();
+       return bundles.elements();
    }
 
 
     public boolean contains(ProviderInterface provider) {
-	if (bundles.get(provider)!=null) {
-		return(true);
-	} else {
-		return(false);
-	}
+        if (bundles.get(provider) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
    
     public boolean isShared() {
-	if (shareinfo!=null) {
-		return true;
-	}
-	return false;
-
+        if (shareinfo != null) {
+            return true;
+        }
+        return false;
     }
 
     public ShareInfo getShareInfo() {
-	return shareinfo;
+        return shareinfo;
     }
 
     public BundleInterface getBundleByScore() {
-	BundleInterface winner=null;
-	Enumeration e=bundles.elements();
-	while (e.hasMoreElements()) {
-		BundleInterface b=(BundleInterface)e.nextElement();
-		if (winner==null) {
-			winner=b;
-		} else if (b.getProvider().getBaseScore()>winner.getProvider().getBaseScore()) {
-			winner=b;
-		}
-	}
-	return winner;
+        BundleInterface winner = null;
+        Enumeration e = bundles.elements();
+        while (e.hasMoreElements()) {
+            BundleInterface b = (BundleInterface)e.nextElement();
+            if (winner == null) {
+                winner = b;
+            } else if (b.getProvider().getBaseScore() > winner.getProvider().getBaseScore()) {
+                winner = b;
+            }
+        }
+        return winner;
     }
 
 }
