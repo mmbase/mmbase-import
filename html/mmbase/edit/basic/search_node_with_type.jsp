@@ -90,7 +90,7 @@
                 constraints="$where">
   <tr>
         <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;</td>
-  <mm:fieldlist type="list">
+   <mm:fieldlist nodetype="$node_type" type="list">
         <td class="listdata"><mm:fieldinfo type="guivalue" />&nbsp;</td>
    </mm:fieldlist>
     <td class="navigate">
