@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.32 2003-12-28 19:05:15 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.33 2003-12-28 19:49:38 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -134,20 +134,27 @@ public class DatabaseStorageManager implements StorageManager {
     public void beginTransaction() throws StorageException {
         if (inTransaction) {
             throw new StorageException("Cannot start Transaction when one is already active.");
-        } else if (factory.supportsTransactions()) {
-            try {
-                getActiveConnection();
-                activeConnection.setTransactionIsolation(transactionIsolation);
-                activeConnection.setAutoCommit(false);
-            } catch (SQLException se) {
-                releaseActiveConnection();
-                throw new StorageException(se);
-            } finally {
-                releaseActiveConnection();
+        } else {
+            if (factory.supportsTransactions()) {
+                try {
+                    getActiveConnection();
+                    activeConnection.setTransactionIsolation(transactionIsolation);
+                    activeConnection.setAutoCommit(false);
+                } catch (SQLException se) {
+                    releaseActiveConnection();
+                    inTransaction = false;
+                    throw new StorageException(se);
+                } finally {
+                    // setting active connection to null ??!!
+                    releaseActiveConnection(); 
+                }
+                inTransaction = true;
+            } else {
+                inTransaction = true;
             }
+            changes = new HashMap();
         }
-        changes = new HashMap();
-        inTransaction = true;
+
     }
 
     // javadoc is inherited
