@@ -87,30 +87,30 @@ public class Email extends MMObjectBuilder {
      */
     public final static int TYPE_ONESHOTKEEP=3;
 
-	// if oneshot types of mails are used we check for dups
-	private Vector dubcheck=new Vector(100);
+    // if oneshot types of mails are used we check for dups
+    private Vector dubcheck=new Vector(100);
 
-	// number of emails send sofar since startup
-	private int numberofmailsend=0;
+    // number of emails send sofar since startup
+    private int numberofmailsend=0;
 
-	// ref to sessions module needed to parse pages
-	private static sessionsInterface sessions=null;
+    // ref to sessions module needed to parse pages
+    private static sessionsInterface sessions=null;
 
 
-	/**
-	* init
-	*/
-	public boolean init() {
-		super.init ();
+    /**
+     * init
+     */
+    public boolean init() {
+        super.init ();
 		
-		// start the EmailSendProbe
-		sendprobe=new EmailSendProbe(this);
+	// start the EmailSendProbe
+	sendprobe=new EmailSendProbe(this);
 
-		// obtain the session module
-		sessions=(sessionsInterface)mmb.getModule("SESSION");
+	// obtain the session module
+	sessions=(sessionsInterface)mmb.getModule("SESSION");
 
-		return (true);
-	}
+	return (true);
+    }
 
 
 	/**
@@ -639,5 +639,4 @@ public class Email extends MMObjectBuilder {
 			return(-1);
 		}
 	}
-
 }
