@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <?xml-stylesheet type="text/css"
 href="file:/C:/Program Files/XMLmind_XML_Editor/css/docbook.css"
-?>
-<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN"
-"file:/C:/Program Files/XMLmind_XML_Editor/dtd/docbook/docbookx.dtd">
+?><!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article
 ><articleinfo
 ><date
@@ -158,7 +156,7 @@ id="gettingstarted"
 ><title
 >Step 1. Deciding what to do</title
 ><para
->First, you need to decide what your wizard should do. In our first example, we just want to let the user edit the plain fields of a –very- simple object. We use the builder: “people” to make our first wizard.</para
+>First, you need to decide what your wizard should do. In our first example, we just want to let the user edit the plain fields of a very- simple object. We use the builder: "people" to make our first wizard.</para
 ><para
 >Users will be able to add, delete and change people-objects (persons in real-life) using this wizard. If you just want to see how it’s done, see the working example in the editwizard installation.</para
 ><para
@@ -223,7 +221,7 @@ fileref="media/new_person.jpg"
 ></screenshot
 ></figure
 ><para
->Here you can see your first wizard in action! Two fields are visible (as defined in the simple.xml file). Fill in the two fields and press save. Your newly created person should be visible in the list-view. Congratulations. You&#39;ve made -and runned- your first wizard. And now? You can image you can change fieldnames, titles and object-types so that you can edit different objects in the system. Wizard can do a lot more. We’ll get to that in the following section.</para
+>Here you can see your first wizard in action! Two fields are visible (as defined in the simple.xml file). Fill in the two fields and press save. Your newly created person should be visible in the list-view. Congratulations. You&#39;ve made -and runned- your first wizard. And now? You can image you can change fieldnames, titles and object-types so that you can edit different objects in the system. Wizard can do a lot more. We'll get to that in the following section.</para
 ></section
 ></section
 ><section
@@ -239,17 +237,17 @@ id="createaction"
 ><para
 >In the create action is defined what should be created in mmbase if the user clicks on the create-button. A create action is placed inside the /wizard node. You can create multiple objects inside each other (and create relations between them), place default values in some fields. Example:</para
 ><programlisting
->&#60;action type=”create”&#62;
-	&#60;object type=”people”&#62;
-		&#60;field name=”firstname”&#62;NOBODY&#60;/field&#62;
-		&#60;relation role=”related”&#62;
-			&#60;object type=”news” /&#62;
+>&#60;action type="create" &#62;
+	&#60;object type="people" &#62;
+		&#60;field name="firstname"&#62;NOBODY&#60;/field&#62;
+		&#60;relation role="related"&#62;
+			&#60;object type="news" /&#62;
 		&#60;/relation&#62;
 	&#60;/object&#62;
 &#60;/action&#62;
 </programlisting
 ><para
->This action creates 2 objects and 1 relation. A new people object with in the field “firstname” is placed “NOBODY”. And, a relation is created between this new people object and a new news object.</para
+>This action creates 2 objects and 1 relation. A new people object with in the field "firstname" is placed "NOBODY". And, a relation is created between this new people object and a new news object.</para
 ><note
 ><para
 >MMBase will default not allow you to make a relation between people and news. So remove the relation and inside-object node in the object to try it in a wizard.</para
@@ -267,7 +265,7 @@ id="deleteaction"
 ><title
 >Delete action</title
 ><para
->Place a delete action in the wizard if you want to allow the users to delete objects. Try to remove the &#60;action type=”delete” /&#62; from the practice wizard and reload the list to see what the impact is.</para
+>Place a delete action in the wizard if you want to allow the users to delete objects. Try to remove the &#60;action type="delete" /&#62; from the practice wizard and reload the list to see what the impact is.</para
 ><note
 ><para
 >The delete buttons will disappear.</para
@@ -318,7 +316,7 @@ id="createwizard"
     &#60;object type=&#34;people&#34;&#62;
       &#60;field name=&#34;firstname&#34;&#62;Enter firstname HERE&#60;/field&#62;
       &#60;/object&#62;
-    &#60;/action&#62;
+        &#60;/action&#62;
   
   &#60;action type=&#34;delete&#34; /&#62;
   
