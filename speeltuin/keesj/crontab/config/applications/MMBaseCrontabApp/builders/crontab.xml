@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<!-- crontab -->
+<builder version="1" name="crontab" maintainer="mmbase.org" extends="object">
+    <classfile>org.mmbase.applications.crontab.builders.JCrontabBuilder</classfile>
+    <searchage>360</searchage>
+    <names/>
+    <descriptions/>
+    <properties/>
+    <fieldlist>
+        <field>
+            <descriptions/>
+            <gui>
+                <guitype/>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>name</name>
+                <type size="127" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guitype/>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>crontime</name>
+                <type size="127" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+        <field>
+            <descriptions/>
+            <gui>
+                <guitype/>
+            </gui>
+            <editor>
+                <positions>
+                    <input>1</input>
+                    <list>1</list>
+                    <search>1</search>
+                </positions>
+            </editor>
+            <db>
+                <name>classfile</name>
+                <type size="127" key="false" state="persistent" notnull="false">STRING</type>
+            </db>
+        </field>
+    </fieldlist>
+</builder>
