@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.74 2002-10-18 11:28:15 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.75 2002-10-25 11:09:40 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -745,7 +745,17 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
             } else {
                 tempNodeManager = new VirtualNodeManager(this);
             }
-            return new BasicNodeList(resultlist,tempNodeManager);
+            NodeList list=new BasicNodeList(resultlist,tempNodeManager);
+            list.setProperty("nodes",startNodes);
+            list.setProperty("path",nodePath);
+            list.setProperty("fields",fields);
+            list.setProperty("constraints",constraints);
+            list.setProperty("orderby",orderby);
+            list.setProperty("directions",directions);
+            list.setProperty("searchdir",searchDir);
+            list.setProperty("distinct",new Boolean(distinct));
+            return list;
+
         } else {
             String message;
             message = "Parameters are invalid :" + pars + " - " + constraints;
