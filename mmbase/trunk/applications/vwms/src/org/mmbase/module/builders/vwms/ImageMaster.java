@@ -29,6 +29,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 	Hashtable properties;
 	boolean first=true;
+	private boolean debug=false;
 	Object syncobj=new Object();
 	Queue files2copy=new Queue(128);
 	FileCopier filecopier=new FileCopier(files2copy);
@@ -117,7 +118,6 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	public boolean handleMirror(MMObjectNode filenode,int status,String ctype) {
 		switch(status) {
 			case 1:  // Verzoek
-				debug("mirror verzoek");
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
@@ -159,15 +159,12 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 				// remove the tmp image file
 
-				debug("doing mirror stuff");
 				filenode.setValue("status",3);
 				filenode.commit();
 				break;
 			case 2:  // Onderweg
-				debug("mirror Onderweg");
 				break;
 			case 3:  // Gedaan
-				debug("mirror Done");
 				break;
 			default:
 				debug("ljjljkljkjol error");
@@ -180,20 +177,16 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 	public boolean handleMain(MMObjectNode filenode,int status,String ctype) {
 		switch(status) {
 			case 1:  // Verzoek
-				debug("handleMain: verzoek");
 				filenode.setValue("status",2);
 				filenode.commit();
 				// do stuff
-				debug("doing main stuff");
 				doMainRequest(filenode);
 				filenode.setValue("status",3);
 				filenode.commit();
 				break;
 			case 2:  // Onderweg
-				debug("handleMain: Onderweg");
 				break;
 			case 3:  // Gedaan
-				debug("handleMain: Done");
 				break;
 			default:
 				debug("aslfaslfasfasljk error");
@@ -217,7 +210,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		}
 		while (e.hasMoreElements()) {
 			MMObjectNode mirrornode=(MMObjectNode)e.nextElement();
-			debug("doMainRequest sending change for "+mirrornode.getIntValue("number"));
+			if (debug) debug("doMainRequest sending change for "+mirrornode.getIntValue("number"));
 			mirrornode.setValue("status",1);
 			mirrornode.commit();
 		}
@@ -228,7 +221,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		Netfiles bul=(Netfiles)Vwms.mmb.getMMObject("netfiles");		
 		Enumeration e=bul.search("WHERE filename='"+filename+"' AND service='"+service+"' AND subservice='"+subservice+"'");
 		if (e.hasMoreElements()) {
-			debug("handleMainCheck: existing file");
+			if (debug) debug("handleMainCheck: existing file");
 			MMObjectNode mainnode=(MMObjectNode)e.nextElement();
 			int currentstatus=mainnode.getIntValue("status");
 			if (currentstatus>2) { // check only the ones that are done
@@ -236,7 +229,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 				mainnode.commit();
 			}
 		} else {
-			debug("handleMainCheck: new file");
+			if (debug) debug("handleMainCheck: new file");
 			MMObjectNode mainnode=bul.getNewNode("system");
 			mainnode.setValue("filename",filename);
 			mainnode.setValue("mmserver","test1");
@@ -274,8 +267,6 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 
 
 	public boolean saveImageAsisFile(String path,String filename,byte[] value) {
-		debug("SAVE TO DISK="+path+filename);
-
 		String header="Status: 200 OK";
 		header+="\r\nContent-type: image/jpeg";
 		header+="\r\nContent-length: "+value.length;
@@ -300,7 +291,6 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 		String ckey=tok.nextToken();
 
 		// check if its a number if not check for name and even oalias
-		debug("CKEY="+ckey);
 		try {
 			int numint=Integer.parseInt(ckey);
 		} catch(Exception e) {
