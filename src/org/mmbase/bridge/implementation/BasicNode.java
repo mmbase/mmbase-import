@@ -611,4 +611,19 @@ public class BasicNode implements Node {
     public StringList getPossibleContexts() {
     	return new BasicStringList(cloud.getPossibleContexts(getNumber()));
     }
+
+
+    public boolean mayWrite() {
+        return cloud.check(Operation.WRITE, noderef.getNumber());
+    }
+    public boolean mayDelete() {
+        return cloud.check(Operation.DELETE, noderef.getNumber());
+    }
+    public boolean mayLink() {
+        return cloud.check(Operation.LINK, noderef.getNumber());
+    }
+
+    public boolean mayChangeContext() {
+        return cloud.check(Operation.CHANGECONTEXT, noderef.getNumber());
+    };
 }
