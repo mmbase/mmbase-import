@@ -53,7 +53,7 @@
    <mm:notpresent referid="annotate_relation">
      <mm:node id="node_number" referid="node_number">
 
-    <mm:compare referid="direction" value="create_parent">
+    <mm:compare referid="direction" value="create_child">
         <mm:createrelation id="relation" source="node" destination="node_number" role="${role_name}" >
             <mm:fieldlist type="edit">
                 <mm:first><mm:import id="annotate">true</mm:import></mm:first>
@@ -61,7 +61,7 @@
         </mm:createrelation>
     </mm:compare>        
     
-    <mm:compare referid="direction" value="create_child">        
+    <mm:compare referid="direction" value="create_parent">        
         <!-- if role could also be the dname, this code wouldnt be nessecary -->
         <!-- solved by replacing source with destination -->
         <mm:createrelation id="relation" source="node_number" destination="node" role="${role_name}" >

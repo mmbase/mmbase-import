@@ -44,7 +44,7 @@
                         <mm:param name="node_type"><%= otherNodeType.getName()%></mm:param>
                         <mm:param name="role_name"><%= relationDefinition.getStringValue("sname") %></mm:param>
                         <!-- WHY CANT I USE DNAME as ROLE????  -->
-                        <mm:param name="direction">create_parent</mm:param>
+                        <mm:param name="direction">create_child</mm:param>
                         <!-- END WHY CANT I USE DNAME as ROLE????  -->
                         </mm:url>'>
                        <span class="create"></span><span class="alt">+</span>
@@ -64,7 +64,8 @@
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <mm:field name="gui()" />
+                    <!-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder -->
+                    <%= cloud.getNode(insrelNode.getNumber()).getStringValue("gui()") %>                
                 </td>
                 <td class="navigate">
                     <!-- delete the relation node, not sure about the node_type argument! -->
@@ -89,7 +90,7 @@
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <mm:field name="gui()" />
+                    <mm:field name="gui()" />               
                 </td>
                 <td class="navigate">
                     <!-- edit the related node -->
@@ -142,7 +143,7 @@
                         <mm:param name="node_type"><%= otherNodeType.getName()%></mm:param>
                         <!-- WHY CANT I USE DNAME as ROLE???? -->
                         <mm:param name="role_name"><%= relationDefinition.getStringValue("sname") %></mm:param>
-                        <mm:param name="direction">create_child</mm:param>
+                        <mm:param name="direction">create_parent</mm:param>
                         <!-- END WHY CANT I USE DNAME as ROLE???? -->
                         </mm:url>'>
                       <span class="create"></span><span class="alt">+</span>
@@ -162,7 +163,8 @@
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <mm:field name="gui()" />
+                    <!-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder -->
+                    <%= cloud.getNode(insrelNode.getNumber()).getStringValue("gui()") %>
                 </td>
                 <td class="navigate">
                     <!-- delete the relation node, not sure about the node_type argument! -->
