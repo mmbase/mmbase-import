@@ -20,7 +20,6 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- * The collection of clouds, and modules within a Java Virtual Machine.
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -87,21 +86,11 @@ public class BasicCloudContext implements CloudContext {
         }
     }
 
-	/**
-	 * Retrieves all the modules available in this context
-	 * @return a <code>List</code> of all available modules
-	 */
 	public ModuleList getModules() {
         ModuleList ml=new BasicModuleList(localModules.values(),this);
 	    return ml;
 	}
 
-	
-	/**
-	 * Retrieves a Module
-	 * @param modulename name of the module
-	 * @return the requested module
-	 */
 	public Module getModule(String moduleName) {
 	    Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
@@ -110,10 +99,6 @@ public class BasicCloudContext implements CloudContext {
         return mod;
 	}
 
-	/**
-	 * Retrieves all clouds within this context
-	 * @return a <code>List</code> of all Clouds within this context
-	 */
 	public CloudList getClouds() {
         Vector v=new Vector();
         for (Iterator i=localClouds.values().iterator(); i.hasNext();) {
@@ -122,23 +107,10 @@ public class BasicCloudContext implements CloudContext {
 	    return new BasicCloudList(v,this);
 	}
 
-	/**
-	 * Retrieves a Cloud
-	 * @param cloudName name of the Cloud
-	 * @return the requested Cloud
-	 */
 	public Cloud getCloud(String cloudName) {
 	    return getCloud(cloudName,false);
 	}
 
-	/**
-	 * Retrieves a Cloud.
-	 * @param cloudname name of the Cloud
-	 * @param readonly if <code>true</code>, the cloud returned is read-only.
-	 *          No transactions are possible, nor any edits/changes to the cloud.
-	 *          This can be used for optimization.
-	 * @return all Clouds
-	 */
 	public Cloud getCloud(String cloudName, boolean readonly) {
         Cloud cloud = (Cloud)localClouds.get(cloudName);
         if (cloud==null) {
