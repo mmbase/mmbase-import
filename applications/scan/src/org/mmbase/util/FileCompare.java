@@ -21,7 +21,12 @@ import java.io.File;
 public class FileCompare implements CompareInterface {
 
     /**
-     * The compare function called by SortedVector to sort things
+     * Make the comparison.
+     * The result is a negative value if the time of the first file is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both times are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>File</code>.
+     * @param other the second object to compare. should be a <code>File</code>.
+     * @return the result of the comparison
      */
     public int compare(Object thisone,Object other) {
         return (int) (((File)thisone).lastModified()-((File)other).lastModified());

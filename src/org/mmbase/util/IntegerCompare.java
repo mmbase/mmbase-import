@@ -15,14 +15,17 @@ package org.mmbase.util;
  * @see org.mmbase.util.CompareInterface
  *
  * @author Rico Jansen
- * @version $Id: IntegerCompare.java,v 1.2 2001-04-12 15:00:31 pierre Exp $
+ * @version $Id: IntegerCompare.java,v 1.3 2001-04-13 15:13:17 pierre Exp $
  */
 public class IntegerCompare implements CompareInterface {
 
     /**
-     * The compare function called by SortedVector to sort things
-     * @see org.mmbase.util.SortedVector
-     * @see org.mmbase.util.CompareInterface
+     * Make the comparison.
+     * The result is a negative value if the first object is 'smaller' than the second,
+     * a positive value if it is 'larger', and 0 if both objects are 'equal'.
+     * @param thisOne the first object to compare. should be a <code>Integer</code>.
+     * @param other the second object to compare. should be a <code>Integer</code>.
+     * @return the result of the comparison
      */
     public int compare(Object thisone,Object other) {
         return ((Integer)thisone).intValue()-((Integer)other).intValue();
