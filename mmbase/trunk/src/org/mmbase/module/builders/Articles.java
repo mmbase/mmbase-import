@@ -26,11 +26,7 @@ public class Articles extends MMObjectBuilder {
 
 	public String getGUIIndicator(MMObjectNode node) {
 		String str=node.getStringValue("orderinfo");
-		if (str.length()>15) {
-			return(str.substring(0,12)+"...");
-		} else {
-			return(str);
-		}
+		return(str);
 	}
 
 
