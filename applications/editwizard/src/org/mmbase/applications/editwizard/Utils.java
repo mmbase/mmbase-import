@@ -25,19 +25,19 @@ import org.apache.xpath.objects.XNodeSet;
 import org.mmbase.util.logging.*;
 
 import org.mmbase.cache.xslt.*;
+import org.mmbase.util.xml.URIResolver;
 
 /**
  * This class contains static utility methods used by the editwizard.
  * Most methods handle xml functions for you and are just to support ease and lazyness.
  *
- * 
  *
  * @javadoc
  * @author  Kars Veling
  * @author  Pierre van Rooden
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Utils.java,v 1.10 2002-04-02 13:37:04 michiel Exp $
+ * @version $Id: Utils.java,v 1.11 2002-04-19 20:17:33 michiel Exp $
  */
 public class Utils {
 
@@ -59,7 +59,7 @@ public class Utils {
      *
      * @return     a new empty Document. Returns null if something went wrong.
      */
-    public static Document EmptyDocument() {
+    public static Document emptyDocument() {
         try {
             DocumentBuilder dBuilder = getDocumentBuilder();
             return dBuilder.newDocument();
@@ -73,25 +73,25 @@ public class Utils {
     /**
      * This method can load a xml file and returns the resulting document. If something went wrong, null is returned.
      *
-     * @param       filename        the filename of the file to be loaded.
+     * @param       file        the file to be loaded.
      * @return     The loaded xml Document
      * @throws      WizardException if someting wend wrong...
      */
-    public static Document loadXMLFile(String filename) throws WizardException {
+    public static Document loadXMLFile(File file) throws WizardException {
         try {
             DocumentBuilder b = getDocumentBuilder();
-            return b.parse(new FileInputStream(filename));
+            return b.parse(new FileInputStream(file));
         } catch (Exception e) {
-            throw new WizardException("Could not load schema xml file. Filename:"+filename+ "\n" + Logging.stackTrace(e));
+            throw new WizardException("Could not load schema xml file. Filename:"+file + "\n" + Logging.stackTrace(e));
         }
     }
 
     /**
      * With this method you can parse a xml string and get the resulting Document.
      *
-     * @param       xml     The xml string to be parsed. Note that you should supply xml for a valid document (one root node, etc)
-     * @return     The newly created xml Document.
-     * @throws      WizardException if someting wend wrong...     
+     * @param      xml     The xml string to be parsed. Note that you should supply xml for a valid document (one root node, etc)
+     * @return     The newly created xml Document
+     * @throws     WizardException if something went wrong
      */
     public static Document parseXML(String xml) throws WizardException {
         try {
@@ -392,31 +392,27 @@ public class Utils {
      * This method does a standard XSL(T) transform on a node as a base context node and sends it to the given Result result.
      *
      * @param       node    the base context node to run the xsl(t) against.
-     * @param       xslfilename     the path of the xsl file
+     * @param       xslFile the xsl file
      * @param       result  The place where to put the result of the transformation
      * @param       params  Optional params.
      */
-    public static void transformNode(Node node, String xslfilename, Result result, Map params) {
-        try {                       
-            TemplateCache cache= TemplateCache.getCache();
-            Source xsl = new StreamSource(new File(xslfilename));
-            Templates cachedXslt = cache.getTemplates(xsl);
-            if (cachedXslt == null) {
-                cachedXslt = FactoryCache.getCache().getFactory(new java.io.File("")).newTemplates(xsl);
-                cache.put(xsl, cachedXslt);
-            } else {
-                if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
-            }
-            Transformer transformer = cachedXslt.newTransformer();
-            // Set any stylesheet parameters.
-            if (params != null) {
-                setStylesheetParams(transformer, params);
-            }
-            if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
-            transformer.transform(new DOMSource(node), result);
-        } catch (Exception e) {
-            log.error(Logging.stackTrace(e));
+    public static void transformNode(Node node, File xslFile, URIResolver uri, Result result, Map params) throws TransformerException {
+        TemplateCache cache= TemplateCache.getCache();
+        Source xsl = new StreamSource(xslFile);
+        Templates cachedXslt = cache.getTemplates(xsl);
+        if (cachedXslt == null) {
+            cachedXslt = FactoryCache.getCache().getFactory(uri).newTemplates(xsl);
+            cache.put(xsl, cachedXslt);
+        } else {
+            if (log.isDebugEnabled()) log.debug("Used xslt from cache with " + xsl.getSystemId());
         }
+        Transformer transformer = cachedXslt.newTransformer();
+        // Set any stylesheet parameters.
+        if (params != null) {
+            setStylesheetParams(transformer, params);
+        }
+        if (log.isDebugEnabled()) log.debug("transforming: \n" + stringFormatted(node));
+        transformer.transform(new DOMSource(node), result);        
     }
 
 
@@ -457,22 +453,22 @@ public class Utils {
      * same as above, but now the result is returned in a new Node and some less params.
      *
      * @param       node    the base context node.
-     * @param       xslfilename     the path to the xslfile.
+     * @param       xslFile     the xslFile.
      * @return     the documentelement of the resulting xml (of the transformation)
      */
 
-    public static Node transformNode(Node node, String xslfilename) {
+    public static Node transformNode(Node node, File xslFile, URIResolver uri) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node,xslfilename,res,null);
+        transformNode(node, xslFile, uri, res, null);
         return res.getNode();
     }
 
     /**
      * same as above, but now you can supply a params hashtable.
      */
-    public static Node transformNode(Node node, String xslfilename, Map params) {
+    public static Node transformNode(Node node, File xslFile, URIResolver uri, Map params) throws TransformerException {
         DOMResult res = new DOMResult();
-        transformNode(node,xslfilename,res,params);
+        transformNode(node, xslFile, uri, res, params);
         return res.getNode();
     }
 
@@ -480,21 +476,21 @@ public class Utils {
     /**
      * same as above, but now the result is written to the writer.
      */
-    public static void transformNode(Node node, String xslfilename, Writer out) {
-        transformNode(node, xslfilename, out, null);
+    public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out) throws TransformerException {
+        transformNode(node, xslFile, uri, out, null);
     }
     /**
      * same as above, but now the result is written to the writer and you can use params.
      */
-    public static void transformNode(Node node, String xslfilename, Writer out, Map params) {
-        if (log.isDebugEnabled()) log.debug("transforming: " + node.toString());
+    public static void transformNode(Node node, File xslFile, URIResolver uri, Writer out, Map params) throws TransformerException {
+        if (log.isDebugEnabled()) log.debug("transforming: " + node.toString() + " " + params);
         // UNICODE works like this...
         java.io.StringWriter res = new java.io.StringWriter();
-        transformNode(node,xslfilename, new javax.xml.transform.stream.StreamResult(res),  params);
+        transformNode(node, xslFile, uri, new javax.xml.transform.stream.StreamResult(res),  params);
         if (log.isDebugEnabled()) log.debug("transformation result " + res.toString());
         try {
             out.write(res.toString());
-        } catch (Exception e) {
+        } catch (java.io.IOException e) {
             log.error(e.toString());
         }
         //new StreamResult(out), null);
@@ -635,11 +631,13 @@ public class Utils {
     /**
      * (Not used) method to post (http-post) xml to a url.
      *
+     * Since it is 'not used' I made i private for the moment.
+     *
      * @param       xml     The main node which should be posted.
      * @param       url     The destination url
      * @return     The resulting string sent from the destination after sending.
      */
-    public static String PostXml(Node xml, String url) throws Exception {
+    private static String postXml(Node xml, String url) throws Exception {
         String inputString = getXML(xml);
 
         URL downeyjrURL = new URL(url);
