@@ -275,7 +275,7 @@ about the Ant build tool.
   <!-- Creates the jar file                                                -->
   <!-- =================================================================== -->
   <target name="jar" depends="clean,compile">
-    <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" includes="org/mmbase/**" manifest="${src.dir}/META-INF/org.mmbase.mf" />
+    <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" includes="org/mmbase/**" />
     <copy file="${build.dir}/${name}.jar" tofile="${dist.lib}/${name}.jar"/>
   </target>
 
