@@ -7,6 +7,12 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+
+/*
+ $Id: sessions.java,v 1.2 2000-02-24 13:28:54 wwwtech Exp $
+
+ $Log: not supported by cvs2svn $
+*/
 package org.mmbase.module;
 
 import java.lang.*;
@@ -22,10 +28,13 @@ import org.mmbase.module.core.*;
 /**
  *
  * @author Daniel Ockeloen
+ *
+ * @version $Id: sessions.java,v 1.2 2000-02-24 13:28:54 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
 	private String classname = getClass().getName();
+	private boolean debug=true;
 	
 	Hashtable sessions = new Hashtable();
     private MMBase mmbase;
@@ -70,18 +79,21 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 
 	public void forgetSession(String wanted) {
-		if (sessions!=null && wanted!=null) {
-			if (sessions.containsKey(wanted)) {
-				sessions.remove(wanted);
-				System.out.println("Sessions -> Forget user :"+wanted);
-			}
-		}
+		if (sessions!=null) { 
+			if(wanted!=null) {
+				if (sessions.containsKey(wanted)) {
+					sessions.remove(wanted);
+					debug("forgetSession("+wanted+"): Who? Don't know 'm .. sorry!");
+				} else debug("forgetSession("+wanted+"): WARNING: This key not found in session!");
+			} else debug("forgetSession("+wanted+"): ERROR: wanted to forget a null!");
+		} else debug("forgetSession("+wanted+"): ERROR: sessions is null!");
 	}
 	
 	public String getValue(sessionInfo session,String wanted) {
 		if (session!=null) {
 			return(session.getValue(wanted));
 		} else {
+			debug("getValue("+wanted+"): ERROR: session is null!");
 			return(null);
 		}
 	}
@@ -90,14 +102,28 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		if (session!=null) {
 			return(session.setValue(key,value));
 		} else {
+			debug("setValue("+key+","+value+"): ERROR: sessions is null!");
 			return(null);
 		}
 	}
 
+	public void addSetValues(sessionInfo session,String key,Vector values) {
+		if (session!=null) {
+			String str;
+			for (Enumeration e=values.elements();e.hasMoreElements();) {
+				str=(String)e.nextElement();
+				session.addSetValue(key,str);
+			}
+		}
+		else
+			debug("addSetValues("+key+","+values+"): ERROR: sessions is null!");
+	}
 
 	public void addSetValue(sessionInfo session,String key,String value) {
 		if (session!=null) {
 			session.addSetValue(key,value);
+		} else {
+			debug("addSetValue("+key+","+value+"): ERROR: sessions is null!");
 		}
 	}
 	
@@ -112,106 +138,161 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			while (tok.hasMoreTokens()) {
 				addSetValue( session, key, tok.nextToken());	
 			}
+		} else {
+			debug("setValueFromNode("+key+","+ptype+","+value+"): ERROR: ptype("+ptype+") neither 'string' nor 'vector'!");
 		}
 	}
 
 	public void loadProperties(sessionInfo session) {	
 		try {
-		if (session!=null) {
-			if (mmbase!=null) {
-				props=mmbase.getMMObject("properties");
-				String sid=session.getCookie();
-				Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
-				System.out.println("GETPROP -> WHERE key='SID' AND value='"+sid+"'");
-				if (res.hasMoreElements()) {
-					MMObjectNode snode = (MMObjectNode)res.nextElement();
-					int id=snode.getIntValue("parent");
-					setValue(session,"USERNUMBER",""+id);
-					res=props.search("WHERE parent='"+id+"'");
-					while (res.hasMoreElements()) {
-						setValueFromNode( session, (MMObjectNode)res.nextElement() );
+			String sid;
+			if (session!=null) {
+				sid=session.getCookie();
+				if (mmbase!=null) {
+					props=mmbase.getMMObject("properties");
+					Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
+					if( debug ) debug("loadProperties(): got SID("+sid+")"); // WHERE key='SID' AND value='"+sid+"'");
+					if (res.hasMoreElements()) {
+						MMObjectNode snode = (MMObjectNode)res.nextElement();
+						int id=snode.getIntValue("parent");
+						setValue(session,"USERNUMBER",""+id);
+						res=props.search("WHERE parent='"+id+"'");
+						while (res.hasMoreElements()) {
+							setValueFromNode( session, (MMObjectNode)res.nextElement() );
+						}
 					}
-				}
-			}
-		}
+          		} else debug("loadProperties(): mmbase is null!");
+            } else debug("loadProperties(): session is null!");
 		} catch (Exception e) {
-		//	e.printStackTrace();
+			//	e.printStackTrace();
 		}
 	}
 
-	public String saveValue(sessionInfo session,String key) {
-		if (session!=null) {
-			int id=-1;
-			String sid=session.getCookie();
-			MMObjectNode node=session.getNode();
-			if (node==null) {
-				if (mmbase==null) return(null);
-				props=mmbase.getMMObject("properties");
-				users=mmbase.getMMObject("users");
+	public String saveValue(sessionInfo session,String key) 
+	{
+		if (mmbase==null) 
+		{
+			debug("saveValue("+session+","+key+"): ERROR: mmbase is null!");
+			return(null);
+		}
+
+		if (session!=null) 
+		{
+			if( key != null )
+			{
+				int id=-1;
+				String sid=session.getCookie();
+				MMObjectNode node=session.getNode();
+
+				if (node==null) {
+
+					// node not found
+					// --------------
+
+					props=mmbase.getMMObject("properties");
+					users=mmbase.getMMObject("users");
 
 
-				Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
-				if (res.hasMoreElements()) {
-					// get the parent for this ID value
-					MMObjectNode snode = (MMObjectNode)res.nextElement();
-					id=snode.getIntValue("parent");
-					node=users.getNode(id);
-					session.setNode(node);
+					// does the sid have any properties?
+	
+					Enumeration res=props.search("WHERE key='SID' AND value='"+sid+"'");
+					if (res.hasMoreElements()) {
+
+						// yes, is it a user?
+						// ------------------
+
+						// get the parent for this ID value
+						MMObjectNode snode = (MMObjectNode)res.nextElement();
+						id=snode.getIntValue("parent");
+						node=users.getNode(id);
+						if( node != null )
+						{
+							session.setNode(node);
+						}
+						else
+						{
+							debug("saveValue("+key+"): WARNING: node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
+						}
+
+					} else {
+						// ----------------------------------------------------------------------
+						// Server has given a cookie, but *now* we create a new user & properties
+						// ----------------------------------------------------------------------
+
+						debug("saveValue("+key+"): This is a new user("+sid+"), making database entry..");
+	
+						node = users.getNewNode ("system");
+						if( node != null ) 
+						{
+							node.setValue ("description","created for SID = "+sid);
+							id = users.insert ("system", node); 
+							node.setValue("number",id);
+	
+							// hier
+							// ----
+							MMObjectNode snode = props.getNewNode ("system");
+							snode.setValue ("parent",id);
+							snode.setValue ("ptype","string");
+							snode.setValue ("key","SID");
+							snode.setValue ("value",sid);
+							props.insert("system", snode); 
+							session.setNode(node);
+						}
+						else
+							debug("saveValue("+session+","+key+"): ERROR: No node("+id+") could be created for this user("+sid+")!");
+					}
 				} else {
-					// so no SID found so no parent lets create them both
-					System.out.println("sessions-> WANNE CREATE A NEW USER");
+					id=node.getIntValue("number");	
+				}
 
-					node = users.getNewNode ("system");
-					node.setValue ("description","created for SID = "+sid);
-					id = users.insert ("system", node); 
-					node.setValue("number",id);
-					// hier
-					MMObjectNode snode = props.getNewNode ("system");
-					snode.setValue ("parent",id);
-					snode.setValue ("ptype","string");
-					snode.setValue ("key","SID");
-					snode.setValue ("value",sid);
-					props.insert("system", snode); 
-					session.setNode(node);
+				// set value in the users node and save in database
+				// ------------------------------------------------
+
+				if (node!=null) {
+					MMObjectNode pnode=node.getProperty(key);
+					if (pnode!=null) {
+						String value=session.getSetString(key);
+						if (value==null) {
+							value=session.getValue(key);
+						}
+						pnode.setValue("value",value);
+						pnode.commit();
+					} else {
+						MMObjectNode snode = props.getNewNode ("system");
+						String value=session.getSetString(key);
+						if (value==null) {
+							value=session.getValue(key);
+							if( value==null )
+							{
+								debug("saveValue("+key+"): value("+value+") is null!");
+								debug(" - values(" + session.values +")" );
+								debug(" - setvalues(" + session.setvalues +")" );
+							}
+							snode.setValue ("ptype","string");
+						} else {
+							snode.setValue ("ptype","vector");
+						}
+						snode.setValue ("parent",id);
+						snode.setValue ("key",key);
+						snode.setValue ("value",value);
+						int id2=props.insert("system", snode); 
+						snode.setValue("number",id2);
+						node.putProperty(snode);
+					}
+
+					return(null);
+				}
+				else
+				{
+					debug("saveValue("+session+","+key+"): ERROR: no node("+node+") found for user("+sid+")!");
+					return(null);
 				}
 			} else {
-				id=node.getIntValue("number");	
+				debug("saveValue("+session+","+key+"): ERROR: key is null!");
+				return(null);
 			}
-			// set value in the users node and save in database
-			if (node!=null) {
-				MMObjectNode pnode=node.getProperty(key);
-				if (pnode!=null) {
-					String value=session.getSetString(key);
-					if (value==null) {
-						value=session.getValue(key);
-					}
-					pnode.setValue("value",value);
-					pnode.commit();
-				} else {
-					MMObjectNode snode = props.getNewNode ("system");
-					String value=session.getSetString(key);
-					if (value==null) {
-						value=session.getValue(key);
-						if( value==null )
-						{
-							debug("saveValue("+key+"): value("+value+") is null!");
-							debug(" - values(" + session.values +")" );
-							debug(" - setvalues(" + session.setvalues +")" );
-						}
-						snode.setValue ("ptype","string");
-					} else {
-						snode.setValue ("ptype","vector");
-					}
-					snode.setValue ("parent",id);
-					snode.setValue ("key",key);
-					snode.setValue ("value",value);
-					int id2=props.insert("system", snode); 
-					snode.setValue("number",id2);
-					node.putProperty(snode);
-				}
-			}
-			return(null);
 		} else {
+			debug("saveValue("+session+","+key+"): ERROR: session is null!");
 			return(null);
 		}
 	}
@@ -237,6 +318,24 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 			}
 			return(results);
 		}
+		if (cmd.equals("SESSION")) {
+			Vector results=new Vector();
+			String key;
+			sessionInfo session=getSession(sp,sp.sname);
+			for (Enumeration e=session.values.keys();e.hasMoreElements();) {
+				key=(String)e.nextElement();
+				results.addElement("VAR");
+				results.addElement(key);
+				results.addElement(session.getValue(key));
+			}
+			for (Enumeration e=session.setvalues.keys();e.hasMoreElements();) {
+				key=(String)e.nextElement();
+				results.addElement("SET");
+				results.addElement(key);
+				results.addElement(session.getSetString(key));
+			}
+			return(results);
+		}
 
     	String line = Strip.DoubleQuote(cmd,Strip.BOTH);
 		StringTokenizer tok = new StringTokenizer(line,"-\n\r");
@@ -255,15 +354,18 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();	
-			if (cmd.equals("CLEARSET")) return(doClearSet(sp,tok));
-			if (cmd.equals("ADDSET")) return(doAddSet(sp,tok));
-			if (cmd.equals("PUTSET")) return(doPutSet(sp,tok));
-			if (cmd.equals("DELSET")) return(doDelSet(sp,tok));
-			if (cmd.equals("CONTAINSSET")) return(getContainsSet(sp,tok));
-			if (cmd.equals("SETSTRING")) return(getSetString(sp,tok));
-			if (cmd.equals("AVGSET")) return(getAvgSet(sp,tok));
+			
+			if (cmd.equals("CLEARSET")) 	return(doClearSet(sp,tok));
+			if (cmd.equals("ADDSET")) 		return(doAddSet(sp,tok));
+			if (cmd.equals("PUTSET")) 		return(doPutSet(sp,tok));
+			if (cmd.equals("DELSET")) 		return(doDelSet(sp,tok));
+			if (cmd.equals("CONTAINSSET")) 	return(getContainsSet(sp,tok));
+			if (cmd.equals("SETSTRING")) 	return(getSetString(sp,tok));
+			if (cmd.equals("AVGSET")) 		return(getAvgSet(sp,tok));
+			
+			debug("replace("+cmds+"): WARNING: Unknown command("+cmd+")!");
 		}
-		return("No command defined");
+		return( classname +"replace(): ERROR: No command defined");
 	}
 
 	public String doAddSet(scanpage sp, StringTokenizer tok) {
@@ -350,7 +452,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	public Vector doGetSet(scanpage sp, StringTokenizer tok) {
 		Vector results=new Vector();
 		String line=getSetString(sp,tok);
-		System.out.println("SESSION LINE="+line);
+		debug("doGetSet(): SESSION LINE="+line);
 		if (line!=null) {
 			StringTokenizer tok2 = new StringTokenizer(line,",\n\r");
 			while (tok2.hasMoreTokens()) {
