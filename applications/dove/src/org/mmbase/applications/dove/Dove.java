@@ -47,7 +47,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.30 2003-03-04 13:27:07 nico Exp $
+ * @version $Id: Dove.java,v 1.31 2003-03-05 09:03:19 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -128,7 +128,7 @@ public class Dove extends AbstractDove {
         // load fields
         Element field=getFirstElement(in,FIELD);
         if (field==null) {
-            for (FieldIterator i=nm.getFields().fieldIterator(); i.hasNext(); ) {
+            for (FieldIterator i=nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field f=i.nextField();
                 String fname=f.getName();
                 if (isDataField(nd,f)) {
@@ -551,7 +551,7 @@ public class Dove extends AbstractDove {
                 // fields
                 Element fields=doc.createElement(FIELDS);
                 out.appendChild(fields);
-                for(FieldIterator i = nm.getFields().fieldIterator(); i.hasNext(); ) {
+                for(FieldIterator i = nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                     Field fielddef=i.nextField();
                     String fname=fielddef.getName();
                     // Filter out the owner/otype/number/CacheCount fields and
