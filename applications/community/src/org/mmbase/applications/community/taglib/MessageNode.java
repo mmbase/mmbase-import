@@ -236,19 +236,6 @@ public class MessageNode implements Node {
         return false;
     }
 
-    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree) {
-        invalidOperation();  // not implemented
-        return null;
-    }
-    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree, FieldList f) {
-        invalidOperation();  // not implemented
-        return null;
-
-    }
-    public org.w3c.dom.Element toXML(org.w3c.dom.Document tree, Field f) {
-        invalidOperation();  // not implemented
-        return null;
-    }
     public boolean mayLink() {
         return false;
     }

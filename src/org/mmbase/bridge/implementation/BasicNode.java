@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.51 2002-03-15 09:44:16 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.52 2002-03-20 13:16:47 eduard Exp $
  */
 public class BasicNode implements Node {
 
@@ -852,25 +852,6 @@ public class BasicNode implements Node {
     return found;
     }
 
-    /**
-     * Inserts this node into a DOM Document 'objects' if it is not in
-     * it already.
-     *
-     * @param   tree A DOM Document in which the object should be created.
-     * @return       The node as a DOM Element.
-     *
-     */
-
-    public Element toXML(Document tree) {
-        return toXMLBase(tree, getNodeManager().getFields(), false, true);
-    }
-
-    public Element toXML(Document tree, FieldList fieldList) {
-        return toXMLBase(tree, fieldList, true, false);
-    }
-    public Element toXML(Document tree, Field field) {
-        return toXMLBase(tree, field, true, false);
-    }
 
     /**
      * Create the node if it is not in tree already. Add the given
