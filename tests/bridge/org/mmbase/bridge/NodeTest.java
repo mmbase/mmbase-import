@@ -20,11 +20,15 @@ import org.mmbase.tests.*;
  * @author Jaco de Groot
  */
 public abstract class NodeTest extends BridgeTest {
-    Node node;
-    String[] fieldTypes = {"byte", "double", "float", "int", "long", "string"};
+    protected Node node;
+    protected String[] fieldTypes = {"byte", "double", "float", "int", "long", "string", "xml"};
 
     public NodeTest(String name) {
         super(name);
+    }
+
+    public void setUp() {
+        System.out.println(this.getClass().getName());
     }
 
     abstract public void testGetValue();
@@ -38,6 +42,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetLongValue();
         testGetStringValue();
+        testGetXMLValue();
     }
 
     abstract public void testGetByteValue();
@@ -51,6 +56,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetLongValue();
         testGetStringValue();
+        testGetXMLValue();
     }
 
     abstract public void testGetDoubleValue();
@@ -64,6 +70,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetLongValue();
         testGetStringValue();
+        testGetXMLValue();
     }
 
     abstract public void testGetFloatValue();
@@ -77,6 +84,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetIntValue();
         testGetLongValue();
         testGetStringValue();
+        testGetXMLValue();
     }
 
     abstract public void testGetIntValue();
@@ -90,6 +98,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetFloatValue();
         testGetLongValue();
         testGetStringValue();
+        testGetXMLValue();
     }
 
     abstract public void testGetLongValue();
@@ -103,6 +112,7 @@ public abstract class NodeTest extends BridgeTest {
         testGetFloatValue();
         testGetIntValue();
         testGetStringValue();
+        testGetXMLValue();
     }
 
     abstract public void testGetStringValue();
@@ -116,6 +126,21 @@ public abstract class NodeTest extends BridgeTest {
         testGetFloatValue();
         testGetIntValue();
         testGetLongValue();
+        testGetXMLValue();
+    }
+
+    abstract public void testGetXMLValue();
+
+    public void testGetXMLValueCache() {
+        // Test if the first call doesn't make MMBase cache an incorrect value.
+        testGetXMLValue();
+        testGetValue();
+        testGetByteValue();
+        testGetDoubleValue();
+        testGetFloatValue();
+        testGetIntValue();
+        testGetLongValue();
+        testGetStringValue();
     }
 
     public void testSetSNumber() {
@@ -175,20 +200,27 @@ public abstract class NodeTest extends BridgeTest {
         }        
         assertTrue(found);
     }
-    
-    public void testSetContext() {
-        String context = node.getContext();
-        String otherContext = context;
-        StringIterator possibleContexts = node.getPossibleContexts().stringIterator();
+
+    protected String getOtherContext(Node n) {        
+        String context = n.getContext();
+        StringIterator possibleContexts = n.getPossibleContexts().stringIterator();
         while (possibleContexts.hasNext()) {
             String listContext = possibleContexts.nextString();              
             if (! context.equals(listContext)){
-                otherContext = listContext;
-                break;
+                return listContext;
             }
         }
+        return context;
+    }
+
+    
+    public void testSetContext() {
+        String context = node.getContext();
+        String otherContext = getOtherContext(node);
+     
         if (otherContext.equals(context)) {
-            System.err.println("TESTWARNING testSetContext: Could not find other context than " + context);
+            otherContext = context + "other";
+            System.err.println(this.getClass().getName() + " TESTWARNING testSetContext: Could not find other context than " + context + " setting to '" + otherContext + "'");
         }
         
         // set context to something different:
@@ -196,7 +228,6 @@ public abstract class NodeTest extends BridgeTest {
         
         // now, the new context must be equal to otherContext
         assertTrue("KNOWN - bug #6168:", otherContext.equals(node.getContext()));
-        
     }
 
 }
