@@ -167,7 +167,7 @@ Create a build.xml with a DOCTYPE like this:
     <echo message="${project.jar} is up-to-date (${project.source.dir}/src/** ${jar.uptodate})" />
   </target>
 
-  <target name="jar.config" depends="init,jar.check" if="config.available,jar.uptodate">
+  <target name="jar.config" depends="init,jar.check" if="config.available" unless="jar.uptodate">
     <copy todir="${project.build.dir}/classes">
       <mapper type="glob" from="*" to="org/mmbase/config/*" />
       <fileset dir="${project.config.dir}" includes="${project.config.jar.includes}">
