@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.5 2003-11-19 12:14:45 michiel Exp $
+   @version $Id: log4j.xml,v 1.6 2003-11-25 12:13:53 robmaris Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -90,7 +90,7 @@
   -->
   
   <appender name="sqllog" class="org.apache.log4j.FileAppender" >
-    <param name="File" value="&logdir;mmbase-sql.log" />
+    <param name="File" value="/tmp/mmbase-sql.log" />
     <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} %m%n" />
