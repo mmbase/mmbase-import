@@ -62,7 +62,20 @@
             </mm:url>' ><mm:fieldinfo type="guiname" /></a>
          </th>
        </mm:fieldlist>
-       <th><%@include file="pager.jsp" %></th>
+       <th><a title="order" href='<mm:url referids="search,parameters,$parameters"><mm:param name="orderby">number</mm:param>
+       <mm:compare referid="orderby" value="number">
+         <mm:write referid="directions">
+           <mm:compare value="UP">
+             <mm:param name="directions">DOWN</mm:param>
+           </mm:compare>
+           <mm:compare value="DOWN">
+             <mm:param name="directions">UP</mm:param>
+           </mm:compare>
+         </mm:write>
+       </mm:compare>
+     </mm:url>'>
+     *</a>
+          <%@include file="pager.jsp" %></th>
      </tr>
 
 
