@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.86 2004-02-13 10:59:00 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.87 2004-02-13 13:11:35 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -555,7 +555,7 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
         session = (HttpSession) pageContext.getSession();
         if (session != null) { // some people like to disable their session
             Object c = session.getAttribute(getSessionName());
-            if (! (c instanceof Cloud)) {
+            if (c != null && ! (c instanceof Cloud)) {
                 throw new TaglibException("The session variable '" + getSessionName() + "' is not of type Cloud (but it is a '" + c.getClass().getName() + "'), and perhaps is used for another goal. This error could be avoided by use of the 'sessionname' attribute of the cloud-tag.");
             }
             cloud = (Cloud) c;
