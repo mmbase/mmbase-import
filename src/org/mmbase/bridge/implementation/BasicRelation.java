@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicRelation.java,v 1.21 2002-07-26 08:47:33 vpro Exp $
+ * @version $Id: BasicRelation.java,v 1.22 2002-10-03 12:28:11 pierre Exp $
  */
 public class BasicRelation extends BasicNode implements Relation {
     private static Logger log = Logging.getLoggerInstance(BasicRelation.class.getName());
@@ -190,14 +190,9 @@ public class BasicRelation extends BasicNode implements Relation {
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof Relation) && (o.hashCode()==hashCode());
-    }
+        return (o instanceof Relation) &&
+              getNumber()==((Node)o).getNumber() &&
+              cloud.equals(((Node)o).getCloud());
+     }
 
-    /**
-     * Returns the object's hashCode.
-     * This effectively returns th objectnode's number
-     */
-    public int hashCode() {
-        return getNumber();
-    }
 }

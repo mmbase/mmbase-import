@@ -13,9 +13,8 @@ import org.mmbase.bridge.*;
 import org.mmbase.cache.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
-import org.mmbase.module.corebuilders.TypeDef;
 import org.mmbase.util.StringTagger;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.SizeMeasurable;
@@ -26,9 +25,9 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.69 2002-09-23 13:53:42 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.70 2002-10-03 12:28:10 pierre Exp $
  */
-public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
+public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
 
     // lastRequestId
@@ -91,7 +90,7 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
         return sizeof.sizeof(transactions) + sizeof.sizeof(nodeManagerCache) + sizeof.sizeof(relationManagerCache) + sizeof.sizeof(multilevel_cache);
     }
 
-    
+
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
      */
@@ -166,14 +165,22 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
         int nodenr=node.getNumber();
         if (nodenr==-1) {
             int nodeid = Integer.parseInt(nodenumber);
-            if (node.parent instanceof InsRel) {
+            if (node.parent instanceof TypeDef) {
+                return new BasicNodeManager(node, this, nodeid);
+            } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
+                return new BasicRelationManager(node, this, nodeid);
+            } else if (node.parent instanceof InsRel) {
                 return new BasicRelation(node, nm, nodeid);
             } else {
                 return new BasicNode(node, nm, nodeid);
             }
         } else {
             this.verify(Operation.READ,nodenr);
-            if (node.parent instanceof InsRel) {
+            if (node.parent instanceof TypeDef) {
+                return new BasicNodeManager(node, this);
+            } else if (node.parent instanceof RelDef || node.parent instanceof TypeRel) {
+                return new BasicRelationManager(node, this);
+            } else if (node.parent instanceof InsRel) {
                 return new BasicRelation(node, nm);
             } else {
                 return new BasicNode(node, nm);
@@ -242,7 +249,7 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
                 return false;
             }
             int nodenr=node.getNumber();
-            if (nodenr==-1) { 
+            if (nodenr==-1) {
                return true;  // temporary node
             } else {
                return check(Operation.READ,node.getNumber()); // check read access
@@ -637,7 +644,7 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
             String searchDir, boolean distinct) {
 
         // begin of check invalid search command
-        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");        
+        org.mmbase.util.Encode encoder = new org.mmbase.util.Encode("ESCAPE_SINGLE_QUOTE");
         // if(startNodes != null) startNodes = encoder.encode(startNodes);
         // if(nodePath != null) nodePath = encoder.encode(nodePath);
         // if(fields != null) fields = encoder.encode(fields);
@@ -648,7 +655,7 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
             throw new BridgeException("invalid contrain:" + constraints);
         }
         // end of check invalid search command
-        
+
         String sdistinct="";
         int search = ClusterBuilder.SEARCH_BOTH;
         String pars ="";
@@ -682,6 +689,10 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
         if (distinct) {
             sdistinct="YES";
             pars+=" DISTINCT='YES'";
+        }
+
+        if (searchDir!=null) {
+          pars+=" SEARCH='"+searchDir+"'";
         }
 
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
@@ -785,7 +796,7 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
 
     /** returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) */
     boolean validConstraints(String contraints) {
-        // first remove all the escaped "'" ('' occurences) chars...                      
+        // first remove all the escaped "'" ('' occurences) chars...
         String remaining = contraints;
         while(remaining.indexOf("''") != -1) {
             int start = remaining.indexOf("''");
@@ -798,9 +809,9 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
             else {
                 remaining = remaining.substring(0, start);
             }
-        }        
+        }
         // assume we are not escaping... and search the string..
-        // Keep in mind that at this point, the remaining string could contain different information 
+        // Keep in mind that at this point, the remaining string could contain different information
         // than the original string. This doesnt matter for the next sequence...
         // but it is important to realize!
         while(remaining.length() > 0) {
@@ -813,13 +824,13 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
 		    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints);
 		    return false;
 		}
-            
+
 		String notEscaped = remaining.substring(0, start);
 		if(notEscaped.indexOf(';') != -1) {
 		    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nnot excaped:" + notEscaped);
 		    return false;
 		}
-                        
+
 		int stop = remaining.substring(start + 1).indexOf('\'');
 		if(stop < 0) {
 		    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + contraints + "\nlast escaping:" + remaining.substring(start + 1));
@@ -827,12 +838,12 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
 		}
 		// we added one to to start, thus also add this one to stop...
 		stop = start + stop + 1;
-            
+
 		// when the last character was the stop of our escaping
 		if(stop == remaining.length())  {
 		    return true;
 		}
-            
+
 		// cut the escaped part from the string, and continue with resting sting...
 		remaining = remaining.substring(stop + 1);
 	    }
@@ -846,4 +857,38 @@ public class BasicCloud implements Cloud, Cloneable, SizeMeasurable {
         }
         return true;
     }
+
+    /**
+     * Compares this cloud to the passed object.
+     * Returns 0 if they are equal, -1 if the object passed is a Cloud and larger than this cloud,
+     * and +1 if the object passed is a Cloud and smaller than this cloud.
+     * @todo There is no specific order in which clouds are ordered at this moment.
+     *       Currently, all clouds within one CloudContext are treated as being equal.
+     * @param o the object to compare it with
+     */
+    public int compareTo(Object o) {
+        int h1=((Cloud)o).getCloudContext().hashCode();
+        int h2=cloudContext.hashCode();
+        if (h1>h2) {
+            return -1;
+        } else if (h1<h2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * Compares this cloud to the passed object, and returns true if they are equal.
+     * @todo Add checks for multiple clouds in the same cloudcontext
+     *       Currently, all clouds within one CloudContext are treated as being equal.
+     * @param o the object to compare it with
+     */
+    public boolean equals(Object o) {
+        // XXX: Currently, all clouds (i.e. transactions/user clouds) within a CloudContext
+        // are treated as the 'same' cloud. This may change in future implementations
+        return (o instanceof Cloud) &&
+               cloudContext.equals(((Cloud)o).getCloudContext());
+    }
+
 }

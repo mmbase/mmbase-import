@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of relations
  *
  * @author Pierre van Rooden
- * @version $Id: BasicRelationList.java,v 1.9 2002-09-25 14:57:48 pierre Exp $
+ * @version $Id: BasicRelationList.java,v 1.10 2002-10-03 12:28:11 pierre Exp $
  */
 public class BasicRelationList extends BasicNodeList implements RelationList {
     private static Logger log = Logging.getLoggerInstance(BasicRelationList.class.getName());
@@ -35,10 +35,10 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
     /**
      * ...
      */
-    BasicRelationList(Collection c, Cloud cloud, NodeManager nodemanager) {
+    BasicRelationList(Collection c, BasicCloud cloud, NodeManager nodemanager) {
         super(c,cloud,nodemanager);
     }
-    
+
     protected Object validate(Object o) throws ClassCastException {
         if (o instanceof MMObjectNode) {
             if (((MMObjectNode) o).getBuilder() instanceof org.mmbase.module.corebuilders.InsRel) {
@@ -72,7 +72,7 @@ public class BasicRelationList extends BasicNodeList implements RelationList {
         return new BasicRelationIterator(this);
     }
 
-    public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {        
+    public class BasicRelationIterator extends BasicNodeIterator implements RelationIterator {
         BasicRelationIterator(BasicList list) {
             super(list);
         }

@@ -21,28 +21,28 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.15 2002-09-25 14:57:48 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.16 2002-10-03 12:28:10 pierre Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static Logger log = Logging.getLoggerInstance(BasicNodeList.class.getName());
-    protected Cloud cloud;
+    protected BasicCloud cloud;
     protected NodeManager nodemanager = null;
-    
+
     BasicNodeList() {
         super();
     }
 
-    BasicNodeList(Collection c, Cloud cloud) {
+    BasicNodeList(Collection c, BasicCloud cloud) {
         super(c);
         this.cloud=cloud;
     }
 
-    BasicNodeList(Collection c, Cloud cloud, NodeManager nodemanager) {
+    BasicNodeList(Collection c, BasicCloud cloud, NodeManager nodemanager) {
         super(c);
         this.nodemanager = nodemanager;
         this.cloud=cloud;
     }
-    
+
     /**
      *
      */
@@ -54,7 +54,7 @@ public class BasicNodeList extends BasicList implements NodeList {
         MMObjectBuilder coreBuilder = coreNode.getBuilder();
         Node node = null;
         NodeManager manager = nodemanager;
-        if(manager == null)  {            
+        if(manager == null)  {
             manager = cloud.getNodeManager(coreBuilder.getTableName());
         }
         if(coreBuilder instanceof InsRel) {
@@ -92,17 +92,17 @@ public class BasicNodeList extends BasicList implements NodeList {
 
     /**
      *
-     */    
+     */
     public NodeIterator nodeIterator() {
         return new BasicNodeIterator(this);
-    }   
-     
-     
+    }
+
+
     public class BasicNodeIterator extends BasicIterator implements NodeIterator {
         BasicNodeIterator(BasicList list) {
             super(list);
         }
-                
+
         public Node nextNode() {
             return (Node)next();
         }
