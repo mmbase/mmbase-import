@@ -51,7 +51,7 @@ several MMBase-checkouts.
 
 ============================================================================ -->
 
-<project name="MMBase" default="usage" basedir=".">
+<project name="MMBase" default="jar" basedir=".">
 
   <!-- =================================================================== -->
   <!-- Init                                                                -->
@@ -93,10 +93,15 @@ several MMBase-checkouts.
   <property name="applications.home"  value="${source.dir}/applications" />
 
 
-  <property name="source-config.dir"         location="${source.dir}/config"/>
-  <property name="source-config-builders.dir" location="${source.dir}/config/builders;${source.dir}/config/applications"/>
+  <property name="source-config.dir"          value="${source.dir}/config"/>
+  <property name="source-config-builders.dir" value="${source.dir}/config/builders;${source.dir}/config/applications"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="source-html.dir"           location="${source.dir}/html"/>
+  <property name="source-html.dir"            value="${source.dir}/html"/>
+
+  <property name="web.xml"                    value="web.xml"/> <!-- set it to web-2.4.xml (in build.properties) if you want a web-app 2.4 web.xml -->
+  <property name="web.xml.path"               value="${source-html.dir}/WEB-INF/${web.xml}"/>
+
+
   <property name="source-documentation.dir"  location="${source.dir}/documentation" />
   <property name="source-src.dir"       location="${source.dir}/src"/>
   <property name="generated-source-src.dir"       location="${build.dir}/src"/>
@@ -119,21 +124,6 @@ several MMBase-checkouts.
     <property name="builddate" value="${DSTAMP}"/>
   </target>
 
-
-  <!-- =================================================================== -->
-  <!-- Help on usage                                                       -->
-  <!-- =================================================================== -->
-  <target name="usage" description="Help on usage">
-    <echo message=""/>
-    <echo message="MMBase Build file"/>
-    <echo message="*************************************************************"/>
-    <echo message=""/>
-    <echo message="Use the -projecthelp option to see a short description for"/>
-    <echo message="the main targets"/>
-    <echo message=""/>
-    <echo message="*************************************************************"/>
-    <echo message=""/>
-  </target>
 
   <!-- =================================================================== -->
   <!-- Create the source distribution                                      -->
@@ -307,6 +297,10 @@ builddate=${builddate}
     <copy file="${javamail.jar}"       todir="${release.lib.dir}" />
     -->
     <copy file="${javaactivation.jar}"  todir="${release.lib.dir}" />
+
+    <copy file="${taglibs-standard-jstl.jar}"     todir="${release.lib.dir}" />
+    <copy file="${taglibs-standard-standard.jar}" todir="${release.lib.dir}" />
+
     <copy file="${mmbase.jar}"         todir="${release.lib.dir}" />
 
     <!-- copy licenses for included jars -->
@@ -722,7 +716,7 @@ Build-compiler: ${build.compiler}
 
   <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,applications">
 
-    <war warfile="${build.dir}/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml" duplicate="preserve">
+    <war warfile="${build.dir}/mmbase.war" webxml="${web.xml.path}" duplicate="preserve">
       <lib dir="${release.lib.dir}" />
       <!-- our file's on the server -->
       <fileset dir="${build.dir}/mmbase/mmbase-webapp">
@@ -734,7 +728,7 @@ Build-compiler: ${build.compiler}
 
   <target name="minimalistic.war" description="Create a minimalistic MMBase war-file"
           depends="lib.release,jar,minimalistic.war.config">
-    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${web.xml.path}">
       <lib dir="${release.lib.dir}" />
       <!-- here our config has to be.. -->
       <webinf dir="${build.dir}/min">
@@ -861,9 +855,13 @@ Build-compiler: ${build.compiler}
     <copy todir="${webapp.dir}">
       <fileset dir="${source-html.dir}" defaultexcludes="yes">
         <exclude name="WEB-INF/classes/**" />
+        <exclude name="WEB-INF/web*.xml" />
         <exclude name="mmdocs/**" />
       </fileset>
     </copy>
+
+    <copy tofile="${webapp.dir}/WEB-INF/web.xml" file="${web.xml.path}" />
+
   </target>
 
   <target name="web.documentation" if="do.documentation">
@@ -957,6 +955,21 @@ Build-compiler: ${build.compiler}
       <param name="expandedfile" value="${fileupload.jar}"/>
     </antcall>
 
+
+    <echo message="JSTL" />
+    <antcall target="downloadgz">
+      <param name="sourcefile"   value="${taglibs-standard.loc}"/>
+      <param name="destfile"     value="${taglibs-standard.dest}"/>
+      <param name="expandedfile" value="${taglibs-standard-jstl.jar}"/>
+    </antcall>
+
+    <echo message="taglib standard" />
+    <antcall target="downloadgz">
+      <param name="sourcefile"   value="${taglibs-standard.loc}" />
+      <param name="destfile"     value="${taglibs-standard.dest}" />
+      <param name="expandedfile" value="${taglibs-standard-standard.jar}"/>
+    </antcall>
+
   </target>
 
   <target name="proxyflags" depends="init">
@@ -1022,6 +1035,7 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <target name="clean.expand" description="Clean the expand directory">
     <delete dir="${expand.dir}"/>
+    <delete file="${download.dir}/file.tar" />
   </target>
 
   <target name="xsltransformer" depends="init.compile">
