@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
+<builder maintainer="mmbase.org" version="0" extends="mediafragments">
+
+<status>active</status>
+
+<classfile>org.mmbase.module.builders.media.MediaFragments</classfile>
+
+<names>
+	<!-- singles per language as defined by ISO 639 -->
+	<singular xml:lang="nl">Videofragment</singular>
+	<singular xml:lang="en">Video_fragment</singular>
+
+	<!-- multiple per language as defined by ISO 639 -->
+	<plural xml:lang="nl">Videofragmenten</plural>
+	<plural xml:lang="en">Video_fragments</plural>
+</names>
+
+<descriptions>
+    <!-- descriptions per language as defined by ISO 639  -->
+	<description xml:lang="nl">Een video Fragment beschrijft een stukje video.</description>
+	<description xml:lang="en">A video Fragment describes one piece of video.</description>
+</descriptions>
+
+</builder>
