@@ -63,15 +63,15 @@ public class UrlTag extends ContextReferrerTag {
         if (keys == null) { // all keys not in session
             keys = getContextTag().getKeys(ContextTag.TYPE_POSTPARAMETERS);
         }
-        String connector = (show.indexOf('?') == -1 ? "?" : "&");
+        String connector = (show.indexOf('?') == -1 ? "?" : "&amp;");
 
         Iterator i = keys.iterator();
         while (i.hasNext()) {
             String key = (String)i.next();
             String value = getContextTag().getObjectAsString(key);
             if (value != null) {
-                show += connector + key + "=" + getContextTag().getObjectAsString(key);
-                connector = "&";
+                show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", getContextTag().getObjectAsString(key));
+                connector = "&amp;";
             }
         }
         
@@ -80,7 +80,7 @@ public class UrlTag extends ContextReferrerTag {
             while (i.hasNext()) {
                 String keyvalue = (String) i.next();
                 show += connector + keyvalue;
-                connector = "&";
+                connector = "&amp;";
             }
         }
         
