@@ -15,8 +15,8 @@ import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.servlet.BridgeServlet;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.Arguments;
-import org.mmbase.util.Argument;
+import org.mmbase.util.*;
+
 
 /**
  * Some builders are associated with a servlet. Think of images and attachments.
@@ -25,7 +25,7 @@ import org.mmbase.util.Argument;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractServletBuilder.java,v 1.18 2003-07-03 09:04:55 pierre Exp $
+ * @version $Id: AbstractServletBuilder.java,v 1.19 2003-11-10 21:10:51 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractServletBuilder extends MMObjectBuilder {
@@ -124,10 +124,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
      * directly after this string.
      *
      * @param root The path to the application's root.
-     * @param fileName Optional fileName. Will be added to the url, but it will not influence the servlet.
      */
-
-    protected String getServletPath(String root, String fileName) {
+   
+    protected String getServletPath(String root) { 
         if (servletPath == null) {
             servletPath = getServletPathWithAssociation(getAssociation(), "");
             if (log.isServiceEnabled()) {
@@ -135,14 +134,10 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             }
         }
         String result;
-        if (fileName == null) {
-            result = root + servletPath;
+        if (root.endsWith("/") && servletPath.startsWith("/")) {
+            result = root + servletPath.substring(1);
         } else {
-            if (servletPath.endsWith("/")) {
-                result =  root + servletPath + fileName;
-            } else {
-                result =  root + servletPath;
-            }
+            result = root + servletPath;
         }
 
         // add '?' if it wasn't already there (only needed if not terminated with /)
@@ -150,16 +145,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
         return result;
     }
 
-
-    /**
-     * Returns the path to the  servlet.
-     * @see #getServletPath(String, String)
-     */
-    protected String getServletPath(String fileName) {
-        return getServletPath(MMBaseContext.getHtmlRootUrlPath(), fileName);
-    }
     protected String getServletPath() {
-        return getServletPath(MMBaseContext.getHtmlRootUrlPath(), null);
+        return getServletPath(MMBaseContext.getHtmlRootUrlPath());
     }
 
     /**
@@ -234,7 +221,8 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             String session = a.getString("session");
 
             String argument = (String) a.get("argument");
-           
+            // argument represents the node-number
+
             if (argument == null) {                                
                 // second argument, which field to use, can for example be 'number' (the default)
                 String fieldName   = (String) a.get("field");
@@ -253,7 +241,7 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (context == null) { 
                 servlet.append(getServletPath()); // use 'absolute' path (starting with /)
             } else {
-                servlet.append(getServletPath(context, null));
+                servlet.append(getServletPath(context));
             }
             if (usesBridgeServlet && ! session.equals("")) {
                 servlet.append("session=" + session + "+");
@@ -263,7 +251,9 @@ public abstract class AbstractServletBuilder extends MMObjectBuilder {
             if (servlet.toString().endsWith("?") ||  "".equals(fileName)) {
                 return servlet.append(argument).toString();
             } else {
-                servlet.append(fileName).append('?').append(argument);
+                StringObject fn = new StringObject(fileName);
+                fn.replace(" ", "_");
+                servlet.append(argument).append('/').append(fn.toString());
                 return servlet.toString();
             }
         } else if (function.equals("servletpathof")) {
