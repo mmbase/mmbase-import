@@ -33,24 +33,20 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;
-    private static boolean commit = true;
-
+    private boolean commit = true;    
     private String name = null;
+    private String jspvar = null;
 
-    static final String DEFAULT_TRANS_JSPVAR = "trans";
-    private String jspvar = DEFAULT_TRANS_JSPVAR;
-
-    public void setCommitonclose(boolean c) {
-        log.debug("Set commitonclose to " + c);
-        commit = c;
+    public void setCommitonclose(String c) throws JspTagException { 
+        commit = getAttributeBoolean(c).booleanValue();
     }
 
     public Cloud getCloudVar() throws JspTagException {
         return transaction;
     }
 
-    public void setName(String s) {
-        name = s;
+    public void setName(String s) throws JspTagException {
+        name = getAttributeValue(s);
     }
 
     public void setJspvar(String jv) {
@@ -58,12 +54,13 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
     }
 
     /**
-    *  Creates the transaction.
-    */
+     *  Creates the transaction.
+     */
     public int doStartTag() throws JspTagException{
+        log.debug("value of commit: " + commit);
         transaction =null;
         if (getId() != null) { // look it up from session
-            log.debug("looking up transaction in session");
+            log.debug("looking up transaction in context");
             try {
                 transaction = (Transaction) getObject(getId());
                 log.debug("found " + transaction);
@@ -79,7 +76,9 @@ public class TransactionTag extends CloudReferrerTag implements CloudProvider {
                 getContextTag().register(getId(), transaction);
             }
         }
-        pageContext.setAttribute(jspvar, transaction);
+        if (jspvar != null) {
+            pageContext.setAttribute(jspvar, transaction);
+        }
         return EVAL_BODY_TAG;
     }
 
