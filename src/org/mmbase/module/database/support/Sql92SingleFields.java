@@ -23,15 +23,15 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92SingleFields.java,v 1.3 2004-01-27 12:04:49 pierre Exp $
+ * @version $Id: Sql92SingleFields.java,v 1.4 2004-03-11 23:25:03 eduard Exp $
  */
 public abstract class Sql92SingleFields extends BaseJdbc2Node implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92SingleFields.class.getName());
     protected MMBase mmb;
 
     // conversion related..
-    private HashMap disallowed2allowed;
-    private HashMap allowed2disallowed;
+    protected HashMap disallowed2allowed;
+    protected HashMap allowed2disallowed;
 
     // how to create new fields?
     private HashMap typeMapping;
