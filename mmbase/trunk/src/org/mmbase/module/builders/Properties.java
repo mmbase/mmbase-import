@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Properties.java,v 1.5 2000-03-30 13:11:33 wwwtech Exp $
+	$Id: Properties.java,v 1.6 2000-11-14 14:52:11 gerard Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/03/30 13:11:33  wwwtech
+	Rico: added license
+	
 	Revision 1.4  2000/03/29 10:59:24  wwwtech
 	Rob: Licenses changed
 	
@@ -32,7 +35,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Id: Properties.java,v 1.5 2000-03-30 13:11:33 wwwtech Exp $
+ * @version $Id: Properties.java,v 1.6 2000-11-14 14:52:11 gerard Exp $
  */
 public class Properties extends MMObjectBuilder implements MMBaseObserver {
 
@@ -40,28 +43,12 @@ public class Properties extends MMObjectBuilder implements MMBaseObserver {
 	private boolean debug = true;
 
 	public String getGUIIndicator(MMObjectNode node) {
-		String str=node.getStringValue("name");
+		String str=node.getStringValue("key");
 		if (str.length()>15) {
 			return(str.substring(0,12)+"...");
 		} else {
 			return(str);
 		}
-	}
-
-	public String getGUIIndicator(String field,MMObjectNode node) {
-		/*
-		if (field.equals("storage")) {
-			int val=node.getIntValue("storage");
-			switch(val) {
-				case 1: return("Muziek");
-				case 2: return("Muziek geen backup");
-				case 3: return("Spraak");
-				case 4: return("Spraak geen backup");
-				default: return("Onbepaald");
-			}
-		}
-		*/
-		return(null);
 	}
 	
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
