@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
  */
 /*
-$Id: JDBC.java,v 1.17 2001-03-27 11:13:30 vpro Exp $
+$Id: JDBC.java,v 1.18 2001-06-03 22:22:30 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.17  2001/03/27 11:13:30  vpro
+Implemented log4j
+
 Revision 1.15  2000/12/30 14:00:59  daniel
 added switch for debug
 
@@ -66,7 +69,7 @@ import org.mmbase.util.logging.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.17 2001-03-27 11:13:30 vpro Exp $
+ * @version $Id: JDBC.java,v 1.18 2001-06-03 22:22:30 daniel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -315,7 +318,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      * User interface stuff
      */
 
-    public Vector getList(HttpServletRequest requestInfo,StringTagger tagger, String value) throws ParseException {
+    public Vector getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
@@ -360,7 +363,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 } else {
                     results.addElement(name.substring(name.lastIndexOf('/')+1));
                 }
-                results.addElement(realcon.toString());
+                results.addElement(realcon.getStateString());
                 results.addElement(""+realcon.getLastSQL());
                 results.addElement(""+realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
@@ -373,8 +376,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
                 } else {
                     results.addElement(name.substring(name.lastIndexOf('/')+1));
                 }
-                results.addElement(realcon.toString());
-                results.addElement("&nbsp;");
+                results.addElement(realcon.getStateString());
+                results.addElement(""+realcon.getLastSQL());
                 results.addElement(""+realcon.getUsage());
                 //results.addElement(""+pool.getStatementsCreated(realcon));
             }

@@ -32,6 +32,13 @@ public class MultiConnection implements Connection
    private int startTime=0;
    String lastSql;
    private int usage=0;
+   public int state=0;
+
+    // states
+    public final static int CON_UNUSED = 0;
+    public final static int CON_BUSY = 1;
+    public final static int CON_FINISHED = 2;
+    public final static int CON_FAILED = 3;
 
   /**
    *
@@ -39,14 +46,34 @@ public class MultiConnection implements Connection
    MultiConnection(MultiPool parent,Connection con) {
 		this.con=con;
 		this.parent=parent;
+		state=CON_UNUSED;
    } 
 
-   /**
-	*/
-   public void setLastSQL(String sql) {
-		lastSql=sql;
+   public String getStateString() {
+	if (state==CON_FINISHED) {
+		return("Finished");
+	} else if (state==CON_BUSY) {
+		return("Busy");
+	} else if (state==CON_FAILED) {
+		return("Failed");
+	} else if (state==CON_UNUSED) {
+		return("Unused");
+	}
+	return("Unknown");
    }
 
+   /**
+   */
+   public void setLastSQL(String sql) {
+		lastSql=sql;
+		state=CON_BUSY;
+   }
+
+   /**
+   * i changed this jun 2001, since i didn't understand
+   * the logic. I changed it to keep track of a state
+   * daniel.
+   */
    public void delLastSQL() {
 		lastSql=null;
    }
@@ -124,6 +151,7 @@ public class MultiConnection implements Connection
    * Close connections
    */
    public void close() throws SQLException {
+		state=CON_FINISHED;
 		parent.putBack(this);
    }
 
