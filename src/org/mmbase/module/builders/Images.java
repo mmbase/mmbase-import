@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.84 2003-12-17 20:59:37 michiel Exp $
+ * @version $Id: Images.java,v 1.85 2004-02-05 12:02:59 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -83,6 +83,8 @@ public class Images extends AbstractImages {
      * checks for 'icaches', inits the request-processor-pool.
      */
     public boolean init() {
+        if (oType != -1) return true; // inited already
+
         if (!super.init()) return false;
 
         String tmp;
@@ -566,7 +568,7 @@ public class Images extends AbstractImages {
         // get  the bytes from the Object (assume in field handle)
         byte[] inputPicture = node.getByteValue("handle");
         if(inputPicture == null) {
-            log.warn("ConvertImage: Image Node is bad "+objectId);
+            log.warn("ConvertImage: Image Node is bad " + objectId);
             return null;
         }
 
