@@ -31,24 +31,18 @@
     	</form>
     </mm:compare>
 
-	<mm:import id="where" />
+    <mm:notpresent referid="search">
+        <mm:import id="where" />
+    </mm:notpresent>
     <!-- ordered to search with form button 'search'. Following are some tricks to get the where right.-->    
-    <mm:present referid="search">		
-    	<mm:import id="tempwhere" jspvar="where">
-	    <mm:fieldlist id="search_form" nodetype="${node_type}" type="search">
-	    	<mm:fieldinfo type="usesearchinput" > AND </mm:fieldinfo>
-	    </mm:fieldlist>
-    	</mm:import>
-	<% 
-	// if there is an 'AND' our query was not empty, thus this well mean it endswith an 'AND' so now remove the last 'AND'
-	int lastAnd = where.lastIndexOf("AND");
-	if(lastAnd != -1) where = where.substring(0, lastAnd);
-    	%>
-		<mm:remove referid="where" />
-    	<mm:import id="where"><%= where %></mm:import>
+    <mm:present referid="search">
+    	<mm:import id="where"><mm:context>
+	    <mm:fieldlist id="search_form" nodetype="$node_type" type="search"><mm:fieldinfo type="usesearchinput"><mm:isnotempty><mm:present referid="notfirst"> AND </mm:present><mm:notpresent referid="notfirst"><mm:import id="notfirst">yes</mm:import></mm:notpresent><mm:write /></mm:isnotempty></mm:fieldinfo></mm:fieldlist>
+    	</mm:context></mm:import>
     </mm:present>
     <!-- else -->
     
+     where: |<mm:write referid="where" />|
     <% boolean mayLink = false; %>
     <mm:present referid="maylink">
     	<% mayLink = true; %>
@@ -58,17 +52,16 @@
     	<table width="100%" border="0">
 	    <!-- list table -->
     	    <tr align="left">
-    	    	<mm:fieldlist nodetype="${node_type}" type="list">
+    	    	<mm:fieldlist nodetype="$node_type" type="list">
             	    <th><mm:fieldinfo type="guiname" /> <small>(<mm:fieldinfo type="name" />)</small></th>
     	    	</mm:fieldlist>
     	    	<th>&nbsp;</th>			
     	    	<th>&nbsp;</th>
     	    </tr>
-    	    <mm:listnodes id="sn" type="${node_type}" directions="DOWN"   orderby="number"
-            	offset="${+$page*$config.page_size}"  max="${+$config.page_size +1}"
+    	    <mm:listnodes id="sn" type="$node_type" directions="DOWN"   orderby="number"
+            	offset="${+$page*$config.page_size}"  max="$config.page_size"
             	jspvar="sn"
-            	constraints="${where}">
-            <mm:last inverse="true">
+            	constraints="$where">
      	    <tr>
      	    	<mm:fieldlist type="list">
 		    <td class="listdata"><mm:fieldinfo type="guivalue" />&nbsp;</td>
@@ -97,13 +90,12 @@
 		%>
 		</td>
     	    </tr>	
-            </mm:last>
             <mm:last>
-              <mm:index><mm:compare value="${+$config.page_size+1}">
+              <mm:index><mm:compare referid2="config.page_size">
                   <mm:import id="next_page">jes</mm:import>
               </mm:compare>
               </mm:index>
-			</mm:last>
+	    </mm:last>
     	    </mm:listnodes>
     	</table>
 <table> 
