@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.91 2003-05-26 14:54:35 pierre Exp $
+  @version $Id: wizard.xsl,v 1.92 2003-05-28 11:45:39 pierre Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -17,9 +17,6 @@
   <xsl:variable name="defaultsearchage">7</xsl:variable>
   <xsl:variable name="searchagetype">combobox</xsl:variable>
   <xsl:param name="objectnumber"></xsl:param>
-
-
-  <xsl:param name="title"></xsl:param>
 
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of wizard

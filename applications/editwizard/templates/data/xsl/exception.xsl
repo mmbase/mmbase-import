@@ -3,15 +3,17 @@
   xmlns:xsl  ="http://www.w3.org/1999/XSL/Transform"
 >
   <!--
-  error.xls
+  exception.xls
 
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: exception.xsl,v 1.1 2003-05-13 14:04:01 pierre Exp $
+  @version $Id: exception.xsl,v 1.2 2003-05-28 11:45:38 pierre Exp $
   -->
 
-  <xsl:param name="backPage" />
+  <xsl:import href="xsl/base.xsl" />
+
+  <xsl:param name="backpage" />
 
   <xsl:template name="errortitle">
 	  DON'T PANIC - But Something Went Wrong
@@ -32,9 +34,8 @@
 		</head>
 		<body>
 			<xsl:call-template name="errormessage" />
-
-			<xsl:if test="backPage != ''">
-				<p><a href="${backPage}">Return Home.</a></p>
+			<xsl:if test="$backpage!=''">
+				<p><a href="{$backpage}">Return Home.</a></p>
 			</xsl:if>
 			<h3 style="color:#ff0000;">Error: <xsl:value-of select="exception" /></h3>
 			<h3>Expanded error:</h3>
