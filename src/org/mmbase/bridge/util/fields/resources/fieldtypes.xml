@@ -14,49 +14,24 @@
       <class>org.mmbase.core.processors.XMLValidate</class>
     </setprocessor>
 
-    <!-- and on fields of certain 'guitype' =~ specialization -->
-    <specialization id="mmxf">
-      <setprocessor type="string">
-        <class config="RICH">org.mmbase.util.transformers.XmlField</class>
-        <class>org.mmbase.core.processors.MMXFValidate</class>
-      </setprocessor>
-      <getprocessor type="string">
-        <class>org.mmbase.core.processors.UnXML</class>
-      </getprocessor>
-    </specialization>
-
   </fieldtype>
 
   
   <fieldtype id="string">
-    <specialization id="fillotherfield">
-      <setprocessor type="string">
-        <class>org.mmbase.bridge.util.fields.ComplicatedAndVeryObfucatingFillAlsoOtherFieldsProcessor</class>
+    <specialization id="md5password">
+      <setprocessor>
+        <class>org.mmbase.util.transformers.MD5</class>
       </setprocessor>
     </specialization>
-    <specialization id="i18n">
+    <specialization id="lowercaseuppercase"><!-- silly example to test -->
       <setprocessor>
-        <class>org.mmbase.core.processors.I18N</class>
+        <class>org.mmbase.util.transformers.LowerCaser</class>
       </setprocessor>
       <getprocessor>
-        <class>org.mmbase.core.processors.I18N</class>
+        <class>org.mmbase.util.transformers.UpperCaser</class>
       </getprocessor>
     </specialization>
   </fieldtype>
 
   
-  <fieldtype id="integer">
-    <specialization id="myenum">
-      <setprocessor type="integer">
-        <class>org.mmbase.core.processors.EnumChecker</class>
-      </setprocessor>
-    </specialization>
-  </fieldtype>
-
-
-  <fieldtype id="node">
-    <setprocessor type="integer">
-      <class>org.mmbase.core.processors.NodeExistsChecker</class>
-    </setprocessor>
-  </fieldtype>
 </fieldtypes>
