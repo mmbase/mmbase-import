@@ -23,7 +23,6 @@
 </head>
 <body>
 
-<mm:treeinclude page="/education/print.jsp" objectlist="$includePath" referids="$referids"/>
 
 
 <mm:node number="$learnobject">
