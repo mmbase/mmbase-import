@@ -29,7 +29,7 @@ import org.mmbase.util.FileWatcher;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.10 2003-06-12 10:07:35 vpro Exp $
+ * @version $Id: Wizard.java,v 1.74.2.11 2003-06-12 13:05:21 vpro Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -43,9 +43,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         wizardSchemaCache = new WizardSchemaCache();
         wizardSchemaCache.putCache();
     }
-    // Some of these variables are placed public, for debugging reasons.
-    private Document preform;
-
     /**
      * The cloud used to connect to MMBase
      */
@@ -147,7 +144,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     }
     public int getByteSize(org.mmbase.util.SizeOf sizeof) {
         return
-            sizeof.sizeof(preform) +
             sizeof.sizeof(cloud)   +
             sizeof.sizeof(uriResolver) +
             sizeof.sizeof(schema) +
@@ -236,15 +232,23 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         return schema;
     }
 
-    public Document getPreform() {
-        return preform;
+    public Document getPreForm() throws WizardException {
+        return getPreForm(wizardName);
     }
+
+    public Document getPreForm(String instanceName) throws WizardException {
+        Node datastart = Utils.selectSingleNode(data, "/data/*");
+        return createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
+    }
+
     public boolean error() {
         return errors.size() > 0;
     }
+
     public Iterator getErrors() {
         return errors.iterator();
     }
+
     public String getErrorString() {
         String str = "";
         Iterator iter = getErrors();
@@ -430,10 +434,9 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
      */
     public void writeHtmlForm(Writer out, String instanceName) throws WizardException, TransformerException {
         if (log.isDebugEnabled()) log.debug("writeHtmlForm for " + instanceName);
-        Node datastart = Utils.selectSingleNode(data, "/data/*");
         // Build the preHtml version of the form.
-        preform = createPreHtml(schema.getDocumentElement(), currentFormId, datastart, instanceName);
-        Validator.validate(preform, schema);
+        Document preForm = getPreForm(instanceName); 
+        Validator.validate(preForm, schema);
         Map params = new HashMap(variables);
         params.put("ew_context", context);
         // params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
@@ -444,7 +447,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         params.put("cloud",      cloud);
         if (templatesDir != null) params.put("templatedir",  templatesDir);
 
-        Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
+        Utils.transformNode(preForm, wizardStylesheetFile, uriResolver, out, params);
     }
 
     /**

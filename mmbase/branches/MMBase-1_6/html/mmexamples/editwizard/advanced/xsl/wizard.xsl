@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard wizard.xsl 
 
-  @version   $Id: wizard.xsl,v 1.2.2.3 2003-05-26 14:50:30 vpro Exp $
+  @version   $Id: wizard.xsl,v 1.2.2.4 2003-06-12 13:08:55 vpro Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 
@@ -59,7 +59,7 @@
 				 </nobr></span>
       </td>
 		 <td class="mysteps_top">
-        <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}" target="_blank" class="step">[debug]</a></xsl:if>
+        <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}?sessionkey={$sessionkey}&amp;popupid={$popupid}" target="_blank" class="step">[debug]</a></xsl:if>
 		 </td>
 		</tr>
   </xsl:template>
@@ -109,7 +109,7 @@
   <xsl:template name="previousbutton">
     <xsl:choose>
       <xsl:when test="/wizard/form[@id=/wizard/prevform]">
-        <li><a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/prevform}')" title="{$tooltip_previous} '{/wizard/form[@id=/wizard/prevform]/title}'"><xsl:call-template name="prompt_previous_li" /></a></li>
+        <li><a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/prevform}')" title="{$tooltip_previous} '{/wizard/form[@id=/wizard/prevform]/title}'"><xsl:call-template name="prompt_previous" /></a></li>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
@@ -117,7 +117,7 @@
   <xsl:template name="nextbutton">
     <xsl:choose>
       <xsl:when test="/wizard/form[@id=/wizard/nextform]">
-        <li><a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/nextform}')" title="{$tooltip_next} '{/wizard/form[@id=/wizard/nextform]/title}'"><xsl:call-template name="prompt_next_li" /></a></li>
+        <li><a class="step" align="left" width="100%" href="javascript:doGotoForm('{/wizard/nextform}')" title="{$tooltip_next} '{/wizard/form[@id=/wizard/nextform]/title}'"><xsl:call-template name="prompt_next" /></a></li>
       </xsl:when>
     </xsl:choose>
   </xsl:template>
