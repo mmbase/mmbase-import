@@ -447,7 +447,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>number</name>
         <required>false</required>
-        <requirednote>Either 'number' or 'parameter' or 'id' must be supplied.</requirednote>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  The nodenumber or alias identifying this node in MMBase.
@@ -456,6 +456,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <attribute>
         <name>id</name>
         <required>false</required>
+        <requirednote>Either 'number' or 'id' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
 	  With the 'id' attribute you define an unique identifier for
@@ -463,16 +464,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	  variable with this name. 
         </info>	
     </attribute>
-    <attribute>
-        <name>parameter</name>
-        <required>false</required>
-        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
-        <rtexprvalue>true</rtexprvalue>
-	<info>
- 	   The request parameter name which contains the nodenumber or
-	   alias indentifying this node in MMBase.
-	</info>
-    </attribute>    
     <attribute>
         <name>jspvar</name>
         <required>false</required>
@@ -1099,7 +1090,15 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
         <required>true</required>
         <rtexprvalue>false</rtexprvalue>
 	<info>
-	The name of the variable to create.
+	The name of the variable to create/used.
+	</info>
+    </attribute>
+    <attribute>
+        <name>declare</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+	<info>
+	If the jspvar must be declared first.
 	</info>
     </attribute>
     <attribute>
