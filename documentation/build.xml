@@ -1,4 +1,4 @@
-<project name="MMBase-Documentation" default="documentation.all" basedir=".">
+<project name="MMBase-Documentation" default="documentation" basedir=".">
 
   <!-- ===================== Initialize Property Values =================== -->
   
@@ -14,16 +14,20 @@
   <property file="build.properties.default"/>
 
   <!-- mmbase defaults-->
+  <property name="mmbase.default.dir"
+            location=".." />
   <property name="mmbase.build.dir"  
-            location="../build" /> <!-- mmbase build dir -->
+            location="${mmbase.default.dir}/build" /> <!-- mmbase build dir -->
   <property name="mmbase.html.dir"  
-            location="../html" />
+            location="${mmbase.default.dir}/html" />
   <property name="mmbase.html.documentation.dir"  
             location="${mmbase.html.dir}/mmdocs" />
   <property name="mmbase.lib.dir"
+            location="${mmbase.build.dir}/lib"/>
+  <property name="mmbase.jar.dir"
             location="${mmbase.build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
   <property name="mmbase.jar"    
-            value="${mmbase.lib.dir}/mmbase.jar"/>
+            value="${mmbase.jar.dir}/mmbase.jar"/>
   <property name="xerces.jar"    
             value="${mmbase.lib.dir}/xerces.jar"/>
   <property name="xalan.jar"    
@@ -31,7 +35,7 @@
   <property name="servlet.jar"    
             value="${mmbase.lib.dir}/servlet.jar"/>
   <property name="mmbase.config" 
-            value="${mmbase.build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+            value="${mmbase.default.dir}/config"/>
 
   <!-- documentation related settings -->
   <property name="documentation.dest.dir" value="${build.dir}/documentation"/>
@@ -160,7 +164,8 @@
 
     <!-- copy the images to a temp dir, this is needed because of -->
     <!-- a strange problem with fop's basedir                     -->
-    <copy todir="${documentation.temp.dir}/images/" flatten="yes" >
+    <!-- It's a very bad hack, but it's needed                    -->
+    <copy todir="${basedir}/media/" flatten="yes" >
       <fileset dir="${documentation.src.dir}" >
         <exclude name="build/**"/>
         <include name="**/*.jpg"/>
@@ -199,12 +204,17 @@
       <mapper type="glob" from="*.html" to="*.fo"/>
     </move>
 
+    <!-- test if jai-jars inside fop-dir are working -->
+    <copy file="${jai.codec.jar}" todir="${fop.home}/lib"/>
+    <copy file="${jai.core.jar}" todir="${fop.home}/lib"/>
+
     <!-- needed jars for fop-task        -->
     <path id="fop.classpath">
       <pathelement location="${fop.avalon.jar}"/>
       <pathelement location="${fop.batik.jar}"/>
       <pathelement location="${fop.jar}"/>
-      <pathelement location="${jimi.jar}"/>
+      <pathelement location="${jai.codec.jar}"/>
+      <pathelement location="${jai.core.jar}"/>
     </path>
 
     <!-- define fop-task before it can be used -->
@@ -231,17 +241,29 @@
         <include name="**/*.fo"/>
       </fileset>
     </delete>
-    <delete dir="${documentation.temp.dir}/images/" />
+    <delete dir="${basedir}/media/" />
   </target>
 
-
+  <!-- ================================================================================ -->
+  <!-- Main documentation Target                                                        -->
+  <!-- ================================================================================ -->
   <target name="documentation"
           depends="documentation.html,documentation.pdf">
     <delete dir="${documentation.temp.dir}"/>
   </target>
+ 
+  <!-- clean everything -->
+  <target name="clean">
+    <delete dir="${documentation.dest.dir}"/>
+    <delete file="${build.dir}/docbook2xhtml.xslt"/>
+    <delete file="${build.dir}/newstyle.xslt"/>
+  </target>
 
 
-  <!-- ================== Download or build the required binary packages ============== -->
+
+  <!-- ================================================================================ -->
+  <!-- Download or build the required binary packages                                   -->
+  <!-- ================================================================================ -->
   <target name="download" depends="proxyflags" 
           description="Download binary packages" >
     <mkdir dir="${download.dir}" />
@@ -250,15 +272,18 @@
       <param name="sourcefile" value="${docbook-xsl.loc}"/>
       <param name="destfile" value="${docbook-xsl.home}"/>
     </antcall>
+
     <antcall target="downloadgz">
       <param name="sourcefile" value="${fop.loc}"/>
       <param name="destfile" value="${fop.home}"/>
     </antcall>
-    <antcall target="downloadzip">
-      <param name="sourcefile" value="${jimi.loc}"/>
-      <param name="destdir" value="${jimi.home}"/>
-      <param name="destfile" value="${jimi.jar}"/>
+    
+    <antcall target="downloadbz2">
+      <param name="sourcefile" value="${jai.loc}"/>
+      <param name="destfile" value="${jai.home}"/>
+      <param name="destdir" value="${jai.home}"/>
     </antcall>
+    
   </target>
 
   <target name="proxyflags" depends="init">
@@ -297,6 +322,16 @@
     <untar src="${download.dir}/file.tar" dest="${download.dir}"/>
     <delete file="${download.dir}/file.tar"/>
     <delete file="${download.dir}/file.tar.gz"/>
+  </target>
+
+  <target name="downloadbz2" unless="exist" depends="setproxy,testexist">
+    <!-- Download and extract the package -->
+    <get src="${sourcefile}" dest="${download.dir}/file.tar.bz2" />
+    <mkdir dir="${destdir}" />
+    <bunzip2 src="${download.dir}/file.tar.bz2" dest="${download.dir}/file.tar"/>
+    <untar src="${download.dir}/file.tar" dest="${destdir}"/>
+    <delete file="${download.dir}/file.tar"/>
+    <delete file="${download.dir}/file.tar.bz2"/>
   </target>
 
   <target name="downloadzip" unless="exist" depends="setproxy,testexist">

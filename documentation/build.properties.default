@@ -6,7 +6,7 @@
 # If you'd like to customize some of the settings, create a build.properties in
 # the root of this directory.
 #
-# $Id: build.properties.default,v 1.1 2003-05-30 22:31:37 gerard Exp $
+# $Id: build.properties.default,v 1.2 2003-06-26 11:56:25 gerard Exp $
 # -----------------------------------------------------------------------------
 
 
@@ -49,12 +49,15 @@ fop.jar=${download.dir}/${fop.version}/build/fop.jar
 fop.batik.jar=${download.dir}/${fop.version}/lib/batik.jar
 fop.avalon.jar=${download.dir}/${fop.version}/lib/avalon-framework-cvs-20020806.jar
 
-# ---- Jimi, version 1.0 ----
-jimi.version=jimi1_0
-jimi.file=${jimi.version}.zip
-jimi.home=${download.dir}/${jimi.version}
 
-# ---- Hmmm...this is probably a temporary url, but don't know any other url ---
-jimi.loc=http://java.sun.com/webapps/download/Redirect/45321150/58474793772828070535056072460860693332289386335946694772280741324128-3221/jimi1_0.zip
-jimi.jar=${jimi.home}/Jimi/JimiProClasses.zip
+# ---- Jai, version 1.0.2 ----
+# It's a very old version, but the only one that can be download
+# without expiring urls.
 
+jai-old.version=jai1_0_2-beta
+jai.file=${jai-old.version}-lib-linux-i386.tar.bz2
+jai.home=${download.dir}/${jai-old.version}
+
+jai.loc=ftp://ftp.nluug.nl/pub/os/Linux/java/jdk/JAI/1.0.2/i386/${jai.file}
+jai.codec.jar=${jai.home}/jre/lib/ext/jai_codec.jar
+jai.core.jar=${jai.home}/jre/lib/ext/jai_core.jar
