@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.11 2002-04-26 12:20:33 mark Exp $
+ * @version $Id: MultiConnection.java,v 1.12 2002-04-26 13:37:43 mark Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -62,7 +62,6 @@ public class MultiConnection implements Connection {
      */
     String lastSql;
 
-    private int startTime=0;
     private int startTimeMillis=0;
     private int usage=0;
     public int state=0;
@@ -285,7 +284,6 @@ public class MultiConnection implements Connection {
      */
     public void claim() {
         usage++;
-        startTime=(int)(System.currentTimeMillis()/1000);
 	startTimeMillis = (int)System.currentTimeMillis();
     }
 
@@ -293,7 +291,7 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public void release() {
-        startTime=0;
+        startTimeMillis=0;
     }
 
     /**
@@ -307,7 +305,7 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public int getStartTime() {
-        return startTime;
+        return (int)startTimeMillis/1000;
     }
 
     /**
@@ -546,9 +544,10 @@ public class MultiConnection implements Connection {
      *              do not use!
      * @since MMBase 1.5
      */
+/*
     private class Savepoint {
     }
-
+*/
 }
 
 
