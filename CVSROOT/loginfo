@@ -36,6 +36,8 @@ applications $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/applications.log
 
 documentation $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/documentation.log $USER %{sVv}
 
+contributions $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/contributions.log $USER %{sVv}
+
 #src /home/wwwtech/bin/cvslog2 %{sVv} -f $CVSROOT/CVSROOT/commitlog -d -s -m cvs@mmbase.org
 src $CVSROOT/CVSROOT/log/cvsmail  $CVSROOT/CVSROOT/log/src.log $USER %{sVv}
 
