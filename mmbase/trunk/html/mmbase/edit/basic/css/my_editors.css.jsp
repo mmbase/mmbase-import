@@ -1,17 +1,17 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %><mm:content type="text/css">
 
-<mm:import id="myeditors">../../my_editors/img/</mm:import>
+<mm:import id="myeditors">../../my_editors/img</mm:import>
 @import url(base.css);
 
-span.select:before   { content: url(<mm:url page="${myeditors}mmbase-right.gif" />);  }
-span.create:before   { content: url(<mm:url page="${myeditors}mmbase-new.gif" />);    }
-span.change:before   { content: url(<mm:url page="${myeditors}mmbase-edit.gif" />);   }
-span.delete:before   { content: url(<mm:url page="${myeditors}mmbase-delete.gif" />); }
-span.previous:before { content: url(<mm:url page="${myeditors}mmbase-left.gif" />);   }
-span.next:before     { content: url(<mm:url page="${myeditors}mmbase-right.gif" />);  }
-span.search:before   { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
-span.tree:before   { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
+span.select:before   { content: url(<mm:url page="$myeditors/mmbase-right.gif" />);  }
+span.create:before   { content: url(<mm:url page="$myeditors/mmbase-new.gif" />);    }
+span.change:before   { content: url(<mm:url page="$myeditors/mmbase-edit.gif" />);   }
+span.delete:before   { content: url(<mm:url page="$myeditors/mmbase-delete.gif" />); }
+span.previous:before { content: url(<mm:url page="$myeditors/mmbase-left.gif" />);   }
+span.next:before     { content: url(<mm:url page="$myeditors/mmbase-right.gif" />);  }
+span.search:before   { content: url(<mm:url page="$myeditors/mmbase-search.gif" />);  }
+span.tree:before   { content: url(<mm:url page="$myeditors/mmbase-search.gif" />);  }
 
 
 body.basic { 
@@ -27,14 +27,14 @@ body.basic:before {
 	font-weight: bold;
 	color: #660000;
   width: 100%;
-  content: url(<mm:url page="${myeditors}mmbase-edit-40.gif" />) "   jsp-editors";
+  content: url(<mm:url page="$myeditors/mmbase-edit-40.gif" />) "   jsp-editors";
 }
 
 body.navigationbar {
   background-color: #00425A;  
 }
 
-input.search:after  { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
+input.search:after  { content: url(<mm:url page="$myeditors/mmbase-search.gif" />);  }
 
 a:link
 {

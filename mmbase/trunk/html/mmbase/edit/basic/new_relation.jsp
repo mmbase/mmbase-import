@@ -56,7 +56,7 @@
      <mm:node id="node_number" referid="node_number">
 
     <mm:compare referid="direction" value="create_child">
-        <mm:createrelation id="relation" source="node" destination="node_number" role="${role_name}" >
+        <mm:createrelation id="relation" source="node" destination="node_number" role="$role_name" >
             <mm:fieldlist type="edit">
                 <mm:first><mm:import id="annotate">true</mm:import></mm:first>
             </mm:fieldlist>
@@ -66,7 +66,7 @@
     <mm:compare referid="direction" value="create_parent">        
         <!-- if role could also be the dname, this code wouldnt be nessecary -->
         <!-- solved by replacing source with destination -->
-        <mm:createrelation id="relation" source="node_number" destination="node" role="${role_name}" >
+        <mm:createrelation id="relation" source="node_number" destination="node" role="$role_name" >
             <mm:fieldlist type="edit">
                 <mm:first><mm:import id="annotate">true</mm:import></mm:first>
             </mm:fieldlist>
@@ -96,12 +96,12 @@
 
 	 <mm:notpresent referid="annotate">
 	   <!-- do the redirect to the page where we want to go to... -->
-	   <META HTTP-EQUIV="refresh" content="0; url=<mm:url  page="${redirectTo}" />">
+	   <META HTTP-EQUIV="refresh" content="0; url=<mm:url  page="$redirectTo" />">
        <mm:write referid="style" escape="none" />
 	   </head>
        <body class="basic">
        <h1>Redirecting</h1>
-       <a href="<mm:url page="${redirectTo}" />"><%=m.getString("new_relation.redirect")%></a>
+       <a href="<mm:url page="$redirectTo" />"><%=m.getString("new_relation.redirect")%></a>
      </mm:notpresent>
 
     </mm:node>
@@ -115,12 +115,12 @@
           <mm:fieldinfo type="useinput" />
        </mm:context></mm:fieldlist>
     </mm:node>
-	<META HTTP-EQUIV="refresh" content="0; url=<mm:url page="${redirectTo}" />">	
+	<META HTTP-EQUIV="refresh" content="0; url=<mm:url page="$redirectTo" />">	
     <mm:write referid="style" escape="none" />
 	</head>
     <body>
     <h1>Redirecting</h1>
-    <a href="<mm:url page="${redirectTo}" />"><%=m.getString("new_relation.redirect")%></a>
+    <a href="<mm:url page="$redirectTo" />"><%=m.getString("new_relation.redirect")%></a>
     <%-- never mind .. --%>
     <mm:write referid="redirectTo" jspvar="redirect" vartype="string">
       <% response.sendRedirect(redirect); %>
