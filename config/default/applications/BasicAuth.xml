@@ -7,7 +7,7 @@
     <builder maintainer="mmbase.org" version="0">authrel</builder>
     <builder maintainer="mmbase.org" version="0">typedef</builder>
     <builder maintainer="mmbase.org" version="0">urls</builder>
-  </neededbuilderlist>	
+  </neededbuilderlist>
 
   <neededreldeflist>
     <reldef source="authrel" target="authrel" direction="bidirectional" guisourcename="AuthRel" guitargetname="AuthRel" />
@@ -18,12 +18,12 @@
   </allowedrelationlist>
 
   <datasourcelist>
-    <datasource builder="people" path="BasicAuth/people.xml" /> 
-    <datasource builder="typedef" path="BasicAuth/typedef.xml" /> 
+    <datasource builder="people" path="BasicAuth/people.xml" />
+    <datasource builder="typedef" path="BasicAuth/typedef.xml" />
   </datasourcelist>
 
   <relationsourcelist>
-    <relationsource builder="authrel" path="BasicAuth/authrel.xml" /> 
+    <relationsource builder="authrel" path="BasicAuth/authrel.xml" />
   </relationsourcelist>
 
 
@@ -31,16 +31,12 @@
     <contextsource path="BasicAuth/backup.xml" type="depth" goal="backup"/>
     </contextsourcelist>
 
-  <description>
-  Basic authorisation, only needed when using scan. Please use
-  a different security implementation, see &lt;mmdocs/security&gt; for more
-  information. This application uses builders provided by the resource
-  and MyCompany application, so please install these two before
-  installing this application.
-  </description>
+  <description><![CDATA[Basic authorisation, only needed when using scan. Please use a different security implementation.
+See /mmdocs/administrators/security-framework.html for more information.
+This application uses builders provided by the Resource and MyCompany application, so please install these two before installing this application.
+  ]]></description>
 
-  <install-notice>
-    Turn authorisation on in mmbaseroot.xml and restart the server
-  </install-notice>
+  <install-notice><![CDATA[Turn authorisation on in mmbaseroot.xml and restart the server.
+  ]]></install-notice>
 
 </application>

@@ -41,14 +41,11 @@
     <contextsource path="BugTracker/backup.xml" type="depth" goal="backup"/>
   </contextsourcelist>
 
-  <description>
-  BugTracking application for www.mmbase.org, depends on MyUser
-  application. Please install that application before this installing
-  this one.
-  </description>
+  <description><![CDATA[BugTracking application for www.mmbase.org.
+Depends on MyUser application, please install that application before installing this one.
+  ]]></description>
 
-  <install-notice>
-  BugTracker installed, don't forget to install the html pages
-  </install-notice>
+  <install-notice><![CDATA[BugTracker installed, don't forget to install the html pages.
+  ]]></install-notice>
 
 </application>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE application PUBLIC "-//MMBase/DTD application config 1.0//EN" "http://www.mmbase.org/dtd/application_1_0.dtd">
 <application name="PageCache" maintainer="mmbase.org" version="1" auto-deploy="false">
-  
+
   <neededbuilderlist>
     <builder maintainer="mmbase.org" version="0">vwms</builder>
     <builder maintainer="mmbase.org" version="0">mmservers</builder>
@@ -25,15 +25,11 @@
 
   <contextsourcelist/>
 
-  <description>Installs builders and relations needed for using
-  PageCache. PageCaching allows pages to be cached on frontend
-  proxies. A little documentation about PageCache is provided on the
-  MMBase-website, this will be expanded in the future. This
-  application depends on the Vwms-application, please install that one
-  first.
-  </description>
+  <description><![CDATA[Installs builders and relations needed for using PageCache. PageCaching allows pages to be cached on frontend proxies.
+A little documentation about PageCache is provided on the MMBase-website, this will be expanded in the future.
+This application depends on the Vwms-application, please install that one first.
+  ]]></description>
 
-  <install-notice>
-    PageCache builders and relations installed
-  </install-notice>
+  <install-notice><![CDATA[PageCache builders and relations installed.
+  ]]></install-notice>
 </application>
