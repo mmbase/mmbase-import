@@ -1,16 +1,3 @@
-/*
-
-$Id: remoteXML.java,v 1.4 2000-03-13 10:30:15 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-$Log: not supported by cvs2svn $
-*/
-
 package org.mmbase.servlet;
  
 import java.io.*;
@@ -29,7 +16,7 @@ import org.mmbase.module.core.*;
  * XML and will respond with a 200 OK if the xml was understood by the
  * mmbase system.
  *
- * @version $Revision: 1.4 $ $Date: 2000-03-13 10:30:15 $
+ * @version $Revision: 1.5 $ $Date: 2000-03-29 09:27:38 $
  */
 public class remoteXML extends JamesServlet {
 
@@ -50,12 +37,15 @@ public class remoteXML extends JamesServlet {
  	*/
 	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
 	{	
-		if (req.getMethod().equals("POST")) {
-			handlePost(req,res);
-		} else 
-		if (req.getMethod().equals("GET")) {
-			handleGet(req,res);
-		}
+		incRefCount();
+		try {
+			if (req.getMethod().equals("POST")) {
+				handlePost(req,res);
+			} else 
+			if (req.getMethod().equals("GET")) {
+				handleGet(req,res);
+			}
+		} finally { decRefCount(); }
 	}
 
 	private void handlePost(HttpServletRequest req,HttpServletResponse res) {
@@ -158,10 +148,11 @@ public class remoteXML extends JamesServlet {
 		String remhost=req.getRemoteAddr();
 		String givenhost=(String)values.get("host");
 
-		if (debug) debug("commitXML "+xml);
+		if (debug) debug("commitXML(): xml("+xml+")");
+
 		// hack for braindead psion jdk
 		if (givenhost!=null && givenhost.indexOf("http://localhost")!=-1) {
-			System.out.println("HOST REPLACE=http://"+remhost+":8080");
+			debug("commitXML(): HOST REPLACE=http://"+remhost+":8080");
 			values.put("host","http://"+remhost+":8080");	
 		}
 
@@ -185,7 +176,7 @@ public class remoteXML extends JamesServlet {
 				try {
 					sbul.addService((String)values.get("name"),"cdplayerDummy",server.getNode(snumber));
 				} catch(Exception e) {
-					debug("commitXML addService failed "+buildername+" "+snumber);
+					debug("commitXML(): ERROR: addService failed buildername("+buildername+"), snumber("+snumber+")");
 					e.printStackTrace();
 				}
 				number=bul.getNumberFromName(number);
@@ -195,14 +186,13 @@ public class remoteXML extends JamesServlet {
 				 mergeXMLNode(node,values);
 				node.commit();
 			} else {
-				System.out.println("remoteXML-> can't get node "+number);
+				debug("commitXML(): remoteXML-> can't get node "+number);
 			}
 		} 
 		return(true);
 	}
 
 	private void mergeXMLNode(MMObjectNode node,Hashtable values) {
-
 
 		Enumeration t=values.keys();
 		while (t.hasMoreElements()) {
@@ -242,7 +232,9 @@ public class remoteXML extends JamesServlet {
 			key=key.substring(0,key.indexOf(">"));
 			String begintoken="<"+key+">";
 			endtoken="</"+key+">";
-			
+		
+			// (marcel) optimist
+	
 			String value=nodedata.substring(nodedata.indexOf(begintoken)+begintoken.length());
 			value=value.substring(0,value.indexOf(endtoken));
 

@@ -1,12 +1,3 @@
-/*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
 package org.mmbase.servlet;
 
 import java.io.*;
@@ -39,15 +30,19 @@ public class servjumpers extends JamesServlet
  	*/
 	public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
 	{	
-		String url=null;
-		String tmpr=req.getRequestURI().substring(1);
-		if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
-		if (url!=null) {
-			res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY,"OK");
-			res.setContentType("text/html");
-			res.setHeader("Location",url);
-			return;
+		incRefCount();
+		try {
+			String url=null;
+			String tmpr=req.getRequestURI().substring(1);
+			if (tmpr.indexOf('.')==-1 && (!tmpr.endsWith("/"))) url=getUrl(tmpr);
+			if (url!=null) {
+				res.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY,"OK");
+				res.setContentType("text/html");
+				res.setHeader("Location",url);
+				return;
+			}
 		}
+		finally { decRefCount(); }
 	}
 
 
