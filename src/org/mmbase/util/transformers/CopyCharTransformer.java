@@ -19,10 +19,10 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
- * @version $Id: CopyCharTransformer.java,v 1.3 2003-05-09 22:33:56 michiel Exp $
+ * @version $Id: CopyCharTransformer.java,v 1.4 2003-05-10 22:23:51 michiel Exp $
  */
 
-public class CopyCharTransformer extends AbstractCharTransformer implements CharTransformer {
+public class CopyCharTransformer extends ReaderTransformer implements CharTransformer {
 
     public static CopyCharTransformer instance = new CopyCharTransformer();
 

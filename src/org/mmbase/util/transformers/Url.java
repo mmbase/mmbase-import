@@ -22,7 +22,7 @@ import org.mmbase.util.URLParamEscape;
  * @author Michiel Meeuwissen 
  */
 
-public class Url extends ConfigurableCharTransformer implements CharTransformer {
+public class Url extends ConfigurableStringTransformer implements CharTransformer {
     
     public final static int ESCAPE       = 1;     
     public final static int PARAM_ESCAPE = 2;
@@ -45,15 +45,6 @@ public class Url extends ConfigurableCharTransformer implements CharTransformer 
         h.put("escape_url_param".toUpperCase(), new Config(Url.class, PARAM_ESCAPE));
         return h;
     }
-
-    public Writer transform(Reader r, Writer w) {
-        return transformUtil(r, w);
-    }
-
-    public Writer transformBack(Reader r, Writer w) {
-        return transformBackUtil(r, w);
-    }
-
 
     public String transform(String r) {
         switch(to){

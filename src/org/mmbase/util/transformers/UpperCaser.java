@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @since MMBase-1.7
  */
 
-public class UpperCaser extends AbstractCharTransformer implements CharTransformer {
+public class UpperCaser extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(UpperCaser.class.getName());
 
     public Writer transform(Reader r, Writer w) {

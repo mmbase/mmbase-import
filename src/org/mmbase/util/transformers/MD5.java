@@ -20,7 +20,7 @@ import java.io.Writer;
  * @author Michiel Meeuwissen 
  */
 
-public class MD5 extends AbstractCharTransformer implements CharTransformer {
+public class MD5 extends StringTransformer implements CharTransformer, ConfigurableTransformer {
     private final static String ENCODING = "MD5";
     private MD5Implementation transformer = new MD5Implementation();
 
@@ -28,15 +28,11 @@ public class MD5 extends AbstractCharTransformer implements CharTransformer {
         return ENCODING;
     }
 
-    public Writer transform(Reader r, Writer w) {
-        return transformUtil(r, w);
-    }
-
     public String transform(String r) {
         return transformer.calcMD5(r);
     }
 
-    public String transformBack(String r, Writer w) {
+    public String transformBack(String w) {
         throw new UnsupportedOperationException("transformBack(String) can never be done for MD5(i hope so :p)");
     }
 
