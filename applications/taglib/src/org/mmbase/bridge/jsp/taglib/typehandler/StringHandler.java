@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.22 2003-12-21 18:06:43 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.23 2004-01-19 13:24:42 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -149,7 +149,8 @@ public class StringHandler extends AbstractTypeHandler {
         if (search == null) return null;
 
         Sql sql = new Sql(Sql.ESCAPE_QUOTES);
-        return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search) + "%')";
+        return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
+        // cannot call getSearvhValue, because sql excaping is done twice then :-(
     }
 
     protected int getOperator() {
