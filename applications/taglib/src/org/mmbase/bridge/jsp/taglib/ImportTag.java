@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.49 2005-03-15 20:33:25 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.50 2005-03-15 20:48:20 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -113,6 +113,10 @@ public class ImportTag extends ContextReferrerTag {
                         result = cc.find(pageContext, from, useId);
                     }
                     if (result != null) {
+                        if (! (from == ContextContainer.LOCATION_PARAMETERS || from == ContextContainer.LOCATION_MULTIPART)) {
+                            helper.overrideNoImplicitList();
+                        }
+
                         cc.register(useId, result, ! res);
                         found = true;
                         break;

@@ -27,7 +27,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.62 2005-03-15 12:56:38 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.63 2005-03-15 20:48:20 michiel Exp $
  */
 
 public class WriterHelper {
@@ -178,6 +178,15 @@ public class WriterHelper {
     }
 
     /**
+     * @since MMBase-1.7.4
+     */
+    private boolean overrideNoImplicitList = false;
+    public void overrideNoImplicitList() {
+         overrideNoImplicitList = true;
+     }
+    
+
+    /**
      * There is a default behavior for what should happen if the 'write' attribute is not set.
      * if you want to override this, then call this function.
      */
@@ -251,7 +260,7 @@ public class WriterHelper {
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         value = null;
-        if (noImplicitList && vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
+        if (noImplicitList && ! overrideNoImplicitList &&  vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
             // Take last of list if vartype defined not to be a list:
             if (v instanceof List) {
                 List l = (List) v;
