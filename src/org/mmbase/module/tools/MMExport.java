@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools;
 
@@ -20,49 +20,51 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * The module which provides access to the multimedia database
- * it creates, deletes and gives you methods to keep track of
+ * The module provides access to the multimedia database.
+ * It creates, deletes and gives you methods to keep track of
  * multimedia objects. It does not give you direct methods for
- * inserting and reading them thats done by other objects
+ * inserting and reading them, that's done by other objects.
  *
+ * @deprecated not used anymore (?)
  * @author Daniel Ockeloen
+ * @version $Id: MMExport.java,v 1.8 2004-10-11 11:08:51 pierre Exp $
  */
 public class MMExport extends ProcessorModule {
-    
+
     private static Logger log = Logging.getLoggerInstance(MMExport.class.getName());
-    
+
     MMBase mmb=null;
-    
+
     public void init() {
         mmb=(MMBase)getModule("MMBASEROOT");
     }
-    
-    
+
+
     /**
      */
     public MMExport() {
     }
-    
+
     /**
      * Generate a list of values from a command to the processor
      */
-    public Vector  getList(scanpage sp,StringTagger tagger, String value) throws ParseException {
+    public Vector  getList(PageContext sp,StringTagger tagger, String value) {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             //if (cmd.equals("OBJECTS")) return(doObjects(req,tagger));
-            
+
         }
         return(null);
     }
-    
+
     /**
      * Execute the commands provided in the form values
      */
-    public boolean process(scanpage sp, Hashtable cmds,Hashtable vars) {
+    public boolean process(PageContext sp, Hashtable cmds,Hashtable vars) {
         String cmdline,token;
-        
+
         for (Enumeration h = cmds.keys();h.hasMoreElements();) {
             cmdline=(String)h.nextElement();
             StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
@@ -73,11 +75,11 @@ public class MMExport extends ProcessorModule {
         }
         return(false);
     }
-    
+
     /**
      *	Handle a $MOD command
      */
-    public String replace(scanpage sp, String cmds) {
+    public String replace(PageContext sp, String cmds) {
         StringTokenizer tok = new StringTokenizer(cmds,"-\n\r");
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
@@ -86,20 +88,20 @@ public class MMExport extends ProcessorModule {
         }
         return("No command defined");
     }
-    
+
     public void maintainance() {
     }
-    
+
     public void doExportXML(Hashtable cmds, Hashtable vars) {
         log.info("doExportXML started");
         if (log.isDebugEnabled()) {
             log.debug("cmd="+cmds);
             log.debug("vars="+vars);
         }
-        
+
         String buildername=(String)vars.get("builder");
         String exportdir=(String)vars.get("exportdir")+".xml";
-        
+
         MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(buildername);
         if (log.isDebugEnabled()) {
             log.debug(" "+buildername+" "+exportdir+" "+bul);
@@ -117,9 +119,9 @@ public class MMExport extends ProcessorModule {
         }
         log.info("doExportXML finished");
     }
-    
-    
-    
+
+
+
     public boolean saveFile(String filename,String value) {
         log.info("SAVE TO DISK="+filename);
         File sfile = new File(filename);
@@ -134,5 +136,5 @@ public class MMExport extends ProcessorModule {
         }
         return(true);
     }
-    
+
 }

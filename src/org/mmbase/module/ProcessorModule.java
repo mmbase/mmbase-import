@@ -34,7 +34,7 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     /**
      * {@inheritDoc}
      **/
-    public Vector getNodeList(Object context, String command, Map params) throws ParseException {
+    public Vector getNodeList(Object context, String command, Map params) {
         StringTagger tagger=null;
         if (params instanceof StringTagger) {
             tagger= (StringTagger)params;
@@ -52,9 +52,9 @@ public class ProcessorModule extends Module implements ProcessorInterface {
                 }
             }
         }
-        scanpage sp = null;
-        if (context instanceof scanpage) {
-            sp = (scanpage)context;
+        PageContext sp = null;
+        if (context instanceof PageContext) {
+            sp = (PageContext)context;
         }
         Vector v = getList(sp,tagger,command);
         int items=1;
@@ -79,21 +79,21 @@ public class ProcessorModule extends Module implements ProcessorInterface {
     /**
      * {@inheritDoc}
      **/
-    public Vector  getList(scanpage sp,StringTagger params, String command) throws ParseException {
-        throw new ParseException("Module " + this.getClass().getName() + " does not implement LIST");
+    public Vector  getList(PageContext sp,StringTagger params, String command) {
+        throw new UnsupportedOperationException("Module " + this.getClass().getName() + " does not implement LIST");
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean process(scanpage sp, Hashtable cmds, Hashtable vars) {
+    public boolean process(PageContext sp, Hashtable cmds, Hashtable vars) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      **/
-    public String replace (scanpage sp, String command) {
+    public String replace (PageContext sp, String command) {
         return "This module doesn't implement this processor call";
     }
 
@@ -101,14 +101,14 @@ public class ProcessorModule extends Module implements ProcessorInterface {
      * {@inheritDoc}
      * who the hell uses this (daniel)
      **/
-    public String replace (scanpage sp, StringTagger command) {
+    public String replace (PageContext sp, StringTagger command) {
         return "This module doesn't implement this processor call";
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean cacheCheck(scanpage sp, String cmd) {
+    public boolean cacheCheck(PageContext sp, String cmd) {
         return false;
     }
 

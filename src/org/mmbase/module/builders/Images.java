@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.97 2004-08-26 12:10:38 michiel Exp $
+ * @version $Id: Images.java,v 1.98 2004-10-11 11:08:47 pierre Exp $
  */
 public class Images extends AbstractImages {
 
@@ -232,8 +232,8 @@ public class Images extends AbstractImages {
             image = servlet.toString();
         }
         return
-            "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" " + 
-            //"heigth=\"" + getHeight(icache) + "\" with=\"" + getWidth(icache) + "\" " + 
+            "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" " +
+            //"heigth=\"" + getHeight(icache) + "\" with=\"" + getWidth(icache) + "\" " +
             "border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
@@ -409,9 +409,9 @@ public class Images extends AbstractImages {
         String cacheKey = "" + node.getNumber() + template;
         Integer i = (Integer) templateCacheNumberCache.get(cacheKey);
         if (i != null) {
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.debug("found image in cache " + i + " for " + cacheKey);
-            }            
+            }
             return i.intValue();
         }
 
@@ -459,14 +459,14 @@ public class Images extends AbstractImages {
     /**
      * @deprecated Use getImageNode(params);
      */
-    public byte[] getImageBytes5(scanpage sp, List params) {
+    public byte[] getImageBytes5(PageContext sp, List params) {
         return getImageBytes(params);
     }
 
     /**
      * @deprecated Use getImageNode(params);
      */
-    public byte[] getImageBytes(scanpage sp, List params) {
+    public byte[] getImageBytes(PageContext sp, List params) {
         return getImageBytes(params);
     }
 
@@ -666,7 +666,7 @@ public class Images extends AbstractImages {
     /**
      * @javadoc
      */
-    public Vector getList(scanpage sp, StringTagger tagger, StringTokenizer tok) throws org.mmbase.module.ParseException {
+    public Vector getList(PageContext sp, StringTagger tagger, StringTokenizer tok) {
         Vector devices = new Vector();
 
         if (tok.hasMoreTokens()) {
@@ -791,27 +791,27 @@ public class Images extends AbstractImages {
         invalidateImageCache(node);
         templateCacheNumberCache.remove(node.getNumber());
         super.removeNode(node);
-    }    
+    }
 
     public boolean nodeLocalChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) {            
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
-        }        
-        MMObjectNode image = getNode(number);        
+        if (log.isDebugEnabled()) {
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
+        }
+        MMObjectNode image = getNode(number);
         invalidateTemplateCacheNumberCache(image.getNumber());
-        return super.nodeLocalChanged(machine, number, builder, ctype);        
+        return super.nodeLocalChanged(machine, number, builder, ctype);
     }
 
     public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-        if (log.isDebugEnabled()) {            
-            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype); 
+        if (log.isDebugEnabled()) {
+            log.debug("Changed " + machine + " " + number + " " + builder + " "+ ctype);
         }
-        MMObjectNode image = getNode(number);        
+        MMObjectNode image = getNode(number);
         invalidateTemplateCacheNumberCache(image.getNumber());
-        return super.nodeRemoteChanged(machine, number, builder, ctype);        
+        return super.nodeRemoteChanged(machine, number, builder, ctype);
     }
-    
-    
+
+
     /**
      * Invalidate the Image Cache, if there is one, for a specific ImageNode
      * @param node The image node, which is the original

@@ -38,7 +38,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.120 2004-10-09 10:51:04 nico Exp $
+ * @version $Id: MMBase.java,v 1.121 2004-10-11 11:08:48 pierre Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -324,10 +324,6 @@ public class MMBase extends ProcessorModule {
             encoding = tmp;
         }
 
-        tmp = getInitParameter("AUTH401URL");
-        if (tmp != null && !tmp.equals("")) {
-            HttpAuth.setLocalCheckUrl(tmp);
-        }
         tmp = getInitParameter("DTDBASE");
         if (tmp != null && !tmp.equals("")) {
             dtdbase = tmp;
