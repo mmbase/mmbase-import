@@ -16,7 +16,7 @@
 <mm:import externid="spriority" >3</mm:import>
 <mm:import externid="smaintainer">-1</mm:import>
 <mm:import externid="ssubmitter">-1</mm:import>
-<mm:import externid="noffset">0</mm:import>
+<mm:import externid="noffset" vartype="integer">0</mm:import>
 
 <mm:import externid="flap">search</mm:import>
 
