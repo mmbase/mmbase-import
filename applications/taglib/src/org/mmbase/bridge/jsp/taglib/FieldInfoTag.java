@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * @author Michiel Meeuwissen
  * @author Jaco de Groot
  * @author Gerard van de Looi
- * @version $Id: FieldInfoTag.java,v 1.64 2003-07-28 20:01:18 michiel Exp $
+ * @version $Id: FieldInfoTag.java,v 1.65 2003-07-30 09:04:49 michiel Exp $
  */
 
 public class FieldInfoTag extends FieldReferrerTag implements Writer {
@@ -52,7 +52,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
 
     static {
         try {
-            log = Logging.getLoggerInstance(FieldInfoTag.class.getName());
+            log = Logging.getLoggerInstance(FieldInfoTag.class);
             initializeTypeHandlers();
         } catch (Exception e) {
             log.error(e.toString());
@@ -275,7 +275,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
             show = htmlInput(node, field, true);
             break;
         case TYPE_USESEARCHINPUT: {
-            NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
+            NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this), false);
             if (c == null) { // produce a String to use in a constraint attribute of a list (legacy)
                 show = whereHtmlInput(field);
             } else {
