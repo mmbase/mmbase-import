@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase/DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder extends="object">
-<status>active</status>
+<builder name="mediaproviders" extends="object">
+  <status>active</status>
+  
+  <classfile>org.mmbase.module.builders.media.MediaProviders</classfile>
 
-<classfile>org.mmbase.module.builders.media.MediaProviders</classfile>
+  <names>
+    <singular xml:lang="en">Media provider</singular>
+    <singular xml:lang="nl">Mediaprovider</singular>
 
-<names>
-	<singular xml:lang="en">Media provider</singular>
-	<singular xml:lang="nl">Mediaprovider</singular>
+    <plural xml:lang="en">Media providers</plural>
+    <plural xml:lang="nl">Mediaproviders</plural>
+  </names>
 
-	<plural xml:lang="en">Media providers</plural>
-	<plural xml:lang="nl">Mediaproviders</plural>
-</names>
-
-<descriptions>
-	<description xml:lang="en">Describes the system that is providing media files.</description>
-	<description xml:lang="nl">Beschrijft het systeem dat media bestanden beschikbaar steld.</description>
-</descriptions>
+  <descriptions>
+    <description xml:lang="en">Describes the system that is providing media files.</description>
+    <description xml:lang="nl">Beschrijft het systeem dat media bestanden beschikbaar steld.</description>
+  </descriptions>
 
   <properties>
     <!-- specify which protocols to use for which media formats -->
