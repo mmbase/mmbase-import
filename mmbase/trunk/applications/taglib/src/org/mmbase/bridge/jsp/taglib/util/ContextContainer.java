@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.26 2005-01-04 13:44:43 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.27 2005-01-18 18:15:12 michiel Exp $
  **/
 
 public abstract class ContextContainer extends AbstractMap implements Map {
@@ -447,6 +447,51 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         register(id, n);
     }
 
+    /**
+     * Java Servlet Specification Version 2.3 SRV.4.9
+     * says that a servlet engine should read a request
+     * as ISO-8859-1 if request.getCharacterEncoding()
+     * returns null. We override this behaviour because
+     * the browser propably sends the request in the
+     * same encoding as the html was send to te browser
+     * And it is likely that the html was send to the
+     * browser in the same encoding as the MMBase
+     * encoding property.
+     * @since MMBase-1.8
+     */
+    protected Object fixEncoding(Object value, String encoding) throws TaglibException {
+        if(value instanceof String) {
+            try {                
+                value = new String(((String)value).getBytes("ISO-8859-1"), encoding);
+            } catch (java.io.UnsupportedEncodingException e) {
+                throw new TaglibException("Unsupported Encoding ", e);
+            }
+        } else if (value instanceof List) {
+            ListIterator i = ((List)value).listIterator();
+            while(i.hasNext()) {
+                i.set(fixEncoding(i.next(), encoding));
+            }
+        }
+        return value;
+
+    }
+    /**
+     * @since MMBase-1.8
+     */
+    protected Object fixEncoding(Object value, PageContext pageContext) throws TaglibException {
+        HttpServletRequest req = (HttpServletRequest) pageContext.getRequest();
+        String enc = req.getCharacterEncoding();
+        if (enc == null) {
+            enc = getDefaultCharacterEncoding(pageContext);
+        } else {
+            log.info("form encoding specified: " + enc);
+        }
+
+        if (enc.equalsIgnoreCase("ISO-8859-1")) {
+            enc = "CP1252";                                
+        }                            
+        return fixEncoding(value, enc);
+    }
    
     /**
      * @since MMBase-1.7
@@ -485,9 +530,11 @@ public abstract class ContextContainer extends AbstractMap implements Map {
         case LOCATION_MULTIPART:
             if (MultiPart.isMultipart(pageContext)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("searching " + referId + " in multipart post");
+                    log.info("searching " + referId + " in multipart post");
                 }
-                result = MultiPart.getMultipartRequest(pageContext).getParameterValues(referId);
+                log.info("searching " + referId + " in multipart post");
+                result = fixEncoding(MultiPart.getMultipartRequest(pageContext).getParameterValues(referId), pageContext);
+                log.info("Result " + result);
             } else {
                 throw new JspTagException("Trying to read from multipart post, while request was not a multipart post");
             }
@@ -501,28 +548,10 @@ public abstract class ContextContainer extends AbstractMap implements Map {
             if (resultvec != null) {
                 if (log.isDebugEnabled()) log.debug("Found: " + resultvec);
                 if (resultvec.length > 1) {
-                    result = java.util.Arrays.asList(resultvec);
+                    result = (List) fixEncoding(java.util.Arrays.asList(resultvec), pageContext);
+                    log.info("Result " + result);
                 } else {
-                    String formEncoding = req.getCharacterEncoding();
-                    if (log.isDebugEnabled()) log.debug("found encoding in the request: " + formEncoding);
-                    if (formEncoding == null) {
-                        // Java Servlet Specification Version 2.3 SRV.4.9
-                        // says that a servlet engine should read a request
-                        // as ISO-8859-1 if request.getCharacterEncoding()
-                        // returns null. We override this behaviour because
-                        // the browser propably sends the request in the
-                        // same encoding as the html was send to te browser
-                        // And it is likely that the html was send to the
-                        // browser in the same encoding as the MMBase
-                        // encoding property.
-                        try {
-                            result = new String(resultvec[0].getBytes("ISO-8859-1"), getDefaultCharacterEncoding(pageContext));
-                        } catch (java.io.UnsupportedEncodingException e) {
-                            throw new TaglibException("Unsupported Encoding ", e);
-                        }
-                    } else {
-                        result = resultvec[0];
-                    }
+                    result = fixEncoding(resultvec[0], pageContext);
                 }
             }
         }
@@ -662,7 +691,8 @@ public abstract class ContextContainer extends AbstractMap implements Map {
 
     static String getDefaultCharacterEncoding(PageContext pageContext) {
        String charEnc = pageContext.getResponse().getCharacterEncoding();
-       if(charEnc!=null) {
+       if(charEnc != null) {
+           log.info("page encoding: " + charEnc);
            return charEnc;
        }
        log.error("page encoding not specified, using iso-8859-1");
