@@ -36,13 +36,13 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.27 2003-11-18 15:07:17 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.28 2004-02-24 11:53:19 michiel Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
-public class MMBaseServlet extends  HttpServlet {
+public class MMBaseServlet extends  HttpServlet implements MMBaseStarter {
 
-    private   static Logger log = Logging.getLoggerInstance(MMBaseServlet.class);
+    private   static final Logger log = Logging.getLoggerInstance(MMBaseServlet.class);
     protected static MMBase mmbase;
     // private   static String context;
 
@@ -85,6 +85,15 @@ public class MMBaseServlet extends  HttpServlet {
     // mapping to servlet instance
     private static Map mapToServlet = new Hashtable();
 
+    /** 
+     * @since MMBase-1.7
+     */
+    private static ServletException initException = new ServletException("MMBase not yet, or not successfully initialized (check mmbase log)");
+
+
+    private Thread initThread;
+
+
     /**
      * On default, servlets are not associated with any function.
      *
@@ -113,11 +122,23 @@ public class MMBaseServlet extends  HttpServlet {
         int    priority;
     }
 
+
+    public MMBase getMMBase() {
+        return mmbase;
+    }
+    public void setMMBase(MMBase mmb) {
+        mmbase = mmb;
+    }
+
+    public void setInitException(ServletException e) {
+        initException = e;
+    }
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
      */
 
     public void init() throws ServletException {
+
         if (! MMBaseContext.isInitialized()) {
             ServletContext servletContext = getServletConfig().getServletContext();
             MMBaseContext.init(servletContext);
@@ -125,7 +146,7 @@ public class MMBaseServlet extends  HttpServlet {
         }
 
         log.info("Init of servlet " + getServletName() + ".");
-        boolean initialize=false;
+        boolean initialize = false;
         // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
             initialize = (servletInstanceCount == 0);
@@ -134,11 +155,13 @@ public class MMBaseServlet extends  HttpServlet {
         if (initialize) {
             // used to determine the accurate way to access a servlet
             try {
+               
+                MMBaseContext.initHtmlRoot();
                 // get config and do stuff.
                 String path = MMBaseContext.getHtmlRoot() + "/WEB-INF/web.xml";
                 log.service("Reading servlet mappings from " + path);
                 XMLBasicReader webDotXml = new XMLBasicReader(path, false);
-                Enumeration mappings = webDotXml.getChildElements("web-app","servlet-mapping");
+                Enumeration mappings = webDotXml.getChildElements("web-app", "servlet-mapping");
                 while (mappings.hasMoreElements()) {
                     Element mapping = (Element) mappings.nextElement();
                     Element servName = webDotXml.getElementByPath(mapping, "servlet-mapping.servlet-name");
@@ -149,7 +172,7 @@ public class MMBaseServlet extends  HttpServlet {
                         if (!(pattern.equals(""))) {
                             List ls = (List) servletMappings.get(name);
                             if (ls == null) {
-                                ls = new Vector();
+                                ls = new ArrayList(); 
                                 servletMappings.put(name, ls);
                             }
                             ls.add(pattern);
@@ -161,15 +184,6 @@ public class MMBaseServlet extends  HttpServlet {
                 log.error(e.getMessage() + Logging.stackTrace(e));
             }
             log.debug("Loaded servlet mappings");
-        }
-        if (mmbase == null) {
-            log.service("Creating MMBase module in " + getServletName());
-            try {
-                mmbase = MMBase.getMMBase();
-            } catch (Throwable e) {
-                log.error("Could not find module with name 'MMBASEROOT'!");
-                log.error(e.getMessage() + Logging.stackTrace(e));
-            }
         }
         log.debug("Associating this servlet with functions");
         Iterator i = getAssociations().entrySet().iterator();
@@ -183,6 +197,11 @@ public class MMBaseServlet extends  HttpServlet {
             String mapping=(String)i.next();
             mapToServlet.put(mapping,this);
         }
+
+        // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
+        initThread = new MMBaseStartThread(this);
+        initThread.start();
+
     }
 
     /**
@@ -326,6 +345,9 @@ public class MMBaseServlet extends  HttpServlet {
      * working, without having to think about it.
      */
     public void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
+        if (initException != null) {
+            throw initException;
+        }
         incRefCount(req);
         try {
             super.service(req, res);
@@ -366,17 +388,17 @@ public class MMBaseServlet extends  HttpServlet {
 
     protected void decRefCount(HttpServletRequest req) {
         if (logServlets) {
-            String url = getRequestURL(req);
-            url += " " + req.getMethod();
+            String url = getRequestURL(req) + " " + req.getMethod();
             synchronized (servletCountLock) {
                 servletCount--;
                 ReferenceCountServlet s = (ReferenceCountServlet) runningServlets.get(this);
                 if (s!=null) {
-                    if (s.refCount==0) runningServlets.remove(this);
-                    else {
+                    if (s.refCount == 0) {
+                        runningServlets.remove(this);
+                    } else {
                         s.refCount--;
                         int i = s.uris.indexOf(url);
-                        if (i>=0) s.uris.removeElementAt(i);
+                        if (i >= 0) s.uris.removeElementAt(i);
                     }
                 }// s!=null
             }//sync
@@ -393,14 +415,19 @@ public class MMBaseServlet extends  HttpServlet {
 
     protected void incRefCount(HttpServletRequest req) {
         if (logServlets) {
-            String url = getRequestURL(req);
-            url += " " + req.getMethod();
+            String url = getRequestURL(req) + " " + req.getMethod();
             int curCount;
             synchronized (servletCountLock) {
-                servletCount++; curCount=servletCount; printCount++;
+                servletCount++; 
+                curCount = servletCount; 
+                printCount++;
                 ReferenceCountServlet s = (ReferenceCountServlet) runningServlets.get(this);
-                if (s==null) runningServlets.put(this, new ReferenceCountServlet(this, url, 0));
-                else { s.refCount++; s.uris.addElement(url); }
+                if (s==null) {
+                    runningServlets.put(this, new ReferenceCountServlet(this, url, 0));
+                } else { 
+                    s.refCount++; 
+                    s.uris.addElement(url); 
+                }
             }// sync
 
             if ((printCount & 31) == 0) { // Why not (printCount % <configurable number>) == 0?
@@ -415,6 +442,7 @@ public class MMBaseServlet extends  HttpServlet {
 
     public void destroy() {
         log.info("Servlet " + getServletName() + " is taken out of service");
+        initThread.interrupt();
         log.debug("Disassociating this servlet with mappings");
         Iterator i = getServletMappings(getServletConfig().getServletName()).iterator();
         while (i.hasNext()) {
@@ -424,6 +452,7 @@ public class MMBaseServlet extends  HttpServlet {
         super.destroy();
          // for retrieving servletmappings, determine status
         synchronized (servletMappings) {
+
            servletInstanceCount--;
             if (servletInstanceCount == 0) {
                 log.info("Unloaded servlet mappings");
@@ -436,7 +465,7 @@ public class MMBaseServlet extends  HttpServlet {
             }
         }
    }
-
+    
     /**
      * This class maintains current state information for a running servlet.
      * It contains a reference count, as well as a list of URI's being handled by the servlet.
