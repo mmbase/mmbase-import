@@ -108,7 +108,7 @@
 
      <!--
 <pre>
-      offset="${+$page*$config.page_size}"  max="$config.page_size"
+      offset="$[+$page*$config.page_size]"  max="$config.page_size"
  </pre>
   and in the body something like this:
   <pre>
@@ -123,12 +123,12 @@
  After the list the 'next' page and 'previous' page links can be made by something like this:
 <pre>
     &lt;mm:isgreaterthan referid="page" value="0.5"&gt;
-            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page" value="${+$page-1}" /&gt;&lt;/mm:url&gt;' &gt;
+            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page" value="$[+$page-1]" /&gt;&lt;/mm:url&gt;' &gt;
               previous page
       &lt;/a&gt;
     &lt;/mm:isgreaterthan&gt;
     &lt;mm:present referid="next_page"&gt;
-            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page"  value="${+$page+1}" /&gt;&lt;/mm:url&gt;' &gt;
+            &lt;a href='&lt;mm:url&gt;&lt;mm:param name="page"  value="$[+$page+1]" /&gt;&lt;/mm:url&gt;' &gt;
                next page
             &lt;/a&gt;
   </pre>
