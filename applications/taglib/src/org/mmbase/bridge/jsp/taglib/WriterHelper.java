@@ -114,6 +114,17 @@ public class WriterHelper extends BodyTagSupport {
     }
 
     /**
+     * @deprecated Use setWrite(Attribute)
+     */
+    public void setWrite(Boolean b) { 
+        try {
+            write = Attribute.getAttribute(b.toString());
+        } catch (JspTagException e) {
+            log.error(e.toString());
+        }
+    }
+
+    /**
      * There is a default behavior for what should happen if the 'write' attribute is not set.
      * if you want to override this, then call this function.
      */
@@ -139,6 +150,15 @@ public class WriterHelper extends BodyTagSupport {
     public void setJspvar(String j) {
         jspvar = j;
     }
+
+    /**
+     * @deprecated use 'setTag' in doStartTag. Jspvar will be set by setValue then
+     */
+    public void setJspvar(PageContext p) throws JspTagException {
+        pageContext = p;
+        setJspvar();
+    }
+
     public String getJspvar() {
         return jspvar;
     }
@@ -258,6 +278,11 @@ public class WriterHelper extends BodyTagSupport {
     }
     
 
+    /**
+     * To evaluate Attributes and to obtain the pagecontext for jspvars, the helper needs the Tag.
+     * Call this in your doStartTag.
+     * @since MMBase-1.7
+     */
 
     public void setTag(ContextReferrerTag b) {
         thisTag     = b;
@@ -329,6 +354,11 @@ public class WriterHelper extends BodyTagSupport {
             return "";
         }
     }
+
+    /**
+     * Sets the bodycontent (to be used in doEndTag)
+     * @since MMBase-1.7
+     */
 
     public int doAfterBody() throws JspException {
         bodyContent = thisTag.getBodyContent();
