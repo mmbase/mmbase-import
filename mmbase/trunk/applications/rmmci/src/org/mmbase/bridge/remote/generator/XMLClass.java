@@ -13,7 +13,7 @@ import org.w3c.dom.*;
 import java.util.*;
 
 /**
- * @author Kees Jongenburger <keesj@framfab.nl>
+ * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class XMLClass {
     Element xml;

@@ -14,7 +14,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 /**
- * @author Kees Jongenburger <keesj@framfab.nl>
+ * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class XMLMethod extends XMLClass{
     

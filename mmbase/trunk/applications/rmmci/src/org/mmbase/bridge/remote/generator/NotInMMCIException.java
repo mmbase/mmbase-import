@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.remote.generator;
 
 /**
- * @author Kees Jongenburger <keesj@framfab.nl>
+ * @author Kees Jongenburger <keesj@dds.nl>
  **/
 public class NotInMMCIException extends Exception{
     public NotInMMCIException(String message){
