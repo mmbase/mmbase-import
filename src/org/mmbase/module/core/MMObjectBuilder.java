@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.266 2004-05-07 13:21:32 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.267 2004-05-10 11:52:58 rob Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3442,6 +3442,10 @@ public class MMObjectBuilder extends MMTable {
         if (field.getType() != FieldDefs.TYPE_STRING &&
             field.getType() != FieldDefs.TYPE_XML &&
             field.getType() != FieldDefs.TYPE_UNKNOWN) {
+                // backwards comp fix. This is needed for the scan editors.
+                if(strValue.indexOf("*")!=-1) {
+                        strValue = strValue.substring(1, strValue.length() - 1);
+                }
                 value = Double.valueOf(strValue);
         }
 
