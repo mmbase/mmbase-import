@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.18 2000-06-05 15:42:15 wwwtech Exp $
+	$Id: Images.java,v 1.19 2000-06-06 21:31:58 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.18  2000/06/05 15:42:15  wwwtech
+	Rico: fixed count in number of requests
+	
 	Revision 1.17  2000/06/05 14:42:15  wwwtech
 	Rico: image queuing built in plus parallel converters
 	
@@ -65,7 +68,7 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.18 2000-06-05 15:42:15 wwwtech Exp $
+ * @version $Id: Images.java,v 1.19 2000-06-06 21:31:58 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
 	private String classname = getClass().getName();
@@ -236,7 +239,7 @@ public class Images extends MMObjectBuilder {
 				
 			if (number>=0) {
 				// flatten parameters as a 'hashed' key;
-				ckey=""+number;
+				ckey="";
 				for (Enumeration t=params.elements();t.hasMoreElements();) {
 					key=(String)t.nextElement();
 					ckey+=key;
