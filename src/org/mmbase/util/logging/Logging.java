@@ -195,8 +195,10 @@ public class Logging {
             System.err.println("Could not find class " + classToUse);
             System.err.println(e.toString());
             logClass = logClassCopy;
-        } 
-                 
+        } catch (Throwable e) {
+            System.err.println("Exception to find class " + classToUse + ": " +  e);
+            logClass = logClassCopy;
+        }
         configureClass(configuration);
     }
 
@@ -209,10 +211,11 @@ public class Logging {
 
     public static void configureClass(String configuration) {
         try { // to configure
-            // System.out.println("Found class " + logclass.getName());
+            // System.out.println("Found class " + logClass.getName());
             Method conf = logClass.getMethod("configure", new Class[] { String.class } ); 
             conf.invoke(null, new String[] { configuration } );    
         } catch (NoSuchMethodException e) {
+            //System.err.println("Could not find configure method in " + logClass.getName());
             // okay, simply don't configure
         } catch (java.lang.reflect.InvocationTargetException e) {
             System.err.println("Invocation Exception while configuration class. " + e.getMessage());
