@@ -32,6 +32,7 @@ public class MMEvents extends MMObjectBuilder {
 	public boolean init() {
 		super.init();
 		datestrings = new DateStrings(mmb.getLanguage());
+		probe=new MMEventsProbe(this);
 		return true;
 	}
 
@@ -146,11 +147,13 @@ public class MMEvents extends MMObjectBuilder {
 			} catch (InterruptedException f) {
 				log.error("interrupted while sleeping");
 			}
+			log.debug("Node local change "+wnode.getIntValue("number"));
 			super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
 			Enumeration g=also.elements();
 			while (g.hasMoreElements()) {
 				wnode=(MMObjectNode)g.nextElement();
 				if ((wnode.getIntValue("start")==sleeptime) || (wnode.getIntValue("stop")==sleeptime)) {
+					log.debug("Node local change "+wnode.getIntValue("number"));
 					super.nodeLocalChanged(mmb.getMachineName(),""+wnode.getIntValue("number"),tableName,"c");
 				}
 			}
