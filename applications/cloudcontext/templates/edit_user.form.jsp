@@ -37,6 +37,29 @@
       </td>
     </tr>
     </mm:compare>
+    <mm:compare value="<%=cloud.getUser().getIdentifier()%>">
+    <td><%=m.getString("groups")%></td>
+      <td>        
+        <mm:relatednodes id="ingroups" type="mmbasegroups" searchdir="source">         
+          <mm:nodeinfo type="gui" /><mm:last inverse="true">, </mm:last>
+        </mm:relatednodes>
+        <a href="<mm:url referids="parameters,$parameters">
+          <mm:param name="url">index_groups.jsp</mm:param>
+          <mm:relatednodes referid="ingroups">
+            <mm:param name="group"><mm:field name="number" /></mm:param>
+          </mm:relatednodes>
+          </mm:url>"><%=m.getString("view_groups")%>
+        </a>
+      </td>
+      <td><%=m.getString("rank")%></td>
+      <td>
+        <mm:relatednodes type="mmbaseranks">
+          <mm:nodeinfo type="gui" />
+        </mm:relatednodes>
+      </td>
+    </tr>
+
+    </mm:compare>
   </mm:field>
   <input type="hidden" name="user" value="<mm:field name="number" />" />
 </table>
