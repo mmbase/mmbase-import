@@ -11,112 +11,146 @@ See http://www.MMBase.org/license
 package org.mmbase.util.media;
 
 import org.mmbase.module.builders.media.ResponseInfo;
+import org.mmbase.module.builders.media.Format;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.Element;
+import java.util.*;
 
 
 /**
- * This can sort according to properties of real streams.
+ * This can sort according to properties of real streams.  The client
+ * can request a certain speed/channels, but it can be forced to be
+ * between two values (configured in mediasourcefilter.xml).
+ *
  * @author  Michiel Meeuwissen
- * @version $Id: RealComparator.java,v 1.2 2003-01-08 08:50:18 michiel Exp $
+ * @version $Id: RealComparator.java,v 1.3 2003-01-08 14:50:17 michiel Exp $
  */
-public class RealComparator extends  PreferenceComparator {
+public class RealComparator extends  GroupComparator {
     private static Logger log = Logging.getLoggerInstance(RealComparator.class.getName());
 
-    private static int minSpeed        = 0;
-    private static int maxSpeed        = 0;
-    private static int minChannels     = 0;
-    private static int maxChannels     = 0;
 
-    public  RealComparator() {
-    }
-
-    public void configure(XMLBasicReader reader, Element e) {
-        try {
-            minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minspeed")));
-            maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxspeed")));
-            minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minchannels")));
-            maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxchannels")));
-        } catch (Exception ex) {
-            log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
-            log.error(Logging.stackTrace(ex));
-        }
-        if(log.isDebugEnabled()) {
-            log.debug("Minspeed="   + minSpeed);
-            log.debug("Maxspeed="   + maxSpeed);
-            log.debug("Minchannels="+ minChannels);
-            log.debug("Maxchannels="+ maxChannels);
-        }
-    }
-        
     /**
-     * select the best realaudio mediasource if available
-     * @param mediaSources the list of appropriate mediasources
-     * @return the best realaudio mediasource
+     * Prefer real a little if this filter is used?
+     * Other possibility: Impelmeent it that if one of both ResponseInfo are no reals, that they are equal then.
      */
-    protected int getPreference(ResponseInfo ri) {
-        MMObjectNode source = ri.getSource();
-        /*
-        if (source.getIntValue("format") =
-        int result;
 
-        if(info.containsKey("wantedspeed")) {
-            wantedspeed=Integer.parseInt(""+info.get("wantedspeed"));
+    class RealFormatComparator extends PreferenceComparator {        
+        protected int getPreference(ResponseInfo ri) {
+            if (ri.getSource().getIntValue("format") != Format.RM.toInt()) return 0; 
+            return 1;
         }
-        if(info.containsKey("wantedchannels")) {
-            wantedchannels=Integer.parseInt(""+info.get("wantedchannels"));
+    }
+
+
+    class SpeedComparator extends PreferenceComparator {
+
+        private int minSpeed        = -1;
+        private int maxSpeed        = -1;    
+        public void configure(XMLBasicReader reader, Element e) {
+            try {
+                minSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minspeed")));
+                maxSpeed    = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxspeed")));
+            } catch (Exception ex) {
+                log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
+                log.error(Logging.stackTrace(ex));
+            }
+            if(log.isDebugEnabled()) {
+                log.debug("Minspeed="   + minSpeed);
+                log.debug("Maxspeed="   + maxSpeed);
+           }
         }
-        
-        if( wantedspeed < minSpeed ) {
-            log.error("wantedspeed("+wantedspeed+") less than minspeed("+minSpeed+")");
-            wantedspeed = minSpeed;
+        /**
+         * select the best realaudio mediasource if available
+         * @param mediaSources the list of appropriate mediasources
+         * @return the best realaudio mediasource
+         */
+        protected int getPreference(ResponseInfo ri) {
+            Map info           = ri.getInfo();
+            int wantedSpeed    = -1;
+
+            int preference     = 0;
+            if(info.containsKey("wantedSpeed")) {
+                preference = 1;  // explicitely requested something real-specific, prefer real
+                wantedSpeed    = ((Integer) info.get("wantedSpeed")).intValue();
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("wantedSpeed:" + wantedSpeed + " minspeed: " + minSpeed + " maxspeed: " + maxSpeed);
+            }
+
+            if( wantedSpeed < minSpeed) {
+                wantedSpeed = minSpeed;
+            } else if( wantedSpeed > maxSpeed) {
+                wantedSpeed = maxSpeed;
+            }
+
+            int speed    = ri.getSource().getIntValue("speed");
+
+            if (speed <= wantedSpeed) {
+                preference += Math.abs(wantedSpeed - speed);
+            }
+            return preference;
         }
-        if( wantedspeed > maxSpeed ) {
-            log.error("wantedspeed("+wantedspeed+") greater than maxspeed("+maxSpeed+")");
-            wantedspeed = maxSpeed;
-        }
-        if( wantedchannels < minChannels ) {
-            log.error("wantedchannels("+wantedchannels+") less than minchannels("+minChannels+")");
-            wantedchannels = minChannels;
-        }
-        if( wantedchannels > maxChannels ) {
-            log.error("wantedchannels("+wantedchannels+") greater than maxchannels("+maxChannels+")");
-            wantedchannels = maxChannels;
-        }
-        
-        MMObjectNode bestR5 = null;
-        for(Iterator i=mediaSources.iterator(); i.hasNext();) {
-            MMObjectNode mediaSource = (MMObjectNode) i.next();
-            
-            // Is the MediaSource ready for use && is format realaudio
-            if( mediaSource.getIntValue("status") == MediaSources.DONE  &&
-            mediaSource.getIntValue("format") == MediaSources.RA_FORMAT ) {
-                if(mediaSourceBuilder.getSpeed(mediaSource) <= wantedspeed && mediaSourceBuilder.getChannels(mediaSource) <= wantedchannels) {
-                    if(bestR5==null) {
-                        bestR5 = mediaSource;
-                    } else {
-                        if(mediaSourceBuilder.getChannels(bestR5) < mediaSourceBuilder.getChannels(mediaSource)) {
-                            bestR5 = mediaSource;
-                        }
-                        if(mediaSourceBuilder.getSpeed(bestR5) < mediaSourceBuilder.getSpeed(mediaSource) && mediaSourceBuilder.getChannels(bestR5) == mediaSourceBuilder.getChannels(mediaSource)) {
-                            bestR5 = mediaSource;
-                        }
-                    }
-                }
+    }
+
+    class ChannelsComparator extends PreferenceComparator {
+        private int minChannels     = -1;
+        private int maxChannels     = -1;
+
+
+        public void configure(XMLBasicReader reader, Element e) {
+            try {
+                minChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.minchannels")));
+                maxChannels = Integer.parseInt(reader.getElementValue(reader.getElementByPath(e, "filterConfigs.realaudio.maxchannels")));
+            } catch (Exception ex) {
+                log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information:" + ex);
+                log.error(Logging.stackTrace(ex));
+            }
+            if(log.isDebugEnabled()) {
+                log.debug("Minchannels="   + minChannels);
+                log.debug("Maxchannels="   + maxChannels);
             }
         }
-        // did we find a R5 stream ?
-        if( bestR5 != null ) {
-            log.debug("R5 stream found "+bestR5.getStringValue("number"));
-            return bestR5;
-        }
+
+        /**
+         * select the best realaudio mediasource if available
+         * @param mediaSources the list of appropriate mediasources
+         * @return the best realaudio mediasource
+         */
+        protected int getPreference(ResponseInfo ri) {
+            Map info           = ri.getInfo();
+            int wantedChannels = -1;
+
+            int preference     = 0;
+            if(info.containsKey("wantedChannels")) {
+                preference = 1; // explicitely requested something real-specific, prefer real
+                wantedChannels = ((Integer) info.get("wantedChannels")).intValue();
+            }
+
+            if (log.isDebugEnabled()) {
+                log.debug("wantedChannels:" + wantedChannels + " minchennels: " + minChannels + " maxchannels: " + maxChannels);
+            }
         
-        return null;
-        */
-        return 0;
+
+            int channels    = ri.getSource().getIntValue("channels");
+
+            if (channels <= wantedChannels) {
+                preference += Math.abs(wantedChannels - channels);
+         
+            }
+            return preference;
+        }
     }
+
+    
+    public  RealComparator() {
+        add(new RealFormatComparator());
+        add(new SpeedComparator());
+        add(new ChannelsComparator());
+    }
+
 
 }
 
