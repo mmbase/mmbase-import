@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.11 2003-05-12 11:15:35 michiel Exp $
+ * @version $Id: XmlField.java,v 1.12 2003-05-12 14:53:01 michiel Exp $
  */
 
 public class XmlField extends ConfigurableStringTransformer implements CharTransformer {
@@ -27,6 +27,8 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     public final static int POOR = 2;
     public final static int BODY = 3;
     public final static int XML  = 4;
+    public final static int POORBODY = 5;
+    public final static int RICHBODY = 6;
 
     // cannot be decoded:
     public final static int ASCII = 10;
@@ -121,7 +123,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
     private static void handleEmph(StringObject obj) {
 
-        obj.replace("__", "&#95;");
+        obj.replace("__", "&#95;"); // makes it possible to escape underscores
 
         // Emphasizing. This is perhaps also asking for trouble, because
         // people will try to use it like <font> or other evil
@@ -147,7 +149,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
         }
 
         if (emph) { // make sure it is closed on the end.
-            // should neve happen when you e.g. used paragraphs.
+            // should never happen when you e.g. used paragraphs.
             obj.insert(obj.length(), "</em>\r");
         }
 
@@ -503,6 +505,9 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             case RICH :
             case POOR :
                 return XSLTransform("mmxf2rich.xsl", data);
+            case RICHBODY :
+            case POORBODY :
+                return XSLTransform("mmxf2rich.xsl", XML_TAGSTART + data + XML_TAGEND);
             case ASCII :
                 return XSLTransform("mmxf2ascii.xsl", data);
             case XHTML :
@@ -517,28 +522,38 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     public String transformBack(String r) {
-        String result;
-        switch (to) {
+        String result = null;
+        try {
+            switch (to) {
             case RICH :
                 result = XML_TAGSTART + richToXML(r) + XML_TAGEND;
                 // rich will not be validated... Cannot be used yet!!
                 break;
             case POOR :
                 result = XML_TAGSTART + poorToXML(r) + XML_TAGEND;
+                validate(XML_HEADER + result);
+                break;
+            case RICHBODY :
+                result = richToXML(r);
+                // rich will not be validated... Cannot be used yet!!
+                break;
+            case POORBODY :
+                result = poorToXML(r);
                 break;
             case BODY :
                 result = XML_TAGSTART + r + XML_TAGEND;
+                validate(XML_HEADER + result);
                 break;
             case XML :
                 result = r;
+                validate(XML_HEADER + result);
                 break;
             case ASCII :
                 throw new UnsupportedOperationException("Cannot transform");
             default :
                 throw new UnknownCodingException(getClass(), to);
-        }
-        try {
-            validate(XML_HEADER + result);
+            }
+            
         } catch (FormatException fe) {
             log.error(fe.toString() + " source: \n" + result);
         }
@@ -551,6 +566,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
                 return "MMXF_RICH";
             case POOR :
                 return "MMXF_POOR";
+            case RICHBODY :
+                return "MMXFBODY_RICH";
+            case POORBODY :
+                return "MMXFBODY_POOR";
             case ASCII :
                 return "MMXF_ASCII";
             case XHTML :
