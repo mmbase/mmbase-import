@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.134 2004-10-09 09:37:33 nico Exp $
+ * @version $Id: BasicNode.java,v 1.135 2004-10-12 09:42:23 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -98,6 +98,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * from the cloud (such as a temporary nodemanager for a result list).
      * @param node the MMObjectNode to base the node on
      * @param nodeManager the NodeManager to use for administrating this Node
+     * @throws IllegalArgumentException If node is null
      */
     BasicNode(MMObjectNode node, NodeManager nodeManager) {
         this.nodeManager = nodeManager;
@@ -110,6 +111,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * The NodeManager for the node is requested from the Cloud.
      * @param node the MMObjectNode to base the node on
      * @param cloud the cloud to which this node belongs
+     * @throws IllegalArgumentException If node is null
      */
     BasicNode(MMObjectNode node, Cloud cloud) {
         this.cloud = (BasicCloud) cloud;
@@ -226,9 +228,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      */
     protected void setNode(MMObjectNode n) {
         if (n == null) {
-            String message = "Passed Node is null";
-            log.error(message);
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException("Passed Node is null");
         }
         noderef = n;
     }
