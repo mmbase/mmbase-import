@@ -19,13 +19,15 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.8 2004-02-03 15:14:40 michiel Exp $
+ * @version $Id: JumpersFilter.java,v 1.9 2004-02-24 11:53:19 michiel Exp $
  */
-public class JumpersFilter implements Filter {
+public class JumpersFilter implements Filter, MMBaseStarter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
-    private static MMBase mmb;
+    private static MMBase mmbase;
     private static Jumpers bul;
     private static String name;
+
+    private Thread initThread;
 
     /**
      * Supported for use with older versions of the servlet api, such as used by Orion 1.5.2
@@ -45,6 +47,15 @@ public class JumpersFilter implements Filter {
         throw new UnsupportedOperationException("This method is not part of the Servlet api 2.3");
     }
 
+    public MMBase getMMBase() {
+        return mmbase;
+    }
+    public void setMMBase(MMBase mmb) {
+        mmbase = mmb;
+    }
+    public void setInitException(ServletException se) {
+        // never mind, simply, ignore
+    }
     /**
      * @javadoc
      */
@@ -52,22 +63,11 @@ public class JumpersFilter implements Filter {
         name = filterConfig.getFilterName();
         MMBaseContext.init(filterConfig.getServletContext());
         MMBaseContext.initHtmlRoot();
-        mmb = MMBase.getMMBase();
-        if (mmb == null) {
-            log.warn("Could not start MMBase.");
-            throw new ServletException("Could not start jumpers filter because MMBase not started");
-        }
-        
-        try {
-            bul = (Jumpers)mmb.getBuilder("jumpers");
-        } catch (BuilderConfigurationException bce) {
-            log.warn(bce.getMessage());
-            bul = null;
-        }
-        if (bul == null) {
-            log.warn("Could not find jumpers builder. Perhaps it will be installed later. If not, you could as well remove the Jumpers filter.");
-        }
-        log.info("Filter " + name + " initialized.");
+
+        // stuff that can take indefinite amount of time (database down and so on) is done in separate thread
+        initThread = new MMBaseStartThread(this);
+        initThread.start();
+
     }
 
     /**
@@ -75,7 +75,9 @@ public class JumpersFilter implements Filter {
      */
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws java.io.IOException, ServletException {
         if (bul == null) {
-            bul = (Jumpers)mmb.getBuilder("jumpers");
+            if (mmbase != null) {
+                bul = (Jumpers)mmbase.getBuilder("jumpers");
+            } 
             if (bul == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return; // nothing to be done
@@ -123,6 +125,8 @@ public class JumpersFilter implements Filter {
      */
     public void destroy() {
         log.info("Filter " + name + " destroyed.");
+        initThread.interrupt();
     }
+
 
 }
