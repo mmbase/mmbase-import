@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: AbstractNodeListTag.java,v 1.61 2004-01-19 17:22:08 michiel Exp $
+ * @version $Id: AbstractNodeListTag.java,v 1.62 2004-03-23 21:42:46 michiel Exp $
  */
 
 abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implements BodyTag, ListProvider {
@@ -304,7 +304,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     }
 
     public void doInitBody() throws JspTagException {
-        listHelper.doInitBody();
+        
     }
 
     /**
