@@ -1020,6 +1020,12 @@ See mmexamples/taglib for more elaborated examples.
       <see tag="list" attribute="directions" />
     </attribute>
     <attribute>
+      <name>searchdir</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <see tag="list" attribute="searchdir" />
+    </attribute>
+    <attribute>
       <name>max</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
