@@ -1,4 +1,4 @@
-<list role="posrel" destination="mediafragments" fields="posrel.pos" orderby="posrel.pos">
+<list role="posrel" destination="&fragments;" orderby="field[@name='pos']">
   <title>Items</title>       
   <item>          
     <field name="title" />
@@ -13,9 +13,9 @@
   </item>
 
 	<action type="create">
-     <relation role="posrel" destinationtype="mediafragments" >
+     <relation role="posrel" destinationtype="&fragments;" >
         <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
-        <object type="mediafragments" />
+        <object type="&fragments;" />
      </relation>
 	</action>
 </list>

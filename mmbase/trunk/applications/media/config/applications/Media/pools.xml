@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
-	<node number="157" owner="admin" alias="media.myfragments">
-		<name>My fragments</name>
+<pools exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+	<node number="271" owner="michiel">
+		<name>Other streams</name>
+		<description></description>
+	</node>
+
+	<node number="266" owner="michiel" alias="media.streams">
+		<name>Audio &amp; video streams</name>
+		<description></description>
+	</node>
+
+	<node number="143" owner="admin" alias="media.myfragments">
+		<name>My clips</name>
 		<description>Used by the Media editor example</description>
 	</node>
 

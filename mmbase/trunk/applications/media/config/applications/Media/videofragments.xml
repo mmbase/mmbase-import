@@ -1,3 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<videofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
+<videofragments exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+	<node number="274" owner="admin">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body>asfd</body>
+		<stop>-1</stop>
+		<title>Eerste item</title>
+		<subtitle>asdf</subtitle>
+		<intro>sdfsafasfdasfd</intro>
+	</node>
+
+	<node number="248" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Journaal van maandag 20 uur</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="243" owner="michiel">
+		<start>46892</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>879750.0</stop>
+		<title>Eerste item</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="242" owner="michiel">
+		<start>0</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>44596</stop>
+		<title>De introductie</title>
+		<subtitle></subtitle>
+		<intro>Een leuk programma dat Noordrelicht.</intro>
+	</node>
+
+	<node number="239" owner="admin">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>Mijn opknipsel</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="237" owner="admin">
+		<start></start>
+		<length></length>
+		<class></class>
+		<body></body>
+		<stop></stop>
+		<title>Noorderlicht</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="276" owner="admin">
+		<start>1361647.0</start>
+		<length></length>
+		<class></class>
+		<body></body>
+		<stop>-1.0</stop>
+		<title>Het weer</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
+	<node number="253" owner="michiel">
+		<start>-1</start>
+		<length>-1</length>
+		<class>-1</class>
+		<body></body>
+		<stop>-1</stop>
+		<title>18 november</title>
+		<subtitle></subtitle>
+		<intro></intro>
+	</node>
+
 </videofragments>

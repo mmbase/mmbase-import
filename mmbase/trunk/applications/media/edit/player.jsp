@@ -10,16 +10,23 @@
 <title>[ STREAM ]</title>
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
+<script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;language=$language" />" language="javascript"><!--help IE--></script>
 </head>
 <body>
 <mm:cloud>
 <%-- determin source --%>
-<mm:node number="$fragment">
-  <mm:relatednodes type="mediasources" constraints="format = 6" max="1">
+<mm:node number="$fragment" notfound="skip">
+  <mm:relatednodes type="videosources" constraints="format = 6" max="1">
       <mm:node id="source" />
   </mm:relatednodes>
+  <mm:notpresent referid="source">
+    <mm:relatednodes type="audiosources" constraints="format = 6" max="1">
+      <mm:node id="source" />
+  </mm:relatednodes>
+  </mm:notpresent>
 </mm:node>
 
+    <mm:present referid="source">
 <table width="350" height="300" align="left" background="images/bck_movie.gif" class="movie">
 	<tr>
 		<td width="350" height="300"  class="movie">
@@ -56,11 +63,15 @@
 				</map></td>
 			</tr>
 		</table>
-		
 		</td>
 	</tr>
 
-</table> 
+</table>
+	  </mm:present>
+    <mm:notpresent referid="source">
+       Could not determin source
+    </mm:notpresent>
+ 
 </mm:cloud>
 </body>
 </mm:locale>

@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<posrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114814">
-	<node number="554" owner="michiel" snumber="540" dnumber="557" rtype="posrel" dir="bidirectional">
-		<pos>3</pos>
+<posrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+	<node number="275" owner="admin" snumber="253" dnumber="274" rtype="posrel" dir="bidirectional">
+		<pos>1</pos>
 	</node>
 
-	<node number="553" owner="michiel" snumber="540" dnumber="556" rtype="posrel" dir="bidirectional">
+	<node number="273" owner="admin" snumber="253" dnumber="276" rtype="posrel" dir="bidirectional">
 		<pos>2</pos>
 	</node>
 
-	<node number="552" owner="michiel" snumber="540" dnumber="555" rtype="posrel" dir="bidirectional">
+	<node number="272" owner="michiel" snumber="266" dnumber="271" rtype="posrel" dir="bidirectional">
+		<pos>2</pos>
+	</node>
+
+	<node number="270" owner="michiel" snumber="266" dnumber="143" rtype="posrel" dir="bidirectional">
+		<pos>1</pos>
+	</node>
+
+	<node number="244" owner="michiel" snumber="239" dnumber="243" rtype="posrel" dir="bidirectional">
+		<pos>2</pos>
+	</node>
+
+	<node number="241" owner="michiel" snumber="239" dnumber="242" rtype="posrel" dir="bidirectional">
 		<pos>1</pos>
 	</node>
 
