@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.servlet;
 
 import org.mmbase.module.core.MMBase;
+import org.mmbase.module.Module;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ import javax.servlet.ServletException;
  * Seperate thread to init MMBase. This is because init() of Servlets and Filters must take little
  * time, to not hold other web-apps.  Init of MMBase may take indefinitely if e.g. the database is down.
  *
- * @version $Id: MMBaseStartThread.java,v 1.1 2004-02-24 11:53:19 michiel Exp $
+ * @version $Id: MMBaseStartThread.java,v 1.2 2004-02-24 17:40:06 michiel Exp $
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
  */
@@ -32,7 +33,7 @@ class MMBaseStartThread extends Thread {
         setDaemon(true); // if init never ends, don't hinder destroy
     }
     public void run() {
-        synchronized(MMBaseStartThread.class) {
+        synchronized(Module.class) {
             
             if (starter.getMMBase() == null) {
                 try {
