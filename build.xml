@@ -63,11 +63,12 @@ NetComponents can be found at:
   <!-- Read customized values if available -->
   <property file="build.properties"/>
   <!-- Default values for properties that can be customized -->
-  <property name="source.dir" location="." />
-  <property name="build.dir" value="${source.dir}/build"/>
-  <property name="download.dir" value="${build.dir}/download"/>
-  <property name="expand.dir" value="${download.dir}/expanded"/>
-  <property name="download.zip" value="mmbase-downloads.zip" />
+
+  <property name="source.dir"   location="." />
+  <property name="build.dir"    value="${source.dir}/build" />
+  <property name="download.dir" value="${build.dir}/download" />
+  <property name="expand.dir"   value="${download.dir}/expanded" />
+  <property name="download.zip" value="mmbase-downloads.zip"  />
 
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
@@ -123,7 +124,7 @@ NetComponents can be found at:
   <!-- Create the source distribution                                      -->
   <!-- =================================================================== -->
   <target name="srcdist" description="Create the source distribution"
-          depends="init,documentation,javadocs,lib.release.zip">
+          depends="init,documentation,javadocs">
     <!-- copy the java-sources -->
     <mkdir dir="${build.dir}/mmbase-src/src"/>
     <copy todir="${build.dir}/mmbase-src/src">
@@ -162,8 +163,8 @@ build.compiler=modern
 optimize=on
 debug=off
 deprecation=on
-distro=MMBase 1.6.0
-version=1.6.0-rc1
+distro=MMBase 1.7.0
+version=1.7.0-dev
     </echo>
 
     <!-- copy a readme and other basic docs from documentation dir -->
@@ -212,11 +213,13 @@ version=1.6.0-rc1
       <fileset dir="${source-documentation.dir}/releases"
                defaultexcludes="yes">
         <exclude name="legal"/>
+        <exclude name="building.txt"/>
         <include name="*.txt"/>
       </fileset>
     </copy>
     <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
           tofile="${build.dir}/mmbase/LICENSE"/>
+
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip">
      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}" 
@@ -265,31 +268,6 @@ version=1.6.0-rc1
     </copy>
 
   </target>
-
-  <target
-    name="lib.release.zip"
-    description="Create a zip of the lib directory"
-    depends="lib.release">
-
-    <!-- copy licenses for included jars -->
-    <mkdir dir="${release.lib.dir}/legal" />
-    <copy todir="${release.lib.dir}/legal">
-      <fileset dir="${source-documentation.dir}/releases/legal"/>
-    </copy>
-
-    <zip zipfile="${build.dir}/${name}-jars-${version}.zip" >
-      <zipfileset dir="${release.lib.dir}" prefix="${name}-jars-${version}"
-               defaultexcludes="yes">
-        <include name="**" />
-        <!-- these may not be redistributed -->
-        <exclude name="oracle-jdbc.zip"/>
-        <exclude name="ifxjdbc.jar"/>
-      </zipfileset>
-    </zip>
-
-  </target>
-
-
 
   <target name="lib.compile" description="Create the lib directory, containing the libraries necessary form compilation" 
           depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation,get.jdbc">
@@ -874,6 +852,14 @@ Build-compiler: ${build.compiler}
       <arg value="-OUT"/>
       <arg value="${reference.dir}/mmbase-taglib.html"/>
     </java>
+
+    <!-- sucks, but at least repairs a broken link for now: -->
+    <!-- taglib-groups.html must be generated from the xml -->
+    <copy todir="${reference.dir}/taglib">      
+      <fileset dir="${source-src.dir}/org/mmbase/bridge/jsp/taglib">
+        <include name="*.html"/>
+      </fileset>
+    </copy>
   </target>
 
   <target name="community.tld.check">
@@ -1494,6 +1480,7 @@ Version: MMBase build ${version}
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
            classpathref="compile.classpath"
+           depend="true"
            debug="${debug}"
            optimize="${optimize}"
            deprecation="${deprecation}">
@@ -1678,8 +1665,9 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <!-- Clean the documentation directory                                   -->
   <!-- =================================================================== -->
-  <target name="clean.documentation" description="Clean the generated documenation">
+  <target name="clean.documentation" description="Clean the generated documentation">
     <delete dir="${mmdocs.dir}"/>
+    <delete file="${build.dir}/docbook2xhtml.xslt"/>
   </target>
 
   <!-- =================================================================== -->
@@ -1687,10 +1675,15 @@ Version: MMBase build ${version}
   <!-- =================================================================== -->
   <target
     name="clean.build"
-    depends="clean.compile,clean.remote,clean.junit,clean.apptool,clean.lib"
+    depends="clean.compile,clean.remote,clean.generatedsource,clean.junit,clean.apptool,clean.lib"
     description="Clean all classes and generated java, safe for every recompilation"
     >
     <!-- junit,apptool? -->
+  </target>
+
+  <!-- this doesn't get clean anywhere else -->
+  <target name="clean.generatedsource">
+    <delete dir="${generated-source-src.dir}" />
   </target>
 
   <target
