@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.22 2002-08-13 06:46:32 michiel Exp $
+ * @version $Id: Config.java,v 1.23 2002-08-14 18:12:03 michiel Exp $
  */
 
 public class Config {
@@ -44,19 +44,16 @@ public class Config {
     public String      templates;
     public String      language;
 
-    public Map         popups     = new HashMap(); // all popups now in use (key -> Config)
-
     static public abstract class SubConfig {
         public String wizard;
         public String page;
-        public Map attributes = new HashMap();
-        public Set   popups   = new HashSet(); // all subpopups (keys)
-                                               // if some wizard is closed, then all its 'popups'
-                                               // can be invalidated, finished or not..
+        public Map   popups     = new HashMap(); // all popups now in use below this (key -> Config)
+        
+        public Map    attributes = new HashMap();
 
         public void setAttribute(String name, String value) {
             if (value!=null) {
-                log.info("storing "+name+" :"+value);
+                log.debug("storing "+name+" :"+value);
                 attributes.put(name,value);
             }
         }
@@ -67,6 +64,7 @@ public class Config {
         public String objectNumber;
         public String parentFid;
         public String parentDid;
+        public String popupId;
     }
     static public class ListConfig extends SubConfig {
         public String title;
@@ -206,6 +204,11 @@ public class Config {
                 return def.toString();
             }
             return getParam(paramName);
+        }
+        protected int  getParam(String paramName, int def) {
+            String i = request.getParameter(paramName);
+            if (i == null || i.equals("")) return def;
+            return new Integer(i).intValue();
         }
 
         protected Integer getParam(String paramName, Integer def) {

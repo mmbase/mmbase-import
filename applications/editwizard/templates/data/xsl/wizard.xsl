@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.63 2002-08-13 15:36:19 michiel Exp $
+  @version $Id: wizard.xsl,v 1.64 2002-08-14 18:15:02 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -339,6 +339,7 @@
         
         -->
    <xsl:template name="fieldintern">
+     <xsl:apply-templates select="prefix" />
       <xsl:choose>
         <xsl:when test="@ftype='function'">
           <xsl:if test="not(string(number(@number)) = 'NaN')">
@@ -355,7 +356,6 @@
         </xsl:when>
         <xsl:when test="@ftype='text' or @ftype='html'">
           <span>
-           <xsl:apply-templates select="prefix" />
           <xsl:text disable-output-escaping="yes">&lt;textarea
                 name="</xsl:text><xsl:value-of select="@fieldname" /><xsl:text>"
                 dttype="</xsl:text><xsl:value-of select="@dttype" /><xsl:text>"
@@ -455,7 +455,7 @@
                 </a>
            </xsl:if>
            <xsl:if test="not(@inline='true')">
-                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popup={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
+                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
                    target="_blank">
                 <xsl:call-template name="prompt_edit_wizard" />
                 </a>
@@ -523,6 +523,7 @@
           <xsl:apply-templates select="value" mode="inputline" />
         </xsl:otherwise>
       </xsl:choose>
+      <xsl:apply-templates select="postfix" />
   </xsl:template>
 
 
@@ -763,7 +764,7 @@
                         </a>
                       </xsl:if>
                       <xsl:if test="not(@inline='true')">
-                        <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;popup={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
+                        <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;popupid={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
                           target="_blank">
                           <xsl:call-template name="prompt_add_wizard" />
                           </a>
