@@ -75,7 +75,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 				}
 
 				if(secondToken.equals("help")) {
-					com.sendPublic(	"Syntax of MMBase commands are:\n"+
+					com.sendPrivate(im.getFromNick(),"Syntax of MMBase commands are:\n"+
 									"mmbase say [text]\n"+
 									"mmbase question [text]\n"+
 									"mmbase answer to question [number] is [text]\n"+
