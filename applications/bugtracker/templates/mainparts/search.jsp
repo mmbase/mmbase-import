@@ -14,6 +14,19 @@
       </mm:listnodescontainer>>
     </select>
   </td>
+  <td colspan="4">
+   Submitter:
+   <select name="ssubmitter">
+     <option value="-1">any</option>
+       <mm:listnodescontainer path="users,groups">
+         <mm:constraint field="groups.name" value="BugTrackerCommitors" />
+         <mm:sortorder  field="lastname" />
+         <mm:listnodes>
+           <option <mm:field name="number">value="<mm:write />" <mm:compare referid2="ssubmitter">selected="selected"</mm:compare></mm:field> ><mm:field name="firstname" /> <mm:field name="lastname" /></option>
+        </mm:listnodes>
+      </mm:listnodescontainer>>
+    </select>
+  </td>
 </tr>
 <tr class="listsearch">
    <td width="50">
@@ -90,25 +103,50 @@
 </tr>
 <!-- the real searchpart -->
 
-<mm:url id="pagingurl" referids="portal?,page?,base,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer" write="false" />
+<mm:url id="pagingurl" referids="portal?,page?,base,sissue,sstatus,stype,sversion,sfixedin,sbugid,sarea,spriority,smaintainer,ssubmitter" write="false" />
 
 <mm:write referid="smaintainer">
   <mm:compare value="-1">
-    <mm:import id="root">pools</mm:import>
+    <mm:write referid="ssubmitter">
+       <mm:compare value="-1">
+          <mm:import id="root">pools</mm:import>
+       </mm:compare>
+       <mm:compare value="-1" inverse="true">
+           <mm:import id="root">users,rolerel</mm:import>
+       </mm:compare>
+    </mm:write>
   </mm:compare>
   <mm:compare value="-1" inverse="true">
     <mm:import id="root">users,rolerel</mm:import>
   </mm:compare>
 </mm:write>
 
+
+
 <mm:listcontainer path="$root,bugreports,areas">
-  <mm:write referid="smaintainer">
-    <mm:compare value="-1">
+  <mm:write referid="root">
+    <mm:compare value="pools">
       <mm:constraint field="pools.number" value="BugTracker.Start" />
     </mm:compare>
-    <mm:compare value="-1" inverse="true">
-      <mm:constraint field="rolerel.role" value="maintainer" />
-      <mm:constraint field="users.number" value="$_" />
+    <mm:compare value="pools" inverse="true">
+      <mm:composite operator="or">
+       <mm:write referid="smaintainer">
+         <mm:isgreaterthan value="0">
+           <mm:composite operator="and">	
+             <mm:constraint field="rolerel.role" value="maintainer" />
+             <mm:constraint field="users.number" value="$_" />
+           </mm:composite>
+         </mm:isgreaterthan>
+       </mm:write>
+       <mm:write referid="ssubmitter">
+         <mm:isgreaterthan value="0">
+           <mm:composite operator="and">	
+             <mm:constraint field="rolerel.role" value="submitter" />
+             <mm:constraint field="users.number" value="$_" />
+           </mm:composite>
+         </mm:isgreaterthan>
+       </mm:write>
+     </mm:composite>
     </mm:compare>
   </mm:write>
 
