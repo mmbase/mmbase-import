@@ -9,15 +9,14 @@ See http://www.MMBase.org/license
  */
 
 package org.mmbase.bridge.remote.generator;
-import org.w3c.dom.*;
-
-import javax.xml.parsers.*;
-import org.xml.sax.*;
 import java.io.*;
 import java.util.*;
 
-import org.mmbase.util.*;
-import org.mmbase.util.xml.*;
+import javax.xml.parsers.*;
+
+import org.mmbase.util.XMLBasicReader;
+import org.mmbase.util.xml.XMLWriter;
+import org.w3c.dom.*;
 
 /**
  * @author Kees Jongenburger <keesj@dds.nl>
@@ -114,9 +113,8 @@ public class MMCI{
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueInConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.FieldValueBetweenConstraint",doc));
         xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.CompositeConstraint",doc));
-
-
-
+				//why???
+        xmle.appendChild(ClassToXML.classToXML("org.mmbase.storage.search.SearchQuery",doc));
     }
 
     public static void main(String [] argv) throws Exception{

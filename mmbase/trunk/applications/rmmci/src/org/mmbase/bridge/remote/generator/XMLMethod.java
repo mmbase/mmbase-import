@@ -16,37 +16,37 @@ import java.lang.reflect.*;
 /**
  * @author Kees Jongenburger <keesj@dds.nl>
  **/
-public class XMLMethod extends XMLClass{
-    
-    public XMLMethod(Document document){
+public class XMLMethod extends XMLClass {
+
+    public XMLMethod(Document document) {
         super(document);
     }
-    
-    public static XMLClass fromXML(Element xml){
-        Document doc=xml.getOwnerDocument();
+
+    public static XMLClass fromXML(Element xml) {
+        Document doc = xml.getOwnerDocument();
         XMLMethod method = new XMLMethod(doc);
         method.setXML(xml);
         return method;
     }
-    
-    public Method getJavaMethod(Class clazz){
+
+    public Method getJavaMethod(Class clazz) {
         Method[] methods = clazz.getMethods();
-        for (int i =0 ; i < methods.length;i++){
-            if (methods[i].getName().equals(getName())){
+        for (int i = 0; i < methods.length; i++) {
+            if (methods[i].getName().equals(getName())) {
                 Class[] params = methods[i].getParameterTypes();
                 List list = getParameterList();
                 boolean ok = false;
-                if (params != null){
-                    if (params.length == list.size()){
+                if (params != null) {
+                    if (params.length == list.size()) {
                         ok = true;
-                        for (int p =0 ; p < params.length; p++){
-                            if (! (params[p].getName().equals( ((XMLClass)list.get(p)).getOriginalName()))){
+                        for (int p = 0; p < params.length; p++) {
+                            if (!(params[p].getName().equals(((XMLClass)list.get(p)).getOriginalName()))) {
                                 ok = false;
                             }
                         }
                     }
                 }
-                if (ok){
+                if (ok) {
                     return methods[i];
                 }
             }
