@@ -1,4 +1,4 @@
-<!-- ===========================================================================
+s<!-- ===========================================================================
 
 MMBase Build File. See <http://jakarta.apache.org/> for more information
 about the Ant build tool.
@@ -239,7 +239,7 @@ about the Ant build tool.
              noindex="true"
              windowtitle="MMBase API"
              doctitle="MMBase"
-             bottom="Moet nog een tekstje voor bedacht worden."
+             bottom="MMBase 2000"
     />
   </target>
 
