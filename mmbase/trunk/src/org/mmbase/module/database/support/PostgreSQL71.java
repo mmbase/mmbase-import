@@ -20,7 +20,8 @@ import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 /**
  * Postgresql driver for MMBase, only works with Postgresql 7.1 + that supports inheritance on default.
- *@author Eduard Witteveen
+ * @author Eduard Witteveen
+ * @version $Id: PostgreSQL71.java,v 1.6 2002-02-22 19:54:45 kees Exp $
  */
 public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     private static Logger log = Logging.getLoggerInstance(PostgreSQL71.class.getName());
@@ -118,7 +119,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	Statement stmt = null;
         String sql =  "CREATE SEQUENCE "+sequenceTableName()+" INCREMENT 1 START 1";        
     	try {
-	    log.info("gonna execute the following sql statement: " + sql);        
+	    log.debug("gonna execute the following sql statement: " + sql);        
 	    con = mmb.getConnection();
     	    stmt=con.createStatement();
     	    stmt.executeUpdate(sql);
@@ -147,10 +148,11 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
 	// TODO : create this one also in a generic way !
 	sql += getNumberString()+" INTEGER PRIMARY KEY, \t-- the unique identifier for objects\n";
 	sql += getOTypeString()+" INTEGER NOT NULL REFERENCES " + objectTableName() + " ON DELETE CASCADE, \t-- describes the type of object this is\n";
+	//is text the right type of field? the size can be broken down to 12 chars
 	sql += getOwnerString()+" TEXT NOT NULL  \t-- field for security information\n";
 	sql += ")";
     	try {
-	    log.info("gonna execute the following sql statement: " + sql);        
+	    log.debug("gonna execute the following sql statement: " + sql);        
 	    con = mmb.getConnection();
     	    stmt=con.createStatement();
     	    stmt.executeUpdate(sql);
@@ -245,7 +247,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
         }
 	// create the sql statement...
 	String sql = "CREATE TABLE " + mmb.baseName+"_"+bul.getTableName() + "(" + fieldList + ") INHERITS ( " + mmb.baseName+"_"+getInheritTableName(bul)+" ) ;";	
-	log.info("gonna create a new table with statement: " + sql);
+	log.debug("gonna create a new table with statement: " + sql);
 
 	MultiConnection con=null;
 	Statement stmt=null;
@@ -462,7 +464,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
             }
         }
 	node.clearChanged();
-        log.info("inserted with number #"+number+" the node :" + node);
+        log.debug("inserted with number #"+number+" the node :" + node);
         return number;
     }    
     
@@ -973,7 +975,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	    stmt = con.createStatement();
 	    
     	    String sql = "SELECT "+fieldname+" FROM "+mmb.baseName+"_"+tableName+" WHERE "+getNumberString()+" = "+number;
-	    log.info("gonna excute the followin query: " + sql);
+	    log.debug("gonna excute the followin query: " + sql);
     	    ResultSet rs=stmt.executeQuery(sql);
 	    java.io.DataInputStream is = null;
 	    
@@ -1082,7 +1084,7 @@ public class PostgreSQL71 implements MMJdbc2NodeInterface  {
     	try {
 	    con = mmb.getConnection();
     	    stmt = con.createStatement();
-	    log.info("gonna excute the followin query: " + sql);
+	    log.debug("gonna excute the followin query: " + sql);
     	    stmt.close();	    
     	    con.close();	    
 	    return true;
