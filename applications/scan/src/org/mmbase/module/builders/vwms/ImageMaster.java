@@ -9,8 +9,11 @@ See http://www.MMBase.org/license
 */
 
 /*
-$Id: ImageMaster.java,v 1.15 2000-07-04 12:05:30 vpro Exp $
+$Id: ImageMaster.java,v 1.16 2000-09-28 13:56:37 vpro Exp $
 $Log: not supported by cvs2svn $
+Revision 1.15  2000/07/04 12:05:30  vpro
+Rico: fixed bug when find . in netfile
+
 Revision 1.14  2000/06/14 15:22:15  wwwtech
 Rico: made netfiles object check/create synchronized
 
@@ -215,7 +218,7 @@ public class ImageMaster extends Vwm implements MMBaseObserver,VwmServiceInterfa
 					scpcopy.copy(srcpath,filename);
 				}
 */
-				files.addElement(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename));
+				files.addElement(new aFile2Copy(dstuser,dsthost,dstpath,srcpath,filename,sshpath));
 
 				// remove the tmp image file
 
