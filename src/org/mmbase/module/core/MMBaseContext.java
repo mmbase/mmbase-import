@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Jaco de Groot
- * @version $Id: MMBaseContext.java,v 1.35 2003-05-05 15:06:13 michiel Exp $
+ * @version $Id: MMBaseContext.java,v 1.36 2003-07-01 15:09:42 keesj Exp $
  */
 public class MMBaseContext {
     private static Logger log;
@@ -434,10 +434,10 @@ public class MMBaseContext {
     }
 
     private static String CONTEXT_URL_IDENTIFIER = "jndi:/";
+    
     /**
      * Returns a string representing the HtmlRootUrlPath, this is the path under
      * the webserver, what is the root for this instance.
-w
      * this will return '/' or something like '/mmbase/' or so...
      * @return  the HtmlRootUrlPath
      * @deprecated  should not be needed, and this information should be requested from the ServletRequest
