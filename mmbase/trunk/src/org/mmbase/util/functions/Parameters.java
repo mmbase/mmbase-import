@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.2 2004-01-24 21:17:31 daniel Exp $
+ * @version $Id: Parameters.java,v 1.3 2004-01-26 09:25:05 pierre Exp $
  * @see Parameter
  */
 
@@ -62,7 +62,6 @@ public class Parameters extends AbstractList implements List  {
 
 
     Parameters() {
-
     }
 
     /**
@@ -77,8 +76,8 @@ public class Parameters extends AbstractList implements List  {
         for (int i = 0; i < definition.length; i++) {
             if (backing.put(definition[i].key, definition[i].defaultValue) != null) {
                 throw new IllegalArgumentException("Parameter keys not unique");
-            } 
-            
+            }
+
         }
     }
     /**
@@ -96,8 +95,6 @@ public class Parameters extends AbstractList implements List  {
             set(i, values.get(i));
         }
     }
-    
-
 
     public String toString() {
         StringBuffer buf = new StringBuffer("[");
@@ -119,15 +116,14 @@ public class Parameters extends AbstractList implements List  {
         for (int i = 0; i < definition.length; i++) {
             array[i] = definition[i].getType();
         }
-        return array;        
+        return array;
     }
-
 
     /**
      * Adds the definitions to a List. Resolves the Attribute.Wrapper's (recursively).
      * @return List with only simple Parameter's.
      */
-    protected static List define(Parameter[] def, List list) {        
+    protected static List define(Parameter[] def, List list) {
         for (int i = 0; i < def.length; i++) {
             if (def[i] instanceof Parameter.Wrapper) {
                 define(((Parameter.Wrapper) def[i]).arguments, list);
@@ -159,7 +155,6 @@ public class Parameters extends AbstractList implements List  {
         return backing.put(a.key, value);
     }
 
-
     /**
      * Throws IllegalArgumentException if one of the required parameters is null.
      */
@@ -185,35 +180,35 @@ public class Parameters extends AbstractList implements List  {
 
 
     /**
-     * Sets the value of an argument. 
+     * Sets the value of an argument.
      * @throws IllegalArgumentException if either the argument name is unknown to this Parameters, or the value is of the wrong type.
-     * @throws NullPointerException if definition not set 
+     * @throws NullPointerException if definition not set
      */
     public Parameters set(String arg, Object value) {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
             if (a.key.equals(arg)) {
-                if (a.checkType(value)) {
-                	backing.put(arg, value);
-		} else {
-			if (value instanceof String) {
-				if (a.getType().equals(Integer.class)) {
-					try {			
-                				backing.put(arg, new Integer(Integer.parseInt((String)value)));
-					} catch(Exception e) {
-            					throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to Integer");
-					}
-				} else if (a.getType().equals(int.class)) {
-					try {			
-                				backing.put(arg, new Integer(Integer.parseInt((String)value)));
-					} catch(Exception e) {
-            					throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to int");
-					}
-				}
-			} else {
-            			throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + a.getType() + " (but is " + (value == null ? value : value.getClass()) + ")");
-			}
-		}
+                if (a.isType(value)) {
+                    backing.put(arg, value);
+                } else {
+                    if (value instanceof String) {
+                        if (a.getType().equals(Integer.class)) {
+                            try {
+                                backing.put(arg, new Integer(Integer.parseInt((String)value)));
+                            } catch(Exception e) {
+                                throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to Integer");
+                            }
+                        } else if (a.getType().equals(int.class)) {
+                            try {
+                                backing.put(arg, new Integer(Integer.parseInt((String)value)));
+                            } catch(Exception e) {
+                                throw new IllegalArgumentException("Parameter '" + value + "' must be of type a real number to autocast from String to int");
+                            }
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Parameter '" + value + "' must be of type " + a.getType() + " (but is " + (value == null ? value : value.getClass()) + ")");
+                    }
+                }
                 return this;
             }
         }
@@ -235,13 +230,13 @@ public class Parameters extends AbstractList implements List  {
 
     /**
      * Sets the value of an argument, if the argument is defined, otherwise do nothing.
-     * @throws NullPointerException if definition not set 
+     * @throws NullPointerException if definition not set
      */
 
     public Parameters setIfDefined(String arg, Object value) {
         for (int i = 0; i < definition.length; i++) {
             Parameter a = definition[i];
-            if (a.key.equals(arg)) {         
+            if (a.key.equals(arg)) {
                 if (! a.type.isInstance(value)) break;
                 backing.put(arg, value);
                 return this;
