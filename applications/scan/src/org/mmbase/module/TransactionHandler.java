@@ -247,8 +247,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 				} 
 				if (tName.equals("openTransaction")) { // no-op we only need currentTransactionContext
 				}
-				if (tName.equals("commitTransaction")) { //no-op, we do on exit
-				} 
+				//if (tName.equals("commitTransaction")) { //no-op, we do on exit
+				//} 
 				if (tName.equals("deleteTransaction")) {
 					transactionManager.cancel(userTransactionInfo.user, id);
 					currentTransactionContext = null;
@@ -576,6 +576,8 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 		Thread kicker = null;
 		// List of transaction of a user
 		UserTransactionInfo uti = null;
+		// Is the transaction finished or timedout?
+		boolean finished=false;
 
 		TransactionInfo (String t, String timeout, String id, UserTransactionInfo uti) {
 			this.transactionContext = t;
@@ -585,6 +587,9 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 			start();
 		}
 
+		/** 
+	 	 * start the TransactionInfo to sleep untill it may timeout
+		 */
   		public void start() {
         	if (kicker == null) {
             	kicker = new Thread(this,"TR "+transactionContext);
@@ -592,22 +597,30 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
         	}
     	}
 
-    	public void stop() {
-			uti.knownTransactionContexts.remove(id);
-        	kicker.setPriority(Thread.MIN_PRIORITY);
-        	kicker.suspend();
-        	kicker.stop();
+		/**
+	 	 * stop the timeout sleep and cleanup this TransactionInfo
+		 */
+    	public synchronized void stop() {
         	kicker = null;
+			finished = true;
+			notify();
     	}
 
+		/**
+	 	 * sleep untill the transaction times out.
+		 * this can be interrupted by invoking the stop method.
+	 	 */
     	public void run () {
-        	try {
-				Thread.sleep(timeout);
-				System.out.println("Transaction with id="+id +" is timed out after "+timeout/1000+" seconds.");
-				stop();
-        	} catch (Exception e) {
-            	System.out.println("Transaction with id="+id+" has a problem.");
-        	}
+			try {
+				synchronized(this) {
+					wait(timeout*1000);
+				}
+			} catch (InterruptedException e) {
+			}		
+			uti.knownTransactionContexts.remove(id);
+			if (_debug && !finished) {
+				debug("Transaction with id="+id +" is timed out after "+timeout/1000+" seconds.",0);
+			}
     	}
 
 		public String toString() {
