@@ -1909,6 +1909,16 @@ public class MMObjectBuilder extends MMTable {
         // overal cache control, this makes sure that the caches
         // provided by mmbase itself (on nodes and relations)
         // are kept in sync is other servers add/change/delete them.
+        if (ctype.equals("d")) {
+            try {
+                Integer i=new Integer(number);
+                if (nodeCache.containsKey(i)) {
+                    nodeCache.remove(i);
+                }
+            } catch (Exception e) {
+                log.error("nodeRemoteChanged(): Not a number");
+            }
+        } else
         if (ctype.equals("r")) {
             try {
                 Integer i=new Integer(number);
