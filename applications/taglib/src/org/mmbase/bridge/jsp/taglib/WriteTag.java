@@ -51,6 +51,41 @@ public class WriteTag extends ContextReferrerTag {
         log.debug("releasing" );
         super.release();       
     }
+
+    protected void setJspVar(Object value) throws JspTagException {
+        if (log.isDebugEnabled()) {
+            log.debug("Setting variable " + jspvar + " to " + value);
+        }
+        if ("Vector".equalsIgnoreCase(type)) {
+            if (value == null) {
+                // if a vector is requested, but the value is not present,
+                // make a vector of size 0.
+                value = new java.util.Vector();
+            }
+            if (! (value instanceof java.util.Vector)) {
+                // if a vector is requested, but the value is not a vector,
+                if (! (value instanceof java.util.Collection)) {
+                    // not even a Collection!
+                    // make a vector of size 1.
+                    java.util.Vector v = new java.util.Vector();
+                    v.add(value);
+                    value = v;
+                } else {
+                    value = new java.util.Vector((java.util.Collection)value);
+                }
+            }                         
+        } else if (value == null) {
+            pageContext.setAttribute(jspvar, null);
+        } else if ("Integer".equalsIgnoreCase(type) && ! (value instanceof Integer)) {
+            pageContext.setAttribute(jspvar, new Integer(value.toString()));
+        } else if ("String".equalsIgnoreCase(type) && ! (value instanceof String)) {
+            pageContext.setAttribute(jspvar, value.toString());
+        } else if ("Node".equalsIgnoreCase(type) && ! (value instanceof org.mmbase.bridge.Node)) {
+            throw new JspTagException("Variable is not of type Node. Conversion is not yet supported by this Tag");
+        } else {
+            pageContext.setAttribute(jspvar, value);
+        }
+    }
     
 
     public int doStartTag() throws JspTagException {
@@ -76,29 +111,8 @@ public class WriteTag extends ContextReferrerTag {
             Object value = getObject(getReferid());
             
             extraBodyContent = null;
-            if (jspvar != null) { // a jspvar was defined, don't write to page.
-                if ("Vector".equalsIgnoreCase(type)) {
-                    if (value == null) {
-                        // if a vector is requested, but the value is not present,
-                        // make a vector of size 0.
-                        value = new java.util.Vector();
-                    }
-                    if (! (value instanceof java.util.Vector)) {
-                        // if a vector is requested, but the value is not a vector,
-                        if (! (value instanceof java.util.Collection)) {
-                            // not even a Collection!
-                            // make a vector of size 1.
-                            java.util.Vector v = new java.util.Vector();
-                            v.add(value);
-                            value = v;
-                        } else {
-                            value = new java.util.Vector((java.util.Collection)value);
-                        }
-                    }             
-                    
-                } 
-                pageContext.setAttribute(jspvar, value);
-                
+            if (jspvar != null) { // a jspvar was defined, don't write to page. 
+                setJspVar(value);                
             } else { // write to page, (set extraBodyContent)
                 if (type != null) {
                     throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute (unless the type is 'bytes'");
