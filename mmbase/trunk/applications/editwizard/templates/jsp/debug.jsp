@@ -9,17 +9,21 @@
      * debug.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: debug.jsp,v 1.6 2002-08-19 16:18:58 michiel Exp $
+     * @version  $Id: debug.jsp,v 1.7 2002-08-21 13:56:37 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      */
     String wizard="";
-    Object con=ewconfig.subObjects.peek();
+      
+    Object con = null;
+    if (!ewconfig.subObjects.empty()) {
+      con = ewconfig.subObjects.peek();
+      }
     if (con instanceof Config.SubConfig) {
         wizard=((Config.SubConfig)con).wizard;
     }
     Document doc = Utils.parseXML("<debugdata/>");
-    if (ewconfig.subObjects.size() > 0 && ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
+    if ((! ewconfig.subObjects.empty()) && ewconfig.subObjects.peek() instanceof Config.WizardConfig) {
         Config.WizardConfig  wizardConfig = (Config.WizardConfig) ewconfig.subObjects.peek();
         add(doc, wizardConfig.wiz.getData(),    wizard);
         add(doc, wizardConfig.wiz.getSchema(),  wizard);
