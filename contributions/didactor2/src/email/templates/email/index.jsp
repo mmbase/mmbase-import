@@ -108,7 +108,7 @@
 
        <input type="image" src="<mm:treefile page="/email/gfx/verwijder geselecteerde.gif" objectlist="$includePath" referids="$referids"/>" border="0" alt="<fmt:message key="DELETESELECTED" />" name="action_delete" value="delete"/>
 
-       <a href="<mm:treefile page="/email/mailrule.jsp" objectlist="$includePath" referids="$referids"/>"><fmt:message key="MAILRULES"/></a>
+       <a href="<mm:treefile page="/email/mailrule.jsp" objectlist="$includePath" referids="$referids"/>"><img src="<mm:treefile page="/email/gfx/mail_rule.gif" objectlist="$includePath" referids="$referids"/>" alt="<fmt:message key="MAILRULES"/>" border="0"></a>
        
   </div>
   <div class="contentBody">
