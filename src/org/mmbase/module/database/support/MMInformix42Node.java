@@ -46,7 +46,7 @@ import java.util.Iterator;
  * @author Daniel Ockeloen
  * @author Mark Huijser
  * @author Pierre van Rooden
- * @version $Id: MMInformix42Node.java,v 1.41.2.1 2003-01-21 14:34:49 mark Exp $
+ * @version $Id: MMInformix42Node.java,v 1.41.2.2 2003-03-24 14:18:39 mark Exp $
  */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -286,8 +286,7 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
         String fieldType = getDbFieldType(def, def.getDBSize(), fieldRequired);
         String result = fieldName + " " + fieldType;
         if (fieldRequired) {
-            //TODO : parser.getNotNullScheme();
-            //result += " NOT NULL ";
+            result += " "+parser.getNotNullScheme();
         }
         if (fieldUnique) {
             //TODO : parser.getKeyScheme()+ "("+name+") so make a
