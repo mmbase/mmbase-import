@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  * @todo Fix cache so it will be updated using multicast.
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: RelDef.java,v 1.30 2003-07-09 13:18:49 pierre Exp $
+ * @version $Id: RelDef.java,v 1.31 2003-11-10 21:20:07 michiel Exp $
  */
 
 public class RelDef extends MMObjectBuilder {
@@ -146,24 +146,25 @@ public class RelDef extends MMObjectBuilder {
      * @return the builder name
      */
     public String getBuilderName(MMObjectNode node) {
-        String bulname=null;
-          if (usesbuilder) {
-              int builder = node.getIntValue("builder");
-              if (builder<=0) {
-                  bulname=node.getStringValue("sname");
-              } else {
-                  bulname=mmb.getTypeDef().getValue(builder);
+        if (node == null) return "NULL";
+        String bulname = null;
+        if (usesbuilder) {
+            int builder = node.getIntValue("builder");
+            if (builder<=0) {
+                bulname=node.getStringValue("sname");
+            } else {
+                bulname=mmb.getTypeDef().getValue(builder);
               }
-          } else {
-              // fix for old mmbases that have no builder field
-              bulname=node.getStringValue("sname");
-              if (mmb.getMMObject(bulname)==null) bulname=null;
-          }
-          if (bulname==null) {
-              return "insrel";
-          } else {
-              return bulname;
-          }
+        } else {
+            // fix for old mmbases that have no builder field
+            bulname=node.getStringValue("sname");
+            if (mmb.getMMObject(bulname)==null) bulname=null;
+        }
+        if (bulname==null) {
+            return "insrel";
+        } else {
+            return bulname;
+        }
     }
 
     /**
@@ -296,7 +297,7 @@ public class RelDef extends MMObjectBuilder {
     public void setDefaults(MMObjectNode node) {
         node.setValue("dir", DIR_BIDIRECTIONAL);
         if (usesbuilder) {
-            node.setValue("builder",mmb.getInsRel().oType);
+            node.setValue("builder", mmb.getInsRel().oType);
         }
     }
 
