@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.storage;
 
 import java.util.Map;
+import org.mmbase.storage.util.StorageReader;
 import org.mmbase.module.core.MMBase;
 
 /**
@@ -18,7 +19,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.2 2003-07-21 13:21:54 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.3 2003-07-23 11:19:46 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -27,10 +28,9 @@ public interface StorageManagerFactory {
      * This method should be called after instantiation of the factory class.
      * It is called automatically by {@link Storage.getStorageManagerFactory()} and {@link Storage.getStorageManagerFactory(MMBase)}.
      * @param mmbase the MMBase instance to which this factory belongs
-     * @throws StorageConfigurationException when something went wrong during configuration of the factory
-     * @throws StorageInaccessibleException when the storage cannot be accessed
+     * @throws StorageException when something went wrong during configuration of the factory, or when the storage cannot be accessed
      */
-    public void init(MMBase mmbase) throws StorageConfigurationException, StorageInaccessibleException;
+    public void init(MMBase mmbase) throws StorageException;
 
     /**
      * Obtains a StorageManager from the factory.
@@ -41,6 +41,13 @@ public interface StorageManagerFactory {
      */
     public StorageManager getStorageManager() throws StorageException;
 
+    /**
+     * Locates and opens the storage configuration document.
+     * @throws StorageException if something went wrong while obtaining the document reader, or if no reader can be found
+     * @return a StorageReader instance
+     */
+    public StorageReader getDocumentReader() throws StorageException;
+    
     /**
      * Retrieve a map of attributes for this factory.
      * The attributes are the configuration parameters for the factory.

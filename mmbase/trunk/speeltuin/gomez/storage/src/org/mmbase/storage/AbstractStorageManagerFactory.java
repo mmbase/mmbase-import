@@ -9,10 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
+import java.io.InputStream;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
+import org.xml.sax.InputSource;
 
+import org.mmbase.storage.util.StorageReader;
 import org.mmbase.module.core.MMBase;
 
 /**
@@ -20,7 +23,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: AbstractStorageManagerFactory.java,v 1.2 2003-07-21 13:21:54 pierre Exp $
+ * @version $Id: AbstractStorageManagerFactory.java,v 1.3 2003-07-23 11:19:46 pierre Exp $
  */
 public abstract class AbstractStorageManagerFactory implements StorageManagerFactory {
 
@@ -28,19 +31,97 @@ public abstract class AbstractStorageManagerFactory implements StorageManagerFac
      * A reference to the MMBase module
      */
     protected MMBase mmbase;
+    /**
+     * The class used to instantiate storage managers.
+     * The classname is retrieved from the storage configuration file
+     */
+    protected Class storageManagerClass;
+
     // the map with configuration data
     private Map attributes;
+    
+    // the map with disallowed fieldnames and (if given) alternates
+    private Map disallowedFields;
+    
+    // the map with type mapping data
+    private Map typeMaps;
 
     /**
      * Stores the MMBase reference, and initializes the attribute map.
+     * Opens and reads the STorageReader for this factory.
+     * @see load()
      */
-    public void init(MMBase mmbase) throws StorageConfigurationException, StorageInaccessibleException {
+    public final void init(MMBase mmbase) throws StorageException {
         this.mmbase = mmbase;
         attributes = Collections.synchronizedMap(new HashMap());
+        disallowedFields = Collections.synchronizedMap(new HashMap());
+        typeMaps = Collections.synchronizedMap(new HashMap());
+        load();
     }
 
-    abstract public StorageManager getStorageManager() throws StorageException;
+    /**
+     * Opens and reads the storage configuration document.
+     * Override this method to add additional configuration code.
+     * @throws StorageException if the storage could not be accessed or necessary configuration data is missing or invalid
+     */
+    protected void load() throws StorageException {
+        StorageReader reader = getDocumentReader();
+        // get the storage manager class
+        storageManagerClass = reader.getStorageManagerClass(this);
+        // get attributes
+        setAttributes(reader.getAttributes());
+        // get disallowed fields
+        disallowedFields.putAll(reader.getDisallowedFields());
+        // get type map
+        
+        // ...
+    }
 
+    /**
+     * Obtains a StorageManager that grants access to the storage.
+     * The instance represents a temporary connection to the storage -
+     * do not store the result of this call as a static or long-term member of a class.
+     * @return a StorageManager instance
+     */
+    public StorageManager getStorageManager() throws StorageException {
+        try {
+            StorageManager storageManager = (StorageManager)storageManagerClass.newInstance();
+            storageManager.init(this);
+            return storageManager;
+        } catch(InstantiationException ie) {
+            throw new StorageException(ie);
+        } catch(IllegalAccessException iae) {
+            throw new StorageException(iae);
+        }
+    }
+
+    /**
+     * Locates and opens the storage configuration document.
+     * The configuration document to open can be set in mmbasereoot (using the storage property).
+     * The property should point to a resource which is to be present in the MMBase classpath.
+     * If not given or the resource cannot be found, this method throws an exception. 
+     * Overriding factories may provide ways to auto-detect the location of a configuration file, or
+     * dismiss with its use.
+     * @throws StorageException if something went wrong while obtaining the document reader, or if no reader can be found
+     * @return a StorageReader instance
+     */
+    public StorageReader getDocumentReader() throws StorageException {
+        // determine storage resource.
+        // use the parameter set in mmbaseroot if it is given
+        String storagepath = mmbase.getInitParameter("storage");
+        if (storagepath == null) {
+            throw new StorageConfigurationException("No storage resource specified.");
+        } else {
+            InputStream resource = this.getClass().getResourceAsStream(storagepath);
+            if (resource == null) {
+                throw new StorageConfigurationException("Storage resource '"+storagepath+"' not found.");
+            }
+            InputSource in = new InputSource(resource);
+            in.setSystemId("resource://" + storagepath);
+            return new StorageReader(in);
+        }
+    }
+    
     public Map getAttributes() {
         return Collections.unmodifiableMap(attributes);
     }

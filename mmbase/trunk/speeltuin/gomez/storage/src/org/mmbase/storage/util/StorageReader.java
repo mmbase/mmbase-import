@@ -74,9 +74,9 @@ public class StorageReader extends DocumentReader  {
         if (factory != null) {
             // verify if the storagemanagerfactory is of the correct class, and
             // of the correct version
-            NodeList factoryTags = root.getElementsByTagName("storagemanagerfactory");
-            if (factoryTags.getLength()>0) {
-                Element factoryTag = (Element)factoryTags.item(0);
+            NodeList factoryTagList = root.getElementsByTagName("storagemanagerfactory");
+            if (factoryTagList.getLength()>0) {
+                Element factoryTag = (Element)factoryTagList.item(0);
                 try {
                     // obtain and check class
                     String factoryClassName = factoryTag.getAttribute("classname");
@@ -99,9 +99,9 @@ public class StorageReader extends DocumentReader  {
                 }
             }
         }
-        NodeList managerTags = root.getElementsByTagName("storagemanager");
-        if (managerTags.getLength()>0) {
-            Element managerTag = (Element)managerTags.item(0);
+        NodeList managerTagList = root.getElementsByTagName("storagemanager");
+        if (managerTagList.getLength()>0) {
+            Element managerTag = (Element)managerTagList.item(0);
             String managerClassName = managerTag.getAttribute("classname");
             // intantiate storage manager and check version
             try {
@@ -130,4 +130,81 @@ public class StorageReader extends DocumentReader  {
         }
     }
 
+    /**
+     * Reads all attributes from the reader and returns them as a map.
+     * This include options, as well as the following special attributes:
+     * <ul>
+     *  <li>option-disallowed-fields-case-sensitive : has the Boolean value TRUE if disallowed fields are case sensitive (default FALSE)</li>
+     * </ul>
+     * @return attributes as a map 
+     */
+    public Map getAttributes() {
+        Map attributes = new HashMap();
+        Element root = document.getDocumentElement();
+        NodeList attributesTagList = root.getElementsByTagName("attributes");
+        if (attributesTagList.getLength()>0) {
+            Element attributesTag = (Element)attributesTagList.item(0);
+            NodeList attributeTagList = attributesTag.getElementsByTagName("attribute");
+            for (int i=0; i<attributeTagList.getLength(); i++) {
+                Element attributeTag = (Element)attributeTagList.item(i);
+                String attributeName = attributeTag.getAttribute("name");
+                // require an attribute name. 
+                // if not given, skip the option. 
+                if (attributeName != null) {
+                    attributes.put(attributeName,getNodeTextValue(attributeTag));
+                }
+            }
+            NodeList optionTagList = attributesTag.getElementsByTagName("option");
+            for (int i=0; i<optionTagList.getLength(); i++) {
+                Element optionTag = (Element)optionTagList.item(i);
+                // require an option name. 
+                // if not given, skip the option. 
+                String optionName = optionTag.getAttribute("name");
+                if (optionName != null) {
+                    String optionValue = optionTag.getAttribute("set");
+                    Boolean value = Boolean.TRUE;
+                    if (optionValue == null) {
+                        value = new Boolean(optionValue);
+                    }
+                    attributes.put(optionName,value);
+                }
+            }
+        }
+        // system attributes
+        NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
+        if (disallowedFieldsList.getLength()>0) {
+            Element disallowedFieldsTag = (Element)disallowedFieldsList.item(0);
+            attributes.put("option-disallowed-fields-case-sensitive", Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")));
+        }
+        return attributes;
+    }
+
+    /**
+     * Returns all disallowed fields and their possible alternate values.
+     * The fields are returned as name-value pairs, where the disallowedfieldname is the key, and
+     * the alternate name is the value (null if no name is given).
+     * @return disallowed fields as a map 
+     */
+    public Map getDisallowedFields() {
+        Map attributes = new HashMap();
+        Element root = document.getDocumentElement();
+        NodeList disallowedFieldsList = root.getElementsByTagName("disallowed-fields");
+        if (disallowedFieldsList.getLength()>0) {
+            Element disallowedFieldsTag = (Element)disallowedFieldsList.item(0);
+            boolean casesensitive = Boolean.valueOf(disallowedFieldsTag.getAttribute("case-sensitive")).booleanValue();
+            NodeList fieldTagList = disallowedFieldsTag.getElementsByTagName("disallowed-field");
+            for (int i=0; i<fieldTagList.getLength(); i++) {
+                Element fieldTag = (Element)fieldTagList.item(i);
+                String fieldName = fieldTag.getAttribute("name");
+                // require an attribute name. 
+                // if not given, skip the option.
+                if (fieldName != null) {
+                    if (casesensitive) fieldName = fieldName.toLowerCase(); 
+                    String replacement = fieldTag.getAttribute("replacement");
+                    attributes.put(fieldName,replacement);
+                }
+            }
+        }
+        return attributes;
+    }
 }
