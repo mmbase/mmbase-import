@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.16 2002-10-14 15:20:50 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.17 2002-10-15 12:19:25 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -870,14 +870,11 @@ public class ClusterBuilder extends VirtualBuilder {
                 // the typdef number of the destination-type
                 int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));
 
-                log.info("rnum="+rnum+"("+(String) alltables.elementAt(i + 1)+", s="+s+"("+(String) alltables.elementAt(i)+")"+", d="+d+"("+(String) alltables.elementAt(i + 2));
-
                 // check if  a definite rnumber was requested...
                 if (rnum != null) {
                     result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
                     srctodest = (searchdir != SEARCH_SOURCE)      && typerel.reldefCorrect(s, d, rnum.intValue());
                     desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.reldefCorrect(d, s, rnum.intValue());
-                    log.info("rnum="+rnum+", srctodest="+srctodest+", desttosrc="+desttosrc);
                 } else {
                     for (Enumeration e = typerel.getAllowedRelations(s, d); e.hasMoreElements(); ) {
                         // get the allowed relation definitions
@@ -894,7 +891,6 @@ public class ClusterBuilder extends VirtualBuilder {
                                     );
                         if (desttosrc && srctodest) break;
                     }
-                    log.info("srctodest="+srctodest+", desttosrc="+desttosrc);
                 }
             }
 
