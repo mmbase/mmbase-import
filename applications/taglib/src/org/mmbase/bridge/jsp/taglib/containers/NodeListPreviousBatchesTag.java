@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListPreviousBatchesTag.java,v 1.1 2003-08-05 18:42:56 michiel Exp $
+ * @version $Id: NodeListPreviousBatchesTag.java,v 1.2 2003-08-06 07:41:48 michiel Exp $
  */
 public class NodeListPreviousBatchesTag extends StringListTag implements NodeListContainerReferrer {
     private static Logger log = Logging.getLoggerInstance(NodeListPreviousBatchesTag.class);
@@ -59,6 +59,12 @@ public class NodeListPreviousBatchesTag extends StringListTag implements NodeLis
         Query query = c.getQuery();
         int offset = query.getOffset();
         int maxNumber = query.getMaxNumber();
+        if (maxNumber == Query.DEFAULT_MAX_NUMBER) {
+            throw new JspTagException("No max-number set. Cannot batch results (use mm:maxnumber first)");
+        }
+        if (offset % maxNumber != 0) { // be paranoid, perhaps not necessary, but guarantees less queries in case of url-hacking (if 'offset' is used on url)
+            throw new JspTagException("Offset (" + offset + ") is not a multipible of max-number (" + maxNumber + "): Cannot batch results.");
+        }
         List result = new ArrayList();
         int maxSize = getMaxNumber();
         while (offset > 0) {
