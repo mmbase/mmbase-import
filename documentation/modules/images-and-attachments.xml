@@ -4,7 +4,7 @@
   <articleinfo>
     <title>Images and Attachments</title>
     <date>20 april 2003</date>
-    <edition>$Id: images-and-attachments.xml,v 1.1 2003-04-24 21:10:28 michiel Exp $</edition>
+    <edition>$Id: images-and-attachments.xml,v 1.2 2003-05-14 10:43:42 michiel Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Michiel</firstname>
@@ -111,28 +111,6 @@ while(i.hasNext()) {
       </para>
     </note>
     <section>
-      <title>Attachments</title>
-      <para>
-        Other types of data blobs can of course, just as images, be stored in MMBase. We call them generally
-        'attachments'. There is in fact no need to make any difference between images and attachments. The
-        'attachments' builder from the mmbase distro does indeed share the 'handle' field with the 'images'
-        builder, but it also has some other fields which are lacking in the default images builder (filename,
-        size, mimetype). Because of these small differences there is variant for the image servlet, the
-        attachmens-servlet.
-      </para>
-      <para>
-        It works excactly the same as for images. You could even use the image-tag to create urls to the
-        attachment-servlet. That would be a bit silly though, so there is also an 'attachment' tag. It
-        does excactly the same (the only difference being that the 'template' attribute of the next
-        section may not be used).
-      </para>
-      <para>
-        There is one other thing where images are more then attachments. Images can be converted into
-        other images (they can be resized, turned etc.). MMBase can also do this for you, and this will
-        be described in the next section.
-      </para>
-    </section>
-    <section>
       <title>Image conversion</title>
       <para>
         As mentioned, images can be converted to other images. This is a very useful feature, because you
@@ -179,6 +157,8 @@ while(i.hasNext()) {
         node which is a conversion by this template of the image presented by the Node 'image' can be
         requested from the bridge like this:
       <programlisting><![CDATA[
+Node image;
+...
 List arguments = new ArrayList();
 argument.add("geometry(100x200)");
 int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
@@ -198,7 +178,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       </para>
       <note>
         <para>
-          MMBase provides a abbreviation for this vastly used command 'geometry' which is simply 's' (for
+          MMBase provides an abbreviation for this vastly used command 'geometry' which is simply 's' (for
           size), so normally you would encounter:
       <programlisting><![CDATA[
    <img src="<mm:image template="s(100x200)" />" alt="<mm:field name="title" />" /><mm:field name="description" /><br />
@@ -212,7 +192,7 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       <programlisting><![CDATA[
 <mm:image template="s(100x200)+r(90)" />
 ]]></programlisting>
-        The order of the commands can be significant (but not in this case), and you supply the same
+        The order of the commands can be significant, and you can supply the same
         command more then once.
       </para>
       <para>
@@ -221,6 +201,28 @@ int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
       <para>
         We refer to the documentation of imagemagick for a complete description of all commands. Also in
         the image tag entry of the MMBase taglib reference guide there are given some examples.
+      </para>
+    </section>
+    <section>
+      <title>Attachments</title>
+      <para>
+        Other types of data blobs can of course, just as images, be stored in MMBase. We call them generally
+        'attachments'. There is in fact no need to make any difference between images and attachments. The
+        'attachments' builder from the mmbase distro does indeed share the 'handle' field with the 'images'
+        builder, but it also has some other fields which are lacking in the default images builder (filename,
+        size, mimetype). Because of these small differences there is variant for the image servlet, the
+        attachments-servlet.
+      </para>
+      <para>
+        It works excactly the same as for images. You could even use the image-tag to create urls to the
+        attachment-servlet. That would be a bit silly though, so there is also an 'attachment' tag. It
+        does excactly the same (the only difference being that the 'template' attribute of the next
+        section may not be used).
+      </para>
+      <para>
+        There is one other thing where images are more then attachments. Images can be converted into
+        other images (they can be resized, turned etc.). MMBase can also do this for you, and this will
+        be described in the next section.
       </para>
       <para>
         For every day usage you know enough now. The following sections will be more technical.
