@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.45 2002-04-17 13:17:50 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.46 2002-05-06 14:25:12 eduard Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -554,7 +554,7 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
         if (app!=null) {
-            if (areBuildersLoaded(app.getNeededBuilders())) {
+            if (areBuildersLoaded(app.getNeededBuilders(), path + applicationname)) {
                 if (checkRelDefs(app.getNeededRelDefs())) {
                     if (checkAllowedRelations(app.getAllowedRelations())) {
                         if (installDataSources(app.getDataSources(),applicationname)) {
@@ -827,14 +827,67 @@ public class MMAdmin extends ProcessorModule {
     /**
      * @javadoc
      */
-    boolean areBuildersLoaded(Vector neededbuilders) {
+    boolean areBuildersLoaded(Vector neededbuilders, String applicationRoot) {
         for (Enumeration h = neededbuilders.elements();h.hasMoreElements();) {
-            Hashtable bh=(Hashtable)h.nextElement();
-            String name=(String)bh.get("name");
-            MMObjectBuilder bul=getMMObject(name);
+            Hashtable bh= (Hashtable) h.nextElement();
+            String name = (String) bh.get("name");
+            MMObjectBuilder bul = getMMObject(name);
+            // if builder not loaded
             if (bul==null) {
-                log.error("Application installer error : builder '"+name+"' not loaded");
-                return false;
+                // if 'inactive' in the config/builder path, we dont know what to do (i dont like inactive builders)
+                String path = mmb.getBuilderPath(name, "");
+                if(path != null) {
+                    log.error("builder was already on our system, but inactive. To install this application, make the builder '" + path + java.io.File.separator + name +  ".xml" + "' active");
+                    return false;
+                }
+                // well we try to open the %application%/ from inside our application dir...
+                File appFile = new File(applicationRoot);
+                if(!appFile.exists()) {
+                    log.error("could not find application dir :  '" + appFile + "'");
+                    return false;
+                }
+                // well we try to open the %application%/builders/ from inside our application dir...
+                appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + "builders");
+                if(!appFile.exists()) {
+                    log.error("could not find builder's dir inside the application :  '" + appFile + "'");
+                    return false;
+                }
+                // well we will try to open the %application%/builders/%buildername%.xml from inside our application dir...
+                appFile = new File(appFile.getAbsolutePath() + java.io.File.separator + name + ".xml");
+                if(!appFile.exists()) {
+                    log.error("could not find the builderfile :  '" + appFile + "'");
+                    return false;
+                }
+                // we now have the location,.....
+                MMObjectBuilder objectTypes = getMMObject("typedef");
+                if(objectTypes == null) {
+                    log.error("could not find builder typedef");
+                    return false;
+                }
+                // try to add a node to typedef, same as adding a builder...
+                MMObjectNode type = objectTypes.getNewNode("system");
+                // fill the name....
+                type.setValue("name", name);
+
+                // fill the config...                
+                org.w3c.dom.Document config = null;
+                try {                
+                    config =  org.mmbase.util.XMLBasicReader.getDocumentBuilder().parse(appFile);
+                }
+                catch(org.xml.sax.SAXException se) {
+                    String msg = se.toString() + "\n" + Logging.stackTrace(se);
+                    log.error(msg);
+                    return false;
+                }
+                catch(java.io.IOException ioe) {
+                    String msg = ioe.toString() + "\n" + Logging.stackTrace(ioe);
+                    log.error(msg);
+                    return false;
+                }
+                type.setValue("config", config);
+                // insert into mmbase
+                objectTypes.insert("system", type);
+                // we now made the builder active.. look for other builders...
             }
         }
         return true;
