@@ -171,7 +171,7 @@
 
    <%  
       {
-       List urls = resourceLoader.findResourceList(resource);
+       List urls = resourceLoader.getResourceList(resource);
        for(int i = 0; i < urls.size(); i++) {
   %>
       <mm:context>
@@ -274,7 +274,7 @@
        <table>
          <tr><th>URL</th><th>read</th><th>write</th><th></th></tr>
          <% 
-            List urls = resourceLoader.findResourceList(resource.equals("") ? "&lt;new resource name&gt;" : resource);
+            List urls = resourceLoader.getResourceList(resource.equals("") ? "&lt;new resource name&gt;" : resource);
             ListIterator i = urls.listIterator();
             int read = 0;
             int write = 0;
