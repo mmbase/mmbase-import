@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.18 2002-08-21 11:43:55 michiel Exp $
+  @version $Id: base.xsl,v 1.19 2002-08-21 16:46:04 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -17,7 +17,7 @@
     omit-xml-declaration="no"
     standalone="yes"
     doctype-public="-//W3C//DTD XHTML 1.0 Transitional//"
-    indent="yes"
+    indent="no"
     />
 
   <xsl:param name="ew_context"></xsl:param><!-- The web-application's context -->
@@ -45,10 +45,12 @@
        -->
   <xsl:variable name="templatedir"><xsl:value-of select="$referrerdir" /></xsl:variable>
 
+  <xsl:param name="debug">false</xsl:param>
+
   <xsl:param name="sessionkey">editwizard</xsl:param>
   <xsl:param name="cloudkey">cloud_mmbase</xsl:param><!-- name of variable in session in which is the cloud -->
 
-  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" /></xsl:param>
+  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
   
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
@@ -58,7 +60,6 @@
   <xsl:variable name="deletepage">deletelistitem.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   <xsl:variable name="uploadpage">upload.jsp<xsl:value-of select="$wizardparams" /></xsl:variable>
   
-  <xsl:param name="debug">false</xsl:param>
   
   <xsl:variable name="javascriptdir">../javascript/</xsl:variable>
   <xsl:variable name="mediadir">../media/</xsl:variable>
