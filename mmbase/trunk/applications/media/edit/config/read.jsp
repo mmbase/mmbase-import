@@ -14,14 +14,14 @@ String thisServer(javax.servlet.http.HttpServletRequest request, String url) {
  <mm:notpresent referid="configsubmitted">
     <%-- get config from cookies --%>
     <mm:import id="lang"    externid="mmjspeditors_language"   from="cookie">nl</mm:import>
-    <mm:import id="quality" externid="mmmediaeditors_quality"  from="cookie">any</mm:import>
-    <mm:import id="player"  externid="mmmediaeditors_player"   from="cookie">any</mm:import>
+    <mm:import id="quality" externid="mediaeditors_quality"  from="cookie">any</mm:import>
+    <mm:import id="player"  externid="mediaeditors_player"   from="cookie">any</mm:import>
   </mm:notpresent>
 
   <%-- always write cookies --%>
   <mm:write  referid="lang"       cookie="mmjspeditors_language" />
-  <mm:write  referid="quality"    cookie="mmmediaeditors_quality" />
-  <mm:write  referid="player"     cookie="mmmediaeditors_player" />
+  <mm:write  referid="quality"    cookie="mediaeditors_quality" />
+  <mm:write  referid="player"     cookie="mediaeditors_player" />
   
 </mm:context>
 <% 

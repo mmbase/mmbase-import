@@ -1,9 +1,9 @@
-<mm:field name="format(mov)" jspvar="url" vartype="string">
+<mm:field name="format(mov,ram,wmp)" jspvar="url" vartype="string">
    <% if (url.equals("ram")) { %>
-       <mm:write id="player" value="real" />
-   <% } else if (url.equals("wmf")) { %>
-       <mm:write id="player" value="wm" /> 
+       <mm:write id="player" value="real" write="false" />
+   <% } else if (url.equals("wmp")) { %>
+       <mm:write id="player" value="qt" write="false" /> 
    <% } else { %>
-       <mm:write id="player" value="qt" />
+       <mm:write id="player" value="qt" write="false" />
    <% } %>
 </mm:field>
