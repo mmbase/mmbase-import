@@ -58,7 +58,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public Node createNode() {
         Node relation = super.createNode();
-        relation.setIntValue("rnumber",roleID);
+        ((BasicNode)relation)._setValue("rnumber", new Integer(roleID));
         return relation;
     }
 
@@ -167,5 +167,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
           return relDefNode.getNumber();
         }
         return typeRelNode.getNumber();
+    }
+
+    public boolean mayCreateRelation(Node sourceNode, Node destinationNode) {
+        return cloud.check(Operation.CREATE, builder.oType,
+                           sourceNode.getNumber(), destinationNode.getNumber());
     }
 }

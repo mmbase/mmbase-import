@@ -64,7 +64,6 @@ public class BasicNodeManager implements NodeManager, Comparable {
     }
 
     public Node createNode() {
-        cloud.assert(Operation.CREATE, builder.oType);
         // create object as a temporary node
         int id = cloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);

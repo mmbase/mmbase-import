@@ -26,7 +26,6 @@ public class BasicNode implements Node {
     public static final int ACTION_CREATE = 1;   // create a node
     public static final int ACTION_EDIT = 2;     // edit node, or change aliasses
     public static final int ACTION_DELETE = 3;   // delete node
-    public static final int ACTION_LINK = 4;     // add a relation to a node
     public static final int ACTION_COMMIT = 10;   // commit a node after changes
 
     private static Logger log = Logging.getLoggerInstance(BasicNode.class.getName());
@@ -152,7 +151,6 @@ public class BasicNode implements Node {
      * ACTION_CREATE (create a node),<br>
      * ACTION_EDIT (edit node, or change aliasses),<br>
      * ACTION_DELETE (delete node),<br>
-     * ACTION_LINK (add a relation),<br>
      * ACTION_COMMIT (commit a node after changes)
      *
      * @param action The action to perform.
@@ -178,9 +176,6 @@ public class BasicNode implements Node {
         if (realnumber!=-1) {
             if (action==ACTION_DELETE) {
                 cloud.assert(Operation.DELETE,realnumber);
-            }
-            if (action==ACTION_LINK) {
-                cloud.assert(Operation.LINK,realnumber);
             }
             if ((action==ACTION_EDIT) && (temporaryNodeId==-1)) {
                 cloud.assert(Operation.WRITE,realnumber);
@@ -237,6 +232,23 @@ public class BasicNode implements Node {
             log.error(message);
             throw new BridgeException(message);
         }
+        if (this instanceof Relation) {
+            if ("rnumber".equals(attribute)) {
+                String message;
+                message = "Not allowed to change field " + attribute + ".";
+                log.error(message);
+                throw new BridgeException(message);
+            } else if ("snumber".equals(attribute)
+                    || "dnumber".equals(attribute)) {
+                BasicRelation relation = (BasicRelation)this;
+                relation.relationChanged = true;
+            }
+        }
+        _setValue(attribute, value);
+    }
+
+    // Protected method to be able to set rnumber when creating a relation.
+    protected void _setValue(String attribute, Object value) {
         String result = BasicCloudContext.tmpObjectManager.setObjectField(account,""+temporaryNodeId, attribute, value);
         if ("unknown".equals(result)) {
             String message;
@@ -244,8 +256,7 @@ public class BasicNode implements Node {
             log.error(message);
             throw new BridgeException(message);
         }
-    changed = true;
-
+        changed = true;
     }
 
     public void setBooleanValue(String attribute, boolean value) {
@@ -323,6 +334,23 @@ public class BasicNode implements Node {
     }
 
     public void commit() {
+        if (isnew) {
+            if (this instanceof BasicRelation) {
+                BasicRelation relation = (BasicRelation)this;
+                cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()), relation.snum, relation.dnum);
+                relation.relationChanged = false;
+            } else {
+                cloud.assert(Operation.CREATE, mmb.getTypeDef().getIntValue(getNodeManager().getName()));
+            }
+        } else {
+            if (this instanceof BasicRelation) {
+                BasicRelation relation = (BasicRelation)this;
+                if (relation.relationChanged) {
+                    cloud.assert(Operation.CHANGE_RELATION, mmb.getTypeDef().getIntValue(getNodeManager().getName()), relation.snum, relation.dnum);
+                    relation.relationChanged = false;
+                }
+            }
+        }
         edit(ACTION_COMMIT);
         // ignore commit in transaction (transaction commits)
         if (!(cloud instanceof Transaction)) {
@@ -725,11 +753,22 @@ public class BasicNode implements Node {
     public boolean mayWrite() {
         return cloud.check(Operation.WRITE, noderef.getNumber());
     }
+
     public boolean mayDelete() {
         return cloud.check(Operation.DELETE, noderef.getNumber());
     }
+
     public boolean mayLink() {
-        return cloud.check(Operation.LINK, noderef.getNumber());
+        String message = "Node.mayLink() is deprecated.";
+        log.warn(message);
+        // Give us some time to fix the editors before throwing an exception.
+        Calendar now = java.util.Calendar.getInstance();
+        Calendar deadline = java.util.Calendar.getInstance();
+        deadline.set(2002, 0, 31, 0, 0, 0);
+        if (!now.before(deadline)) {
+            throw new java.lang.UnsupportedOperationException(message);
+        }
+        return true;
     }
 
     public boolean mayChangeContext() {

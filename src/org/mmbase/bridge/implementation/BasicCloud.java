@@ -416,9 +416,9 @@ public class BasicCloud implements Cloud, Cloneable {
 
     /**
     * Checks access rights.
-    * @param operation the operation to check (READ, WRITE, CREATE, LINK, OWN)
+    * @param operation the operation to check (READ, WRITE, CREATE, OWN)
     * @param nodeID the node on which to check the operation
-    * @return <code>true</code> if acces sis granted, <code>false</code> otherwise
+    * @return <code>true</code> if access is granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
         return mmbaseCop.getAuthorization().check(userContext.getUserContext(),nodeID,operation);
@@ -426,11 +426,34 @@ public class BasicCloud implements Cloud, Cloneable {
 
     /**
     * Asserts access rights. throws an exception if an operation is not allowed.
-    * @param operation the operation to check (READ, WRITE, CREATE, LINK, OWN)
+    * @param operation the operation to check (READ, WRITE, CREATE, OWN)
     * @param nodeID the node on which to check the operation
     */
     void assert(Operation operation, int nodeID) {
         mmbaseCop.getAuthorization().assert(userContext.getUserContext(),nodeID,operation);
+    }
+
+    /**
+    * Checks access rights.
+    * @param operation the operation to check (CREATE, CHANGE_RELATION)
+    * @param nodeID the node on which to check the operation
+    * @param srcNodeID the source node for this relation
+    * @param dstNodeID the destination node for this relation
+    * @return <code>true</code> if access is granted, <code>false</code> otherwise
+    */
+    boolean check(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
+        return mmbaseCop.getAuthorization().check(userContext.getUserContext(),nodeID,srcNodeID,dstNodeID,operation);
+    }
+
+    /**
+    * Asserts access rights. throws an exception if an operation is not allowed.
+    * @param operation the operation to check (CREATE, CHANGE_RELATION)
+    * @param nodeID the node on which to check the operation
+    * @param srcNodeID the source node for this relation
+    * @param dstNodeID the destination node for this relation
+    */
+    void assert(Operation operation, int nodeID, int srcNodeID, int dstNodeID) {
+        mmbaseCop.getAuthorization().assert(userContext.getUserContext(),nodeID,srcNodeID,dstNodeID,operation);
     }
 
     /**
