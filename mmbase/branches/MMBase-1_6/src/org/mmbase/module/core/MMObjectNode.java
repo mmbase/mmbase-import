@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.8 2003-02-13 15:01:47 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.9 2003-02-13 17:27:30 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1169,29 +1169,21 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	return result;
     }
 
-    private Map makeMap(Vector v) {
-	HashMap      result = new HashMap();
-	MMObjectNode node   = null;
-	Iterator     i      = v.iterator();
-
+    /**
+     * Makes number -> MMObjectNode of a vector of MMObjectNodes.
+     * @since MMBase-1.6.2
+     */
+    private Map makeMap(List v) {
+	Map       result = new HashMap();
+	Iterator  i      = v.iterator();
 	while(i.hasNext()) {
-	    node = (MMObjectNode)i.next();
+	    MMObjectNode node = (MMObjectNode) i.next();
 	    result.put(node.getStringValue("number"), node);
 	}
 
 	return result;
     }
 
-    private Map addOther(Map source, Map destin) {
-	Iterator i = destin.keySet().iterator();
-	String number = null;
-	while(i.hasNext()) {
-	    number  = (String)i.next();
-	    if(!source.containsKey(number))
-		source.put(number, (MMObjectNode)destin.get(number));
-	}
-	return source;
-    }
 
     /**
      * Get the related nodes of a certain type. The returned nodes are not the
@@ -1202,8 +1194,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
-	Vector result = null;
+        if (log.isDebugEnabled()) {
+            log.debug("Getting related nodes of " + this + " of type " + type);
+        }
 
+	Vector result;
 	if(parent.mmb.InsRel.usesdir) {
 	    result = getRelatedNodes(type, ClusterBuilder.SEARCH_EITHER);
 	} else {
@@ -1211,10 +1206,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	    Map source = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_SOURCE));
 	    Map destin = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_DESTINATION));
 
-	    log.debug("source("+source.size()+") - destin("+destin.size()+")");
-
+            if (log.isDebugEnabled()) {
+                log.debug("source("+source.size()+") - destin("+destin.size()+")");
+            }
 	    // remove duplicates (can happen if multirel is being used when no dir on insrel exists)
-	    result = new Vector(addOther(source,destin).values());
+            destin.putAll(source);
+	    result = new Vector(destin.values());
 	}
 
 	return result;
@@ -1227,10 +1224,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * }
      * Otherwise the SEARCH_EITHER will result in an OR on insrel which will never return in
      * (huge) databases.
+     * @since MMBase-1.6.2
      */
     private Vector getRelatedNodes(String type, int search_type) {
-	Vector result = new Vector();
-	MMObjectBuilder builder = (MMObjectBuilder)parent.mmb.getMMObject(type);
+	Vector result;
+	MMObjectBuilder builder = (MMObjectBuilder) parent.mmb.getBuilder(type);
 
 	// example: we want a thisnode.relatedNodes(mediaparts) where mediaparts are of type
 	// audioparts and videoparts. This method will return the real nodes (thus of type audio/videoparts)
@@ -1247,39 +1245,41 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 
 	    // multilevel from table this.parent.name -> type
 	    Vector tables = new Vector();
-	    tables.addElement(parent.getTableName()+"1");
-	    tables.addElement(type+"2");
+	    tables.add(parent.getTableName() + "1");
+	    tables.add(type + "2");
 
 	    // return type.number (and otype for sorting)
 	    Vector fields = new Vector();
-	    fields.addElement(type + "2.number");
-	    fields.addElement(type + "2.otype");
+	    fields.add(type + "2.number");
+	    fields.add(type + "2.otype");
 
 	    // order list UP
 	    Vector directions = new Vector();
-	    directions.addElement("UP");
+	    directions.add("UP");
 
 	    // and order on otype
 	    Vector ordered = new Vector();
-	    ordered.addElement(type + "2.otype");
+	    ordered.add(type + "2.otype");
 
 	    String where = "WHERE " + parent.getTableName() +"1.number != " + type + "2.number";
 
-	    Vector vnode=new Vector();
+	    Vector vnode = new Vector();
 	    vnode.addElement(""+getNumber());
 
 	    // retrieve the related nodes (these are virtual)
-	    Vector v = clusterBuilder.searchMultiLevelVector(
-							     vnode,fields,"NO",tables,where,ordered,directions,search_type);
+	    Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
 
 	    if(v == null) v = new Vector();
-	    result = new Vector(getRealNodes(v, type+"2"));
+	    result = new Vector(getRealNodes(v, type + "2"));
 
 	} else {
-	    log.error("This type("+type+") is not a valid buildername!");
+	    log.error("This type(" + type + ") is not a valid buildername!");
+            result = new Vector(); // return empty vectro
 	}
 
-	log.debug("related("+parent.getTableName()+"("+getNumber()+")) -> "+type+" = size("+result.size()+")");
+        if (log.isDebugEnabled()) {
+            log.debug("related("+parent.getTableName()+"("+getNumber()+")) -> "+type+" = size("+result.size()+")");
+        }
 
 	return result;
     }
@@ -1292,8 +1292,11 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @returns List of real nodes
      *
      * @see getRelatedNodes(String type)
+     * @since MMBase-1.6.2
      */
     private List getRealNodes(Vector virtuals, String type) {
+
+        log.debug("Getting real nodes");
 	List            result  = new ArrayList();
 
 	MMObjectNode    node    = null;
@@ -1342,6 +1345,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	return result;
     }
 
+    /**
+     * @since MMBase-1.6.2
+     */
     private List getRealNodesFromBuilder(List list, int otype) {
 	List result = new ArrayList();
 	String name = parent.mmb.TypeDef.getValue(otype);
