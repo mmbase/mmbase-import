@@ -9,16 +9,16 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.77 2002-09-20 20:22:48 michiel Exp $
+  @version $Id: wizard.xsl,v 1.78 2002-10-29 10:57:37 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
 
   <xsl:variable name="defaultsearchage">7</xsl:variable>
   <xsl:param name="objectnumber"></xsl:param>
-  <xsl:param name="wizardtitle"><xsl:value-of select="list/object/@type" /></xsl:param>
-  <xsl:param name="title"><xsl:value-of select="$wizardtitle" /></xsl:param>
 
+
+  <xsl:param name="title"></xsl:param>
 
   <!-- ================================================================================
        The following things can be overriden to customize the appearance of wizard
@@ -26,9 +26,9 @@
 
   <!-- It can be usefull to add a style, change the title -->
   <xsl:template name="style"> 
-     <title><xsl:value-of select="title" /></title>
+     <title><xsl:call-template name="i18n"><xsl:with-param name="nodes"  select="title" /></xsl:call-template></title>
      <link rel="stylesheet" type="text/css" href="../style/wizard.css" />
-     <xsl:call-template name="extrastyle" /> <!-- see base.xsl -->
+     <xsl:call-template name="extrastyle" /><!-- see base.xsl -->
   </xsl:template>
 
   <!-- You can put stuff before and after then, or change the attributes of body itself. Don't forget to call 'bodycontent' 
@@ -45,13 +45,16 @@
   <xsl:template name="title">
     <tr>
       <th colspan="2">        
-        <span class="title"><nobr><xsl:value-of select="title" /></nobr></span>
-        <span class="form">
-          <nobr>
-            <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if><xsl:value-of select="form[@id=/wizard/curform]/title" />
-          </nobr>
-        </span>
-      </th>
+      <span class="title">
+        <nobr><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="title" /></xsl:call-template></nobr>
+      </span>
+      <span class="form">
+        <nobr>
+          <xsl:if test="$debug='true'"><a href="debug.jsp{$sessionid}" target="_blank">[debug]</a><br /></xsl:if>
+          <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="form[@id=/wizard/curform]/title" /></xsl:call-template>
+        </nobr>
+      </span>
+    </th>
     </tr>   
   </xsl:template>
 
@@ -205,7 +208,7 @@
   <!-- Every wizard is based on one 'form', with a bunch of attributes and a few hidden entries.
        Those are set here -->
   <xsl:template name="bodyform">   
-    <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}"
+    <form name="form" method="post" action="{$formwizardpage}" id="{/wizard/curform}"
       message_pattern="{$message_pattern}"
       message_required="{$message_required}"
       message_minlength="{$message_minlength}" message_maxlength="{$message_maxlength}"
@@ -220,6 +223,7 @@
       <xsl:if test="$debug='true'">debug:<textarea class="debug" name="debug">javascript debugging</textarea></xsl:if>
       <input type="hidden" name="curform" value="{/wizard/curform}" />
       <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
+      <xsl:call-template name="formwizardargs" />
       <xsl:call-template name="formcontent" />
     </form>
   </xsl:template>
@@ -289,6 +293,8 @@
   </xsl:template>
 
 
+
+
   <!-- 
        Prefix and postfix are subtags of 'field', and are put respectively before and after the presentation of the field.
        Useful in fieldsets. 
@@ -301,15 +307,15 @@
       <span id="prompt_{@fieldname}" class="valid" prompt="{prompt}">
         <xsl:choose>
           <xsl:when test="description">
-            <xsl:attribute name="title"><xsl:value-of select="description" /></xsl:attribute>
-            <xsl:attribute name="description"><xsl:value-of select="description" /></xsl:attribute>
+            <xsl:attribute name="title"><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="description" /></xsl:call-template></xsl:attribute>
+            <xsl:attribute name="description"><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="description" /></xsl:call-template></xsl:attribute>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:attribute name="title"><xsl:value-of select="prompt" /></xsl:attribute>
-            <xsl:attribute name="description"><xsl:value-of select="prompt" /></xsl:attribute>
+            <xsl:attribute name="title"><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template></xsl:attribute>
+            <xsl:attribute name="description"><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template></xsl:attribute>
           </xsl:otherwise>
         </xsl:choose>
-        <xsl:value-of select="prompt" />
+        <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template>
       </span>
    </xsl:template>
 
@@ -659,7 +665,7 @@
     <td colspan="2" class="listcanvas">
       
       <div class="subhead" title="{description}">
-        <nobr><xsl:value-of select="title" /></nobr>
+        <nobr><xsl:call-template name="i18n"><xsl:with-param name="nodes" select="title" /></xsl:call-template></nobr>
       </div>
 
       <!-- show the item's of the list like that -->
@@ -676,7 +682,7 @@
           <table class="itemadd">
             <tr>
               <td>
-                  <xsl:value-of select="prompt" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
+                <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
                   <nobr><!-- the search-tools must not be seperated -->
                   <!-- alway make searching on age possible -->
                   <select name="searchage_{../command[@name='add-item']/@cmd}" class="age">
@@ -690,7 +696,9 @@
                     <xsl:choose>
                       <xsl:when test="search-filter">
                         <xsl:for-each select="search-filter">
-                          <option value="{search-fields}" default="{default}"><xsl:value-of select="name" /></option>
+                          <option value="{search-fields}" default="{default}">
+                            <xsl:call-template name="i18n"><xsl:with-param name="nodes" select="name" /></xsl:call-template>
+                            </option>
                         </xsl:for-each>
                       </xsl:when>
                       <!-- if nothing, then search on title -->
