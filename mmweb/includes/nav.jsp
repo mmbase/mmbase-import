@@ -216,7 +216,7 @@
 		pnumber = "202";
 	}
        Node portal = cloud.getNode(pnumber);
-       nav = new Nav(portal.getStringValue("name"),portal.getNumber(),"index.jsp?portal=202");
+       nav = new Nav(portal.getStringValue("name"),portal.getNumber(),request.getContextPath() + "/index.jsp?portal=202");
        nav.isPortal = true;
        currentNav = addChildPagesOfPortal(nav,portalPages,subpages,currentPageString);
        if (currentNav == null){
