@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: ListFunctionTag.java,v 1.4 2004-05-26 11:40:01 michiel Exp $
+ * @version $Id: ListFunctionTag.java,v 1.5 2004-06-30 17:51:56 michiel Exp $
  */
 public class ListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, Writer {
 
@@ -112,7 +112,11 @@ public class ListFunctionTag extends AbstractFunctionTag implements ListProvider
         if (getId() != null) {
             getContextProvider().getContextContainer().register(getId(), returnList, false);
         }
-        return  EVAL_PAGE;
+        // dereference for gc.
+        returnList = null;
+        iterator = null;
+        collector = null;
+        return  super.doEndTag();
     }
 
 

@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.58 2004-06-28 21:37:56 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.59 2004-06-30 17:51:52 michiel Exp $
  * @see ContextTag
  */
 
@@ -87,7 +87,8 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         if (pageContextTag == null) { // not yet put
             log.debug("No pageContextTag found in pagecontext, creating..");
             if (pageLog.isServiceEnabled()) {
-                thisPage = ((HttpServletRequest)pageContext.getRequest()).getRequestURI();
+                HttpServletRequest request = ((HttpServletRequest)pageContext.getRequest());
+                thisPage = request.getRequestURI();
                 String queryString = ((HttpServletRequest)pageContext.getRequest()).getQueryString();
                 pageLog.service("Parsing JSP page: " + thisPage + (queryString != null ? "?" + queryString : ""));
             }
@@ -153,7 +154,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     /**
      * Which writer to use.
      */
-    protected String writerid = null;
+    protected Attribute writerid = Attribute.NULL;
 
 
     /**
@@ -170,7 +171,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.6.2
      */
     public Writer findWriter(boolean th) throws JspTagException {
-        Writer w = (Writer) findParentTag(Writer.class, writerid, th);
+        Writer w = (Writer) findParentTag(Writer.class, (String) writerid.getValue(this), th);
         if (w != null) {
             w.haveBody();
         }
@@ -183,11 +184,13 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * Sets the writer attribute.
      */
     public void setWriter(String w) throws JspTagException {
-        writerid = getAttributeValue(w);
+        writerid = getAttribute(w);
 
     }
 
-
+    public int doEndTag() throws JspTagException {
+        return EVAL_PAGE;
+    }
 
     /**
      * Release all allocated resources.
@@ -201,12 +204,12 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
+        pageContextTag = null;
         /*
         id = null;
         referid   = Attribute.NULL;
         contextId = Attribute.NULL;
         */
-        pageContextTag = null;
     }
 
 

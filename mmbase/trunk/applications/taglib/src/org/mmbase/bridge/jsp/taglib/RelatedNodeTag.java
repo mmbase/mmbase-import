@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.14 2004-02-26 22:11:49 michiel Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.15 2004-06-30 17:51:54 michiel Exp $ 
  */
 
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -48,7 +48,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
         Node node = lr.getRelatedNode();
         setNodeVar(node);
         // if direct parent is a Formatter Tag, then communicate
-        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class.getName(), null, false);
+        FormatterTag f = (FormatterTag) findParentTag(FormatterTag.class, null, false);
         if (f!= null && f.wantXML() && node != null) {
             f.getGenerator().add(node);
         }

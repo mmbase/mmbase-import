@@ -20,7 +20,7 @@ import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.11 2004-03-24 09:49:20 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.12 2004-06-30 17:51:54 michiel Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);
@@ -58,6 +58,10 @@ public class FunctionContainerTag extends AbstractFunctionTag implements Functio
             }
         }
         return SKIP_BODY;
+    }
+    public int doEndTag() throws JspTagException {
+        parameters = null;
+        return super.doEndTag();
     }
 
     public class ParameterEntry implements FunctionContainer.Entry {

@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.42 2004-06-02 14:42:16 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.43 2004-06-30 17:51:53 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -200,6 +200,7 @@ public class ImportTag extends ContextReferrerTag {
         bodyContent = null;
         helper.release();
         log.debug("end of importag");
+        super.doEndTag();
         return EVAL_PAGE;
     }
 
