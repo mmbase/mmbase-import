@@ -153,6 +153,7 @@ public class WriterHelper extends BodyTagSupport {
         setValue(v, IMPLICITLIST);        
     }
     public void setValue(Object v, boolean noImplicitList) throws JspTagException {
+        value = null;
         switch (vartype) { 
             // these accept a value == null (meaning that they are empty)
         case TYPE_LIST:
@@ -162,6 +163,7 @@ public class WriterHelper extends BodyTagSupport {
                 } else { 
                     value = new java.util.Vector(); 
                 }
+                setJspvar();
                 return;
             }
         case TYPE_VECTOR: // I think the type Vector should be deprecated?
@@ -182,13 +184,15 @@ public class WriterHelper extends BodyTagSupport {
                 }
             } else {
                 value = v;
-            }            
+            }     
+            setJspvar();
             return;
         }
 
         // other can't be valid and still do something reasonable with 'null'.
         if (v == null) {
             value = null;
+            setJspvar();
             return;
         } 
 
@@ -211,30 +215,35 @@ public class WriterHelper extends BodyTagSupport {
         case TYPE_INTEGER:
             if (! (v instanceof Integer)) {
                 value = new Integer(v.toString());
+                setJspvar();
                 return;
             }
             break;
         case TYPE_DOUBLE:
             if (! (v instanceof Double)) {
                 value = new Double(v.toString());
+                setJspvar();
                 return;
             }
             break;
         case TYPE_LONG:
             if (! (v instanceof Long)) {
                 value = new Long(v.toString());
+                setJspvar();
                 return;
             }
             break;
         case TYPE_FLOAT:
             if (! (v instanceof Float)) {
                 value =  new Float(v.toString());
+                setJspvar();
                 return;
             }
             break;
         case TYPE_STRING:
             if (! (v instanceof String)) {                
                 value = Casting.toString(v);
+                setJspvar();
                 return;
             } 
             break;
@@ -244,7 +253,7 @@ public class WriterHelper extends BodyTagSupport {
             }
             break;
         }
-        value = v;
+        if (value == null) value = v;
         setJspvar();
     }
     
