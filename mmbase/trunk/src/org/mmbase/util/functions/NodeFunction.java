@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * Describing a function on a bridge Node, giving access to the underlying executeFunction of the MMObjectBuilder.
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeFunction.java,v 1.1 2003-12-21 13:25:36 michiel Exp $
+ * @version $Id: NodeFunction.java,v 1.2 2004-09-30 16:08:40 pierre Exp $
  * @see org.mmbase.module.core.MMObjectBuilder#executeFunction
  * @see org.mmbase.bridge.Node#getFunctionValue
  * @since MMBase-1.7
@@ -72,7 +72,7 @@ public class NodeFunction extends Function {
     }
 
     /**
-     * Trying to determin Parameter[] constants using a Class. It considers all static fields of
+     * Trying to determine Parameter[] constants using a Class. It considers all static fields of
      * type Parameter[]. The name of the field is lowercased and everything after and including the
      * first underscore is removed. This gives a key (which is supposed to equal to the 'execute' function name).
      *

@@ -28,9 +28,10 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
  * @todo   THIS CLASS IS EXPERIMENTAL
+ * @version $Id: SortedBundle.java,v 1.3 2004-09-30 16:08:39 pierre Exp $
  */
-
 public class SortedBundle {
+
     private static final Logger log = Logging.getLoggerInstance(SortedBundle.class);
 
     /**
@@ -60,8 +61,6 @@ public class SortedBundle {
         knownResources.putCache();
     }
 
-
-
     /**
      * You can specify ValueWrapper.class as a value for the wrapper argument. The keys will be objects with natural order of the values.
      * @todo EXPERIMENTAL
@@ -81,14 +80,12 @@ public class SortedBundle {
         }
         public boolean equals(Object o) {
             ValueWrapper other = (ValueWrapper) o;
-            return key.equals(other.key) && (value == null ? other.value == null : value.equals(other.value));            
+            return key.equals(other.key) && (value == null ? other.value == null : value.equals(other.value));
         }
     }
-    
-
 
     /**
-     * @param baseName A string identifying the resource. See {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale, java.lang.ClassLoader)} 
+     * @param baseName A string identifying the resource. See {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale, java.lang.ClassLoader)}
      *                 for an explanation of this string.
      * @param locale   the locale for which a resource bundle is desired
      * @param loader - the class loader from which to load the resource bundle
@@ -98,15 +95,15 @@ public class SortedBundle {
      *                          You could specify e.g. Integer.class if the keys of the
      *                          map are meant to be integers. This can be <code>null</code>, in which case the keys will remain unwrapped
      * @param comparator        the elements will be sorted (by key) using this comparator or by natural key order if this is <code>null</code>.
-     * 
+     *
      * @throws NullPointerException      if baseName or locale is null  (not if loader is null)
      * @throws MissingResourceException  if no resource bundle for the specified base name can be found
      */
     public static SortedMap getResource(String baseName, Locale locale, ClassLoader loader, Class constantsProvider, Class wrapper, Comparator comparator) {
         String resourceKey = baseName + '/' + locale + (constantsProvider == null ? "" : constantsProvider.getName()) + "/" + (comparator == null ? "" : "" + comparator.hashCode()) + "/" + (wrapper == null ? "" : wrapper.getName());
         SortedMap m = (SortedMap) knownResources.get(resourceKey);
-        
-        if (m == null) { // find and make the resource           
+
+        if (m == null) { // find and make the resource
             ResourceBundle bundle;
             if (loader != null) {
                 bundle = ResourceBundle.getBundle(baseName, locale);
@@ -122,7 +119,7 @@ public class SortedBundle {
 
                 // if the key is numeric then it will be sorted by number
                 //key Double
-                
+
                 Class providerClass = constantsProvider; // default class (may be null)
                 int lastDot = bundleKey.lastIndexOf('.');
                 if (lastDot > 0) {
@@ -133,19 +130,19 @@ public class SortedBundle {
                         log.warn("No class found with name " + className + " for resource " + baseName);
                         providerClass = constantsProvider;
                     }
-                } 
+                }
 
                 if (providerClass != null) {
                     try {
                         Field constant = providerClass.getDeclaredField(bundleKey);
-                        key = constant.get(null); 
+                        key = constant.get(null);
                     } catch (NoSuchFieldException nsfe) {
                         log.info("No java constant with name " + bundleKey);
                         key = bundleKey;
                     } catch (IllegalAccessException ieae) {
                         log.warn("The java constant with name " + bundleKey + " is not accessible");
                         key = bundleKey;
-                        
+
                     }
                 } else {
                     key = bundleKey;
@@ -155,7 +152,7 @@ public class SortedBundle {
                     try {
                         if (wrapper.isAssignableFrom(ValueWrapper.class)) {
                             Constructor c = wrapper.getConstructor(new Class[] {String.class, Comparable.class});
-                            key = c.newInstance(new Object[] { key, (Comparable) bundle.getObject(bundleKey)});                            
+                            key = c.newInstance(new Object[] { key, (Comparable) bundle.getObject(bundleKey)});
                         } else {
                             Constructor c = wrapper.getConstructor(new Class[] {key.getClass()});
                             key = c.newInstance(new Object[] { key });
@@ -173,14 +170,11 @@ public class SortedBundle {
                     }
                 }
 
-                m.put(key, bundle.getObject(bundleKey));                
+                m.put(key, bundle.getObject(bundleKey));
             }
             m = Collections.unmodifiableSortedMap(m);
             knownResources.put(resourceKey, m);
         }
         return m;
     }
-
-        
-
 }
