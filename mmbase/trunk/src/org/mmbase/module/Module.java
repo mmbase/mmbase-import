@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.16 $ $Date: 2000-07-12 08:19:42 $
+ * @version $Revision: 1.17 $ $Date: 2000-07-22 11:24:11 $
  */
 public abstract class Module {
 
@@ -358,7 +358,7 @@ public abstract class Module {
 			try {
 				Class newclass=Class.forName("org.xml.sax.ContentHandler");
 				Module.xmlinstalled=true;
-				System.out.println("xerces.jar installed moving to XML mode");	
+				if (debug) debug("xerces.jar installed moving to XML mode");	
 				modules=ModuleXML.loadModulesFromDisk();
 			} catch(Exception e) {
 				System.out.println("***** xerces.jar ERROR not found, put xerces.jar in your classpath (see install guide how to install xerces) ******");
