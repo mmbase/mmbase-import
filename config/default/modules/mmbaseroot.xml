@@ -60,9 +60,10 @@
         
         When you want to disable the communication between different MMBase-instances,
         (log message builder xxx not found, can be annoying), leave the value empty:
-            <property name="multicasthost"></property>
+	else use a multicat IP address like this
+	<property name="multicasthost">224.0.0.1</property>
 	-->
-	<property name="multicasthost">224.0.0.1</property><!-- ALL-SYSTEMS.MCAST.NET -->
+	<property name="multicasthost"></property><!-- ALL-SYSTEMS.MCAST.NET -->
 
 	<!--
 	name="multicastport" on what port does this multicast talking between nodes
@@ -77,7 +78,7 @@
 	used for communication between mmbase nodes and external devices
 	(xml or jini based).
 	-->
-	<property name="host">10.10.10.45</property>
+	<property name="host">127.0.0.1</property>
 
 	<!--
 	name="authtype" defines what authorisation type is used, This is a plugin
