@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.21 2002-10-25 18:48:14 michiel Exp $
+ * @version $Id: Attachments.java,v 1.22 2003-01-06 17:04:29 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -178,4 +178,18 @@ public class Attachments extends AbstractServletBuilder {
         checkHandle(node);
         return super.commit(node);
     }
+
+    /**
+     * Implements 'mimetype' function (Very simply for attachments, because they have the field).
+     *
+     * @since MMBase-1.6.1
+     */
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
+        log.debug("executeFunction of attachments builder");
+        if ("mimetype".equals(function)) {
+            return node.getStringValue("mimetype");
+        }
+        return super.executeFunction(node, function, args);
+    }
+
 }
