@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.49 2002-10-25 11:09:40 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.50 2002-10-29 15:29:01 michiel Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -251,8 +251,8 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             throw new BridgeException(e);
         }
         // remove all nodes that cannot be accessed
-        for(int i=(v.size()-1); i>-1; i--) {
-            if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getIntValue("number"))) {
+        for(int i = v.size() - 1; i >= 0; i--) {
+            if (!cloud.check(Operation.READ, ((MMObjectNode)v.get(i)).getNumber())) {
                 v.remove(i);
             }
         }
