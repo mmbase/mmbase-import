@@ -15,7 +15,7 @@
          <mm:node number="$user">
            <p>
              I am <mm:field name="firstname" /> <mm:field name="lastname" /> 
-             ( its not me,
+             ( it's not me,
              <a href="<mm:url referids="parameters,$parameters"><mm:param name="btemplate" value="changeUser.jsp" /></mm:url>">
              change name
              </a>)
