@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.39 2001-02-02 22:37:58 daniel Exp $
+$Id: scanparser.java,v 1.40 2001-02-16 09:22:15 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.39  2001/02/02 22:37:58  daniel
+ changed some debug calls
+
 Revision 1.38  2001/01/04 16:02:35  vpro
 Wilbert: Added ( to start and ) to stop skipping arguments for tree and leafpart
 
@@ -137,7 +140,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.39 $ $Date: 2001-02-02 22:37:58 $
+ * @$Revision: 1.40 $ $Date: 2001-02-16 09:22:15 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -632,9 +635,10 @@ public class scanparser extends ProcessorModule {
 							newbody.append(do_mod(sp,body.substring(prepostcmd,postcmd)));
 						break;
 					case 10: // '<GOTO'
-							newbody=new StringBuffer();
-							newbody.append(do_goto(sp,body.substring(prepostcmd,postcmd)));
-						break;
+//							newbody=new StringBuffer();
+//							newbody.append(do_goto(sp,body.substring(prepostcmd,postcmd)));
+							return do_goto(sp,body.substring(prepostcmd,postcmd));
+//						break;
 					case 11: // '<NEWPAGE'
 							newbody=new StringBuffer();
 							newbody.append(do_newpage(sp,body.substring(prepostcmd,postcmd)));
