@@ -80,7 +80,7 @@
 					</orderedlist>
 					<remark>
 						It is not clear whether MMBase really stands for Multi Media Base.
-						<emphasis>The prefered term is MMBase</emphasis>
+						<emphasis>The preferred term is MMBase</emphasis>
 					</remark>
 				</glossdef>
 				<glossseealso>open source</glossseealso>
@@ -179,7 +179,7 @@
 						<listitem>
 							<para>
 								This bridge concept represents the object which describes meta information (which
-								fields are availabe and so on) about node types, and serves to create new nodes and
+								fields are available and so on) about node types, and serves to create new nodes and
 								so on.
 							</para>
 						</listitem>
@@ -227,7 +227,7 @@
 						</para>
 					</example>
 					<remark>
-						The term is used when one speaks about information analyses.
+						The term is used when one speaks about information analysis.
 					</remark>
 					<glossseealso otherterm="builder" />
 					<glossseealso otherterm="nodemanager" />
@@ -450,21 +450,21 @@
         <glossterm>vote</glossterm>
         <glossdef>										
 					<para>
-						Major decisions on MMBase implementation are done by voting by commitors on the
+						Major decisions on MMBase implementation are done by voting by committer on the
 						developers list.
 					</para>
 					<glossseealso otherterm="plusone" />
-					<glossseealso otherterm="commitor" />
+					<glossseealso otherterm="committer" />
 				</glossdef>
       </glossentry>
 
 
 
-      <glossentry id="commitor">
-        <glossterm>commmitor</glossterm>
+      <glossentry id="committer">
+        <glossterm>committer</glossterm>
         <glossdef>										
 					<para>
-						An MMBase developer with CVS commiting access.
+						An MMBase developer with CVS committing access.
 					</para>
 					<glossseealso otherterm="vote" />
 					<glossseealso otherterm="cvs" />
@@ -478,10 +478,10 @@
         <glossdef>										
 					<para>
 						Open Source version system, which is used to administrate MMBase source codes. Typical
-						for CVS is that it is possible to use it withouth acquiring locks on files (which is the
+						for CVS is that it is possible to use it without acquiring locks on files (which is the
 						way it is used for MMBase). This means that files can be edited simultaneously by
-						different people, but also that the risc for 'conflicts' arises (if a patch cannot be
-						made automaticly). 
+						different people, but also that the risk for 'conflicts' arises (if a patch cannot be
+						made automatically). 
 					</para>
 					<para>
 						The MMBase CVS repository is hosted on the mmbase.org server.
@@ -495,7 +495,7 @@
         <glossterm>MMBase</glossterm>
         <glossdef>
 					<para>
-						Very object oriented open source content managment system based (a.o) on java servlet
+						Very object oriented open source content management system based (a.o) on java servlet
 						technology. 
 					</para>				
 					<glossseealso>Everywhere else</glossseealso>
@@ -530,7 +530,7 @@
 						<listitem>
 							<para>
 								The java classes of MMBase which are 'under' the bridge, and should be invisible for
-								casual users. They provide the data persistency and other basic MMBase concepts like
+								casual users. They provide the data persistence and other basic MMBase concepts like
 								relations. The MMBase core is not protected by MMBase security.
 							</para>
 						</listitem>
@@ -576,7 +576,7 @@
         <acronym>WIAB</acronym>
         <glossdef>
 					<para>
-						A packaged content managment system based on MMBase. Typical for WIAB is a fixed object
+						A packaged content management system based on MMBase. Typical for WIAB is a fixed object
 						model and a distinction between life and staging environments. It was developed for the
 						Amsterdam municipal by Framfab but is maintained by Finalist now.
 					</para>
@@ -585,11 +585,11 @@
       </glossentry>
 
       <glossentry id="mmc">
-        <glossterm>MMBase Managment Committee</glossterm>
+        <glossterm>MMBase Management Committee</glossterm>
         <acronym>MMC</acronym>
         <glossdef>
 					<para>
-						High status MMBase commitors who are supposed to meet every thursday to talk about it.
+						High status MMBase committers who are supposed to meet every Thursday to talk about it.
           </para>
 				</glossdef>
       </glossentry>
@@ -611,12 +611,12 @@
         <glossterm>SCAN</glossterm>
         <glossdef>
 					<para>
-						The original MMBase template language. An interpreted language charactarized by several
+						The original MMBase template language. An interpreted language characterized by several
 						parse stages of the source. Commands, parameters and variables are recognized by
 						$-symbols. SCAN HTML pages use to be mapped to '.shtml'.
           </para>
 					<para>
-						Use of SCAN is nowadays discouraged in favour of more modern and standardized scripting
+						Use of SCAN is nowadays discouraged in favor of more modern and standardized scripting
 						manner like JSP and (MMBase) taglib.
 					</para>
 					<para>
@@ -653,14 +653,14 @@
 						<listitem>
 							<para>
 								In a J2EE environment the web-application is associated with a 'context', which is
-								basicly the first parth of the path. Often it will be '/', but this is not required
+								basically the first part of the path. Often it will be '/', but this is not required
 								for MMBase.
 							</para>
 						</listitem>
 						<listitem>
 							<para>
 								In MMBase taglib a 'context' is a container for Taglib variables. It is also
-								asociated with every page, the 'context' tag, and list tags.
+								associated with every page, the 'context' tag, and list tags.
 							</para>
 						</listitem>
 						<listitem>
@@ -703,7 +703,7 @@
 								several common ideas.
 							</para>
 							<para>
-								Modules are usually compiled seperately (in compiled
+								Modules are usually compiled separately (in compiled
 								languages) and provide an abstraction or information hiding
 								mechanism so that a module's implementation can be changed
 								without requiring any change to other modules.  In this
@@ -724,7 +724,7 @@
         <glossterm>unidirectional</glossterm>
         <glossdef>
 					<para>
-						A value for the 'dir' attribute of reldef and insrel nodes. It only sais something about
+						A value for the 'dir' attribute of reldef and insrel nodes. It only says something about
 						the visibility of the relation. A unidirection relation is not visible from the
 						destination node.
           </para>
@@ -738,7 +738,7 @@
         <glossterm>bidirectional</glossterm>
         <glossdef>
 					<para>
-						A value for the 'dir' attribute of reldef and insrel nodes. It only sais something about
+						A value for the 'dir' attribute of reldef and insrel nodes. It only says something about
 						the visibility of the relation. Every MMBase relation is bidirectional in the sense that
 						it has a clearly defined source and destination.
           </para>
@@ -749,11 +749,11 @@
       </glossentry>
 
       <glossentry id="taglib">
-        <glossterm>tag libary</glossterm>
+        <glossterm>tag library</glossterm>
         <abbrev>taglib</abbrev>
 				<glossdef>
 					<para>
-						A Tag Library is a SUN defined way to define extra XML-like tags. A tag libraray is
+						A Tag Library is a SUN defined way to define extra XML-like tags. A tag library is
 						implemented in Java and currently only available in mixture with JSP-pages.
           </para>
 					<glossseealso otherterm="mmbasetaglib" />
@@ -761,7 +761,7 @@
       </glossentry>
 
       <glossentry id="mmbasetaglib">
-        <glossterm>MMBase tag libary</glossterm>
+        <glossterm>MMBase tag library</glossterm>
         <abbrev>MMBase taglib</abbrev>
 				<glossdef>
 					<para>
