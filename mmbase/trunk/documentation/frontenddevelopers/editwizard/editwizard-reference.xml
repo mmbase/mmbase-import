@@ -18,7 +18,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Reference Manual</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-reference.xml,v 1.4 2003-05-19 11:22:20 pierre Exp $</edition>
+		<edition>$Id: editwizard-reference.xml,v 1.5 2003-05-26 15:11:04 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -108,7 +108,7 @@
 					<listitem>
 						<para>The fields to show in the list. If you query only one nodetype (see nodepath), you can use simple field names. Otherwise, you need to preface the fieldnames with the name of the objecttype they belong to.
 						If the first field listed is a number field, teh objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
-						<programlisting format="linespecific">fields=firstname,lastname or fields=news.title,people.firstname,people.lastname</programlisting>
+						<programlisting format="linespecific">fields=news.title,people.firstname,people.lastname</programlisting>
 					</listitem>
 				</varlistentry>
 			</variablelist>
@@ -117,23 +117,38 @@
 				<varlistentry>
 					<term>sessionkey</term>
 					<listitem>
-						<para>A key that identififies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
+						<para>A key that identifies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
 						The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
-						<programlisting format="linespecific">orderby=lastname or  orderby=people.lastname,news.title</programlisting>
+						<programlisting format="linespecific">sessionkey=my_key</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>maxupload</term>
+					<listitem>
+						<para>The maximum size of a file to upload. The fefakt maximum size for files is 4MB.</para>
+						<programlisting format="linespecific">maxupload=8000000</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>orderby</term>
 					<listitem>
 						<para>A list of fieldnames used to order the returning list. This parameter is similar to the orderby attribute of the taglib's &lt;mm:list&gt; tag.</para>
-						<programlisting format="linespecific">orderby=lastname or  orderby=people.lastname,news.title</programlisting>
+						<programlisting format="linespecific">orderby=people.lastname,news.title</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
 					<term>directions</term>
 					<listitem>
 						<para>A list of one or more UP/DOWN keywords. Each keyword determines whether the order of a matching field specified in the orderby parameter is ascending (UP) or descending (DOWN). This parameter is similar to the directions attribute of the taglib's &lt;mm:list&gt; tag.</para>
-						<programlisting format="linespecific">directions=UP or  directions=UP,UP</programlisting>
+						<programlisting format="linespecific">directions=UP</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>searchdir</term>
+					<listitem>
+						<para>The direction in which relations between nodemanagers should be followed. This parameter is similar to the searchdir attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						<note><para>Available from MMBase 1.6.4 and up</para></note>
+						<programlisting format="linespecific">searchdir=source</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -190,6 +205,16 @@
 					</listitem>
 				</varlistentry>
 				<varlistentry>
+					<term>realsearchfield</term>
+					<listitem>
+						<para>The actual field on which to search. Normally, searches are done on the fields mentioned in the searchfields parameter (used to craete teh serach box ina  alist page). Sometimes, you want to search on a field other than those listed in searchfield (such as 'number' or 'owner'). In that case, use this parameter to specify the field.
+						</para>
+						<note><para>This parameter is set by the system when a user submits a search- you will hardly ever use it yourself. If you want to add additional constraints, use the 'constraints' parameter. If you specify a constraints parameter, that constraint is combined in further searches with the search parameters given by a user. If you use realsearchfield to specify a constraint, that information is only valid for teh first serach - it will be replaced when a user submits his search.</para></note>
+						<note><para>Available from MMBase 1.6.4 and up</para></note>
+						<programlisting format="linespecific">searchfields=news.title,news.subtitle</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
 					<term>searchvalue</term>
 					<listitem>
 						<para>The term or value to search for. This is only valid if you also specify the searchfields parameter.</para>
@@ -203,6 +228,14 @@
 						<para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare teh feild to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
 						</para>
 						<programlisting format="linespecific">searchtype=like</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>forcesearch</term>
+					<listitem>
+						<para>If true, a search is enforced before a result list is returned. If no serachvalue is given, the wziard produces an empty list and forces the user to enter a searchvalue. Note that this parameter is only appropriate if you provide searchfields.</para>
+						<note><para>Available from MMBase 1.6.4 and up</para></note>
+						<programlisting format="linespecific">forcesearch=true</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -255,9 +288,23 @@
 				<varlistentry>
 					<term>sessionkey</term>
 					<listitem>
-						<para>A key that identififies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
+						<para>A key that identifies the 'session' of this wizard. Normally, you cannot run two separate editwizards concurrently from the same browser. If you want to allow this for your users for some reason, you can provide a 'sessionkey' to identify separate sessions: a wizard with one sessionkey runs independent from those who use a different one.
 						The default session key is 'editwizard'. Note that allowing more wizards to be opened from one browser consumes more resources and is therefor not recommended.</para>
-						<programlisting format="linespecific">orderby=lastname or  orderby=people.lastname,news.title</programlisting>
+						<programlisting format="linespecific">sessionkey=my_key</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>debug</term>
+					<listitem>
+						<para>If debug=true, the wizard will place additional information in the wizard page that allows for debugging of the application. This includes a link to a debug page that allows you to view the loaded object data and the wizard schema.</para>
+						<programlisting format="linespecific">debug=true</programlisting>
+					</listitem>
+				</varlistentry>
+				<varlistentry>
+					<term>maxupload</term>
+					<listitem>
+						<para>The maximum size of a file to upload. The fefakt maximum size for files is 4MB.</para>
+						<programlisting format="linespecific">maxupload=8000000</programlisting>
 					</listitem>
 				</varlistentry>
 				<varlistentry>
@@ -275,6 +322,23 @@
 				<programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=184</programlisting>
 				<programlisting format="linespecific">wizard.jsp?wizard=practice/simple&amp;objectnumber=new</programlisting>
 			</example>
+		</section>
+		<section>
+			<title>debug.jsp</title>
+			<para>When you are debugging your wizard code, it can be useful to know what data is read and pared by the wizard. The debug.jsp page gives access to three xml trees that are used by the current running wizard.</para>
+			<para>The data tree shows the xml that contains the data used by the wizrad, including any changes made by the user. It can be useful to see if data is loaded (or changed) as expected. It can also be useful to determine xpaths when you plan to use these in your wizard: if you use an xpath in your wizard xml file, it access the data xml.</para>
+			<para>The wizard lists the fully expanded wizard schema file (including any inclusions and extensions). Note that this xml also contains some additonal navigational information related to the current form, and does not fully follow the wizard dtd.</para>
+			<para>The wizard-schema combines the data and wizard xmlks into one xml tree. This tree is what is passed to the xsl-transformers, and is used to create the form that is sent to the end-user. Use this form to see if data loaded is actually used, and if you want to override the default xsl files.</para>
+			<variablelist>
+				<title>The following parameters MAY be specified:</title>
+				<varlistentry>
+					<term>sessionkey</term>
+					<listitem>
+						<para>A key that identifies the 'session' of this wizard. See the wizard.jsp for more information.</para>
+						<programlisting format="linespecific">sessionkey=my_key</programlisting>
+					</listitem>
+				</varlistentry>
+			</variablelist>
 		</section>
 	</section>
 	<section id="basicconcepts">
