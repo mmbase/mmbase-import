@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.53 2004-07-30 16:52:28 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.54 2004-10-07 17:22:35 pierre Exp $
  */
 public class MultiPool {
 
@@ -183,7 +183,7 @@ public class MultiPool {
             multiCon.con = DriverManager.getConnection(url, name, password);
         }
         databaseSupport.initConnection(multiCon.con);
-        
+
     }
 
     protected void finalize() {
@@ -229,7 +229,7 @@ public class MultiPool {
             conMax == 0           // during shut-down this could happen
             ) return;
         synchronized (semaphore) {
-            
+
             int releaseCount = 0; // number of connection that are put back to pool
 
             //lock semaphore, so during the checks, no connections can be acquired or put back
@@ -272,7 +272,7 @@ public class MultiPool {
                     log.warn("Could not check isClosed on connection, assuming it closed: " + e.getMessage());
                 }
 
-                
+
 
                 if (isClosed) {
                     MultiConnection newCon = null;
@@ -294,14 +294,14 @@ public class MultiPool {
                     pool.add(newCon);
                     releaseCount++;
                     i.remove();
-                    
+
                     continue;
                 }
 
                 long diff = nowTime - con.getStartTimeMillis();
 
                 if (log.isDebugEnabled()) {
-                    if (diff > 5000 || diff > maxZeroTime) {  // don't log too often                     
+                    if (diff > 5000 || diff > maxZeroTime) {  // don't log too often
                         log.debug("Checking a busy connection " + con + " time = " + diff + " seconds");
                     }
                 }

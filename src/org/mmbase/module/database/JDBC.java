@@ -23,8 +23,9 @@ import org.mmbase.util.logging.*;
  * The module that provides you access to the loaded JDBC interfaces.
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
+ * @deprecation-used drop reference to {@link JDBCInterface}
  * @author vpro
- * @version $Id: JDBC.java,v 1.38 2004-08-25 11:33:29 michiel Exp $
+ * @version $Id: JDBC.java,v 1.39 2004-10-07 17:22:34 pierre Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -337,7 +338,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         String line = Strip.DoubleQuote(value,Strip.BOTH);
         StringTokenizer tok = new StringTokenizer(line,"-\n\r");
         if (tok.hasMoreTokens()) {
-            String cmd=tok.nextToken();
+            String cmd = tok.nextToken();
             if (cmd.equals("POOLS")) return listPools(tagger);
             if (cmd.equals("CONNECTIONS")) return listConnections(tagger);
         }
