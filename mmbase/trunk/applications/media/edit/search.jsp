@@ -1,4 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1.1-strict.dtd>
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@include file="config/read.jsp" 
@@ -12,7 +11,7 @@
 <html>
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
-   <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
+   <link href="style/streammanager.css" type="text/css" rel="stylesheet"><!-- help IE --></link>
    <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=" />" language="javascript"><!--help IE--></script>
 <head>
 <mm:import externid="origin">media.myyfragments</mm:import>

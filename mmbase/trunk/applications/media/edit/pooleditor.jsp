@@ -12,12 +12,11 @@
 
 <body class="content">
    <h1><%=m.getString("categories")%></h1>
-
    <%-- search form --%>
    
    <mm:context>
      <form action="<mm:url />" method="post">
-       <table summary="pools">
+       <table summary="pools" style="width: 100%">
          <mm:fieldlist nodetype="pools" type="search" id="searchform">
            <tr><td><mm:fieldinfo type="guiname" /></td><td><mm:fieldinfo type="searchinput" /></td</tr>
          </mm:fieldlist>
@@ -74,7 +73,7 @@
 
   <mm:import id="pagelength">10</mm:import>
 
-  <table class="searchresult">      
+  <table class="searchresult" style="width: 100%" >
   <mm:node number="media.streams">
     <mm:relatednodescontainer type="pools" role="parent">
 
@@ -173,7 +172,6 @@
     </mm:relatednodescontainer>
   </mm:node>
   </table>
-  
   
 </body>
 </html>

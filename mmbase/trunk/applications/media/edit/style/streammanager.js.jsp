@@ -103,7 +103,7 @@ if (getPlayer() == "real") {
 
 function getLeftURL(form) {
     if (form == "search") {
-        return '<mm:write value="search.jsp" />';
+        return '<mm:write value="" />';
     } else if (form == "poolselector") {
         return '<mm:write value="poolselector.jsp" />';
     } else if (form == "itemize") {    

@@ -8,9 +8,8 @@
     return "http://" + getHost() + request.getContextPath() + url;
  } 
 %><mm:context id="config"
-><mm:import id="configsubmitted" externid="config" from="parameters" />
-
- <mm:present referid="configsubmitted">
+><mm:import id="configsubmitted" externid="config" from="parameters" 
+/> <mm:present referid="configsubmitted">
     <%-- for config-page --%>
     <mm:import id="lang"    externid="lang"   from="parameters">en</mm:import>
     <mm:import id="quality" externid="quality" from="parameters">any</mm:import>

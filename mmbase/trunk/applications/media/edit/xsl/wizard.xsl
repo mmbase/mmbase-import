@@ -22,7 +22,7 @@
       <input type="button" value="{$button_start}{$thisprompt}"  title="{$tooltip_start}"    onClick="document.forms['form'].elements['{@fieldname}'].value = 0;" />
     </xsl:if>
     <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
-      <input type="button" value="{$button_end}{$thisprompt}"    title="{$tooltip_end}"      onClick="document.forms['form'].elements['{@fieldname}'].value = getLength();" />
+      <input type="button" value="{$button_end}{$thisprompt}"    title="{$tooltip_end}" onClick="document.forms['form'].elements['{@fieldname}'].value = getLength();" />
     </xsl:if>
 
 
@@ -45,6 +45,16 @@
 
       
      <input class="check" type="button" value="{$button_check}{$thisprompt}" title="{$tooltip_check}" onClick="setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
+
+
+     <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
+       <xsl:if test="substring(@number, 1, 1) != 'n'"><!-- cannot view if not commited -->
+         <br />
+         <a target="_new" href="{$referrerdir}/view/showurls.jsp?fragment={@number}">view</a>         
+       </xsl:if>
+    </xsl:if>
+
+
     </nobr>
   </span>
   </xsl:template>
@@ -102,6 +112,9 @@
         </p>
         <p>
           <xsl:call-template name="savebutton" />
+        </p>
+        <p>
+          <xsl:call-template name="saveonlybutton" />
         </p>
       </td>
     </tr>    
