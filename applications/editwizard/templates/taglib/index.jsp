@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.1 2002-04-19 14:00:39 michiel Exp $
+    @version  $Id: index.jsp,v 1.2 2002-05-07 13:35:57 michiel Exp $
  
     Showing: 
           - use of taglib in this entrance page
@@ -35,8 +35,8 @@
 </head>
 <body>
 <form>
+   <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->     
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%></mm:import>
-  <mm:import id="logout">yes</mm:import>
   <mm:import id="jsps">../jsp/</mm:import>
 	<h1>Editwizard Examples</h1>
 
@@ -50,7 +50,7 @@
 
   <!-- Yes, installed, show the editwizard entry page -->
   <mm:present referid="mynews_installed">
-	<a href="<mm:url referids="logout,referrer" page="${jsps}list.jsp">           
+	<a href="<mm:url referids="referrer" page="${jsps}list.jsp">           
            <mm:param name="title">People</mm:param>
            <mm:param name="wizard">samples/people</mm:param>
            <mm:param name="nodepath">people</mm:param>
@@ -63,8 +63,8 @@
             <mm:param name="wizard">samples/people</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>">Create</a>)
-<br />   
-   <a href="<mm:url referids="logout,referrer" page="${jsps}list.jsp">
+  <br />   
+   <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
            <mm:param name="title">Images</mm:param>
            <mm:param name="wizard">samples/imageupload</mm:param>
            <mm:param name="nodepath">images</mm:param>
@@ -73,7 +73,7 @@
            </mm:url>" 
            onClick="return openListImages(this);">    
            Images</a> (search:  <input type="text" name="imagedesc" value="" style="width:200px;text-align:left;" />) <br />
-    <a href="<mm:url referids="logout,referrer" page="${jsps}list.jsp">
+    <a href="<mm:url referids="referrer" page="${jsps}list.jsp">
 		       <mm:param name="title">News</mm:param>
         	 <mm:param name="wizard">samples/news</mm:param>
            <mm:param name="nodepath">news</mm:param>
