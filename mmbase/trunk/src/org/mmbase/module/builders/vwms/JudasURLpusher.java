@@ -11,7 +11,7 @@ import java.io.*;
 public class JudasURLpusher implements Runnable {
 
 	Thread kicker = null;
-	int sleepTime=3333;
+	int sleepTime=8888;
 	Judas parent;
 
 	public JudasURLpusher(Judas parent) {
