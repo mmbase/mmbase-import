@@ -16,7 +16,7 @@
     <!-- <sqlhandler>
         Defines the SqlHandler that converts SearchQuery objects to sql statements.
     -->
-    <sqlhandler>org.mmbase.storage.search.implementation.database.BasicSqlHandler</sqlhandler>
+    <sqlhandler>org.mmbase.storage.search.implementation.database.HSqlSqlHandler</sqlhandler>
 
     <!-- <chainedsqlhandler>
         Defines the chained SqlHandler that extend the sqlhandler's functionality.
