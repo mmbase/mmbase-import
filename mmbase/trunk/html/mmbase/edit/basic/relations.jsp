@@ -1,30 +1,34 @@
-<!-- Listing relations is rather dirty, perhaps 'mm:lisrelation' could be used -->
+<%-- Listing relations is rather dirty.
+     We wait for new bridge features. --%>
 <mm:context id="relations">
-    <mm:import externid="backpage_cancel" required="true" from="parent"/>
-    <mm:import externid="backpage_ok"     required="true" from="parent"/>
-    <mm:import externid="this_node"       required="true" from="parent" vartype="Node" jspvar="node" />
+  <%-- make sure the following variables are set --%>
+  <mm:import externid="backpage_cancel" required="true" from="parent"/>
+  <mm:import externid="backpage_ok"     required="true" from="parent"/>
 
-    <mm:field id="thisnodenumber" name="number"> </mm:field>
 
-    <mm:import id="thisnumber">0</mm:import>
-    <mm:import id="typewhere">name='<mm:nodeinfo type="nodemanager" />'</mm:import>
+  <%-- Make sure that we are in a node; 
+       not specifying by 'numer' or 'referid' attribute makes the tag look for a parent 'NodeProvider' --%>
+  <mm:node id="this_node" jspvar="node">
 
-    <mm:listnodes type="typedef" constraints="${typewhere}">
-        <mm:remove referid="thisnumber" />
-        <mm:import id="thisnumber"><mm:field name="number" /></mm:import>
-    </mm:listnodes>
+    <mm:field id="this_node_number" name="number" write="false" />
 
-    <mm:import id="sourceWhereClause">snumber=<mm:write referid="thisnumber" /></mm:import>
-    <mm:import id="tn" vartype="Integer" jspvar="thisnumber"><mm:write referid="thisnumber" /></mm:import>
+
+    <%-- Determin the number of the nodemanager --%>
+    <mm:import id="typedefNumber">0</mm:import>
+    <mm:nodeinfo type="nodemanager">
+     <mm:listnodes type="typedef" constraints="name='$_'"><%-- need to query typedef :-( --%>
+         <mm:remove referid="typedefNumber" />
+         <mm:field  name="number" id="typedefNumber" write="false" />
+     </mm:listnodes>
+    </mm:nodeinfo>
+
     <table class="list" summary="relation overview" width="100%">
         <tr>
             <th colspan="8"><%=m.getString("relations.from")%></th>
         </tr>
         <mm:context>
-            <!-- list all relation types, where we are the source -->
-            <mm:import externid="sourceWhereClause" required="true" from="parent"/>
-            <!-- typerel query <mm:write referid="sourceWhereClause" /> -->
-            <mm:listnodes type="typerel" constraints="${sourceWhereClause}" jspvar="typerelNode">
+            <%-- list all relation types, where we are the source --%>
+            <mm:listnodes type="typerel" constraints="snumber=$typedefNumber" jspvar="typerelNode">
             <%
                 // what is our relation type?
                 Node relationDefinition = typerelNode.getNodeValue("rnumber");
@@ -38,37 +42,34 @@
                 <th colspan="3"><%=m.getString("relations.relations")%></th>
                 <th colspan="3"><%=m.getString("relations.related")%></th>
                 <td class="navigate">
-                    <!-- <%= m.getString("new_relation.new")%> -->
+                    <%-- <%= m.getString("new_relation.new")%> --%>
                     <a href='<mm:url page="new_relation.jsp" >
                         <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>
                         <mm:param name="node_type"><%= otherNodeType.getName()%></mm:param>
                         <mm:param name="role_name"><%= relationDefinition.getStringValue("sname") %></mm:param>
-                        <!-- WHY CANT I USE DNAME as ROLE????  -->
-                        <mm:param name="direction">create_child</mm:param>
-                        <!-- END WHY CANT I USE DNAME as ROLE????  -->
+                        <mm:param name="direction">create_child</mm:param><%-- WHY CANT I USE DNAME as ROLE????  --%>
                         </mm:url>'>
                        <span class="create"></span><span class="alt">+</span>
                    </a>                
                 </td>
             </tr>
-            <!-- list all nodesof this specific relation type.. -->
-            <mm:import id="insrelWhereClause">(snumber=<mm:field referid="thisnodenumber" />) and (rnumber=<%=relationDefinition.getNumber()%>)</mm:import>
-            <!-- insrel query <mm:write referid="insrelWhereClause" /> -->
+            <%-- list all nodesof this specific relation type.. --%>
+            <mm:import id="insrelWhereClause">(snumber=<mm:field referid="this_node_number" />) and (rnumber=<%=relationDefinition.getNumber()%>)</mm:import>
             <mm:listnodes type="insrel" constraints="$insrelWhereClause" jspvar="insrelNode">
-            <!-- only display if the typerel nodemanager type, matches the type we have here.. -->
+            <%-- only display if the typerel nodemanager type, matches the type we have here.. --%>
             <% if(insrelNode.getNodeValue("dnumber").getNodeManager().getName().equals(otherNodeType.getName())) { %>
             <tr>
-                <!-- skip first field -->
+                <%-- skip first field --%>
                 <td>&nbsp;</td>
                 <td class="data">
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <!-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder -->
+                    <%-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder --%>
                     <%= cloud.getNode(insrelNode.getNumber()).getStringValue("gui()") %>                
                 </td>
                 <td class="navigate">
-                    <!-- delete the relation node, not sure about the node_type argument! -->
+                    <%-- delete the relation node, not sure about the node_type argument! --%>
                     <a href='<mm:url page="commit_node.jsp" referids="backpage_cancel,backpage_ok">
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
             <mm:param name="node_type"><%= insrelNode.getNodeManager().getName() %></mm:param>
@@ -77,7 +78,7 @@
                       <span class="delete"></span><span class="alt">x</span>
                     </a>
 
-                    <!-- edit the relation -->
+                    <%-- edit the relation --%>
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
 		    </mm:url>' >
@@ -93,12 +94,12 @@
                     <mm:field name="gui()" />               
                 </td>
                 <td class="navigate">
-                    <!-- edit the related node -->
+                    <%-- edit the related node --%>
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok,node_number"/>'>
                       <span class="select"></span><span class="alt">-&gt;</span>
                     </a>
                 </td>
-                <!-- skip last field -->
+                <%-- skip last field --%>
                 <td>&nbsp;</td>
                 </mm:node>
                 <mm:remove referid="node_number" />
@@ -106,20 +107,17 @@
             <% } %>
             </mm:listnodes>
             <mm:remove referid="insrelWhereClause" />
-            <!-- END: list all nodesof this specific relation type.. -->
+            <%-- END: list all nodesof this specific relation type.. --%>
             </mm:listnodes>
-            <!-- END: list all relation types, where we are the source -->
+            <%-- END: list all relation types, where we are the source --%>
         </mm:context>
 
-        <mm:import id="destinationWhereClause">dnumber=<mm:write referid="thisnumber" /></mm:import>
         <tr>
             <th colspan="8"><%=m.getString("relations.to")%></th>
         </tr>
         <mm:context>
-            <!-- list all relation types, where we are the source -->
-            <mm:import externid="destinationWhereClause" required="true" from="parent"/>
-            <!-- typerel query <mm:write referid="destinationWhereClause" /> -->
-            <mm:listnodes type="typerel" constraints="${destinationWhereClause}" jspvar="typerelNode">
+            <%-- list all relation types, where we are the source --%>
+            <mm:listnodes type="typerel" constraints="dnumber=$typedefNumber" jspvar="typerelNode">
             <%
                 // what is our relation type?
                 Node relationDefinition = typerelNode.getNodeValue("rnumber");
@@ -128,46 +126,46 @@
             %>
             <tr>
                 <td class="data">
-                    <!-- begin gomez friendly code -->
+                    <%-- begin gomez friendly code --%>
                     <% if(relationDefinition.getIntValue("dir")==1) { %><small><% } %>
-                    <!-- end gomez friendly code -->
+                    <%-- end gomez friendly code --%>
                     <%=otherNodeType.getGUIName()%> (<%=relationDefinition.getValue("gui(sname)")%>)
                     <% if(relationDefinition.getIntValue("dir")==1) { %><%=m.getString("relations.hidden_relation")%></small><% } %>
                 </td>
                 <th colspan="3"><%=m.getString("relations.relations")%></th>
                 <th colspan="3"><%=m.getString("relations.related")%></th>
                 <td class="navigate">
-                    <!-- <%= m.getString("new_relation.new")%> -->
+                    <%-- <%= m.getString("new_relation.new")%> --%>
                     <a href='<mm:url page="new_relation.jsp" >
                         <mm:param name="node"><mm:field node="this_node" name="number" /></mm:param>
                         <mm:param name="node_type"><%= otherNodeType.getName()%></mm:param>
-                        <!-- WHY CANT I USE DNAME as ROLE???? -->
+                        <%-- WHY CANT I USE DNAME as ROLE???? --%>
                         <mm:param name="role_name"><%= relationDefinition.getStringValue("sname") %></mm:param>
                         <mm:param name="direction">create_parent</mm:param>
-                        <!-- END WHY CANT I USE DNAME as ROLE???? -->
+                        <%-- END WHY CANT I USE DNAME as ROLE???? --%>
                         </mm:url>'>
                       <span class="create"></span><span class="alt">+</span>
                    </a> 
                 </td>
             </tr>
-            <!-- list all nodesof this specific relation type.. -->
-            <mm:import id="insrelWhereClause">(dnumber=<mm:field referid="thisnodenumber" />) and (rnumber=<%=relationDefinition.getNumber()%>)</mm:import>
-            <!-- insrel query <mm:write referid="insrelWhereClause" /> -->
+            <%-- list all nodesof this specific relation type.. --%>
+            <mm:import id="insrelWhereClause">(dnumber=<mm:field referid="this_node_number" />) and (rnumber=<%=relationDefinition.getNumber()%>)</mm:import>
+            <%-- insrel query <mm:write referid="insrelWhereClause" /> --%>
             <mm:listnodes type="insrel" constraints="${insrelWhereClause}" jspvar="insrelNode">
-            <!-- only display if the typerel nodemanager type, matches the type we have here.. -->
+            <%-- only display if the typerel nodemanager type, matches the type we have here.. --%>
             <% if(insrelNode.getNodeValue("snumber").getNodeManager().getName().equals(otherNodeType.getName())) { %>
             <tr>
-                <!-- skip first field -->
+                <%-- skip first field --%>
                 <td>&nbsp;</td>
                 <td class="data">
                     #<mm:field name="number" />
                 </td>
                 <td class="data">
-                    <!-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder -->
+                    <%-- code below needed, since everything returned by insrel is a insrel node,.. not the actual builder --%>
                     <%= cloud.getNode(insrelNode.getNumber()).getStringValue("gui()") %>
                 </td>
                 <td class="navigate">
-                    <!-- delete the relation node, not sure about the node_type argument! -->
+                    <%-- delete the relation node, not sure about the node_type argument! --%>
                     <a href='<mm:url page="commit_node.jsp" referids="backpage_cancel,backpage_ok">
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
             <mm:param name="node_type"><%= insrelNode.getNodeManager().getName() %></mm:param>
@@ -176,7 +174,7 @@
                       <span class="delete"></span><span class="alt">x</span>
                     </a>
 
-                    <!-- edit the relation -->
+                    <%-- edit the relation --%>
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok">
                         <mm:param name="node_number"><%=insrelNode.getNumber()%></mm:param>
 		    </mm:url>' >
@@ -192,12 +190,12 @@
                     <mm:field name="gui()" />
                 </td>
                 <td class="navigate">
-                    <!-- edit the related node -->
+                    <%-- edit the related node --%>
                     <a href='<mm:url page="change_node.jsp" referids="backpage_cancel,backpage_ok,node_number"/>'>
                       <span class="select"></span><span class="alt">-&gt;</span>
                     </a>
                 </td>
-                <!-- skip last field -->
+                <%-- skip last field --%>
                 <td>&nbsp;</td>
                 </mm:node>
                 <mm:remove referid="node_number" />
@@ -205,10 +203,11 @@
             <% } %>
             </mm:listnodes>
             <mm:remove referid="insrelWhereClause" />
-            <!-- END: list all nodesof this specific relation type.. -->
+            <%-- END: list all nodesof this specific relation type.. --%>
             </mm:listnodes>
-            <!-- END: list all relation types, where we are the source -->
+            <%-- END: list all relation types, where we are the source --%>
         </mm:context>
 
     </table>
+  </mm:node>
 </mm:context>
