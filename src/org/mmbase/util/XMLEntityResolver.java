@@ -107,7 +107,7 @@ public class XMLEntityResolver implements EntityResolver {
                     if (log.isDebugEnabled()) log.debug("Getting DTD as resource " + resource + " of " + resolveBase.getName());
                     dtdStream = resolveBase.getResourceAsStream(resource);
                     if (dtdStream == null) {
-                        log.warn("Could not find " + resource + " in " + resolveBase.getClass().getName() + ", falling back to " + MMRESOURCES);
+                        log.warn("Could not find " + resource + " in " + resolveBase.getName() + ", falling back to " + MMRESOURCES);
                         base = null; // try it in org.mmbase.resources too.
                     }
                 }
