@@ -12,6 +12,6 @@ while [ 1==1 ]; do
 echo 'Starting MMBase at ' `date`
 java -Dmmbase.config=$MMBASEpath/org/mmbase/config/default \
      -Dmmbase.htmlroot=$ORIONpath/default-web-app/ \
-     -Dmmbase.outputfile=$MMBASEpath/mmbase.log \
+     -Dmmbase.outputfile=$MMBASEpath/org/mmbase/log/mmbase.log \
 	 -jar orion.jar 
 done
