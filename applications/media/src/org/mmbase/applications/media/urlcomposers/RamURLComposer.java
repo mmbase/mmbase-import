@@ -11,6 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.applications.media.urlcomposers;
 
 import org.mmbase.module.core.*;
+import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.util.logging.*;
 import org.mmbase.applications.media.Format;
 import java.util.*;
@@ -21,11 +22,14 @@ import java.net.*;
  * Provides the functionality to create URL's (or URI's) for a certain
  * fragment, source, provider combination.
  *
- * Depends on mediafragment.jsp in the templates dir.
+ * Depends on mediafragment.ram.jsp and mediafragment.asf.jsp in the
+ * templates dir. These can be mapped to something else in
+ * web.xml. The servlet name must be media-asf and media-rm then.
+ * 
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.9 2003-02-18 17:08:58 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.10 2003-02-25 10:18:28 michiel Exp $
  * @since MMBase-1.7
  * @see   Config
  */
@@ -38,7 +42,18 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
         this.format = Format.get(source.getIntValue("format"));
     }
     protected StringBuffer  getURLBuffer() {
-        return new StringBuffer("http://" + Config.host + Config.templatesDir + "mediafragment.jsp?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format);
+        List servlets = MMBaseServlet.getServletMappings("media-" + format);
+        String servlet;
+        if (servlets.size() == 0) {
+            log.error("No mapping found to media-" + format + " servlet. Change this in your web.xml");
+            servlet = Config.templatesDir + "mediafragment." + format + ".jsp";
+        } else {
+            String root = MMBaseContext.getHtmlRootUrlPath();
+            root = root.substring(0, root.length() - 1);
+            servlet = root  + (String) servlets.get(0);
+        }
+        
+        return new StringBuffer("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()));
 
         // todo, perhaps simply the right source number should be passed
     }

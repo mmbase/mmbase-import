@@ -104,4 +104,18 @@
 	</node>
 
 
+	<node number="5004" owner="media">
+		<state>3</state>
+		<url>/rvu/mov/leraarshow_makingof.mov</url>
+		<width></width>
+		<fps></fps>
+		<channels></channels>
+		<codec></codec>
+		<bitrate></bitrate>
+		<format>13</format>
+		<height></height>
+		<filesize></filesize>
+	</node>
+
+
 </videosources>
