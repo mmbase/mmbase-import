@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- * @version $Revision: 1.16 $ $Date: 2001-04-05 12:18:51 $
+ * @version $Revision: 1.17 $ $Date: 2001-04-05 12:24:13 $
  */
 public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
@@ -163,7 +163,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		boolean result = false;
 		log.info("addService("+name+","+localclass+","+mmserver+"), inserting.");
 
-		log.debug("addService - creating a new object now !
+		log.debug("addService - creating a new object now !");
 		MMObjectNode newnode=getNewNode("system");
 		newnode.setValue("name",name);
 		newnode.setValue("cdtype","C="+localclass); // Warning this will be altered to devtype
