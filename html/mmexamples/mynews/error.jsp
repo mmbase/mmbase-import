@@ -2,8 +2,9 @@
 <html>
 <head>
 <title>News error</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
 </head>
-<BODY TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#42BDAD" ALINK="#42BDAD" VLINK="#42BDAD">
+<body>
 
 <table border="0" cellspacing="0" cellpadding="5">
 <tr>
@@ -21,4 +22,5 @@
 <td align="right"> <%= exception.getMessage() %>.  </td>
 </tr>
 </table>
+</body>
 </html>

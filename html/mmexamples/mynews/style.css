@@ -1,0 +1,34 @@
+body {
+ background-image: url(../images/back.gif);
+ color:			    #42BDAD;
+ background-color:  #ffffff;
+}
+
+table {
+    background-color:  #00425B;
+	border: solid green 0px;
+    padding: 1px;	
+}
+table td {
+   border: solid #b0b0b0 0px;
+   padding: 3px;
+}
+a:link
+{
+        color: #42BDAD;
+        font-weight: bold;
+        text-decoration: none;
+}
+a:active
+{
+        color: #42BDAD;
+        font-weight: bold;
+        text-decoration: none;
+}
+a:visited
+{
+        color: #42BDAD;
+        font-weight: bold;
+        text-decoration: none;
+}
+

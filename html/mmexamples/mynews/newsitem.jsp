@@ -12,8 +12,9 @@ for the MMBase node --%>
   <%-- we are in the news node  we can ask 
   for fields of this magazine --%>
   <title><mm:field  name="title"/></title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
  </head>
-<body background="../images/back.gif" text="#42bdad" bgcolor="#00425b" link="#42bdad" alink="#42bdad" vlink="#42BDAD">
+<body>
 <center>
   <table width="90%" cellspacing=1 cellpadding=3 border=0>
   <tr>
