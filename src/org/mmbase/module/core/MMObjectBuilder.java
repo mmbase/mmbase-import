@@ -33,6 +33,7 @@ import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 
 import org.mmbase.module.gui.html.EditState;  //argh
 
+import org.mmbase.storage.StorageManagerFactory;
 import org.mmbase.storage.StorageException;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
@@ -63,7 +64,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.256 2004-01-06 19:49:51 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.257 2004-01-08 15:03:56 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -77,12 +78,12 @@ public class MMObjectBuilder extends MMTable {
     public final static String DEFAULT_ALINEA = "<br />&nbsp;<br />";
     public final static String DEFAULT_EOL = "<br />";
 
-    
+
     /**
      * Parameters for the GUI function
      * @since MMBase-1.7
      */
-     
+
     public final static Parameter[] GUI_PARAMETERS = {
         new Parameter("field",    String.class),
         Parameter.LANGUAGE, // should add Locale
@@ -418,11 +419,29 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Drops the builder table from the current database
+     * @deprecated use {@link #delete()}
      */
     public boolean drop() {
-        log.info("trying to drop table of builder: '"+tableName+"' with database class: '"+mmb.getDatabase().getClass().getName()+"'");
-        if(size() > 0) throw new RuntimeException("cannot drop a builder, that still contains nodes");
-        return mmb.getDatabase().drop(this);
+        delete();
+        return true;
+    }
+
+    /**
+     * Removes the builder from the storage.
+     */
+    public void delete() {
+        log.service("trying to drop table of builder: '"+tableName+"' with database class: '"+mmb.getDatabase().getClass().getName()+"'");
+        StorageManagerFactory factory = mmb.getStorageManagerFactory();
+        if (factory!=null) {
+            try {
+                factory.getStorageManager().delete(this);
+            } catch (StorageException se) {
+                throw new RuntimeException(se);
+            }
+        } else {
+            if(size() > 0) throw new RuntimeException("cannot drop a builder, that still contains nodes");
+            if (!mmb.getDatabase().drop(this))  throw new RuntimeException("cannot drop a builder");
+        }
     }
 
     /**
@@ -633,8 +652,8 @@ public class MMObjectBuilder extends MMTable {
             while (! found) {
                 NodeSearchQuery query = new NodeSearchQuery(this);
                 value = baseValue + seq;
-                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), value);      
-                query.setConstraint(constraint);            
+                BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), value);
+                query.setConstraint(constraint);
                 if (getNodes(query).size() == 0) {
                     found = true;
                     break;
@@ -660,7 +679,7 @@ public class MMObjectBuilder extends MMTable {
             while (! found) {
                 NodeSearchQuery query = new NodeSearchQuery(this);
                 BasicFieldValueConstraint constraint = new BasicFieldValueConstraint(query.getField(getField(field)), new Integer(seq));
-                query.setConstraint(constraint);            
+                query.setConstraint(constraint);
                 if (getNodes(query).size() == 0) {
                     found = true;
                     break;
@@ -673,7 +692,7 @@ public class MMObjectBuilder extends MMTable {
         node.setValue(field,  seq);
         return seq;
     }
-         
+
 
     /**
      * Remove a node from the cloud.
@@ -935,11 +954,11 @@ public class MMObjectBuilder extends MMTable {
             int numbersSize = 0;
             NodeSearchQuery query = new NodeSearchQuery(this);
             BasicStep       step  = (BasicStep) query.getSteps().get(0);
-            
+
             Iterator        i       = virtuals.iterator();
             while(i.hasNext()) {
                 MMObjectNode node    = (MMObjectNode) i.next();
-                
+
                 // check if this node is already in cache
                 Integer number = new Integer(node.getNumber());
                 if(nodeCache.containsKey(number)) {
@@ -949,7 +968,7 @@ public class MMObjectBuilder extends MMTable {
                     numbersSize +=  ("," + number).length();
                     step.addNode(number.intValue());
                 }
-                
+
                 if(numbersSize > MAX_QUERY_SIZE) {
                     result.addAll(getRawNodes(query));
                     query = new NodeSearchQuery(this);
@@ -957,13 +976,13 @@ public class MMObjectBuilder extends MMTable {
                     numbersSize  = 0;
                 }
             }
-            
+
             // now that we have a comma seperated string of numbers, we can
             // the search with a where-clause containing this list
             if(numbersSize > 0) {
                 result.addAll(getRawNodes(query));
             } // else everything from cache
-            
+
         } catch (SearchQueryException sqe) {
             log.error(sqe.getMessage() + Logging.stackTrace(sqe));
         }
@@ -1285,7 +1304,7 @@ public class MMObjectBuilder extends MMTable {
         AggregatedResultCache cache = AggregatedResultCache.getCache();
 
         List results = (List) cache.get(query);
-        if (results == null) { 
+        if (results == null) {
             // Execute query, return result.
             results = mmb.getDatabase().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
             cache.put(query, results);
@@ -1712,7 +1731,7 @@ public class MMObjectBuilder extends MMTable {
      * @since MMBase-1.7
      */
     public List getNodes(NodeSearchQuery query) throws SearchQueryException {
- 
+
         List results = (List) listCache.get(query);
         if (results == null) {
             results = getRawNodes(query);
@@ -2524,15 +2543,6 @@ public class MMObjectBuilder extends MMTable {
      */
     public FieldDefs getNextField(String currentfield) {
         return getNextField(currentfield,FieldDefs.ORDER_EDIT);
-    }
-
-    /**
-     * Retrieve the table name (without the clouds' base name)
-     * @return a <code>String</code> containing the table name
-     *
-     */
-    public String getTableName() {
-        return tableName;
     }
 
     /**

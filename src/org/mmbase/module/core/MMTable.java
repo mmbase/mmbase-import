@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadoc)
- * @version $Id: MMTable.java,v 1.11 2003-11-10 21:17:36 michiel Exp $
+ * @version $Id: MMTable.java,v 1.12 2004-01-08 15:03:57 pierre Exp $
  */
 public class MMTable {
 
@@ -48,6 +48,15 @@ public class MMTable {
      * Empty constructor.
      */
     public MMTable() {
+    }
+
+    /**
+     * Retrieve the table name (without the clouds' base name)
+     * @return a <code>String</code> containing the table name
+     *
+     */
+    public String getTableName() {
+        return tableName;
     }
 
     /**
