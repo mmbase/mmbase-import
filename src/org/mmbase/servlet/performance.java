@@ -20,9 +20,8 @@ import org.mmbase.util.logging.*;
  * It also does a very basic test to measure how fast the JVM is.
  *
  * @rename  Performance
- * @deprecated not defined any more in web.xml
  * @author  vpro
- * @version $Id: performance.java,v 1.12 2004-10-11 15:15:02 pierre Exp $
+ * @version $Id: performance.java,v 1.13 2004-11-08 12:44:54 michiel Exp $
  */
 public class performance extends BridgeServlet {
     // logging
@@ -39,8 +38,7 @@ public class performance extends BridgeServlet {
     public void init() throws ServletException {
         super.init();
         // Initializing log here because log4j has to be initialized first.
-        log = Logging.getLoggerInstance(performance.class.getName());
-        log.info("Init of servlet " + getServletConfig().getServletName() + ".");
+        log = Logging.getLoggerInstance(performance.class);
     }
 
     /**
