@@ -18,28 +18,37 @@ import org.mmbase.module.database.*;
 
 /**
  *
- * InsRel, the main relation object holds Insrels, and methods to
- * handle them a insrel defines a relation between two objects. 
+ * InsRel, the main relation object, holds relations, and methods to
+ * handle them. An insrel defines a relation between two objects.
+ * <p>
  * This class can be extended to create insrels that can also hold
- * extra values (named relations for example).
+ * extra values and custom methods (named relations for example).
+ * </p>
  *
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @author Pierre van Rooden
+ * @version 3 jan 2001
  */
 public class InsRel extends MMObjectBuilder {
 
 	public String classname = getClass().getName();
 	public boolean debug = false;
 	public void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	
+	/**
+	 * Hold the relnumber to use when creating a node of this builder.
+	 */
 	public int relnumber=-1;
 
-	// cache system, holds the relations from the 25 
-	// most used relations
+	/** Cache system, holds the relations from the 25
+	 *  most used relations
+	 */
 	LRUHashtable relatedCache=new LRUHashtable(25);
 
-	// cache table that holds yes/no if a relation direction
-	// question was correct or not (this is needed to make sure
-	// that a relation is correctly inserted.
+	/** Cache table that holds yes/no if a relation direction
+	 * question was correct or not.
+	 * This is needed to make sure that a relation is correctly inserted.
+	 */
 	Hashtable relDefConnectCache=new Hashtable(10);
 
 	/**
@@ -49,8 +58,13 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* Fix a reldef node
-	*/
+	* Fixes a relation node.
+	* Determines the source and destination numbers, and checks the object types against the types specified in
+	* the relation definition ( {@link TypeRel} ).
+	* If the types differ, the source and destination are likely mis-aligned, and
+	* are swapped to produce a correct relation node.
+	* @param node The node to fix
+	**/
 	public MMObjectNode alignRelNode(MMObjectNode node) {
 		MMObjectNode result = null;
 
@@ -87,8 +101,14 @@ public class InsRel extends MMObjectBuilder {
 
 
 	/**
-	* insert a new Instance Relation
-	*/
+	* Insert a new Instance Relation.
+	* @param owner Administrator
+	* @param snumber Identifying number of the source object
+	* @param dnumber Identifying number of the destination object
+	* @param rnumber Identifying number of the relation defintition
+	* @return A <code>integer</code> value identifying the newly inserted relation
+	* @deprecated Use insert(String, MMObjectNode) instead.
+	**/
 	public int insert(String owner,int snumber,int dnumber, int rnumber) {
 		int result = -1;
 		if( owner != null ) { 
@@ -117,8 +137,11 @@ public class InsRel extends MMObjectBuilder {
 
 
 	/**
-	* insert a new Instance Relation
-	*/
+	* Insert a new Instance Relation.
+	* @param owner Administrator
+	* @param node Relation node to add
+	* @return A <code>integer</code> value identifying the newly inserted relation
+	**/
 	public int insert(String owner, MMObjectNode node) {
 		int result = -1;
 		if( owner != null ) { 
@@ -158,8 +181,12 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* get relation(s) for a MMObjectNode
-	*/
+	* Get relation(s) for a MMObjectNode
+	* @param src Identifying number of the object to find the relations of.
+	* @return If succesful, an <code>Enumeration</code> listing the relations.
+	*         If no relations exist, the method returns <code>null</code>.
+	* @see getRelationsVector
+	**/
 	public Enumeration getRelations(int src) {
 		Vector re=getRelationsVector(src);
 		if (re!=null) return(re.elements());
@@ -167,8 +194,15 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* get relation(s) for a MMObjectNode
-	*/
+	* Get relation(s) for a MMObjectNode
+	* This function returns all relations in which the node is either a source, or where the node is
+	* the destination, but the direction is uni-directional.
+	* @param src Identifying number of the object to find the relations of.
+	* @return If succesful, a <code>Vector</code> containing the relations.
+	*       Each element in the vector's enumeration is a node object retrieved from the
+	*       associated table (i.e. 'insrel'), containing the node's fields.
+	*       If no relations exist (or a database exception occurs), the method returns <code>null</code>.
+	**/
 	public Vector getRelationsVector(int src) {
 		try {
 			MultiConnection con=mmb.getConnection();
@@ -228,7 +262,10 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* get relation(s) for a MMObjectNode
+	* Get MMObjectNodes of a specified type related to a specified MMObjectNode
+	* @param src this is the number of the source MMObjectNode
+	* @param otype the object type of the nodes you want to have
+	* @returns An <code>Enumeration</code> of <code>MMObjectNode</code> object related to the source
 	*/
 	public Enumeration getRelated(int src,int otype) {
 		Vector se=getRelatedVector(src,otype);
@@ -237,8 +274,12 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 	/**
-	* get relation(s) for a MMObjectNode
-	*/
+	* Get MMObjectNodes related to a specified MMObjectNode
+	* @param src this is the number of the MMObjectNode requesting the relations
+	* @param otype the object type of the nodes you want to have. -1 means any node.
+	* @returns A <code>Vector</code> whose enumeration consists of <code>MMObjectNode</code> object related to the source
+	*   according to the specified filter(s).
+	**/
 	public Vector getRelatedVector(int src,int otype) {
 
 		Vector list=(Vector)relatedCache.get(new Integer(src));
@@ -292,9 +333,15 @@ public class InsRel extends MMObjectBuilder {
 	}
 
 
-	/**
-	* get the display string for a given field of this node
-	*/
+    /**
+    * Get the display string for a given field of this node.
+    * Returns for 'snumber' the name of the source object,
+    * for 'dnumber' the name of the destination object, and
+    * for 'rnumber' the name of the relation definition.
+    * @param field name of the field to describe.
+    * @param node Node containing the field data.
+    * @return A <code>String</code> describing the requested field's content
+    **/
 	public String getGUIIndicator(String field,MMObjectNode node) {
 		try {
 		if (field.equals("snumber")) {
@@ -319,10 +366,14 @@ public class InsRel extends MMObjectBuilder {
 		return(null);
 	}
 
-	/**
-	* Is the given set of n1,n2 with relation type r in the correct
-	* way. returns true of this is the case, false if not.
-	*/
+    /**
+    * Checks whether a specific relation exists.
+    * Maintains a cache containing the last checked relations
+    * @param n1 Number of the source node
+    * @param n2 Number of the destination node
+    * @param r  Number of the relation definition
+    * @return A <code>boolean</code> indicating success when the relation exists, failure if it does not.
+    */
 	public boolean reldefCorrect(int n1,int n2, int r) {
 		// do the query on the database
 		Boolean b=(Boolean)relDefConnectCache.get(""+n1+" "+n2+" "+r);
@@ -358,21 +409,29 @@ public class InsRel extends MMObjectBuilder {
 	}
 	
 	/**
-	* delete the Relation cache, this is to be called if caching gives problems.
-	* make sure that you can't use the deleteRelationCache(int src) instead.
-	*/
+	* Deletes the Relation cache.
+	* This is to be called if caching gives problems.
+	* Make sure that you can't use the deleteRelationCache(int src) instead.
+	**/
 	public void deleteRelationCache() {
 		relatedCache.clear();
 	}
 
 	/**
-	* delete the Relation with number src from the relationCache
-	*/
+	* Delete a specified relation from the relationCache
+	* @param src the number of the relation to remove from the cache
+	**/
 	public void deleteRelationCache(int src) {
 		relatedCache.remove(new Integer(src));
 	}
 
-
+	/**
+	* Search the relation definition table for the identifying number of
+	* a relation, by name.
+	* Success is dependent on the uniqueness of the relation's name (not enforced, so unpredictable).
+	* @param name The name on which to search for the relation
+	* @return A <code>int</code> value indicating the relation's object number, or -1 if not found.
+	**/
 	public int getGuessedNumber(String name) {
 		RelDef bul=(RelDef)mmb.getMMObject("reldef");
 		if (bul!=null) {
@@ -383,7 +442,10 @@ public class InsRel extends MMObjectBuilder {
 
 
 	/**
-	* setDefaults for a node
+	* Set defaults for a node.
+	* Tries to determine a default for 'relnumber' by searching the RelDef table for an occurrence of the node's builder.
+	* Uses the table-mapping system, and should be replaced.
+	* @param node The node whose defaults to set.
 	*/
 	public void setDefaults(MMObjectNode node) {
 		if (tableName.equals("insrel")) return;
