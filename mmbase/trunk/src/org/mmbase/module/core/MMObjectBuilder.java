@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.189 2002-11-29 17:27:43 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.190 2002-12-04 11:01:01 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1029,56 +1029,22 @@ public class MMObjectBuilder extends MMTable {
      * @param where The constraint, can be a SQL where-clause, a MMNODE 
      *        expression or an altavista-formatted expression.
      * @return The number of nodes, or -1 when failing to retrieve the data.
-     * @sql
+     * @deprecated Use {@link #count(NodeSearchQuery) count(NodeSearchQuery)}
+     *             instead.
      */
     public int count(String where) {
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are caught.
         int result = -1;
-        if (where==null) where="";
-        
+        NodeSearchQuery query = getSearchQuery(where);
         try {
-            if (where.indexOf("MMNODE")!=-1) {
-                // MMNODE expression
-                NodeSearchQuery query = convertMMNodeSearch2Query(where);
-                result = count(query);
-            } else {
-                where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
-                String query="SELECT Count(*) FROM "+getFullTableName()+" "+where;
-                result = basicCount(query);
-            }
+            result = count(query);
         } catch (SearchQueryException e) {
             log.error(e);
         }
-        
         return result;
     }
 
-    /**
-     * Executes a search (sql query) on the current database
-     * and returns the nodes that result from the search as a Vector.
-     * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
-     * @param query The SQL query
-     * @return A Vector which contains all nodes that were found
-     */
-    private int basicCount(String query) {
-        int nodecount=-1;
-        MultiConnection con=null;
-        Statement stmt=null;
-        try {
-            con=mmb.getConnection();
-            stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery(query);
-            if (rs.next()) {
-                nodecount= rs.getInt(1);
-            }
-        } catch (Exception e) {
-            // something went wrong print it to the logs
-            log.error("basicSearch(): ERROR in search "+query);
-        }  finally {
-            mmb.closeConnection(con,stmt);
-        }
-        return nodecount;
-    }
-    
     /**
      * Counts number of nodes matching a specified constraint. 
      * The constraint is specified by a query that selects nodes of
@@ -1126,12 +1092,157 @@ public class MMObjectBuilder extends MMTable {
         return searchVector(where).elements();
     }
 
+    /**
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
+    public Enumeration search(String where,String sort) {
+        return searchVector(where,sort).elements();
+    }
+
+    /**
+     * Enumerate all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return an <code>Enumeration</code> containing all the objects that apply.
+     */
+    public Enumeration search(String where,String sort,boolean direction) {
+        return searchVector(where,sort,direction).elements();
+    }
+
+    /**
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where scan expression that the objects need to fulfill
+     * @return a vector containing all the objects that apply.
+     * @deprecated Use search() instead
+     */
+    public Vector searchVector(String where) {
+        // do the query on the database
+        return basicSearch(getQuery(where));
+    }
+
+    /**
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where       where clause that the objects need to fulfill
+     * @param sorted      a comma separated list of field names on wich the
+     *                    returned list should be sorted
+     * @return a vector containing all the objects that apply.
+     */
+    public Vector searchVector(String where,String sorted) {
+        return searchVector(where, sorted, true);
+    }
+
+    /**
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
+     * @return a vector containing all the objects that apply.
+     */
+    public Vector searchVector(String where,String sorted,boolean direction) {
+        String directions = (direction? "UP": "DOWN");
+        return searchVector(where, sorted, directions);
+    }
+
+    /**
+     * Returns a vector containing all the objects that match the searchkeys in
+     * a given order.
+     *
+     * @param where       where clause that the objects need to fulfill
+     * @param sorted      a comma separated list of field names on wich the
+     *                    returned list should be sorted
+     * @param directions  A comma separated list of the values indicating wether
+     *                    to sort up (ascending) or down (descending) on the
+     *                    corresponding field in the <code>sorted</code>
+     *                    parameter or <code>null</code> if sorting on all
+     *                    fields should be up.
+     *                    The value DOWN (case insensitive) indicates
+     *                    that sorting on the corresponding field should be
+     *                    down, all other values (including the
+     *                    empty value) indicate that sorting on the
+     *                    corresponding field should be up.
+     *                    If the number of values found in this parameter are
+     *                    less than the number of fields in the
+     *                    <code>sorted</code> parameter, all fields that
+     *                    don't have a corresponding direction value are
+     *                    sorted according to the last specified direction
+     *                    value.
+     * @return            a vector containing all the objects that apply in the
+     *                    requested order
+     */
+    public Vector searchVector(String where, String sorted, String directions) {
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are caught.
+        // - The result is converted to a vector.
+        Vector result = new Vector();
+        NodeSearchQuery query = getSearchQuery(where, sorted, directions);
+        try {
+            List nodes = getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return result;
+    }
+    
+    /**
+     * As searchVector. Differences are:
+     * - Throws exception on SQL errors
+     * - returns List rather then Vector.
+     * @since MMBase-1.6
+     */
+
+    public List searchList(String where) throws SQLException {
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are wrapped
+        //   inside an SQLException.
+        NodeSearchQuery query = getSearchQuery(where);
+        try {
+            return getNodes(query);
+        } catch (SearchQueryException e) {
+            throw new SQLException(e.toString());
+        }
+    }
+
+    /**
+     * As searchVector
+     * But
+     * - throws Exception on error
+     * - returns List
+     *
+     * @param where Constraint, represented by scan MMNODE expression, 
+     *        AltaVista format or SQL "where"-clause.
+     * @param sorted Comma-separated list of names of fields to sort on.
+     * @param directions Comma-separated list of sorting directions ("UP" 
+     *        or "DOWN") of the fields to sort on.
+     * @since MMBase-1.6
+     */
+
+    public List searchList(String where, String sorted, String directions) 
+    throws SQLException {
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are wrapped
+        //   inside an SQLException.
+        NodeSearchQuery query = getSearchQuery(where, sorted, directions);
+        try {
+            return getNodes(query);
+        } catch (SearchQueryException e) {
+            throw new SQLException(e.toString());
+        }
+    }
 
     /**
      * Parses arguments of searchVector and searchList
      * @since MMBase-1.6
      * @sql
      * @deprecated Use {@link #getSearchQuery(String) getSearchQuery()} instead.
+     * @deprecated-now This method no longer serves a purpose and is called 
+     *                  from nowhere.
      */
     protected String getQuery(String where) {
         if (where == null) where="";
@@ -1145,14 +1256,16 @@ public class MMObjectBuilder extends MMTable {
     }
     
     /**
-     * Creates search query to retrieve nodes matching a specified constraint. 
+     * Creates search query that retrieves nodes matching a specified 
+     * constraint. 
      *
      * @param where The constraint, can be a SQL where-clause, a MMNODE 
      *        expression or an altavista-formatted expression.
      * @return The query.
      * @since MMBase-1.7
      */
-    protected NodeSearchQuery getSearchQuery(String where) {
+    // package visibility!
+    NodeSearchQuery getSearchQuery(String where) {
         NodeSearchQuery query;
         
         if (where == null || where.length() == 0) {
@@ -1175,39 +1288,68 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Returns a vector containing all the objects that match the searchkeys
-     * @param where scan expression that the objects need to fulfill
-     * @return a vector containing all the objects that apply.
-     * @deprecated Use search() instead
+     * Creates search query that retrieves a sorted list of nodes,
+     * matching a specified constraint. 
+     *
+     * @param where The constraint, can be a SQL where-clause, a MMNODE 
+     *        expression or an altavista-formatted expression.
+     * @param sorted Comma-separated list of names of fields to sort on.
+     * @param directions Comma-separated list of sorting directions ("UP" 
+     *        or "DOWN") of the fields to sort on.
+     *        If the number of sorting directions is less than the number of
+     *        fields to sort on, the last specified direction is applied to 
+     *        the remaining fields.
+     * @since MMBase-1.7
      */
-    public Vector searchVector(String where) {
-        // do the query on the database
-        return basicSearch(getQuery(where));
+    // package visibility!
+    NodeSearchQuery getSearchQuery(String where, String sorted, String directions) {
+        NodeSearchQuery query = getSearchQuery(where);
+        if (directions == null) {
+            directions = "";
+        }
+        StringTokenizer sortedTokenizer = new StringTokenizer(sorted, ",");
+        StringTokenizer directionsTokenizer
+        = new StringTokenizer(directions, ",");
+        
+        String direction = "UP";
+        while (sortedTokenizer.hasMoreElements()) {
+            String fieldName = sortedTokenizer.nextToken().trim();
+            FieldDefs fieldDefs = getField(fieldName);
+            if (fieldDefs == null) {
+                throw new IllegalArgumentException(
+                "Not a known field of builder " + getTableName()
+                + ": '" + fieldName + "'");
+            }
+            StepField field = query.getField(fieldDefs);
+            BasicSortOrder sortOrder = query.addSortOrder(field);
+            if (directionsTokenizer.hasMoreElements()) {
+                direction = directionsTokenizer.nextToken().trim();
+            }
+            if (direction.equalsIgnoreCase("DOWN")) {
+                sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
+            } else {
+                sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+            }
+        }
+        return query;
     }
-
+    
     /**
-     * As searchVector. Differences are:
-     * - Throws exception on SQL errors
-     * - returns List rather then Vector.
-     * @since MMBase-1.6
+     * Adds nodenumbers to be included to query retrieving nodes.
+     *
+     * @param query The query.
+     * @param nodeNumbers Comma-separated list of nodenumbers.
+     * @since MMBase-1.7
      */
-
-    public List searchList(String where) throws SQLException {
-        return getList(getQuery(where));
-    }
-
-    /**
-     * Returns a vector containing all the objects that match the searchkeys
-     * @param in either a set of object numbers (in comma-separated string format), or a sub query
-     *		returning a set of object numbers.
-     * @return a vector containing all the objects that apply.
-     * @sql
-     */
-    public Vector searchVectorIn(String in) {
-        // do the query on the database
-        if (in==null || in.equals("")) return new Vector();
-        String query="SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
-        return basicSearch(query);
+    // package access!
+    void addNodesToQuery(NodeSearchQuery query, String nodeNumbers) {
+        BasicStep step = (BasicStep) query.getSteps().get(0);
+        StringTokenizer st = new StringTokenizer(nodeNumbers, ",");
+        while (st.hasMoreTokens()) {
+            String str = st.nextToken().trim();
+            int nodeNumber = Integer.parseInt(str);
+            step.addNode(nodeNumber);
+        }
     }
 
     /**
@@ -1216,17 +1358,20 @@ public class MMObjectBuilder extends MMTable {
      * If the query is null, gives no results, or results in an error, an empty enumeration is returned.
      * @param query The SQL query
      * @return A Vector which contains all nodes that were found
+     * @deprecated Use getNodes(NodeSearchQuery) instead.
      */
     private Vector basicSearch(String query) {
-        Vector results;
+        // In order to support this method:
+        // - The result is converted to a vector.
+        Vector result = new Vector();
         try {
-            results = (Vector) getList(query);
+            List nodes = getList(query);
+            result.addAll(nodes);
         } catch (Exception e) {
             // something went wrong print it to the logs
             log.error("basicSearch(): ERROR in search " + query + " : " + Logging.stackTrace(e));
-            results = new Vector();  // Return an empty Vector
         }
-        return results;
+        return result;
     }
 
     /**
@@ -1295,39 +1440,36 @@ public class MMObjectBuilder extends MMTable {
      * @sql
      */
     public Vector searchNumbers(String where) {
-        // do the query on the database
-        MultiConnection con = null;
-        Statement stmt = null;
+        // In order to support this method:
+        // - Exceptions of type SearchQueryExceptions are caught.
+        // - The result is converted to a vector.
+        Vector results = new Vector();
+        NodeSearchQuery query = getSearchQuery(where);
+
+        // Wrap in modifiable query, replace fields by just the "number"-field.
+        ModifiableQuery modifiedQuery = new ModifiableQuery(query);
+        Step step = (Step) query.getSteps().get(0);
+        FieldDefs numberFieldDefs = getField("number");
+        StepField field = query.getField(numberFieldDefs);
+        List newFields = new ArrayList(1);
+        newFields.add(field);
+        modifiedQuery.setFields(newFields);
+        
         try {
-            con=mmb.getConnection();
-            stmt=con.createStatement();
-
-            ResultSet rs=stmt.executeQuery("SELECT "+mmb.getDatabase().getNumberString()+" FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase()));
-            Vector results=new Vector();
-            Integer number;
-            String tmp;
-            while(rs.next()) {
-                results.addElement(new Integer(rs.getInt(1)));
+            List resultNodes = mmb.getDatabase().getNodes(modifiedQuery, 
+                new ResultBuilder(mmb, modifiedQuery));
+            
+            // Extract the numbers from the result.
+            Iterator iResultNodes = resultNodes.iterator();
+            while (iResultNodes.hasNext()) {
+                ResultNode resultNode = (ResultNode) iResultNodes.next();
+                results.add(resultNode.getIntegerValue("number"));
             }
-            return results;
-        } catch (SQLException e) {
-            // something went wrong print it to the logs
-            log.error(Logging.stackTrace(e));
-            return null;
-        } finally {
-            mmb.closeConnection(con,stmt);
+        } catch (SearchQueryException e) {
+            log.error(e);
+            results = null;
         }
-
-    }
-
-    /**
-     * Enumerate all the objects that match the searchkeys
-     * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
-     * @return an <code>Enumeration</code> containing all the objects that apply.
-     */
-    public Enumeration search(String where,String sort) {
-        return searchVector(where,sort).elements();
+        return results;
     }
 
     /**
@@ -1355,18 +1497,6 @@ public class MMObjectBuilder extends MMTable {
      * Enumerate all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
-     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
-     * @return an <code>Enumeration</code> containing all the objects that apply.
-     */
-    public Enumeration search(String where,String sort,boolean direction) {
-        return searchVector(where,sort,direction).elements();
-    }
-
-    /**
-     * Enumerate all the objects that match the searchkeys
-     * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
      * @param in lost of node numbers to filter on
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
@@ -1379,27 +1509,69 @@ public class MMObjectBuilder extends MMTable {
 
     /**
      * Returns a vector containing all the objects that match the searchkeys
-     * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
+     * @param in either a set of object numbers (in comma-separated string format), or a sub query
+     *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
      * @sql
      */
-    public Vector searchVector(String where,String sorted) {
-        // do the query on the database
-        if (where==null) {
-            where="";
-        } else if (where.indexOf("MMNODE")!=-1) {
-            where=convertMMNode2SQL(where);
-        } else {
-            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
+    public Vector searchVectorIn(String in) {
+        if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
+            // Nodenumbers specified as query:
+            // do the query on the database
+            // TODO RvM: phase this out, subquery should not be supported.
+            if (in==null || in.equals("")) return new Vector();
+            String query="SELECT * FROM "+getFullTableName()+" where "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+            return basicSearch(query);
         }
 
-        // temp mapper hack only works in single order fields
-        sorted=mmb.getDatabase().getAllowedField(sorted);
-        String query="SELECT * FROM "+getFullTableName()+" "+where+" ORDER BY "+sorted;
-        return basicSearch(query);
+        // In order to support this method:
+        // - The result is converted to a Vector.
+        // - Exceptions of type SearchQueryException are caught.
+        Vector result = new Vector();
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        addNodesToQuery(query, in);
+        try {
+            List nodes = getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return result;
     }
+    
+    /*
+     * Returns a vector containing all the objects that match the searchkeys
+     * @param where where clause that the objects need to fulfill
+     * @param in either a set of object numbers (in comma-separated string format), or a sub query
+     *		returning a set of object numbers.
+     * @return a vector containing all the objects that apply.
+     * @sql
+     */
+    public Vector searchVectorIn(String where, String in) {
+        if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
+            // Nodenumbers specified as query:
+            // do the query on the database
+            // TODO RvM: phase this out, subquery should not be supported.
+            // do the query on the database
+            if (in==null || in.equals("")) return new Vector();
+            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
+            return basicSearch(query);
+        }
 
+        // In order to support this method:
+        // - The result is converted to a Vector.
+        // - Exceptions of type SearchQueryException are caught.
+        Vector result = new Vector();
+        NodeSearchQuery query = getSearchQuery(where);
+        addNodesToQuery(query, in);
+        try {
+            List nodes = getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return result;
+    }
 
     /**
      * Returns a vector containing all the objects that match the searchkeys
@@ -1411,27 +1583,53 @@ public class MMObjectBuilder extends MMTable {
      * @sql
      */
     public Vector searchVectorIn(String where,String sorted,String in) {
-        // temp mapper hack only works in single order fields
-        sorted=mmb.getDatabase().getAllowedField(sorted);
-        // do the query on the database
-        if (in!=null && in.equals("")) return new Vector();
-        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted;
-        return basicSearch(query);
+        return searchVectorIn(where, sorted, true, in);
     }
 
-    /*
+    /**
      * Returns a vector containing all the objects that match the searchkeys
      * @param where where clause that the objects need to fulfill
+     * @param sorted order in which to return the objects
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
+     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
+     *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
      * @sql
      */
-    public Vector searchVectorIn(String where,String in) {
-        // do the query on the database
-        if (in==null || in.equals("")) return new Vector();
-        String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+")";
-        return basicSearch(query);
+    public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
+        
+        if (in.substring(0, 5).equalsIgnoreCase("SELECT")) {
+            // Nodenumbers specified as query:
+            // do the query on the database
+            // TODO RvM: phase this out, subquery should not be supported.
+            // temp mapper hack only works in single order fields
+            sorted=mmb.getDatabase().getAllowedField(sorted);
+            // do the query on the database
+            if (in==null || in.equals("")) return new Vector();
+            if (direction) {
+                String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
+                return basicSearch(query);
+            } else {
+                String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
+                return basicSearch(query);
+            }
+        }
+
+        // In order to support this method:
+        // - The result is converted to a Vector.
+        // - Exceptions of type SearchQueryException are caught.
+        Vector result = new Vector();
+        String directions = (direction? "UP": "DOWN");
+        NodeSearchQuery query = getSearchQuery(where, sorted, directions);
+        addNodesToQuery(query, in);
+        try {
+            List nodes = getNodes(query);
+            result.addAll(nodes);
+        } catch (SearchQueryException e) {
+            log.error(e);
+        }
+        return result;
     }
 
     /**
@@ -1439,6 +1637,11 @@ public class MMObjectBuilder extends MMTable {
      *
      * @since MMBase-1.6
      * @sql
+     * @deprecated Use {@link #getSearchQuery(String,String,String) 
+     *             getSearchQuery()} instead - specifying direction "UP" or 
+     *             "DOWN" as appropriate.
+     * @deprecated-now This method no longer serves a purpose and is called 
+     *                 from nowhere.
      */
 
     protected String getQuery(String where, String sorted, boolean direction) {
@@ -1462,23 +1665,14 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Returns a vector containing all the objects that match the searchkeys
-     * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
-     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
-     * @return a vector containing all the objects that apply.
-     */
-    public Vector searchVector(String where,String sorted,boolean direction) {
-        // do the query on the database
-        return basicSearch(getQuery(where, sorted, direction));
-    }
-
-    /**
      * Parses arguments of searchVector and searchList
      *
      * @since MMBase-1.6
      * @sql
+     * @deprecated Use {@link #getSearchQuery(String,String,String) 
+     *             getSearchQuery()} instead.
+     * @deprecated-now This method no longer serves a purpose and is called 
+     *                 from nowhere.
      */
     protected String getQuery(String where, String sorted, String directions) {
         if (where==null) {
@@ -1517,90 +1711,18 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Returns a vector containing all the objects that match the searchkeys in
-     * a given order.
-     *
-     * @param where       where clause that the objects need to fulfill
-     * @param sorted      a comma separated list of field names on wich the
-     *                    returned list should be sorted
-     * @param directions  A comma separated list of the values indicating wether
-     *                    to sort up (ascending) or down (descending) on the
-     *                    corresponding field in the <code>sorted</code>
-     *                    parameter or <code>null</code> if sorting on all
-     *                    fields should be up.
-     *                    The value DOWN (case insensitive) indicates
-     *                    that sorting on the corresponding field should be
-     *                    down, all other values (including the
-     *                    empty value) indicate that sorting on the
-     *                    corresponding field should be up.
-     *                    If the number of values found in this parameter are
-     *                    less than the number of fields in the
-     *                    <code>sorted</code> parameter, all fields that
-     *                    don't have a corresponding direction value are
-     *                    sorted according to the last specified direction
-     *                    value.
-     * @return            a vector containing all the objects that apply in the
-     *                    requested order
-     */
-    public Vector searchVector(String where, String sorted, String directions) {
-        return basicSearch(getQuery(where, sorted, directions));
-    }
-
-    /**
-     * As searchVector
-     * But
-     * - throws Exception on error
-     * - returns List
-     *
-     * @since MMBase-1.6
-     */
-
-    public List searchList(String where, String sorted, String  directions) throws SQLException {
-        return getList(getQuery(where, sorted, directions));
-    }
-
-    /**
-     * Returns a vector containing all the objects that match the searchkeys
-     * @param where where clause that the objects need to fulfill
-     * @param sorted order in which to return the objects
-     * @param in either a set of object numbers (in comma-separated string format), or a sub query
-     *		returning a set of object numbers.
-     * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
-     *		Only applies if a sorted order is given.
-     * @return a vector containing all the objects that apply.
-     * @sql
-     */
-    public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
-        // temp mapper hack only works in single order fields
-        sorted=mmb.getDatabase().getAllowedField(sorted);
-        // do the query on the database
-        if (in==null || in.equals("")) return new Vector();
-        if (direction) {
-            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" ASC";
-            return basicSearch(query);
-        } else {
-            String query="SELECT * FROM "+getFullTableName()+" "+QueryConvertor.altaVista2SQL(where,mmb.getDatabase())+" AND "+mmb.getDatabase().getNumberString()+" in ("+in+") ORDER BY "+sorted+" DESC";
-            return basicSearch(query);
-        }
-    }
-
-    /**
      * Enumerate all the objects that match the where clause
      * This method is slightly faster than search(), since it does not try to 'parse'
      * the where clause.
      * @param where where clause (SQL-syntax) that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
      * @sql
+     * @deprecated Use one of the other search methods instead.
+     *             The performance gain is negligible and does not justify
+     *             another method.
      */
     public Enumeration searchWithWhere(String where) {
-        // do the query on the database
-        String query="SELECT * FROM "+getFullTableName()+" where "+where;
-        Vector results=basicSearch(query);
-        if (results!=null) {
-            return results.elements();
-        } else {
-            return null;
-        }
+        return search(where);
     }
 
     /**
