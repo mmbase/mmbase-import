@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.89 2003-06-18 14:30:36 kees Exp $
+ * @version $Id: BasicCloud.java,v 1.90 2003-07-11 13:08:49 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -89,11 +89,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         parentCloud = cloud;
         typedef = cloud.typedef;
         locale = cloud.locale;
-        if (cloudName == null) {
-            name = cloud.name;
-        } else {
-            name = cloud.name + "." + cloudName;
-        }
+        name = cloudName;
         description = cloud.description;
         mmbaseCop = cloud.mmbaseCop;
 

@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.76.2.9 2003-06-16 08:44:17 vpro Exp $
+ * @version $Id: BasicCloud.java,v 1.76.2.10 2003-07-11 13:06:29 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -93,11 +93,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         parentCloud=cloud;
         typedef = cloud.typedef;
         locale = cloud.locale;
-        if (cloudName==null) {
-            name = cloud.name;
-        } else {
-            name = cloud.name+"."+cloudName;
-        }
+        name = cloudName;
         description = cloud.description;
         mmbaseCop = cloud.mmbaseCop;
 
@@ -435,15 +431,15 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     public Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
         if (name==null) {
             name="Tran"+uniqueId();
-          } else {
-              Transaction oldtransaction=(Transaction)transactions.get(name);
-              if (oldtransaction!=null) {
-                  if (overwrite) {
-                      oldtransaction.cancel();
-                  } else {
-                      throw new AlreadyExistsException("Transaction with name " + name + "already exists.");
-                  }
-              }
+        } else {
+            Transaction oldtransaction=(Transaction)transactions.get(name);
+            if (oldtransaction!=null) {
+                if (overwrite) {
+                    oldtransaction.cancel();
+                } else {
+                    throw new AlreadyExistsException("Transaction with name " + name + "already exists.");
+                }
+            }
         }
         Transaction transaction = new BasicTransaction(name,this);
         transactions.put(name,transaction);
