@@ -38,7 +38,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	private static boolean _debug = true;
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
-	private String version="2.3.1";
+	private static String version="2.3.1";
 
 	// Cashes all transactions belonging to a user.
 	private static Hashtable transactionsOfUser = new Hashtable();
@@ -214,7 +214,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 					id = currentTransactionArgumentNode.getNodeValue();
 				}
 				//commitOnClose
-				currentTransactionArgumentNode = nm.getNamedItem("commitOnClose");
+				currentTransactionArgumentNode = nm.getNamedItem("commit");
 				if (currentTransactionArgumentNode != null) {
 					commit = currentTransactionArgumentNode.getNodeValue();
 				}
