@@ -33,13 +33,13 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.42 2003-12-16 13:54:09 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.43 2004-01-15 23:23:05 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
 
     private static  final Logger log = Logging.getLoggerInstance(IncludeTag.class);
-    private static  final Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
+    private static  final Logger pageLog = Logging.getLoggerInstance(Logging.PAGE_CATEGORY);
 
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;

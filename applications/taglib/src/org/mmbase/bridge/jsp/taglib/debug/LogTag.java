@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * The implementation of the log tag.
  *
  * @author Michiel Meeuwissen 
- * @version $Id: LogTag.java,v 1.9 2003-08-11 15:27:25 michiel Exp $ 
+ * @version $Id: LogTag.java,v 1.10 2004-01-15 23:23:04 michiel Exp $ 
  */
 
 public class LogTag extends ContextReferrerTag {
@@ -28,7 +28,7 @@ public class LogTag extends ContextReferrerTag {
     private boolean doLog;
     private int counter = 0; // A counter for every page. Because of this even <mm:log /> gets usefull.
 
-    public final static String LOGTAG_CATEGORY = PAGE_CATEGORY + ".LOGTAG";  // pages themselfs log to subcategories of this.
+    public final static String LOGTAG_CATEGORY = Logging.PAGE_CATEGORY + ".LOGTAG";  // pages themselfs log to subcategories of this.
 
     private String jspvar;
     /**
