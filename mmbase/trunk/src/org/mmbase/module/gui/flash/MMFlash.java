@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
 /**
  * Implements the parsing and generating of dynamic flash files
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.7 2001-05-04 13:42:45 vpro Exp $
+ * @version $Id: MMFlash.java,v 1.8 2001-05-30 09:16:36 eduard Exp $
  */
 public class MMFlash extends Module {
 
@@ -183,6 +183,85 @@ public class MMFlash extends Module {
 		}	
 		return(bytes);
 	}
+
+    /**
+     * This function will try to generate a new flash thingie, generated from a template.
+     * the only thing which has to be specified is the XML, and the working direcotory.
+     * This function was added, so that there is the possibility to use the generater 
+     * from a place without SCAN 
+     * @param	flashXML    a xml which contains the manipulations on the flash template
+     * @param 	workingdir  the path where there has to be searched for the template and the 
+     *	    	    	    other things, like pictures.(THIS LOOKS BELOW THE mmbase.htmlroot !!)
+     * @return      	    a byte thingie, which contains the new generated flash thingie
+     */
+    public synchronized byte[] getParsedFlash(String flashXML, String workingdir) {
+	CharArrayReader reader=new CharArrayReader(flashXML.toCharArray());
+	XMLDynamicFlashReader script=new XMLDynamicFlashReader(reader);
+	String body="";
+
+	// retrieve the template flash file path...
+	String src=script.getSrcName();		
+    	File inputFile;
+	if (src.startsWith("/")) {
+	    inputFile = new File(htmlroot+src);
+	} 
+	else {
+	    inputFile = new File(htmlroot+workingdir+src);	    
+	}	
+	// get absolute path, and add it to our script..
+	inputFile = inputFile.getAbsoluteFile();
+    	src = inputFile.getAbsolutePath();
+													
+	// is there a caching option set ?
+    	String caching=script.getCaching();
+	if (caching!=null && (caching.equals("lru") || caching.equals("disk")) ) {
+	    // lru caching, always took here first... if we are caching on disk or on lru..
+	    byte[] bytes=(byte[])lru.get(src + flashXML);
+	    if (bytes!=null) {
+		return(bytes);
+	    }
+	    
+	    // when we also have to check the disk..
+	    if(caching.equals("disk")) {
+	    	// try to find on disk..
+    	    	bytes=loadDiskCache(src, flashXML);
+		if (bytes!=null) {
+		    // found on disk...
+		    log.error("WOW from disk");
+		    lru.put(src + flashXML, bytes);
+		    return(bytes);
+		}	    
+	    }
+	} 
+	
+    	// hey ho, generate our template..
+	body+="INPUT \""+inputFile.getAbsolutePath()+"\"\n";
+	body+="OUTPUT \""+generatortemppath+"export.swf\"\n";
+
+    	String scriptpath=src;
+	scriptpath=scriptpath.substring(0,scriptpath.lastIndexOf('/')+1);
+
+	body+=addDefines(script.getDefines(),scriptpath);
+	body+=addReplaces(script.getReplaces(),scriptpath);
+
+	// save the created input file for the generator
+	saveFile(generatortemppath+"input.sws",body);	
+
+	// lets generate the file
+	generateFlash(scriptpath);
+	
+	// retrieve the result of the genererator..
+	byte[] bytes=readBytesFile(generatortemppath+"export.swf");
+	
+	// store the flash in cache, when needed...
+	if (caching!=null && (caching.equals("lru")|| caching.equals("disk")) ) {
+	    lru.put(src + flashXML, bytes);
+	    if(caching.equals("disk")) {
+    	    	saveDiskCache(src, flashXML, bytes);
+	    }
+	} 	
+	return(bytes);
+    }
 
 	private String addReplaces(Vector replaces,String scriptpath) {
 		String part="";
