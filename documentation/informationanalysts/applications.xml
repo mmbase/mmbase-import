@@ -4,7 +4,7 @@
   <articleinfo>
     <title>MMBase Applications</title>
     <date>27 february 2003</date>
-    <edition>$Id: applications.xml,v 1.5 2003-02-28 12:19:58 pierre Exp $</edition>
+    <edition>$Id: applications.xml,v 1.6 2003-04-03 11:45:11 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
@@ -84,7 +84,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<application name="MyNews" maintainer="mmbase.org"  version="1" auto-deploy="false"> ... </application>]]></sgmltag></para>
-          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The names of applications should made up out of capitalized words, the maintainer is the domain name of the organisation or person who takes the responsiblity for updating this application, and the version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automaticaly be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administartor pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
+          <para>The whole description of the cloud-structure is enclosed by the <sgmltag>application</sgmltag> tag. The attributes <sgmltag class="attribute">name</sgmltag>, <sgmltag class="attribute">maintainer</sgmltag>, and <sgmltag class="attribute">version</sgmltag> can be used to label the application. The prefered way of writing names of applications is to use capitalized words. The maintainer is the domain name of the organisation or person who takes the responsiblity for updating this application. The version number can be used to distinguish different versions of your application. The property <sgmltag class="attribute">auto-deploy</sgmltag> is important. The application will automaticaly be installed the next time MMBase is restarted, when auto-deploy is set to  "true" and the application was not already present in your MMBase installation. When auto-deploy is "false" you can install the application manually via the MMBase administartor pages (See the chapter  "How to install an MMBase application" for more information on this topic).</para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<neededbuilderlist><builder maintainer="mmbase.org" version="1">mags</builder> .... </neededbuilderlist>]]></sgmltag></para>
@@ -100,7 +100,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<datasourcelist><datasource builder="mags" path="MyNews/mags.xml" /> ... </datasourcelist>]]></sgmltag></para>
-          <para>The <sgmltag class="attribute">datasourcelist</sgmltag> tag specifies where MMBase has to look for the content to fill each object when case the application is installed. The <sgmltag class="attribute">datasourcelist</sgmltag> only contains the datasources of regular objects and does not contain relations.</para>
+          <para>The <sgmltag class="attribute">datasourcelist</sgmltag> tag specifies where MMBase has to look for the content to fill each object when case the application is installed. The <sgmltag class="attribute">datasourcelist</sgmltag> only contains the datasources of regular objects and does not contain relations. When images or attachments are included in the application, MMBase will use subdirectories of the MyNews directory to store the images and attachments. The MyNews/images.xml and the MyNews/attachments.xml contain the handles to these files.</para>
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<relationsourcelist><relationsource builder="insrel" path="MyNews/insrel.xml" /> ... </relationsourcelist>]]></sgmltag></para>
@@ -117,7 +117,7 @@
         </listitem>
         <listitem>
           <para><sgmltag><![CDATA[<install-notice><![CDATA[The MyNews application is installed ...] ]></install-notice>]]></sgmltag></para>
-          <para>The <sgmltag class="attribute">install-notice</sgmltag> is shown in the MMBase install pages and the MMBase admin interface after succesfull installation of the application. (TO DO what happens if the application does not install succesfull?)</para>
+          <para>The <sgmltag class="attribute">install-notice</sgmltag> is shown in the MMBase install pages and the MMBase admin interface after succesfull installation of the application. It is not possible to add messages to the application configuration file, which are shown in case the application fails to install.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -128,7 +128,7 @@
     <section>
       <title>The Backup Scenario: backup.xml</title>
       <para>The <sgmltag>contextsource</sgmltag> specifies where the file with the backup scenario for this application is located - specified in its <sgmltag class="attribute">path</sgmltag> attribute. For MyNews we saw that this is "MyNews/backup.xml".</para>
-      <para>Most applications come with a 'backup.xml' file that decsribes the startpoint for exporting data (as described below). It is not necessary to specify a file - i.e. if an application is only ment to be installed and not exported. You can also use other filenames (though 'backup.xml' is the convention) or specify multiple contextsources. In the latter case, the administration pages require the user to choose the contextsource with which to make the export, using the freeform <sgmltag class="attribute">goal</sgmltag> attribute to give user-feedback on the intention of the contextsource.</para>
+      <para>Most applications come with a 'backup.xml' file that describes the startpoint for exporting data (as described below). It is not necessary to specify a file - i.e. if an application is only ment to be installed and not exported. You can also use other filenames (though 'backup.xml' is the convention) or specify multiple contextsources. In the latter case, the administration pages require the user to choose the contextsource with which to make the export, using the freeform <sgmltag class="attribute">goal</sgmltag> attribute to give user-feedback on the intention of the contextsource.</para>
       <note>
         <para>While we speak about "backup" here, the system can also be used to simply export certain parts of your cloud, for instance for sharing with others, or porting data from a test environment to a production environment.</para>
       </note>
@@ -191,6 +191,12 @@
       </para>
       <note>
         <para>Sometimes the MMAppTool does not become the active window. So if you do not see anything happening after clicking "Yes", it might be that the MMAppTool is hidden behind the active window.</para>
+      </note>
+	  <note>
+	    <para>It is possible to change the layout of the graphical representation. See for instance the file MyNews/tools/mmapptoolconfig.xml for an overview of the possible settings that can be configured.</para>
+      </note>
+	  <note>
+	    <para>There exists a second tool for graphical representations of your application, which is developed by the Publieke Omroepen and provides fancier graphics. This tool is not included in the MMBase 1.6 release. If you would to try it out use the MMBase developers list to get a copy of this alternative tool.</para>
       </note>
     </section>
   </section>
