@@ -27,6 +27,7 @@ public interface CreatorInterface {
      */
     public String getType();
 
+    public String getState();
 
     /**
      *  Sets the type attribute of the CreatorInterface object
@@ -72,6 +73,7 @@ public interface CreatorInterface {
      */
     public boolean createPackage(Target target, int newversion);
 
+    public void createPackageThreaded(Target target, int newversion);
 
     /**
      *  Gets the packageSteps attribute of the CreatorInterface object
@@ -490,5 +492,7 @@ public interface CreatorInterface {
     public void setDefaults(Target target);
 
     public String getDefaultTargetName();
+
+    public void addRelatedTargetsCreate(Target t);
 }
 

@@ -15,7 +15,7 @@
 
 
 
-<body>
+<body onload="doLoad()">
 <!-- first the selection part -->
 <center>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="95%">
