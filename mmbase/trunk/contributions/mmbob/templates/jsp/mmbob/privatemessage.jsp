@@ -107,7 +107,8 @@
                          <img align="left" width="50" border="0" src="../img.db?<mm:field name="avatar" />" style="margin-top: 5px; margin-right: 10px;">
                         </mm:compare></mm:field>
 			<mm:field name="account" /> (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-			<mm:write referid="mlg_Level"/> : <mm:field name="level" /> <br />
+			<%-- TODO: not yet implemented
+                        <mm:write referid="mlg_Level"/> : <mm:field name="level" /> <br />--%>
 			<mm:write referid="mlg_Posts"/> : <mm:field name="accountpostcount" /><br />
 			<mm:write referid="mlg_Gender"/> : <mm:field name="gender" /><br />
 			<mm:write referid="mlg_Location"/> : <mm:field name="location" /><br /><br />

@@ -68,15 +68,16 @@
                </mm:write>
               </h4>
             </center>
-            <center>
-              <a href="<mm:url page="remail.jsp" referids="forumid" />"><mm:write referid="mlg_forgot_your_password" /></a>
-            </center>
-            <p />
-          </mm:present>
+            </mm:present>
+
           <mm:notpresent referid="loginfailed">
             <h4><mm:write referid="mlg_Welcome" /> <mm:write referid="mlg_on_the" /> <mm:field name="name" /> <mm:write referid="mlg_forum" /> !</h4>
             <p /><b><mm:write referid="mlg_login" /></b><p />
           </mm:notpresent>
+            <center>
+              <a href="<mm:url page="remail.jsp" referids="forumid" />"><mm:write referid="mlg_forgot_your_password" /></a>
+            </center>
+            <p />
           <mm:write referid="mlg_account" /> : <input size="12" name="account">
           <mm:write referid="mlg_password" /> : <input size="12" type="password" name="password">
           <input type="submit" value="<mm:write referid="mlg_login"/>" />
@@ -129,7 +130,8 @@
  
           <br />
           <mm:write referid="mlg_number_of_messages" /> : <mm:field name="active_postcount" /> 
-          <mm:write referid="mlg_Level" /> : <mm:field name="active_level" />
+          <%-- TODO: not yet implemented 
+          <mm:write referid="mlg_Level" /> : <mm:field name="active_level" />--%>
 
           <p>
             <br />
