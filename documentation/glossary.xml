@@ -5,7 +5,7 @@
   <articleinfo>
     <title>MMBase Glossary</title>
 
-    <edition>$Id: glossary.xml,v 1.14 2003-07-29 09:30:06 henk Exp $</edition>
+    <edition>$Id: glossary.xml,v 1.15 2004-03-05 15:18:43 michiel Exp $</edition>
 
     <copyright>
       <year>This document is created under the Mozilla Public License</year>
@@ -16,7 +16,6 @@
     <authorgroup>
       <author>
         <firstname>Henk</firstname>
-
         <surname>Hangyi</surname>
       </author>
 
@@ -30,10 +29,12 @@
     <revhistory>
       <revision>
         <revnumber>0.0</revnumber>
-
         <date>2003-06-01</date>
-
         <revremark>First draft</revremark>
+      </revision>
+      <revision>
+        <revnumber>1.0</revnumber>
+        <date>2004-03-05</date>
       </revision>
     </revhistory>
 
@@ -81,7 +82,7 @@
 
     <glosslist>
       <glossentry>
-        <glossterm>headword and inflected forms, like plurals</glossterm>
+        <glossterm>head word and inflected forms, like plurals</glossterm>
 
         <acronym>acronym of the term</acronym>
 
@@ -418,7 +419,7 @@
         <glossterm>virtual node</glossterm>
 
         <glossdef>
-          <para>A node to which no builder xml is associated.</para>
+          <para>A non persistent node. Generally no builder xml is associated witch such a node.</para>
 
           <glossseealso otherterm="clusternode"></glossseealso>
         </glossdef>
@@ -531,11 +532,15 @@
         <glossterm>bridge</glossterm>
 
         <glossdef>
-          <para>The bridge is the set of Java interfaces which are to be used
-          to talk to MMBase. In contradiction to the core of MMBase all
-          actions are authorized by the security system. Templating language
-          should communicate through the bridge, and for example the MMBase
-          Taglib is doing this.</para>
+          <para>
+            The bridge is the set of Java interfaces which are to be used
+            to talk to MMBase. All actions are authorized by the security system, if one uses the
+            bridge, which does not happend if one talks to the core of MMBase directly.
+          </para>
+          <para>
+            Templating languages should communicate through the bridge, and for example the MMBase
+            Taglib is doing this.
+          </para>
 
           <para>There is currently one &#39;basic&#39; implementation of the
           bridge, and also one alternative implementation which makes it
@@ -613,7 +618,7 @@
         <glossdef>
           <para>A packaged content management system based on MMBase. Typical
           for WIAB is a fixed object model and a distinction between life and
-          staging environments in two seperate object clouds. It was developed
+          staging environments in two separate object clouds. It was developed
           for the Amsterdam municipal by Framfab but is maintained by Finalist
           now.</para>
 
@@ -721,6 +726,13 @@
               <para>In MMBase taglib a &#39;context&#39; is a container for
               Taglib variables. It is also associated with every page, the
               &#39;context&#39; tag, and (in MMBase &#62;= 1.7) list tags.</para>
+            </listitem>
+
+            <listitem>
+              <para>
+                MMBaseContext is a core MMBase class, which takes care of initializing MMBase and
+                its configuration.  It provides several static methods for that.
+              </para>
             </listitem>
 
             <listitem>
@@ -834,6 +846,142 @@
           combination with pieces of Java in your JSP pages.</para>
 
           <glossseealso otherterm="taglib"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+
+      <glossentry id="path">
+        <glossterm>path</glossterm>
+
+        <glossdef>
+          <para>
+            A list of steps. The definition from the bridge's javadoc follows.
+            A comma separated list of node manager names
+            which specifies the path that should be followed.
+            It is possible to explicitly specify a relation
+            manager that should be used to go from one node to
+            an other. If no relation manager is specified
+            between two nodes, all possible relation managers
+            that can be used to go to the next specified node in
+            the path are followed. 
+          </para>
+          <glossseealso otherterm="searchquery"></glossseealso>
+          <glossseealso otherterm="step"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+
+      <glossentry id="step">
+        <glossterm>step</glossterm>
+        <glossdef>
+         <para>
+           One of the items of a path in a query. You could often read it as `database table' or
+           `builder'. Step is an abstraction of this in the Search Query framework of MMBase.
+         </para>
+          <glossseealso otherterm="searchquery"></glossseealso>
+          <glossseealso otherterm="path"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="searchquery">
+        <glossterm>Search Query</glossterm>
+
+        <glossdef>
+          <para>
+            MMBase has a completely abstract way of querying its storage layer. This allows for a
+            great deal of database independency, and also for efficient and object oriented
+            manipulating of search queries. The other option is to use the String oriented SQL
+            language, and this was tried in MMBase &lt; 1.7, but was abandoned as non-feasible in a
+            database (or even <emphasis>storage</emphasis>) independent product as MMBase is.
+          </para>
+          <glossseealso otherterm="sql"></glossseealso>
+          <glossseealso otherterm="storage"></glossseealso>
+          <glossseealso otherterm="step"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="sql">
+        <glossterm>Structured Query Language</glossterm>
+        <acronym>SQL</acronym>
+        <glossdef>
+          <para>
+            This is the `general' language to talk to databases. The common denominator of all
+            databases in SQL is actually very small, which largely limits its use for database
+            independent products like MMBase.
+          </para>
+          <para>
+            To work around the Babylon of SQL dialects, MMBase makes use of Search Query objects.
+          </para>
+          <glossseealso otherterm="searchquery"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+
+      <glossentry id="storage">
+        <glossterm>storage</glossterm>
+        <glossdef>
+          <para>
+            MMBase has an abstract `storage' layer, which is used for persistency of MMBase objects.
+            Currently only database storages are implemented
+            so you can safely read `storage' as `the database which MMBase is using'. There are
+            several types of databases which are supported however, most notably Informix, MySql,
+            Postgresql and HSql.
+          </para>
+          <glossseealso otherterm="searchquery"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="dontpanic">
+        <glossterm>Don't Panic!</glossterm>
+
+        <glossdef>
+          <para>
+            An exception from an edit wizard. It is called like this, because the error page of an
+            editwizard use(d?) to be introduced with these big friendly letters.
+          </para>
+          <para>
+            Normally, but a bit unexpectedly, this is read as the completely opposite advice.
+          </para>
+          <para>
+            This is a geeky reference to the Hitchhiker's guide to the Galaxy which according to the
+            book of Douglas Adams had these words written on the cover.
+          </para>
+          <glossseealso otherterm="editwizard"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="editwizard">
+        <glossterm>Editwizards</glossterm>
+        <glossdef>
+          <para>
+            Editwizards are `task oriented' content editors. Tasks are defined by XML and could for
+            example be something like `creating news articles and related one author and several
+            images to it'. Editwizards are no `generic' editors, which means that they not automaticly
+            allow for creating all possible types of relations, though some parties have been
+            creating tools to automaticly generate all possible editwizards.
+          </para>
+          <para>
+            Editwizards communicate with MMBase by the 'dove' protocol.
+          </para>
+          <glossseealso otherterm="dove"></glossseealso>
+          <glossseealso otherterm="dontpanic"></glossseealso>
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="dove">
+        <glossterm>Dove</glossterm>
+
+        <glossdef>
+          <para>
+            Dove is a protocol to receive a part of the MMBase cloud in XML, make chances to it, and
+            send it back. It was inspired by the SOAP protocol (and hence the name Dove, which is a
+            brand of soap), but sadly is not compatible with it.
+          </para>
+          <para>
+            It was created for use by the editwizards. There is also a Dove servlet, which is not
+            used by the editwizards, but which one could use for similar purposes.
+          </para>
+          <glossseealso otherterm="editwizard"></glossseealso>
         </glossdef>
       </glossentry>
     </glosslist>
