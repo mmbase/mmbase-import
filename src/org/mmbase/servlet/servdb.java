@@ -26,12 +26,13 @@ import org.mmbase.util.logging.*;
 /**
  * The servdb servlet handles binairy requests.
  * This includes images (img.db), realaudio (realaudio.db) but also xml (xml.db) and dtd's (dtd.db).
- * With servscan it provides the communication between the clients browser and the mmbase space.
+ * With servscan it provides the communication between the clients browser and the MMBase space.
  *
  * @rename Servdb
  * @deprecation-used
- * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead
- * @version $Id: servdb.java,v 1.55 2004-08-06 08:50:15 marcel Exp $
+ * @deprecated use {@link ImageServlet} or {@link AttachmentServlet} instead. Needs a better implementation that
+ *             captures things that now do not work in ImageServlet
+ * @version $Id: servdb.java,v 1.56 2004-09-29 10:34:59 pierre Exp $
  * @author Daniel Ockeloen
  */
 public class servdb extends JamesServlet {
@@ -100,7 +101,7 @@ public class servdb extends JamesServlet {
         String templine,templine2;
         int filesize;
 
-        incRefCount(req); // this is already done in service of MMBaseServlet, 
+        incRefCount(req); // this is already done in service of MMBaseServlet,
 
         try {
             scanpage sp = new scanpage(this, req, res, sessions );
@@ -231,16 +232,16 @@ public class servdb extends JamesServlet {
                         // img
                         // ---
 
-						boolean notANumber=false;
+                        boolean notANumber=false;
                         Vector params = getParamVector(req);
-						// Catch alias only images without parameters.
-						if (params.size()==1) {
-							try { 
-								Integer.parseInt((String)params.elementAt(0));
-							} catch (NumberFormatException e) {
-								notANumber=true;
-							}
-						}
+                        // Catch alias only images without parameters.
+                        if (params.size()==1) {
+                            try {
+                                Integer.parseInt((String)params.elementAt(0));
+                            } catch (NumberFormatException e) {
+                                notANumber=true;
+                            }
+                        }
 
                         if (params.size() > 1 || notANumber) {
                             // template was included on URL
@@ -263,10 +264,10 @@ public class servdb extends JamesServlet {
 
                         if (params.size()>0) {
                             // good image
-	                        ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
-	                        cline.buffer   = icaches.getImageBytes(params);
-	                        cline.mimetype = icaches.getImageMimeType(params);
-	                        mimetype=cline.mimetype;
+                            ImageCaches icaches = (ImageCaches) mmbase.getMMObject("icaches");
+                            cline.buffer   = icaches.getImageBytes(params);
+                            cline.mimetype = icaches.getImageMimeType(params);
+                            mimetype=cline.mimetype;
                         } else {
                             // return a broken image
                             cline.buffer=null;
