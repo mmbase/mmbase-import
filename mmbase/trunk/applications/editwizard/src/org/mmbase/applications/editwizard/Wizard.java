@@ -30,7 +30,7 @@ import org.mmbase.util.FileWatcher;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.91 2003-07-03 10:45:20 michiel Exp $
+ * @version $Id: Wizard.java,v 1.92 2003-07-03 11:57:13 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -818,14 +818,16 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
                         + xpath
                         + " is not valid. Note: this xpath maybe generated from a &lt;field name='fieldname'&gt; tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
                      }
-                     if (fieldinstances.getLength() > 0)
-                        fieldDataNode = fieldinstances.item(0);
-                     fieldDataCache.put(field, fieldDataNode);
+                     fieldDataCache.put(field, fieldinstances);
                   }
-               }
-               else {
+               } else {
                   log.debug("fieldDataNode found in cache");
-                  fieldDataNode = (Node)fieldDataObj;
+               
+                  fieldinstances = (NodeList) fieldDataObj;
+               }
+               
+               if (fieldinstances.getLength() > 0) {
+                  fieldDataNode = fieldinstances.item(0);
                }
                 // A normal field.
                 if (nodeName.equals("field")) {
