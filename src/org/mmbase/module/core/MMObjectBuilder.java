@@ -421,7 +421,7 @@ public class MMObjectBuilder extends MMTable {
 	}
 
 	private Vector basicSearch(String query) {
-		System.out.println(query);
+		//System.out.println(query);
 		// test with counting
 		statCount("search");
 	
