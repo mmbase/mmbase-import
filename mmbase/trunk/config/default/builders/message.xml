@@ -158,7 +158,12 @@
 		</db>
 	</field>
 
-	<!-- POS 5 : <field> 'timestamp'  -->
+	<!-- POS 5 : <field> 'timestamp'
+             Note that in eralier versions of message, the timestamp field was represented
+             with two separate integer fields: 'timestampl' and 'timestamph'.
+             If you have the message buidler active, do not replace you builder file (but adapt the old one).
+             The code that uses timestamp supports both the old and the new format.
+        -->
 	<field>
 		<!-- gui related -->
 		<gui>
