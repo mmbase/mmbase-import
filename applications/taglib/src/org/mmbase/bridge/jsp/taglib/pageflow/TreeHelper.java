@@ -78,26 +78,26 @@ public class TreeHelper {
         StringTokenizer st = new StringTokenizer(objectlist, ",");
         int numberTokens = st.countTokens();
         String objectNumbers[] = new String[numberTokens];
-        for (int i=0; i<numberTokens; i++) {
-            objectNumbers[i] = ""+st.nextToken();
+        for (int i = 0; i < numberTokens; i++) {
+            objectNumbers[i] = "" + st.nextToken();
         }
         
         // Try to find the best file (so starting with the best option)
-        for (int i=numberTokens; i>=0; i--) {
+        for (int i = numberTokens; i >= 0; i--) {
             String middle = "/";
-            for (int u=0; u<numberTokens; u++) {
-                if(u<i) {
-                    String smartpath = getSmartPath(objectNumbers[u],middle,session);
-                    if (smartpath==null || smartpath.equals("")) {
+            for (int u = 0; u < numberTokens; u++) {
+                if(u < i) {
+                    String smartpath = getSmartPath(objectNumbers[u], middle, session);
+                    if (smartpath == null || smartpath.equals("")) {
                         // If smartpath doesn't exist use object number
-                        middle+=objectNumbers[u] + File.separator;
+                        middle += objectNumbers[u] + File.separator;
                     } else {
                         // The smartpath overrides all previous smartpaths
-                        middle=smartpath;
+                        middle = smartpath;
                     }
                 } else {
                     // Use the object type name
-                    middle+=getBuilderName(objectNumbers[u]) + File.separator;
+                    middle += getBuilderName(objectNumbers[u]) + File.separator;
                 }
             }
             // make sure the middle url ends with a file separator or not
@@ -105,7 +105,7 @@ public class TreeHelper {
             // I choice here to be sure the middle ends always with a file separator
             // This means that the page attribute in the jsp page can cannot start with a file separator
             if (!middle.endsWith(File.separator)) {
-                middle+=File.separator;
+                middle += File.separator;
             }
             
             // Make sure that during concatenation of root+path, they are seperated with a File.seperator
@@ -115,9 +115,11 @@ public class TreeHelper {
             }
 
             // Check if the file exists
-            log.debug("Check file: "+htmlroot+extraSep+middle+nudePage);
-            if (new File(htmlroot+extraSep+middle+nudePage).exists()) {
-                return middle+includePage;
+            log.debug("Check file: " + htmlroot + extraSep + middle + nudePage);
+            if (new File(htmlroot + extraSep + middle + nudePage).exists()) {
+                // Make sure that the path is correctly encoded, if it contains spaces these must be
+                // changed into '%20' etc.
+                return encodedPath(middle + includePage); 
             }
         }
         return null;
@@ -152,14 +154,14 @@ public class TreeHelper {
         String pathNow = "/";
         
         // Move all the objectnumbers into the array
-        for (int i=0; i<numberTokens; i++) {
+        for (int i = 0; i < numberTokens; i++) {
             objectNumbers[i] = Integer.parseInt(st.nextToken());
         }
         
         // Find the paths for all the nodes in the nodelist
-        for (int i=0; i<numberTokens; i++) {
+        for (int i = 0; i < numberTokens; i++) {
             int objectNo = objectNumbers[i];
-            String field = getSmartPath(""+objectNo, pathNow, session);
+            String field = getSmartPath("" + objectNo, pathNow, session);
             
             if (field == null || field.equals("")) {
                 break;
@@ -178,7 +180,7 @@ public class TreeHelper {
             String path = (String)objectPaths.pop();
             // Make sure path always end with a file separator
             if (!path.endsWith(File.separator)) {
-                path+=File.separator;
+                path += File.separator;
             }
 
             // Make sure that during concatenation of root+path, they are seperated with a File.seperator
@@ -187,14 +189,17 @@ public class TreeHelper {
                 extraSep = File.separator;
             }
 
-            log.debug("Check file: "+htmlroot+extraSep+path+nudePage);
+            log.debug("Check file: " + htmlroot + extraSep + path + nudePage);
             if ((new File(htmlroot + extraSep + path + nudePage)).isFile()) {
-                return path + includePage;
+                // Make sure that the path is correctly encoded, if it contains spaces these must be
+                // changed into '%20' etc.
+                return encodedPath(path + includePage);
+             
             }
         }
         
         // Check if the file exists in the 'root'
-        log.debug("Check file: "+htmlroot+File.separator+nudePage);
+        log.debug("Check file: " + htmlroot + File.separator + nudePage);
         if (new File(htmlroot + nudePage).isFile()) {
             return includePage;
         } else {
@@ -215,8 +220,8 @@ public class TreeHelper {
             // No session variable set
             return "";
         }
-        String versionnumber = (String)session.getAttribute(getBuilderName(objectnumber)+"version");
-        if (versionnumber==null) {
+        String versionnumber = (String)session.getAttribute(getBuilderName(objectnumber) + "version");
+        if (versionnumber == null) {
             // The session variable was not set.
             return "";
         }
@@ -239,6 +244,28 @@ public class TreeHelper {
      * @return the smartpath
      */
     private String getSmartPath(String objectnumber, String middle, HttpSession session) throws JspTagException {
-        return (String)cloud.getNode(objectnumber).getValue("smartpath(" + htmlroot + "," + middle + ","+getVersion(objectnumber, session)+")");
+        return (String)cloud.getNode(objectnumber).getValue("smartpath(" + htmlroot + "," + middle + "," + getVersion(objectnumber, session) + ")");
     }
+    
+    /**
+     * Rewrite a path that points to a file on the filesystem to an URL path.
+     * - Split the path on 'File.seperator'
+     * - except for the last part (the file), escape all the parts
+     * - combine the parts with a '/'
+     *
+     * @param fileSystemPath the path on a filesystem pointing to a files
+     * @returns the URL-escaped version of the path
+     */
+    private String encodedPath(String fileSystemPath) {
+        File f = new File(fileSystemPath);
+        String result = f.getName();
+        f = f.getParentFile();
+        while (!(f == null)) {
+            String thisPart = f.getName();
+            result = org.mmbase.util.Encode.encode("ESCAPE_URL", thisPart) + "/" + result;
+            f = f.getParentFile();
+        }
+        return result;        
+    }
+
 }
