@@ -1,12 +1,12 @@
-/*
- 
+ /*
+  
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+  
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
-*/
+  
+  */
 
 package org.mmbase.module.builders.media;
 
@@ -40,7 +40,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  */
 public class MediaSource extends MMObjectBuilder {
-
+    
     
     private static Logger log = Logging.getLoggerInstance(MediaSource.class.getName());
     
@@ -67,47 +67,54 @@ public class MediaSource extends MMObjectBuilder {
     private final static int STEREO = 2;
     
     // MediaProviderFilter helps by resolving the best media provider
-    private MediaProviderFilter mediaProviderFilter = new MediaProviderFilter(this);
+    private static MediaProviderFilter mediaProviderFilter = null;
     
     // MediaProviderBuilder
-    private MediaProvider mediaProviderBuilder = null;
-
-
+    private static MediaProvider mediaProviderBuilder = null;
+    
+    
     private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
-            public String getName()        { return "mediasource cache"; }
-            public String getDescription() { return "If the server gives ram's you can read them, results are stored in this cache."; }
-        };
-    private Map    servers;   
-    private Map    descriptions;  
+        public String getName()        { return "mediasource cache"; }
+        public String getDescription() { return "If the server gives ram's you can read them, results are stored in this cache."; }
+    };
+    private Map    servers;
+    private Map    descriptions;
     private String defaultServer;
-
-
-    private FileWatcher configWatcher = new FileWatcher (true) {
-            protected void onChange(File file) {
-                readConfiguration(file);
-            }
-        };
-     
-   public boolean init() {
+    
+    
+    private FileWatcher configWatcher = new FileWatcher(true) {
+        protected void onChange(File file) {
+            readConfiguration(file);
+        }
+    };
+    
+    public boolean init() {
         boolean result = super.init();
         
-        // Retrieve a reference to the MediaProvider builder
-        mediaProviderBuilder = (MediaProvider) mmb.getMMObject("mediaproviders");
+        // set the mediaproviderfilter
+        if(mediaProviderFilter==null) {
+            mediaProviderFilter = new MediaProviderFilter(this);
+        }
         
+        // Retrieve a reference to the MediaProvider builder
         if(mediaProviderBuilder==null) {
-            log.error("Builder mediaproviders is not loaded.");
-        } else {
-            log.debug("The builder mediaproviders is retrieved.");
+            mediaProviderBuilder = (MediaProvider) mmb.getMMObject("mediaproviders");
+            
+            if(mediaProviderBuilder==null) {
+                log.error("Builder mediaproviders is not loaded.");
+            } else {
+                log.debug("The builder mediaproviders is retrieved.");
+            }
         }
         return result;
     }
-      
+    
     
     public MediaSource() {
         
         /*
         cache.putCache();
-        log.debug("static init");    
+        log.debug("static init");
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "mediaservers.xml");
         if (! configFile.exists()) {
             log.warn("Configuration file for mediasources " + configFile + " does not exist");
@@ -118,27 +125,27 @@ public class MediaSource extends MMObjectBuilder {
         configWatcher.start();
          */
     }
-	    
+    
     /**
      * After changing the configuration file, you could call this
      * method. (No need to restart MMBase then).
      **/
-
+    
     private void readConfiguration(File configFile) {
         servers      = new HashMap();
         descriptions = new HashMap();
-        try {        
+        try {
             log.debug("reading " + configFile);
             DOMParser parser = new DOMParser();
             parser.parse(configFile.toString());
             
             Document doc = parser.getDocument();
             org.w3c.dom.Node n = doc.getFirstChild();
-            while (n != null) {              
+            while (n != null) {
                 if (n.getNodeName().equals("mediaservers")) {
-                    NamedNodeMap map1= n.getAttributes();                            
+                    NamedNodeMap map1= n.getAttributes();
                     defaultServer = map1.getNamedItem("default").getNodeValue();
-
+                    
                     org.w3c.dom.Node n2 = n.getFirstChild();
                     while (n2 != null) {
                         if (n2.getNodeName().equals("server")) {
@@ -152,13 +159,13 @@ public class MediaSource extends MMObjectBuilder {
                             if (s.indexOf("%s", 0) < 0 ) {
                                 throw new RuntimeException("No %s in servert");
                             }
-
+                            
                             if (log.isDebugEnabled()) {
                                 log.info("found script in configuration file mediaservers.xml. Id: " + id + " source: " + servers.get(id));
                             }
                         }
                         n2 = n2.getNextSibling();
-                    }                 
+                    }
                 }
                 n = n.getNextSibling();
             }
@@ -170,8 +177,8 @@ public class MediaSource extends MMObjectBuilder {
         }
     }
     
-
-
+    
+    
     
     /**
      * Resolves the url
@@ -180,10 +187,10 @@ public class MediaSource extends MMObjectBuilder {
         if (srv == null || srv.equals("")) srv = defaultServer;
         log.debug("Getting URL for node " + node + " and server " + srv);
         String serverTemplate = (String) servers.get(srv); // not yet decided how to do anything else then default
-        if (serverTemplate == null) {           
+        if (serverTemplate == null) {
             throw new RuntimeException("No server with id = " + serverTemplate + " is not defined");
         }
-
+        
         StringObject serverObj = new StringObject(serverTemplate);
         serverObj.replace("%s", node.getStringValue("url"));
         if (log.isDebugEnabled()) log.debug("new url: " + serverObj.toString() + " with " + node.getStringValue("url"));
@@ -198,7 +205,7 @@ public class MediaSource extends MMObjectBuilder {
         String result = (String) cache.get(url);
         if (result == null) {
             try {
-                URL u = new URL(url);            
+                URL u = new URL(url);
                 URLConnection con = u.openConnection();
                 BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 result = in.readLine();
@@ -212,7 +219,7 @@ public class MediaSource extends MMObjectBuilder {
         }
         return result;
     }
-
+    
     /**
      * used in the editors
      */
@@ -228,7 +235,7 @@ public class MediaSource extends MMObjectBuilder {
         return node.getIntValue("channels");
     }
     
-   
+    
     public String getGUIIndicator(String field, MMObjectNode node) {
         return "" + getValue(node, "str("+field+")");
     }
@@ -237,44 +244,44 @@ public class MediaSource extends MMObjectBuilder {
      * return some human readable strings
      */
     public Object executeFunction(MMObjectNode node, String function, String field) {
-        if (log.isDebugEnabled()) log.debug("executeFunction  " + function + "(" + field + ") on" + node); 
+        if (log.isDebugEnabled()) log.debug("executeFunction  " + function + "(" + field + ") on" + node);
         if (function.equals("str")) {
             if (field.equals("status")) {
                 int val=node.getIntValue("status");
                 switch(val) {
-                case REQUEST: return "Request";
-                case BUSY: return "Busy";
-                case DONE: return "Done";
-                case SOURCE: return "Source";
-                default: return "Undefined";
+                    case REQUEST: return "Request";
+                    case BUSY: return "Busy";
+                    case DONE: return "Done";
+                    case SOURCE: return "Source";
+                    default: return "Undefined";
                 }
             } else if (field.equals("channels")) {
                 int val=node.getIntValue("channels");
                 switch(val) {
-                case MONO: return "Mono";
-                case STEREO: return "Stereo";
-                default: return "Undefined";
+                    case MONO: return "Mono";
+                    case STEREO: return "Stereo";
+                    default: return "Undefined";
                 }
             } else if (field.equals("format")) {
                 int val=node.getIntValue("format");
                 switch(val) {
-                case MP3_FORMAT: return "mp3";
-                case RA_FORMAT: return "ra";
-                case WAV_FORMAT: return "wav";
-                case PCM_FORMAT: return "pcm";
-                case MP2_FORMAT: return "mp2";
-                case SURESTREAM_FORMAT: return "g2/sure";
-                case MPG_FORMAT: return "mpg";
-                case RM_FORMAT: return "Rm";
-                case MOV_FORMAT: return "Mov";
-                default: return "Undefined";
+                    case MP3_FORMAT: return "mp3";
+                    case RA_FORMAT: return "ra";
+                    case WAV_FORMAT: return "wav";
+                    case PCM_FORMAT: return "pcm";
+                    case MP2_FORMAT: return "mp2";
+                    case SURESTREAM_FORMAT: return "g2/sure";
+                    case MPG_FORMAT: return "mpg";
+                    case RM_FORMAT: return "Rm";
+                    case MOV_FORMAT: return "Mov";
+                    default: return "Undefined";
                 }
             } else if (field.equals("issurestream")) {
                 int val=node.getIntValue("issurestream");
                 switch( val ) {
-                case 0	: return "false";
-                case 1	: return "true";
-                default	: return "Undefined";
+                    case 0	: return "false";
+                    case 1	: return "true";
+                    default	: return "Undefined";
                 }
             } else {
                 return field;
@@ -283,7 +290,7 @@ public class MediaSource extends MMObjectBuilder {
             return getURL(node, field);
         } else if (function.equals("urlresult")) {
             return getURLResult(node, field);
-        }      
+        }
         return super.executeFunction(node, function, field);
     }
     
@@ -300,24 +307,28 @@ public class MediaSource extends MMObjectBuilder {
      * and an uriFilter.
      * @param mediafragment the mediafragment (maybe not needed...)
      * @param mediasource the mediasource
-     * @param request the request of the user 
+     * @param request the request of the user
      * @param wantedspeed
      * @param wantedchannels
-     * @return the url 
+     * @return the url
      */
     public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, int wantedspeed, int wantedchannels) {
         
         // Find the provider for the url
         MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
-        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
-               
-        // Get the protocol and the hostinfomation of the provider.
-        String firstPartUrl = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("url");
+        if(mediaProvider==null) {
+           log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
+           return null;
+        } 
         
-        return firstPartUrl+"rest";
+        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
+        // Get the protocol and the hostinfomation of the provider.
+        String firstPartUrl = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
+        
+        return firstPartUrl+"/rest";
     }
     
-     /**
+    /**
      * get all mediaproviders belonging to this mediasource
      * @param mediasource the mediasource
      * @return All mediaproviders related to the given mediasource
