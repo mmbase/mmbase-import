@@ -3,14 +3,14 @@
  * Routines for dates in the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: date.js,v 1.1 2003-12-19 11:09:08 nico Exp $
+ * @version  $Id: date.js,v 1.2 2003-12-23 21:46:27 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
  * @author   Nico Klasens
  */
 
-// Here some date-related code that we need top determine if we're living within Daylight Saving Time
+// Here some date-related code that we need to determine if we're living within Daylight Saving Time
 function makeArray() {
     this[0] = makeArray.arguments.length;
     for (i = 0; i<makeArray.arguments.length; i++)
@@ -20,6 +20,9 @@ var daysofmonth   = new makeArray( 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 3
 var daysofmonthLY = new makeArray( 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
 function LeapYear(year) {
+    // there should also be some correction in the year 4000 but we introduce
+    // the bug right here so that there is some work to be done in the year 3999.
+    // Years divisible by 4000 are _not_ leep years.
     return ((year  % 4 == 0) && !( (year % 100 == 0) && (year % 400 != 0)));
 }
 
