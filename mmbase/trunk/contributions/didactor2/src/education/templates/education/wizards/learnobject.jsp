@@ -12,6 +12,7 @@
 
  depth--;
  if (depth >= 0) {
+
 %>
 <%--// entering depth <%=depth%>--%>
 <%--// for node <%=startnode%>--%>
@@ -24,12 +25,14 @@
     </mm:relatednodes>
 </mm:node>
 
-<mm:node number="<%=startnode%>">
+<mm:node number="<%=startnode%>" jspvar="thisNode">
   <mm:import id="treeName" jspvar="treeName">lbTree<mm:field name="number"/>z</mm:import>
-  <mm:related path="posrel,learnobjects" orderby="posrel.pos" directions="up" searchdir="destination">
+  <% if(thisNode.countRelatedNodes(cloud.getNodeManager("learnobjects"),"posrel","destination")>0) { %>
+  <% //needed an extra check to prevent mm:related from writing warning messages %>
+  
+  <mm:related  path="posrel,learnobjects" orderby="posrel.pos" directions="up"  searchdir="destination">
    <mm:first>
     var <mm:write referid="treeName" /> = new MTMenu();
-<%--    <mm:write referid="treeName" /> = new MTMenu();--%>
    </mm:first>
    <mm:node element="learnobjects">
    <%@include file="whichimage.jsp"%>
@@ -78,7 +81,6 @@
 <%--    <mm:compare referid="objecttype" value="learnobjects"> --%>
       <% if (depth > 0) { %>
         <mm:field jspvar="objectNumber" name="number">
-        <% System.err.println("Next request will have depth " + depth); %>
         <mm:include page="learnobject.jsp" referids="wizardjsp">
           <mm:param name="parenttree"><%=treeName%></mm:param>
           <mm:param name="startnode"><%=objectNumber%></mm:param>
@@ -92,6 +94,7 @@
     <%=parenttree%>.makeLastSubmenu(<mm:write referid="treeName" />, true);
    </mm:last>
   </mm:related>
+  <% } %>
 </mm:node>
 </mm:cloud>
 <%--// gone from depth <%=depth%>--%>
