@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.42 2003-06-06 10:03:06 pierre Exp $ 
+ * @version $Id: ContextReferrerTag.java,v 1.43 2003-06-17 18:07:38 michiel Exp $ 
  * @see ContextTag
  */
 
@@ -47,7 +47,9 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
     protected ContextTag pageContextTag = null;
 
     protected  Attribute  contextId = Attribute.NULL; // context to which this tagg is referring to.
-    protected  Attribute  referid=   Attribute.NULL;
+    protected  Attribute  referid   = Attribute.NULL;
+
+    protected  Attribute  id        = Attribute.NULL; // hides String id of TagSupport
 
     private String       thisPage = null;
 
@@ -107,6 +109,22 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public void setReferid(String r) throws JspTagException {
         referid = getAttribute(r);
+    }
+
+    public void setId(String i) {
+        try {            
+            id = getAttribute(i);
+        } catch (JspTagException j) {
+            throw new RuntimeException(j.toString());
+        }
+    }
+
+    public String getId() {
+        try {
+            return (String) id.getValue(this);
+        } catch (JspTagException j) {
+            throw new RuntimeException(j.toString());
+        }
     }
 
     protected String getReferid() throws JspTagException {

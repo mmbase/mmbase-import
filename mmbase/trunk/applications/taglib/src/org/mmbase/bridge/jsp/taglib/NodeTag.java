@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: NodeTag.java,v 1.43 2003-06-06 10:03:09 pierre Exp $ 
+ * @version $Id: NodeTag.java,v 1.44 2003-06-17 18:07:38 michiel Exp $ 
  */
 
 public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -130,7 +130,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             default: node = getNode(referString);
             }
 
-            if(referString.equals(id)) {
+            if(referString.equals(getId())) {
                 getContextProvider().getContainer().unRegister(referString);
                 // register it again, but as node
                 // (often referid would have been a string).                
