@@ -84,7 +84,7 @@ import org.mmbase.util.logging.*;
  * 
  * 
  * @author Daniel Ockeloen, David van Zeventer
- * @version $Revision: 1.21 $ $Date: 2001-05-14 12:59:00 $
+ * @version $Revision: 1.22 $ $Date: 2001-07-25 12:49:04 $
  */
 public class EncodeCop extends Vwm implements MMBaseObserver {
     private static Logger log = Logging.getLoggerInstance(EncodeCop.class.getName());
@@ -430,13 +430,21 @@ public class EncodeCop extends Vwm implements MMBaseObserver {
 		// need to be encoded.
 		Enumeration e=rabul.search("WHERE status="+RawAudioDef.STATUS_VERZOEK+" and "
 		        +"format="+RawAudioDef.FORMAT_G2);
+		
 		while (e.hasMoreElements()) {
 			ranode = (MMObjectNode)e.nextElement();
+			log.debug("Found ranode: "+ranode);
 			id = ranode.getIntValue("id");
 			apnode = apbul.getNode(id);
-			if (apnode.getIntValue("source")==(AudioParts.AUDIOSOURCE_CD)) {
-				log.info("Audiopart "+id+" still needs to be encoded, adding new EncodeHandler, task 'g2encode'.");
-				EncoderHandlers.addElement(new EncodeHandler(this,"g2encode",ranode));
+			if (apnode==null) {
+				log.error("Can't recover since parent audiopart is null for rawaudio:"+ranode);
+			} else {
+				String title = apnode.getStringValue("title");
+				if (apnode.getIntValue("source")==(AudioParts.AUDIOSOURCE_CD)) {
+					log.info("Audiopart "+id+", (title:"+title+") still needs to be "
+					        +"encoded, adding new EncodeHandler, task 'g2encode'.");
+					EncoderHandlers.addElement(new EncodeHandler(this,"g2encode",ranode));
+				}
 			}
 		}
 	}
