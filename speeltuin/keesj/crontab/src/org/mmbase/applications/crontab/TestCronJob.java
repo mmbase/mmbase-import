@@ -5,7 +5,7 @@ import org.mmbase.util.logging.*;
 
 public class TestCronJob implements Runnable {
 
-    private static final Logger log = Logging.getLoggerInstance(TestCronJob2.class);
+    private static final Logger log = Logging.getLoggerInstance(TestCronJob.class);
 
     public void run() {
         Cloud cloud = ContextProvider.getDefaultCloudContext().getCloud("mmbase", "class", null);
