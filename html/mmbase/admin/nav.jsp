@@ -47,14 +47,16 @@
 <img src="images/logo.gif" border="0" alt="MMBase">
 </td>
 <td width="850" border="0">
-    <%=mainmenu("1","about","license")%>
+    <%=mainmenu("1","about","about")%>
+    <%=mainmenu("7","demos",null)%>
     <%=mainmenu("2","editors","basic")%>
     <%=mainmenu("3","admin","servers")%>
     <%=mainmenu("4","tools","cache")%>
 	<hr />
 	
 	<% if("1".equals(menu)) { %>
-        <%=submenu("1","1","about", "license")%>
+        <%=submenu("1","1","about", "about")%>
+        <%=submenu("1","2","about", "license")%>
 	<% } else if("2".equals(menu)) { %>
         <%=submenu("2","1","editors", "basic")%>
 	<% } else if("3".equals(menu)) { %>
@@ -73,4 +75,5 @@
 </table>
 </body>
 </html>
+
 
