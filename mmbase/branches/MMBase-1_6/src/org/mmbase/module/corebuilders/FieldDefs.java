@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.30 2002-10-24 12:56:07 pierre Exp $
+ * @version $Id: FieldDefs.java,v 1.30.2.1 2002-11-21 16:05:35 robmaris Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -525,7 +525,7 @@ public class FieldDefs implements Comparable {
                " Input="+GUIPos+" Search="+GUISearch+" List="+GUIList+
                " DBname="+DBName+
                " DBType="+getDBTypeDescription()+
-               " DBSTATE="+getDBTypeDescription()+
+               " DBSTATE=" + getDBStateDescription() +
                " DBNOTNULL="+DBNotNull+" DBPos="+DBPos+" DBSIZE="+DBSize+
                " isKey="+isKey+" DBDocType="+DBDocType);
     }
