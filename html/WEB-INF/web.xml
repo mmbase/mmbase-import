@@ -90,14 +90,14 @@
   <!-- mmbase-taglib-0.8 for backwards-compatibility, not working at the moment
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-0.8</taglib-uri>
-    <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
+    <taglib-location>/WEB-INF/mmbase-taglib-0.8.tld</taglib-location>
   </taglib>
   -->
 
   <!-- mmbase-taglib-1.0 -->
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmbase-taglib-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/lib/mmbase.jar</taglib-location>
+    <taglib-location>/WEB-INF/mmbase-taglib.tld</taglib-location>
   </taglib>
 
   <!-- mmbase-community-taglib, 
