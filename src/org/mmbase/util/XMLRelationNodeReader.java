@@ -103,7 +103,7 @@ public class XMLRelationNodeReader  {
                     //int times=DateSupport.parsedatetime(n2.getNodeValue());
                     return times;
                 } catch (java.text.ParseException e) {
-                    return 0;
+                    return -1;
                 }
 
             }
