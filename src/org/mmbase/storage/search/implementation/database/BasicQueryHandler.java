@@ -31,7 +31,7 @@ import org.mmbase.storage.search.implementation.ModifiableQuery;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.31 2005-01-25 12:45:19 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.32 2005-01-26 15:00:42 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -100,8 +100,7 @@ public class BasicQueryHandler implements SearchQueryHandler {
                         rs.next();
                     }
                 }
-
-
+                
                 // Now store results as cluster-/real nodes.
                 StepField[] fields = (StepField[]) query.getFields().toArray(STEP_FIELD_ARRAY);
                 int maxNumber = query.getMaxNumber();
@@ -264,28 +263,43 @@ public class BasicQueryHandler implements SearchQueryHandler {
         List results= new ArrayList();
         DatabaseStorageManager storageManager = (DatabaseStorageManager)mmbase.getStorageManager();
 
+        if (! rs.next()) return results;
+        
         // Truncate results to provide weak support for maxnumber.
-        while (rs.next() && (maxNumber>results.size() || maxNumber==-1)) {
-            MMObjectNode node = new MMObjectNode(builder);
-            node.start();
-            Step nodeStep = fields[0].getStep();
-            for (int i = 0; i < fields.length; i++) {
-                if (fields[i].getStep() != nodeStep) continue;
-                String fieldName =  fields[i].getFieldName();
-                FieldDefs field = builder.getField(fieldName);
-                if (field.getDBType() == FieldDefs.TYPE_BYTE) {
-                    node.setValue(fieldName, "$SHORTED");
-                } else {
-                    Object value = storageManager.getValue(rs, i + 1, field);
-                    node.setValue(fieldName, value);
+        while (maxNumber > results.size() || maxNumber==-1) {
+            try {                
+                MMObjectNode node = new MMObjectNode(builder);
+                node.start();
+                Step nodeStep = fields[0].getStep();
+                for (int i = 0; i < fields.length; i++) {
+                    if (fields[i].getStep() != nodeStep) continue;
+                    String fieldName =  fields[i].getFieldName();
+                    FieldDefs field = builder.getField(fieldName);
+                    if (field.getDBType() == FieldDefs.TYPE_BYTE) {
+                        node.setValue(fieldName, "$SHORTED");
+                    } else {
+                        Object value = storageManager.getValue(rs, i + 1, field);
+                        node.setValue(fieldName, value);
+                    }
                 }
-            }
-            node.clearChanged();
-            node.finish();
-            results.add(node);
+                node.clearChanged();
+                node.finish();
+                results.add(node);
+            } catch (Throwable t) { // this arrangement should perhaps also be ported to the two other readNodes in this class
+                log.error(t);
+                //break;
+            }         
+            try {                
+                if (! rs.next()) break;            
+            } catch (SQLException sqe) {
+                    // there are results already, don't mess up those.
+                log.error(sqe);
+                break;                
+            }   
         }
         return results;
     }
+
 
     // javadoc is inherited
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
