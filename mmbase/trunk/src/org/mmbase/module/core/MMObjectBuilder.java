@@ -61,7 +61,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.243 2003-09-02 20:03:02 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.244 2003-09-03 13:26:49 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2257,11 +2257,16 @@ public class MMObjectBuilder extends MMTable {
         }        
         FieldDefs fieldDefs = getField(fieldName);
         if (fieldDefs == null) {
-            //perhaps prefixed with own name ? (allowed since MMBase-1.7)
-            String prefix = tableName + '.';            
-            if (fieldName.startsWith(prefix)) {
-                fieldName = fieldName.substring(prefix.length());
-                fieldDefs = getField(fieldName);
+            //perhaps prefixed with own tableName[0-9]? (allowed since MMBase-1.7)
+            int dot = fieldName.indexOf('.');
+            if (dot > 0) {
+                if (fieldName.startsWith(tableName)) {
+                    if (tableName.length() <= dot  ||
+                        Character.isDigit(fieldName.charAt(dot - 1))) { 
+                        fieldName = fieldName.substring(dot + 1);
+                        fieldDefs = getField(fieldName);
+                    }
+                }
             }
         }
 
