@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.16 2003-09-26 18:45:42 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.17 2003-11-18 19:01:33 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -455,10 +455,10 @@ public class ContextContainer extends HashMap {
             }
             break;
         case LOCATION_SESSION:
-            if (((HttpServletRequest) pageContext.getRequest()).getSession() == null) {
+            if (((HttpServletRequest) pageContext.getRequest()).getSession(false) == null) {
                 throw new JspTagException("Cannot use session if session is disabled");
             }
-            result = ((HttpServletRequest) pageContext.getRequest()).getSession().getAttribute(referid);
+            result = ((HttpServletRequest) pageContext.getRequest()).getSession(false).getAttribute(referid);
             break;
         case LOCATION_MULTIPART:
             if (MultiPart.isMultipart(pageContext)) {
@@ -549,7 +549,7 @@ public class ContextContainer extends HashMap {
             result = find(pageContext, LOCATION_MULTIPART, externid);
             if (result != null) return result;
         }
-        if (((HttpServletRequest) pageContext.getRequest()).getSession() != null) {
+        if (((HttpServletRequest) pageContext.getRequest()).getSession(false) != null) {
             log.debug("searching in session");
             result = find(pageContext, LOCATION_SESSION, externid);
         }
