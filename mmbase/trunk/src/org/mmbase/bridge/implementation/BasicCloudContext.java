@@ -52,7 +52,6 @@ public class BasicCloudContext implements CloudContext {
      *  (protected, so cannot be reached from a script)
      */
     protected BasicCloudContext() {
-
         Iterator i=org.mmbase.module.Module.getModules();
         if (i!=null) {
             mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
@@ -76,58 +75,68 @@ public class BasicCloudContext implements CloudContext {
         }
     }
 
-	public ModuleList getModules() {
+    public ModuleList getModules() {
         ModuleList ml=new BasicModuleList(localModules.values(),this);
 	    return ml;
-	}
+    }
 
-	public Module getModule(String moduleName) {
-	    Module mod = (Module)localModules.get(moduleName);
+    public Module getModule(String moduleName) {
+    	Module mod = (Module)localModules.get(moduleName);
         if (mod==null) {
             throw new BasicBridgeException("Module "+moduleName+" does not exist.");
         }
         return mod;
-	}
+    }
 
-	public CloudList getClouds() {
+    public CloudList getClouds() {
         Vector v=new Vector();
         for (Iterator i=localClouds.values().iterator(); i.hasNext();) {
             v.add((Cloud)i.next());
         }
-	    return new BasicCloudList(v,this);
-	}
+	return new BasicCloudList(v,this);
+    }
 
-	public Cloud getCloud(String cloudName) {
-	    return getCloud(cloudName,false);
-	}
-
-	public Cloud getCloud(String cloudName, boolean readonly) {
+    public Cloud getCloud(String cloudName) {
+    	return getCloud(cloudName,false);
+    }
+    
+    public Cloud getCloud(String name, String application, User user) {
+    	throw new BasicBridgeException("Not yet implemented");
+	//  this will set the new User supplied by the authentication
+	//  and set it as the User of the Cloud, it is not certain if
+	//  this new user object contains certain value's which it con-
+	//  taned before,.. This shouldn't be nessecary, since there is
+	//  only information which is related to the authentication/
+	//  authorization stored inside this object.
+	
+    	//  return getCloud(cloudName,false);    
+    }
+    
+    public Cloud getCloud(String cloudName, boolean readonly) {
         Cloud cloud = (Cloud)localClouds.get(cloudName);
         if (cloud==null) {
             throw new BasicBridgeException("Cloud "+cloudName+" does not exist.");
         }
-	    if (!readonly) {
+	if (!readonly) {
             cloud = ((BasicCloud)cloud).getCopy();
-	    }
-	    return cloud;
 	}
+	return cloud;
+    }
 
-	/**
-    * Create a temporary scanpage object.
-	*/
+    /**
+     * Create a temporary scanpage object.
+     */
     static scanpage getScanPage(ServletRequest rq, ServletResponse resp) {
-	    scanpage sp = new scanpage();
+	scanpage sp = new scanpage();
         if (rq instanceof HttpServletRequest) {
             HttpServletRequest req=(HttpServletRequest)rq;
-        	sp.setReq(req);
-	        sp.setRes((HttpServletResponse)resp);
+            sp.setReq(req);
+	    sp.setRes((HttpServletResponse)resp);
     	    if (req!=null) {
-	            sp.req_line=req.getRequestURI();
+	        sp.req_line=req.getRequestURI();
     	        sp.querystring=req.getQueryString();
-        	}
-	    }
-	    return sp;
+            }
+    	}
+	return sp;
     }
-	
-
 }
