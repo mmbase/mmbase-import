@@ -3,47 +3,42 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud method="http" rank="administrator">
 <%@ include file="thememanager/loadvars.jsp" %>
-<HTML>
-<HEAD>
-   <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <TITLE>MMBase Package Manager</TITLE>
-</HEAD>
-<mm:import externid="main" >bundles</mm:import>
-<mm:import externid="sub" >none</mm:import>
-<mm:import externid="id" >none</mm:import>
-<mm:import externid="help" >on</mm:import>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
+    <title>MMBase Package Manager</title>
+  </head>
+  <mm:import externid="main" >bundles</mm:import>
+  <mm:import externid="sub" >none</mm:import>
+  <mm:import externid="id" >none</mm:import>
+  <mm:import externid="help" >on</mm:import>
+  
+  
+  
+  <body onload="doLoad()">
+  <!-- first the selection part -->
+  <center>
+    <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="95%">      
+      <tr>        
+        <th colspan="8">
+          MMBase Package Manager - version 0.74 (1.8)
+        </th>
+      </tr>
+    </table>
 
-
-
-<body onload="doLoad()">
-<!-- first the selection part -->
-<center>
-<table cellpadding="0" cellspacing="0" class="list" style="margin-top : 30px;" width="95%">
-
-<tr>
-
-		<th COLSPAN="8">
-		 MMBase Package Manager - version 0.74 (1.8)
-		</th>
-</tr>
-</table>
-
-<%@ include file="headers/main.jsp" %>
-<mm:compare referid="help" value="on">
-	<%@ include file="help/main.jsp" %>
-</mm:compare>
-<mm:write referid="main">
- <mm:compare value="bundles"><%@ include file="bundles/index.jsp" %></mm:compare>
- <mm:compare value="packages"><%@ include file="packages/index.jsp" %></mm:compare>
- <mm:compare value="providers"><%@ include file="providers/index.jsp" %></mm:compare>
- <mm:compare value="sharing"><%@ include file="sharing/index.jsp" %></mm:compare>
- <mm:compare value="manual"><%@ include file="manual/index.jsp" %></mm:compare>
- <mm:compare value="settings"><%@ include file="settings/index.jsp" %></mm:compare>
-</mm:write>
-
-
+    <%@ include file="headers/main.jsp" %>
+    <mm:compare referid="help" value="on">
+      <%@ include file="help/main.jsp" %>
+    </mm:compare>
+    <mm:write referid="main">
+      <mm:compare value="bundles"><%@ include file="bundles/index.jsp" %></mm:compare>
+      <mm:compare value="packages"><%@ include file="packages/index.jsp" %></mm:compare>
+      <mm:compare value="providers"><%@ include file="providers/index.jsp" %></mm:compare>
+      <mm:compare value="sharing"><%@ include file="sharing/index.jsp" %></mm:compare>
+      <mm:compare value="manual"><%@ include file="manual/index.jsp" %></mm:compare>
+      <mm:compare value="settings"><%@ include file="settings/index.jsp" %></mm:compare>
+    </mm:write>
+  </center>
+</body>
+</html>    
 </mm:cloud>
-<br />
-<br />
-</BODY>
-</HTML>
