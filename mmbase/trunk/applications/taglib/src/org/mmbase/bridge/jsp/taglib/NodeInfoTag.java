@@ -27,7 +27,8 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
     private static final int TYPE_NODEMANAGER    = 0;
     private static final int TYPE_GUINODEMANAGER = 1;
-    private static final int TYPE_NODENUMBER= 2;
+    private static final int TYPE_NODENUMBER     = 2;
+    private static final int TYPE_GUI            = 3;
 
 
     protected WriterHelper helper = new WriterHelper();
@@ -47,15 +48,18 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
 
     private int type;
 
-    public void setType(String t) throws JspTagException {
+    public void setType(String tu) throws JspTagException {
+        String t = getAttributeValue(tu).toLowerCase();
         // note: 'nodemanager' and 'guinodemanager' values are deprecated
         // use 'type' and 'guitype' instead
-        if ("nodemanager".equalsIgnoreCase(t) || "type".equalsIgnoreCase(t)) {
+        if ("nodemanager".equals(t) || "type".equals(t)) {
             type = TYPE_NODEMANAGER;
-        } else if ("guinodemanager".equalsIgnoreCase(t) || "guitype".equalsIgnoreCase(t)) {
+        } else if ("guinodemanager".equals(t) || "guitype".equals(t)) {
             type = TYPE_GUINODEMANAGER;
-        } else if ("number".equalsIgnoreCase(t)) {
+        } else if ("number".equals(t)) {
             type = TYPE_NODENUMBER;
+        } else if ("gui".equals(t)) {
+            type = TYPE_GUI;
         } else {
             throw new JspTagException("Unknown value for attribute type (" + t + ")");
         }
@@ -91,6 +95,9 @@ public class NodeInfoTag extends NodeReferrerTag implements Writer {
             break;
         case TYPE_GUINODEMANAGER:
             show = nodeManager.getGUIName();
+            break;
+        case TYPE_GUI:
+            show = getNode().getFunctionValue("sgui", null).toString();
             break;
         default:
         }
