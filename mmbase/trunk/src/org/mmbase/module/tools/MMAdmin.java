@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.51 2002-08-28 14:46:46 eduard Exp $
+ * @version $Id: MMAdmin.java,v 1.52 2002-10-24 12:56:08 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -1402,12 +1402,11 @@ public class MMAdmin extends ProcessorModule {
         MMObjectBuilder bul=getMMObject(buildername);
         if (bul!=null) {
             FieldDefs def=bul.getField(fieldname);
-            Hashtable guinames=def.getGUINames();
-            for (Enumeration h = guinames.keys();h.hasMoreElements();) {
-                String key=(String)h.nextElement();
-                String value=(String)guinames.get(key);
-                results.addElement(key);
-                results.addElement(value);
+            Map guinames=def.getGUINames();
+            for (Iterator h = guinames.entrySet().iterator();h.hasNext();) {
+                Map.Entry me=(Map.Entry)h.next();
+                results.addElement(me.getKey());
+                results.addElement(me.getValue());
             }
         }
         return results;

@@ -17,7 +17,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.10 2002-10-03 12:28:10 pierre Exp $
+ * @version $Id: BasicField.java,v 1.11 2002-10-24 12:56:07 pierre Exp $
  */
 public class BasicField implements Field, Comparable {
 
@@ -45,6 +45,10 @@ public class BasicField implements Field, Comparable {
         return field.getGUIName(((BasicCloud)nodeManager.getCloud()).getLocale().getLanguage());
     }
 
+    public String getDescription() {
+        return field.getDescription(((BasicCloud)nodeManager.getCloud()).getLocale().getLanguage());
+    }
+
     public int getType() {
         return field.getDBType();
     }
@@ -60,7 +64,7 @@ public class BasicField implements Field, Comparable {
     public boolean isRequired() {
         return field.getDBNotNull();
     }
-    
+
     public boolean isUnique() {
         return field.isKey();
     }
@@ -95,7 +99,7 @@ public class BasicField implements Field, Comparable {
      * @param o the object to compare it with
      */
     public boolean equals(Object o) {
-        return (o instanceof Field) && 
+        return (o instanceof Field) &&
                nodeManager.equals(((Field)o).getNodeManager()) &&
                getName().equals(((Field)o).getName());
     }

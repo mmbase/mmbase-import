@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Field.java,v 1.10 2002-09-23 15:57:34 pierre Exp $
+ * @version $Id: Field.java,v 1.11 2002-10-24 12:56:06 pierre Exp $
  */
 public interface Field {
 
@@ -66,6 +66,13 @@ public interface Field {
     public String getGUIName();
 
     /**
+     * Returns the description for this field.
+     *
+     * @return  the description for this field
+     */
+    public String getDescription();
+
+    /**
      * Returns the identifier for the data type this field contains.
      *
      * @return  an <code>int</code> which identifies the type of data this field
@@ -94,7 +101,7 @@ public interface Field {
 
     /**
      * Returns whether this field is unique (should have content that occurs only once).
-     * Note that MMBase lets the database layer handle this. If your database or configuration does 
+     * Note that MMBase lets the database layer handle this. If your database or configuration does
      * not support this the uniqueness may not be enforced.
      *
      * @return  <code>true</code> if the field is unique
