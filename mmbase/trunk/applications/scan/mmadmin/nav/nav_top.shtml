@@ -56,10 +56,10 @@
 	&nbsp;&nbsp;
 
 	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<A HREF="/mmadmin/index.shtml?6+mmbase" TARGET="_top">
+	<A HREF="/mmadmin/index.shtml?6+1+email" TARGET="_top">
 	<IF $PARAM1==6>
-		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>SITE</B></FONT>
+		<FONT COLOR="#FFFFFF" FACE=helvetica,arial,geneva SIZE=2><B>TOOLS</B></FONT>
 	<ELSE>
-		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>SITE</B></FONT>
+		<FONT COLOR="#42BDAD" FACE=helvetica,arial,geneva SIZE=2><B>TOOLS</B></FONT>
 	</IF>
 	</A>
