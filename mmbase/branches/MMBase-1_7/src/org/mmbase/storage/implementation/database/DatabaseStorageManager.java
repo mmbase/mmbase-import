@@ -30,7 +30,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.63.2.12 2005-02-03 09:20:40 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.63.2.13 2005-02-04 13:41:41 michiel Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -364,8 +364,7 @@ public class DatabaseStorageManager implements StorageManager {
                     // CP 1252 only fills in the 'blanks' of ISO-8859-1,
                     // so it is save to upgrade the encoding, in case accidentily those bytes occur
                     encoding = "CP1252";                    
-                }                
-
+                }
                 untrimmedResult = new String(bytes.toByteArray(), encoding);
             } catch (IOException ie) {
                 throw new StorageException(ie);
@@ -398,8 +397,7 @@ public class DatabaseStorageManager implements StorageManager {
             
             
         }
-
-        return untrimmedResult;
+        return untrimmedResult;// now trimmed.
     }
 
     /**
@@ -1052,7 +1050,6 @@ public class DatabaseStorageManager implements StorageManager {
              if (factory.hasOption(Attributes.LIE_CP1252)) {
                  try {
                      if (encoding.equalsIgnoreCase("ISO-8859-1")) {
-                         log.info("Lying CP-1252");
                          encoding = "CP1252";
                          setValue = new String(value.getBytes("CP1252"), "ISO-8859-1");
                      } else {
@@ -1074,6 +1071,9 @@ public class DatabaseStorageManager implements StorageManager {
                 // cannot happen
             }
         }            
+        if (factory.hasOption(Attributes.TRIM_STRINGS)) {
+            value = value.trim();
+        }
         if (objectValue == null) node.storeValue(field.getDBName(),value);
         return value;
     }
