@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @todo undoubtly, this is too crude.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CacheInvalidator.java,v 1.2 2003-05-23 16:12:32 michiel Exp $
+ * @version $Id: CacheInvalidator.java,v 1.3 2003-08-05 21:26:33 michiel Exp $
  * @since MMBase-1.7
  */
 class CacheInvalidator implements MMBaseObserver {
@@ -45,7 +45,7 @@ class CacheInvalidator implements MMBaseObserver {
     /**
      *  A security builder can add its cache(s)
      */
-    synchronized void addCache(Cache c) {
+    synchronized void addCache(Map c) {
         securityCaches.add(c);
     }
 
@@ -67,8 +67,7 @@ class CacheInvalidator implements MMBaseObserver {
         log.debug("A security object has changed, invalidating all security caches");
         Iterator i = securityCaches.iterator();
         while (i.hasNext()) {
-            Cache c = (Cache) i.next();
-            log.debug("Making cache " + c + " empty");
+            Map c = (Map) i.next();
             c.clear();
         }
         return true;
