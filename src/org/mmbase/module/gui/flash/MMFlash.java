@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Implements the parsing and generating of dynamic flash files
  * @author Johannes Verelst
  * @author Daniel Ockeloen
- * @version $Id: MMFlash.java,v 1.16 2002-09-25 14:40:15 johannes Exp $
+ * @version $Id: MMFlash.java,v 1.17 2002-11-20 10:04:28 vpro Exp $
  */
 public class MMFlash extends Module {
 
@@ -130,11 +130,11 @@ public class MMFlash extends Module {
         if (!sp.reload) {
             result =(byte[])lru.get(url+query);
             if (result!=null) {
-                log.info("Cache hit from disk+lru");
+                log.debug("Cache hit from disk+lru");
             } else {
                 result=loadDiskCache(filename,query);
                 if (result!=null) {
-                    log.info("Cache hit from from disk");
+                    log.debug("Cache hit from from disk");
                     lru.put(url+query,result);
                 }
             }
@@ -551,7 +551,7 @@ public class MMFlash extends Module {
             s+=e.toString();
             out.print(s);
         }
-        log.info("Executed command: "+command+" succesfull, now gonna parse");                                    
+        log.service("Executed command: "+command+" succesfull, now gonna parse");                                    
         dip = new DataInputStream(new BufferedInputStream(p.getInputStream()));
         byte[] result=new byte[32000];
 
