@@ -7,6 +7,11 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+/*
+	$Id: FieldDef.java,v 1.2 2000-02-25 12:52:15 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
@@ -21,7 +26,7 @@ import org.mmbase.module.database.*;
  *
  *
  * @author Daniel Ockeloen
- * @version 12 Mar 1997
+ * @version $Id: FieldDef.java,v 1.2 2000-02-25 12:52:15 wwwtech Exp $
  */
 public class FieldDef extends MMObjectBuilder {
 
@@ -31,64 +36,6 @@ public class FieldDef extends MMObjectBuilder {
 		this.description="Field defs";
 		init();
 		m.mmobjs.put(tableName,this);
-	}
-
-
-	/**
-	* insert a new object, normally not used (only subtables are used)
-	*/
-	public int insert(String owner,MMObjectNode node) {
-		int dbtable=node.getIntValue("dbtable");
-		String dbname=node.getStringValue("dbname");
-		String dbtype=node.getStringValue("dbtype");
-		String guiname=node.getStringValue("guiname");
-		String guitype=node.getStringValue("guitype");
-		int guipos=node.getIntValue("guipos");
-		int guilist=node.getIntValue("guilist");
-		int guisearch=node.getIntValue("guisearch");
-		int dbstate=node.getIntValue("dbstate");
-
-		int number=getDBKey();
-		try {
-			MultiConnection con=mmb.getConnection();
-			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_fielddef values(?,?,?,?,?,?,?,?,?,?,?,?)");
-			stmt.setInt(1,number);
-			stmt.setInt(2,oType);
-			stmt.setString(3,owner);
-			stmt.setInt(4,dbtable);
-			stmt.setString(5,dbname);
-			stmt.setString(6,dbtype);
-			stmt.setString(7,guiname);
-			stmt.setString(8,guitype);
-			stmt.setInt(9,guipos);
-			stmt.setInt(10,guilist);
-			stmt.setInt(11,guisearch);
-			stmt.setInt(12,dbstate);
-			stmt.executeUpdate();
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
-			return(-1);
-		}
-			
-		
-		try {
-			MultiConnection con=mmb.getConnection();
-			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_object values(?,?,?)");
-			stmt.setInt(1,number);
-			stmt.setInt(2,oType);
-			stmt.setString(3,owner);
-			stmt.executeUpdate();
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Error on : "+number+" "+owner+" fake");
-			return(-1);
-		}
-		return(number);
 	}
 
 	public String getGUIIndicator(String field,MMObjectNode node) {
@@ -119,10 +66,10 @@ public class FieldDef extends MMObjectBuilder {
 			String bulname=tbul.getValue(otype);
 			//System.out.println("Change node ! fielddef DBTABLLE="+otype+" bul="+bulname);
 			if (bulname!=null) {
-			MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(bulname);
-			if (bul!=null) {
-				bul.initFields(false);
-			} 
+				MMObjectBuilder bul=(MMObjectBuilder)mmb.getMMObject(bulname);
+				if (bul!=null) {
+					bul.initFields(false);
+				} 
 			}
 		}
 		return(true);
