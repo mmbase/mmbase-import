@@ -1,10 +1,10 @@
 <%
-    response.setHeader("Content-Type", "application/smil");
+  response.setHeader("Content-Type", "application/smil");
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><mm:import externid="fragment" /><mm:cloud><mm:node number="$fragment"><smil>
 <head>
-              <meta name="title"     content="<mm:field name="title" />" />
-              <meta name="copyright" content=""/>
+ <meta name="title"     content="<mm:field name="title" />" />
+ <meta name="copyright" content=""/>
  <meta name="author"    content=""/>
  <meta name="abstract"  content="<mm:field name="intro" />" />
 <layout>

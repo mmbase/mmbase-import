@@ -17,7 +17,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.12 2002-12-05 13:57:45 michiel Exp $
+    @version  $Id: entrancepage.jsp,v 1.13 2002-12-19 19:31:18 michiel Exp $
  
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
@@ -30,6 +30,22 @@
    <!-- We are going to set the referrer explicitely, because we don't wont to depend on the 'Referer' header (which is not mandatory) -->     
   <mm:import id="referrer"><%=new java.io.File(request.getServletPath())%>?origin=<mm:write referid="origin" /></mm:import>
   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
+
+  <mm:import id="videofieldoptions">
+     <option value="videofragments.title"><mm:fieldlist nodetype="videofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="videofragments.subtitle"><mm:fieldlist nodetype="videofragments" fields="subtitle"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="videofragments.intro"><mm:fieldlist nodetype="videofragments" fields="intro"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="videofragments.body"><mm:fieldlist nodetype="videofragments" fields="body"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="videofragments.title,videofragments.subtitle,videofragments.intro,videofragments.body">*</option>
+  </mm:import>
+
+  <mm:import id="audiofieldoptions">
+     <option value="audiofragments.title"><mm:fieldlist nodetype="audiofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="audiofragments.subtitle"><mm:fieldlist nodetype="audiofragments" fields="subtitle"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="audiofragments.intro"><mm:fieldlist nodetype="audiofragments" fields="intro"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="audiofragments.body"><mm:fieldlist nodetype="audiofragments" fields="body"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+     <option value="audiofragments.title,audiofragments.subtitle,audiofragments.intro,audiofragments.body">*</option>
+  </mm:import>
 
 
   <mm:node number="$origin">
@@ -45,7 +61,7 @@
             action="<mm:url referids="referrer,language,origin,startnodes" page="${jsps}list.jsp" />" 
             method="post">
            <select name="searchfields">
-               <option value="videofragments.title"><mm:fieldlist nodetype="videofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+               <mm:write referid="videofieldoptions" />
            </select>
            <input type="text" name="searchvalue" />
            <input type="hidden" name="wizard" value="tasks/videofragments" />
@@ -65,17 +81,17 @@
                   action="<mm:url referids="referrer,language,origin,startnodes" page="${jsps}list.jsp" />" 
                   method="post">
            <select name="searchfields">
-               <option value="videofragments.title,videofragments2.title"><mm:fieldlist nodetype="videofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+               <mm:write referid="videofieldoptions" />
            </select>
            <input type="text" name="searchvalue" />
-           <input type="hidden" name="wizard" value="tasks/itemizevideo" />
+           <input type="hidden" name="wizard" value="tasks/videoitemize" />
            <input type="hidden" name="nodepath" value="pools,videofragments,parent,videofragments2" />
            <input type="hidden" name="fields" value="videofragments2.number,videofragments.number,videofragments.title,videofragments2.title" />
            <input type="hidden" name="orderby" value="videofragments.title,videofragments2.title" />
           <input type="hidden" name="directions" value="down" />
           <input type="hidden" name="distinct" value="true" />
         </form><a href="javascript:document.forms['clippingvideo'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a><a href="<mm:url referids="referrer,origin,language" page="${jsps}wizard.jsp">
-            <mm:param name="wizard">tasks/itemizevideo</mm:param>
+            <mm:param name="wizard">tasks/videoitemize</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" /></a></td></tr>
 
@@ -88,7 +104,7 @@
   <tr>
    <td><%=m.getString("baseaudio")%></td><td><form style="display:inline; " id="baseaudio" action="<mm:url referids="referrer,language" page="${jsps}list.jsp" />" method="post">
            <select name="searchfields">
-               <option value="audiofragments.title"><mm:fieldlist nodetype="audiofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+              <mm:write referid="audiofieldoptions" />             
            </select>
            <input type="text" name="searchvalue" />
            <input type="hidden" name="wizard" value="tasks/audiofragments" />
@@ -113,10 +129,10 @@
 
    <tr><td><%=m.getString("clippingaudio")%></td><td><form style="display: inline; " id="clippingaudio" action="<mm:url referids="referrer,language" page="${jsps}list.jsp" />" method="post">
            <select name="searchfields">
-               <option value="audiofragments.title,audiofragments2.title"><mm:fieldlist nodetype="audiofragments" fields="title"><mm:fieldinfo type="guiname" /></mm:fieldlist></option>
+               <mm:write referid="audiofieldoptions" />
            </select>
            <input type="text" name="searchvalue" />
-           <input type="hidden" name="wizard" value="tasks/itemizeaudio" />
+           <input type="hidden" name="wizard" value="tasks/audioitemize" />
            <input type="hidden" name="nodepath" value="pools,audiofragments,parent,audiofragments2" />
            <input type="hidden" name="fields" value="audiofragments2.number,audiofragments.number,audiofragments.title,audiofragments2.title" />
            <input type="hidden" name="orderby" value="audiofragments.title,audiofragments2.title" />
@@ -126,7 +142,7 @@
           <input type="hidden" name="distinct" value="true" />
         </form><a href="javascript:document.forms['clippingaudio'].submit();"><img src="media/search.gif" alt="<%=m.getString("newstream")%>" border="0" /></a>
                <a href="<mm:url referids="referrer,language,origin" page="${jsps}wizard.jsp">
-            <mm:param name="wizard">tasks/itemizeaudio</mm:param>
+            <mm:param name="wizard">tasks/audioitemize</mm:param>
             <mm:param name="objectnumber">new</mm:param>
             </mm:url>"><img src="media/new.gif" border="0" alt="<%=m.getString("newitems")%>" /></a></td></tr>
 
@@ -158,10 +174,10 @@
             </mm:write>
           </mm:present>
           <mm:notpresent referid="notvalid">
-          <a href="<mm:url referids="fragment,language" page="demo.smil.jsp" />" target="new"> 
+          <a href="<mm:url referids="fragment,language" page="demo/index.jsp" />" target="new"> 
           </mm:notpresent>
              <mm:field name="title" write="true"><mm:isempty><mm:field node="base" name="title" /></mm:isempty></mm:field>
-          <mm:notpresent referid="notvalid">
+           <mm:notpresent referid="notvalid">
           </a>
           </mm:notpresent>
           <br />

@@ -10,17 +10,21 @@
   </head>
   <mm:cloud>
   <body background="images/bckplaceholder.gif">
+   <mm:node number="media.streams">
+   <span class="kop"><mm:field name="html(name)" /></span>
+   <mm:field name="html(description)" />
    <span class="kop"><mm:nodeinfo nodetype="pools" type="guitype" /></span>
-
+   
     <ul>
-    <mm:list nodes="media.streams"  path="pools,parent,pools2" orderby="pools2.name">
+    <mm:related path="parent,pools2" orderby="pools2.name">
       <mm:context>
        <mm:node id="origin" element="pools2">
          <li><a href="javascript:setContentFrame('<mm:url referids="origin,language" page="entrancepage.jsp" />');"><mm:field name="name" /></a></li>
        </mm:node>
        </mm:context>
-    </mm:list>
+    </mm:related>
     </ul>
+   </mm:node>
   </body>
   </mm:cloud>
 </html>
