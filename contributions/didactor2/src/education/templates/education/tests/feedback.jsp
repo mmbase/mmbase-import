@@ -49,6 +49,7 @@
   <mm:isgreaterthan referid="madetestscore" value="-1">
       Het behaalde aantal punten is: <mm:write referid="madetestscore"/><br/>
  
+    <mm:compare referid="feedback" value="0">
       <%-- if madestestscore larger or equal than requiredscore --%>
      <mm:islessthan referid="madetestscore" referid2="requiredscore" inverse="true">
        U bent geslaagd voor deze toets.<p/>
@@ -57,6 +58,7 @@
     <mm:islessthan referid="madetestscore" referid2="requiredscore" >
        U bent niet geslaagd voor deze toets.<p/>
      </mm:islessthan>
+     </mm:compare>
 
   <%-- NODE provider is now "tests" --%>
     <mm:relatednodescontainer type="feedback">
@@ -103,9 +105,9 @@
   <mm:import id="user_string"><mm:field name="html(firstname)"/> <mm:field name="html(lastname)"/></mm:import>
 </mm:node>
 
-<mm:notpresent referid="workgroup">
+<%--<mm:notpresent referid="workgroup">
   There is no workgroup for user <mm:write referid="user_string"/> in class <mm:node referid="class"><mm:field name="name"/></mm:node>
-</mm:notpresent>
+</mm:notpresent>--%>
 
 <mm:present referid="workgroup">
 <mm:node number="$workgroup">
