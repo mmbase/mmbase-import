@@ -167,7 +167,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
     public void run () {
 		com = (CommunicationInterface) new IrcUser( this );
 
-		if( com.connect( "irc.xs4all.nl", "mmbase", "#mmbase", "#mmbase") )
+		if( com.connect( "irc.xs4all.nl", "mmbase2", "#mmbase2", "#mmbase2") )
 		{
 			String l = "test";
 			DataInputStream dis = new DataInputStream( System.in );
@@ -233,10 +233,10 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 						fromNick=from.substring(0,from.indexOf('!'));
 					} catch (Exception e) {
 					}
-				}
+				} else
 				if(token.indexOf("]")==0) {
 					if(st.hasMoreTokens()) {
-						message = st.nextToken();	
+						this.message = st.nextToken();	
 					}
 				}
 			} 
