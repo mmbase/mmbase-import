@@ -18,6 +18,12 @@
      a key/value system. Its a optional tag.
    -->
   <properties>
+	<property name="keycode">hokusspokuspitaluspas</property>
+	
+	<!-- signal = if something goes wrong it will be printed
+	     secure = the mallanous transaction will not be executed
+	  -->
+    <property name="security">secure</property>
   </properties>
 
 </module>
