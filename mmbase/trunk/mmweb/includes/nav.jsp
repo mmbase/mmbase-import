@@ -71,9 +71,7 @@ count number off first line menus
 	int numberofportals = -1; // minus one since the current portal is excluded from the navigation
 	int numberofblanks = 3;
 	Vector currentPath = new Vector(); 
-%><mm:listnodes type="portals"
-	><% numberofportals++;
-%></mm:listnodes
+%><mm:listnodes type="portals" ><% numberofportals++; %></mm:listnodes
 ><mm:node number="$portal"
 ><mm:relatednodes type="pages" role="posrel" 
 	><mm:countrelations type="pages" jspvar="dummy" vartype="Integer" write="false"
@@ -129,11 +127,7 @@ while((depth>0||subPageFound)&&depth<10) {
 	<mm:node element="pages2"><mm:relatednodes type="pages" role="posrel" searchdir="destination"><% numberOfSubPages++; %></mm:relatednodes></mm:node>
       Menu<%= pageTree %> = new Array("<mm:field name="pages2.title" />","<mm:url escapeamps="false" page="/index.jsp?portal=$portal"><mm:param name="page"><%= pages2_number %></mm:param></mm:url>","",<%= numberOfSubPages %>,26,142);
 	     <mm:compare referid="page" value="<%= pages2_number %>">
-	      <% int c=0;
-		 while(c<d) {
-			     currentPath.add(lastPage[c]);
-			     c++;
-		  }
+	      <% for(int c=0; c<d; currentPath.add(lastPage[c++])) ;
 		%>
 	     </mm:compare>
 	  </mm:field>

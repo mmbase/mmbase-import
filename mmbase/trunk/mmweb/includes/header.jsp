@@ -1,3 +1,4 @@
+<% String componentTitle = "header";%>
 <%!
 
     // MM: hard node numbers ?!?!
@@ -32,10 +33,11 @@
         // this should never happen - parameters may be appended.
         return "/index.jsp?portal=" + pn + "&" + param;
     }
-%><% String componentTitle = "header";%>
+%>
 <%@include file="cachesettings.jsp" %>
+<% String userFullName = (String) session.getAttribute("user_node_name"); %>
 <cache:cache key="<%= cacheKey %>" time="<%= expireTime %>" scope="application">
-<!-- <mm:time time="now" format=":LONG.LONG" /> -->
+<!-- <mm:time time="now" format=":LONG.LONG" /> user(<%= userFullName %>) -->
 <html>
   <head>
      <link rel="stylesheet" type="text/css" href="<mm:url page="/css/mmbase-devnews.css" />" />
@@ -46,7 +48,7 @@
      <title>
         <mm:node number="$portal" notfound="skipbody">
 	  <mm:field name="name" />
-        </mm:node> - <mm:node number="$page" notfound="skipbody"><mm:field name="title" /></mm:node>
+        </mm:node> - <mm:node number="$page" notfound="skipbody"><mm:field name="title" /></mm:node><% if(userFullName != null) { %> - Welcome <%= userFullName %> <% } %>
       </title>
      <script type="text/javascript" language="javascript" src="/scripts/launchcenter.js"><!-- help IE --></script> 
      <meta http-equiv="imagetoolbar" content="no" />
@@ -87,7 +89,17 @@
 <tr>
 	<td><table border="0" width="100%" cellspacing="0" cellpadding="0" class="breadcrumbar">
 	  <tr>
-	    <td><span class="breadcrum"><%@ include file="/includes/breadcrums.jsp" %></span></td>
+	    <td width="100%"><span class="breadcrum"><%@ include file="/includes/breadcrums.jsp" %></span></td>
+<%  String rightContent = "";
+    if(userFullName != null) {
+      rightContent = "<a style=\"color: black;\" href=\"/login/mmaccount.jsp\">Welcome&nbsp;" + org.apache.commons.lang.StringUtils.replace(userFullName, " ", "&nbsp;") + "</a>&nbsp;";
+    } else {
+      String orgLocation = "/index.jsp" + ((request.getQueryString() == null) ? "" : ("?" + request.getQueryString()));
+      orgLocation = java.net.URLEncoder.encode(orgLocation);
+      rightContent = "<a style=\"color: black;\" href=\"/login/mmlogin.jsp?orgLocation=" + orgLocation + "\">login</a>";
+    }
+%>
+<td align="right"><%=rightContent%></td>
 	  </tr>
 	</table></td>
 </tr>

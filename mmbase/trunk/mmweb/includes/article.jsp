@@ -1,3 +1,5 @@
+
+<!-- START FILE: /includes/article.jsp -->
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tr>
   <td width="540" valign="top">	
@@ -33,3 +35,4 @@
   </td>
 </tr>
 </table>
+<!-- END FILE: /includes/article.jsp -->
