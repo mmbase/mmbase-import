@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -1538,7 +1538,7 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(
             sb, composite2, query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "NOT (m_images.m_number>news.m_number AND m_images.m_number>9876)"));
+        "NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876"));
         
         // Composite with compositeConstraint as childs.
         sb.setLength(0);
@@ -1546,8 +1546,8 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendCompositeConstraintToSql(
             sb, composite2, query, false, false, instance);
         assertTrue(sb.toString(), sb.toString().equals(
-        "(NOT (m_images.m_number>news.m_number AND m_images.m_number>9876)) AND "
-        + "(NOT (m_images.m_number>news.m_number AND m_images.m_number>9876))"));
+        "(NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876) AND "
+        + "(NOT (m_images.m_number>news.m_number) AND m_images.m_number>9876)"));
     }
     
     /** Test of appendFieldValue method, of class org.mmbase.storage.search.implementation.database.BasicSqlHandler. */
