@@ -11,8 +11,10 @@ about the Ant build tool.
   <!-- Initialization target                                               -->
   <!-- =================================================================== -->
   <target name="init">
+    <tstamp/>
     <property name="name"    value="mmbase"/>
-
+    <property name="version" value="${DSTAMP}"/>
+   
     <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
     <property name="build.compiler" value="classic"/>
     <property name="debug"          value="on"/>
@@ -22,9 +24,21 @@ about the Ant build tool.
     <property name="src.dir"     value="../../.."/>
     <property name="packages"    value="org.mmbase.*"/>
 
+    <!-- build dirs -->
     <property name="build.dir"     value="../../../../build"/>
     <property name="build.dest"     value="${build.dir}/classes"/>
     <property name="build.javadocs" value="${build.dir}/javadocs"/>
+
+    <!-- distribution dirs -->
+    <property name="dist.root"     value="../../../../dist"/>
+    <property name="dist.dir"     value="${dist.root}/${name}-${version}"/>
+    <property name="dist.lib" value="${dist.dir}/lib"/>
+    <property name="dist.src" value="${dist.dir}/src"/>
+    <property name="dist.log" value="${dist.dir}/log"/>
+    <property name="dist.config" value="${dist.dir}/config"/>
+    <property name="dist.docs" value="${dist.dir}/docs"/>
+    <property name="dist.scripts" value="${dist.dir}/scripts"/>
+    <property name="dist.html" value="${dist.dir}/html"/>
 
     <!-- needed packages -->
     <available property="xerces.present"
@@ -228,6 +242,26 @@ about the Ant build tool.
     />
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Creates the distribution                                            -->
+  <!-- =================================================================== -->
+
+  <target name="dist" depends="compile">
+
+    <mkdir dir="${dist.root}"/>
+    <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${dist.lib}"/>
+    <mkdir dir="${dist.src}"/>
+    <mkdir dir="${dist.log}"/>
+    <mkdir dir="${dist.config}"/>
+    <mkdir dir="${dist.docs}"/>
+    <mkdir dir="${dist.scripts}"/>
+    <mkdir dir="${dist.html}"/>
+
+    <copyfile src="${build.dir}/${name}.jar" dest="${dist.lib}/${name}.jar"/>
+
+  </target>
+ 
   <!-- =================================================================== -->
   <!-- Clean target                                                        -->
   <!-- =================================================================== -->
