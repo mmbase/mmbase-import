@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.126 2002-04-10 15:04:26 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.127 2002-04-12 12:33:34 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -433,13 +433,20 @@ public class MMObjectBuilder extends MMTable {
      *  Creates an alias for a node, provided the OAlias builder is loaded.
      *  @param number the to-be-aliased node's unique number
      *  @param alias the aliasname to associate with the object
+     *  @return if the alias could be created
      */
-    public void createAlias(int number,String alias) {
+    public boolean createAlias(int number, String alias) {
         if (mmb.getOAlias()!=null) {
-                MMObjectNode node=mmb.getOAlias().getNewNode("system");
-                node.setValue("name",alias);
-                node.setValue("destination",number);
-                node.insert("system");
+            if (getNode(alias) != null ) {  // this alias already exists! Don't add a new one!
+                return false;
+            } 
+            MMObjectNode node=mmb.getOAlias().getNewNode("system");
+            node.setValue("name",alias);
+            node.setValue("destination",number);
+            node.insert("system");
+            return true;
+        } else {
+            return false;
         }
     }
 
