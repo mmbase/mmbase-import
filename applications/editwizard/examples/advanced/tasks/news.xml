@@ -15,6 +15,7 @@
 		<relation destination="people" role="related" />
 		<relation destination="images" role="posrel" />
 		<relation destination="urls" role="posrel" />
+		<relation destination="news" role="posrel"  searchdir="destination" />
 	</action>
 
 	<form-schema id="basics">
@@ -125,6 +126,32 @@
           </relation>
 			</action>
 		</list>
+  </form-schema>
 
+	<form-schema id="news">
+		<field name="title" ftype="data" />
+    <title>Related news (example of relations to same node-type)</title>
+
+    <list role="posrel" destination="news" ordertype="number" orderby="field[@name='pos']">
+      <title>Related articles</title>
+
+      <item>
+        <field name="title"    ftype="data"/>
+      </item>
+
+      <command name="search" nodepath="news" fields="title" orderby="title" age="-1">
+	  		<prompt>Search for news</prompt>
+        <search-filter>
+          <name>Title</name>
+          <search-fields>title|subtitle</search-fields>
+        </search-filter>
+      </command>
+
+			<action type="create">
+	      <relation role="posrel" destinationtype="news">
+  	      <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+         </relation>
+			</action>
+		</list>
   </form-schema>
 </wizard-schema>
