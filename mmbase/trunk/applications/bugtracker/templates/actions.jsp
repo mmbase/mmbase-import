@@ -3,6 +3,7 @@
 <mm:present referid="action">
 <mm:cloud logon="admin" method="delegate" authenticate="class">
 
+<mm:url id="baseurl" write="false" referids="parameters,$parameters" page="<%=request.getScheme() + "://" + request.getServerName() + request.getContextPath() +  request.getRequestURI() %>" />
  <mm:import id="works">yep</mm:import>
 
 <mm:compare value="sendaccountinfo" referid="action">
@@ -211,8 +212,7 @@ issue      :<mm:field name="issue" escape="none"/>
 bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
 rationale  :<mm:field name="rationale"/>
 
-
-           <mm:url referids="parameters,$parameters" page="<%=request.getScheme() %>://<%=request.getServerName() %><%=request.getContextPath()%><%= request.getRequestURI() %>">
+<mm:url referid="baseurl" escapeamps="false">
                <mm:param name="btemplate" value="fullview.jsp" />
                <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
           </mm:url>
@@ -305,7 +305,7 @@ issue      :<mm:field name="issue" escape="none"/>
 bug status : <mm:field name="bstatus"><mm:compare value="1">Open</mm:compare><mm:compare value="2">Accepted</mm:compare><mm:compare value="3">Rejected</mm:compare><mm:compare value="4">Pending</mm:compare><mm:compare value="5">Integrated</mm:compare><mm:compare value="6">Closed</mm:compare></mm:field>
 rationale  :<mm:field name="rationale"/>
 
-<mm:url referids="parameters,$parameters" page="<%=request.getScheme() %>://<%=request.getServerName() %><%=request.getContextPath()%><%= request.getRequestURI() %>">
+<mm:url referid="baseurl" escapeamps="false">
     <mm:param name="btemplate" value="fullview.jsp" />
     <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
 </mm:url>
@@ -452,7 +452,7 @@ user <mm:node referid="newuser"><mm:field name="account"/></mm:node> commented
 <mm:write referid="newtext" escape="none"/>
 
 
- <mm:url referids="parameters,$parameters" page="<%=request.getScheme() %>://<%=request.getServerName() %><%=request.getContextPath()%><%= request.getRequestURI() %>">
+<mm:url referid="baseurl" escapeamps="false">
      <mm:param name="btemplate" value="fullview.jsp" />
      <mm:param name="bugnumber"><mm:field name="bugid" /></mm:param>
 </mm:url>
