@@ -107,6 +107,19 @@
     </div>
   </xsl:template>
 
+  <!-- Sort glossary entries -->
+  <xsl:template match="glosslist">
+    <div xmlns="http://www.w3.org/1999/xhtml" class="{name(.)}">
+      <xsl:call-template name="anchor"/>
+      <dl>
+        <xsl:apply-templates>
+          <xsl:sort select="glossterm" />
+        </xsl:apply-templates>
+      </dl>
+    </div>
+  </xsl:template>
+
+
   <!-- MMBase specific footer on every page -->
   <xsl:template name="user.footer.content">
     <hr/>
