@@ -70,7 +70,7 @@ public class MediaUrlComposer {
      */
     private synchronized void readConfiguration(File configFile) {
         
-        XMLBasicReader reader = new XMLBasicReader(configFile.toString());
+        XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         mimeMapping = new Hashtable();
         
         // reading filterchain information

@@ -10,7 +10,7 @@
 		-->
 	<chain>
 		<filter>sortProviders</filter>
-		<filter>nl.vpro.mmbase.util.media.OmroepFilter</filter>
+		<!-- filter>nl.vpro.mmbase.util.media.OmroepFilter</filter -->
 	</chain>
 
 	<!-- The filerOnHost filter can be used when you want to redirect certain domains
@@ -18,8 +18,8 @@
 	specified by this dfault filter will be used.
 	-->
 	<filterOnHost>
-		<hostfilter user="*" provider="streams.omroep.nl" />
-		<hostfilter user="*.es" provider="streams.omroep.es" />
+		<hostfilter user="*"         provider="streams.omroep.nl" />
+		<hostfilter user="*.es"      provider="streams.omroep.es" />
 		<hostfilter user="*.vpro.nl" provider="streams.vpro.nl" />
 	</filterOnHost>
 
