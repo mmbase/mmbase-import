@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.7 2002-04-17 13:17:39 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.8 2002-06-21 08:10:16 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -176,45 +176,17 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Return a field's database type. The returned value is one of the following values
-     * declared in FieldDefs:
-     * TYPE_STRING,
-     * TYPE_INTEGER,
-     * TYPE_BYTE,
-     * TYPE_FLOAT,
-     * TYPE_DOUBLE,
-     * TYPE_LONG,
-     * TYPE_NODE or
-     * TYPE_UNKNOWN (returned if the original builder of the field cannot be determined)
+     * Return a field.
      * @param the requested field's name
-     * @return the field's type.
+     * @return the field
      */
-    public int getDBType(String fieldName) {
+    public FieldDefs getField(String fieldName) {
         String buildername=getBuilderNameFromField(fieldName);
         if (buildername.length()>0) {
             MMObjectBuilder bul=mmb.getMMObject(buildername);
-            return bul.getDBType(getFieldNameFromField(fieldName));
+            return bul.getField(getFieldNameFromField(fieldName));
         }
-        return FieldDefs.TYPE_UNKNOWN;
-    }
-
-    /**
-     * Return a field's database state. The returned value is one of the following values
-     * declared in FieldDefs:
-     * DBSTATE_VIRTUAL,
-     * DBSTATE_PERSISTENT,
-     * DBSTATE_SYSTEM, or
-     * DBSTATE_UNKNOWN (returned if the original builder of the field cannot be determined)
-     * @param the requested field's name
-     * @return the field's type.
-     */
-    public int getDBState(String fieldName) {
-        String buildername=getBuilderNameFromField(fieldName);
-        if (buildername.length()>0) {
-            MMObjectBuilder bul=mmb.getMMObject(buildername);
-            return bul.getDBState(getFieldNameFromField(fieldName));
-        }
-        return FieldDefs.DBSTATE_UNKNOWN;
+        return null;
     }
 
     /**

@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.143 2002-06-17 13:12:00 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.144 2002-06-21 08:10:16 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1513,7 +1513,7 @@ public class MMObjectBuilder extends MMTable {
             log.error("getDBType(): fielddefs are null on object : "+tableName);
             return FieldDefs.TYPE_UNKNOWN;
         }
-        FieldDefs node=(FieldDefs)fields.get(fieldName);
+        FieldDefs node=getField(fieldName);
         if (node==null) {
             // log warning, except for virtual builders
             if (!virtual) log.warn("getDBType(): Can't find fielddef on : "+fieldName+" builder="+tableName);
@@ -1533,8 +1533,8 @@ public class MMObjectBuilder extends MMTable {
      * @return the field's type.
      */
     public int getDBState(String fieldName) {
-        if (fields==null) return FieldDefs.DBSTATE_PERSISTENT;
-        FieldDefs node=(FieldDefs)fields.get(fieldName);
+        if (fields==null) return FieldDefs.DBSTATE_UNKNOWN;
+        FieldDefs node=getField(fieldName);
         if (node==null) return FieldDefs.DBSTATE_UNKNOWN;
         return node.getDBState();
     }
