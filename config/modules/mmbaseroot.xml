@@ -29,10 +29,8 @@
 
 	<!--
 	name="storagemanagerfactory" defines what factory to use for accessing the storage devices.
-	Currently. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices
-				using JDBC.
-				Uncomment this property to use the storagemanagerfactory code, rather than te old (soon to be depricated)
-	support classes.
+	Currently. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices using JDBC.
+	Comment this property to use the old database support classes (which are deprecated).
 	-->
 	<property name="storagemanagerfactory">org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory</property>
 
@@ -136,16 +134,17 @@
 	compatibility. Perhaps this will change to UTF-8 once this is
 	tested well.
 	-->
-				<!-- since, when not mentioned it will be ISO-8859-1, all new systems will get urf-8 -->
+  <!-- since, when not mentioned it will be ISO-8859-1, all new systems will get utf-8 -->
 	<property name="encoding">UTF-8</property>
-
-	<!--
-	name="xmlbuilderwriterdir"
-	If specified, MMBase will write xml configuration files  to this directory when loading builders.
-	This can be useful if you want to convert old format builder xmls to the new format.
-
-	-->
-	<!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
+ 
+  <!--
+  name="xmlbuilderwriterdir"
+  If specified, MMBase will write xml configuration files  to this directory when loading builders.
+  This can be useful if you want to convert old format builder xmls to the new format.
+  
+  -->
+  <!-- property name="xmlbuilderwriterdir">/home/guest/schooltv/tmpbul/</property -->
+  
 
 	</properties>
 </module>
