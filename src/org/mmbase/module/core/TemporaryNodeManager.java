@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.21 2001-04-18 09:41:03 install Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.22 2001-07-04 13:08:56 michiel Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 
@@ -89,7 +89,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		if (node==null) {
             log.debug("getNode tmp not node found " + key);
 			node=bul.getNode(key);
-			if(node==null) throw new java.lang.RuntimeException("HUGE ERROR, NODE NOT FOUND !!" + key);
+			if(node==null) throw new java.lang.RuntimeException("Node not found !! (key = '" + key + "')");
 		}
 		node.parent.checkAddTmpField("_number");
 		if (node.parent instanceof InsRel) {
