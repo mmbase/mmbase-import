@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>multil</shortname>
+	<uri>no uri</uri>
+	<info>Multilingual Tag library</info>
+	
+	<tag>
+		<name>field</name>
+		<tagclass>org.mmbase.application.multilngual.tag.FieldTag</tagclass>
+		<teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
+		<info>
+			Gets the field `name' from node `node' (can also be list).
+			Translates the field based on the locale and presence of the translation
+			For more info see the mm:field tag
+	    </info>
+		
+		<attribute>
+			<name>jspvar</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>vartype</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>write</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>field</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>node</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>context</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>referid</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>locale</name>
+		<tagclass>org.mmbase.application.multilngual.tag.LocaleTag</tagclass>
+		<teiclass>org.mmbase.bridge.jsp.taglib.LocaleTEI</teiclass>
+		<info>
+		See mm:locale tag for info.
+    	</info>
+
+		<attribute>
+			<name>jspvar</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>url</name>
+		<tagclass>org.mmbase.application.multilngual.tag.URLTag</tagclass>
+		<teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+		<info>See mm:url tag for info. This only adds the country en language parameters</info>
+
+		  <attribute>
+		     <name>jspvar</name>
+		     <required>false</required>
+		     <rtexprvalue>false</rtexprvalue>
+		  </attribute>
+		  <attribute>
+		     <name>vartype</name>
+		     <required>false</required>
+		     <rtexprvalue>false</rtexprvalue>
+		  </attribute>
+		  <attribute>
+		     <name>write</name>
+		     <required>false</required>
+		     <rtexprvalue>true</rtexprvalue>
+		  </attribute>
+		  <attribute>
+         <name>context</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>id</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>cloud</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>referids</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>page</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>escapeamps</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+	</tag>
+
+</taglib>
