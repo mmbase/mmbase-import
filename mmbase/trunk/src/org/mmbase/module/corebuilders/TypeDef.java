@@ -10,10 +10,9 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.*;
-import java.sql.*;
-import org.mmbase.module.database.*;
 import org.mmbase.module.core.*;
-import org.mmbase.util.*;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.StringTagger;
 import org.mmbase.module.ParseException;
 import org.mmbase.util.logging.*;
 
@@ -26,14 +25,26 @@ import org.mmbase.util.logging.*;
  */
 public class TypeDef extends MMObjectBuilder {
 
-    /**
-    * Logger routine
-    */
+    // Logger routine
     private static Logger log = Logging.getLoggerInstance(TypeDef.class.getName());
 
-    Hashtable nameCache; 						// object number -> typedef name
-    Hashtable numberCache=new Hashtable(); 		// typedef name -> object number
-    Hashtable descriptionCache; 				// object number -> typedef description
+    /**
+     * Number-to-name cache.
+     * @duplicate should be moved to org.mmbase.cache
+     */
+    Hashtable nameCache; // object number -> typedef name
+
+    /**
+     * Name-to-number cache.
+     * @duplicate should be moved to org.mmbase.cache
+     */
+    Hashtable numberCache=new Hashtable(); // typedef name -> object number
+
+    /**
+     * Number-to-description cache.
+     * @deprecated not used.
+     */
+    Hashtable descriptionCache;
     public boolean broadcastChanges=false;
     public Vector typedefsLoaded=new Vector();	// Contains the names of all active builders
 
@@ -44,102 +55,75 @@ public class TypeDef extends MMObjectBuilder {
         super.init();
         mmb.mmobjs.put(tableName,this);
         readCache(); // read type info into the caches
-        return(true);
+        return true;
     }
-
-
-    public boolean readCache() {
-        try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
-            //System.out.println("SELECT * FROM "+mmb.baseName+"_"+tableName);
-            ResultSet rs=stmt.executeQuery("SELECT * FROM "+mmb.baseName+"_"+tableName);
-            nameCache=new Hashtable();
-            //numberCache=new Hashtable();
-            descriptionCache=new Hashtable();
-            Integer number;String name,desc;
-            while(rs.next()) {
-                number=new Integer(rs.getInt(1));
-                name=rs.getString(4);
-                desc=rs.getString(5);
-                // System.out.println("NUMBER="+number+" NAME="+name+" DESC="+desc);
-                numberCache.put(name,number);
-                nameCache.put(number,name);
-                if (desc==null) desc="";
-                descriptionCache.put(number,desc);
-            }
-            stmt.close();
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return(true);
-    }
-
-
-    boolean checkRootNode() {
-        try {
-            MultiConnection con=mmb.getConnection();
-            Statement stmt=con.createStatement();
-            ResultSet rs=stmt.executeQuery("SELECT number FROM "+mmb.baseName+"_object where number=0");
-            if (rs.next()) {
-                stmt.close();
-                con.close();
-                return(true);
-            } else {
-                stmt.close();
-                con.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return(false);
-    }
-
 
     /**
-    * obtain the type value of the requested type, returns -1 if not defined.
-    */
+     * Fill the typedef caches with the initial values.
+     * Caches filled are a number-to-name, name-to-number, and
+     * number-to-description cache
+     * @duplicate should be moved to org.mmbase.cache
+     */
+    public boolean readCache() {
+        Integer number;
+        String name,desc;
+        nameCache=new Hashtable();
+        descriptionCache=new Hashtable();
+        for (Enumeration e=search(null);e.hasMoreElements();) {
+            MMObjectNode n= (MMObjectNode)e.nextElement();
+            number=n.getIntegerValue("number");
+            name=n.getStringValue("name");
+            desc=n.getStringValue("description");
+            numberCache.put(name,number);
+            nameCache.put(number,name);
+            descriptionCache.put(number,desc);
+         }
+        return true;
+    }
+
+    /**
+     * Obtain the type value of the requested type, returns -1 if not defined.
+     */
     public int getIntValue(String value) {
         Integer result=(Integer)numberCache.get(value);
         if (result!=null) {
-            return(result.intValue());
+            return result.intValue();
         } else {
             readCache();
             result=(Integer)numberCache.get(value);
             if (result!=null) {
-                return(result.intValue());
+                return result.intValue();
             }
-            return(-1);
+            return -1;
         }
     }
 
     /**
-    * obtain the type value of the requested type, returns -1 if not defined.
-    */
+     * obtain the type value of the requested type, returns -1 if not defined.
+     */
     public String getValue(int type) {
-        return((String)nameCache.get(new Integer(type)));
+        return (String)nameCache.get(new Integer(type));
     }
 
 
     /**
-    * obtain the type value of the requested type, returns -1 if not defined.
-    */
+     * obtain the type value of the requested type, returns -1 if not defined.
+     */
     public String getValue(String type) {
         try {
-            return((String)nameCache.get(new Integer(Integer.parseInt(type))));
+            return (String)nameCache.get(new Integer(Integer.parseInt(type)));
         } catch(Exception e) {
-            return("unknown");
+            return "unknown";
         }
     }
 
     public String getDutchSName(String name) {
-        if (name==null) return("ERROR");
+        if (name==null) return "ERROR";
         MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(name);
         if (bul!=null) {
-            return(bul.getDutchSName());
+            return bul.getDutchSName();
         } else {
-            return("inactive ("+name+".xml)");
+            return "inactive ("+name+".xml)";
         }
     }
 
@@ -149,14 +133,14 @@ public class TypeDef extends MMObjectBuilder {
         while (enum.hasMoreElements()){
             MMObjectBuilder bul=(MMObjectBuilder)enum.nextElement();
             if (bul.getDutchSName().equals(dutchname)) {
-                return(bul.tableName);
+                return bul.tableName;
             }
         }
-        return("inactive ("+dutchname+".xml)");
+        return "inactive ("+dutchname+".xml)";
     }
 
     public boolean isRelationTable(String name) {
-        return(mmb.getRelDef().isRelationTable(name));
+        return mmb.getRelDef().isRelationTable(name);
     }
 
     public Object getValue(MMObjectNode node,String field) {
@@ -169,21 +153,19 @@ public class TypeDef extends MMObjectBuilder {
                 // state 1 is up and running
                 node.setValue("state",1);
             }
-            //System.out.println("STATE="+val+" "+node);
-            return(""+val);
+            return ""+val;
         } else if (field.equals("dutchs(name)")) {
             String name=node.getStringValue("name");
-            return(getDutchSName(name));
+            return getDutchSName(name);
         }
         return super.getValue(node,field);
     }
-
 
     public boolean fieldLocalChanged(String number,String builder,String field,String value) {
         if (field.equals("state")) {
             if (value.equals("4")) {
                 // reload request
-                System.out.println("Reload wanted on : "+builder);
+                log.service("Reload wanted on : "+builder);
                 // perform reload
                 MMObjectNode node=getNode(number);
                 String objectname=node.getStringValue("name");
@@ -193,13 +175,11 @@ public class TypeDef extends MMObjectBuilder {
                 }
             }
         }
-        return(true);
+        return true;
     }
 
-
-
     public boolean reloadBuilder(String objectname) {
-        System.out.println("MMBASE -> Trying to reload builder : "+objectname);
+        log.service("MMBASE -> Trying to reload builder : "+objectname);
         // first get all the info we need from the builder allready running
         MMObjectBuilder oldbul=mmb.getMMObject(objectname);
         String classname=oldbul.getClassName();
@@ -208,10 +188,10 @@ public class TypeDef extends MMObjectBuilder {
 
         try {
             Class newclass=Class.forName("org.mmbase.module.builders."+classname);
-                System.out.println("TypeDef -> Loaded load class : "+newclass);
+            log.debug("TypeDef -> Loaded load class : "+newclass);
 
             MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
-            System.out.println("TypeDef -> started : "+newclass);
+            log.debug("TypeDef -> started : "+newclass);
 
             bul.setMMBase(mmb);
             bul.setTableName(objectname);
@@ -221,10 +201,10 @@ public class TypeDef extends MMObjectBuilder {
             bul.init();
             mmb.mmobjs.put(objectname,bul);
             } catch (Exception e) {
-                e.printStackTrace();
-                return(false);
+                log.error(Logging.stackTrace(e));
+                return false;
             }
-            return(true);
+            return true;
         }
 
 
@@ -232,44 +212,43 @@ public class TypeDef extends MMObjectBuilder {
         if (node!=null) {
             String name=node.getStringValue("name");
             if (name==null) {
-                System.out.println("TypeDef-> problem node "+node);
-                return("problem");
+                log.error("TypeDef-> problem node "+node);
+                return "problem";
             } else {
-                return(name);
+                return name;
             }
         } else {
-            System.out.println("TypeDef-> problem node empty");
-            return("problem");
+            log.error("TypeDef-> problem node empty");
+            return "problem";
         }
     }
 
-
     /**
-    *	Handle a $MOD command
-    */
+     *	Handle a $MOD command
+     */
     public String replace(scanpage sp, StringTokenizer tok) {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("D2E")) {
                 if (tok.hasMoreTokens()) {
-                    return(getEnglishName(tok.nextToken()));
+                    return getEnglishName(tok.nextToken());
                 }
             }
         }
-        return("");
+        return "";
     }
 
-
     /**
-    * return the database type of the objecttype
-    */
+     * Return the database type of the objecttype
+     * @deprecated-now use default behavior
+     */
     public int getDBType(String fieldName) {
-        if (fieldName.equals("owner")) return(FieldDefs.TYPE_STRING);
-        if (fieldName.equals("otype")) return(FieldDefs.TYPE_INTEGER);
-        if (fieldName.equals("number")) return(FieldDefs.TYPE_INTEGER);
-        if (fieldName.equals("name")) return(FieldDefs.TYPE_STRING);
-        if (fieldName.equals("description")) return(FieldDefs.TYPE_STRING);
-        return(-1);
+        if (fieldName.equals("owner")) return FieldDefs.TYPE_STRING;
+        if (fieldName.equals("otype")) return FieldDefs.TYPE_INTEGER;
+        if (fieldName.equals("number")) return FieldDefs.TYPE_INTEGER;
+        if (fieldName.equals("name")) return FieldDefs.TYPE_STRING;
+        if (fieldName.equals("description")) return FieldDefs.TYPE_STRING;
+        return -1;
     }
 
     public void loadTypeDef(String name) {
@@ -288,8 +267,7 @@ public class TypeDef extends MMObjectBuilder {
         }
     }
 
-    public Vector  getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
-        System.out.println("Tataaaaa");
+    public Vector getList(scanpage sp,StringTagger tagger, StringTokenizer tok) throws ParseException {
         if (tok.hasMoreTokens()) {
             String cmd=tok.nextToken();
             if (cmd.equals("builders")) {
