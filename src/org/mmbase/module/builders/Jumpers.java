@@ -21,7 +21,7 @@ import org.mmbase.util.*;
  */
 public class Jumpers extends MMObjectBuilder {
 
-	public boolean debug = true;
+	public boolean debug = false;
 
 	LRUHashtable jumpCache = new LRUHashtable(1000);
 
@@ -65,8 +65,10 @@ public class Jumpers extends MMObjectBuilder {
 				ikey=-1;
 			}
 			url = (String)jumpCache.get(key);
-			if (url!=null) debug("Cache hit on "+key);
-			else debug("Cache miss on "+key);
+			if (debug) {
+				if (url!=null) debug("Cache hit on "+key);
+				else debug("Cache miss on "+key);
+			}
 			if (url==null) {
 				// Search jumpers with name;
 				debug("Search jumpers with name="+key);
