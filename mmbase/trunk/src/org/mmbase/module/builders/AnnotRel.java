@@ -1,4 +1,5 @@
 /*
+$Id: AnnotRel.java,v 1.4 2000-02-24 14:15:51 wwwtech Exp $
 
 VPRO (C)
 
@@ -6,6 +7,7 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.builders;
 
@@ -24,6 +26,7 @@ import org.mmbase.util.RelativeTime;
 /**
  * @author David van Zeventer
  * @version 8 Dec 1999 
+ * @$Revision $Date
  */
 public class AnnotRel extends InsRel {
 
