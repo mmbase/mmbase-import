@@ -137,9 +137,9 @@
 
 <mm:compare value="changeforum" referid="action">
 	<mm:import externid="name" />
-	<mm:import externid="language" />
+	<mm:import externid="newlang" />
 	<mm:import externid="description" />
-	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,language,description" >
+	<mm:booleanfunction set="mmbob" name="changeForum" referids="forumid,name,newlang,description" >
 	</mm:booleanfunction>
 </mm:compare>
 
