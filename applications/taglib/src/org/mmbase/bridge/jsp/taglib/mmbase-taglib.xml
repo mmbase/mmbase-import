@@ -415,27 +415,6 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
 	  id and an underscore.
         </info>	
     </attribute>    
-    <attribute>
-        <name>type</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <info>A comma-separated list of NodeManagers and/or RelationManagers. The list forms a &quot;chain of relations&quot;.</info>
-        <examplevalue>
-          <value>mags</value>
-        </examplevalue>
-        <examplevalue>
-          <value>mags,news</value>
-        </examplevalue>
-        <examplevalue>
-          <value>mags,related,news</value>
-        </examplevalue>
-        <examplevalue>
-          <value>mags,news,images</value>
-        </examplevalue>
-        <examplevalue>
-          <value>mags,related,news,related,images</value>
-        </examplevalue>
-    </attribute>
   </tag>
   <tag>
     <name>field</name>
@@ -704,5 +683,36 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <value>false</value>
       </possiblevalue>
     </attribute>
+  </tag>
+  <tag>
+    <name>deleteNode</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.DeleteNodeTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
+    <info>
+      This tag extends the `node' tag, and is precisely the same. The
+      only difference is that after the body the node will be removed.
+    </info>
+    <attribute>
+        <name>number</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>parameter</name>
+        <required>false</required>
+        <requirednote>Either 'number' or 'parameter' must be supplied.</requirednote>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>fields</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>    
   </tag>
 </taglib>
