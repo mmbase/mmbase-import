@@ -9,24 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import javax.servlet.jsp.*;
+
+import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.containers.*;
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 
 /**
  * The size of a list or of a nodelistcontainer (then the query is consulted).
  *
  * @author Michiel Meeuwissen
- * @version $Id: SizeTag.java,v 1.19 2003-11-19 16:57:42 michiel Exp $ 
+ * @version $Id: SizeTag.java,v 1.20 2003-12-03 06:57:39 keesj Exp $ 
  */
 
 public class SizeTag extends ListReferrerTag implements Writer, NodeListContainerReferrer {

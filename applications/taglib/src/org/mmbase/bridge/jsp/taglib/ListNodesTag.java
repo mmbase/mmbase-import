@@ -15,7 +15,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.containers.ListNodesContainerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import java.util.List;
 import org.mmbase.util.logging.*;
 
 /**
@@ -24,15 +23,14 @@ import org.mmbase.util.logging.*;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListNodesTag.java,v 1.18 2003-11-07 10:40:30 michiel Exp $
+ * @version $Id: ListNodesTag.java,v 1.19 2003-12-03 06:57:38 keesj Exp $
  */
 
 public class ListNodesTag extends AbstractNodeListTag {
     private static final Logger log = Logging.getLoggerInstance(ListNodesTag.class);
 
-    protected Attribute type      = Attribute.NULL;
+    protected Attribute type = Attribute.NULL;
     protected Attribute container = Attribute.NULL;
-
 
     public void setContainer(String c) throws JspTagException {
         container = getAttribute(c);
@@ -44,7 +42,6 @@ public class ListNodesTag extends AbstractNodeListTag {
     public void setType(String t) throws JspTagException {
         type = getAttribute(t);
     }
-
 
     protected NodeManager nodeManager;
 
@@ -60,7 +57,6 @@ public class ListNodesTag extends AbstractNodeListTag {
      */
     protected NodeList getNodes() throws JspTagException {
         ListNodesContainerTag c = (ListNodesContainerTag) findParentTag(ListNodesContainerTag.class, (String) container.getValue(this), false);
-
 
         NodeList nodes;
         if (c == null || type != Attribute.NULL) {
@@ -85,8 +81,8 @@ public class ListNodesTag extends AbstractNodeListTag {
     /**
      * Performs the search
      */
-    public int doStartTag() throws JspTagException{
-        int superresult =  doStartTagHelper(); // the super-tag handles the use of referid...
+    public int doStartTag() throws JspTagException {
+        int superresult = doStartTagHelper(); // the super-tag handles the use of referid...
         if (superresult != NOT_HANDLED) {
             return superresult;
         }
@@ -95,4 +91,3 @@ public class ListNodesTag extends AbstractNodeListTag {
     }
 
 }
-

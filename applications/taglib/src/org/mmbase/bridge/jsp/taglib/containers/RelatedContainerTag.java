@@ -9,24 +9,20 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.bridge.util.Queries;
-import org.mmbase.storage.search.*;
-import org.mmbase.util.StringSplitter;
-
-import java.util.*;
-import javax.servlet.jsp.JspTagException;
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.storage.search.Step;
+import org.mmbase.util.logging.*;
 
 /**
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: RelatedContainerTag.java,v 1.4 2003-10-16 07:25:11 pierre Exp $
+ * @version $Id: RelatedContainerTag.java,v 1.5 2003-12-03 06:57:41 keesj Exp $
  */
 public class RelatedContainerTag extends NodeReferrerTag implements NodeListContainer {
 
