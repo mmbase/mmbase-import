@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -949,6 +949,32 @@ public class BasicSqlHandlerTest extends TestCase {
         assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_title NOT IN ('AsDf','qWeR')"));
 
+        // Test for BasicFieldValueBetweenConstraint (String)
+        BasicFieldValueBetweenConstraint constraint2a
+            = new BasicFieldValueBetweenConstraint(field1, "AsDf", "jkLM");
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint2a, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_title BETWEEN 'AsDf' AND 'jkLM'"));
+        
+        sb.setLength(0);
+        constraint2a.setInverse(true); // Set inverse.
+        instance.appendConstraintToSql(sb, constraint2a, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_title NOT BETWEEN 'AsDf' AND 'jkLM'"));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint2a, query, true, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_title BETWEEN 'AsDf' AND 'jkLM'"));
+        
+        sb.setLength(0);
+        constraint2a.setCaseSensitive(false); // Set case insensitive.
+        instance.appendConstraintToSql(sb, constraint2a, query, true, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "LOWER(m_images.m_title) BETWEEN 'asdf' AND 'jklm'"));
+        
         // Test for BasicFieldValueInConstraint (integer).
         BasicFieldValueInConstraint constraint3 
         = new BasicFieldValueInConstraint(field2);
@@ -1000,6 +1026,33 @@ public class BasicSqlHandlerTest extends TestCase {
         instance.appendConstraintToSql(sb, constraint3, query, false, false);
         assertTrue(sb.toString(), sb.toString().equals(
         "m_images.m_number NOT IN (1234,5678)"));
+        
+        // Test for BasicFieldValueBetweenConstraint (integer)
+        BasicFieldValueBetweenConstraint constraint3a
+            = new BasicFieldValueBetweenConstraint(
+                field2, new Integer(123), new Double(456.0));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint3a, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_number BETWEEN 123 AND 456"));
+        
+        sb.setLength(0);
+        constraint3a.setInverse(true); // Set inverse.
+        instance.appendConstraintToSql(sb, constraint3a, query, false, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_number NOT BETWEEN 123 AND 456"));
+        
+        sb.setLength(0);
+        instance.appendConstraintToSql(sb, constraint3a, query, true, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_number BETWEEN 123 AND 456"));
+        
+        sb.setLength(0);
+        constraint3a.setCaseSensitive(false); // Set case insensitive, must be ignored.
+        instance.appendConstraintToSql(sb, constraint3a, query, true, false);
+        assertTrue(sb.toString(), sb.toString().equals(
+            "m_images.m_number BETWEEN 123 AND 456"));
         
         // Test for BasicFieldValueConstraint (string).
         BasicFieldValueConstraint constraint6 
