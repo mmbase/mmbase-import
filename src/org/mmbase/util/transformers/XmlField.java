@@ -15,7 +15,7 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.14 2003-07-10 07:23:27 michiel Exp $
+ * @version $Id: XmlField.java,v 1.15 2003-09-17 19:37:36 michiel Exp $
  * @todo   THIS CLASS NEEDS A CONCEPT! It gets a bit messy.
  */
 
@@ -306,6 +306,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
     }
 
     /**
+     * Only escape, clean up.
      * @since MMBase-1.7
      */
     private static void handleFormat(StringObject obj, boolean format) {
@@ -315,7 +316,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
             cleanupText(obj);
         }
     }
-    private static StringObject prepareDate(String data) {
+    private static StringObject prepareData(String data) {
         StringObject obj = new StringObject(Xml.XMLEscape(data));
         obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
         return obj;
@@ -362,7 +363,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
 
     public static String richToXML(String data, boolean format) {
-        StringObject obj = prepareDate(data);
+        StringObject obj = prepareData(data);
         handleRich(obj, true);
         handleNewlines(obj);
         handleFormat(obj, format);
@@ -377,7 +378,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
 
     public static String poorToXML(String data, boolean format) {
-        StringObject obj = prepareDate(data);
+        StringObject obj = prepareData(data);
         handleRich(obj, true);
         handleFormat(obj, format);
         return obj.toString();
@@ -394,7 +395,7 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      */
 
     public static String richToHTMLBlock(String data) {
-        StringObject obj = prepareDate(data);
+        StringObject obj = prepareData(data);
         handleRich(obj, false);   // no <section> tags
         handleNewlines(obj);
         handleFormat(obj, false); 
@@ -407,9 +408,10 @@ public class XmlField extends ConfigurableStringTransformer implements CharTrans
      * @since MMBase-1.7
      */
     public static String poorToHTMLInline(String data) {
-        StringObject obj = prepareDate(data);
+        StringObject obj = prepareData(data);
         // don't add newlines.
         handleFormat(obj, false);
+        handleEmph(obj);
         return obj.toString();
     }
 
