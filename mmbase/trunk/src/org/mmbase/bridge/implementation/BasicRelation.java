@@ -71,8 +71,8 @@ public class BasicRelation extends BasicNode implements Relation {
         if (node.getCloud() != cloud) {
             throw new BasicBridgeException("Source and relation are not in the same transaction or from different clouds");
         }
-        Edit(ACTION_EDIT);
-        ((BasicNode)node).Edit(ACTION_LINK);
+        edit(ACTION_EDIT);
+        ((BasicNode)node).edit(ACTION_LINK);
         int source=node.getIntValue("number");
         if (source==-1) {
             // set a temporary field, transactionmanager resolves this
@@ -88,8 +88,8 @@ public class BasicRelation extends BasicNode implements Relation {
         if (node.getCloud() != cloud) {
             throw new BasicBridgeException("Destination and relation are not in the same transaction or from different clouds");
         }
-        Edit(ACTION_EDIT);
-        ((BasicNode)node).Edit(ACTION_LINK);
+        edit(ACTION_EDIT);
+        ((BasicNode)node).edit(ACTION_LINK);
         int dest=node.getIntValue("number");
         if (dest==-1) {
             // set a temporary field, transactionmanager resolves this
