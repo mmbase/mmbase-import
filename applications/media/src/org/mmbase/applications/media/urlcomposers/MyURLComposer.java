@@ -21,19 +21,19 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyURLComposer.java,v 1.1 2003-02-03 17:50:33 michiel Exp $
+ * @version $Id: MyURLComposer.java,v 1.2 2003-02-03 18:06:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class MyURLComposer extends MediaURLComposer {
     
     private static Logger log = Logging.getLoggerInstance(MyURLComposer.class.getName());
 
-    public MyURLComposer(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
-        super(composer, provider, source, fragment, info);
+    public MyURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+        super(provider, source, fragment, info);
     }
     public Format getFormat() {
         Format format = super.getFormat();
-        if (composer.getStringValue("rootpath").startsWith("/cgi-bin")) {
+        if (provider.getStringValue("rootpath").startsWith("/cgi-bin")) {
             if (format == Format.RM)  return Format.RAM;
             if (format == Format.ASF) return Format.WMP;                
         }
@@ -52,7 +52,7 @@ public class MyURLComposer extends MediaURLComposer {
     
     public String getURL() {
         String url      = source.getStringValue("url");
-        String rootpath = composer.getStringValue("rootpath");
+        String rootpath = provider.getStringValue("rootpath");
         String host = provider.getStringValue("host");
         
         StringBuffer args = new StringBuffer(source.getStringValue("url"));
@@ -74,7 +74,7 @@ public class MyURLComposer extends MediaURLComposer {
         if (getFormat() == Format.RM || host.equals("cgi.omroep.nl")) {
             getRMArgs(args);
         }
-        return composer.getStringValue("protocol") + "://" + host + args.toString();
+        return provider.getStringValue("protocol") + "://" + host + args.toString();
     }
 }
 
