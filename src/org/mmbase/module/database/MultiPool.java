@@ -20,7 +20,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.42 2004-02-24 11:54:33 michiel Exp $
+ * @version $Id: MultiPool.java,v 1.43 2004-02-24 17:41:00 michiel Exp $
  */
 public class MultiPool {
 
@@ -37,7 +37,7 @@ public class MultiPool {
     private String   url;
     private DatabaseSupport databaseSupport;
 
-    private static final boolean DORECONNECT  = true;
+    private boolean doReconnect  = true;
 
     /**
      * @javadoc
@@ -51,14 +51,14 @@ public class MultiPool {
      */
     MultiPool(DatabaseSupport databaseSupport, String url, String name, String password, int conMax,int maxQueries) throws SQLException {
 
-        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, which will be refreshed after " + maxQueries + " queries");
         this.conMax          = conMax;
         this.name            = name;
         this.url             = url;
         this.password        = password;
         this.maxQueries      = maxQueries;
+        if (this.maxQueries <= 0) doReconnect = false;
         this.databaseSupport = databaseSupport;
-
+        log.service("Creating a multipool for database " + name + " containing : " + conMax + " connections, " + (doReconnect ? "which will be refreshed after " + maxQueries + " queries"  : "which will not be refreshed"));
         createPool();
     }
 
@@ -352,7 +352,7 @@ public class MultiPool {
             con.release(); //Resets time connection is busy.
             MultiConnection oldcon = con;
 
-            if (DORECONNECT && (con.getUsage() > maxQueries)) {
+            if (doReconnect && (con.getUsage() > maxQueries)) {
                 if (log.isDebugEnabled()) {
                     log.debug("Re-Opening connection");
                 }
