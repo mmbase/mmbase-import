@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.47 2004-04-07 12:36:01 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.48 2004-04-15 14:52:08 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -259,7 +259,6 @@ function doSave() {
         clearScroll();
         setButtonsInactive();
         doSendCommand("cmd/commit////");
-        cleanScroll();
     }
 }
 
@@ -388,8 +387,7 @@ function saveScroll() {
 
 function clearScroll() {
     var wizardinstance = document.forms[0].getAttribute("wizardinstance");
-    var id = document.forms[0].getAttribute("id");
-        clearCookie_general(wizardinstance, id);
+    clearCookie_general(wizardinstance);
 }
 
 function setFocusOnFirstInput() {
