@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * It allows for emailing on time, repeat mail, stats
  * and using urls as input for subject and body.
  * @author Daniel Ockeloen
- * @version $Id: Email.java,v 1.21 2003-05-07 21:06:46 kees Exp $
+ * @version $Id: Email.java,v 1.22 2003-05-08 06:01:20 kees Exp $
  */
 public class Email extends MMObjectBuilder {
 
@@ -229,7 +229,7 @@ public class Email extends MMObjectBuilder {
      * @javadoc
      */
     public int sendMailNode(MMObjectNode node) {
-        SendMailInterface sendmail=mmb.getSendMail();
+        SendMailInterface sendmail=(SendMailInterface)Module.getModule("sendmail");
         if (sendmail==null) {
             log.error("sendmail module not active, cannot send email");
             return -1; // STATE_FAILED ?

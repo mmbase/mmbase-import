@@ -11,6 +11,7 @@ package org.mmbase.module.builders;
 
 import java.util.*;
 
+import org.mmbase.module.Module;
 import org.mmbase.module.SendMailInterface;
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
@@ -19,7 +20,7 @@ import org.mmbase.util.logging.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: BugReports.java,v 1.4 2002-11-21 13:39:43 pierre Exp $
+ * @version $Id: BugReports.java,v 1.5 2003-05-08 06:01:21 kees Exp $
  */
 public class BugReports extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(BugReports.class.getName());
@@ -82,8 +83,8 @@ public class BugReports extends MMObjectBuilder {
 		}
 		if (lastlog!=null) body+=lastlog;
 
-        SendMailInterface sendmail=mmb.getSendMail();
-        if (sendmail==null) {
+        SendMailInterface sendMail=(SendMailInterface)Module.getModule("sendmail");
+        if (sendMail==null) {
             log.warn("sendmail module not active, cannot send email");
         } else {
             // send the email
@@ -99,7 +100,7 @@ public class BugReports extends MMObjectBuilder {
                 mail.setDate();
                 mail.setReplyTo("bugs@mmbase.org"); // should be from
                 mail.setText(body);
-                if (mmb.getSendMail().sendMail(mail)==false) {
+                if (sendMail.sendMail(mail)==false) {
                     log.error("sending email failed");
                 }
             }

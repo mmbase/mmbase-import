@@ -9,7 +9,6 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 
@@ -19,7 +18,6 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.Casting; // not used enough
 
 /**
