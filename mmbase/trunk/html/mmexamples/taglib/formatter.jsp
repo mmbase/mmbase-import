@@ -1,7 +1,7 @@
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@ taglib uri="http://mmbase.omroep.nl/omroep-taglib-1.0" prefix="nos"
-%><% response.setContentType("text/html; charset=UTF-8");
+%><%-- @ taglib uri="oscache" prefix="cache"
+--%><% response.setContentType("text/html; charset=UTF-8");
 	java.util.Locale utf = new java.util.Locale("nl", "NL");
 	java.util.Locale.setDefault(utf);
  %><html>
@@ -10,7 +10,7 @@
 <link href="style.css" rel="stylesheet" type="text/css" media="screen"  />
 </head>
 <body>
-
+<cache:cache time="60">
 <%@ include file="menu.jsp"%>
 <mm:import id="node">xmltest</mm:import>
 <mm:cloud>
@@ -32,8 +32,6 @@
 </mm:notpresent>
 <mm:present referid="ok">
 
-<% System.err.println("hieerr");%>
-
 <mm:node referid="ok">
 <h1>The formatter tag mm:formatter</h1>
 <p>
@@ -46,6 +44,7 @@
 
 </p>
 <mm:timer>
+<form>
 <table border="1" width="100%">
 <!--
 <tr><td colspan="2">Dates. Without this tag, it was not well possible to nicely format them. With this tag, it is easy.</td></tr>
@@ -57,7 +56,7 @@
 <tr><td colspan="2">Rich text fields. These fields can contain some basic structure information in XML. We can show XML with the formatter tag.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/showrichfield.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><pre><%@include file="codesamples/showrichfield.jsp" %></pre></td>
+  <td width="50%"><textarea><%@include file="codesamples/showrichfield.jsp" %></textarea></td>
 </tr>
 <tr><td colspan="2">Rich text fields receive their meaning when you convert this XML format to XHTML.</td></tr>
 <tr valign="top">
@@ -72,7 +71,7 @@
 <tr><td colspan="2">You don't like html? Output it as plain text then. The plain text is `enriched' with newlines and so on.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/userichfieldascii.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/userichfieldascii.jsp" %></td>
+  <td width="50%"><textarea><%@include file="codesamples/userichfieldascii.jsp" %></textarea></td>
 </tr>
 <tr><td colspan="2">You can also format a whole node in this way.</td></tr>
 <tr valign="top">
@@ -107,7 +106,7 @@
 <tr><td colspan="2">Perhaps you are curious about the intermediate XML which was generated in the last step? No problem.</td></tr>
 <tr valign="top">
   <td width="50%"><pre><mm:formatter format="escapexml"><mm:include page="codesamples/shownoderelationsxml.jsp" /></mm:formatter></pre></td>
-  <td width="50%"><%@include file="codesamples/shownoderelationsxml.jsp" %></td>
+  <td width="50%"><textarea class="huge"><%@include file="codesamples/shownoderelationsxml.jsp" %></textarea></td>
 </tr>
 <!--
 <tr><td colspan="2">Want to try some XSL yourself?</td></tr>
@@ -117,9 +116,11 @@
 </tr>
 -->
 </table>
+</form>
 </mm:timer>
 </mm:node>
 </mm:present>
 </mm:cloud>
+</cache:cache>
 </body>
 </html>
