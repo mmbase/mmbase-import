@@ -4,7 +4,7 @@
 	 <articleinfo>
 		<title>Documentation Overview</title>
 		<date>3 december 2002</date>
-		<edition>$Id: index.xml,v 1.9 2003-02-07 14:34:46 pierre Exp $</edition>
+		<edition>$Id: index.xml,v 1.10 2003-02-14 15:13:56 pierre Exp $</edition>
 		<legalnotice>
 			<para>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</para>
 			<para>The license (Mozilla version 1.0) can be read at the MMBase site. See <ulink  url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
@@ -75,6 +75,9 @@
 	<section>
 		<title>Developers</title>
 		<itemizedlist>
+			<listitem>
+				<para><ulink url="developers/codingstandards.html">MMBase Coding Standards</ulink></para>
+			</listitem>
 			<listitem>
 				<para><ulink url="developers/rmmci.html">Remote MMBase Cloud Interface</ulink></para>
 			</listitem>
