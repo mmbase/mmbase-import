@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.8 2000-11-24 12:15:22 vpro Exp $
+	$Id: TransactionManager.java,v 1.9 2000-11-24 13:08:26 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.8  2000/11/24 12:15:22  vpro
+	Rico: fixed exist testing
+	
 	Revision 1.7  2000/11/24 12:08:38  vpro
 	Rico: increased debug
 	
@@ -43,7 +46,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.8 2000-11-24 12:15:22 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.9 2000-11-24 13:08:26 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -295,7 +298,7 @@ public class TransactionManager implements TransactionManagerInterface {
 						if (_debug) debug("node "+i+" delete ");
 						if (!debug) {
 							// no return information
-							bul.removeNode(node);
+							node.parent.removeNode(node);
 							res=true;
 						} else {
 							res=true;
