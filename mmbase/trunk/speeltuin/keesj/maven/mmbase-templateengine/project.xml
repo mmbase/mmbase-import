@@ -29,18 +29,21 @@
       <artifactId>mmbase-core</artifactId>
       <version>1.7-rc3</version>
       <url>http://www.mmbase.org/</url>
+			<properties><war.bundle>true</war.bundle></properties>
     </dependency>
     <dependency>
       <groupId>mmbase</groupId>
       <artifactId>mmbase-taglib</artifactId>
       <version>1.1</version>
       <url>http://www.mmbase.org/taglib</url>
+			<properties><war.bundle>true</war.bundle></properties>
     </dependency>
     <dependency>
       <groupId>mmapps</groupId>
       <artifactId>simplexml</artifactId>
       <version>1.0</version>
       <url>http://mmapps.sf.net/simplexml/index.html</url>
+			<properties><war.bundle>true</war.bundle></properties>
     </dependency>
   </dependencies>
   <build>
