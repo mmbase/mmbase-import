@@ -196,7 +196,7 @@ function refresh()
 	<td height="20">
 		<mm:field name="target">
 		<mm:compare value="" inverse="true">
-		<mm:field name="nextversion" /><input type="checkbox" name="createnew" value="<mm:field name="target" />" /> <mm:field name="target" />
+		<mm:field name="nextversion" /><input type="checkbox" name="createnew" value="<mm:field name="target" />" <mm:field name="forcednew"><mm:compare value="true">checked</mm:compare></mm:field> /> <mm:field name="target" />
 		</mm:compare>
 		<mm:compare value="">
 		external

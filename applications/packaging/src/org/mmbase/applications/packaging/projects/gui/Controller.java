@@ -342,12 +342,21 @@ public class Controller {
                         virtual.setValue("maintainer", ip.getMaintainer());
                         virtual.setValue("version", ip.getVersion());
 			PackageInterface pa = PackageManager.getPackage(ip.getId());
-                        virtual.setValue("lastversion", pa.getVersion());
-			// weird way	
-			try {
-	                	virtual.setValue("nextversion", Integer.parseInt(pa.getVersion())+1);
-			} catch (Exception e) {
-				log.info("Can't create a new version string : "+pa.getVersion());
+			if (pa != null) {
+                        	virtual.setValue("forcednew", "false");
+                        	virtual.setValue("lastversion", pa.getVersion());
+				// weird way	
+				try {
+	                		virtual.setValue("nextversion", Integer.parseInt(pa.getVersion())+1);
+				} catch (Exception e) {
+					log.info("Can't create a new version string : "+pa.getVersion());
+				}
+			} else {
+                        	virtual.setValue("forcednew", "true");
+                        	virtual.setValue("lastversion", ip.getVersion());
+				try {
+                        		virtual.setValue("nextversion", Integer.parseInt(ip.getVersion())+1);
+				} catch (Exception e) {}
 			}
                         virtual.setValue("type", ip.getType());
                         virtual.setValue("id", ip.getId());
