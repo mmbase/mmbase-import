@@ -21,7 +21,7 @@ import org.mmbase.util.functions.*;
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.28 2004-10-03 11:03:46 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.29 2004-10-11 14:54:19 pierre Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -53,10 +53,10 @@ public abstract class AbstractImages extends AbstractServletBuilder {
             if (log.isDebugEnabled()) {
                 log.debug("removing " + prefix);
             }
-            Iterator keys  = keySet().iterator();
-            List removed = new ArrayList();
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
+            Iterator entries  = entrySet().iterator();
+            while (entries.hasNext()) {
+                Map.Entry entry = (Map.Entry)entries.next();
+                String key = (String)entry.getKey();
                 if (log.isDebugEnabled()) {
                     log.debug("checking " + key);
                 }
@@ -68,20 +68,20 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                     if (log.isDebugEnabled()) {
                         log.debug("removing " + key + " " + get(key));
                     }
-                    keys.remove();
+                    entries.remove();
                 }
 
             }
         }
-        
+
         void removeCacheNumber(int icacheNumber) {
             Iterator entries  = entrySet().iterator();
             while (entries.hasNext()) {
-                Map.Entry entry = (Map.Entry) entries.next();                    
+                Map.Entry entry = (Map.Entry) entries.next();
                 String key = (String) entry.getKey();
                 Object value = entry.getValue();
                 if (value instanceof ByteFieldContainer) {
-                    ByteFieldContainer bf = (ByteFieldContainer) value;                
+                    ByteFieldContainer bf = (ByteFieldContainer) value;
                     if (bf.number == icacheNumber) {
                         entries.remove();
                     }
@@ -91,13 +91,13 @@ public abstract class AbstractImages extends AbstractServletBuilder {
                         entries.remove();
                     }
                 }
-                
+
             }
         }
     }
 
     protected String getAssociation() {
-        return "images";       
+        return "images";
     }
     protected String getDefaultPath() {
         return "/img.db";
@@ -153,18 +153,18 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * @return the image as a <a>byte[]</code>, or <code>null</code> if something went wrong
      */
     abstract public byte[] getImageBytes(List params);
-    
+
 
     /**
      */
     /*
-    protected int getHeight(MMObjectNode node) {       
-        byte[] data = node.getByteValue("handle");      
+    protected int getHeight(MMObjectNode node) {
+        byte[] data = node.getByteValue("handle");
         imageInfo.setInput(new ByteArrayInputStream(data));
-        
+
         if (log.isServiceEnabled()) {
             if (!imageInfo.check()) {
-                log.service("ImageBuilder: Error parsing image");  
+                log.service("ImageBuilder: Error parsing image");
             }
         }
         int height = imageInfo.getHeight();
@@ -179,12 +179,12 @@ public abstract class AbstractImages extends AbstractServletBuilder {
     /*
     protected int getWidth(MMObjectNode node) {
 
-       byte[] data = node.getByteValue("handle");      
+       byte[] data = node.getByteValue("handle");
        imageInfo.setInput(new ByteArrayInputStream(data));
-       
+
        if (log.isServiceEnabled()) {
            if (!imageInfo.check()) {
-               log.service("ImageBuilder: Error parsing image");  
+               log.service("ImageBuilder: Error parsing image");
            }
        }
        int width = imageInfo.getWidth();
@@ -214,9 +214,9 @@ public abstract class AbstractImages extends AbstractServletBuilder {
         } else if (function.equals("format")) {
             return getImageFormat(node);
             /*
-        } else if ("width".equals(function)) {    
+        } else if ("width".equals(function)) {
             return new Integer(getWidth(node));
-        } else if ("height".equals(function)) {     
+        } else if ("height".equals(function)) {
             return new Integer(getHeight(node));
             */
         } else {
