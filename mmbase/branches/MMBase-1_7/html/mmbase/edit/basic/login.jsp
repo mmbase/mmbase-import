@@ -3,6 +3,7 @@
 <mm:write referid="style" escape="none" />
 <title>Login</title>
 </head>
+<mm:cloud sessionname="$config.session" method="logout" />
 <body class="basic">
   <h2>Login</h2>
   <mm:import externid="reason">please</mm:import>
