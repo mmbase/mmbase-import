@@ -29,6 +29,13 @@ public class XMLBuilderReader  {
 
     public XMLBuilderReader(String filename) {
         try {
+
+
+      	    File file = new File(filename);
+      	    if(!file.exists()) {
+  		System.out.println("ERROR -> Builder file "+filename+" does not exist");
+            }
+
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);

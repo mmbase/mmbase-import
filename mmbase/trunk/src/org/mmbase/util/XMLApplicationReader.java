@@ -29,6 +29,11 @@ public class XMLApplicationReader  {
 
 
     public XMLApplicationReader(String filename) {
+
+	File file = new File(filename);
+       	if(!file.exists()) {
+  		System.out.println("ERROR -> Application file "+filename+" does not exist");
+         }
         try {
             parser = new DOMParser();
             parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
