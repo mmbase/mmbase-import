@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.50 2004-01-07 21:41:39 michiel Exp $
+ * @version $Id: Dove.java,v 1.51 2004-02-02 12:19:20 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -66,37 +66,36 @@ public class Dove extends AbstractDove {
 
     /**
      * Utility function, determines whether a field is a data field.
-     * Data fields are persistent (non-virtual) fields.
+     * Data fields are fields mentioned explicitly in the builder configuration file.
+     * These can include virtual fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, rnumber, and dir
      * are excluded; these fields should be handled through the attributes of Element.
      * @param node  the MMBase node that owns the field (or null)
      * @param f The field to check
      */
-    private boolean isDataField(org.mmbase.bridge.Node node, Field f) {
+    private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, Field f) {
         String fname = f.getName();
-        return (f.getState()==Field.STATE_PERSISTENT) && // skip virtual fields
+        return (nodeManager.hasField(fname)) && // skip temporary fields
                (!"owner".equals(fname)) && // skip owner/otype/number fields!
                (!"otype".equals(fname)) &&
                (!"number".equals(fname)) &&
-               (!(node != null && node.isRelation()) ||
-                ((!"snumber".equals(fname)) &&
-                 (!"dnumber".equals(fname)) &&
-                 (!"rnumber".equals(fname)) &&
-                 (!"dir".equals(fname))
-                )
-               );
+               (!"snumber".equals(fname)) &&
+               (!"dnumber".equals(fname)) &&
+               (!"rnumber".equals(fname)) &&
+               (!"dir".equals(fname));
     }
 
     /**
      * Utility function, determines whether a field is a data field.
-     * Data fields are persistent (non-virtual) fields.
+     * Data fields are fields mentioned explicitly in the builder configuration file.
+     * These can include virtual fields.
      * Fields number, owner, and ottype, and the relation fields snumber,dnumber, and rnumber
      * are not excluded; these fields should be handled through the attributes of Element.
      * @param node  the MMBase node that owns the field
      * @param fname The name of the field to check
      */
-    private boolean isDataField(org.mmbase.bridge.Node node, String fname) {
-        return node.getNodeManager().hasField(fname);
+    private boolean isDataField(org.mmbase.bridge.NodeManager nodeManager, String fname) {
+        return nodeManager.hasField(fname);
     }
 
     /**
@@ -132,7 +131,7 @@ public class Dove extends AbstractDove {
             for (FieldIterator i=nm.getFields(NodeManager.ORDER_CREATE).fieldIterator(); i.hasNext(); ) {
                 Field f=i.nextField();
                 String fname=f.getName();
-                if (isDataField(nd,f)) {
+                if (isDataField(nm,f)) {
                     String val="";
                     if (nm.getField(fname).getType()!=Field.TYPE_BYTE) {
                         val=nd.getStringValue(fname);
@@ -147,7 +146,7 @@ public class Dove extends AbstractDove {
                 if ((fname==null) || (fname.equals(""))) {
                     Element err = addContentElement(ERROR,"name required for field",out);
                     err.setAttribute(ELM_TYPE,IS_PARSER);
-                } else if (isDataField(nd,fname)) {
+                } else if (isDataField(nm,fname)) {
                     String val="";
                     if (nm.getField(fname).getType()!=Field.TYPE_BYTE) {
                         val=nd.getStringValue(fname);
@@ -582,7 +581,7 @@ public class Dove extends AbstractDove {
                     String fname=fielddef.getName();
                     // Filter out the owner/otype/number/CacheCount fields and
                     // the virtual fields.
-                    if (isDataField(null,fielddef)) {
+                    if (isDataField(nm,fielddef)) {
                         Element field=doc.createElement(FIELD);
                         field.setAttribute(ELM_NAME,fname);
                         fields.appendChild(field);
@@ -623,7 +622,7 @@ public class Dove extends AbstractDove {
                                 case Field.TYPE_BYTE:
                                     dttype="binary";
                                     break;
-                                default:                                    
+                                default:
                                     dttype = "string";
                                 }
                                 guiType = dttype + "/" + guiType;
@@ -919,7 +918,7 @@ public class Dove extends AbstractDove {
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry me = (Map.Entry)i.next();
             String key = (String)me.getKey();
-            if (isDataField(node,key)) {
+            if (isDataField(node.getNodeManager(),key)) {
                 Object value = me.getValue();
                 if ((originalValues != null) &&
                     (!(value instanceof byte[]))) { // XXX: currently, we do not validate on byte fields
