@@ -12,6 +12,7 @@
 	<action type="create">
 		<object type="mediafragments">
 			<field name="title">Don't forget to add a title</field>
+       <relation role="related" destination="{$origin}" />
 		</object>
 	</action>
 	
@@ -51,6 +52,5 @@
   </form-schema>
 
   &itemize;
-  &itemize2;
 
 </wizard-schema>

@@ -10,9 +10,8 @@
   <head>
      <meta name="copyright" content="NOS Internet" />
      <layout>
-        <root-layout width="200" height="165" background-color="black" />
-        <region id="filmpje"   left="20" top="0" z-index="2" width="175" height="140" background-color="black"  />
-        <region id="filmtext"  left="5"  top="141" z-index="3" width="190" height="20"  background-color="blue"   />
+        <root-layout width="260" height="200" background-color="#717171" />
+        <region id="filmpje"   left="0" top="20"   z-index="2" width="260" height="200" background-color="#717171"  />
      </layout>
   </head>
   <body>    

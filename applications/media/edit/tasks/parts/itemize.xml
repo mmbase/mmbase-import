@@ -1,5 +1,5 @@
-<form-schema id="itemize-embeded">
-    <title>Itemize (embeded)</title>
+<form-schema id="itemize">
+    <title>Itemize</title>
 		<list role="parent" destination="mediafragments" orderby="start" >
       <title>Items</title>       
       <item>          
