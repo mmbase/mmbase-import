@@ -21,11 +21,21 @@ import java.sql.DatabaseMetaData;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * Selects a MMBase database configuration based on a java.sql.Connection
+ */
 public class DatabaseLookup {  
+    /** the logger logs */
     private static Logger log = Logging.getLoggerInstance(DatabaseLookup.class.getName());
+    /** directory in which the configuration file's can be found */
     private File databaseConfigPath;
+    /** the configuration */
     private Document document;
-
+    /**
+     * constructor
+     * @param lookupConfig The config file that is used to lookup files
+     * @param databaseConfigPath The directory in which all the database configuration files can b found
+     */
     public DatabaseLookup(File lookupConfig, File databaseConfigPath) {
 	this.databaseConfigPath = databaseConfigPath;
 
@@ -41,7 +51,11 @@ public class DatabaseLookup {
             throw new RuntimeException(message);
         }
     }
-
+    /**
+     * getDatabaseConfig
+     * @param connection The connection of which the type of database has to be resolved
+     * @return The file with mmbase-database-configuration data for this type of connection
+     */
     public File getDatabaseConfig(Connection connection) {
 	// process all the filters and when we have a match, return the result!
         String xpath = "/database-filters/filter";
@@ -70,7 +84,11 @@ public class DatabaseLookup {
 	error += "\nPlease add resolve information to lookup.xml, since this database is not known to the system.";
 	throw new RuntimeException(error);
     }
-
+    /**
+     * databaseInformation
+     * @param connection The connection of which the information has to be resolved
+     * @return a <code>String</code> that contains the information about the given Connection
+     */
     private String databaseInformation(Connection connection) {
 	try {
 	    DatabaseMetaData dmd = connection.getMetaData();
@@ -93,7 +111,13 @@ public class DatabaseLookup {
 	    throw new RuntimeException(Logging.stackTrace(sqle));
 	}
     }
-
+    /**
+     * Tests if an given filterset applies
+     * @param database Database name (for log usage only)
+     * @param filterNode The element containing all filters 
+     * @param connection The connection that has to be checked against
+     * @return <code>true</code> when true, otherwise <code>false</code>
+     */
     private boolean match(String database, Node filterNode, Connection connection) {
 	// process all the conditions of this filternode...
 	int i=0;
@@ -146,19 +170,37 @@ public class DatabaseLookup {
 	}
 	return true;
     }
-
+    /**
+     * Tests if an element value matches a value specified
+     * @param node the Node of which the body value has to be checked
+     * @param value the Value which has to be compared
+     * @return <code>true</code> when true, otherwise <code>false</code>
+     */
     private boolean match(Node node, String value) {
 	// im stupid, this should work...
 	return node.getFirstChild().getNodeType() == Node.TEXT_NODE
 	    && node.getFirstChild().getNodeValue().equals(value)
 	    && node.getFirstChild().getNextSibling() == null;
     }
+    /**
+     * Tests if an string starts with the value of the node
+     * @param node the Node of which the body value has to be checked
+     * @param value the Value which has to be compared
+     * @return <code>true</code> when true, otherwise <code>false</code>
+     */
     private boolean startMatch(Node node, String value) {
 	// im stupid, this should work...
 	return node.getFirstChild().getNodeType() == Node.TEXT_NODE
 	    && value.startsWith(node.getFirstChild().getNodeValue())
 	    && node.getFirstChild().getNextSibling() == null;
     }
+    /**
+     * Tests a condition from an attibute of the Element applies to the
+     * value of the element with the given int value
+     * @param node the Node of which the body value has to be checked
+     * @param value the Value which has to be compared
+     * @return <code>true</code> when true, otherwise <code>false</code>
+     */
     private boolean match(Node node, int value) {
 	if(node.getFirstChild().getNodeType() != Node.TEXT_NODE) return false;
 	Element element = (Element) node;
