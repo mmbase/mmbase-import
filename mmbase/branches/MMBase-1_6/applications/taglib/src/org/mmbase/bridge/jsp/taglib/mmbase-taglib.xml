@@ -2396,6 +2396,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>import</name>
+    <extends>contextreferrer</extends>
     <type>util.context</type>
     <!-- import does not extend writer because we don't want the 'writer' attribute of it functional -->
     <tagclass>org.mmbase.bridge.jsp.taglib.ImportTag</tagclass>
