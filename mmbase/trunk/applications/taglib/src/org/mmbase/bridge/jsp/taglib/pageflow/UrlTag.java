@@ -65,12 +65,10 @@ public class UrlTag extends ContextReferrerTag {
         if (referids != null) {
             Iterator i = referids.iterator();
             while (i.hasNext()) {
-                String key = (String)i.next();
-                if (getContextTag().isPresent(key)) {
-                    String value = getString(key);                
-                    show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value);
-                    connector = amp;
-                }
+                String key = (String)i.next();           
+                String value = getString(key);                
+                show += connector + key + "=" + (value == null ? "" : org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value));
+                connector = amp;
             }
         }
         
