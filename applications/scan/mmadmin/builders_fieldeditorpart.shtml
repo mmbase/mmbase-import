@@ -1,65 +1,69 @@
-<TR>
-	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="#44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Editor variables</B>
-	</TD>
-	<TD BGCOLOR="#44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Values</B>
-	</TD>
-	<TD BGCOLOR="#44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Change</B>
-	</TD>
-	<TD BGCOLOR="#44BDAD" COLSPAN="2">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Change</B>
-	</TD>
-</TR>
-<TR>
-		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-		<TD BGCOLOR="#00425A">
-			input
-		</TD>
-		<TD BGCOLOR="#00425A">
-			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorinput^
-		</TD>
-		<TD BGCOLOR="#00425A">
-			<A HREF="/mmdocs/config/builders.html#editorinput" TARGET="_new">explain</A>
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="2">
-				<A HREF="builders_seteditorinput.shtml?$PARAM1+$PARAM2">change</A>
-		</TD>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="#44BDAD">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Editor variables</strong>
+    </font>
+  </td>
+  <td bgcolor="#44BDAD">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Values</strong>
+    </font>
+  </td>
+  <td bgcolor="#44BDAD">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Change</strong>
+    </font>
+  </td>
+  <td bgcolor="#44BDAD" colspan="2">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Change</strong>
+    </font>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="#00425A">
+    input
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorinput^
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_input" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_seteditorinput.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
 
-</TR>
-<TR>
-		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-		<TD BGCOLOR="#00425A">
-			list 
-		</TD>
-		<TD BGCOLOR="#00425A">
-			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorlist
-		</TD>
-		<TD BGCOLOR="#00425A">
-			<A HREF="/mmdocs/config/builders.html#editorlist" TARGET="_new">explain</A>
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="2">
-				<A HREF="builders_seteditorlist.shtml?$PARAM1+$PARAM2">change</A>
-		</TD>
-</TR>
-<TR>
-		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-		<TD BGCOLOR="#00425A">
-			search
-		</TD>
-		<TD BGCOLOR="#00425A">
-			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorsearch
-		</TD>
-		<TD BGCOLOR="#00425A">
-			<A HREF="/mmdocs/config/builders.html#editorsearch" TARGET="_new">explain</A>
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="2">
-				<A HREF="builders_seteditorsearch.shtml?$PARAM1+$PARAM2">change</A>
-		</TD>
-</TR>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    list
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorlist
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_list" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_seteditorlist.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#00425A">
+    search
+  </td>
+  <td bgcolor="#00425A">
+    $MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorsearch
+  </td>
+  <td bgcolor="#00425A">
+    <a href="$MOD-INFO-SERVERCONTEXT^/mmdocs/administrators/builders.html#field_search" target="_blank">explain</a>
+  </td>
+  <td bgcolor="#00425A" colspan="2">
+    <a href="builders_seteditorsearch.shtml?$PARAM1+$PARAM2">change</a>
+  </td>
+</tr>
