@@ -25,13 +25,11 @@ import org.mmbase.module.core.*;
  * XML and will respond with a 200 OK if the xml was understood by the
  * mmbase system.
  *
- * @version $Revision: 1.8 $ $Date: 2000-05-22 09:24:56 $
+ * @version $Revision: 1.9 $ $Date: 2000-06-08 17:45:46 $
  */
 public class remoteXML extends JamesServlet {
 
-	//private String classname = getClass().getName();
-	private boolean debug = true;
-	//private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
+	private boolean debug = false;
 
 	MMBase mmbase;
 	
