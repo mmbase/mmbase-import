@@ -35,7 +35,7 @@
           <td></td>
           <td>
             <a name="toc"/>
-            <xsl:apply-templates select="tag" mode="toc"/>
+            <xsl:apply-templates select="tag" mode="toc" ><xsl:sort /></xsl:apply-templates>
             <a href="#info">info about the syntax of this document</a>
           </td>
           <td></td>
@@ -43,7 +43,7 @@
         <tr>
           <td></td>
           <td>
-            <xsl:apply-templates select="tag" mode="full" />
+            <xsl:apply-templates select="tag" mode="full" ><xsl:sort /></xsl:apply-templates>
           </td>
           <td></td>
         </tr>
@@ -64,13 +64,11 @@
             <p>Attributes in <font color="red">red</font> are
             required.
 	    </p>
-	    <p>If an attribute can refer to the context, then the
-	    value of the attribute will be parsed for the occurence of
-	    a dot (.). If it is found then the value of the attribute
-	    will be searched in the context. Before the dot is the id
-	    of the context and after the dot is the identifier of the
-	    value in the context.
-	    </p>	   
+	    <p>If an attribute can refer to the context, then any occurences of the format
+	        ${x}, where x is the name of a context atribute, will be replaced by
+	        the value of that attribute.
+	        If the attribute is not defined the tag will throw an exception.
+	    </p>	
 	    <p>
             If a tag definition contains a body section this means that the
             tag might do something with the content of the body.</p>
