@@ -4,8 +4,15 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: i18n.xml,v 1.2 2002-09-17 06:33:57 michiel Exp $</date>
+    <date>$Id: i18n.xml,v 1.3 2002-10-29 12:23:24 michiel Exp $</date>
     <title>MMBase Internationalisation and Localisation</title>
+    <author>
+      <firstname>Michiel</firstname>
+      <surname>Meeuwissen</surname>      
+      <affiliation>
+        <orgname>Publieke Omroep</orgname>
+      </affiliation>
+    </author>
   </articleinfo>
   <section>
     <title>Introduction</title>
@@ -135,8 +142,15 @@
         omit this prompt though the internationalised version of the builder is used in stead.
       </para>
       <para>
-        The schema XML itself is not (yet) internationalised, and titles, prompts and other
-        messages in these files can only be in one language.
+        The schema XML itself is also internationalised, and titles, prompts and other
+        messages in these files can be present in more than one
+        language. This is done by the 'xml:lang' attribute. There are
+        bunch of `example' and `library' wizard xmls available in
+        &lg;editwizard-dir&gt;data/samples and
+        &lg;editwizard-dir&gt;data/lib, so for a nice and complete
+        localisation to your language, it would be nice to translate
+        those too (search for the already present elements with an
+        xml:lang attribute).
       </para>
     </section>
   </section>
