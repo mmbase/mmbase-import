@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johan Verelst
- * @version $Id: MMBase.java,v 1.69 2002-09-24 10:42:48 eduard Exp $
+ * @version $Id: MMBase.java,v 1.70 2002-09-24 18:24:38 eduard Exp $
  */
 public class MMBase extends ProcessorModule  {
 
@@ -626,24 +626,6 @@ public class MMBase extends ProcessorModule  {
         return clusterBuilder;
     }
 
-    /**
-     * Get a database connection that is multiplexed and checked.
-     * @return a <code>MultiConnection</code> if the connection succeeded, <code>null</code> if it failed.
-     */
-    public MultiConnection getConnection() {
-        try {
-            MultiConnection con=database.getConnection(jdbc);
-            return con;
-        } catch (SQLException e) {
-            log.error("Can't get a JDBC connection (database error : " + jdbc + ")" + e);
-            log.error(Logging.stackTrace(e));
-            return null;
-        } catch (Exception e) {
-            log.error("Can't get a JDBC connection (JDBC module error : " + jdbc + ")"+e);
-            log.error(Logging.stackTrace(e));
-            return null;
-        }
-    }
 
     /**
      * Get the JDBC module used by this MMBase.
@@ -658,12 +640,47 @@ public class MMBase extends ProcessorModule  {
      * @param stmt The statement to close, prior to closing the connection. Can be <code>null</code>.
      */
     public void closeConnection(MultiConnection con, Statement stmt) {
-    try {
-        if (stmt!=null) stmt.close();
-    } catch(Exception g) {}
-    try {
-        if (con!=null) con.close();
-    } catch(Exception g) {}
+	try {
+	    if (stmt!=null) stmt.close();
+	} 
+	catch(Exception g) {
+	}
+	try {
+	    if (con!=null) con.close();
+	} 
+	catch(Exception g) {
+	}
+    }
+
+
+    /**
+     * Get a database connection that is multiplexed and checked.
+     * @return a <code>MultiConnection</code> 
+     */
+    public MultiConnection getConnection() {
+	MultiConnection con = null;
+	int timeout = 10;
+	
+	// always return a connection, maybe database down,... so wait in that situation....
+	while(con == null) {
+	    try {
+		con=database.getConnection(jdbc);
+	    } 
+	    catch (SQLException sqle){
+		String msg = "Could not get a multi-connection, will try again over "+timeout+" seconds, failure:\n";
+		msg += Logging.stackTrace(sqle);
+		log.fatal(msg);
+		try {
+		    wait(timeout * 1000);
+		}
+		catch(InterruptedException ie) {
+		    msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
+		    log.warn(msg);
+		    throw new RuntimeException(msg);
+		}
+	    }
+	}
+	return con;
     }
 
     /**
@@ -672,17 +689,29 @@ public class MMBase extends ProcessorModule  {
      * interface calls. Use very sparingly.
      */
     public Connection getDirectConnection() {
-        try {
-            Connection con=jdbc.getDirectConnection(jdbc.makeUrl());
-            return con;
-        } catch (SQLException e) {
-            log.error(Logging.stackTrace(e));
-            return null;
-        } catch (Exception e) {
-            log.error("Can't get a JDBC connection (JDBC module error)"+e);
-            log.error(Logging.stackTrace(e));
-            return null;
-        }
+	Connection con = null;
+	int timeout = 10;
+	
+	// always return a connection, maybe database down,... so wait in that situation....
+	while(con == null) {
+	    try {
+		con=jdbc.getDirectConnection(jdbc.makeUrl());
+	    } 
+	    catch (SQLException sqle){
+		String msg = "Could not get a connection, will try again over "+timeout+" seconds, failure:\n";
+		msg += Logging.stackTrace(sqle);
+		log.fatal(msg);
+		try {
+		    wait(timeout * 1000);
+		}
+		catch(InterruptedException ie) {
+		    msg = "Wait for connection was canceled:" + Logging.stackTrace(ie);
+		    log.warn(msg);
+		    throw new RuntimeException(msg);
+		}
+	    }
+	}
+	return con;
     }
 
     /**
