@@ -9,9 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
  
-  $Id
+  $Id: Attachments.java,v 1.2 2000-08-06 00:31:05 case Exp $
  
-  $Log
+  $Log: not supported by cvs2svn $
  
 */
 package org.mmbase.module.builders;
@@ -30,14 +30,28 @@ import org.mmbase.util.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id
+ * @version $Id: Attachments.java,v 1.2 2000-08-06 00:31:05 case Exp $
  *
  */
 public class Attachments extends MMObjectBuilder {
     private String classname = getClass().getName();
-    private boolean debug = true;
+    private boolean debug = false;
 
     protected String defaultMimeType = "application/x-binary";
+
+    public boolean process(scanpage sp, StringTokenizer command, Hashtable cmds, Hashtable vars) {
+        debug("CMDS="+cmds);
+        debug("VARS="+vars);
+        EditState ed = (EditState)vars.get("EDITSTATE");
+        System.out.println("Attachments::process() called");
+        String action = command.nextToken();
+        if (action.equals("SETFIELD")) {
+            String fieldname = command.nextToken();
+            System.out.println("fieldname = "+fieldname);
+            setEditFileField(ed, fieldname, cmds, sp);
+        }
+        return false;
+    }
 
     public String getGUIIndicator(String field,MMObjectNode node) {
         if (field.equals("handle")) {
@@ -67,6 +81,8 @@ public class Attachments extends MMObjectBuilder {
      * of the uploaded file and, eventually, the mimetype.
      * 
      */
+    /*
+      XXX This method should go, now that processing is taking place immediately
     public int preCommit(EditState ed, MMObjectNode node) {
         String mimeType;
         byte[] handle = node.getByteValue("handle");
@@ -75,12 +91,87 @@ public class Attachments extends MMObjectBuilder {
             mimeType = defaultMimeType; // Dunno how to dynamically determine this :-(
             node.setValue("size",size);
             node.setValue("mimetype",mimeType);
-            debug("handle size set to "+size);
-            debug("handle mimetype set to "+mimeType);
+            if (debug) debug("handle size set to "+size);
+            if (debug) debug("handle mimetype set to "+mimeType);
         }
         return(-1);
+}
+    */
+
+    /**
+     * cjr: copied from FieldEditor, commented out the FieldDefs def = .. line
+     */
+    /* XXX doesn't work XXX
+    protected boolean setEditDISKField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
+    MMObjectBuilder obj=ed.getBuilder();
+    //FieldDefs def=obj.getField(fieldname); // Doesn't seem to be called ?!
+    try {
+     MMObjectNode node=ed.getEditNode();
+     if (node!=null) {
+    //String filename=(String)cmds.get("EDIT-BUILDER-SETFIELDFILE_DISK-"+fieldname);
+    String filename = sp.poster.getPostParameterFile(fieldname);
+    System.out.println("filename = "+filename);
+    //byte[] bytes=getFile(filename);
+    byte[] bytes = getFile("/tmp/net7681");
+    if (bytes==null) {
+      System.out.println("FieldEditor-> Empty file !!");
+} else {
+      node.setValue(fieldname,bytes);
+      node.setValue("mimetype","foo/bar");
+      node.setValue("size",5000);
+}
+     }
+} catch (Exception e) {
+     e.printStackTrace();
+}
+    return(true);
+}
+    */
+
+    protected boolean setEditFileField(EditState ed, String fieldname,Hashtable cmds,scanpage sp) {
+        MMObjectBuilder obj=ed.getBuilder();
+        //FieldDefs def=obj.getField(fieldname);
+        try {
+            MMObjectNode node=ed.getEditNode();
+            if (node!=null) {
+                byte[] bytes=sp.poster.getPostParameterBytes("file");
+                node.setValue(fieldname,bytes);
+
+                if (bytes != null && bytes.length > 0) {
+                    MagicFile magic = new MagicFile();
+                    String mimetype = magic.test(bytes);
+                    node.setValue("mimetype",mimetype);
+                    node.setValue("size",bytes.length);
+                } else {
+                    if (debug) {
+                        debug("Damn. Got zero bytes");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return(true);
+    }
+
+    /**
+     * cjr: copied from FieldEditor
+     * getFile: This method creates a byte array using the specified filepath argument.
+     */
+    public byte[] getFile(String filepath) {
+        try {
+            File file = new File(filepath);
+            FileInputStream fis = new FileInputStream(filepath);
+            byte[] ba = new byte[(int)file.length()];	//Create a bytearray with a length the size of the filelength.
+            fis.read(ba);	//Read up to ba.length bytes of data from this inputstream into the bytearray ba.
+            fis.close();
+            return(ba);
+        } catch (IOException ioe) {
+            return(null);
+        }
     }
 }
+
 
 
 
