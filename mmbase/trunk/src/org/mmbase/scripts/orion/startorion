@@ -1,6 +1,7 @@
 #!/usr/local/bin/bash
 
-MMBASEpath=../../
+cd ../..
+MMBASEpath=`pwd`
 ORIONpath=/usr/local/install/orion
 
 cd $ORIONpath
