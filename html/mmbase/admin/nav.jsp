@@ -1,5 +1,6 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
+<mm:content type="text/html">
 <html>
 <head>
 <%
@@ -17,20 +18,27 @@
 </td>
 <td width="850" border="0">
     &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top"
-    ><span class="<%=("about".equals(category)) ? "current" : ""%>menuitem">ABOUT</span></a>
-    &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=examples" />" target="_top"
-    ><span class="<%=("examples".equals(category)) ? "current" : ""%>menuitem">EXAMPLES</span></a>
+    <a href="<mm:url page="default.jsp?category=about&subcategory=about" />" target="_top">
+      <span class="<%=("about".equals(category)) ? "current" : ""%>menuitem">ABOUT</span>
+    </a>
+    <% if ((new java.io.File(request.getRealPath("/mmexamples"))).exists()) {%>
+         &nbsp;&nbsp;
+    <a href="<mm:url page="default.jsp?category=examples" />" target="_top">
+      <span class="<%=("examples".equals(category)) ? "current" : ""%>menuitem">EXAMPLES</span>
+    </a>
+    <% } %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=editors&subcategory=basic" />" target="_top"
     ><span class="<%=("editors".equals(category)) ? "current" : ""%>menuitem">EDITORS</span></a>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=admin&subcategory=servers" />" target="_top"
     ><span class="<%=("admin".equals(category)) ? "current" : ""%>menuitem">ADMIN</span></a>
+    <% if ((new java.io.File(request.getRealPath("/mmdocs"))).exists()) {%>
     &nbsp;&nbsp;
-    <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top"
-    ><span class="<%=("documentation".equals(category)) ? "current" : ""%>menuitem">DOCUMENTATION</span></a>
+    <a href="<mm:url page="default.jsp?category=documentation&subcategory=overview" />" target="_top">
+      <span class="<%=("documentation".equals(category)) ? "current" : ""%>menuitem">DOCUMENTATION</span>
+    </a>
+    <% } %>
     &nbsp;&nbsp;
     <a href="<mm:url page="default.jsp?category=tools&subcategory=cache" />" target="_top"
     ><span class="<%=("tools".equals(category)) ? "current" : ""%>menuitem">TOOLS</span></a>
@@ -83,5 +91,4 @@
 </table>
 </body>
 </html>
-
-
+</mm:content>
