@@ -150,7 +150,7 @@ public class BasicCloud implements Cloud, Cloneable {
             log.error(message);
             throw new BridgeException(message);
         } else {
-            if (node.getNumber()==-1) {
+            if (node.getIntValue("number")==-1) {
                 return new BasicNode(node, getNodeManager(node.parent.getTableName()), nodenumber);
             } else {
                 assert(Operation.READ,nodenumber);
