@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.3 2003-01-03 18:57:10 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.4 2003-02-03 15:37:39 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1023,10 +1023,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @param wantedtype the 'type' of related nodes (NOT the relations!).
      * @return An <code>int</code> indicating the number of nodes found
      */
-    public int getRelationCount(String wantedtype) {
+    public int getRelationCount(String wt) {
         int count = 0;
-        MMObjectBuilder type = parent.mmb.getBuilder(wantedtype);
-        if (type != null) {
+        MMObjectBuilder wantedType = parent.mmb.getBuilder(wt);
+        if (wantedType != null) {
 
             if (relations==null) {
                 relations=parent.mmb.getInsRel().getRelationsVector(getNumber());
@@ -1036,7 +1036,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             }
             if (relations!=null) {
                 for(Enumeration e=relations.elements();e.hasMoreElements();) {
-                    MMObjectNode tnode=(MMObjectNode)e.nextElement();
+                    MMObjectNode tnode = (MMObjectNode)e.nextElement();
                     int snumber=tnode.getIntValue("snumber");
                     int nodetype =0;
                     if (snumber==getNumber()) {
@@ -1044,13 +1044,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                     } else {
                         nodetype=parent.getNodeType(snumber);
                     }
-                    if (type.isInstanceOfBuilder(parent.mmb.getTypeDef().getValue(nodetype))) {
+                    MMObjectBuilder nodeType = parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(nodetype));
+                    if (nodeType.equals(wantedType) || nodeType.isExtensionOf(wantedType)) {
                         count++;
                     }
                 }
             }
         } else {
-            log.warn("getRelationCount is requested with an invalid Builder name (otype "+wantedtype+" does not exist)");
+            log.warn("getRelationCount is requested with an invalid Builder name (otype " + wt + " does not exist)");
         }
         return count;
     }
@@ -1129,16 +1130,17 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      * @return a <code>Vector</code> containing <code>MMObjectNode</code>s
      */
     public Vector getRelatedNodes(String type) {
-        MMObjectBuilder bul = parent.mmb.getMMObject(type);
-        if (bul == null) {
-            log.error("getRelatedNodes: "+type+" is not a valid builder");
+        MMObjectBuilder wantedType = parent.mmb.getMMObject(type);
+        if (wantedType == null) {
+            log.error("getRelatedNodes: " + type + " is not a valid builder");
             return null;
         }
         Vector allNodes = getRelatedNodes();
         Vector result = new Vector();
         for (Enumeration e = allNodes.elements(); e.hasMoreElements();) {
             MMObjectNode node = (MMObjectNode) e.nextElement();
-            if (bul.isInstanceOfBuilder(node.parent.getTableName())) {
+            
+            if (parent.equals(wantedType) || parent.isExtensionOf(wantedType)) {
                 result.add(node);
             }
         }
