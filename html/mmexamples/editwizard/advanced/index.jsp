@@ -10,7 +10,7 @@
 
     @since    MMBase-1.6
     @author   Michiel Meeuwissen
-    @version  $Id: index.jsp,v 1.15 2002-07-11 08:29:33 michiel Exp $
+    @version  $Id: index.jsp,v 1.16 2002-07-15 12:23:28 michiel Exp $
 
     Showing:
           - use of taglib in this entrance page
@@ -40,15 +40,16 @@
   <mm:import id="jsps">/mmapps/editwizard/jsp/</mm:import>
         <h1>Editwizard Examples</h1>
   <p>
-   This example overrides the 'list.xsl' of the editwizard bij placing
-   a variant in xsl/list.xsl relative to this file. It addes a
-   stylesheet by overriding base.xsl.  Furthermore it uses it's
-   private XML editwizard definitions, which are also placed
-   relativily to this file in the 'tasks' directory.
+   This example overrides some XSL's the editwizard bij placing
+   variants in xsl/ relative to this file. It addes a stylesheet by
+   overriding base.xsl.  Furthermore it uses it's private XML
+   editwizard definitions, which are also placed relativily to this
+   file in the 'tasks' directory.
   </p>
   <p>
   <td>
      <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/list.xsl</mm:param></mm:url>">view xsl/list.xsl</a>
+     <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/wizard.xsl</mm:param></mm:url>">view xsl/wizard.xsl</a>
      <a target="_new" href="<mm:url page="../citexml.jsp"><mm:param name="page">advanced/xsl/base.xsl</mm:param></mm:url>">view xsl/base.xsl</a>
   </td>
   </p>
