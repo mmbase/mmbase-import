@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.42 2003-08-06 19:41:19 michiel Exp $
+ * @version $Id: Node.java,v 1.43 2003-08-07 18:01:17 michiel Exp $
  */
 public interface Node {
 
@@ -576,6 +576,17 @@ public interface Node {
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String searchDir);
 
 
+
+    /**
+     * Returns a query to reretrieve this node. It is not very usefull 'as is' because you already
+     * have the node. The result can however be changed (with addRelationsStep), to find 'related nodes'. 
+     *
+     * @since MMBase-1.7.
+     * @see   NodeManager#getList
+     * @see   Query#addRelationStep
+     */
+    //public Query    createQuery();
+
     /**
      * Returns the number of related nodes that have a specific node manager.
      * The counted nodes are not the nodes directly attached to this node (the
@@ -593,7 +604,7 @@ public interface Node {
     /**
      * @since MMBase-1.7
      */
-    public int countRelatedNodes(NodeManager otherNodeManager, String role, int searchDir);
+    public int countRelatedNodes(NodeManager otherNodeManager, String role, String searchDir);
 
 
 
