@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.88 2002-12-04 20:51:49 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.89 2002-12-11 12:04:25 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -565,7 +565,9 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
     }
 
     /**
+     * Executes getFunctionValue of MMOBjectBuilder
      * @since MMBase-1.6
+     * @see MMObjectBuilder#getFunctionValue
      */
     public Object getFunctionValue(String function, List args) {
         return  parent.getFunctionValue(this, function, args);
