@@ -18,7 +18,7 @@ String node_man = "";		// Nodemanager?
 <mm:import jspvar="ref" externid="ref" />	<%-- the 'referer': the node on the previous page --%>
 <mm:import jspvar="change" externid="change" />
 <mm:import jspvar="delete" externid="delete" />
-<mm:node number="<%= nr %>">
+<mm:node number="$nr" notfound="skip">
 <%-- Get some information about the node: its type and GUI name --%>
 <mm:nodeinfo type="type" jspvar="n_type" vartype="String" write="false"><% ntype = n_type; %></mm:nodeinfo>
 <mm:nodeinfo type="guinodemanager" jspvar="n_gui" vartype="String" write="false"><% node_gui = n_gui; %></mm:nodeinfo>
@@ -45,14 +45,33 @@ String node_man = "";		// Nodemanager?
 <form method="post" action="<mm:url referids="nr,ref" />">
 <table border="0" cellspacing="0" cellpadding="3" width="580" class="table-form">
 <tr bgcolor="#CCCCCC">
-  <td bgcolor="#CCCCCC" align="center">&nbsp;</td>
+  <td bgcolor="#CCCCCC" align="center" class="title-s"># <mm:write referid="nr" /></td>
   <td bgcolor="#CCCCCC" class="title-s">
-    Edit relation
+    Edit relation of kind
 	<mm:field name="rnumber" jspvar="r_node" vartype="String" write="false">
 		<mm:node number="<%= r_node %>"><b><mm:field name="gui()" /> </b> </mm:node>
 	</mm:field>  
   </td>
 </tr>
+
+<mm:present referid="delete">
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>
+		<mm:deletenode number="<%= nr %>" />
+		<p class="message">The relation is removed.</p>
+		</td>
+	</tr>
+</mm:present>
+<mm:present referid="change">
+	<tr>
+	  <td>&nbsp;</td>
+	  <td>
+		<mm:fieldlist type="edit" fields="owner"><mm:fieldinfo type="useinput" /></mm:fieldlist>
+		<p class="message">The relation is changed.</p>
+	  </td>
+	</tr>
+</mm:present>
 
 <mm:notpresent referid="delete">
 	<tr valign="top">
@@ -79,36 +98,16 @@ String node_man = "";		// Nodemanager?
 	</tr>
 </mm:notpresent>
 
-<mm:present referid="delete">
-	<tr>
-	  <td>&nbsp;</td>
-	  <td>
-		<mm:deletenode number="<%= nr %>" />
-		<p class="message">The relation is removed.</p>
-		</td>
-	</tr>
-</mm:present>
-
-<mm:present referid="change">
-	<tr>
-	  <td>&nbsp;</td>
-	  <td>
-		<mm:fieldlist type="edit">
-			<mm:fieldinfo type="useinput" />
-		</mm:fieldlist>
-		<p class="message">The relation is changed.</p>
-		</td>
-	</tr>
-</mm:present>
-
 <mm:notpresent referid="delete">
+	<mm:maywrite><mm:import id="formtype">input</mm:import></mm:maywrite>
+	<mm:maywrite inverse="true"><mm:import id="formtype">guivalue</mm:import></mm:maywrite>
+	<mm:fieldlist type="edit" fields="owner">
+	<tr valign="top">
+	  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
+	  <td><mm:fieldinfo type="$formtype" /> </td>
+	</tr>
+    </mm:fieldlist>
 	<mm:maywrite>
-	<mm:fieldlist type="edit">
-		<tr valign="top">
-		  <td align="right"><span class="name"><mm:fieldinfo type="guiname" /></span><br /><mm:fieldinfo type="name" /></td>
-		  <td><mm:fieldinfo type="input" />&nbsp;</td>
-		</tr>
-	</mm:fieldlist>
 	<tr>
 	  <td align="right"><input type="submit" name="change" value="Change" /></td>
 	  <td>Change relation  &nbsp;&nbsp;&nbsp;&nbsp; 
@@ -129,7 +128,6 @@ String node_man = "";		// Nodemanager?
 	</tr>
 	</mm:maywrite>
 </mm:notpresent>
-
 
 
 </table>
