@@ -1,4 +1,4 @@
-/* -*- tab-width: 4; -*-
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -142,6 +142,7 @@ public class XMLNodeReader  {
 								int type=bul.getDBType(key);
 								if (type!=-1) {
 									if (type==FieldDefs.TYPE_STRING) {
+										if (value==null) value="";
 										newnode.setValue(key,value);
 									} else if (type==FieldDefs.TYPE_INTEGER) {
 										try { 
