@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen 
 */
 
-public abstract class CloudReferrerTag extends BodyTagSupport {
+public abstract class CloudReferrerTag extends ContextReferrerTag {
 	
     private static Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
 
@@ -51,14 +51,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
         cloudId = c;
     }
 
-    /**
-     * You can also call it context, if you prefer.
-     */
 
-    public void setContext(String c) {
-        cloudId = c;
-    }
-    
     /**
     * This method tries to find an ancestor object of type CloudTag
     * in that case the first node provider found will be taken.
@@ -68,31 +61,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     */
 	
     protected CloudProvider findCloudProvider() throws JspTagException {
-
-        Class cloudClass;
-        try {
-            cloudClass = Class.forName("org.mmbase.bridge.jsp.taglib.CloudProvider");
-        } catch (java.lang.ClassNotFoundException e) {
-            throw new JspTagException ("Could not find CloudProvider class");  
-        }
-
-        CloudProvider cTag = (CloudProvider) findAncestorWithClass((Tag)this, cloudClass); 
-        if (cTag == null) {
-            throw new JspTagException ("Could not find parent CloudProvider");  
-        }
-
-        if ("".equals(cloudId)) cloudId = null;
-
-        if (cloudId != null) { // search further, if necessary
-            while (cTag.getId() != cloudId) {
-                cTag = (CloudProvider) findAncestorWithClass((Tag)cTag, cloudClass);
-                if (cTag == null) {
-                    throw new JspTagException ("Could not find parent CloudProvider with id " + cloudId);  
-                }
-            }
-            
-        }
-        return cTag;
+        return (CloudProvider) findParentTag("org.mmbase.bridge.jsp.taglib.CloudProvider", cloudId);
     }
     
     /**
@@ -111,15 +80,6 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
         return cloudTag.getCloudVar();
     }
 
-    protected Object getObject(String id) throws JspTagException {
-        if (cloudTag == null) {
-            cloudTag = findCloudProvider();
-        }
-        return cloudTag.getObject(id);
-    }
-    protected String getString(String id) throws JspTagException {
-        return (String) getObject(id);
-    }
 
 
     /**
