@@ -53,5 +53,6 @@
 
 <!ELEMENT publishprovider (#PCDATA)>
 <!ATTLIST publishprovider active CDATA #IMPLIED>
-<!ATTLIST publishprivider name CDATA #IMPLIED>
-<!ATTLIST publishprivider sharepassword CDATA #IMPLIED>
+<!ATTLIST publishprovider name CDATA #IMPLIED>
+<!ATTLIST publishprovider state CDATA #IMPLIED>
+<!ATTLIST publishprovider sharepassword CDATA #IMPLIED>
