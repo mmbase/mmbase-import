@@ -8,6 +8,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.util.logging;
+import java.util.StringTokenizer;
 
 /**
  * A very simple implementation of Logger. It ignores everything below
@@ -29,6 +30,8 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
 
     private static ExceptionImpl root = new ExceptionImpl();
 
+    protected static int  exceptionlevel = Level.WARN_INT;
+
     private ExceptionImpl() {
         // a Singleton class.
     }
@@ -45,15 +48,26 @@ public class ExceptionImpl extends AbstractSimpleImpl implements Logger {
      */
    
     public static  void configure(String c) {
-        if (c == null || c.equals("")) {
+        if (c == null) {
             return; // everything default
         } else {
-            level = Level.toLevel(c).toInt();
+            StringTokenizer t    = new StringTokenizer(c, ","); 
+            if (t.hasMoreTokens()) {
+                exceptionlevel = Level.toLevel(t.nextToken()).toInt();
+            }
+            if (t.hasMoreTokens()) {
+                level = Level.toLevel(t.nextToken()).toInt();
+            }
         }
     }
 
-    public final void log (String s) {
-        throw new LoggingException(s);
+    protected final void log (String s, int l) {
+        if (l >= level) {
+            System.out.println(s);
+        }
+        if (l >= exceptionlevel) {
+            throw new LoggingException(s);
+        }
     }
 
 

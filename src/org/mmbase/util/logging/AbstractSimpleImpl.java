@@ -34,43 +34,48 @@ abstract public class AbstractSimpleImpl  {
     public void setLevel(Level p) {
         level = p.toInt();
     }
-
-    abstract public void log (String s);
+    
+    // override one of these two
+    protected void log (String s) {
+    }
+    protected void log(String s, int level) {
+        log(s);
+    }
 
     public void trace (Object m) {
         if (level <= Level.TRACE_INT) {
-            log("TRACE " + m);
+            log("TRACE " + m,  Level.TRACE_INT);
         }
     }
     public void debug (Object m) {
         if (level <= Level.DEBUG_INT) {
-            log("DEBUG " + m);
+            log("DEBUG " + m, Level.DEBUG_INT);
         }
     }
 
     public void service (Object m) {
         if (level <= Level.SERVICE_INT) {
-            log("SERVICE " + m);
+            log("SERVICE " + m, Level.SERVICE_INT);
         }
     }
     public void info    (Object m) {
         if (level <= Level.INFO_INT) {
-            log("INFO " + m);
+            log("INFO " + m, Level.INFO_INT);
         }
     }
     public void warn    (Object m) {
         if (level <= Level.WARN_INT) {
-            log("WARN " + m);
+            log("WARN " + m, Level.WARN_INT);
         }
     }
     public void error   (Object m) {
         if (level <= Level.ERROR_INT) {
-            log("ERROR " + m);
+            log("ERROR " + m, Level.ERROR_INT);
         }
     }
     public void fatal   (Object m) {
         if (level <= Level.FATAL_INT) {
-            log("FATAL " + m);
+            log("FATAL " + m, Level.FATAL_INT);
         }
     }
 
