@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.96 2004-06-17 16:28:06 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.97 2004-06-18 08:09:12 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -904,13 +904,13 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             int existingQueryPosition = toFile.indexOf('?');
             if (existingQueryPosition > 0) {
                 String existingQuery = toFile.substring(existingQueryPosition + 1);
-                log.info("Found existing query " + existingQuery);
+                log.debug("Found existing query " + existingQuery);
                 String[] parameters = existingQuery.split("&");
                 for (int i = 0; i < parameters.length; i++) {
                     if (parameters[i].startsWith("referrer=")) {
                         referrer = org.mmbase.util.Encode.decode("escape_url", parameters[i].substring(9));
                         if (referrer.startsWith("?")) referrer = "." + referrer; // tomcat 5, referrerPage can be "", which is inconvenient, because using it as action for login.jsp whill be empty string, will post to login.jsp again
-                        log.info("Found existing referrer " + referrer);
+                        log.debug("Found existing referrer " + referrer);
                         break;
                     }
                 }
