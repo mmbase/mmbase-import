@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: NodeListConstraintTag.java,v 1.12 2003-09-03 19:40:04 michiel Exp $
+ * @version $Id: NodeListConstraintTag.java,v 1.13 2003-09-23 13:04:38 michiel Exp $
  */
 public class NodeListConstraintTag extends CloudReferrerTag implements NodeListContainerReferrer {
 
@@ -39,6 +39,8 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     protected Attribute value2    = Attribute.NULL; // needed for BETWEEN
 
+
+    protected Attribute inverse    = Attribute.NULL;
 
     protected Attribute field2     = Attribute.NULL; // not implemented
 
@@ -62,6 +64,10 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
 
     public void setOperator(String o) throws JspTagException {
         operator = getAttribute(o);
+    }
+
+    public void setInverse(String i) throws JspTagException {
+        inverse = getAttribute(i);
     }
 
     protected int getOperator() throws JspTagException {
@@ -142,8 +148,10 @@ public class NodeListConstraintTag extends CloudReferrerTag implements NodeListC
         NodeListContainer c = (NodeListContainer) findParentTag(NodeListContainer.class, (String) container.getValue(this));
 
         Query query = c.getQuery();
-        addConstraint(query, field.getString(this), getOperator(), value.getString(this), value2.getString(this));
-                
+        Constraint cons = addConstraint(query, field.getString(this), getOperator(), value.getString(this), value2.getString(this));
+        if (inverse.getBoolean(this, false)) {
+            query.setInverse(cons, true);
+        }
         return SKIP_BODY;
     }
 

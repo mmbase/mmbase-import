@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.202 2003-09-22 11:50:14 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.203 2003-09-23 13:04:37 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4619,6 +4619,14 @@ The 0 is just counter, which starts at 0 on every page.
       </info>
     </attribute>
     <attribute>
+      <name>inverse</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Inverses the constraint. So adds a NOT.
+      </info>
+    </attribute>
+    <attribute>
       <name>operator</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
@@ -4698,6 +4706,14 @@ The 0 is just counter, which starts at 0 on every page.
       <rtexprvalue>true</rtexprvalue>
       <info>
           Maximal age of the object in days.
+      </info>
+    </attribute>
+    <attribute>
+      <name>inverse</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Inverses the constraint. So adds a NOT.
       </info>
     </attribute>
   </tag>
