@@ -13,6 +13,8 @@ import java.io.*;
 import java.util.Set;
 import java.util.HashSet;
 import java.net.URL;
+import org.mmbase.util.XMLBasicReader;
+import org.xml.sax.InputSource;
 
 /** 
  * With this class the logging is configured and it supplies the `Logger' objects.
@@ -118,71 +120,17 @@ public class Logging {
             // that doesn't work, so let's try to do it ourselves
             configfile = "file:///" + configurationFile.getAbsolutePath();
         }                               
-         
-        //configfile = configfile.replace('/',(System.getProperty("file.separator")).charAt(0));
-        //configfile = configfile.replace('\\',(System.getProperty("file.separator")).charAt(0));   
-        
 
-        // configfile is in XML, which we are going to parse with Xerces, 
-        // but with reflection, to makes us independent of Xerces.
-        Class domParserClass = null;
-        Class documentClass  = null;
-        Class nodeClass      = null;
-        
-        try { 
-            domParserClass = Class.forName("org.apache.xerces.parsers.DOMParser");
-            documentClass  = Class.forName("org.w3c.dom.Document");
-            nodeClass      = Class.forName("org.w3c.dom.Node");
-        } catch (ClassNotFoundException e) {
-            System.err.println(e.toString());
-            System.err.println("Could not find xerces classes, logging cannot be configured, using defaults.");            
-            return;
-        } 
+
+        XMLBasicReader reader = new XMLBasicReader(new InputSource(configfile), Logging.class);
 
         String classToUse    = "org.mmbase.util.logging.SimpleImpl"; // default
         String configuration = "stderr,debug";                        // default
-        try { // to read the XML configuration file
-            
-            Object parser = domParserClass.newInstance();
-            Method setFeature =  domParserClass.getMethod("setFeature",  new Class [] { String.class, Boolean.TYPE});
-            Method parse       = domParserClass.getMethod("parse",       new Class [] { String.class });
-            Method getDocument = domParserClass.getMethod("getDocument", new Class [] {});
-            
-            setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/dom/defer-node-expansion",        new Boolean(true)});
-            // setFeature.invoke(parser, new Object[] { "http://apache.org/xml/features/continue-after-fatal-error",  new Boolean(true)});
-            
-            // configfile="file://" + configfile;
-            
-            // System.out.println("configfile:" + configfile);
-            parse.invoke(parser, new Object[] {configfile});            
-            
-            Object [] no = new Object[] {}; // shorthand...
-            Object document = getDocument.invoke(parser, no);
-            Method getFirstChild = nodeClass.getMethod("getFirstChild", new Class [] {});
-            Method getNodeName   = nodeClass.getMethod("getNodeName",   new Class [] {});
-            Method getNextSibling= nodeClass.getMethod("getNextSibling",new Class [] {});
-            Method getNodeValue  = nodeClass.getMethod("getNodeValue",  new Class [] {});
-                                   
-            Object n1 = getFirstChild.invoke(document, new Object[] {});
-            
-            while (n1 != null) {              
-                if (getNodeName.invoke(n1, no).equals("logging")) {
-                    Object n2 = getFirstChild.invoke(n1, no);
-                    while (n2 != null) {
-                        if (getNodeName.invoke(n2, no).equals("class")) {       
-                            classToUse = (String)getNodeValue.invoke(getFirstChild.invoke(n2, no), no);
-                            //System.err.println("found class" + classToUse);
-                        }
-                        if (getNodeName.invoke(n2, no).equals("configuration")) {
-                            configuration = (String)getNodeValue.invoke(getFirstChild.invoke(n2, no), no);
-                            // System.err.println("found conf" + configuration);
-                        }
-                        n2 = getNextSibling.invoke(n2, no);
-                        
-                    }
-                } 
-                n1 = getNextSibling.invoke(n1, no);
-            }
+        try { // to read the XML configuration file            
+            String claz = reader.getElementValue("logging.class");
+            if (claz != null) classToUse = claz;
+            String config = reader.getElementValue("logging.configuration");
+            if (config != null) configuration = config;
         } catch (Exception e) {
             System.err.println("Exception during parsing: " + e);
             e.printStackTrace(System.err);
