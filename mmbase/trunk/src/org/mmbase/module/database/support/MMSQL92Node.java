@@ -27,7 +27,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Kees Jongenburger
- * @version $Id: MMSQL92Node.java,v 1.62 2002-06-04 20:20:07 michiel Exp $
+ * @version $Id: MMSQL92Node.java,v 1.63 2002-06-08 08:15:16 michiel Exp $
  */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -95,8 +95,8 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
         }
 
         typeMapping=parser.getTypeMapping();
-        disallowed2allowed=parser.getDisallowedFields();
-        allowed2disallowed=getReverseHash(disallowed2allowed);
+        disallowed2allowed = parser.getDisallowedFields();
+        allowed2disallowed = getReverseHash(disallowed2allowed);
         // map the default types
         mapDefaultFields(disallowed2allowed);
         // Check if the numbertable exists, if not one will be created.
@@ -107,7 +107,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      * @javadoc
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i) {
-        return decodeDBnodeField(node,fieldname,rs,i,"");
+        return decodeDBnodeField(node, fieldname, rs, i, "");
     }
 
     /**
@@ -147,9 +147,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
      */
     public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs, int i, String prefix) {
         try {
-            // is this fieldname disallowed ? ifso map it back
+            // is this fieldname disallowed ? ifso map it back           
             if (allowed2disallowed.containsKey(fieldname)) {
-                fieldname=(String)allowed2disallowed.get(fieldname);
+                fieldname = (String)allowed2disallowed.get(fieldname);
             }
             if (node == null) {
                 log.warn("Cannot decode field " + fieldname + " because given node is null");
@@ -163,28 +163,31 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 
                 String tmp = null;
                 try {
-                    tmp = new String(rs.getBytes(i), mmb.getEncoding());
+                    byte[] bytes = rs.getBytes(i);
+                    if (bytes != null) {
+                        tmp = new String(bytes, mmb.getEncoding());
+                    }
                 } catch (Exception e) {
-                    log.error(e.toString());
+                    log.error("Getting encoded bytes: " + e.toString());
                 }
-                if (tmp==null) {
-                    node.setValue(prefix+fieldname,"");
+                if (tmp == null) {
+                    node.setValue(prefix + fieldname, "");
                 } else {
-                    node.setValue(prefix+fieldname,tmp);
+                    node.setValue(prefix + fieldname, tmp);
                 }
                 break;
             }
             case FieldDefs.TYPE_NODE:
             case FieldDefs.TYPE_INTEGER:
-                node.setValue(prefix+fieldname,(Integer)rs.getObject(i));
+                node.setValue(prefix + fieldname, (Integer)rs.getObject(i));
                 break;
             case FieldDefs.TYPE_LONG:
-                node.setValue(prefix+fieldname,(Long)rs.getObject(i));
+                node.setValue(prefix + fieldname, (Long)rs.getObject(i));
                 break;
             case FieldDefs.TYPE_FLOAT:
                 // who does this now work ????
                 //node.setValue(prefix+fieldname,((Float)rs.getObject(i)));
-                node.setValue(prefix+fieldname,new Float(rs.getFloat(i)));
+                node.setValue(prefix + fieldname, new Float(rs.getFloat(i)));
                 break;
             case FieldDefs.TYPE_DOUBLE:
                 node.setValue(prefix+fieldname,(Double)rs.getObject(i));
