@@ -14,7 +14,8 @@ import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
+import org.mmbase.bridge.util.Queries;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -23,7 +24,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeProviderHelper.java,v 1.3 2004-06-30 17:51:54 michiel Exp $ 
+ * @version $Id: NodeProviderHelper.java,v 1.4 2004-09-14 17:59:38 michiel Exp $ 
  * @since MMBase-1.7
  */
 
@@ -32,6 +33,7 @@ public class NodeProviderHelper implements NodeProvider {
     private static final Logger log = Logging.getLoggerInstance(NodeProviderHelper.class);
         
     private   Node   node;        
+    private   Query  query = null;
     private   String jspvar = null;
     private   boolean  modified = false;
     private   ContextReferrerTag thisTag;
@@ -71,6 +73,17 @@ public class NodeProviderHelper implements NodeProvider {
         this.node = node;
     }
     
+
+    public void setGeneratingQuery(Query q) {
+        query = q;
+    }
+
+    public Query getGeneratingQuery() throws JspTagException {
+        if (query == null) {
+            query = Queries.createNodeQuery(getNodeVar());
+        } 
+        return query;
+    }
 
     public String getId() {
         try {

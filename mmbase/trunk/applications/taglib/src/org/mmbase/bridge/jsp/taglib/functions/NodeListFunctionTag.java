@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: NodeListFunctionTag.java,v 1.5 2004-07-26 20:18:03 nico Exp $
+ * @version $Id: NodeListFunctionTag.java,v 1.6 2004-09-14 17:59:38 michiel Exp $
  */
 public class NodeListFunctionTag extends AbstractFunctionTag implements ListProvider, FunctionContainerReferrer, NodeProvider {
     //cannot extend AbstractNodeList because we extend AbstractFunctionTag alreeady. Sigh, stupid java.
@@ -48,13 +48,16 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public void setModified() {
         nodeHelper.setModified();
     }
+    public Query getGeneratingQuery() throws JspTagException {
+        return nodeHelper.getGeneratingQuery();
+    }
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);
     }
 
 
     // implementation of ListProvider
-    public int size(){
+    public int size() {
         return listHelper.size();
     }
     public int getIndex() {
@@ -98,20 +101,22 @@ public class NodeListFunctionTag extends AbstractFunctionTag implements ListProv
     public int doStartTag() throws JspTagException {
 
         NodeList list;
-        { 
-            Object value = getFunctionValue();
-            if (value instanceof NodeList) {
-                list = (NodeList) value;
-            } else {
-                list = getCloudVar().getCloudContext().createNodeList();
-                list.addAll((Collection) value); 
+        Object value = getFunctionValue();
+        if (value instanceof NodeList) {
+            list = (NodeList) value;
+        } else {
+            list = getCloudVar().getCloudContext().createNodeList();
+            
+            if (value != null) {
                 // the Collection must contain "Nodes" only, no MMObjectNodes otherwise Exception from BasicNodeList, because it cannot convert without Cloud
+                list.addAll((Collection) value); 
             }
+
         }
         return listHelper.setReturnValues(list, true);
     }
-
-
+    
+    
     public int doAfterBody() throws JspException {
         log.debug("doafterbody");
         nodeHelper.doAfterBody();
