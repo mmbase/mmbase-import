@@ -18,6 +18,7 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.jsp.taglib.*;
 import org.mmbase.bridge.jsp.taglib.containers.*;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.Referids;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.functions.*;
 import java.lang.reflect.*;
@@ -35,7 +36,7 @@ import java.lang.reflect.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.7
- * @version $Id: AbstractFunctionTag.java,v 1.1 2004-01-16 20:21:11 michiel Exp $
+ * @version $Id: AbstractFunctionTag.java,v 1.2 2004-01-20 23:16:47 michiel Exp $
  */
 abstract public class AbstractFunctionTag extends NodeReferrerTag { 
 
@@ -48,7 +49,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
     protected Attribute module      = Attribute.NULL;
     protected Attribute nodeManager = Attribute.NULL;
 
-    protected Attribute functionSet = Attribute.NULL; // not yet implemented
+    protected Attribute functionSet = Attribute.NULL; 
+
+    protected Attribute referids    = Attribute.NULL; 
 
 
     public void setName(String n) throws JspTagException {
@@ -74,6 +77,10 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
 
     public void setSet(String s) throws JspTagException {
         functionSet = getAttribute(s);
+    }
+
+    public void setReferids(String r) throws JspTagException {
+        referids = getAttribute(r);
     }
 
     /**
@@ -183,6 +190,9 @@ abstract public class AbstractFunctionTag extends NodeReferrerTag {
                 FunctionContainer.Entry entry = (FunctionContainer.Entry) i.next();
                 params.set(entry.getKey(), entry.getValue());
             }        
+        }
+        if (referids != Attribute.NULL) {
+            params.setAll(Referids.getReferids(referids, this));
         }
 
         fillStandardParameters(params);
