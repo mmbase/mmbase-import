@@ -162,6 +162,7 @@
       <td colspan="2">
         <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
         <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
+        <br />
         <xsl:apply-templates select="info"/>
       </td>
     </tr>
