@@ -105,8 +105,8 @@ public class MMExamples extends ProcessorModule {
 		String path=MMBaseContext.getConfigPath()+("/applications/");
 		XMLApplicationReader app=new XMLApplicationReader(path+applicationname+".xml");
 		if (app!=null) {
-			System.out.println(app.getApplicationName());
-			System.out.println(app.getApplicationVersion());
+			//System.out.println(app.getApplicationName());
+			//System.out.println(app.getApplicationVersion());
 			if (areBuildersLoaded(app.getNeededBuilders())) {
 				if (checkRelDefs(app.getNeededRelDefs())) {
 					if (checkAllowedRelations(app.getAllowedRelations())) {
@@ -149,7 +149,7 @@ public class MMExamples extends ProcessorModule {
 					Enumeration b=syncbul.search(query);
 					if (b.hasMoreElements()) {
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-						System.out.println("node allready installed : "+exportnumber);
+						//System.out.println("node allready installed : "+exportnumber);
 					} else {
 						newnode.setValue("number",-1);
 						int localnumber=doKeyMergeNode(newnode);
@@ -225,7 +225,7 @@ public class MMExamples extends ProcessorModule {
 					Enumeration b=syncbul.search("exportnumber=="+exportnumber+"+exportsource=='"+exportsource+"'");
 					if (b.hasMoreElements()) {
 						MMObjectNode syncnode=(MMObjectNode)b.nextElement();
-						System.out.println("node allready installed : "+exportnumber);
+						//System.out.println("node allready installed : "+exportnumber);
 					} else {
 						newnode.setValue("number",-1);
 						
