@@ -68,7 +68,7 @@ public class servflash extends JamesServlet {
                     res.setContentType("text/plain");
                     byte[] bytes = gen.getDebugSwt(sp);
                     if (bytes != null) {
-                           out.write(bytes, 0, bytes.length);
+                        out.write(bytes, 0, bytes.length);
                     } else {
                         res.sendError(404);
                     }
@@ -83,7 +83,8 @@ public class servflash extends JamesServlet {
                 }    
             }
             log.service("END Parsing FLASH page");
-        } finally { 
+        }    
+        finally { 
             decRefCount(req); 
         }
     }
