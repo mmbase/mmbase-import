@@ -1,5 +1,5 @@
 <%@include file="page_base.jsp"
-%><mm:content type="text/html" language="$config.lang" expires="0">
+%><mm:content type="text/html" language="$config.lang" country="$config.country" expires="0">
 <mm:cloud sessionname="$config.session" method="asis" jspvar="cloud">
   <mm:write referid="style" escape="none" />
   <title>About generic mmbase taglib editors</title>
