@@ -31,7 +31,7 @@
     <a name="viewcvs">&nbsp;</a>
   <p>
    The source of MMBase can be browsed
-   <a href="<mm:url page="/viewcvs/" />">on-line</a>
+   <a href="<mm:url page="http://cvs.mmbase.org/viewcvs/" />">on-line</a>
   </p>
   <h1>Recent changes</h1>
     <a name="recent">&nbsp;</a>
