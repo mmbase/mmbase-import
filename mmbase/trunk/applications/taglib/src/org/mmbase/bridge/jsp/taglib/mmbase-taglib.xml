@@ -374,6 +374,16 @@ one or more examplevalue tags is you want to give some example values.
         cases.
       </info>
     </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+       The name of the Jsp variable to export by cloud. If not
+       specified, then a variable with name 'cloud' will exist.
+      </info>
+    </attribute>
+
     <example>
 &lt;!-- Show titles of all news articles from user kamer (which are in pool kamer_pool)  
 only to user kamer --&gt;
@@ -777,7 +787,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     </info>
     <attribute>
       <name>name</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>The name of the transaction.</info>
       <examplevalue>
@@ -788,12 +798,22 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <name>id</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
-      <info>The id of the transactions and name of its jsp-variable
-      (default is 'cloud').</info>
+      <info>The id of the transaction. Will be used to put it in a
+      context, if possible.</info>
       <examplevalue>
         <value>my_transaction</value>
       </examplevalue>
     </attribute>
+    <attribute>
+      <name>jspvar</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+       The name of the Jsp variable to export. If not
+       specified, then a variable with name 'trans' will exist.
+      </info>
+    </attribute>
+
     <attribute>
       <name>commitonclose</name>
       <required>false</required>
@@ -941,7 +961,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
     <info>This thing can be used inside a FieldListTag, or directly
     inside a NodeProvider if you indicate with the field attribute
-    about which field you want to have information.</info>
+    about which field you want to have information. It can have a
+    body, which will be added to the produced value, if this is not null.</info>
     <attribute>
       <name>type</name>
       <required>true</required>
@@ -972,6 +993,12 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <possiblevalue>
         <value>value</value>         
         <info>The value of this field. Can only be used if in a NodeProviderTag.
+        </info>
+      </possiblevalue>
+
+      <possiblevalue>
+        <value>guivalue</value>         
+        <info>The guivalue of this field. Can only be used if in a NodeProviderTag.
         </info>
       </possiblevalue>
     </attribute>
@@ -1054,7 +1081,7 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
 	</info>
     </attribute>
     <attribute>
-        <name>id</name>
+        <name>key</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>
@@ -1095,7 +1122,21 @@ Node of type &lt;mm:nodeinfo type="guinodemanager" /&gt;&lt;br /&gt;
     it possible to put other things in it too).
     </info>
     <attribute>
-        <name>id</name>
+        <name>key</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+	<info>	
+	</info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>remove</name>
+    <tagclass>org.mmbase.bridge.jsp.taglib.RemoveTag</tagclass>
+    <info>
+    Remove an object from the context.
+    </info>
+    <attribute>
+        <name>key</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
 	<info>	
