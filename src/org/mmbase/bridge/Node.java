@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.45 2003-10-13 08:34:25 keesj Exp $
+ * @version $Id: Node.java,v 1.46 2003-12-23 20:00:31 michiel Exp $
  */
 public interface Node {
 
@@ -92,7 +92,8 @@ public interface Node {
     public RelationManager toRelationManager();
 
     /**
-     * Sets the value of the specified field using an object.
+     * Sets the value of the specified field using an object, but delegated to the right 
+     * set--Value depending on the type of the field.
      * For example a field of type <code>int</code> can be set using an
      * <code>Integer</code>.
      * This change will not be visible to the cloud until the commit method is
@@ -102,6 +103,15 @@ public interface Node {
      * @param value      the new value for the given field
      */
     public void setValue(String fieldName, Object value);
+
+    /**
+     * Sets the value of the specified field using an object.
+     *
+     * @param fieldName  the name of the field to be updated
+     * @param value      the new value for the given field
+     * @since MMBase-1.7
+     */
+    public void setObjectValue(String fieldName, Object value);
 
     /**
      * Sets the value of the specified field using an <code>boolean</code>.
@@ -196,6 +206,13 @@ public interface Node {
      * @return           the value of the specified field
      */
     public Object getValue(String fieldName);
+
+    /**
+     * Returns the field's value as an object. It is not delegated to the right get--Value.
+     * @since MMBase-1.7
+     */
+
+    public Object getObjectValue(String fieldName);
 
     /**
      * Returns the value of the specified field as a <code>boolean</code>.
