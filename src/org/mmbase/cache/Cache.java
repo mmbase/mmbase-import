@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * A base class for all Caches. Extend this class for other caches.  
  *
  * @author Michiel Meeuwissen
- * @version $Id: Cache.java,v 1.3 2002-05-15 19:00:57 michiel Exp $
+ * @version $Id: Cache.java,v 1.4 2002-06-27 13:22:58 michiel Exp $
  */
 abstract public class Cache extends LRUHashtable {
 
@@ -38,19 +38,27 @@ abstract public class Cache extends LRUHashtable {
      * doesn't harm.
      */
 
-    private static void configure(File file) {
+    private static void configure(XMLBasicReader file) {
         configure(file, null);
     }
+
+    private static XMLBasicReader configReader = null;
+
     /**
      * As configure, but it only changes the configuration of the cache 'only'.
      * This is called on first use of a cache.
      */
-    private static void configure(File file, String only) {
-        if (only == null) log.info("Configuring caches with " + file);
-        if (! file.exists()) {
+    private static void configure(XMLBasicReader xmlReader, String only) {
+        if (xmlReader == null) {
             return; // nothing can be done...
         }
-        XMLBasicReader xmlReader = new XMLBasicReader(file.getAbsolutePath());
+
+        if (only == null) {
+            log.info("Configuring caches with " + xmlReader.getFileName());
+        } else {
+            if (log.isDebugEnabled()) log.debug("Configuring cache " + only + " with file " + xmlReader.getFileName());
+        }
+
         Enumeration e =  xmlReader.getChildElements("caches", "cache");
         while (e.hasMoreElements()) {           
             Element cacheElement = (Element) e.nextElement();
@@ -82,17 +90,18 @@ abstract public class Cache extends LRUHashtable {
     */
     private static FileWatcher configWatcher = new FileWatcher (true) {
             protected void onChange(File file) {
-                configure(file);
+                configReader = new XMLBasicReader(file.getAbsolutePath());
+                configure(configReader);
             }
         };
 
-    private static File configFile;
     static { // configure
         log.debug("Static init of Caches");
-        configFile = new File(MMBaseContext.getConfigPath() + File.separator + "caches.xml");
+        File configFile = new File(MMBaseContext.getConfigPath() + File.separator + "caches.xml");
         if (configFile.exists()) {
             configWatcher.add(configFile);
-            // configure(configFile); never mind, no cache are present on start up
+            configReader = new XMLBasicReader(configFile.getAbsolutePath());
+            // configure(configReader); never mind, no cache are present on start up
         } else {
             log.warn("No cache configuration file " + configFile + " found");
         }
@@ -134,7 +143,7 @@ abstract public class Cache extends LRUHashtable {
      */
     protected static Cache putCache(Cache cache) {
         Cache old = (Cache) caches.put(cache.getName(), cache);
-        configure(configFile, cache.getName());
+        configure(configReader, cache.getName());
         return old;
     }
 
