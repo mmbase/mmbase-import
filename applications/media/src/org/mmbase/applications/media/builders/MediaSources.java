@@ -45,7 +45,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.19 2003-07-28 08:36:42 vpro Exp $
+ * @version $Id: MediaSources.java,v 1.20 2003-08-08 11:02:13 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -472,7 +472,7 @@ public class MediaSources extends MMObjectBuilder {
             String url = node.getStringValue("url");
             int dot = url.lastIndexOf('.');
             if (dot > 0) {
-                String extension = url.substring(dot + 1);
+                String extension = url.substring(dot + 1).toLowerCase();
                 log.service("format was unset, trying to autodetect by using 'url' field with extension '" + extension);
                 node.setValue("format", Format.get(extension).toInt());
             }
