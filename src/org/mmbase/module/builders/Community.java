@@ -56,7 +56,7 @@ public class Community extends MMObjectBuilder {
      */
     public boolean init() {
         boolean result = super.init();
-        mapBuilder = (Channel)mmb.getMMObject("maps");
+        mapBuilder = mmb.getMMObject("maps");
         channelBuilder = (Channel)mmb.getMMObject("channel");
         return result;
     }
