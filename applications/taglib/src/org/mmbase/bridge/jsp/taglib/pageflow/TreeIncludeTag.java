@@ -52,10 +52,11 @@ public class TreeIncludeTag extends IncludeTag {
         
         th.setCloud(getCloud());
         
-        page = th.findTreeFile(page, objectlist, pageContext.getSession());
+        String orgpage = page;
+        page = th.findTreeFile(orgpage, objectlist, pageContext.getSession());
         
         log.debug("Retrieving page '" + page + "'");
-        
+        if (page == null) throw new JspTagException("Could not find page " + orgpage);
         // Let IncludeTag do the rest of the work
         return includePage();
     }
@@ -64,8 +65,5 @@ public class TreeIncludeTag extends IncludeTag {
         objectlist = getAttributeValue(p);
     }
 
-    protected String getThisName() {
-        return "TreeInclude";
-    }
         
 }
