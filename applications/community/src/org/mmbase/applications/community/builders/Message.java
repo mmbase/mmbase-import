@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Dirk-Jan Hoekstra
  * @author Pierre van Rooden
- * @version $Id: Message.java,v 1.20 2003-11-19 17:05:14 michiel Exp $
+ * @version $Id: Message.java,v 1.21 2004-01-07 15:11:19 pierre Exp $
  */
 
 public class Message extends MMObjectBuilder {
@@ -97,6 +97,9 @@ public class Message extends MMObjectBuilder {
     // relation breaker for maintaining temporary messages
     private NodeBreaker chatboxMessages = null;
 
+    // indicates whether this builder has been activated for the community application
+    private boolean active = true;
+
     /**
      * Constructor
      */
@@ -105,7 +108,6 @@ public class Message extends MMObjectBuilder {
 
     public boolean init() {
         boolean result = super.init();
-        channelBuilder = (Channel) mmb.getMMObject("channel");
 
         String maxBody = getInitParameter("maxbodysize");
         if ((maxBody != null) && (maxBody.length() > 0)) {
@@ -133,7 +135,21 @@ public class Message extends MMObjectBuilder {
         checkAddTmpField("user");  // node number of the user object for this message
         checkAddTmpField("username"); // username of the person posting the message
 
+        activate();
+
         return result;
+    }
+
+    /**
+     * Activates the message builder for the community application by associating it with other community builders
+     * @return true if activation worked
+     */
+    public boolean activate() {
+        if (!active) {
+            channelBuilder = (Channel) mmb.getMMObject("channel");
+            active = channelBuilder!=null;
+        }
+        return active;
     }
 
     // used to retrieve the parent - child role from reldef or cache
