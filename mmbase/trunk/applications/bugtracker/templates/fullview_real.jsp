@@ -1,5 +1,7 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><mm:cloud>
+%>
+<mm:content type="text/html" expires="0">
+<mm:cloud>
 <mm:import externid="bugreport" />
 <mm:import externid="portal" jspvar="portal" />
 <mm:import externid="page" jspvar="page2" />
@@ -45,3 +47,4 @@
 
 </mm:node>
 </mm:cloud>
+</mm:content>

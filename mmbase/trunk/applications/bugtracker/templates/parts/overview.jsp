@@ -152,7 +152,7 @@
 			 Longer bug description	
 		</th>
 		<td colspan="3">
-				<mm:field name="html(description)" />
+							<mm:field name="description" escape="p" />
 		</td>
 </tr>
 </table>

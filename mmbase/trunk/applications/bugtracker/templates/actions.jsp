@@ -1,8 +1,7 @@
 
 <mm:import externid="action" />
 <mm:present referid="action">
-<mm:cloud logon="admin" pwd="nietgebruikenaub">
-
+<mm:cloud logon="admin" method="delegate" authenticate="class">
 
 
 <mm:compare value="sendaccountinfo" referid="action">
@@ -36,9 +35,13 @@ password : <mm:write referid="password" />
 <mm:compare value="checkuser" referid="action">
         <mm:import externid="account" />
         <mm:import externid="password" />
-        <mm:listnodes type="users" constraints="(account='$account' AND password='$password')">
+	<mm:listnodescontainer type="users">
+	<mm:constraint field="account" value="$account" />
+	<mm:constraint field="password" value="$password" />
+        <mm:listnodes>
                 <mm:import id="usernumber" jspvar="usernumber" ><mm:field name="number"/></mm:import>
         </mm:listnodes>
+        </mm:listnodescontainer>
         <mm:present referid="usernumber">
             <mm:write referid="account" cookie="ca" />
             <mm:write referid="password" cookie="cw" />
