@@ -58,8 +58,8 @@ NetComponents can be found at:
 Creating a customized jar and avoiding automated downloads
 ==========================================================
 
-The compile.cust and jar.cust targets will not download any packages. Instead
-they use the classes available in the system's classpath to compile against.
+The compile.cust, jar.cust and javadocs.cust targets will not download any packages.
+Instead they use the classes available in the system's classpath to compile against.
 When using these targets you only need the servlet and xerces classes. All other
 classes are optional and the java files that need them are excluded from the
 compilation process.
@@ -575,6 +575,25 @@ Change directory to ${build.dir}/orion and run:
     </javadoc>
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Create the API documentation                                        -->
+  <!-- =================================================================== -->
+  <target name="javadocs.cust"
+          description="Create the API documentation, dependent on the system classpath"
+          depends="init.compile.cust">
+    <mkdir dir="${build.dir}/mmbase/docs/api"/>
+    <javadoc packagenames="${javadoc.packages}"
+             sourcepath="${source-src.dir}"
+             destdir="${build.dir}/mmbase/docs/api"
+             author="true"
+             version="true"
+             use="false"
+             noindex="true"
+             windowtitle="MMBase API"
+             doctitle="MMBase"
+             bottom="MMBase 2001">
+    </javadoc>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Create the web directory                                            -->
