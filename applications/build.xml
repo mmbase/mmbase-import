@@ -32,10 +32,10 @@ Applications build file
   </target>
 
   <target name="all16" depends="init,media,bugtracker,email" />
-  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community,scan" />
+  <target name="all17" depends="init,all16,taglib,cloudcontext,editwizard,dove,xmlimporter,community" />
+  <target name="all18" depends="init,all17,crontab,vwms,scan" />
 
-  <!-- target name="all" depends="init,all16,cloudcontext,editwizard,community,rmmci" /-->
-  <target name="all"   depends="init,all17,crontab" />
+  <target name="all"   depends="init,all18" />
 
 
   <target name="jars" depends="all">
@@ -57,9 +57,14 @@ Applications build file
      </ant>
   </target>
 
-
   <target name="scan" depends="mmbase">
-     <ant dir="scan"      target="package" inheritAll="false">
+     <ant dir="scan"      target="dependent.package" inheritAll="false">
+       <property name="project.zip.dir"        value="${applications.build.dir}" />
+     </ant>
+  </target>
+
+  <target name="vwms" depends="mmbase">
+     <ant dir="vwms"      target="package" inheritAll="false">
        <property name="project.zip.dir"        value="${applications.build.dir}" />
      </ant>
   </target>
@@ -139,13 +144,6 @@ Applications build file
     <ant dir="dove"          target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
-    <!-- uncomment, as we can't do this without scan
-    <ant dir="xmlimporter"   target="dependent.install" inheritAll="false">
-      <property name="build.dir"        value="${build.dir}" />
-    </ant>
-    -->
-    <!-- ant dir="cloudcontext"  target="install" /-->
-    <!-- ant dir="email"         target="install" /-->
     <ant dir="rmmci"         target="install" inheritAll="false">
       <property name="build.dir"        value="${build.dir}" />
     </ant>
@@ -162,6 +160,7 @@ Applications build file
      <ant dir="community"      target="clean" inheritAll="false" />
      <ant dir="email"      target="clean" inheritAll="false" />
      <ant dir="xmlimporter"   target="clean" inheritAll="false" />
+     <ant dir="vwms"      target="clean" inheritAll="false" />
      <ant dir="scan"      target="clean" inheritAll="false" />
      <ant dir="crontab"      target="clean" inheritAll="false" />
      <delete dir="${applications.build.dir}" />
