@@ -65,7 +65,7 @@ General New Features:
 - New storage layer, which allows for real transactions! 
 
 - Some 'applications' (like editwizards) have been split up to
-  seperate jars. This will allow for easiers partial upgrades of
+  separate jars. This will allow for easier partial upgrades of
   installations. 
 
 - Added functionality to the jsp editors: better paging mechanism. 
@@ -248,7 +248,7 @@ Know Issues and Problems:
 
 
 - Length of email field inside Users and People builder isn't
-  rfc-complient, but with 255 it stays beyond a limit some databases
+  rfc-compliant, but with 255 it stays beyond a limit some databases
   use before switching to a bigger string-type (eg clob).
 
 - Not all HTML is html4 or xhtml valid
@@ -274,7 +274,7 @@ Know Issues and Problems:
     <property name="MaxConcurrentRequests">20</property>
   </properties>
 
-  Please keep in mind that the image builder is less powerfull when
+  Please keep in mind that the image builder is less powerful when
   using JAI instead of Imagemagick.
 
 - Jumpers jump to /index.html by default, which can e.g. shield the
@@ -312,6 +312,8 @@ the list is probably a lot bigger :-)
 -------------
 Java versions
 -------------
+- J2SE 1.4.1_02
+
 - J2SE 1.4.2
 
 - J2SE Blackdown-1.4.2-rc1
@@ -349,6 +351,7 @@ These are the applications servers on which MMBase was tested.
 ---------
 Databases
 ---------
+- IBM Informix Dynamic Server 9.40.FC1
 - Hsqldb 1.7.0RC2
 - Mysql Ver 11.12 Distrib 3.23.32,
         Ver 11.16 Distrib 3.23.49,
