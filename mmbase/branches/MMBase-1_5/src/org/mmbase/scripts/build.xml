@@ -1300,7 +1300,7 @@ Change directory to ${build.dir}/orion and run:
     <!-- Xalan and Xerces -->
     <property name="xalan.version" value="xalan-j_2_2"/>
     <property name="xalan.fullversion" value="xalan-j_2_2_0"/>
-    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/${xalan.version}-bin.tar.gz"/>
+    <property name="xalan.url" value="http://xml.apache.org/dist/xalan-j/old/${xalan.version}-bin.tar.gz"/>
     <property name="xalan.jar" value="${expand.dir}/${xalan.fullversion}/bin/xalan.jar"/>
     <property name="xerces.jar" value="${expand.dir}/${xalan.fullversion}/bin/xerces.jar"/>
     <property name="xml-apis.jar" value="${expand.dir}/${xalan.fullversion}/bin/xml-apis.jar"/>
