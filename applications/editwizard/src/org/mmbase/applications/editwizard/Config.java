@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.applications.editwizard;
 
-import java.util.Stack;
-import java.util.HashMap;
+import java.util.*;
 import java.io.File;
 import org.mmbase.util.xml.URIResolver;
 import org.mmbase.applications.editwizard.SecurityException;
@@ -25,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.16 2002-07-19 13:05:00 eduard Exp $
+ * @version $Id: Config.java,v 1.17 2002-07-19 17:21:07 michiel Exp $
  */
 
 public class Config {
@@ -46,11 +45,11 @@ public class Config {
     static public abstract class SubConfig {
         public String wizard;
         public String page;
-        public HashMap attributes=new HashMap();
+        public Map attributes = new HashMap();
 
         public void setAttribute(String name, String value) {
             if (value!=null) {
-log.info("storing "+name+" :"+value);
+                log.info("storing "+name+" :"+value);
                 attributes.put(name,value);
             }
         }
@@ -86,10 +85,15 @@ log.info("storing "+name+" :"+value);
     public abstract static class Configurator {
         private static Logger log = Logging.getLoggerInstance(Config.class.getName());
 
-        private HttpServletRequest request;
-        private HttpServletResponse response;
+        protected HttpServletRequest request;
+        protected HttpServletResponse response;
         private Config config;
-        public Configurator(HttpServletRequest req, HttpServletResponse res, Config c) {
+
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public Configurator(HttpServletRequest req, HttpServletResponse res, Config c) throws WizardException {
             request = req;
             response = res;
             config  = c;
@@ -118,24 +122,14 @@ log.info("storing "+name+" :"+value);
                     log.trace("creating uriresolver (backpage = " + config.backPage + ")");
                 }
                 URIResolver.EntryList extraDirs = new URIResolver.EntryList();
+
+                /* Determin the 'referring' page, and add its directory to the URIResolver.
+                   That means that xml can be placed relative to this page, and xsl's int xsl-dir.
+                 */
                 File refFile;
                 // capture direct reference of http:// and shttp:// referers
                 int protocolPos= config.backPage.indexOf(PROTOCOL);
-                if(request.getParameter("templates") != null && request.getParameter("wizard") != null) {
-                    // get the directory of the xml we are using.....
-                    File workingDir = new File(request.getParameter("wizard")).getParentFile();                    
-                    // now w need to find our template dir, it's relative from the wizard directorie
-                    File templateDir = new File(workingDir.getAbsolutePath() + File.separator +  request.getParameter("templates"));
-                    try {
-                        templateDir = templateDir.getCanonicalFile();
-                    }
-                    catch(java.io.IOException ieo) {
-                        throw new RuntimeException("io error:" + ieo);
-                    }
-                    File check = new File(templateDir, File.separator + "xsl");
-                    if(!check.isDirectory()) throw new RuntimeException("template directory not found : " + check);
-                    extraDirs.add("templates:", templateDir);
-                }                
+
                 if (protocolPos >=0 ) { // given absolutely
                     String path =  config.backPage.substring(config.backPage.indexOf('/', protocolPos + PROTOCOL.length()));
                     // Using URL.getPath() would be nicer, but is not availeble in java 1.2
@@ -150,6 +144,31 @@ log.info("storing "+name+" :"+value);
                 if (refFile != null && refFile.exists()) {
                     extraDirs.add("ref:", refFile);
                 }
+
+                /* Optionally, you can indicate with a 'templates' option where the xml's and 
+                   xsl must be searched (if they cannot be found in the referring dir).
+                */
+                String templates = request.getParameter("templates");
+
+                if(templates != null) {
+                    File templateDir = new File(request.getRealPath(templates));
+                    try {
+                        templateDir = templateDir.getCanonicalFile();
+                    } catch (java.io.IOException e) {
+                        throw new WizardException(e.toString());
+                    }
+                    if(! templateDir.isDirectory()) {
+                        throw new WizardException("Template directory not found : " + templateDir);
+                    }
+                    extraDirs.add("templates:", templateDir);
+                }
+
+                /**
+                 * Then of course also the directory of editwizard installation must be added. This will allow for the 'basic' xsl's to be found,
+                 * and also for 'library' editors.
+                 */
+
+
                 File jspFileDir = new File(request.getRealPath(request.getServletPath())).getParentFile(); // the directory of this jsp (list, wizard)
                 File basedir    = new java.io.File(jspFileDir.getParentFile().getAbsolutePath(), "data"); // ew default data/xsls is in ../data then
                 extraDirs.add("ew:", basedir);
