@@ -18,9 +18,11 @@ import org.mmbase.util.logging.*;
 /**
  * This module provides mail functionality
  *
+ * @application Mail
+ * @deprecated use the Mail application code instead
  * @author Rob Vermeulen
  * @author Johannes Verelst
- * @version $Id: SendMail.java,v 1.15 2004-07-09 10:09:22 marcel Exp $
+ * @version $Id: SendMail.java,v 1.16 2004-10-04 11:30:31 pierre Exp $
  */
 public class SendMail extends AbstractSendMail {
     private static Logger log = Logging.getLoggerInstance(SendMail.class.getName());
@@ -134,11 +136,11 @@ public class SendMail extends AbstractSendMail {
      */
     public synchronized boolean sendMail(String from, String to, String data, Map headers) {
 
-        // bugfix #6525 
+        // bugfix #6525
         // ------------
         // marcel: be sure that mailhost is known (dont depend on init) before sending mail
         //         (checked and verified fix)
-        // 
+        //
         // Also added a subject line to be more descriptive to what mail gets send to
         // detect more easily a possible abuse of our mailsystem (logfile.service now shows from, to and subject)
         // This would also log the connect (which is debug more than a service-message)

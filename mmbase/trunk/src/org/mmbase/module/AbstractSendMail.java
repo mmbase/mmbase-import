@@ -17,6 +17,8 @@ import org.mmbase.util.logging.*;
 /**
  * This module provides mail functionality
  *
+ * @application Mail
+ * @deprecated use the Mail application code instead
  * @author Michiel Meeuwissen
  */
 abstract public class AbstractSendMail extends Module implements SendMailInterface {
@@ -24,7 +26,7 @@ abstract public class AbstractSendMail extends Module implements SendMailInterfa
 
     public void onload() { }
 
-    /** 
+    /**
      * Send mail without extra headers
      */
     public boolean sendMail(String from, String to, String data) {
@@ -33,24 +35,24 @@ abstract public class AbstractSendMail extends Module implements SendMailInterfa
 
     /**
      * Send mail
-     */    
+     */
     public boolean sendMail(Mail mail) {
         return sendMail(mail.from, mail.to, mail.text, mail.headers);
     }
 
     /**
      * checks the e-mail address
-     */ 
+     */
     public String verify(String name) {
         throw new UnsupportedOperationException("cannot verify e-mail");
     }
 
     /**
-     * gives all the members of a mailinglist 
-     */    
+     * gives all the members of a mailinglist
+     */
     public List expand(String name) {
         throw new UnsupportedOperationException("cannot expand e-mail");
     }
-    
+
 
 }

@@ -13,6 +13,7 @@ import java.util.*;
 import org.mmbase.util.*;
 
 /**
+ * @application Mail
  * @javadoc
  */
 
