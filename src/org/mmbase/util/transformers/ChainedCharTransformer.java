@@ -43,14 +43,14 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: ChainedCharTransformer.java,v 1.17 2004-10-13 21:05:41 michiel Exp $
+ * @version $Id: ChainedCharTransformer.java,v 1.18 2004-10-13 21:18:11 michiel Exp $
  */
 
 public class ChainedCharTransformer extends ReaderTransformer implements CharTransformer {
     private static Logger log = Logging.getLoggerInstance(ChainedCharTransformer.class);
 
 
-    private static final MMExecutor executor = new MMExecutor();
+    static final MMExecutor executor = new MMExecutor();
 
     private List charTransformers = new ArrayList();
 
@@ -169,7 +169,6 @@ public class ChainedCharTransformer extends ReaderTransformer implements CharTra
             charTransformer = ct;
             closeWriter = cw;
         }
-
 
         synchronized public  void run() {            
             log.debug("starting thread");
