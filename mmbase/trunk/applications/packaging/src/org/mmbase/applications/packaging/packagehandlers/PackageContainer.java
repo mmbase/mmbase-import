@@ -34,7 +34,6 @@ import org.w3c.dom.*;
  * upgrading (generate diffs) or having multiple 'download' places for a package * when a disk is broken or a server is down.
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class PackageContainer implements PackageInterface {
     private static Logger log = Logging.getLoggerInstance(PackageContainer.class);

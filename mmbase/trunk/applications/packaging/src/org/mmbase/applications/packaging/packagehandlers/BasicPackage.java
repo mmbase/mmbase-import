@@ -30,7 +30,6 @@ import org.xml.sax.*;
  * BasicPackage, base class for packages
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class BasicPackage implements PackageInterface {
     private static Logger log = Logging.getLoggerInstance(BasicPackage.class);

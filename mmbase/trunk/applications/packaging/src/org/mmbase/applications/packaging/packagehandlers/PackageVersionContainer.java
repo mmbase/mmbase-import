@@ -26,7 +26,6 @@ import org.w3c.dom.*;
  * the same version (but multiple providers)
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class PackageVersionContainer {
     private static Logger log = Logging.getLoggerInstance(PackageVersionContainer.class);

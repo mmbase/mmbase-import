@@ -20,7 +20,6 @@ import org.xml.sax.*;
  * Interface for all the package handlers
  *
  * @author     danielockeloen
- * @created    July 20, 2004
  */
 public interface PackageInterface {
     /**

@@ -28,7 +28,6 @@ import org.w3c.dom.*;
  * DisplayHtmlPackage, Handler for html packages
  *
  * @author     Daniel Ockeloen (MMBased)
- * @created    July 20, 2004
  */
 public class DisplayHtmlPackage extends BasicPackage implements PackageInterface {
 
