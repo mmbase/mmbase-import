@@ -30,7 +30,7 @@ import org.mmbase.util.FileWatcher;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.74.2.15 2003-07-07 16:58:49 michiel Exp $
+ * @version $Id: Wizard.java,v 1.74.2.16 2003-07-08 14:29:10 nico Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -42,16 +42,14 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
 
     private static NodeCache nodeCache;
-    private static FieldDataCache fieldDataCache;
    
     static {
         wizardSchemaCache = new WizardSchemaCache();
         wizardSchemaCache.putCache();
         nodeCache         = new NodeCache();
         nodeCache.putCache();
-        fieldDataCache    = new FieldDataCache();
-        fieldDataCache.putCache();
     }
+    
     /**
      * The cloud used to connect to MMBase
      */
@@ -662,7 +660,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
 
             // check all fields and do the thingies
             createPreHtmlForm(prehtmlform, form, data);
-            fieldDataCache.clear();
         }
 
         // now, resolve optionlist values:
@@ -769,109 +766,112 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         return preHtml;
     }
 
-    /**
-     * This method is used by the #createPreHtml method to generate a pre-html form.
-     *
-     * @param       form    The node of the pre-html form which is to be generated
-     * @param       formdef the node of the wizardschema form definition
-     * @param       data    Points to the datacontext node which should be used for this form.
-     */
-    public void createPreHtmlForm(Node form, Node formdef, Node data) throws WizardException {
-        if (log.isDebugEnabled()) {
-            log.trace("Creating preHTMLForm for form:" + form + " / formdef:" + formdef + " / data:" + data);
-        }
-        // select all fields on first level
-        NodeList fields = Utils.selectNodeList(formdef, "fieldset|field|list|command");
+   /**
+    * This method is used by the #createPreHtml method to generate a pre-html form.
+    *
+    * @param       form    The node of the pre-html form which is to be generated
+    * @param       formdef the node of the wizardschema form definition
+    * @param       data    Points to the datacontext node which should be used for this form.
+    */
+   public void createPreHtmlForm(Node form, Node formdef, Node data)
+      throws WizardException {
+      if (log.isDebugEnabled()) {
+         log.trace("Creating preHTMLForm for form:" + form + " / formdef:" +
+            formdef + " / data:" + data);
+      }
 
-        // process all possible fields
-        // - Parse the fdatapath attribute to obtain the corresponding data fields.
-        // - Create a form field for each found data field.
-        for (int i = 0; i < fields.getLength(); i++) {
-            Node field = fields.item(i);
-            // let's see what we should do here
-            String nodeName = field.getNodeName();
-            // a field set
-            if (nodeName.equals("fieldset")) {
-                Node newfieldset = form.getOwnerDocument().createElement("fieldset");
-                Utils.copyAllAttributes(field, newfieldset);
-                NodeList itemprops = Utils.selectNodeList(field, "prompt");
-                Utils.appendNodeList(itemprops, newfieldset);
-                // place newfieldset in pre-html form
-                form.appendChild(newfieldset);
-                createPreHtmlForm(newfieldset, field, data);
+      // select all fields on first level
+      NodeList fields = Utils.selectNodeList(formdef,
+            "fieldset|field|list|command");
+
+      // process all possible fields
+      // - Parse the fdatapath attribute to obtain the corresponding data fields.
+      // - Create a form field for each found data field.
+      for (int i = 0; i < fields.getLength(); i++) {
+         Node field = fields.item(i);
+
+         // let's see what we should do here
+         String nodeName = field.getNodeName();
+
+         // a field set
+         if (nodeName.equals("fieldset")) {
+            Node newfieldset = form.getOwnerDocument().createElement("fieldset");
+            Utils.copyAllAttributes(field, newfieldset);
+
+            NodeList itemprops = Utils.selectNodeList(field, "prompt");
+            Utils.appendNodeList(itemprops, newfieldset);
+
+            // place newfieldset in pre-html form
+            form.appendChild(newfieldset);
+            createPreHtmlForm(newfieldset, field, data);
+         } else {
+            Node fieldDataNode = null;
+            String xpath = Utils.getAttribute(field, "fdatapath", null);
+
+            if (xpath == null) {
+               String ftype = Utils.getAttribute(field, "ftype", null);
+
+               if (!("startwizard".equals(ftype) || "wizard".equals(ftype))) {
+                  throw new WizardException(
+                     "A field tag should contain one of the following attributes: fdatapath or name");
+               }
             } else {
-               Object fieldDataObj = fieldDataCache.get(field);
-            
-               Node fieldDataNode = null;
-               NodeList fieldInstances = null;
+               // A normal field.
+               if (nodeName.equals("field")) {
+                  // xpath is found.
+                  fieldDataNode = Utils.selectSingleNode(data, xpath);
 
-               if (fieldDataObj == null) {
-                   if (log.isDebugEnabled()) {
-                       log.debug("fieldDataNode not in cache, getting for " + field);
-                   }
-                   String xpath = Utils.getAttribute(field, "fdatapath", null);
-                   
-                   if (xpath == null) {
-                       String ftype = Utils.getAttribute(field, "ftype", null);
-                       if (!("startwizard".equals(ftype) || "wizard".equals(ftype))) {
-                           throw new WizardException("A field tag should contain one of the following attributes: fdatapath or name");
-                       }
-                   } else {
-                       // xpath is found. Let's see howmany 'hits' we have
-                       fieldInstances = Utils.selectNodeList(data, xpath);
-                       if (fieldInstances == null) {
-                           throw new WizardException("The xpath: " + xpath + " is not valid. Note: this xpath maybe generated from a <field name='fieldname'> tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
-                       }
-                       fieldDataCache.put(field, fieldInstances);
-                   }
-               } else {
-                  log.debug("fieldDataNode found in cache");              
-                  fieldInstances = (NodeList) fieldDataObj;
-               }
-               
-               if (fieldInstances.getLength() > 0) {
-                  fieldDataNode = fieldInstances.item(0);
-               }
-                // A normal field.
-                if (nodeName.equals("field")) {
-                    if (fieldDataNode != null) {
-                        // create normal formfield.
-                        mergeConstraints(field, fieldDataNode);
+                  if (fieldDataNode != null) {
+                     // create normal formfield.
+                     mergeConstraints(field, fieldDataNode);
+                     createFormField(form, field, fieldDataNode);
+                  } else {
+                     String ftype = Utils.getAttribute(field, "ftype");
+
+                     if ("function".equals(ftype)) {
+                        log.debug(
+                           "Not an data node, setting number attribute, because it cannot be found with fdatapath");
+
+                        //set number attribute in field ???
+                        Utils.setAttribute(field, "number",
+                           Utils.selectSingleNodeText(data, "object/@number",
+                              null));
+
+                        // create the formfield (should be using the current data node ???)
                         createFormField(form, field, fieldDataNode);
-                    } else {
-                        String ftype = Utils.getAttribute(field, "ftype");
-                        if ("function".equals(ftype)) {
-                            log.debug(
-                                "Not an data node, setting number attribute, because it cannot be found with fdatapath");
-                            //set number attribute in field ???
-                            Utils.setAttribute(
-                                field,
-                                "number",
-                                Utils.selectSingleNodeText(data, "object/@number", null));
-                            // create the formfield (should be using the current data node ???)
-                            createFormField(form, field, fieldDataNode);
-                        } else if ("startwizard".equals(ftype) || "wizard".equals(ftype)) {
-                            log.debug("A startwizard!");
-                            // create the formfield using the current data node
-                            createFormField(form, field, data);
-                        } else {
-                            // throw an exception, but ONLY if the datapath was created from a 'name' attribute
-                            // (only in that case can we be sure that the path is faulty - in otehr cases
-                            // the path can be valid but point to a related object that is not present)
-                            String fname = Utils.getAttribute(field, "name", null);
-                            if (fname != null) {
-                                throw new WizardException("The field with name '" + fname + "' does not exist.");
-                            }
+                     } else if ("startwizard".equals(ftype) ||
+                           "wizard".equals(ftype)) {
+                        log.debug("A startwizard!");
+
+                        // create the formfield using the current data node
+                        createFormField(form, field, data);
+                     } else {
+                        // throw an exception, but ONLY if the datapath was created from a 'name' attribute
+                        // (only in that case can we be sure that the path is faulty - in otehr cases
+                        // the path can be valid but point to a related object that is not present)
+                        String fname = Utils.getAttribute(field, "name", null);
+
+                        if (fname != null) {
+                           throw new WizardException("The field with name '" +
+                              fname + "' does not exist.");
                         }
-                    }
-                }
-                // A list "field". Needs special processing.
-                if (nodeName.equals("list")) {
-                    createFormList(form, field, fieldInstances, data);
-                }
+                     }
+                  }
+               }
+
+               // A list "field". Needs special processing.
+               if (nodeName.equals("list")) {
+                  NodeList fieldInstances = Utils.selectNodeList(data, xpath);
+                  if (fieldInstances == null) {
+                     throw new WizardException("The xpath: " + xpath +
+                        " is not valid. Note: this xpath maybe generated from a <field name='fieldname'> tag. Make sure you use simple valid fieldnames use valid xpath syntax.");
+                  }
+                  createFormList(form, field, fieldInstances, data);
+               }
             }
-        }
-    }
+         }
+      }
+   }
 
     /**
      * This method loads the schema using the properties of the wizard. It loads the wizard using #wizardSchemaFilename,
@@ -2289,24 +2289,6 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
         }
     }
   
-   /**
-    * Caches field to node.
-    * @since MMBase-1.6.4
-    */
-   static class FieldDataCache extends Cache {
-      FieldDataCache() {
-         super(100);
-      }
-      
-       public String getName() {
-         return "FieldDataCache";
-      }
-      
-      public String getDescription() {
-         return "field -> node";
-      }
-   }
-   
    /**
     * Caches objectNumber to Node.
     * @since MMBase-1.6.4
