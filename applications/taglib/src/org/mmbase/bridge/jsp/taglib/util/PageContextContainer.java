@@ -21,7 +21,7 @@ import java.util.*;
  * The page context container stores variables directly in the page context, like JSTL does.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PageContextContainer.java,v 1.8 2005-03-15 20:33:25 michiel Exp $
+ * @version $Id: PageContextContainer.java,v 1.9 2005-03-16 12:11:56 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -116,7 +116,7 @@ public class PageContextContainer extends ContextContainer {
     }
 
     protected boolean checkJspVar(String jspvar, String id) {
-        return ! jspvar.equals(id);
+        return ! id.equals(jspvar);
     }
 
 }
