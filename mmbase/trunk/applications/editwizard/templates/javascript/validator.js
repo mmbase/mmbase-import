@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.33 2004-06-16 10:31:03 pierre Exp $
+ * @version  $Id: validator.js,v 1.34 2004-08-23 09:52:47 pierre Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -89,17 +89,17 @@ Validator.prototype.validateEvent = function (evt) {
     if (evt) {
         var elem = getTargetElement(evt)
         if (elem) {
-                    this.validate(elem);
+            this.validate(elem);
         }
     }
 
 }
 
 Validator.prototype.validate = function (el) {
-        var element = el;
+    var element = el;
     var superId = el.getAttribute("super");
     if (superId != null) {
-            var form = document.forms[0];
+        var form = document.forms[0];
         element = form[superId];
     }
 
@@ -207,6 +207,9 @@ Validator.prototype.validateElement = function (el, silent) {
         case "enum":
             err += validateEnum(el, form, v);
             break;
+        case "binary":
+            err += validateBinary(el, form, v);
+            break;
         case "datetime":
             err += validateDatetime(el, form, v);
             break;
@@ -265,7 +268,7 @@ function requiresValidation(element) {
             break;
     }
 
-        return validationRequired;
+    return validationRequired;
 }
 
 function requiresUnknown(el, form) {
@@ -346,6 +349,16 @@ function validateEnum(el, form, v) {
     required = el.getAttribute("dtrequired");
     if (!isEmpty(required) && (required == "true")) {
         if (el.options[el.selectedIndex].value == "-")
+            return getToolTipValue(form,'message_required',
+                   "value is required; please select a value");
+    }
+    return "";
+}
+
+function validateBinary(el, form, v) {
+    required = el.getAttribute("dtrequired");
+    if (!isEmpty(required) && (required == "true")) {
+        if (v=="")
             return getToolTipValue(form,'message_required',
                    "value is required; please select a value");
     }
