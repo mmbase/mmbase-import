@@ -851,8 +851,8 @@ public class MMBase extends ProcessorModule  {
 				log.error("Cannot find modules in "+path);
 			}
         } else {
-			log.error(path+" is not a directory");
-		}
+			//log.error(path+" is not a directory");
+	}
     }
 
     /**
