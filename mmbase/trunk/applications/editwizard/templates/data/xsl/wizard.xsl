@@ -13,7 +13,7 @@
     @author Michiel Meeuwissen
     @author Pierre van Rooden
     @author Nico Klasens
-    @version $Id: wizard.xsl,v 1.103 2003-12-19 11:09:33 nico Exp $
+    @version $Id: wizard.xsl,v 1.104 2003-12-21 16:16:05 nico Exp $
     
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -31,7 +31,7 @@
     The following things can be overriden to customize the appearance of wizard
     ================================================================================ -->
 
-  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); <xsl:if test="//*[@ftype=&apos;html&apos;]">startHtmlArea();</xsl:if></xsl:variable>
+  <xsl:variable name="BodyOnLoad">doOnLoad_ew(); start_validator(); startHtmlArea();</xsl:variable>
   <xsl:variable name="BodyOnunLoad">doOnUnLoad_ew();</xsl:variable>
 
   <xsl:template name="javascript">
@@ -86,9 +86,7 @@
     </xsl:choose>
     
     <!-- no need to add the html editor if there are not fields of this type -->
-    <xsl:if test="//*[@ftype=&apos;html&apos;]">
-	    <xsl:call-template name="javascript-html"/>
-    </xsl:if>
+    <xsl:call-template name="javascript-html"/>
   </xsl:template>
 
   <xsl:template name="javascript-html">
@@ -113,7 +111,7 @@
           var htmlAreas = new Array();
         ]]></xsl:text>
 
-      <xsl:for-each select="//*[@ftype='html']">
+      <xsl:for-each select="//wizard/form[@id=//wizard/curform]/*[@ftype=&apos;html&apos;]">
         htmlAreas[htmlAreas.length] = '<xsl:value-of select="@fieldname"/>';
       </xsl:for-each>
 
