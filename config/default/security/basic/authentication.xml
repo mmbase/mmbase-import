@@ -3,18 +3,18 @@
 <authentication>
 
         <loginmodule    name="anonymous"
-                        class="org.mmbase.security.implementation.AnonymousLoginModule"
+                        class="org.mmbase.security.implementation.basic.AnonymousLoginModule"
                         rank="anonymous"/>
 
 	<loginmodule 	name="name/password" 
-			class="org.mmbase.security.implementation.FileLoginModule" 
+			class="org.mmbase.security.implementation.basic.FileLoginModule" 
 			rank="basic user">
 		<property 
-		    	name="file">../accounts.properties</property>
+		    	name="file">../../accounts.properties</property>
 	</loginmodule>
 
         <loginmodule    name="admin"
-                        class="org.mmbase.security.implementation.AdminLoginModule"
+                        class="org.mmbase.security.implementation.basic.AdminLoginModule"
                         rank="administrator">
                 <property 
 		    	name="key">admin2k</property>

@@ -22,7 +22,7 @@
 			class.
 
 	 -->
-  	<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="authentication.xml" />
+  	<authentication class="org.mmbase.security.implementation.basic.AuthenticationHandler" url="basic/authentication.xml" />
 
 	<!--
 		tag authorization:
