@@ -52,9 +52,8 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
             servlet = root  + (String) servlets.get(0);
         }
         
-        return new StringBuffer("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()));
+        return new StringBuffer("http://" + Config.host + servlet + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&source=" + (source == null ? "" : "" + source.getNumber()));
 
-        // todo, perhaps simply the right source number should be passed
     }
 
     public Format  getFormat()   { 
