@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.10 2003-09-01 15:21:52 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.11 2003-09-04 11:04:39 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -454,9 +454,7 @@ public class DatabaseStorageManager implements StorageManager {
         List fields =  new ArrayList();
         for (Iterator f = builderFields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
-            // use field.inStorage()
-            if (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT ||
-                field.getDBState() == FieldDefs.DBSTATE_SYSTEM) {
+            if (field.inStorage()) {
                 // skip bytevalues that are written to file
                 if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
                     storeBinaryAsFile(node,field);
@@ -527,10 +525,7 @@ public class DatabaseStorageManager implements StorageManager {
                 throw new StorageException("trying to change the '"+key+"' field");
             }
             FieldDefs field = builder.getField(key);
-            // use field.inStorage()
-            if ((field != null) &&
-                ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT) ||
-                 (field.getDBState() == FieldDefs.DBSTATE_SYSTEM))) {
+            if ((field != null) && field.inStorage()) {
                 // skip bytevalues that are written to file
                 if (factory.hasOption(Attributes.STORES_BINARY_AS_FILE) && (field.getDBType() == FieldDefs.TYPE_BYTE)) {
                     storeBinaryAsFile(node,field);
@@ -597,11 +592,25 @@ public class DatabaseStorageManager implements StorageManager {
             // Store strings
             case FieldDefs.TYPE_STRING:;
             case FieldDefs.TYPE_XML:
-                setStringValue(statement, index, node.getStringValue(fieldName), field);
+                // note: do not use getStringValue, as this may attempt to
+                // retrieve a (old, or nonexistent) value from the storage
+                Object textValue = node.getValue(fieldName);
+                if (textValue instanceof String) {
+                    setStringValue(statement, index, (String)textValue, field);
+                } else {
+                    setStringValue(statement, index, null, field);
+                }
                 break;
             // Store binary data
             case FieldDefs.TYPE_BYTE:
-                setBinaryValue(statement, index, node.getByteValue(fieldName), field);
+                // note: do not use getByteValue, as this may attempt to
+                // retrieve a (old, or nonexistent) value from the storage
+                Object byteValue = node.getValue(fieldName);
+                if (byteValue instanceof byte[]) {
+                    setBinaryValue(statement, index, (byte[])byteValue, field);
+                } else {
+                    setBinaryValue(statement, index, null, field);
+                }
                 break;
             // unknown field type - error
             default:
@@ -798,10 +807,7 @@ public class DatabaseStorageManager implements StorageManager {
             StringBuffer fieldNames = null;
             for (Iterator f = builderFields.iterator(); f.hasNext();) {
                 FieldDefs field = (FieldDefs) f.next();
-                // use field.inStorage()
-                if ((field.getDBState() == FieldDefs.DBSTATE_PERSISTENT ||
-                     field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
-                     !shorten(field)) {
+                if (field.inStorage() && !shorten(field)) {
                     // store the fieldname and the value parameter
                     String fieldName = (String)factory.getStorageIdentifier(field);
                     if (fieldNames == null) {
@@ -948,10 +954,9 @@ public class DatabaseStorageManager implements StorageManager {
         }
         for (Iterator f = fields.iterator(); f.hasNext();) {
             FieldDefs field = (FieldDefs) f.next();
-            // persistent field? ( use inStorage() )
-            boolean storefield = field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM;
+            // persistent field?
             // skip binary fields when values are written to file
-            storefield = storefield && (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE));
+            boolean storefield = field.inStorage() && (field.getDBType() != FieldDefs.TYPE_BYTE || !factory.hasOption(Attributes.STORES_BINARY_AS_FILE));
             // also, if the database is OO, and the builder has a parent, skip fields that are in the parent builder
             if (storefield && parentBuilder != null) {
                 storefield = !factory.hasOption(Attributes.SUPPORTS_INHERITANCE) || parentBuilder.getField(field.getDBName())==null;
