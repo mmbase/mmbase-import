@@ -25,10 +25,10 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.37 2001-03-26 09:44:30 install Exp $
+ * @version $Id: Images.java,v 1.38 2001-03-30 08:49:55 pierre Exp $
  */
 public class Images extends MMObjectBuilder {
-    private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
+    private static Logger log = Logging.getLoggerInstance(Images.class.getName());
 
 	ImageConvertInterface imageconvert=null;
 	Hashtable ImageConvertParams=new Hashtable();
