@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.35 2004-06-03 15:58:48 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.36 2004-09-17 07:27:57 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -222,8 +222,9 @@ public class MediaFragments extends MMObjectBuilder {
         }
     }
 
+
     public String getGUIIndicator(String field, MMObjectNode node) {
-        if ("start".equals(field) || "stop".equals(field)) {
+        if (getField(field).getGUIType().equals("relativetime")) { // must be delegated to a field-type implementation
             StringBuffer buf = new StringBuffer();
             org.mmbase.applications.media.urlcomposers.RealURLComposer.appendTime(node.getIntValue(field), buf);
             return buf.toString();
