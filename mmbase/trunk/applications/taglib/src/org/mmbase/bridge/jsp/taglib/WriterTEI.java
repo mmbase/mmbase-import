@@ -65,6 +65,8 @@ public class WriterTEI extends TagExtraInfo {
                 type = "java.util.Vector"; break;
             case WriterHelper.TYPE_LIST:
                 type = "java.util.List"; break;
+            case WriterHelper.TYPE_DATE:
+                type = "java.util.Date"; break;
             case WriterHelper.TYPE_BYTES:
                 type = "[B"; break; 
                 // this doesn't work like this...
