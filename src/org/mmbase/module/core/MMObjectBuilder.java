@@ -1414,9 +1414,9 @@ public class MMObjectBuilder extends MMTable {
 	public String getDutchSName() {
 		if (singularNames!=null) {
 			String tmp=(String)singularNames.get(mmb.getLanguage());
-			if (tmp!=null) {
-				return(tmp);
-			}
+			if (tmp!=null) return(tmp);
+			tmp=(String)singularNames.get("us");
+			if (tmp!=null) return(tmp);
 			return(null);
 		}
 		return(dutchSName);
