@@ -37,8 +37,11 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         this.number=number;    
     }
     
-    public void setParameter(String param) {
+    public void setParameter(String param) throws JspTagException{  
         this.number = pageContext.getRequest().getParameter(param);
+        if (this.number == null) { 
+            throw new JspTagException("No parameter "  + param);
+        }
     }
     
     
@@ -47,7 +50,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         
         if (number != null) { 
             // explicity indicated which node (by number or alias)
-            node = getDefaultCloud().getNode(number);
+            node = getCloudProviderVar().getNode(number);
         } else { 
             // get the node from a parent element.           
             try {

@@ -31,7 +31,6 @@ public class SetFieldTag extends NodeReferrerTag {
     
     private String parentNodeId = null;
     private String name;   
-    private String head;
     
     public void setNode(String node){
         parentNodeId = node;

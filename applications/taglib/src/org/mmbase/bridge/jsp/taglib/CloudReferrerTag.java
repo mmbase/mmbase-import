@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* Tag which are meant to live as a child of the CloudTag, could extend this
+* Tags which are meant to live as a child of the CloudTag, could extend this
 * class. 
 *
 * @author Michiel Meeuwissen 
@@ -34,9 +34,25 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     private static Logger log = Logging.getLoggerInstance(CloudReferrerTag.class.getName()); 
     private static CloudContext cloudContext;
 
+    private CloudProvider cloudTag = null;
+
+    private String cloudId = null; 
+    // the id of the cloud to which we refer
+    // not yet supported by CloudTag
+
+
+    /**
+     * If there are more clouds to choose from, you can have a 'cloud'
+     * attribute in your tag, in wich you can indicate the id of the
+     * cloud you mean.
+     *
+     **/
+    public void setCloud(String c) {
+        cloudId = c;
+    }
+    
     /**
     * This method tries to find an ancestor object of type CloudTag
-    * @param id the id of the parent we are looking for , this id might be null or ""
     * in that case the first node provider found will be taken.
     * REMARK: the CloudTag does not yet have 'id', i think. We dont'
     * have multiple cloud support yet.
@@ -44,7 +60,7 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
     *
     */
 	
-    public CloudProvider findCloudProvider(String id) throws JspTagException {
+    protected CloudProvider findCloudProvider() throws JspTagException {
 
         Class cloudClass;
         try {
@@ -53,61 +69,48 @@ public abstract class CloudReferrerTag extends BodyTagSupport {
             throw new JspTagException ("Could not find CloudProvider class");  
         }
 
-        CloudProvider cloud = (CloudProvider) findAncestorWithClass((Tag)this, cloudClass); 
-        if (cloud == null) {
+        CloudProvider cTag = (CloudProvider) findAncestorWithClass((Tag)this, cloudClass); 
+        if (cTag == null) {
             throw new JspTagException ("Could not find parent cloud");  
         }
 
-        if ("".equals(id)) id = null;
+        if ("".equals(cloudId)) cloudId = null;
 
         if (id != null) { // search further, if necessary
-            while (cloud.getId() != id) {
-                cloud = (CloudProvider) findAncestorWithClass((Tag)cloud, cloudClass);            
-                if (cloud == null) {
-                    throw new JspTagException ("Could not find parent with id " + id);  
+            while (cTag.getId() != cloudId) {
+                cTag = (CloudProvider) findAncestorWithClass((Tag)cTag, cloudClass);
+                if (cTag == null) {
+                    throw new JspTagException ("Could not find parent with id " + cloudId);  
                 }
             }
             
         }
-        return cloud;
-    }
-
-    /**
-     * Returns the closest ancestor which is a CloudTag.
-     *
-     */
-
-    public CloudProvider findCloudProvider() throws JspTagException {
-        return findCloudProvider(null);
+        return cTag;
     }
     
     /**
-    * @return the default cloud being the cloud with name equals to the DEFAULT_CLOUD_NAME
-    * defined in this class. 
-    **/
+     * Find the CloudProvider and return its cloud variable in one
+     * step. And the result of findCloudProvider is stored, so
+     * invoking this function more often is better then invoking
+     * findCloudProvider every time.
+     *
+     * @return a Cloud
+     **/
 
-    public Cloud getDefaultCloud() throws JspTagException {
-        return findCloudProvider().getCloudVar();
+    protected Cloud getCloudProviderVar() throws JspTagException {
+        if (cloudTag == null) {
+            cloudTag = findCloudProvider();
+        }
+        return cloudTag.getCloudVar();
     }
 
-    /**
-    * @return the page cloud being the cloud set with the <mm:cloud>
-    * tag
-    *
-    * REMARK: now exist 'getDefaultCloud' and 'getPageCloud'. I think
-    * one such a function would be sufficient.
-    **/
-
-    public Cloud getPageCloud() throws JspTagException {
-        return findCloudProvider().getCloudVar();
-    }
 
     /**
-    * @return the default cloud context 
+    * @return the cloud context 
     **/
-    public CloudContext getDefaultCloudContext(){
+    protected CloudContext getCloudContext(){
         if (cloudContext == null){
-            cloudContext=LocalContext.getCloudContext();
+            cloudContext = LocalContext.getCloudContext();
         } 
         return cloudContext;
     }

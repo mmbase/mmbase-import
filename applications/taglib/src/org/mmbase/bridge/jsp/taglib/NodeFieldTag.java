@@ -90,7 +90,7 @@ public class NodeFieldTag extends CloudReferrerTag {
     
     public int doAfterBody() throws JspTagException {
         try {
-            Node node = getDefaultCloud().getNode(number);
+            Node node = getCloudProviderVar().getNode(number);
             //bodyOut.clearBody();
             //BodyContent bodyOut = getBodyContent();
             bodyContent.print(node.getStringValue(field));

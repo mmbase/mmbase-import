@@ -44,7 +44,7 @@ public class CreateNodeTag extends AbstractNodeProviderTag implements BodyTag {
     public int doStartTag() throws JspTagException{            
         Node node;
         
-        node = getDefaultCloud().getNodeManager(type).createNode();
+        node = getCloudProviderVar().getNodeManager(type).createNode();
         setNodeVar(node);        
         log.debug("created node " + node.getValue("gui()"));
         return EVAL_BODY_TAG; // should perhaps give a SKIP_BODY if 'field' is given.
