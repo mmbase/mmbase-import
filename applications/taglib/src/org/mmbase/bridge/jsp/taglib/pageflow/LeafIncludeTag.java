@@ -60,27 +60,9 @@ public class LeafIncludeTag extends IncludeTag {
     public void setObjectlist(String p) throws JspTagException {
         objectlist = getAttributeValue(p);
     }
-    
-    protected void debugStart(String url) {
-        try {
-            if (debugtype == DEBUG_HTML) {
-                bodyContent.write("\n<!-- LeafInclude page = '" + url + "' -->\n");
-            }
-            if (debugtype == DEBUG_CSS) {
-                bodyContent.write("\n/* LeafInclude page = '" + url + "' */\n");
-            }
-        } catch (Exception e) {}
+
+    protected String getThisName() {
+        return "LeafInclude";
     }
-    
-    protected void debugEnd(String arg) {
-        try {
-            if (debugtype == DEBUG_HTML) {
-                bodyContent.write("\n<!-- END LeafInclude page = '" + arg + "' -->\n");
-            }
-            if (debugtype == DEBUG_CSS) {
-                bodyContent.write("\n/* END LeafInclude page = '" + arg + "' */\n");
-            }
-        } catch (Exception e) {}
-    }
-    
+        
 }

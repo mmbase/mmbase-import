@@ -63,27 +63,9 @@ public class TreeIncludeTag extends IncludeTag {
     public void setObjectlist(String p) throws JspTagException {
         objectlist = getAttributeValue(p);
     }
-    
-    protected void debugStart(String url) {
-        try {
-            if (debugtype == DEBUG_HTML) {
-                bodyContent.write("\n<!-- TreeInclude page = '" + url + "' -->\n");
-            }
-            if (debugtype == DEBUG_CSS) {
-                bodyContent.write("\n/* TreeInclude page = '" + url + "' */\n");
-            }
-        } catch (Exception e) {}
+
+    protected String getThisName() {
+        return "TreeInclude";
     }
-    
-    protected void debugEnd(String arg) {
-        try {
-            if (debugtype == DEBUG_HTML) {
-                bodyContent.write("\n<!-- END TreeInclude page = '" + arg + "' -->\n");
-            }
-            if (debugtype == DEBUG_CSS) {
-                bodyContent.write("\n/* END TreeInclude page = '" + arg + "' */\n");
-            }
-        } catch (Exception e) {}
-    }
-    
+        
 }
