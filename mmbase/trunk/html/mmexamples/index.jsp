@@ -44,7 +44,7 @@
         Small example of a news/magazine system
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="mynews.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
@@ -74,7 +74,7 @@
         Example of the community-features of MMBase (forum &amp; chat)
       </td>
       <td class="link" >
-        <a href="<mm:url page="jsp/community.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
+        <a href="<mm:url page="community.jsp" />"><img alt="&gt;" src="<mm:url page="/mmbase/style/images/next.gif" />" /></a>
       </td>
     </tr>
     
