@@ -31,7 +31,7 @@ public class Poster {
     // logger
     static private Logger log = Logging.getLoggerInstance(Poster.class);
 
-    private int id, postcount, sessionstart, lastsessionend;
+    private int id, postcount, sessionstart, lastsessionend, state;
     private int quotanumber,quotaused;
     private int avatar = 0;
     private String firstname, lastname, email, level, location, gender;
@@ -40,6 +40,9 @@ public class Poster {
     private HashMap mailboxes;
     private HashMap seenthreads = new HashMap();
 
+    private static final int STATE_ACTIVE = 0;
+    private static final int STATE_DISABLED = 1;
+
     /**
      * Contructor
      *
@@ -47,8 +50,9 @@ public class Poster {
      * @param parent Forum that the poster belongs to
      */
     public Poster(Node node, Forum parent) {
-	this.quotanumber=10;
-	this.quotaused=-1;
+        this.state=0;
+	    this.quotanumber=10;
+	    this.quotaused=-1;
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
@@ -410,6 +414,30 @@ public class Poster {
     }
 
     /**
+     * disable the poster
+     *
+     * @return <code>true</code> if this method is called
+     */
+    public boolean disable() {
+        this.state = STATE_DISABLED;
+        node.setIntValue("state",this.state);
+        ForumManager.syncNode(node, ForumManager.SLOWSYNC);
+        return true;
+    }
+
+   /**
+     * enable the poster
+     *
+     * @return <code>true</code> if this method is called
+     */
+    public boolean enable() {
+        this.state = STATE_ACTIVE;
+        node.setIntValue("state",this.state);
+        ForumManager.syncNode(node, ForumManager.SLOWSYNC);
+        return true;
+    }
+
+    /**
      * get the poster's mailbox by the  name
      *
      * @param name
@@ -437,7 +465,7 @@ public class Poster {
     /**
      * Get the poster's mailboxes
      *
-     * @return All the poster's mailboxes
+     * @ return All the poster's mailboxes
      */
     private void readMailboxes() {
         mailboxes = new HashMap();
