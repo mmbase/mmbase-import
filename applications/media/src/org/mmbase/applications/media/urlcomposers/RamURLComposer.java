@@ -28,13 +28,13 @@ import java.net.*;
   </pre>
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.4 2003-02-05 11:41:25 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.5 2003-02-05 12:00:09 michiel Exp $
  * @since MMBase-1.7
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     private static Logger log = Logging.getLoggerInstance(RamURLComposer.class.getName());
     
-    private final static String SERVLET_MAPPING = "/mediaframent"; // todo make configurable/ read from web.xml 
+    private final static String SERVLET_MAPPING = "/mediafragment"; // todo make configurable/ read from web.xml 
 
 
     protected  Format          format;
@@ -44,7 +44,10 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     }
     protected StringBuffer  getURLBuffer() {
         return new StringBuffer(SERVLET_MAPPING + "." + format + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format);
+
+        // todo, perhaps simply the right source number should be passed
     }
+
     public Format  getFormat()   { 
         if (format == Format.RM)  return Format.RAM; 
         if (format == Format.ASF) return Format.WMP; 

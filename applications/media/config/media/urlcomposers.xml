@@ -5,6 +5,7 @@
   <default>org.mmbase.applications.media.urlcomposers.URLComposer</default>
   <urlcomposer format="ra" >org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
   <urlcomposer format="rm" >org.mmbase.applications.media.urlcomposers.RealURLComposer</urlcomposer>
+
   <urlcomposer format="ra" >org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
   <urlcomposer format="rm" >org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
   <urlcomposer format="asf">org.mmbase.applications.media.urlcomposers.RamURLComposer</urlcomposer>
