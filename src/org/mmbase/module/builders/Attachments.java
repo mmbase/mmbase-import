@@ -115,24 +115,21 @@ public class Attachments extends MMObjectBuilder {
         return(true);
     }
 
-    /**
-     * cjr: copied from FieldEditor
-     * getFile: This method creates a byte array using the specified filepath argument.
-     */
-    public byte[] getFile(String filepath) {
-        try {
-            File file = new File(filepath);
-            FileInputStream fis = new FileInputStream(filepath);
-            byte[] ba = new byte[(int)file.length()];	//Create a bytearray with a length the size of the filelength.
-            fis.read(ba);	//Read up to ba.length bytes of data from this inputstream into the bytearray ba.
-            fis.close();
-            return(ba);
-        } catch (IOException ioe) {
-            return(null);
-        }
-    }
+	public boolean setValue(MMObjectNode node, String field) {
+
+		try {
+			if(field.equals("handle") && node.getValue("mimetype")==null) {
+				byte[] handle = (byte[])node.getValue("handle");
+				node.setValue("size",handle.length);
+				log.debug("Attachment size of file = "+handle.length);
+				MagicFile magic = new MagicFile();
+       			node.setValue("mimetype",magic.test(handle));
+				log.debug("ATTACHMENT mimetype of file = "+magic.test(handle));
+			}
+		} catch (Exception e) {
+			log.error("Attachments, wasn't able to determine mime/type or size");
+		}
+		
+		return true;	
+	}	
 }
-
-
-
-
