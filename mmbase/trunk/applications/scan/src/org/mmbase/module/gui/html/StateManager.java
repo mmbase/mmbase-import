@@ -25,7 +25,7 @@ import org.mmbase.module.builders.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: StateManager.java,v 1.13 2003-03-10 11:50:39 pierre Exp $
+ * @version $Id: StateManager.java,v 1.14 2003-07-03 13:15:11 pierre Exp $
  */
 
 public class StateManager implements CommandHandlerInterface {
@@ -76,7 +76,7 @@ public class StateManager implements CommandHandlerInterface {
 		String token;
 		String userName=HttpAuth.getRemoteUser(sp);
 	
-		if (userName==null) return("StateManager-> not logged in");	
+		if (userName==null) return "StateManager-> not logged in";	
 		EditState state = getEditState(userName);
   	//	log.debug("STATE="+state);
 
@@ -92,7 +92,7 @@ public class StateManager implements CommandHandlerInterface {
 					}
 				}
 			} else if (token.equals("GETBUILDER")) {
-					return(state.getBuilderName());
+					return state.getBuilderName();
 			} else if (token.equals("DELBUILDER")) {
 					state.popState();
 			} else if (token.equals("CLEARBUILDERS")) {
@@ -102,27 +102,27 @@ public class StateManager implements CommandHandlerInterface {
 			} else if (token.equals("SETHTMLVALUE")) {
 					state.setHtmlValue(commands.nextToken(),commands.nextToken());
 			} else if (token.equals("GETHTMLVALUE")) {
-					return(state.getHtmlValue(commands.nextToken()));
+					return state.getHtmlValue(commands.nextToken());
 			} else if (token.equals("SETEDITNODE")) {
 					state.setEditNode(commands.nextToken(),userName);
 			} else if (token.equals("GETEDITNODE")) {
-					return(""+state.getEditNodeNumber());
+					return ""+state.getEditNodeNumber();
 			} else if (token.equals("GETEDITSRCDUTCHNAME")) {
-					return(""+state.getEditNodeSrcDutchName());
+					return state.getEditNodeSrcDutchName();
 			} else if (token.equals("GETEDITDSTDUTCHNAME")) {
-					return(""+state.getEditNodeDstDutchName());
+					return state.getEditNodeDstDutchName();
 			} else if (token.equals("GETEDITSRCNAME")) {
-					return(""+state.getEditNodeSrcName());
+					return state.getEditNodeSrcName();
 			} else if (token.equals("GETEDITDSTNAME")) {
-					return(""+state.getEditNodeDstName());
+					return state.getEditNodeDstName();
 			} else if (token.equals("GETEDITSRCNODE")) {
-					return(""+state.getEditNodeSrcNumber());
+					return ""+state.getEditNodeSrcNumber();
 			} else if (token.equals("GETEDITDSTNODE")) {
-					return(""+state.getEditNodeDstNumber());
+					return ""+state.getEditNodeDstNumber();
 			} else if (token.equals("GETEDITSRCGUIINDICATOR")) {
-					return(""+state.getEditNodeSrcGuiIndicator());
+					return state.getEditNodeSrcGuiIndicator();
 			} else if (token.equals("GETEDITDSTGUIINDICATOR")) {
-					return(""+state.getEditNodeDstGuiIndicator());
+					return state.getEditNodeDstGuiIndicator();
 			} else if (token.equals("NEWNODE")) {
 					state.NewNode(userName);
 			} else if (token.equals("NEWINSNODE")) {
@@ -133,12 +133,12 @@ public class StateManager implements CommandHandlerInterface {
 					state.popState();
 			} else if (token.equals("ISCHANGED")) {
 					if (state.isChanged()) {
-						return("YES");
+						return "YES";
 					} else {
-						return("NO");
+						return "NO";
 					}
 			}
-			return ("");
+			return "";
 		}
 
 		return "Command not defined (StateManager)";
@@ -218,7 +218,7 @@ public class StateManager implements CommandHandlerInterface {
             log.error("StateManager -> Can't create insnode");
             e.printStackTrace();
         }
-        return(true);
+        return true;
     }
 
 
@@ -241,7 +241,7 @@ public class StateManager implements CommandHandlerInterface {
 		}
 		MMObjectBuilder bul=ed.getBuilder();
 		ed.setSelectionQuery(createSelectionQuery(ed.getSearchValues(),bul));
-		return(true);
+		return true;
 	}
 
 
@@ -279,7 +279,7 @@ public class StateManager implements CommandHandlerInterface {
 				}
 			}
 
-		return(where);
+		return where;
 	}
 
 	/**
@@ -315,7 +315,7 @@ public class StateManager implements CommandHandlerInterface {
 		if (command.hasMoreTokens()) {
 			token = command.nextToken();
 			if (token.equals("GETOPENBUILDERS")) {	
-				return(getOpenBuilders(state,args));		
+				return getOpenBuilders(state,args);		
 			}
 		}
 		result.addElement("No List command defined (FieldEditor)");
@@ -338,7 +338,7 @@ public class StateManager implements CommandHandlerInterface {
 			if (tok.hasMoreTokens()) {
 				cmd=tok.nextToken(); // read away dummy STATE-
 				cmd=tok.nextToken();	
-				if (cmd.equals("SETSEARCHVALUES")) return(setSearchValues(state,vars));
+				if (cmd.equals("SETSEARCHVALUES")) return setSearchValues(state,vars);
 				if (cmd.equals("REMOVENODE")) {
 					String qw=(String)cmds.get("STATE-REMOVENODE");	
 					if (qw.equals("YES")) {	
@@ -395,7 +395,7 @@ public class StateManager implements CommandHandlerInterface {
 			}
 		}
 		args.setValue("ITEMS","2");
-		return(results);
+		return results;
 	}
 
 	/**

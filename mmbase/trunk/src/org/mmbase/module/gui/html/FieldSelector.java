@@ -22,6 +22,7 @@ import org.mmbase.module.corebuilders.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
+ * @version $Id: FieldSelector.java,v 1.8 2003-07-03 13:15:10 pierre Exp $
  */
 public class FieldSelector implements CommandHandlerInterface {
 	
@@ -44,19 +45,19 @@ public class FieldSelector implements CommandHandlerInterface {
 
 		token=commands.nextToken();
 		if (token.equals("GETEDITFIELDS")) {
-			return(getEditFields(state,args));
+			return getEditFields(state,args);
 		} else if (token.equals("GETPOSRELATIONS")) {
-			return(getPosRelations(state,args));
+			return getPosRelations(state,args);
 		} else if (token.equals("GETTYPES")) {
-			return(getTypes(state,args));
+			return getTypes(state,args);
 		} else if (token.equals("GETRELTYPES")) {
-			return(getRelTypes(state,args));
+			return getRelTypes(state,args);
 		} else if (token.equals("GETDATATYPES")) {
-			return(getDataTypes(state,args));
+			return getDataTypes(state,args);
 		} else if (token.equals("GETRELDEFS")) {
-			return(getRelDefs(state,args));
+			return getRelDefs(state,args);
 		}
-		return(null);
+		return null;
 	}
 
 	Vector getRelTypes(EditState ed,StringTagger args) {
@@ -70,7 +71,7 @@ public class FieldSelector implements CommandHandlerInterface {
 		    }
 		}
 		args.setValue("ITEMS","3");
-		return(results);
+		return results;
 	}
 	
 	Vector getDataTypes(EditState ed,StringTagger args) {
@@ -84,7 +85,7 @@ public class FieldSelector implements CommandHandlerInterface {
 		    }
 		}
 		args.setValue("ITEMS","3");
-		return(results);
+		return results;
 	}
 	
 	Vector getTypes(EditState ed,StringTagger args) {
@@ -97,7 +98,7 @@ public class FieldSelector implements CommandHandlerInterface {
 			results.addElement(node.getStringValue("name"));
 		}
 		args.setValue("ITEMS","2");
-		return(results);
+		return results;
 	}
 
 
@@ -116,7 +117,7 @@ public class FieldSelector implements CommandHandlerInterface {
 			}
 		}
 		args.setValue("ITEMS","2");
-		return(results);
+		return results;
 	}
 
 	Vector getPosRelations(EditState ed,StringTagger args) {
@@ -134,7 +135,7 @@ public class FieldSelector implements CommandHandlerInterface {
 			results.addElement(node2.getGUIIndicator());	
 		}
 		args.setValue("ITEMS","2");
-		return(results);
+		return results;
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class FieldSelector implements CommandHandlerInterface {
 			results.addElement(val);
 		}
 		args.setValue("ITEMS","4");
-		return(results);
+		return results;
 	}
 
 	/**

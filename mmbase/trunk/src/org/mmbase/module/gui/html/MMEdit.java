@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module.gui.html;
 
 import java.util.*;
-import java.lang.String;
 
 import org.mmbase.module.*;
 import org.mmbase.module.core.*;
@@ -27,6 +26,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
+ * @version $Id: MMEdit.java,v 1.10 2003-07-03 13:15:10 pierre Exp $
  */
 public class MMEdit extends ProcessorModule {
 
@@ -77,8 +77,8 @@ public class MMEdit extends ProcessorModule {
     /*
     */
     private String leadZero (int m) {
-        if (m < 0 || m > 9) return ("" + m);
-        return ("0" + m);
+        if (m < 0 || m > 9) return "" + m;
+        return "0" + m;
     }
 
 
@@ -88,7 +88,7 @@ public class MMEdit extends ProcessorModule {
         Vector v = new Vector ();
 
         for (int n = begin; n <= end; n++) v.addElement (leadZero (n));
-        return (v);
+        return v;
     }
 
 
@@ -115,7 +115,7 @@ public class MMEdit extends ProcessorModule {
         else if (what.equals ("MINUTES")) v = numberList (0, 59);
         else if (what.equals ("SECONDS")) v = numberList (0, 59);
 
-        return (v);
+        return v;
     }
 
 
@@ -168,7 +168,7 @@ public class MMEdit extends ProcessorModule {
             }
         }
 
-        return (result);
+        return result;
     }
 
     /**
@@ -205,7 +205,7 @@ public class MMEdit extends ProcessorModule {
 
         }
 
-        return (true);
+        return true;
     }
 
     /**
@@ -223,6 +223,6 @@ public class MMEdit extends ProcessorModule {
 
         if (handler != null) return handler.replace(sp, tok);
 
-        return ("Command not defined (MMEdit)");
+        return "Command not defined (MMEdit)";
     }
 }
