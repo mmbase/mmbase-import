@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module.corebuilders;
 
-import java.util.Iterator;
+import java.util.*;
 import org.mmbase.cache.Cache;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: OAlias.java,v 1.17 2004-09-02 10:40:56 pierre Exp $
+ * @version $Id: OAlias.java,v 1.18 2004-09-02 12:52:18 michiel Exp $
  */
 
 public class OAlias extends MMObjectBuilder {
@@ -164,27 +164,27 @@ public class OAlias extends MMObjectBuilder {
     }
 
     /**
-     * Called when a remote node is changed.
+     * {@inheritDoc}
      * If a node is changed or newly created, this adds the new or updated alias to the
      * cache.
-     * @todo Old aliasses are currently not cleared or removed - which means that they may remain
-     * useable for some time after the actual alias is deleted or renamed.
-     * This is because old alias information is no longer available when this call is made.
-     * @since MMBase-1.7
-     * @param machine Name of the machine that changed the node.
-     * @param number Number of the changed node as a <code>String</code>
-     * @param builder type of the changed node
-     * @param ctype command type, 'c'=changed, 'd'=deleted', 'r'=relations changed, 'n'=new
-     * @return always <code>true</code>
+     * @since MMBase-1.7.1
      */
-    public boolean nodeRemoteChanged(String machine,String number,String builder,String ctype) {
-        if (machine.equals(getTableName())) {
+    public boolean nodeRemoteChanged(String machine, String number, String builder, String ctype) {
+        if (builder.equals(getTableName())) {
             if (ctype.equals("c") || ctype.equals("n")) {
                 // should remove aliasses referencing this number from numberCache here
                 MMObjectNode node = getNode(number);
                 numberCache.put(node.getStringValue("name"), node.getIntegerValue("destination"));
             } else if (ctype.equals("d")) {
-                // should remove aliasses referencing this number from numberCache here
+                Integer n = new Integer(number);
+                Iterator i = numberCache.entrySet().iterator();
+                while (i.hasNext()) {
+                    Map.Entry entry = (Map.Entry) i.next();
+                    Object value = entry.getValue();
+                    if (n.equals(value)) {
+                        i.remove();
+                    }
+                }
             }
        }
        return super.nodeRemoteChanged(machine, number, builder, ctype);
