@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: User.java,v 1.5 2003-08-11 13:31:14 michiel Exp $
+ * @version $Id: User.java,v 1.6 2003-08-13 10:39:17 michiel Exp $
  * @see    org.mmbase.security.implementation.cloudcontext.builders.Users; 
  */
 public class User extends UserContext implements MMBaseObserver {
@@ -83,15 +83,6 @@ public class User extends UserContext implements MMBaseObserver {
      */
     boolean isValid() {
         return (node != null) && Users.getBuilder().isValid(node);
-    }
-
-    /**
-     * Wether this User equals some object. 
-     */
-    public boolean equals(Object object) {
-        if (!(object instanceof MMObjectNode)) return super.equals(object);
-        MMObjectNode otherNode = (MMObjectNode) object;
-        return (otherNode != null) && (node.getNumber() == otherNode.getNumber());
     }
 
    
