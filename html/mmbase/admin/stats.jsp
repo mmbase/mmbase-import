@@ -46,7 +46,7 @@
 #
 # Memory useage for <mm:write referid="thisserver" />
 #
-Target[<mm:write referid="thisserver" />_memory]: `/usr/bin/wget -q -O- "<mm:write referid="this" />>?action=memory&gc=true"`
+Target[<mm:write referid="thisserver" />_memory]: `/usr/bin/wget -q -O- "<mm:write referid="this" />?action=memory&gc=true"`
 Title[<mm:write referid="thisserver" />_memory]: <mm:write referid="thisserver" /> memory usage
 MaxBytes[<mm:write referid="thisserver" />_memory]: 500000000
 Options[<mm:write referid="thisserver" />_memory]:  integer, gauge, nopercent
