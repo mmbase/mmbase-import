@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.60 2003-03-13 12:44:06 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.61 2003-03-18 13:30:08 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -235,12 +235,12 @@ public class MMAdmin extends ProcessorModule {
                             moduleOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
-                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
+                            lastmsg="Writing finished, problems occurred\n\n"+
+                                    "Error encountered="+e.getMessage()+"\n\n";
                             return false;
                         }
-                        lastmsg="Writing finished, no problems.<br /><br />\n"+
-                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"<br /><br />\n";
+                        lastmsg="Writing finished, no problems.\n\n"+
+                                "A clean copy of "+modulename+".xml can be found at : "+savepath+"\n\n";
                     }
                 }
             } else if (token.equals("BUILDERSAVE")) {
@@ -258,12 +258,12 @@ public class MMAdmin extends ProcessorModule {
                             builderOut.writeToFile(savepath);
                         } catch (Exception e) {
                             log.error(Logging.stackTrace(e));
-                            lastmsg="Writing finished, problems occurred<br /><br />\n"+
-                                    "Error encountered="+e.getMessage()+"<br /><br />\n";
+                            lastmsg="Writing finished, problems occurred\n\n"+
+                                    "Error encountered="+e.getMessage()+"\n\n";
                             return false;
                         }
-                        lastmsg="Writing finished, no problems.<br /><br />\n"+
-                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"<br /><br />\n";
+                        lastmsg="Writing finished, no problems.\n\n"+
+                                "A clean copy of "+buildername+".xml can be found at : "+savepath+"\n\n";
                     }
                 }
             }
@@ -514,7 +514,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
             return;
         }
-        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<br /><br />\n";
+        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds\n\n";
         log.info("Server Reset requested by '"+user+"' Restart in 3 seconds");
         restartwanted=true;
         probe = new MMAdminProbe(this,3*1000);
@@ -532,8 +532,8 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         log.info("Starting apptool with : "+path+File.separator+appname+".xml");
         MMAppTool app=new MMAppTool(path+File.separator+appname+".xml");
-        lastmsg="Started a instance of the MMAppTool with path : <br /><br />\n";
-        lastmsg+=path+File.separator+appname+".xml<br /><br />\n";
+        lastmsg="Started a instance of the MMAppTool with path : \n\n";
+        lastmsg+=path+File.separator+appname+".xml\n\n";
         return true;
     }
 
@@ -562,27 +562,27 @@ public class MMAdmin extends ProcessorModule {
             if (autoDeploy && !app.getApplicationAutoDeploy()) {
                 return true;
             }
-            // should be installed - add to installation set
-            installationSet.add(applicationname);
-            List requires=app.getRequirements();
-            for (Iterator i=requires.iterator(); i.hasNext();) {
-                Map reqapp= (Map)i.next();
-                String appname= (String)reqapp.get("name");
-                log.service("Application '"+applicationname+"' requires : "+appname);
-                if (!installApplication(appname,result,installationSet,false)) {
-                    return false;
-                }
-            }
-            // note: currently name and application file name should be the same
             String name=app.getApplicationName();
-            if(!name.equals(applicationname)) {
-                result.warn("Application name "+name+" not the same as the base filename "+applicationname+".\n"+
-                            "This may cause problems when referring to this application.");
-            }
             String maintainer=app.getApplicationMaintainer();
             int version=app.getApplicationVersion();
             int installedversion=ver.getInstalledVersion(name,"application");
             if (installedversion==-1 || version>installedversion) {
+                if(!name.equals(applicationname)) {
+                    result.warn("Application name "+name+" not the same as the base filename "+applicationname+".\n"+
+                                "This may cause problems when referring to this application.");
+                }
+                // should be installed - add to installation set
+                installationSet.add(applicationname);
+                List requires=app.getRequirements();
+                for (Iterator i=requires.iterator(); i.hasNext();) {
+                    Map reqapp= (Map)i.next();
+                    String appname= (String)reqapp.get("name");
+                    log.service("Application '"+applicationname+"' requires : "+appname);
+                    if (!installApplication(appname,result,installationSet,false)) {
+                        return false;
+                    }
+                }
+                // note: currently name and application file name should be the same
                 if (installedversion==-1) {
                     log.info("Installing application : "+name);
                 } else {
@@ -1116,11 +1116,11 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
         Vector savestats=XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
-        lastmsg="Application saved oke<br /><br />\n";
-        lastmsg+="Some statistics on the save : <br /><br />\n";
+        lastmsg="Application saved oke\n\n";
+        lastmsg+="Some statistics on the save : \n\n";
         for (Enumeration h = savestats.elements();h.hasMoreElements();) {
             String result=(String)h.nextElement();
-            lastmsg+=result+"<br /><br />\n";
+            lastmsg+=result+"\n\n";
         }
         return true;
     }
