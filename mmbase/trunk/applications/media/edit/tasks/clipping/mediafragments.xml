@@ -16,6 +16,7 @@
     </relation>
 		<relation destination="&type;fragments"    role="previous"  searchdir="destination" /><!-- role='next' searchdir='source' would be more logical, but editwizards suck -->
 		<relation destination="publishtimes"   role="related" />
+		<relation destination="templates"   role="related" />
 	</action>
 
   <form-schema id="publish">
@@ -65,7 +66,7 @@
       <relation role="previous" />
     </action>
   </list>
-  <list destination="templates" minoccurs="0" maxoccurs="1">
+  <list role="related" destination="templates" minoccurs="0" maxoccurs="1">
     <title xml:lang="en">Default template (optional)</title>
     <title xml:lang="nl">Default sjabloon (optioneel)</title>
     <command name="search" nodepath="templates" fields="name,url" orderby="name" age="-1">
@@ -79,6 +80,7 @@
     </item>
     <command name="startwizard" inline="true" wizardname="tasks/clipping/templates" objectnumber="new" origin="{$origin}" />
     <action type="create">
+      <relation role="related" />
     </action>
   </list>
  
