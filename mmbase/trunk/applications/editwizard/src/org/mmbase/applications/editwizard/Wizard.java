@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.41 2002-07-05 10:09:37 pierre Exp $
+ * @version $Id: Wizard.java,v 1.42 2002-07-05 15:03:22 pierre Exp $
  *
  */
 public class Wizard {
@@ -1039,6 +1039,7 @@ public class Wizard {
         }
 
         String ftype = Utils.getAttribute(newfield, "ftype");
+        String dttype = Utils.getAttribute(newfield, "dttype");
         // place html form field name (so that we always know about which datanode and fieldnode we are talking)
         String htmlfieldname = calculateFormName(newfield);
         Utils.setAttribute(newfield, "fieldname", htmlfieldname);
@@ -1056,7 +1057,7 @@ public class Wizard {
         }
 
         // binary type needs special processing
-        if (ftype.equals("binary")) {
+        if (dttype.equals("binary")) {
             addBinaryData(newfield);
         }
 
@@ -1152,17 +1153,17 @@ public class Wizard {
     private void storeValue(String did, String fid, String value) throws WizardException {
         if (log.isDebugEnabled())
             log.debug(Utils.getSerializedXML(Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']")));
-        Node  ftypeNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@ftype");
-        if (ftypeNode == null) {
+        Node dttypeNode = Utils.selectSingleNode(schema, ".//*[@fid='" + fid + "']/@dttype");
+        if (dttypeNode == null) {
             throw new WizardException("No node with fid=" + fid + " could be found");
         }
-        String ftype = ftypeNode.getNodeValue();
+        String dttype = dttypeNode.getNodeValue();
         Node datanode = Utils.selectSingleNode(data, ".//*[@did='" + did + "']");
         boolean ok = false;
 
         if (datanode == null){
             // Nothing.
-        } else if (ftype.equals("binary")) {
+        } else if (dttype.equals("binary")) {
             // binaries are stored differently
             if (getBinary(did)!=null) {
                 Utils.setAttribute(datanode, "href", did);
@@ -1173,9 +1174,8 @@ public class Wizard {
             Utils.storeText(datanode, value);
             ok = true;
         }
-
         if (!ok) {
-            log.warn("Unable to store value for field with ftype " + ftype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName);
+            log.warn("Unable to store value for field with dttype " + dttype + ". fid=" + fid + ", did=" + did + ", value=" + value +", wizard:"+wizardName);
         }
     }
 
