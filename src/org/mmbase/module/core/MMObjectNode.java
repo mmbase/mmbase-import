@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Eduard Witteveen
- * @version $Revision: 1.69 $ $Date: 2002-04-03 11:19:28 $
+ * @version $Revision: 1.70 $ $Date: 2002-04-03 14:53:41 $
  */
 
 public class MMObjectNode {
@@ -65,9 +65,17 @@ public class MMObjectNode {
 
     /**
      * Pointer to the parent builder that is responsible for this node.
+     * Note: this may on occasion (due to optimization) duffer for the node's original builder.
+     * Use {@link #getBuilder()} instead.
      * @scope private
      */
     public MMObjectBuilder parent;
+
+    /**
+     * Pointer to the actual builder to which this node belongs.
+     * This value is initialised through the first call to {@link #getBuilder() }
+     */
+    private MMObjectBuilder builder=null;
 
     /**
      * Used to make fields from multiple nodes (for multilevel for example)
@@ -122,10 +130,25 @@ public class MMObjectNode {
     }
 
     /**
-     * legacy constructor, useless will be removed soon (daniel)
+     * Returns the actual builder of the node.
+     * Note that it is possible that, due to optimization, a node is currently associated with
+     * another (parent) builder, i.e. a posrel node may be associated with a insrel builder.
+     * This method returns the actual builder.
+     * The node may miss vital information (not retrieved from the database) to act as a node of such
+     * a builder - if you need actual status you need to reload it.
+     * @return the builder of this node
      */
-//    public MMObjectNode(int id,int type, String owner) {
-//    }
+    public MMObjectBuilder getBuilder() {
+        if (builder==null) {
+            int oType=getOType();
+            if (parent.oType==oType) {
+                builder=parent;
+            } else {
+                builder=parent.mmb.getBuilder(parent.mmb.getTypeDef().getValue(oType));
+            }
+        }
+        return builder;
+    }
 
     /**
      * Tests whether the data in a node is valid (throws an exception if this is not the case).
@@ -250,7 +273,7 @@ public class MMObjectNode {
     public boolean isVirtual() {
         return virtual;
     }
-        
+
 
     /**
      *  Sets a key/value pair in the main values of this node.
@@ -263,8 +286,8 @@ public class MMObjectNode {
      */
     public boolean setValue(String fieldName, Object fieldValue) {
         // check the value also when the parent thing is null
-	Object originalValue = values.get(fieldName);
-        
+    Object originalValue = values.get(fieldName);
+
         // if we have an XML-dbtype field, we always have to store it inside an Element.
         if(parent != null && getDBType(fieldName) == FieldDefs.TYPE_XML && !(fieldValue instanceof Document)) {
             log.debug("im called far too often");
@@ -276,14 +299,14 @@ public class MMObjectNode {
         }
         // put the key/value in the value hashtable
         storeValue(fieldName, fieldValue);
-        
+
         // process the changed value (?)
         if (parent != null) {
-	    if(!parent.setValue(this,fieldName, originalValue)) {
-	        // setValue of parent returned false, no update needed...
-	        return false;
+        if(!parent.setValue(this,fieldName, originalValue)) {
+            // setValue of parent returned false, no update needed...
+            return false;
             }
-	}
+    }
         else log.error("parent was null for node with number" + getNumber());
         setUpdate(fieldName);
         return true;
@@ -431,7 +454,7 @@ public class MMObjectNode {
      * @return the field's value as an <code>Object</code>
      */
     public Object getValue(String fieldName) {
-        
+
         // get the value from the values table
         Object o = retrieveValue(prefix+fieldName);
 
@@ -460,9 +483,9 @@ public class MMObjectNode {
         if (o!=null) {
             if (o instanceof byte[]) {
                 tmp = new String((byte[])o);
-            } 
+            }
             else if(o instanceof Document) {
-                // 
+                //
                 tmp = convertXmlToString(fieldName, (Document) o );
             }
             else {
@@ -537,11 +560,11 @@ public class MMObjectNode {
      */
     public Document getXMLValue(String fieldName) {
         Object o = getValue(fieldName);
-        
-       
+
+
         if(getDBType(fieldName)!= FieldDefs.TYPE_XML) {
             throw new RuntimeException("field was not an xml-field, dont know how i need to convert this to and xml-document");
-        }        
+        }
         if (o == null) {
             log.warn("Got null value in field " + fieldName);
             return null;
@@ -1262,7 +1285,7 @@ public class MMObjectNode {
     public static int getRelationCacheMiss() {
         return relation_cache_miss;
     }
-    
+
 
     /**
      * Convert a String value of a field to a Document
@@ -1280,11 +1303,11 @@ public class MMObjectNode {
                 throw new RuntimeException("field with name '"+fieldName+"' may not be null");
             }
             return null;
-        }                
-        if (value.startsWith("<")) { 
+        }
+        if (value.startsWith("<")) {
             // removing doc-headers if nessecary
 
-            // remove all the <?xml stuff from beginning if there.... 
+            // remove all the <?xml stuff from beginning if there....
             //  <?xml version="1.0" encoding="utf-8"?>
             if(value.startsWith("<?xml")) {
                 // strip till next ?>
@@ -1299,8 +1322,8 @@ public class MMObjectNode {
             } else {
                 log.debug("no <?xml header found");
             }
-            
-            // remove all the <!DOCTYPE stuff from beginning if there.... 
+
+            // remove all the <!DOCTYPE stuff from beginning if there....
             // <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
             if(value.startsWith("<!DOCTYPE")) {
                 // strip till next >
@@ -1310,26 +1333,26 @@ public class MMObjectNode {
                     log.debug("removed <!DOCTYPE part");
                 } else {
                     throw new RuntimeException("no ending > found in xml:\n" + value);
-                }                
+                }
             } else {
                 log.debug("no <!DOCTYPE header found");
-            }            
+            }
         }
         else {
             // not XML, make it XML, when conversion specified, use it...
             String propertyName = fieldName + ".xmlconversion";
             String conversion = parent.getInitParameter(propertyName);
-            if(conversion == null) {                
-                conversion = "MMXF_POOR";                
+            if(conversion == null) {
+                conversion = "MMXF_POOR";
                 log.warn("property: '"+propertyName+"' for builder: '"+parent.getTableName()+"' was not set, converting string to xml for field: '" + fieldName + "' using the default: '" + conversion + "'.");
             }
             log.debug("converting the string to something else using conversion: " + conversion);
             value = org.mmbase.util.Encode.decode(conversion, (String) value);
-        }        
-        
-        if (log.isDebugEnabled()) { 
+        }
+
+        if (log.isDebugEnabled()) {
             log.trace("using xml string:\n"+value);
-        }    
+        }
         // add the header stuff...
         String xmlHeader = "<?xml version=\"1.0\" encoding=\"" + parent.mmb.getEncoding() + "\" ?>";
         String doctype = parent.getField(fieldName).getDBDocType();
@@ -1337,10 +1360,10 @@ public class MMObjectNode {
             xmlHeader += "\n" + doctype;
         }
         value = xmlHeader + "\n" + value;
-        
+
         /////////////////////////////////////////////
         // TODO: RE-USE THE PARSER EVERY TIME !    //
-        try {                
+        try {
             // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
             // or ask it from BasicReader ?
             javax.xml.parsers.DocumentBuilderFactory dfactory = javax.xml.parsers.DocumentBuilderFactory.newInstance();
@@ -1363,32 +1386,32 @@ public class MMObjectNode {
             return doc;
         }
         catch(javax.xml.parsers.ParserConfigurationException pce) {
-	    String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
+        String msg = "[sax parser] not well formed xml: "+pce.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(pce);
             log.error(msg);
-	    throw new RuntimeException(msg);
+        throw new RuntimeException(msg);
         }
         catch(org.xml.sax.SAXException se) {
-	    String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(se);
+        String msg = "[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")" + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(se);
             log.error(msg);
-	    throw new RuntimeException(msg);
+        throw new RuntimeException(msg);
         }
         catch(java.io.IOException ioe) {
-	    String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(ioe);
+        String msg = "[io] not well formed xml: "+ioe.toString() + " node#"+getNumber()+"\n"+value+"\n" + Logging.stackTrace(ioe);
             log.error(msg);
-	    throw new RuntimeException(msg);
+        throw new RuntimeException(msg);
         }
     }
-    
+
     private String convertXmlToString(String fieldName, Document xml) {
         log.debug("converting from xml to string");
-        
+
         // check for null values
         if(xml == null) {
             log.debug("field was empty");
             // string with null isnt allowed in mmbase...
-            return "";            
+            return "";
         }
-        
+
         // check if we are using the right DOC-type for this field....
         String doctype = parent.getField(fieldName).getDBDocType();
         if(doctype != null) {
@@ -1405,20 +1428,20 @@ public class MMObjectNode {
         try {
             // getXML also uses a documentBuilder, maybe we can speed it up by making it a static member variable,,
             // or ask it from BasicReader ?
-        
+
             //make a string from the XML
             javax.xml.transform.TransformerFactory tfactory = javax.xml.transform.TransformerFactory.newInstance();
             //tfactory.setURIResolver(new org.mmbase.util.xml.URIResolver(new java.io.File("")));
             javax.xml.transform.Transformer serializer = tfactory.newTransformer();
-            // for now, we save everything in ident form, this since it makes debugging a little bit more handy            
+            // for now, we save everything in ident form, this since it makes debugging a little bit more handy
             serializer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
             // store as less as possible, otherthings should be resolved from gui-type
             serializer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
             java.io.StringWriter str = new java.io.StringWriter();
             serializer.transform(new javax.xml.transform.dom.DOMSource(xml),  new javax.xml.transform.stream.StreamResult(str));
-            if (log.isDebugEnabled()) { 
+            if (log.isDebugEnabled()) {
                 log.debug("xml -> string:\n" + str.toString());
-            }                                    
+            }
             return str.toString();
         }
         catch(javax.xml.transform.TransformerConfigurationException tce) {
@@ -1430,6 +1453,6 @@ public class MMObjectNode {
             String message = te.toString() + " " + Logging.stackTrace(te);
             log.error(message);
             throw new RuntimeException(message);
-        }        
-    }    
+        }
+    }
 }
