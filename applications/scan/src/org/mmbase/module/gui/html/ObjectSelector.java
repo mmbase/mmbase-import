@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.14 2003-05-22 15:13:03 kees Exp $
+ * @version $Id: ObjectSelector.java,v 1.15 2003-07-03 14:29:32 pierre Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -87,7 +87,7 @@ public class ObjectSelector implements CommandHandlerInterface {
             FieldDefs def;
             String DBName,val;
             Object o;
-            for (Iterator i=obj.getFields(FieldDefs.ORDER_EDIT).iterator();i.hasNext();) 			{
+            for (Iterator i=obj.getFields(FieldDefs.ORDER_EDIT).iterator();i.hasNext();) {
                 def=(FieldDefs)i.next();
                 DBName=def.getDBName();
                 if (!DBName.equals("owner") && !DBName.equals("number") && !DBName.equals("otype")) {
@@ -178,17 +178,17 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * Retrieves a list of existing relations and allowed relation types to a specific node.
      * Represented by a vector of strings, in which each set of 8 consequetive strings
-     * represets either an existing relation or a relationtype to be used for creating a new one.<br />
-     * The strings represent, in order:<br />
-     * 1 - The builder name of the type linked to (i.e. people) <br />
-     * 2 - The builder name of the relation (i.e. insrel) if an existing relation, otherwise the builder name of the typed linked to <br />
-     * 3 - The number of the relation node if an existing relation, otehrwise the number of the current (edited) node <br />
+     * Represents either an existing relation or a relationtype to be used for creating a new one.<br>
+     * The strings represent, in order:<br>
+     * 1 - The builder name of the type linked to (i.e. people) <br>
+     * 2 - The builder name of the relation (i.e. insrel) if an existing relation, otherwise the builder name of the typed linked to <br>
+     * 3 - The number of the relation node if an existing relation, otehrwise the number of the current (edited) node <br>
      * 4 - Empty when an existing realtion. Otherwise it is either the name of the relation defintiton for a typed relation, or,
-     *     when more than one relationtype exists for this node type, the value "multiple" <br />
-     * 5 - GUI name for the node linked to. (empty when a relation type)<br />
-     * 6 - "insEditor" if this is an existing node, "addeditor" if this is a rel;ation type. <br />
-     * 7 - GUI name of the linked-to node's builder (language dependent) <br />
-     * 8 - The gui name of the relation definition for this relation (appropriate for direction, empty when a relation type). <br />
+     *     when more than one relationtype exists for this node type, the value "multiple" <br>
+     * 5 - GUI name for the node linked to. (empty when a relation type)<br>
+     * 6 - "insEditor" if this is an existing node, "addeditor" if this is a rel;ation type. <br>
+     * 7 - GUI name of the linked-to node's builder (language dependent) <br>
+     * 8 - The gui name of the relation definition for this relation (appropriate for direction, empty when a relation type). <br>
      * @param ed the EditState object that governs this edit
      * @args the arguments to this command. The only argument available is "USER". If set, a crude authorization is checked which allows
      *       or disallows access to relations to specific node types.
@@ -388,7 +388,7 @@ public class ObjectSelector implements CommandHandlerInterface {
      * Sets the selection query for this user in this editor.
      */
     boolean setObjectSelectionConditions(String user, Hashtable vars) {
-        EditState state = stateMngr.getState(user);
+        EditState state = stateMngr.getEditState(user);
 
         // Waardes uit de values lezen en met setQueryString() aan
         // de userstate geven

@@ -19,7 +19,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: EditState.java,v 1.14 2003-07-03 13:15:10 pierre Exp $
+ * @version $Id: EditState.java,v 1.15 2003-07-03 14:29:32 pierre Exp $
  */
 public class EditState {
 
@@ -35,13 +35,11 @@ public class EditState {
     MMBase mmBase;
 
     public EditState(String user,MMBase mmBase) {
-        if( mmBase != null )
-        {
+        if( mmBase != null ) {
             this.mmBase=mmBase;
-            //pushState();
-        }
-        else
+        } else {
             log.error("EditState("+mmBase+"): MMBase is not valid!");
+        }
         if (user!=null) {
             this.user=user;
         } else {
@@ -106,7 +104,6 @@ public class EditState {
         curNode.clearSearchValues();
     }
 
-
     public boolean setHtmlValue(String fieldname,Object value) {
         boolean result = false;
 
@@ -147,12 +144,10 @@ public class EditState {
         if( number != null )
             if(!number.equals(""))
                 if(userName!=null)
-                    if(!userName.equals(""))
-                    {
+                    if(!userName.equals("")) {
                         delInsSaveList();
                         curNode.setEditNode(number,userName);
-                    }
-                    else
+                    } else
                         log.error("setEditNode("+number+","+userName+"): username is empty!");
                 else
                     log.error("setEditNode("+number+","+userName+"): username is null!");
@@ -166,8 +161,6 @@ public class EditState {
         if (curNode == null) return null;
         return curNode.getEditNode();
     }
-
-
 
     public MMObjectNode getEditNode(int i) {
         int pos=nodes.indexOf(curNode);
@@ -237,7 +230,6 @@ public class EditState {
         return "";
     }
 
-
     public String getEditNodeDstGuiIndicator() {
         MMObjectNode dnode=getEditDstNode();
         if (dnode!=null) {
@@ -246,7 +238,6 @@ public class EditState {
         }
         return "";
     }
-
 
     public String getEditNodeSrcGuiIndicator() {
         MMObjectNode snode=getEditSrcNode();
@@ -257,7 +248,6 @@ public class EditState {
         return "";
     }
 
-
     public String getEditNodeDstDutchName() {
         MMObjectNode snode=getEditDstNode();
         if (snode!=null) {
@@ -267,7 +257,6 @@ public class EditState {
         return "";
     }
 
-
     public String getEditNodeSrcName() {
         MMObjectNode snode=getEditSrcNode();
         if (snode!=null) {
@@ -276,7 +265,6 @@ public class EditState {
         }
         return "";
     }
-
 
     public String getEditNodeDstName() {
         MMObjectNode snode=getEditDstNode();
@@ -296,15 +284,10 @@ public class EditState {
     }
 
     public void setBuilder(String name) {
-        if( name != null )
-        {
-            if( !name.equals("") )
-            {
-                //if( curNode != null )
-                {
-                    pushState();
-                    curNode.setBuilder(name);
-                } //else log.error("setBuilder("+name+"): curNode is null!");
+        if( name != null ) {
+            if( !name.equals("") ) {
+                pushState();
+                curNode.setBuilder(name);
             } else log.error("setBuilder("+name+"): name is empty!");
         } else log.error("setBuilder("+name+"): name is null!");
     }
