@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.102 2003-08-13 16:33:32 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.103 2003-08-15 11:16:58 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -704,7 +704,38 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
     }
 
     public RelationList getRelations(String role, NodeManager nodeManager, String searchDir) throws NotFoundException {
-        throw new UnsupportedOperationException("not yet implemnted");
+        // temporay implementation to get it working for now. Really we would want to make separate queries, I think.
+
+        RelationList  relations = getRelations(role, nodeManager);
+
+        int dir = ClusterBuilder.SEARCH_BOTH;
+        if (searchDir != null) {
+            dir = ClusterBuilder.getSearchDir(searchDir);
+        }
+        if (dir == ClusterBuilder.SEARCH_BOTH) return relations;
+
+        RelationIterator it = relations.relationIterator();
+
+        RelationList result = new BasicRelationList();
+
+        while (it.hasNext()) {
+            Relation relation = it.nextRelation();
+            switch(dir) {
+            case ClusterBuilder.SEARCH_DESTINATION: 
+                if(relation.getSource().getNumber() == getNumber()) {
+                    result.add(relation);
+                }
+                break;
+            case ClusterBuilder.SEARCH_SOURCE:
+                if(relation.getDestination().getNumber() == getNumber()) {
+                    result.add(relation);
+                }
+                break;
+            default: 
+                result.add(relation); // er..
+            }
+        }
+        return result;
     }
 
     public boolean hasRelations() {
