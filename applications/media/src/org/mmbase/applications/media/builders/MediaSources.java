@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.6 2003-02-05 15:39:34 rob Exp $
+ * @version $Id: MediaSources.java,v 1.7 2003-02-10 13:24:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -53,6 +53,7 @@ public class MediaSources extends MMObjectBuilder {
     
     // typo check
     public static final String FUNCTION_URLS        = "urls";
+    public static final String FUNCTION_FILTEREDURLS        = "filteredurls";
     public static final String FUNCTION_URL         = "url";
     public static final String FUNCTION_AVAILABLE   = "available";
     public static final String FUNCTION_FORMAT      = "format";
@@ -156,7 +157,7 @@ public class MediaSources extends MMObjectBuilder {
      * @return the url of the media source
      */
     protected String getURL(MMObjectNode source, Map info) {
-        List urls = getSortedURLs(source, null, info);
+        List urls = getFilteredURLs(source, null, info);
         if (urls.size() == 0) return "[could not compose URL]";
         URLComposer ri = (URLComposer) urls.get(0);
         return ri.getURL();
@@ -197,41 +198,12 @@ public class MediaSources extends MMObjectBuilder {
     }
     
     
-    
-    /**
-     * Gets the first line of a ram file. This can be needed in smil.
-     */
-    
-    // to make a rm of a ram.
-    /*
-    protected String getURLResult(MMObjectNode node, String src) {
-        if (log.isDebugEnabled()) log.debug("Getting URL-Result voor src " + src);
-        Map info = new HashMap();
-        info.put("src", src); // not used
-        String url = getURL(node, info);
-        String result = (String) cache.get(url);
-        if (result == null) {
-            try {
-                URL u = new URL(url);
-                URLConnection con = u.openConnection();
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                result = in.readLine();
-                in.close();
-            } catch (java.net.MalformedURLException e) {
-                throw new RuntimeException(e.toString());
-            } catch (java.io.IOException e) {
-                throw new RuntimeException(e.toString());
-            }
-            cache.put(url, result);
-        }
-        return result;
-    }
-     */
+
     /**
      * used in the editors
      */
     public String getGUIIndicator(MMObjectNode source) {
-        List urls = getSortedURLs(source, null, null);
+        List urls = getFilteredURLs(source, null, null);
         if (urls.size() == 0) return "[could not compose URL]";
         URLComposer ri = (URLComposer) urls.get(0);
         if (ri.isAvailable()) {
@@ -403,7 +375,7 @@ public class MediaSources extends MMObjectBuilder {
      * Returns all URLs for this source, but filtered, with the best ones on top.
      * @author mm
      */
-    protected List getSortedURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
+    protected List getFilteredURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
         List urls = getURLs(source, fragment, info, null);
         return MainFilter.getInstance().filter(urls);
     }
