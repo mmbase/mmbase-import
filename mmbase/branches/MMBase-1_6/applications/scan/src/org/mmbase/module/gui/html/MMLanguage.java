@@ -23,6 +23,7 @@ import org.mmbase.util.logging.*;
  * It can then return the localized terms when needed.
  *
  * @author Daniel Ockeloen
+ * @version $Id: MMLanguage.java,v 1.9.6.1 2003-07-03 13:13:18 vpro Exp $
  */
 public class MMLanguage extends ProcessorModule {
 

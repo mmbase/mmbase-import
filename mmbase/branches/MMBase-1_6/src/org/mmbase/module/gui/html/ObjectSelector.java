@@ -25,7 +25,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @version $Id: ObjectSelector.java,v 1.12 2002-07-06 13:14:47 pierre Exp $
+ * @version $Id: ObjectSelector.java,v 1.12.2.1 2003-07-03 13:13:18 vpro Exp $
  */
 public class ObjectSelector implements CommandHandlerInterface {
 
@@ -87,8 +87,8 @@ public class ObjectSelector implements CommandHandlerInterface {
             FieldDefs def;
             String DBName,val;
             Object o;
-            for (Enumeration h=obj.getSortedFields().elements();h.hasMoreElements();) 			{
-                def=(FieldDefs)h.nextElement();
+            for (Iterator i=obj.getFields(FieldDefs.ORDER_EDIT).iterator();i.hasNext();) {
+                def=(FieldDefs)i.next();
                 DBName=def.getDBName();
                 if (!DBName.equals("owner") && !DBName.equals("number") && !DBName.equals("otype")) {
                     val=obj.getGUIIndicator(DBName,node);
@@ -178,7 +178,7 @@ public class ObjectSelector implements CommandHandlerInterface {
     /**
      * Retrieves a list of existing relations and allowed relation types to a specific node.
      * Represented by a vector of strings, in which each set of 8 consequetive strings
-     * represets either an existing relation or a relationtype to be used for creating a new one.<br>
+     * Represents either an existing relation or a relationtype to be used for creating a new one.<br>
      * The strings represent, in order:<br>
      * 1 - The builder name of the type linked to (i.e. people) <br>
      * 2 - The builder name of the relation (i.e. insrel) if an existing relation, otherwise the builder name of the typed linked to <br>
