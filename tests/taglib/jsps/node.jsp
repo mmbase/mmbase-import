@@ -51,7 +51,9 @@
 <h3>field-function wrap, html</h3>
 <mm:node referid="node">
   <mm:field name="html(wrap(title, 10))" />
-   <mm:field name="info()" />
+  <mm:field name="wrap(title, 10)" escape="p" />
+  <pre><mm:field name="wrap(title,10)" /></pre>
+  <mm:field name="info()" />
 </mm:node>
 
 
@@ -305,6 +307,17 @@ using list tag: <br />
          24  related url (used list with nodes): <mm:field name="urls.url" /><br />
        </mm:list>
      </mm:field>
+
+     <mm:relatednodes role="sorted" type="news" constraints="title LIKE  '%Another%'">
+       25 using containts attribute.: size <mm:size /> (should be 1)<br />
+     </mm:relatednodes>
+
+     <mm:relatednodes path="sorted,news" orderby="sorted.pos" element="news" searchdirs="destination">
+       26 using path/element on mm:relatednodes <mm:size /> (should be 1)<br />
+     </mm:relatednodes>
+
+     Last number should be 26 (and no number should be missing).
+     <hr />
    </mm:node>
 </mm:list>
 
@@ -326,6 +339,12 @@ using list tag: <br />
     1 news: <mm:field name="title" /><br />
    </mm:listnodes>
 </mm:listnodescontainer>
+
+mm:listnodes with path/element (should show twice the article):
+<mm:listnodes path="news,urls" element="news">
+  1 news: <mm:field name="title" /><br />
+</mm:listnodes>
+<br />
 
 <mm:log>mm:list</mm:log>
 <em>Using mm:distinct on mm:listcontainer</em><br />
@@ -364,6 +383,8 @@ using list tag: <br />
     <mm:index /> url: <mm:field name="url" /><br />
   </mm:listnodes>
 </mm:listnodescontainer>
+
+
 
 
 
