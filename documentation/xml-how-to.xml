@@ -2,8 +2,9 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
 <article>
 	<articleinfo>
-		<date>07 February 2003</date>
 		<title>How To Use XML</title>
+		<date>12 February 2003</date>
+		<edition>$Id: xml-how-to.xml,v 1.4 2003-02-14 15:13:56 pierre Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Henk</firstname>
@@ -77,7 +78,34 @@
 	</section>
 	<section id="more_info">
 		<title>More information</title>
-		<para>XML is a W3C standard, a beginners course can be found at: http://www.w3schools.com/xml/</para>
-		<para>An explanation of XPath can be found at the following point: http://www.zvon.org/xxl/XPathTutorial/General/examples.html</para>
+		<itemizedlist>
+			<title>For more information on how to read DTD's, see:</title>
+			<listitem>
+				<para>W3 Schools: <ulink url="http://www.w3schools.com/dtd/default.asp">http://www.w3schools.com/dtd/default.asp</ulink>
+				</para>
+			</listitem>
+			<listitem>
+				<para>Zvon: <ulink url="http://www.zvon.org/xxl/DTDTutorial/General/book.html">http://www.zvon.org/xxl/DTDTutorial/General/book.html</ulink>
+				</para>
+			</listitem>
+		</itemizedlist>
+		<itemizedlist>
+			<title>For more information on XML, see:</title>
+			<listitem>
+				<para>W3 Schools:<ulink url="http://www.w3schools.com/xml/">http://www.w3schools.com/xml/default.asp</ulink>
+				</para>
+			</listitem>
+			<listitem>
+				<para>Zvon: <ulink url="http://www.zvon.org/xxl/XMLTutorial/General/book.html">http://www.zvon.org/xxl/XMLTutorial/General/book.html</ulink>
+				</para>
+			</listitem>
+		</itemizedlist>
+		<itemizedlist>
+			<title>For more information on XPath, see:</title>
+			<listitem>
+				<para>Zvon: <ulink url="http://www.zvon.org/xxl/XPathTutorial/General/examples.html">http://www.zvon.org/xxl/XPathTutorial/General/examples.html</ulink>
+				</para>
+			</listitem>
+		</itemizedlist>
 	</section>
 </article>
