@@ -41,7 +41,7 @@ import java.lang.Integer;
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
  */
-public class MediaSourceFilter extends ChainComparator {    
+public class MediaSourceFilter implements MediaFilter {    
     private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
 
     public static String MAIN_TAG         = "mediasourcefilter";
@@ -53,6 +53,8 @@ public class MediaSourceFilter extends ChainComparator {
         }
     };
     
+    private List filters = new ArrayList();
+
     /**
      * Construct the MediaSourceFilter
      */
@@ -75,6 +77,9 @@ public class MediaSourceFilter extends ChainComparator {
         if (filter == null) filter = new MediaSourceFilter();
         return filter;
     }
+
+
+    public void configure(XMLBasicReader reader, Element e) { }
     
     /**
      * read the MediaSourceFilter configuration
@@ -83,19 +88,29 @@ public class MediaSourceFilter extends ChainComparator {
         if (log.isServiceEnabled()) {
             log.service("Reading " + configFile);
         }
-        clear();
+        filters.clear();
 
         XMLBasicReader reader = new XMLBasicReader(configFile.toString(), getClass());
         Element filterConfigs = reader.getElementByPath(MAIN_TAG + "." + FILTERCONFIGS_TAG);
+
+        ChainComparator chainComp = new ChainComparator();
         for(Enumeration e = reader.getChildElements(MAIN_TAG + ".chain","filter"); e.hasMoreElements();) {
             Element chainElement=(Element)e.nextElement();
-            String chainValue = reader.getElementValue(chainElement);
+            String  chainValue = reader.getElementValue(chainElement);
             try {
                 Class newclass = Class.forName(chainValue);
-                ResponseInfoComparator ri = (ResponseInfoComparator) newclass.newInstance();
-                add(ri);
-                log.service("Added medisourcefilter " + chainValue);
-                ri.configure(reader, filterConfigs);
+                MediaFilter filter = (MediaFilter) newclass.newInstance();
+                if (filter instanceof ResponseInfoComparator) {
+                    chainComp.add((ResponseInfoComparator) filter);
+                } else {
+                    if (chainComp.size() > 0) { 
+                        filters.add(chainComp);
+                        chainComp = new ChainComparator();                        
+                    }
+                    filters.add(filter);
+                }
+                log.service("Added mediasourcefilter " + chainValue);
+                filter.configure(reader, filterConfigs);
             } catch (ClassNotFoundException ex) {
                 log.error("Cannot load filter " + chainValue + "\n" + ex);
             } catch (InstantiationException ex1) {
@@ -104,6 +119,16 @@ public class MediaSourceFilter extends ChainComparator {
                 log.error("Cannot load filter " + chainValue + "\n" + ex2);
             }                   
         }
+        if (chainComp.size() > 0) filters.add(chainComp);
+    }
+
+    public List filter(List urls) {
+        Iterator i = filters.iterator();
+        while (i.hasNext()) {
+            MediaFilter filter = (MediaFilter) i.next();
+            urls = filter.filter(urls);
+        }
+        return urls;
     }
     
 }

@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 /**
  * Chains some comparators
  * @author  Michiel Meeuwissen
- * @version $Id: ChainComparator.java,v 1.1 2003-01-08 22:20:24 michiel Exp $
+ * @version $Id: ChainComparator.java,v 1.2 2003-01-14 20:36:20 michiel Exp $
  */
 public class ChainComparator extends  ResponseInfoComparator {
 
@@ -38,11 +38,15 @@ public class ChainComparator extends  ResponseInfoComparator {
     public void add(ResponseInfoComparator ri) {
         comparators.add(ri);
     }
+
+    public int size() {
+        return comparators.size();
+    }
     
     /**
      * Configure. Configures all elements on default.
      */
-    protected void configure(XMLBasicReader reader, Element e) {
+    public void configure(XMLBasicReader reader, Element e) {
         Iterator i = comparators.iterator();
         while (i.hasNext()) {
             ResponseInfoComparator ri = (ResponseInfoComparator) i.next();

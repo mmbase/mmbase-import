@@ -41,7 +41,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.22 2003-01-08 22:23:07 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.23 2003-01-14 20:36:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -555,8 +555,7 @@ public class MediaSources extends MMObjectBuilder {
      */
     protected List getSortedURLs(MMObjectNode source, MMObjectNode fragment, Map info) {
         List urls = getURLs(source, fragment, info);
-        Collections.sort(urls, MediaSourceFilter.getInstance());
-        return urls;
+        return MediaSourceFilter.getInstance().filter(urls);
     }
 
     /**

@@ -21,7 +21,7 @@ import java.text.*;
  * An example. URL's from these kind of URLComposers can contain 'start' and 'end' arguments.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MyURLComposers.java,v 1.3 2003-01-08 22:23:07 michiel Exp $
+ * @version $Id: MyURLComposers.java,v 1.4 2003-01-14 20:36:20 michiel Exp $
  * @since MMBase-1.7
  */
 public class MyURLComposers extends MediaURLComposers {
@@ -30,92 +30,53 @@ public class MyURLComposers extends MediaURLComposers {
 
     /** 
      * Adds 'start' and 'end' parameters using the fragment.
-     * @throws MalformedURLException
      */
+    protected class MyResponseInfo extends MediaURLComposers.MediaResponseInfo {
 
-    protected List getURLs(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map preferences) {
-        if (provider == null) throw new IllegalArgumentException("Cannot create URL without a provider");
-        if (source   == null) throw new IllegalArgumentException("Cannot create URL without a source");
-
-        StringBuffer args = new StringBuffer(composer.getStringValue("rootpath") +  source.getStringValue("url"));
-        if (fragment != null) {
-            int start = fragment.getIntValue("start");
-            int end   = fragment.getIntValue("stop");
-            char sep = '?';
-            if (start > -1) {            
-                appendTime(start, args.append(sep).append("start="));
-                sep = '&';
-            }
-            if (end > -1) {            
-                appendTime(end, args.append(sep).append("end="));
-                sep = '&';
-            }
-            Format format = Format.get(source.getIntValue("format"));
-            if (format.isReal()) { 
-                // real...
-                String title = fragment.getStringValue("title");
-                args.append(sep).append("title=").append(title);
-            }
+        MyResponseInfo(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+            super(composer, provider, source, fragment, info);
         }
-        List result = new ArrayList();
-        try {
-            result.add(
-                       new URL(composer.getStringValue("protocol"), provider.getStringValue("host"), args.toString())
-                       );
-        } catch (MalformedURLException e) {
-            log.error(e);
+        public Format getFormat() {
+            Format format = super.getFormat();
+            if (composer.getStringValue("rootpath").startsWith("/cgi-bin")) {
+                if (format == Format.RM)  return Format.RAM;
+                if (format == Format.ASF) return Format.WMP;                
+            }
+            
+            return format;
         }
-        return result;
-    }
 
-
-    /**
-     * Script accept times that look like dd:hh:mm:ss.th, where t is tenths of seconds.
-     * @param time the time in milliseconds
-     * @return the time in real format
-     */
-    protected static StringBuffer appendTime(int time, StringBuffer buf) {
-        time /= 10; // in centis
-
-        int centis = -1;
-        int s     = 0;
-        int min   = 0;
-        int h     = 0;
-        int d     = 0;
-
-        if (time != 0) {
-            centis = time % 100;
-            time /= 100;  // in s
-            if (time != 0) {
-                s = time % 60;
-                time /= 60;  // in min
-                if (time != 0) {
-                    min = time % 60;
-                    time /= 60; // in hour
-                    if (time != 0) {
-                        h = time % 24;
-                        d = time / 24;   // in day
-                    }
+        public String getURL() {
+            String url      = source.getStringValue("url");
+            String rootpath = composer.getStringValue("rootpath");
+            String host = provider.getStringValue("host");
+            if (rootpath.startsWith("/cgi-bin")) {
+                host = "cgi.omroep.nl";
+            }
+                       
+            StringBuffer args = new StringBuffer(source.getStringValue("url"));
+            
+            
+            if (rootpath.startsWith("%")) {
+                int lastSlash = url.lastIndexOf('/');
+                String existingPrefix = url.substring(lastSlash + 1, lastSlash + 4);
+                if (existingPrefix.equals("sb.") || existingPrefix.equals("bb.")) { // remove existing prefix.
+                    args.delete(lastSlash + 1, lastSlash + 4);
                 }
+                String insert = rootpath.substring(1);
+                args.insert(lastSlash + 1, insert + ".");
+            } else {
+                args.insert(0, rootpath);
             }
+            getArgs(args);            
+            return composer.getStringValue("protocol") + "://" + host + args.toString();
         }
-        boolean append = false;
-
-        if (d > 0) append = true;
-        if (append) buf.append(d).append(':');
-        if (h > 0) append = true;
-        if (append) buf.append(h).append(':');
-        if (min > 0) append = true;
-        if (append) buf.append(min).append(':');
-        buf.append(s);
-        if (centis > 0) {
-            buf.append('.');
-            if (centis < 10) buf.append('0');
-            buf.append(centis);
-        }
-        
-        return buf;
     }
+    
+    
+    protected ResponseInfo createResponseInfo(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
+        return new MyResponseInfo(composer, provider, source, fragment, info);           
+    };
 
 }
 

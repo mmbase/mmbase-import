@@ -102,7 +102,7 @@ public class MediaProviderFilter {
                 
                 try {
                     Class newclass = Class.forName(chainvalue);
-                    externFilters.put(chainvalue,(MediaProviderFilterInterface)newclass.newInstance());
+                    // externFilters.put(chainvalue,(MediaProviderFilterInterface)newclass.newInstance());
                     filterChain.add(chainvalue);
                 } catch (Exception exception) {
                     log.error("Cannot load MediaProviderFilter "+chainvalue+"\n"+exception);
