@@ -4,7 +4,7 @@
   <articleinfo>
     <title>The MMBase Security Framework</title>
     <date>12 February 2003</date>
-    <edition>$Id: security-framework.xml,v 1.6 2003-02-14 15:13:56 pierre Exp $</edition>
+    <edition>$Id: security-framework.xml,v 1.7 2003-04-08 09:55:43 pierre Exp $</edition>
     <authorgroup>
       <author>
         <firstname>Eduard</firstname>
@@ -68,7 +68,7 @@
     <title>The MMBase Security Framework</title>
     <section>
       <title>Overview of the MMBase Architecture</title>
-      <graphic fileref="media/architecture.png" />
+      <graphic fileref="../general/media/architecture.png" />
       <para>As the MMBase architecture image shows, the MMBase security framework forms a layer between the MMBase core and the MMCI - the MMBase Cloud Interface which is used for external programs and applications to communicate with the system.</para>
       <para>All communication through the MMCI uses the security layer, while the 'core classes' of the system generally don't. This allows the core to handle requests quickly, while maintaining security where it matters - in communication with external sources.</para>
       <para>When a user connects to MMBase using an external application (such as the taglibs, a jsp servlet, or the editwizards), that application creates a session to maintain the state of the user. In other words: maintaining state is left to the external application. Security itself does not offer this functionality as it is dependent on the means of communication.</para>
