@@ -30,15 +30,10 @@ import org.mmbase.util.logging.*;
  *
  * @author  John Balder: 3MPS 
  * @author 	Rob Vermeulen: VPRO
- * @version 1.2, 22/10/2000
- * @version 2.3.1 24/11/2000
  *
  * This class parses the TML code and calls the appropriate methods
  * in TransactionManager TemporarayNodeManager org.mmabse.module.core
- * Furthermore is does some nameserving.
- *
- * John Balder: 3MPS  added key-check 4-4-2001 for security
- *
+ * Furthermore it does some nameserving.
  */
  
 public class TransactionHandler extends Module implements TransactionHandlerInterface {
@@ -47,7 +42,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
  	private static sessionsInterface sessions = null;
 	private static MMBase mmbase = null;
 	private static Upload upload = null;
-	private static String version="2.3.7";
+	private static String version="2.3.8";
 	//JohnB key test
 	private static boolean needs_key = true; //set true for safety
 	private static String securityMode = "none";
@@ -92,7 +87,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
 	 */
 	private String getXMLHeader() {
 		return	"<?xml version='1.0'?>\n"+
-			 "<!DOCTYPE transactions SYSTEM \"/usr/local/install/mmbase/config/default/dtd/transactions.dtd\">\n";
+			 "<!DOCTYPE transactions SYSTEM \""+MMBaseContext.getConfigPath()+"/dtd/transactions.dtd\">\n";
 	}
 	
 	/**
