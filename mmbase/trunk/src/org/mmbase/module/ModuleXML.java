@@ -30,10 +30,11 @@ import org.xml.sax.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.1 $ $Date: 2000-05-02 10:00:16 $
+ * @version $Revision: 1.2 $ $Date: 2000-05-02 10:27:29 $
  */
 public abstract class ModuleXML extends Module {
 
+	private static void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	public static synchronized Hashtable loadModulesFromDisk() {
 			return(loadModulesFromDisk_xml());
