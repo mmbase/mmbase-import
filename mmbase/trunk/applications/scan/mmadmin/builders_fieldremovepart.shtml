@@ -1,46 +1,48 @@
-<FORM ACTION="builders_actions.shtml?$PARAM1" METHOD="POST">
-<TR>
-	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="#44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Remove field</B>
-	</TD>
-	<TD BGCOLOR="#44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Check</B>
-	</TD>
-	<TD BGCOLOR="#44BDAD">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>explain</B>
-	</TD>
-	<TD BGCOLOR="#44BDAD" COLSPAN="2">
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Confirm</B>
-	</TD>
-</TR>
-<TR>
-		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-		<TD BGCOLOR="#00425A">
-			remove field : '$PARAM2'
-		</TD>
-		<TD BGCOLOR="#00425A">
-			<SELECT NAME="PRC-VAR-SURE">
-			<OPTION>No
-			<OPTION>Yes
-			</SELECT>
-		</TD>
-		<TD BGCOLOR="#00425A">
-			explain
-		<TD BGCOLOR="#00425A" COLSPAN="2">
-			<CENTER>
-			<INPUT TYPE="hidden" NAME="SECURE" VALUE="BASIC">
-			<INPUT TYPE="hidden" NAME="PRC-VAR-PROCESSOR" VALUE="MMADMIN">
-
-			<INPUT TYPE="hidden" NAME="PRC-VAR-BUILDER" VALUE="$PARAM1">
-			<INPUT TYPE="hidden" NAME="PRC-VAR-FIELDNAME" VALUE="$PARAM2">
-			<INPUT TYPE="hidden" NAME="PRC-CMD-BUILDER-REMOVEFIELD">
-			<INPUT TYPE="SUBMIT" VALUE="just do it"></TD>
-		</TD>
-
-</TR>
-</FORM>
+<form action="builders_actions.shtml?$param1" method="post">
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1"></td>
+  <td bgcolor="#44bdad">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+      <strong>Remove field</strong>
+    </font>
+  </td>
+  <td bgcolor="#44bdad">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+        <strong>Check</strong>
+    </font>
+  </td>
+  <td bgcolor="#44bdad">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+        <strong>explain</strong>
+    </font>
+  </td>
+  <td bgcolor="#44bdad">
+    <font color="000000" face="helvetica,arial,geneva" size="2">
+        <strong>Confirm</strong>
+    </font>
+  </td>
+</tr>
+<tr>
+  <td><img src="beeld/trans.gif" width="50" height="1" /></td>
+  <td bgcolor="#00425a">
+    remove field : '$PARAM2'
+  </td>
+  <td bgcolor="#00425A">
+    <select name="PRC-VAR-SURE">
+      <option>No</option>
+      <option>Yes</option>
+    </select>
+  </td>
+  <td bgcolor="#00425a">
+          explain
+  <td bgcolor="#00425a" colspan="2">
+          <center>
+          <input type="hidden" name="SECURE" value="BASIC" />
+          <input type="hidden" name="PRC-VAR-PROCESSOR" value="MMADMIN" />
+          <input type="hidden" name="PRC-VAR-BUILDER" value="$PARAM1" />
+          <input type="hidden" name="PRC-VAR-FIELDNAME" value="$PARAM2" />
+          <input type="hidden" name="PRC-CMD-BUILDER-REMOVEFIELD" />
+          <input type="submit" value="just do it" />
+  </td>
+</tr>
+</form>
