@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.64.2.1 2003-02-18 10:35:44 michiel Exp $
+ * @version $Id: Images.java,v 1.64.2.2 2003-03-04 20:05:32 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -39,7 +39,7 @@ public class Images extends AbstractImages {
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
-    private org.mmbase.cache.Cache templateCacheNumberCache = new org.mmbase.cache.Cache(500) {
+    private CKeyCache templateCacheNumberCache = new CKeyCache(500) {
         public String getName()        { return "CkeyNumberCache"; }
         public String getDescription() { return "Connection between image conversion templates and icache node numbers"; }
         };
@@ -598,6 +598,7 @@ public class Images extends AbstractImages {
             // when cache is invalide, invalidate
             if(imageCacheInvalid) {
                 invalidateImageCache(node);
+                templateCacheNumberCache.remove(node.getNumber());                
             }
             return true;
         }
@@ -613,6 +614,7 @@ public class Images extends AbstractImages {
     public void removeNode(MMObjectNode node) {
         super.removeNode(node);
         invalidateImageCache(node);
+        templateCacheNumberCache.remove(node.getNumber());
     }
 
     /**
@@ -630,8 +632,8 @@ public class Images extends AbstractImages {
     /**
      * @javadoc
      */
-    void invalidateTemplateCacheNumberCache() {
-        templateCacheNumberCache.clear();
+    void invalidateTemplateCacheNumberCache(int number) {
+        templateCacheNumberCache.remove(number);
     }
 }
 
