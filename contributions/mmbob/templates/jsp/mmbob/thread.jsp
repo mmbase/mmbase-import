@@ -137,12 +137,21 @@
            
             <mm:node referid="postingid">
 
-            <mm:formatter xslt="xslt/posting2xhtml.xslt">
+            <mm:even> 
+              <mm:formatter xslt="xslt/posting2xhtmlDark.xslt">
+                <mm:function referids="imagecontext,themeid" name="escapesmilies">
+                <mm:write/>
+                </mm:function>
+              </mm:formatter>
+            </mm:even>
+            <mm:odd>
+               <mm:formatter xslt="xslt/posting2xhtmlLight.xslt">
+                <mm:function referids="imagecontext,themeid" name="escapesmilies">
+                <mm:write/>
+                </mm:function>
+              </mm:formatter>
+            </mm:odd> 
 
-            <mm:function referids="imagecontext,themeid" name="escapesmilies">
-            <mm:write/>
-            </mm:function>
-            </mm:formatter>
             </mm:node>
 
 			<br /><br /><br /><br /><br />
