@@ -15,7 +15,7 @@ import java.util.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSqlHandlerTest extends TestCase {
     
@@ -174,7 +174,7 @@ public class BasicSqlHandlerTest extends TestCase {
         "SELECT DISTINCT m_title AS m_imageTitle,"
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set constraint.
         Constraint constraint1 = new BasicFieldValueConstraint(field1a, "abd");
@@ -185,7 +185,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set composite constraint.
         Constraint constraint2 
@@ -201,7 +201,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_DESCENDING);
@@ -211,7 +211,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle DESC"));
+        + "ORDER BY m_title DESC"));
         
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_ASCENDING);
@@ -221,7 +221,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set distinct false.
         query.setDistinct(false);
@@ -231,7 +231,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Add node constraint for first step (one node).
         step1.addNode(123);
@@ -242,7 +242,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "FROM " + prefix + "images m_i "
         + "WHERE m_number IN (123) "
         + "AND (m_title='abd' AND m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Add second node to node constraint.
         step1.addNode(456);
@@ -253,7 +253,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "FROM " + prefix + "images m_i "
         + "WHERE m_number IN (123,456) "
         + "AND (m_title='abd' AND m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Add relationstep (default directionality).
         BasicRelationStep step2 = query.addRelationStep(insrel,news);
@@ -268,7 +268,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set aliases on step2 and stap3.
         step2.setAlias("insrel");
@@ -286,7 +286,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set directionality for relationstep to DESTINATION.
         step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
@@ -299,7 +299,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set checkedDirectionality to true.
         step2.setCheckedDirectionality(true);
@@ -312,7 +312,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set directionality for relationstep to SOURCE,
         // set checkedDirectionality to false.
@@ -327,7 +327,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND (m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set checkedDirectionality to true.
         step2.setCheckedDirectionality(true);
@@ -341,7 +341,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND insrel.dir<>1 "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set directionality for relationstep to BOTH, 
         // set checkedDirectionality to false.
@@ -357,7 +357,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set checkedDirectionality to true.
         step2.setCheckedDirectionality(true);
@@ -372,7 +372,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND insrel.rnumber=890) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Reset role and checkedDirectionality.
         step2.setRole(null);
@@ -386,7 +386,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Add field for relationstep.
         StepField field2a = query.addField(step2, insrelRNumber).setAlias(null);
@@ -400,7 +400,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Add field for third step.
         StepField field3a = query.addField(step3, newsTitle).setAlias(null);
@@ -415,7 +415,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Add second sortorder
         BasicSortOrder sortOrder3a = query.addSortOrder(field3a);
@@ -430,7 +430,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,news.m_title ASC"));
+        + "ORDER BY m_i.m_title ASC,news.m_title ASC"));
         
         // Add third sortorder.
         BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
@@ -445,7 +445,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,news.m_title ASC,insrel.rnumber ASC"));
+        + "ORDER BY m_i.m_title ASC,news.m_title ASC,insrel.rnumber ASC"));
         
         // Add node constraint for second step (relation step).
         step2.addNode(789);
@@ -460,7 +460,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,news.m_title ASC,insrel.rnumber ASC"));
+        + "ORDER BY m_i.m_title ASC,news.m_title ASC,insrel.rnumber ASC"));
     }
     
     
@@ -542,7 +542,7 @@ public class BasicSqlHandlerTest extends TestCase {
         "m_title AS m_imageTitle,"
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set constraint.
         Constraint constraint1 = new BasicFieldValueConstraint(field1a, "abd");
@@ -555,7 +555,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set composite constraint.
         Constraint constraint2 
@@ -573,7 +573,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_DESCENDING);
@@ -585,7 +585,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle DESC"));
+        + "ORDER BY m_title DESC"));
         
         // Set sortorder direction.
         sortOrder1a.setDirection(SortOrder.ORDER_ASCENDING);
@@ -597,7 +597,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Set distinct false.
         query.setDistinct(false);
@@ -609,7 +609,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "m_number AS imageNumber "
         + "FROM " + prefix + "images m_i "
         + "WHERE m_title='abd' AND m_number=123 "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Add node constraint for first step (one node).
         step1.addNode(123);
@@ -622,7 +622,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "FROM " + prefix + "images m_i "
         + "WHERE m_number IN (123) "
         + "AND (m_title='abd' AND m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Add second node to node constraint.
         step1.addNode(456);
@@ -635,7 +635,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "FROM " + prefix + "images m_i "
         + "WHERE m_number IN (123,456) "
         + "AND (m_title='abd' AND m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_title ASC"));
         
         // Add relationstep (default directionality).
         BasicRelationStep step2 = (BasicRelationStep)
@@ -653,7 +653,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set directionality for relationstep to DESTINATION.
         step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
@@ -667,7 +667,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set directionality for relationstep to SOURCE.
         step2.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
@@ -681,7 +681,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "WHERE m_i.m_number IN (123,456) "
         + "AND (m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Set directionality for relationstep to BOTH.
         step2.setDirectionality(RelationStep.DIRECTIONS_BOTH);
@@ -696,7 +696,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Add field for relationstep.
         StepField field2a = query.addField(step2, insrelRNumber).setAlias(null);
@@ -712,7 +712,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Add field for third step.
         StepField field3a = query.addField(step3, newsTitle).setAlias(null);
@@ -729,7 +729,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC"));
+        + "ORDER BY m_i.m_title ASC"));
         
         // Add second sortorder
         BasicSortOrder sortOrder3a = query.addSortOrder(field3a);
@@ -746,7 +746,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,news.m_title ASC"));
+        + "ORDER BY m_i.m_title ASC,news.m_title ASC"));
         
         // Add third sortorder.
         BasicSortOrder sortOrder2a = query.addSortOrder(field2a);
@@ -763,7 +763,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,news.m_title ASC,insrel.rnumber ASC"));
+        + "ORDER BY m_i.m_title ASC,news.m_title ASC,insrel.rnumber ASC"));
         
         // Add node constraint for second step (relation step).
         step2.addNode(789);
@@ -780,7 +780,7 @@ public class BasicSqlHandlerTest extends TestCase {
         + "AND ((m_i.m_number=insrel.m_dnumber AND news.m_number=insrel.m_snumber) "
         + "OR (m_i.m_number=insrel.m_snumber AND news.m_number=insrel.m_dnumber)) "
         + "AND (m_i.m_title='abd' AND m_i.m_number=123) "
-        + "ORDER BY m_imageTitle ASC,news.m_title ASC,insrel.rnumber ASC"));
+        + "ORDER BY m_i.m_title ASC,news.m_title ASC,insrel.rnumber ASC"));
         
         // Aggregated query.
         query = new BasicSearchQuery(true);
@@ -1125,7 +1125,7 @@ public class BasicSqlHandlerTest extends TestCase {
         sb.setLength(0);
         constraint6.setInverse(true); // set inverse
         instance.appendConstraintToSql(sb, constraint6, query, false, false);
-        assertTrue(sb.toString(), sb.toString().equals(
+        assertTrue("KNOWN - BasicSqlHandler r1.23 (pierre): " + sb.toString(), sb.toString().equals(
         "NOT m_images.m_title LIKE 'qWeRtY'"));
 
         sb.setLength(0);
@@ -1455,7 +1455,7 @@ public class BasicSqlHandlerTest extends TestCase {
         compositeConstraint.addChild(constraint2); // Add first child constraint.
         instance.appendCompositeConstraintToSql(sb, (CompositeConstraint) compositeConstraint, 
         query, false, false, instance);
-        assertTrue(sb.toString(), sb.toString().equals(
+        assertTrue("KNOWN - BasicSqlHandler r1.23 (pierre): " + sb.toString(), sb.toString().equals(
         "NOT m_images.m_number>news.m_number"));
         
         sb.setLength(0);

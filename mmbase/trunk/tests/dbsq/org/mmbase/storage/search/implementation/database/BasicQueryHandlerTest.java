@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -307,7 +307,7 @@ public class BasicQueryHandlerTest extends TestCase {
             
             // Compare with resultnodes.
             ResultNode result = (ResultNode) resultNodes.get(0);
-            assertTrue(result.toString(), 
+            assertTrue("KNOWN - bug #6254: " + result.toString(), 
                 result.getStringValue("minName").equals(minName));
             assertTrue(result.getStringValue("maxName").equals(maxName));
         }
