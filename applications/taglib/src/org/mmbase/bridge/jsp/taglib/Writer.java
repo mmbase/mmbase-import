@@ -45,7 +45,7 @@ public interface Writer extends TagIdentifier {
      * Subtags of 'Writer' tag can request the value.
      */
 
-    public Object getValue() throws JspTagException ;
+    public Object getWriterValue() throws JspTagException ;
     
 
 }

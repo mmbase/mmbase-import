@@ -38,7 +38,7 @@ public class IndexTag extends ListReferrerTag implements Writer {
     public void setWrite(String w) throws JspTagException {
         helper.setWrite(getAttributeBoolean(w));
     }
-    public Object getValue() {
+    public Object getWriterValue() {
         return helper.getValue();
     }
 
