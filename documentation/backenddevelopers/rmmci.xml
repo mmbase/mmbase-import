@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>Remote MMBase Cloud Interface</title>
 		<date>2001</date>
-		<edition>$Id: rmmci.xml,v 1.5 2003-01-20 09:15:09 kees Exp $</edition>
+		<edition>$Id: rmmci.xml,v 1.6 2003-02-25 12:01:35 kees Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kees</firstname>
@@ -238,8 +238,8 @@ jdk	: 1.3.0/Java HotSpot(TM) Client VM
 			<title>TODO</title>
 			<itemizedlist>
 				<listitem><para>Creating a build.xml that create a jar rmmci.jar containing everything needed for using RMMCI at client side.</para></listitem>
-				<listitem><para>When a bridge class extends a java.util.list interface the generaterd classes should extends AbstractList so that sorting and using the base methods is possible.</para></listitem>
-				<listitem><para>Generate better errors send stack traces to the client?.</para></listitem>
+				<listitem><para>When a bridge class extends a java.util.list interface the generaterd classes should extends AbstractList so that sorting and using the base methods is possible.[DONE]</para></listitem>
+				<listitem><para>Generate better errors send stack traces to the client?.[DONE] bridge Exception a rethrown or contain a root cause</para></listitem>
 				<listitem><para>write guidelines for writing rmmci compatilble code (no casting etc).</para></listitem>
 			</itemizedlist>
 		</section>
