@@ -117,8 +117,8 @@ public class RelDef extends MMObjectBuilder {
 	 * the same sname or dname.
 	 */
  	public int getGuessedByName(String buildername) {
+
 	        Enumeration e=search("WHERE sname='"+buildername+"' OR dname='"+buildername+"'");
- 
 	        // *** was: Enumeration e=search("WHERE sname='"+buildername+"' AND dname='"+buildername+"'");
 	        // *** doesn't work when you have a different sname/dname.
 	
@@ -143,8 +143,7 @@ public class RelDef extends MMObjectBuilder {
 		{
 	            MMObjectNode node = (MMObjectNode)e.nextElement();
 	            return(node.getIntValue("number"));
-	        }         
-
+	        }
 		return(-1);
 	}
 }
