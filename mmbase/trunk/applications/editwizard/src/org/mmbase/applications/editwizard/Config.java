@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.37 2003-06-10 16:49:50 michiel Exp $
+ * @version $Id: Config.java,v 1.38 2003-06-13 13:24:30 pierre Exp $
  */
 
 public class Config {
@@ -553,6 +553,12 @@ public class Config {
                     refFile = new File(getRealPath(config.backPage)).getParentFile();
                 }
                 if (refFile.exists()) {
+                    if (! config.language.equals("")) {
+                        File refi18n = new File(refFile, "i18n" + File.separator + config.language);
+                        if (refi18n.isDirectory()) {
+                            extraDirs.add("refi18n:", refi18n);
+                        }
+                    }
                     extraDirs.add("ref:", refFile);
                 }
 
