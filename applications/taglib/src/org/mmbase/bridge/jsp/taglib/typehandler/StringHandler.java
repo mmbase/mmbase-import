@@ -26,7 +26,7 @@ import org.mmbase.util.transformers.Sql;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.21 2003-12-18 09:03:49 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.22 2003-12-21 18:06:43 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -99,7 +99,7 @@ public class StringHandler extends AbstractTypeHandler {
                 }
                 buffer.append("</textarea>");
             } else {
-                if (field.getGUIType().equals("password")) {
+                if (field.getGUIType().indexOf("password") > -1) {
                     buffer.append("<input type =\"password\" class=\"small\" size=\"80\" name=\"");
                 } else {
                     buffer.append("<input type =\"text\" class=\"small\" size=\"80\" name=\"");
@@ -134,7 +134,7 @@ public class StringHandler extends AbstractTypeHandler {
         } else {
             fieldValue = tag.encode(fieldValue, field);
             if (fieldValue != null && ! fieldValue.equals(node.getValue(fieldName))) {
-                node.setValue(fieldName,  fieldValue);
+                node.setStringValue(fieldName,  fieldValue);
                 return true;
             }
         }
