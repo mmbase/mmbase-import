@@ -263,7 +263,7 @@
         <% if (role==null) { %>
           <td class="navlink"><a href="<mm:url page="editor.jsp"><mm:param name="action">save</mm:param></mm:url>" target="_top">##</a></td>
         <% } else { %>
-          <td class="navlink"><a href="<mm:url page="editor.jsp"><mm:param name="action">save</mm:param><mm:param name="createrelation">true</mm:param></mm:url>" target="_top">##</a></td>
+          <td class="navlink"><a href="<mm:url page="editor.jsp"><mm:param name="action">save</mm:param></mm:url>" target="_top">##</a></td>
         <% } %>
       </tr>
       <tr>
