@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage;
 
+import java.util.List;
 import java.util.Map;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.module.core.MMBase;
@@ -19,7 +20,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.4 2003-07-23 14:11:34 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.5 2003-07-23 14:34:57 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -105,6 +106,18 @@ public interface StorageManagerFactory {
      * @return the version as an integer
      */
     public double getVersion();
+
+    /**
+     * Returns a sorted list of type mappings for this storage.
+     * @return  the list of TypeMapping objects
+     */
+	public List getTypeMappings();
+
+    /**
+     * Returns a map of disallowed field names and their possible alternate values.
+     * @return  A Map of disallowed field names
+     */
+	public Map getDisallowedFields();
 
 }
 
