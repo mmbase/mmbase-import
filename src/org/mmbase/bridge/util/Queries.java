@@ -27,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.5 2003-09-08 08:21:34 michiel Exp $
+ * @version $Id: Queries.java,v 1.6 2003-09-16 09:36:04 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -341,6 +341,8 @@ public class Queries {
         if (query.getSteps().size() == 0 ) { // if no steps yet, first step must be added with addStep
             String completeFirstToken = pathTokenizer.nextToken().trim();
             String firstToken      = removeDigits(completeFirstToken);
+            if (cloud.hasRole(firstToken)) {
+            }
             Step step = query.addStep(cloud.getNodeManager(firstToken));
             if (! firstToken.equals(completeFirstToken)) {
                 query.setAlias(step, completeFirstToken);
@@ -353,8 +355,9 @@ public class Queries {
             String token      = removeDigits(completeToken); 
 
             if (searchDirsTokenizer.hasMoreTokens()) {
-                searchDir = searchDirsTokenizer.nextToken();
+                 searchDir = searchDirsTokenizer.nextToken();
             }
+
 
             if (cloud.hasRole(token)) {
                 if (! pathTokenizer.hasMoreTokens()) throw new BridgeException("Path cannot end with a role (" + path + "/" + searchDirs + ")" );
@@ -362,7 +365,9 @@ public class Queries {
                 String nodeManagerName  = removeDigits(nodeManagerAlias);
                 NodeManager nodeManager = cloud.getNodeManager(nodeManagerName);
                 RelationStep relationStep = query.addRelationStep(nodeManager, token, searchDir);
-                if (! token.equals(completeToken)) query.setAlias(relationStep, completeToken);
+                if (! cloud.hasNodeManager(completeToken)) {
+                    query.setAlias(relationStep, completeToken);
+                }
                 if (! nodeManagerName.equals(nodeManagerAlias)) {
                     Step next = relationStep.getNext();
                     query.setAlias(next, nodeManagerAlias);
