@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * We use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @author vpro
- * @version $Id: JDBC.java,v 1.26 2002-04-26 14:44:43 eduard Exp $
+ * @version $Id: JDBC.java,v 1.27 2002-09-20 13:36:06 michiel Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -50,9 +50,9 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     private String defaultpassword;
 
     public void onload() {
-        getprops();
-        getdriver();
-        loadsupport();
+        getProps();
+        getDriver();
+        loadSupport();
         poolHandler=new MultiPoolHandler(databasesupport,maxConnections,maxQuerys);
     }
 
@@ -61,15 +61,16 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
      */
     public void init() {
         // old
-        getprops();
-        probe=new JDBCProbe(this);
+        getProps();
+        probe = new JDBCProbe(this);
+        log.info("Module JDBC started (" + this + ")");
     }
 
     /**
      * Reload the properties and driver
      */
     public void reload() {
-        getprops();
+        getProps();
 
         /* This doesn't work, have to figure out why
         try {
@@ -78,8 +79,8 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
         debug("reload(): JDBC Module: Can't deregister driver");
         }
          */
-        loadsupport();
-        getdriver();
+        loadSupport();
+        getDriver();
     }
 
     public void unload() {
@@ -90,7 +91,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     /**
      * Get the driver as specified in our properties
      */
-    private void getdriver() {
+    private void getDriver() {
         Driver d;
 
         driver=null;
@@ -128,7 +129,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     /**
      * Get the driver as specified in our properties
      */
-    private void loadsupport() {
+    private void loadSupport() {
         Class cl;
 
         try {
@@ -144,7 +145,7 @@ public class JDBC extends ProcessorModule implements JDBCInterface {
     /**
      * Get the properties
      */
-    private void getprops() {
+    private void getProps() {
 
         JDBCdriver=getInitParameter("driver");
         JDBCurl=getInitParameter("url");
