@@ -95,7 +95,7 @@ public class NodeBreaker implements Runnable {
      */
     public synchronized void remove(String id) {
         int i = ids.indexOf(id);
-        if (i > 0) {
+        if (i >= 0) {
             remove(i);
         }
     }
