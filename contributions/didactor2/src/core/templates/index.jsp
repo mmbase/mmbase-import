@@ -51,31 +51,10 @@
 
   <div class="columnMiddle">
     <mm:node number="$provider" notfound="skipbody">
-      <mm:field name="name">
-        <mm:compare value="telecoach">
-          <mm:listnodes type="news" orderby="number" directions="DOWN" max="5">
-            <b><mm:field name="title"/></b><br/>
-            <mm:field name="body"/><br/>
-            <p/>
-          </mm:listnodes>
-        </mm:compare>
-        <mm:compare value="telecoach" inverse="true">
-          <p>
-          <h1><fmt:message key="WELCOME" /></h1>
-          </p>
-          <br />
-          <p>
-            <h3>Bij Didactor, de elektronische leeromgeving.</h3>
-          </p>
-          <br />
-          <p>
-            Didactor versie 2.0 Beta
-          </p>
-        </mm:compare>
-      </mm:field>
+    <mm:treeinclude page="/welcome.jsp" objectlist="$includePath" />
     </mm:node>
     <p>
-    <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
+   <a href="<mm:treefile write="true" page="/portfolio/listall.jsp" objectlist="$includePath" />"><fmt:message key="LISTALLPORTFOLIOS"/></a>
     </p>
   </div>
 
