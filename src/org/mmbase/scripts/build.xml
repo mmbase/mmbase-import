@@ -263,7 +263,7 @@ NetComponents can be found at:
   </target>
 
   <target name="lib.compile" description="Create the lib directory"
-          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit">
+          depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation">
     <mkdir dir="${compile.lib.dir}"/>
     <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
     <copy file="${xerces.jar}"    todir="${compile.lib.dir}" />
