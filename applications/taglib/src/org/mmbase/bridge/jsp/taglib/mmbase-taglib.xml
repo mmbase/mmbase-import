@@ -415,7 +415,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         <requirednote>Either 'number' or 'parameter' or 'key' must be supplied.</requirednote>
         <rtexprvalue>true</rtexprvalue>
 	<info>
-	  Get the node from the context with this key.
+	  Get the node from the context with this key. 
 	</info>
     </attribute>
     <attribute>
@@ -926,6 +926,14 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
         id, the names of the form entries will be prefixed with it.
         </info>
       </possiblevalue>
+      <possiblevalue>
+        <value>useinput</value>         
+        <info>If you have create a form with type="input" and this
+        form was submitted, then you can use type="useinput" under a
+        NodeProvider, and it will get the request/post parameter
+        produced by "input" and make the right changes to the node.
+        </info>
+      </possiblevalue>      
       <possiblevalue>
         <value>value</value>         
         <info>The value of this field. Can only be used if in a NodeProviderTag.
