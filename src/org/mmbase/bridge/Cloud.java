@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.45 2004-06-08 08:45:16 michiel Exp $
+ * @version $Id: Cloud.java,v 1.46 2004-09-17 09:26:21 michiel Exp $
  */
 public interface Cloud {
 
@@ -506,7 +506,7 @@ public interface Cloud {
             String searchDir, boolean distinct);
 
     /**
-     * Executes a query and returns the result as a Cluster Node List (also if the query is a NodeQuery).
+     * Executes a query and returns the result as a Cluster Node List (also if the query is a {@link NodeQuery}).
      * 
      * @see org.mmbase.storage.search.SearchQuery
      * @since MMBase-1.7
@@ -515,10 +515,9 @@ public interface Cloud {
 
 
     /**
-     * Create an empty Query, which can be filled, and used in {getList#query}.
+     * Create an empty Query, which can be filled, and used in {@link #getList(Query)}.
      * @since MMBase-1.7
      */
-
     public Query createQuery();
 
 
@@ -530,18 +529,16 @@ public interface Cloud {
 
 
     /**
-     * Create an empty NodeQuery, which can be filled, and used in {getList#nodequery}. The query
-     * can be used only when at least one step is added, and 'setNodeStep' is called.
+     * Create an empty NodeQuery, which can be filled, and used in {@link NodeManager#getList(NodeQuery)} or 
+     * {@link #getList(Query)} (but then no 'real' node are returned). The query can be used on NodeManager only when at 
+     * least one step is added, and {@link NodeQuery#setNodeStep} is called.
      * @since MMBase-1.7
      */
-
     public NodeQuery createNodeQuery();
 
 
-
-
     /**
-     * Sets a locale for this Cloud instance.
+     * Sets a locale for this <code>Cloud</code> instance.
      * @param locale To which locale it must be set. It can be null, in which case it will be reset to a default.
      *
      * @since MMBase-1.6
@@ -549,11 +546,31 @@ public interface Cloud {
     public void setLocale(Locale locale);
 
    /**
-     * Gets the Locale assocatied with this Cloud instance.
+     * Gets the locale assocatied with this <code>Cloud</code> instance.
      *
      * @since MMBase-1.6
      */
     public Locale  getLocale();
+
+    /**
+     * Retrieves a property previously set for this cloud.
+     * @see #setProperty(Object, Object)
+     * @param key the key of the property
+     * @return the property value
+     * @since MMBase-1.8
+     */
+    public Object getProperty(Object key);
+
+    /**
+     * Sets a property for this clodu object.
+     * This can be used as a kind of 'environment' variables.
+     * @param key the key of the property
+     * @param value the property value
+     * @since MMBase-1.8
+     */
+    public void setProperty(Object key, Object value);
+
+
 
 
 }
