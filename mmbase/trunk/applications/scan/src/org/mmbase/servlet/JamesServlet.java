@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.9 2000-05-10 13:08:42 wwwtech Exp $
+$Id: JamesServlet.java,v 1.10 2000-05-10 13:26:05 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.9  2000/05/10 13:08:42  wwwtech
+- (marcel) Replaced System.out's with debug and added computer-address in output when new cookie is requested to identify improper use of our service
+
 Revision 1.8  2000/05/04 10:01:34  wwwtech
 Davzev: Changed error log in method getCookie, for the Properties=null situation.
 
@@ -23,6 +26,7 @@ package org.mmbase.servlet;
 // import the needed packages
 import java.io.*;
 import java.util.*;
+import java.net.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import org.mmbase.module.*;
@@ -35,7 +39,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.9 2000-05-10 13:08:42 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.10 2000-05-10 13:26:05 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -180,7 +184,7 @@ public class JamesServlet extends HttpServlet {
 			// This would imply improper use of our service :)
 			// ------------------------------------------------------------------------------------------
 
-			debug(methodName+": address("+req.getRemoteHost()+"), User has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
+			debug(methodName+": address("+getAddress(req)+"), User has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
 			MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
 			if (mmbase == null) {
 				debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
@@ -331,4 +335,159 @@ public class JamesServlet extends HttpServlet {
         ServletContext sx=sc.getServletContext();
         MMBaseContext.setServletContext(sx);
     }
+
+	
+
+
+//  ------------------------------------------------------------------------------------------------------------
+
+    private static  boolean     isForVPRO        = true;                // is this class used by vpro or others
+    private static  String      VPRODomain       = "145.58";            // well not quite, but does the trick :)
+    private static  String      VPROProxyName    = "vpro6d.vpro.nl";    // name of proxyserver
+    private static  String      VPROProxyAddress = "145.58.172.6";      // address of proxyserver
+
+    // methods
+    // -------
+
+    /**
+    *
+    * uses      : VPROProxyName, VPROProxyAddress, VPRODomain
+    */
+    public boolean isInternalVPROAddress(HttpServletRequest req)
+    {
+        boolean intern  = false;
+
+           String  ip      = req.getRemoteAddr();
+
+            // computers within vpro domain, use *.vpro.nl as server, instead *.omroep.nl
+            // --------------------------------------------------------------------------
+
+            if( ip != null && !ip.equals(""))
+            {
+                // is address from proxy?
+                // ----------------------
+                if( ip.indexOf( VPROProxyName )!= -1  || ip.indexOf( VPROProxyAddress )!= -1 )
+                {
+                    // positive on proxy, get real ip
+                    // ------------------------------
+                    ip = req.getHeader("X-Forwarded-For");
+
+                    // come from internal host?
+                    // ------------------------
+                    if( ip != null && !ip.equals("") && ip.indexOf( VPRODomain ) != -1 )
+                        intern = true;
+                }
+                else
+                    // no proxy, this is the real thing
+                    // --------------------------------
+                    if( ip.indexOf("145.58") != -1 )
+                        intern = true;
+            }
+
+        return intern;
+    }
+
+    /**
+    * Extract hostname from scanpage, get address and determine the proxies between it.
+    * Needed to determine if user comes from internal or external host, because
+    * we use two streaming servers, one for external users and one for internal users.
+    *
+    * input     : scanpage sp, contains hostname as ipaddress
+    * output    : String "clientproxy.clientside.com->dialin07.clientside.com"
+    *
+    * uses      : VPROProxyName, VPROProxyAddress, VPRODomain
+    */
+    public String getAddress(HttpServletRequest req)
+    {
+        String  result      = null;
+        boolean fromProxy   = false;
+        String  addr        = req.getRemoteHost();
+
+        if( addr != null && !addr.equals("") )
+        {
+                // from proxy ?
+                // ------------
+
+                if( addr.indexOf( VPROProxyName ) != -1 || addr.indexOf( VPROProxyAddress ) != -1 )
+                {
+                    // get real address
+                    // ----------------
+
+                    fromProxy = true;
+                    addr = req.getHeader("X-Forwarded-For");
+                    if( addr != null && !addr.equals("") )
+                        result = addr;
+                }
+                else
+                    result = addr;
+            }
+
+            result = getHostNames( addr );
+            if( fromProxy )
+                result = "zen.vpro.nl->" + result;
+
+        return result;
+    }
+
+    /**
+    *
+    */
+    private String getHostNames( String host )
+    {
+        String result   = null;
+        String hn       = null;
+
+        // comes client from his own proxy?
+        // --------------------------------
+        if( host.indexOf(",") != -1 )
+        {
+            int pos;
+
+            // filter and display the clientproxies
+            // ------------------------------------
+            while( (pos = host.indexOf(",")) != -1 )
+            {
+                hn = host.substring( 0, pos );
+                host = host.substring( pos + 2 );
+                if( result == null )
+                    result  = getHostName( hn );
+                else
+                    result += "->" + getHostName( hn );
+            }
+            // which results in "proxy.clientside.com->dailin07.clientside.com"
+            // ----------------------------------------------------------------
+        }
+        else
+            result = getHostName( host );
+
+        return result;
+    }
+
+    /**
+    *
+    */
+    private String getHostName( String hostname )
+    {
+        // if hostname == ipaddress, try to get a hostname for it
+        // ------------------------------------------------------
+
+        String hn = null;
+        if( hostname != null && !hostname.equals(""))
+        {
+            try
+            {
+                hn = InetAddress.getByName( hostname ).getHostName();
+            }
+            catch( UnknownHostException e )
+            {
+                hn = hostname;
+            }
+        }
+        else
+            hn = hostname;
+        return hn;
+    }
+
+//  ------------------------------------------------------------------------------------------------------------
+
 }
