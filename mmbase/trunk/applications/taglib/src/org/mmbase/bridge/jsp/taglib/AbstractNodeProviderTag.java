@@ -13,6 +13,7 @@ package org.mmbase.bridge.jsp.taglib;
 import javax.servlet.jsp.JspTagException;
 
 import org.mmbase.bridge.*;
+import org.mmbase.bridge.jsp.taglib.util.Attribute;
 
 /**
  * A base class for tags which provide a node. The
@@ -27,7 +28,7 @@ import org.mmbase.bridge.*;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.32 2005-01-30 16:46:35 nico Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.33 2005-03-02 23:06:48 michiel Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {
@@ -35,6 +36,17 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
     // this is especially useful for some extended classes (like 'relatednodes').
 
     protected  NodeProviderHelper nodeHelper = new NodeProviderHelper(this); // no m.i. and there are more nodeprovider which cannot extend this, they can use the same trick.
+
+
+    protected Attribute fieldEscaper;
+
+    /**
+     * @since MMBase-1.8
+     */
+    public void setFieldescape(String e) throws JspTagException {
+        fieldEscaper = getAttribute(e);
+    }
+
 
     public void setJspvar(String jv) {
         nodeHelper.setJspvar(jv);

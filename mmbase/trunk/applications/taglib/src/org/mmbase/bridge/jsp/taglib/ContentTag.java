@@ -11,6 +11,7 @@ package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 import java.util.*;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.33 2005-03-01 16:02:54 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.34 2005-03-02 23:06:48 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -44,6 +45,8 @@ public class ContentTag extends LocaleTag  {
     private static final CharTransformer COPY = new CopyCharTransformer();
 
     private static final long DEFAULT_EXPIRE_TIME = 60; // one minute
+
+    public static final String ESCAPER_KEY = "org.mmbase.bridge.jsp.taglib.ContentTag.ESCAPER";
 
     static final ContentTag DEFAULT = new ContentTag() {
             public CharTransformer getWriteEscaper() { return COPY; } 
@@ -287,7 +290,8 @@ public class ContentTag extends LocaleTag  {
      * @throws JspTagException if not transformer with given id was configured
      */
 
-    static CharTransformer getCharTransformer(String id) throws JspTagException {
+    public static CharTransformer getCharTransformer(String id) throws JspTagException {
+
         if (id.indexOf(',') > 0) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
             // Iterator ids = StringSplitter.split(id).iterator();
@@ -313,20 +317,34 @@ public class ContentTag extends LocaleTag  {
      */
 
     public CharTransformer getWriteEscaper() throws JspTagException {
-        if (! escaper.getString(this).equals("")) { 
-            return getCharTransformer(escaper.getString(this));
-        } 
-        String defaultEscaper = (String) defaultEscapers.get(getType());
-        if (defaultEscaper != null) {                
-            return getCharTransformer(defaultEscaper);
-        } else {
-            return COPY;
-        }
+        return (CharTransformer) pageContext.getAttribute(ESCAPER_KEY);
     }
+    private CharTransformer prevEscaper = null;
+
+    protected void setWriteEscaper() throws JspTagException {
+        prevEscaper = getWriteEscaper();
+        CharTransformer esc;
+        if (! escaper.getString(this).equals("")) { 
+            esc =  getCharTransformer(escaper.getString(this));
+        }  else {
+            String defaultEscaper = (String) defaultEscapers.get(getType());
+            if (defaultEscaper != null) {                
+                esc = getCharTransformer(defaultEscaper);
+            } else {
+                esc = COPY;
+            }
+        }
+        pageContext.setAttribute(ESCAPER_KEY, esc);
+    }
+    protected void unsetWriteEscaper() {
+        pageContext.setAttribute(ESCAPER_KEY, prevEscaper);
+    }
+
 
 
     public int doStartTag() throws JspTagException {
         super.doStartTag();
+        setWriteEscaper();
         String type = getType();
 
         if (! type.equals("")) {
@@ -375,6 +393,11 @@ public class ContentTag extends LocaleTag  {
         } else {
             return EVAL_BODY_BUFFERED;
         }
+    }
+
+    public int doEndTag() throws JspTagException {
+        unsetWriteEscaper();
+        return super.doEndTag();
     }
 
 

@@ -19,13 +19,15 @@ import java.util.Set;
 import javax.servlet.jsp.PageContext;
 
 import org.mmbase.bridge.jsp.taglib.ContextTag;
+import org.mmbase.bridge.jsp.taglib.ContentTag;
 import org.mmbase.util.Casting;
+import org.mmbase.util.transformers.CharTransformer;
 
 /**
  * This ContextContainer provides its own 'backing', it is used as 'subcontext' in other contextes.
  *
  * @author Michiel Meeuwissen
- * @version $Id: StandaloneContextContainer.java,v 1.5 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: StandaloneContextContainer.java,v 1.6 2005-03-02 23:06:49 michiel Exp $
  * @since MMBase-1.8
  **/
 
@@ -115,7 +117,7 @@ public class StandaloneContextContainer extends ContextContainer {
                 }
 
                 if (value != null) {
-                    pageContext.setAttribute((String) key, Casting.wrapToString(value), SCOPE);
+                    pageContext.setAttribute((String) key, Casting.wrap(value, (CharTransformer) pageContext.getAttribute(ContentTag.ESCAPER_KEY)), SCOPE);
                 } else {
                     pageContext.removeAttribute((String) key, SCOPE);
                 }
