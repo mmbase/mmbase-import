@@ -23,7 +23,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.5 2004-01-08 22:15:06 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.6 2004-02-02 20:52:33 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -230,7 +230,7 @@ public class ValueIntercepter {
                     }
                     Processor newProcessor = createProcessor(reader, setProcessorElement);
                     map.put(guiType, newProcessor);
-                    log.service("Defined for field type " + typeString + "/" + guiType + " setprocessor (" + setTypeString + ") " + newProcessor);
+                    log.service("Defined for field type " + typeString + "/" + guiType + " setprocessor(" + ("".equals(setTypeString) ? "ALL TYPES" : setTypeString) + ") " + newProcessor);
                 }
 
                 h = reader.getChildElements(specializationElement, "getprocessor");
@@ -256,7 +256,7 @@ public class ValueIntercepter {
                     }
                     Processor newProcessor = createProcessor(reader, getProcessorElement);
                     map.put(guiType, newProcessor);
-                    log.service("Defined for field type " + typeString + "/" + guiType + " getprocessor (" + getTypeString + ") " + newProcessor);
+                    log.service("Defined for field type " + typeString + "/" + guiType + " getprocessor(" + ("".equals(getTypeString) ? "ALL TYPES" : getTypeString)  + ") " + newProcessor);
                 }
             }
         }
