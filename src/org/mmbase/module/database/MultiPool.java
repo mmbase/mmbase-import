@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.20 2002-11-15 13:24:41 robmaris Exp $
+ * @version $Id: MultiPool.java,v 1.21 2002-12-19 10:31:35 rob Exp $
  */
 public class MultiPool {
     
@@ -62,7 +62,7 @@ public class MultiPool {
         this.url=url;
         this.name=name;
         this.password=password;
-        this.maxQuerys=maxQuerys;
+        this.maxQuerys=maxQueries;
         this.databasesupport=databasesupport;
         
         // put connections on the pool
@@ -93,7 +93,28 @@ public class MultiPool {
         
         synchronized (semaphore) {
             //lock semaphore, so during the checks, no connections can be acquired or put back
-            // (because the methods of semaphore are synchronized)
+            
+            //// (because the methods of semaphore are synchronized) 
+            //// commented out above commentline, because this is not true. 
+            //// The synchronized in java works on instnaces of a class.
+            //// The code
+            ////
+            ////   void synchronized myMethod() ( statement; )
+            ////
+            //// can be rewritten as
+            ////
+            ////   void myMethod(){
+            ////       synchronized(this) { statement; }
+            ////   }
+        	////
+            //// This way the instance is only locked when the method is executing. 
+            //// The statements before and after this are not synchronized. 
+            //// When an instnace is not in a synchronized block the instance is not locked 
+            //// and every thread can modify the instance.
+            //// Busypool is in this method not locked and can be modified in getFree and putBack.
+            //// if the busypool is iterated and modified at the same time a 
+            //// ConcurrentModificationException is thrown.
+
             
             int nowTime = (int) (System.currentTimeMillis() / 1000);
         
@@ -141,6 +162,7 @@ public class MultiPool {
                             con.realclose();
                         } catch(Exception re) {
                             log.error("Can't close a connection !!!");
+							log.error(re);
                         }
                     }
                 }
@@ -181,57 +203,64 @@ public class MultiPool {
      * get a free connection from the pool
      */
     public MultiConnection getFree() {
+    	MultiConnection con = null;
         try {
             totalConnections++;
-            semaphore.acquire();
-            MultiConnection con = (MultiConnection) pool.remove(0);
-            con.claim();
-            busyPool.add(con);
-            return con;
+            //see comment in method checkTime()
+        	synchronized (semaphore) {
+            	semaphore.acquire();
+            	con = (MultiConnection) pool.remove(0);
+            	con.claim();
+            	busyPool.add(con);
+        	}
         } catch (InterruptedException e) {
             log.error("GetFree was Interrupted");
-            return null;
         }
+    	return con;
     }
     
     /**
      * putback the used connection in the pool
      */
     public void putBack(MultiConnection con) {
+		//reset time connection is busy
         con.release();
         if (! busyPool.contains(con)) {
             log.warn("Put back connection was not in busyPool!!");
         }
+
+    	//see comment in method checkTime()
+    	synchronized (semaphore) {
+    		MultiConnection oldcon = con;
         
-        if (DORECONNECT && (con.getUsage() > maxQuerys)) {
-            MultiConnection oldcon = con;
-            if (log.isDebugEnabled()) {
-                log.debug("Re-Opening connection");
-            }
-            try {
-                oldcon.realclose();
-            } catch(Exception re) {
-                log.error("Can't close a connection !!!");
-            }
-            
-            try {
-                if (name.equals("url") && password.equals("url")) {
-                    Connection realcon = DriverManager.getConnection(url);
-                    initConnection(realcon);
-                    con = new MultiConnection(this,realcon);
-                } else {
-                    Connection realcon = DriverManager.getConnection(url,name,password);
-                    initConnection(realcon);
-                    con = new MultiConnection(this,realcon);
-                }
-            } catch(Exception re) {
-                log.error("Can't add connection to pool");
-            }
-            busyPool.remove(oldcon);
-        }
-        pool.add(con);
-        busyPool.remove(con);
-        semaphore.release();
+	        if (DORECONNECT && (con.getUsage() > maxQuerys)) {
+    	        if (log.isDebugEnabled()) {
+        	        log.debug("Re-Opening connection");
+            	}
+	            try {
+    	            oldcon.realclose();
+        	    } catch(Exception re) {
+            	    log.error("Can't close a connection !!!");
+            	}
+
+	            try {
+    	            if (name.equals("url") && password.equals("url")) {
+        	            Connection realcon = DriverManager.getConnection(url);
+            	        initConnection(realcon);
+                	    con = new MultiConnection(this,realcon);
+	                } else {
+    	                Connection realcon = DriverManager.getConnection(url,name,password);
+        	            initConnection(realcon);
+            	        con = new MultiConnection(this,realcon);
+                	}
+	            } catch(Exception re) {
+    	            log.error("Can't add connection to pool");
+        	    }
+	        }
+        	pool.add(con);
+   			busyPool.remove(oldcon);
+	        semaphore.release();
+    	}
     }
     
     /**
@@ -305,3 +334,4 @@ public class MultiPool {
         databasesupport.initConnection(conn);
     }
 }
+
