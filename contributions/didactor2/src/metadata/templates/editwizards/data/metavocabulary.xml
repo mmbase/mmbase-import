@@ -3,23 +3,10 @@
 <wizard-schema id="empty">
   <title>Metadata Editor</title>
   <action type="load">
-    <!--<relation destinationtype="metadata" role="related">
-      <object type="metadata">
-        <relation destinationtype="metalangstring" role="posrel">
-          <object type="metalangstring"/>
-        </relation>
-      </object>
-    </relation>-->
   </action>
   
   <action type="create">
-    <!--<relation destinationtype="metadata" role="related">-->
-      <object type="metadata">
-        <!--<relation destinationtype="metavocabulary" role="posrel">
-          <object type="metavocabulary"/>
-        </relation>-->
-      </object>
-<!--    </relation>-->
+    <object type="metadata"/>
   </action>
 
   <steps>
@@ -28,8 +15,6 @@
 
   <form-schema id="step1">
     <title>Metadata Invoeren</title>
-
-    <!--<list extends="list/metadefinition-inmetavalues.xml"/>-->
 
     <list destination="metavocabulary" role="posrel" minoccurs="0" maxoccurs="*">
       <title>Bijbehorende Metavocabulary</title>
@@ -40,19 +25,13 @@
       </item>
 
     <action type="add">
-        <relation destinationtype="metavocabulary" role="posrel">
-            <object type="metavocabulary"></object>
-        </relation>
+      <relation destinationtype="metavocabulary" role="posrel">
+        <object type="metavocabulary"></object>
+      </relation>
     </action>
 
     <action type="load">
-        <!--<relation destinationtype="metadata" role="related">
-            <object type="metadata">-->
-              <relation destinationtype="metavocabulary" role="posrel">
-                <!--<object type="metavocabulary"/>-->
-              </relation>
-           <!-- </object>
-        </relation>-->
+      <relation destinationtype="metavocabulary" role="posrel"/>
     </action>
 
     <command name="search" nodepath="metavocabulary" fields="value" age="7" orderby="number" directions="down" >

@@ -3,23 +3,17 @@
 <wizard-schema id="empty">
   <title>Metadata Editor</title>
   <action type="load">
-    <!--<relation destinationtype="metadata" role="related">
-      <object type="metadata">-->
-        <relation destinationtype="metalangstring" role="posrel">
-          <object type="metalangstring"/>
-        </relation>
-      <!--</object>
-    </relation>-->
+    <relation destinationtype="metalangstring" role="posrel">
+      <object type="metalangstring"/>
+    </relation>
   </action>
   
   <action type="create">
-    <!--<relation destinationtype="metadata" role="related">-->
-      <object type="metadata">
-        <relation destinationtype="metalangstring" role="posrel">
-          <object type="metalangstring"/>
-        </relation>
-      </object>
-<!--    </relation>-->
+    <object type="metadata">
+      <relation destinationtype="metalangstring" role="posrel">
+        <object type="metalangstring"/>
+      </relation>
+    </object>
   </action>
 
   <steps>
@@ -32,7 +26,6 @@
     <list extends="list/metadefinition-inmetavalues.xml"/>
 
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/field[@name='value']" ftype="line">
-<!--    <field name="value" ftype="line">-->
       <prompt>Waarde</prompt>
     </field>
     <field fdatapath="relation[@role='posrel']/object[@type='metalangstring']/field[@name='language']" ftype="line">
