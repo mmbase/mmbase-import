@@ -288,5 +288,4 @@
 </mm:listcontainer>
 </table>
 
-<%@include file="../whoami.jsp" %>
 </form>

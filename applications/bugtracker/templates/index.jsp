@@ -17,6 +17,7 @@
     <%@include file="login.jsp" %>
 
     <mm:include debug="html" page="$btemplate" />      
+    <%@include file="whoami.jsp"%>
 
   </body>
 </html>
