@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<insrel exportsource="mmbase://127.0.0.1/test_db/mm" timestamp="20020516170725">
+<insrel exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170725">
 	<node number="8530" owner="admin" snumber="8498" dnumber="8508" rtype="related" dir="bidirectional">
 	</node>
 

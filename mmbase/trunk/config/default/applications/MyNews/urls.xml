@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<urls exportsource="mmbase://127.0.0.1/test_db/mm" timestamp="20020516170724">
+<urls exportsource="mmbase://www.mmbase.org/mmexamples/mynews" timestamp="20020516170724">
 	<node number="8516" owner="system">
 		<name></name>
 		<url>http://www.mmbase.org/download</url>
