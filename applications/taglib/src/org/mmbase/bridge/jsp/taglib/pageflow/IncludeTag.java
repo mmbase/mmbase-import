@@ -16,15 +16,12 @@ import java.net.HttpURLConnection;
 import java.io.*;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.ServletOutputStream;
+import javax.servlet.http.*;
+import javax.servlet.*;
 
 import java.util.*;
 
+import org.mmbase.util.*;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -33,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.44 2004-02-06 12:18:38 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.45 2004-03-19 23:06:26 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -165,11 +162,6 @@ public class IncludeTag extends UrlTag {
             log.debug("Internal: found url: >" + relativeUrl + "<");
             String targetEncoding   = resp.getCharacterEncoding();
             log.debug("encoding: " + targetEncoding);
-        }
-
-        ResponseWrapper response = new ResponseWrapper(resp);
-
-        if (log.isDebugEnabled()) {
             log.debug("req Parameters");
             Map params = req.getParameterMap();
             Iterator i = params.entrySet().iterator();
@@ -177,30 +169,40 @@ public class IncludeTag extends UrlTag {
             while (i.hasNext()) {
                 Map.Entry e = (Map.Entry) i.next();
                 o = e.getValue();
-                if (log.isDebugEnabled()) {
-                    if (o instanceof String[]) {
-                        log.debug("key '" + e.getKey() + "' value '" + Arrays.asList((String[]) o) + "'");
-                    } else {
-                        log.debug("key '" + e.getKey() + "' value '" + o.toString() + "'");
-                    }
-                }
+                if (o instanceof String[]) {
+                    log.debug("key '" + e.getKey() + "' value '" + Arrays.asList((String[]) o) + "'");
+                } else {
+                    log.debug("key '" + e.getKey() + "' value '" + o.toString() + "'");
+                }                
             }
         }
 
-        HttpServletRequestWrapper request   = new HttpServletRequestWrapper(req);
+        HttpServletRequestWrapper requestWrapper   = new HttpServletRequestWrapper(req);
 
 
         try {
-            javax.servlet.ServletContext sc = pageContext.getServletContext();
+            ServletContext sc = pageContext.getServletContext();
             if (sc == null) log.error("Cannot retrieve ServletContext from PageContext");
-            javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher(relativeUrl);
-            if (rd == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
-            rd.include(request, response);
+            RequestDispatcher requestDispatcher = sc.getRequestDispatcher(relativeUrl);
+            if (requestDispatcher == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
 
+
+            String page;
+            GenericResponseWrapper responseWrapper = new GenericResponseWrapper(resp);
+
+
+            requestDispatcher.include(requestWrapper, responseWrapper);                
             // bodyContent.write(response.toString());
-            helper.setValue(debugStart(relativeUrl) + response.toString() + debugEnd(relativeUrl));
+            page = responseWrapper.toString();
+
+
+            helper.setValue(debugStart(relativeUrl) + page + debugEnd(relativeUrl));                
+            //log.info("page : " + page);
+            // helper.setValue(page);
+
+
         } catch (Exception e) {
-            log.debug(Logging.stackTrace(e));
+            log.error(Logging.stackTrace(e));
             throw new TaglibException(e);
         }
 
@@ -436,7 +438,7 @@ public class IncludeTag extends UrlTag {
         switch(getDebug()) {
         case DEBUG_NONE: return "";
         case DEBUG_HTML: return "\n<!-- " + getThisName() + " page = '" + url + "' -->\n";
-         case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
+        case DEBUG_CSS:  return "\n/* " + getThisName() +  " page  = '" + url + "' */\n";
         default: return "";
         }
     }
@@ -451,122 +453,5 @@ public class IncludeTag extends UrlTag {
         case DEBUG_CSS:  return "\n/* END " + getThisName() + " page = '" + url + "' */\n";
         default: return "";
         }
-    }
-}
-
-/**
- * Wrapper around the response. It collects all data that is sent to it, and
- * makes it available through a toString() method.
- */
-class ResponseWrapper extends HttpServletResponseWrapper {
-
-    private static String DEFAULT_CHARSET = "utf-8";
-    private static String DEFAULT_CONTENTTYPE = "text/html;charset=" + DEFAULT_CHARSET;
-    private static final Logger log = Logging.getLoggerInstance(IncludeTag.class.getName());
-
-    private CharArrayWriter caw;
-    private PrintWriter writer;
-    private MyServletOutputStream msos;
-    private String contentType = DEFAULT_CONTENTTYPE;
-    private String characterEncoding = DEFAULT_CHARSET;
-
-    /**
-     * Public constructor
-     */
-    public ResponseWrapper(HttpServletResponse resp) {
-        super(resp);
-        caw =    new CharArrayWriter();
-        writer = new PrintWriter(caw);
-        msos =   new MyServletOutputStream(writer);
-    }
-
-    /**
-     * Return the OutputStream. This is a 'MyServletOutputStream' that
-     * wraps around the PrintWriter
-     */
-    public ServletOutputStream getOutputStream() throws IOException {
-        return msos;
-    }
-
-    /**
-     * Return the PrintWriter
-     */
-    public PrintWriter getWriter() throws IOException {
-        return writer;
-    }
-
-    /**
-     * Return all data that has been written to the PrintWriter.
-     */
-    public String toString() {
-        writer.flush();
-        return caw.toString();
-    }
-
-    /**
-     * Sets the content type of the response being sent to the
-     * client. The content type may include the type of character
-     * encoding used, for example, text/html; charset=ISO-8859-4.  If
-     * obtaining a PrintWriter, this method should be called first.
-     */
-    public void setContentType(String ct) {
-        if (ct == null) {
-            contentType = DEFAULT_CONTENTTYPE;
-        } else {
-            contentType = ct;
-        }
-        int i = contentType.indexOf("charset=");
-        if (i >= 0) {
-            characterEncoding = contentType.substring(i + 8);
-        } else {
-            characterEncoding = DEFAULT_CHARSET;
-        }
-        if (log.isDebugEnabled()) {
-            log.debug("set contenttype of include page to: '" +  contentType + "' (and character encoding to '" + characterEncoding +  "')");
-        }
-    }
-
-    /**
-     * Returns the name of the charset used for the MIME body sent in this response.
-     * If no charset has been assigned, it is implicitly set to ISO-8859-1 (Latin-1).
-     * See RFC 2047 (http://www.ietf.org/rfc/rfc2045.txt) for more information about character encoding and MIME.
-     * returns the encoding
-     */
-    public String getCharacterEncoding() {
-        log.debug(characterEncoding);
-        return characterEncoding;
-    }
-}
-
-/**
- * Wrapper around a HttpServletRequest.
- */
-class RequestWrapper extends HttpServletRequestWrapper {
-    /**
-     * Public constructor
-     */
-    public RequestWrapper(HttpServletRequest req) {
-        super(req);
-    }
-}
-
-/**
- * Wrapper around a PrintWriter, that can cast to a ServletOutputStream
- */
-class MyServletOutputStream extends ServletOutputStream {
-    private PrintWriter printer;
-
-    /**
-     * Public constructor
-     */
-    public MyServletOutputStream(PrintWriter w) {
-        printer = w;
-    }
-
-    /**
-     * Write a character to the PrintWriter
-     */
-    public void write(int i) {
-        printer.write(i);
     }
 }
