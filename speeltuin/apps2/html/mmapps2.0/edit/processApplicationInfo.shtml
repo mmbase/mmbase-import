@@ -1,7 +1,0 @@
-<PROCESSOR MMADMIN>
-$MOD-MMADMIN-CREATEAPPLICATION-1^
-<IF $PARAM1=E>
-<GOTO editComponents.jsp?appname=$SESSION-name^>
-<ELSE>
-<GOTO editComponents.jsp?appname=$PARAM1>
-</IF>
