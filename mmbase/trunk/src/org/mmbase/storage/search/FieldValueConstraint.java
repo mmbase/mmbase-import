@@ -15,7 +15,7 @@ package org.mmbase.storage.search;
  * This corresponds with comparison operators <, =, > and LIKE in SQL SELECT-syntax.
  *
  * @author Rob van Maris
- * @version $Id: FieldValueConstraint.java,v 1.3 2003-03-10 11:50:47 pierre Exp $
+ * @version $Id: FieldValueConstraint.java,v 1.4 2003-11-26 14:11:57 robmaris Exp $
  * @since MMBase-1.7
  */
 public interface FieldValueConstraint extends FieldCompareConstraint {
@@ -45,7 +45,9 @@ public interface FieldValueConstraint extends FieldCompareConstraint {
      * <li><em>&lt;inverse&gt;</em>is the value returned by
      *      {@link #isInverse isInverse()}
      * <li><em>&lt;field&gt;</em> is the field alias returned by 
-     *     <code>FieldConstraint#getField().getAlias()</code>
+     *     <code>FieldConstraint#getField().getAlias()</code>, or
+     *     <code>FieldConstraint#getField().getFieldName()</code>
+     *      when the former is <code>null</code>.
      * <li><em>&lt;casesensitive&gt;</em> is the value returned by
      *     {@link FieldConstraint#isCaseSensitive isCaseSensitive()}
      * <li><em>&lt;operator&gt;</em> is the value returned by
