@@ -7,6 +7,12 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 */
+
+/*
+	$Id: Forums.java,v 1.2 2000-02-24 13:44:23 wwwtech Exp $
+
+	$Log: not supported by cvs2svn $
+*/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -19,9 +25,13 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version 8 Dec 1999
+ * @version $Id: Forums.java,v 1.2 2000-02-24 13:44:23 wwwtech Exp $
  */
 public class Forums extends MMObjectBuilder {
+
+	private String classname = getClass().getName();
+	private boolean debug = true;
+	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	/*
 	public Forums(MMBase m) {
@@ -46,11 +56,11 @@ public class Forums extends MMObjectBuilder {
 			Statement stmt=con.createStatement();
 			stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t (title varchar(255) not null"
 				+", intro char(2048) not null) under "+mmb.baseName+"_object_t");
-			System.out.println("Created "+tableName);
+			debug("create(): Created "+tableName);
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create type "+tableName);
+			debug("create(): ERROR: can't create type "+tableName);
 			e.printStackTrace();
 		}
 		try {
@@ -61,7 +71,7 @@ public class Forums extends MMObjectBuilder {
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
+			debug("create(): can't create table "+tableName);
 			e.printStackTrace();
 		}
 		return(false);
@@ -99,81 +109,32 @@ public class Forums extends MMObjectBuilder {
 		Vector results=new Vector();
 		if (tok.hasMoreTokens()) {
 			String cmd=tok.nextToken();
-			System.out.println("FORUMS->"+cmd);
+			debug("getList("+sp.req.getRequestURI()+"): FORUMS->"+cmd);
+
 			if (cmd.equals("ACTIVEOPINIONS")) {
-				results=getActiveOpinions(tagger);
-			} else if (cmd.equals("ACTIVEARGUMENTS")) {
-				results=getActiveArguments(tagger);
+				results=getAttachedOpinions("actopi",tagger);
 			} else if (cmd.equals("PROPOSEDOPINIONS")) {
-				results=getProposedOpinions(tagger);
-			} else if (cmd.equals("PROPOSEDARGUMENTS")) {
-				results=getProposedArguments(tagger);
+				results=getAttachedOpinions("proopi",tagger);
+			} else if (cmd.equals("ACCEPTEDOPINIONS")) {
+				results=getAttachedOpinions("accopi",tagger);
+			} else if (cmd.equals("REJECTEDOPINIONS")) {
+				results=getAttachedOpinions("rejopi",tagger);
+
+			} else if (cmd.equals("ACTIVEARGUMENTS")) {
+				results=getAttachedArguments("actarg",tagger);
+			} else if (cmd.equals("PROPOPSEDARGUMENTS")) {
+				results=getAttachedArguments("proarg",tagger);
+			} else if (cmd.equals("ACCEPTEDARGUMENTS")) {
+				results=getAttachedArguments("accarg",tagger);
+			} else if (cmd.equals("REJECTEDARGUMENTS")) {
+				results=getAttachedArguments("rejarg",tagger);
+
 			} else if (cmd.equals("OPINION")) {
 				results=getOpinion(tagger);
 //			} else if (cmd.equals("ARGUMENT")) {
 //				results=getArgument(tagger);
 			}
-			System.out.println("FORUMS->"+cmd+" done");
-		}
-		return(results);
-	}
-
-	public Vector getActiveOpinions(StringTagger tagger) {
-		Vector results=new Vector();
-		String forum=tagger.Value("FORUM");
-		MMObjectNode forumnode=getNode(forum);
-
-		if (forumnode!=null) {
-			boolean pollinfo;
-			String pi=tagger.Value("POLL");
-			if (pi!=null && (pi.equals("YES") || pi.equals("\"YES\""))) pollinfo=true;
-			else pollinfo=false;
-			
-			Enumeration tk=mmb.getInsRel().getRelated(forumnode.getIntValue("number"),1938425); // find the active opinion container
-			if (tk.hasMoreElements()) {
-				MMObjectNode actopinode=(MMObjectNode)tk.nextElement();
-				Enumeration r=mmb.getInsRel().getRelated(actopinode.getIntValue("number"),1946004); // find the conarguments in this container
-				while (r.hasMoreElements()) {
-					MMObjectNode conopinode=(MMObjectNode)r.nextElement();
-					results.addElement(""+conopinode.getIntValue("number"));
-					results.addElement(""+conopinode.getIntValue("id"));
-					MMObjectNode opinode=getNode(conopinode.getIntValue("id"));
-					if (opinode!=null) {
-						String tmp=opinode.getStringValue("title");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-						tmp=opinode.getStringValue("body");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-
-					// add the attached poll (question/posrel/answer)
-					if (pollinfo) {
-						results=getPollInfo2(conopinode,results);	
-					} else {
-						results=getPollInfo(conopinode,results);	
-					}
-					Enumeration y=mmb.getInsRel().getRelated(opinode.getIntValue("number"),"people"); // find the user this statement belongs to
-					if (y.hasMoreElements()) {
-						MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
-						results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
-						results.addElement(""+peoplenode.getIntValue("number"));	
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-				}
-				
-			}
+			System.out.println("getList("+sp.req.getRequestURI()+"): "+cmd+" done");
 		}
 		return(results);
 	}
@@ -232,90 +193,80 @@ public class Forums extends MMObjectBuilder {
 		return(results);
 	}
 
-	public Vector getProposedOpinions(StringTagger tagger) {
+	public Vector getArgument(StringTagger tagger) {
 		Vector results=new Vector();
-		String forum=tagger.Value("FORUM");
-		MMObjectNode forumnode=getNode(forum);
-		if (forumnode!=null) {
+		String conarg=tagger.Value("CONARG");
+		MMObjectNode conargnode=getNode(conarg);
+
+		// conarg.number,conarg.id,arg.title,arg.body,X,people.name,people.number
+		// Poll=NO X= "" , question.number ITEMS=8
+		// Poll=YES X= question.number, 1, yes% , 2 no%, 0 , maybe% ITEMS=13
+		if (conargnode!=null) {
 			boolean pollinfo;
 			String pi=tagger.Value("POLL");
 			if (pi!=null && (pi.equals("YES") || pi.equals("\"YES\""))) pollinfo=true;
 			else pollinfo=false;
-			Enumeration tk=mmb.getInsRel().getRelated(forumnode.getIntValue("number"),1938427); // find the proposed opinion container
-			if (tk.hasMoreElements()) {
-				MMObjectNode proopinode=(MMObjectNode)tk.nextElement();
-				Enumeration r=mmb.getInsRel().getRelated(proopinode.getIntValue("number"),1946004); // find the conarguments in this container
-				while (r.hasMoreElements()) {
-					MMObjectNode conopinode=(MMObjectNode)r.nextElement();
-					results.addElement(""+conopinode.getIntValue("number"));
-					results.addElement(""+conopinode.getIntValue("id"));
-					MMObjectNode opinode=getNode(conopinode.getIntValue("id"));
-					if (opinode!=null) {
-						String tmp=opinode.getStringValue("title");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-						tmp=opinode.getStringValue("body");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-
-					// add the attached poll (question/posrel/answer)
-					if (pollinfo) {
-						results=getPollInfo2(conopinode,results);	
-					} else {
-						results=getPollInfo(conopinode,results);	
-					}
-					Enumeration y=mmb.getInsRel().getRelated(opinode.getIntValue("number"),"people"); // find the user this statement belongs to
-					if (y.hasMoreElements()) {
-						MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
-						results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
-						results.addElement(""+peoplenode.getIntValue("number"));	
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
+			
+			results.addElement(""+conargnode.getIntValue("number"));
+			results.addElement(""+conargnode.getIntValue("id"));
+			MMObjectNode argnode=getNode(conargnode.getIntValue("id"));
+			if (argnode!=null) {
+				String tmp=argnode.getStringValue("title");
+				if (tmp!=null) {
+					results.addElement(tmp);
+				} else {
+					results.addElement("");
 				}
-				
+				tmp=argnode.getStringValue("body");
+				if (tmp!=null) {
+					results.addElement(tmp);
+				} else {
+					results.addElement("");
+				}
+			} else {
+				results.addElement("");
+				results.addElement("");
+			}
+
+			// add the attached poll (question/posrel/answer)
+			if (pollinfo) {
+				results=getPollInfo2(conargnode,results);	
+			} else {
+				results=getPollInfo(conargnode,results);	
+			}
+			Enumeration y=mmb.getInsRel().getRelated(argnode.getIntValue("number"),"people"); // find the user this statement belongs to
+			if (y.hasMoreElements()) {
+				MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
+				results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
+				results.addElement(""+peoplenode.getIntValue("number"));	
+			} else {
+				results.addElement("");
+				results.addElement("");
 			}
 		}
 		return(results);
 	}
 
-	public Vector getPollInfo(MMObjectNode conopinode, Vector results) {
-		Enumeration r=mmb.getInsRel().getRelated(conopinode.getIntValue("number"),68254); // find the question attached to this conopi
+
+	public Vector getPollInfo(MMObjectNode anode, Vector results) {
+		Enumeration r=mmb.getInsRel().getRelated(anode.getIntValue("number"),"questions"); // find the question attached 
 		if (r.hasMoreElements()) {
 			MMObjectNode questionnode=(MMObjectNode)r.nextElement();
-/*
-			Enumeration t=questionnode.getRelations(621); // find the relation to the answer (621)
-			while (t.hasMoreElements()) {
-				MMObjectNode posrelnode=(MMObjectNode)t.nextElement();
-				posrelnode=getNode(posrelnode.getIntValue("number"));
-				System.out.println("Forums-> posrel = "+posrelnode+" "+posrelnode.getIntValue("pos"));
-			}
-*/
 			results.addElement("");
 			results.addElement(""+questionnode.getIntValue("number"));
 		} else {
+			System.out.println("Forums -> No poll for "+anode);
 			results.addElement("");
 			results.addElement("");
 		}
 		return(results);
 	}
 
-	public Vector getPollInfo2(MMObjectNode conopinode, Vector results) {
+	public Vector getPollInfo2(MMObjectNode anode, Vector results) {
 		MMObjectNode node,yesnode=null,nonode=null,maynode=null;
 		String atitle;
 		Vector tables=new Vector();
-		tables.addElement("conopi");
+		tables.addElement(anode.getName());
 		tables.addElement("questions");
 		tables.addElement("posrel");
 		tables.addElement("answers");
@@ -327,10 +278,10 @@ public class Forums extends MMObjectBuilder {
 		Vector ordervec=new Vector();
 		Vector dirvec=new Vector();
 		MultiRelations multirelations=(MultiRelations)mmb.getMMObject("multirelations");		
-		Vector vec=multirelations.searchMultiLevelVector(conopinode.getIntValue("number"),fields,"YES",tables,"",ordervec,dirvec);
+		Vector vec=multirelations.searchMultiLevelVector(anode.getIntValue("number"),fields,"YES",tables,"",ordervec,dirvec);
 
 		if (vec.size()>0) {
-			if (vec.size()!=3) System.out.println("Forums -> More then 3 answers ? "+vec);
+			if (vec.size()!=3) debug("getPollInfo2(): Forums -> More then 3 answers ? "+vec);
 			for (Enumeration e=vec.elements();e.hasMoreElements();) {
 				node=(MMObjectNode)e.nextElement();
 				atitle=node.getStringValue("answers.title");
@@ -342,7 +293,7 @@ public class Forums extends MMObjectBuilder {
 				} else if (atitle.startsWith("Nog")) {
 					maynode=node;
 				} else {
-					System.out.println("Jerry -> Unknown title "+atitle+" ("+node+") ");
+					debug("getPollInfo2(): Jerry -> Unknown title "+atitle+" ("+node+") ");
 				}
 			}
 			calcPercentages(yesnode,nonode,maynode);
@@ -388,122 +339,10 @@ public class Forums extends MMObjectBuilder {
 			npercent=(100.0*n)/sum;
 			mpercent=(100.0*m)/sum;
 		}
-		System.out.println("Forums -> calcPercentage "+ypercent+" , "+npercent+" , "+mpercent+" totalvotes "+sum);
+		debug("calcPercentages(): Forums -> calcPercentage "+ypercent+" , "+npercent+" , "+mpercent+" totalvotes "+sum);
 		yesnode.setValue("posrel.percentage",""+(int)(ypercent+0.5));
 		nonode.setValue("posrel.percentage",""+(int)(npercent+0.5));
 		maynode.setValue("posrel.percentage",""+(int)(mpercent+0.5));
-	}
-
-	public Vector getActiveArguments(StringTagger tagger) {
-		MMObjectNode argnode=null;
-		Vector results=new Vector();
-		String conopi=tagger.Value("CONOPI");
-		MMObjectNode conopinode=getNode(conopi);
-		if (conopinode!=null) {
-			Enumeration tk=mmb.getInsRel().getRelated(conopinode.getIntValue("number"),1938424);
-			if (tk.hasMoreElements()) {
-				MMObjectNode actargnode=(MMObjectNode)tk.nextElement();
-				Enumeration r=mmb.getInsRel().getRelated(actargnode.getIntValue("number"),1946005);
-				while (r.hasMoreElements()) {
-					MMObjectNode conargnode=(MMObjectNode)r.nextElement();
-					results.addElement(""+conargnode.getIntValue("number"));
-					results.addElement(""+conargnode.getIntValue("id"));
-					argnode=getNode(conargnode.getIntValue("id"));
-					if (argnode!=null) {
-						String tmp=argnode.getStringValue("title");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-						tmp=argnode.getStringValue("body");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-					results=getArgumentPollInfo(conargnode,results);
-					Enumeration y=mmb.getInsRel().getRelated(argnode.getIntValue("number"),"people"); // find the user this statement belongs to
-					if (y.hasMoreElements()) {
-						MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
-						results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
-						results.addElement(""+peoplenode.getIntValue("number"));	
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-				}
-			}
-		}
-		return(results);
-	}
-
-	public Vector getProposedArguments(StringTagger tagger) {
-		MMObjectNode argnode=null;
-		Vector results=new Vector();
-		String conopi=tagger.Value("CONOPI");
-		MMObjectNode conopinode=getNode(conopi);
-		if (conopinode!=null) {
-			Enumeration tk=mmb.getInsRel().getRelated(conopinode.getIntValue("number"),1938427); // related proposed arguments
-			if (tk.hasMoreElements()) {
-				MMObjectNode proargnode=(MMObjectNode)tk.nextElement();
-				Enumeration r=mmb.getInsRel().getRelated(proargnode.getIntValue("number"),1946004); // related argument containers 
-				while (r.hasMoreElements()) {
-					MMObjectNode conargnode=(MMObjectNode)r.nextElement();
-					results.addElement(""+conargnode.getIntValue("number"));
-					results.addElement(""+conargnode.getIntValue("id"));
-					argnode=getNode(conargnode.getIntValue("id"));
-					if (argnode!=null) {
-						String tmp=argnode.getStringValue("title");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-						tmp=argnode.getStringValue("body");
-						if (tmp!=null) {
-							results.addElement(tmp);
-						} else {
-							results.addElement("");
-						}
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-					results=getArgumentPollInfo(conargnode,results);
-					Enumeration y=mmb.getInsRel().getRelated(argnode.getIntValue("number"),"people"); // find the user this statement belongs to
-					if (y.hasMoreElements()) {
-						MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
-						results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
-						results.addElement(""+peoplenode.getIntValue("number"));	
-					} else {
-						results.addElement("");
-						results.addElement("");
-					}
-				}
-			}
-		}
-		return(results);
-	}
-
-	public Vector getArgumentPollInfo(MMObjectNode conargnode, Vector results) {
-		Enumeration t=conargnode.getRelations(951212); // find the relation to the answer (951212)
-		if (t.hasMoreElements()) {
-			MMObjectNode posrelnode=null;
-			while (t.hasMoreElements()) {
-				posrelnode=(MMObjectNode)t.nextElement();
-				posrelnode=getNode(posrelnode.getIntValue("number"));
-				System.out.println("Forums-> posrel = "+posrelnode+" "+posrelnode.getIntValue("contexttype"));
-			}
-			results.addElement(""+posrelnode.getIntValue("contexttype"));
-		} else {
-			results.addElement("");
-		}
-		return(results);
 	}
 
 	String getObjectField(scanpage sp, StringTokenizer tok) {
@@ -590,45 +429,255 @@ public class Forums extends MMObjectBuilder {
 								rnode.commit();
 
 							} else {
-								System.out.println("Forums -> BitRotter strikes again!!! "+conopi);
+								debug("migrateOpinion(): BitRotter strikes again!!! "+conopi);
 							}
-							// Clone conopi and attach to actopi
-							e1=mmb.getInsRel().getRelated(forum,"actopi");
-							if (e1.hasMoreElements()) {
-								actnode=(MMObjectNode)e1.nextElement();
-								newcon=mmb.getMMObject("conopi").getNewNode("Forums");
-								newcon.setValue("id",connode.getIntValue("id"));
-								int r=newcon.insert("Forums");
-								if (r>=0) {
-									rnode=mmb.getInsRel().getNewNode("Forums");
-									rnode.setValue("rnumber",14);
-									rnode.setValue("snumber",r);
-									rnode.setValue("dnumber",actnode.getIntValue("number"));
-									r=rnode.insert("Forums");
-									if (r<0) {
-										System.out.println("Forums -> can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
+							if (accept) {
+								// Clone conopi and attach to actopi
+								e1=mmb.getInsRel().getRelated(forum,"actopi");
+								if (e1.hasMoreElements()) {
+									actnode=(MMObjectNode)e1.nextElement();
+									newcon=mmb.getMMObject("conopi").getNewNode("Forums");
+									newcon.setValue("id",connode.getIntValue("id"));
+									int r=newcon.insert("Forums");
+									if (r>=0) {
+										rnode=mmb.getInsRel().getNewNode("Forums");
+										rnode.setValue("rnumber",14);
+										rnode.setValue("snumber",r);
+										rnode.setValue("dnumber",actnode.getIntValue("number"));
+										r=rnode.insert("Forums");
+										if (r<0) {
+											debug("migrateOpinion(): can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
+										}
+									} else {
+										System.out.println("migrateOpinion(): can't insert new conopi"+forum+","+conopi);
 									}
 								} else {
-									System.out.println("Forums -> can't insert new conopi"+forum+","+conopi);
+								
+									System.out.println("migrateOpinion(): forum has no relation to actopi "+forum);
 								}
 							} else {
-							
-								System.out.println("Forums -> forum has no relation to actopi "+forum);
+								System.out.println("migrateOpinion(): opinion not put in actopi (rejected opinion) "+go_opi);
+
 							}
 						} else {
-							System.out.println("Forums -> conopi has no relation to proopi "+conopi);
+							System.out.println("migrateOpinion(): conopi has no relation to proopi "+conopi);
 						}
 					} else {
-						System.out.println("Forums -> conopi has no relations ? "+conopi);
+						System.out.println("migrateOpinion(): conopi has no relations ? "+conopi);
 					}
 				}
 			} else {
-				System.out.println("Forums -> No accopi/rejopi to migrate to "+forumnode);
+				System.out.println("migrateOpinion(): No accopi/rejopi to migrate to "+forumnode);
 			}
 
 		} else {
-			System.out.println("Forums -> Can't promote conopi not attached to proopi : "+conopi);
+			System.out.println("migrateOpinion(): Can't promote conopi not attached to proopi : "+conopi);
 		}
+	}
 
+	private void migrateArgument(int conopi,int conarg,boolean accept) {
+		MMObjectNode connode=getNode(conopi);
+		MMObjectNode rnode,proarg,go_arg=null,conargnode,newcon,actnode;
+		Enumeration tk,e1;
+		int pronumber;
+		int found=0;
+
+		// Get proposed opininon container
+		tk=mmb.getInsRel().getRelated(conopi,"proarg");
+		if (tk.hasMoreElements()) {
+			proarg=(MMObjectNode)tk.nextElement();
+			pronumber=proarg.getIntValue("number");
+			// Select correct container to move to.
+			if (accept) {
+				e1=mmb.getInsRel().getRelated(conopi,"accarg");
+			} else {
+				e1=mmb.getInsRel().getRelated(conopi,"rejarg");
+			}
+			// Find container
+			if (e1.hasMoreElements()) {
+				go_arg=(MMObjectNode)e1.nextElement();
+				conargnode=getNode(conarg);
+				if (conargnode!=null) {
+					// Get relations of conarg
+					Enumeration rels=conargnode.getRelations("contextrel");
+					if (rels.hasMoreElements()) {
+						// Find the one to the proposed argument container
+						rnode=null;
+						while(rels.hasMoreElements() && found==0) {
+							rnode=(MMObjectNode)rels.nextElement();
+							if (rnode.getIntValue("snumber")==pronumber) found=1;
+							if (rnode.getIntValue("dnumber")==pronumber) found=2;
+						}
+						// Move the relation to the go container (rejarg/accarg)
+						if (found!=0) {
+							if (found==1) {
+								rnode.setValue("snumber",go_arg.getIntValue("number"));
+								rnode.commit();
+							} else if (found==2) {
+								rnode.setValue("dnumber",go_arg.getIntValue("number"));
+								rnode.commit();
+
+							} else {
+								debug("migrateArgument(): BitRotter strikes again!!! "+conopi);
+							}
+							if (accept) {
+								// Clone conarg and attach to actarg
+								e1=mmb.getInsRel().getRelated(conopi,"actarg");
+								if (e1.hasMoreElements()) {
+									actnode=(MMObjectNode)e1.nextElement();
+									newcon=mmb.getMMObject("conarg").getNewNode("Forums");
+									newcon.setValue("id",conargnode.getIntValue("id"));
+									int r=newcon.insert("Forums");
+									if (r>=0) {
+										rnode=mmb.getMMObject("contextrel").getNewNode("Forums");
+										rnode.setValue("snumber",r);
+										rnode.setValue("dnumber",actnode.getIntValue("number"));
+										rnode.setValue("contexttype",rnode.getIntValue("contexttype"));
+										r=rnode.insert("Forums");
+										if (r<0) {
+											debug("migrateArgument(): can't create relations between "+newcon.getIntValue("number")+" AND "+actnode.getIntValue("number"));
+										}
+									} else {
+										System.out.println("migrateArgument(): can't insert new conarg"+conopi+","+conarg);
+									}
+								} else {
+								
+									System.out.println("migrateArgument(): conopi has no relation to actarg "+conopi);
+								}
+							} else {
+								System.out.println("migrateArgument(): argument not put in actarg (rejected argument) "+go_arg);
+
+							}
+						} else {
+							System.out.println("migrateArgument(): conopi has no relation to proarg "+conopi);
+						}
+					} else {
+						System.out.println("migrateArgument(): conopi has no relations ? "+conopi);
+					}
+				}
+			} else {
+				System.out.println("migrateArgument(): No accarg/rejarg to migrate to "+connode);
+			}
+
+		} else {
+			System.out.println("migrateArgument(): Can't promote conarg not attached to proarg : "+conarg);
+		}
+	}
+
+	public Vector getAttachedOpinions(String connector,StringTagger tagger) {
+		Vector results=new Vector();
+		String forum=tagger.Value("FORUM");
+		MMObjectNode forumnode=getNode(forum);
+
+		if (forumnode!=null) {
+			boolean pollinfo;
+			String pi=tagger.Value("POLL");
+			if (pi!=null && (pi.equals("YES") || pi.equals("\"YES\""))) pollinfo=true;
+			else pollinfo=false;
+			
+			Enumeration tk=mmb.getInsRel().getRelated(forumnode.getIntValue("number"),connector); // find the active opinion container
+			if (tk.hasMoreElements()) {
+				MMObjectNode connectnode=(MMObjectNode)tk.nextElement();
+				Enumeration r=mmb.getInsRel().getRelated(connectnode.getIntValue("number"),"conopi"); // find the conarguments in this container
+				while (r.hasMoreElements()) {
+					MMObjectNode conopinode=(MMObjectNode)r.nextElement();
+					results.addElement(""+conopinode.getIntValue("number"));
+					results.addElement(""+conopinode.getIntValue("id"));
+					MMObjectNode opinode=getNode(conopinode.getIntValue("id"));
+					if (opinode!=null) {
+						String tmp=opinode.getStringValue("title");
+						if (tmp!=null) {
+							results.addElement(tmp);
+						} else {
+							results.addElement("");
+						}
+						tmp=opinode.getStringValue("body");
+						if (tmp!=null) {
+							results.addElement(tmp);
+						} else {
+							results.addElement("");
+						}
+					} else {
+						results.addElement("");
+						results.addElement("");
+					}
+
+					// add the attached poll (question/posrel/answer)
+					if (pollinfo) {
+						results=getPollInfo2(conopinode,results);	
+					} else {
+						results=getPollInfo(conopinode,results);	
+					}
+					Enumeration y=mmb.getInsRel().getRelated(opinode.getIntValue("number"),"people"); // find the user this statement belongs to
+					if (y.hasMoreElements()) {
+						MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
+						results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
+						results.addElement(""+peoplenode.getIntValue("number"));	
+					} else {
+						results.addElement("");
+						results.addElement("");
+					}
+				}
+				
+			}
+		}
+		return(results);
+	}
+
+	public Vector getAttachedArguments(String connector,StringTagger tagger) {
+		MMObjectNode argnode=null;
+		Vector results=new Vector();
+		String conopi=tagger.Value("CONOPI");
+		MMObjectNode conopinode=getNode(conopi);
+		if (conopinode!=null) {
+			boolean pollinfo;
+			String pi=tagger.Value("POLL");
+			if (pi!=null && (pi.equals("YES") || pi.equals("\"YES\""))) pollinfo=true;
+			else pollinfo=false;
+
+			Enumeration tk=mmb.getInsRel().getRelated(conopinode.getIntValue("number"),connector);
+			if (tk.hasMoreElements()) {
+				MMObjectNode connectnode=(MMObjectNode)tk.nextElement();
+				Enumeration r=mmb.getInsRel().getRelated(connectnode.getIntValue("number"),"conarg");
+				while (r.hasMoreElements()) {
+					MMObjectNode conargnode=(MMObjectNode)r.nextElement();
+					results.addElement(""+conargnode.getIntValue("number"));
+					results.addElement(""+conargnode.getIntValue("id"));
+					argnode=getNode(conargnode.getIntValue("id"));
+					if (argnode!=null) {
+						String tmp=argnode.getStringValue("title");
+						if (tmp!=null) {
+							results.addElement(tmp);
+						} else {
+							results.addElement("");
+						}
+						tmp=argnode.getStringValue("body");
+						if (tmp!=null) {
+							results.addElement(tmp);
+						} else {
+							results.addElement("");
+						}
+					} else {
+						results.addElement("");
+						results.addElement("");
+					}
+					if (pollinfo) {
+						results=getPollInfo2(conargnode,results);	
+					} else {
+						results=getPollInfo(conargnode,results);
+					}
+					Enumeration y=mmb.getInsRel().getRelated(argnode.getIntValue("number"),"people"); // find the user this statement belongs to
+					if (y.hasMoreElements()) {
+						MMObjectNode peoplenode=(MMObjectNode)y.nextElement();
+						results.addElement(peoplenode.getStringValue("firstname")+" "+peoplenode.getStringValue("lastname"));	
+						results.addElement(""+peoplenode.getIntValue("number"));	
+					} else {
+						results.addElement("");
+						results.addElement("");
+					}
+				}
+			}
+		}
+		return(results);
 	}
 }
