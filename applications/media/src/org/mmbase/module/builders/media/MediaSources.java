@@ -42,7 +42,7 @@ import org.w3c.dom.NamedNodeMap;
 public class MediaSources extends MMObjectBuilder {
     
     
-    private static Logger log = Logging.getLoggerInstance(MediaSource.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaSources.class.getName());
     
     // Audio formats
     public final static int MP3_FORMAT         = 1;

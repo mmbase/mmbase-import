@@ -22,7 +22,7 @@ import java.util.Hashtable;
  */
 public class MediaProviders extends MMObjectBuilder {
     
-    private static Logger log = Logging.getLoggerInstance(MediaProvider.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaProviders.class.getName());
     
     /**
      * The protocols that have to be used as default are specified in the
