@@ -5,10 +5,12 @@
    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
    <!-- Very straightforward example -->
   <mm:import externid="language">nl</mm:import>
+  <mm:import id="ew">/mmapps/editwizard/jsp</mm:import>
   <mm:import id="referrer"><%=new  java.io.File(request.getServletPath())%>?language=<mm:write referid="language" /></mm:import>
 </head>
 <body>
 <form>
+<mm:cloud method="http">
   <mm:write referid="language" jspvar="lang" vartype="string" >
 	<h1>Editwizard - samples, '<%= new java.util.Locale(lang, "").getDisplayLanguage(java.util.Locale.US)%>' version</h1>
   </mm:write>
@@ -27,17 +29,17 @@
   </p>
 	<table>
   <tr><td>
-	<a href="<mm:url referids="referrer,language" page="/mmapps/editwizard/jsp/list.jsp?wizard=samples/people&nodepath=people&fields=firstname,lastname,owner" />" >Person-Test</a>
+	<a href="<mm:url referids="referrer,language" page="${ew}/list.jsp?wizard=../samples/people&nodepath=people&fields=firstname,lastname,owner" />" >Person-Test</a>
   </td><td> 
   A simple one-step person editor. First-name, last-name and related articles.
   </td></tr>
   <tr><td>
-	  <a href="<mm:url referids="referrer,language" page="/mmapps/editwizard/jsp/list.jsp?wizard=samples/imageupload&nodepath=images&fields=title" /> " >Images</a>
+	  <a href="<mm:url referids="referrer,language" page="${ew}/list.jsp?wizard=../samples/imageupload&nodepath=images&fields=title" /> " >Images</a>
   </td><td> 
    You can also upload images with an editwizard. Here is shown how this can be done.
   </td></tr>
   <tr><td>
-	<a href="<mm:url referids="referrer,language" page="/mmapps/editwizard/jsp/list.jsp?wizard=samples/news&nodepath=news&fields=title,owner" />" >News</a>
+	<a href="<mm:url referids="referrer,language" page="${ew}/list.jsp?wizard=../samples/news&nodepath=news&fields=title,owner" />" >News</a>
     </td><td> 
    An editor for news articles. In the one step you can create or add a news article and relate people and images to it.
   </td></tr>
@@ -52,7 +54,7 @@
   <a href="index.jsp?language=it">italian</a><br />
   <a href="index.jsp?language=eo">esperanto</a><br />
   <a href="mailto:mihxil@komputilo.org">Offer your help to improve/add support for your language</a><br />
- 
+</mm:cloud>
 </form>
 </body>
 </html>
