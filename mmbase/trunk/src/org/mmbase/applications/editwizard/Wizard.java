@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.64 2002-08-14 21:04:59 michiel Exp $
+ * @version $Id: Wizard.java,v 1.65 2002-08-21 12:36:27 pierre Exp $
  *
  */
 public class Wizard implements org.mmbase.util.Sizeable {
@@ -1845,9 +1845,9 @@ public class Wizard implements org.mmbase.util.Sizeable {
         // process requiredness
         //
         String dtrequired = Utils.getAttribute(fielddef, "dtrequired", null);
-        if (required.equals("true")) {
-            // should be required (according to MMBase)
-            dtrequired="true";
+        if (dtrequired==null) {
+            // if unknown, determine requiredness according to MMBase
+            dtrequired=required;
         }
 
         // fix for old format type 'wizard'
