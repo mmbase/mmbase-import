@@ -488,20 +488,6 @@ public class servdb extends JamesServlet {
         }
     }
 
-    private final void setHeaders(HttpServletRequest req,HttpServletResponse res,int len) {
-        String ac="www";
-
-        res.setContentType("text/html; charset=iso-8859-1");
-        res.setContentLength(len);
-        Date d=new Date(0);
-        //		Date d=new Date(DateSupport.currentTimeMillis()-(1000*24*3600)); // probably this one
-        String dt=RFC1123.makeDate(d);
-        //		debug("TIJD="+dt);
-        res.setHeader("Expires",dt);
-        res.setHeader("Last-Modified",dt);
-        res.setHeader("Date",dt);
-    }
-
     boolean Show_Directory(String pathname,File dirfile, PrintWriter out) {
         String body,bfiles,bdirs,header,line;
         int i;
