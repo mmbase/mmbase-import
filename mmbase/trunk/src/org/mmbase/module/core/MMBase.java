@@ -475,6 +475,8 @@ public class MMBase extends ProcessorModule  {
 
 	boolean initBuilders(String path) {
 
+
+
 		initBuilder("typedef",path);
 		TypeDef=(TypeDef)getMMObject("typedef");
 		TypeDef.init();
@@ -513,6 +515,12 @@ public class MMBase extends ProcessorModule  {
 			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
 			fbul.init();
 		}
+
+		Enumeration t2 = mmobjs.keys(); 
+		while (t2.hasMoreElements()) {
+			TypeDef.loadTypeDef(""+t2.nextElement());
+		}
+	
 		return(true);
 	}
 
