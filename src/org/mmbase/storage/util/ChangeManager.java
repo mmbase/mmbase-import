@@ -15,10 +15,12 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.InsRel;
 
 /**
- * 
+ * This utility class contains the methods for broadcasting/registering changes on nodes. It is
+ * available as 'getChangeManager()' from the StorageManagerFactory.
  *
  * @author Pierre van Rooden
- * @version $Id: ChangeManager.java,v 1.2 2003-08-29 12:12:26 keesj Exp $
+ * @version $Id: ChangeManager.java,v 1.3 2004-04-09 09:03:03 michiel Exp $
+ * @see org.mmbase.storage.StorageManagerFactory#getChangeManager
  */
 public final class ChangeManager {
 
@@ -37,14 +39,14 @@ public final class ChangeManager {
      * Commit all changes stored in a Changes map. 
      * Clears the change status of all changed nodes, then broadcasts changes to the
      * nodes' builders.
-     * @param changes a map wityh node/change value pairs
+     * @param changes a map with node/change value pairs
      */
     public void commit(Map changes) {
         for (Iterator i = changes.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry e = (Map.Entry)i.next();
             MMObjectNode node = (MMObjectNode)e.getKey(); 
             String change = (String)e.getValue();
-            commit(node,change);
+            commit(node, change);
             i.remove();
         }
     }
@@ -61,7 +63,7 @@ public final class ChangeManager {
         node.clearChanged();
         MMObjectBuilder builder = node.getBuilder();
         if (builder.broadcastChanges) {
-            mmc.changedNode(node.getNumber(),builder.getTableName(),change);
+            mmc.changedNode(node.getNumber(), builder.getTableName(), change);
             if (builder instanceof InsRel) {
                 // figure out tables to send the changed relations
                 MMObjectNode n1 = node.getNodeValue("snumber");
