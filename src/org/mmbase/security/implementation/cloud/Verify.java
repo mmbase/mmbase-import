@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Security from within MMBase
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Verify.java,v 1.5 2002-06-07 12:56:59 pierre Exp $
+ * @version $Id: Verify.java,v 1.6 2002-06-10 12:41:55 eduard Exp $
  */
 public class Verify extends Authorization {
     private static Logger   log=Logging.getLoggerInstance(Verify.class.getName());
@@ -110,14 +110,6 @@ public class Verify extends Authorization {
     }
     }
 
-    public void assert(UserContext user, int nodeid, Operation operation) throws org.mmbase.security.SecurityException {
-        if (!check(user, nodeid, operation) ) {
-        String msg = "Operation '" + operation + "' on " + nodeid + " was NOT permitted to " + user.getIdentifier();
-        log.error(msg);
-        throw new org.mmbase.security.SecurityException(msg);
-    }
-    }
-
     public boolean check(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) {
     Rank rank = user.getRank();
     if(rank == Rank.ADMIN) {
@@ -136,14 +128,6 @@ public class Verify extends Authorization {
         }
     }
     return false;
-    }
-
-    public void assert(UserContext user, int nodeid, int srcnodeid, int dstnodeid, Operation operation) throws org.mmbase.security.SecurityException {
-        if (!check(user, nodeid, srcnodeid, dstnodeid, operation) ) {
-        String msg = "Operation '" + operation + "' on " + nodeid + " with src " + srcnodeid + "  and dest " + dstnodeid + " was NOT permitted to " + user.getIdentifier();
-        log.error(msg);
-        throw new org.mmbase.security.SecurityException(msg);
-        }
     }
 
     public String getContext(UserContext user, int nodeid) throws org.mmbase.security.SecurityException {
