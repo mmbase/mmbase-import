@@ -17,13 +17,13 @@
       </classpath>
     </available>
   </target>
+
   <target name="jar.uptodatecheck">
-<!-- BLAME ANT AND XML .. IT JUST DOES NOT WORK
     <uptodate property="jar.uptodate" targetfile="${project.jar.dir}/mmbase-rmmci-server.jar">
       <srcfiles dir="build/classes" includes="**/*"/>
     </uptodate>
-	 -->
   </target>
+
   <target name="package" depends="rmmci">
     <zip zipfile="${project.zip}">
       <fileset dir="${project.jar.dir}" includes="*.jar"/>
@@ -101,7 +101,7 @@
 <!-- =================================================================== -->
 <!-- Create mmbase-rmmci.jar                                             -->
 <!-- =================================================================== -->
-  <target name="rmmci" depends="compile.remote">
+  <target name="rmmci" depends="compile.remote,jar.uptodatecheck" unless="jar.uptodate">
     <mkdir dir="build/rmmcitmp"/>
     <unjar src="${build.dir}/lib/servlet.jar" dest="build/rmmcitmp"/>
     <unjar src="${build.dir}/lib/xml-apis.jar" dest="build/rmmcitmp"/>
