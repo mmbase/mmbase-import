@@ -1,4 +1,5 @@
 /*
+$Id: MMInformix42Node.java,v 1.3 2000-03-20 14:28:23 wwwtech Exp $
 
 VPRO (C)
 
@@ -6,6 +7,7 @@ This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 package org.mmbase.module.database.support;
 
@@ -25,6 +27,7 @@ import org.mmbase.module.corebuilders.InsRel;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
+* @$Revision: 1.3 $ $Date: 2000-03-20 14:28:23 $
 */
 public class MMInformix42Node implements MMJdbc2NodeInterface {
 
@@ -370,12 +373,20 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 
 
 	/**
-	* insert a new object, normally not used (only subtables are used)
+	* Insert: This method inserts a new object, normally not used (only subtables are used)
+	* Only fields with DBState value = DBSTATE_PERSISTENT or DBSTATE_SYSTEM are inserted.
+	* Fields with DBstate values = DBSTATE_VIRTUAL or any other value are skipped.
+	* @param bul The MMObjectBuilder.
+	* @param owner The nodes' owner.
+	* @param node The current node that's to be inserted.
+	* @return The DBKey number for this node, or -1 if an error occurs.
 	*/
 	public int insert(MMObjectBuilder bul,String owner, MMObjectNode node) {
 		int number=getDBKey();
 		if (number==-1) return(-1);
 		try {
+			/* $Id: MMInformix42Node.java,v 1.3 2000-03-20 14:28:23 wwwtech Exp $
+			// Original code, not deleted for savety reasons (will be deleted soon),davzev
 			String tmp="";
 			for (int i=0;i<(bul.sortedDBLayout.size()+1);i++) {
 				if (tmp.equals("")) {
@@ -384,6 +395,29 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 					tmp+=",?";
 				}
 			}
+			*/
+
+			// Create a String that represents the amount of DB fields to be used in the insert.
+			// First add an field entry symbol '?' for the 'number' field since it's not in the sortedDBLayout vector.
+			String fieldAmounts="?";
+
+			// Append the DB elements to the fieldAmounts String.
+			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
+				String key = (String)e.nextElement();
+				int DBState = node.getDBState(key);
+				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)  
+			      || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+					// debug("Insert: DBState = "+DBState+", adding key: "+key);
+					fieldAmounts+=",?";
+				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
+					// debug("Insert: DBState = "+DBState+", skipping key: "+key);
+				} else {
+					debug("Insert: Error DBState = "+DBState+" unknown!, skipping key: "+key);
+				}
+			}
+
+			/* $Id: MMInformix42Node.java,v 1.3 2000-03-20 14:28:23 wwwtech Exp $
+			// Original code, not deleted for savety reasons (will be deleted soon),davzev
 			MultiConnection con=bul.mmb.getConnection();
 			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+tmp+")");
 			stmt.setInt(1,number);
@@ -392,6 +426,34 @@ public class MMInformix42Node implements MMJdbc2NodeInterface {
 				String key = (String)e.nextElement();	
 				setValuePreparedStatement( stmt, node, key, i );
 				i++;
+			}
+			stmt.executeUpdate();
+			stmt.close();
+			con.close();
+			*/
+
+			// Create the DB statement with DBState values in mind. 
+			MultiConnection con=bul.mmb.getConnection();
+			PreparedStatement stmt=con.prepareStatement("insert into "+mmb.baseName+"_"+bul.tableName+" values("+fieldAmounts+")");
+			// First add the 'number' field to the statement since it's not in the sortedDBLayout vector.
+			stmt.setInt(1,number);
+
+			// Prepare the statement for the DB elements to the fieldAmounts String.
+			// debug("Insert: Preparing statement using fieldamount String: "+fieldAmounts);
+			int j=2;
+			for (Enumeration e=bul.sortedDBLayout.elements();e.hasMoreElements();) {
+				String key = (String)e.nextElement();	
+				int DBState = node.getDBState(key);
+				if ( (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT)  
+			      || (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM) ) {
+					// debug("Insert: DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+j);
+					setValuePreparedStatement( stmt, node, key, j );
+					j++;
+				} else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
+					// debug("Insert: DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+				} else {
+					debug("Insert: Error DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key);
+				}
 			}
 			stmt.executeUpdate();
 			stmt.close();
