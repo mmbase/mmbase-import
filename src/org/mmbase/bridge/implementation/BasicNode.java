@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.57 2002-04-09 12:39:37 eduard Exp $
+ * @version $Id: BasicNode.java,v 1.58 2002-04-12 12:33:34 michiel Exp $
  */
 public class BasicNode implements Node {
 
@@ -657,7 +657,14 @@ public class BasicNode implements Node {
             log.error(message);
             throw new BridgeException(message);
         } else {
-            getNode().parent.createAlias(getNumber(),aliasName);
+            if (! getNode().parent.createAlias(getNumber(), aliasName)) {
+                Node otherNode = cloud.getNode(aliasName);
+                if (otherNode != null) {
+                    throw new BridgeException("Alias " + aliasName + " could not be created. It is an alias for " + otherNode.getNodeManager().getName() + " node " + otherNode.getNumber() + " already");
+                } else {
+                    throw new BridgeException("Alias " + aliasName + " could not be created.");
+                }
+            }
         }
     }
 
