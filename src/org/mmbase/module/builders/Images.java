@@ -14,6 +14,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * If this class is used as the class for your builder, then an
@@ -27,13 +28,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.70 2003-03-14 21:41:16 michiel Exp $
+ * @version $Id: Images.java,v 1.71 2003-03-31 17:16:27 michiel Exp $
  */
 public class Images extends AbstractImages {
 
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
-
-    protected String defaultImageType = "jpg";
 
     // This cache connects templates (or ckeys, if that occurs), with node numbers,
     // to avoid querying icaches.
@@ -46,57 +45,66 @@ public class Images extends AbstractImages {
         templateCacheNumberCache.putCache();
     }
 
-    ImageConvertInterface imageconvert=null;
-    Hashtable ImageConvertParams = new Hashtable();
+    protected Map imageConvertParams = new Hashtable();
 
-    // Currenctly only ImageMagick works / this gets parameterized soon
-    protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick";
-    protected int MaxConcurrentRequests=2;
+    /** 
+     * The ImageConvertInterface implementation to be used (defaults to ConvertImageMagic)
+     */
+    protected static final Class DEFAULT_IMAGECONVERTCLASS = ConvertImageMagick.class;
 
-    protected int MaxRequests=32;
-    protected Queue imageRequestQueue=new Queue(MaxRequests);
-    protected Hashtable imageRequestTable=new Hashtable(MaxRequests);
+    protected int maxConcurrentRequests = 2;
+    
+    /**
+     * Supposed image type if not could be determined (configurable)
+     */
+    protected String defaultImageType = "jpg";
+    
+    protected static final int maxRequests = 32;
+    protected Queue imageRequestQueue     = new Queue(maxRequests);
+    protected Hashtable imageRequestTable = new Hashtable(maxRequests);
     protected ImageRequestProcessor ireqprocessors[];
 
     /**
-     * @javadoc
+     * Read configurations (imageConvertClass, maxConcurrentRequest),
+     * checks for 'icaches', inits the request-processor-pool.
      */
     public boolean init() {
         if (!super.init()) return false;
 
         String tmp;
         int itmp;
-        tmp = getInitParameter("ImageConvertClass");
-        if (tmp != null) ImageConvertClass=tmp;
-        getImageConvertParams(getInitParameters());
-        tmp = getInitParameter("MaxConcurrentRequests");
+        String imageConvertClass  = DEFAULT_IMAGECONVERTCLASS.getName();
+        tmp = getInitParameter("imageConvertClass");
+        if (tmp == null) imageConvertClass = tmp;
+        getimageConvertParams(getInitParameters());
+        tmp = getInitParameter("maxConcurrentRequests");
         if (tmp!=null) {
             try {
                 itmp=Integer.parseInt(tmp);
             }
             catch (NumberFormatException e) {
                 itmp=2;
-            } MaxConcurrentRequests=itmp;
+            } maxConcurrentRequests=itmp;
         }
         tmp = getInitParameter("DefaultImageType");
         if (tmp!=null) {
             defaultImageType = tmp;
         }
 
-        imageconvert=loadImageConverter(ImageConvertClass);
-        imageconvert.init(ImageConvertParams);
+        ImageConvertInterface imageConverter = loadImageConverter(imageConvertClass);
+        imageConverter.init(imageConvertParams);
 
-        ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
+        ImageCaches bul = (ImageCaches)mmb.getMMObject("icaches");
         if(bul==null) {
             String msg = "builder with name icache wasnt loaded";
             log.error(msg);
             throw new RuntimeException(msg);
         }
         // Startup parrallel converters
-        ireqprocessors=new ImageRequestProcessor[MaxConcurrentRequests];
-        log.info("Starting "+MaxConcurrentRequests+" Converters");
-        for (int i=0;i<MaxConcurrentRequests;i++) {
-            ireqprocessors[i]=new ImageRequestProcessor(bul,imageconvert,imageRequestQueue,imageRequestTable);
+        ireqprocessors = new ImageRequestProcessor[maxConcurrentRequests];
+        log.info("Starting "+maxConcurrentRequests+" Converters");
+        for (int i=0;i < maxConcurrentRequests;i ++) {
+            ireqprocessors[i] = new ImageRequestProcessor(bul, imageConverter, imageRequestQueue, imageRequestTable);
         }
         return true;
     }
@@ -127,16 +135,17 @@ public class Images extends AbstractImages {
     }
 
     /**
+     * The GUI-indicator of an image-node also needs a res/req object.
      * @since MMBase-1.6
      */
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, HttpServletRequest req,  String sessionName) {
         int num = node.getNumber();
         if (num == -1 ) {   // img.db cannot handle uncommited images..
             return "...";
         }
         // NOTE that this has to be configurable instead of static like this
         String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
-        List args = new Vector();
+        List args = new ArrayList();
         args.add("s(100x60)");
         String imageThumb = servlet + executeFunction(node, "cache", args);
         String image      = servlet + node.getNumber();
@@ -147,20 +156,20 @@ public class Images extends AbstractImages {
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
-    /**
-     * @javadoc
-     */
-    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), res, session);
+    // javadoc copied from parent
+    protected String getSGUIIndicator(String session, HttpServletResponse res, HttpServletRequest req, MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, node.getStringValue("title"), res, req, session);
     }
 
-    // called by init..used to retrieve all settings
-    private void getImageConvertParams(Hashtable params) {
+    /**
+     * called by init..used to retrieve all settings
+     */
+    private void getimageConvertParams(Hashtable params) {
         String key; 
         for (Iterator e=params.keySet().iterator();e.hasNext();) {
             key=(String)e.next();
             if (key.startsWith("ImageConvert.")) {
-                ImageConvertParams.put(key,params.get(key));
+                imageConvertParams.put(key, params.get(key));
             }
         }
     }
@@ -249,6 +258,7 @@ public class Images extends AbstractImages {
      *
      * @since MMBase-1.7
      */
+    // @author michiel
     protected static final char NOQUOTING = '-';
     protected List parseTemplate(MMObjectNode node, String template) {
         List params = new ArrayList();
@@ -292,11 +302,12 @@ public class Images extends AbstractImages {
         return params;
     }
     /**
+     * Just a utitility function, used by the function above.
      * @since MMBase-1.7
      */
     protected void removeSurroundingQuotes(StringBuffer buf) {
         // remove surrounding quotes --> "+contrast" will be changed to +contrast 
-        if ((buf.charAt(0) == '"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
+        if (buf.length() >= 2 && (buf.charAt(0) == '"' || buf.charAt(0) == '\'') && buf.charAt(buf.length() - 1) == buf.charAt(0)) {
             buf.deleteCharAt(0);
             buf.deleteCharAt(buf.length() - 1);
         }
@@ -333,7 +344,9 @@ public class Images extends AbstractImages {
      * @since MMBase-1.6
      */
     public int cacheImage(List params) {
-        if (log.isDebugEnabled()) log.debug("Caching image " + params);
+        if (log.isDebugEnabled()) { 
+            log.debug("Caching image " + params);
+        }
 
 
         if (getImageBytes(params) != null) {
@@ -448,16 +461,16 @@ public class Images extends AbstractImages {
 
         // get our hashcode
         String ckey = flattenParameters(params);
-        log.debug("getting cached image" + ckey);
+        if (log.isDebugEnabled()) {
+            log.debug("getting cached image" + ckey);
+        }
         if(ckey == null) {
             log.debug("getCachedImage: no parameters");
             return null;
         }
 
         // now get the actual bytes
-        byte[] cachedPicture = null;
-        cachedPicture = imageCacheBuilder.getCkeyNode(ckey);
-        return cachedPicture;
+        return imageCacheBuilder.getCkeyNode(ckey);
     }
 
 
@@ -474,7 +487,9 @@ public class Images extends AbstractImages {
      * @return null if something goes wrong, otherwise the picture in a byte[]
      */
     protected byte[] getOriginalImage(List params) {
-        log.service("getting image bytes of " + params);
+        if (log.isServiceEnabled()) {
+            log.service("getting image bytes of " + params);
+        }
         if (params==null || params.size() == 0) {
             log.debug("getOriginalImage: no parameters");
             return null;
@@ -487,8 +502,9 @@ public class Images extends AbstractImages {
             return null;
         }
 
-        // try to resolve the number of our object (first param) (could also be the name)
-        int objectId = convertAlias((String)params.get(0));
+        // try to resolve the number of our object (first param) (could also be the title)
+        int objectId = convertAlias((String)params.get(0)); // arch, deprecated!
+
         if ( objectId < 0 ) {
             // why is 0 a valid object number???
             log.warn("getOriginalImage: Parameter is not a valid image "+objectId);
@@ -527,13 +543,17 @@ public class Images extends AbstractImages {
     }
 
     /**
-     * Check if its a number if not check for name.
-     * @javadoc Not clear enough
+     * Converts a string into a node-number, in the following a
+     * way. If the string represents an integer, this integer is
+     * returned, otherwise the String is used to do a search on
+     * title. Note that if you use this, the _oalias_ is ignored.
+     *
+     * @deprecated This is hackery, and un-mmbase-like.
      */
-    public int convertAlias(String num) {
-        int number=-1;
+    protected int convertAlias(String num) {
+        int number = -1;
         try {
-            number=Integer.parseInt(num);
+            number = Integer.parseInt(num);
         } catch(NumberFormatException e) {
             if (num!=null && !num.equals("")) {
                 Enumeration g=search("WHERE title='"+num+"'");
