@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.36 2004-06-16 10:43:23 michiel Exp $
+ * @version $Id: Queries.java,v 1.37 2004-07-09 17:24:29 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -639,41 +639,31 @@ abstract public  class Queries {
 
     }
 
+
+
     /**
      * Add startNodes as a String to the (first step) of the given query.
-     *
-     * @return the new constraint, or null if the startNodes list was empty.
      */
-    public static Constraint addStartNodes(Query query, String startNodes) {
+    public static void addStartNodes(Query query, String startNodes) {
         if (startNodes == null || "".equals(startNodes) || "-1".equals(startNodes)) {
-            return null;
+            return;
         }
 
-        SortedSet startNodeSet = new TreeSet();
+        Step firstStep = (Step)query.getSteps().get(0);
 
         Iterator nodes = StringSplitter.split(startNodes).iterator();
         while (nodes.hasNext()) {
             String node = (String)nodes.next();
-            Integer nodeNumber;
             try {
-                nodeNumber = new Integer(node);
+                if (query instanceof BasicQuery) { // not needed anymore when addNode(step, int) is in Query itself.
+                    ((BasicQuery) query).addNode(firstStep, Integer.parseInt(node));
+                } else {
+                    query.addNode(firstStep, query.getCloud().getNode(node));
+                }
             } catch (NumberFormatException nfe) {
-                nodeNumber = new Integer(query.getCloud().getNode(node).getNumber());
+                query.addNode(firstStep, query.getCloud().getNode(node));
             }
-            startNodeSet.add(nodeNumber);
         }
-
-        if (startNodeSet.size() > 0) {
-            Step firstStep = (Step)query.getSteps().get(0);
-            StepField firstStepField = query.createStepField(firstStep, "number");
-
-            Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);
-            addConstraint(query, newConstraint);
-            return newConstraint;
-        } else {
-            return null;
-        }
-
     }
 
     /**
@@ -762,9 +752,7 @@ abstract public  class Queries {
         NodeQuery query = node.getCloud().createNodeQuery(); // use the version which can acept more steops
         Step step       = query.addStep(nm);
         query.setNodeStep(step);
-        StepField number = query.getStepField(nm.getField("number"));
-        Constraint constraint = query.createConstraint(number, new Integer(node.getNumber()));
-        query.setConstraint(constraint);
+        query.addNode(step, node);
         return query;
     }
 
