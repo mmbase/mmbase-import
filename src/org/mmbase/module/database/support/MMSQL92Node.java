@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.49 2001-03-09 09:12:04 pierre Exp $
+$Id: MMSQL92Node.java,v 1.50 2001-04-20 08:33:25 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.49  2001/03/09 09:12:04  pierre
+pierre: added directionality support to databse support classes. also added logging.
+Someone please test the Informix database!
+
 Revision 1.48  2001/03/04 15:23:05  daniel
 Added on/off option for tableChanges
 
@@ -47,7 +51,7 @@ import org.mmbase.util.logging.*;
 * @author Daniel Ockeloen
 * @author Pierre van Rooden
 * @version 09 Mar 2001
-* @$Revision: 1.49 $ $Date: 2001-03-09 09:12:04 $
+* @$Revision: 1.50 $ $Date: 2001-04-20 08:33:25 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -1380,6 +1384,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			Hashtable values1=new Hashtable(colcount1);
 			for (int i=1;i<colcount1+1;i++) {
 				Object o=rs.getObject(i);
+                if (o instanceof byte[]) {
+                    o=rs.getString(i);
+				}
 				String colname=rsmd.getColumnName(i);	
 				colname=colname.toLowerCase();
 				values1.put(colname,o);
@@ -1389,6 +1396,9 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 			Hashtable values2=new Hashtable(colcount1);
 			for (int i=1;i<colcount2+1;i++) {
 				Object o=rs2.getObject(i);
+                if (o instanceof byte[]) {
+                    o=rs2.getString(i);
+				}
 				String colname=rsmd2.getColumnName(i);	
 				colname=colname.toLowerCase();
 				values2.put(colname,o);
@@ -1403,7 +1413,7 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 					log.debug("SET1="+value1.toString());
 					log.debug("SET2="+value2.toString());
 					*/
-					if (!(value1.toString()).equals((value2.toString()))) {
+	                if (!(value1.toString()).equals((value2.toString()))) {
 						log.error("data check error on field : "+key1);
 						return(false);
 					}
@@ -1435,13 +1445,14 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 		String fieldAmounts="?";
 
 		Vector newfields=bul.getFields();
-		for (int i=0;i<newfields.size();i++) {
+		for (int i=1;i<newfields.size();i++) {
 			fieldAmounts+=",?";
 		}
 
   		while(rs.next()) {
 			MultiConnection con2=mmb.getConnection();
 			PreparedStatement stmt2=con2.prepareStatement("insert into "+mmb.baseName+"_"+tmptable+" values("+fieldAmounts+")");
+			stmt2.setEscapeProcessing(false);
 			Hashtable oldvalues=new Hashtable(colcount);
 			for (int i=1;i<colcount+1;i++) {
 				Object o=rs.getObject(i);
@@ -1465,8 +1476,11 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				if (o==null) {
 					int type=def.getDBType();
 					switch (type) {
+						case FieldDefs.TYPE_BYTE:
+							setDBByte(dbpos,stmt2,new byte[0]);
+							break;
 						case FieldDefs.TYPE_STRING:
-							stmt2.setString(dbpos,new String());
+							setDBText(dbpos,stmt2,new String());
 							break;
 						case FieldDefs.TYPE_INTEGER:
 							stmt2.setInt(dbpos,-1);
@@ -1484,20 +1498,28 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 				} else {
 					int type=def.getDBType();
 					switch (type) {
+						case FieldDefs.TYPE_BYTE:
+							setDBByte(dbpos,stmt2,(byte[])o);
+							break;
 						case FieldDefs.TYPE_STRING:
-							stmt2.setString(dbpos,(String)o);
+                            if (o instanceof byte[]) {
+                                String s=new String((byte[])o);
+							    setDBText(dbpos,stmt2,s);
+							} else {
+    		                    setDBText(dbpos,stmt2,o.toString());
+    		                }
 							break;
 						case FieldDefs.TYPE_INTEGER:
-							stmt2.setInt(dbpos,((Integer)o).intValue());
+    		                stmt2.setInt(dbpos,((Number)o).intValue());
 							break;
 						case FieldDefs.TYPE_DOUBLE:
-							stmt2.setDouble(dbpos,((Double)o).doubleValue());
+							stmt2.setDouble(dbpos,((Number)o).doubleValue());
 							break;
 						case FieldDefs.TYPE_FLOAT:
-							stmt2.setFloat(dbpos,((Float)o).floatValue());
+							stmt2.setFloat(dbpos,((Number)o).floatValue());
 							break;
 						case FieldDefs.TYPE_LONG:
-							stmt2.setLong(dbpos,((Long)o).longValue());
+							stmt2.setLong(dbpos,((Number)o).longValue());
 							break;
 					}
 				}
