@@ -26,33 +26,33 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * There's large simularity in the way data travels from and to a web server.
- * But unfortunately there is one difference: while the web server tells the browser what 
+ * But unfortunately there is one difference: while the web server tells the browser what
  * character encoding the page it sends is in (via the Content-Type HTTP header),
  * the client does not send such information.
- * 
- * Accordingly to the HTTP spec the HTTP request the browser send to the server 
+ *
+ * Accordingly to the HTTP spec the HTTP request the browser send to the server
  * (that contains the submitted form) may well contain the Content-Type header too.
- * This would give the server the key to decript the form parameters. 
+ * This would give the server the key to decript the form parameters.
  * Regretfully our present internet browsers do not send it
- * 
+ *
  * The browser generally does the following: it takes user input in national characters
  * <UL>
  * <li>
  *   translates it to a byte sequence using the character encoding that the web page that contains
- *   the form is encoded with 
+ *   the form is encoded with
  * </li>
  * <li>
  *   the resulting byte secuence is encoded into the query string according to the usual rules of
  *   encoding query strings. That is all bytes that correspond to legal ascii alpha-numeric chars
- *   are encoded as those chars, all the rest are converted to the %xy representation, where xy 
+ *   are encoded as those chars, all the rest are converted to the %xy representation, where xy
  *   is the hexademical code of the corresponding byte (like %C1, for example)
  * </li>
  * </UL>
  * Then the encoded query (possibly containing %xy codes) is sent to the server. ascii characters,
  * according to the procedure described above are sent to the server as they are, provided that they
  * have the same codes both in ascii character encoding and in the national character encoding that is used.
- * 
- * 
+ *
+ *
  * This filter sets the character encoding before parameters are handled.
  * The filter sets the character encoding by the following information:
  * <UL>
@@ -69,8 +69,9 @@ import org.mmbase.util.logging.Logging;
  *    No encoding defined. (default UTF-8)
  * </li>
  * </UL>
- * 
+ *
  * Get it to work by incorporating the following piece of XML in your web.xml:
+ <pre><code>
  *  &lt;filter&gt;
  *    &lt;filter-name&gt;Set Character Encoding&lt;/filter-name&gt;
  *    &lt;filter-class&gt;org.mmbase.servlet.CharacterEncodingFilter&lt;/filter-class&gt;
@@ -86,13 +87,14 @@ import org.mmbase.util.logging.Logging;
  *    &lt;filter-name&gt;Set Character Encoding&lt;/filter-name&gt;
  *    &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
  *  &lt;/filter-mapping&gt;
- *  
+ </code></pre>
+ *
  *
  * @author: P.S.D.Reitsma (Finalist IT Group)
  * @author Nico Klasens (Finalist IT Group)
- * 
+ *
  * @since  MMBase-1.6
- * @version $Id: CharacterEncodingFilter.java,v 1.1 2003-06-01 15:58:12 nico Exp $
+ * @version $Id: CharacterEncodingFilter.java,v 1.2 2003-07-24 15:48:48 robmaris Exp $
  */
 public class CharacterEncodingFilter implements Filter {
 
