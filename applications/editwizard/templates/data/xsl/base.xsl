@@ -7,7 +7,7 @@
     @author Michiel Meeuwissen
     @author Nico Klasens
     @author Martijn Houtman
-    @version $Id: base.xsl,v 1.32 2004-06-02 16:21:25 michiel Exp $
+    @version $Id: base.xsl,v 1.33 2004-06-03 08:47:38 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -33,6 +33,7 @@
   <xsl:param name="cloud" />
   <xsl:param name="username">(unknown)</xsl:param>
   <xsl:param name="language">en</xsl:param>
+  <xsl:param name="country"></xsl:param>
   <xsl:param name="sessionid" />
   <xsl:param name="popupid" />
 
@@ -100,7 +101,7 @@
     </xsl:call-template>
   </xsl:variable>
 
-  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
+  <xsl:param name="wizardparams"><xsl:value-of select="$sessionid" />?proceed=true&amp;sessionkey=<xsl:value-of select="$sessionkey" />&amp;language=<xsl:value-of select="$language" />&amp;country=<xsl:value-of select="$country" />&amp;debug=<xsl:value-of select="$debug" /></xsl:param>
 
   <xsl:variable name="listpage">list.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
   <xsl:variable name="wizardpage">wizard.jsp<xsl:value-of select="$wizardparams" />&amp;popupid=<xsl:value-of select="$popupid" /></xsl:variable>
@@ -110,6 +111,7 @@
     <input type="hidden" name="proceed" value="true" />
     <input type="hidden" name="sessionkey" value="{$sessionkey}" />
     <input type="hidden" name="language" value="{$language}" />
+    <input type="hidden" name="country" value="{$country}" />
     <input type="hidden" name="debug" value="{$debug}" />
     <input type="hidden" name="popupid" value="{$popupid}" />
   </xsl:template>
