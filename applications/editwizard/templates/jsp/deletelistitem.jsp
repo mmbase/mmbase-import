@@ -1,5 +1,6 @@
 .<%@ include file="settings.jsp"
-%><mm:locale language="<%=ewconfig.language%>"><mm:cloud name="mmbase" method="http" jspvar="cloud"
+%><mm:locale language="<%=ewconfig.language%>">
+<mm:cloud name="mmbase" method="http" jspvar="cloud"
 ><%@ page import="org.mmbase.bridge.*"
 %><%@ page import="org.w3c.dom.Node"
 %><%@ page import="org.mmbase.applications.editwizard.*"
@@ -8,7 +9,7 @@
      * deletelistitem.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: deletelistitem.jsp,v 1.9 2003-09-05 14:21:11 pierre Exp $
+     * @version  $Id: deletelistitem.jsp,v 1.10 2003-09-23 12:11:44 michiel Exp $
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
      */
