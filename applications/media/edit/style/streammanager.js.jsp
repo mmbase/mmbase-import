@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
-%><%@ include file="../readconfig.jsp" %><% response.setContentType("text/javascript"); %>      
+%><%@ include file="../config/read.jsp" %><% response.setContentType("text/javascript"); %>      
 <mm:import externid="fragment" />
 <mm:import externid="dir"      required="true" />
 
@@ -58,7 +58,6 @@ if (getPlayer() == "real") {
   parent.frames['left'].document.embeddedplayer.Pause();
 }
 }
-
 
 function getLeftURL(form) {
     if (form == "search") {
@@ -123,6 +122,7 @@ function detach() {
 
 // init page on the right side
 function init(form) {
+    //alert("hoi");
     setLeftFrame(form);
 }
 

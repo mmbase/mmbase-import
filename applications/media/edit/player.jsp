@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <%@page language="java" contentType="text/html;charset=UTF-8" 
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
-%><%@include file="readconfig.jsp" %><?xml version="1.0" encoding="UTF-8"?>
+%><%@include file="config/read.jsp" %><?xml version="1.0" encoding="UTF-8"?>
 <html>
 <head>
 <mm:import externid="fragment" required="true" />
@@ -36,9 +36,9 @@
 <tr>
     <td valign="top" background="images/movie_left.gif" width="32" ></td>
     <td valign="top" bgcolor="#717171">
-          <mm:write referid="player">
-          <mm:compare value="real">                  
-              <embed src="<mm:field id="source" name="url(ram)" />"
+          <mm:write referid="config.player">
+          <mm:compare value="real">
+              <embed src="<%=request.getContextPath()%><mm:field id="source" name="url(ram)" />"
                 width="260" 
                 height="300"   
                 type="audio/x-pn-realaudio-plugin"
@@ -90,10 +90,11 @@
     <td valign="top" width="35" height="43"><img src="images/movie_down_right.gif" alt="" width="35" height="43" border="0"></td>
 </tr>
 </table>
-preferred format: <mm:write referid="config.format"><mm:isempty>No preference</mm:isempty></mm:write><br />
-preferred player: <mm:write referid="config.player"><mm:isempty>No preference</mm:isempty></mm:write><br />
+preferred format: <mm:write referid="config.format"><mm:write /><mm:isempty>No preference</mm:isempty></mm:write><br />
+preferred player: <mm:write referid="config.player"><mm:write /><mm:isempty>No preference</mm:isempty></mm:write><br />
 used source:      <mm:write referid="source" /> <br />
-used player:      <mm:write referid="player" />
+used player:      <mm:write referid="player" /><br />
+mimetype:      <mm:field name="mimetype()" /><br />
 </mm:node>
 </mm:cloud>
 </body>

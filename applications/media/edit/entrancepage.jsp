@@ -16,7 +16,7 @@
    <!--
 
     @author   Michiel Meeuwissen
-    @version  $Id: entrancepage.jsp,v 1.14 2003-01-03 21:47:49 michiel Exp $ 
+    @version  $Id: entrancepage.jsp,v 1.15 2003-01-21 17:41:11 michiel Exp $ 
     -->
    <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <head>
@@ -24,7 +24,7 @@
   <p>
     <ul>
      <li><a href="edit.jsp">Edit</a></li>
-     <li><a href="view.jsp">View</a></li>
+     <li><a href="search.jsp">Search</a></li>
     </ul>
   </p>
   <p align="right">
