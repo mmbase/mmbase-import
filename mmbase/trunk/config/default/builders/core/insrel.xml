@@ -11,10 +11,12 @@
   <singular xml:lang="en">Relation</singular>
   <singular xml:lang="nl">Relatie</singular>
   <singular xml:lang="eo">Rilato</singular>
+  <singular xml:lang="it">Relazione</singular>
   <!-- multiple per language as defined by ISO 639 -->
   <plural xml:lang="en">Relations</plural>
   <plural xml:lang="nl">Relaties</plural>
   <plural xml:lang="eo">Rilatoj</plural>
+  <plural xml:lang="it">Relazioni</plural>
 </names>
 
 <!-- <descriptions>
@@ -25,6 +27,7 @@
   <description xml:lang="en">Basic relation</description>
   <description xml:lang="nl">Basis relatie</description>
   <description xml:lang="eo">Baza rilato</description>
+  <description xml:lang="it">Relazione base</description>
 </descriptions>
 
 <!-- <fieldlist>
@@ -40,6 +43,7 @@
       <guiname xml:lang="en">Source</guiname>
       <guiname xml:lang="nl">Bron</guiname>
       <guiname xml:lang="eo">Fonto</guiname>
+      <guiname xml:lang="it">Fonte</guiname>
       <guitype>integer</guitype>
     </gui>
     <!-- editor related  -->
@@ -58,7 +62,7 @@
       <!-- name of the field in the database -->
       <name>snumber</name>
       <!-- MMBase datatype and demands on it -->
-      <type state="persistent" notnull="true" key="false">NODE</type>
+      <type state="persistent" notnull="true" key="true">NODE</type>
     </db>
   </field>
 
@@ -69,6 +73,7 @@
       <guiname xml:lang="en">Destination</guiname>
       <guiname xml:lang="nl">Bestemming</guiname>
       <guiname xml:lang="eo">Celo</guiname>
+      <guiname xml:lang="it">Destinazione</guiname>
       <guitype>integer</guitype>
     </gui>
     <!-- editor related  -->
@@ -87,7 +92,7 @@
       <!-- name of the field in the database -->
       <name>dnumber</name>
       <!-- MMBase datatype and demands on it -->
-      <type state="persistent" notnull="true" key="false">NODE</type>
+      <type state="persistent" notnull="true" key="true">NODE</type>
     </db>
   </field>
 
@@ -98,6 +103,7 @@
       <guiname xml:lang="en">Relation</guiname>
       <guiname xml:lang="nl">Relatie</guiname>
       <guiname xml:lang="eo">Rilato</guiname>
+      <guiname xml:lang="it">Relazione</guiname>
       <guitype>reldef</guitype>
     </gui>
     <!-- editor related  -->
@@ -127,6 +133,7 @@
       <guiname xml:lang="en">Direction</guiname>
       <guiname xml:lang="nl">Richting</guiname>
       <guiname xml:lang="eo">Direkto</guiname>
+      <guiname xml:lang="it">Direzione</guiname>
       <guitype>dirs</guitype>
     </gui>
     <!-- editor related  -->

@@ -20,10 +20,12 @@
         <singular xml:lang="en">MMBase Server</singular>
         <singular xml:lang="nl">MMBase Server</singular>
         <singular xml:lang="eo">MMBase Servilo</singular>
+        <singular xml:lang="it">MMBase Server</singular>
         <!-- multiple per language as defined by ISO 639 -->
         <plural xml:lang="en">MMBase Servers</plural>
         <plural xml:lang="nl">MMBase Servers</plural>
         <plural xml:lang="eo">MMBase Serviloj</plural>
+        <plural xml:lang="it">MMBase Servers</plural>
     </names>
 
     <!-- <descriptions>
@@ -34,6 +36,7 @@
         <description xml:lang="en">MMBase Servers defines node of a MMBase within this system</description>
         <description xml:lang="nl">MMMBase Servers bepaalt de node binnen een MMBase cluster</description>
         <description xml:lang="eo">Tipo MMServilo difinas la nodon en MMBase-aro</description>
+        <description xml:lang="it">MMBase Servers definiscono il nodo di un MMBase dentro questo sistema</description>
     </descriptions>
 
   <properties>
@@ -59,6 +62,7 @@
                 <guiname xml:lang="en">Server</guiname>
                 <guiname xml:lang="nl">Server</guiname>
                 <guiname xml:lang="eo">Servilo</guiname>
+                <guiname xml:lang="it">Server</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -88,6 +92,7 @@
                 <guiname xml:lang="en">State</guiname>
                 <guiname xml:lang="nl">Status</guiname>
                 <guiname xml:lang="eo">Stato</guiname>
+                <guiname xml:lang="it">Stato</guiname>
                 <guitype>integer</guitype>
             </gui>
             <!-- editor related  -->
@@ -117,6 +122,7 @@
                 <guiname xml:lang="en">Last Seen</guiname>
                 <guiname xml:lang="nl">Laatst Gezien</guiname>
                 <guiname xml:lang="eo">Laste vidita</guiname>
+                <guiname xml:lang="it">Visto da ultimo</guiname>
                 <guitype>eventtime</guitype>
             </gui>
             <!-- editor related  -->
@@ -146,6 +152,7 @@
                 <guiname xml:lang="en">Host</guiname>
                 <guiname xml:lang="nl">Host</guiname>
                 <guiname xml:lang="eo">Ĉefkomputilo</guiname>
+                <guiname xml:lang="it">Sistema ospitante</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -175,6 +182,7 @@
                 <guiname xml:lang="en">OS</guiname>
                 <guiname xml:lang="nl">OS</guiname>
                 <guiname xml:lang="eo">Operaciumo</guiname>
+                <guiname xml:lang="it">OS</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->
@@ -204,6 +212,7 @@
                 <guiname xml:lang="en">JDK</guiname>
                 <guiname xml:lang="nl">JDK</guiname>
                 <guiname xml:lang="eo">JDK</guiname>
+                <guiname xml:lang="it">JDK</guiname>
                 <guitype>string</guitype>
             </gui>
             <!-- editor related  -->

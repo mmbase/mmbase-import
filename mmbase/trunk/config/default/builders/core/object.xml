@@ -33,12 +33,14 @@
     <singular xml:lang="eo">Objekto</singular>
     <singular xml:lang="fr">Objet</singular>
     <singular xml:lang="fy">Objekt</singular>
+    <singular xml:lang="it">Oggetto</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Objects</plural>
     <plural xml:lang="nl">Objecten</plural>
     <plural xml:lang="eo">Objektoj</plural>
     <plural xml:lang="fr">Objets</plural>
     <plural xml:lang="fy">Objekts</plural>
+    <plural xml:lang="it">Oggetti</plural>
   </names>
 
   <!-- <descriptions>
@@ -51,6 +53,7 @@
     <description xml:lang="eo">Objektoj</description>
     <description xml:lang="fr">Objets</description>
     <description xml:lang="fy">Objekten</description>
+    <description xml:lang="it">Oggetti</description>
   </descriptions>
 
   <!-- <properties>
@@ -75,6 +78,7 @@
         <guiname xml:lang="eo">Objekto</guiname>
         <guiname xml:lang="fr">Objet</guiname>
         <guiname xml:lang="fy">Objekt Nummer</guiname>
+        <guiname xml:lang="it">Oggetto</guiname>
         <guitype>integer</guitype>
       </gui>
       <!-- editor related  -->
@@ -106,6 +110,7 @@
         <guiname xml:lang="eo">Posedanto</guiname>
         <guiname xml:lang="fr">Propriétaire</guiname>
         <guiname xml:lang="fy">Context</guiname>
+        <guiname xml:lang="it">Proprietario</guiname>
     <guitype>string</guitype>
       </gui>
       <!-- editor related  -->

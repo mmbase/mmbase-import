@@ -16,11 +16,13 @@
     <singular xml:lang="fr">Image</singular>
     <singular xml:lang="nl">Afbeelding</singular>
     <singular xml:lang="eo">Bildo</singular>
+    <singular xml:lang="it">Immagine</singular>
     <!-- multiple per language as defined by ISO 639 -->
     <plural xml:lang="en">Images</plural>
     <plural xml:lang="fr">Images</plural>
     <plural xml:lang="nl">Afbeeldingen</plural>
     <plural xml:lang="eo">Bildoj</plural>
+    <plural xml:lang="it">Immagini</plural>
   </names>
 
   <!-- <descriptions>
@@ -32,6 +34,7 @@
     <description xml:lang="fr">Images</description>
     <description xml:lang="nl">Afbeeldingen</description>
     <description xml:lang="eo">Bildoj</description>
+    <description xml:lang="it">Immagini</description>
   </descriptions>
 
   <!-- <properties>
@@ -66,6 +69,7 @@
         <guiname xml:lang="fr">Titre</guiname>
         <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="eo">Titolo</guiname>
+        <guiname xml:lang="it">Titolo</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->
@@ -96,6 +100,7 @@
         <guiname xml:lang="fr">Description</guiname>
         <guiname xml:lang="nl">Omschrijving</guiname>
         <guiname xml:lang="eo">Priskribo</guiname>
+        <guiname xml:lang="it">Descrizione</guiname>
         <guitype>field</guitype>
       </gui>
       <!-- editor related  -->
@@ -126,6 +131,7 @@
         <guiname xml:lang="fr">Image</guiname>
         <guiname xml:lang="nl">Plaatje</guiname>
         <guiname xml:lang="eo">Bildo</guiname>
+        <guiname xml:lang="it">Immagine</guiname>
         <guitype>newimage</guitype>
       </gui>
       <!-- editor related  -->
@@ -156,6 +162,7 @@
         <guiname xml:lang="fr">ImageTapent</guiname>
         <guiname xml:lang="nl">PlaatjesType</guiname>
         <guiname xml:lang="eo">Bildotipo</guiname>
+        <guiname xml:lang="it">ImmagineTipo</guiname>
         <guitype>string</guitype>
       </gui>
       <!-- editor related  -->

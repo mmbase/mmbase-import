@@ -10,10 +10,12 @@
      <singular xml:lang="en">Version Control</singular>
      <singular xml:lang="nl">Versiebeheer</singular>
      <singular xml:lang="eo">Versiestrilo</singular>
+     <singular xml:lang="it">Controllo di Versione</singular>
      <!-- multiple per language as defined by ISO 639 -->
      <plural xml:lang="en">Version Control</plural>
      <plural xml:lang="nl">Versiebeheer</plural>
      <plural xml:lang="eo">Versiestrilo</plural>
+     <plural xml:lang="it">Controlo di Versione</plural>
   </names>
 
   <descriptions>
@@ -21,6 +23,7 @@
      <description xml:lang="en">Keeps track of what versions of apps/builders etc etc are installed</description>
      <description xml:lang="nl">Houd bij van applicaties/builders welke versie actief is</description>
      <description xml:lang="eo">Administras la aktivajn versiojn de aplikaĵoj kaj konstruantoj</description>
+     <description xml:lang="it">Registra la versione installata di applicazioni/costruttori ecc ecc ecc </description>
   </descriptions>
 
   <fieldlist>
@@ -31,6 +34,7 @@
           <guiname xml:lang="en">Name</guiname>
           <guiname xml:lang="nl">Naam</guiname>
           <guiname xml:lang="eo">Nomo</guiname>
+          <guiname xml:lang="it">Nome</guiname>
           <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -60,6 +64,7 @@
           <guiname xml:lang="en">Type</guiname>
           <guiname xml:lang="nl">Type</guiname>
           <guiname xml:lang="eo">Tipo</guiname>
+          <guiname xml:lang="it">Tipo</guiname>
           <guitype>string</guitype>
         </gui>
         <!-- editor related  -->
@@ -89,6 +94,7 @@
           <guiname xml:lang="en">Version</guiname>
           <guiname xml:lang="nl">Versie</guiname>
           <guiname xml:lang="eo">Versio</guiname>
+          <guiname xml:lang="it">Versione</guiname>
           <guitype>integer</guitype>
         </gui>
         <!-- editor related  -->
