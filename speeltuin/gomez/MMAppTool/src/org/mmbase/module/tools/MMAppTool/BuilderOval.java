@@ -107,6 +107,14 @@ public class BuilderOval extends Object {
 		return(y);
 	}
 
+	public int getMaxX() {
+		return x + (dx / 2);
+	}
+
+	public int getMaxY() {
+		return y + (dy / 2);
+	}
+
 	public int getFontSize() {
 		return(size);
 	}
