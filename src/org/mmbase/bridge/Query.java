@@ -16,7 +16,7 @@ import java.util.SortedSet;
  * Representation of a (database) query. It is modifiable for use by bridge-users.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Query.java,v 1.18 2003-09-02 19:43:46 michiel Exp $
+ * @version $Id: Query.java,v 1.19 2003-09-03 19:32:45 michiel Exp $
  * @since MMBase-1.7
  */
 public interface Query extends SearchQuery, Cloneable {
@@ -44,6 +44,16 @@ public interface Query extends SearchQuery, Cloneable {
      */
     Step addStep(NodeManager nodeManager);
 
+    /**
+     * Sets the alias to the given step.
+     */
+    void setAlias(Step step, String alias);
+
+    /**
+     * Returns the step with given alias, or null if it is not present
+     * @param stepAlias Alias for the step (may also be tableName, in which case the first step for this table is returned)
+     */
+    Step getStep(String stepAlias);
 
     /**
      * Adds new Relation step to the query.  Adds the next step as well, it can be retrieved by

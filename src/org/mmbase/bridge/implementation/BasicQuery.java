@@ -24,7 +24,7 @@ import org.mmbase.security.Authorization;
  * 'Basic' implementation of bridge Query. Wraps a 'BasicSearchQuery' from core.
  *
  * @author Michiel Meeuwissen
- * @version $Id: BasicQuery.java,v 1.21 2003-09-02 19:43:46 michiel Exp $
+ * @version $Id: BasicQuery.java,v 1.22 2003-09-03 19:32:46 michiel Exp $
  * @since MMBase-1.7
  * @see org.mmbase.storage.search.implementation.BasicSearchQuery
  */
@@ -118,7 +118,7 @@ public class BasicQuery implements Query  {
     }
     public Query aggregatingClone() {
         BasicSearchQuery bsq = new BasicSearchQuery(query, true); 
-        BasicQuery clone = new BasicQuery(cloud, bsq);
+        BasicQuery clone     = new BasicQuery(cloud, bsq);
         clone.used = false;
         clone.aggregating = true;
         return clone;
@@ -143,13 +143,22 @@ public class BasicQuery implements Query  {
         if (used) throw new BridgeException("Query was used already");
 
         removeSecurityConstraint(); // if present
-
+ 
         BasicStep step = query.addStep(((BasicNodeManager)nm).builder);
-        
-        step.setAlias(createAlias(step));
-        if (! aggregating) addField(step, nm.getField("number")); // how works distinct in mmbase?
+
+        if (! aggregating && ! (this instanceof NodeQuery)) {
+            addField(step, nm.getField("number"));
+        }
+
         return step;
     }
+
+    public void setAlias(Step step, String alias) {
+        if (alias == null)  alias = createAlias(step);
+        BasicStep basicStep = (BasicStep) step;
+        basicStep.setAlias(alias);
+    }
+
 
     // similar constants to those of CluserBuilder but still different ?!
     protected int getRelationStepDirection(String search) {
@@ -230,14 +239,14 @@ public class BasicQuery implements Query  {
     }
 
     
-    /**
-     * Returns the step with given alias, or null if it is not present
-     */
-    protected Step getStep(String stepAlias) {
+
+    public Step getStep(String stepAlias) {
         Iterator i = getSteps().iterator();
         while (i.hasNext()) {
             Step step = (Step) i.next();
             if (stepAlias.equals(step.getAlias())) {
+                return step;
+            } else if (stepAlias.equals(step.getTableName())) {
                 return step;
             }
         }
@@ -245,10 +254,11 @@ public class BasicQuery implements Query  {
     }
 
     public StepField createStepField(String fieldIdentifier) {
-        int point = fieldIdentifier.indexOf('.');
-        String stepAlias = fieldIdentifier.substring(0, point);
-       String fieldName = fieldIdentifier.substring(point + 1);
+        int dot = fieldIdentifier.indexOf('.');
+        String stepAlias = fieldIdentifier.substring(0, dot);
+        String fieldName = fieldIdentifier.substring(dot + 1);
         Step step = getStep(stepAlias);
+        if (step == null) throw new  NotFoundException("No step with alias '" + stepAlias + "' found in " + getSteps()); 
         NodeManager nm = cloud.getNodeManager(step.getTableName());
         Field field = nm.getField(fieldName);
         return createStepField(step, field);
