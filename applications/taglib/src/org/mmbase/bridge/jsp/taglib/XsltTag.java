@@ -46,16 +46,17 @@ public class XsltTag extends ContextReferrerTag  {
     }
 
     /**
-     * Write the value of the fieldinfo.
+     * 
      */
-    public int doAfterBody() throws JspTagException {
+    public int doEndTag() throws JspTagException {
         String xsltString;
+        String body = bodyContent != null ? bodyContent.getString() : "";
         if (getReferid() == null) {
-            xsltString = bodyContent.getString();
+            xsltString = body;
 
         } else {
             xsltString = getString(getReferid());
-            if (! "".equals(bodyContent.getString())) {
+            if (! "".equals(body)) {
                 throw new JspTagException("Cannot use body when using 'referid' attribute'.");
             }
         }
@@ -77,6 +78,6 @@ public class XsltTag extends ContextReferrerTag  {
             src.setSystemId(xsltString);
             formatter.setXsltSource(src);
         }
-        return SKIP_BODY;
+        return EVAL_PAGE;
     }
 }

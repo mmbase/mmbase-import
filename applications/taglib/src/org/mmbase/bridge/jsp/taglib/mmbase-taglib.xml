@@ -3358,6 +3358,50 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
         You can give options to the transformation.
       </info>
     </attribute>
+    <attribute>
+      <name>wants</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        <p>
+          This tags can communicate in two ways with its body. Normally
+          the default way will do what you expect, but occasionally it
+          can be that it doesn't. then this attribute will come in
+          handy.
+        </p>
+        <p>
+          If you don't understand this attribute, then don't
+          worry. You will when you need it.
+        </p>
+      </info>
+      <possiblevalue>
+        <value>string</value>
+        <info>Means that the tag simply takes its body as a string.</info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>DOM</value>
+        <info>
+          Means that the tag must contains subtags, which can
+          communicate theirselves to this formatter tag and are put in
+          a DOM Document (created by org.mmbase.bridge.xml.Generator)
+        </info>
+      </possiblevalue>
+      <possiblevalue>
+        <value>default</value>
+        <info>
+          <p>
+            This is the default, and means that the way in which the
+            formatter tag get its information is determined smartly.
+          </p>
+          <p>
+            This means that it is 'DOM' iff the body contains only tags
+            which can communicate themselves to this tag, or don't
+            produce output theirselves (are not writer tags) and the
+            'format' is an XSLT-format.
+          </p>
+        </info>
+      </possiblevalue>
+    </attribute>
     <extends>contextreferrer</extends>
     <extends>writer</extends>
     <see tag="xslt" />
