@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.62 2002-08-05 13:15:44 michiel Exp $
+  @version $Id: wizard.xsl,v 1.63 2002-08-13 15:36:19 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -455,7 +455,7 @@
                 </a>
            </xsl:if>
            <xsl:if test="not(@inline='true')">
-                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
+                <a href="{$popuppage}&amp;fid={../../@fid}&amp;did={../../command[@name='add-item']/@value}&amp;popup={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
                    target="_blank">
                 <xsl:call-template name="prompt_edit_wizard" />
                 </a>
@@ -743,31 +743,40 @@
       <!-- 
            Create the add-buttons for the startwizard commands.
            -->
-      <xsl:for-each select="command[@name='startwizard']">
-        <!-- only if less then maxoccurs -->
-        <xsl:if test="not(ancestor::list/@maxoccurs) or (ancestor::list/@maxoccurs = '*') or count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
-        <table class="itemadd">
-          <tr>
-            <td>
-              <nobr>
-                <xsl:if test="@inline='true'">
-                  <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
-                    <xsl:call-template name="prompt_add_wizard" />
-                  </a>
-                </xsl:if>
-                <xsl:if test="not(@inline='true')">
-                  <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;sessionkey={@wizardname}|popup_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
-                    target="_blank">
-                    <xsl:call-template name="prompt_add_wizard" />
-                  </a>
-                </xsl:if>                
-                </nobr>
+      <xsl:if test="command[@name='startwizard']">
+       
+        <table class="itemadd">       
+        <xsl:for-each select="command[@name='startwizard']">
+          <!-- only if less then maxoccurs -->
+          <xsl:if test="not(ancestor::list/@maxoccurs) or (ancestor::list/@maxoccurs = '*') or count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
+            <tr>
+              <td>
+                <xsl:if test="prompt">
+                  <xsl:value-of select="prompt" />
+                </xsl:if>            
               </td>
-            </tr>
-          </table>
-        </xsl:if>
-        </xsl:for-each>
-      </td>
+              <td>
+                <nobr>                  
+                    <xsl:if test="@inline='true'">
+                      <a href="javascript:doStartWizard('{../@fid}','{../command[@name='add-item']/@value}','{@wizardname}','{@objectnumber}','{@origin}');">
+                        <xsl:call-template name="prompt_add_wizard" />
+                        </a>
+                      </xsl:if>
+                      <xsl:if test="not(@inline='true')">
+                        <a href="{$popuppage}&amp;fid={../@fid}&amp;did={../command[@name='add-item']/@value}&amp;popup={@wizardname}_{@objectnumber}&amp;wizard={@wizardname}&amp;objectnumber={@objectnumber}&amp;origin={@origin}"
+                          target="_blank">
+                          <xsl:call-template name="prompt_add_wizard" />
+                          </a>
+                        </xsl:if>                
+                      </nobr>
+                    </td>
+                  </tr>
+                </xsl:if>
+              </xsl:for-each>
+            </table>
+          </xsl:if>
+
+        </td>
 
     </xsl:template><!-- list -->
       
