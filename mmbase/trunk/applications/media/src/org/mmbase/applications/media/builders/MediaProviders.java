@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
  * is related to the mediasources that are available on the mediaprovider. A mediaprovider can 
  * be online/offline. 
  *
- * @author Michiel Meeuwissen
- * @version $Id: MediaProviders.java,v 1.6 2003-02-05 15:39:34 rob Exp $
+* @author Michiel Meeuwissen
+ * @version $Id: MediaProviders.java,v 1.7 2003-02-10 13:24:48 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaProviders extends MMObjectBuilder {
