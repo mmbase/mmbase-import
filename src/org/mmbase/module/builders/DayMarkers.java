@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.17 2001-03-19 10:58:15 michiel Exp $
+ * @version $Id: DayMarkers.java,v 1.18 2001-04-10 10:36:16 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -58,7 +58,10 @@ public class DayMarkers extends MMObjectBuilder {
 			if (rs.next()) {
 				smallestMark   = rs.getInt(1);
 				smallestDay    = rs.getInt(2);
-			} 
+			} else {
+			    smallestDay = currentDay();
+			    //smallestMark = 0;
+			}
 			stmt.close();
 			con.close();
 		} catch (SQLException e) {
