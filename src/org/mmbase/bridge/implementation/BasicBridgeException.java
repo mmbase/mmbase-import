@@ -8,7 +8,7 @@ See http://www.MMBase.org/license
 
 */
 package org.mmbase.bridge.implementation;
-import org.mmbase.bridge.BridgeError;
+import org.mmbase.bridge.*;
 import org.mmbase.util.logging.*;
 
 /**
