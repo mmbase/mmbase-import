@@ -19,7 +19,7 @@ import org.mmbase.util.logging.*;
  * Redirects request based on information supplied by the jumpers builder.
  *
  * @author Jaco de Groot
- * @version $Id: JumpersFilter.java,v 1.7 2004-01-30 13:03:22 pierre Exp $
+ * @version $Id: JumpersFilter.java,v 1.8 2004-02-03 15:14:40 michiel Exp $
  */
 public class JumpersFilter implements Filter {
     private static final Logger log = Logging.getLoggerInstance(JumpersFilter.class);
@@ -57,8 +57,13 @@ public class JumpersFilter implements Filter {
             log.warn("Could not start MMBase.");
             throw new ServletException("Could not start jumpers filter because MMBase not started");
         }
-
-        bul = (Jumpers)mmb.getBuilder("jumpers");
+        
+        try {
+            bul = (Jumpers)mmb.getBuilder("jumpers");
+        } catch (BuilderConfigurationException bce) {
+            log.warn(bce.getMessage());
+            bul = null;
+        }
         if (bul == null) {
             log.warn("Could not find jumpers builder. Perhaps it will be installed later. If not, you could as well remove the Jumpers filter.");
         }
