@@ -3,14 +3,14 @@
 	<node number="415" owner="admin" alias="user.admin">
 		<state>0</state>
 		<username>admin</username>
-		<defaultcontext>admin</defaultcontext>
+		<defaultcontext>520</defaultcontext>
 		<password>admin2k</password>
 	</node>
 
 	<node number="777" owner="admin">
 		<state>0</state>
 		<username>foo</username>
-		<defaultcontext>default</defaultcontext>
+		<defaultcontext>1000</defaultcontext>
 		<password>bar</password>
 	</node>
 
@@ -18,7 +18,7 @@
 	<node number="1002" owner="admin">
 		<state>0</state>
 		<username>anonymous</username>
-		<defaultcontext>default</defaultcontext>
+		<defaultcontext>1000</defaultcontext>
 		<password></password>
 	</node>
 
