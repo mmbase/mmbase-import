@@ -164,8 +164,33 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         this.whereString = getAttributeValue(where);
     }
 
-    abstract public int doStartTag() throws JspTagException;
 
+    protected static int NOT_HANDLED = -100;
+    public int doStartTag() throws JspTagException {
+        if (getReferid() != null) {
+            Object o =  getContextTag().getObject(getReferid());
+            if (! (o instanceof NodeList)) {
+                throw new JspTagException("Context variable " + getReferid() + " is not a NodeList");
+            }
+            if (sortedString != null) {
+                throw new JspTagException("'orderby' attribute does not make sense with 'referid' attribute");
+            }
+            if (offset != 0) {
+                throw new JspTagException("'offset' attribute does not make sense with 'referid' attribute");
+            }
+            if (max != -1) {
+                throw new JspTagException("'max' attribute does not make sense with 'referid' attribute");
+            }
+            if (directionString != null) {
+                throw new JspTagException("'directions' attribute does not make sense with 'referid' attribute");
+            }
+            if (whereString != null) {
+                throw new JspTagException("'contraints' attribute does not make sense with 'referid' attribute");
+            }
+            return setReturnValues((NodeList) o);
+        }
+        return NOT_HANDLED;
+    }
     /**
      * Creates the node iterator and sets appropriate variables (i.e. listsize)
      * froma  passed node list.
@@ -175,8 +200,8 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  list is empty. THis value should be passed as the result of {
      *  @link #doStartTag}.
      */
-    protected int setReturnValues(NodeList nodes) {
-        return setReturnValues(nodes,false);
+    protected int setReturnValues(NodeList nodes) throws JspTagException {
+        return setReturnValues(nodes, false);
     }
 
     /**
@@ -191,7 +216,7 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      *  list is empty. THis value should be passed as the result of {
      *  @link #doStartTag}.
      */
-    protected int setReturnValues(NodeList nodes, boolean trim) {
+    protected int setReturnValues(NodeList nodes, boolean trim) throws JspTagException {
         if (trim && (max>-1 || offset > 0)) {
             int currentSize = nodes.size();
             int maxx = (max>currentSize ? currentSize : max);
@@ -206,11 +231,17 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
                 offset = 0;
             }
             nodes = nodes.subNodeList(offset, to);
-            returnValues = nodes.nodeIterator();
-        } else {
-            returnValues = nodes.nodeIterator();
+       
+        } 
+        NodeList returnList   = nodes;
+        {
+            String id = getId();
+            if (id != null && ! "".equals(id)) {
+                getContextTag().register(getId(), returnList);
+            }
         }
-        listSize = nodes.size();
+        returnValues = returnList.nodeIterator();        
+        listSize = returnList.size();
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
@@ -222,10 +253,6 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
 
     public int doAfterBody() throws JspTagException {
         super.doAfterBody();
-        String id = getId();
-        if (id != null && ! "".equals(id)) {
-            getContextTag().unRegister(id);
-        }
         if (returnValues.hasNext()){
             doInitBody();
             return EVAL_BODY_TAG;
@@ -262,10 +289,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
             fillVars();
         }
     }
-
+    /*
     public boolean isFirst(){
         return (currentItemIndex == 0);
     }
+    */
 
     /**
      * If you order a list, then the 'changed' property will be
@@ -278,10 +306,11 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
     public int size(){
         return listSize;
     }
-
+    /*
     public boolean isLast(){
         return (! returnValues.hasNext());
     }
+    */
 
 }
 

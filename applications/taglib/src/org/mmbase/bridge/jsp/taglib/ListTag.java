@@ -95,6 +95,11 @@ public class ListTag extends AbstractNodeListTag {
      * Performs the search
      */
     public int doStartTag() throws JspTagException{
+        int superresult =  super.doStartTag(); // the super-tag handles the use of referid...
+        if (superresult != NOT_HANDLED) {
+            return superresult;
+        }
+
         String searchNodes= (nodesString == null)? "-1" : nodesString;
         boolean searchDistinct = false;
         if ("true".equals(distinctString) || "yes".equals(distinctString)) {
