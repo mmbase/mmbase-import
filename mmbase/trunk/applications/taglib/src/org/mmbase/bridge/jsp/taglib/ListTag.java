@@ -9,13 +9,26 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+
+import java.util.Collection;
+import java.util.Vector;
+import java.util.List;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
+import java.util.Iterator;
+
 import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import javax.servlet.jsp.tagext.*;
 
-import org.mmbase.bridge.*;
+import org.mmbase.bridge.Node;
+import org.mmbase.bridge.NodeIterator;
+import org.mmbase.bridge.NodeList;
+import org.mmbase.bridge.NodeManager;
+import org.mmbase.bridge.NodeComparator;
+import org.mmbase.bridge.implementation.BasicNodeList;
+
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -224,6 +237,7 @@ public class ListTag extends NodeLikeTag implements BodyTag {
                 action = "no multilevel search";
 		boolean hasSearch = (searchWhere != null);
 		boolean hasNode   = (nodesString != null);
+		boolean hasSort   = (searchSorted != null);
 		if (hasSearch) {
                     action = "has a where-search";
 		    if (hasNode){
@@ -231,25 +245,74 @@ public class ListTag extends NodeLikeTag implements BodyTag {
 			//first hack, the MMCI does not provide a search on a node
 			//but this is what we need here, so we expand the query
 			//to resctrict the search on the node given
-			searchWhere = "(" + searchWhere +") and ( number = " + getDefaultCloud().getNode(nodesString).getNumber() + " )";
-		    }
-                    action = "search relations with start node (" + nodesString + ") using a search";
+                        searchWhere = "(" + searchWhere +") and ( number = " + getDefaultCloud().getNode(nodesString).getNumber() + " )";
+                    }
+                    action = "search relations with start node (" + nodesString + ") using a search " + searchWhere;
 		    log.debug(action);
 		    NodeManager nodeManager = getDefaultCloud().getNodeManager(nodeManagers);
+                    
 //		    boolean direction = ("UP".equals(searchDirection))? true: false;
 //		    nodes= nodeManager.getList(searchWhere,null,direction);
+                    log.debug("search " + searchWhere + " sorted "  + searchSorted + " direction " + searchDirection);
 		    nodes= nodeManager.getList(searchWhere, searchSorted, searchDirection);
 		} else if (hasNode){
+                    if (stringSplitter(searchNodes,",").size() > 1){ 
+                        throw new JspException ("Cannot have multiple starting points on a getRelatedNodes");
+                    }
 		    action = "list all relations of node("+ searchNodes +") of type("+ typeString + ")";
 		    log.debug(action);
-                    nodes = getDefaultCloud().getNode(searchNodes).getRelatedNodes(typeString);
-                    if (searchSorted != null) {
-                        throw new JspException ("Cannot do a sort on a getRelatedNodes");
+                    if (hasSort) { // a not-so-nice hack.
+                        log.warn("Trying to sort on non-multilevel list. Bad for performance.");
+                        // get the type of this one node:
+                        Node baseNode = getDefaultCloud().getNode(searchNodes);
+                        NodeManager baseNodeManager = baseNode.getNodeManager();
+
+                        // look which types are wanted:
+                        Vector nodeManagersVector = stringSplitter(nodeManagers);
+                        if (nodeManagersVector.size() == 0) {
+                            throw new JspException ("Must specify at least one NodeManager");
+                        }
+                        // for a getList the first type must be the type of the node.
+                        // So if it is not there, we can easily add it:
+                        if (! ((String)nodeManagersVector.get(0)).equalsIgnoreCase(baseNodeManager.getName())) {
+                            nodeManagersVector.add(0, baseNodeManager.getName());
+                        }
+
+                        // now there must be only two nodemanagers:
+                        if (nodeManagersVector.size() != 2) {
+                            throw new JspException("Must be 2 nodemanagers");
+                        } 
+                        nodeManagers = nodeManagersVector.get(0) + "," + nodeManagersVector.get(1);
+                        
+
+                        // The fieldlist must be simply the numbers...
+
+                        String numbers = nodeManagersVector.get(1) + ".number";
+
+                        // check if searchSorted is ok:
+                        StringTokenizer st = new StringTokenizer(searchSorted, ".");
+                        st.nextToken();
+                        if (! st.hasMoreTokens()) {
+                            searchSorted = nodeManagersVector.get(1) + "." + searchSorted;
+                        } else {
+                            String nm = (String) st.nextToken();
+                            if (! nm.equalsIgnoreCase((String)nodeManagersVector.get(1))) {
+                                throw new JspException("Indicated wrong nodemanager in search " + searchSorted + ", must be " + nodeManagersVector.get(1)); 
+                            }
+                        }
+                        NodeList virtualNodes = getDefaultCloud().getList("" + baseNode.getNumber(), nodeManagers, numbers, null, searchSorted, searchDirection, null, false); 
+
+                        // now make normal nodes of it.                       
+                        Vector nodesVector = new Vector();
+                        NodeIterator i = virtualNodes.nodeIterator();
+                        while(i.hasNext()){
+                            nodesVector.add(getDefaultCloud().getNode(i.nextNode().getStringValue(numbers)));
+                        }
+                        nodes = new BasicNodeList((Collection)nodesVector, getDefaultCloud());
+                    } else {
+                        nodes = getDefaultCloud().getNode(searchNodes).getRelatedNodes(typeString);
+                        
                     }
-                    if (searchWhere != null) {
-                        throw new JspException ("Cannot do a where on a getRelatedNodes");
-                    }
-                    // michiel: a few more of these kind of checks could do no harm
 
 		} else {
 		    action = "list all objects of type("+ typeString + ")";
