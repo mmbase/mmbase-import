@@ -39,7 +39,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.21 2002-12-05 15:59:12 robmaris Exp $
+ * @version $Id: ClusterBuilder.java,v 1.22 2002-12-06 12:25:52 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -313,7 +313,7 @@ public class ClusterBuilder extends VirtualBuilder {
     public Vector searchMultiLevelVector(
             Vector snodes,Vector fields,String pdistinct,
             Vector tables,String where, Vector orderVec,Vector direction,
-                                         int searchdir) {
+            int searchdir) {
         String stables,relstring,select,order,basenodestring,distinct;
         Vector alltables,selectTypes;
         MMObjectNode basenode;
@@ -507,6 +507,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * This includes adding relation tables when not specified, and converting table names by
      * removing numeric extensions (such as people1,people2).
      * @param tables the original chain of tables
+     * @param roles Map of tablenames mapped to <code>Integer</code> values,
+     *        representing the nodenumber of a corresponing RelDef node.
+     *        This method adds entries for tablenames that specify a role,
+     *        e.g. "related" or "related2".
      * @return an expanded list of tablesnames
      */
     private Vector getAllTables(Vector tables, HashMap roles) {
@@ -601,14 +605,14 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Determines the SQL-query version of a tablename.
+     * Determines the SQL-query version of a table alias.
      * This is done by searching for the appropriate tablename in a known list, and
      * calculating a name based on the index in that list.
      * @param alltables the tablenames known (used to determine the SQL tablename)
      * @param table the table name to convert
-     * @return the SQL table name as a <code>String</code>
+     * @return the SQL table alias as a <code>String</code>
      */
-    private String getSQLTableName(Vector alltables,String table) {
+    private String getSQLTableAlias(Vector alltables,String table) {
         int idx=alltables.indexOf(table);
         if (idx>=0) {
             return idx2char(idx);
@@ -616,11 +620,13 @@ public class ClusterBuilder extends VirtualBuilder {
             return null;
         }
     }
-
+    
     /**
-     * Determines the SQL-query version of a field name.
-     * Basically, this means replacing the table name specified in the user's field name by the one created
-     * for the query,
+     * Determines the SQL-query version of a prefixed field name.
+     * This means: replacing the table name prefix in the specified field name 
+     * by the table alias created for the query, and replacing the fieldname by
+     * a so-called 'allowed' fieldname.
+     *
      * @param alltables the tablenames known (used to determine the SQL tablename)
      * @param fieldname the field name to convert
      * @return the SQL field name as a <code>String</code>
@@ -629,7 +635,7 @@ public class ClusterBuilder extends VirtualBuilder {
         int pos=fieldName.indexOf('.'); // check if a tablename precedes the fieldname
         if (pos!=-1) {
             String table=fieldName.substring(0,pos); // the table
-            String idxn=getSQLTableName(alltables,table);
+            String idxn=getSQLTableAlias(alltables,table);
             if (idxn==null) {
                 log.error("getSQLFieldName(): The field '"+fieldName+"' has an invalid type specified");
             } else {
@@ -645,8 +651,11 @@ public class ClusterBuilder extends VirtualBuilder {
     }
 
     /**
-     * Retrieves fieldnames from a value (possibly a function name), and adds
-     * these to a set of fieldnames.
+     * Retrieves fieldnames from an ezpression, and adds these to a set of
+     * fieldnames.
+     * The expression may be either a fieldname or a a functionname with a 
+     * parameterlist between parenthesis.
+     *
      * @param alltables List of tablenames, used for deriving a SQL table name
      * @param val the value to retrieve the fieldname from
      * @param realfields the set to add the fieldnames to
@@ -655,7 +664,6 @@ public class ClusterBuilder extends VirtualBuilder {
         // strip the function(s)
         int pos=val.indexOf('(');
         if (pos!=-1) {
-            String result="";
             val=val.substring(pos+1);
             pos=val.lastIndexOf(')');
             if (pos!=-1) {
@@ -708,11 +716,12 @@ public class ClusterBuilder extends VirtualBuilder {
             val=(String)r.nextElement();
             obtainSelectField(alltables,val,realfields);
         }
-        // add numbers for all originally specified tables
+        
+        // optionally add "number" fields for all originally specified tables
         if (includeAllReferences) {
             for (Enumeration r=originaltables.elements();r.hasMoreElements();) {
                 val=(String)r.nextElement();
-                realfields.add(numberOf(getSQLTableName(alltables,val)));
+                realfields.add(numberOf(getSQLTableAlias(alltables,val)));
             }
         }
         for (Iterator r=realfields.iterator();r.hasNext();) {
@@ -788,7 +797,7 @@ public class ClusterBuilder extends VirtualBuilder {
 
         for (Enumeration e=tables.elements();e.hasMoreElements();) {
             atable=(String)e.nextElement();
-            table = getSQLTableName(alltables,atable);
+            table = getSQLTableAlias(alltables,atable);
 
             // This translates the long tablename to the short one
             // i.e. people.account to a.account.
