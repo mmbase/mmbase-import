@@ -22,7 +22,14 @@
 		<description xml:lang="nl">Jumpers zijn links waarmee naar een object of webpagina wordt gesprongen</description>
 	</descriptions>
 
+	<!-- The jumpers builder can be configured using two properties:
+		- JumperCacheSize : determines the size of the jumper cache (in nr of items).
+			The default size is 1000
+		- JumperNotFoundURL : Determines the default url (such as a home page or error page) when no jumper is found.
+			If not specified nothing will be done if no jumper is found.
+	-->
 	<properties>
+		<property name="JumperCacheSize">1000</property>
 		<property name="JumperNotFoundURL">/index.html</property>
 	</properties>
 
