@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
- * @version $Id: ListTag.java,v 1.38 2003-12-02 11:29:43 michiel Exp $
+ * @version $Id: ListTag.java,v 1.39 2003-12-02 12:33:27 michiel Exp $
  */
 
 public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider {
@@ -186,11 +186,7 @@ public class ListTag extends AbstractNodeListTag implements ClusterNodeProvider 
             }
             query.setDistinct(searchDistinct);
             if (fields != Attribute.NULL) {
-                Iterator i = fields.getList(this).iterator();
-                while (i.hasNext()) {
-                    String fieldName = (String) i.next();
-                    query.addField(fieldName);
-                }
+                Queries.addFields(query, fields.getString(this));
             }
 
             NodeList nodes = getCloud().getList(query);
