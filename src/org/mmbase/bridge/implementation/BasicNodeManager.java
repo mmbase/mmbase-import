@@ -29,13 +29,13 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.37 2002-10-03 15:39:34 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.38 2002-10-03 15:44:28 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
 
     // builder on which the type is based
-    protected MMObjectBuilder builder=null;
+    protected MMObjectBuilder builder;
 
     // field types
     protected Hashtable fieldTypes = new Hashtable();
