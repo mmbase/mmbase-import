@@ -1599,7 +1599,7 @@ public class MMObjectBuilder extends MMTable {
 		}
 	}
 	
-	private void debug( String msg )
+	protected void debug( String msg )
 	{
 		System.out.println( classname +":"+ msg );
 	}
