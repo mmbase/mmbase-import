@@ -294,7 +294,7 @@ public class MMBase extends ProcessorModule  {
 	public void doProbeRun() {
 		DayMarkers bul=(DayMarkers)getMMObject("daymarks");
 		if (bul!=null) {
-			bul.createMarker();
+			bul.probe();
 		} else {
 			debug("doProbeRun(): ERROR: Can't access builder : daymarks");
 		}
