@@ -163,6 +163,7 @@ public class g2encoderUnix implements g2encoderInterface {
 
 		try {
 			p = (Runtime.getRuntime()).exec(command,null);
+			p.waitFor();
 		} catch (Exception e) {
 			s+=e.toString();
 			return s;
@@ -176,6 +177,16 @@ public class g2encoderUnix implements g2encoderInterface {
 			//s+=e.toString();
 			return s;
 	   }
+
+		DataInputStream dep = new DataInputStream(p.getErrorStream());
+		try {
+			while( (tmp=dep.readLine()) != null ) {
+				s += tmp + "\n";	
+			}	
+		} catch( Exception e ) { 
+			return s;
+		}
+		
 	   return s;
 	}
 
@@ -262,10 +273,10 @@ public class g2encoderUnix implements g2encoderInterface {
 
 		
 
-		result+=" -t 0,1,2,3,4";
+		result+=" -t 2,3,4";
 		debug("doEncode(): exec("+command+result+")");
 		result=execute(command+result);
-		debug("doEncode(): result("+result+")");
+		debug("doEncode(): encoding done, result("+result+")");
 		//return result;
 		return("oke");
 	}
