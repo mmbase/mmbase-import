@@ -35,7 +35,6 @@ public class EmailExpireHandler implements Runnable {
     // parent builder needed for callbacks
     EmailBuilder parent;
 
-    Thread kicker = null;
     /**
     *  create a handler with sleeptime and expiretime
     */
@@ -43,7 +42,7 @@ public class EmailExpireHandler implements Runnable {
         this.parent = parent;
         this.sleeptime = sleeptime;
         this.expiretime = expiretime;
-        kicker = new Thread(this, "emailexpireprobe");
+        Thread kicker = new Thread(this, "emailexpireprobe");
         kicker.setDaemon(true);
         kicker.start();
     }
@@ -53,15 +52,16 @@ public class EmailExpireHandler implements Runnable {
     */
     public void run() {
         try {
-            while (kicker != null) {
+            while (true) {
                 // get the nodes we want to expire
                 for (Iterator i = parent.getDeliveredMailOlderThan(expiretime).iterator(); i.hasNext(); ) {
                     // get next node
-                    MMObjectNode expirenode = (MMObjectNode)i.next();
+                    MMObjectNode expiredNode = (MMObjectNode)i.next();
+                    log.service("Removing successfully mailed email 'one shot' email node " + expiredNode.getNumber());
                     // remove all its relations
-                    expirenode.removeRelations();
+                    expiredNode.removeRelations();
                     // remove the node itself, by asking its builder
-                    parent.removeNode(expirenode);
+                    parent.removeNode(expiredNode);
                 }
                 try {
                     Thread.sleep(sleeptime * 1000);
