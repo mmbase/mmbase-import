@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.applications.media.urlcomposers;
 import org.mmbase.applications.media.builders.MediaProviders;
+import org.mmbase.applications.media.builders.MediaSources;
 import org.mmbase.module.core.MMObjectNode;
 import org.mmbase.applications.media.Format;
 import java.util.Map;
@@ -26,7 +27,7 @@ import java.util.Map;
  * as entry in Lists)
  *
  * @author Michiel Meeuwissen
- * @version $Id: URLComposer.java,v 1.3 2003-02-04 12:40:41 michiel Exp $
+ * @version $Id: URLComposer.java,v 1.4 2003-02-04 17:43:33 michiel Exp $
  */
 
 public class URLComposer  {
@@ -70,16 +71,18 @@ public class URLComposer  {
     }
 
     public boolean      isAvailable() { 
-        boolean providerAvailable = (provider.getIntValue("state") == MediaProviders.STATE_ON);
-        return providerAvailable;
+        boolean sourceAvailable    = (source != null && source.getIntValue("state") == MediaSources.STATE_DONE);
+        boolean providerAvailable  = (provider.getIntValue("state") == MediaProviders.STATE_ON);
+        return providerAvailable && sourceAvailable;
     }
-  
     
     public String toString() {
+        // for verboseness:
+        String className = getClass().getName().substring(getClass().getName().lastIndexOf(".") + 1);
         if (isAvailable()) {
-            return getFormat().toString() + ": " + getURL();
+            return className + "/" + getFormat() + ": " + getURL();
         } else {
-            return "{" +  getFormat().toString() + ": " + getURL() + "}";
+            return "{" + className + "/" +  getFormat() + ": " + getURL() + "}";
         }
     }
 }

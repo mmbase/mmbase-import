@@ -8,7 +8,7 @@
 >
 
 
-<!ENTITY % configSubTags " "><!-- default no configs, add them in the DOCTYPE of mediasourcefilter.xml -->
+<!ENTITY % configSubTags " "><!-- default no configs, add them in the DOCTYPE of filters.xml -->
 
 <!ELEMENT filterConfigs (config*)>
 

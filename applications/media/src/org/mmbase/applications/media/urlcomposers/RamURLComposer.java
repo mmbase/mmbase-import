@@ -22,7 +22,7 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: RamURLComposer.java,v 1.2 2003-02-03 22:50:55 michiel Exp $
+ * @version $Id: RamURLComposer.java,v 1.3 2003-02-04 17:43:33 michiel Exp $
  * @since MMBase-1.7
  */
 public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
@@ -32,7 +32,7 @@ public class RamURLComposer extends FragmentURLComposer { // also for wmp/asx
     protected  Format          format;
     public RamURLComposer(MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, Map info) {
         super(provider, source, fragment, info);
-        this.format = format;
+        this.format = Format.get(source.getIntValue("format"));
         this.url = "/mediahtml.jsp";
     }
     protected StringBuffer  getURLBuffer() {
