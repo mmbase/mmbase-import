@@ -42,7 +42,7 @@ public class sessionInfo {
 	public MMObjectNode getNode() {
 		return(node);
 	}
-	
+
 	public String getCookie() {
 		return(cookie);
 	}
@@ -59,6 +59,15 @@ public class sessionInfo {
 			return("illegal input,see error log");
 		}
 	}
+
+    /**
+     * Removes (clears) a value from a session.
+     * @param key the key of the attribute to clear
+     * @return the original value of the attribute
+     */
+    public String removeValue(String key) {
+        return((String)values.remove(key));
+    }
 
 	/**
 	* adds a value to a set, no duplicates are allowed.
@@ -77,11 +86,11 @@ public class sessionInfo {
 			} else {
 				log.error("ERROR: Illegal input, action blocked");
 			}
-			log.debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());
 		} else {
 			if (!v.contains(value)) {
 				v.addElement(value);
-				log.debug("sessionset="+v.toString());	
+				log.debug("sessionset="+v.toString());
 			}
 		}
 		log.debug("addSetValue() -> getSetString("+key+"): " +getSetString(key));
@@ -105,14 +114,14 @@ public class sessionInfo {
 			} else {
 				log.error("ERROR: Illegal input, action blocked");
 			}
-			log.debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());
 		} else {
 			if (isSecure(value)) {
 				v.addElement(value);
 			} else {
 				log.error("ERROR: Illegal input, action blocked");
 			}
-			log.debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());
 		}
 	}
 
@@ -125,7 +134,7 @@ public class sessionInfo {
 		if (v!=null) {
 			if (v.contains(value)) {
 				v.removeElement(value);
-				log.debug("sessionset="+v.toString());	
+				log.debug("sessionset="+v.toString());
 			}
 		}
 	}
@@ -149,12 +158,12 @@ public class sessionInfo {
 	* delete the values belonging to the key
 	*/
 	public String clearSet(String key) {
-		log.debug("sessionset="+key);	
+		log.debug("sessionset="+key);
 		Vector v=(Vector)setvalues.get(key);
 		if (v!=null) {
 			v=new Vector();
 			setvalues.put(key,v);
-			log.debug("sessionset="+v.toString());	
+			log.debug("sessionset="+v.toString());
 		}
 		return("");
 	}
@@ -162,7 +171,7 @@ public class sessionInfo {
 
 	/**
 	* returns the session variable values comma separaterd
-	* @param key the name of the session variable 
+	* @param key the name of the session variable
 	*/
 	public String getSetString(String key) {
 
@@ -225,7 +234,7 @@ public class sessionInfo {
 		}
 	}
 
-	/**	
+	/**
 	 * returns the hostname of a user
 	 */
 	public String getHostName() {
