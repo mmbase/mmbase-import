@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.226 2003-04-11 20:14:02 kees Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.227 2003-04-11 21:29:06 kees Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3375,16 +3375,20 @@ public class MMObjectBuilder extends MMTable {
         return searchAge;
     }
 
-    /**
+    /** 
      * Gets short name of the builder, using the specified language.
      * @param lang The language requested
      * @return the short name in that language, or <code>null</code> if it is not available
      */
     public String getSingularName(String lang) {
+	String tmp =null;
         if (singularNames !=null) {
-            return (String)singularNames.get(lang);
+            tmp = (String)singularNames.get(lang);
+            if (tmp==null) tmp = (String)singularNames.get(mmb.getLanguage());
+            if (tmp==null) tmp = (String)singularNames.get("en");
 	}
-        return null;
+        if (tmp==null) tmp = tableName;
+        return tmp;
     }
 
     /**
@@ -3394,10 +3398,7 @@ public class MMObjectBuilder extends MMTable {
      * @return the short name in either the default language or in "en"
      */
     public String getSingularName() {
-        String tmp = getSingularName(mmb.getLanguage());
-        if (tmp==null) tmp = getSingularName("en");
-        if (tmp==null) tmp = tableName;
-        return tmp;
+        return getSingularName(mmb.getLanguage());
     }
 
     /**
@@ -3406,14 +3407,15 @@ public class MMObjectBuilder extends MMTable {
      * @return the long name in that language, or <code>null</code> if it is not available
      */
     public String getPluralName(String lang) {
-        String retval = null;
+        String tmp = null;
         if (pluralNames !=null){
-          retval = (String)pluralNames.get(lang);
+	    tmp= (String)pluralNames.get(lang);
+            if (tmp==null) tmp = (String)pluralNames.get(mmb.getLanguage());
+            if (tmp==null) tmp = (String)pluralNames.get("en");
+            if (tmp==null) tmp = getSingularName(lang);
 	}
-        if (retval == null){
-            return getPluralName();
-        }
-        return retval;
+        if (tmp==null) tmp = tableName;
+        return tmp;
     }
 
     /**
@@ -3423,10 +3425,7 @@ public class MMObjectBuilder extends MMTable {
      * @return the long name in either the default language or in "en"
      */
     public String getPluralName() {
-        String tmp = getPluralName(mmb.getLanguage());
-        if (tmp==null) tmp = getPluralName("en");
-        if (tmp==null) tmp = getSingularName();
-        return tmp;
+        return getPluralName(mmb.getLanguage());
     }
 
     /**
