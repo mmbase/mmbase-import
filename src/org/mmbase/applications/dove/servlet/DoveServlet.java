@@ -37,7 +37,7 @@ import org.mmbase.servlet.MMBaseServlet;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: DoveServlet.java,v 1.4 2002-06-26 11:44:55 michiel Exp $
+ * @version $Id: DoveServlet.java,v 1.5 2002-11-06 18:46:52 michiel Exp $
  */
 public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to use its logging
 
@@ -98,7 +98,7 @@ public class DoveServlet extends MMBaseServlet { // MMBase, only to be able to u
             // My advise would be yes, but for debugging purposes I
             // have made it optional.
             parser.setFeature("http://apache.org/xml/features/validation/dynamic", true);
-            EntityResolver resolver = new XMLEntityResolver();
+            EntityResolver resolver = new XMLEntityResolver(true, getClass());
             parser.setEntityResolver(resolver);
 
             DoveErrorHandler errorhandler = new DoveErrorHandler();
