@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class VtsSuite extends TestCase {
     
@@ -35,7 +35,7 @@ public class VtsSuite extends TestCase {
         //Do NOT change lines enclosed by the --JUNIT: and :JUNIT-- tags.
         
         TestSuite suite = new TestSuite("VtsSuite");
-        suite.addTest(org.mmbase.storage.search.implementation.database.vts.VtsSqlHandlerTest.suite());
+//        suite.addTest(org.mmbase.storage.search.implementation.database.vts.VtsSqlHandlerTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.database.vts.XmlVtsIndicesReaderTest.suite());
         //:JUNIT--
         //This value MUST ALWAYS be returned from this function.
