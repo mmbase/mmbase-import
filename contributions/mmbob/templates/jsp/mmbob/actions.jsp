@@ -19,6 +19,18 @@
 	  </mm:nodefunction>
 </mm:present>
 
+<mm:import id="moderatormode">false</mm:import>
+<mm:import externid="moderatorcheck" />
+<mm:present referid="moderatorcheck">
+          <mm:import externid="postareaid" />
+          <mm:import externid="page">1</mm:import>
+          <mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
+                <mm:remove referid="moderatormode" />
+                <mm:import id="moderatormode"><mm:field name="ismoderator" /></mm:import>
+          </mm:nodefunction>
+          <mm:remove referid="postareaid"/>
+</mm:present>
+
 <mm:compare value="postreply" referid="action">
 	<mm:import externid="postareaid" />
 	<mm:import externid="postthreadid" />
@@ -168,6 +180,18 @@
 	</mm:booleanfunction>
 </mm:compare>
 </mm:compare>
+
+<mm:compare value="true" referid="moderatormode">
+<mm:compare value="removepost" referid="action">
+        <mm:import externid="postareaid" />
+        <mm:import externid="postthreadid" />
+        <mm:import externid="postingid" />
+        <mm:booleanfunction set="mmbob" name="removePost" referids="forumid,postareaid,postthreadid,postingid,posterid">
+        </mm:booleanfunction>
+</mm:compare>
+</mm:compare>
+
+
 
 <mm:compare value="newforum" referid="action">
 	<mm:import externid="name" />
