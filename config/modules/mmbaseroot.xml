@@ -28,8 +28,8 @@
 	<property name="machinename">MMBaseserver</property>
 
 	<!--
-	name="storagemanagerfactory" defines waht factory to use for accessing the storage divices.
-	Curerntly. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices
+	name="storagemanagerfactory" defines what factory to use for accessing the storage devices.
+	Currently. only DatabaseStorageManagerFactory is implemented, which gives access to various database devices
         using JDBC. 
         Uncomment this property to use the storagemanagerfactory code, rather than te old (soon to be depricated) 
 	support classes.
