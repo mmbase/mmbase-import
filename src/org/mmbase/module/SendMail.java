@@ -1,11 +1,14 @@
 /*
 
+$Id: SendMail.java,v 1.2 2000-02-24 13:29:52 wwwtech Exp $
+
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
 placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
+$Log: not supported by cvs2svn $
 */
 
 package org.mmbase.module;
@@ -20,16 +23,20 @@ import org.mmbase.util.*;
  * This module gives mail functionality 
  *
  * @author Rob Vermeulen
- * @version 30 December 1996
+ * @version $Revision: 1.2 $ $Date: 2000-02-24 13:29:52 $
  */
 public class SendMail extends Module implements SendMailInterface {
-   	private DataInputStream in=null;
-   	private DataOutputStream out=null;
-	private Socket connect=null;
-	private String mailhost="";
+	private String 		 classname 	= getClass().getName();
+	private boolean		 debug 		= false;
+   	private DataInputStream  in		= null;
+   	private DataOutputStream out		= null;
+	private Socket 		 connect	= null;
+	private String		 mailhost 	= "";
+
+	private void		 debug(String msg){ System.out.println(classname+":"+msg); }
 
 	public void reload() {
-        mailhost=getInitParameter("mailhost");
+        	mailhost=getInitParameter("mailhost");
 	}
 
 	public void unload() {
@@ -43,7 +50,7 @@ public class SendMail extends Module implements SendMailInterface {
 	
 	public void init() {
         	mailhost=getInitParameter("mailhost");
-		//System.out.println("SendMail -> mailhost "+mailhost);
+		if( debug ) debug("init(): SendMail -> mailhost "+mailhost);
 	}
 
 	/** 
@@ -55,23 +62,23 @@ public class SendMail extends Module implements SendMailInterface {
         try {
             connect=new Socket(host,port);
 		} catch (Exception e) { 
-			System.out.println("SendMail="+e);
+			debug("connect("+host+","+port+"): ERROR: while connecting: "+e);
 			return false;
 		}
         try {
            out=new DataOutputStream(connect.getOutputStream());
         } catch (IOException e) { 	
-			System.out.println("SendMail="+e);
+			debug("connect("+host+","+port+"): ERROR: while getting outputstream: "+e);
 			return false;}
         try {
            in=new DataInputStream(connect.getInputStream());
         } catch (IOException e) { 
-			System.out.println("SendMail="+e);
+			debug("connect("+host+","+port+"): ERROR: while getting inputstream: "+e);
 			return false;}
 		try {
-        	result = in.readLine();
-		} 	catch (Exception e) { 
-			System.out.println("SendMail="+e);
+        		result = in.readLine();
+		} catch (Exception e) { 
+			debug("connect("+host+","+port+"): ERROR: while reading response:"+e);
 			return false;
 		}
 		/** Is anwser 220 **/
@@ -92,33 +99,33 @@ public class SendMail extends Module implements SendMailInterface {
 			out.writeBytes("MAIL FROM:<"+from+">\n");
 			out.flush();
             anwser = in.readLine();
-			//System.out.println(anwser);
+			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 	
 			out.writeBytes("RCPT TO:<"+to+">\n");
 			out.flush();
             anwser = in.readLine();
-			//System.out.println(anwser);
+			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 			
 			out.writeBytes("DATA\n");
 			out.flush();
             anwser = in.readLine();
-			//System.out.println(anwser);
+			//debug(anwser);
         	if(anwser.indexOf("354")!=0)  return false;
 				
 			out.writeBytes(data+"\n");
 			out.writeBytes("\n.\n");
 			out.flush();
             anwser = in.readLine();
-			//System.out.println(anwser);
+			//debug(anwser);
         	if(anwser.indexOf("250")!=0)  return false;
 			
 			out.writeBytes("QUIT\n");
 			out.flush();
 			in.close();
         }   catch (Exception e) {
-            System.out.println("SendMail="+e);
+            debug("sendMail("+from+","+to+","+data.length()+"): ERROR: "+e);
             return false;
         }
 		return true;
@@ -164,7 +171,7 @@ public class SendMail extends Module implements SendMailInterface {
             if(anwser.indexOf("250")!=0)  return "Error";
  
         }   catch (Exception e) {
-            System.out.println("SendMail="+e);
+            debug("verify("+name+"): ERROR: "+e);
             return "Error";
         }
 		anwser=anwser.substring(4);
@@ -192,7 +199,7 @@ public class SendMail extends Module implements SendMailInterface {
 				if(anwser.indexOf("-")!=3) break;
 			}
         }   catch (Exception e) {
-            System.out.println("SendMail="+e);
+            debug("expand("+name+"): ERROR: "+e);
             return new Vector();
         }
         return ret;
