@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.40 2002-07-15 15:47:49 michiel Exp $
+  @version $Id: wizard.xsl,v 1.41 2002-07-15 15:58:00 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -685,6 +685,8 @@
            Create the add-buttons for the startwizard commands.
            -->
       <xsl:for-each select="command[@name='startwizard']">
+        <!-- only if less then maxoccurs -->
+        <xsl:if test="count(ancestor::list/item) &lt; ancestor::list/@maxoccurs">
         <table border="0" cellspacing="0" cellpadding="0" style="display:inline;" width="616">
           <tr>
             <td align="right" valign="top" class="search" width="100%">
@@ -705,6 +707,7 @@
               </td>
             </tr>
           </table>
+        </xsl:if>
         </xsl:for-each>
       </td>
 
