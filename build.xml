@@ -72,6 +72,7 @@ NetComponents can be found at:
   <property name="debug" value="off"/>
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
+  <property name="mmcidoc.packages" value="org.mmbase.bridge"/>
   <property name="distro"      value="MMBase 1.6.0"/>
   <property name="documentation.builders.language" value="en" />
   <!-- Don't change the following properties unless you know what you're doing -->
@@ -166,7 +167,7 @@ NetComponents can be found at:
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,jar,web">
+          depends="lib.release,jar,web,mmcidocs">
     <!-- copy a readme from somewhere -->
     <!-- not in cvs yet -->
     <!-- copy the config -->
@@ -767,6 +768,37 @@ Build-compiler: ${build.compiler}
       </classpath>
     </javadoc>
     <property name="did.javadocs" value="true" />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Create the MMCI API documentation                                        -->
+  <!-- =================================================================== -->
+  <target name="mmcidocs"
+          description="Create the MMCI API documentation"
+          depends="init,lib.compile"
+          unless="did.mmcidocs"
+    >
+    <mkdir dir="${mmdocs.dir}"/>
+    <mkdir dir="${mmdocs.dir}/mmci"/>
+    <mkdir dir="${mmdocs.dir}/mmci/api"/>
+    <javadoc packagenames="${mmcidoc.packages}"
+             sourcepath="${source-src.dir}"
+             destdir="${mmdocs.dir}/mmci/api"
+             author="true"
+             version="true"
+             use="false"
+             noindex="true"
+             windowtitle="MMBase MMCI API"
+             doctitle="MMBase"
+             maxmemory="100M"
+             bottom="MMBase build ${version}">
+      <classpath>
+        <fileset dir="${compile.lib.dir}">
+          <include name="*.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc>
+    <property name="did.mmcidocs" value="true" />
   </target>
 
 
