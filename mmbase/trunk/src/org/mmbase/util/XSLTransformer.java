@@ -21,9 +21,12 @@ import org.apache.xalan.xslt.*;
  * Make XSL Transformations
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.2 2000-08-10 19:53:54 case Exp $
+ * @version $Id: XSLTransformer.java,v 1.3 2000-10-18 12:48:53 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  2000/08/10 19:53:54  case
+ * cjr: Removed an obsolete comment
+ *
  * Revision 1.1  2000/08/09 12:45:24  case
  * cjr: implements a transform(xmlPath,xslPath) method that returns a string
  *
@@ -35,6 +38,11 @@ public class XSLTransformer {
      */
     public XSLTransformer() {}
 
+
+    public String transform(String xmlPath, String xslPath) {
+	return transform(xmlPath,xslPath,false);
+    }
+
     /**
      * Transform an XML document using a certain XSL document. 
      *
@@ -42,7 +50,7 @@ public class XSLTransformer {
      * @param xslPath Path to XSL file
      * @return String with converted XML document
      */
-    public String transform(String xmlPath, String xslPath) {
+    public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
             processor = XSLTProcessorFactory.getProcessor();
 
@@ -56,7 +64,14 @@ public class XSLTransformer {
             // Perform the transformation.
             processor.process(xmlSource, xslSheet, xmlResult);
 
-            return res.toString();
+            //return res.toString();
+	    String s = res.toString();
+	    int n = s.indexOf("\n");
+	    if (cutXML && s.length() > n) {
+		s = s.substring(n+1);
+	    }
+	    return s;
+
         } catch (SAXException e) {
             return "Fout bij XSLT tranformatie: "+e.getMessage();
         }
