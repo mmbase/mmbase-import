@@ -60,9 +60,9 @@
 	<mm:field name="country"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
 	</p>
 	<p>
-	<mm:field name="phone"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
-	<a target="_blank" href="mailto:<mm:field name="email"/>"><mm:field name="email"/></a><br/>
-	<a target="_blank" href="<mm:field name="homepage"/>"><mm:field name="homepage"/></a><br/>
+	<mm:field name="phone"><mm:isnotempty>T: <mm:write /><br/></mm:isnotempty></mm:field>
+	<mm:field name="homepage"><mm:isnotempty>F: <mm:write /><br/></mm:isnotempty></mm:field>
+	<mm:field name="email"><mm:isnotempty><a href="mailto:<mm:write />"><mm:write /></a></mm:isnotempty></mm:field>
 	</p>
 	<p><strong>Contact:</strong><br/>
 	<mm:field name="contactperson"><mm:isnotempty><mm:write /><br/></mm:isnotempty></mm:field>
