@@ -198,12 +198,10 @@
   be done after activating the needed builders (community, channel, chatter, message,
   people). To use it you also need the communityprc module to be active.
   -->
-	<!--
   <taglib>
     <taglib-uri>http://www.mmbase.org/mmcommunity-taglib-1.0</taglib-uri>
     <taglib-location>/WEB-INF/lib/mmbase-community.jar</taglib-location>
   </taglib>
-	-->
 
   <!-- for the org.mmbase.module.JMSendMail class (maybe in future more classes)-->
   <!--
