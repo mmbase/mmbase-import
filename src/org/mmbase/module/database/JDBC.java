@@ -8,9 +8,12 @@ MMBase partners.
 
 */
 /*
-	$Id: JDBC.java,v 1.5 2000-03-01 16:28:46 wwwtech Exp $
+	$Id: JDBC.java,v 1.6 2000-03-06 22:47:25 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/03/01 16:28:46  wwwtech
+	Rico: fixed bug forgetting to init databasesupport
+	
 	Revision 1.4  2000/02/25 14:06:37  wwwtech
 	Rico: added database specific connection init support
 	
@@ -31,7 +34,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.5 2000-03-01 16:28:46 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.6 2000-03-06 22:47:25 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
@@ -171,7 +174,7 @@ private String defaultpassword;
 		}
 		JDBCdatabase=getInitParameter("database");
 		if (databasesupportclass==null || databasesupportclass.length()==0) {
-			databasesupportclass="mm.org.mmbase.module.database.DatabaseSupportShim";
+			databasesupportclass="org.mmbase.module.database.DatabaseSupportShim";
 		}
 	}
 
