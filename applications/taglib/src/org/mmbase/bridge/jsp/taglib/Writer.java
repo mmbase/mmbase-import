@@ -18,9 +18,9 @@ import javax.servlet.jsp.JspTagException;
  * Tags implementing this interface can (should?) use 'WriterHelper'
  * for a quick implementation.
  *
- * @author Michiel Meeuwissen 
- **/
-
+ * @author Michiel Meeuwissen
+ * @version $Id: Writer.java,v 1.10 2003-06-06 10:03:10 pierre Exp $ 
+ */
 
 public interface Writer {
 

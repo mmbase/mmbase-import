@@ -23,12 +23,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-*
-* Creates a new Transaction.
-*
-* @author Michiel Meeuwissen
-*
-**/
+ *
+ * Creates a new Transaction.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: TransactionTag.java,v 1.17 2003-06-06 10:03:22 pierre Exp $ 
+ */
+
 public class TransactionTag extends CloudReferrerTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());

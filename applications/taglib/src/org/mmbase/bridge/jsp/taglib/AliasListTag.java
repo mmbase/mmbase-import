@@ -26,7 +26,8 @@ import org.mmbase.util.logging.Logging;
  * This class makes a tag which can list the aliases of a Node.
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: AliasListTag.java,v 1.19 2003-06-06 10:03:06 pierre Exp $ 
+ */
 
 public class AliasListTag extends NodeReferrerTag implements ListProvider, Writer {
     private static Logger log = Logging.getLoggerInstance(AliasListTag.class);

@@ -29,7 +29,8 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: WriteTag.java,v 1.34 2003-06-06 10:03:10 pierre Exp $ 
+ */
 
 public class WriteTag extends ContextReferrerTag implements Writer {
 

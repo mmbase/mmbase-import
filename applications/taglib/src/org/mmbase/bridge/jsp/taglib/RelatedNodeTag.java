@@ -23,7 +23,9 @@ import org.mmbase.util.logging.Logging;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
+ * @version $Id: RelatedNodeTag.java,v 1.11 2003-06-06 10:03:09 pierre Exp $ 
  */
+
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(RelatedNodeTag.class.getName());

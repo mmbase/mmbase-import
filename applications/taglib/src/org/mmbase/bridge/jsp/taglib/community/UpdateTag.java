@@ -24,10 +24,12 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.bridge.jsp.taglib.*;
 
 /**
-* Posts a message
-*
-* @author Pierre van Rooden
-*/
+ * Posts a message
+ *
+ * @author Pierre van Rooden
+ * @version $Id: UpdateTag.java,v 1.7 2003-06-06 10:03:15 pierre Exp $
+ */
+ 
 public class UpdateTag extends AbstractNodeProviderTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(UpdateTag.class.getName());

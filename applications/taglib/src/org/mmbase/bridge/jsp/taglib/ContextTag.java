@@ -43,8 +43,9 @@ import org.mmbase.util.logging.*;
  * </p>
  *
  * @author Michiel Meeuwissen
- * @see    ImportTag
- * @see    WriteTag
+ * @version $Id: ContextTag.java,v 1.59 2003-06-06 10:03:07 pierre Exp $ 
+ * @see ImportTag
+ * @see WriteTag
  */
 
 public class ContextTag extends ContextReferrerTag implements ContextProvider {

@@ -22,15 +22,15 @@ import org.mmbase.util.Arguments;
 import org.mmbase.module.core.MMObjectBuilder;
 import javax.servlet.jsp.PageContext;
 
-
-
-
 /**
+ * @javadoc
  *
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
+ * @version $Id: ByteHandler.java,v 1.4 2003-06-06 10:03:35 pierre Exp $
  */
+
 public class ByteHandler extends AbstractTypeHandler {
     private static Logger log = Logging.getLoggerInstance(ByteHandler.class);
     /**

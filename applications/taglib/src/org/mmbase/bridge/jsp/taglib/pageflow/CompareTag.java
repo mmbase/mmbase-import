@@ -22,6 +22,7 @@ import org.mmbase.util.logging.Logging;
  * variable equals a certain String value.
  *
  * @author Michiel Meeuwissen
+ * @version $Id: CompareTag.java,v 1.22 2003-06-06 10:03:24 pierre Exp $
  */
 
 public class CompareTag extends PresentTag implements Condition, WriterReferrer {

@@ -14,11 +14,13 @@ import javax.servlet.jsp.JspTagException;
 
 
 /**
-* A very simple tag to check if node may be linked to.
-*
-* @deprecated  As of 20020123, replaced by {@link MayCreateRelationTag}
-* @author Michiel Meeuwissen
-*/
+ * A very simple tag to check if node may be linked to.
+ *
+ * @deprecated  As of 20020123, replaced by {@link MayCreateRelationTag}
+ * @author Michiel Meeuwissen
+ * @version $Id: MayLinkTag.java,v 1.6 2003-06-06 10:03:33 pierre Exp $
+ */
+
 public class MayLinkTag extends MayWriteTag implements Condition {
 
     public int doStartTag() throws JspTagException {

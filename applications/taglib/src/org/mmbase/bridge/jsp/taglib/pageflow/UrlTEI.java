@@ -18,7 +18,9 @@ import javax.servlet.jsp.tagext.VariableInfo;
  * variable cannot be used in jsp:include, so it's probably not that usefull.
  *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: UrlTEI.java,v 1.4 2003-06-06 10:03:28 pierre Exp $
+ */
+
 public class UrlTEI extends  WriterTEI {
     
     protected int scope() {

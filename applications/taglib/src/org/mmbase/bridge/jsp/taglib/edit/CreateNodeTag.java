@@ -23,11 +23,13 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* A NodeProvider which creates a new node, which will be commited after the body. So, you
-* can use `setField's in the body.
-*
-* @author Michiel Meeuwissen
-*/
+ * A NodeProvider which creates a new node, which will be commited after the body. So, you
+ * can use `setField's in the body.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: CreateNodeTag.java,v 1.14 2003-06-06 10:03:19 pierre Exp $
+ */
+
 public class CreateNodeTag extends NodeTag implements BodyTag {
 
     private static Logger log = Logging.getLoggerInstance(CreateNodeTag.class.getName());

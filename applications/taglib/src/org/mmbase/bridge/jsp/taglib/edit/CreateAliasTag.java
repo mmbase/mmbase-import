@@ -16,10 +16,12 @@ import org.mmbase.bridge.Node;
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 
 /**
-* To call the method createAlias from Node.
-* 
-* @author Michiel Meeuwissen
-*/
+ * To call the method createAlias from Node.
+ * 
+ * @author Michiel Meeuwissen
+ * @version $Id: CreateAliasTag.java,v 1.8 2003-06-06 10:03:19 pierre Exp $
+ */
+
 public class CreateAliasTag extends NodeReferrerTag {    
 
     private Attribute alias = Attribute.NULL;

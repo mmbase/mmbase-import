@@ -13,10 +13,13 @@ import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.Cloud;
 
 /**
-*
-* Interface designed to make it possible for child tags
-* to access a cloud (or transaction) defined in a tag
-**/
+ *
+ * Interface designed to make it possible for child tags
+ * to access a cloud (or transaction) defined in a tag
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: CloudProvider.java,v 1.8 2003-06-06 10:03:06 pierre Exp $ 
+ */
 
 public interface CloudProvider extends TagIdentifier {
     /**

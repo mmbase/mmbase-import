@@ -12,9 +12,10 @@ package org.mmbase.bridge.jsp.taglib.macro;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
- *  Shortcut for listCondition changed
- *  @version $Id: ListChangedTag.java,v 1.4 2003-03-25 13:21:03 michiel Exp $
+ *  Macro tag for listCondition changed
+ *  @version $Id: ListChangedTag.java,v 1.5 2003-06-06 10:03:23 pierre Exp $
  */
+
 public class ListChangedTag extends ListConditionTag{
     protected int getValue() throws JspTagException {
         return CONDITION_CHANGED;

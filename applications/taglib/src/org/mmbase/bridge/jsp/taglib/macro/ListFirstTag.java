@@ -12,8 +12,10 @@ package org.mmbase.bridge.jsp.taglib.macro;
 import javax.servlet.jsp.JspTagException;
 import org.mmbase.bridge.jsp.taglib.ListConditionTag;
 /**
-*  shortcut for listContdition first<BR>
-*/
+ * Macro tag for listCondition first
+ *
+ * @version $Id: ListFirstTag.java,v 1.3 2003-06-06 10:03:24 pierre Exp $
+ */
 public class ListFirstTag extends ListConditionTag {
     protected int getValue() throws JspTagException {
         return CONDITION_FIRST;

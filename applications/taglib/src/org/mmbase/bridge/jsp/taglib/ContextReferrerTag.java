@@ -31,8 +31,9 @@ import javax.servlet.http.HttpServletRequest;
  * refer to other tags, then your tag can extend from this one.
  *
  *
- * @author Michiel Meeuwissen 
- * @see    ContextTag
+ * @author Michiel Meeuwissen
+ * @version $Id: ContextReferrerTag.java,v 1.42 2003-06-06 10:03:06 pierre Exp $ 
+ * @see ContextTag
  */
 
 public abstract class ContextReferrerTag extends BodyTagSupport {

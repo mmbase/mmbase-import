@@ -20,6 +20,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
+ * @version $Id: NodeFieldTag.java,v 1.9 2003-06-06 10:03:09 pierre Exp $ 
  */
 
 public class NodeFieldTag extends FieldTag {

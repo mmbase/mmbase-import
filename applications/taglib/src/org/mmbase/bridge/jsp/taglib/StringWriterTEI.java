@@ -12,9 +12,10 @@ package org.mmbase.bridge.jsp.taglib;
 /**
  * A TEI class for Writer Tags that (on default) produce String jsp vars.
  *
- *
  * @author Michiel Meeuwissen
- **/
+ * @version $Id: StringWriterTEI.java,v 1.3 2003-06-06 10:03:09 pierre Exp $ 
+ */
+
 public class StringWriterTEI extends  WriterTEI {
     protected String defaultType() {
         return "String";

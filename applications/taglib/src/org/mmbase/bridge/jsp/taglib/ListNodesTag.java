@@ -24,7 +24,9 @@ import org.mmbase.util.logging.Logging;
  * @author Kees Jongenburger
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
+ * @version $Id: ListNodesTag.java,v 1.7 2003-06-06 10:03:08 pierre Exp $ 
  */
+
 public class ListNodesTag extends AbstractNodeListTag {
     private static Logger log = Logging.getLoggerInstance(ListNodesTag.class.getName());
 

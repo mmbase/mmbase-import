@@ -18,12 +18,14 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
-* The TEI class for NodeProviders. A NodeProvider can export one or more
-* 'Nodes', and it also can export fields (if the `fields' attribute is
-* given).
-*
-* @author Michiel Meeuwissen
-**/
+ * The TEI class for NodeProviders. A NodeProvider can export one or more
+ * 'Nodes', and it also can export fields (if the `fields' attribute is
+ * given).
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: NodeProviderTEI.java,v 1.9 2003-06-06 10:03:09 pierre Exp $ 
+ */
+
 public class NodeProviderTEI extends TagExtraInfo {
     
     private static Logger log = Logging.getLoggerInstance(NodeProviderTEI.class.getName());    
