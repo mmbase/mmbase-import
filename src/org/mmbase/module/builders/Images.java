@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.46 2001-10-08 13:24:25 michiel Exp $
+ * @version $Id: Images.java,v 1.47 2002-01-18 12:27:28 eduard Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -128,11 +128,25 @@ public class Images extends MMObjectBuilder {
         try {
             cl=Class.forName(classname);
             ici=(ImageConvertInterface)cl.newInstance();
-            log.info("loadImageConverter(): loaded : "+classname);
-        } catch (Exception e) {
-            log.error("loadImageConverter(): can't load : "+classname);
+            log.info("loaded '"+classname+"' for builder '" + getTableName() + "'");
+        } 
+        catch (ClassNotFoundException e) {
+            log.error("is classname in " + getTableName() + ".xml correct? ('not found class "+classname+"')");
+			log.error(Logging.stackTrace(e));
         }
-        return(ici);
+        catch (InstantiationException e) {
+            log.error("something wend wrong ('could not instantiate class "+classname+"')");
+            log.error(Logging.stackTrace(e));            
+        }        
+        catch (java.lang.IllegalAccessException e) {
+            log.error("something wend wrong ('illegal access class "+classname+"')");
+            log.error(Logging.stackTrace(e));
+        }        
+		catch (NoClassDefFoundError e) {
+            log.error("are all lib's available? ('missing class used by class"+classname+"')");
+			log.error(Logging.stackTrace(e));            
+        }
+        return ici;
     }
 
 
