@@ -21,10 +21,8 @@ import org.mmbase.util.logging.*;
 /**
  * Sorts on format of the source, preferred formats can be can be configured with the filters.xml.
  *
- * @todo this implementation can be merged with FormatSorter itself, i think.
- *
  * @author  Michiel Meeuwissen
- * @version $Id: ServerFormatSorter.java,v 1.3 2003-02-06 13:36:22 michiel Exp $
+ * @version $Id: ServerFormatSorter.java,v 1.4 2003-02-10 13:26:55 michiel Exp $
  */
 public class ServerFormatSorter extends  PreferenceSorter {
     private static Logger log = Logging.getLoggerInstance(ServerFormatSorter.class.getName());
