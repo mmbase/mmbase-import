@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  * a key.
  *
  * @author  Michiel Meeuwissen
- * @version $Id: TemplateCache.java,v 1.7 2002-06-14 19:30:03 michiel Exp $
+ * @version $Id: TemplateCache.java,v 1.8 2002-06-25 22:06:03 michiel Exp $
  * @since   MMBase-1.6
  */
 public class TemplateCache extends Cache {
@@ -92,26 +92,29 @@ public class TemplateCache extends Cache {
     }
 
     private String getKey(Source src) {
-        return src.getSystemId();
+        return  src.getSystemId();
     }
     
     private String getKey(Source src, URIResolver uri) {     
-        return (uri != null ? "" + uri.hashCode() : "") + src.getSystemId();
+        return uri == null ? src.getSystemId() : uri.hashCode() + src.getSystemId();
     }
 
     private int remove(File file) {
         int removed = 0;
         String key = "file:///" + file.getPath();
         Iterator i =  getOrderedEntries().iterator();
-        while (i.hasNext()) {
+        if (log.isDebugEnabled()) log.debug("trying to remove keys containing " + key);
+        while (i.hasNext()) {           
             String mapKey = (String) ((Map.Entry) i.next()).getKey();
-            if (mapKey.indexOf(key) > 0) {
-                if(remove(mapKey) != null) {
+            if (mapKey.indexOf(key) >= 0) {
+                if(remove(mapKey) != null) {                 
                     removed++;
+                } else {
+                    log.warn("Could not remove " + mapKey);
                 }
             }
         }
-        return 0;        
+        return removed;
     }
 
     public Templates getTemplates(Source src) {
@@ -145,12 +148,16 @@ public class TemplateCache extends Cache {
         String key = getKey(src, uri);
         if (key == null) return null;
         Object res = super.put(key, value);        
-        log.service("Put xslt in cache with key " + key.substring(0, 20) + "...");
+        log.service("Put xslt in cache with key " + key);
         if (key.startsWith("file:////")) { // this Source is a File, watch it, because it it changes, the cache entry must be invalidated.
             try {
                 java.io.File  f  = new java.io.File(new java.net.URL(key).getFile());
-                log.debug("setting watch on  " + f.getAbsolutePath());
-                templateWatcher.add(f);                
+                templateWatcher.add(f);
+                if (log.isDebugEnabled()) {
+                    log.debug("have set watch on  " + f.getAbsolutePath());
+                    log.trace("currently watching: " + templateWatcher);
+                }
+                
             } catch (Exception e) {
                 log.error(e.toString());
             }
