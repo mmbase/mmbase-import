@@ -4,11 +4,15 @@
 <%
   try {
     PartnerHandler.addProject(cloud, request);
-    String url = "/download/article/partner.jsp?message=" + URLEncoder.encode("Project has been added.");
-    config.getServletContext().getRequestDispatcher(url).forward(request, response);
+%> <jsp:forward page="/development/article/partner.jsp">
+     <jsp:param name="message" value="Project has been added."/>
+   </jsp:forward> <%
   } catch(Exception ex) {
-     String url = "/download/article/partner.jsp?message=" + URLEncoder.encode(ex.getMessage());
-     config.getServletContext().getRequestDispatcher(url).forward(request, response);
+    String message = ex.getMessage();
+    message = message == null ? "" : message;
+%> <jsp:forward page="/development/article/partner.jsp">
+     <jsp:param name="message" value="<%= message %>"/>
+   </jsp:forward> <%
   }
 %>
 </mm:cloud>
