@@ -16,7 +16,7 @@ import org.mmbase.module.core.*;
  *
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: FieldValue.java,v 1.1 2002-09-26 15:25:35 pierre Exp $
+ * @version $Id: FieldValue.java,v 1.2 2002-09-26 15:28:12 pierre Exp $
  */
 public interface FieldValue {
 
@@ -45,6 +45,13 @@ public interface FieldValue {
      * @return  the field object
      */
     public Object getField();
+
+    /**
+     * Returns the Node to which this value belongs.
+     *
+     * @return  the Node object
+     */
+    public Node getNode();
 
     /**
      * Returns the value as an boolean (<code>true</code> or  <code>false</code>).
