@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManager.java,v 1.5 2000-11-08 13:24:19 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.6 2000-11-08 14:24:46 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.5  2000/11/08 13:24:19  vpro
+	Rico: included owner in operations
+	
 	Revision 1.4  2000/10/26 13:10:37  vpro
 	Rico: fixed b0rken uncompilable code
 	
@@ -34,7 +37,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.5 2000-11-08 13:24:19 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.6 2000-11-08 14:24:46 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
@@ -80,14 +83,18 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		return(node);
 	}
 
-	public String getObject(String owner,String key) {
+	public String getObject(String owner,String key,String dbkey) {
 		MMObjectBuilder bul=mmbase.getMMObject("typedef");
 		MMObjectNode node;
 		node=bul.getTmpNode(makeKey(owner,key));
-		// fallback to normal nodes
 		if (node==null) {
 			if (_debug) debug("getObject not tmp node found "+key);
-			bul.getNode(key);
+			node=bul.getNode(dbkey);
+			if (node==null) {
+				debug("Node not found in database "+dbkey);
+			} else {
+				bul.putTmpNode(makeKey(owner,key),node);
+			}
 		}
 		if (node != null) {
 			return(makeKey(owner,key));
