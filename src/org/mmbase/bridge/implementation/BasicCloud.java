@@ -25,7 +25,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.77 2002-11-18 12:24:17 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.78 2002-11-27 00:39:07 daniel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -704,14 +704,16 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         if (resultlist==null) {
             log.debug("result list is null, getting from database");
             resultlist = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+       	    // store result in cache if needed
+            if (hash != null && resultlist != null) {
+            	multilevelCache.put(hash, resultlist, tables, tagger);
+            }
         }
-        // store result in cache if needed
-        if (hash != null && resultlist != null) {
-            multilevelCache.put(hash, resultlist, tables, tagger);
-            // why is it cloned?
-            resultlist = (Vector) resultlist.clone();
-        }
+
+
         if (resultlist != null) {
+            // why is it cloned? (daniel comment, cloned because sec. filters result)
+            resultlist = (Vector) resultlist.clone();
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
             for (int i=resultlist.size()-1; i>=0; i--) {
