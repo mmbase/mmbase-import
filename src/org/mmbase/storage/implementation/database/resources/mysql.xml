@@ -25,8 +25,8 @@
 		<!-- uses different syntax for creating constraints -->
 		<scheme name="create-unique-key-scheme" >UNIQUE INDEX {2} ({2})</scheme>
 		<scheme name="create-composite-key-scheme" >UNIQUE INDEX {1}_key ({2})</scheme>
-		<!-- MySQL does not properly support foreign keys -->
-		<scheme name="create-foreign-key-scheme" />
+		<!-- MySQL does not properly support foreign keys, Still create a least an index -->
+		<scheme name="create-foreign-key-scheme" >INDEX {2} ({2})</scheme>
 
 		<!-- uses different syntax for deleting constraints -->
 		<scheme name="delete-constraint-scheme" >ALTER TABLE {1} DROP INDEX {2}</scheme>
