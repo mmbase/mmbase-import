@@ -7,7 +7,7 @@
 
     <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.7 2003-07-01 14:37:01 johannes Exp $</edition>
+    <edition>$Id: storage.xml,v 1.8 2003-07-02 11:39:16 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -96,7 +96,7 @@ public interface Storage extends SearchQueryHandler {
 	public String getText(MMObjectNode node,String fieldname);
 
 	public byte[] getBytes(MMObjectNode node,String fieldname);
-
+	
 	public Transaction createTransaction() throws StorageException;
 
 	public int createKey();
@@ -907,6 +907,8 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 
     public DatabaseTransaction createDatabaseTransaction(boolean useRollback) throws StorageException;
 
+    public final byte[] getBytes(String tableName, String fieldName, int number);
+
     protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx);
 
 }]]></programlisting>
@@ -1078,6 +1080,13 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 							</listitem>
 						</varlistentry>
 						<varlistentry>
+							<term><methodname>public final byte[] getBytes(String tableName, String fieldName, int number);</methodname></term>
+							<listitem>
+								<para>Returns a binary object. Used instead of <methodname>getByte(MMObjectNode node, String fieldname)</methodname> for backward compatibility with supportclasses <methodname>getShortedBytes()</methodname> method</para>
+								<note><para>Should this really be final?</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
 							<term><methodname>protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx);</methodname></term>
 							<listitem>
 								<para>Returns a binary object using a stream to retrieve it from JDBC.</para>
@@ -1091,7 +1100,360 @@ public abstract class AbstractDatabaseStorage extends Support2Storage implements
 	
 		<section id="SQL92DatabaseStorage">
 			<title>SQL92DatabaseStorage Class</title>
-			<para>TODO: explain class</para>
+			<para>This class implements some methods for SQL-based databases. It takes implements some methods, nut makes assumptions that the database has OO-features.</para>
+			<note><para>The fuction of this class is similar to that of AbstractDatabaseStorage (methods were mostly moved here to limit the size of that class). Mehods that implement adding, insreting, creating, etc, should be removed and implemented in the subclasses OODatabase and RelationalDatabase. Unless specified otherwise, all other methods in this class should be moved to the AbstractDatabaseStorage class. This class will be removed.</para></note>
+			<programlisting format="linespecific"><![CDATA[
+public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
+
+	  protected void loadExistingTables();
+
+    protected void loadSupportInformation();
+
+    protected void prepare();
+
+    protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);
+
+    protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);
+
+    protected String dropSQL(String tableName);
+
+    protected String insertSQL(String tableName,String fieldNames, String fieldValues);
+
+    protected String updateSQL(String tableName,String setFields,int number);
+
+    protected String deleteSQL(String tableName,int number);
+
+    protected String selectSQL(String tableName, String fieldNames, String where, String orderby,
+                               int offset, int max);
+
+    public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String fieldName, int i) throws SQLException;
+
+    public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i);
+
+    abstract protected String getText(String tableName, String fieldname, int number);
+
+    public String getText(MMObjectNode node, String fieldname);
+
+    public final byte[] getBytes(MMObjectNode node, String fieldName);
+
+    public int insert(MMObjectNode node, Transaction trans) throws StorageException;
+
+    protected int insertIntoTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;
+
+    public boolean commit(MMObjectNode node, Transaction trans) throws StorageException;
+
+    protected boolean commitToTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException;
+
+    public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;
+
+    public boolean deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;
+
+    public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;
+
+    public int getNodeType(int number, Transaction trans) throws StorageException;
+
+    protected List getFieldsOrderCreate(MMObjectBuilder builder);
+
+    protected MMObjectBuilder getParentBuilder(MMObjectBuilder builder);
+
+    protected String getParentTableName(MMObjectBuilder builder);
+
+    protected boolean isParentField(MMObjectBuilder builder,String fieldName);
+
+    public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;
+
+    public boolean createObjectStorage(Transaction trans) throws StorageException;
+
+    public boolean created(MMObjectBuilder builder);
+
+    public boolean created(String tableName);
+
+    public int size(MMObjectBuilder builder);
+
+    public int size(String tableName);
+
+    protected File getBinaryFile(String tableName, String fieldName, int number);
+
+    protected boolean writeBytesToFile(String tableName, String fieldName, int number, byte[] value);
+
+    protected byte[] readBytesFromFile(String tableName, String fieldName, int number);
+
+    public boolean drop(MMObjectBuilder builder);
+
+    public boolean addField(MMObjectBuilder builder,String fieldname);
+
+    public boolean removeField(MMObjectBuilder builder,String fieldname);
+
+    public boolean changeField(MMObjectBuilder builder,String fieldname);
+
+    public boolean updateStorage(MMObjectBuilder builder);
+			
+}]]></programlisting>
+			<formalpara>
+				<title>AbstractDatabaseStorage Methods (in addition to the methods in DatabaseStorage):</title>
+				<para>
+					<variablelist>
+						<varlistentry>
+							<term><methodname>protected void loadExistingTables();</methodname></term>
+							<listitem>
+								<para>Load the names of the existing tables for this MMBase instance in memory. Called by init().</para>
+								<note><para>This list is only used internally to determine if a table is created, in the created() and drop() methods. It is better to use the <classname>DatabaseTransaction</classname> <methodname>hasTable()</methodname> or <methodname>getMetaData()</methodname> methods. In that case this method can be dropped</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected void loadSupportInformation();</methodname></term>
+							<listitem>
+								<para>Load information on database support (i.e support of rollback). Called by init().</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected void prepare();</methodname></term>
+							<listitem>
+								<para>Prepares the database layer. Called by init(). Ment to be overridden by subclasses, to prepare the database. Possible examples are creating a Sequence in postgresql, or adding a supporting numberTable for tracking objectnumbers in MySQL. Overriding prepare() is easier than overriding init().</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);</methodname></term>
+							<listitem>
+								<para>Applies the create scheme (if available), and returns the result (a field type defintiton string). If no scheme is available, this code uses a default SQL scheme.</para>
+								<note><para>Obsolete. abstract classes should not make assumptons on the validity of create schemes.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for creating a specified table, optionally extending another supplied table.</para>
+								<note><para>Should be moved to a more specific layer.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String dropSQL(String tableName);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for dropping a specified table.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String insertSQL(String tableName,String fieldNames, String fieldValues);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for inserting an object in a table.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String updateSQL(String tableName,String setFields,int number);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for updating an object in a table.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String deleteSQL(String tableName,int number);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for deleting an object in a table.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String selectSQL(String tableName, String fieldNames, String where, String orderby, int offset, int max);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for selecting data from a table.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>abstract protected String getText(String tableName, String fieldname, int number);</methodname></term>
+							<listitem>
+								<para>Obtain (large) text field for a node with the indicated number.</para>
+								<note><para>Move the implementation of getText from RelationalDatabaseStorage to this layer. The reason this method exists is backward compatibility with the <methodname>getShortedText</methodname> methdoi from the support classes. As such it cannot yet be removed.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public String getText(MMObjectNode node, String fieldname);</methodname></term>
+							<listitem>
+								<para>Obtain (large) text field for a node</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public final byte[] getBytes(MMObjectNode node, String fieldName);</methodname></term>
+							<listitem>
+								<para>Obtain (large) binary field for a node. This method determines whether to retrieve data from file or database, and then calls the function that retrieves it.</para>
+								<note><para>Should this really be final?</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public int insert(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>This method performs some checks, retrieves a key if needed, inserts a new object within a transaction (by calling <methodname>insertIntoTable</methodname>), and registers the change.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected int insertIntoTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>This method inserts a new object in a specified builder table. It performs a simple insert statement</para>
+								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean commit(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Commit this node to the specified builder table within a transaction (by calling <methodname>commitToTable</methodname>), and registers the change.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected boolean commitToTable(MMObjectBuilder builder,MMObjectNode node, DatabaseTransaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Commit the changes to this node to the specified builder table.</para>
+								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean delete(MMObjectNode node, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Delete a node within a transaction (by calling <methodname>deleteFromTable</methodname>), and registers the change.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean deleteFromTable(MMObjectBuilder builder, MMObjectNode node, DatabaseTransaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Remove a node from the specified builder table.</para>
+								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public MMObjectNode getNode(MMObjectBuilder builder, int number, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Select a node from a specified builder</para>
+								<note><para>Should use Query?</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public int getNodeType(int number, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Returns the nodetype for a specified nodereference</para>
+								<note><para>Should use Query?</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected List getFieldsOrderCreate(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Returns the fields of a builder in the order in which they should be created.</para>
+								<note><para>Order is not of import with this particular database layer, which refers to fields by name (not index). However, older databases DO rely on a specific order of the fields, specifically when inserting data. Also, some older routines in MMBase that still execute SQL on their own (shudder!) access fields on index. As such, when creating a table, fields should be created in order.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected MMObjectBuilder getParentBuilder(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Returns the parent builder of the specifed builder.</para>
+								<note><para>Utility method. Move to MMObjectBuilder.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String getParentTableName(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Returns the name of the parent table of the specifed builder.</para>
+								<note><para>Utility method. Bit obscure and only called once, so remove.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected boolean isParentField(MMObjectBuilder builder,String fieldName);</methodname></term>
+							<listitem>
+								<para>Tests whether the specified field is a member of the parent table of the specifed builder.</para>
+								<note><para>Utility method. Move to MMObjectBuilder.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean create(MMObjectBuilder builder, Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Create a database table for the specified builder.</para>
+								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean createObjectStorage(Transaction trans) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Create the object table (the basic table for all objects) within a transaction</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean created(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Tells if a table for the builder already exists</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean created(String tableName);</methodname></term>
+							<listitem>
+								<para>Tells if a table already exists.</para>
+								<note><para>This version of the method exists so existence of non-builder tables (i.e. teh numberTable in MySQL) can be checked too.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public int size(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Return number of objects in a builder.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public int size(String tableName);</methodname></term>
+							<listitem>
+								<para>Return number of entries consisting in given table.</para>
+								<note><para>Probably not needed anymore, can be removed.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected File getBinaryFile(String tableName, String fieldName, int number);</methodname></term>
+							<listitem>
+								<para>Obtain a file reference containing a binary object for a field in a given node.</para>
+								<note><para>Maybe define as private, as it is unlikely to be accessed otehr than by <methodname>writeBytesToFile()</methodname> or <methodname>readBytesFromFile()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected boolean writeBytesToFile(String tableName, String fieldName, int number, byte[] value);</methodname></term>
+							<listitem>
+								<para>Writes a binary object of a given node to a file.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected byte[] readBytesFromFile(String tableName, String fieldName, int number);</methodname></term>
+							<listitem>
+								<para>Reads a binary object of a given node from a file.</para>
+								<note><para>zzz</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean drop(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Drops the table of this builder.</para>
+								<note><para>Should be moved to a more specific layer, as implementation is dependent on whether a database is OO or Relational.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean addField(MMObjectBuilder builder,String fieldname);</methodname></term>
+							<listitem>
+								<para>Adds a field to the table of this builder.</para>
+								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean removeField(MMObjectBuilder builder,String fieldname);</methodname></term>
+							<listitem>
+								<para>Deletes a field from the table of this builder.</para>
+								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean changeField(MMObjectBuilder builder,String fieldname);</methodname></term>
+							<listitem>
+								<para>Changes a field to the table of this builder.</para>
+								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public boolean updateStorage(MMObjectBuilder builder);</methodname></term>
+							<listitem>
+								<para>Changes the storage of a builder to match its new configuration.</para>
+								<note><para>Not implemented yet. Implement in a specific layer (Relational or OO).</para></note>
+							</listitem>
+						</varlistentry>
+					</variablelist>
+				</para>
+			</formalpara>
 		</section>
 	
 		<section id="OODatabaseStorage">
