@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
 <builder name="object" maintainer="mmbase.org" version="0" >
@@ -108,7 +109,7 @@
 			</editor>
 			<db>
 				<name>owner</name>
-				<type state="persistent" size="12" notnull="false" key="false">STRING</type>
+				<type state="persistent" size="12" notnull="true" key="false">STRING</type>
 			</db>
 		</field>
 
