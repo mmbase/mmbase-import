@@ -113,7 +113,8 @@ public class XMLNodeReader  {
 							String key=n5.getNodeName();
 							if (!key.equals("#text")) {
 								Node n6=n5.getFirstChild();
-								String value=n6.getNodeValue();
+								String value="";
+								if (n6!=null) value=n6.getNodeValue();
 								int type=bul.getDBType(key);
 								if (type!=-1) {
 									if (type==FieldDefs.TYPE_STRING) {
