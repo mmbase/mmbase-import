@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.228 2003-05-19 08:53:09 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.229 2003-05-22 11:29:03 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -3659,7 +3659,12 @@ public class MMObjectBuilder extends MMTable {
             StringObject obj=new StringObject(body);
             obj.replace("<","&lt;");
             obj.replace(">","&gt;");
+            // escape dollar-sign (prevent SCAN code to be run)
             obj.replace("$","&#36;");
+            // unquote ampersand and quotes (see escapeXML method)
+            obj.replace("&", "&amp;");
+            obj.replace("\"", "&quot;");
+            obj.replace("'", "&apos;");
 
             String alinea=getInitParameter("html.alinea");
             String endofline=getInitParameter("html.endofline");
