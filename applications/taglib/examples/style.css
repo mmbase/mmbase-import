@@ -1,1 +1,6 @@
 @import url("../../mmbase/style/css/mmbase.css");
+
+textarea { 
+  width: 100%;
+  height: 20ex;
+}
