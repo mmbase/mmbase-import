@@ -345,6 +345,7 @@ public class NodeListTag extends AbstractNodeProviderTag implements BodyTag, Lis
             }
             nodes=nodes.subNodeList(offset, to);
             
+            listSize = nodes.size();
             returnValues = nodes.nodeIterator();
         } else {
             listSize = nodes.size();
