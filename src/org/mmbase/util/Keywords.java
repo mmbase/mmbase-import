@@ -13,6 +13,7 @@ import java.io.*;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.util.logging.*;
 
 
@@ -40,7 +41,8 @@ public class Keywords {
     private static void getIgnoreVector() {
         ignoreVector = new Vector();
 
-        String fileName = System.getProperty("mmbase.config")+"/keywordstoignore.txt";
+        String fileName = MMBaseContext.getConfigPath()
+                          + "/keywordstoignore.txt";
         char sep = System.getProperty("file.separator").charAt(0);
         fileName = fileName.replace('/', sep);
         fileName = fileName.replace('\\', sep);
