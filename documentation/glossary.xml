@@ -113,7 +113,7 @@
     <title>MMBase Glossary</title>
 
     <glosslist>
-      <glossentry>
+      <glossentry id="builder">
         <glossterm>builder</glossterm>
 
         <glossdef><orderedlist><listitem><para>The xml configuration file
@@ -166,12 +166,12 @@
 						term builder is used when one speaks about the object cloud and its
 						representation in the database.
 					</remark>
-					<glossseealso>nodemanager</glossseealso>
-					<glossseealso>object type</glossseealso>
+					<glossseealso otherterm="nodemanager" />
+					<glossseealso otherterm="object type" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="nodemanager">
         <glossterm>nodemanager</glossterm>
 
         <glossdef>
@@ -192,12 +192,12 @@
 						</para>
 					</example>
 					<remark>The term nodemanager is used in when one speaks about the functionality of the bridge.</remark>
-					<glossseealso>builder</glossseealso>
-					<glossseealso>object type</glossseealso>
+					<glossseealso otherterm="builder" />
+					<glossseealso otherterm="object type" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="object type">
         <glossterm>object type</glossterm>
         <glossdef>
 					<orderedlist>
@@ -221,39 +221,39 @@
 					<remark>
 						The term is used when one speaks about information analyses.
 					</remark>
-					<glossseealso>builder</glossseealso>
-					<glossseealso>nodemanager</glossseealso>
+					<glossseealso otherterm="builder" />
+					<glossseealso otherterm="nodemanager" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="role">
         <glossterm>role</glossterm>
 				<glossdef>
 					<para>
 						The name of an reldef object.
 					</para>
-					<glossseealso>reldef</glossseealso>
+					<glossseealso otherterm="reldef" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="reldef">
         <glossterm>reldef</glossterm>
 				<glossdef>
 					<para>
 						The builder defining relation roles.						
 					</para>
-					<glossseealso>role</glossseealso>
+					<glossseealso otherterm="role" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="insrel">
         <glossterm>insrel</glossterm>
         <glossdef>
 					<para>
 						A relation instance. This is special kind of object type which contains relation objects.
 					</para>
-					<glossseealso>builder</glossseealso>
-					<glossseealso>object type</glossseealso>
+					<glossseealso otherterm="builder" />
+					<glossseealso otherterm="object type" />
 				</glossdef>
       </glossentry>
 
@@ -264,19 +264,14 @@
 				</glossdef>
       </glossentry>
 
-      <glossentry>
-        <glossterm>insrel</glossterm>
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
 
-      </glossentry>
-
-      <glossentry>
+      <glossentry id="object">
         <glossterm>object</glossterm>
         <glossdef>					
 					<orderedlist>
 						<listitem>
 							<para>
-								The base builder
+								The base builder, from which every other builder extends.
 							</para>
 						</listitem>
 						<listitem>
@@ -284,27 +279,80 @@
 								General term for 'node'.
 							</para>
 						</listitem>
+						<listitem>
+							<para>
+								An instance of a Java class.
+							</para>
+						</listitem>
 					</orderedlist>
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="node">
         <glossterm>node</glossterm>
         <glossdef>
 					<para>
-					</para>					
+						MMBase objects are generally referred to as 'node'. A normal MMBase node corresponds to
+						one record in the database (in the table(s) associated with the builder). We recognize
+						also 'cluster nodes' and 'virtual nodes'.
+					</para>
+					<glossseealso otherterm="clusternode" />
+					<glossseealso otherterm="virtualnode" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
-        <glossterm>cloud</glossterm>
+
+      <glossentry id="clusternode">
+        <glossterm>cluster node</glossterm>
         <glossdef>
 					<para>
-					</para>					
+						Complicated database queries do not give back simple nodes, but fields from several
+						tables. A record from such a table join is represented by a 'cluster node'. A cluster
+						node is a special kind of virtual node.				
+					</para>
+					<glossseealso otherterm="virtualnode" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+
+      <glossentry id="virtualnode">
+        <glossterm>virtual node</glossterm>
+        <glossdef>
+					<para>
+						A node to which no builder xml is associated. 
+					</para>
+					<glossseealso otherterm="clusternode" />
+				</glossdef>
+      </glossentry>
+
+      <glossentry id="cloud">
+        <glossterm>cloud</glossterm>
+        <glossdef>
+					<orderedlist>
+						<listitem>
+							<para>
+								A bunch of interrelated nodes viewed as a unity.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								All nodes from one MMBase instance.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								All nodes inside an MMBase transaction.
+							</para>
+						</listitem>
+					</orderedlist>
+					<para>
+
+					</para>					
+					<glossseealso otherterm="node" />
+				</glossdef>
+      </glossentry>
+
+      <glossentry id="mmbase">
         <glossterm>MMBase</glossterm>
         <glossdef>
 					<para>
@@ -312,61 +360,168 @@
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="bridge">
         <glossterm>bridge</glossterm>
         <glossdef>
 					<para>
+						The bridge are the Java interfaces which are to be used to talk to MMBase. In
+						contradiction to the core of MMBase all actions are authorized by the security
+						system. Templating language should communicate through the bridge, and for example the
+						MMBase Taglib is doing thing.
 					</para>					
-				</glossdef>
+					<para>
+						There is currently one 'basic' implementation of the bridge, and also one alternative
+						implementation which makes it possible to talk to a 'remote' MMBase by remote method
+						invocations.
+					</para>
+					<glossseealso otherterm="rmmci" />
+					<glossseealso otherterm="mmci" />
+				</glossdef>				
       </glossentry>
 
-      <glossentry>
-        <glossterm>MMBase Cloud Interface</glossterm>
+      <glossentry id="mmci">
+        <glossterm>MMBase Cloud Interfaces</glossterm>
         <acronym>MMCI</acronym>
-				<glosssee>bridge</glosssee>
+				<glosssee otherterm="bridge" />
       </glossentry>
 
-      <glossentry>
+      <glossentry id="rmmci">
+        <glossterm>Remote MMBase Cloud Interfaces</glossterm>
+        <acronym>RMMCI</acronym>
+        <glossdef>
+					<para>
+						An alternative to the bridge. Can be used to implement life/staging MMBase's, but can
+						also be useful to inspect/test a running MMBase.
+					</para>
+					<glossseealso otherterm="bridge" />
+					<glossseealso otherterm="wiab" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="wiab">
+        <glossterm>Web in a Box</glossterm>
+        <acronym>WIAB</acronym>
+        <glossdef>
+					<para>
+						A packaged content managment system based on MMBase. Typical for WIAB is a fixed object
+						model and a distinction between life and staging environments. It was developed for the
+						Amsterdam municipal.
+					</para>
+					<glossseealso otherterm="rmmci" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="mmc">
         <glossterm>MMBase Managing Comitee</glossterm>
         <acronym>MMC</acronym>
         <glossdef>
-					<para />
+					<para>
+						High status MMBase commitors who meet every thursday to talk about it.
+          </para>
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="xmlimporter">
         <glossterm>temporary cloud project</glossterm>
         <acronym>TCP</acronym>
         <glossdef>
-					<orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark>
+					<para>
+						An XML way to add content to an MMBase cloud.
+          </para>
+					<glossseealso otherterm="xmlimporter" />
 				</glossdef>
       </glossentry>
 
-      <glossentry>
+
+      <glossentry id="xmlimporter">
+        <glossterm>XML importer</glossterm>
+        <glossdef>
+					<para>
+						A way to synchronize data from another source with MMBase data. This happens in a fuzzy
+						way, to avoid duplications because of minor inconsistencies in the source data.
+          </para>
+				</glossdef>
+      </glossentry>
+
+      <glossentry id="context">
         <glossterm>context</glossterm>
         <glossdef>
-					<orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark>
+					<orderedlist>
+						<listitem>
+							<para>
+								In several security implementation the concept 'security context' is stored in
+								the owner field, to attribute rights to objects.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								In a J2EE environment the web-application is associated with a 'context', which is
+								basicly the first parth of the path. Often it will be '/', but this is not required
+								for MMBase.
+							</para>
+						</listitem>
+						<listitem>
+							<para>
+								In MMBase taglib a 'context' is a container for Taglib variables. It is also
+								asociated with every page, the 'context' tag, and list tags.
+							</para>
+						</listitem>
+					</orderedlist>
 				</glossdef>
 
 
       </glossentry>
 
-      <glossentry>
+      <glossentry id="unidir">
         <glossterm>unidirectional</glossterm>
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
+        <glossdef>
+					<para>
+						A value for the 'dir' attribute of reldef and insrel nodes. It only sais something about
+						the visibility of the relation. A unidirection relation is not visible from the
+						destination node.
+          </para>
+					<glossseealso otherterm="bidir" />
+					<glossseealso otherterm="reldef" />
+					<glossseealso otherterm="insrel" />
+				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="bidir">
         <glossterm>bidirectional</glossterm>
-        <glossdef><orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark></glossdef>
+        <glossdef>
+					<para>
+						A value for the 'dir' attribute of reldef and insrel nodes. It only sais something about
+						the visibility of the relation. Every MMBase relation is bidirection in the sense that
+						it has a clearly defined source and destination.
+          </para>
+					<glossseealso otherterm="unidir" />
+					<glossseealso otherterm="reldef" />
+					<glossseealso otherterm="insrel" />
+				</glossdef>
       </glossentry>
 
-      <glossentry>
+      <glossentry id="taglib">
         <glossterm>tag libary</glossterm>
         <abbrev>taglib</abbrev>
-        <glossdef>
-					<orderedlist><listitem><para></para></listitem><listitem><para></para></listitem></orderedlist><example><title></title><para></para></example><remark></remark>
-				</glossdef>
+				<glossdef>
+					<para>
+						A Tag Library is a SUN defined way to define extra XML-like tags. A tag libraray is
+						implemented in Java and currently only available in mixture with JSP-pages.
+          </para>
+					<glossseealso otherterm="mmbasetaglib" />
+        </glossdef>
+      </glossentry>
+
+      <glossentry id="mmbasetaglib">
+        <glossterm>MMBase tag libary</glossterm>
+        <abbrev>MMBase taglib</abbrev>
+				<glossdef>
+					<para>
+						A taglib implementation for MMBase. Tags to access MMBase data, but also more general
+						tags. It consists more or less a complete (however simple) language.
+          </para>
+					<glossseealso otherterm="taglib" />
+        </glossdef>
       </glossentry>
     </glosslist>
 		
