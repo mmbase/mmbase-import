@@ -18,7 +18,7 @@ package org.mmbase.bridge;
  * initCause() and getCause();
  *
  * @author Pierre van Rooden
- * @version $Id: BridgeException.java,v 1.6 2002-09-23 15:57:34 pierre Exp $
+ * @version $Id: BridgeException.java,v 1.7 2002-10-10 14:45:43 eduard Exp $
  */
 public class BridgeException extends RuntimeException {
 
@@ -52,7 +52,7 @@ public class BridgeException extends RuntimeException {
      * @since  MMBase-1.6
      */
     public BridgeException(Throwable cause) {
-        super((cause==null ? null : cause.toString()));
+        super(cause==null ? null : org.mmbase.util.logging.Logging.stackTrace(cause));
         initCause(cause);
         // 1.4 code:
         // super(cause);
