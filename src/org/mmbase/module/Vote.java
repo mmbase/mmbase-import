@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.module;
 
-public 	class 		Vote
-{
+public 	class 		Vote {
 	public int	number;
 	public int	vote;	
 	public int	percentage;
