@@ -172,12 +172,16 @@ several MMBase-checkouts.
     <!-- copy the application files -->
     <mkdir dir="${build.dir}/mmbase-src/applications"/>
     <copy todir="${build.dir}/mmbase-src/applications">
-      <fileset dir="${applications.home}" defaultexcludes="yes"/>
+      <fileset dir="${applications.home}" defaultexcludes="yes">
+        <exclude name="**/build/**" />
+      </fileset>
     </copy>
     <!-- copy the test files -->
     <mkdir dir="${build.dir}/mmbase-src/tests"/>
     <copy todir="${build.dir}/mmbase-src/tests">
-      <fileset dir="${source.dir}/tests" defaultexcludes="yes"/>
+      <fileset dir="${source.dir}/tests" defaultexcludes="yes">
+        <exclude name="**/build/**" />
+      </fileset>
     </copy>
 
 
