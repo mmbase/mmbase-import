@@ -21,7 +21,7 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaURLComposers.java,v 1.2 2003-01-07 09:06:33 michiel Exp $
+ * @version $Id: MediaURLComposers.java,v 1.3 2003-01-07 14:52:56 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaURLComposers extends MMObjectBuilder {    
@@ -29,39 +29,6 @@ public class MediaURLComposers extends MMObjectBuilder {
 
     public static final String FUNCTION_URL = "url";
     
-    /**
-     * ResponseInfo is a wrapper around an URL.  It contains besides
-     * the URL some extra meta information about it, like the MimeType
-     * of the resource it represents and if it is currently available
-     * or not.  An URL can be unavailable because of two reasons:
-     * Because the provider is offline, or because the fragment where
-     * it belongs to is not valid (e.g. because of publishtimes)
-     *
-     */
-
-    public class ResponseInfo  {
-        private URL    url;
-        private MMObjectNode source;
-        private boolean available;
-        ResponseInfo(URL u, MMObjectNode s, boolean a) {
-            url = u; source = s; available = a;
-        }
-        ResponseInfo(URL u, MMObjectNode s) {
-            this(u, s, true);
-        }
-        public URL          getURL()      { return url;       }
-        public MMObjectNode getSource()   { return source;  }
-        public boolean      isAvailable() { return available; }
-        
-        public String toString() {
-            if (available) {
-                return url.toString();
-            } else {
-                return "{" + url.toString() + "}";
-            }
-        }
-    }
-
     /**
      * Returns just an abstract respresentation of an urlcomposer object. Only useful for editors.
      */
@@ -93,6 +60,13 @@ public class MediaURLComposers extends MMObjectBuilder {
                     provider.getStringValue("host"),
                     composer.getStringValue("rootpath") + source.getStringValue("url"));
     }
+    protected boolean isAvailable(MMObjectNode composer, MMObjectNode provider, MMObjectNode source, MMObjectNode fragment, List preferences) {
+        Boolean fragmentAvailable = (Boolean) fragment.getFunctionValue(MediaFragments.FUNCTION_AVAILABLE, null);
+        boolean providerAvailable = (provider.getIntValue("state") == 1); // todo: use symbolic constant
+        boolean sourceAvailable = (source.getIntValue("state") == 3); // todo: use symbolic constant
+        return fragmentAvailable.booleanValue() && providerAvailable && sourceAvailable;
+    }
+
     /**
      * This function is between executeFunction and getURL and has two
      * purposes. It translates the executeFunction argument List to
@@ -100,7 +74,7 @@ public class MediaURLComposers extends MMObjectBuilder {
      *
      * Final, because I think that you should override getURL.
      */
-    final protected ResponseInfo getResponseInfo(MMObjectNode n, List arguments) throws MalformedURLException {
+    final protected ResponseInfo getResponseInfo(MMObjectNode composer, List arguments) throws MalformedURLException {
         MMObjectNode provider   = null;
         MMObjectNode source     = null;
         MMObjectNode fragment   = null;
@@ -117,11 +91,9 @@ public class MediaURLComposers extends MMObjectBuilder {
                 }
             }
         }
-        URL url = getURL(n, provider, source, fragment, info);
-        boolean online;
-        Boolean fragmentAvailable = (Boolean) fragment.getFunctionValue(MediaFragments.FUNCTION_AVAILABLE, null);
-        boolean providerAvailable = (provider.getIntValue("state") == 1); // todo: use symbolic constant
-        return new ResponseInfo(url, source, fragmentAvailable.booleanValue() && providerAvailable);
+        URL url        = getURL(composer, provider, source, fragment, info);
+        boolean online = isAvailable(composer, provider, source, fragment, info);
+        return new ResponseInfo(url, source, online); 
     }
     
     protected Object executeFunction(MMObjectNode node, String function, List args) {
