@@ -36,6 +36,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
  * @see   ChainedCharTransformer
+ * @see   TransformingReader
  */
 
 public class TransformingWriter extends PipedWriter {
@@ -66,10 +67,15 @@ public class TransformingWriter extends PipedWriter {
     }
 
    
+    /**
+     * {@inheritDoc}
+     * ALso closes the wrapped Writer.
+     */
     public void close() throws IOException {   
         try {
             super.close();
             thread.join();
+            out.close();
         } catch (InterruptedException ie) {
             log.error(ie.getMessage());
         }
