@@ -9,14 +9,12 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security.implementation.cloudcontext.builders;
 
-import org.mmbase.security.implementation.cloudcontext.*;
 import java.util.*;
 import org.mmbase.module.core.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import org.mmbase.security.Rank;
 import org.mmbase.security.SecurityException;
-import org.mmbase.util.Encode;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -26,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * and so on.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Ranks.java,v 1.10 2004-02-23 18:59:34 pierre Exp $
+ * @version $Id: Ranks.java,v 1.11 2004-07-30 17:12:24 michiel Exp $
  * @since MMBase-1.7
  */
 public class Ranks extends MMObjectBuilder {
