@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE project 
+ [ <!ENTITY base     SYSTEM "../buildbase.xml" > ]
+>
+
+<project name="taglib" default="dependent.jar" basedir=".">
+  <property name="project.name"   value="taglib" />
+  <property name="source-taglib.xml"    value="org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
+  &base;
+
+  <target name="dependent.jar" depends="taglib.tld,jar">
+  </target>
+
+  <target name="dependent.package" depends="dependent.jar,taglib.doc,package" />
+	<target name="dependent.install" depends="dependent.jar,install" />
+
+  <target name="taglib.tld.check">
+    <uptodate property="taglib.tld.uptodate" targetfile="${project.metainf.dir}/taglib.tld" >
+      <srcfiles dir="${project.source.dir}" includes="src/${source-taglib.xml}" />
+    </uptodate>
+  </target>
+
+  <target name="taglib.tld" description="Make the MMBase taglib tld"
+          depends="compile,taglib.tld.check" unless="taglib.tld.uptodate">
+    <mkdir dir="${project.metainf.dir}" />
+    <!-- create the mmtaglib tld: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-Q"/>
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-taglib.xml}"/>
+      <arg value="-OUT"/>
+      <arg value="${project.metainf.dir}/taglib.tld"/>
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2tld.xslt" />
+    </java>
+  </target>
+
+
+  <target name="taglib.doc.check">
+    <uptodate property="taglib.doc.uptodate" targetfile="${reference.dir}/mmbase-taglib.html" >
+      <srcfiles dir="${source-src.dir}" includes="${source-taglib.xml},${xml2html}" />
+    </uptodate>
+  </target>
+
+
+  <target name="taglib.doc" description="Make the MMBase taglib taglib documentation"
+          depends="compile,taglib.doc.check" unless="taglib.doc.uptodate" if="build.documentation">
+    <mkdir dir="${project.build.dir}/documentation/taglib"/>
+    <!-- and its documentation: -->
+    <java classname="org.apache.xalan.xslt.Process"
+          classpathref="compile.classpath"
+          fork="yes"
+          failonerror="yes">
+      <arg value="-DIAG"/>
+      <arg value="-IN"/>
+      <arg value="file:///${project.source.dir}/src/${source-taglib.xml}" />
+      <arg value="-PARAM"/>
+      <arg value="basedir"/>
+      <arg value="${project.build.dir}/documentation/taglib"/>
+      <arg value="-PARAM"/>
+      <arg value="files"/>
+      <arg value="taglib-taglib" />
+      <arg value="-OUT"/>
+      <arg value="${project.build.dir}/documentation/taglib/mmbase-taglib.html" />
+      <arg value="-XSL"/>
+      <arg value="${share.dir}/xslt/xml2html.xslt" />
+    </java>
+  </target>
+
+
+</project>
