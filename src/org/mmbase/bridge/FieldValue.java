@@ -15,8 +15,8 @@ import org.mmbase.module.core.*;
  * This interface represents a value stored in a node.
  *
  * @author Pierre van Rooden
- * @author Jaco de Groot
- * @version $Id: FieldValue.java,v 1.3 2002-09-26 16:12:04 pierre Exp $
+ * @since MMBase 1.6
+ * @version $Id: FieldValue.java,v 1.4 2002-09-27 13:24:48 pierre Exp $
  */
 public interface FieldValue {
 
