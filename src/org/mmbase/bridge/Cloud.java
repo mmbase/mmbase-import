@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.27 2002-09-20 09:18:17 pierre Exp $
+ * @version $Id: Cloud.java,v 1.28 2002-09-23 12:07:11 pierre Exp $
  */
 public interface Cloud {
 
@@ -31,7 +31,7 @@ public interface Cloud {
      * @return                        the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
-    public Node getNode(int number);
+    public Node getNode(int number) throws NotFoundException;
 
     /**
      * Returns the node with the specified number from this cloud. 
@@ -43,7 +43,7 @@ public interface Cloud {
      * @return          the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
-    public Node getNode(String number);
+    public Node getNode(String number) throws NotFoundException;
 
 
     /**
@@ -55,7 +55,7 @@ public interface Cloud {
      * @return                        the requested node
      * @throws NotFoundException  if the specified node could not be found
      */
-    public Node getNodeByAlias(String alias);
+    public Node getNodeByAlias(String alias) throws NotFoundException;
 
     /**
      * Returns the relation with the specified number from this cloud. The returned
@@ -67,7 +67,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @throws ClassCastException  if the specified node is not a relation
      */
-    public Relation getRelation(int number);
+    public Relation getRelation(int number) throws NotFoundException;
 
     /**
      * Returns the relation with the specified number from this cloud. 
@@ -80,7 +80,7 @@ public interface Cloud {
      * @throws NotFoundException  if the specified node could not be found
      * @throws ClassCastException  if the specified node is not a relation
      */
-    public Relation getRelation(String number);
+    public Relation getRelation(String number) throws NotFoundException;
 
     /**
      * Determines whether a node with the specified number is available from this cloud.
@@ -135,40 +135,49 @@ public interface Cloud {
     /**
      * Returns the specified node manager.
      *
-     * @param name                           the name of the requested node
-     *                                       manager
-     * @return                               the requested node manager
-     * @throws NodeManagerNotFoundException  if the specified node manager
-     *                                       could not be found
+     * @param name                      the name of the requested node
+     *                                  manager
+     * @return                          the requested node manager
+     * @throws NotFoundException        if the specified node manager
+     *                                  could not be found
      */
-    public NodeManager getNodeManager(String name);
+    public NodeManager getNodeManager(String name) throws NotFoundException;
+
+    /**
+     * Returns the specified node manager.
+     *
+     * @param nodeManagerId       Unique ID of the NodeManager to retrieve
+     * @return                    the requested node manager
+     * @throws NotFoundException  if the specified node manager could not be found
+     */
+    public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException;
 
     /**
      * Returns the specified relation manager.
      *
-     * @param sourceManagerName                  name of the node manager of the
-     *                                           source node
-     * @param destinationManagerName             name of the node manager of the
-     *                                           destination node
-     * @param roleName                           name of the role
-     * @return                                   the requested relation manager
-     * @throws RelationManagerNotFoundException  if the specified relation
-     *                                           manager could not be found
+     * @param sourceManagerName         name of the node manager of the
+     *                                  source node
+     * @param destinationManagerName    name of the node manager of the
+     *                                  destination node
+     * @param roleName                  name of the role
+     * @return                          the requested relation manager
+     * @throws NotFoundException        if the specified relation
+     *                                  manager could not be found
      */
     public RelationManager getRelationManager(String sourceManagerName,
-            String destinationManagerName, String roleName);
+            String destinationManagerName, String roleName) throws NotFoundException;
 
     /**
      * Returns the specified relation manager.
      * This is a very generic Relation Manager, which does not contain type
      * information (it does, however, validate new relations).
      *
-     * @param roleName                           name of the role
-     * @return                                   the requested relation manager
-     * @throws RelationManagerNotFoundException  if the specified relation
-     *                                           manager could not be found
+     * @param roleName            name of the role
+     * @return                    the requested relation manager
+     * @throws NotFoundException  if the specified relation
+     *                            manager could not be found
      */
-    public RelationManager getRelationManager(String roleName);
+    public RelationManager getRelationManager(String roleName) throws NotFoundException;
 
     /**
      * Returns all relation managers available in this cloud.
@@ -196,35 +205,28 @@ public interface Cloud {
     /**
      * Creates a transaction on this cloud with a specified name.
      *
-     * @param name                                 an unique name to use for the
-     *                                             transaction
-     * @return                                     a <code>Transaction</code> on
-     *                                             this cloud
-     * @throws TransactionAllreadyExistsException  if a transaction with the
-     *                                             specified name allready
-     *                                             exists
+     * @param name                     an unique name to use for the transaction
+     * @return                         a <code>Transaction</code> on this cloud
+     * @throws AlreadyExistsException  if a transaction with the
+     *                                 specified name allready exists
      */
-    public Transaction createTransaction(String name);
+    public Transaction createTransaction(String name) throws AlreadyExistsException;
 
     /**
      * Creates a transaction on this cloud with a specified name.
      *
-     * @param name                                 an unique name to use for the
-     *                                             transaction
-     * @param overwrite                            if <code>true</code>, cancels and the  replaces
-     *                                             any existing transaction of this name
-     *                                             for the current user
-     * @return                                     a <code>Transaction</code> on
-     *                                             this cloud
-     * @throws TransactionAllreadyExistsException  if a transaction with the
-     *                                             specified name allready
-     *                                             exists and overwrite is <code>false</code>
+     * @param name                    an unique name to use for the transaction
+     * @param overwrite               if <code>true</code>, cancels and replaces
+     *                                any existing transaction of this name for the current user
+     * @return                         a <code>Transaction</code> on this cloud
+     * @throws AlreadyExistsException  if a transaction with the specified name allready
+     *                                 exists and overwrite is <code>false</code>
      */
-    public Transaction createTransaction(String name, boolean overwrite);
+    public Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException;
 
     /**
      * Returnes the transaction with the specified name.
-     * If no active transaction exists, a new transaction is craeted.
+     * If no active transaction exists, a new transaction is created.
      *
      * @param name  the name of the requested transaction
      * @return      the requested transaction

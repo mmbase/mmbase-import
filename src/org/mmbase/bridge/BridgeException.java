@@ -10,10 +10,27 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge;
 
 /**
- * This exception gets thrown when something goes wronmg on the MMCI.
- * @version $Id: BridgeException.java,v 1.4 2002-01-31 10:05:07 pierre Exp $
+ * This exception gets thrown when something goes wrong on the MMCI.
+ * @todo This exception implements a few constructors also found in java 1.4.
+ * These implementations need be adjusted for java 1.4 to enable excpetion chaining.
+ * To adjust, replace the constructor bodies with the 1.4 commented-out code (so that these 
+ * tasks are delegated to Excception), and remove the private field cause and the methods 
+ * initCause() and getCause();
+ *
+ * @author Pierre van Rooden
+ * @version $Id: BridgeException.java,v 1.5 2002-09-23 12:07:11 pierre Exp $
  */
 public class BridgeException extends RuntimeException {
+
+    private Throwable cause=null;
+
+    /**
+     * Constructs a <code>BridgeException</code> with <code>null</code> as its
+     * message.
+     */
+    public BridgeException() {
+        super();
+    }
 
     /**
      * Constructs a <code>BridgeException</code> with the specified detail
@@ -25,4 +42,63 @@ public class BridgeException extends RuntimeException {
         super(message);
     }
 
+    /**
+     * Constructs a <code>BridgeException</code> with the detail
+     * message of the original exception.
+     * The cause can be retrieved with getCause().
+     *
+     * @param Throwable the cause of the error
+     */
+    public BridgeException(Throwable cause) {
+        super((cause==null ? null : cause.toString()));
+        initCause(cause);
+        // 1.4 code:
+        // super(cause);
+    }
+
+    /**
+     * Constructs a <code>BridgeException</code> with the detail
+     * message of the original exception.
+     * The cause can be retrieved with getCause().
+     *
+     * @param message a description of the error
+     * @param Throwable the cause of the error
+     */
+    public BridgeException(String message, Throwable cause) {
+        super(message);
+        initCause(cause);
+        // 1.4 code:
+        // super(message,cause);
+    }
+
+    /**
+     * Sets the cause of the exception.
+     *
+     * @return the cause of the error
+     */
+    public Throwable initCause(Throwable cause) {
+        if (cause==this) {
+          throw new IllegalArgumentException("A throwable cannot be its own cause"); 
+        }
+        if (this.cause!=null) {
+          throw new IllegalStateException("A cause can be set at most once"); 
+        }
+        this.cause=cause;
+        return cause;
+        // 1.4 code:
+        // return super.initCause(cause);
+    }
+
+    /**
+     * Returns the cause of the exception.
+     *
+     * @return the cause of the exception
+     */
+    public Throwable getCause() {
+        return cause;
+        // 1.4 code:
+        // return super.getCause();
+    }
+
+    
 }
