@@ -38,7 +38,7 @@
     <td valign="top" bgcolor="#717171">
           <mm:write referid="config.player">
           <mm:compare value="real">
-              <embed src="<%=request.getContextPath()%><mm:field id="source" name="url(ram)" />"
+              <embed src="<mm:url referids="fragment" id="source" name="../view/mediafragment.jsp?format=rm" />"
                 width="260" 
                 height="300"   
                 type="audio/x-pn-realaudio-plugin"

@@ -2,7 +2,7 @@
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
 %><%@ page import="java.util.*,org.mmbase.module.builders.media.ResponseInfo"
 %><%@include file="../config/read.jsp" %><%@include file="../config/server.jsp" %>
-<mm:locale language="$config.lang"><mm:cloud jspvar="cloud" loginpage="../login.jsp"><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<mm:locale language="$config.lang"><mm:cloud><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
    <title><mm:write id="title" value="<%=m.getString("title")%>" /></title>
@@ -12,10 +12,11 @@
 <body>
 <mm:import externid="fragment" required="true" />
 <mm:node number="$fragment">
-<h1><mm:field name="title" /></h1>
+<h1><mm:field name="title" /><mm:field name="gui(start)" /></h1>
 <table>
 <tr><th>Format</th><th>URL</th></tr>
-<mm:field name="urls()" jspvar="urls" vartype="list">
+<mm:log jspvar="log">
+<mm:field name="sortedurls(ram,wmp)" jspvar="urls" vartype="list">
    <%
       Iterator i = urls.iterator();
       while(i.hasNext()) {
@@ -27,6 +28,7 @@
       }
    %>
 </mm:field>
+</mm:log>
 </table>
 </mm:node>
 </body>
