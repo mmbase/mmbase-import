@@ -21,7 +21,7 @@ import javax.xml.transform.Source;
  * Has to live in a formatter tag, and can provide inline XSLT to it.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XsltTag.java,v 1.12 2004-06-30 17:51:54 michiel Exp $ 
+ * @version $Id: XsltTag.java,v 1.13 2004-11-17 20:39:04 michiel Exp $ 
  */
 
 public class XsltTag extends ContextReferrerTag  {
@@ -88,8 +88,8 @@ public class XsltTag extends ContextReferrerTag  {
                     xsltString +
                     "\n</xsl:stylesheet>";
             }
-            Source src = new StreamSource(new java.io.ByteArrayInputStream(totalString.getBytes()));
-            src.setSystemId("string:" + xsltString.hashCode());
+            Source src = new StreamSource(new java.io.StringReader(totalString));
+            //src.setSystemId("string:" + xsltString.hashCode());
             formatter.setXsltSource(src);
         }
         formatter = null;
