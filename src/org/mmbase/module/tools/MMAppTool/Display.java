@@ -29,6 +29,7 @@ public class Display extends Frame implements WindowListener,ActionListener {
 	private AppCanvas can;
 	private MMAppTool parent;
 	private String filename;
+	private FileDialog fileDialog;
 
 	public Display(MMAppTool parent) {
 		init(parent);
@@ -75,6 +76,7 @@ public class Display extends Frame implements WindowListener,ActionListener {
 		add(sp);
 		sp.add(can);
 		addWindowListener(this);
+		fileDialog=new FileDialog(this,"Open Application xml",FileDialog.LOAD);
 	}
 
 	public void windowDeiconified(WindowEvent event) {
@@ -107,7 +109,7 @@ public class Display extends Frame implements WindowListener,ActionListener {
 		// create filemenu
 		Menu m = new Menu("File");
 		m.add(new MenuItem("Open",new MenuShortcut('O')));
-		m.add(new MenuItem("Snapshot"));
+		m.add(new MenuItem("Save",new MenuShortcut('S')));
 		m.add(new MenuItem("Exit",new MenuShortcut('E')));
 
 		m.addActionListener(this);
@@ -122,14 +124,14 @@ public class Display extends Frame implements WindowListener,ActionListener {
 			parent.doExit();
 		} else if (cmd.equals("Open")) {
 			doOpen();
-		} else if (cmd.equals("Snapshot")) {
-			doSnapshot();
+		} else if (cmd.equals("Save")) {
+			doSave();
 		} else {
 			System.out.println("Unknown="+cmd);
 		}
 	}
 
-	private void doSnapshot() {
+	private void doSave() {
 		if (can!=null) {
 			if (filename!=null) {
 				// create the dir for the Data & resource files
@@ -142,15 +144,14 @@ public class Display extends Frame implements WindowListener,ActionListener {
 
 
 				XMLAppToolWriter.writeXMLFile(can,filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
-				System.out.println("Snapshot = "+filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
+				System.out.println("Save = "+filename.substring(0,filename.length()-4)+"/tools/mmapptoolconfig.xml");
 			}
 		}
 	}
 
 	private void doOpen() {
-		FileDialog df=new FileDialog(this,"Open Application xml",FileDialog.LOAD);
-		df.show();
-		filename=df.getDirectory()+df.getFile();
+		fileDialog.show();
+		filename=fileDialog.getDirectory()+fileDialog.getFile();
 
 		XMLApplicationReader app=new XMLApplicationReader(filename);
 		if (can!=null) {
