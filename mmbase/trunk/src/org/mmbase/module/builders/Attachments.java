@@ -26,7 +26,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.29 2004-02-12 11:43:50 michiel Exp $
+ * @version $Id: Attachments.java,v 1.30 2004-02-16 13:39:51 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static final Logger log = Logging.getLoggerInstance(Attachments.class);
@@ -169,8 +169,11 @@ public class Attachments extends AbstractServletBuilder {
         String mimetype = node.getStringValue("mimetype");
         if (mimetype == null || mimetype.equals("")) {
             log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determin it automaticly.");
-            byte[] handle = (byte[]) node.getValue("handle");
-            if (handle != null) {
+            Object h = node.getValue("handle");
+            if (h != null && (h instanceof byte[])) { // if unfilled h can be $SHORTED, sigh, sigh (at least when using editwizard)
+
+                // if (! (h instanceof byte[])) throw new RuntimeException("Handle field was not a byte[] but a '" + h.getClass().getName() + "'" + " with value " + h);
+                byte[] handle = (byte[]) h;
                 node.setValue("size", handle.length); // also the size, why not.
                 log.debug("Attachment size of file = " + handle.length);
             
