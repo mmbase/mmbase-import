@@ -24,15 +24,41 @@ import org.mmbase.util.*;
 /**
  * @author cjr@dds.nl
  *
- * @version $Id: Config.java,v 1.7 2000-08-06 14:56:18 case Exp $
+ * Config module
+ *
+ * This module analyses the MMBase XML configuration files.
+ *
+ * LIST functions are:
+ *  - token=SHOW
+ *  - type={builders,databases,modules}
+ *  Returns an list of arrays:
+ *   $ITEM1 = name of file
+ *   $ITEM2 = DTD-based syntax check: false, nodtd, true
+ *  and for builders and databases there is:
+ *   $ITEM3 = whether the item is active: false, true
+ *
+ *
+ * REPLACE functions are: SHOW, CHECK and ANNOTATE
+ *    where the next argument is the directory, e.g. 'builders'
+ *    and the third the name of the file without the .xml extension.
+ *    SHOW: return a string with syntax colored XML file
+ *    CHECK: return 1 if validates ok, -1 if not
+ *    ANNOTATE: return a string with the XML file with errors listed
+ *      and pointed out visually.
+ *
+ *    Example: $MOD-CONFIG-SHOW-builders-people  
+ *
+ * @version $Id: Config.java,v 1.8 2000-08-10 21:06:46 case Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  2000/08/06 14:56:18  case
+ * cjr: Now tells if no dtd is defined - in this case no validation takes place and previously it was presented as if validation had been done successfully.
+ *
  * Revision 1.6  2000/08/06 10:00:42  case
  * cjr: very minor change
  *
  *
  * TODO:
- * - Indicate if no DTD is set as no validity checks are done in that case
  * - Add code for examples
  * - Add code to check whether database configuration works
  * - Add code for fault oriented results, rather than directory oriented results
@@ -42,6 +68,8 @@ public class Config extends ProcessorModule {
     private String classname = getClass().getName();
     private String configpath;
 
+    private static boolean debug = false;
+
     class ParseResult {
 
         Vector warningList, errorList, fatalList,resultList;
@@ -49,9 +77,6 @@ public class Config extends ProcessorModule {
         String dtdpath;
 
         public ParseResult(String path) {
-            this(path,null);
-        }
-        public ParseResult(String path,String dtdPath) {
             hasDTD = false;
             dtdpath = null;
             try {
@@ -65,9 +90,6 @@ public class Config extends ProcessorModule {
 
                 //use own entityResolver for converting the dtd's url to a local file
                 XMLEntityResolver resolver = new XMLEntityResolver();
-                if (dtdPath != null) {
-                    resolver.setDTDPath(dtdPath);
-                }
                 parser.setEntityResolver((EntityResolver)resolver);
 
                 parser.parse(path);
@@ -81,12 +103,7 @@ public class Config extends ProcessorModule {
                 fatalList = errorHandler.getFatalList();
 
                 resultList = errorHandler.getResultList();
-                /*
-                for (int i=0; i<resultList.size();i++) {
-                    // XXX ??? What is this supposed to do???
-                    ErrorStruct err = (ErrorStruct)resultList.elementAt(i);
-            }
-                */
+
             } catch (Exception e) {
                 warningList = new Vector();
                 errorList = new Vector();
@@ -98,7 +115,9 @@ public class Config extends ProcessorModule {
                 resultList = new Vector();
                 resultList.addElement(err);
 
-                debug("ParseResult error: "+e.getMessage());
+                if (debug) {
+                    debug("ParseResult error: "+e.getMessage());
+                }
             }
         }
 
@@ -167,6 +186,7 @@ public class Config extends ProcessorModule {
         } catch (Exception e) {}
 
 
+
         String curdb = (String)mods.get("DATABASE");
         return path.indexOf(curdb) > 0;
     }
@@ -195,10 +215,13 @@ public class Config extends ProcessorModule {
     public void reload() {}
 
 
+
     public void onload() {}
 
 
+
     public void unload() {}
+
 
 
     public void shutdown() {}
@@ -248,6 +271,7 @@ public class Config extends ProcessorModule {
                                 // bla
                             }
 
+
                         }
                         int n = item1List.size();
                         int rescheck;
@@ -255,12 +279,7 @@ public class Config extends ProcessorModule {
                         for (int i=0;i<n;i++) {
                             v.addElement(item1List.elementAt(i));
                             //v.addElement(checkXMLOk((String)item2List.elementAt(i)) ? "true" : "false");
-                            if (category.equalsIgnoreCase("builders")) {
-                                dtdpath = configpath+File.separator+"builder.dtd";
-                                rescheck = checkXMLOk((String)item2List.elementAt(i),dtdpath);
-                            } else {
-                                rescheck = checkXMLOk((String)item2List.elementAt(i));
-                            }
+                            rescheck = checkXMLOk((String)item2List.elementAt(i));
 
                             switch (rescheck) {
                             case -1:
@@ -411,10 +430,7 @@ public class Config extends ProcessorModule {
      * <li>-1: false
      */
     protected int checkXMLOk(String path) {
-        return checkXMLOk(path, null);
-    }
-    protected int checkXMLOk(String path, String dtdpath) {
-        ParseResult pr = new ParseResult(path,dtdpath);
+        ParseResult pr = new ParseResult(path);
         if (!pr.hasDTD()) {
             //System.out.println("checkXMLOk[nodtd] - 0");
             return 0;
