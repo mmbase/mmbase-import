@@ -26,7 +26,7 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.17 $ $Date: 2000-07-22 11:24:11 $
+ * @version $Revision: 1.18 $ $Date: 2000-12-20 00:27:16 $
  */
 public abstract class Module {
 
@@ -281,7 +281,8 @@ public abstract class Module {
         filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
         filename=filename.replace('\\',(System.getProperty("file.separator")).charAt(0));
 
-
+	// added uri file:/// for windows98/2000 (daniel);
+	filename="file:///"+filename;
         Hashtable mods = Reader.readProperties(filename);
 
         // oke try loading all these modules and start em up

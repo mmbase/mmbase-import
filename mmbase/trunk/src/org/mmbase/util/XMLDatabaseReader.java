@@ -35,10 +35,11 @@ public class XMLDatabaseReader  {
             parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
             //Errors errors = new Errors();
             //parser.setErrorHandler(errors);
-			File file = new File(filename);
+		File file = new File(filename);
         	if(!file.exists()) {
   				System.out.println("ERROR -> Database file "+filename+" does not exist (check <DATABASE> tag in mmbaseroot.xml)");
            	}
+		filename="file:///"+filename;
             parser.parse(filename);
             document = parser.getDocument();
 
