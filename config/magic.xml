@@ -2053,7 +2053,7 @@
 </detector>
 <detector>
 	<mimetype>application/pdf</mimetype>
-	<extension>application/pdf</extension>
+	<extension>pdf</extension>
 	<designation>PDF document</designation>
 	<test offset="0" type="string" comparator="=">%PDF-</test>
 	<childlist>
