@@ -307,4 +307,5 @@
     <delete file="${download.dir}/file.zip"/>
   </target>
 
+  <target name="documentation.all" depends="documentation.html,documentation.pdf"/>
 </project>
