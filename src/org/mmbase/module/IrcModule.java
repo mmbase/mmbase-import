@@ -1,3 +1,12 @@
+/* -*- tab-width: 4; -*-
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
 package org.mmbase.module;
 
 import org.mmbase.module.irc.communication.*;
@@ -7,9 +16,12 @@ import java.io.*;
 import java.util.*;
 import org.mmbase.util.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 public class IrcModule extends ProcessorModule implements CommunicationUserInterface, Runnable
 {
-	private String classname = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(IrcModule.class.getName()); 
 
 	private	CommunicationInterface	com;
     private Thread kicker = null;
@@ -46,7 +58,9 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 	}
 
 	public void receive( String msg ) {
-		debug("#"+msg);
+		if (log.isDebugEnabled()) {
+            log.debug("#" + msg);
+        }
 
 		IrcMessage im = new IrcMessage(msg);
 		msg=im.getMessage();
@@ -179,10 +193,6 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 		}
 	}
 
-	private void debug( String msg ) {
-		System.out.println( classname +":"+ msg );
-	}
-
 	public void onload() {
 	}
 
@@ -296,20 +306,20 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
                     }
                     else
                     {
-                        debug("calling reconned()!");
+                        log.debug("calling reconned()!");
                         //com.reconnect();
                     }
                 }
             }
             catch( IOException e )
             {
-                debug( e.toString() );
+                log.error( e.toString() );
                 com.stopit();
             }
         }
         else
         {
-            debug("Could not connect!");
+            log.error("Could not connect!");
             com.stopit();
         }
     }
@@ -351,7 +361,7 @@ public class IrcModule extends ProcessorModule implements CommunicationUserInter
 					}
 				} 
 			} catch (Exception e) {
-				debug("IrcModule failed to encode message "+message);
+				log.error("Failed to encode message " + message);
 			}
 		}
 
