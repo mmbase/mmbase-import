@@ -98,9 +98,9 @@ abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements
             String field = (String)returnFieldEnum.nextElement();
             // michiel: should be deprecated?
             if (log.isDebugEnabled()) {
-                log.trace("will set " + getSimpleReturnValueName(field) + " to " + node.getValue(field));
+                log.trace("will set " + getSimpleReturnValueName(field) + " to " + node.getStringValue(field));
             }
-            pageContext.setAttribute(getSimpleReturnValueName(field) , "" + node.getValue(field));
+            pageContext.setAttribute(getSimpleReturnValueName(field) , node.getStringValue(field));
             //pageContext.setAttribute(getPrefix() + "item"+(j++) ,
             //                         "" + node.getValue(field));
         }
