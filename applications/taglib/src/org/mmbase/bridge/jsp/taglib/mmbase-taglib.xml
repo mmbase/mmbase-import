@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.199 2003-09-10 11:16:09 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.200 2003-09-16 09:41:14 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -4134,6 +4134,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       </possiblevalue>
       <since>MMBase-1.7</since>
     </attribute>
+    <!--
     <attribute>
       <name>relevance</name>
       <required>false</required>
@@ -4164,7 +4165,7 @@ Of course, the default behavior of getSmartPath can still be overridden.
       <see tag="time" attribute="precision" />
       <since>MMBase-1.7</since>
     </attribute>
-
+    -->
     <example>
       &lt;mm:time format="yyyy/MM/dd" /&gt; generates 2002/04/21
     </example>
@@ -4468,6 +4469,15 @@ The 0 is just counter, which starts at 0 on every page.
       <info>
 
       </info>
+      <see tag="relatednodes" attribute="type" />
+    </attribute>
+    <attribute>
+      <name>role</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+      </info>
+      <see tag="relatednodes" attribute="role" />
     </attribute>
     <attribute>
       <name>path</name>
