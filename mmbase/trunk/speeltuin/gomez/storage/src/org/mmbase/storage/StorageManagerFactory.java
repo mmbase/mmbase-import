@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.19 2003-08-19 14:18:31 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.20 2003-08-20 13:25:38 pierre Exp $
  */
 public abstract class StorageManagerFactory {
 
@@ -87,14 +87,7 @@ public abstract class StorageManagerFactory {
      * The default storage factory class.
      * This classname is used if you doe not spevify the clasanme in the 'storagemanagerfactory' proeprty in mmabseroot.xml. 
      */
-    static private final String DEFAULT_FACTORY_CLASS = "org.mmbase.storage.database.DatabaseStorageManagerFactory";
-
-    /**
-     * The legacy storage factory class.
-     * For backward compatibility with the old database support classes.
-     * So... how to determine you should use this?
-     */
-    static private final String LEGACY_FACTORY_CLASS = "org.mmbase.storage.legacy.LegacyStorageManagerFactory";
+    static private final Class DEFAULT_FACTORY_CLASS = org.mmbase.storage.implementation.database.DatabaseStorageManagerFactory.class;
 
     /**
      * Obtain the StorageManagerFactory belonging to the indicated MMBase module.
@@ -107,10 +100,12 @@ public abstract class StorageManagerFactory {
                   throws StorageException {
         // get the class name for the factory to instantiate
         String factoryClassName = mmbase.getInitParameter("storagemanagerfactory");
-        if (factoryClassName == null) factoryClassName = DEFAULT_FACTORY_CLASS;
         // instantiate and initialize the class
         try {
-            Class factoryClass = Class.forName(factoryClassName);
+            Class factoryClass = DEFAULT_FACTORY_CLASS;
+            if (factoryClassName != null) {  
+                factoryClass = Class.forName(factoryClassName);
+            }
             StorageManagerFactory factory = (StorageManagerFactory)factoryClass.newInstance();
             factory.init(mmbase);
             return factory;

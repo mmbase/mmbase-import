@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 /**
  * This class defines the attributes names used by the default database storage manager classes.
@@ -15,7 +15,7 @@ package org.mmbase.storage.database;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.3 2003-08-19 10:32:42 pierre Exp $
+ * @version $Id: Attributes.java,v 1.1 2003-08-20 13:25:44 pierre Exp $
  */
 public final class Attributes {
 

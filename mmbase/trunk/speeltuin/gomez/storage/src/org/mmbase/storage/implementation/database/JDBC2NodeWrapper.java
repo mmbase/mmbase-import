@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 import java.util.*;
 import java.sql.*;
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
  * Wrapper of MMJdbc2NodeInterface for the storage classes
  *
  * @author Pierre van Rooden
- * @version $Id: JDBC2NodeWrapper.java,v 1.8 2003-08-20 09:20:40 pierre Exp $
+ * @version $Id: JDBC2NodeWrapper.java,v 1.1 2003-08-20 13:25:45 pierre Exp $
  */
 public class JDBC2NodeWrapper implements MMJdbc2NodeInterface {
 

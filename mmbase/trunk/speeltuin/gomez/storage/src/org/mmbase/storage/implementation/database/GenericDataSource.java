@@ -7,7 +7,7 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.storage.database;
+package org.mmbase.storage.implementation.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,7 +28,7 @@ import org.mmbase.module.database.JDBCInterface;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.4 2003-08-01 14:16:12 pierre Exp $
+ * @version $Id: GenericDataSource.java,v 1.1 2003-08-20 13:25:44 pierre Exp $
  */
 public final class GenericDataSource implements DataSource {
 
