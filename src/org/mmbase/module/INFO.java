@@ -24,7 +24,7 @@ import org.mmbase.util.*;
  *
  * @author Daniel Ockeloen
  *
- * @$Revision: 1.13 $ $Date: 2000-05-19 16:06:47 $
+ * @$Revision: 1.14 $ $Date: 2000-05-23 13:29:06 $
  */
 public class INFO extends ProcessorModule {
 
@@ -33,6 +33,9 @@ public class INFO extends ProcessorModule {
 	Random rnd;
 	String documentroot;
 	Hashtable DirCache=new Hashtable();
+
+	TimeZone tz = TimeZone.getTimeZone("ECT"); //Rob
+	GregorianCalendar calendar = new GregorianCalendar(tz); //Rob
 
 	public void init() {
 		documentroot=System.getProperty("mmbase.htmlroot");
@@ -380,28 +383,33 @@ public class INFO extends ProcessorModule {
 				whichname=INFO.Not;
 			}
 			if (cmd.equals("TIME")) {
-				if (d.getMinutes()<10) {
-					return(""+d.getHours()+":0"+d.getMinutes());
+				int getminutes = calendar.get(Calendar.MINUTE);
+				if (getminutes<10) {
+					return(""+calendar.get(Calendar.HOUR_OF_DAY)+":0"+getminutes);
 				} else {
-					return(""+d.getHours()+":"+d.getMinutes());
+					return(""+calendar.get(Calendar.HOUR_OF_DAY)+getminutes);
 				}
 			}
+			
+			int days = calendar.get(Calendar.DAY_OF_YEAR);
+
 			if (cmd.equals("CURTIME")) return(""+System.currentTimeMillis()/1000);
 			if (cmd.equals("DCURTIME")) return(""+DateSupport.currentTimeMillis()/1000);
 			if (cmd.equals("CURTIME10")) return(""+System.currentTimeMillis()/(10*1000));
 			if (cmd.equals("CURTIME20")) return(""+System.currentTimeMillis()/(20*1000));
-			if (cmd.equals("HOUR")) return(""+d.getHours());
-			if (cmd.equals("MIN")) return(""+d.getMinutes());
-			if (cmd.equals("SEC")) return(""+d.getSeconds());
-			if (cmd.equals("YEAR")) return(""+(1900+d.getYear())); // year 2000 bug! 
+
+			// YEAR
+			if (cmd.equals("YEAR")) return(""+calendar.get(Calendar.YEAR));
 			if (cmd.equals("SHORTYEAR")) {
-				int getyear = d.getYear()%100;
+				int getyear = calendar.get(Calendar.YEAR)%100;
 				if(getyear<10) {
 					return "0"+getyear;
 				} else {
 					return ""+getyear;
 				}
 			} 
+	
+			//MONTH
 			if (cmd.equals("MONTH")) {
 				switch(whichname) {
 					case INFO.Not:
@@ -419,17 +427,25 @@ public class INFO extends ProcessorModule {
 				}
 				return(rtn);
 			}
-			if (cmd.equals("DAY")) return(""+d.getDate());
+
+			//WEEK
+			if (cmd.equals("WEEK")) return(""+((days/7)+1));
+			if (cmd.equals("WEEK_OF_YEAR")) return(""+calendar.get(Calendar.WEEK_OF_YEAR));
+			if (cmd.equals("WEEKOFMONTH")) return(""+calendar.get(Calendar.WEEK_OF_MONTH));
+
+			// DAY
+			if (cmd.equals("DAY") || cmd.equals("DAYOFMONTH")) return(""+calendar.get(Calendar.DAY_OF_MONTH));
 			if (cmd.equals("WEEKDAY") || cmd.equals("DAYOFWEEK")) {
+				int getday = calendar.get(Calendar.DAY_OF_WEEK);
 				switch(whichname) {
 					case INFO.Not:
-						rtn=""+(d.getDay()+1);
+						rtn=""+getday;
 						break;
 					case INFO.English:
-						rtn=DateStrings.longdays[d.getDay()];
+						rtn=DateStrings.longdays[getday];
 						break;
 					case INFO.Dutch:
-						rtn=DateStrings.Dutch_longdays[d.getDay()];
+						rtn=DateStrings.Dutch_longdays[getday];
 						break;
 					default:
 						rtn="Plokta";
@@ -437,17 +453,27 @@ public class INFO extends ProcessorModule {
 				}
 				return(rtn);
 			}
-			long secInYear=calcsec(d);
-			int days=(int)(secInYear/(3600*24));
-			if (cmd.equals("YDAY") || cmd.equals("DAYOFYEAR")) return(""+(days+1));
-			if (cmd.equals("WEEK")) return(""+((days/7)+1)); 
-			if (cmd.equals("GWEEK")) return(""+(((days+3)/7))); // +3 days
+			if (cmd.equals("DAYOFWEEKINMONTH")) return(""+calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+			if (cmd.equals("YDAY") || cmd.equals("DAYOFYEAR")) return(""+calendar.get(Calendar.DAY_OF_YEAR));
+
+			//HOUR
+			if (cmd.equals("HOUR")) return(""+calendar.get(Calendar.HOUR));
+			if (cmd.equals("HOUROFDAY")) return(""+calendar.get(Calendar.HOUR_OF_DAY));
+
+			//MINUTES
+			if (cmd.equals("MIN") || cmd.equals("MINUTE")) return(""+calendar.get(Calendar.MINUTE));
+
+			//SECONDS
+			if (cmd.equals("SEC") || cmd.equals("SECOND")) return(""+calendar.get(Calendar.SECOND));
+
+
 			if (cmd.equals("PREVWEEK")) {
 				long tmp=days/7;
 				if (tmp<1) tmp=52;
 				if (tmp>52) tmp=1;
 				return(""+tmp);
 			}
+			if (cmd.equals("GWEEK")) return(""+(((days+3)/7))); // +3 days
 			if (cmd.equals("PREVGWEEK")) {
 				long tmp=((days+3)/7)-1; // +3 days
 				if (tmp<1) tmp=52;
@@ -582,16 +608,20 @@ public class INFO extends ProcessorModule {
 				return(""+ctime);
 				//return(t2d(ctime));
 			}
+
 			return("Illegal date command");	
 		} else {
 			return(new Date(DateSupport.currentTimeMillis()).toString());
 		}
 	}
 
+	/**
+	 * Not needed anymore
 	long calcsec(Date d) {
 		Date b = new Date ((d.getYear()),0,0);
 		return((d.getTime()-b.getTime())/1000);
 	}
+	*/
 
 	public String getModuleInfo() {
 		return("Support routines for servscan, Daniel Ockeloen");
