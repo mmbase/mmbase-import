@@ -128,8 +128,7 @@ public class IncludeTag extends UrlTag {
             }            
             helper.setValue(debugStart(absoluteUrl) + string.toString() + debugEnd(absoluteUrl));
             
-            if (log.isDebugEnabled()) log.debug("found string: " + bodyContent.getString());
-
+            if (log.isDebugEnabled()) log.debug("found string: " + helper.getValue());
 
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
