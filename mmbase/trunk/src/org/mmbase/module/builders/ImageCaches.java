@@ -18,12 +18,13 @@ import org.mmbase.module.database.*;  // sql
 import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @javadoc
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
- * @version $Id: ImageCaches.java,v 1.24 2002-09-30 13:00:51 michiel Exp $
+ * @version $Id: ImageCaches.java,v 1.25 2002-10-25 18:48:14 michiel Exp $
  */
 public class ImageCaches extends AbstractImages {
 
@@ -52,7 +53,7 @@ public class ImageCaches extends AbstractImages {
      *
      * @since MMBase-1.6
      **/
-    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName) {
+    protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName) {
         String servlet    = getServletPath() + (usesBridgeServlet ? sessionName : "");
         MMObjectNode origNode = originalImage(node);
         String imageThumb;
@@ -60,16 +61,18 @@ public class ImageCaches extends AbstractImages {
             List args = new java.util.Vector();
             args.add("s(100x60)");
             imageThumb = servlet + origNode.getFunctionValue("cache", args);
+            if (res != null) imageThumb = res.encodeURL(imageThumb);
         } else {
             imageThumb = "";
         }
         String image      = servlet + node.getNumber();
+        if (res != null) image = res.encodeURL(image);
         return "<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imageThumb + "\" border=\"0\" alt=\"" + title + "\" /></a>";
     }
 
-    protected String getSGUIIndicator(MMObjectNode node, String session) {
+    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
         MMObjectNode origNode = originalImage(node);
-        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), session);
+        return getGUIIndicatorWithAlt(node, (origNode != null ? origNode.getStringValue("title") : ""), res, session);
     }
 
     /*

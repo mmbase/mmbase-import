@@ -15,13 +15,14 @@ import org.mmbase.servlet.MMBaseServlet;
 import org.mmbase.module.builders.*;
 import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * AbstractImages holds the images and provides ways to insert, retrieve and
  * search them.
  *
  * @author Michiel Meeuwissen
- * @version $Id: AbstractImages.java,v 1.13 2002-10-02 21:23:31 michiel Exp $
+ * @version $Id: AbstractImages.java,v 1.14 2002-10-25 18:48:14 michiel Exp $
  * @since   MMBase-1.6
  */
 public abstract class AbstractImages extends AbstractServletBuilder {
@@ -40,18 +41,18 @@ public abstract class AbstractImages extends AbstractServletBuilder {
      * An image's gui-indicator is of course some &lt;img src&gt;, but it depends on what kind of image
      * (cached, original) what excactly it must be.
      */
-    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, String sessionName);
+    abstract protected String getGUIIndicatorWithAlt(MMObjectNode node, String title, HttpServletResponse res, String sessionName);
 
     /**
      * Gui indicator of a whole node.
      */
-    protected String getSGUIIndicator(String session, MMObjectNode node) {
-        return getGUIIndicatorWithAlt(node, "*", session);
+    protected String getSGUIIndicator(String session, HttpServletResponse res, MMObjectNode node) {
+        return getGUIIndicatorWithAlt(node, "*", res, session);
     }
 
-    protected String getSGUIIndicator(String session, String field, MMObjectNode node) {
+    protected String getSGUIIndicator(String session, HttpServletResponse res, String field, MMObjectNode node) {
         if (field.equals("handle") || field.equals("")) {
-            return getGUIIndicatorWithAlt(node, "*", session);
+            return getSGUIIndicator(session, res, node);
         }
         // other fields can be handled by the orignal gui function...
         return getSuperGUIIndicator(field, node);

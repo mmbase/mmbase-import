@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.174 2002-10-17 12:48:10 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.175 2002-10-25 18:49:59 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2103,7 +2103,7 @@ public class MMObjectBuilder extends MMTable {
         if (function.equals("info")) {
             Map info = new HashMap();
             info.put("wrap", "(string, length) Wraps a string (for use in HTML)");
-            info.put("gui",  "(field, session, language) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
+            info.put("gui",  "(field, language, session, response) Returns a (XHTML) gui representation of the node (if field is '') or of a certain field. It can take into consideration a http session variable name with loging information and a language");
             // language is only implemented in TypeDef now, session in AbstractServletBuilder
             // if needed on more place, then it can be generalized to here.
 
@@ -2180,10 +2180,10 @@ public class MMObjectBuilder extends MMTable {
                 String rtn;
                 String field = (String) arguments.get(0);
                 Locale locale = null;
-                if (arguments.size() <= 2) { // support for login info not needed
+                if (arguments.size() < 2) { // support for login info not needed
                     rtn = getGUIIndicator(field, node);
                 } else {
-                    locale = new Locale((String) arguments.get(2), "");
+                    locale = new Locale((String) arguments.get(1), "");
                     if (null == field || "".equals(field)) {
                         rtn = getLocaleGUIIndicator(locale, node);
                     } else {
