@@ -188,7 +188,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
     public String getAttributeValue(String attribute) throws JspTagException {        
         if (attribute == null) return null;
-        return (String) getAttribute(attribute).getValue(this);        
+        return getAttribute(attribute).getString(this);        
     }
     /**
      * @since MMBase-1.6.1

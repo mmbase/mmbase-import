@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * decide not to call the set-function of the attribute (in case of tag-instance-reuse).
  *
  * @author Michiel Meeuwissen
- * @version $Id: Attribute.java,v 1.1 2002-12-24 15:41:30 michiel Exp $
+ * @version $Id: Attribute.java,v 1.2 2002-12-24 18:17:27 michiel Exp $
  * @since   MMBase-1.6.1
  */
 
@@ -74,6 +74,7 @@ public class Attribute {
      * a new one if it is not in the Attribute cache.
      */
     public static Attribute getAttribute(Object at) throws AttributeException {
+        if (log.isDebugEnabled()) log.debug("Getting attribute " + at);
         return cache.getAttribute(at);
     }
 
@@ -120,7 +121,7 @@ public class Attribute {
     }
     public Object getValue(ContextReferrerTag tag) throws JspTagException {
         if (log.isDebugEnabled()) {
-            log.debug("Evaluating " + attribute);
+            log.debug("Evaluating " + this);
         }
         if (! containsVars) return attribute;
         if (attributeParts.size() == 1) {
@@ -134,13 +135,14 @@ public class Attribute {
 
 
     public String getString(ContextReferrerTag tag) throws JspTagException {
-        return (String) getValue(tag);
+        return getValue(tag).toString();
     }
+
     /**
      * Returns the unparsed Attribute as a string.
      */
     public String toString() {
-        return attribute.toString();
+        return "att: " + attribute.toString() + " parts: " + attributeParts;         
     }
 
     /**
@@ -148,13 +150,9 @@ public class Attribute {
      */
 
     protected void parse() throws AttributeException {
-        if (attribute == null) {
-            containsVars = false;
-            return;
-        }
         String attr = (String) attribute;
         if (log.isDebugEnabled()) {
-            log.debug("Parsing " + attr);
+            log.debug("Parsing " + attribute);
         }
         // search all occurences of $
         int foundpos     = attr.indexOf('$');
@@ -168,7 +166,10 @@ public class Attribute {
 
         int pos          = 0;
         while (foundpos >= 0) { // we found a variable!
-            attributeParts.add(new AttributePart(attr.substring(pos, foundpos))); 
+            String npart = attr.substring(pos,foundpos);
+            if (npart.length() > 0) {
+                attributeParts.add(new AttributePart(npart)); 
+            }
             // piece of string until now is ready.
             foundpos ++;
             if (foundpos >= attr.length()) { // end of string
@@ -194,9 +195,13 @@ public class Attribute {
                         pos = posclose + 1;
                     }
                 }
-                // even variable names can be in a variable, why not...
-                Attribute var = getAttribute(attr.substring(foundpos, pos - 1));
-                attributeParts.add(new AttributePart(var));
+                if (attr.charAt(foundpos) != '+') {
+                    Attribute var = getAttribute(attr.substring(foundpos, pos - 1));
+                    attributeParts.add(new AttributePart(var));
+                } else {
+                    Attribute var = getAttribute(attr.substring(foundpos + 1, pos - 1));
+                    attributeParts.add(new AttributePart(AttributePart.EXPRESSION, var));
+                }
             } else { // not using parentheses.
                 char c = attr.charAt(pos = foundpos);
                 if (c == '$') { // make escaping of $ possible
@@ -218,50 +223,74 @@ public class Attribute {
             foundpos = attr.indexOf('$', pos);
         }
         // no more $'es, add rest of string
-        attributeParts.add(new AttributePart(attr.substring(pos)));
+        String rest = attr.substring(pos);
+        if (rest.length() > 0) {
+            attributeParts.add(new AttributePart(rest));
+        }
         return;
     }
 
-    class AttributePart {
+    static class AttributePart {
+        private static Logger log = Logging.getLoggerInstance(Attribute.class.getName()+".AttributePart");
         final static int STRING      = 0;
-        final static int VAR         = 1;
-        final static int ATTRIBUTE   = 2;
-        final static int EXPRESSION  = 3;
+        final static int DOUBLE      = 1;
+        final static int VAR         = 10;
+        final static int ATTRIBUTE   = 11;
+        final static int EXPRESSION  = 12;
         private int type;
         private Object part;
         AttributePart(int t, Object p) throws AttributeException {
-            type = t; part = p;
+            type = t; 
+            part = p;
             check();
-        }
+       }
         AttributePart(Attribute att) throws AttributeException {
             if(att.containsVars) {
                 type = ATTRIBUTE;
                 part = att;
             } else {
                 type = VAR;
-                part = att.toString();
+                part = (String)  att.attribute;
             }
             check();
         }
         AttributePart(String att) throws AttributeException {
             this(STRING, att);
         }
+
+        public String toString() {
+            return "(" + type + "/" + part.toString() + ")";
+        }
+
         /**
          * After construction some basic checks can be done.
          */
         void check() throws AttributeException {
-            if (log.isDebugEnabled()) log.trace("Checking new AttributePart " + part + "/" + type);
+            if (log.isDebugEnabled()) log.trace("Checking new AttributePart '" + part + "'/" + type);
             switch(type) {
             case VAR: {
-                String var = (String) part;
-                if (var.length() < 1) throw new AttributeException("Expression too short in " + attribute);                
+                String var =  part.toString();
+                if (var.length() < 1) throw new AttributeException("Expression too short");
+                return;
+            }
+            case EXPRESSION: {
+                if (part instanceof Attribute) {
+                    Attribute att = (Attribute) part;
+                    if (! att.containsVars) {
+                        log.debug("Expression does not contain vars, casting to double");
+                        ExprCalc cl = new ExprCalc(att.attribute.toString());
+                        part = new Double(cl.getResult());
+                        type = DOUBLE; 
+                    }
+                }
             }
             }
         }
 
         Object getValue(ContextReferrerTag tag) throws JspTagException {
             switch(type) {
-            case STRING: return (String) part;
+            case DOUBLE:
+            case STRING: return  part;
             case VAR:{
                 if ("_".equals(part)) {
                     return tag.findWriter().getWriterValue();
@@ -269,11 +298,11 @@ public class Attribute {
                     return tag.getObject((String) part);
                 }
             }
-            case ATTRIBUTE:   return ((Attribute) part).getValue(tag);
+            case ATTRIBUTE:   
+                return ((Attribute) part).getValue(tag);
             case EXPRESSION: { 
-                //ExprCalc cl = new ExprCalc((Attribute) part.toString(tag));
-                //return cl.getResult();
-                return "UNSUPPORTED";
+                ExprCalc cl = new ExprCalc( ((Attribute) part).getString(tag));
+                return new Double(cl.getResult());
             }
             default: throw new AttributeException("Found an unknown Attribute Part type");
             }
@@ -281,21 +310,12 @@ public class Attribute {
 
 
         void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException {            
-            /*
-              // dropped aritmetic for the moment. Will be fixed.
-
-                } else if (varName.charAt(0) == '+') { // make simple aritmetic possible
-                    ExprCalc cl = new ExprCalc(varName.substring(1));
-                    result.append(cl.getResult());
-                } else {
-                    result.append(getString(varName));
-                }
-            */
             if (log.isDebugEnabled()) {
-                log.trace("Appending part of " + part + " type " + type);
+                log.trace("Appending part '" + part + "' of  type " + type);
             }
             switch(type) {
             case STRING:
+            case DOUBLE:
             case VAR:
             case EXPRESSION:
                 buffer.append(getValue(tag).toString()); 
@@ -314,7 +334,9 @@ public class Attribute {
 class NullAttribute extends Attribute {
     NullAttribute() { 
     }
-    public Object getValue(ContextReferrerTag tag) throws JspTagException { return null; }
-    public void appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
+    public Object getValue(ContextReferrerTag tag)  throws JspTagException { return null; }
+    public String getString(ContextReferrerTag tag) throws JspTagException { return null; }
+    public void   appendValue(ContextReferrerTag tag, StringBuffer buffer) throws JspTagException { return; }
     public String toString() { return ""; }
+
 }
