@@ -51,7 +51,8 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.187 2002-11-28 14:11:51 robmaris Exp $
+ * @author Rob van Maris
+ * @version $Id: MMObjectBuilder.java,v 1.188 2002-11-29 15:51:07 robmaris Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -490,6 +491,8 @@ public class MMObjectBuilder extends MMTable {
      * Creates a cache for storing types and objects.
      * The cache can contain a maximum of OBJ2TYPE_MAX_SIZE elements.
      * Note that this should possibly be moved to the variable declaration part (like nodecache)?
+     *
+     * @sql
      */
     public synchronized void init_obj2type() {
 
@@ -724,6 +727,7 @@ public class MMObjectBuilder extends MMTable {
      * Retrieves an object's type. If necessary, the type is added to the cache.
      * @param number The number of the node to search for
      * @return an <code>int</code> value which is the object type (otype) of the node.
+     * @sql
      */
     public int getNodeType(int number) {
 	// assertment
@@ -848,6 +852,7 @@ public class MMObjectBuilder extends MMTable {
      * @return <code>null</code> if the node does not exist or the key is invalid, or a
      *       <code>MMObjectNode</code> containign the contents of the requested node.
      * @throws RuntimeException If the node does not exist
+     * @sql
      */
     public synchronized MMObjectNode getNode(int number, boolean usecache) {
         if (number==-1) {
@@ -1019,19 +1024,32 @@ public class MMObjectBuilder extends MMTable {
     }
 
     /**
-     * Count all the objects that match the searchkeys
-     * @param where scan expression that the objects need to fulfill
-     * @return the number of an <code>Enumeration</code> containing all the objects that apply.
+     * Counts number of nodes matching a specified constraint. 
+     *
+     * @param where The constraint, can be a SQL where-clause, a MMNODE 
+     *        expression or an altavista-formatted expression.
+     * @return The number of nodes.
+     * @sql
      */
     public int count(String where) {
+        int result = -1;
         if (where==null) where="";
-        if (where.indexOf("MMNODE")!=-1) {
-            where=convertMMNode2SQL(where);
-        } else {
-            where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
+        
+        try {
+            if (where.indexOf("MMNODE")!=-1) {
+                // MMNODE expression
+                NodeSearchQuery query = convertMMNodeSearch2Query(where);
+                result = count(query);
+            } else {
+                where=QueryConvertor.altaVista2SQL(where,mmb.getDatabase());
+                String query="SELECT Count(*) FROM "+getFullTableName()+" "+where;
+                result = basicCount(query);
+            }
+        } catch (SearchQueryException e) {
+            log.error(e);
         }
-        String query="SELECT Count(*) FROM "+getFullTableName()+" "+where;
-        return basicCount(query);
+        
+        return result;
     }
 
     /**
@@ -1112,6 +1130,7 @@ public class MMObjectBuilder extends MMTable {
     /**
      * Parses arguments of searchVector and searchList
      * @since MMBase-1.6
+     * @sql
      */
 
     protected String getQuery(String where) {
@@ -1152,6 +1171,7 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
+     * @sql
      */
     public Vector searchVectorIn(String in) {
         // do the query on the database
@@ -1242,6 +1262,7 @@ public class MMObjectBuilder extends MMTable {
      * Returns a Vector containing all the objects that match the searchkeys. Only returns the object numbers.
      * @param where scan expression that the objects need to fulfill
      * @return a <code>Vector</code> containing all the object numbers that apply, <code>null</code> if en error occurred.
+     * @sql
      */
     public Vector searchNumbers(String where) {
         // do the query on the database
@@ -1331,6 +1352,7 @@ public class MMObjectBuilder extends MMTable {
      * @param where where clause that the objects need to fulfill
      * @param sorted order in which to return the objects
      * @return a vector containing all the objects that apply.
+     * @sql
      */
     public Vector searchVector(String where,String sorted) {
         // do the query on the database
@@ -1356,6 +1378,7 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
+     * @sql
      */
     public Vector searchVectorIn(String where,String sorted,String in) {
         // temp mapper hack only works in single order fields
@@ -1372,6 +1395,7 @@ public class MMObjectBuilder extends MMTable {
      * @param in either a set of object numbers (in comma-separated string format), or a sub query
      *		returning a set of object numbers.
      * @return a vector containing all the objects that apply.
+     * @sql
      */
     public Vector searchVectorIn(String where,String in) {
         // do the query on the database
@@ -1384,6 +1408,7 @@ public class MMObjectBuilder extends MMTable {
      * Parses arguments of searchVector and searchList
      *
      * @since MMBase-1.6
+     * @sql
      */
 
     protected String getQuery(String where, String sorted, boolean direction) {
@@ -1423,8 +1448,8 @@ public class MMObjectBuilder extends MMTable {
      * Parses arguments of searchVector and searchList
      *
      * @since MMBase-1.6
+     * @sql
      */
-
     protected String getQuery(String where, String sorted, String directions) {
         if (where==null) {
             where="";
@@ -1513,6 +1538,7 @@ public class MMObjectBuilder extends MMTable {
      * @param direction sorts ascending if <code>true</code>, descending if <code>false</code>.
      *		Only applies if a sorted order is given.
      * @return a vector containing all the objects that apply.
+     * @sql
      */
     public Vector searchVectorIn(String where,String sorted,boolean direction,String in) {
         // temp mapper hack only works in single order fields
@@ -1534,6 +1560,7 @@ public class MMObjectBuilder extends MMTable {
      * the where clause.
      * @param where where clause (SQL-syntax) that the objects need to fulfill
      * @return an <code>Enumeration</code> containing all the objects that apply.
+     * @sql
      */
     public Enumeration searchWithWhere(String where) {
         // do the query on the database
@@ -2762,8 +2789,8 @@ public class MMObjectBuilder extends MMTable {
            "prefix.fieldname")
      * <li><em>XX</em> is a 2 letter comparison operator: "==" (equal), 
      *     "=E" (equal), "=N" (not equal), "=G" (greater than),
-     *     "=g" (greater than or equal), "=S" (smaller than),
-     *     "=s" (smaller than or equal).
+     *     "=g" (greater than or equal), "=S" (less than),
+     *     "=s" (less than or equal).
      * <li><em>value</em> is a value. The form "*value*" is used to
      *     represent any string containing "value" when comparing for equality.
      * <li><em>logical operator</em> is "+" (AND) or "-" (AND NOT).
@@ -2779,6 +2806,161 @@ public class MMObjectBuilder extends MMTable {
         String result="WHERE "+mmb.getDatabase().getMMNodeSearch2SQL(where,this);
         log.debug("convertMMNode2SQL(): results : "+result);
         return result;
+    }
+
+    /**
+     * Creates query based on an MMNODE expression.
+     * 
+     * @param expr The MMNODE expression.
+     * @return The query.
+     * @throws IllegalArgumentException when an invalid argument is supplied.
+     * @since MMBase-1.7
+     */
+     // package visibility
+    NodeSearchQuery convertMMNodeSearch2Query(String expr) {
+        NodeSearchQuery query = new NodeSearchQuery(this);
+        BasicCompositeConstraint constraints
+            = new BasicCompositeConstraint(CompositeConstraint.LOGICAL_AND);
+        String logicalOperator = null;
+        
+        // Strip leading string "MMNODE " from expression, parse 
+        // fieldexpressions and logical operators.
+        // (legacy: eol characters '\n' and '\r' are interpreted as "AND NOT")
+        StringTokenizer tokenizer 
+            = new StringTokenizer(expr.substring(7), "+-\n\r", true);
+        while (tokenizer.hasMoreTokens()) {
+            String fieldExpression = tokenizer.nextToken();
+            
+            // Remove prefix if present (example episodes.title==).
+            int pos = fieldExpression.indexOf('.');
+            if (pos != -1) {
+                fieldExpression = fieldExpression.substring(pos + 1);
+            }
+            
+            // Break up field expression in fieldname, comparison operator
+            // and value.
+            pos = fieldExpression.indexOf('=');
+            if (pos != -1 && fieldExpression.length() > pos + 2) {
+                String fieldName = fieldExpression.substring(0, pos);
+                char comparison = fieldExpression.charAt(pos + 1);
+                String value = fieldExpression.substring(pos + 2);
+                
+                // Add corresponding constraint to constraints.
+                FieldDefs fieldDefs = getField(fieldName);
+                if (fieldDefs == null) {
+                    throw new IllegalArgumentException(
+                        "Invalid MMNODE expression: " + expr);
+                }
+                StepField field = query.getField(fieldDefs);
+                BasicConstraint constraint 
+                    = parseFieldPart(field, comparison, value);
+                constraints.addChild(constraint);
+                
+                // Set to inverse if preceded by a logical operator that is
+                // not equal to "+".
+                if (logicalOperator != null && !logicalOperator.equals("+")) {
+                    constraint.setInverse(true);
+                }
+            } else {
+                // Invalid expression.
+                throw new IllegalArgumentException(
+                    "Invalid MMNODE expression: " + expr);
+            }
+            
+            // Read next logical operator.
+            if (tokenizer.hasMoreTokens()) {
+                logicalOperator = tokenizer.nextToken();
+            }
+        }
+        
+        List childs = constraints.getChilds();
+        if (childs.size() == 1) {
+            query.setConstraint((FieldValueConstraint) childs.get(0));
+        } else if (childs.size() > 1) {
+            query.setConstraint(constraints);
+        }
+        return query;
+    }
+
+    /**
+     * Creates a {@link org.mmbase.storage.search.FieldCompareConstraint
+     * FieldCompareConstraint}, based on parts of a field expression in a 
+     * MMNODE expression.
+     * 
+     * @param fieldName The field name.
+     * @param comparison The second character of the comparison operator.
+     * @param strValue The value to compare with, represented as 
+     *        <code>String<code>.
+     * @return The constraint.
+     * @since MMBase-1.7
+     */
+    // package visibility!
+    BasicFieldValueConstraint parseFieldPart(
+            StepField field, char comparison, String strValue) {
+        
+        Object value = strValue;
+        
+        // For numberical fields, convert string representation to Double.
+        if (field.getType() != FieldDefs.TYPE_STRING &&
+            field.getType() != FieldDefs.TYPE_XML &&
+            field.getType() != FieldDefs.TYPE_UNKNOWN) {
+                value = Double.valueOf(strValue);
+        }
+                
+        BasicFieldValueConstraint constraint = 
+            new BasicFieldValueConstraint(field, value);
+        
+        switch (comparison) {
+            case '=':
+            case 'E':
+                // EQUAL (string field)
+                if (field.getType() == FieldDefs.TYPE_STRING ||
+                    field.getType() == FieldDefs.TYPE_XML) {
+                    // Strip first and last character of value, when 
+                    // equal to '*'.
+                    String str = (String) value;
+                    int length = str.length();
+                    if (str.charAt(0) == '*' && str.charAt(length - 1) == '*') {
+                        value = str.substring(1, length - 1);
+                    }
+
+                    // Convert to LIKE comparison with wildchard characters
+                    // before and after (legacy).
+                    constraint.setValue('%' + (String) value + '%');
+                    constraint.setCaseSensitive(false);
+                    constraint.setOperator(FieldCompareConstraint.LIKE);
+
+                // EQUAL (numerical field)
+                } else {
+                    constraint.setOperator(FieldCompareConstraint.EQUAL);
+                }
+                break;
+                
+            case 'N':
+                constraint.setOperator(FieldCompareConstraint.NOT_EQUAL);
+                break;
+                
+            case 'G':
+                constraint.setOperator(FieldCompareConstraint.GREATER);
+                break;
+
+            case 'g':
+                constraint.setOperator(FieldCompareConstraint.GREATER_EQUAL);
+                break;
+
+            case 'S':
+                constraint.setOperator(FieldCompareConstraint.LESS);
+                break;
+
+            case 's':
+                constraint.setOperator(FieldCompareConstraint.LESS_EQUAL);
+                break;
+            
+            default:
+                throw new IllegalArgumentException(
+                    "Invalid comparison character: '" + comparison + "'");
+        }
+        return constraint;
     }
 
     /**
