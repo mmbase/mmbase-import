@@ -20,13 +20,14 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @javadoc
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.5 2004-03-05 14:52:15 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.6 2004-09-17 09:36:16 michiel Exp $
+ * @since MMBase-1.7
  */
 public class StorageReader extends DocumentReader  {
 
-    // logger
-    private static Logger log = Logging.getLoggerInstance(StorageReader.class);
+    private static final Logger log = Logging.getLoggerInstance(StorageReader.class);
 
     /** Public ID of the Storage DTD version 1.0 */
     public static final String PUBLIC_ID_STORAGE_1_0 = "-//MMBase//DTD storage config 1.0//EN";
