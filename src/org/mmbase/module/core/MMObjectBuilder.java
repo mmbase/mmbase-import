@@ -55,7 +55,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.291 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.292 2005-02-09 08:36:33 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -948,7 +948,7 @@ public class MMObjectBuilder extends MMTable {
             log.error(sqe.getMessage() + Logging.stackTrace(sqe));
         }
         // check that we didnt loose any nodes
-        assert(virtuals.size() == result.size());
+        assert virtuals.size() == result.size();
 
         return result;
     }
