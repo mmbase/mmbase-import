@@ -14,7 +14,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicSqlHandler implements SqlHandler {
     
@@ -60,6 +60,21 @@ public class BasicSqlHandler implements SqlHandler {
             }
         }
         return result;
+    }
+    
+    /**
+     * Tests if a field constraint is explicitly case insensitive, i.e. the
+     * constraint is set to case insensitive and the field has string type.
+     *
+     * @param constraint The constraint.
+     * @return true if the constraint is set to case insensitive 
+     *         and the field has string type, false otherwise.
+     */
+    private static boolean isExplicitCaseInsensitive(
+    FieldConstraint constraint) {
+        return !constraint.isCaseSensitive()
+        && (constraint.getField().getType() == FieldDefs.TYPE_STRING 
+            || constraint.getField().getType() == FieldDefs.TYPE_XML);
     }
     
     /**
@@ -374,18 +389,35 @@ public class BasicSqlHandler implements SqlHandler {
                     "Field value-in constraint specifies no values "
                     + "(at least 1 value is required).");
                 }
-                sb.append(getAllowedValue(tableAlias)).
-                append(".").
-                append(getAllowedValue(fieldName)).
-                append(overallInverse? " NOT IN (": " IN (");
+                if (isExplicitCaseInsensitive(fieldConstraint)) {
+                    // case insensitive
+                    sb.append("LOWER(").
+                    append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName)).
+                    append(")");
+                } else {
+                    // case sensitive or case ignored
+                    sb.append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName));
+                }
+                sb.append(overallInverse? " NOT IN (": " IN (");
                 Iterator iValues = values.iterator();
                 while (iValues.hasNext()) {
                     Object value = iValues.next();
                     if (fieldType == FieldDefs.TYPE_STRING
                     || fieldType == FieldDefs.TYPE_XML) {
-                        value = toSqlString((String) value); // escape single quotes in string
+                        
+                        // escape single quotes in string
+                        String stringValue = toSqlString((String) value); 
+                        
+                        // to lowercase when case insensitive
+                        if (!fieldConstraint.isCaseSensitive()) {
+                             stringValue = stringValue.toLowerCase();
+                        }
                         sb.append("'").
-                        append(value).
+                        append(stringValue).
                         append("'");
                     } else {
                         sb.append(value);
@@ -409,11 +441,21 @@ public class BasicSqlHandler implements SqlHandler {
                 // Field compare constraint
                 FieldCompareConstraint fieldCompareConstraint
                 = (FieldCompareConstraint) fieldConstraint;
-                sb.append(overallInverse? "NOT ": "").
-                append(getAllowedValue(tableAlias)).
-                append(".").
-                append(getAllowedValue(fieldName));
-                switch (fieldCompareConstraint.getOperator()) {
+                sb.append(overallInverse? "NOT ": "");
+                if (isExplicitCaseInsensitive(fieldConstraint)) {
+                    // case insensitive
+                    sb.append("LOWER(").
+                    append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName)).
+                    append(")");
+                } else {
+                    // case sensitive or case ignored
+                    sb.append(getAllowedValue(tableAlias)).
+                    append(".").
+                    append(getAllowedValue(fieldName));
+                }
+                 switch (fieldCompareConstraint.getOperator()) {
                     case FieldValueConstraint.LESS:
                         sb.append("<");
                         break;
@@ -442,9 +484,16 @@ public class BasicSqlHandler implements SqlHandler {
                     Object value = fieldValueConstraint.getValue();
                     if (fieldType == FieldDefs.TYPE_STRING
                     || fieldType == FieldDefs.TYPE_XML) {
-                        value = toSqlString((String) value); // escape single quotes in string
+                        
+                        // escape single quotes in string
+                        String stringValue = toSqlString((String) value); 
+                        
+                        // to lowercase when case insensitive
+                        if (!fieldConstraint.isCaseSensitive()) {
+                             stringValue = stringValue.toLowerCase();
+                        }
                         sb.append("'").
-                        append(value).
+                        append(stringValue).
                         append("'");
                     } else {
                         sb.append(value);
@@ -456,10 +505,20 @@ public class BasicSqlHandler implements SqlHandler {
                     StepField field2 = compareFieldsConstraint.getField2();
                     String fieldName2 = field2.getFieldName();
                     String tableAlias2 = field2.getStep().getAlias();
+                if (isExplicitCaseInsensitive(fieldConstraint)) {
+                    // case insensitive
+                    sb.append("LOWER(").
+                    append(getAllowedValue(tableAlias2)).
+                    append(".").
+                    append(getAllowedValue(fieldName2)).
+                    append(")");
+                } else {
+                    // case sensitive or case ignored
                     sb.append(getAllowedValue(tableAlias2)).
                     append(".").
                     append(getAllowedValue(fieldName2));
-                } else {
+                }
+                 } else {
                     throw new UnsupportedOperationException(
                     "Unknown constraint type: "
                     + constraint.getClass().getName());
