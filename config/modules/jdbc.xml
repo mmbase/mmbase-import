@@ -121,7 +121,7 @@
 		obtained from the documentation from the jdbc driver you use.
 		-->
 		<!--
-		MySQL:          com.mysql.jdbc.Driver   (http://www.mysql.com/Downloads/Contrib/mm.mysql-2.0.4-bin.jar)
+		MySQL:          com.mysql.jdbc.Driver (http://www.mysql.com/downloads/api-jdbc.html)
 		PostgreSQL:     org.postgresql.Driver   (http://jdbc.postgresql.org/download.html)
 		Hypersonic:     org.hsql.jdbcDriver     (http://hsqldb.sourceforge.net/)
 		HsqlDB:         org.hsqldb.jdbcDriver   (http://hsqldb.sourceforge.net/)
