@@ -131,7 +131,21 @@ strong
 	margin: 0 0 20px 150px;
 }
 
-.relatedpages { margin: 0 0 10px 150px; }
+.relatedpages
+{
+	margin: 10px 0 10px 150px;
+	font-weight: normal;
+	font-size: 1.1em;
+}
+
+.relatedpages a { font-weight: lighter; }
+
+.relatedpages strong a
+{
+	font-weight: bold;
+	text-decoration: underline;
+	text-transform: inherit;
+}
 
 #footer
 {
@@ -301,7 +315,7 @@ a:visited
 a:hover
 {
 	color: #797868;
-	text-decoration: none;
+	text-decoration: underline;
 }
 
 /*
