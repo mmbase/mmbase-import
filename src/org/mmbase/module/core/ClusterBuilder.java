@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.38 2003-06-16 08:46:36 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.39 2003-06-16 09:12:41 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -1031,6 +1031,8 @@ public class ClusterBuilder extends VirtualBuilder {
                 desttosrc= false;
             }
 
+            String sourceNumber= numberOf(idx2char(i));
+            String destNumber= numberOf(idx2char(i + 2));
             if (desttosrc) {
                 // check for directionality if supported
                 String dirstring;
@@ -1041,67 +1043,35 @@ public class ClusterBuilder extends VirtualBuilder {
                 }
                 // there is a typed relation from destination to src
                 if (srctodest) {
-                    String sourceNumber= numberOf(idx2char(i));
-                    String destNumber= numberOf(idx2char(i + 2));
                     // there is ALSO a typed relation from src to destination - make a more complex query
                     result.append(
-                        "(("
-                            + sourceNumber
-                            + "="
-                            + relChar
-                            + ".snumber AND "
-                            + destNumber
-                            + "="
-                            + relChar
-                            + ".dnumber ) OR ("
-                            + sourceNumber
-                            + "="
-                            + relChar
-                            + ".dnumber AND "
-                            + destNumber
-                            + "="
-                            + relChar
-                            + ".snumber"
-                            + dirstring
-                            + "))");
+                        "((" + sourceNumber + "=" + relChar + ".snumber AND " +
+                             destNumber + "=" + relChar + ".dnumber ) OR (" +
+                             sourceNumber + "=" + relChar + ".dnumber AND " +
+                             destNumber + "=" + relChar + ".snumber" + 
+                             dirstring + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
                     result.append(
-                        numberOf(idx2char(i))
-                            + "="
-                            + relChar
-                            + ".dnumber AND "
-                            + numberOf(idx2char(i + 2))
-                            + "="
-                            + relChar
-                            + ".snumber"
-                            + dirstring);
+                        sourceNumber + "=" + relChar + ".dnumber AND " +
+                        destNumber + "=" + relChar + ".snumber" +
+                        dirstring);
                 }
             } else {
                 if (srctodest) {
                     // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
                     result.append(
-                        numberOf(idx2char(i))
-                            + "="
-                            + relChar
-                            + ".snumber AND "
-                            + numberOf(idx2char(i + 2))
-                            + "="
-                            + relChar
-                            + ".dnumber");
+                        sourceNumber + "=" + relChar + ".snumber AND " +
+                        destNumber + "=" + relChar + ".dnumber");
                 } else {
                     // no results possible
                     // terminate, return null!
                     log.warn(
-                        "There are no relations possible (no typerel specified) between "
-                            + getTableName((String)alltables.elementAt(i))
-                            + " and "
-                            + getTableName((String)alltables.elementAt(i + 2))
-                            + " using "
-                            + alltables.elementAt(i + 1)
-                            + " in "
-                            + getSearchDirString(searchdir)
-                            + " direction(s)");
+                        "There are no relations possible (no typerel specified) between " +
+                        getTableName((String)alltables.elementAt(i)) + " and " +
+                        getTableName((String)alltables.elementAt(i + 2)) + 
+                        " using " + alltables.elementAt(i + 1) + 
+                        " in " + getSearchDirString(searchdir) + " direction(s)");
                     return null;
                 }
             }
