@@ -1,6 +1,9 @@
 /*
-$Id: RawAudios.java,v 1.5 2000-03-29 10:59:24 wwwtech Exp $
+$Id: RawAudios.java,v 1.6 2000-03-30 12:42:57 wwwtech Exp $
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/29 10:59:24  wwwtech
+Rob: Licenses changed
+
 Revision 1.4  2000/03/21 15:38:53  wwwtech
 - (marcel) Removed debug (globally declared in MMOBjectNode)
 
@@ -11,6 +14,12 @@ Revision 1.2  2000/02/24 12:35:44  wwwtech
 Davzev fixed getFileName() & getHostName() and added getProtocolName().
 
 */
+
+/*************************************************************************
+ * NOTE This Builder needs significant changes to operate on NON-VPRO
+ * machines. Do NOT use before that, also ignore all errors stemming from
+ * this builder
+ *************************************************************************/
 package org.mmbase.module.builders;
 
 import java.util.*;
@@ -25,9 +34,8 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.5 $ $Date: 2000-03-29 10:59:24 $
+ * @$Revision: 1.6 $ $Date: 2000-03-30 12:42:57 $
  *
- * 17 Dec 1999 davzev Added static methods getFileName, getHostName and getProtocolName used by Audioparts $MOD GETURL.
  */
 public class RawAudios extends MMObjectBuilder {
 
