@@ -172,7 +172,7 @@ public class WriteTag extends ContextReferrerTag {
             if (jspvar != null) { // a jspvar was defined, don't write to page. 
                 setJspVar(value);                
             } else { // write to page, (set extraBodyContent)
-                if (type == TYPE_UNSET) {
+                if (type != TYPE_UNSET) {
                     throw new JspTagException("It does not make sense to specify the type attribute (" + type + ") without the jspvar attribute (unless the type is 'bytes'");
                 }
                 if (value != null) {
