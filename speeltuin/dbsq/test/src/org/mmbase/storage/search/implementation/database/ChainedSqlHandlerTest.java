@@ -4,13 +4,14 @@ import junit.textui.TestRunner;
 import org.mmbase.storage.search.*;
 import org.mmbase.storage.search.implementation.*;
 import junit.framework.*;
+import java.util.Map;
 
 
 /**
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ChainedSqlHandlerTest extends TestCase {
     private final static int TEST_SUPPORT_LEVEL = 123;
