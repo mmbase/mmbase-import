@@ -3,7 +3,7 @@
  * Routines for validating the edit wizard form
  *
  * @since    MMBase-1.6
- * @version  $Id: validator.js,v 1.7 2002-07-19 09:06:18 pierre Exp $
+ * @version  $Id: validator.js,v 1.8 2002-07-24 09:22:53 michiel Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  */
@@ -188,22 +188,22 @@ function doValidateForm() {
 function doValidateAndUpdateButtons() {
     // check if current form is valid.
     var valid = doValidateForm();
-    var curform = document.forms[0].elements[0].value;
-    var savebut=document.getElementById("bottombutton-save");
-    var stepbut=document.getElementById("bottombutton-step-"+curform);
+    var curform = document.forms[0].elements['curform'].value;
+    var savebut = document.getElementById("bottombutton-save");
+    var stepbut = document.getElementById("step-" + curform);
     var otherforms = savebut.getAttribute("otherforms");
-    var allvalid = valid && otherforms=='valid';
+    var allvalid = valid && otherforms == 'valid';
 
     if (valid) {
         if (stepbut) {
-            stepbut.className = "currentstepicon-valid";
+            stepbut.className = "valid";
             var usetext = getToolTipValue(stepbut,"titlevalid",
                               "The current form is valid.");
             stepbut.title = usetext;
         }
     } else {
         if (stepbut) {
-            stepbut.className = "currentstepicon";
+            stepbut.className = "invalid";
             var usetext = getToolTipValue(stepbut,"titlenotvalid",
                               "The current form is NOT valid. Correct red-marked fields and try again.");
             stepbut.title = usetext;

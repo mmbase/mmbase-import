@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.58 2002-07-23 14:50:05 pierre Exp $
+  @version $Id: wizard.xsl,v 1.59 2002-07-24 09:22:54 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -319,7 +319,13 @@
    <xsl:template match="value" mode="inputline">
      <xsl:param name="val" select="." />
        <xsl:apply-templates select="../prefix" />
-       <input type="text" size="80" name="{../@fieldname}" value="{$val}" class="input" onkeyup="validate_validator(event);" onblur="validate_validator(event);">
+       <input type="text" size="80"
+         name="{../@fieldname}" 
+         value="{$val}" 
+         class="input" 
+         onKeyUp="validate_validator(event);"
+         onChange="validate_validator(event);">
+
          <xsl:apply-templates select="../@*" />
         </input>
         <xsl:apply-templates select="../postfix" />
@@ -763,11 +769,14 @@
       </td>
 
     </xsl:template><!-- list -->
-          
+      
           
     <xsl:template name="savebutton">
-    <a href="javascript:doSave();" id="bottombutton-save" unselectable="on"
-      titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}" >
+    <a href="javascript:doSave();" 
+       id="bottombutton-save" 
+       unselectable="on"
+       titlesave="{$tooltip_save}" 
+       titlenosave="{$tooltip_no_save}" >
       <xsl:if test="@allowsave='true'">
         <xsl:attribute name="class">bottombutton</xsl:attribute>
         <xsl:attribute name="title"><xsl:value-of select="$tooltip_save" /></xsl:attribute>
@@ -789,9 +798,9 @@
   </xsl:template>
 
   <xsl:template name="cancelbutton">
-    <a href="javascript:doCancel();"><span id="bottombutton-cancel" class="bottombutton" title="{$tooltip_cancel}">
+    <a href="javascript:doCancel();" id="bottombutton-cancel" class="bottombutton" title="{$tooltip_cancel}">
     <xsl:call-template name="prompt_cancel" />
-    </span></a>
+    </a>
   </xsl:template>
 
   <xsl:template name="previousbutton">
@@ -820,8 +829,13 @@
   <xsl:template name="stepaattributes">
     <xsl:attribute name="href">javascript:doGotoForm('<xsl:value-of select="@form-schema" />');</xsl:attribute>
     <xsl:attribute name="titlevalid"><xsl:value-of select="$tooltip_valid" /></xsl:attribute>
+    <xsl:attribute name="id">step-<xsl:value-of select="@form-schema" /></xsl:attribute>
     <xsl:attribute name="titlenotvalid"><xsl:value-of select="$tooltip_not_valid" /></xsl:attribute>
     <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=current()/@form-schema]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
+    <xsl:attribute name="class">
+      <xsl:if test="@valid='true'">valid</xsl:if>
+      <xsl:if test="@valid='false'">notvalid</xsl:if>
+    </xsl:attribute>
   </xsl:template>
 
 
@@ -834,13 +848,7 @@
           <xsl:otherwise>other</xsl:otherwise>
        </xsl:choose>
      </xsl:attribute>
-     <span>
-       <xsl:attribute name="class">
-         <xsl:if test="@valid='true'">valid</xsl:if>
-         <xsl:if test="@valid='false'">notvalid</xsl:if>
-       </xsl:attribute>
-       <xsl:call-template name="step" />
-      </span>
+     <xsl:call-template name="step" />
     </span>
   </xsl:template>
 
