@@ -39,7 +39,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.86.2.9 2003-02-13 17:27:30 michiel Exp $
+ * @version $Id: MMObjectNode.java,v 1.86.2.10 2003-02-13 18:11:06 michiel Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -1198,10 +1198,12 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
             log.debug("Getting related nodes of " + this + " of type " + type);
         }
 
+
 	Vector result;
 	if(parent.mmb.InsRel.usesdir) {
-	    result = getRelatedNodes(type, ClusterBuilder.SEARCH_EITHER);
-	} else {
+            return  getRelatedNodes(type, ClusterBuilder.SEARCH_BOTH);
+	} else 
+            //
 	    // determine related nodes
 	    Map source = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_SOURCE));
 	    Map destin = makeMap(getRelatedNodes(type, ClusterBuilder.SEARCH_DESTINATION));
@@ -1215,6 +1217,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	}
 
 	return result;
+
     }
 
     /**
@@ -1264,7 +1267,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	    String where = "WHERE " + parent.getTableName() +"1.number != " + type + "2.number";
 
 	    Vector vnode = new Vector();
-	    vnode.addElement(""+getNumber());
+	    vnode.add("" + getNumber());
 
 	    // retrieve the related nodes (these are virtual)
 	    Vector v = clusterBuilder.searchMultiLevelVector(vnode,fields,"NO",tables,where,ordered,directions,search_type);
@@ -1352,7 +1355,7 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 	List result = new ArrayList();
 	String name = parent.mmb.TypeDef.getValue(otype);
 	if(name != null) {
-	    MMObjectBuilder rparent = parent.mmb.getMMObject(name);
+	    MMObjectBuilder rparent = parent.mmb.getBuilder(name);
 	    if(rparent != null) {
 		result.addAll(rparent.getNodes(list));
 	    } else {
