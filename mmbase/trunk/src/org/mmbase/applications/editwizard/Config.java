@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.7 2002-05-15 12:32:48 michiel Exp $
+ * @version $Id: Config.java,v 1.8 2002-05-17 10:45:53 pierre Exp $
  */
 
 public class Config {
@@ -41,7 +41,7 @@ public class Config {
     public String      wizard;
     public String      sessionId;   // necessary if client doesn't accept cookies to store sessionid (this is appended to urls)
     public String      backPage;
-    
+
     static public abstract class SubConfig {
         public String page;
     }
@@ -57,7 +57,7 @@ public class Config {
         public String nodePath;
         public String constraints;
         public String orderBy;
-        public String directions;        
+        public String directions;
         public int    age = -1;
         public int    start = 0;
         public boolean distinct;
@@ -85,7 +85,7 @@ public class Config {
             if (config.backPage == null) {
                 log.debug("No backpage. Getting from parameters");
                 config.backPage = org.mmbase.util.Encode.decode("ESCAPE_URL_PARAM", getParam("referrer", "")).replace('\\', '/'); // this translations seems to be needed by some windows setups
-                                                                                       
+
                 if (config.backPage.equals("")) {
                     log.debug("No backpage getting from header");
                     config.backPage = request.getHeader("Referer");
@@ -98,7 +98,7 @@ public class Config {
 
             // if no 'uriResolver' is configured yet, then there is one created right now:
             // the uriResolver is used to find xml's and xsl's.
-            if (config.uriResolver == null) {                
+            if (config.uriResolver == null) {
                 if (log.isDebugEnabled()) {
                     log.trace("creating uriresolver (backpage = " + config.backPage + ")");
                 }
@@ -126,19 +126,19 @@ public class Config {
                 config.uriResolver = new URIResolver(jspFileDir, extraDirs);
             }
         }
-        protected String getParam(String paramName) { 
+        protected String getParam(String paramName) {
             if (request.getParameter(paramName) == null) return null;
-            return request.getParameter(paramName); 
+            return request.getParameter(paramName);
         }
-        
+
         protected String getParam(String paramName, String def) {
             if (request.getParameter(paramName) == null) {
                 if (def == null) return null;
-                return def.toString(); 
+                return def.toString();
             }
             return getParam(paramName);
         }
-        
+
         protected Integer getParam(String paramName, Integer def) {
             String i = request.getParameter(paramName);
             if (i == null || i.equals("")) return def;
@@ -146,7 +146,7 @@ public class Config {
         }
         protected Boolean getParam(String paramName, Boolean def) {
             if (request.getParameter(paramName) == null) return def;
-            return new Boolean(request.getParameter(paramName));            
+            return new Boolean(request.getParameter(paramName));
         }
         public String getBackPage(){
             if(config.subObjects.size() == 0) {
@@ -164,9 +164,10 @@ public class Config {
         public Config.WizardConfig createWizard(Cloud cloud) throws SecurityException, WizardException {
             WizardConfig wizard = new WizardConfig();
             wizard.page = response.encodeURL(request.getServletPath() + "?proceed=yes");
-            config(wizard); // determin the objectnumber.            
+            config(wizard); // determin the objectnumber.
             wizard.wiz = new Wizard(request.getContextPath(), config.uriResolver, config.wizard, wizard.objectNumber, cloud);
             wizard.wiz.setSessionId(config.sessionId);
+            wizard.wiz.setSessionKey(config.sessionKey);
             return wizard;
         }
         public abstract void config(Config.ListConfig c);

@@ -26,7 +26,7 @@ import org.mmbase.util.xml.URIResolver;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.20 2002-05-16 12:01:55 pierre Exp $
+ * @version $Id: Wizard.java,v 1.21 2002-05-17 10:45:53 pierre Exp $
  *
  */
 public class Wizard {
@@ -65,6 +65,7 @@ public class Wizard {
     private File wizardStylesheetFile;
 
     private String sessionId;
+    private String sessionKey="editwizard";
 
     /**
      * public xmldom's: the schema, the data and the originaldata is stored.
@@ -154,6 +155,10 @@ public class Wizard {
 
     public void setSessionId(String s) {
         sessionId = s;
+    }
+
+    public void setSessionKey(String s) {
+        sessionKey = s;
     }
 
     public String getDataId() {
@@ -296,6 +301,7 @@ public class Wizard {
         params.put("ew_context", context);
         params.put("ew_imgdb",   org.mmbase.module.builders.AbstractImages.getImageServletPath(context));
         params.put("sessionid", sessionId);
+        params.put("sessionkey", sessionKey);
         try {
             Utils.transformNode(preform, wizardStylesheetFile, uriResolver, out, params);
         } catch (javax.xml.transform.TransformerException e) {
