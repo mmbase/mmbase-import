@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mediasources exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119114638">
-	<node number="544" owner="michiel">
+<videosources exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021122141550">
+	<node number="249" owner="michiel">
 		<state>-1</state>
 		<url>/tv/nos/journaal/maandag.2000.rm</url>
+		<width>200</width>
+		<fps>-1</fps>
 		<channels>-1</channels>
 		<codec>-1</codec>
 		<bitrate>-1</bitrate>
 		<format>6</format>
+		<height>300</height>
 		<filesize>-1</filesize>
 	</node>
 
-	<node number="168" owner="admin">
+	<node number="238" owner="admin">
 		<state>-1</state>
 		<url>/tv/vpro/noorderlicht/sb.20020328.rm</url>
+		<width>-1</width>
+		<fps>-1</fps>
 		<channels>-1</channels>
 		<codec>-1</codec>
 		<bitrate>-1</bitrate>
 		<format>6</format>
+		<height>-1</height>
 		<filesize>-1</filesize>
 	</node>
 
-</mediasources>
+</videosources>

@@ -5,7 +5,6 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">audiofragments</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">videofragments</builder>
 
-    <builder maintainer="mediaproject.mmbase.org" version="1">lookup</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">mediasources</builder>
@@ -13,7 +12,7 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">videosources</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">insrel</builder>
-    <builder maintainer="mediaproject.mmbase.org" version="1">posrel</builder>
+
     <builder maintainer="mediaproject.mmbase.org" version="1">pools</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">publishtimes</builder>
   </neededbuilderlist>
@@ -21,13 +20,9 @@
   <neededreldeflist>
     <reldef source="related" target="related" direction="bidirectional" guisourcename="Related" guitargetname="Related" builder="insrel" />
     <reldef source="parent"  target="parent"  direction="bidirectional" guisourcename="Parent"  guitargetname="Child" builder="insrel" />
-    <reldef source="posrel" target="posrel" direction="bidirectional" guisourcename="Posrel" guitargetname="Posrel" builder="posrel" />
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="pools"           to="mediafragments"  type="related" />
-    <relation from="mediafragments"  to="mediasources"    type="related" />
-
     <relation from="videofragments"  to="videofragments"  type="parent" />
     <relation from="audiofragments"  to="audiofragments"  type="parent" />
 
@@ -37,38 +32,42 @@
     <relation from="videofragments"  to="publishtimes"    type="related" />
     <relation from="audiofragments"  to="publishtimes"    type="related" />
 
-    <relation from="mediasources"    to="mediaproviders"  type="related" />
 
-    <relation from="pools"           to="pools"           type="posrel" />
+    <relation from="pools"           to="pools"           type="parent"  />
+ 
 
-    <!-- the following should not be needed (because of inheritance) -->
-    <relation from="audiofragments"  to="audiosources" type="related" />
-    <relation from="videofragments"  to="videosources" type="related" />
+    <relation from="audiofragments"  to="audiosources"    type="related" />
+    <relation from="videofragments"  to="videosources"    type="related" />
 
-    <relation from="videofragments"  to="mediasources" type="related" />
-    <relation from="videofragments"  to="mediafragments" type="related" />
 
     <relation from="audiosources"    to="mediaproviders"  type="related" />
     <relation from="videosources"    to="mediaproviders"  type="related" />
 
     <relation from="pools"           to="videofragments"  type="related" />
-    <relation from="pools"           to="audiofragments" type="related" />
+    <relation from="pools"           to="audiofragments"  type="related" />
+
+
+    <!-- needed to let relatenodes types="mediaframents" work -->
+    <relation from="pools"           to="mediafragments"  type="related" />
 
   </allowedrelationlist>
 
   <datasourcelist>
 		<datasource builder="pools"            path="Media/pools.xml" />
+
 		<datasource builder="mediafragments"   path="Media/mediafragments.xml" />
-		<datasource builder="mediasources"     path="Media/mediasources.xml" />
+		<datasource builder="audiofragments"   path="Media/audiofragments.xml" />
 		<datasource builder="videofragments"   path="Media/videofragments.xml" />
+
+		<datasource builder="mediasources"     path="Media/mediasources.xml" />
 		<datasource builder="audiosources"     path="Media/audiosources.xml" />
-		<datasource builder="lookup"           path="Media/lookup.xml" />
+		<datasource builder="videosources"     path="Media/videosources.xml" />
+
 		<datasource builder="mediaproviders"   path="Media/mediaproviders.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
 		<relationsource builder="insrel" path="Media/insrel.xml" />
-		<relationsource builder="posrel" path="Media/posrel.xml" />
   </relationsourcelist>
   
   <contextsourcelist>

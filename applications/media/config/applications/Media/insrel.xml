@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021119223004">
+<insrel exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021122141550">
+	<node number="234" owner="admin" snumber="143" dnumber="237" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="281" owner="michiel" snumber="266" dnumber="271" rtype="parent" dir="bidirectional">
+	</node>
+
+	<node number="280" owner="michiel" snumber="266" dnumber="143" rtype="parent" dir="bidirectional">
+	</node>
+
 	<node number="251" owner="michiel" snumber="253" dnumber="248" rtype="parent" dir="bidirectional">
 	</node>
 
@@ -12,7 +21,16 @@
 	<node number="245" owner="michiel" snumber="143" dnumber="248" rtype="related" dir="bidirectional">
 	</node>
 
+	<node number="289" owner="michiel" snumber="292" dnumber="283" rtype="parent" dir="bidirectional">
+	</node>
+
 	<node number="240" owner="admin" snumber="239" dnumber="237" rtype="parent" dir="bidirectional">
+	</node>
+
+	<node number="286" owner="michiel" snumber="143" dnumber="283" rtype="related" dir="bidirectional">
+	</node>
+
+	<node number="285" owner="michiel" snumber="284" dnumber="166" rtype="related" dir="bidirectional">
 	</node>
 
 	<node number="236" owner="admin" snumber="238" dnumber="166" rtype="related" dir="bidirectional">
@@ -21,7 +39,7 @@
 	<node number="235" owner="admin" snumber="237" dnumber="238" rtype="related" dir="bidirectional">
 	</node>
 
-	<node number="234" owner="admin" snumber="143" dnumber="237" rtype="related" dir="bidirectional">
+	<node number="282" owner="michiel" snumber="283" dnumber="284" rtype="related" dir="bidirectional">
 	</node>
 
 </insrel>
