@@ -29,6 +29,7 @@ public class RawVideos extends MMObjectBuilder {
 	public RawVideos() {
 		// like rawaudios, has no contructor also
 	}
+	
 /*
 	public RawVideos(MMBase m) {
 		this.mmb=m;
@@ -43,71 +44,6 @@ public class RawVideos extends MMObjectBuilder {
 			System.out.println("RawVideos -> Probe NOT started for rawvideos");
 		}
 	}
-
-
-	public boolean create() {
-		// create the main object table
-		// informix
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("create row type "+mmb.baseName+"_"+tableName+"_t ("
-				+"id integer not null"
-				+", status integer not null"
-				+", format integer not null"
-				+", speed integer not null"
-				+", channels integer not null"
-				+", url varchar(255)"
-				+", issurestream integer not null"
-				+", cpu varchar(32)) under "+mmb.baseName+"_object_t");
-			System.out.println("Created "+tableName);
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			System.out.println("can't create type "+tableName);
-			e.printStackTrace();
-		}
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			stmt.executeUpdate("create table "+mmb.baseName+"_"+tableName+" of type "+mmb.baseName+"_"+tableName+"_t ("
-				+"primary key(id,format,speed,channels)) under "+mmb.baseName+"_object");
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			System.out.println("can't create table "+tableName);
-			e.printStackTrace();
-		}
-		return(false);
-	}
-
-
-	public int insert(String owner,MMObjectNode node) {
-		int id=node.getIntValue("id");
-		int status=node.getIntValue("status");
-		int format=node.getIntValue("format");
-		int speed=node.getIntValue("speed");
-		int channels=node.getIntValue("channels");
-		String url=node.getStringValue("url");
-		int	issurestream=node.getIntValue("issurestream");
-		String cpu=node.getStringValue("cpu");
-		int number=super.insert(owner,""+id+","
-						+status+","
-						+format+","
-						+speed+","
-						+channels+",'"
-						+url+"',"
-						+issurestream+",'"
-						+cpu+"'");
-
-		// fast hack this should works because imports of wav are allways done
-		if (status==1) {
-			CDTracks bul=(CDTracks)mmb.getMMObject("cdtracks");
-			bul.getTrack(id);
-		}	
-		return(number);
-	}
-
 */
 
 	public String getGUIIndicator(MMObjectNode node) {
