@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<pools exportsource="mmbase://127.0.0.1/install/Community" timestamp="20000602143030">
-	<node number="709" owner="admin" alias="CommunityApplication">
-		<name>Community Application Pool</name>
-		<description>This pool is used to collect application objects fo export.</description>
-	</node>
-
-</pools>
