@@ -614,6 +614,7 @@ Build-compiler: ${build.compiler}
 
 
     <property name="config.build.dir" value="${build.dir}/config"/>
+    <property name="minconfig.build.dir" value="${build.dir}/minconfig"/>
     <property name="webroot.build.dir" value="${build.dir}/webroot"/>
     
     <!-- =================================================================== -->
@@ -621,7 +622,7 @@ Build-compiler: ${build.compiler}
     <!-- =================================================================== -->
     <target name="minimalistic.war.config" depends="init.compile">
         <!-- copy the jsp editors to a reasonable place -->
-        <copy todir="${config.build.dir}">
+        <copy todir="${minconfig.build.dir}">
             <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
                 <!-- the dirs we definitly need -->
                 <include name="databases/**"/>
@@ -648,15 +649,10 @@ Build-compiler: ${build.compiler}
         </copy>            
     </target>
 
-  <target name="war.config" depends="minimalistic.war.config">
+  <target name="war.config" depends="init.compile">
     <copy todir="${config.build.dir}">
-      <fileset dir="${source-config.dir}/default"  defaultexcludes="true">
-        
-        <include name="applications/MyNews.xml"/>
-        <include name="applications/MyNews/**"/>
-                
-        <include name="modules/**"/>       
-        <include name="builders/**"/>
+      <fileset dir="${source-config.dir}/default"  defaultexcludes="true">        
+        <include name="**"/>
       </fileset>
     </copy>
   </target>
@@ -693,7 +689,7 @@ Build-compiler: ${build.compiler}
     
     <!-- examples -->
     <copy todir="${webroot.build.dir}/mmexamples">
-      <fileset dir="${source-html.dir}/mmexamples/**"/>
+      <fileset dir="${source-html.dir}/mmexamples"/>
     </copy>         
     
     <!-- javadocs -->
@@ -706,6 +702,7 @@ Build-compiler: ${build.compiler}
   <target name="clean.war">
       <delete dir="${webroot.build.dir}" />
       <delete dir="${config.build.dir}" />
+      <delete dir="${minconfig.build.dir}" />
       <delete file="${build.dir}/mmbase/mmbase.war" />
     </target>
 
@@ -734,7 +731,7 @@ Build-compiler: ${build.compiler}
             <lib dir="${release.lib.dir}" />
             <!-- here our config has to be.. -->
             <webinf dir="${build.dir}">
-                <include name="config/**"/>
+                <include name="minconfig/**"/>
             </webinf>
 
             <!-- our file's on the server -->
