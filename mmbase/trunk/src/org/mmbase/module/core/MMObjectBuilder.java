@@ -43,7 +43,7 @@ public class MMObjectBuilder extends MMTable {
 	public static LRUHashtable obj2type;
 	public static LRUHashtable nodeCache = new LRUHashtable(1024*4);
 	static String currentPreCache=null;
-	private static Hashtable fieldDefCache;
+	private static Hashtable fieldDefCache=new Hashtable(40);
 	public int oType=0; // type of the object in database (overloaded).
 	public String description="Base Object"; // description of this type (overloaded)
 	private Hashtable fields;
@@ -68,6 +68,8 @@ public class MMObjectBuilder extends MMTable {
 	Statistics statbul;
 	private Vector qlist=new Vector();
 	Hashtable nameCache=new Hashtable();
+	private boolean isXmlConfig=false;
+
 	/**
 	* base object, should not be used
 	*/
@@ -81,13 +83,6 @@ public class MMObjectBuilder extends MMTable {
 	public boolean init() {
 		database=mmb.getDatabase();
 
-		// added FAKE call to simulate XML config
-		Hashtable xmlbuildersetup=getXMLSetup();
-		if (xmlbuildersetup!=null) {
-			database.createXML(this);
-		}
-		// end of temp code
-		
 		if (!created()) {
 			debug("init(): Create "+tableName);
 			create();
@@ -110,9 +105,9 @@ public class MMObjectBuilder extends MMTable {
 		// hack to override the hard  fields by database (bootstrap)
 		// Hashtable tmp=initFields();
 		// if (tmp.size()>0) fields=tmp;
-		if (fieldDefCache==null) initAllFields();
+		//if (fieldDefCache==null) initAllFields();
 		if (obj2type==null) init_obj2type(); // RICO switched ON
-		if (fields==null) initFields(true);
+		//if (fields==null) initFields(true);
 		return(true);
 	}
 
@@ -120,7 +115,7 @@ public class MMObjectBuilder extends MMTable {
 	* create new object type , normally not used (only subtables are used)
 	*/
 	public boolean create() {
-		return(database.create(this,tableName));
+		return(database.create(this));
 	}
 
 	/**
@@ -177,112 +172,6 @@ public class MMObjectBuilder extends MMTable {
 	public boolean commit(MMObjectNode node) {
 		return(database.commit(this,node));
 	}
-
-	/**
-	* init all the fielddefs for this builder
-	*/
-	public void initFields(boolean allowmastercache) {
-
-		if (fields!=null) return; 
-
-		fields=new Hashtable();
-		sortedEditFields = null;
-		sortedListFields = null;
-		sortedFields = null;
-		if (oType==-1) {
-			oType=mmb.TypeDef.getIntValue(tableName);
-		}
-
-		/*
-		Hashtable results=(Hashtable)fieldDefCache.get(new Integer(oType));
-		if (results!=null && allowmastercache) {
-			fields=results;
-			return;
-		}
-		*/
-
-		Hashtable results=new Hashtable();
-		FieldDefs def;
-
-		// default ones
-		def=new FieldDefs("Nummer","integer",-1,-1,"number","int",-1,3);
-		results.put("number",def);	
-		def=new FieldDefs("Type","integer",-1,-1,"otype","int",-1,3);
-		results.put("otype",def);	
-		def=new FieldDefs("Eigenaar","string",-1,-1,"owner","varchar",-1,3);
-		results.put("owner",def);	
-
-		// do the query on the databasue
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			
-			//ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate  FROM "+mmb.baseName+"_fielddef WHERE dbtable="+oType+" AND dbstate=2;");
-			ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate  FROM "+mmb.baseName+"_fielddef WHERE dbtable="+oType+";");
-			while(rs.next()) {
-				def=new FieldDefs(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5).toLowerCase(),rs.getString(6),rs.getInt(7),rs.getInt(8));
-				results.put(rs.getString(5).toLowerCase(),def);	
-			}	
-			stmt.close();
-			con.close();
-			fieldDefCache.put(new Integer(oType),results);
-			fields=results;
-		} catch (SQLException e) {
-			debug("initFields(): can't load fielddefs yet because table fielddef not found");
-		}
-	}
-
-
-	/**
-	* init all fielddefs (for speed)
-	*/
-	public void initAllFields() {
-
-		sortedEditFields = null;
-		sortedListFields = null;
-		sortedFields = null;
-		FieldDefs def;
-		
-		fieldDefCache=new Hashtable(40);
-
-		// do the query on the database
-		try {
-			MultiConnection con=mmb.getConnection();
-			Statement stmt=con.createStatement();
-			//ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate,dbtable  FROM "+mmb.baseName+"_fielddef WHERE dbstate=2;");
-			ResultSet rs=stmt.executeQuery("SELECT guiname,guitype,guisearch,guilist,dbname,dbtype,guipos,dbstate,dbtable  FROM "+mmb.baseName+"_fielddef;");
-			while(rs.next()) {
-				Integer dbtable=new Integer(rs.getInt(9));
-				// get its def hash
-				Hashtable results=(Hashtable)fieldDefCache.get(dbtable);
-				if (results==null) {
-					results=new Hashtable();
-					// default ones
-					def=new FieldDefs("Nummer","integer",-1,-1,"number","int",-1,3);
-					results.put("number",def);	
-					def=new FieldDefs("Type","integer",-1,-1,"otype","int",-1,3);
-					results.put("otype",def);	
-					def=new FieldDefs("Eigenaar","string",-1,-1,"owner","varchar",-1,3);
-					results.put("owner",def);	
-					fieldDefCache.put(dbtable,results);
-					def=new FieldDefs(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getInt(8));
-					results.put(rs.getString(5),def);	
-				} else {
-					def=new FieldDefs(rs.getString(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getString(5),rs.getString(6),rs.getInt(7),rs.getInt(8));
-					String tmp=rs.getString(5);
-					if (tmp!=null) {
-						results.put(tmp,def);	
-					}
-				}	
-			}	
-			stmt.close();
-			con.close();
-		
-		} catch (SQLException e) {
-			debug("initAllFields(): can't load fielddefs yet because table fielddef not found");
-		}
-	}
-
 
 
 	/**
@@ -1523,7 +1412,7 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public String getDutchSName() {
 		if (singularNames!=null) {
-			String tmp=(String)singularNames.get("en");
+			String tmp=(String)singularNames.get("us");
 			if (tmp!=null) {
 				return(tmp);
 			}
@@ -1792,5 +1681,13 @@ public class MMObjectBuilder extends MMTable {
 		//def=new FieldDefs("Eigenaar","string",-1,-1,"owner","varchar",-1,3);
 		//fields.put("owner",def);	
 		setDBLayout_xml(fields);
+	}
+
+	public void setXmlConfig(boolean state) {
+		isXmlConfig=state;
+	}
+
+	public boolean isXMLConfig() {
+		return(isXmlConfig);
 	}
 }

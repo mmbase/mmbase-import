@@ -136,29 +136,21 @@ public class MMBase extends ProcessorModule  {
 			createMMBase();
 		}
 
-		// start the core objects
-		TypeDef=new TypeDef(this); // switch arround with FielDef
-		FieldDef=new FieldDef(this);
-
-		RelDef=new RelDef(this);	
-		InsRel=new InsRel(this);	
-		TypeRel=new TypeRel(this);	
-		OAlias=new OAlias(this);	
-
 		// new loader system for now only checks the defines
 		String builderfile=getInitParameter("BUILDERFILE");
 		if (builderfile==null || builderfile.equals("")) {
-			builderfile=MMBaseContext.getConfigPath()+("/defines/");
-			initBuilders(builderfile);
-		} else {
-			initBuilders(builderfile);
+			builderfile=MMBaseContext.getConfigPath()+("/builders/");
 		}
+		initBuilders(builderfile);
 
+
+		/*
 		Enumeration t = mmobjs.elements(); 
 		while (t.hasMoreElements()) {
 			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
 			fbul.initFields(false);
 		}
+		*/
 
 		if (debug) debug("Objects started");
 
@@ -231,7 +223,7 @@ public class MMBase extends ProcessorModule  {
 		debug(" creating new multimedia base : "+baseName);
 		Vector v;
 		database=getDatabase();
-		database.create(null,"object");
+		database.createObjectTable(baseName);
 		return(true);
 	}
 
@@ -350,6 +342,8 @@ public class MMBase extends ProcessorModule  {
 	}
 
 
+
+	/*
 	private String getFile(String file) {
         File scanfile;
         int filesize,len=0;
@@ -375,6 +369,7 @@ public class MMBase extends ProcessorModule  {
         }
         return(rtn);
 	}
+	*/
 
 
 	private byte[] getFileBytes(String file) {
@@ -487,49 +482,55 @@ public class MMBase extends ProcessorModule  {
 	}
 
 	boolean initBuilders(String path) {
-		String filestring=getFile(path+"objects.def");
-		if (filestring!=null) {
-			StringTokenizer tok = new StringTokenizer(filestring,"\n\r");
-			while (tok.hasMoreTokens()) {
-				String cmdline=tok.nextToken();	
-				int pos=cmdline.indexOf("=");
-				if (pos!=-1) {
-					String cmdtype=cmdline.substring(0,pos);
-					String cmdrest=cmdline.substring(pos+1);
-					//if( debug ) debug("initBuilders(): cmd="+cmdtype+" line="+cmdrest);
-					if (cmdtype.equals("object")) initBuilder(cmdrest,path);
-				} else {
-					debug("initBuilders(): ERROR: no command defines in line : '"+cmdline+"'");
+
+		initBuilder("typedef",path);
+		TypeDef=(TypeDef)getMMObject("typedef");
+
+		initBuilder("fielddef",path);
+		FieldDef=(FieldDef)getMMObject("fielddef");
+
+		initBuilder("reldef",path);
+		RelDef=(RelDef)getMMObject("reldef");
+		
+		initBuilder("typerel",path);
+		TypeRel=(TypeRel)getMMObject("typerel");
+
+		initBuilder("insrel",path);
+		InsRel=(InsRel)getMMObject("insrel");
+
+		initBuilder("oalias",path);
+		OAlias=(OAlias)getMMObject("oalias");
+
+		// new code checks all the *.xml files in builder dir
+        	File bdir = new File(path);
+		if (bdir.isDirectory()) {
+			String files[] = bdir.list();		
+			for (int i=0;i<files.length;i++) {
+				String bname=files[i];
+				if (bname.endsWith(".xml")) {
+					bname=bname.substring(0,bname.length()-4);
+					initBuilder(bname,path);
 				}
 			}
-		} else {
-			debug("initBuilders(): ERROR: no objects.def file defined");
 		}
+
 		return(true);
 	}
 
+
+
 	boolean initBuilder(String builder,String path) {
-		// start of new code for XML config support
-		if ((new File(path+builder+".xml")).exists()) {
-			XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
-			return(initBuilder_xml(builder,path,parser));
-		} else {
-			return(initBuilder_plain(builder,path));
-		}
-		// end of new new
-	}
-
-	boolean initBuilder_xml(String builder,String path,XMLBuilderReader parser) {
-		System.out.println("PARSER="+parser);
-
+		if (!(new File(path+builder+".xml")).exists()) return(false);
+		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
 		Hashtable tmp=parser.getDescriptions();
-		String description=(String)tmp.get("en");
+		String description=(String)tmp.get("us");
 		String dutchsname="Default!";
 		String objectname=builder; // should this allow override in file ?
 		int searchage=parser.getSearchAge();
 		String classname=parser.getClassFile();
 
-		if (!classname.equals("core")) {
+		String status=parser.getStatus();
+		if (status.equals("active")) {
 			debug(" Starting builder XML : "+objectname);
 			try {
 				// is it a full name or inside the org.mmase.* path
@@ -544,7 +545,8 @@ public class MMBase extends ProcessorModule  {
 
 				MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
 				// debug("MMBase -> started : "+newclass);
-
+				
+				bul.setXmlConfig(true);
 				bul.setMMBase(this);
 				bul.setTableName(objectname);
 				bul.setDescription(description);
@@ -569,66 +571,8 @@ public class MMBase extends ProcessorModule  {
 		return(true);
 	}
 
-	boolean initBuilder_plain(String builder,String path) {
-		//if( debug ) debug("MMBase -> "+builder);
-		String classname=null;
-		MMObjectBuilder bul=null;
-		String objectname=null;
-		String description=null;
-		String dutchsname=null;
-		String searchage=null;
-		Vector fields=new Vector();
 
-		String filestring=getFile(path+builder+".def");
-		if (filestring!=null) {
-			//if( debug ) debug(filestring);
-			StringTokenizer tok = new StringTokenizer(filestring,"\n\r");
-			while (tok.hasMoreTokens()) {
-				String cmdline=tok.nextToken();	
-				int pos=cmdline.indexOf("=");
-				if (pos!=-1) {
-					String cmdtype=cmdline.substring(0,pos);
-					String cmdrest=cmdline.substring(pos+1);
-    				cmdrest = Strip.DoubleQuote(cmdrest,Strip.BOTH);
-					//if( debug ) debug("MMBASE-> cmd="+cmdtype+" line="+cmdrest);
-					if (cmdtype.equals("classname")) {
-						classname=cmdrest;
-					} else if (cmdtype.equals("objectname")) {
-						objectname=cmdrest;
-					} else if (cmdtype.equals("description")) {
-						description=cmdrest;
-					} else if (cmdtype.equals("dutchsname")) {
-						dutchsname=cmdrest;
-					} else if (cmdtype.equals("searchage")) {
-						searchage=cmdrest;
-					} else if (cmdtype.equals("fielddef")) {
-						fields.addElement(cmdrest);
-					}
-				} else {
-					debug("initBuilder("+builder+"): ERROR: No command defines in line : '"+cmdline+"'");
-				}
-			}
-			if (classname!=null) {
-				if(objectname!=null) {
-					if(description!=null) {
-						if(dutchsname!=null) {
-							startBuilder(classname,objectname,description,dutchsname,searchage,fields);
-						} else {
-							debug("initBuilder("+builder+"): ERROR: Can't start object("+objectname+"), missing dutchname.");
-						}
-					} else {
-						debug("initBuilder("+builder+"): ERROR: Can't start object("+objectname+"), missing description.");
-					}
-				} else {
-					debug("initBuilder("+builder+"): ERROR: Can't start object("+objectname+"), missing objectname.");
-				}
-			} else {
-				debug("initBuilder("+builder+"): ERROR: Can't start object("+objectname+"), missing classname.");
-			}
-		}
-		return(true);
-	}
-
+	/*
 	boolean startBuilder(String classname,String objectname, String description, String dutchsname,String searchage, Vector fields) {
 		if (searchage==null) searchage="14";
 		if (!classname.equals("core")) {
@@ -724,6 +668,7 @@ public class MMBase extends ProcessorModule  {
 		}
 		return(true);
 	}
+	*/
 	
 	public String getDTDBase() {	
 		return(dtdbase);
