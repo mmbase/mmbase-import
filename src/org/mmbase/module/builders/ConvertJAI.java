@@ -7,18 +7,6 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-/*
-  $Id: ConvertJAI.java,v 1.4 2001-01-30 11:54:38 daniel Exp $
-  
-  $Log: not supported by cvs2svn $
-  Revision 1.3  2000/10/21 22:03:52  daniel
-  turned debug mode off
-  
-  Revision 1.2  2000/08/20 21:36:01  daniel
-  making sure its in weird cvs
-  
-  
-*/
 package org.mmbase.module.builders;
 
 import java.awt.image.renderable.ParameterBlock;
@@ -28,22 +16,21 @@ import java.io.*;
 import com.sun.media.jai.codec.*;
 
 import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
 
 /**
  *
  * Converts Images using image Java Advanced Imaging
  *
  * @author Daniel Ockeloen
- * @version $Id: ConvertJAI.java,v 1.4 2001-01-30 11:54:38 daniel Exp $
+ * @version $Id: ConvertJAI.java,v 1.5 2001-03-26 14:12:18 install Exp $
  */
 public class ConvertJAI implements ImageConvertInterface {
     
-    private String classname = getClass().getName();
-    private boolean debug = false;
-    private void debug(String msg) { System.out.println(classname+":"+msg); }
+    private static Logger log = Logging.getLoggerInstance(ConvertJAI.class.getName());
     
     public void init(Hashtable params) {
-	if (debug) System.out.println("Starting JAI convertor");
+		log.info("Starting JAI convertor");
     }
     
     public byte[] ConvertImage(byte[] input,Vector commands) {	
@@ -104,7 +91,7 @@ public class ConvertJAI implements ImageConvertInterface {
 		type=key.substring(0,pos);
 		cmd=key.substring(pos+1,pos2);
 		StringTokenizer tok = new StringTokenizer(cmd,"x,\n\r");
-		if (debug) debug("getCommands(): type="+type+" cmd="+cmd);
+		log.debug("getCommands(): type="+type+" cmd="+cmd);
 		if (type.equals("s")) {
 		    try {
 			int x=Integer.parseInt(tok.nextToken());
@@ -278,13 +265,13 @@ public class ConvertJAI implements ImageConvertInterface {
 
 
     public static PlanarImage loadImage(String filename) {
-	ParameterBlock pb = new ParameterBlock();
-	pb.add(filename);
-	PlanarImage image = JAI.create("fileload",pb);
-	if (image==null) {
-	    System.out.println("Can't load image");
-	}
-	return(image);
+		ParameterBlock pb = new ParameterBlock();
+		pb.add(filename);
+		PlanarImage image = JAI.create("fileload",pb);
+		if (image==null) {
+	    	log.warn("Can't load image");
+		}
+		return(image);
     }
 
 
