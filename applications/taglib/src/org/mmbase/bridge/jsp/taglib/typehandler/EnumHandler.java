@@ -26,7 +26,7 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: EnumHandler.java,v 1.19 2004-08-05 14:14:16 michiel Exp $
+ * @version $Id: EnumHandler.java,v 1.20 2005-02-08 18:39:55 michiel Exp $
  */
 
 public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
@@ -77,7 +77,7 @@ public class EnumHandler extends AbstractTypeHandler implements TypeHandler {
                                                         SortedBundle.NO_CONSTANTSPROVIDER, type, SortedBundle.NO_COMPARATOR);
                 available = true;
             } catch (java.util.MissingResourceException e) {
-                log.warn(e.toString());
+                log.warn(e.toString() + " for field " + field.getName() + " of builder " + field.getNodeManager().getName());
                 available = false;
             }
         }
