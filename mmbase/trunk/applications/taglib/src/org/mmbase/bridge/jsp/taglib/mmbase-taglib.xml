@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.275 2004-12-10 15:50:02 pierre Exp $
+version: $Id: mmbase-taglib.xml,v 1.276 2004-12-10 20:25:11 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3281,8 +3281,8 @@ like the parameter list or the session (where ever it is available) --&gt;
   </tag>
   <tag>
     <name>url</name>
-    <type>util</type>
     <extends>writer</extends>
+    <type>util</type>
     <extends>contextwriter</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
@@ -3388,6 +3388,25 @@ like the parameter list or the session (where ever it is available) --&gt;
 &lt;/mm:url&gt;
     generates e.g. : codesamples/index.jsp?page=home&amp;b=jan&amp;c=5
     </example>
+  </tag>
+  <tag>
+    <name>link</name>
+    <type>util</type>
+    <extends>url</extends>
+    <extends>contextwriter</extends>
+    <extends>cloudreferrer</extends>
+    <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlWriterTag</tagclass>
+    <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
+    <info>
+      Like mm:url, but this is a true writer. Which means that it does not write if it has a body. The idea is to use this in conjuction with EL of JSP2.
+    </info>
+    <example>
+&lt;mm:link&gt;
+  &lt;mm:param name="h"&gt;hallo&lt;/mm:param&gt;
+    <a href="${_}">Change</a>
+&lt;/mm:link&gt;
+    </example>
+    <since>MMBase-1.8</since>
   </tag>
   <tag>
     <name>redirect</name>

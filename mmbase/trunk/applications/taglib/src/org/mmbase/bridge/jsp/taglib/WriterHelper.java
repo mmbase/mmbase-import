@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.50 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: WriterHelper.java,v 1.51 2004-12-10 20:25:11 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -319,6 +319,7 @@ public class WriterHelper extends BodyTagSupport {
             }
             value = v;
         }
+        thisTag.getContextProvider().getContextContainer().register("_", value);
         setJspvar();
     }
 
