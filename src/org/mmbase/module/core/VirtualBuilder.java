@@ -36,19 +36,6 @@ public class VirtualBuilder extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(VirtualBuilder.class.getName());
 
     /**
-     * Creates an instance of a Virtual builder and registers it in MMBase.
-     * @param m the MMbase cloud creating the node
-     * @param tableName the name of the builder as known in the MMbase system
-     */
-    protected VirtualBuilder(MMBase m, String tableName) {
-        this.mmb=m;
-        this.tableName=tableName;
-        this.description="";
-        m.mmobjs.put(tableName,this);
-        virtual=true;
-    }
-
-    /**
      * Creates an instance of a Virtual builder.
      * A builder instantiated with this constrcutor is not registered in MMBase
      * and should only be used as a temporary parent for virtual nodes which
@@ -59,7 +46,19 @@ public class VirtualBuilder extends MMObjectBuilder {
         this.mmb=m;
         this.tableName="virtualnodes_"+System.currentTimeMillis();
         this.description="";
+        fields=new Hashtable();
         virtual=true;
+    }
+
+    /**
+     * Creates an instance of a Virtual builder and registers it in MMBase.
+     * @param m the MMbase cloud creating the node
+     * @param tableName the name of the builder as known in the MMbase system
+     */
+    protected VirtualBuilder(MMBase m, String tableName) {
+        this(m);
+        this.tableName=tableName;
+        m.mmobjs.put(tableName,this);
     }
 
     /**
@@ -125,16 +124,6 @@ public class VirtualBuilder extends MMObjectBuilder {
         } else {
             return GUIIndicator;
         }
-    }
-
-    /**
-     * Return a field's database type.
-     * The default behavior for a virtual node is to return <code>DBTYPE_UNKNOWN</code>.
-     * @param the requested field's name
-     * @return the field's type (<code>DBTYPE_UNKNOWN</code>).
-     */
-    public int getDBType(String fieldName) {
-        return FieldDefs.TYPE_UNKNOWN;
     }
 
     /**
