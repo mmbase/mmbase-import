@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: ClusterBuilder.java,v 1.17 2002-10-15 12:19:25 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.18 2002-10-23 08:13:48 pierre Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -77,7 +77,6 @@ public class ClusterBuilder extends VirtualBuilder {
      *
      * @since MMBase-1.6
      */
-
     public static int getSearchDir(String search) {
         if (search == null) return SEARCH_EITHER;
         search = search.toUpperCase();
@@ -95,6 +94,25 @@ public class ClusterBuilder extends VirtualBuilder {
             throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
         }
 
+    }
+
+    /**
+     * Translates a search direction constant to a string.
+     *
+     * @since MMBase-1.6
+     */
+    public static String getSearchDirString(int search) {
+        if (search==SEARCH_DESTINATION) {
+            return "DESTINATION";
+        } else if (search==SEARCH_SOURCE) {
+            return "SOURCE";
+        } else if (search==SEARCH_BOTH) {
+            return "BOTH";
+        } else if (search==SEARCH_ALL) {
+            return "ALL";
+        } else {
+            return "EITHER";
+        }
     }
 
     // logging variable
@@ -929,6 +947,12 @@ public class ClusterBuilder extends VirtualBuilder {
                 } else {
                     // no results possible
                     // terminate, return null!
+                    log.warn("There are no relations possible (no typerel specified) between "+
+                               alltables.elementAt(i)+ " and "+
+                               alltables.elementAt(i + 2)+ " using "+
+                               alltables.elementAt(i + 1)+ " in "+
+                               getSearchDirString(searchdir) + " direction(s)"
+                               );
                     return null;
                 }
             }
