@@ -109,7 +109,7 @@
  <td class="linkdata" >
    <input type="hidden" name="module" value="<%=module%>" />
    <input type="hidden" name="cmd" value="MODULESAVE" />
-   <input type="image" src="<mm:url page="/mmbase/style/images/search.gif" />" alt="OK" border="0"  />
+   <input type="image" src="<mm:url page="/mmbase/style/images/ok.gif" />" alt="OK" border="0"  />
  </td>
 </tr>
   </form>
