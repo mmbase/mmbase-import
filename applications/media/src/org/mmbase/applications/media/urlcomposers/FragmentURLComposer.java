@@ -15,11 +15,11 @@ import java.util.Map;
 import java.util.Hashtable;
 
 /**
- * A Fragment URLComposer is an URLComposer which can also use information about the Fragment in the URL.
+  * A Fragment URLComposer is an URLComposer which can also use information about the Fragment in the URL.
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: FragmentURLComposer.java,v 1.4 2003-02-05 11:41:25 michiel Exp $
+ * @version $Id: FragmentURLComposer.java,v 1.5 2003-02-05 11:50:30 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -43,7 +43,7 @@ abstract public class FragmentURLComposer extends URLComposer  {
 
     public boolean equals(Object o) {
         if (o.getClass().equals(getClass())) {
-            RamURLComposer r = (RamURLComposer) o;
+            FragmentURLComposer r = (FragmentURLComposer) o;
             return 
                 (fragment == null ? r.fragment == null : fragment.getNumber() == r.fragment.getNumber()) &&
                 (source == null ? r.source == null : source.getNumber() == r.source.getNumber()) &&
