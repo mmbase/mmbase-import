@@ -14,32 +14,42 @@
 <mm:import externid="node_type"  jspvar="node_type" from="parameters"/>
 
 <body class="basic" <mm:present referid="node_type">onLoad="document.search.elements[0].focus();"</mm:present>>
-    <table summary="node editors" width="100%" class="super">
-    	<tr align="left">
-    	    <th width="20%"><%=m.getString("search_node.search")%>
-            
-             (<mm:compare referid="config.liststyle" value="short" >
-                <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">long</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showall")%></span></a>
-              </mm:compare>
-              <mm:compare referid="config.liststyle" value="short" inverse="true" >
-                <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">short</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showshortlist")%></span></a>
-              </mm:compare>)
-            
-            </th>
-    	    <mm:present referid="node_type">
-    	    	<th width="80%"><%=m.getString("search_node.type")%> <mm:nodeinfo nodetype="$node_type" type="guitype" />
-                                              (<mm:nodeinfo nodetype="$node_type" type="type" />)
-				</th>
-    	    </mm:present>		
-    	    <mm:notpresent referid="node_type">
-     	    	<th width="80%"><%=m.getString("search_node.nonodes")%></th>
-    	    </mm:notpresent>		
+
+<table summary="node editors" width="100%" class="super">
+  <tr align="left">
+    <th width="20%">
+      <mm:present referid="node_type"><a href="<mm:url page="search_node.jsp" />"><%=m.getString("search_node.search")%></mm:present>
+      <mm:notpresent referid="node_type"><%=m.getString("search_node.search")%></mm:notpresent>
+    </a>
+    
+    (<mm:compare referid="config.liststyle" value="short" >
+    <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">long</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showall")%></span></a>
+  </mm:compare>
+  <mm:compare referid="config.liststyle" value="short" inverse="true" >
+    <a href="<mm:url page="search_node.jsp" ><mm:param name="mmjspeditors_liststyle">short</mm:param></mm:url>"><span class="navigate"><%=m.getString("search_node.showshortlist")%></span></a>
+    </mm:compare>)
+    
+  </th>
+  <mm:present referid="node_type">
+    <th width="80%"><%=m.getString("search_node.type")%> <mm:nodeinfo nodetype="$node_type" type="guitype" />
+      (<mm:nodeinfo nodetype="$node_type" type="type" />)      
+      <mm:maycreate type="$node_type">
+        <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
+          <span class="create"></span><span class="alt">[create]</span>
+        </a>
+    </mm:maycreate>
+    </th>
+  </mm:present>		
+  <mm:notpresent referid="node_type">
+    <th width="80%"><%=m.getString("search_node.nonodes")%>
+        </th>
+  </mm:notpresent>		
     	</tr>
     	<tr valign="top">
     	    <td><!-- node manager overview -->
              <!-- mm:timer name="node_managers"-->
-                    <!-- quick search by number/alias: -->
-    	    	    <form method="post" action="<mm:url page="change_node.jsp"/>">
+             <!-- quick search by number/alias: -->
+             <form method="post" action="<mm:url page="change_node.jsp"/>">
     	    	<table summary="node managers" width="100%" cellspacing="1" cellpadding="3" border="0">
 		    <% // functionality for listing nodemanagers is not (yet?) in taglib, using MMCI.
                      NodeManagerList l = cloud.getNodeManagers();
@@ -81,37 +91,23 @@
 			    <td colspan="2" class="navigate"><input type="submit"  name="change" value="--&gt;" /></td>
 			</tr>
     	    	</table>
-    	    	 </form>
-            <!-- /mm:timer-->
+            </form>
+            <%-- /mm:timer--%>
     	    </td>
-    	    <td><!-- right collum, present search result (if clicked on node manager)-->  
-    	    	<mm:present referid="node_type">		   
-		    <!-- following page needs the param 'to_page' -->
-		    	<mm:import id="to_page"><mm:url page="change_node.jsp"/></mm:import>			       
-	     		 <mm:include referids="to_page" page="search_node_with_type.jsp" />
-		    <!-- end import -->	    	   
-               <mm:maycreate type="$node_type">
-              	    	<table summary="nodes" width="100%" cellspacing="1" cellpadding="3" border="0">
-	      	    	    <tr>
-	      	    	    	<td class="data"><%= m.getString("search_node.create")%> <mm:nodeinfo nodetype="$node_type" type="guitype" /> (<mm:write referid="node_type" />) </td>
-	      	    	    	<td class="navigate">
-	      	    	    	    <a href="<mm:url referids="node_type" page="create_node.jsp" />" >
-                             <span class="create"></span><span class="alt">[create]</span>
-             	    	    	</a>
-              	    	    </td>
-	      	    	    </tr>
-	      	    	</table>
-              </mm:maycreate>
-              <mm:maycreate type="${node_type}" inverse="true">
-              	    	<table width="100%">
-	      	    	    <tr>
-			    	<td class="data"><%= m.getString("search_node.maynotcreate")%> <mm:nodeinfo nodetype="${node_type}" type="guitype" /> (<mm:write referid="node_type" />)</td>
-	      	    	    	<td class="navigate">&nbsp;</td>        
-	      	    	    </tr>
-              	    	</table> 
-              </mm:maycreate>
-		    &nbsp;
-    	    	</mm:present>
+    	    <td><%-- right collumn, present search result (if clicked on node manager)--%>  
+          <mm:present referid="node_type">		   
+            <%-- following page needs the param 'to_page' --%>
+            <mm:import id="to_page"><mm:url page="change_node.jsp"/></mm:import>			       
+            <mm:include referids="to_page" page="search_node_with_type.jsp" />
+            &nbsp;
+          </mm:present>
+          <mm:notpresent referid="node_type">
+            <form name="search" method="post" action="<mm:url page="change_node.jsp"/>">
+            <table class="search" align="center" width="100%" border="0" cellspacing="1">
+              <tr><td width="20%"><%=m.getString("aliasornumber")%></td><td width="80%"><input class="small" type="text" size="5" name="node_number" /></td></tr>
+              <tr><td colspan="2"><input class="search" type="submit" name="search" value="<%=m.getString("search")%>" /></td></tr>
+            </table>
+          </mm:notpresent>
 	    </td>
     	</tr>
     </table>

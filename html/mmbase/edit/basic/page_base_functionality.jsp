@@ -7,7 +7,8 @@ void push(Stack stack, String id,  String url) {
    stack.push(new String[] {id, url});
 }
 void push(Stack stack, String id, HttpServletRequest request) {
-   push(stack, id, request.getServletPath() + "?" + request.getQueryString());
+   String qs = request.getQueryString();
+   push(stack, id, request.getServletPath() + (qs != null ? ("?" + qs) : ""));
 }
 String peek(Stack stack) {
     if (stack.size() > 0) {
