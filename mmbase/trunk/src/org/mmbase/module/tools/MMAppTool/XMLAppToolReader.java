@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.tools.MMAppTool;
 
@@ -16,14 +16,20 @@ import javax.xml.parsers.*;
 import org.mmbase.util.XMLBasicReader;
 import org.w3c.dom.*;
 
+/**
+ * Class XMLAppToolReader
+ *
+ * @application MMAppTool
+ * @javadoc
+ */
 public class XMLAppToolReader  {
-    
+
     Document document;
-    
+
     public boolean ok=true;
-    
+
     public XMLAppToolReader(String filename) {
-        
+
         File file = new File(filename);
         if(!file.exists()) {
             ok=false;
@@ -36,7 +42,7 @@ public class XMLAppToolReader  {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * getNeededBuilders for this application
      */
@@ -73,8 +79,8 @@ public class XMLAppToolReader  {
         }
         return(null);
     }
-    
-    
+
+
     /**
      * getNeededBuilders for this application
      */
@@ -100,7 +106,7 @@ public class XMLAppToolReader  {
                                     return(-1);
                                 }
                             }
-                            
+
                         }
                         n3=n3.getNextSibling();
                     }
@@ -110,8 +116,8 @@ public class XMLAppToolReader  {
         }
         return(-1);
     }
-    
-    
+
+
     /**
      * getNeededBuilders for this application
      */
@@ -137,7 +143,7 @@ public class XMLAppToolReader  {
                                     return(-1);
                                 }
                             }
-                            
+
                         }
                         n3=n3.getNextSibling();
                     }
@@ -147,5 +153,5 @@ public class XMLAppToolReader  {
         }
         return(-1);
     }
-    
+
 }
