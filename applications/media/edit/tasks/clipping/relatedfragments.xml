@@ -5,6 +5,7 @@ List with posrelated fragments
 <list destination="&type;fragments" searchdir="destination" role="posrel" orderby="field[@name='pos']">
   <title>Items</title>       
   <item>          
+    <!-- field fdatapath="field[@name='pos']" / -->
     <field name="title" />
     <field name="intro" rows="2" />
 
@@ -25,9 +26,10 @@ List with posrelated fragments
 
   <!-- command name="startwizard" inline="true" wizardname="tasks/clipping/&type;item" objectnumber="new" origin="{$origin}">
   </command -->
+
 	<action type="create">
      <relation role="posrel" destinationtype="&type;fragments" >
-        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos}}</field>
+        <field name="pos">{sum(//relation[@role='posrel' and @lastitem='true']/field[@name='pos'])+{$pos} + 1 }</field>
         <object type="&type;fragments" />
      </relation>
 	</action>

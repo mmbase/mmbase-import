@@ -17,33 +17,34 @@
     <xsl:variable name="thisprompt"><!--<xsl:call-template name="i18n"><xsl:with-param name="nodes" select="prompt" /></xsl:call-template>--></xsl:variable>
     <nobr>
 
-    <input type="button" value="{$button_current} {$thisprompt}"    onClick="document.forms['form'].elements['{@fieldname}'].value = getPosition();" />
-     <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
-      <input type="button" value="{$button_start} {$thisprompt}"      onClick="document.forms['form'].elements['{@fieldname}'].value = 0;" />
+    <input type="button" value="{$button_current}{$thisprompt}"  title="{$tooltip_current}"  onClick="document.forms['form'].elements['{@fieldname}'].value = getPosition();" />
+    <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
+      <input type="button" value="{$button_start}{$thisprompt}"  title="{$tooltip_start}"    onClick="document.forms['form'].elements['{@fieldname}'].value = 0;" />
     </xsl:if>
-     <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
-       <input type="button" value="{$button_end}  {$thisprompt}"       onClick="document.forms['form'].elements['{@fieldname}'].value = getLength();" />
+    <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
+      <input type="button" value="{$button_end}{$thisprompt}"    title="{$tooltip_end}"      onClick="document.forms['form'].elements['{@fieldname}'].value = getLength();" />
     </xsl:if>
 
 
      <xsl:if test="following::field[@ftype='realposition']">
        <xsl:if test="not(following-sibling::field[@ftype='realposition'])">
-       <input type="button" value="{$button_next} {$thisprompt}"         onClick="document.forms['form'].elements['{@fieldname}'].value = document.forms['form'].elements['{following::field[@ftype='realposition']/@fieldname}'].value;" />        
+       <input type="button" value="{$button_next}{$thisprompt}"  title="{$tooltip_next}"     onClick="document.forms['form'].elements['{@fieldname}'].value = document.forms['form'].elements['{following::field[@ftype='realposition']/@fieldname}'].value;" />        
        </xsl:if>
      </xsl:if>
      <xsl:if test="preceding::field[@ftype='realposition']">
        <xsl:if test="not(preceding-sibling::field[@ftype='realposition'])">
-       <input type="button" value="{$button_previous} {$thisprompt}"     onClick="document.forms['form'].elements['{@fieldname}'].value = document.forms['form'].elements['{preceding::field[@ftype='realposition'][1]/@fieldname}'].value;" />        
+       <input type="button" value="{$button_previous}{$thisprompt}"  title="{$tooltip_previous}"    onClick="document.forms['form'].elements['{@fieldname}'].value = document.forms['form'].elements['{preceding::field[@ftype='realposition'][1]/@fieldname}'].value;" />        
        </xsl:if>
      </xsl:if>
 
-     -&gt;
+     <img height="10" src="{$referrerdir}/media/a_right.gif" alt="-&gt;" />
     <input type="text" name="{@fieldname}" value="{value}" class="input" onBlur="validate_validator(event);">
      <xsl:apply-templates select="@*" />
     </input> ms
-     -&gt;
+     <img height="10" src="{$referrerdir}/media/a_right.gif" alt="-&gt;" />
+
       
-     <input class="check" type="button" value="{$button_check} {$thisprompt}" onClick="setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
+     <input class="check" type="button" value="{$button_check}{$thisprompt}" title="{$tooltip_check}" onClick="setPosition(document.forms['form'].elements['{@fieldname}'].value);" />
     </nobr>
   </span>
   </xsl:template>
