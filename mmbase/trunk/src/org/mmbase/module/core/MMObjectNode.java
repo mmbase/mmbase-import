@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectNode.java,v 1.128 2004-09-20 16:42:08 pierre Exp $
+ * @version $Id: MMObjectNode.java,v 1.129 2004-09-22 14:56:50 pierre Exp $
  */
 
 public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
@@ -526,14 +526,14 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
 //            if(value.length()==0 && parent.getField(fieldName).getDBNotNull()) {
 //                throw new RuntimeException("field with name '" + fieldName + "' may not be empty");
 //            }
-            if(value.length()==0) {
-                fieldValue = VALUE_NULL;
-            } else {
+//            if(value.length()==0) {
+//                fieldValue = VALUE_NULL;
+//            } else {
                 Document doc = toXML(value, fieldName);
                 if(doc != null) {
                     // store the document inside the field.. much faster...
                     fieldValue = doc;
-                }
+//                }
             }
         }
         if (log.isDebugEnabled()) {
@@ -728,6 +728,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // get the value from the values table
         Object o = retrieveValue(prefix + fieldName);
 
+        // explicitly load byte values if they are 'shortened'
+        // should probably be made more generic for other values
+        if ("$SHORTED".equals(o) && getDBType(fieldName) == FieldDefs.TYPE_BYTE) {
+            o = parent.getShortedByte(fieldName, getNumber());
+            storeValue(prefix + fieldName, o);
+        }
+
         // routine to check for indirect values
         // this are used for functions for example
         // its implemented per builder so lets give this
@@ -827,13 +834,13 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
      *
      * @param fieldName  the name of the field to be returned
      * @return  the value of the specified field as a DOM Element or <code>null</code>
-     * @throws  IllegalArgumentException if the Field is not of type TYPE_XML.
+     * @throws  IllegalArgumentException if the value cannot be converted.
      * @since MMBase-1.6
      */
     public Document getXMLValue(String fieldName) {
         Document o =  toXML(getValue(fieldName), fieldName);
-        if(o != null) {
-            values.put(fieldName, o);
+        if(o != null && getDBType(fieldName) == FieldDefs.TYPE_XML) {
+            storeValue(fieldName, o);
         }
         return o;
     }
@@ -857,8 +864,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
         // we really use them since they mean a extra request to the
         // database most of the time.
 
-        // we signal with a empty byte[] that its not obtained yet.
-        if (obj instanceof byte[]) {
+        // we signal with an empty byte[] that its not obtained yet.
+        if (obj == null) {
+            return new byte[0];
+        } else if (obj instanceof byte[]) {
             // was already unmapped so return the value
             return (byte[]) obj;
         } else {
@@ -867,14 +876,10 @@ public class MMObjectNode implements org.mmbase.util.SizeMeasurable {
                 // call our builder with the convert request this will probably
                 // map it to the database we are running.
                 b = parent.getShortedByte(fieldName, getNumber());
+                storeValue(prefix + fieldName, b);
                 if (b == null) {
                     b = new byte[0];
-                } else {
-                    // we could in the future also leave it unmapped in the values
-                    // or make this programmable per builder ?
-                    storeValue(prefix + fieldName, b);
                 }
-
             } else {
                 if (getDBType(fieldName) == FieldDefs.TYPE_STRING) {
                     String s = getStringValue(fieldName);
