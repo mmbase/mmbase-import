@@ -31,7 +31,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: AudioParts.java,v 1.28 2002-02-20 10:43:26 pierre Exp $
+ * @version $Id: AudioParts.java,v 1.29 2002-12-04 13:54:37 vpro Exp $
  */
 public class AudioParts extends MediaParts {
     //logging
@@ -192,6 +192,18 @@ public class AudioParts extends MediaParts {
                 break;
             case 9:
                 rtn="Program";			// Broadcast of a program
+                break;
+            case 10:
+                rtn="Column";
+                break;
+            case 11:
+                rtn="Documentaire";
+                break;
+            case 12:
+                rtn="Recensie";
+                break;
+            case 13:
+                rtn="Historisch Fragment";
                 break;
             default:
                 rtn="Unknown";			// Unknown
