@@ -315,7 +315,7 @@ public class EmailHandler {
 
 		MimeMultipart mmpart=MimeMessageGenerator.getMimeMultipart(text);
 		
-               	result=((JMimeSendMail)EmailBuilder.getSendMail()).sendMultiPartMail(mail,mmpart);
+               	result=((SendMail)EmailBuilder.getSendMail()).sendMultiPartMail(mail,mmpart);
               }
 	      return result;
 	}
