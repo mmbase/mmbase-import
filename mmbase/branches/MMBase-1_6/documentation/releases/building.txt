@@ -27,7 +27,8 @@ config/                     MMBase config dir
   xslt/                     Some xslt's for displaying config files in
                             adminpages
 docs/                       
-  apidocs/                  Apidocs for MMBase-sources
+  api/                      Apidocs for MMBase-sources
+mmdocs/                     Generated docs
 html/                       Html-directory
   mmadmin/                  (scan) Admin pages (deprecated)
     jsp/                    (jsp) Admin pages
@@ -41,6 +42,7 @@ html/                       Html-directory
     jsp/                    Jsp-examples
     scan/                   Scan-examples (deprecated)
 src/                        Src-dir
+  documentation/            Docbook sources for documentation
   org/
     mmbase/
       LICENSE               MPL-1.0 license

@@ -29,38 +29,56 @@ General New Features:
   'transformation'-template like the 'servdb' servlet of previous MMBase
   versions did. This functionality can be accessed by the imagetag or the 'cache'
   function of an image node.
-
 - Editwizards. A way to define `task oriented' editors in XML.
-
 - Improved support for Oracle
-
 - Added the 'storage' classes. The storage classes are a new (yet experimental)
-  interface for adding database support. Supported databses are mysql and postgresql.
-  The database configuration classes for tehse impleentations are relational.xml and postgresql.xml.
-  These database layers automatically add indexes, and provide database support for deep buidler
-  inheritance.
+  interface for adding database support. Supported databases are mysql
+  and postgresql. 
+  The database configuration classes for these implentations are
+  relational.xml and postgresql.xml. 
+  These database layers automatically add indexes, and provide
+  database support for deep builder inheritance.
+- A lot of new documentation has been added to this release. This
+  documentation has been created using the docbook-format.
+- Character encoding is configurable
+- Scan has been turned off by default
+- Centralized caches configuration (caches.xml)
+- Automatic builder installation for applications
+- auto detection of some databases (TODO: add more info)
+- Use of webapplication server resources (JNDI)
+- DTD's are available in the jar (and removed from the config dir)
+- Richtext 0.5
+- Security 1.0
+- Builder extension (not completely finished)
+
 
 ---------------------
 MMCI New Features:
 ---------------------
 
- - Updated to MMCI 1.2.
- - NodeManagers now extends Node, and can be retrieved by number
- - cloud.hasNode() and hasRelation() methods
- - New FieldValue interface
- - Users can now create their own MMCI lists (such as NodeList)
- - better exception handling (NotFoundException and AlreadyExistsException)
- - more filters to retrieve relations or related nodes
+- Updated to MMCI 1.2.
+- NodeManagers now extends Node, and can be retrieved by number
+- cloud.hasNode() and hasRelation() methods
+- New FieldValue interface
+- Users can now create their own MMCI lists (such as NodeList)
+- better exception handling (NotFoundException and AlreadyExistsException)
+- more filters to retrieve relations or related nodes
 
 -------------------
 Taglib New Features:
 -------------------
 
- - mm:formatter, mm:xslt : implement 'Richtext' features  (experimental)
- - mm:attachment : for obtaining download links to mmbase attachment objects
- - mm:time : for formatting mmabse time and date values
- - mm:locale : for setting country locale and language
- - mm:cloud tag: new loginpage attribute
+- mm:formatter, mm:xslt : implement 'Richtext' features  (experimental)
+- mm:attachment : for obtaining download links to mmbase attachment objects
+- mm:time : for formatting mmbase time and date values
+- mm:locale : for setting country locale and language
+- mm:cloud tag: new loginpage attribute
+
+---------------------
+Examples New Features:
+---------------------
+
+- Alternative jsp-editors (aka my_editors) added as an example.
 
 
 ==========================
@@ -70,6 +88,7 @@ BUG FIXES AND IMPROVEMENTS:
 ------------------
 General Bug Fixes:
 ------------------
+
 - Fixed a problem with memory allocation in the bridge, which could cause
   MMBase to claim disproportional parts of memory when using the Multilevel
   cache. (bug #4282)
@@ -77,32 +96,46 @@ General Bug Fixes:
   connections (bug #3974).
 - Calling cloud.getList() with seachdir='source' now works. (bug #3000)
 - Multilevel cacheing issues solved (bug #2971)
-- When removing a builder from MMBase,referring nodes in typerel/reldef are also removed.
+- When removing a builder from MMBase,referring nodes in
+  typerel/reldef are also removed.
+- MMBase works inside webapp contexts
+- Performance issue resolved regarding MMObjectNode::getRelated() and
+  MMObjectNode::getRelated(type) where type is a builder 
+- Connection pool can run on a lower amount of connections
+- Nodes are always returned with the correct type of builder
+
 
 ------------------
 Security Bug Fixes:
 ------------------
- - Fixed a problem with checking whether relations can be added (bug #3602)
- - You can no longer delete relations you have no right to delete (bug #1932)
+
+- Fixed a problem with checking whether relations can be added (bug #3602)
+- You can no longer delete relations you have no right to delete (bug
+  #1932)
+- Security can be set in no-read-check mode
+- Performance workaround for context/cloud security (possible to grant
+  read privilege to everyone)
 
 ----------------
 Taglib Bug Fixes:
 ----------------
-[1.6.0]
 
------------------
-Example Bug Fixes:
------------------
-[1.6.0]
+- Taglib works with Tomcat 4.1.x (version 4.1.12 is the first version
+  it's working) 
 
 
 ========================
 Know Issues and Problems:
 ========================
 
-- Orion doesn't support the final servlet api 2.3, because of this the
-  jumpersFilter will not work. You will need to remove the following
-  lines from <WEB-INF/web.xml>:
+- Builder inheritance has been added in MMInformix42Node, this is an
+  experimental feature.
+- When using Tomcat 4.1.12 mmbase-logs are written into cataline.out
+  and localhost_log. This has been fixed in Tomcat 4.1.16 (which is a
+  beta release).
+- Some versions of Orion doesn't support the final servlet api 2.3, because of this the
+  jumpersFilter will not work. This is true for Orion 1.5.2 and older
+  versions. You will need to remove the following lines from <WEB-INF/web.xml>:
 
     <!-- Filter for jumpers -->
     <filter>
@@ -146,6 +179,7 @@ Know Issues and Problems:
 - Sometimes it is needed to copy xml-apis.jar to
   <$CATALINA_HOME/common/lib/> or $ORION_HOME, eg if you're doing xslt-transformation
   or if you're using the editwizards.
+  TODO: add info about Tomcat 4.1.x and xerces
 
 - Imagemagick does work with Windows 98/ME, but MMBase is not able to
   use it. You have to use Jai (Java Advanced Imaging API). You can do
