@@ -6,7 +6,7 @@
  * and validation (in validator.js)
  *
  * @since    MMBase-1.6
- * @version  $Id: editwizard.jsp,v 1.43 2004-02-18 09:49:44 pierre Exp $
+ * @version  $Id: editwizard.jsp,v 1.44 2004-02-26 14:34:13 nico Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Nico Klasens
@@ -367,7 +367,7 @@ function restoreScroll() {
     if (pf == document.forms[0].id) {
         document.getElementById("editform").scrollTop = st;
     } else {
-        setFacusOnFirstInput();
+        setFocusOnFirstInput();
     }
 }
 
@@ -385,7 +385,7 @@ function cleanScroll() {
     cleanupScroll = true;
 }
 
-function setFacusOnFirstInput() {
+function setFocusOnFirstInput() {
     var form = document.forms["form"];
     for (var i=0; i < form.elements.length; i++) {
         var elem = form.elements[i];
