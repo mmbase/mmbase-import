@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.18 2003-12-04 12:39:03 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.19 2003-12-21 14:57:28 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -70,55 +70,13 @@ public class ContentTag extends LocaleTag  {
         while (e.hasMoreElements()) {
             Element element = (Element) e.nextElement();
             String claz = reader.getElementValue(element);
-            Class clazz;
-             try {
-                clazz = Class.forName(claz);
-            } catch (ClassNotFoundException ex) {
-                log.error("Class " + claz + " for '" + id + "' could not be found");
-                continue;
-            }
-            if (! CharTransformer.class.isAssignableFrom(clazz)) {
-                log.error("The class " + clazz + " specified as an escaper for " +id + " is not a CharTransformer");
-                continue;
-            }
-            CharTransformer ct;
-            try {
-                ct = (CharTransformer) clazz.newInstance();
-            } catch (Exception ex) {
-                log.error("Error instantiating a " + clazz + ": " + ex.toString());
-                continue;
-            }
 
             String config = element.getAttribute("config");
-            if (ct instanceof ConfigurableTransformer) {
-                log.debug("Trying to configure with '" + config + "'");
-                if (! config.equals("")) {
-                    int conf;
-                    try {
-                        log.debug("With int");
-                        conf = Integer.parseInt(config);
-                    } catch (NumberFormatException nfe) {
-                        try {
-                            log.debug("With static field");
-                            conf = clazz.getDeclaredField(config).getInt(null);
-                        } catch (Exception nsfe) {
-                            log.error("Type " + id + " is not well configured : " + nfe.toString() + " and " + nsfe.toString());
-                            continue;
-                        }                
-                    }
-                    ((ConfigurableTransformer) ct).configure(conf);
-                }
-            } else {
-                if (! config.equals("")) {
-                    log.warn("Tried to configure non-configurable transformer " + claz);
-                }
-            }
             boolean back = "true".equalsIgnoreCase(element.getAttribute("back"));
-            if (back) {
-                result.add(new InverseCharTransformer(ct));
-            } else {
-                result.add(ct);
-            }            
+
+            CharTransformer ct = Transformers.getCharTransformer(claz, config, " escaper " + id, back);
+            if (ct == null) continue;
+            result.add(ct);
         }
         if (result.size() == 0) {
             return COPY;
