@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 
 /* 
-	$Id: HtmlBase.java,v 1.23 2000-06-28 10:48:07 daniel Exp $
+	$Id: HtmlBase.java,v 1.24 2000-07-14 05:41:07 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.23  2000/06/28 10:48:07  daniel
+	Daniel.. removed ref to FieldDef
+	
 	Revision 1.22  2000/06/20 14:24:52  install
 	Rob: turned debug off
 	
@@ -98,7 +101,7 @@ import org.mmbase.module.database.support.*;
  * inserting and reading them thats done by other objects
  *
  * @author Daniel Ockeloen
- * @version $Id: HtmlBase.java,v 1.23 2000-06-28 10:48:07 daniel Exp $
+ * @version $Id: HtmlBase.java,v 1.24 2000-07-14 05:41:07 daniel Exp $
  */
 public class HtmlBase extends ProcessorModule {
 
@@ -684,7 +687,7 @@ public class HtmlBase extends ProcessorModule {
 			if( tok.hasMoreTokens()){
 				String fieldname=tok.nextToken();
 				String result=null;
-				MMObjectBuilder bul=mmb.getMMObject("fielddef");
+				MMObjectBuilder bul=mmb.getMMObject("typedef");
 				MMObjectNode node=bul.getNode(nodeNr);
 				sessionInfo pagesession=getPageSession(sp);
 				if (pagesession!=null) {
