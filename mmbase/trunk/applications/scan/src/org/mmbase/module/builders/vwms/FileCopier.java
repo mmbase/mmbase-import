@@ -18,6 +18,7 @@ public class FileCopier implements Runnable {
 	Queue files;
 
 	public FileCopier(Queue files) {
+		this.files=files;
 		init();
 	}
 
@@ -68,9 +69,13 @@ public class FileCopier implements Runnable {
 		debug("Active");
 		while (kicker!=null) {
 			afile=(aFile2Copy)files.get();
-			debug("Copying "+afile.srcpath+"/"+afile.filename);
-			SCPcopy scpcopy=new SCPcopy(sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
-			scpcopy.copy(afile.srcpath,afile.filename);
+			if (afile!=null) {
+				debug("Copying "+afile.srcpath+"/"+afile.filename);
+				SCPcopy scpcopy=new SCPcopy(sshpath,afile.dstuser,afile.dsthost,afile.dstpath);
+				scpcopy.copy(afile.srcpath,afile.filename);
+			} else {
+				debug("afile is null ?");
+			}
 		}
 	}
 
