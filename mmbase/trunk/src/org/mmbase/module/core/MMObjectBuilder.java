@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.282 2004-11-11 17:01:01 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.283 2004-11-11 17:47:54 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -2463,7 +2463,6 @@ public class MMObjectBuilder extends MMTable {
      * A complicated default implementation for GUI.
      * @since MMBase-1.8
      */
-    /*
     protected String getGUIIndicator(MMObjectNode node, Parameters pars) {
 
 
@@ -2525,7 +2524,7 @@ public class MMObjectBuilder extends MMTable {
         }
         return rtn;
     }
-    */
+
     
     /**
      * What should a GUI display for this node.
