@@ -2,7 +2,7 @@
 <!-- 
 
    @author  Michiel Meeuwissen
-   @version $Id: log4j.xml,v 1.20 2002-10-21 16:15:21 michiel Exp $
+   @version $Id: log4j.xml,v 1.21 2002-10-25 13:03:08 michiel Exp $
    @since   MMBase-1.4
 
    Location of the log4j.dtd. 
@@ -19,7 +19,7 @@
 -->
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd"
    [
-    <!ENTITY mmlevel    "org.mmbase.util.logging.log4j2.Log4jLevel" >
+    <!ENTITY mmlevel    "org.mmbase.util.logging.log4j.Log4jLevel" >
     <!ENTITY logdir   "/tmp/" >
 ]>
 
@@ -62,6 +62,7 @@
 
   <appender name="logfile" class="org.apache.log4j.ConsoleAppender" >
     <param name="Target" value="System.out" />
+    <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{ABSOLUTE} %-7p %c{4} - %m%n" />
     </layout>
@@ -73,6 +74,7 @@
   -->     
   <appender name="pagedebug" class="org.apache.log4j.ConsoleAppender" >
     <param name="Target" value="System.out" />
+    <param name="Encoding"   value="UTF-8" />    
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%d{MM-dd HH:mm:ss} PAGE %-7p %c{2} %L - %m%n" />
     </layout>
@@ -91,7 +93,7 @@
 
 
   <!-- 'page logging' goes to a different appender -->
-  <logger name="org.mmbase.bridge.jsp.taglib.pageflow"  additivity="false" >
+  <logger name="org.mmbase.PAGE" additivity="false">
     <level class="&mmlevel;" value ="service" />
     <appender-ref ref="pagedebug" />
   </logger>
