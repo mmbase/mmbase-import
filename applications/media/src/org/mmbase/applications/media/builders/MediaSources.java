@@ -44,7 +44,7 @@ import org.w3c.dom.NamedNodeMap;
  *
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: MediaSources.java,v 1.8 2003-02-16 18:51:48 michiel Exp $
+ * @version $Id: MediaSources.java,v 1.9 2003-02-17 21:32:44 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaSources extends MMObjectBuilder {
@@ -75,11 +75,6 @@ public class MediaSources extends MMObjectBuilder {
     public final static int STEREO = 2;
     
     
-    private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
-        public String getName()        { return "mediasource cache"; }
-        public String getDescription() { return "If the server gives ram's you can read them, results are stored in this cache."; }
-    };
-    
     private static Map mimeMapping = null;
     
     public boolean init() {
@@ -108,7 +103,6 @@ public class MediaSources extends MMObjectBuilder {
     
     
     public MediaSources() {
-        cache.putCache();
     }
     
     /**
