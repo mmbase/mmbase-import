@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.49 2004-03-10 16:42:00 michiel Exp $
+ * @version $Id: Config.java,v 1.50 2004-04-20 13:08:27 michiel Exp $
  */
 
 public class Config {
@@ -362,7 +362,7 @@ public class Config {
             searchDir   = configurator.getParam("searchdir",  searchDir);
             directions  = configurator.getParam("directions", directions);
             orderBy     = configurator.getParam("orderby",    orderBy);
-            distinct    = configurator.getParam("distinct",   new Boolean(false)).booleanValue();
+            distinct    = configurator.getParam("distinct",   false);
 
             // only perform the following is there was no prior parsing
             if (!parsed) {
