@@ -3,7 +3,7 @@
 
 
   <!-- straight-forward real example -->
-	<node number="130" owner="default">
+	<node number="130" owner="media">
 		<state>3</state>
 		<url>/tv/vpro/noorderlicht/sb.20020328.rm</url>
 		<width>-1</width>
@@ -20,7 +20,7 @@
   <!-- less straight forward, this url can be fed to the omroep play cgi -->
  
    <!-- real -->
-	<node number="128" owner="default">
+	<node number="128" owner="media">
 		<state>3</state>
 		<url>/tv/nos/journaal/maandag.2000.rm</url>
 		<width>-1</width>
@@ -33,7 +33,7 @@
 		<filesize>-1</filesize>
 	</node>
    <!-- windows media -->
-	<node number="217" owner="default">
+	<node number="217" owner="media">
 		<state>3</state>
 		<url>/tv/nos/journaal/maandag.2000.asf</url>
 		<width></width>
@@ -48,7 +48,7 @@
 
 
   <!-- straight forward asf example -->
-	<node number="5000" owner="default">
+	<node number="5000" owner="media">
 		<state>3</state>
 		<url>/tv/nos/netwerk/sb.20030113.asf</url>
 		<width>-1</width>
@@ -63,7 +63,7 @@
 
 
   <!-- another one, but for use with 'omroep' cgi -->
-	<node number="5001" owner="default">
+	<node number="5001" owner="media">
 		<state>3</state>
 		<url>/tv/nos/netwerk/20030112.asf</url>
 		<width>-1</width>
@@ -78,7 +78,7 @@
 
 
   <!-- journaal of tuesday is used as 'intro' because I couldn't find something real -->
-	<node number="5002" owner="default">
+	<node number="5002" owner="media">
 		<state>3</state>
 		<url>/tv/nos/journaal/sb.dinsdag.2000.rm</url>
 		<width>-1</width>
@@ -90,7 +90,7 @@
 		<format>6</format>
 		<filesize>-1</filesize>
 	</node>
-	<node number="5003" owner="default">
+	<node number="5003" owner="media">
 		<state>3</state>
 		<url>/tv/nos/journaal/sb.dinsdag.2000.asf</url>
 		<width></width>

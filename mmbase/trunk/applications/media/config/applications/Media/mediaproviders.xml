@@ -2,7 +2,7 @@
 <mediaproviders exportsource="mmbase://127.0.0.1/media/mm" timestamp="20021123002821">
 
   <!-- A rather odd provider (example) -->
-	<node number="3001" owner="default">
+	<node number="3001" owner="media">
 		<host>cgi.omroep.nl</host>
 		<state>1</state>
 		<name>Play cgi script server</name>
@@ -13,7 +13,7 @@
 
   
   <!-- A server for windows media -->
-	<node number="3002" owner="default">
+	<node number="3002" owner="media">
 		<host>media.omroep.nl</host>
 		<state>1</state>
 		<name>Windows media server</name>
@@ -23,7 +23,7 @@
 	</node>
 
   <!-- For real media -->
-	<node number="3003" owner="default">
+	<node number="3003" owner="media">
 		<host>streams.omroep.nl</host>
 		<state>1</state>
 		<name>Streams server</name>
