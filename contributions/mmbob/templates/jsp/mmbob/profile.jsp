@@ -248,19 +248,13 @@
             <mm:fieldlist nodetype="images" fields="handle">
             <mm:fieldinfo type="input"/>
             </mm:fieldlist>
+            <input type="submit" name="addavatar" value="Upload" />
           </span>
         </div>
         <div class="row">
           <span class="label">Selecteer avatar uit de lijst</span>
           <span class="formw">
             <input type="submit" name="selectavatar" value="Selecteer"/>
-          </span>
-        </div>
-     
-        <div class="row">
-          <span class="label"></span>
-          <span class="formw">
-            <input type="submit" name="addavatar" value="Bewaren" />
           </span>
         </div>
 

@@ -96,6 +96,16 @@
         </mm:node>
       </mm:present>
 
+      <mm:node id="avatarnode" referid="selectedavatarnumber"/>
+      <mm:present referid="userset">
+        <mm:import id="constraint">images.number = <mm:node referid="avatarnode"><mm:field name="number"/></mm:node></mm:import>
+        <mm:node referid="userset">
+          <mm:related path="images" fields="images.number" constraints="$constraint" >
+            <mm:import id="avatarExists">true</mm:import>
+          </mm:related>
+        </mm:node>
+      </mm:present>
+
       <mm:notpresent referid="userset">
         <mm:createnode id="userset" type="avatarsets">
           <mm:setfield name="name"><mm:node referid="posterid"><mm:field name="account"/></mm:node> 's set</mm:setfield>
@@ -103,15 +113,6 @@
         <mm:createrelation source="posternode" destination="userset" role="related" />
       </mm:notpresent>  
    
-      <mm:node id="avatarnode" referid="selectedavatarnumber"/>
-      
-      <%-- check if this avatar allready exists in the given userset otherwise we don't need to relate it again--%>
-      <mm:import id="constraint">images.number = <mm:node referid="avatarnode"><mm:field name="number"/></mm:node></mm:import> 
-      <mm:node referid="userset">
-        <mm:related path="images" fields="images.number" constraints="$constraint" >
-          <mm:import id="avatarExists">true</mm:import>
-        </mm:related> 
-      </mm:node>  
       <mm:notpresent referid="avatarExists">    
         <mm:createrelation source="userset" destination="avatarnode" role="posrel" />
       </mm:notpresent>
