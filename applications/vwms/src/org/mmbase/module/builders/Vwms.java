@@ -51,22 +51,23 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 
 	public void startVwmsByField() {
 		Class newclass;
-		if (debug) System.out.println("Vwms on machine "+getMachineName());
+		if (debug) System.out.println("Vwms:startVwmsByField -> Vwms on machine "+getMachineName());
 		Enumeration e=search("WHERE (wantedcpu='"+getMachineName()+"' OR wantedcpu='*') AND status=2");
 		for (;e.hasMoreElements();) {
 			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Vwms -> VWM="+node);
+			System.out.println("Vwms:startVwmsByField -> VWM="+node);
 			String name = node.getStringValue("name");
 			String classname=node.getStringValue("classname");
 			try {
-				System.out.println("Vwms -> Trying to create bot : "+name+" classname "+classname);
+				System.out.println("Vwms:startVwmsByField -> Trying to create bot : "+name+" classname "+classname);
 				newclass=Class.forName(classname);
-				System.out.println("Vwms -> Loaded load class : "+newclass);
+				System.out.println("Vwms:startVwmsByField -> Loaded load class : "+newclass);
 				VwmInterface vwm = (VwmInterface)newclass.newInstance();
 				vwm.init(node,this);
 				vwm_cache.put(name,vwm);
 			} catch (Exception f) {
-				System.out.println("Vwms -> Can't load class : "+name);
+				System.out.println("Vwms:startVwmsByField -> Can't load class : "+name);
+				f.printStackTrace();
 			}
 		}
 	}
@@ -75,7 +76,7 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 	public void startVwms() {
 		Class newclass;
 		// try to find my own node
-		if (debug) System.out.println("Vwms on machine "+getMachineName());
+		if (debug) System.out.println("Vwms:startVwms -> Vwms on machine "+getMachineName());
 		MMObjectBuilder bul=mmb.getMMObject("mmservers");
 		Enumeration e=bul.search("WHERE name='"+getMachineName()+"'");
 		if (e.hasMoreElements()) {
@@ -83,18 +84,19 @@ public class Vwms extends MMObjectBuilder implements MMBaseObserver {
 			Enumeration f=mmb.getInsRel().getRelated(node.getIntValue("number"),"vwms");
 			for (;f.hasMoreElements();) {
 				MMObjectNode vwmnode=(MMObjectNode)f.nextElement();
-				System.out.println("Vwms -> VWM="+vwmnode);
+				System.out.println("Vwms:startVwms -> VWM="+vwmnode);
 				String name = vwmnode.getStringValue("name");
 				String classname=vwmnode.getStringValue("classname");
 				try {
-					System.out.println("Vwms -> Trying to create bot : "+name+" classname "+classname);
+					System.out.println("Vwms:startVwms -> Trying to create bot : "+name+" classname "+classname);
 					newclass=Class.forName(classname);
-					System.out.println("Vwms -> Loaded load class : "+newclass);
+					System.out.println("Vwms:startVwms -> Loaded load class : "+newclass);
 					VwmInterface vwm = (VwmInterface)newclass.newInstance();
 					vwm.init(vwmnode,this);
 					vwm_cache.put(name,vwm);
 				} catch (Exception g) {
-					System.out.println("Vwms -> Can't load class : "+name);
+					System.out.println("Vwms:startVwms -> Can't load class : "+name);
+					g.printStackTrace();
 				}
 			}
 		}
