@@ -19,6 +19,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.logging.log4j2;
 import  org.apache.log4j.Level;
+import  org.apache.log4j.Priority;
 
 /** 
  *    LoggerLevel The new Level class for Log4jImpl. It extends
@@ -66,20 +67,20 @@ public class Log4jLevel extends Level {
         return Level.toLevel(i);
     }
     
-    public static Level[] getAllPossibleLog4jPriorities() {
-        return new Level[] {FATAL, ERROR, WARN, INFO, SERVICE, DEBUG, TRACE};
+    public static Priority[] getAllPossibleLog4jPriorities() {
+        return new Priority[] {FATAL, ERROR, WARN, INFO, SERVICE, DEBUG, TRACE};
     }
    
     public static Level toLog4jLevel(String sArg) { // needed?
         Level result;
-        result = Level.toLevel(sArg, null);
+        result = (Level) Level.toLevel(sArg, null);
         if (result != null) {
             return result;
         }
         String s = sArg.toUpperCase();
         if (s.equals("SERVICE")) return SERVICE;
         if (s.equals("TRACE"))   return TRACE;
-        return DEBUG;
+        return (Level) DEBUG;
     }
 
 }
