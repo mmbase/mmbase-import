@@ -18,13 +18,36 @@
 <mm:createrelation role="related" source="madetest" destination="my_givenanswers"/>
 <mm:createrelation role="related" source="question" destination="my_givenanswers"/>
   <% int dragCounter = 1; %>
+  <% String answerText = ""; %>
   <% boolean allCorrect = true; %>
   <mm:list nodes="$question" path="dropquestions,dragimagerel,images" fields="images.number" orderby="dragimagerel.pos" distinct="true">
     <% String extId = "drop"+qNum.getNumber()+"."+dragCounter; %>
     <% boolean thisAnswer = false; %>
     <mm:import id="givenanswer" jspvar="givenAnswer" externid="<%= extId %>" reset="true" from="parameters"/>
+
+    <h1>Givenanswer: <%= givenAnswer %>, <mm:write referid="givenanswer"/></h1>
+    
     <mm:isgreaterthan referid="givenanswer" value="0">
-	<%-- // has been dragged - check if there is a target --%>
+        <mm:import id="dragimage" reset="true"><mm:field name="images.number"/></mm:import>
+        <mm:node number="$dragimage">
+          <mm:import id="dragtitle" reset="true"><%= dragCounter %>. <mm:field name="title" /></mm:import>
+        </mm:node>
+        
+        <%-- has been dragged - store title of destination image --%>
+        <mm:list nodes="$question" path="dropquestions,dropimagerel,images" constraints="dropimagerel.pos=$givenanswer">
+            <h1><mm:write referid="givenanswer"/>. <mm:field name="images.title"/></h1>
+            <mm:import id="droptitle" reset="true"><mm:write referid="givenanswer"/>. <mm:field name="images.title"/></mm:import>
+        </mm:list>
+        
+        <mm:import id="thisanswertext" jspvar="thisAnswerText" reset="true"><mm:write referid="dragtitle"/> - <mm:write referid="droptitle"/></mm:import>
+        <% 
+           if (answerText.length() != 0) {
+            answerText += ", ";
+           } 
+           answerText += thisAnswerText;
+        %>
+        
+	<%-- // has been dragged - check if the answer is true --%>
 	<% String constraints = "dropanswers.dropnumber = "+givenAnswer+ " AND dropanswers.dragnumber = "+dragCounter; %>
 	<mm:list nodes="$question" path="dropquestions,dropanswers" constraints="<%= constraints %>" max="1">
 	    <% thisAnswer = true; %>
@@ -49,6 +72,7 @@
 	  
        <mm:node referid="my_givenanswers">
           <mm:setfield name="score"><%= allCorrect ? "1" : "0" %></mm:setfield>
+          <mm:setfield name="text"><%= answerText %></mm:setfield>
         </mm:node>
         <mm:remove referid="questioncorrect" />
 </mm:node>
