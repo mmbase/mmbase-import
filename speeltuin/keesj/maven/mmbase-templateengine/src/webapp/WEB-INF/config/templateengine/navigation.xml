@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE navigation SYSTEM "navigation.dtd">
+<navigation name="sites" id="1" visible="false">
+  <navigation name="bugtracker" id="bugtracker">
+    <property name="template">/templateengine/index.jsp</property>
+  </navigation>
+</navigation>
