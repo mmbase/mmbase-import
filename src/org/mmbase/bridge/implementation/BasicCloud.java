@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
+import org.mmbase.cache.*;
 import org.mmbase.security.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
@@ -66,6 +67,10 @@ public class BasicCloud implements Cloud, Cloneable {
     // User context
     protected BasicUser userContext = null;
 
+
+    private int multilevel_cachesize=300;
+    private MultilevelCacheHandler multilevel_cache;
+
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
      */
@@ -84,6 +89,11 @@ public class BasicCloud implements Cloud, Cloneable {
 
         userContext = cloud.userContext;
         account= cloud.account;
+
+	// start multilevel cache	
+        MMBase mmb = this.cloudContext.mmb;
+        multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
+
     }
 
     /**
@@ -124,6 +134,9 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // generate an unique id for this instance...
         account="U"+uniqueId();
+
+	// start multilevel cache	
+        multilevel_cache=new MultilevelCacheHandler(mmb,multilevel_cachesize);
     }
 
     public Node getNode(int nodenumber) {
@@ -544,6 +557,11 @@ public class BasicCloud implements Cloud, Cloneable {
         if (directions!=null) {
           pars+=" DIR='"+directions+"'";
         }
+
+        if (constraints!=null) {
+          pars+=" WHERE='"+constraints+"'";
+        }
+
         StringTagger tagger= new StringTagger(pars,' ','=',',','\'');
         if (searchDir!=null) {
             searchDir = searchDir.toUpperCase();
@@ -577,11 +595,25 @@ public class BasicCloud implements Cloud, Cloneable {
             } else {
                 constraints=convertClauseToDBS(constraints);
             }
-        }
-        Vector v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,
-                                                   orderVec,sdirection,search);
+        } 
+
+	// start of test for multilevel cache in mmci
+	Integer hash=multilevel_cache.calcHashMultiLevel(tagger); 
+
+	Vector v=null; // ugly way  
+	if (multilevel_cache.isActive()) {
+		v=(Vector)multilevel_cache.get(hash);
+		if (v==null) {
+       			v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+		}
+	} else {
+       		v = clusters.searchMultiLevelVector(snodes,sfields,sdistinct,tables,constraints,orderVec,sdirection,search);
+	} 
 
         if (v!=null) {
+	    //  store Vector in cache for future use
+            if (multilevel_cache.isActive()) multilevel_cache.put(hash,v,tables,tagger);
+
             // get authorization for this call only
             Authorization auth=mmbaseCop.getAuthorization();
             for (int i=v.size()-1; i>=0; i--) {
@@ -628,4 +660,5 @@ public class BasicCloud implements Cloud, Cloneable {
     StringList getPossibleContexts(int nodeNumber) {
     	return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
     }
+   
 }
