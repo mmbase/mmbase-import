@@ -966,12 +966,17 @@ public class MMObjectBuilder extends MMTable {
                 return null;
             }
 
+            MMObjectBuilder thisbuilder = mmb.getBuilder(bul);
+            if (thisbuilder==null) {
+                log.warn("Node #" + number + " builder " + bul + "(" + bi + ")) is not loaded");
+                return null;
+            }
+
             MultiConnection con =null;
             Statement stmt = null;
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
-                MMObjectBuilder thisbuilder = mmb.getBuilder(bul);
                 String query = "SELECT " + thisbuilder.getNonByteArrayFields() +" FROM " + thisbuilder.getFullTableName() + " WHERE "+mmb.getDatabase().getNumberString()+"="+number;
                 log.debug("query : " + query );
                 ResultSet rs = stmt.executeQuery(query);
