@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.21 2004-02-02 11:03:51 michiel Exp $
+ * @version $Id: Queries.java,v 1.22 2004-02-12 15:55:56 keesj Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -39,9 +39,7 @@ public class Queries {
      *
      * It can also be simply handy to specify things as Strings.
      */
-    public static Query createQuery(Cloud cloud, String startNodes, String nodePath,
-            String fields, String constraints, String orderby, String directions,
-            String searchDir, boolean distinct) {
+    public static Query createQuery(Cloud cloud, String startNodes, String nodePath, String fields, String constraints, String orderby, String directions, String searchDir, boolean distinct) {
 
         // the bridge test case say that you may also specifiy empty string (why?)
         if ("".equals(startNodes)) {
@@ -78,6 +76,7 @@ public class Queries {
         }
 
         // create query object
+        //TODO: remove this code... classes under org.mmbase.bridge.util must not use the core
         ClusterBuilder clusterBuilder = MMBase.getMMBase().getClusterBuilder();
         int search = -1;
         if (searchDir != null) {
@@ -134,21 +133,13 @@ public class Queries {
 
                 String notEscaped = remaining.substring(0, start);
                 if (notEscaped.indexOf(';') != -1) {
-                    log.warn(
-                        "found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:"
-                            + constraints
-                            + "\nnot excaped:"
-                            + notEscaped);
+                    log.warn("found a ';' outside the constraints(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nnot excaped:" + notEscaped);
                     return false;
                 }
 
                 int stop = remaining.substring(start + 1).indexOf('\'');
                 if (stop < 0) {
-                    log.warn(
-                        "reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:"
-                            + constraints
-                            + "\nlast escaping:"
-                            + remaining.substring(start + 1));
+                    log.warn("reached end, but we are still escaping(you should sql-escape the search query inside the jsp-page?)\noriginal:" + constraints + "\nlast escaping:" + remaining.substring(start + 1));
                     return false;
                 }
                 // we added one to to start, thus also add this one to stop...
@@ -179,6 +170,8 @@ public class Queries {
      */
     private static String convertClausePartToDBS(String constraints) {
         // obtain dbs for fieldname checks
+
+        //TODO: remove this code... classes under org.mmbase.bridge.util must not use the core
         MMJdbc2NodeInterface dbs = MMBase.getMMBase().getDatabase();
         StringBuffer result = new StringBuffer();
         int posa = constraints.indexOf('[');
@@ -222,9 +215,13 @@ public class Queries {
             constraints = "WHERE " + constraints;
         }
 
+        //keesj: here constraints will start with WHERE,ALTA or MMNODE
+
         //keesj: what does this code do?
+
         StringBuffer result = new StringBuffer();
         //if there is a quote in the constraints posa will not be equals -1
+
         int posa = constraints.indexOf('\'');
         while (posa > -1) {
             //keesj: posb can be the same a posa maybe the method should read indexOf("\"",posa) ?
@@ -273,7 +270,8 @@ public class Queries {
      * Adds a Constraint to the already present constraint (with AND)
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
-        if (newConstraint == null) return null;
+        if (newConstraint == null)
+            return null;
 
         Constraint constraint = query.getConstraint();
 
@@ -288,9 +286,8 @@ public class Queries {
         }
     }
 
-
     public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
-    public static final int OPERATOR_IN      = 10000; // not a FieldCompareConstraint (non numeric)
+    public static final int OPERATOR_IN = 10000; // not a FieldCompareConstraint (non numeric)
 
     /**
      * Creates a operator constant for use by createConstraint
@@ -315,8 +312,8 @@ public class Queries {
             return OPERATOR_BETWEEN;
         } else if (op.equals("IN")) {
             return OPERATOR_IN;
-        //} else if (op.equals("~") || op.equals("REGEXP")) {
-        //  return FieldCompareConstraint.REGEXP;
+            //} else if (op.equals("~") || op.equals("REGEXP")) {
+            //  return FieldCompareConstraint.REGEXP;
         } else {
             throw new BridgeException("Unknown Field Compare Operator '" + op + "'");
         }
@@ -327,12 +324,12 @@ public class Queries {
      */
     protected static Number getNumberValue(String stringValue) throws BridgeException {
         try {
-            return  new Integer(stringValue);
+            return new Integer(stringValue);
         } catch (NumberFormatException e) {
             try {
-               return new Double(stringValue);
+                return new Double(stringValue);
             } catch (NumberFormatException e2) {
-                throw new  BridgeException("Operator requires number value ('" + stringValue + "' is not)");
+                throw new BridgeException("Operator requires number value ('" + stringValue + "' is not)");
             }
         }
     }
@@ -342,36 +339,34 @@ public class Queries {
      */
     protected static Object getCompareValue(int fieldType, int operator, Object value) {
 
-        if (fieldType != Field.TYPE_STRING &&
-            fieldType != Field.TYPE_XML &&
-            operator < FieldCompareConstraint.LIKE) {  // numeric compare
+        if (fieldType != Field.TYPE_STRING && fieldType != Field.TYPE_XML && operator < FieldCompareConstraint.LIKE) { // numeric compare
             if (value instanceof Number) {
                 return value;
             } else {
-                return  getNumberValue(Casting.toString(value));
+                return getNumberValue(Casting.toString(value));
             }
         } else {
             if (operator == OPERATOR_IN) {
                 SortedSet set;
                 if (value instanceof SortedSet) {
-                    set = (SortedSet) value;
+                    set = (SortedSet)value;
                 } else if (value instanceof NodeList) {
                     set = new TreeSet();
-                    NodeIterator i = ((NodeList) value).nodeIterator();
+                    NodeIterator i = ((NodeList)value).nodeIterator();
                     while (i.hasNext()) {
                         Node node = i.nextNode();
                         set.add(new Integer(node.getNumber()));
                     }
                 } else if (value instanceof Collection) {
                     set = new TreeSet();
-                    Iterator i = ((Collection) value).iterator();
+                    Iterator i = ((Collection)value).iterator();
                     while (i.hasNext()) {
                         Object o = i.next();
                         set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, o));
                     }
                 } else {
                     set = new TreeSet();
-                    if (! (value == null || value.equals(""))) {
+                    if (!(value == null || value.equals(""))) {
                         set.add(getCompareValue(fieldType, FieldCompareConstraint.EQUAL, value));
                     }
                 }
@@ -404,22 +399,21 @@ public class Queries {
 
     public static Constraint createConstraint(Query query, String fieldName, int operator, Object value, Object value2, boolean caseSensitive) {
 
-
         StepField stepField = query.createStepField(fieldName);
-        if (stepField == null) throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
-
+        if (stepField == null)
+            throw new BridgeException("Could not create stepfield with '" + fieldName + "'");
 
         Cloud cloud = query.getCloud();
         FieldConstraint newConstraint;
 
         if (value instanceof StepField) {
-            newConstraint = query.createConstraint(stepField, operator, (StepField) value);
+            newConstraint = query.createConstraint(stepField, operator, (StepField)value);
         } else {
             int fieldType = cloud.getNodeManager(stepField.getStep().getTableName()).getField(stepField.getFieldName()).getType();
 
             if (fieldName.equals("number")) {
                 if (value instanceof String) { // it might be an alias!
-                    Node node = cloud.getNode((String) value);
+                    Node node = cloud.getNode((String)value);
                     value = new Integer(node.getNumber());
                 }
             }
@@ -428,23 +422,22 @@ public class Queries {
 
             if (operator > 0 && operator < OPERATOR_IN) {
                 newConstraint = query.createConstraint(stepField, operator, compareValue);
-             } else {
-                switch(operator) {
-                case OPERATOR_BETWEEN:
-                    Object compareValue2 = getCompareValue(fieldType, operator, value2);
-                    newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
-                    break;
-                case OPERATOR_IN:
-                    newConstraint = query.createConstraint(stepField, (SortedSet) compareValue);
-                    break;
-                default:
-                    throw new RuntimeException("Unknown value for operation " + operator);
+            } else {
+                switch (operator) {
+                    case OPERATOR_BETWEEN :
+                        Object compareValue2 = getCompareValue(fieldType, operator, value2);
+                        newConstraint = query.createConstraint(stepField, compareValue, compareValue2);
+                        break;
+                    case OPERATOR_IN :
+                        newConstraint = query.createConstraint(stepField, (SortedSet)compareValue);
+                        break;
+                    default :
+                        throw new RuntimeException("Unknown value for operation " + operator);
                 }
             }
         }
         query.setCaseSensitive(newConstraint, caseSensitive);
         return newConstraint;
-
 
     }
 
@@ -588,11 +581,12 @@ public class Queries {
 
     public static List addFields(Query query, String fields) {
         List result = new ArrayList();
-        if (fields == null) return result;
+        if (fields == null)
+            return result;
         List list = StringSplitter.split(fields);
         Iterator i = list.iterator();
         while (i.hasNext()) {
-            String fieldName = (String) i.next();
+            String fieldName = (String)i.next();
             result.add(query.addField(fieldName));
         }
         return result;
@@ -604,14 +598,15 @@ public class Queries {
      *
      * @return the new constraint, or null if the startNodes list was empty.
      */
-    public static Constraint  addStartNodes(Query query, String startNodes) {
-        if (startNodes == null) return null;
+    public static Constraint addStartNodes(Query query, String startNodes) {
+        if (startNodes == null)
+            return null;
 
         SortedSet startNodeSet = new TreeSet();
 
         Iterator nodes = StringSplitter.split(startNodes).iterator();
         while (nodes.hasNext()) {
-            String node = (String) nodes.next();
+            String node = (String)nodes.next();
             Integer nodeNumber;
             try {
                 nodeNumber = new Integer(node);
@@ -622,7 +617,7 @@ public class Queries {
         }
 
         if (startNodeSet.size() > 0) {
-            Step firstStep = (Step) query.getSteps().get(0);
+            Step firstStep = (Step)query.getSteps().get(0);
             StepField firstStepField = query.createStepField(firstStep, "number");
 
             Constraint newConstraint = query.createConstraint(firstStepField, startNodeSet);
@@ -631,7 +626,6 @@ public class Queries {
         } else {
             return null;
         }
-
 
     }
 
@@ -644,7 +638,7 @@ public class Queries {
         Query count = query.aggregatingClone();
         Step step = (Step) (count.getSteps().get(0));
         count.addAggregatedField(step, cloud.getNodeManager(step.getTableName()).getField("number"), AggregatedField.AGGREGATION_TYPE_COUNT);
-        Node result = (Node) cloud.getList(count).get(0);
+        Node result = (Node)cloud.getList(count).get(0);
         return result.getIntValue("number");
     }
 
