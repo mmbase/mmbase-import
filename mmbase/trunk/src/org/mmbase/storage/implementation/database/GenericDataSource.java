@@ -28,7 +28,7 @@ import org.mmbase.storage.StorageInaccessibleException;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: GenericDataSource.java,v 1.3 2003-10-13 08:36:10 keesj Exp $
+ * @version $Id: GenericDataSource.java,v 1.4 2004-01-21 09:06:02 michiel Exp $
  */
 public final class GenericDataSource implements DataSource {
 
@@ -63,13 +63,13 @@ public final class GenericDataSource implements DataSource {
 
     /**
      * Attempt to establish a database connection.
-     * @param user - the database user on whose behalf the Connection is being made
+     * @param userName - the database user on whose behalf the Connection is being made
      * @param password - the user's password
      * @return a Connection to the database
      * @throws java.sql.SQLException - if a database-access error occurs.
      */
-    public Connection getConnection(java.lang.String username, java.lang.String password) throws SQLException {
-        return jdbc.getConnection(jdbc.makeUrl(), username, password);
+    public Connection getConnection(String userName, String password) throws SQLException {
+        return jdbc.getConnection(jdbc.makeUrl(), userName, password);
     }
 
     /**
