@@ -18,11 +18,11 @@ for the MMBase node --%>
 <center>
   <table width="90%" cellspacing=1 cellpadding=3 border=0>
   <tr>
-  <td width="30"></td>
-  <td>
-  
+  <th colspan="2">  
   <%-- use the title field again --%>
-  <h1><mm:field  name="title"/></h1>
+  <h2><mm:field  name="title"/></h2>
+  </th><tr>
+  <tr><td width="30" /><td>
 
   <b><mm:field  name="intro"/></B>
 
@@ -31,25 +31,24 @@ for the MMBase node --%>
   brakes and paragraphs --%>
   <p><mm:field  name="html(body)"/></p>
 
+  </td></tr>
   <mm:relatednodes type="images" max="3">
-   <mm:first><h2>Related images</h2><p></mm:first>
+   <mm:first><tr><th colspan="2">Related images</th></tr><tr><td /><td></mm:first>
        <img src="<mm:image template="s(200)" />" alt="<mm:field name="title" />" />
-   <mm:last></p></mm:last>
+   <mm:last></td></tr></mm:last>
   </mm:relatednodes>
 
   <mm:relatednodes type="urls">
-   <mm:first><h2>Related urls</h2><p></mm:first>
+   <mm:first><tr><th colspan="2">Related urls</th></tr><tr><td /><td></mm:first>
    <a href="<mm:field name="url"/>"><mm:field name="description"/></a><br />
-   <mm:last></p></mm:last>
+   <mm:last></td></tr></mm:last>
   </mm:relatednodes>
 
   <mm:relatednodes type="people">
-   <mm:first><h2>Authors</h2><p></mm:first>
+   <mm:first><tr><th colspan="2">Authors</th></tr><tr><td /><td></mm:first>
    <em><mm:field name="firstname" /> <mm:field name="lastname" /></em><br />
-   <mm:last></p></mm:last>
+   <mm:last></td></tr></mm:last>
   </mm:relatednodes>
-  </td>
-  </tr>
   </table>
 </center>
 <hr />
