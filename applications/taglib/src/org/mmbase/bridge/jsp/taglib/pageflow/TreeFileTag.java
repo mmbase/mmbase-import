@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * A full description of this command can be found in the mmbase-taglib.xml file.
  *
  * @author Johannes Verelst
- * @version $Id: TreeFileTag.java,v 1.8 2004-01-19 17:22:09 michiel Exp $
+ * @version $Id: TreeFileTag.java,v 1.9 2004-01-20 09:38:54 johannes Exp $
  */
 
 public class TreeFileTag extends UrlTag {
@@ -65,5 +65,11 @@ public class TreeFileTag extends UrlTag {
     
     public void setObjectlist(String includePage) throws JspTagException {
         objectList = getAttribute(includePage);
+    }
+    
+    // override to cancel 
+    protected StringBuffer makeRelative(StringBuffer show) {
+    	log.debug("makeRelative() overridden!");
+    	return show;
     }
 }
