@@ -39,7 +39,7 @@ import javax.xml.transform.TransformerException;
  * @author Pierre van Rooden
  * @author Hillebrand Gelderblom
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.109 2003-11-19 13:34:27 pierre Exp $
+ * @version $Id: Wizard.java,v 1.110 2003-11-26 21:00:21 michiel Exp $
  *
  */
 public class Wizard implements org.mmbase.util.SizeMeasurable {
@@ -278,20 +278,24 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
     * @param operation a valid operation, i.e. maywrite or maydelete
     * @throws WizardException if the object cannot be retrieved
     */
-   protected boolean checkNode(String objectNumber, String operation)
-      throws WizardException {
+   protected boolean checkNode(String objectNumber, String operation) throws WizardException {
       Object nodeObj = nodeCache.get(objectNumber);
 
       if (nodeObj == null) {
-         NodeList nodes = Utils.selectNodeList(data,
-               ".//*[@number='" + objectNumber + "']");
+         NodeList nodes = Utils.selectNodeList(data, ".//*[@number='" + objectNumber + "']");
 
          if ((nodes != null) && (nodes.getLength() > 0)) {
-            nodeObj = nodes.item(0);
+             nodeObj = nodes.item(0);
          } else {
-            // node is from outside the datacloud...
-            // get it through dove... should we add it, and if so where?
-            nodeObj = databaseConnector.getDataNode(null, objectNumber, null);
+             if (objectNumber == null || objectNumber.equals("")) {
+                 log.warn("Checking security for objectNumber '" + objectNumber + "'  "); // + Logging.stackTrace(5));
+                 // MM: This happened to me when using sub-wizards (mmexamples)
+                 // And this code made it work at least, but still wondering why it came here in the first place.
+                 return true;
+             }
+             // node is from outside the datacloud...
+             // get it through dove... should we add it, and if so where?
+             nodeObj = databaseConnector.getDataNode(null, objectNumber, null);
          }
 
          nodeCache.put(objectNumber, nodeObj);
@@ -1550,8 +1554,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
    private void createFormField(Node form, Node field, Node dataNode)
       throws WizardException {
       if (log.isDebugEnabled()) {
-         log.debug("Creating form field for " + field + " wizard for obj: " +
-            objectNumber);
+          log.debug("Creating form field for " + field + " wizard for obj: " + objectNumber);
       }
 
       // copy all attributes from fielddefinition to new pre-html field definition
@@ -1583,8 +1586,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
       // place objectNumber as attribute number, if not already was placed there by the copyAllAttributes method.
       if ((dataNode != null) &&
             (Utils.getAttribute(dataNode, "number", null) == null)) {
-         Utils.setAttribute(newField, "number",
-            Utils.getAttribute(dataNode.getParentNode(), "number"));
+         Utils.setAttribute(newField, "number", Utils.getAttribute(dataNode.getParentNode(), "number"));
       }
 
       // resolve special attributes
@@ -1605,8 +1607,7 @@ public class Wizard implements org.mmbase.util.SizeMeasurable {
          }
 
          // evaluate object number
-         wizardObjectNumber = Utils.transformAttribute(dataNode,
-               wizardObjectNumber);
+         wizardObjectNumber = Utils.transformAttribute(dataNode, wizardObjectNumber);
 
          boolean mayEdit = true;
 
