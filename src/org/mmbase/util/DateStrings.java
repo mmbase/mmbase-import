@@ -46,7 +46,7 @@ public class DateStrings {
     /**
      *  Dutch long month names
      */
-    public static String Dutch_longmonths[]={ "januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","Novemben","december" };
+    public static String Dutch_longmonths[]={ "januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december" };
 
     /**
      *  Short week day names (value deoends on chosen language)
