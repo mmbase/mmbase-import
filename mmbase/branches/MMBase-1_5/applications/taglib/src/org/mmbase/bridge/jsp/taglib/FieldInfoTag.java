@@ -190,7 +190,7 @@ public class FieldInfoTag extends FieldReferrerTag implements Writer {
      * 
      */
     private String prefix(String s) {
-        String id = getId();
+        String id = findFieldProvider().getId();
         if (id == null) id = "";
         if (id.equals("") ) {
             return s;
