@@ -7,7 +7,9 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.bridge.jsp.taglib;
+package org.mmbase.bridge.jsp.taglib.containers;
+
+import org.mmbase.bridge.jsp.taglib.*;
 
 import java.util.List;
 import org.mmbase.util.Argument;
@@ -18,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainer.java,v 1.1 2003-06-27 12:58:27 michiel Exp $
+ * @version $Id: FunctionContainer.java,v 1.1 2003-07-23 17:46:57 michiel Exp $
  */
 public interface FunctionContainer extends ParamHandler, TagIdentifier {
 
