@@ -1,6 +1,6 @@
 <% String title = "Configure"; %>
 <%@ include file="inc_top.jsp" %>
-<mm:cloud name="mmbase" jspvar="wolk" method="http" rank="basic user">
+<mm:cloud name="mmbase" jspvar="wolk" method="loginpage" loginpage="login.jsp" rank="basic user">
 <mm:import jspvar="savethis" externid="savethis" />
 <mm:import jspvar="ntype" externid="ntype" />
 <% String path1 = ntype;		// Eerst stukje van kruimelpad %>
@@ -44,11 +44,11 @@ If you want to make permanent changes you will have to edit the file 'inc_head.j
 </tr>
 <tr valign="top">
   <td align="right" class="name">Max days old</td>
-  <td><input type="text" name="conf_days" value="<%= conf_days %>" size="9" maxlength="9" /></td>
+  <td><input class="small" type="text" name="conf_days" value="<%= conf_days %>" size="9" maxlength="9" /></td>
 </tr>
 <tr valign="top">
   <td align="right" class="name">Max items per page</td>
-  <td><input type="text" name="conf_max" value="<%= conf_max %>" size="9" maxlength="9" /></td>
+  <td><input class="small" type="text" name="conf_max" value="<%= conf_max %>" size="9" maxlength="9" /></td>
 </tr>
   <tr><td align="right" colspan="2"><input type="submit" name="savethis" value="Save" /></td></tr>
 </table>
