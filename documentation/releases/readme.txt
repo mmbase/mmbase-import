@@ -1,5 +1,5 @@
 ===================================================================
-                     MMBase 1.6.0 - Readme
+                     MMBase 1.7.0 - Readme
 ===================================================================  
   
 MMBase is an Open Source content management system that can be used
