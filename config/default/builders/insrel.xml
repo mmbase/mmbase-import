@@ -1,4 +1,4 @@
- <?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
 <builder maintainer="mmbase.org" version="0">
 
@@ -123,9 +123,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Src</guiname>
-			<guiname xml:lang="en">Src</guiname>
-			<guiname xml:lang="us">Src</guiname>
+			<guiname xml:lang="nl">Bron</guiname>
+			<guiname xml:lang="en">Source</guiname>
+			<guiname xml:lang="us">Source</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -144,7 +144,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>snumber</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -152,9 +152,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Dst</guiname>
-			<guiname xml:lang="en">Dst</guiname>
-			<guiname xml:lang="us">Dst</guiname>
+			<guiname xml:lang="nl">Bestemming</guiname>
+			<guiname xml:lang="en">Destination</guiname>
+			<guiname xml:lang="us">Destination</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -173,7 +173,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>dnumber</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -181,9 +181,9 @@ a key/value system. Its a optional tag.
 	<field>
 		<!-- gui related -->
 		<gui>
-			<guiname xml:lang="nl">Rel</guiname>
-			<guiname xml:lang="en">Rel</guiname>
-			<guiname xml:lang="us">Rel</guiname>
+			<guiname xml:lang="nl">Relatie</guiname>
+			<guiname xml:lang="en">Relation</guiname>
+			<guiname xml:lang="us">Relation</guiname>
 			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
@@ -202,7 +202,7 @@ a key/value system. Its a optional tag.
 			<!-- name of the field in the database -->
 			<name>rnumber</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="true" key="false">INTEGER</type>
 		</db>
 	</field>
 
