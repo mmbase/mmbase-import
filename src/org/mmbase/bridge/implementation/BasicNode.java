@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.87 2003-03-25 19:08:10 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.88 2003-03-26 11:04:34 michiel Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -713,6 +713,12 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         int    dir          = ClusterBuilder.getSearchDir(direction);
         List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
+        // remove the elements which may not be read:
+        ListIterator li = mmnodes.listIterator();
+        while (li.hasNext()) {
+            MMObjectNode node = (MMObjectNode) li.next();
+            if (! cloud.check(Operation.READ, node.getNumber())) li.remove();
+        }
         if (nodeManager != null) {
             return new BasicNodeList(mmnodes, nodeManager);
         } else {
