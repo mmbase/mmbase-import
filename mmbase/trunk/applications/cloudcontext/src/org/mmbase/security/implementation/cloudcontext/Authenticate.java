@@ -29,7 +29,7 @@ import org.mmbase.util.ResourceWatcher;
  * @author Eduard Witteveen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: Authenticate.java,v 1.8 2005-03-01 14:28:03 michiel Exp $
+ * @version $Id: Authenticate.java,v 1.9 2005-03-15 09:08:58 michiel Exp $
  */
 public class Authenticate extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(Authenticate.class);
@@ -122,6 +122,9 @@ public class Authenticate extends Authentication {
                 }
             }
             node = users.getUser(userName, password);
+            if (! users.isValid(node)) {
+                throw new SecurityException("Logged in an invalid user");
+            }
         } else if ("class".equals(s)) {
             org.mmbase.security.classsecurity.ClassAuthentication.Login li = org.mmbase.security.classsecurity.ClassAuthentication.classCheck("class");
             if (li == null) {
@@ -154,13 +157,13 @@ public class Authenticate extends Authentication {
             return false;
         }
         User user = (User) userContext;
-        boolean flag = user.isValid() && user.getKey() == uniqueNumber;
+        boolean flag = user.isValidNode() && user.getKey() == uniqueNumber;
         if (flag) {
             log.debug(user.toString() + " was valid");
-        } else if (user.isValid()) {
-            log.debug(user.toString() + " was NOT valid (different unique number)");
+        } else if (user.isValidNode()) {
+            log.debug(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (different unique number)");
         } else {
-            log.debug(user.toString() + " was NOT valid (node was different)");
+            log.debug(user.toString() + "(" + user.getClass().getName() + ") was NOT valid (node was different)");
         }
         return flag;
     }
@@ -177,7 +180,7 @@ public class Authenticate extends Authentication {
         public String getIdentifier() { return userName; }
         public String  getOwnerField() { return userName; }
         public Rank getRank() throws SecurityException { return Rank.ADMIN; }
-        public boolean isValid() { return l == extraAdminsUniqueNumber; }
+        public boolean isValidNode() { return l == extraAdminsUniqueNumber; }
     }
     public  class AdminVirtualNode extends VirtualNode {
         AdminVirtualNode() {
