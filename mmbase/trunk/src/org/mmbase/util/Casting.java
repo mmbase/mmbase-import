@@ -134,7 +134,16 @@ public class Casting {
      * @return the field's value as an <code>int</code>
      */
     static public int toInt(Object i) {
-        int res = -1;
+        return toInt(i, -1);
+    }
+    
+    /**
+     * as toInt, but with configurable fallback-value
+     * @since MMBase-1.7
+     */
+
+    static public int toInt(Object i, int def) {
+        int res = def;
         if (i instanceof MMObjectNode) {
             res=((MMObjectNode)i).getNumber();
         } else if (i instanceof Boolean) {
