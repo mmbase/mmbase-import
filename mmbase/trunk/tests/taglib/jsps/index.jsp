@@ -20,10 +20,9 @@
   application server. 
 </p>
 <p>
-  <img src="mag.jpg" alt="tadaam" title="gvd" />
-</p>
-<p>
-  Start <a title="hoi" href="<mm:url page="transaction.jsp" />">here for transaction-tests</a>.
+<mm:import id="a">ba</mm:import>
+<mm:import id="b">ca</mm:import>
+  Start <a title="hoi" href="<mm:url referids="a,b?@c" page="transaction.jsp" />">here for transaction-tests</a>.
 </p>
 <p>
   The cloud-tag is a rather complex thing, it has some attributes
@@ -37,6 +36,15 @@
 </p>
 <p>
   <a href="<mm:url page="attributes.jsp" />">Tag attribute tests</a>
+</p>
+<p>
+  <a href="<mm:url page="changed.jsp" />">mm:changed</a>
+</p>
+<p>
+  <a href="<mm:url page="batches.jsp" />">mm:previousbatches/mm:nextbatches</a>
+</p>
+<p>
+  <a href="<mm:url page="session.jsp" />">session stuff</a>
 </p>
 
 <hr />
