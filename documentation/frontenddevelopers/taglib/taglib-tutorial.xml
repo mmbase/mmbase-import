@@ -998,39 +998,35 @@
         this.
       </para>
       <para>
-        The first tag which we encountered was the 'cloud' tag. Every tag
-        that wraps functionality needing a cloud must be inside such
-        a cloud tag. Those tags are named 'cloudreferrers' (e.g. in the
-        taglib referrence). 
+        The first tag which we encountered was the 'cloud' tag. Every tag that wraps functionality
+        needing a cloud must be inside such a cloud tag. Those tags are named 'cloudreferrers'
+        (e.g. in the taglib referrence).
       </para>
       <para>
-        The cloud tag itself of course then is a 'CloudProvider'. That
-        seems a bit silly at first, because perhaps you cannot think
-        of something else that could provide a cloud. If you look
-        'cloudprovider' up in the reference you see however that there
-        is one other cloudprovider, namely the 'transaction'-tag. A
-        transaction is a special kind of cloud.
+        The cloud tag itself of course then is a 'CloudProvider'. That seems a bit silly at first,
+        because perhaps you cannot think of something else that could provide a cloud. If you look
+        'cloudprovider' up in the reference you see however that there is one other cloudprovider,
+        namely the 'transaction'-tag. A transaction is a special kind of cloud.
       </para>
       <para>
-        This same scheme can be applied to several other concepts. The
-        next one of course is the 'node provider' with its counterpart
-        the 'node referrer'.
+        This same scheme can be applied to several other concepts. The next one of course is the
+        'node provider' with its counterpart the 'node referrer'.
       </para>
       <para>
-        Node referrers are many. The most obvious one is of course the
-        field tag. A field of course needs to refer to a node. But also
-        the two 'related' tags are node referrers, because they are
-        related to this node to which they are 'referring'.    
+        Node referrers are many. The most obvious one is of course the field tag. When presenting a
+        field, the field tag of course needs a reference to a node variable where the actual field
+        value belong to.  Other examples of node referrer tags are the 'related' tag and the
+        'relatednodes' tag, which list nodes related to the node to which they refer as a node
+        referrer.
       </para>
       <para>
-        The relatednodes tags are of course also node providers. They
-        provide nodes, based on the reference to another node.
+        These relatednodes tags are of course also node providers. They provide nodes, based on the
+        reference to another node.
       </para>
       <para>
-        For node referrer tags it does not matter which tag excactly is
-        the node provider, they only search for the abstract thing which
-        is a 'node provider'. That's why a field-tag can be used inside
-        a node-tag or a nodelist-tag and so on.
+        For node referrer tags it does not matter which tag excactly is the node provider, they only
+        search for the abstract thing which is a 'node provider'. That's why a field-tag can be used
+        inside a node-tag or a nodelist-tag and so on.
       </para>
     </section>
     <section>
