@@ -61,7 +61,7 @@ public class MediaSources extends MMObjectBuilder {
     public final static int WMA_FORMAT  = 14;
     public final static int OGG_FORMAT  = 15;
     public final static int OGM_FORMAT  = 16;
-        
+    
     // Codecs
     public final static int VORBIS_CODEC = 1;
     public final static int G2_CODEC     = 2;
@@ -109,7 +109,7 @@ public class MediaSources extends MMObjectBuilder {
     public boolean init() {
         boolean result = super.init();
         
-        // Retrieve a reference to the MediaProvider builder
+        // Retrieve a reference to the MediaProvider
         if(mediaProviderBuilder==null) {
             mediaProviderBuilder = (MediaProviders) mmb.getMMObject("mediaproviders");
             
@@ -298,17 +298,7 @@ public class MediaSources extends MMObjectBuilder {
                 }
             } else if (field.equals("format")) {
                 int val=node.getIntValue("format");
-                switch(val) {
-                    case MP3_FORMAT: return "mp3";
-                    case RA_FORMAT: return "ra";
-                    case WAV_FORMAT: return "wav";
-                    case PCM_FORMAT: return "pcm";
-                    case MP2_FORMAT: return "mp2";
-                    case RM_FORMAT: return "rm";
-                    case MPG_FORMAT: return "mpg";
-                    case MOV_FORMAT: return "Mov";
-                    default: return "Undefined";
-                }
+                return MediaSources.convertNumberToFormat(val);
             } else {
                 return field;
             }
@@ -333,15 +323,13 @@ public class MediaSources extends MMObjectBuilder {
      * and an uriFilter.
      * @param mediafragment the mediafragment (maybe not needed...)
      * @param mediasource the mediasource
-     * @param request the request of the user
-     * @param wantedspeed
-     * @param wantedchannels
+     * @param info     
      * @return the url
      */
-    public String getUrl(MMObjectNode mediafragment, MMObjectNode mediasource, HttpServletRequest request, HttpServletResponse response, int wantedspeed, int wantedchannels) {
+    public String getLongUrl(MMObjectNode mediafragment, MMObjectNode mediasource, Hashtable info) {
         
         // Find the provider for the url
-        MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
+        MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, info);
         if(mediaProvider==null) {
             log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
             return null;
@@ -349,12 +337,45 @@ public class MediaSources extends MMObjectBuilder {
         
         log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
         // Get the protocol and the hostinfomation of the provider.
-        String firstPartUrl = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
+        String url = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
+        String uri = mediaUrlComposer.getURI(mediafragment, mediasource, info);
         
-        // Maybe we have to give here everything...
-        String url = mediaUrlComposer.composeUrl(mediafragment, mediasource, request, response, wantedspeed, wantedchannels);
+        return url+uri;
+    }
+    
+    /**
+     * resolve the url of the mediasource (e.g. pnm://www.mmbase.org/test/test.ra)
+     *
+     * @param mediafragment the media fragment
+     * @param mediasouce the media source
+     * @param info extra info (i.e. HttpRequestIno, bitrate, etc.)
+     * @return the url of the media source
+     */
+    public String getUrl(MMObjectNode mediasource, Hashtable info) {
+        log.debug("Getting url");
         
-        return firstPartUrl+url;
+        // Find the provider for the url
+        MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, info);
+        if(mediaProvider==null) {
+            log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
+            return null;
+        }
+        
+        log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
+        // Get the protocol and the hostinfomation of the provider.
+        String providerinfo = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
+        return providerinfo+mediaUrlComposer.getUrl(mediasource, info);
+    }
+    
+    /**
+     * resolve the content type of the mediasource
+     *
+     * @param mediasource the media source
+     * @return the content type
+     */
+    public String getContentType(MMObjectNode mediasource) {
+        log.debug("Getting content type");
+        return mediaUrlComposer.getContentType(mediasource);
     }
     
     /**
@@ -365,5 +386,52 @@ public class MediaSources extends MMObjectBuilder {
     public Vector getMediaProviders(MMObjectNode mediasource) {
         log.debug("mediasource "+mediasource.getStringValue("number"));
         return mediasource.getRelatedNodes("mediaproviders");
+    }
+    
+    /**
+     * converting format number to string representation
+     * @param format the format number
+     * @return the format
+     */
+    public static String convertNumberToFormat(int format) {
+        switch(format) {
+            case MP3_FORMAT: return "mp3";
+            case RA_FORMAT: return "ra";
+            case WAV_FORMAT: return "wav";
+            case PCM_FORMAT: return "pcm";
+            case MP2_FORMAT: return "mp2";
+            case RM_FORMAT: return "rm";
+            case VOB_FORMAT: return "vob";
+            case AVI_FORMAT: return "avi";
+            case MPEG_FORMAT: return "mpeg";
+            case MP4_FORMAT: return "mp4";
+            case ASF_FORMAT: return "asf";
+            case MOV_FORMAT: return "mov";
+            case WMA_FORMAT: return "wma";
+            case OGG_FORMAT: return "ogg";
+            case OGM_FORMAT: return "ogm";
+            default: return "Undefined";
+        }
+    }
+    
+    public static int convertFormatToNumber(String format) {
+        format=format.toLowerCase();
+        if(format.equals("mp3")) return MP3_FORMAT;
+        if(format.equals("ra")) return RA_FORMAT;
+        if(format.equals("wav")) return WAV_FORMAT;
+        if(format.equals("pcm")) return PCM_FORMAT;
+        if(format.equals("mp2")) return MP2_FORMAT;
+        if(format.equals("rm")) return RM_FORMAT;
+        if(format.equals("vob")) return VOB_FORMAT;
+        if(format.equals("avi")) return AVI_FORMAT;
+        if(format.equals("mpeg")) return MPEG_FORMAT;
+        if(format.equals("mp4")) return MP4_FORMAT;
+        if(format.equals("asf")) return ASF_FORMAT;
+        if(format.equals("mov")) return MOV_FORMAT;
+        if(format.equals("wma")) return WMA_FORMAT;
+        if(format.equals("ogg")) return OGG_FORMAT;
+        if(format.equals("ogm")) return OGM_FORMAT;
+        log.error("Cannot convert format ("+format+") to number");
+        return -1;
     }
 }

@@ -16,16 +16,17 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.*;
 
-import javax.servlet.http.HttpServletRequest;
 import org.w3c.dom.Element;
 
 import java.util.*;
 import java.io.File;
+import java.lang.Integer;
 
 /**
- * The MediaSourceFilter is involved in finding the appropriate MediaSource while
- * an url is requested on a MediaFragment. According to information given by an user,
- * and policies of the organisation providing the media a choice can be made.
+ * The MediaSourceFilter is involved in finding the appropriate media source 
+ * given a certain media fragment. The choice of the media source depends on 
+ * the configuration files configured, and the information an user is passing 
+ * through the info variable.
  *
  * The appropriate mediasource will be found by passing the mediasources through a
  * set of mediasource filters. These filters can be specified in the
@@ -35,9 +36,9 @@ import java.io.File;
  * 1) preferedSource, this is a list of media formats. The first found format is
  * returned.
  *
+ * A specific method for RealAudio is implemented. More of these can follow.
  *
  * @author Rob Vermeulen (VPRO)
- *
  */
 public class MediaSourceFilter {
     
@@ -45,8 +46,7 @@ public class MediaSourceFilter {
     
     private MediaFragments mediaFragmentBuilder = null;
     private MediaSources mediaSourceBuilder = null;
-    
-    
+        
     private static int MINSPEED        = 0;
     private static int MAXSPEED        = 0;
     private static int MINCHANNELS     = 0;
@@ -120,7 +120,7 @@ public class MediaSourceFilter {
         for( Enumeration e = reader.getChildElements("mediasourcefilter.preferedSource","source");e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String format = reader.getElementAttributeValue(n3,"format");
-            preferedSources.addElement(format);
+            preferedSources.addElement(format.toLowerCase());
             log.debug("Adding preferedSource format: "+format);
         }
         
@@ -145,8 +145,11 @@ public class MediaSourceFilter {
      * filter the most appropriate mediasource. This method is invoked from MediaFragment.
      * The mediaSource will be found by passing a list of mediaSources through a chain
      * of mediaSources filters.
+     * @param mediaFragment the given media fragment
+     * @param info Additional information given by an user
+     * @return the most appropriate media source
      */
-    public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, HttpServletRequest request, int wantedspeed, int wantedchannels) {
+    public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Hashtable info) {
         
         Vector mediaSources = mediaFragmentBuilder.getMediaSources(mediaFragment);
         if( mediaSources == null ) {
@@ -158,10 +161,10 @@ public class MediaSourceFilter {
             String filter = (String)e.nextElement();
             log.debug("Using filter "+filter);
             if(filter.equals("preferedSource")) {
-                mediaSources = preferedSource(mediaSources, wantedspeed, wantedchannels);
+                mediaSources = preferedSource(mediaSources, info);
             } else {
                 MediaSourceFilterInterface mpfi = (MediaSourceFilterInterface)externFilters.get(filter);
-                mediaSources = mpfi.filterMediaSource(mediaSources, mediaFragment, request, wantedspeed, wantedchannels);
+                mediaSources = mpfi.filterMediaSource(mediaSources, mediaFragment, info);
             }
         }
         
@@ -169,12 +172,13 @@ public class MediaSourceFilter {
     }
     
     /**
-     * take one mediasource. This method is used to just take one mediasource
+     * Take one mediasource. This method is used to just take one mediasource
      * of a list with appropriate media sources.
      * @param mediasources list of appropriate media sources
      * @return The mediasource that is going to handle the request
      */
     private MMObjectNode takeOneMediaSource(Vector mediasources) {
+        if(mediasources==null) return null;
         
         Enumeration e = mediasources.elements();
         while(e.hasMoreElements()) {
@@ -185,29 +189,23 @@ public class MediaSourceFilter {
     }
     
     /**
-     * find a media source with a format specified in the preferedSource list in the
+     * Find a media source with a format specified in the preferedSource list in the
      * mediasourcefilter configuration file.
      * @param mediasources The list with appropriate mediasources
-     * @param wantedspeed the wantedspeed of the user
-     * @param wantedchannels the wantedchannels of the user
+     * @param info Additional information
      * @return The most appropriate media source
      */
-    private Vector preferedSource(Vector mediasources, int wantedspeed, int wantedchannels) {
+    private Vector preferedSource(Vector mediasources, Hashtable info) {
         MMObjectNode node = null;
         
         for (Enumeration e=preferedSources.elements();e.hasMoreElements();) {
             String format = (String)e.nextElement();
-            if(format.equals("RA")) {
-                node = getRealAudio(mediasources, wantedspeed, wantedchannels);
-            } else if(format.equals("MP3")) {
-                node = getFormat(mediasources, MediaSources.MP3_FORMAT);
-            } else if(format.equals("WAV")) {
-                node = getFormat(mediasources, MediaSources.WAV_FORMAT);
-            } else if(format.equals("RM")) {
-                node = getFormat(mediasources, MediaSources.RM_FORMAT);
-            } else if(format.equals("MP2")) {
-                node = getFormat(mediasources, MediaSources.MP2_FORMAT);
-            }
+            log.debug("checking format "+format);
+            if(format.equals("ra")) {
+                node = getRealAudio(mediasources, info);
+            } else {
+                node = getFormat(mediasources, MediaSources.convertFormatToNumber(format));
+            } 
             if (node!=null) {
                 log.debug("found mediasource format "+format);
                 Vector mediasource = new Vector();
@@ -215,6 +213,7 @@ public class MediaSourceFilter {
                 return mediasource;
             }
         }
+        log.error("No appropriate mediasource found.");
         return null;
     }
     
@@ -225,19 +224,21 @@ public class MediaSourceFilter {
      * @return a mediasource of wanted format
      */
     private MMObjectNode getFormat(Vector mediaSources, int format) {
-        
+        log.debug("Getting format "+format);
         for(Enumeration e=mediaSources.elements();e.hasMoreElements();) {
             MMObjectNode mediaSource = (MMObjectNode)e.nextElement();
             
             // Is the MediaSource ready for use && is it of format surestream
-            if( mediaSource.getIntValue("status") == MediaSources.DONE &&
-            mediaSource.getIntValue("format") == format ) {
-                log.debug("stream found "+mediaSource.getStringValue("number"));
-                return mediaSource;
+            if(mediaSource.getIntValue("format") == format ) {
+                if(mediaSource.getIntValue("state") == MediaSources.DONE) {
+                    log.debug("Media source found ("+mediaSource.getStringValue("number")+")");
+                    return mediaSource;
+                } else {
+                    log.debug("Media source ("+mediaSource.getStringValue("number")+")does not have status DONE");
+                }
             }
         }
         return null;
-        
     }
     
     /**
@@ -245,7 +246,15 @@ public class MediaSourceFilter {
      * @param mediaSources the list of appropriate mediasources
      * @return the best realaudio mediasource
      */
-    private MMObjectNode getRealAudio(Vector mediaSources, int wantedspeed, int wantedchannels) {
+    private MMObjectNode getRealAudio(Vector mediaSources, Hashtable info) {
+        int wantedspeed=0;
+        int wantedchannels=0;
+        if(info.containsKey("wantedspeed")) {
+            wantedspeed=Integer.parseInt(""+info.get("wantedspeed"));
+        }
+        if(info.containsKey("wantedchannels")) {
+            wantedchannels=Integer.parseInt(""+info.get("wantedchannels"));
+        }
         
         if( wantedspeed < MINSPEED ) {
             log.error("wantedspeed("+wantedspeed+") less than minspeed("+MINSPEED+")");
