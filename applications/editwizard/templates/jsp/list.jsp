@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.23 2002-08-14 18:16:54 michiel Exp $
+     * @version  $Id: list.jsp,v 1.24 2002-08-14 21:03:41 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -249,6 +249,7 @@ params.put("sessionkey", ewconfig.sessionKey);
 params.put("sessionid",  ewconfig.sessionId);
 params.put("deletable",  deletable+"");
 params.put("creatable",  creatable+"");
+params.put("cloud",  cloud);
 
 if (deletedescription!=null) params.put("deletedescription", deletedescription);
 if (deleteprompt!=null) params.put("deleteprompt", deleteprompt);
