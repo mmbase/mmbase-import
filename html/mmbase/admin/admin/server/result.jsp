@@ -24,8 +24,8 @@
     }
 %>
 
-<table summary="server results" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="server results">
+<tr>
   <th class="header" colspan="2">Results of your action on server <%=server%></th>
 </tr>
 <tr>
@@ -36,8 +36,8 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?server="+server%>" />"><img src="../../images/back.gif" alt="next" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?server="+server%>" />"><img src="../../images/back.gif" alt="next" border="0" /></td>
 <td class="data">Return to Server Administration</td>
 </tr>
 

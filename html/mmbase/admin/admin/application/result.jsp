@@ -31,8 +31,8 @@
    }
 %>
 
-<table summary="application results" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="application results">
+<tr>
   <th class="header" colspan="2" >Results of your action on application <%=app%></th>
 </tr>
 <tr>
@@ -41,8 +41,8 @@
   </td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr>
-<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="<%="actions.jsp?application="+app%>" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data">Return to Application Administration</td>
 </tr>
 

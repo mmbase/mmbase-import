@@ -10,8 +10,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="servers" width="93%" cellspacing="1" cellpadding="3" border="0">
-<tr align="left">
+<table summary="servers">
+<tr>
 <th class="header" colspan="7">Server Overview
 </th>
 </tr>
@@ -19,14 +19,14 @@
   <td class="multidata" colspan="7"><p>This overview describes all MMBase servers running on this MMBase system.</p></td>
 </tr>
 <tr><td>&nbsp;</td></tr>
-<tr align="left">
+<tr>
     <th class="header">Machine</th>
     <th class="header">State</th>
     <th class="header">Last Seen</th>
     <th class="header">Uptime</th>
     <th class="header">Host</th>
     <th class="header">OS</th>
-    <th class="header">&nbsp;</th>
+    <th class="navigate">Manage</th>
 </tr>
 <mm:listnodes type="mmservers" >
 <mm:context>
@@ -51,7 +51,7 @@
     </td>
     <td class="navigate" width="14">
         <mm:field name="name" id="server">
-        <a href="<mm:url page="server/actions.jsp?server=$server" />"><img src="../images/next.gif" alt="next" border="0" align="right"></a>
+        <a href="<mm:url page="server/actions.jsp?server=$server" />"><img src="../images/next.gif" alt="next" border="0" /></a>
         </mm:field>
     </td>
 </tr>
@@ -59,8 +59,8 @@
 </mm:listnodes>
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../default.jsp" />" target="_top"><img src="../images/back.gif" alt="back" border="0" /></td>
 <td class="data" colspan="6">Return to home page</td>
 </tr>
 </table>

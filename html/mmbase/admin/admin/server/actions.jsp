@@ -11,8 +11,8 @@
 <meta http-equiv="expires" value="0" />
 </head>
 <body class="basic" >
-<table summary="server actions" width="93%" cellspacing="1" cellpadding="3">
-<tr align="left">
+<table summary="server actions">
+<tr>
   <th class="header" colspan="2" >Administrate Server: <%=server%></th>
 </tr>
 <tr>
@@ -25,9 +25,9 @@
 </tr>
 <tr><td><br /></td></tr>
 
-<tr align="left">
+<tr>
   <th class="header">Action</th>
-  <th class="header">Confirm</th>
+  <th class="navigate">Confirm</th>
 </tr>
 <tr>
   <td class="data">Stop/restart Server <br />
@@ -48,8 +48,8 @@
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td class="navigate"><a href="<mm:url page="../servers.jsp" />"><img src="../../images/back.gif" alt="back" border="0" align="left" /></td>
+<tr class="footer">
+<td class="navigate"><a href="<mm:url page="../servers.jsp" />"><img src="../../images/back.gif" alt="back" border="0" /></td>
 <td class="data">Return&nbsp;to&nbsp;Server&nbsp;Overview</td>
 </tr>
 </table>
