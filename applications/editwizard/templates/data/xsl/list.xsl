@@ -5,7 +5,7 @@
   @since  MMBase-1.6
   @author Kars Veling
   @author Michiel Meeuwissen
-  @version $Id: list.xsl,v 1.8 2002-05-27 09:26:32 pierre Exp $
+  @version $Id: list.xsl,v 1.9 2002-05-27 15:07:46 pierre Exp $
   -->
 
   <xsl:import href="baselist.xsl" />
@@ -186,6 +186,7 @@
 
           <tr class="itemrow" ><td colspan="2" align="center" >
             <a href="{$listpage}&amp;remove=true" title="{$tooltip_index}"><xsl:call-template name="prompt_index"/></a>
+            -
             <a href="{$listpage}&amp;logout=true&amp;remove=true" title="{$tooltip_logout}"><xsl:call-template name="prompt_logout"/></a>
           </td></tr>
         </table>
