@@ -52,7 +52,7 @@
 <p>
   To write the value of a variable to the page, we did use the `write'
   tag. If the value of the variable must be used in some attribute than
-  you have to use the ${}-notation. For example like this: 
+  you have to use the {}-notation. For example like this: 
   <mm:url   page="${a}" />
 </p>
 <h2>Escaping to JSP</h2>
