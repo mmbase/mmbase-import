@@ -28,6 +28,7 @@ import org.mmbase.module.sessionsInterface;
 import org.mmbase.module.sessionInfo;
 
 import nl.vpro.mmbase.util.media.video.*;
+import nl.vpro.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen
