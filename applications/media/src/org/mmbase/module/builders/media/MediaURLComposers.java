@@ -21,7 +21,7 @@ import java.net.*;
  * fragment, source, provider combination.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MediaURLComposers.java,v 1.7 2003-01-21 23:04:00 michiel Exp $
+ * @version $Id: MediaURLComposers.java,v 1.8 2003-01-22 22:17:14 michiel Exp $
  * @since MMBase-1.7
  */
 public class MediaURLComposers extends MMObjectBuilder {    
@@ -36,7 +36,7 @@ public class MediaURLComposers extends MMObjectBuilder {
             this.url = url;
         }
         public String  getURL() {
-            return url + "." + format.toString() + "?fragment=" + fragment.getNumber() + "&format=" + format;
+            return url + "." + format + "?fragment=" + (fragment == null ? "" : "" + fragment.getNumber()) + "&format=" + format;
         }
         public Format  getFormat()   { 
             if (format == Format.RM) return Format.RAM; 

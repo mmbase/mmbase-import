@@ -17,7 +17,7 @@ import java.util.Hashtable;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: FragmentResponseInfo.java,v 1.2 2003-01-21 23:03:59 michiel Exp $
+ * @version $Id: FragmentResponseInfo.java,v 1.3 2003-01-22 22:17:14 michiel Exp $
  * @todo    Move to org.mmbase.util.media, I think
  */
 
@@ -25,6 +25,8 @@ abstract public class FragmentResponseInfo extends ResponseInfo  {
     protected MMObjectNode fragment;
 
     public FragmentResponseInfo(MMObjectNode source, MMObjectNode fragment, Map info) {
+        if (source   == null) throw new RuntimeException("Source may not be null in a ResponseInfo object");
+        // if (fragment == null) throw new RuntimeException("Fragment may not be null in a ResponseInfo object");
         this.source   = source;
         this.fragment = fragment;
         this.info     = info;

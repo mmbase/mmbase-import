@@ -4,7 +4,7 @@
 	<node number="7000" owner="default">
 		<name>Default template</name>
 		<description>Produces simple urls, to be included with object</description>
-		<url>/rams?</url>
+		<url>/mediafragment</url>
 		<mimetype></mimetype>
 	</node>
 
