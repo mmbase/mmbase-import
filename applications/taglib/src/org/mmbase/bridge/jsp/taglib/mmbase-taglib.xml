@@ -44,9 +44,9 @@ one or more examplevalue tags is you want to give some example values.
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>
     <p>
-    MMBase consists of a cloud of nodes (objects) wich can be related to each other. Relations can
+	  MMBase consists of a cloud of nodes (objects) wich can be related to each other. Relations can
     be seen as nodes with two arms which they use to connect two other nodes. Nodes of a specific
-	  type (like a person node who holds a person's data) have their own nodemanager. A node manager
+    type (like a person node who holds a person's data) have their own nodemanager. A node manager
     can have functions wich are specific for the type of nodes it is managing. Just like a cloud can
     contain different type of nodes it can contain different type of relations. And just like
     specific type of nodes have their own nodemanager, relations of a specific type have their own
@@ -184,7 +184,7 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-	If the tag is living in more than one fieldprovider, and you don't need the direct parent.
+		If the tag is living in more than one fieldprovider, and you don't need the direct parent.
       </info>
     </attribute>
   </taginterface>
@@ -1006,8 +1006,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <rtexprvalue>true</rtexprvalue>
       <refercontext>true</refercontext>
       <info>
-		What to do if the node is not found. The default is to throw an exception.
-	  </info>
+     What to do if the node is not found. The default is to throw an exception.
+    </info>
       <possiblevalue>
         <value>skip|skipbody</value>
         <info>Simply skip the body if the node is not found</info>
@@ -1322,7 +1322,8 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
       <info>
-       The name of the jsp variable to create for this transaction.
+       The name of the Jsp variable to export. If not
+       specified, then a variable with name `trans' will exist.
       </info>
     </attribute>
 
@@ -1398,8 +1399,11 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <bodycontent>JSP</bodycontent>
-    <info>A list of fields. A fieldlist can list inside a NodeProvider in which case the NodeManager is found by means of
-    the parent node. It can also be stand alone, then you have to supply the type of the node (the name of the `nodemanager').
+    <info>
+	  A list of fields. A fieldlist can be inside a NodeProvider in
+	  which case the NodeManager is found by means of the parent
+	  node. It can also be stand alone, then you have to supply the type
+	  of the node (the name of the `nodemanager').
     </info>
     <attribute>
       <name>nodetype</name>
@@ -1457,16 +1461,26 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldInfoTag</tagclass>
+	<see>field</see>
+	<see>fieldlist</see>	
     <info>
-    The fieldinfo tag can be used inside a FieldListTag, or directly inside a
-    NodeProvider if you indicate with the field attribute about which
-    field you want to have information. It can have a body, which will
-    be added to the produced value, if this is not null.
+	  <p>
+		The fieldinfo tag can be used inside a FieldProvider. It's basic
+		goal is to provide information about the field, though it
+		sometimes can do a little more. It can for example in some case
+		also <em>change</em> the field.
+	  </p>
+	  <p>
+		If the parent fieldprovider is a fieldlist then this fieldlist
+		does not always provide a node as well. In that case not every
+		type of information is available.
+	  </p>
     </info>
     <attribute>
       <name>type</name>
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
+	  <info>The type of information which must be returned</info>
       <possiblevalue>
         <value>name</value>
         <info>The name of the field</info>
@@ -1477,52 +1491,60 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
       </possiblevalue>
       <possiblevalue>
         <value>input</value>
-    <info>
-    A form entry for the field. This can only be used if the
-        FieldList was in a Noderovider tag, or if you have provided
-        the `nodemanager' attribute. If the FieldList has an id, the
-        names of the form entries will be prefixed with it.
+		<info>
+		  A form entry for the field.  If the surrounding FieldList
+		  has an id, the names of the form entries will be prefixed
+		  with it.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>useinput</value>
         <info>
-    <p>
-    If you have created a form with type="input" and this form was
-        submitted, then you can use type="useinput" under a
-        NodeProvider, and it will get the request/post parameter
-        produced by "input" and make the right changes to the node.
-    </p>
-    <p>
-    The necessary externid's for this will be implicity imported
-    in the context. You don't have to worry about them.
-    </p>
+		  <p>
+			If you have created a form with type="input" and this form
+			was submitted, then you can use type="useinput", and it
+			will get the request/post parameter produced by "input"
+			and make the right changes to the parent field.
+		  </p>
+		  <p>
+			The necessary externid's for this will be implicity imported
+			in the context. You don't have to worry about them.
+		  </p>
+		  <p>
+			'useinput' is exceptional because it doesn't realy produce
+			any 'info' about the field, but rather changes it.
+		  </p>
+		  <p>
+			Can only be used if the parent FieldProvider also provides a Node.
+		  </p>
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>searchinput</value>
         <info>
-    A form entry for the field, fit for use for searching. That
-        means that not textareas will be used and such.
+		  A form entry for the field, fit for use for searching. That
+		  means that no textareas will be used and such.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>usesearchinput</value>
         <info>
-    If you have created a form with type="searchinput" and this
-        form was submitted, then you can use this. It will produce a
-        part of a where clause which you can use to construct a whole
-        `where' for the list tag you are going to use.
+		  If you have created a form with type="searchinput" and this
+		  form was submitted, then you can use this. It will produce a
+		  part of a where clause which you can use to construct a whole
+		  `where' for the list tag you are going to use.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>value</value>
-        <info>The value of this field. Can only be used if in a NodeProviderTag.
+        <info>
+		  The value of this field. Can only be used if the parent FieldProvider also provides a Node.
         </info>
       </possiblevalue>
       <possiblevalue>
         <value>guivalue</value>
-        <info>The guivalue of this field. Can only be used if in a NodeProviderTag.
+        <info>
+		  The guivalue of this field. Can only be used if the parent FieldProvider also provides a Node.
         </info>
       </possiblevalue>
     </attribute>
@@ -1809,6 +1831,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>url</name>
     <extends>writer</extends>
     <extends>contextwriter</extends>
+    <extends>cloudreferrer</extends>  
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
     <info>
@@ -2042,7 +2065,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>condition</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.security.MayCreateRelationTag</tagclass>
     <info>
-    Check if a relation between two nodes may be created.
+    Check if a relation may be created.
     </info>
     <attribute>
         <name>role</name>
@@ -2215,19 +2238,5 @@ like the parameter list or the session (whereever it is availabe) --&gt;
 	  </info>
     </attribute>
 	<extends>contextreferrer</extends>   
-   </tag>
-  <tag>   
-    <name>formatter</name>
-    <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
-    <info>
-    </info>
-    <attribute>
-      <name>xslt</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-      <info>
-		Experimental tag.
-	  </info>
-    </attribute>
    </tag>
 </taglib>
