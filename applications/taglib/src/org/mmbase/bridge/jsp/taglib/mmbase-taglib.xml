@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.239 2004-02-17 09:45:47 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.240 2004-02-18 18:39:32 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -2510,7 +2510,9 @@ transaction was commited, following should result anything:
 				<value>input</value>
 				<info>
 					A form entry for the field.  If the surrounding FieldList has an id, the names of the form
-					entries will be prefixed with it.
+					entries will be prefixed with it, so it is possible to use it for the same fields in the
+          same form more than once. The post of the form should be treated with corresponding
+          mm:fieldinfo type='useinput's.
 				</info>
 			</possiblevalue>
 			<possiblevalue>
@@ -3066,7 +3068,18 @@ like the parameter list or the session (where ever it is available) --&gt;
 			<info>
 				The url to refer to. If not specified, then it becomes the
 				result of getRequestURI.
-		</info>
+      </info>
+    </attribute>
+		<attribute>
+			<name>referid</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<info>
+        Reuses another mm:url (via its id). You can add extra parameters then, or simply make
+        another link (this last thing could also be done with mm:write). This attribute cannot be used
+        together with the 'page' attribute.
+      </info>
+      <since>MMBase-1.7</since>
 		</attribute>
 		<attribute>
 			<name>escapeamps</name>
