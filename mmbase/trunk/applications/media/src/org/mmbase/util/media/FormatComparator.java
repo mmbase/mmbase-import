@@ -20,32 +20,43 @@ import org.mmbase.util.logging.*;
 /**
  * This can sort a list with the requested formats on top.
  * @author  Michiel Meeuwissen
- * @version $Id: FormatComparator.java,v 1.1 2003-01-07 22:21:02 michiel Exp $
+ * @version $Id: FormatComparator.java,v 1.2 2003-01-08 08:50:18 michiel Exp $
  */
 public class FormatComparator extends  PreferenceComparator {
     private static Logger log = Logging.getLoggerInstance(FormatComparator.class.getName());
+
+    public static String CONFIG_TAG = "preferredSource";
+    public static String SOURCE_TAG = "source";
+    public static String FORMAT_ATT = "format";
+
     private List preferredSources = new ArrayList();
     public  FormatComparator(String f) {
         preferredSources.add(f);
     }
     public  FormatComparator() {};
 
-    // todo, make it work
     public void configure(XMLBasicReader reader, Element el) {
+        preferredSources.clear();
         // reading preferredSource information    
-        for( Enumeration e = reader.getChildElements("mediasourcefilter.preferredSource","source");e.hasMoreElements();) {
+        for( Enumeration e = reader.getChildElements(reader.getElementByPath(el, MediaSourceFilter.FILTERCONFIGS_TAG + "." + CONFIG_TAG), SOURCE_TAG);e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
-            String format = reader.getElementAttributeValue(n3,"format");
+            String format = reader.getElementAttributeValue(n3, FORMAT_ATT);
             preferredSources.add(format.toLowerCase());
-            log.debug("Adding preferredSource format: "+format);
+            log.service("Adding preferredSource format: '"+format +"'");
         }
   
     }
     
-    protected int getPreference(ResponseInfo ri) {        
-        int index =  preferredSources.indexOf(ri.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null));
-        if (index == -1) index = preferredSources.size() + 1;
-        return -index;   // low index =  high preference
+    protected int getPreference(ResponseInfo ri) {
+        String format = (String) ri.getSource().getFunctionValue(MediaSources.FUNCTION_FORMAT, null);
+        int index =  preferredSources.indexOf(format);
+        if (index == -1) { 
+            log.debug("Not found format: '" + format + "' in" + preferredSources);
+            index = preferredSources.size() + 1;
+        }
+        index = -index;   // low index =  high preference
+        log.debug("preference of format '" + format + "': " + index);
+        return index; 
     }
 
 }
