@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.54.2.4 2003-03-06 13:34:12 pierre Exp $
+ * @version $Id: MMAdmin.java,v 1.54.2.5 2003-03-18 13:27:57 pierre Exp $
  */
 public class MMAdmin extends ProcessorModule {
 
@@ -546,7 +546,7 @@ public class MMAdmin extends ProcessorModule {
             log.warn("MMAdmin> refused to reset the server, am in kiosk mode");
             return;
         }
-        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<BR><BR>\n";
+        lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds\n\n";
         log.info("Server Reset requested by '"+user+"' Restart in 3 seconds");
         restartwanted=true;
         probe = new MMAdminProbe(this,3*1000);
@@ -564,8 +564,8 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         log.info("Starting apptool with : "+path+File.separator+appname+".xml");
         MMAppTool app=new MMAppTool(path+File.separator+appname+".xml");
-        lastmsg="Started a instance of the MMAppTool with path : <BR><BR>\n";
-        lastmsg+=path+File.separator+appname+".xml<BR><BR>\n";
+        lastmsg="Started a instance of the MMAppTool with path : \n\n";
+        lastmsg+=path+File.separator+appname+".xml\n\n";
         return true;
     }
 
@@ -1112,11 +1112,11 @@ public class MMAdmin extends ProcessorModule {
         String path=MMBaseContext.getConfigPath()+File.separator+"applications"+File.separator;
         XMLApplicationReader app=new XMLApplicationReader(path+appname+".xml");
         Vector savestats=XMLApplicationWriter.writeXMLFile(app,targetpath,goal,mmb);
-        lastmsg="Application saved oke<BR><BR>\n";
-        lastmsg+="Some statistics on the save : <BR><BR>\n";
+        lastmsg="Application saved oke\n\n";
+        lastmsg+="Some statistics on the save : \n\n";
         for (Enumeration h = savestats.elements();h.hasMoreElements();) {
             String result=(String)h.nextElement();
-            lastmsg+=result+"<BR><BR>\n";
+            lastmsg+=result+"\n\n";
         }
         return true;
     }
