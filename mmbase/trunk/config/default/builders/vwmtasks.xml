@@ -1,4 +1,6 @@
-<builder>
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE builder PUBLIC "//MMBase - builder//" "http://www.mmbase.org/dtd/builder.dtd">
+<builder maintainer="mmbase.org" version="0">
 
 <!-- <status>
 	what is the status of this builder options : active or inactive
@@ -26,9 +28,9 @@
 	<Urls, people).
 >-->
 <names>
-	<!-- singles per language  as defined by RFC xxx -->
+	<!-- singles per language as defined by ISO 639 -->
 	<singular xml:lang="us">VwmOpdracht</singular>
-	<!-- multiple per language  as defined by RFC xxx -->
+	<!-- multiple per language as defined by ISO 639 -->
 	<plural xml:lang="us">VwmOpdracht</plural>
 </names>
 
@@ -36,9 +38,16 @@
 	small description of the builder for human reading
 -->
 <descriptions>
-<!-- descriptions per language  as defined by RFC xxx -->
+<!-- descriptions per language as defined by ISO 639  -->
 	<description xml:lang="us">tasks that can be used as a event system to control vwms</description>
 </descriptions>
+
+<!-- <properties>
+you can define properties to be used by the classfile (if used) it uses
+a key/value system. Its a optional tag.
+-->
+<properties>
+</properties>
 
 <!-- <fieldlist>
 	 defines the different fields in this object, be carefull the order is important
@@ -50,8 +59,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Object</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Object</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -69,7 +78,7 @@
 			<!-- name of the field in the database -->
 			<name>number</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="true">INTEGER</type>
+			<type state="persistent" notnull="true" key="true">INTEGER</type>
 		</db>
 	</field>
 
@@ -77,8 +86,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Eigenaar</name>
-			<type>string</type>
+			<guiname xml:lang="us">Eigenaar</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -96,7 +105,7 @@
 			<!-- name of the field in the database -->
 			<name>owner</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="12" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -104,8 +113,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Machine</name>
-			<type>string</type>
+			<guiname xml:lang="us">Machine</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -123,7 +132,7 @@
 			<!-- name of the field in the database -->
 			<name>wantedcpu</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -131,8 +140,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">VWM</name>
-			<type>string</type>
+			<guiname xml:lang="us">VWM</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -150,7 +159,7 @@
 			<!-- name of the field in the database -->
 			<name>vwm</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -158,8 +167,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Status</name>
-			<type>integer</type>
+			<guiname xml:lang="us">Status</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -177,7 +186,7 @@
 			<!-- name of the field in the database -->
 			<name>status</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -185,8 +194,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Verwerker</name>
-			<type>string</type>
+			<guiname xml:lang="us">Verwerker</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -204,7 +213,7 @@
 			<!-- name of the field in the database -->
 			<name>claimedcpu</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="32" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -212,8 +221,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">StartTijd</name>
-			<type>eventtime</type>
+			<guiname xml:lang="us">StartTijd</guiname>
+			<guitype>eventtime</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -231,7 +240,7 @@
 			<!-- name of the field in the database -->
 			<name>wantedtime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -239,8 +248,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">LaatsteAanpassing</name>
-			<type>eventtime</type>
+			<guiname xml:lang="us">LaatsteAanpassing</guiname>
+			<guitype>eventtime</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -258,7 +267,7 @@
 			<!-- name of the field in the database -->
 			<name>changedtime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -266,8 +275,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">VerloopTijd</name>
-			<type>eventtime</type>
+			<guiname xml:lang="us">VerloopTijd</guiname>
+			<guitype>eventtime</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -285,7 +294,7 @@
 			<!-- name of the field in the database -->
 			<name>expiretime</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -293,8 +302,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Opdracht</name>
-			<type>string</type>
+			<guiname xml:lang="us">Opdracht</guiname>
+			<guitype>string</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -312,7 +321,7 @@
 			<!-- name of the field in the database -->
 			<name>task</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
@@ -320,8 +329,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">ID</name>
-			<type>integer</type>
+			<guiname xml:lang="us">ID</guiname>
+			<guitype>integer</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -339,7 +348,7 @@
 			<!-- name of the field in the database -->
 			<name>id</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">INTEGER</type>
 		</db>
 	</field>
 
@@ -347,8 +356,8 @@
 	<field>
 		<!-- gui related -->
 		<gui>
-			<name xml:lang="us">Data</name>
-			<type>field</type>
+			<guiname xml:lang="us">Data</guiname>
+			<guitype>field</guitype>
 		</gui>
 		<!-- editor related  -->
 		<editor>
@@ -366,7 +375,7 @@
 			<!-- name of the field in the database -->
 			<name>data</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false">VARCHAR</type>
+			<type state="persistent" size="255" notnull="false" key="false">STRING</type>
 		</db>
 	</field>
 
