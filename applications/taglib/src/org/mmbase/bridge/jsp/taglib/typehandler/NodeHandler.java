@@ -60,7 +60,7 @@ public class NodeHandler extends IntegerHandler {
     public String htmlInput(Node node, Field field, boolean search) throws JspTagException {
 
         // if the gui was a builder(maybe query in future) then show a drop down for this thing, listing the nodes..
-        if(context.getCloud().getNodeManagers().contains(field.getGUIType())) {
+        if(context.getCloud().hasNodeManager(field.getGUIType())) {
             StringBuffer buffer = new StringBuffer();
             // yippee! the gui was the same a an builder!
             buffer.append("<select name=\"" + prefix(field.getName()) + "\">\n");
