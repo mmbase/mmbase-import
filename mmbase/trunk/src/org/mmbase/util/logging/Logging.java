@@ -92,7 +92,7 @@ public class Logging {
         // where to search for these kinds of problems..
         
         System.out.println("Configuring logging with " + configfile);
-        System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
+        ///System.out.println("(If logging does not start then dtd validation might be a problem on your server)");
 
 
 
@@ -138,9 +138,9 @@ public class Logging {
 
        
         System.out.println("Class to use for logging " + classToUse);
-        System.out.println("(Depending on your selected logging system no more logging");
-        System.out.println("might be written to this file. See the configuration of the");
-        System.out.println("selected logging system for more hints where logging will appear)");
+        // System.out.println("(Depending on your selected logging system no more logging");
+        // System.out.println("might be written to this file. See the configuration of the");
+        // System.out.println("selected logging system for more hints where logging will appear)");
         Class logClassCopy = logClass; // if something's wrong, we can restore the current value.
         try { // to find the configured class
             logClass = Class.forName(classToUse);
