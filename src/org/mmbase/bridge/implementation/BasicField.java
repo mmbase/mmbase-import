@@ -14,7 +14,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.FieldDefs;
 
 /**
- * This class represents a node's field type information object.
+ *
  * @author Pierre van Rooden
  */
 
@@ -28,52 +28,30 @@ public class BasicField implements Field {
   	    this.field=field;
   	}
   	
-    /**
-     * Gets the NodeManager this field belongs to
-     * @return the <code>NodeManager</code> object for this field
-     */
     public NodeManager getNodeManager() {
         return nodeManager;
     }
 
-	/**
-     * Retrieve the field name (identifying name)
-     */
     public String getName() {
         return field.getDBName();
     }
  	
- 	/**
-	 * Retrieve the field's GUI type
-	 */
     public String getGUIType() {
         return field.getGUIType();
     }
  	
- 	/**
-	 * Retrieve the field's GUI name
-	 */
     public String getGUIName() {
         return field.getGUIName(((BasicCloud)nodeManager.getCloud()).language);
     }
 
-	/**
-	 * Retrieve the field type
-	 */
 	public int getType() {
         return field.getDBType();
 	}
 
-	/** 
-	 * Retrieve the field state
-	 */
 	public int getState() {
         return field.getDBState();
 	}
 
-	/**
-	* retrieve the size of the field (i.e. the maximum length for a String)
-	*/
 	public int getMaxLength() {
 	    return field.getDBSize();
 	}

@@ -18,8 +18,6 @@ import org.mmbase.util.StringTagger;
 import java.util.*;
 
 /**
- * A Cloud is a collection of Nodes (and relations that are also nodes).
- * A Cloud is tied to one or more CLoudContexts (which reside on various VMs).
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
@@ -111,12 +109,6 @@ public class BasicCloud implements Cloud, Cloneable {
         description = cloudName;
     }
 
-	/**
-	 * Retrieve the node from the cloud.
-	 * Note : this also retrieves temporary (newly created) nodes
-	 * @param nodenumber the number of the node
-	 * @return the requested node
-	 */
 	public Node getNode(int nodenumber) {
 	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
 	    if (node==null) {
@@ -131,12 +123,6 @@ public class BasicCloud implements Cloud, Cloneable {
 	    }
 	}
 
-	/**
-	 * Retrieve the node from the cloud.
-	 * Note : this also retrieves temporary (newly created) nodes
-	 * @param nodenumber the number of the node
-	 * @return the requested node
-	 */
 	public Node getNode(String nodenumber) {
 	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,""+nodenumber);
 	    if (node==null) {
@@ -151,12 +137,6 @@ public class BasicCloud implements Cloud, Cloneable {
 	    }
 	}
 	
-	/**
-	 * Retrieves the node with the given aliasname.
-	 * Note : this does not retrieve temporary (newly created) nodes
-	 * @param aliasname the aliasname of the node
-	 * @return the requested node
-	 */
 	public Node getNodeByAlias(String aliasname) {
 	    MMObjectNode node = BasicCloudContext.tmpObjectManager.getNode(account,aliasname);
 	    if ((node==null) || (node.getNumber()==-1)) {
@@ -167,10 +147,6 @@ public class BasicCloud implements Cloud, Cloneable {
 	    }
 	}
 
- 	/**
-     * Retrieves all node managers (aka builders) available in this cloud
-     * @return an <code>Iterator</code> containing all node managers
-     */
     public NodeManagerList getNodeManagers() {
         Vector nodeManagers = new Vector();
         for(Enumeration builders = cloudContext.mmb.getMMObjects(); builders.hasMoreElements();) {
@@ -182,11 +158,6 @@ public class BasicCloud implements Cloud, Cloneable {
        return new BasicNodeManagerList(nodeManagers,this);
     }
 
-	/**
-     * Retrieves a node manager (aka builder)
-     * @param nodeManagerName name of the NodeManager to retrieve
-     * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
-     */
     public NodeManager getNodeManager(String nodeManagerName) {
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
         NodeManager nodeManager=(NodeManager)nodeManagerCache.get(nodeManagerName);
@@ -232,11 +203,6 @@ public class BasicCloud implements Cloud, Cloneable {
         return relManager;
     };
 
-
- 	/**
-     * Retrieves a list of RelationManagers
-     * @return the RelationManagers
-     */
     public RelationManagerList getRelationManagers() {
         Vector v= new Vector();
         for(Enumeration e =cloudContext.mmb.getTypeRel().search("");e.hasMoreElements();) {
@@ -245,15 +211,8 @@ public class BasicCloud implements Cloud, Cloneable {
         return new BasicRelationManagerList(v,this);
     }
 
- 	
- 	/**
-     * Retrieves a RelationManager
-     * @param sourceManagerName name of the NodeManager of the source node
-     * @param destinationManagerName name of the NodeManager of the destination node
-     * @param roleName name of the role
-     * @return the requested RelationManager
-     */
-    public RelationManager getRelationManager(String sourceManagerName, String destinationManagerName, String roleName) {
+    public RelationManager getRelationManager(String sourceManagerName,
+            String destinationManagerName, String roleName) {
         // uses getguesed number, maybe have to fix this later
         int r=cloudContext.mmb.getRelDef().getGuessedNumber(roleName);
         if (r==-1) {
@@ -286,19 +245,10 @@ public class BasicCloud implements Cloud, Cloneable {
 		return (int)(java.lang.System.currentTimeMillis() % Integer.MAX_VALUE);		
 	}
 
-    /**
-     * Creates a non-named transaction on this cloud
-     * @return a <code>Transaction</code> on this cloud
-     */
     public Transaction createTransaction() {
         return createTransaction(null);
     }
 
-    /**
-     * Creates a transaction on this cloud.
-     * @param name an unique name to use for the transaction
-     * @return a <code>Transaction</code> on this cloud
-     */
     public Transaction createTransaction(String name){
       getAccount();
       if (name==null) {
@@ -311,12 +261,6 @@ public class BasicCloud implements Cloud, Cloneable {
       return transaction;
     }
 
-    /**
-     * Opens a transaction on this cloud.
-     * If no active transaction exists, a new transaction is craeted.
-     * @param name the unique name to for the transaction
-     * @return the identified <code>Transaction</code>
-     */
     public Transaction getTransaction(String name) {
         Transaction tran=(Transaction)transactions.get(name);
         if (tran==null) {
@@ -325,26 +269,14 @@ public class BasicCloud implements Cloud, Cloneable {
         return tran;
     }
 	
-	/**
-     * Retrieves the context for this cloud
-     * @return the cloud's context
-     */
     public CloudContext getCloudContext() {
         return cloudContext;
     }
 
-  	/**
-     * Retrieves the cloud's name (this is an unique identifier).
-     * @return the cloud's name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Retrieves the description of the cloud
-     * @return return a description of the cloud
-     */
     public String getDescription(){
         return description;
     }
@@ -360,13 +292,6 @@ public class BasicCloud implements Cloud, Cloneable {
         return account;
     }
   	
-  	/**
-     * Logs on a user.
-                 * This results in an environment (a cloud) in which the user is registered.
-	 * @param authenticatorName name of the authentication method to sue
-	 * @param parameters parameters for the authentication
-	 * @return <code>true</code> if succesful (should throw exception?)
-     */
     public boolean logon(String authenticatorName, Object[] parameters) {
         getAccount();
         return authentication.login(authenticatorName,userContext,parameters);
@@ -426,29 +351,6 @@ public class BasicCloud implements Cloud, Cloneable {
         return cloud;
     }  	
 
-	/**
-     * Search nodes in a cloud accoridng to a specified filter.
-     * @param nodes The numbers of the nodes to start the search with. These have to be a member of the first NodeManager
-     *      listed in the nodeManagers parameter. The syntax is a comma-separated lists of node ids.
-     *      Example : '112' or '1,2,14'
-     * @param nodeManagers The NodeManager chain. The syntax is a comma-separated lists of NodeManager names.
-     *      The search is formed by following the relations between successive NodeManagers in the list. It is possible to explicitly supply
-     *      a RelationManager by placing the name of the manager between two NodeManagers to search.
-     *      Example: 'company,people' or 'typedef,authrel,people'.
-     * @param fields The fieldnames to return (comma separated). This can include the name of the NodeManager in case of fieldnames that are used by
-     *      more than one manager (i.e number).
-     *      Fieldnames are accessible in the nodes returned in the same format (i.e. with manager indication) as they are specified in this parameter.
-     *      Examples: 'people.lastname', 'typedef.number,authrel.creat,people.number'
-     * @param where The contraint. this is in essence a SQL where clause, using the NodeManager names from the nodes as tablenames.
-     *      Examples: "people.email IS NOT NULL", "(authrel.creat=1) and (people.lastname='admin')"
-     * @param order the fieldnames on which you want to sort. Identical in syntax to the fields parameter.
-     * @param direction A list of values containing, for each field in the order parameter, a value indicating whether the sort is
-     *      ascending (<code>UP</code>) or descending (<code>DOWN</code>). If less values are syupplied then there are fields in order,
-     *      The first value in the list is used for teh remainig fields. Default value is <code>'UP'</code>.
-     *      Examples: 'UP,DOWN,DOWN'
-     * @param distinct <code>True> indicates the records returned need to be distinct. <code>False</code> indicates double values can be returned.
-     * @return a <code>List</code> of found (virtual) nodes
-     */
     public NodeList getList(String nodes, String nodeManagers, String fields, String where, String sorted, String direction, boolean distinct) {
   		
         String pars ="";
