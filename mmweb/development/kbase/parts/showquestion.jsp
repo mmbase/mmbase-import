@@ -47,10 +47,14 @@
   <h5>answers to this quetion:</h5>
   <mm:relatednodes type="kb_answer" orderby="number" directions="up">
     <div style="max-height:600px;overflow:auto;margin-top:10px;">
+      <mm:maycreate type="kb_answer">
       <a href="javascript:goEditAnswer(<mm:field name="number"/>)">
         <img src="<mm:write referid="realpath"/>/img/smallpen.gif" border="0"/>
       </a>
-      <mm:field name="answer" jspvar="answer" vartype="String"><%=formatCodeBody(answer)%></mm:field>
+      </mm:maycreate>
+      <div style="width: 80%">
+        <mm:field name="answer" jspvar="answer" vartype="String"><%=formatCodeBody(answer)%></mm:field>
+      </div>
     </div>
     <table class="list" cellpadding="0" cellspacing="0" width="90%" style="margin-top:10px;">
     <tr>
@@ -59,8 +63,8 @@
   </table>    
   </mm:relatednodes>
 </mm:node>
-<mm:maycreate type="kb_answer">
-  <a href="javascript:goNewAnswer()"><h5><img src="<mm:write referid="realpath"/>/img/create.gif" border="0"/>add an answer to this question</h5></a>
-</mm:maycreate>
+  <mm:maycreate type="kb_answer">
+    <a href="javascript:goNewAnswer()"><h5><img src="<mm:write referid="realpath"/>/img/create.gif" border="0"/>add an answer to this question</h5></a>
+  </mm:maycreate>
   </div>
   </mm:cloud>
