@@ -12,14 +12,19 @@ package org.mmbase.module.core;
 import java.util.*;
 import org.mmbase.module.corebuilders.*;
 /*
-	$Id: TransactionResolver.java,v 1.1 2000-08-14 19:19:05 rico Exp $
+	$Id: TransactionResolver.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/08/14 19:19:05  rico
+	Rico: added the temporary node and transaction support.
+	      note that this is rather untested but based on previously
+	      working code.
+	
 */
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionResolver.java,v 1.1 2000-08-14 19:19:05 rico Exp $
+ * @version $Id: TransactionResolver.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
  */
 public class TransactionResolver {
 	private String	_classname = getClass().getName();
@@ -44,7 +49,7 @@ public class TransactionResolver {
 		MMObjectBuilder bul;
 		FieldDefs fd;
 		String field,tmpfield,key;
-		int state,number,ikey,dbtype;
+		int state,number,ikey,dbtype,tmpstate;
 		Vector v;
 		boolean rtn=true;
 
@@ -64,7 +69,8 @@ public class TransactionResolver {
 						// Database field of type integer
 						field=fd.getDBName();
 						tmpfield="_"+field;
-						if (node.getDBState(tmpfield)==0) {
+						tmpstate=node.getDBState(tmpfield);
+						if (tmpstate==FieldDefs.DBSTATE_VIRTUAL || tmpstate==FieldDefs.DBSTATE_UNKNOWN) {
 							ikey=node.getIntValue(field);
 							if (ikey<0) {
 								// Key is not set
@@ -85,6 +91,7 @@ public class TransactionResolver {
 								} else {
 									debug("Can't find key for field "+tmpfield+" node "+node+" (warning)");
 								}
+								if (field.equals("number")) node.setValue("_exists","no");
 							} else {
 								// Key is already set
 								debug("Key for value "+field+" is already set "+ikey);
@@ -92,6 +99,8 @@ public class TransactionResolver {
 								// node.removeValue(tmpfield);
 								if (field.equals("number")) node.setValue("_exists","yes");
 							}
+						} else {
+							debug("DBstate for "+tmpfield+" is not set to 0 but is "+node.getDBState(field));
 						}
 					}
 				}

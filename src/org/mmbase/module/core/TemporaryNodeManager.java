@@ -13,9 +13,12 @@ import java.util.*;
 
 import org.mmbase.util.*;
 /*
-	$Id: TemporaryNodeManager.java,v 1.2 2000-10-13 09:39:54 vpro Exp $
+	$Id: TemporaryNodeManager.java,v 1.3 2000-10-13 11:41:34 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.2  2000/10/13 09:39:54  vpro
+	Rico: added a method
+	
 	Revision 1.1  2000/08/14 19:19:06  rico
 	Rico: added the temporary node and transaction support.
 	      note that this is rather untested but based on previously
@@ -25,11 +28,11 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TemporaryNodeManager.java,v 1.2 2000-10-13 09:39:54 vpro Exp $
+ * @version $Id: TemporaryNodeManager.java,v 1.3 2000-10-13 11:41:34 vpro Exp $
  */
 public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	private String	_classname = getClass().getName();
-	private boolean _debug=false;
+	private boolean _debug=true;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
 
 	private MMBase mmbase;
@@ -39,6 +42,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 	}
 
 	public String createTmpNode(String type,String owner,String key) {
+		if (_debug) debug("createTmpNode : type="+type+" owner="+owner+" key="+key);
 		if (owner.length()>12) owner=owner.substring(0,12);
 		MMObjectBuilder builder=mmbase.getMMObject(type);
 		MMObjectNode node;
@@ -64,6 +68,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		node=bul.getTmpNode(key);
 		// fallback to normal nodes
 		if (node==null) {
+			if (_debug) debug("getNode tmp not node found "+key);
 			bul.getNode(key);
 		}
 		return(node);
@@ -79,6 +84,7 @@ public class TemporaryNodeManager implements TemporaryNodeManagerInterface {
 		node=bul.getTmpNode(key);
 		// fallback to normal nodes
 		if (node==null) {
+			if (_debug) debug("getObject not tmp node found "+key);
 			bul.getNode(key);
 		}
 		if (node != null) {

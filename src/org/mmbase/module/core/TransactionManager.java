@@ -13,14 +13,19 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.1 2000-08-14 19:19:05 rico Exp $
+	$Id: TransactionManager.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.1  2000/08/14 19:19:05  rico
+	Rico: added the temporary node and transaction support.
+	      note that this is rather untested but based on previously
+	      working code.
+	
 */
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.1 2000-08-14 19:19:05 rico Exp $
+ * @version $Id: TransactionManager.java,v 1.2 2000-10-13 11:41:34 vpro Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -168,7 +173,7 @@ public class TransactionManager implements TransactionManagerInterface {
 		int[] nodestate=new int[nodes.size()];
 		int[] nodetype=new int[nodes.size()];
 		boolean[] nodeexist=new boolean[nodes.size()];
-		int i;
+		int i,tmpstate;
 		String username=findUserName(user);
 
 		// Nodes are uncommited by default
@@ -188,7 +193,8 @@ public class TransactionManager implements TransactionManagerInterface {
 		// check if they alreay exist (aka use update vs insert)
 		for (i=0;i<nodes.size();i++) {
 			node=(MMObjectNode)nodes.elementAt(i);
-			if (node.getDBState("_number")==0 && node.getStringValue("_exists")==null) {
+			tmpstate=node.getDBState("_number");
+			if ((tmpstate==FieldDefs.DBSTATE_UNKNOWN || tmpstate==FieldDefs.DBSTATE_VIRTUAL) && node.getStringValue("_exists").equals("no")) {
 				nodeexist[i]=false;
 			} else {
 				nodeexist[i]=true;
