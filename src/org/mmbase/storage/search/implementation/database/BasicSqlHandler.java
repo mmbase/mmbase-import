@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.25 2004-02-23 19:01:04 pierre Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.26 2004-03-11 23:40:25 robmaris Exp $
  * @since MMBase-1.7
  */
 
@@ -530,14 +530,9 @@ public class BasicSqlHandler implements SqlHandler {
             while (iSortOrders.hasNext()) {
                 SortOrder sortOrder = (SortOrder) iSortOrders.next();
 
-                // Field alias.
-                String fieldAlias = sortOrder.getField().getAlias();
+                // Fieldname.
                 Step step = sortOrder.getField().getStep();
-                if (fieldAlias != null) {
-                    sb.append(getAllowedValue(fieldAlias));
-                } else {
-                    appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
-                }
+                appendField(sb, step, sortOrder.getField().getFieldName(), multipleSteps);
 
                 // Sort direction.
                 switch (sortOrder.getDirection()) {
@@ -911,9 +906,15 @@ public class BasicSqlHandler implements SqlHandler {
     }
 
     /**
+     * Creates an identifier for a field, and appends it to a stringbuffer.
+     * The identifier is constructed from the fieldname, optionally prefixed
+     * by the tablename or the tablealias - when available.
      *
+     * @param sb The stringbuffer to append to.
+     * @param step The Step the field belongs to.
+     * @param fieldName The fields fieldname.
      * @param includeTablePrefix <code>true</code> when the fieldname must be
-     *        prefixed with the fieldname (e.g. like in "images.number"),
+     *        prefixed with the tablename or tablealias (e.g. like in "images.number"),
      *        <code>false</code> otherwise.
      */
     // TODO RvM: add to interface, add javadoc
