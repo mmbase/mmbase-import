@@ -9,6 +9,7 @@
 		<builder maintainer="mmbase.org" version="1">users</builder>
 		<builder maintainer="mmbase.org" version="1">cookies</builder>
 		<builder maintainer="mmbase.org" version="1">groups</builder>
+		<builder maintainer="mmbase.org" version="1">email</builder>
 	</neededbuilderlist>
 
 	<neededreldeflist>
