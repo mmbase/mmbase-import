@@ -477,6 +477,8 @@ public class XMLBuilderReader  {
 		NamedNodeMap nm=n1.getAttributes();
 		if (nm!=null) {
 			Node n2=nm.getNamedItem("version");
+			if (n2==null) return(0);
+
 			String tmp=n2.getNodeValue();
 			try {
 				int version=Integer.parseInt(tmp);
@@ -505,7 +507,7 @@ public class XMLBuilderReader  {
 			}
 		}
 	}
-	return("MMBase.org");
+	return("mmbase.org");
     }
 
 }
