@@ -107,9 +107,8 @@ public class MultiStatement implements Statement
    }
 
 
-	// new ones
+	// JDBC new ones
 
-   //public int executeBatch()[] throws SQLException { // gave compile error in jikes
    public int[] executeBatch() throws SQLException {
 		return(s.executeBatch());
    }
