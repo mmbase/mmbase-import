@@ -12,6 +12,7 @@ body
 	display: float;
 	margin: 0px;
 	padding: 0px;
+	font-size: 90%;
 }
 
 p
@@ -20,8 +21,8 @@ p
 	text-align: left;
 	margin: 0px;
 	padding: 2px 0 1em 0;
+	line-height: 1.2em;
 }
-
 
 td { font-size: 0.85em; }
 td p { font-size: 1.0em; }
@@ -52,16 +53,17 @@ blockquote
 ol
 {
 	text-align: left;
-	font-size: 0.9em;
+	margin: 0 0 1em 0;
 }
 
 ul
 {
 	text-align: left;
-	margin: 10px 0 10px 0;
-	font-size: 0.9em;
+	margin: 0;
+	padding: 0 0 1em 1.1em;
 }
 
+ul li { list-style: circle default; }
 
 h1
 {
@@ -126,9 +128,38 @@ strong
 	color: #003333;
 }
 
+/* ###### pagedivision ###### */
 #pagecontent { margin: 0 0 20px 150px; }
 
-/* class fo javascript:window.open() stuff */
+#textcontent
+{
+	margin: 0 33% 0 150px;
+}
+
+#relatedcontent
+{
+	float: right;
+	width: 27%;
+	padding: 0 1em 1em 1em;
+	/* background-color: #FC9; */
+	margin: 0 4px 4px 4px;
+}
+
+#footer
+{
+	clear: right;
+	font-size: 0.8em;
+	padding: 4px 0 20px 0;
+	margin: 60px 0 20px 0;
+	border-color: #033;
+	border-width: 1px 0 0 0;
+	border-style: solid;
+	text-align: center;
+	width: 100%;
+}
+
+/* ###### /pagedivision ###### */
+/* class for javascript:window.open() stuff */
 #windowopen
 {
 	margin: 12px 7% 12px 7%;
@@ -138,9 +169,10 @@ strong
 	border-style: solid;
 }
 
-#windowopen .close {
- font-size: 1em;
- float: right;
+#windowopen .close
+{
+	font-size: 1em;
+	float: right;
 }
 
 .relatedpages
@@ -161,18 +193,6 @@ strong
 	font-weight: bold;
 	text-decoration: underline;
 	text-transform: inherit;
-}
-
-#footer
-{
-	font-size: 0.8em;
-	padding: 4px 0 20px 0;
-	margin: 40px 0 0 0;
-	border-color: #033;
-	border-width: 1px 0 0 0;
-	border-style: solid;
-	text-align: center;
-	width: 100%;
 }
 
 .layout { width: 100%; }
@@ -297,8 +317,6 @@ strong
 
 .breadcrumbar
 {
-	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
-	font-size: 0.9em;
 	background: #CCEB6F;
 	width: 100%;
 	height: 18px;
@@ -309,8 +327,6 @@ strong
 
 .breadcrumbar td
 {
-	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
-	font-size: 0.9em;
 	background: #CCEB6F;
 	vertical-align: middle;
 	padding: 3px 0px 3px 5px;
@@ -350,10 +366,7 @@ a:hover
 	border-style: solid;
 }
 
-.intro
-{
-	font-weight: bold;
-}
+.intro { font-weight: bold; }
 
 .imgtitle
 {
@@ -368,11 +381,11 @@ a:hover
 input
 {
 	text-align: left;
-	font-family: Monaco, Courier, monospaced;
+	font-family: Monaco, "Courier New", monospaced;
 	background-color: #D9DDDE;
 	margin: 2px;
 	padding: 2px;
-	font-size: 1.1em;
+	font-size: 0.9em;
 }
 
 /* this is for the radiobuttons on the homepage
@@ -381,7 +394,7 @@ input
 input.ie
 {
 	text-align: left;
-	font-family: Monaco, Courier, monospaced;
+	font-family: Monaco, "Courier New", monospaced;
 	background-color: #fff;
 	margin: 2px 4px 2px 2px;
 	padding: 2px;
@@ -390,7 +403,7 @@ input.ie
 input.mmbase
 {
 	text-align: left;
-	font-family: Monaco, Courier, monospaced;
+	font-family: Monaco, "Courier New", monospaced;
 	background-color: #D9DDDE;
 	margin: 2px;
 	padding: 2px;
@@ -399,7 +412,6 @@ input.mmbase
 select
 {
 	font-family: "Lucide Grande", Arial, sans-serif;
-	font-size: 1.1em;
 	background-color: #D9DDDE;
 	padding: 2px;
 	margin: 2px;
@@ -410,8 +422,8 @@ textarea
 	background-color: #D9DDDE;
 	border-color: #666;
 	border-width: 1px 0 0 1px;
-	font-size: 1.1em;
-	font-family: Monaco, Courier, monospaced;
+	font-size: 0.9em;
+	font-family: Monaco, "Courier New", monospaced;
 }
 
 /* Stylesheet for news pages in dev portal */
@@ -537,11 +549,19 @@ textarea
 /* search */
 #searchhome
 {
-	margin: 42px 0 0 0;
+	margin: 40px 0 0 0;
+	padding: 4px;
+	width: 200px;
+	border-color: #666;
+	border-width: 1px;
+	background-color: #efefef;
+	border-style: solid;
+	white-space: nowrap;
 }
 
 #searchform
 {
+	font-size: 0.9em;
 	margin: 15px 10px 20px 0;
 	padding: 10px;
 	width: 50%;
