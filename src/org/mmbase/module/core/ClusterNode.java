@@ -17,7 +17,7 @@ import org.mmbase.util.Casting;
 
 
 /**
- * ClusterNode combines fields of different nodes in a single "virtual" node.<br/>
+ * ClusterNode combines fields of different nodes in a single "virtual" node.
  * This corresponds to the way that an SQL "join" select statement combines
  * fields of different tables in result rows.
  * <p>
@@ -42,7 +42,7 @@ import org.mmbase.util.Casting;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.15 2004-06-18 12:36:54 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.16 2004-09-17 09:25:14 pierre Exp $
  * @see ClusterBuilder
  */
 public class ClusterNode extends VirtualNode {
