@@ -24,9 +24,6 @@
       ĉifrataj.
     </description>
   </descriptions>
-  <properties>
-    <property name="encoding">MD5</property>
-  </properties>
   <fieldlist>
     <field>
       <gui>
@@ -50,7 +47,7 @@
         <guiname xml:lang="nl">Wachtwoord</guiname>
         <guiname xml:lang="eo">Pasvorto</guiname>
         <guiname xml:lang="en">Password</guiname>
-        <guitype>password</guitype>
+        <guitype>md5password</guitype>
       </gui>
       <db>
         <name>password</name>
