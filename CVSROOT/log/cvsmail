@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.15 2004-11-23 10:25:13 michiel Exp $
+#  $Id: cvsmail,v 1.16 2004-11-23 10:26:48 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -19,6 +19,7 @@ my $cvs         = "/usr/bin/cvs";
 
 if (! defined $files) {
     print "Needs (at least) three arguments\n";	
+	print "cvsmail <log file> <user> <files> [<to address>]\n";
     exit 0;
 }
 
