@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: FieldDefs.java,v 1.13 2000-11-07 14:28:55 vpro Exp $
+$Id: FieldDefs.java,v 1.14 2000-11-16 15:21:58 pierre Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.13  2000/11/07 14:28:55  vpro
+Rico: removed TYPE_TEXT
+
 Revision 1.12  2000/07/15 09:47:26  daniel
 Changed getDBType to int
 
@@ -56,7 +59,7 @@ import java.sql.*;
  *
  * @author Daniel Ockeloen
  * @author Hans Speijer
- * @$Revision: 1.13 $ $Date: 2000-11-07 14:28:55 $
+ * @$Revision: 1.14 $ $Date: 2000-11-16 15:21:58 $
  */
 public class FieldDefs  {
 	public final static int DBSTATE_VIRTUAL = 0;
@@ -72,6 +75,7 @@ public class FieldDefs  {
 	public final static int TYPE_FLOAT = 5;
 	public final static int TYPE_DOUBLE = 6;
 	public final static int TYPE_LONG = 7;
+	public final static int TYPE_UNKNOWN = -1;
 
 	private String GUIName; 
 	public Hashtable GUINames = new Hashtable(); 
