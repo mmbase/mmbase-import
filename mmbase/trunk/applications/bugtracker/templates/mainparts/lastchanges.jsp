@@ -15,7 +15,7 @@
       </td>
       <td style="font-family: monospace">
         <mm:field name="time">
-          <mm:time format="HH:mm:ss, EE dd MM yyyy" />
+          <mm:time format=":LONG.LONG" />
         </mm:field>
       </td>
       <td>
@@ -28,28 +28,5 @@
   </mm:listnodes>
 </tr>
 </table>
-
-<!-- end of the searchpart -->
-
-<%--
-<table cellspacing="0" cellpadding="0" align="middle" width="80%">
-<tr>
-
-		<mm:present referid="user" inverse="true" >
-			<td>
-			 <center><font color="#000000">We have no idea who you are please login !<a href="<mm:url referids="parameters,$parameters" page="$base/changeUser.jsp" />"><img src="<mm:url page="$base/images/arrow-right.png" />" border="0" valign="middle"></a></font>
-			</td>
-		</mm:present>
-		<mm:present referid="user">
-			<td colspan="1">
-			<br />
-			<mm:node number="$user">
-			<center> <font color="black">I am <mm:field name="firstname" /> <mm:field name="lastname" /> ( its not me , <a href="<mm:url referids="parameters,$parameters" page="$base/changeUser.jsp" />">change name</a> )<br /> i have a new bug and want to report it</font><a href="<mm:url page="$base/newBug.jsp" referids="parameters,,user" />"><img src="<mm:url page="$base/images/arrow-right.png" />" border="0" ></a>
-			</td>
-			</mm:node>
-		</mm:present>
-</tr>
-</table>
---%>
 </form>
 
