@@ -1,8 +1,8 @@
 <%@ include file="page_base.jsp"
 %><mm:import externid="username" from="parameters" />
-<mm:locale language="$config.lang">
+<mm:content language="$config.lang" postprocessor="reducespace">
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">
-<mm:write referid="style" />
+<mm:write referid="style" escape="none" />
 <!-- mm:timer name="search_node"-->
 <title><%=m.getString("search_node.search")%></title>
 </head>
@@ -25,7 +25,7 @@
             </th>
     	    <mm:present referid="node_type">
     	    	<th width="80%"><%=m.getString("search_node.type")%> <mm:nodeinfo nodetype="$node_type" type="guitype" />
-                                              (<mm:nodeinfo nodetype="$node_type" type="type" /> <mm:listnodescontainer type="$node_type"><mm:size /></mm:listnodescontainer>)
+                                              (<mm:nodeinfo nodetype="$node_type" type="type" />)
 				</th>
     	    </mm:present>		
     	    <mm:notpresent referid="node_type">
@@ -118,4 +118,4 @@
 <%@ include file="foot.jsp"  %>
 <!-- mm:timer -->
 </mm:cloud>
-</mm:locale>
+</mm:content>
