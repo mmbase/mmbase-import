@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.70 2002-08-21 17:25:52 michiel Exp $
+  @version $Id: wizard.xsl,v 1.71 2002-08-21 17:51:56 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -266,7 +266,7 @@
       <xsl:call-template name="prompt" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     </td>
     <td class="field" colspan="{$colspan}">
-      <xsl:call-template name="fieldintern" />
+      <xsl:call-template name="fieldintern" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
     </td>
   </xsl:template>
 
