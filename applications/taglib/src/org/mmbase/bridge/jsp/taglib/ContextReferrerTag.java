@@ -28,7 +28,7 @@ import java.util.Locale;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.59 2004-06-30 17:51:52 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.60 2004-07-23 14:57:01 michiel Exp $
  * @see ContextTag
  */
 
@@ -319,7 +319,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.7
      */
 
-    final protected TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
+    final public TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
         TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
         if (cTag == null) {
             if (exception) {
