@@ -176,10 +176,18 @@ Security Bug Fixes:
   read privilege to everyone)
 
 ----------------
+MMCI Bug Fixes:
+----------------
+
+[1.6.2]
+- #5568 getAllowedRelations(NodeManager nodeManager, String role, String direction) fails to allow relation between two same types 
+
+----------------
 Taglib Bug Fixes:
 ----------------
 
 [1.6.2]
+- #5587  TEI-class for Fieldinfo tag.    
 - Behavior of mm:include / mm:import (mm:import hack)
 - #5286 ListRelations tag does not accept an id attribute 
 - #5242 mm:write cookie does not set 'path' explicitely. 
@@ -227,6 +235,9 @@ the builders:
 ========================
 Known Issues and Problems:
 ========================
+[1.6.2]
+- XXXX The jsp-editor update might also have solved the tomcat 4.0 issue?
+
 [1.6.1]
 - No known issues solved
 - The following bugfix was mistakenly added to the 1.6.0 releasenotes:
