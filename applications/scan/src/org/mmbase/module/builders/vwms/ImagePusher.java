@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.module.builders.vwms;
 
 import java.util.*;
-import org.mmbase.util.*;
+
 import org.mmbase.util.Queue;
 import org.mmbase.util.logging.*;
 
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: ImagePusher.java,v 1.9 2004-02-09 13:24:21 pierre Exp $
+ * @version $Id: ImagePusher.java,v 1.10 2004-02-11 20:43:23 keesj Exp $
  */
 public class ImagePusher implements Runnable {
 

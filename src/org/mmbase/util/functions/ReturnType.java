@@ -10,8 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.util.functions;
 
 import java.util.*;
-import org.mmbase.util.logging.*;
-import org.mmbase.bridge.*;
 
 /**
  * Description of the return type of certain function. This wraps a Class object but it has some extra 
@@ -20,7 +18,7 @@ import org.mmbase.bridge.*;
  * @author Daniel Ockeloen
  * @author Michiel Meeuwissen
 
- * @version $Id: ReturnType.java,v 1.1 2003-12-18 23:12:20 michiel Exp $
+ * @version $Id: ReturnType.java,v 1.2 2004-02-11 20:43:21 keesj Exp $
  * @since MMBase-1.7
  */
 public class ReturnType {

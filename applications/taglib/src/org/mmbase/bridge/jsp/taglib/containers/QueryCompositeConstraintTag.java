@@ -9,15 +9,15 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import javax.servlet.jsp.JspTagException;
 import java.util.*;
 
-import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
+import javax.servlet.jsp.JspTagException;
+
+import org.mmbase.bridge.Query;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.util.Queries;
 import org.mmbase.storage.search.*;
-import org.mmbase.util.logging.*;
 
 /**
  * mm:composite makes it possible to connect constraints by 'OR'.
@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: QueryCompositeConstraintTag.java,v 1.1 2003-12-18 09:05:46 michiel Exp $
+ * @version $Id: QueryCompositeConstraintTag.java,v 1.2 2004-02-11 20:40:14 keesj Exp $
  */
 public class QueryCompositeConstraintTag extends CloudReferrerTag implements QueryContainerReferrer {
 

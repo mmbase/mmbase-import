@@ -9,25 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.containers;
 
-import org.mmbase.bridge.jsp.taglib.*;
-import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import java.util.*;
-import org.mmbase.util.functions.*;
 
 import javax.servlet.jsp.JspTagException;
-//import org.mmbase.util.logging.*;
 
-
-import java.lang.reflect.*;
+import org.mmbase.bridge.jsp.taglib.functions.AbstractFunctionTag;
 
 /**
  * Function Container can be used around Function (-like) Tags.
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: FunctionContainerTag.java,v 1.9 2004-01-16 20:21:10 michiel Exp $
+ * @version $Id: FunctionContainerTag.java,v 1.10 2004-02-11 20:40:14 keesj Exp $
  */
 public class FunctionContainerTag extends AbstractFunctionTag implements FunctionContainer {
     //private static final Logger log = Logging.getLoggerInstance(FunctionContainerTag.class);

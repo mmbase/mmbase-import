@@ -11,15 +11,15 @@ package org.mmbase.bridge.jsp.taglib.tree;
 
 
 import javax.servlet.jsp.JspTagException;
+
 import org.mmbase.bridge.jsp.taglib.NodeReferrerTag;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.*;
 
 
 /**
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: TreeReferrerTag.java,v 1.1 2003-12-18 23:05:45 michiel Exp $
+ * @version $Id: TreeReferrerTag.java,v 1.2 2004-02-11 20:40:13 keesj Exp $
  */
 abstract public class TreeReferrerTag extends NodeReferrerTag {
 

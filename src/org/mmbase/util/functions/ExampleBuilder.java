@@ -3,10 +3,8 @@ package org.mmbase.util.functions;
 import java.util.*;
 
 import org.mmbase.bridge.*;
-import org.mmbase.bridge.util.Queries;
 import org.mmbase.module.core.*;
-import org.mmbase.storage.search.*;
-
+import org.mmbase.storage.search.SortOrder;
 import org.mmbase.util.logging.*;
 
 /**
@@ -29,7 +27,7 @@ import org.mmbase.util.logging.*;
  * </code>
  *
  * @author Michiel Meeuwissen
- * @version $Id: ExampleBuilder.java,v 1.2 2004-02-10 12:54:03 michiel Exp $
+ * @version $Id: ExampleBuilder.java,v 1.3 2004-02-11 20:43:21 keesj Exp $
  * @since MMBase-1.7
  */
 public final class ExampleBuilder extends MMObjectBuilder { // final to avoid that people actually use this to extend their stuff from or so.

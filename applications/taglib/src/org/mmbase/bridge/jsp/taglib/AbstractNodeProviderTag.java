@@ -10,16 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 
-import org.mmbase.bridge.jsp.taglib.util.Attribute;
-
 import javax.servlet.jsp.JspTagException;
 
-import javax.servlet.jsp.tagext.*;
-
 import org.mmbase.bridge.Node;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 
 /**
@@ -35,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Kees Jongenburger
- * @version $Id: AbstractNodeProviderTag.java,v 1.28 2004-01-14 22:06:14 michiel Exp $ 
+ * @version $Id: AbstractNodeProviderTag.java,v 1.29 2004-02-11 20:40:15 keesj Exp $ 
  */
 
 abstract public class AbstractNodeProviderTag extends NodeReferrerTag implements NodeProvider {

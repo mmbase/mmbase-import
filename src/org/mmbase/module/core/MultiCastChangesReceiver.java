@@ -10,13 +10,10 @@ See http://www.MMBase.org/license
 package org.mmbase.module.core;
 
 import java.net.*;
-import java.util.*;
+import java.util.StringTokenizer;
 
-import org.mmbase.util.*;
 import org.mmbase.util.Queue;
-
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.util.logging.*;
 
 /**
  * MultiCastChangesReceiver is a thread object that reads the receive queue
@@ -24,7 +21,7 @@ import org.mmbase.util.logging.Logging;
  * @javadoc
  *
  * @author Rico Jansen
- * @version $Id: MultiCastChangesReceiver.java,v 1.9 2004-02-09 13:24:22 pierre Exp $
+ * @version $Id: MultiCastChangesReceiver.java,v 1.10 2004-02-11 20:43:22 keesj Exp $
  */
 public class MultiCastChangesReceiver implements Runnable {
 
