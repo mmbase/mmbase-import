@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.29 2003-04-24 08:12:17 pierre Exp $
+ * @version $Id: Config.java,v 1.30 2003-04-28 14:40:56 michiel Exp $
  */
 
 public class Config {
@@ -103,7 +103,8 @@ public class Config {
             request = req;
             response = res;
             config  = c;
-            config.sessionId = res.encodeURL("");
+            config.sessionId = res.encodeURL("test.jsp").substring(8);
+            log.debug("Sessionid : " + config.sessionId);
 
             if (config.language == null) {
                 config.language = getParam("language", org.mmbase.bridge.ContextProvider.getDefaultCloudContext().getDefaultLocale().getLanguage());
