@@ -8,6 +8,17 @@
 <html>
 <head>
 	<title>Delete node(s) of a certain type</title>
+	<%-- 
+	This JSP deletes MMBase nodes of a certain type and all the relations 
+	they have with other nodes.
+	1. Choose the nodetype you prefer;
+	2. select using the checkboxes the nodes you wish to delete;
+	3. hit delete and, when you have the right priveledges, the node(s) 
+	   you selected will be deleted.
+	
+	Use at own risk!
+	Andre van Toly, andre@toly.nl
+	--%>
 <style type="text/css">
 body
 {
