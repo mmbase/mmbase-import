@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  * The FieldTag can be used as a child of a 'NodeProvider' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: FieldTag.java,v 1.47 2004-12-09 15:59:23 pierre Exp $
+ * @version $Id: FieldTag.java,v 1.48 2004-12-09 16:09:31 pierre Exp $
  */
 public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
 
@@ -136,6 +136,17 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
                 f.getGenerator().add(node, field); // add the field
                 value = "";
             } else { // do the rest as well.
+
+                // if a value is really null, should it be past as null or cast?
+                // I am leaning to the latter but it would break backward compatibility.
+                // currently implemented this behavior for DateTime values (new fieldtype)
+                // Maybe better is an attribute on fieldtag that determines this?
+                // I.e. ifempty = "skip|asis|default"
+                // where:
+                //   skip: skips the field tag
+                //   asis: returns null as a value
+                //   default: returns a default value
+
                 switch(helper.getVartype()) {
                 case WriterHelper.TYPE_NODE:
                     value = node.getNodeValue(fieldName);
