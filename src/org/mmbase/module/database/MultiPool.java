@@ -147,11 +147,13 @@ public class MultiPool
 						debug("JDBC -> removing connection "+con);
 					}
 					pool.removeElementAt(0);
-					try {
 //						con.realclose();
-					} catch(Exception e) {
+					/* jikes
+					try {
+					} catch(SQLException e) {
 						debug("JDBC -> Can't close connection");
 					}
+					*/
 				}
 			}
 		}

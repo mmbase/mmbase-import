@@ -135,11 +135,17 @@ public class MMBaseMultiCast implements Runnable {
 			return(false);
 		}
 		if (machine.equals(parent.machineName)) {
+			/* changed if for jikes
+			if (bul!=null) {
+				new MMBaseMultiCastProbe(this,bul,id,tb,ctype,false);
+			}
+			/*
 			try { 
 				new MMBaseMultiCastProbe(this,bul,id,tb,ctype,false);
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
+			*/
 		
 		} else {
 			try { 
