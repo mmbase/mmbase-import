@@ -22,12 +22,13 @@ public interface User {
     /**
      *  Get the unique identifier for this user. This should be unique 
      *  for every different user inside a cloud.
-     *	@return     a unique identifier for this user.
+     *	@return an unique id for the current user
      */
     public String getIdentifier();
     
     /**
      *  Get the rank of this user. 
+     *	@return the rank of this user
      */
-    public org.mmbase.security.Rank getRank();
+    public String getRank();
 }

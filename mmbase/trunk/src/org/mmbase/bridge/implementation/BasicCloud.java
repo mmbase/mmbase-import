@@ -62,7 +62,7 @@ public class BasicCloud implements Cloud, Cloneable {
     private Authorization authorization = null;
 
     // User context
-    protected UserContext userContext = null;
+    protected BasicUser userContext = null;
 
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
@@ -93,9 +93,10 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // do authentication.....
         MMBaseCop mmbaseCop = mmb.getMMBaseCop();
-        if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");
-        userContext = mmbaseCop.getAuthentication().login(application, loginInfo, null);
-        if ( userContext == null ) throw new BasicBridgeException("login invalid");
+        if(mmbaseCop == null) throw new BasicBridgeException("Couldnt find the MMBaseCop");       
+	org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(application, loginInfo, null);	
+        if ( uc == null ) throw new BasicBridgeException("login invalid");
+	userContext = new BasicUser(mmbaseCop, uc);
         // end authentication...
 
         // get authorization
@@ -367,7 +368,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @return <code>true</code> if acces sis granted, <code>false</code> otherwise
     */
     boolean check(Operation operation, int nodeID) {
-        return authorization.check(userContext,nodeID,operation);
+        return authorization.check(userContext.getUserContext(),nodeID,operation);
     }
 
     /**
@@ -376,7 +377,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node on which to check the operation
     */
     void assert(Operation operation, int nodeID) {
-        authorization.assert(userContext,nodeID,operation);
+        authorization.assert(userContext.getUserContext(),nodeID,operation);
     }
 
     /**
@@ -384,7 +385,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node to init
     */
     void createSecurityInfo(int nodeID) {
-        authorization.create(userContext,nodeID);
+        authorization.create(userContext.getUserContext(),nodeID);
     }
 
     /**
@@ -392,7 +393,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node to init
     */
     void removeSecurityInfo(int nodeID) {
-        authorization.remove(userContext,nodeID);
+        authorization.remove(userContext.getUserContext(),nodeID);
     }
 
     /**
@@ -400,7 +401,7 @@ public class BasicCloud implements Cloud, Cloneable {
     * @param nodeID the node to init
     */
     void updateSecurityInfo(int nodeID) {
-        authorization.update(userContext,nodeID);
+        authorization.update(userContext.getUserContext(),nodeID);
     }
 
     public NodeList getList(String startNodes, String nodePath, String fields,
@@ -489,20 +490,20 @@ public class BasicCloud implements Cloud, Cloneable {
      * set the Context of the current Node
      */    
     void setContext(int nodeNumber, String context) {
-    	authorization.setContext(userContext, nodeNumber, context);
+    	authorization.setContext(userContext.getUserContext(), nodeNumber, context);
     }
 
     /**
      * get the Context of the current Node
      */    
     String getContext(int nodeNumber) {
-    	return authorization.getContext(userContext, nodeNumber);
+    	return authorization.getContext(userContext.getUserContext(), nodeNumber);
     }
     
     /**
      * get the Contextes which can be set to this specific node
      */            
     StringList getPossibleContexts(int nodeNumber) {
-    	return new BasicStringList(authorization.getPossibleContexts(userContext, nodeNumber));
+    	return new BasicStringList(authorization.getPossibleContexts(userContext.getUserContext(), nodeNumber));
     }        
 }

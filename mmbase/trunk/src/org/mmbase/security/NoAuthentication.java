@@ -24,4 +24,11 @@ public class NoAuthentication extends Authentication {
     public UserContext login(String application, HashMap loginInfo, Object[] parameters) throws org.mmbase.security.SecurityException {
     	return new UserContext();
     }
+    
+    /** 
+     * this method does nothing..
+     */        
+    public Rank getRank(UserContext usercontext) throws org.mmbase.security.SecurityException {
+    	return Rank.ANONYMOUS;
+    }       
 }

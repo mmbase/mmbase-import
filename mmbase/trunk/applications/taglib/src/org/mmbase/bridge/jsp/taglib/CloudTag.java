@@ -237,7 +237,7 @@ public class CloudTag extends BodyTagSupport implements CloudProvider {
             if (logon == null && method != null) { 
                 // authorisation was requested, but not indicated for whom 
                 log.debug("implicitily requested non-anonymous cloud. Current user: " + cloud.getUser().getIdentifier());                
-                if (cloud.getUser().getRank() == Rank.ANONYMOUS) { // so it simply may not be anonymous
+                if (cloud.getUser().getRank().equals("anonymous")) { // so it simply may not be anonymous
                     log.debug("there was a cloud, but anonymous. log it on");
                     cloud = null;
                     session.removeAttribute("cloud_" + cloudName);
