@@ -8,7 +8,7 @@
 // Version 3.0 developed by Mihai Bazon for InteractiveTools.
 //	     http://students.infoiasi.ro/~mishoo
 //
-// $Id: htmlarea.js,v 1.3 2004-04-07 12:36:00 pierre Exp $
+// $Id: htmlarea.js,v 1.4 2004-04-22 11:17:47 pierre Exp $
 
 // Creates a new HTMLArea object.  Tries to replace the textarea with the given
 // ID with it.
@@ -681,6 +681,9 @@ doc.execCommand("useCSS",false,true);
                                  return editor._editorEvent(HTMLArea.is_ie ? editor._iframe.contentWindow.event : event);
                          });
                 editor.updateToolbar();
+                // MMBase Editwizard addition:
+                // added call to restoreScroll method to set focus after initialization
+                restoreScroll();
         };
         setTimeout(initIframe, HTMLArea.is_gecko ? 10 : 0);
 };
