@@ -25,7 +25,7 @@ import java.net.*;
  * Depends on a 'template' to be linked to the fragment.
  *
  * @author Michiel Meeuwissen
- * @version $Id: MarkupURLComposer.java,v 1.1 2003-02-18 00:11:15 michiel Exp $
+ * @version $Id: MarkupURLComposer.java,v 1.2 2003-02-18 14:07:46 michiel Exp $
  * @since MMBase-1.7
  */
 public class MarkupURLComposer extends FragmentURLComposer { 
@@ -39,41 +39,8 @@ public class MarkupURLComposer extends FragmentURLComposer {
      
     }
 
-    protected List getTemplates(List templates, MMObjectNode fragment) {
-        templates.addAll(fragment.getRelatedNodes("templates"));        
-        return templates;
-    }
-
-    protected List getTemplates() {
-        if (templates == null) {
-            if (fragment != null) {
-                templates = new Vector();
-                MediaFragments bul = (MediaFragments) fragment.parent;
-                Stack stack = bul.getParentFragments(fragment);
-                Iterator i = stack.iterator();
-                while (i.hasNext()) {
-                    MMObjectNode f = (MMObjectNode) i.next();
-                    getTemplates(templates, f);
-                }
-            } else {
-                templates = new Vector();
-            }
-        }
-        return templates;
-    }
-
     protected MMObjectNode getTemplate() {
-        if (fragment != null) {
-            List t = getTemplates();
-            if (t == null || t.size() == 0) {
-                log.debug("no templates");
-            } else if (t.size() > 1) {       
-                log.warn("More then one template linked");
-            } else {
-                return (MMObjectNode) t.get(0);
-            }
-        }
-        return null;
+        return (MMObjectNode) getInfo().get("template");
     }
     
     public boolean canCompose() {
