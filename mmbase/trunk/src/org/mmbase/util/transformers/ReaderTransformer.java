@@ -45,12 +45,14 @@ public abstract class ReaderTransformer implements CharTransformer {
 
     // javadoc inherited
     public String transform(String r) {
+        if (r == null) return null;
         Writer sw = transform(new StringReader(r));
         return sw.toString();
     }
 
     // javadoc inherited
     public String transformBack(String r) {
+        if (r == null) return null;
         Writer sw = transformBack(new StringReader(r));
         return sw.toString();
     }
