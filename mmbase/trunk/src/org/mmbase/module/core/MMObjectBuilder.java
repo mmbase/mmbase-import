@@ -59,7 +59,7 @@ import org.mmbase.util.logging.Logging;
  * @author Eduard Witteveen
  * @author Johannes Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.236 2003-07-09 08:48:26 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.237 2003-07-14 10:13:41 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -440,7 +440,7 @@ public class MMObjectBuilder extends MMTable {
             n = mmb.getDatabase().insert(this,owner,node);
             if (n>=0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
-            if (alias!=null) createAlias(n,alias);    // add alias, if provided
+            if (alias != null) createAlias(n,alias);    // add alias, if provided
             return n;
         } catch(RuntimeException e) {
             // do we really wanna catch our exceptions here?
@@ -510,14 +510,11 @@ public class MMObjectBuilder extends MMTable {
      *  @return if the alias could be created
      */
     public boolean createAlias(int number, String alias) {
-        if (mmb.getOAlias()!=null) {
+        if (mmb.getOAlias() != null) {
             if (getNode(alias) != null ) {  // this alias already exists! Don't add a new one!
                 return false;
             }
-            MMObjectNode node=mmb.getOAlias().getNewNode("system");
-            node.setValue("name",alias);
-            node.setValue("destination",number);
-            node.insert("system");
+            mmb.getOAlias().createAlias(alias, number);
             return true;
         } else {
             return false;
@@ -615,7 +612,7 @@ public class MMObjectBuilder extends MMTable {
             // prevent from making database inconsistent(say remove nodes from inactive builder)
             // the builder we are in is not the actual builder!!
             // ? why not an node.remove()
-            throw new RuntimeException("Builder with name:" + getTableName() + "("+oType+") is not the actual builder.");
+            throw new RuntimeException("Builder with name:" + getTableName() + "(" + oType + ") is not the actual builder.");
         }
 
         removeSyncNodes(node);
@@ -907,7 +904,7 @@ public class MMObjectBuilder extends MMTable {
      */
     public MMObjectNode getNode(String key, boolean usecache) {
         if( key == null ) {
-            log.error("getNode(null): ERROR: for tablename("+tableName+"): key is null!");
+            log.error("getNode(null): ERROR: for tablename(" + tableName + "): key is null!");
             return null;
         }
         int nr =-1;
@@ -918,7 +915,7 @@ public class MMObjectBuilder extends MMTable {
         if (nr!=-1) {
             // key passed was a number.
             // return node with this number
-            return getNode(nr,usecache);
+            return getNode(nr, usecache);
         } else {
             // key passed was an alias
             // return node with this alias
