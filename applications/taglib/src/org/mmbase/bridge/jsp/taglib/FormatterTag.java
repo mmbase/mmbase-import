@@ -40,7 +40,7 @@ import org.mmbase.cache.xslt.*;
  *
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
- * @version $Id: FormatterTag.java,v 1.34 2003-08-27 21:33:32 michiel Exp $ 
+ * @version $Id: FormatterTag.java,v 1.35 2003-09-10 11:16:08 michiel Exp $ 
  */
 public class FormatterTag extends ContextReferrerTag  implements Writer {
 
@@ -281,7 +281,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
                     // TODO, we cannot get the default encoding from the bridge yet, so UTF-8 is assumed now.
                     doc = documentBuilder.parse(new java.io.ByteArrayInputStream(body.getBytes("UTF-8")));
                 } catch (Exception e) {
-                    throw new JspTagException(body + ":" +  e.toString());
+                    throw new TaglibException(body, e);
                 }
                 if (log.isDebugEnabled()) {
                     log.debug("created an element: " + doc.getDocumentElement().getTagName());
@@ -476,7 +476,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         try {
             return xslTransform(doc, getFactory().getURIResolver().resolve(xsl, null));
          } catch (javax.xml.transform.TransformerException e) {
-             throw new JspTagException(e.toString() + ": " + Logging.stackTrace(e)); // probably the file could not be found.
+             throw new TaglibException(e); // probably the file could not be found.
          }
     }
 

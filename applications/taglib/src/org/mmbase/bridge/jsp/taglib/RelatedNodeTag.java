@@ -23,7 +23,7 @@ import org.mmbase.util.logging.Logging;
  * Needs to live under a ListRelationsTag
  *
  * @author Michiel Meeuwissen
- * @version $Id: RelatedNodeTag.java,v 1.12 2003-08-27 21:33:36 michiel Exp $ 
+ * @version $Id: RelatedNodeTag.java,v 1.13 2003-09-10 11:16:08 michiel Exp $ 
  */
 
 public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
@@ -79,7 +79,7 @@ public class RelatedNodeTag extends AbstractNodeProviderTag implements BodyTag {
             try {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch (IOException ioe){
-                throw new JspTagException(ioe.toString());
+                throw new TaglibException(ioe);
             }
         }
         return SKIP_BODY;

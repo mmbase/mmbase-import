@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.14 2003-09-05 16:32:38 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.15 2003-09-10 11:16:10 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -124,7 +124,7 @@ public class ContextContainer extends HashMap {
             try {
                 return put((String) key, value);
             } catch (JspTagException e) {
-                throw new RuntimeException(e.toString());
+                throw new RuntimeException(e);
             }
         } else {
             throw new RuntimeException("Error, key should be string in ContextContainers! (Tried " + key.getClass().getName() + ")");
@@ -308,8 +308,9 @@ public class ContextContainer extends HashMap {
             }
         }
         if (! valid) {
-            log.info(Logging.stackTrace(new Throwable()));
-            throw new TaglibException ("'" + newid + "' is not a valid Context identifier", new Throwable());
+            JspTagException exception = new TaglibException ("'" + newid + "' is not a valid Context identifier", new Throwable());
+            log.info(Logging.stackTrace(exception));
+            throw exception;
         }
 
         log.debug("Valid");
@@ -461,7 +462,7 @@ public class ContextContainer extends HashMap {
                         try {
                             result = new String(resultvec[0].getBytes("ISO-8859-1"), getDefaultCharacterEncoding(pageContext));
                         } catch (java.io.UnsupportedEncodingException e) {
-                            throw new JspTagException("Unsupported Encoding: " + e.toString());
+                            throw new TaglibException("Unsupported Encoding ", e);
                         }
                     } else {
                         result = resultvec[0];

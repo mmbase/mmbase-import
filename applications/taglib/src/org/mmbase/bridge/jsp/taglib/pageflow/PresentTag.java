@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
-import org.mmbase.bridge.jsp.taglib.ContextReferrerTag;
-
-import org.mmbase.bridge.jsp.taglib.Condition;
+import org.mmbase.bridge.jsp.taglib.*;
 
 import javax.servlet.jsp.JspTagException;
 
@@ -21,7 +19,7 @@ import javax.servlet.jsp.JspTagException;
  * A very simple tag to check if certain id is present in the parent context.
  *
  * @author Michiel Meeuwissen
- * @version $Id: PresentTag.java,v 1.16 2003-08-11 15:27:28 michiel Exp $
+ * @version $Id: PresentTag.java,v 1.17 2003-09-10 11:16:10 michiel Exp $
  */
 
 public class PresentTag extends ContextReferrerTag implements Condition {
@@ -50,7 +48,7 @@ public class PresentTag extends ContextReferrerTag implements Condition {
                 if(bodyContent != null)
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());
             } catch(java.io.IOException e){
-                throw new JspTagException("IO Error: " + e.getMessage());
+                throw new TaglibException(e);
             }
         }
         return EVAL_PAGE;

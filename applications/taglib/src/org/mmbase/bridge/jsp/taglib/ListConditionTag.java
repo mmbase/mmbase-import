@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logging;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ListConditionTag.java,v 1.17 2003-08-27 21:33:33 michiel Exp $ 
+ * @version $Id: ListConditionTag.java,v 1.18 2003-09-10 11:16:08 michiel Exp $ 
  */
 
 public class ListConditionTag extends ListReferrerTag implements Condition {
@@ -94,7 +94,7 @@ public class ListConditionTag extends ListReferrerTag implements Condition {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             }
         } catch(java.io.IOException e){
-            throw new JspTagException("IO Error: " + e.getMessage());
+            throw new TaglibException(e);
         }
         return EVAL_PAGE;
     }

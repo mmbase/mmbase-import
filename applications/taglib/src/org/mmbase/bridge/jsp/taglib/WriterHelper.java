@@ -29,7 +29,7 @@ import org.mmbase.util.Casting; // not used enough
  * they can't extend, but that's life.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriterHelper.java,v 1.38 2003-09-05 16:32:36 michiel Exp $
+ * @version $Id: WriterHelper.java,v 1.39 2003-09-10 11:16:09 michiel Exp $
  */
 
 public class WriterHelper extends BodyTagSupport {
@@ -459,7 +459,7 @@ public class WriterHelper extends BodyTagSupport {
                 bodyContent.writeOut(bodyContent.getEnclosingWriter());
             }
         } catch (IOException ioe){
-            throw new JspTagException(ioe.toString());
+            throw new TaglibException(ioe);
         }
         release();
         log.debug("End of doEndTag");
