@@ -46,5 +46,12 @@
   <build>
     <nagEmailAddress>dev@maven.apache.org</nagEmailAddress>
     <sourceDirectory>src/java</sourceDirectory>
+	 <resources>
+				<resource>
+						  <directory>${basedir}/config</directory>
+						  <targetPath>../docs/config</targetPath>
+						  <includes><include>*.xml</include></includes>
+				</resource>
+	 </resources>
   </build>
 </project>
