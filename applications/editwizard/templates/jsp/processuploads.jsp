@@ -12,7 +12,7 @@
      * processuploads.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: processuploads.jsp,v 1.13 2004-01-26 10:08:10 pierre Exp $
+     * @version  $Id: processuploads.jsp,v 1.14 2004-01-26 10:33:38 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -76,10 +76,15 @@ if (! ewconfig.subObjects.empty()) {
                 String fullFileName = fi.getName();
                 String fileName = fullFileName;
                 // the path passed is in the cleint system's format,
-                // so test both path separator chars ('/' and '\')
-                int last = fullFileName.lastIndexOf("/");
-                if (last==-1) last = fullFileName.lastIndexOf("\\");
-                if (last>0) {
+                // so test all known path separator chars ('/', '\' and "::" )
+                // and pick the one which would create the smallest filename
+                // Using Math is rather ugly but at least it is shorter and performs better
+                // than Stringtokenizer, regexp, or sorting collections
+                int last = Math.max(Math.max(
+                    fullFileName.lastIndexOf(':'), // old mac path (::)
+                    fullFileName.lastIndexOf('/')),  // unix path
+                    fullFileName.lastIndexOf('\\')); // windows path
+                if (last > -1) {
                     fileName = fullFileName.substring(last+1);
                 }
                 wizardConfig.wiz.setBinary(fi.getFieldName(), fi.get(), fileName, fullFileName);
