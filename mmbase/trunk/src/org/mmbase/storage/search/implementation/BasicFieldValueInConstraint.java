@@ -10,14 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.storage.search.implementation;
 
 import java.util.*;
-import org.mmbase.module.corebuilders.*;
 import org.mmbase.storage.search.*;
 
 /**
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since MMBase-1.7
  */
 public class BasicFieldValueInConstraint extends BasicFieldConstraint implements FieldValueInConstraint {

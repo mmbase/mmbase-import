@@ -9,15 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.storage.search;
 
-import java.util.*;
-
 /**
  * A constraint that restricts the value of a stepfield to be in a specified range of values.
  * <p>
  * This corresponds to the use of "between ... and ..." in SQL SELECT-syntax. 
  *
  * @author Rob van Maris
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since MMBase-1.7
  */
 public interface FieldValueBetweenConstraint extends FieldConstraint {
