@@ -228,4 +228,7 @@
 
 <mm:import id="keyword" reset="true">Your_account_information_for_the_MMBob_forum</mm:import><mm:import id="mlg_Your_account_information_for_the_MMBob_forum"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
+<mm:import id="keyword" reset="true">Send</mm:import><mm:import id="mlg_Send"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">message</mm:import><mm:import id="mlg_message"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
+<mm:import id="keyword" reset="true">To</mm:import><mm:import id="mlg_To"><mm:function set="mlg" name="getTranslation" referids="setname,keyword,lang" /></mm:import>
 
