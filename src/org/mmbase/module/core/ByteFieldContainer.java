@@ -19,7 +19,8 @@ package org.mmbase.module.core;
  * between functions without loosing track of which image it is part of.
  *
  * @author Pierre van Rooden
- * @version $Id: ByteFieldContainer.java,v 1.1 2004-02-23 19:04:59 pierre Exp $
+ * @version $Id: ByteFieldContainer.java,v 1.2 2004-03-10 14:51:35 michiel Exp $
+ * @since MMBase-1.7
  */
 public class ByteFieldContainer {
     public int number = -1;
