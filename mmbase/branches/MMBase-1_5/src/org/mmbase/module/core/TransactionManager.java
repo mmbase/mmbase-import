@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.21 2002-01-18 15:26:45 robmaris Exp $
+ * @version $Id: TransactionManager.java,v 1.21.2.1 2002-03-22 10:18:12 pierre Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -230,7 +230,7 @@ public class TransactionManager implements TransactionManagerInterface {
     boolean performCommits(Object user,Vector nodes,boolean debug) {
         if (nodes==null || nodes.size()==0) {
             log.warn("performCommits: Empty list of nodes");
-            return false;
+            return true;
         }
 
         MMObjectNode node;
@@ -320,6 +320,9 @@ public class TransactionManager implements TransactionManagerInterface {
                                 }
                             } else {
                                 nodestate[i]=FAILED;
+                                String message = "When this failed, it is possible that the creation of an insrel wend right, with leads to database inconsitent.. stop now..(transaction 2.0: [rollback?])";
+                                log.error(message);
+                                throw new RuntimeException(message);
                             }
                         } else {
                             nodestate[i]=COMMITED;
@@ -376,6 +379,8 @@ public class TransactionManager implements TransactionManagerInterface {
                                 }
                             } else {
                                 nodestate[i]=FAILED;
+                                String message = "relation failed(transaction 2.0: [rollback?])";
+                                log.error(message);
                             }
                         } else {
                             nodestate[i]=COMMITED;
