@@ -127,7 +127,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer 
             if (getReferid() != null) { // referid
                 value = getObject(getReferid());
             } else {                    // function
-                value = getNodeVar().getStringValue(fieldName);
+                value = getNodeVar().getValue(fieldName);
             }
         } else {                        // a field was found!
             // if direct parent is a Formatter Tag, then communicate
