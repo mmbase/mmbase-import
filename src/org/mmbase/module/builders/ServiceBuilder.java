@@ -33,16 +33,14 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 
 	Hashtable cache=null;
 
-	public void setTableName(String tableName) {
-		if( debug ) debug("setTableName("+tableName+"), started.");
-	
-		super.setTableName(tableName);
+	public boolean init() {
 		MMServers bul=(MMServers)mmb.getMMObject("mmservers");
 		if (bul!=null) {
-			bul.setCheckService(tableName);
-		}else
+			bul.setCheckService(getTableName());
+		} else {
 			if( debug ) debug("setTableName("+tableName+"): ERROR: mmservers not found!");
-		
+		}
+		return(true);
 	}
 
 	
