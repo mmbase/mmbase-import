@@ -25,7 +25,7 @@ import org.mmbase.util.logging.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.43 2001-10-03 17:59:04 michiel Exp $
+ * @version $Id: Images.java,v 1.44 2001-10-03 19:32:38 eduard Exp $
  */
 public class Images extends MMObjectBuilder {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -77,43 +77,40 @@ public class Images extends MMObjectBuilder {
     }
 
     public String getGUIIndicator(MMObjectNode node) {
-        int num=node.getIntValue("number");
-        if (num != -1) {
-            // NOTE that this has to be configurable instead of static like this
-            String image      = "/img.db?" + num;
-            String imagethumb = image + "+s(100x60)";
-
-            javax.servlet.ServletContext sc = MMBaseContext.getServletContext();
-            if (sc != null) {
-                try {
-                    return("<a href=\"" + 
-                           MMBaseContext.getServletContext().getResource(image) + 
-                           "\"\" target=\"_new\"><img src=\"" + 
-                           MMBaseContext.getServletContext().getResource(imagethumb) +"\" border=\"0\" alt=\"" + 
-                           node.getStringValue("title") + "\" /></a>");
-                } catch (java.net.MalformedURLException e) {
-                    log.error(e.toString());
-                }
-            } else {
-                return("<a href=\"/" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"" + node.getStringValue("title") + "\" /></a>");
-            }
+        int num = node.getNumber();
+        if(num == -1) {
+            log.error("node not found:" + node);
+            throw new RuntimeException("node not found");
         }
-        return(null);
+        // NOTE that this has to be configurable instead of static like this
+        String servlet    = "/img.db";
+        String image      = servlet + "?" + num;
+        String imagethumb = servlet + "?" + num + "+s(100x60)";
+        String title      = node.getStringValue("title");
+
+        return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"" + title + "\" /></a>");
     }
 
     public void setDefaults(MMObjectNode node) {
         node.setValue("description","");
     }
 
-    public String getGUIIndicator(String field,MMObjectNode node) {
+    public String getGUIIndicator(String field, MMObjectNode node) {
         if (field.equals("handle")) {
-            int num=node.getIntValue("number");
-            if (num!=-1) {
-                // NOTE that this has to be configurable instead of static like this            
-                return("<a href=\"/img.db?"+num+"\" target=\"_new\"><img src=\"/img.db?"+num+"+s(100x60)\" border=\"0\" alt=\"*\" /></a>");
+            int num = node.getNumber();
+            if(num == -1) {
+                log.error("node not found:" + node);
+                throw new RuntimeException("node not found");
             }
+            // NOTE that this has to be configurable instead of static like this
+            String servlet    = "/img.db";
+            String image      = servlet + "?" + num;
+            String imagethumb = servlet + "?" + num + "+s(100x60)";
+
+            return("<a href=\"" + image + "\" target=\"_new\"><img src=\"" + imagethumb + "\" border=\"0\" alt=\"*\" /></a>");
         }
-        return(null);
+        // otherfields can be handled by the gui function...
+        return null;
     }
 
     // called by init..used to retrieve all settings
