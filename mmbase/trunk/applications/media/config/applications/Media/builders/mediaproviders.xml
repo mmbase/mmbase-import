@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE builder PUBLIC "-//MMBase//DTD builder config 1.1//EN" "http://www.mmbase.org/dtd/builder_1_1.dtd">
-<builder name="mediaproviders" extends="object">
+<builder name="mediaproviders" maintainer="mediaproject.mmbase.org" version="0" extends="object">
 	
   <status>active</status>
   
@@ -34,11 +34,12 @@
       <gui>
         <guiname xml:lang="en">Name</guiname>
         <guiname xml:lang="nl">Naam</guiname>
+        <guiname xml:lang="eo">Nomo</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
-          <input>1</input> <list>1</list> <search>1</search>
+          <list>1</list>
         </positions>
       </editor>
 
@@ -60,11 +61,12 @@
       <gui>
         <guiname xml:lang="en">Host name</guiname>
         <guiname xml:lang="nl">Hostname</guiname>
+        <guiname xml:lang="eo">Servilonomo</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
-          <input>2</input><list>2</list><search>2</search>
+          <list>2</list>
         </positions>
       </editor>
       <db>
@@ -85,11 +87,12 @@
       <gui>
         <guiname xml:lang="en">State</guiname>
         <guiname xml:lang="nl">Toestand</guiname>
+        <guiname xml:lang="eo">Stato</guiname>
         <guitype>org.mmbase.applications.media.builders.resources.providerstates</guitype>
       </gui>
       <editor>
         <positions>
-          <input>3</input> <list>3</list> <search>3</search>
+          <list>3</list>
         </positions>
       </editor>
       <db>
@@ -114,7 +117,7 @@
       </gui>
       <editor>
         <positions>
-          <input>5</input><list>5</list><search>-1</search>
+          <list>4</list>
         </positions>
       </editor>
       <db>
@@ -131,11 +134,12 @@
       <gui>
         <guiname xml:lang="en">Protocol</guiname>
         <guiname xml:lang="nl">Protokol</guiname>
+        <guiname xml:lang="eo">Protokolo</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
-          <input>1</input> <list>1</list><search>1</search>
+          <list>1</list>
         </positions>
       </editor>
       <db>
@@ -157,11 +161,12 @@
       <gui>
         <guiname xml:lang="en">RootPath</guiname>
         <guiname xml:lang="nl">HoofdPad</guiname>
+        <guiname xml:lang="eo">Radika pado</guiname>
         <guitype>string</guitype>
       </gui>
       <editor>
         <positions>
-          <input>2</input> <list>2</list><search>2</search>
+          <list>2</list>
         </positions>
       </editor>
       <db>
