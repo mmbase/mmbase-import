@@ -25,61 +25,199 @@ import org.mmbase.module.builders.Properties;
  */
 
 public class Judas extends Vwm implements MMBaseObserver {
-protected Vector urls=new Vector();
-private JudasURLpusher pusher=null;
-
+	protected Vector urls=new Vector();
+	private JudasURLpusher pusher=null;
+	private boolean firstProbeCall = true;
 
 	public Judas() {
 		System.out.println("Yo Judas and im alive");
 	}
 
-	public boolean performTask(MMObjectNode node) {
-		boolean rtn=false;
-		return(rtn);
+    /**
+     * performTask: This method is called when a vwmtask activates.
+     * The task that need to be performed is determined by the tasks' name field.
+     * @param taskNode The current Vwmtasks node.
+     * @return A boolean true when the task can be found and task execution succeeds else false is returned.
+     */
+    public boolean performTask(MMObjectNode taskNode) {
+		String curTime = DateSupport.date2string((int)(DateSupport.currentTimeMillis()/1000));
+		debug("performTask: Vwm Judas performing another task, it is now:"+curTime);
+
+        // Sets tasknode state to claimed.
+        claim(taskNode);
+        String taskName=taskNode.getStringValue("task");
+        if (taskName.equals("ReloadFiles")) {
+            debug("performTask: Performing task: "+taskName);
+            try {
+                boolean success = performReloadFiles(taskNode);
+                if (!success)
+                    System.out.println("Judas:performTask: Warning: performReloadFiles returned false!");
+                // Set tasknode state to finished.
+                performed(taskNode);
+                return true;
+            } catch (Exception e) {
+                System.out.println("Judas:performTask: Perform "+taskName+" exception"+e);
+                e.printStackTrace();
+                return false;
+            }
+        } else if (taskName.equals("ReloadJukeboxes")) {
+            debug("performTask: Performing task: "+taskName);
+            // 'ReloadJukeboxes' has the same implementation as 'ReloadFiles', this is correct.
+            // The difference in taskname is required so this tasknode can be reused which happens in probeCall.
+            try {
+                boolean success = performReloadFiles(taskNode);
+                if (!success)
+                    System.out.println("Judas:performTask: Warning: performReloadFiles returned false!");
+                // Set tasknode state to finished.
+                performed(taskNode);
+                return true;
+            } catch (Exception e) {
+                System.out.println("Judas:performTask: Perform "+taskName+" exception"+e);
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            System.out.println("Judas:performTask: Don't know task with name: "+taskName);
+            return false;
+        }
+    }
+
+	/**
+	 * performReloadFiles: This method retrieves gets all urls objects related with this vwmtask and
+	 * adds them to judas' general URL vector.
+	 * The syntax for the data field should look like: url=/3voor12/jukeboxes/jukeboxes.shtml?123+456
+	 * @param taskNode The current vwmtask node.
+	 * @return A boolean value which is yes when retrieving and adding succeeded, else false.
+	 */
+	private boolean performReloadFiles(MMObjectNode taskNode) {
+		String url;
+		int taskNumber = taskNode.getIntValue("number");
+		MMObjectNode urlsNode;
+		Enumeration e = Vwms.mmb.getInsRel().getRelated(taskNumber,"urls");
+		if (e.hasMoreElements()) {
+			while (e.hasMoreElements()) {
+				urlsNode = (MMObjectNode)e.nextElement();
+				url = urlsNode.getStringValue("url");
+				addURL(url);
+				debug("performReloadFiles: adding url: "+url);
+			}
+			return true;
+		} else {
+			debug("performReloadFiles: No urls related with task "+taskNode.getStringValue("task")+" nr:"+taskNumber);
+			return false;
+		}
 	}
 
+	/**
+	* probeCall: This method is called every x minutes where x is the maintenancetime field of the vwm.
+	* The maintanancetime for this bot HAS TO BE 1 hour=3600 sec for the 3voor12 jukeboxes reload.
+	* @return Always returns 'true'.
+	*/
 	public boolean probeCall() {
 		if (pusher==null) {
 			pusher=new JudasURLpusher(this);
 			System.out.println("Judas -> Starting URL pusher");
 		}
-		
-		System.out.println("Judas -> Adding observers");
+	
+		if (firstProbeCall) { 
+			firstProbeCall = false;	
+			System.out.println("Judas -> Adding observers");
 
-		// add news for 3voor12 
-		Vwms.mmb.addLocalObserver("news",this);
-		Vwms.mmb.addRemoteObserver("news",this);
+			// add news for 3voor12 
+			Vwms.mmb.addLocalObserver("news",this);
+			Vwms.mmb.addRemoteObserver("news",this);
 
-		// add audioparts
-		Vwms.mmb.addLocalObserver("audioparts",this);
-		Vwms.mmb.addRemoteObserver("audioparts",this);
+			// add audioparts
+			Vwms.mmb.addLocalObserver("audioparts",this);
+			Vwms.mmb.addRemoteObserver("audioparts",this);
 
-		// add episodes
-		Vwms.mmb.addLocalObserver("episodes",this);
-		Vwms.mmb.addRemoteObserver("episodes",this);
+			// add episodes
+			Vwms.mmb.addLocalObserver("episodes",this);
+			Vwms.mmb.addRemoteObserver("episodes",this);
 
-		// add groups, temp disabled
-		// Vwms.mmb.addLocalObserver("groups",this);
-		// Vwms.mmb.addRemoteObserver("groups",this);
+			// add groups
+			Vwms.mmb.addLocalObserver("groups",this);
+			Vwms.mmb.addRemoteObserver("groups",this);
 
-		// add groups
-		Vwms.mmb.addLocalObserver("mmevents",this);
-		Vwms.mmb.addRemoteObserver("mmevents",this);
+			// add mmevents
+			Vwms.mmb.addLocalObserver("mmevents",this);
+			Vwms.mmb.addRemoteObserver("mmevents",this);
 
-		// add items
-		Vwms.mmb.addLocalObserver("items",this);
-		Vwms.mmb.addRemoteObserver("items",this);
+			// add items
+			Vwms.mmb.addLocalObserver("items",this);
+			Vwms.mmb.addRemoteObserver("items",this);
 
-		// add people
-		Vwms.mmb.addLocalObserver("people",this);
-		Vwms.mmb.addRemoteObserver("people",this);
+			// add people
+			Vwms.mmb.addLocalObserver("people",this);
+			Vwms.mmb.addRemoteObserver("people",this);
 
-		// add guideart
-		Vwms.mmb.addLocalObserver("guideart",this);
-		Vwms.mmb.addRemoteObserver("guideart",this);
+			// add guideart
+			Vwms.mmb.addLocalObserver("guideart",this);
+			Vwms.mmb.addRemoteObserver("guideart",this);
+		}
+
+		// davzev: 3voor12 Jukeboxes reuses a specific vwmtask.
+		// The maintanancetime for this bot HAS TO BE 1 hour = > 3600 sec.
+		boolean success = false;
+		success = reuseReloadJukeboxesTask();
+		if (!success) debug("probeCall: Error reuseReloadJukeboxesTask returned false");
 
 		return(true);
 	}
+
+	/**
+	 * reuseReloadJukeboxesTask: This method reuses a vwmtask named 'ReloadJukeboxes'.
+ 	 * Reuse is done by setting the task state from DONE to REQUEST and committing it again.
+	 * This is a task with a specific set of Jukebox urls related to it. The task is only written
+	 * out again when the current date is equal to the date information set in the tasknodes' data field.
+	 * @return A boolean which is true is task was found and false otherwise.
+	 */
+	private boolean reuseReloadJukeboxesTask() {
+		String methodName = "reuseReloadJukeboxesTask";
+		String TASK = "ReloadJukeboxes";
+		String MACHINE = "twohigh";
+		int STATE_REQUEST = 1;
+		int STATE_DONE = 3;
+
+		// A task should only be written out when current date info is equal to what's stored in 'data' field.
+		int curtime = (int)(DateSupport.currentTimeMillis()/1000);
+		TimeZone tz = TimeZone.getTimeZone("ECT");
+		GregorianCalendar calendar = new GregorianCalendar(tz);
+		int curDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+		int curHourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+
+		// Find the first 'ReloadJukeboxes' task performed by this bot on that machine that has state 'done'.
+		Vwmtasks vwmtask = (Vwmtasks)Vwms.mmb.getMMObject("vwmtasks");
+		Enumeration e= vwmtask.searchWithWhere("task='"+TASK+"' AND vwm='"+getName()+"' AND wantedcpu='"+MACHINE+"' AND status='"+STATE_DONE+"'");
+		if (e.hasMoreElements()) {
+			debug("probeCall: Reusing 'ReloadJukeboxes' task.");
+			MMObjectNode taskNode = (MMObjectNode) e.nextElement();
+
+			// Get date information from nodes' data field.
+			String dataField = taskNode.getStringValue("data");
+			Hashtable props = parseProperties(dataField);
+			int dayOfWeek = Integer.parseInt((String)props.get("DAY_OF_WEEK"));
+			int hourOfDay = Integer.parseInt((String)props.get("HOUR_OF_DAY"));
+
+			if ((curDayOfWeek == dayOfWeek) && (curHourOfDay == hourOfDay)) {
+				debug(methodName+": dayOfWeek:"+dayOfWeek+" hourOfDay:"+hourOfDay+" -> writting out task again.");
+				// The task will actually start ten minutes later.
+				int starttime = (int) ((DateSupport.currentTimeMillis()/1000) + 10*60);
+				taskNode.setValue("wantedtime",starttime);
+				taskNode.setValue("expiretime",starttime + 50*60);
+				taskNode.setValue("status",STATE_REQUEST);
+				taskNode.commit();
+				return true;
+			} else {
+				debug(methodName+": It isn't time yet.");
+				return true;
+			}
+		} else {
+			System.out.println("Judas: Error can't find task "+TASK);
+			return false;
+		}
+	}
+
 
 	public boolean nodeRemoteChanged(String number,String builder,String ctype) {
 		return(nodeChanged(number,builder,ctype));
@@ -101,24 +239,19 @@ private JudasURLpusher pusher=null;
 	
 		// checks for 3voor12
 		if (builder.equals("news")) {
-			// get3voor12news(inumber);
-			// new 3voor12
 			get3voor12_zapcentral(inumber,ctype);
 		} else if (builder.equals("episodes")) {
-			get3voor12episodes(inumber);
+			get3voor12_shows(inumber,ctype);
 		} else if (builder.equals("audioparts")) {
-			// get3voor12audioparts(inumber,ctype);
-			// get3voor12cdtracks(inumber);
-			// new 3voor12
+			get3voor12_audioparts_shows(inumber,ctype);
+			get3voor12_audioparts_month(inumber,ctype);
+			get3voor12_audioparts_categorie(inumber,ctype);
+			get3voor12_audioparts_tracks(inumber,ctype);
 			get3voor12_zapcentral(inumber,ctype);
-		} else if (builder.equals("groups")) { // temp disabled
-			//get3voor12groups(inumber);
-			// new 3voor12
+		} else if (builder.equals("groups")) {
+			get3voor12_groups(inumber,ctype);
 			get3voor12_zapcentral(inumber,ctype);
 		} else if (builder.equals("mmevents")) {
-			// get3voor12mmeventsAgenda(inumber);
-			// get3voor12mmeventsMagazine(inumber);
-			// new 3voor12
 			get3voor12_zapcentral(inumber,ctype);
 		}
 
@@ -133,141 +266,6 @@ private JudasURLpusher pusher=null;
 	
 		return(true);
 	}
-
-
-	public void get3voor12cdtracks(int number) {
-		Vector tables=new Vector();
-		tables.addElement("programs");
-		tables.addElement("groups");
-		tables.addElement("insrel");
-		tables.addElement("audioparts");
-		Vector fields=new Vector();
-		fields.addElement("programs.number");
-		fields.addElement("groups.number");
-		fields.addElement("audioparts.number");
-		Vector ordervec=new Vector();
-		Vector dirvec=new Vector();
-
-
-		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
-		
-		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
-		for (Enumeration e=vec.elements();e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
-			int prog=node.getIntValue("programs.number");
-			int group=node.getIntValue("groups.number");
-			int area=prog-62752; // huge hack possible because programs range from 62753 to 62758
-			if (area>0 && area<7) {
-				String url="/data/3voor12/layout/tracks/track.shtml?"+area+"+"+number;
-				System.out.println("Judas -> url "+url);
-				addURL(url);
-				url="/data/3voor12/layout/tracks/track-list.shtml?0+0+100+number+down";
-				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+1+100+number+down";
-				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+2+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+3+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+0+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+1+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+2+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?0+3+100+title+up";
- 				addURL(url);
-
-				// now the area
-				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+0+100+number+down";
-				addURL(url);
-
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+1+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+2+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+3+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+0+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+1+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+2+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/tracks/track-list.shtml?"+area+"+3+100+title+up";
- 				addURL(url);
- 
- 				// and the band page itself	
-				url="/data/3voor12/layout/bands/band.shtml?"+area+"+"+group;
-				addURL(url);
-			}
-		}
-	}
-
-
-	public void get3voor12news(int number) {
-		Vector tables=new Vector();
-		tables.addElement("programs");
-		tables.addElement("news");
-		Vector fields=new Vector();
-		fields.addElement("programs.number");
-		fields.addElement("news.number");
-		Vector ordervec=new Vector();
-		Vector dirvec=new Vector();
-		String url;
-
-
-		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
-		
-		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
-		for (Enumeration e=vec.elements();e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
-			int prog=node.getIntValue("programs.number");
-			int news=node.getIntValue("news.number");
-			int area=prog-62752; // huge hack possible because programs range from 62753 to 62758
-			if (prog==128877) area=0;
-			if (area>-1 && area<7) {
-				url="/data/3voor12/layout/nieuws/nieuws.shtml?"+area+"+"+number;
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+0+100+number+down";
-
-				addURL(url);
- 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+1+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+2+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+0+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+1+100+title+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/nieuws/nieuws-list.shtml?0+2+100+title+up";
- 				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?0";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?1";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?2";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?3";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?4";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?5";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?6";
-				addURL(url);
-			}
-			// Sportpaleis
-			if (prog==2142557) {
-				url="/data/"+prog+"/agenda.shtml?"+news;
-				addURL(url);
-			}
-		}
-	}
-
-
 
 	public void getEpisodes(int number) {
 		Vector tables=new Vector();
@@ -469,263 +467,358 @@ private JudasURLpusher pusher=null;
 	}
 
 
-	public void get3voor12groups(int number) {
+	/* ---------------- */
+	/* New 3voor12 site */
+	/* ---------------- */
+
+
+	/*
+		/3voor12/shows/episodes.shtml?portal+map+program+episode
+		/3voor12/shows/programs.shtml?portal+map+program
+	*/
+	private void get3voor12_shows(int number,String ctype) {
+		MMObjectNode node;
 		Vector tables=new Vector();
-		tables.addElement("programs");
-		tables.addElement("groups");
 		Vector fields=new Vector();
-		fields.addElement("programs.number");
-		fields.addElement("groups.number");
 		Vector ordervec=new Vector();
 		Vector dirvec=new Vector();
 
+		boolean doAdd=false;
+
+		int daymark10;
+		int daymark35;
+
+		int portal,map,program,episode;
+
+		if (ctype.equals("d")) return;
 
 		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		daymark10=daymarks.getDayCountAge(10);
+		daymark35=daymarks.getDayCountAge(35);
+		int cur=(int)(DateSupport.currentTimeMillis()/1000);
+
 		
-		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
-		for (Enumeration e=vec.elements();e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
-			int prog=node.getIntValue("programs.number");
-			int news=node.getIntValue("groups.number");
-			int area=prog-62752; // huge hack possible because programs range from 62753 to 62758
-			if (prog==128877) area=0;
-			if (area>-1 && area<7) {
-				String url="/data/3voor12/layout/bands/band.shtml?"+area+"+"+number;
-				System.out.println("Judas -> url "+url);
-				addURL(url);
-
-				url="/data/3voor12/layout/bands/band-list.shtml?0+0+100+number+down";
-				addURL(url);
-
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+0+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+1+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+2+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+3+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+0+100+name+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+1+100+name+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+2+100+name+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?0+3+100+name+up";
- 				addURL(url);
- 
- 				// area	
-				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+0+100+number+down";
-				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+1+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+2+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+3+100+number+down";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+0+100+name+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+1+100+name+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+2+100+name+up";
- 				addURL(url);
- 				url="/data/3voor12/layout/bands/band-list.shtml?"+area+"+3+100+name+up";
- 				addURL(url);
-			}
-		}
-	}
-
-
-	public void get3voor12episodes(int number) {
-		Vector tables=new Vector();
-		tables.addElement("pools");
+		/* 2534202 (portal) episodes */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
 		tables.addElement("programs");
 		tables.addElement("episodes");
-		Vector fields=new Vector();
-		fields.addElement("pools.number");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
 		fields.addElement("programs.number");
 		fields.addElement("episodes.number");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
+		debug("shows: portals,maps,programs,episodes result "+vec);
+		for (Enumeration e=vec.elements();e.hasMoreElements();) {
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			episode=node.getIntValue("episodes.number");
+			addURL("/3voor12/shows/episodes.shtml?"+portal+"+"+map+"+"+program+"+"+episode);
+			addURL("/3voor12/shows/programs.shtml?"+portal+"+"+map+"+"+program);
+		}
+
+	}
+
+	/*
+		/3voor12/shows/episodes.shtml?portal+map+program+episode
+		/3voor12/shows/programs.shtml?portal+map+program
+        /3voor12/shows/shows.shtml?portal
+	*/
+	private void get3voor12_audioparts_shows(int number,String ctype) {
+		MMObjectNode node;
+		Vector tables=new Vector();
+		Vector fields=new Vector();
 		Vector ordervec=new Vector();
 		Vector dirvec=new Vector();
 
+		int daymark10;
+		int daymark75;
+
+		int portal,map,program,episode;
+
+		if (ctype.equals("d")) return;
 
 		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		daymark10=daymarks.getDayCountAge(10);
+		daymark75=daymarks.getDayCountAge(75);
+		int cur=(int)(DateSupport.currentTimeMillis()/1000);
+
 		
-		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
-		for (Enumeration e=vec.elements();e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
-			int pool=node.getIntValue("pools.number");
-			int prog=node.getIntValue("programs.number");
-			int area=-1;
-
-			if (pool==1881762) area=0;
-			if (pool==1882536) area=1;
-			if (pool==1882541) area=2;
-			if (pool==1882542) area=3;
-			if (pool==1882543) area=4;
-			if (pool==1882554) area=5;
-			if (pool==1882555) area=6;
-
-			if (area>-1 && area<7) {
-				String url="/data/3voor12/layout/uitzendingen/uitzending.shtml?"+area+"+"+number;
-				addURL(url);
-				url="/data/3voor12/layout/programs/program.shtml?"+area+"+"+prog;
-				addURL(url);
-
-			}
-		}
-	}
-
-
-	public void get3voor12audioparts(int number,String type) {
-		Vector tables=new Vector();
-		tables.addElement("pools");
+		/* 2534202 (portal) episodes */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
 		tables.addElement("programs");
 		tables.addElement("episodes");
 		tables.addElement("audioparts");
-		Vector fields=new Vector();
-		fields.addElement("pools.number");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
 		fields.addElement("programs.number");
 		fields.addElement("episodes.number");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.number>"+daymark75+"",ordervec,dirvec);
+		debug("audioparts: portals,maps,programs,episodes result "+vec);
+		for (Enumeration e=vec.elements();e.hasMoreElements();) {
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			episode=node.getIntValue("episodes.number");
+			addURL("/3voor12/shows/episodes.shtml?"+portal+"+"+map+"+"+program+"+"+episode);
+			addURL("/3voor12/shows/programs.shtml?"+portal+"+"+map+"+"+program);
+		}
+		if (vec.size()>0) {
+			addURL("/3voor12/shows/shows.shtml?2534202");
+		}
+
+	}
+
+	/*
+		/3voor12/tracks/track.shtml?portal,map,program,group,track
+		/3voor12/tracks/track.shtml?portal,map,program,group
+		/3voor12/tracks/tracks.shtml?portal,map,program
+		/3voor12/dj_sets/dj_set.shtml?portal,map,program,group,track
+		/3voor12/dj_sets/dj_sets.shtml?portal,map,program
+		/3voor12/concerts/concert.shtml?portal,map,program,group,track
+		/3voor12/concerts/concerts.shtml?portal,map,program
+		
+	*/
+	private void get3voor12_audioparts_tracks(int number,String ctype) {
+		MMObjectNode node;
+		Vector tables=new Vector();
+		Vector fields=new Vector();
+		Vector ordervec=new Vector();
+		Vector dirvec=new Vector();
+
+		int daymark10;
+		int daymark75;
+
+		int portal,map,program,audiopart,group,iclass;
+
+		if (ctype.equals("d")) return;
+
+		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		daymark10=daymarks.getDayCountAge(10);
+		daymark75=daymarks.getDayCountAge(75);
+		int cur=(int)(DateSupport.currentTimeMillis()/1000);
+
+		
+		/* 2534202 (portal) */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
+		tables.addElement("programs");
+		tables.addElement("groups");
+		tables.addElement("audioparts");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
+		fields.addElement("programs.number");
+		fields.addElement("groups.number");
 		fields.addElement("audioparts.number");
-		Vector ordervec=new Vector();
-		Vector dirvec=new Vector();
+		fields.addElement("audioparts.class");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.number>"+daymark75+" AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
+		debug("audioparts_tracks: portals,maps,programs,audioparts result "+vec);
+		for (Enumeration e=vec.elements();e.hasMoreElements();) {
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			group=node.getIntValue("groups.number");
+			audiopart=node.getIntValue("audioparts.number");
+			iclass=node.getIntValue("audioparts.class");
+			switch(iclass) {
+				case 1: // Track
+					addURL("/3voor12/tracks/track.shtml?"+portal+"+"+map+"+"+program+"+"+group);
+					addURL("/3voor12/tracks/track.shtml?"+portal+"+"+map+"+"+program+"+"+group+"+"+audiopart);
+					addURL("/3voor12/tracks/tracks.shtml?"+portal+"+"+map+"+"+program);
+					break;
+				case 2: // StudioSession
+					// No pages ?
+					break;
+				case 3: // Live Recording
 
-		
-		// this is bad but i have NO idea what better way to use now when
-		// a delete hits.
-		if (type.equals("d")) {
-			// i have NO idea how to solve it unless we know/check before a delete or
-			// we keep deleted structures nodes somehow so we can still query them !
-			// best bet is a delayed delete.
-		} else {
-			MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
-		
-			Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
-			for	 (Enumeration e=vec.elements();e.hasMoreElements();) {
-				MMObjectNode node=(MMObjectNode)e.nextElement();
-				System.out.println("Judas -> found nodes "+node);
-				int pool=node.getIntValue("pools.number");
-				int prog=node.getIntValue("programs.number");
-				int episode=node.getIntValue("episodes.number");
-				int area=-1;
+					addURL("/3voor12/concerts/concert.shtml?"+portal+"+"+map+"+"+program+"+"+group+"+"+audiopart);
+					addURL("/3voor12/concerts/concerts.shtml?"+portal+"+"+map+"+"+program);
+					break;
+				case 4: // DJ Set
+					addURL("/3voor12/dj_sets/dj_set.shtml?"+portal+"+"+map+"+"+program+"+"+group+"+"+audiopart);
+					addURL("/3voor12/dj_sets/dj_sets.shtml?"+portal+"+"+map+"+"+program);
 
-				if (pool==1881762) area=0;
-				if (pool==1882536) area=1;
-				if (pool==1882541) area=2;
-				if (pool==1882542) area=3;
-				if (pool==1882543) area=4;
-				if (pool==1882554) area=5;
-				if (pool==1882555) area=6;
-
-				if (area>-1 && area<7) {
-					String url="/data/3voor12/layout/uitzendingen/uitzending.shtml?"+area+"+"+episode;
-					addURL(url);
-					url="/data/3voor12/layout/programs/program.shtml?"+area+"+"+prog;
-					addURL(url);
-
-				}
+					break;
+				default:
+					debug("Invalid query result!, got a classtype that wasn't queried");
+					break;
 			}
 		}
 	}
 
 
-	public void get3voor12mmeventsAgenda(int number) {
+
+	/*
+		/3voor12/tracks/tracks_month.shtml?portal,map,program,'months'
+		/3voor12/concerts/concerts_month.shtml?portal,map,program,'months'
+		
+	*/
+	private void get3voor12_audioparts_month(int number,String ctype) {
+		MMObjectNode node;
 		Vector tables=new Vector();
-		tables.addElement("pools");
-		tables.addElement("programs");
-		tables.addElement("episodes");
-		tables.addElement("mmevents");
 		Vector fields=new Vector();
-		fields.addElement("pools.number");
-		fields.addElement("programs.number");
-		fields.addElement("episodes.number");
 		Vector ordervec=new Vector();
 		Vector dirvec=new Vector();
 
+		int daymark10;
+		int daymark75;
+
+		int portal,map,program,audiopart,group,themonth,theclass;
+
+		if (ctype.equals("d")) return;
 
 		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		daymark10=daymarks.getDayCountAge(10);
+		daymark75=daymarks.getDayCountAge(75);
+		int cur=(int)(DateSupport.currentTimeMillis()/1000);
+
 		
-		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
+		/* 2534202 (portal) */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
+		tables.addElement("programs");
+		tables.addElement("groups");
+		tables.addElement("audioparts");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
+		fields.addElement("programs.number");
+		fields.addElement("groups.number");
+		fields.addElement("audioparts.number");
+		fields.addElement("audioparts.class");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
+		debug("audioparts_month: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
-			int prog=node.getIntValue("pools.number");
-			int news=node.getIntValue("programs.number");
-			int area=-1;
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			group=node.getIntValue("groups.number");
+			theclass=node.getIntValue("audioparts.class");
+			audiopart=node.getIntValue("audioparts.number");
+			themonth=getMonthNumber(audiopart);
+			switch(theclass) {
+				case 1: // Track
+					addURL("/3voor12/tracks/tracks_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
+					break;
+				case 2: // StudioSession
+					// No pages ?
+					break;
+				case 3: // Live Recording
+					addURL("/3voor12/concerts/concerts_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
 
-			if (prog==1881762) area=0;
-			if (prog==1882536) area=1;
-			if (prog==1882541) area=2;
-			if (prog==1882542) area=3;
-			if (prog==1882543) area=4;
-			if (prog==1882554) area=5;
-			if (prog==1882555) area=6;
-
-			if (area>-1 && area<7) {
-				String url="/data/3voor12/layout/programs/agenda/agenda.shtml?0";
-				addURL(url);
-				url="/data/3voor12/layout/programs/agenda/agenda.shtml?1";
-				addURL(url);
-				url="/data/3voor12/layout/programs/agenda/agenda.shtml?2";
-				addURL(url);
-				url="/data/3voor12/layout/programs/agenda/agenda.shtml?3";
-				addURL(url);
-				url="/data/3voor12/layout/programs/agenda/agenda.shtml?4";
-				addURL(url);
-				url="/data/3voor12/layout/programs/agenda/agenda.shtml?5";
-				addURL(url);
-				url="/data/3voor12/layout/programs/agenda/agenda.shtml?6";
-				addURL(url);
+					break;
+				case 4: // DJ Set
+					break;
+				default:
+					debug("Invalid query result!, got a classtype that wasn't queried");
+					break;
 			}
 		}
 	}
 
 
-	public void get3voor12mmeventsMagazine(int number) {
+
+	/*
+		/3voor12/tracks/tracks_genre_year.shtml?portal,map,program,month,categorie
+		/3voor12/tracks/genre_search_result.shtml?portal,map,program,categorie
+		/3voor12/concerts/concerts_genre_year.shtml?portal,map,program,month,categorie
+		/3voor12/concerts/genre_search_result.shtml?portal,map,program,categorie
+	
+	*/
+	private void get3voor12_audioparts_categorie(int number,String ctype) {
+		MMObjectNode node;
 		Vector tables=new Vector();
-		tables.addElement("programs");
-		tables.addElement("news");
-		tables.addElement("mmevents");
 		Vector fields=new Vector();
-		fields.addElement("programs.number");
-		fields.addElement("news.number");
 		Vector ordervec=new Vector();
 		Vector dirvec=new Vector();
 
+		int daymark10;
+		int daymark75;
+
+		int portal,map,program,audiopart,group,themonth,theclass,categorie,theyearmonth;
+
+		if (ctype.equals("d")) return;
 
 		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		daymark10=daymarks.getDayCountAge(10);
+		daymark75=daymarks.getDayCountAge(75);
+		int cur=(int)(DateSupport.currentTimeMillis()/1000);
+
 		
-		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"",ordervec,dirvec);
+		/* 2534202 (portal) */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
+		tables.addElement("programs");
+		tables.addElement("groups1");
+		tables.addElement("audioparts");
+		tables.addElement("groups2");
+		tables.addElement("categories");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
+		fields.addElement("programs.number");
+		fields.addElement("groups1.number");
+		fields.addElement("audioparts.number");
+		fields.addElement("audioparts.class");
+		fields.addElement("categories.number");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202 AND groups1.number=groups2.number AND audioparts.class in (1,2,3,4)",ordervec,dirvec);
+		debug("audioparts_categorie: portals,maps,programs,audioparts result "+vec);
 		for (Enumeration e=vec.elements();e.hasMoreElements();) {
-			MMObjectNode node=(MMObjectNode)e.nextElement();
-			System.out.println("Judas -> found nodes "+node);
-			int prog=node.getIntValue("programs.number");
-			int area=prog-62752; // huge hack possible because programs range from 62753 to 62758
-			if (prog==128877) area=0;
-			if (area>-1 && area<7) {
-				String url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?0";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?1";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?2";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?3";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?4";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?5";
-				addURL(url);
-				url="/data/3voor12/layout/nieuws/magazine/magazine.shtml?6";
-				addURL(url);
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			group=node.getIntValue("groups.number");
+			theclass=node.getIntValue("audioparts.class");
+			categorie=node.getIntValue("categories.number");
+			audiopart=node.getIntValue("audioparts.number");
+			themonth=getMonthNumber(audiopart);
+			theyearmonth=themonth-(themonth%12);
+			switch(theclass) {
+				case 1: // Track
+					addURL("/3voor12/tracks/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie);
+					addURL("/3voor12/tracks/tracks_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie);
+					break;
+				case 2: // StudioSession
+					// No pages ?
+					break;
+				case 3: // Live Recording
+					addURL("/3voor12/concerts/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie);
+					addURL("/3voor12/concerts/concerts_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie);
+
+					break;
+				case 4: // DJ Set
+					break;
+				default:
+					debug("Invalid query result!, got a classtype that wasn't queried");
+					break;
 			}
 		}
 	}
 
-	/* New 3voor12 site */
-
+	/*
+        /3voor12/shows/shows.shtml?portal
+		/3voor12/zapcentral.shtml?
+	*/
 	private void get3voor12_zapcentral(int number,String ctype) {
 		MMObjectNode node;
 		Vector tables=new Vector();
@@ -749,7 +842,6 @@ private JudasURLpusher pusher=null;
 		daymark10=daymarks.getDayCountAge(10);
 		daymark35=daymarks.getDayCountAge(35);
 		int cur=(int)(DateSupport.currentTimeMillis()/1000);
-		int cur2=(int)(System.currentTimeMillis()/1000);
 		
 
 		if (!doAdd) {
@@ -824,13 +916,83 @@ private JudasURLpusher pusher=null;
 
 		if (doAdd) {
 			addURL("/3voor12/zapcentral.shtml?");
+//			addURL("/3voor12/navigatie/dollarmod.flashvar?");
 		}
 	}
 
+
+	/*
+		/3voor12/artists/artist.shtml?portal,map,program,artist
+		/3voor12/artists/artists.shtml?portal,map,program
+		/3voor12/artists/artists_genre_year.shtml?portal,map,program,'months',categorie
+		/3voor12/artists/artists_month.shtml?portal,map,program,'months'
+		/3voor12/artists/genre_search_result.shtml?portal,map,program,categorie
+	*/
+	private void get3voor12_groups(int number,String ctype) {
+		MMObjectNode node;
+		Vector tables=new Vector();
+		Vector fields=new Vector();
+		Vector ordervec=new Vector();
+		Vector dirvec=new Vector();
+
+		int portal,map,program,group,categorie,themonth,theyearmonth;
+		int daymark,curdaymark;
+
+		if (ctype.equals("d")) return;
+
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		MultiRelations multirelations=(MultiRelations)Vwms.mmb.getMMObject("multirelations");		
+		
+		/* 2534202 (portal) */
+		tables=new Vector();
+		tables.addElement("portals");
+		tables.addElement("maps");
+		tables.addElement("programs");
+		tables.addElement("groups");
+		tables.addElement("categorie");
+		fields=new Vector();
+		fields.addElement("portals.number");
+		fields.addElement("maps.number");
+		fields.addElement("programs.number");
+		fields.addElement("groups.number");
+		fields.addElement("categories.number");
+		Vector vec=multirelations.searchMultiLevelVector(number,fields,"YES",tables,"where portals.number=2534202",ordervec,dirvec);
+		debug("audioparts_groups: portals,maps,programs,groups result "+vec);
+		for (Enumeration e=vec.elements();e.hasMoreElements();) {
+			node=(MMObjectNode)e.nextElement();
+			portal=node.getIntValue("portals.number");
+			map=node.getIntValue("maps.number");
+			program=node.getIntValue("programs.number");
+			group=node.getIntValue("groups.number");
+			categorie=node.getIntValue("categories.number");
+			themonth=getMonthNumber(group);
+			theyearmonth=themonth-(themonth%12);
+			addURL("/3voor12/artists/artist.shtml?"+portal+"+"+map+"+"+program+"+"+group);
+			addURL("/3voor12/artists/artists_genre_year.shtml?"+portal+"+"+map+"+"+program+"+"+theyearmonth+"+"+categorie);
+			addURL("/3voor12/artists/artists_month.shtml?"+portal+"+"+map+"+"+program+"+"+themonth);
+			addURL("/3voor12/artists/genre_search_result.shtml?"+portal+"+"+map+"+"+program+"+"+categorie);
+			daymark=daymarks.getDayCountByObject(group);
+			curdaymark=daymarks.getDayCount();
+			if ((curdaymark-daymark)<60) {
+				addURL("/3voor12/artists/artists.shtml?"+portal+"+"+map+"+"+program);
+			}
+		}
+	}
+
+
+	/* ----------- */
+	/* 3voor12 end */
+	/* ----------- */
+
+	/**
+	 * addURL: This method adds a String to the urls Vector (class field).
+	 * The url has to be a relative url eg. /3voor12/bla/index.shtml?123+456 .
+	 * If no parameters are given, the url STILL has to have a '?' character eg. /3voor12/test.shtml?
+	 * @param url A String containing the url.
+	 */
 	public void addURL(String url) {
 		urls.addElement(url);
 	}
-
 
 	public boolean pushReload(String url) {
 		System.out.println("Judas -> pushing ="+url);
@@ -845,4 +1007,14 @@ private JudasURLpusher pusher=null;
 		return(true);
 	}
 
+	private int getMonthNumber(int number) {
+		DayMarkers daymarks=(DayMarkers)Vwms.mmb.getMMObject("daymarks");		
+		int daymark;
+		int month=0;
+		// get Daymarker for number
+		daymark=daymarks.getDayCountByObject(number);
+		// convert daymarker to monthnumber
+		month=daymarks.getMonthsByDayCount(daymark);
+		return(month);
+	}
 }
