@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.17 2003-08-06 13:39:04 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.18 2003-09-02 19:52:46 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
     private static Logger log = Logging.getLoggerInstance(SQL92DatabaseStorage.class);
@@ -320,37 +320,54 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     }
 
 
+    String resultSetString(ResultSet rs) {
+        StringBuffer buf = new StringBuffer();
+        try {
+            ResultSetMetaData md = rs.getMetaData();
+            for (int i = 1 ; i <= md.getColumnCount(); i++) {
+                buf.append(md.getColumnName(i));
+                buf.append(",");
+            }
+        } catch (java.sql.SQLException e) {
+            buf.append(e.toString());
+        }
+        return buf.toString();
+    }
+
     //javadoc inherited from DatabaseStorage
     public void loadFieldFromTable(MMObjectNode node, String fieldName, ResultSet rs,int i) {
         try {
             switch (node.getDBType(fieldName)) {
                 // string-type fields, use mmbase encoding
-                case FieldDefs.TYPE_XML:
-                case FieldDefs.TYPE_STRING: {
-                    String tmp;
-                    try {
-                        tmp = getDBText(rs, i);
-                    } catch (Exception e) {
-                        log.error(e.toString());
-                        tmp = "";
-                    }
-                    node.setValue(fieldName, tmp);
-                    break;
+            case FieldDefs.TYPE_XML:
+            case FieldDefs.TYPE_STRING: {
+                String tmp;
+                try {
+                    tmp = getDBText(rs, i);
+                } catch (Exception e) {
+                    log.error(e.toString());
+                    tmp = "";
                 }
+                node.setValue(fieldName, tmp);
+                break;
+            }
                 // Numeric fields (can be passed as-is: node evaluates it)
-                case FieldDefs.TYPE_NODE:;
-                case FieldDefs.TYPE_INTEGER:;
-                case FieldDefs.TYPE_LONG:;
-                case FieldDefs.TYPE_FLOAT:;
-                case FieldDefs.TYPE_DOUBLE: {
-                    node.setValue(fieldName, rs.getObject(i));
-                    break;
-                }
+            case FieldDefs.TYPE_NODE:;
+            case FieldDefs.TYPE_INTEGER:;
+            case FieldDefs.TYPE_LONG:;
+            case FieldDefs.TYPE_FLOAT:;
+            case FieldDefs.TYPE_DOUBLE: {
+                node.setValue(fieldName, rs.getObject(i));
+                break;
+            }
                 // binary fields: mark as $shorted, retrieve later
-                case FieldDefs.TYPE_BYTE: {
-                    node.setValue(fieldName, "$SHORTED");
-                    break;
-                }
+            case FieldDefs.TYPE_BYTE: {
+                node.setValue(fieldName, "$SHORTED");
+                break;
+            }
+            default: {
+                log.warn("No field-type found for field '" + fieldName + "' (" + i + ")"  + resultSetString(rs));
+            }
             }
             if (log.isDebugEnabled()) {
                 log.debug("got field " + fieldName + " '" + node.getValue(fieldName) + "'");
