@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen (NOS)
- * @version $Id: MediaFragments.java,v 1.20 2003-07-15 12:26:35 vpro Exp $
+ * @version $Id: MediaFragments.java,v 1.21 2003-07-28 08:29:25 vpro Exp $
  * @since MMBase-1.7
  */
 
@@ -92,7 +92,6 @@ public class MediaFragments extends MMObjectBuilder {
     }
         
     /**
-     * @author mm
      */
     protected Object executeFunction(MMObjectNode node, String function, List args) {
         if (log.isDebugEnabled()) { 
@@ -213,7 +212,6 @@ public class MediaFragments extends MMObjectBuilder {
      * A list of arguments can be supplied, which is currently unused (but should not be null).
      * It could contain a Map with preferences, or other information about the client.
      *
-     * @author mm
      */
     protected List getURLs(MMObjectNode fragment, Map info, List urls, Set cacheExpireObjects) {
         if (urls == null) urls = new ArrayList();
