@@ -32,7 +32,7 @@ import org.mmbase.util.logging.*;
 
 public class jumpersInterceptor extends BaseInterceptor { 
 
-    private static Logger log = Logging.getLoggerInstance(jumperInterceptor.class.getName());
+    private static Logger log = Logging.getLoggerInstance(jumpersInterceptor.class.getName());
     static MMBase mmbase = null;
     
     ContextManager cm; 
