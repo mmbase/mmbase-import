@@ -5,6 +5,11 @@
 
  <xsl:output method="xml" omit-xml-declaration="yes"  />
 <!-- main entry point -->
+<xsl:variable name="extendscolor">blue</xsl:variable>
+<xsl:variable name="attrcolor">green</xsl:variable>
+<xsl:variable name="reqcolor">red</xsl:variable>
+
+
 <xsl:template match="taglib">
   <html>
     <head>
@@ -35,16 +40,20 @@
         <tr>
           <td></td>
           <td>
-            <a name="toc"/>
-            <xsl:apply-templates select="tag" mode="toc" ><xsl:sort select="name"/></xsl:apply-templates>
-            <a href="#info">info about the syntax of this document</a>
+            <a name="toc"/>			
+            <xsl:apply-templates select="tag|taginterface" mode="toc" >
+				<xsl:sort select="name" />
+   		  	    <xsl:with-param name="last" select="position()" />
+            </xsl:apply-templates><br />
+            <a href="#docinfo">info about the syntax of this document</a>
           </td>
           <td></td>
         </tr>
         <tr>
           <td></td>
           <td>
-            <xsl:apply-templates select="tag" mode="full" ><xsl:sort select="name" /></xsl:apply-templates>
+            <xsl:apply-templates select="taginterface" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
+            <xsl:apply-templates select="tag" mode="full"><xsl:sort select="name" /></xsl:apply-templates>
           </td>
           <td></td>
         </tr>
@@ -58,11 +67,11 @@
          <tr>
           <td></td>
           <td>
-            <a name="info"/>
+            <a name="docinfo"/>
             <p>
             This document lists the current tags implemented for MMBase.
 	    </p>
-            <p>Attributes in <font color="red">red</font> are
+            <p>Attributes in <font color="{$reqcolor}"><xsl:value-of select="$reqcolor" /></font> are
             required.
 	    </p>
 	    <p>If an attribute can refer to the context, then any occurences of the format
@@ -81,12 +90,16 @@
   </html>
 </xsl:template>
 
-<xsl:template match="tag" mode="toc">
-  <a href="#{name}"><xsl:value-of select="name" /></a>
-  <xsl:if test="last()"> | </xsl:if>
+<xsl:template match="tag|taginterface" mode="toc">
+  <a href="#{name}">
+   <xsl:if test="name()='taginterface'"><font color="{$extendscolor}"><xsl:value-of select="name" /></font></xsl:if>
+   <xsl:if test="name()='tag'"><xsl:value-of select="name" /></xsl:if>
+  </a>
+  <xsl:if test="position() != last()"> | </xsl:if>
 </xsl:template>
 
-<xsl:template match="tag" mode="full">
+<xsl:template match="tag|taginterface" mode="full">
+  
   <table bgcolor="#eeeeee" width="100%" cellpadding="5">
     <tr>
       <td colspan="2" bgcolor="white" align="right">
@@ -96,7 +109,8 @@
     </tr>
     <tr>
       <td colspan="2">
-        <b>&lt;<xsl:value-of select="name"/>&gt;</b>
+        <xsl:if test="name()='tag'"><b>&lt;mm:<xsl:value-of select="name"/>&gt;</b></xsl:if>
+        <xsl:if test="name()='taginterface'"><b><font color="{$extendscolor}">`<xsl:value-of select="name"/>' tags</font></b></xsl:if>
         <p>
         <xsl:apply-templates select="info"/>
         </p>
@@ -106,11 +120,12 @@
       <tr>
         <td width="100" valign="top">attributes</td>
         <td>
-          <ul><xsl:apply-templates select="attribute"/></ul>
+          <ul><xsl:apply-templates select="attribute" mode="full" /></ul>
         </td>
       </tr>
     </xsl:if>
-    <xsl:if test="bodycontent">
+	<xsl:apply-templates select="extends" />
+    <xsl:if test="xxbodycontent">
       <tr>
         <td width="100" valign="top">body</td>
         <td>
@@ -120,6 +135,15 @@
         </td>
       </tr>
     </xsl:if>       
+	<xsl:if test="name()='taginterface'">
+	<tr>
+    <td>Tags of this type</td><td>
+      <xsl:variable name="n" select="name" />
+      <xsl:apply-templates select="/taglib/tag/extends[.=$n]/parent::*|/taglib/taginterface/extends[.=$n]/parent::*" mode="toc" ><xsl:sort select="name" /></xsl:apply-templates>
+     </td>
+    </tr>  
+    </xsl:if>
+
     <xsl:apply-templates select="example" />
   </table>
 </xsl:template>
@@ -133,8 +157,26 @@
    </tr>
 </xsl:template>
 
-<xsl:template match="attribute">
+<xsl:template match="extends">
+  <xsl:variable name="e" select="." />
+  <tr><td width="100" valign="top"><a href="#{$e}"><font color="{$extendscolor}"><xsl:value-of select="." /></font></a> attributes</td>
+	  <td>
+      <ul>   	   
+       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/attribute" mode="extends" />
+       <xsl:apply-templates select="/taglib/taginterface/name[.=$e]/parent::*/extends"  />
+      </ul>
+	  </td>
+	</tr>
+</xsl:template>
+
+<xsl:template match="attribute" mode="extends">
+   <xsl:variable name="e" select="." />
+   <li><a href="#{parent::*/name}.{name}"><font color="{$attrcolor}"><xsl:value-of select="name" /></font></a></li>
+</xsl:template>
+
+<xsl:template match="attribute" mode="full">
   <li>
+    <a name="{parent::*/name}.{name}" />
     <xsl:choose>
       <xsl:when test="requirednote">
         <xsl:if test="requirednote">
@@ -145,10 +187,10 @@
       <xsl:otherwise>
         <xsl:choose>
           <xsl:when test="required='true'">
-            <font color="red"><xsl:apply-templates select="name"/></font>
+            <font color="{$reqcolor}"><xsl:apply-templates select="name"/></font>
           </xsl:when>
           <xsl:otherwise>
-            <font color="green"><xsl:apply-templates select="name"/></font>
+            <font color="{$attrcolor}"><xsl:apply-templates select="name"/></font>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>      
@@ -187,10 +229,8 @@
 <xsl:template match="info">
   <xsl:apply-templates select="p|text()" />  
 </xsl:template>
-<xsl:template match="p">
-  <xsl:copy-of select="." />
-</xsl:template>
-<xsl:template match="text()">
+
+<xsl:template match="p|text()">
   <xsl:copy-of select="." />
 </xsl:template>
 
