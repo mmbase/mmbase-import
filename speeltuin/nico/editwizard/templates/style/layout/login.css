@@ -1,0 +1,17 @@
+
+/**
+
+  Editwizard cascading style sheet.
+  You can override parts (cascading), by specifying an 'extrastyle' in your own 'base.xsl'.
+
+  @version  $Id: login.css,v 1.1 2003-11-30 19:53:53 nico Exp $
+  
+*/
+
+@import url("base.css");
+
+table.body {
+ width: 80%;
+ cell-spacing: 0;
+}
+
