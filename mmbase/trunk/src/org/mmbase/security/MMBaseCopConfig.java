@@ -12,7 +12,7 @@ import org.mmbase.util.logging.Logging;
  *  and authorization classes if needed, and they can be requested from this manager.
  */
 public class MMBaseCopConfig {
-    private static Logger log=Logging.getLoggerInstance(MMBaseCop.class.getName());
+    private static Logger log=Logging.getLoggerInstance(MMBaseCopConfig.class.getName());
 
     /** the configuration used by our system */
     private MMBaseCopConfig config;
