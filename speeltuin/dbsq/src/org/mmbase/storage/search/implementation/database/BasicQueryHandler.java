@@ -4,6 +4,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.database.MultiConnection;
 import java.sql.*;
@@ -19,7 +20,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class BasicQueryHandler implements SearchQueryHandler {
     
@@ -79,14 +80,16 @@ public class BasicQueryHandler implements SearchQueryHandler {
                 // Weak support for offset, while sql handler supports maxnumber:
                 // Replace query (offset, maxnumber) by query( 0, offset+maxnumber),
                 // skip <offset> results.
-                // TODO: implement alternative maxnumber
-                // sqlString = sqlHandler.toSql(query, sqlHandler, 0, offset+maxnumber);
+                ModifiableQuery modifiedQuery = new ModifiableQuery(query);
+                modifiedQuery.setOffset(0);
+                modifiedQuery.setMaxNumber(
+                    query.getOffset() + query.getMaxNumber());
+                sqlString = sqlHandler.toSql(modifiedQuery, sqlHandler);
             } else {
                 sqlString = sqlHandler.toSql(query, sqlHandler);
             }
             
             // Execute the SQL and store results as cluster-/real nodes.
-            // TODO: implement offset/limit here when not supported by database.
             MMJdbc2NodeInterface database = mmbase.getDatabase();
             con = mmbase.getConnection();
             stmt = con.createStatement();
@@ -101,23 +104,33 @@ public class BasicQueryHandler implements SearchQueryHandler {
             
             // Read results.
             // Truncate results to provide weak support for maxnumber.
-            while (rs.next() && (sqlHandlerSupportsMaxNumber || results.size() < query.getMaxNumber())) {
+            while (rs.next() && (sqlHandlerSupportsMaxNumber 
+                    || results.size() < query.getMaxNumber())) {
                 MMObjectNode node = null;
                 if (builder instanceof ClusterBuilder) {
                     // Cluster nodes.
                     node = new ClusterNode(builder, steps.size());
+                } else if (builder instanceof ResultBuilder) {
+                    // Result nodes.
+                    node = new ResultNode((ResultBuilder) builder);
                 } else {
                     // Real nodes.
                     node = new MMObjectNode(builder);
                 }
                 for (int i = 0; i < fields.length; i++) {
-                    String fieldName = fields[i].getFieldName();
-                    int fieldType = fields[i].getType();
-                    String prefix = "";
+                    String fieldName;
+                    String prefix;
                     if (builder instanceof ClusterBuilder) {
-                        // Prefix for cluster nodes.
+                        fieldName = fields[i].getFieldName();
                         prefix = fields[i].getStep().getAlias() + ".";
+                    } else if (builder instanceof ResultBuilder) {
+                        fieldName = fields[i].getAlias();
+                        prefix = "";
+                    } else {
+                        fieldName = fields[i].getFieldName();
+                        prefix = "";
                     }
+                    int fieldType = fields[i].getType();
                     // TODO: (later) use alternative to decodeDBnodeField, to
                     // circumvent the code in decodeDBnodeField that tries to
                     // reverse replacement of "disallowed" fieldnames.
@@ -145,22 +158,21 @@ public class BasicQueryHandler implements SearchQueryHandler {
     public int getSupportLevel(int feature, SearchQuery query) throws SearchQueryException {
         int supportLevel;
         switch (feature) {
-// TODO: uncomment when weak support for MAX NUMBER and OFFSET implemented.            
-//            case SearchQueryHandler.FEATURE_OFFSET:
-//                // When sql handler does not support OFFSET, this query handler
-//                // provides weak support by skipping resultsets.
-//                // (falls through)
-//            case SearchQueryHandler.FEATURE_MAX_NUMBER:
-//                // When sql handler does not support MAX NUMBER, this query
-//                // handler provides weak support by truncating resultsets.
-//                int handlerSupport = sqlHandler.getSupportLevel(feature, query);
-//                if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
-//                    supportLevel = SearchQueryHandler.SUPPORT_WEAK;
-//                } else {
-//                    supportLevel = handlerSupport;
-//                }
-//                break;
-//                
+            case SearchQueryHandler.FEATURE_OFFSET:
+                // When sql handler does not support OFFSET, this query handler
+                // provides weak support by skipping resultsets.
+                // (falls through)
+            case SearchQueryHandler.FEATURE_MAX_NUMBER:
+                // When sql handler does not support MAX NUMBER, this query
+                // handler provides weak support by truncating resultsets.
+                int handlerSupport = sqlHandler.getSupportLevel(feature, query);
+                if (handlerSupport == SearchQueryHandler.SUPPORT_NONE) {
+                    supportLevel = SearchQueryHandler.SUPPORT_WEAK;
+                } else {
+                    supportLevel = handlerSupport;
+                }
+                break;
+                
             default:
                 supportLevel = sqlHandler.getSupportLevel(feature, query);
         }

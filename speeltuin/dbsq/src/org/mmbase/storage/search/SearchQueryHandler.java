@@ -7,7 +7,7 @@ import org.mmbase.module.core.MMObjectBuilder;
  * Defines methods for an object that handles search query requests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface SearchQueryHandler {
     /**
@@ -74,6 +74,8 @@ public interface SearchQueryHandler {
      * Processes a search query, returns the result as a list of nodes.
      * Depending on the specified builder, the results will be:
      * <ul>
+     * <li>Resultnodes, with fields named according to the field aliases 
+     * specified by the query.
      * <li>Clusternodes, with fields named 
      * <code>&lt;step alias&gt;.&lt;field name&gt;</code>, where
      * the step alias is required to be of the form 
@@ -85,10 +87,14 @@ public interface SearchQueryHandler {
      * the query.
      * </ul>
      * @param query The search query.
-     * @param builder The builder for the result nodes. Specify
+     * @param builder The builder for the result nodes. Specify a
+     *        {@link ResultBuilder ResultBuilder}
+     *        to get resultnodes.
      *        {@link org.mmbase.module.core.ClusterBuilder ClusterBuilder}
      *        to get clusternodes.
      * @return The resulting nodes.
+     * @see ResultNode
+     * @see org.mmbase.module.core.ClusterNode
      */
     public List getNodes(SearchQuery query, MMObjectBuilder builder)
     throws SearchQueryException;

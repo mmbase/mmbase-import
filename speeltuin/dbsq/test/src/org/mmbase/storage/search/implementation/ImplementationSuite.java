@@ -6,7 +6,7 @@ import junit.framework.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class ImplementationSuite extends TestCase {
     
@@ -50,6 +50,7 @@ public class ImplementationSuite extends TestCase {
         suite.addTest(org.mmbase.storage.search.implementation.BasicStepFieldTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.BasicStringSearchConstraintTest.suite());
         suite.addTest(org.mmbase.storage.search.implementation.database.DatabaseSuite.suite());
+        suite.addTest(org.mmbase.storage.search.implementation.ModifiableQueryTest.suite());
         //:JUNIT--
         //This value MUST ALWAYS be returned from this function.
         return suite;

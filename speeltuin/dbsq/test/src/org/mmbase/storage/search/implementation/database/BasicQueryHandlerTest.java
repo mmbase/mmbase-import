@@ -18,7 +18,7 @@ import java.sql.*;
  * JUnit tests.
  *
  * @author Rob van Maris
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class BasicQueryHandlerTest extends TestCase {
     
@@ -187,6 +187,88 @@ public class BasicQueryHandlerTest extends TestCase {
             assert(!iResultNodes.hasNext());
         }
         
+        // Test for result nodes.
+        {
+            query = new BasicSearchQuery();
+            BasicStep poolsStep = query.addStep(pools);
+            poolsStep.setAlias("pools1");
+            FieldDefs poolsName = pools.getField("name");
+            BasicStepField poolsNameField = query.addField(poolsStep, poolsName);
+            poolsNameField.setAlias("a_name");
+            BasicSortOrder sortOrder = query.addSortOrder(poolsNameField);
+            sortOrder.setDirection(SortOrder.ORDER_ASCENDING);
+            FieldDefs poolsDescription = pools.getField("description");
+            query.addField(poolsStep, poolsDescription);
+            FieldDefs poolsOwner = pools.getField("owner");
+            BasicStepField poolsOwnerField = query.addField(poolsStep, poolsOwner);
+            BasicFieldValueConstraint constraint
+            = new BasicFieldValueConstraint(poolsOwnerField, JUNIT_USER);
+            query.setConstraint(constraint);
+            List resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
+            Iterator iResultNodes = resultNodes.iterator();
+            Iterator iTestNodes = testNodes.iterator();
+            while (iTestNodes.hasNext()) {
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+                assert(iResultNodes.hasNext());
+                MMObjectNode resultNode = (MMObjectNode) iResultNodes.next();
+                assert(resultNode instanceof ResultNode);
+                assert(resultNode.getBuilder() instanceof ResultBuilder);
+                assert(resultNode.getStringValue("a_name") != null
+                && resultNode.getStringValue("a_name").length() > 0);
+                assert(resultNode.getStringValue("a_name").equals(testNode.getStringValue("name")));
+                assert(resultNode.getStringValue("description") != null
+                && resultNode.getStringValue("description").length() > 0);
+                assert(resultNode.getStringValue("description").equals(testNode.getStringValue("description")));
+                assert(resultNode.getStringValue("owner") != null
+                && resultNode.getStringValue("owner").length() > 0);
+                assert(resultNode.getStringValue("owner").equals(testNode.getStringValue("owner")));
+            }
+            assert(!iResultNodes.hasNext());
+        }
+        
+        // Test for result nodes with aggregated fields.
+        {
+            query = new BasicSearchQuery(true);
+            BasicStep poolsStep = query.addStep(pools);
+            poolsStep.setAlias("pools1");
+            FieldDefs poolsName = pools.getField("name");
+            query.addAggregatedField(
+                poolsStep, poolsName, AggregatedField.AGGREGATION_TYPE_MIN).
+                setAlias("minName");
+            query.addAggregatedField(
+                poolsStep, poolsName, AggregatedField.AGGREGATION_TYPE_MAX).
+                setAlias("maxName");
+
+            FieldDefs poolsOwner = pools.getField("owner");
+            BasicStepField poolsOwnerField = new BasicStepField(poolsStep, poolsOwner);
+            BasicFieldValueConstraint constraint
+                = new BasicFieldValueConstraint(poolsOwnerField, JUNIT_USER);
+            query.setConstraint(constraint);
+            List resultNodes = instance.getNodes(query, new ResultBuilder(mmbase, query));
+            assert(resultNodes.size() == 1);
+            
+            // Determine min/max name from testnodes.
+            Iterator iTestNodes = testNodes.iterator();
+            String minName = 
+                ((MMObjectNode)testNodes.get(0)).getStringValue("name");
+            String maxName = 
+                ((MMObjectNode)testNodes.get(0)).getStringValue("name");
+            while (iTestNodes.hasNext()) {
+                MMObjectNode testNode = (MMObjectNode) iTestNodes.next();
+                String name = testNode.getStringValue("name");
+                if (name.compareTo(minName) < 0) {
+                    minName = name;
+                } else if (name.compareTo(maxName) > 0) {
+                    maxName = name;
+                }
+            }
+            
+            // Compare with resultnodes.
+            ResultNode result = (ResultNode) resultNodes.get(0);
+            assert(result.getStringValue("minName").equals(minName));
+            assert(result.getStringValue("maxName").equals(maxName));
+        }
+        
         query.setMaxNumber(100);
         // Query with maxNumber not supported, should throw SearchQueryException.
         try {
@@ -201,31 +283,37 @@ public class BasicQueryHandlerTest extends TestCase {
             instance.getNodes(query, mmbase.getClusterBuilder());
             fail("Query with offset not supported, should throw SearchQueryException.");
         } catch (SearchQueryException e) {}
+        
+        // TODO: (later) test whith partial/full support for offset/maxNumber
     }
     
     /** Test of getSupportLevel(int,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
     public void testGetSupportLevel() throws Exception {
         BasicSearchQuery query = new BasicSearchQuery();
         
-        // Support max number only when set to default (= -1).
+        // Support for max number optimal only when set to default (= -1),
+        // weak otherwise.
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setMaxNumber(100);
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
-        == SearchQueryHandler.SUPPORT_NONE);
+        == SearchQueryHandler.SUPPORT_WEAK);
         query.setMaxNumber(-1);
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_MAX_NUMBER, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         
-        // Support offset only when set to default (= 0).
+        // Support for offset optimal only when set to default (= 0),
+        // weak otherwise.
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
         query.setOffset(100);
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
-        == SearchQueryHandler.SUPPORT_NONE);
+        == SearchQueryHandler.SUPPORT_WEAK);
         query.setOffset(0);
         assert(instance.getSupportLevel(SearchQueryHandler.FEATURE_OFFSET, query)
         == SearchQueryHandler.SUPPORT_OPTIMAL);
+
+        // TODO: (later) test whith partial/full support for offset/maxNumber
     }
     
     /** Test of second getSupportLevel(Constraint,SearchQuery) method, of class org.mmbase.storage.search.implementation.database.BasicQueryHandler. */
