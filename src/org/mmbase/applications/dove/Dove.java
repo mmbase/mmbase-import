@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.47 2003-12-03 08:39:11 michiel Exp $
+ * @version $Id: Dove.java,v 1.48 2003-12-03 15:53:46 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -558,7 +558,9 @@ public class Dove extends AbstractDove {
                     Element parent = doc.createElement(PARENT);
                     out.appendChild(parent);
                     parent.setAttribute(ELM_TYPE,nmparent.getName());
-                } catch (NotFoundException nfe) {}
+                } catch (NotFoundException nfe) {
+                    log.debug("no parent available");
+                }
 
                 // descendants
                 NodeManagerList nmdesclist = nm.getDescendants();
@@ -581,7 +583,6 @@ public class Dove extends AbstractDove {
                     // Filter out the owner/otype/number/CacheCount fields and
                     // the virtual fields.
                     if (isDataField(null,fielddef)) {
-                        int dbtype = fielddef.getType();
                         Element field=doc.createElement(FIELD);
                         field.setAttribute(ELM_NAME,fname);
                         fields.appendChild(field);
@@ -915,7 +916,6 @@ public class Dove extends AbstractDove {
      * @return true if succesful, false if an error ocurred
      */
     protected boolean fillFields(String alias, org.mmbase.bridge.Node node, Element out, Map values, Map originalValues) {
-        NodeManager nm = node.getNodeManager();
         for (Iterator i = values.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry me = (Map.Entry)i.next();
             String key = (String)me.getKey();
