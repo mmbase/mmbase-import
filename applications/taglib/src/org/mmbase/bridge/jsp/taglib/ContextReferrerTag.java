@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextReferrerTag.java,v 1.55 2004-03-23 21:46:19 michiel Exp $
+ * @version $Id: ContextReferrerTag.java,v 1.56 2004-03-24 00:58:48 michiel Exp $
  * @see ContextTag
  */
 
@@ -197,9 +197,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             pageLog.debug("END Parsing JSP page: " + thisPage);
             thisPage = null;
         }
+        /*
         id = null;
         referid   = Attribute.NULL;
         contextId = Attribute.NULL;
+        */
         pageContextTag = null;
     }
 
@@ -310,7 +312,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      * @since MMBase-1.7
      */
 
-    final protected TagSupport findParentTag(Class clazz, String id, boolean exception) throws JspTagException {
+    final protected TagSupport findParentTag(Class clazz, String tagId, boolean exception) throws JspTagException {
         TagSupport cTag = (TagSupport) findAncestorWithClass((Tag) this, clazz);
         if (cTag == null) {
             if (exception) {
@@ -323,11 +325,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             }
         }
 
-        if (id != null) { // search further, if necessary
+        if (tagId != null) { // search further, if necessary
             if (log.isDebugEnabled()) {
-                log.debug(" with id ("  + id + ")");
+                log.debug(" with id ("  + tagId + ")");
             }
-            while (! id.equals(cTag.getId())) {
+            while (! tagId.equals(cTag.getId())) {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
                     if (exception) {
