@@ -9,9 +9,10 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
-import java.util.*;
-import javax.servlet.*;
-import org.mmbase.module.core.*;
+import java.util.Hashtable;
+import javax.servlet.ServletResponse;
+import javax.servlet.ServletRequest;
+
 
 /**
  * This interface represents a node's type information object - what used to be the 'builder'.
@@ -23,7 +24,7 @@ import org.mmbase.module.core.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.12 2002-01-31 10:05:08 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.13 2002-04-13 11:08:39 michiel Exp $
  */
 public interface NodeManager {
 
