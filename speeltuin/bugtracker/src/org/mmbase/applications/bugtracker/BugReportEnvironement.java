@@ -18,7 +18,7 @@ package org.mmbase.applications.bugtracker;
  * @mmbase-nodemanager-field databaseversion STRING
  * @mmbase-nodemanager-field jdbcdrivername STRING
  * @mmbase-nodemanager-field jdbcdriverversion STRING
- * @mmbase-nodemanager-field worked BOOLEAN
+ * @mmbase-nodemanager-field worked INTEGER
  */
 public class BugReportEnvironement {
     String osName;
