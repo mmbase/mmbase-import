@@ -954,7 +954,7 @@ Build-compiler: ${build.compiler}
 
 
     <property name="servlet.version" value="jakarta-servletapi-4"/>
-    <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat-4.0/archives/v4.0/${servlet.version}.tar.gz"/>
+    <property name="servlet.url" value="http://archive.apache.org/dist/jakarta/tomcat-4/archive/v4.0/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
     <available property="servlet.present"
                file="${download.dir}/${servlet.version}.tar.gz"/>
