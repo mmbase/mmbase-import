@@ -5,6 +5,7 @@
 <mm:import externid="postareaid" />
 <mm:import externid="postthreadid" />
 <mm:import externid="posterid" />
+<mm:import externid="logoutmodetype">open</mm:import> 
 <%@ include file="loadtranslations.jsp" %>
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
 <tr><td align="left">
@@ -245,7 +246,10 @@
     <mm:compare referid="pid$forumid" value="-1" inverse="true">
        <mm:node referid="pid$forumid"> 
          login: <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="pid$forumid" />"><mm:field name="account" /></a> 
+	 <mm:compare referid="logoutmodetype" value="open">
          [<a href="logout.jsp?forumid=<mm:write referid="forumid" />"><mm:write referid="mlg_Logout" /></a>]
+         </mm:compare>
+
        </mm:node> 
     </mm:compare>
     <mm:compare referid="pid$forumid" value="-1" >
