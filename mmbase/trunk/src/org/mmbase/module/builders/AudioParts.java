@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: AudioParts.java,v 1.16 2000-10-05 12:14:14 vpro Exp $
+$Id: AudioParts.java,v 1.17 2000-11-10 10:31:32 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2000/10/05 12:14:14  vpro
+Rico: removed limit on getGUIIndicator
+
 Revision 1.15  2000/08/01 09:49:40  install
 changed import
 
@@ -78,7 +81,7 @@ import org.mmbase.module.builders.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.16 2000-10-05 12:14:14 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.17 2000-11-10 10:31:32 vpro Exp $
  * 
  */
 public class AudioParts extends MMObjectBuilder {
@@ -334,11 +337,11 @@ public class AudioParts extends MMObjectBuilder {
 				if (url==null) {
 					System.out.println("Audioparts:getFromUrlCache: doGetUrl returns null, no cache put returning null");
 					return null;
-				} else if (url.startsWith("r")) {
+				} else if (url.charAt(0)=='r') {
 						// debug("getFromUrlCache : Putting Cache entry: "+url);
 						urlCache.put(new Integer(apNumber),url);
 						return url;
-				} else if (url.startsWith("p")) {
+				} else if (url.charAt(0)=='p') {
 						int pos = 0;
 						StringBuffer urlsb = new StringBuffer(url);
 						pos = url.indexOf(".ra");
@@ -582,7 +585,7 @@ public class AudioParts extends MMObjectBuilder {
 		// Get the title info by retrieving the node for this number (which is either an audiopart ).
 		MMObjectNode node = getNode(apNumber); // check this
 		if (node != null) {
-			title = node.getStringValue("title");
+			title = makeRealCompatible(node.getStringValue("title"));
 			if (title == null)
 				title="";
 		} else {
@@ -593,7 +596,7 @@ public class AudioParts extends MMObjectBuilder {
 		Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),"groups");
 		if (e.hasMoreElements()) {
 			MMObjectNode groupsNode = (MMObjectNode) e.nextElement();
-			author = groupsNode.getStringValue("name");
+			author = makeRealCompatible(groupsNode.getStringValue("name"));
 		}
 		if (author == null)
 			author="";
@@ -877,6 +880,32 @@ public class AudioParts extends MMObjectBuilder {
 		}
 	}
 
+
+   /**
+     * Removes RealPlayer incompatible characters from the string.
+     * '#' characters are replaced by space characters.
+     * Characters that are allowed are every letter or digit and '.', '-' and '_' chars.
+     * @param s the String that needs to be fixed.
+     * @return a Nedstat compatible String.
+     */
+    private String makeRealCompatible(String s) {
+        if (s != null) {
+            char[] sArray = s.replace('#',' ').toCharArray();
+            char[] dArray = new char[sArray.length];
+
+            int j = 0;
+            for (int i=0;i<sArray.length;i++) {
+                if (Character.isLetterOrDigit(sArray[i]) ||(sArray[i]==' ')||(sArray[i]=='.')||(sArray[i]=='-')||(sArray[i]=='_')) {
+                    dArray[j] = sArray[i];
+                    j++;
+                }
+            }
+            //Only use the characters until the first character with value=0. This is from index 0 to j-1.
+            return (new String(dArray)).substring(0,j);
+        } else {
+            return null;
+        }
+    }
 
 	/*
 		Test
