@@ -32,7 +32,7 @@ public class RelatedTag extends ListTag {
      * @param type a comma separated list of nodeManagers
      */
     public void setPath(String path) throws JspTagException {
-        log.debug("setting path to " + path);
+        if (log.isDebugEnabled()) log.debug("setting path to " + path);
         this.relatedPathString = getAttributeValue(path);
     }
 
