@@ -9,6 +9,8 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.security;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 import java.util.*;
 
 /**
@@ -16,9 +18,12 @@ import java.util.*;
  * the security context
  * @javadoc
  * @author Eduard Witteveen
- * @version $Id: Rank.java,v 1.8 2003-06-16 17:25:46 michiel Exp $
+ * @author Pierre van Rooden
+ * @author Michiel Meeuwissen
+ * @version $Id: Rank.java,v 1.9 2003-06-26 20:51:15 michiel Exp $
  */
 public final class Rank {
+    private static Logger log = Logging.getLoggerInstance(Rank.class);
     /** int value for the anonymous Rank*/
     public final static int ANONYMOUS_INT = 0;
 
@@ -38,6 +43,7 @@ public final class Rank {
     public final static Rank ADMIN = new Rank(ADMIN_INT, "administrator");
 
     private static Map ranks = new HashMap();
+
 
     static {
         registerRank(ANONYMOUS); 
@@ -79,14 +85,32 @@ public final class Rank {
         return (Rank) ranks.get(rankDesc);
     }
 
-    protected static void registerRank(Rank rank) {
-        ranks.put(rank.toString(), rank);
+    protected static Rank registerRank(Rank rank) {
+        Rank prev = (Rank) ranks.put(rank.toString(), rank);
+        if (prev == null) {
+            log.service("Registered rank " + rank);
+        } else {
+            log.service("Replaced rank " + rank);
+        }
+        return prev;
     }
+
+    /**
+     * @since MMBase-1.7
+     */
 
     public static Rank registerRank(int rank, String rankDesc) {
         Rank rankObject = new Rank(rank, rankDesc);
         registerRank(rankObject);
         return rankObject;
+    }
+
+    /**
+     * @since MMBase-1.7
+     */
+
+    public static Rank unregisterRank(String rankDesc) {
+        return (Rank) ranks.remove(rankDesc);
     }
 
     public static Set getRanks() {
@@ -96,7 +120,7 @@ public final class Rank {
     public boolean equals(Object o) {
         if (o instanceof Rank) {
             Rank r = (Rank) o;
-            return r.rank == rank;
+            return r.rank == rank && r.description.equals(description);
         } else {
             return false;
         }
