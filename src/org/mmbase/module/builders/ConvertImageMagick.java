@@ -22,7 +22,7 @@ import org.mmbase.util.logging.Logger;
  *
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: ConvertImageMagick.java,v 1.35 2002-04-22 15:29:35 pierre Exp $
+ * @version $Id: ConvertImageMagick.java,v 1.36 2002-05-07 15:23:38 michiel Exp $
  */
 public class ConvertImageMagick implements ImageConvertInterface {
     private static Logger log = Logging.getLoggerInstance(ConvertImageMagick.class.getName());
@@ -431,20 +431,12 @@ public class ConvertImageMagick implements ImageConvertInterface {
             log.debug("retrieved all information");
             byte[] image=imagestream.toByteArray();
 
-            // No bytes in the image -
-            // ImageMagick failed to create a proper image.
-            // return null so this image is not by accident stored in the database
-            if(image.length < 1) {
-                log.error("Imagemagick conversion did not succeed. Returning null.");
-                return null;
-            }
-
             // log what came on STDERR
             ByteArrayOutputStream errorstream = new ByteArrayOutputStream();
-            size=0;
-            while((size=err.read(inputbuffer))>0) {
-                log.debug("copying "+size+" bytes from ERROR-stream ");
-                errorstream.write(inputbuffer,0,size);
+            size = 0;
+            while((size = err.read(inputbuffer))>0) {
+                log.debug("copying " + size+" bytes from ERROR-stream ");
+                errorstream.write(inputbuffer, 0, size);
             }
             byte[]  errorMessage = errorstream.toByteArray();
             if(errorMessage.length > 0) {
@@ -457,9 +449,19 @@ public class ConvertImageMagick implements ImageConvertInterface {
                 log.debug("No information on stderr found");
             }
 
-            // print some info and return....
-            log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");
-            return image;
+            if(image.length < 1) {
+            // No bytes in the image -
+            // ImageMagick failed to create a proper image.
+            // return null so this image is not by accident stored in the database
+                log.error("Imagemagick conversion did not succeed. Returning null.");
+                return null;
+            } else {
+                // print some info and return....
+                if (log.isServiceEnabled()) {
+                    log.service("converted image(#" + pict.length + " bytes)  to '" + format + "'-image(#" + image.length + " bytes)('" + command + "')");
+                }                
+                return image;
+            }
         }
         catch (IOException e) {
             log.error("converting image with command: '" + command + "' failed  with reason: '" + e.getMessage() + "'");
