@@ -1,0 +1,15 @@
+<!--
+   mmbobconfig.dtd
+-->
+
+<!ELEMENT mmbobconfig (forum*)>
+
+<!ELEMENT forum (generatedata*)>
+<!ATTLIST forum id CDATA #IMPLIED>
+<!ATTLIST forum account CDATA #IMPLIED>
+<!ATTLIST forum password CDATA #IMPLIED>
+
+<!ELEMENT generatedata (#PCDATA)>
+<!ATTLIST generatedata role CDATA #IMPLIED>
+<!ATTLIST generatedata file CDATA #IMPLIED>
+<!ATTLIST generatedata tokenizer CDATA #IMPLIED>
