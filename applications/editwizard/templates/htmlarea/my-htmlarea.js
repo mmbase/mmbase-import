@@ -23,7 +23,7 @@ function customize(editor, editorURL) {
     ['bold', 'italic', 'underline', 'separator',
      'insertorderedlist', 'insertunorderedlist', 'separator',
      'cut', 'copy', 'paste', 'separator',
-     'undo', 'redo', 'separator',
+//     'undo', 'redo', 'separator',
      'my-createlink', 'separator',
      'htmlmode', 'separator',
      'my-validatesave'
