@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
-// import org.mmbase.security.*;
+import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
@@ -54,7 +54,7 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
     * @return a node of type <code>Relation</code>
     */
     public Node createNode() {
-//        cloud.assert(Operation.CREATE,typeRelNode.getNumber());
+        cloud.assert(Operation.CREATE,typeRelNode.getNumber());
         // create object as a temporary node
         int id = cloud.uniqueId();
         String currentObjectContext = BasicCloudContext.tmpObjectManager.createTmpNode(builder.getTableName(), cloud.getAccount(), ""+id);

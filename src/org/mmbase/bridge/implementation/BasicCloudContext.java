@@ -11,7 +11,9 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.implementation;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.security.*;
 import java.util.*;
+import java.io.*;
 import org.mmbase.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -39,6 +41,12 @@ public class BasicCloudContext implements CloudContext {
     */
 	static TransactionManager transactionManager = null;
 
+	/**
+	* Securitymanager
+	*/
+	public static org.mmbase.security.SecurityManager securityManager= null;
+	
+	
     // map of clouds by name
     private static HashMap localClouds = new HashMap();
 
@@ -55,6 +63,12 @@ public class BasicCloudContext implements CloudContext {
         if (i!=null) {
             mmb = (MMBase)org.mmbase.module.Module.getModule("MMBASEROOT");
 		
+            try {
+                securityManager = new org.mmbase.security.SecurityManager(MMBaseContext.getConfigPath()+File.separator+"security"+File.separator+"security.xml");
+            } catch (Exception e) {
+                throw new BasicBridgeException(e.toString());
+            }
+
             // create transaction manager and temporary node manager
             tmpObjectManager = new TemporaryNodeManager(mmb);
 		    transactionManager = new TransactionManager(mmb,tmpObjectManager);
