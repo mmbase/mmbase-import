@@ -2,7 +2,7 @@
 %><%@ include file="page_base_functionality.jsp"
 %><mm:import externid="userlogon" from="parameters" />
 <mm:content language="$config.lang" country="$config.country" type="text/html" expires="0" jspvar="locale">
-<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud">
+<mm:cloud method="$config.method" loginpage="login.jsp" logon="$userlogon" sessionname="$config.session" jspvar="cloud" rank="$rank">
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
 <mm:import externid="page" vartype="integer" from="parameters"><mm:write referid="config.indexoffset" /></mm:import>

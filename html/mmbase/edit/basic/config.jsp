@@ -77,7 +77,11 @@
         <td><input type="text" size="30" name="mmjspeditors_session" value="<mm:write referid="config.session" />" /></td>
       </tr>
       <tr>
-        <td><%= m.getString("config.language") %></td>  
+        <td>
+          <mm:write referid="config.lang">
+            <mm:compare value="en" inverse="true">language/</mm:compare>
+          </mm:write>
+          <%= m.getString("config.language") %></td>  
         <td>
           <input type="text" size="30" name="mmjspeditors_language" value="<mm:write referid="config.lang" />" />
           <select name="languages" onChange="document.forms['config'].elements['mmjspeditors_language'].value = document.forms['config'].elements['languages'].value;">
@@ -110,7 +114,7 @@
       <tr><td colspan="2"><input type="submit"  name="config" value="config" /></td></tr>
     </table>
   </form>
-  <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud">
+  <mm:cloud method="$config.method" loginpage="login.jsp" sessionname="$config.session" jspvar="cloud" rank="$rank">
     <%@ include file="foot.jsp"  %>      
   </mm:cloud>
 </mm:content>

@@ -1,5 +1,6 @@
 <mm:import externid="stylesheet">style/default.css</mm:import>
-<mm:import externid="rank">basic user</mm:import>
+<mm:import id="rank"><%= org.mmbase.util.xml.UtilReader.get("editors.xml").getProperties().getProperty("rank", "basic user")%></mm:import>
+
 <%!
    String getPrompt(java.util.ResourceBundle m, String key) {
      try {
