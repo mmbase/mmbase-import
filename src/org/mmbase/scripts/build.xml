@@ -239,7 +239,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
   <target name="lib" description="Create the lib directory"
           depends="init,expand.servlet,expand.tomcat,expand.xalan,expand.jai,
-                   expand.log4j,expand.junit">
+                   expand.log4j,expand.junit,get.postgresql">
     <mkdir dir="${build.dir}/mmbase/lib"/>
     <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
     <copy file="${webserver.jar}" todir="${build.dir}/mmbase/lib"/>
@@ -250,6 +250,7 @@ Change directory to ${build.dir}/orion and run:
     <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
     <property name="log4j.dtd" value="jar:file:${build.dir}/mmbase/lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd" />
     <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
+    <copy file="${postgresql.jar}" todir="${build.dir}/mmbase/lib"/>
   </target>
 
   
@@ -385,6 +386,8 @@ Change directory to ${build.dir}/orion and run:
                classname="junit.runner.BaseTestRunner"/>
     <available property="tomcat.in.classpath" 
                classname="org.apache.tomcat.startup.Tomcat"/>
+    <available property="postgresql.in.classpath"
+               classname="org.postgresql.jdbc2.Statement"/>
     <!-- check directory structure -->
     <available property="dir.src.present"
                file="${source-src.dir}"/>
@@ -467,6 +470,14 @@ Change directory to ${build.dir}/orion and run:
     <echo message=""/>
   </target>
 
+  <target name="check.optional.postgresql" depends="init.compile.cust"
+          unless="postgresql.in.classpath">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package PostgreSQL."/>
+    <echo message="PostgreSQL support for MMBase will not be compiled,"/> 
+    <echo message="but MMBase will run without this package though."/>
+    <echo message=""/>
+  </target>
 
   <!-- =================================================================== -->
   <!-- Check packages needed by a specific servlet-engine                  -->
@@ -486,7 +497,8 @@ Change directory to ${build.dir}/orion and run:
   <target name="check.package.all"
           depends="check.needed.xerces,check.needed.servlet,
                    check.optional.xalan,check.optional.jai,check.optional.log4j,
-                   check.optional.junit,check.needed.for.tomcat"/>
+                   check.optional.junit,check.needed.for.tomcat,
+                   check.optional.postgresql"/>
 
 
   <!-- =================================================================== -->
@@ -515,6 +527,7 @@ Change directory to ${build.dir}/orion and run:
       <exclude name="**/logging/log4j/**" unless="log4j.in.classpath"/>
       <exclude name="**/logging/Performance.java" unless="log4j.in.classpath"/>
       <exclude name="**/test/bridge/**" unless="junit.in.classpath"/>
+      <exclude name="org/mmbase/module/database/support/PostgreSQL71.java" unless="postgresql.in.classpath"/>
     </javac>
   </target>
 
@@ -1075,6 +1088,12 @@ Change directory to ${build.dir}/orion and run:
     <property name="mysql.jar" value="${download.dir}/${mysql.version}.jar"/>
     <available property="mysql.present"
                file="${download.dir}/${mysql.version}.jar"/>
+    <!-- PostgresSQL -->
+    <property name="postgresql.version" value="jdbc7.1-1.2"/>
+    <property name="postgresql.url" value="http://jdbc.fastcrypt.com/${postgresql.version}.jar"/>
+    <property name="postgresql.jar" value="${download.dir}/${postgresql.version}.jar"/>
+    <available property="postgresql.present"
+               file="${download.dir}/${postgresql.version}.jar"/>
     <!-- HypersonicSQL -->
     <property name="hsql.version" value="hsql_142"/>
     <property name="hsql.url" value="http://download.sourceforge.net/hsql/${hsql.version}.zip"/>
@@ -1169,6 +1188,12 @@ Change directory to ${build.dir}/orion and run:
   <target name="get.mysql" depends="init.get" unless="mysql.present">
     <get src="${mysql.url}"
          dest="${download.dir}/${mysql.version}.jar"
+         verbose="on"/>
+  </target>
+
+  <target name="get.postgresql" depends="init.get" unless="postgresql.present">
+    <get src="${postgresql.url}"
+         dest="${download.dir}/${postgresql.version}.jar"
          verbose="on"/>
   </target>
 
