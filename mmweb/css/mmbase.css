@@ -126,7 +126,10 @@ strong
 	color: #003333;
 }
 
-#pagecontent { margin: 0 0 20px 150px; }
+#pagecontent
+{
+	margin: 0 0 20px 150px;
+}
 
 #footer
 {
@@ -139,6 +142,7 @@ strong
 	border-style: solid;
 	text-align: center;
 	width: 100%;
+	display: block;
 }
 
 .layout { width: 100%; }
@@ -332,6 +336,18 @@ input
 	text-align: left;
 	font-family: "Lucide Grande", Arial, sans-serif;
 	background-color: #D9DDDE;
+	margin: 2px;
+	padding: 2px;
+	font-size: 1.2em;
+}
+
+/* this is for the radiobuttons on the homepage
+   MSIE shows a background color */
+input.ie
+{
+	text-align: left;
+	font-family: "Lucide Grande", Arial, sans-serif;
+	background-color: #fff;
 	margin: 2px;
 	padding: 2px;
 	font-size: 1.2em;
@@ -541,3 +557,15 @@ textarea {
 }
 .resultcomment { color: #666; }
 /* end search*/
+
+/* warning trickered by user action */
+.warning
+{
+	border-style: double;
+	border-color: #C03;
+	border-width: 2px;
+	background-color: #F99;
+	margin: 6px;
+	padding: 10px;
+	width: 60%;
+}
