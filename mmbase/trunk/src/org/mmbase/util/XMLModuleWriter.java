@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.util;
 
@@ -15,12 +15,16 @@ import org.mmbase.module.*;
 import org.mmbase.module.core.*;
 
 import org.mmbase.module.corebuilders.*;
+import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen
- *
+ * @version 19 Apr 2001
  */
 public class XMLModuleWriter  {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XMLModuleWriter.class.getName());
 
     public static boolean writeXMLFile(String filename,Module mod) {
         String header = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"+
@@ -62,7 +66,7 @@ public class XMLModuleWriter  {
 
         // print it
         saveFile(filename,body);
-        return(true);
+        return true;
     }
 
 
@@ -75,8 +79,9 @@ public class XMLModuleWriter  {
             scan.flush();
             scan.close();
         } catch(Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
+	    log.error(Logging.stackTrace(e));
         }
-        return(true);
+        return true;
     }
 }

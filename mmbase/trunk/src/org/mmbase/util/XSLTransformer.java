@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.util;
 
@@ -18,13 +18,18 @@ import org.apache.xalan.xslt.*;
 import org.apache.xalan.xpath.xml.*;
 import org.apache.xalan.xpath.xdom.*;
 
+import org.mmbase.util.logging.*;
+
 /**
  * Make XSL Transformations
  *
  * @author Case Roole, cjr@dds.nl
- * @version $Id: XSLTransformer.java,v 1.5 2000-10-31 14:52:28 vpro Exp $
+ * @version $Id: XSLTransformer.java,v 1.6 2001-04-19 15:32:26 pierre Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.5  2000/10/31 14:52:28  vpro
+ * Rico: removed import
+ *
  * Revision 1.4  2000/10/19 11:54:12  case
  * cjr: Set entityresolver for XSL transformations so local DTD's of
  * XML documents are found. (Formerly, DTD's were looked for at mmbase.org,
@@ -43,31 +48,43 @@ import org.apache.xalan.xpath.xdom.*;
  *
  */
 public class XSLTransformer {
+
+    // logger
+    private static Logger log = Logging.getLoggerInstance(XSLTransformer.class.getName());
+
     private XSLTProcessor processor;
     /**
-     * empty constructor
+     * Empty constructor
      */
     public XSLTransformer() {}
 
-
-    public String transform(String xmlPath, String xslPath) {
-	return transform(xmlPath,xslPath,false);
-    }
-
     /**
-     * Transform an XML document using a certain XSL document. 
+     * Transform an XML document using a certain XSL document.
      *
      * @param xmlPath Path to XML file
      * @param xslPath Path to XSL file
      * @return String with converted XML document
      */
+    public String transform(String xmlPath, String xslPath) {
+	return transform(xmlPath,xslPath,false);
+    }
+
+    /**
+     * Transform an XML document using a certain XSL document.
+     *
+     * @param xmlPath Path to XML file
+     * @param xslPath Path to XSL file
+     * @param cutXML if <code>true</code>, cuts the &lt;?xml&gt; line that normally starts an
+     *               xml document
+     * @return String with converted XML document
+     */
     public String transform(String xmlPath, String xslPath, boolean cutXML) {
         try {
-	    
+
 	    XMLParserLiaison liaison = (XMLParserLiaison)(new XercesLiaison());
             EntityResolver resolver = new XMLEntityResolver();
             liaison.setEntityResolver(resolver);
-	    
+
             processor = XSLTProcessorFactory.getProcessor(liaison);
 
             StringWriter res = new StringWriter();
@@ -89,13 +106,17 @@ public class XSLTransformer {
 	    return s;
 
         } catch (SAXException e) {
-	    e.printStackTrace(System.out);
+            log.error(e.getMessage());
+	    log.error(Logging.stackTrace(e));
             return "Fout bij XSLT tranformatie: "+e.getMessage();
         }
     }
 
+    /**
+     * Invocation of the class from the commandline for testing.
+     */
     public static void main(String[] argv) {
         XSLTransformer T = new XSLTransformer();
-        System.out.println(T.transform("/opt2/mmbase/org/mmbase/config/default/applications/MyYahoo.xml","/opt2/mmbase/org/mmbase/config/default/xslt/appview.xsl"));
+        log.info(T.transform("/opt2/mmbase/org/mmbase/config/default/applications/MyYahoo.xml","/opt2/mmbase/org/mmbase/config/default/xslt/appview.xsl"));
     }
 }
