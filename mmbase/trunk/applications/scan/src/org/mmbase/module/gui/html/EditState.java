@@ -360,4 +360,8 @@ public class EditState {
 	public Hashtable getRelationTable() {
 		return(curNode.getRelationTable());
 	}
+
+	public String getLanguage() {
+		return(mmBase.getLanguage());
+	}
 }

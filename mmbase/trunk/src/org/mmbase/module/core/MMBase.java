@@ -485,23 +485,23 @@ public class MMBase extends ProcessorModule  {
 
 		initBuilder("typedef",path);
 		TypeDef=(TypeDef)getMMObject("typedef");
-		TypeDef.init();
+		//TypeDef.init();
 
 		initBuilder("fielddef",path);
 		FieldDef=(FieldDef)getMMObject("fielddef");
-		FieldDef.init();
+		//FieldDef.init();
 
 		initBuilder("reldef",path);
 		RelDef=(RelDef)getMMObject("reldef");
-		RelDef.init();
+		//RelDef.init();
 		
 		initBuilder("typerel",path);
 		TypeRel=(TypeRel)getMMObject("typerel");
-		TypeRel.init();
+		//TypeRel.init();
 
 		initBuilder("insrel",path);
 		InsRel=(InsRel)getMMObject("insrel");
-		InsRel.init();
+		//InsRel.init();
 
 		initBuilder("oalias",path);
 		OAlias=(OAlias)getMMObject("oalias");
@@ -522,7 +522,7 @@ public class MMBase extends ProcessorModule  {
 		Enumeration t = mmobjs.elements(); 
 		while (t.hasMoreElements()) {
 			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
-			fbul.init();
+			//fbul.init();
 		}
 		return(true);
 	}
@@ -533,7 +533,7 @@ public class MMBase extends ProcessorModule  {
 		if (!(new File(path+builder+".xml")).exists()) return(false);
 		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
 		Hashtable tmp=parser.getDescriptions();
-		String description=(String)tmp.get("us");
+		String description=(String)tmp.get(language);
 		String dutchsname="Default!";
 		String objectname=builder; // should this allow override in file ?
 		int searchage=parser.getSearchAge();
@@ -566,7 +566,7 @@ public class MMBase extends ProcessorModule  {
 				bul.setClassName(classname);
 				bul.setSearchAge(""+searchage);
 				bul.setXMLValues(parser.getFieldDefs()); // temp  ?
-				//bul.init();
+				bul.init();
 				// bul.getEditFields();
 				mmobjs.put(objectname,bul);
 

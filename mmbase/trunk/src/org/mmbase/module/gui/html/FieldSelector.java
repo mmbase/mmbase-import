@@ -113,13 +113,14 @@ public class FieldSelector implements CommandHandlerInterface {
 	 */
 	Vector getEditFields(EditState ed,StringTagger args) {
 		Vector results=new Vector();
+		String language=ed.getLanguage();
 		MMObjectBuilder obj=ed.getBuilder();
 		String key,val;
 		Vector tempresults=obj.getEditFields();
 		FieldDefs def;
 		for (Enumeration h=tempresults.elements();h.hasMoreElements();) {
 			def=(FieldDefs)h.nextElement();
-			results.addElement(def.getGUIName());
+			results.addElement(def.getGUIName(language));
 			results.addElement(def.getGUIType());
 			key=def.getDBName();
 			val=ed.getSearchValue(key);

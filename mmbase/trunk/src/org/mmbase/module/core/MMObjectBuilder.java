@@ -93,6 +93,7 @@ public class MMObjectBuilder extends MMTable {
 				//mmb.TypeDef.insert("system",tableName,description);
 				MMObjectNode node=mmb.TypeDef.getNewNode("system");
 				node.setValue("name",tableName);
+				if (description==null) description="not defined in this langauge";
 				node.setValue("description",description);
 				node.insert("system");
 				oType=mmb.TypeDef.getIntValue(tableName);
@@ -1412,7 +1413,7 @@ public class MMObjectBuilder extends MMTable {
 	*/
 	public String getDutchSName() {
 		if (singularNames!=null) {
-			String tmp=(String)singularNames.get("us");
+			String tmp=(String)singularNames.get(mmb.getLanguage());
 			if (tmp!=null) {
 				return(tmp);
 			}
