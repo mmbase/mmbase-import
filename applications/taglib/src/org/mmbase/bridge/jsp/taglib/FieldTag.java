@@ -24,28 +24,39 @@ import org.mmbase.util.logging.Logging;
  * 
  * @author Michiel Meeuwissen
  */
-public class FieldTag extends FieldReferrerTag implements FieldProvider {
+public class FieldTag extends FieldReferrerTag implements FieldProvider, Writer {
     
     private static Logger log = Logging.getLoggerInstance(FieldTag.class.getName()); 
+
+    // Writer implementation:
+    protected WriterHelper helper = new WriterHelper();
+    public void setType(String t) throws JspTagException { 
+        helper.setType(t);
+    }
+    public void setJspvar(String j) {
+        helper.setJspvar(j);
+    }
+    public void setSession(String s) throws JspTagException {
+        helper.setSession(getAttributeValue(s));
+    }
+    public void setWrite(String w) throws JspTagException {
+        helper.setWrite(getAttributeBoolean(w));
+    }
+    public Object getValue() {
+        return helper.getValue();
+    }
     
     protected Node   node;
     protected NodeProvider nodeProvider;
     protected Field  field;
     protected String fieldName;
     private   String name;   
-    private   String head;
        
     public void setName(String n) throws JspTagException {
         name = getAttributeValue(n);
     }
 
-    /**
-     * @deprecated Use FieldInfo under FieldTag
-     */
-    public void setHead(String h) throws JspTagException {
-        head = getAttributeValue(h);
-    }
-
+    // NodeProvider Implementation
     /**
      * A fieldprovider also provides a node.
      */
@@ -64,6 +75,8 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider {
         nodeProvider.setModified();
     }
 
+
+    
     public Field getFieldVar() {
         return field;
     }
@@ -73,7 +86,7 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider {
             field = getNodeVar().getNodeManager().getField(n);
             fieldName = n;
             if (getReferid() != null) {
-                throw new JspTagException ("Could not indicate both  'referid' and 'name/head' attribute");  
+                throw new JspTagException ("Could not indicate both  'referid' and 'name' attribute");  
             }
         } else { 
             if (getReferid() == null) {
@@ -99,65 +112,40 @@ public class FieldTag extends FieldReferrerTag implements FieldProvider {
     public int doStartTag() throws JspTagException {
         node= null;
         fieldName = name;
-        if (head != null) { // should be deprecated.
-            if (name != null) {
-                throw new JspTagException ("Could not indicate both  'name' and 'head' attribute");  
+        setFieldVar(fieldName);                       
+        // found the node now. Now we can decide what must be shown:
+        Object value;
+        // now also 'node' is availabe;
+        if (field == null) { // some function, or 'referid' was used.
+            if (getReferid() != null) { // referid
+                value = getString(getReferid());
+            } else {                    // function
+                value = getNodeVar().getStringValue(fieldName);
             }
-            fieldName = head;
+        } else { // a field was found!
+            if (field.getType() == Field.TYPE_BYTE) {        
+                value = node.getByteValue(name);
+            } else {    
+                value = convert(getNodeVar().getStringValue(fieldName));
+            }
         }
-        setFieldVar(fieldName);               
+        helper.setValue(value);
+        helper.setJspVar(pageContext);        
+        if (getId() != null) {
+            getContextTag().register(getId(), helper.getValue());
+        }
+        
         return EVAL_BODY_TAG;
     }
 
     /**
      * write the value of the field.
      **/
-    public int doAfterBody() throws JspTagException {               
-        // found the node now. Now we can decide what must be shown:
-        String show;
-        // now also 'node' is availabe;
-        if (head == null) { 
-            if (field == null) { // some function, or 'referid' was used.
-                if (getReferid() != null) { // referid
-                    show = getString(getReferid());
-                } else {                    // function
-                    show = getNodeVar().getStringValue(fieldName);
-                }
-            } else { // a field was found!
-                if (field.getType() == Field.TYPE_BYTE) {
-                    show = "" + org.mmbase.util.Encode.encode("BASE64", node.getByteValue(name));
-                } else {    
-                    show = getNodeVar().getStringValue(fieldName);
-                    show = convert(show);
-                }
-            }
-        } else { // should be deprecated
-            if (field == null) {
-                throw new JspTagException ("Could not find field " + head);  
-            }
-            show = "" + field.getGUIName();
-        }
-
-        if (getId() != null) {
-            getContextTag().register(getId(), show);
-        }
-        
-        try {         
-            if ("".equals(bodyContent.getString())) { // only write out if no body.
-                // bodyContent.clearBody();
-                bodyContent.print(show);
-            } else {
-                if (getReferid() != null) {
-                    throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
-                    // there is of course Field, but that does not contain the value of a field.
-                    // in fact Field == FieldManager
-                }
-            }
-            bodyContent.writeOut(bodyContent.getEnclosingWriter());
-        } catch (java.io.IOException e) {
-            throw new JspTagException (e.toString());            
-        }
-        
-        return SKIP_BODY;
+    public int doAfterBody() throws JspTagException { 
+        helper.setBodyContent(bodyContent);
+        if ((! "".equals(bodyContent.getString()) && getReferid() != null)) {
+            throw new JspTagException("Cannot use body in reused field (only the value of the field was stored, because a real 'field' object does not exist in MMBase)");
+        }        
+        return helper.doAfterBody();
     }
 }
