@@ -45,7 +45,7 @@ import org.mmbase.cache.xslt.*;
  * @since  MMBase-1.6
  * @author Michiel Meeuwissen
  */
-public class FormatterTag extends ContextReferrerTag  implements Writer {
+public class FormatterTag extends CloudReferrerTag  implements Writer {
 
     private static Logger log = Logging.getLoggerInstance(FormatterTag.class.getName());
 
@@ -212,7 +212,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         }
 
         if (format < 1000) {  // also if format is unset.
-            xmlGenerator = new Generator(documentBuilder);
+            xmlGenerator = new Generator(documentBuilder, getCloud());
         } else {
             xmlGenerator = null; // my childen will know, that this formatter doesn't want them.
         }

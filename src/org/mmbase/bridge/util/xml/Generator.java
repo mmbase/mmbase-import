@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.10 2002-06-11 20:51:34 eduard Exp $
+ * @version $Id: Generator.java,v 1.11 2002-06-12 10:36:30 eduard Exp $
  */
 public class Generator {   
     private static Logger log = Logging.getLoggerInstance(Generator.class.getName());
@@ -31,9 +31,10 @@ public class Generator {
      * To use the functionality of this class, instantiate it with
      * with a DOM Document in which the Elements must be put.
      */
-    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder) {
+    public Generator(javax.xml.parsers.DocumentBuilder documentBuilder, org.mmbase.bridge.Cloud cloud) {
         this.tree = documentBuilder.newDocument();
         Element rootElement = tree.createElement("objects");
+        rootElement.setAttribute("cloud", cloud.getName());
         tree.appendChild(rootElement);
     }
     
@@ -361,48 +362,22 @@ public class Generator {
 
     private Element createRelationEntry(Relation relation, org.mmbase.bridge.Node relatedNode) {
         Element fieldElement = tree.createElement("relation");
-
-
         // we have to know what the relation type was...
         Cloud cloud = relation.getCloud();
         org.mmbase.bridge.Node reldef = cloud.getNode(relation.getStringValue("rnumber"));
 
+        fieldElement.setAttribute("object", "" + relation.getNumber());
 
-        org.w3c.dom.Attr attr;
-        // the role
-        attr = tree.createAttribute("role");
         if(relation.getSource().getNumber() ==  relatedNode.getNumber()) {
-            attr.setValue(reldef.getStringValue("sname"));
+            fieldElement.setAttribute("role", reldef.getStringValue("sname"));
+            fieldElement.setAttribute("related", "" + relation.getDestination().getNumber());
+            fieldElement.setAttribute("type", "source");
         }
         else {
-            attr.setValue(reldef.getStringValue("dname"));
+            fieldElement.setAttribute("role", reldef.getStringValue("dname"));
+            fieldElement.setAttribute("related", "" + relation.getSource().getNumber());
+            fieldElement.setAttribute("type", "destination");
         }
-        fieldElement.setAttributeNode(attr);
-
-        // object
-        attr = tree.createAttribute("object");
-        attr.setValue("" + relation.getNumber());
-        fieldElement.setAttributeNode(attr);
-
-        // related
-        attr = tree.createAttribute("related");
-        if(relation.getSource().getNumber() ==  relatedNode.getNumber()) {
-            attr.setValue("" + relation.getDestination().getNumber());
-        }
-        else {
-            attr.setValue("" + relation.getSource().getNumber());
-        }
-        fieldElement.setAttributeNode(attr);
-
-        // type
-        attr = tree.createAttribute("type");
-        if(relation.getSource().getNumber() ==  relatedNode.getNumber()) {
-            attr.setValue("source");
-        }
-        else {
-            attr.setValue("destination");
-        }
-        fieldElement.setAttributeNode(attr);
         return fieldElement;
     }    
 }
