@@ -9,6 +9,10 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge.implementation;
+
+import java.util.Vector;
+import java.util.Iterator;
+
 import org.mmbase.security.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
@@ -29,10 +33,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     /**
      * Creates a new instance of Relation manager.
-     * The type of manager (a strictly constrained manager or a reole manager)
-     * is dependend on type the passed node (from eitehr the reldef of typerel
+     * The type of manager (a strictly constrained manager or a role manager)
+     * is dependend on type the passed node (from either the reldef of typerel
      * builder).
-     * @param node the node on whcih to base the relation manager
+     * @param node the node on which to base the relation manager
      * @param cloud the cloud for which to create the manager
      */
     BasicRelationManager(MMObjectNode node, Cloud cloud) {
@@ -67,6 +71,10 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
 
     public int getDirectionality() {
         return relDefNode.getIntValue("dir");
+    }
+
+    public int getBuilder() {
+        return relDefNode.getIntValue("builder");
     }
 
     public NodeManager getSourceManager() {
@@ -105,8 +113,19 @@ public class BasicRelationManager extends BasicNodeManager implements RelationMa
        relation.setSource(sourceNode);
        relation.setDestination(destinationNode);
        relation.checkValid();
-//       relation.commit();
+       // relation.commit();
        return relation;
+    }
+
+    public RelationList getRelations(Node node) {
+        // XXX: no caching is done here?
+        Vector result = new Vector();
+        InsRel insRel = (InsRel) builder; 
+        for (Iterator i = insRel.getRelationsVector(node.getNumber()).iterator(); i.hasNext(); ) {
+            MMObjectNode r = (MMObjectNode) i.next();
+            result.add(r);            
+        }
+        return new BasicRelationList(result, cloud, this);
     }
 
     /**
