@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 public class CommandLauncher {
 
     /** MMBase logging system */
-    private static Logger log = Logging.getLoggerInstance(CommandLauncher.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(CommandLauncher.class);
 
     /**
      * Default buffer size.
