@@ -23,7 +23,7 @@
 
 <mm:log jspvar="log">
 <mm:field name="filteredurls(smil,html,ram,wmp,rm,mov)" jspvar="urls" vartype="list">
-   <%
+<%
       Iterator i = urls.iterator();
       int accesskey = 1;
       while(i.hasNext()) {
@@ -45,7 +45,7 @@
        
 
       }
-   %>
+%>
 </mm:field>
 </mm:log>
 <% if (foundNonFragments) { %>
