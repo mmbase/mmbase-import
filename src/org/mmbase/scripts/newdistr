@@ -1,4 +1,4 @@
-name="2Jan"
+name="6mar-dev"
 echo Creating new distributions
 echo
 echo Updating javadocs
@@ -8,7 +8,7 @@ echo javadocs done
 echo 
 echo creating htmldocs$name.zip
 cd /usr/local/algemeen/orion/default-site
-zip -r /usr/local/software/mmbase/htmldocs$name.zip html
+zip -r /usr/local/software/mmbase/htmldocs$name.zip html/mmadmin html/mmeditors
 cp /usr/local/software/mmbase/htmldocs$name.zip /usr/local/algemeen/org/mmbase/zips/mmbasehtml.zip
 cd /usr/local/algemeen/
 zip -r /usr/local/software/mmbase/application$name.zip org -x *\config\*
