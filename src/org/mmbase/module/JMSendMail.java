@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
 */
 package org.mmbase.module;
 
@@ -26,6 +26,11 @@ import org.mmbase.util.logging.*;
  */
 public class JMSendMail extends AbstractSendMail {
     private static final Logger log = Logging.getLoggerInstance(JMSendMail.class);
+
+    public static final String DEFAULT_MAIL_ENCODING="ISO-8859-1";
+
+    public static String mailEncoding = DEFAULT_MAIL_ENCODING;
+
     protected Session session;
 
     /**
@@ -38,14 +43,17 @@ public class JMSendMail extends AbstractSendMail {
     /**
      * {@inheritDoc}
      */
-    public void init() {                     
+    public void init() {
         try {
+            String encoding = getInitParameter("encoding");
+            if (encoding == null) mailEncoding = encoding;
+
             String smtphost   = getInitParameter("mailhost");
             String context    = getInitParameter("context");
             String datasource = getInitParameter("datasource");
-            session = null;           
+            session = null;
             if (smtphost == null) {
-                if (context == null) {                    
+                if (context == null) {
                     context = "java:comp/env";
                     log.warn("The property 'context' is missing, taking default " + context);
                 }
@@ -53,10 +61,10 @@ public class JMSendMail extends AbstractSendMail {
                     datasource = "mail/Session";
                     log.warn("The property 'datasource' is missing, taking default " + datasource);
                 }
-                
+
                 Context initCtx = new InitialContext();
                 Context envCtx = (Context) initCtx.lookup(context);
-                session = (Session) envCtx.lookup(datasource);       
+                session = (Session) envCtx.lookup(datasource);
                 log.info("Module JMSendMail started (datasource = " + datasource +  ")");
             } else {
                 if (context != null) {
@@ -65,14 +73,14 @@ public class JMSendMail extends AbstractSendMail {
                 if (datasource != null) {
                     log.error("It does not make sense to have both properties 'datasource' and 'mailhost' in email module");
                 }
-                log.info("EMail module is configured using 'mailhost' proprerty.\n" + 
+                log.info("EMail module is configured using 'mailhost' proprerty.\n" +
                          "Consider using J2EE compliant 'context' and 'datasource'\n" +
-                         "Which means to put something like this in your web.xml:\n" + 
+                         "Which means to put something like this in your web.xml:\n" +
                          "  <resource-ref>\n" +
-                         "     <description>Email module mail resource</description>\n" + 
-                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" + 
-                         "     <res-type>javax.mail.Session</res-type>\n" + 
-                         "     <res-auth>Container</res-auth>\n" + 
+                         "     <description>Email module mail resource</description>\n" +
+                         "     <res-ref-name>mail/MMBase</res-ref-name>\n" +
+                         "     <res-type>javax.mail.Session</res-type>\n" +
+                         "     <res-auth>Container</res-auth>\n" +
                          "  </resource-ref>\n" +
                          " + some app-server specific configuration (e.g. in orion the 'mail-session' entry in the application XML)"
                          );
@@ -81,7 +89,7 @@ public class JMSendMail extends AbstractSendMail {
                 prop.put("mail.smtp.host", smtphost);
                 session = Session.getInstance(prop, null);
                 log.info("Module JMSendMail started (smtphost = " + smtphost +  ")");
-            }                
+            }
 
         } catch (javax.naming.NamingException e) {
             log.fatal("JMSendMail failure: " + e.getMessage());
@@ -104,8 +112,8 @@ public class JMSendMail extends AbstractSendMail {
         }
 
         msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-        
-        if (headers.get("CC") != null) {                
+
+        if (headers.get("CC") != null) {
             msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse((String) headers.get("CC")));
         }
         if (headers.get("BCC") != null) {
@@ -121,13 +129,12 @@ public class JMSendMail extends AbstractSendMail {
     }
 
     /**
-     * Send mail with headers 
+     * Send mail with headers
      */
     public boolean sendMail(String from, String to, String data, Map headers) {
         try {
             MimeMessage msg = constructMessage(from, to, headers);
-
-            msg.setText(data);
+            msg.setText(data, mailEncoding);
             Transport.send(msg);
             log.debug("JMSendMail done.");
             return true;
