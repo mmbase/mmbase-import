@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.88 2003-03-26 11:04:34 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.89 2003-03-28 14:01:59 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -704,13 +704,19 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * @since MMBase-1.6
      */
     public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
-        if(role == null) role = "insrel";
-
         if (log.isDebugEnabled()) {
             log.debug("type(" + nodeManager.getName() + "), role("+role+"), dir("+direction+")");
         }
 
-        int    dir          = ClusterBuilder.getSearchDir(direction);
+        // default directionalty to query for the bridge is SEARCH_BOTH;
+        // SEARCH_EITHER is intended for SCAN - unfortunately, since SCAN does not provide directionality,
+        // the Clusterbuidler has to assume SEARCH_EITHER as a default.
+        // therefor we have to set SEARCH_BOTH manually
+        int dir = ClusterBuilder.SEARCH_BOTH;
+        if (direction!=null) {
+            dir = ClusterBuilder.getSearchDir(direction);
+        }
+        // call list: note: role can be null
         List   mmnodes      = getNode().getRelatedNodes((nodeManager != null ? nodeManager.getName() : null), role, dir);
 
         // remove the elements which may not be read:
@@ -931,11 +937,11 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
      * This effectively means that both objects are nodes, and they both have the same number and cloud
      * @param o the object to compare it with
      */
-    public boolean equals(Object o) {        
+    public boolean equals(Object o) {
         return (o instanceof Node) &&
             getNumber()==((Node)o).getNumber() &&
             cloud.equals(((Node)o).getCloud());
-        
+
     }
 
 }
