@@ -40,6 +40,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetByteValue();
@@ -55,6 +58,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetDoubleValue();
@@ -70,6 +76,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetFloatValue();
@@ -100,6 +109,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetLongValue();
@@ -115,6 +127,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetStringValue();
         testGetXMLValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetStringValue();
@@ -130,6 +145,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetXMLValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetXMLValue();
@@ -145,6 +163,9 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
     }
 
     abstract public void testGetNodeValue();
@@ -160,6 +181,63 @@ public abstract class NodeTest extends BridgeTest {
         testGetLongValue();
         testGetStringValue();
         testGetXMLValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
+        testGetListValue();
+    }
+
+    abstract public void testGetBooleanValue();
+
+    public void testGetBooleanValueCache() {
+        // Test if the first call doesn't make MMBase cache an incorrect value.
+        testGetBooleanValue();
+        testGetValue();
+        testGetByteValue();
+        testGetDoubleValue();
+        testGetFloatValue();
+        testGetIntValue();
+        testGetLongValue();
+        testGetStringValue();
+        testGetXMLValue();
+        testGetNodeValue();
+        testGetDateTimeValue();
+        testGetListValue();
+    }
+
+    abstract public void testGetDateTimeValue();
+
+    public void testGetDateTimeValueCache() {
+        // Test if the first call doesn't make MMBase cache an incorrect value.
+        testGetDateTimeValue();
+        testGetValue();
+        testGetByteValue();
+        testGetDoubleValue();
+        testGetFloatValue();
+        testGetIntValue();
+        testGetLongValue();
+        testGetStringValue();
+        testGetXMLValue();
+        testGetNodeValue();
+        testGetBooleanValue();
+        testGetListValue();
+    }
+
+    abstract public void testGetListValue();
+
+    public void testGetListValueCache() {
+        // Test if the first call doesn't make MMBase cache an incorrect value.
+        testGetListValue();
+        testGetValue();
+        testGetByteValue();
+        testGetDoubleValue();
+        testGetFloatValue();
+        testGetIntValue();
+        testGetLongValue();
+        testGetStringValue();
+        testGetXMLValue();
+        testGetNodeValue();
+        testGetBooleanValue();
+        testGetDateTimeValue();
     }
 
     public void testSetSNumber() {

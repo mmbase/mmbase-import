@@ -9,6 +9,7 @@ See http://www.MMBase.org/license
 */
 
 package org.mmbase.bridge;
+import java.util.*;
 import org.w3c.dom.Document;
 
 /**
@@ -152,6 +153,30 @@ public class EmptyNotNullNodeTestTransaction extends EmptyNotNullNodeTest {
             }
        }
     }
+
+    public void testGetDateTimeValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Date value = node.getDateValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value!=null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
+                        value.getTime()==-1);
+       }
+    }
+
+    public void testGetListValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            List value = node.getListValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value!=null);
+            if (fieldTypes[i].equals("node")) {
+                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [<node>], but " + value,
+                            value.size() == 1);
+            } else {
+                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value,
+                            value.size() == 0);
+            }
+       }
+    }
+
 
     public void tearDown() {
         // simply roll back transaction
