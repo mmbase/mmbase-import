@@ -19,7 +19,7 @@
 	<form-schema id="basics">
 		<title>Basic News</title>
 		<subtitle>foobar</subtitle>
-		<field name="title" >
+		<field name="title" dtminlength="10" >
 			<prompt>Title</prompt>
 		</field>
 
@@ -37,7 +37,8 @@
 
 		<list role="related" destination="people" minoccurs="0"  maxoccurs="3">
       <title>Authors (notice the search-filters)</title>       
-			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
+			<command name="search" nodepath="people"
+        fields="firstname,lastname" orderby="lastname" age="-1" filterrequired="true">
 				<prompt>People</prompt>
 				<search-filter>
 					<name>firstname contains</name>
@@ -47,6 +48,10 @@
 				<search-filter>
 					<name>lastname contains</name>
 				  <search-fields>lastname</search-fields>
+				</search-filter>
+				<search-filter>
+					<name>number</name>
+				  <search-fields>number</search-fields>
 				</search-filter>
 			</command>
 
