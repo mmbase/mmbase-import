@@ -3,6 +3,8 @@
 <mm:import externid="wizardjsp" required="true" jspvar="wizardjsp" />
 
 <%
+ String imageName = "";
+ String sAltText ="";
  int depth = Integer.parseInt(request.getParameterValues("depth")[0]);
  String startnode = request.getParameterValues("startnode")[0];
  String parenttree = request.getParameterValues("parenttree")[0];
@@ -28,8 +30,9 @@
    <mm:first>
     var <mm:write referid="treeName" /> = new MTMenu();
 <%--    <mm:write referid="treeName" /> = new MTMenu();--%>
-   </mm:first>  
-   <mm:node element="learnobjects"> 
+   </mm:first>
+   <mm:node element="learnobjects">
+   <%@include file="whichimage.jsp"%>
     <mm:import id="objecttype"><mm:nodeinfo type="type" /></mm:import>
 
         <mm:import id="mark_error" reset="true"></mm:import>
@@ -62,16 +65,16 @@
                 <mm:import id="mark_error" reset="true"></mm:import>
             </mm:relatednodes>
         </mm:compare>
-        
- 
 
-    
+
+
+
     <mm:write referid="treeName" />.addItem(
-        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:present referid="pdfurl"><mm:compare referid="objecttype" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present><mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty>",
+        "<mm:field name="name"><mm:isempty><mm:field name="title"/></mm:isempty><mm:isnotempty><mm:write/></mm:isnotempty></mm:field><mm:present referid="pdfurl"><mm:compare referid="objecttype" value="pages"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare><mm:compare referid="objecttype" value="learnblocks"></a> <a href='<mm:write referid="pdfurl"/>&number=<mm:field name="number"/>' target='text'>(PDF)</mm:compare></mm:present></a> <a href='metaedit.jsp?number=<mm:field name="number"/>' target='text'><img id='img_<mm:field name="number"/>' src='<%= imageName %>' border='0' alt='<%= sAltText %>'> <mm:isnotempty referid="mark_error"></a> <a style='color: red; font-weight: bold' href='javascript:alert(&quot;<mm:write referid="mark_error"/>&quot;);'>!</mm:isnotempty>",
         "<mm:write referid="wizardjsp"/>?wizard=<mm:write referid="objecttype" />&objectnumber=<mm:field name="number" />&origin=<mm:field name="number" />",
         null,
         "bewerk object",
-		"<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="" />");
+      "<mm:treefile write="true" page="/education/wizards/gfx/edit_learnobject.gif" objectlist="" />");
 <%--    <mm:compare referid="objecttype" value="learnobjects"> --%>
       <% if (depth > 0) { %>
         <mm:field jspvar="objectNumber" name="number">
@@ -84,7 +87,7 @@
         </mm:field>
       <% } %>
 <%--    </mm:compare> --%>
-   </mm:node> 
+   </mm:node>
    <mm:last>
     <%=parenttree%>.makeLastSubmenu(<mm:write referid="treeName" />, true);
    </mm:last>
