@@ -153,10 +153,28 @@ public class Posting {
      * @return allways <code>true</code>
      */
     public boolean remove() {
+        log.debug("going to remove posting: " + node.getNumber());
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postareas"),"lastpostnumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("postthreads"),"lastpostnumber");
+        removeForeignKeys(ForumManager.getCloud().getNodeManager("forums"),"lastpostnumber");
         node.delete(true);
         parent.childRemoved(this);
         return true;
     }
+
+    private void removeForeignKeys(NodeManager nodeManager, String fieldname) {
+        //check if nodenumber is somewhere referenced as a foreignkey
+        NodeList nodeList = nodeManager.getList(fieldname +"="+node.getNumber(),null,null);
+        log.debug("found: " + nodeList);
+        NodeIterator it = nodeList.nodeIterator();
+        Node tempNode;
+        while (it.hasNext()) {
+            tempNode = (Node)it.next();
+            tempNode.setValue(fieldname,"");
+            tempNode.commit();
+        }
+    }
+
 
     /**
      * save the node to the cloud

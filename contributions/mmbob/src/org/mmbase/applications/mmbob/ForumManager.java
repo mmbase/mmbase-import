@@ -15,6 +15,8 @@ import org.w3c.dom.*;
 import java.io.*;
 import java.util.*;
 
+import org.xml.sax.InputSource;
+
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.*;
@@ -22,6 +24,9 @@ import org.mmbase.module.core.*;
 import org.mmbase.bridge.*;
 import org.mmbase.storage.*;
 import org.mmbase.storage.search.*;
+
+import org.mmbase.util.FileWatcher;
+
 
 
 /**
@@ -80,6 +85,7 @@ public class ForumManager {
             readForums();
 
             // start the mmbase syncer
+            //was 10 * 1000
             syncfast = new ForumMMBaseSyncer(10 * 1000, 50, 500);
             syncslow = new ForumMMBaseSyncer(5 * 60 * 1000, 50, 2000);
             swapmanager = new ForumSwapManager(1 * 60 * 1000);
@@ -281,10 +287,18 @@ public class ForumManager {
      */
     public static void readConfig() {
         String filename = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator + "mmbob.xml";
-
+  
         File file = new File(filename);
+        try {
+            readConfig(file);
+        } catch (FileNotFoundException ex) {
+        }
+
+    }
+
+    private static void readConfig (File file) throws java.io.FileNotFoundException{
         if (file.exists()) {
-            XMLBasicReader reader = new XMLBasicReader(filename, ForumManager.class);
+            XMLBasicReader reader = new XMLBasicReader(new InputSource(new FileInputStream(file)), ForumManager.class);
             if (reader != null) {
 // decode forums
                 for (Enumeration ns = reader.getChildElements("mmbobconfig", "forums"); ns.hasMoreElements();) {
@@ -294,8 +308,27 @@ public class ForumManager {
 		    }
                 }
             }
+            configWatcher.add(file);
+            configWatcher.setDelay(10 * 1000); // check every 10 secs if config changed
+            configWatcher.start();
         }
     }
+
+    private static FileWatcher configWatcher = new FileWatcher (true) {
+            protected void onChange(File file) {
+                try {
+                    readConfig(file);
+       Enumeration e = forums.elements();
+        while (e.hasMoreElements()) {
+            // for now all forums main nodes are loaded so
+            // we just call them all for a maintain
+            Forum f = (Forum) e.nextElement();
+            f.resetConfig();
+        }
+                } catch (FileNotFoundException ex) {
+                }
+            }
+        };
 
     /**
      * ToDo: Write docs!
@@ -378,4 +411,32 @@ public class ForumManager {
    public static String getGuestWriteModeType() {
        return config.getGuestWriteModeType();
    }
+
+    public static String getAvatarsUploadEnabled() {
+        return config.getAvatarsUploadEnabled();
+    }
+
+    public static String getAvatarsGalleryEnabled() {
+        return config.getAvatarsGalleryEnabled();
+    }
+
+    public static String getContactInfoEnabled() {
+        return config.getContactInfoEnabled();
+    }
+
+    public static String getSmileysEnabled() {
+        return config.getSmileysEnabled();
+    }
+
+    public static String getPrivateMessagesEnabled() {
+        return config.getPrivateMessagesEnabled();
+    }
+
+    public static int getPostingsPerPage() {
+        return config.getPostingsPerPage();
+    }
+
+
+
+
 }
