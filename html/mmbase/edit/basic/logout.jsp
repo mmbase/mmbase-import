@@ -12,7 +12,7 @@
 </mm:compare>
 
 <mm:cloud method="logout" sessionname="$config.session" jspvar="cloud" />
-<mm:write referid="style" />
+<mm:write referid="style" escape="none" />
 <title>Logging out</title>
 </head>
 <mm:log />
