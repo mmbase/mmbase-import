@@ -37,7 +37,7 @@ import org.mmbase.bridge.NodeQuery; //jikes!
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.50 2003-11-11 10:41:15 michiel Exp $
+ * @version $Id: ClusterBuilder.java,v 1.51 2003-11-24 12:28:20 robmaris Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -364,7 +364,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } catch (Exception e) {
             if (log.isServiceEnabled()) {
                 log.service("Failed to create SearchQuery for multilevel search, "
-                            + "exception:\n" + Logging.stackTrace(e)
+                            + "exception:\n" + e + Logging.stackTrace(e)
                             + "\nFalling back to legacy code in ClusterBuilder...");
             }
         }
@@ -524,7 +524,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } catch (Exception e) {
             // something went wrong print it to the logs
             log.error("Query failed:" + query);
-            log.error(Logging.stackTrace(e));
+            log.error(e + Logging.stackTrace(e));
             return null;
         }
     }
