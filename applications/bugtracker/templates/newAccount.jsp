@@ -46,16 +46,18 @@
   
   <mm:createrelation role="related" source="groupnode" destination="usernode" />
 
+  <%--//IF MMBASE_ORG
   <mm:createnode id="personsnode" type="persons">
     <mm:setfield name="firstname"><mm:write referid="newfirstname" /></mm:setfield>
     <mm:setfield name="lastname"><mm:write referid="newlastname" /></mm:setfield>
     <mm:setfield name="email"><mm:write referid="newemail" /></mm:setfield>
   </mm:createnode>
   <mm:createrelation role="related" source="usernode" destination="personsnode" />
+  //FI MMBASE_ORG--%>
 
 
 	<!-- send a email with the account info -->
-	<mm:createnode type="email">
+	<mm:createnode id="emailnode" type="email">
 		<mm:setfield name="mailtype">1</mm:setfield>
 		<mm:setfield name="to"><mm:write referid="newemail" /></mm:setfield>
 		<mm:setfield name="from">bugtracker@mmbase.org</mm:setfield>
@@ -67,6 +69,9 @@
 			password : <mm:write referid="newpassword" />
 		</mm:setfield>
   </mm:createnode>
+   <mm:node referid="emailnode">
+     <mm:field name="mail(oneshot)" />
+   </mm:node>
 	<!-- end of sending the email -->
 
   <mm:redirect referids="parameters,$parameters">
