@@ -1,13 +1,10 @@
 /*
-$Id: EncodeHandler.java,v 1.8 2000-03-27 16:10:37 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: EncodeHandler.java,v 1.9 2000-03-29 11:04:45 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/03/27 16:10:37  wwwtech
+Rico: added more refs in Audio/Video builders
+
 Revision 1.6  2000/03/27 15:10:18  wwwtech
 Rico: moved VPRO specific objects to nl.vpro
 
@@ -36,7 +33,7 @@ import nl.vpro.mmbase.util.media.audio.audioparts.*;
 
 /**
  * @author Rico Jansen
- * @version $Revision: 1.8 $ $Date: 2000-03-27 16:10:37 $
+ * @version $Revision: 1.9 $ $Date: 2000-03-29 11:04:45 $
  */
 public class EncodeHandler implements Runnable {
 

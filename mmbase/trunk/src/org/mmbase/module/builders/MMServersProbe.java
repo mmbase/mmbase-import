@@ -1,14 +1,11 @@
 /*
 
-$Id: MMServersProbe.java,v 1.2 2000-02-24 14:08:20 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: MMServersProbe.java,v 1.3 2000-03-29 10:59:23 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 14:08:20  wwwtech
+- (marcel) Changed System.out into debug and added headers
+
 */
 package org.mmbase.module.builders;
 
@@ -23,7 +20,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.2 $ $Date: 2000-02-24 14:08:20 $ 
+ * @version0 $Revision: 1.3 $ $Date: 2000-03-29 10:59:23 $ 
  */
 public class MMServersProbe implements Runnable {
 

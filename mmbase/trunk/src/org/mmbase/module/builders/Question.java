@@ -1,9 +1,3 @@
-/*
-
-	Copyright (C) 1996 VPRO Digitaal
-
-*/
-
 package org.mmbase.module.builders;
 
 import java.util.*;

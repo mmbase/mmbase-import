@@ -1,6 +1,3 @@
-/*
-*/
-
 package org.mmbase.module.builders.protocoldrivers;
 
 import java.lang.*;

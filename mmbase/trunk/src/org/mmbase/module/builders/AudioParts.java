@@ -1,13 +1,10 @@
 /*
-$Id: AudioParts.java,v 1.5 2000-03-27 16:10:35 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: AudioParts.java,v 1.6 2000-03-29 10:59:21 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/27 16:10:35  wwwtech
+Rico: added more refs in Audio/Video builders
+
 Revision 1.4  2000/03/24 14:33:56  wwwtech
 Rico: total recompile
 

@@ -1,7 +1,3 @@
-/*
-	(C) Copyright 1999 VPRO Digitaal
-*/
-
 package org.mmbase.module.builders.vwms;
 
 import java.util.Vector;
@@ -10,6 +6,7 @@ import java.util.Enumeration;
 import java.io.*;
 import org.mmbase.util.*;
 import org.mmbase.module.builders.*;
+import nl.vpro.mmbase.module.builders.*;
 import org.mmbase.module.corebuilders.*;
 import org.mmbase.module.core.*;
 

@@ -1,14 +1,11 @@
 /*
 
-$Id: Teasers.java,v 1.4 2000-03-21 15:45:46 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: Teasers.java,v 1.5 2000-03-29 10:59:25 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/21 15:45:46  wwwtech
+Removed private debug method and private field classname, using inherited instead
+
 Revision 1.3  2000/03/17 12:31:27  wwwtech
 - (marcel) added better support for functions in getValue
 
@@ -29,7 +26,7 @@ import org.mmbase.module.core.*;
 /**
  * @author Daniel Ockeloen
  * @author Rico Jansen
- * @version $Revision: 1.4 $ $Date: 2000-03-21 15:45:46 $ 
+ * @version $Revision: 1.5 $ $Date: 2000-03-29 10:59:25 $ 
  * V2
  */
 public class Teasers extends MMObjectBuilder {

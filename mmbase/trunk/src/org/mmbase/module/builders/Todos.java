@@ -1,13 +1,10 @@
 /*
-$Id: Todos.java,v 1.5 2000-03-20 14:58:37 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: Todos.java,v 1.6 2000-03-29 10:59:25 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.5  2000/03/20 14:58:37  wwwtech
+Rico: added Rejected status
+
 Revision 1.4  2000/03/20 10:47:26  wwwtech
 Wilbert: Merged double mapping of integer status field to text into one method
 
@@ -24,7 +21,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
- * @version $Revision: 1.5 $ $Date: 2000-03-20 14:58:37 $
+ * @version $Revision: 1.6 $ $Date: 2000-03-29 10:59:25 $
  */
 public class Todos extends MMObjectBuilder {
 

@@ -1,14 +1,11 @@
 /*
 
-$Id: MMServers.java,v 1.7 2000-03-21 15:37:31 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: MMServers.java,v 1.8 2000-03-29 10:59:23 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.7  2000/03/21 15:37:31  wwwtech
+- (marcel) Removed debug (globally declared in MMOBjectNode)
+
 Revision 1.6  2000/03/20 13:17:29  wwwtech
 Rico: added super.getValue for global function support
 
@@ -40,7 +37,7 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.7 $ $Date: 2000-03-21 15:37:31 $
+ * @version $Revision: 1.8 $ $Date: 2000-03-29 10:59:23 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 

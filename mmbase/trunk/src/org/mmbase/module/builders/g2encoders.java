@@ -1,13 +1,10 @@
 /*
-$Id: g2encoders.java,v 1.3 2000-03-21 15:39:18 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: g2encoders.java,v 1.4 2000-03-29 10:59:26 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/03/21 15:39:18  wwwtech
+- (marcel) Removed debug (globally declared in MMOBjectNode)
+
 Revision 1.2  2000/02/24 15:07:16  wwwtech
 Davzev added debug() methods and calls to all methods.
 
@@ -26,7 +23,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @$Revision: 1.3 $ $Date: 2000-03-21 15:39:18 $
+ * @$Revision: 1.4 $ $Date: 2000-03-29 10:59:26 $
  */
 public class g2encoders extends ServiceBuilder implements MMBaseObserver {
 
