@@ -591,7 +591,6 @@ Change directory to ${build.dir}/orion and run:
                 <include name="security/**"/>
                 
                 <!-- the modules we definitly need -->
-                <include name="modules/config.xml"/>
                 <include name="modules/jdbc.xml"/>
                 <include name="modules/mmbaseroot.xml"/>
                 
