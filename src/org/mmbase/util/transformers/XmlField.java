@@ -15,39 +15,36 @@ import org.mmbase.util.logging.Logging;
  * XMLFields in MMBase. This class can encode such a field to several other formats.
  *
  * @author Michiel Meeuwissen
- * @version $Id: XmlField.java,v 1.8 2003-05-07 21:25:44 michiel Exp $
+ * @version $Id: XmlField.java,v 1.9 2003-05-08 14:12:43 kees Exp $
  */
 
 public class XmlField extends ConfigurableCharTransformer implements CharTransformer {
 
-
     private static Logger log = Logging.getLoggerInstance(XmlField.class.getName());
 
     // can be decoded:
-    public final static int RICH   = 1;
-    public final static int POOR   = 2;
-    public final static int BODY   = 3;
-    public final static int XML    = 4;
+    public final static int RICH = 1;
+    public final static int POOR = 2;
+    public final static int BODY = 3;
+    public final static int XML = 4;
 
     // cannot be decoded:
-    public final static int ASCII  = 10;
-    public final static int XHTML  = 11;
-
+    public final static int ASCII = 10;
+    public final static int XHTML = 11;
 
     private final static String CODING = "UTF-8"; // This class only support UTF-8 now.
 
-
     // for validation only.
-    private final static String  XML_HEADER   = "<?xml version=\"1.0\" encoding=\"" + CODING + "\"?>\n<!DOCTYPE mmxf PUBLIC \"//NL//OMROEP//MMBASE//DTD//MMXF 1.0//\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
-    private final static String  XML_TAGSTART = "<mmxf>";
-    private final static String  XML_TAGEND   = "</mmxf>";
-
-
+    private final static String XML_HEADER =
+        "<?xml version=\"1.0\" encoding=\""
+            + CODING
+            + "\"?>\n<!DOCTYPE mmxf PUBLIC \"-//MMBase//DTD mmxf 1.0//EN\" \"http://www.mmbase.org/dtd/mmxf_1_0.dtd\">\n";
+    private final static String XML_TAGSTART = "<mmxf>";
+    private final static String XML_TAGEND = "</mmxf>";
 
     public final static boolean isXmlEncoded(String s) {
         return s.startsWith(XML_TAGSTART) && s.endsWith(XML_TAGEND);
     }
-
 
     /**
      * Takes a string object, finds list structures and changes it to XLL
@@ -58,7 +55,8 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
         // make <ul> possible (not yet nested), with *-'s on the first char of line.
         int inList = 0; // if we want nesting possible, then an integer (rather then boolean) will be handy
         int pos;
-        if (obj.length() == 0) return;
+        if (obj.length() == 0)
+            return;
         if (obj.charAt(0) == '-') { // hoo, we even _start_ with al list;
             obj.insert(0, "\n"); // in the loop \n- is deleted, so it must be there.
             pos = 0;
@@ -66,49 +64,55 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
             pos = obj.indexOf("\n-", 0); // search the first
         }
 
-    listwhile:
-        while (pos != -1) {
+        listwhile : while (pos != -1) {
             if (inList == 0) { // not yet in list
-                inList++;        // now we are
+                inList++; // now we are
                 obj.delete(pos, 2); // delete \n-
                 // remove spaces..
-                while(pos < obj.length() && obj.charAt(pos) == ' ') obj.delete(pos, 1);
+                while (pos < obj.length() && obj.charAt(pos) == ' ')
+                    obj.delete(pos, 1);
                 obj.insert(pos, "\r<ul>\r<li>"); // insert 10 chars.
                 pos += 10;
 
-            } else {             // already in list
+            } else { // already in list
                 if (obj.charAt(pos + 1) != '-') { // end of list
                     obj.delete(pos, 1); // delete \n
                     obj.insert(pos, "</li>\r</ul>\n");
                     pos += 12;
                     inList--;
-                } else {                      // not yet end
+                } else { // not yet end
                     obj.delete(pos, 2); // delete \n-
                     // remove spaces..
-                    while(pos < obj.length() && obj.charAt(pos) == ' ') obj.delete(pos, 1);
+                    while (pos < obj.length() && obj.charAt(pos) == ' ')
+                        obj.delete(pos, 1);
                     obj.insert(pos, "</li>\r<li>");
                     pos += 10;
                 }
             }
             if (inList > 0) { // search for new line
                 pos = obj.indexOf("\n", pos);
-                if (pos == -1) break; // no new line found? End of list, of text.
+                if (pos == -1)
+                    break; // no new line found? End of list, of text.
                 if (pos + 1 == obj.length()) {
-                    obj.delete(pos, 1);  break; // if end of text, simply remove the newline.
+                    obj.delete(pos, 1);
+                    break; // if end of text, simply remove the newline.
                 }
-                while (obj.charAt(pos + 1) == ' ') { // if next line starts with space, this new line does not count. This makes it possible to have some formatting in a <li>
+                while (obj.charAt(pos + 1) == ' ') {
+                    // if next line starts with space, this new line does not count. This makes it possible to have some formatting in a <li>
                     pos = obj.indexOf("\n", pos + 1);
                     if (pos + 1 == obj.length()) {
-                        obj.delete(pos, 1);  break listwhile;  // nothing to do...
+                        obj.delete(pos, 1);
+                        break listwhile; // nothing to do...
                     }
                 }
-            } else {             // search for next list
+            } else { // search for next list
                 pos = obj.indexOf("\n-", pos);
             }
         }
         // make sure that the list is closed:
         while (inList > 0) {
-            obj.insert(obj.length(), "</li></ul>\n"); inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
+            obj.insert(obj.length(), "</li></ul>\n");
+            inList--; // always finish with a new line, it might be needed for the finding of paragraphs.
         }
 
     }
@@ -127,12 +131,12 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
         int pos = obj.indexOf("_", 0);
         while (pos != -1) {
             obj.delete(pos, 1);
-            if (! emph) {
+            if (!emph) {
                 obj.insert(pos, "<em>");
                 pos += 3;
                 emph = true;
                 int pos1 = obj.indexOf("_", pos);
-                int pos2 = obj.indexOf("<", pos);// must be closed before next tag opens.
+                int pos2 = obj.indexOf("<", pos); // must be closed before next tag opens.
                 pos = pos1 < pos2 ? pos1 : pos2;
             } else {
                 obj.insert(pos, "</em>");
@@ -163,16 +167,16 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
 
     private static void handleHeaders(StringObject obj) {
         // handle headers
-        int     requested_level;
-        char    ch;
-        int     level   = 0;      // start without being in section.
+        int requested_level;
+        char ch;
+        int level = 0; // start without being in section.
         int pos = obj.indexOf("<p>$", 0);
         while (pos != -1) {
             obj.delete(pos, 4); // remove <p>$
 
             requested_level = 1;
             // find requested level:
-            while(true) {
+            while (true) {
                 ch = obj.charAt(pos);
                 if (ch == '$') {
                     requested_level++;
@@ -185,15 +189,15 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
                 }
             }
             String add = "";
-            for (;requested_level <= level; level--) {
+            for (; requested_level <= level; level--) {
                 // same or higher level section
                 add += "</section>";
             }
             level++;
-            for (;requested_level > level; level++) {
-                add += "<section title=\"\">";
+            for (; requested_level > level; level++) {
+                add += "<section>";
             }
-            add += "<section title=\"";
+            add += "<section><title>";
 
             obj.insert(pos, add);
             pos += add.length();
@@ -203,22 +207,23 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
             while (true) { // oh yes, and don't allow _ in title.
                 int pos1 = obj.indexOf("_", pos);
                 int pos2 = obj.indexOf("</p>", pos);
-                if (pos1 < pos2 && pos1 > 0 ) {
+                if (pos1 < pos2 && pos1 > 0) {
                     obj.delete(pos1, 1);
                 } else {
                     pos = pos2;
                     break;
                 }
             }
-            if (pos == -1) break ; // not found, could not happen.
+            if (pos == -1)
+                break; // not found, could not happen.
             // replace it.
             obj.delete(pos, 4);
-            obj.insert(pos, "\">");
+            obj.insert(pos, "</title>");
             pos += 2;
             pos = obj.indexOf("<p>$", pos); // search the next one.
         }
         // ready, close all sections still open.
-        for(;level>0; level--) {
+        for (; level > 0; level--) {
             obj.insert(obj.length(), "</section>");
         }
 
@@ -230,11 +235,13 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
     private static void handleParagraphs(StringObject obj) {
         // handle paragraphs:
         boolean inParagraph = true;
-        while (obj.length() > 0 && obj.charAt(0) == '\n') obj.delete(0, 1); // delete starting newlines
+        while (obj.length() > 0 && obj.charAt(0) == '\n')
+            obj.delete(0, 1); // delete starting newlines
         obj.insert(0, "<p>");
         int pos = obj.indexOf("\n\n", 3); // one or more empty lines.
         while (pos != -1) {
-            while (obj.length() > pos && obj.charAt(pos) == '\n') obj.delete(pos, 1); // delete the new lines.
+            while (obj.length() > pos && obj.charAt(pos) == '\n')
+                obj.delete(pos, 1); // delete the new lines.
 
             if (inParagraph) { // close the previous paragraph.
                 obj.insert(pos, "</p>");
@@ -250,7 +257,8 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
         if (inParagraph) {
             // read whole text, but stil in paragraph
             // if text ends with newline, take it away, because it then means </p> rather then <br />
-            if (obj.charAt(obj.length() -1) == '\n') obj.delete(obj.length() - 1, 1);
+            if (obj.charAt(obj.length() - 1) == '\n')
+                obj.delete(obj.length() - 1, 1);
             obj.insert(obj.length(), "</p>");
         }
     }
@@ -266,7 +274,8 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
         int pos = obj.indexOf(" ", 0);
         while (pos != -1) {
             pos++;
-            while (obj.length() > pos && obj.charAt(pos) == ' ') obj.delete(pos, 1);
+            while (obj.length() > pos && obj.charAt(pos) == ' ')
+                obj.delete(pos, 1);
             pos = obj.indexOf(" ", pos);
         }
         // we used \r for non significant newlines:
@@ -304,7 +313,7 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
     public static String richToXML(String data, boolean format) {
         StringObject obj = new StringObject(Xml.XMLEscape(data));
 
-        obj.replace("\r","");      // drop returns (\r), we work with newlines, \r will be used as a help.
+        obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
 
         handleList(obj);
         handleParagraphs(obj);
@@ -331,7 +340,7 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
     public static String poorToXML(String data, boolean format) {
         StringObject obj = new StringObject(Xml.XMLEscape(data));
 
-        obj.replace("\r","");      // drop returns (\r), we work with newlines, \r will be used as a help.
+        obj.replace("\r", ""); // drop returns (\r), we work with newlines, \r will be used as a help.
 
         // the order _is_ important!
         handleList(obj);
@@ -347,15 +356,13 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
         return obj.toString();
     }
 
-
     public static String poorToXML(String data) {
         return poorToXML(data, false);
     }
 
-    final static private String  xmlBody(String s) {
+    final static private String xmlBody(String s) {
         // chop of the xml tagstart and tagend:
-        return s.substring(XML_TAGSTART.length(),
-                           s.length() - XML_TAGEND.length());
+        return s.substring(XML_TAGSTART.length(), s.length() - XML_TAGEND.length());
     }
 
     /**
@@ -365,27 +372,24 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
 
     private static String XSLTransform(String xslfile, String data) {
         try {
-            String xslPath =
-                MMBaseContext.getConfigPath() +
-                File.separator + "xslt" +
-                File.separator + xslfile;
+            String xslPath = MMBaseContext.getConfigPath() + File.separator + "xslt" + File.separator + xslfile;
 
-            javax.xml.transform.TransformerFactory tFactory =
-                javax.xml.transform.TransformerFactory.newInstance();
+            javax.xml.transform.TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
 
             //log.error("xslpath: " + xslPath);
             javax.xml.transform.Transformer transformer =
-                tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(new File(xslPath).getAbsoluteFile()));
+                tFactory.newTransformer(
+                    new javax.xml.transform.stream.StreamSource(new File(xslPath).getAbsoluteFile()));
 
             java.io.StringWriter res = new java.io.StringWriter();
-            transformer.transform(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(data)),
-                                  new javax.xml.transform.stream.StreamResult(res));
+            transformer.transform(
+                new javax.xml.transform.stream.StreamSource(new java.io.StringReader(data)),
+                new javax.xml.transform.stream.StreamResult(res));
             return res.toString();
         } catch (Exception e) {
             return "XSL transformation did not succeed: " + e.toString() + "\n" + data;
         }
     }
-
 
     static private void validate(String incoming) throws FormatException {
         try {
@@ -410,18 +414,17 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
             java.io.InputStream input = new java.io.ByteArrayInputStream(incoming.getBytes(CODING));
             documentBuilder.parse(input);
 
-            if (!resolver.hasDTD()) throw new FormatException("no doc-type specified for the xml");
-            if (errorHandler.errorOrWarning) throw new FormatException("error in xml: \n" + errorBuff.toString());
-        }
-        catch(javax.xml.parsers.ParserConfigurationException pce) {
-            throw new FormatException("[sax parser] not well formed xml: "+pce.toString());
-        }
-        catch(org.xml.sax.SAXException se) {
+            if (!resolver.hasDTD())
+                throw new FormatException("no doc-type specified for the xml");
+            if (errorHandler.errorOrWarning)
+                throw new FormatException("error in xml: \n" + errorBuff.toString());
+        } catch (javax.xml.parsers.ParserConfigurationException pce) {
+            throw new FormatException("[sax parser] not well formed xml: " + pce.toString());
+        } catch (org.xml.sax.SAXException se) {
             se.printStackTrace();
             //throw new FormatException("[sax] not well formed xml: "+se.toString() + "("+se.getMessage()+")");
-        }
-        catch(java.io.IOException ioe) {
-            throw new FormatException("[io] not well formed xml: "+ioe.toString());
+        } catch (java.io.IOException ioe) {
+            throw new FormatException("[io] not well formed xml: " + ioe.toString());
         }
     }
 
@@ -442,23 +445,22 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
             errorOrWarning = false;
         }
 
-
         // all methods from org.xml.sax.ErrorHandler
         // from org.xml.sax.ErrorHandler
         public void fatalError(org.xml.sax.SAXParseException exc) {
-            errorBuff.append("FATAL["+getLocationString(exc)+"]:" + exc.getMessage()+ "\n");
+            errorBuff.append("FATAL[" + getLocationString(exc) + "]:" + exc.getMessage() + "\n");
             errorOrWarning = true;
         }
 
         // from org.xml.sax.ErrorHandler
         public void error(org.xml.sax.SAXParseException exc) {
-            errorBuff.append("Error["+getLocationString(exc)+"]: " + exc.getMessage()+ "\n");
+            errorBuff.append("Error[" + getLocationString(exc) + "]: " + exc.getMessage() + "\n");
             errorOrWarning = true;
         }
 
         // from org.xml.sax.ErrorHandler
         public void warning(org.xml.sax.SAXParseException exc) {
-            errorBuff.append("Warning["+getLocationString(exc)+"]:" + exc.getMessage()+ "\n");
+            errorBuff.append("Warning[" + getLocationString(exc) + "]:" + exc.getMessage() + "\n");
             errorOrWarning = true;
         }
 
@@ -472,7 +474,7 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
             if (systemId != null) {
                 int index = systemId.lastIndexOf('/');
                 if (index != -1) {
-                        systemId = systemId.substring(index + 1);
+                    systemId = systemId.substring(index + 1);
                 }
                 str.append(systemId);
             }
@@ -484,15 +486,16 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
         }
     }
 
-
     public Map transformers() {
         HashMap h = new HashMap();
-        h.put("mmxf_rich".toUpperCase(),  new Config(XmlField.class, RICH, "Converts to enriched ASCII"));
-        h.put("mmxf_poor".toUpperCase(),  new Config(XmlField.class, POOR));
+        h.put("mmxf_rich".toUpperCase(), new Config(XmlField.class, RICH, "Converts to enriched ASCII"));
+        h.put("mmxf_poor".toUpperCase(), new Config(XmlField.class, POOR));
         h.put("mmxf_ascii".toUpperCase(), new Config(XmlField.class, ASCII));
-        h.put("mmxf_body".toUpperCase(),  new Config(XmlField.class, BODY));
+        h.put("mmxf_body".toUpperCase(), new Config(XmlField.class, BODY));
         h.put("mmxf_xhtml".toUpperCase(), new Config(XmlField.class, XHTML, "Converts to piece of XHTML"));
-        h.put("mmxf_mmxf".toUpperCase(), new Config(XmlField.class, XML, "Only validates the XML with the DTD (when decoding)"));
+        h.put(
+            "mmxf_mmxf".toUpperCase(),
+            new Config(XmlField.class, XML, "Only validates the XML with the DTD (when decoding)"));
         return h;
     }
 
@@ -501,59 +504,75 @@ public class XmlField extends ConfigurableCharTransformer implements CharTransfo
      */
     public Writer transform(Reader r, Writer w) {
         return transformUtil(r, w);
-    }   
+    }
 
     public Writer transformBack(Reader r, Writer w) {
         return transformBackUtil(r, w);
     }
 
     public String transform(String data) {
-        switch(to){
-        case RICH:
-        case POOR:        return XSLTransform("mmxf2rich.xsl", data);
-        case ASCII:       return XSLTransform("mmxf2ascii.xsl", data);
-        case XHTML:       return XSLTransform("mmxf2xhtml.xsl", data);
-        case BODY:        return xmlBody(data);
-        case XML:         return data;
-        default: throw new UnknownCodingException(getClass(), to);
+        switch (to) {
+            case RICH :
+            case POOR :
+                return XSLTransform("mmxf2rich.xsl", data);
+            case ASCII :
+                return XSLTransform("mmxf2ascii.xsl", data);
+            case XHTML :
+                return XSLTransform("mmxf2xhtml.xsl", data);
+            case BODY :
+                return xmlBody(data);
+            case XML :
+                return data;
+            default :
+                throw new UnknownCodingException(getClass(), to);
         }
     }
+
     public String transformBack(String r) {
         String result;
-        switch(to){
-        case RICH:
-            result = XML_TAGSTART + richToXML(r) + XML_TAGEND;
-            // rich will not be validated... Cannot be used yet!!
-            break;
-        case POOR:
-            result =  XML_TAGSTART + poorToXML(r) + XML_TAGEND;
-            break;
-        case BODY:
-            result =  XML_TAGSTART + r + XML_TAGEND;
-            break;
-        case XML:
-            result = r;
-            break;
-        case ASCII:
-            throw new UnsupportedOperationException("Cannot transform");
-        default: throw new UnknownCodingException(getClass(), to);
+        switch (to) {
+            case RICH :
+                result = XML_TAGSTART + richToXML(r) + XML_TAGEND;
+                // rich will not be validated... Cannot be used yet!!
+                break;
+            case POOR :
+                result = XML_TAGSTART + poorToXML(r) + XML_TAGEND;
+                break;
+            case BODY :
+                result = XML_TAGSTART + r + XML_TAGEND;
+                break;
+            case XML :
+                result = r;
+                break;
+            case ASCII :
+                throw new UnsupportedOperationException("Cannot transform");
+            default :
+                throw new UnknownCodingException(getClass(), to);
         }
         try {
             validate(XML_HEADER + result);
-        } catch(FormatException fe) {
+        } catch (FormatException fe) {
             log.error(fe.toString() + " source: \n" + result);
         }
         return result;
     }
+
     public String getEncoding() {
-        switch(to){
-        case RICH:  return "MMXF_RICH";
-        case POOR:  return "MMXF_POOR";
-        case ASCII: return "MMXF_ASCII";
-        case XHTML: return "MMXF_XHTML";
-        case BODY:  return "MMXF_BODY";
-        case XML:   return "MMXF_MMXF";
-        default: throw new UnknownCodingException(getClass(), to);
+        switch (to) {
+            case RICH :
+                return "MMXF_RICH";
+            case POOR :
+                return "MMXF_POOR";
+            case ASCII :
+                return "MMXF_ASCII";
+            case XHTML :
+                return "MMXF_XHTML";
+            case BODY :
+                return "MMXF_BODY";
+            case XML :
+                return "MMXF_MMXF";
+            default :
+                throw new UnknownCodingException(getClass(), to);
         }
     }
 }
