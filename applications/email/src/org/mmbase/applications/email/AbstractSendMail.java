@@ -7,10 +7,11 @@ The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
 
 */
-package org.mmbase.module;
+package org.mmbase.applications.email;
 
 import java.util.*;
 
+import org.mmbase.module.Module;
 import org.mmbase.util.*;
 import org.mmbase.util.logging.*;
 
