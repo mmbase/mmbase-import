@@ -15,13 +15,15 @@ import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.*;
 import org.mmbase.util.xml.XMLWriter;
+import java.text.*;
+
 
 /**
  * Uses the XML functions from the bridge to construct a DOM document representing MMBase data structures.
  *
  * @author Michiel Meeuwissen
  * @author Eduard Witteveen
- * @version $Id: Generator.java,v 1.22 2004-10-09 09:37:32 nico Exp $
+ * @version $Id: Generator.java,v 1.23 2004-11-17 20:00:26 michiel Exp $
  * @since  MMBase-1.6
  */
 public class Generator {
@@ -30,6 +32,8 @@ public class Generator {
 
     private final static String DOCUMENTTYPE_PUBLIC =  "-//MMBase//DTD objects config 1.0//EN";
     private final static String DOCUMENTTYPE_SYSTEM = "http://www.mmbase.org/dtd/objects_1_0.dtd";
+
+    private final static java.text.DateFormat ISO8601 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private Document document = null;
     private Cloud cloud = null;
 
@@ -135,6 +139,9 @@ public class Generator {
         case Field.TYPE_BYTE :
             org.mmbase.util.transformers.Base64 transformer = new org.mmbase.util.transformers.Base64();
             field.appendChild(document.createTextNode(transformer.transform(node.getByteValue(fieldDefinition.getName()))));
+            break;
+        case Field.TYPE_DATETIME :
+            field.appendChild(document.createTextNode(ISO8601.format(node.getDateValue(fieldDefinition.getName()))));
             break;
         default :
             field.appendChild(document.createTextNode(node.getStringValue(fieldDefinition.getName())));
@@ -311,6 +318,12 @@ public class Generator {
             return "numeric";
         case Field.TYPE_BYTE :
             return "bytes";
+        case Field.TYPE_DATETIME:
+            return "datetime";
+        case Field.TYPE_BOOLEAN:
+            return "boolean";
+        case Field.TYPE_LIST:
+            return "list";
         default :
             throw new RuntimeException("could not find field-type for:" + field.getType() + " for field: " + field);
         }
