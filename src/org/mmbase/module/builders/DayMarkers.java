@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @sql
  * @author Daniel Ockeloen,Rico Jansen
- * @version $Id: DayMarkers.java,v 1.26 2002-11-08 10:17:58 pierre Exp $
+ * @version $Id: DayMarkers.java,v 1.27 2003-03-13 15:24:04 michiel Exp $
  */
 public class DayMarkers extends MMObjectBuilder {
 
@@ -106,7 +106,9 @@ public class DayMarkers extends MMObjectBuilder {
     private void createMarker() {
         int max  = -1;
         int mday = -1;
-        log.info("Daymarker -> DAY="+day);
+        if (log.isDebugEnabled()) {
+            log.debug("Daymarker -> DAY=" + day);
+        }
         MultiConnection con=null;
         Statement stmt=null;
         try {
@@ -126,7 +128,7 @@ public class DayMarkers extends MMObjectBuilder {
         con=null;
         stmt=null;
         if (mday<0) { // it was not in the database
-            log.info("DayMarker inserting new marker " + day);
+            log.service("Inserting new daymarker " + day);
             try {
                 con=mmb.getConnection();
                 stmt=con.createStatement();
