@@ -30,6 +30,8 @@ import org.mmbase.util.logging.Logging;
 public class WriterHelper  {
 
     private static Logger log = Logging.getLoggerInstance(WriterHelper.class.getName());
+    public static boolean NOIMPLICITLIST = true;
+    public static boolean IMPLICITLIST   = false;
 
     static final int TYPE_UNKNOWN = -10;
     static final int TYPE_UNSET   = -1;
@@ -136,6 +138,9 @@ public class WriterHelper  {
      */
 
     public void setValue(Object v) throws JspTagException {
+        setValue(v, IMPLICITLIST);        
+    }
+    public void setValue(Object v, boolean noImplicitList) throws JspTagException {
         switch (vartype) { 
             // these accept a value == null (meaning that there are empty)
         case TYPE_LIST:
@@ -175,6 +180,20 @@ public class WriterHelper  {
             return;
         } 
 
+        if (noImplicitList) {
+            // Take last of list if vartype defined not to be a list:
+            if (v instanceof java.util.List) {
+                if (vartype != TYPE_LIST && vartype != TYPE_VECTOR) {
+                    java.util.List l = (java.util.List) v;
+                    if (l.size() > 0) { 
+                        v = l.get(l.size() - 1);
+                    } else {
+                        v = null;
+                    }
+                }
+            }
+        }
+
         // types which cannot accept null;
         switch (vartype) {
         case TYPE_INTEGER:
@@ -209,7 +228,7 @@ public class WriterHelper  {
             break;
         case TYPE_NODE:
             if (! (v instanceof org.mmbase.bridge.Node)) {
-                throw new JspTagException("Variable is not of type Node. Conversion is not yet supported by this Tag");
+                throw new JspTagException("Variable is not of type Node, but of type " + v.getClass().getName() + ". Conversion is not yet supported by this Tag");
             }
             break;
         }
