@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: BuilderReader.java,v 1.1 2003-04-11 11:05:52 pierre Exp $
+ * @version $Id: BuilderReader.java,v 1.2 2003-04-11 17:46:37 kees Exp $
  */
 public class BuilderReader extends XMLBasicReader {
 
@@ -445,14 +445,6 @@ public class BuilderReader extends XMLBasicReader {
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
-        if (results.isEmpty()) {
-            if (parentBuilder!=null) {
-                Map parentdescs= parentBuilder.getDescriptions();
-                if (parentdescs!=null) {
-                    results.putAll(parentdescs);
-                }
-            }
-        }
         return results;
     }
 
@@ -471,16 +463,6 @@ public class BuilderReader extends XMLBasicReader {
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
-        if (results.isEmpty()) { // nothing, thats little. Try parent.
-            if (parentBuilder!=null) {
-                Map parentnames= parentBuilder.getPluralNames();
-                if (parentnames!=null) {
-                    results.putAll(parentnames);
-                }
-            }
-        }
-
-
         return results;
     }
 
@@ -498,15 +480,6 @@ public class BuilderReader extends XMLBasicReader {
             tmp = (Element)enum.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
-        }
-        if (results.isEmpty()) { // nothing, try parent, to have something at least..
-            if (parentBuilder!=null) {
-                Map parentnames= parentBuilder.getSingularNames();
-                if (parentnames!=null) {
-                    results.putAll(parentnames);
-                }
-                results.putAll(parentnames);
-            }
         }
         return results;
     }
