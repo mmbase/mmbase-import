@@ -46,13 +46,17 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
         log.debug("releasing");
         super.release();
         number = null;
-	type = null ;
-	element = null;
-	contextid = null;
-        node = null;
-
+        type = null ;
+        element = null;
+        contextid = null;
+        node = null;	   
     }
 
+    public void setId(String iid) {
+        log.debug("setting id of node to " + iid);
+        super.setId(iid);
+    }
+    
     public void setNumber(String number) throws JspTagException {
         if (log.isDebugEnabled()) {
             log.debug("setting number to " + number);
@@ -79,7 +83,7 @@ public class NodeTag extends AbstractNodeProviderTag implements BodyTag {
             getContextTag().unRegister(referid); // it will be reregistered, as a real node
             unregistered = true;
         } else {
-            throw new JspTagException("Element " + referid + " from context " + contextid + " cannot be converted to node");
+            throw new JspTagException("Element " + referid + " from context " + contextid + " cannot be converted to node (because it is a " + n.getClass().getName() + " now)");
         }
     }
 
