@@ -254,10 +254,13 @@ public class scancache extends Module implements scancacheInterface {
 	                if (((now-then)-interval)<0) {
 	                    return value;
 	                } else {
-						log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
-						// RICO signal page-processor
-						signalProcessor(sp,key);
-						return value;
+						// Don't handle flasvar
+						if (key.indexOf(".flashvar")<0) {
+							log.debug("get("+poolName+","+key+","+line+"): Request is expired, return old version");
+							// RICO signal page-processor
+							signalProcessor(sp,key);
+							return value;
+						} else return null;
 	                }
 	            } catch(Exception e) {}
 			}
@@ -266,6 +269,8 @@ public class scancache extends Module implements scancacheInterface {
         fileInfo fileinfo=loadFile(poolName,key);
         if (fileinfo!=null && fileinfo.value!=null) {
             if (((now-fileinfo.time)-interval)>0) {
+				if (key.indexOf(".flashvar")>=0) // Don't handle flashvar;
+					return null;
                 log.debug("get("+poolName+","+key+","+line+"): Diskfile expired for file("+fileinfo.time+"), now("+now+") and interval("+interval+") , return old version ");
 				// RICO signal page-processor
 				signalProcessor(sp,key);
@@ -587,7 +592,7 @@ public class scancache extends Module implements scancacheInterface {
      */
     String getWriteHeaders(String value, String mimeType) {
         if ((mimeType==null) || mimeType.equals("") || mimeType.equals("text/html"))
-            mimeType = "text/html; iso-8859-1";
+            mimeType = "text/html; charset=\"iso-8859-1\"";
         String now = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()));
         String expireTime = RFC1123.makeDate(new Date(DateSupport.currentTimeMillis()+15000));
         String body="Status: 200 OK\n";
