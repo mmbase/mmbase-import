@@ -15,22 +15,22 @@ import javax.servlet.jsp.JspTagException;
 
 import javax.servlet.jsp.tagext.BodyContent;
 
-import org.mmbase.bridge.Cloud;
 import org.mmbase.bridge.Node;
 import org.mmbase.bridge.RelationManager;
 import org.mmbase.bridge.Relation;
 
-import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 import org.mmbase.bridge.jsp.taglib.CloudProvider;
+import org.mmbase.bridge.jsp.taglib.NodeTag;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
 /**
 * A tag lib to create relations. 
 *
 * @author Michiel Meeuwissen
 */
-public class CreateRelationTag extends CloudReferrerTag {
+public class CreateRelationTag extends NodeTag {
     
     private static Logger log = Logging.getLoggerInstance(CreateRelationTag.class.getName());
     
@@ -53,11 +53,12 @@ public class CreateRelationTag extends CloudReferrerTag {
         CloudProvider c = findCloudProvider();
         RelationManager rm = getCloudProviderVar().getRelationManager(role);
         Node sourceNode      = c.getNode(source);
-        Node destinationNode = c.getNode(destination);
-        
+        Node destinationNode = c.getNode(destination);        
         Relation r = rm.createRelation(sourceNode, destinationNode);
         r.commit();
-        return SKIP_BODY;
+
+        setNodeVar(r);
+        return EVAL_BODY_TAG; 
     }
     
 }
