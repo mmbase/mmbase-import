@@ -17,12 +17,34 @@ about the Ant build tool.
    
     <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
     <property name="build.compiler" value="classic"/>
-    <property name="debug"          value="on"/>
     <property name="optimize"       value="on"/>
     <property name="deprecation"    value="off"/>
 
     <property name="top.dir" value="../../../../"/>
+
+    <!-- Location of MMBase's config, needed for config-test -->
+    <property name="mmbase.config" value="${top.dir}/config/default"/>
+    <!-- Location of MMBase's html-files, needed for config-test -->
+    <property name="mmbase.htmlroot" value="${top.dir}/html"/>
+    <!-- Location of MMBase's log, needed for config-test -->
+    <property name="mmbase.outputfile" value="${top.dir}/log"/>
+    <!-- Location of MMBase's mode, needed for config-test -->
+    <property name="mmbase.mode" value="mmbase"/>
+
+    <!-- Classpath settings, needed for config-test -->
+    <property name="servlet.classpath" value="/usr/local/lib/java/servlet.jar"/>
+    <property name="jdbc.classpath" value="/usr/local/lib/java/mysql.jar"/>   
+    <property name="classpath" value="
+        ${top.dir}/lib/mmbase.jar:
+        ${top.dir}/lib/xerces.jar:
+        ${top.dir}/lib/xalan.jar:
+        ${top.dir}/lib/ant.jar:
+        ${servlet.classpath}:
+        ${jdbc.classpath}"/>
+
+    <!-- Source directory -->     
     <property name="src.dir"     value="${top.dir}/src"/>
+    <!-- Packages, needed for javadocs -->
     <property name="packages"    value="org.mmbase.*"/>
 
     <!-- build dirs -->
@@ -59,11 +81,11 @@ about the Ant build tool.
    
     <!-- check directory structure -->
     <available property="dir.src.present"
-               file="../../../../src" />
+               file="${top.dir}/src" />
     <available property="dir.org.present"
-               file="../../../org" />
+               file="${top.dir}/src/org" />
     <available property="dir.mmbase.present"
-               file="../../mmbase" />
+               file="${top.dir}/src/org/mmbase" />
   </target>
 
   <!-- =================================================================== -->
@@ -76,10 +98,12 @@ about the Ant build tool.
     <echo message=""/>
     <echo message=" available targets are:"/>
     <echo message=""/>
-    <echo message="   jar   --> generates the mmbase.jar file"/>
-    <echo message="   compile   --> compiles the source code (default)"/>
-    <echo message="   javadocs  --> generates the API documentation"/>
-    <echo message="   clean     --> cleans up the directory after building"/>
+    <echo message="   jar          --> generates the mmbase.jar file"/>
+    <echo message="   compile      --> compiles the source code (default)"/>
+    <echo message="   javadocs     --> generates the API documentation"/>
+    <echo message="   dist         --> generates the MMBase-distribution"/>
+    <echo message="   config-test  --> test the MMBase configuration"/>
+    <echo message="   clean        --> cleans up the directory after building"/>
     <echo message=""/>
     <echo message="*************************************************************"/>
     <echo message=""/>
@@ -247,7 +271,8 @@ about the Ant build tool.
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
 
-  <target name="dist" depends="compile,jar,javadocs">
+  <!--<target name="dist" depends="compile,jar,javadocs">-->
+<target name="dist" depends="compile,jar">
 
     <mkdir dir="${dist.root}"/>
     <mkdir dir="${dist.dir}"/>
@@ -303,6 +328,19 @@ about the Ant build tool.
     <!-- zip -->
     <zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.dir}" includes="**"/>
 
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Test Configuration target                                           -->
+  <!-- =================================================================== -->
+  <target name="config-test" depends="init">
+    <java classname="org.mmbase.config.Test" 
+          fork="yes" 
+          jvmargs="-Dmmbase.config=${mmbase.config} -Dmmbase.htmlroot=${mmbase.htmlroot} -Dmmbase.outputlog=${mmbase.outputfile} -Dmmbase.mode=${mmbase.mode}">
+      <classpath>
+        <pathelement path="${classpath}" />
+      </classpath>
+    </java>
   </target>
  
   <!-- =================================================================== -->
