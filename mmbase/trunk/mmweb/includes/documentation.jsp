@@ -1,4 +1,4 @@
-<mm:relatednodes id="docnr"type="documentation" >
+<mm:relatednodes id="docnr" type="documentation" orderby="title" >
   <mm:first>
   <table class="relationcontainer">
   <tr><th>Documentation</th></tr>
