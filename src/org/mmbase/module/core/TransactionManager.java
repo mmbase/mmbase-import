@@ -13,9 +13,12 @@ import java.util.*;
 import org.mmbase.module.corebuilders.*;
 
 /*
-	$Id: TransactionManager.java,v 1.13 2001-01-08 13:14:17 vpro Exp $
+	$Id: TransactionManager.java,v 1.14 2001-02-05 11:41:15 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.13  2001/01/08 13:14:17  vpro
+	Rico: fixed semantics of deleteObject
+	
 	Revision 1.12  2000/12/30 14:05:11  daniel
 	turned debug off again (please no debug turned on in cvs, some people have this in production and go nuts with debug
 	
@@ -58,7 +61,7 @@ import org.mmbase.module.corebuilders.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.13 2001-01-08 13:14:17 vpro Exp $
+ * @version $Id: TransactionManager.java,v 1.14 2001-02-05 11:41:15 daniel Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 	private String	_classname = getClass().getName();
@@ -234,7 +237,7 @@ public class TransactionManager implements TransactionManagerInterface {
 					debug("Can't commit transaction "+transactionname);
 					debug("Nodes \n"+v);
 				} else {
-					debug("commited "+transactionname);
+					if (debug) debug("commited "+transactionname);
 					// if (!debug) transactions.remove(transactionname);
 				}
 			}
