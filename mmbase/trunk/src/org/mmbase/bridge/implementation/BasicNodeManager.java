@@ -60,11 +60,6 @@ public class BasicNodeManager implements NodeManager {
         }
     }
 
-    /**
-    * Creates a new initialized node.
-    * The returned node will not be visible in the cloud until the commit() method is called on this node.
-    * @return the new <code>Node</code>
-    */
     public Node createNode() {
         cloud.assert(Operation.CREATE,builder.oType);
         // create object as a temporary node
@@ -82,24 +77,14 @@ public class BasicNodeManager implements NodeManager {
         return new BasicNode(node, this, id);
     }
 
- 	/**
-     * Retrieves the Cloud to which this manager belongs
-     */
     public Cloud getCloud() {
         return cloud;
     }
 
-	/**
-     * Retrieve the identifying name of the NodeManager
-     */
     public String getName() {
         return builder.getTableName();
     }
 
-	/**
-     * Retrieve the descriptive name of the NodeManager
-     * Note: currently, this method returns the nodetype/builder table name!
-     */
     public String getGUIName() {
 	    Hashtable singularNames=builder.getSingularNames();
         if (singularNames!=null) {
@@ -112,9 +97,6 @@ public class BasicNodeManager implements NodeManager {
 	    return builder.getTableName();
 	}
 
-	/** 
-	 * Retrieve the description of the NodeManager.
-	 */
 	public String getDescription() {
 	    Hashtable descriptions=builder.getDescriptions();
         if (descriptions!=null) {
@@ -127,19 +109,10 @@ public class BasicNodeManager implements NodeManager {
 	    return builder.getDescription();
 	}
 
-	/**
-	 * Retrieve all field types of this NodeManager.
-	 * @return a <code>List</code> of <code>FieldType</code> objects
-	 */
 	public FieldList getFields() {
 	    return new BasicFieldList(fieldTypes.values(),cloud,this);
 	}
 	
-	/**
-	 * Retrieve a subset of field types of this NodeManager, depending on a given order.
-	 * @param order the order in which to list the fields
-	 * @return a <code>List</code> of <code>FieldType</code> objects
-	 */
 	public FieldList getFields(int order) {
 	    if (order == ORDER_EDIT) {
 	        return new BasicFieldList(builder.getSortedFields(),cloud,this);
@@ -152,25 +125,11 @@ public class BasicNodeManager implements NodeManager {
 	    }
 	}
 
-	/**
-	 * Retrieve the field type for a given fieldname.
-	 * @param fieldName name of the field to retrieve
-	 * @return the requested <code>FieldType</code>
-	 */
 	public Field getField(String fieldName) {
 	    Field f= (Field)fieldTypes.get(fieldName);
 	    return f;
 	}
 	
-	/**
-     * Search nodes beloingin to this NodeManager.
-     * @param where The contraint. this is in essence a SQL where clause.
-     *      Examples: "email IS NOT NULL", "lastname='admin' OR lastname = 'sa'"
-     * @param order the fieldname on which you want to sort.
-     *      Examples: 'lastname', 'number'
-     * @param direction indicates whether the sort is ascending (true) or descending (false).
-     * @return a <code>List</code> of found nodes
-     */
     public NodeList getList(String constraints, String orderby,String directions) {
         // "String directions" isn't used yet!!
         String where = constraints;
@@ -195,48 +154,19 @@ public class BasicNodeManager implements NodeManager {
 	    return new BasicNodeList(v,cloud,this);
     }
 
-
-	/**
-	 * Retrieve info from a node manager based on a command string.
-	 * Similar to the $MOD command in SCAN.
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 */
 	public String getInfo(String command) {
 	    return getInfo(command, null,null);
 	}
 
-	/**
-	 * Retrieve info from a node manager based on a command string
-	 * Similar to the $MOD command in SCAN.
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 * @param req the Request item to use for obtaining user information. For backward compatibility.
-	 * @param resp the Response item to use for redirecting users. For backward compatibility.
-	 */
 	public String getInfo(String command, ServletRequest req,  ServletResponse resp){
 	    StringTokenizer tokens= new StringTokenizer(command,"-");
 	    return builder.replace(BasicCloudContext.getScanPage(req, resp),tokens);
 	}
 	
-	/**
-	 * Retrieve info (as a list of virtual nodes) from a node manager based on a command string.
-	 * Similar to the LIST command in SCAN.
-	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 * @param parameters a hashtable containing the named parameters of the list.
-	 */
 	public NodeList getList(String command, Hashtable parameters){
 	    return getList(command,parameters,null,null);
 	}
 
-	/**
-	 * Retrieve info from a node manager based on a command string
-	 * Similar to the LIST command in SCAN.
-	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
-	 * @param command the info to obtain, i.e. "USER-OS".
-	 * @param parameters a hashtable containing the named parameters of the list.
-	 * @param req the Request item to use for obtaining user information. For backward compatibility.
-	 * @param resp the Response item to use for redirecting users. For backward compatibility.
-	 */
 	public NodeList getList(String command, Hashtable parameters, ServletRequest req, ServletResponse resp){
 	    StringTagger params= new StringTagger("");
 	    if (parameters!=null) {
@@ -281,18 +211,18 @@ public class BasicNodeManager implements NodeManager {
 
 
     /**
-    * Compares two nodemanagers, and returns true if they are equal.
-    * This effectively means that both objects are nodemanagers, and they both use to the same builder type
-    * @param o the object to compare it with
-    */
+     * Compares two nodemanagers, and returns true if they are equal.
+     * This effectively means that both objects are nodemanagers, and they both use to the same builder type
+     * @param o the object to compare it with
+     */
     public boolean equals(Object o) {
         return (o instanceof NodeManager) && (o.hashCode()==hashCode());
     };
 
     /**
-    * Returns the nodemanager's hashCode.
-    * This effectively returns the buidlers's object type number
-    */
+     * Returns the nodemanager's hashCode.
+     * This effectively returns the buidlers's object type number
+     */
     public int hashCode() {
         return builder.oType;
     };

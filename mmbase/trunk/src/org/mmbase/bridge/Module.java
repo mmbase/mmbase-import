@@ -71,6 +71,7 @@ public interface Module {
 	 * Similar to the LIST command in SCAN.
 	 * The values retrieved are represented as fields of a virtual node, named following the fieldnames listed in the fields paramaters..
 	 * @param command the info to obtain, i.e. "USER-OS".
+	 * @param parameters a hashtable containing the named parameters of the list.
 	 * @param fields The names for the fields to retrieve. This allows a user to set it's own names for the fields (i.e.
 	 *      when calling the COLORS List command of the info module, this could be "RGB,name".
 	 *      If the number of names do not match the number of items returns, any additional items are numbered according to their position,

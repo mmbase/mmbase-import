@@ -15,32 +15,26 @@ import org.mmbase.module.corebuilders.TypeDef;
 import java.util.*;
 
 /**
- * A Transaction is an environment that allows for the editing of nodes
- * within a 'safe' context. Either all edits in a transaction are comitted, or all fail.
- * A Transaction acts as a cloud - all that can be done in a cloud can be done in a transaction.
- * I.e. A Node retrieved using the Transaction's getNode method resides in the Transaction -
- * if you change or remove the node, you can later roll it back by calling the Transaction's
- * cancel method.
  *
  * @author Pierre van Rooden
  */
 public class BasicTransaction extends BasicCloud implements Transaction {
 
     /**
-    * The id of the transaction for use with the transaction manager.
-    */
+     * The id of the transaction for use with the transaction manager.
+     */
 	protected String transactionContext;
 	/**
-	* The name of the transaction as used by the user.
-	*/
+	 * The name of the transaction as used by the user.
+	 */
 	protected String transactionName = null;
 
-    /**
-    * Constructor to call from the CloudContext class.
-    * (package only, so cannot be reached from a script)
-    * @param transactionName name of the transaction (assigned by the user)
-    * @param cloud The cloud this transaction is working on
-    */
+    /*
+     * Constructor to call from the CloudContext class.
+     * (package only, so cannot be reached from a script)
+     * @param transactionName name of the transaction (assigned by the user)
+     * @param cloud The cloud this transaction is working on
+     */
     BasicTransaction(String transactionName, BasicCloud cloud) {
         super(transactionName, cloud);
         this.transactionName=transactionName;
@@ -63,13 +57,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-  	/**
-    * Commits this transaction.
-    * This has no effect if the transaction itself was 'nested' in another transaction.
-    * In that case, nothing happens until the 'outer' Transaction commits.
-    * This routine also removes the transaction as an 'active' transaction (it cannot be opened again).
-    * @return <code>true<>/code> if the commit succeeded, <code>false</code> otherwise
-    */
     public boolean commit() {
         if (transactionContext==null) {
             throw new BasicBridgeException("No valid transaction : "+name);
@@ -94,11 +81,6 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         return true;
     }
 
-  	/**
-    * Cancels this transaction.
-    * If the transaction itself was 'nested' in another transaction, that 'outer' transaction is also canceled.
-    * This routine also removes the transaction (and all outer transactions) as an 'active' transaction (it cannot be opened again).
-    */
     public void cancel() {
         if (transactionContext==null) {
             throw new BasicBridgeException("No valid transaction : "+name);
@@ -121,10 +103,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         transactionContext=null;
     }
 
-    /**
-    * Transaction-notification: add a new temporary node to a transaction.
-    * @param currentObjectContext the context of the object to add
-    */
+    /*
+     * Transaction-notification: add a new temporary node to a transaction.
+     * @param currentObjectContext the context of the object to add
+     */
     void add(String currentObjectContext) {
         try {
 		     BasicCloudContext.transactionManager.addNode(transactionContext, account,currentObjectContext);
@@ -133,10 +115,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    /**
-    * Transaction-notification: remove a temporary (not yet committed) node in a transaction.
-    * @param currentObjectContext the context of the object to remove
-    */
+    /*
+     * Transaction-notification: remove a temporary (not yet committed) node in a transaction.
+     * @param currentObjectContext the context of the object to remove
+     */
     void remove(String currentObjectContext) {
         try {
 		     BasicCloudContext.transactionManager.removeNode(transactionContext,account,currentObjectContext);
@@ -145,10 +127,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    /**
-    * Transaction-notification: remove an existing node in a transaction.
-    * @param currentObjectContext the context of the object to remove
-    */
+    /*
+     * Transaction-notification: remove an existing node in a transaction.
+     * @param currentObjectContext the context of the object to remove
+     */
     void delete(String currentObjectContext) {
         try {
 		     BasicCloudContext.transactionManager.deleteObject(transactionContext,account,currentObjectContext);
@@ -157,10 +139,10 @@ public class BasicTransaction extends BasicCloud implements Transaction {
         }
     }
 
-    /**
-    * Transaction-notification: ceheck whether a node exists in a transaction.
-    * @param node the node to check
-    */
+    /*
+     * Transaction-notification: ceheck whether a node exists in a transaction.
+     * @param node the node to check
+     */
     boolean contains(MMObjectNode node) {
         // additional check, so transaction can still get nodes after it has committed.
         if (transactionContext==null) {
@@ -171,12 +153,12 @@ public class BasicTransaction extends BasicCloud implements Transaction {
     }
 
     /**
-    * If this Transaction is scheduled to be garbage collected,
-    * the transaction is canceled and cleaned up (unless it has already been committed/canceled, ofcourse, and
-    * unless the parentcloud of a transaction is a transaction itself... in that case, the parent transaction should cancel!).
-    * This means that a transaction is always cleared - if it 'times out', or is not properly removed, it will
-    * eventually be removed from the MMBase cache.
-    */
+     * If this Transaction is scheduled to be garbage collected,
+     * the transaction is canceled and cleaned up (unless it has already been committed/canceled, ofcourse, and
+     * unless the parentcloud of a transaction is a transaction itself... in that case, the parent transaction should cancel!).
+     * This means that a transaction is always cleared - if it 'times out', or is not properly removed, it will
+     * eventually be removed from the MMBase cache.
+     */
     protected void finalize() {
         if ((transactionContext!=null) && !(parentCloud instanceof Transaction)) {
             cancel();
