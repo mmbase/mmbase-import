@@ -300,7 +300,7 @@
       <title>MMBase taglib - mm:<xsl:value-of select="name" /></title>
       <xsl:text disable-output-escaping="yes">
       &lt;%@page language="java" contentType="text/html; charset=UTF-8" %&gt;
-      &lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"&gt;
+      &lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %&gt;
       </xsl:text>
     </head>
     <body 
