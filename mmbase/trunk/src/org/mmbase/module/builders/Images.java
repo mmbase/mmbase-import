@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.82 2003-10-24 09:09:46 pierre Exp $
+ * @version $Id: Images.java,v 1.83 2003-11-10 21:10:51 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -163,7 +163,7 @@ public class Images extends AbstractImages {
         StringBuffer servlet = new StringBuffer();
         HttpServletRequest req = (HttpServletRequest) args.get("request");
         if (req != null) {
-            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/"), null));
+            servlet.append(getServletPath(UriParser.makeRelative(new java.io.File(req.getServletPath()).getParent(), "/")));
         } else {
             servlet.append(getServletPath());
         }
