@@ -8,7 +8,7 @@
  * settings.jsp
  *
  * @since    MMBase-1.6
- * @version  $Id: settings.jsp,v 1.1 2004-11-01 12:52:43 jdiepenmaat Exp $
+ * @version  $Id: settings.jsp,v 1.2 2005-02-11 15:11:45 jdiepenmaat Exp $
  * @author   Kars Veling
  * @author   Pierre van Rooden
  * @author   Michiel Meeuwissen
@@ -76,6 +76,8 @@ if (configObject == null || ! (configObject instanceof Config) || ! (proceed)) {
     ewconfig = (Config) configObject;
 }
 
+
+ewconfig.maxupload=1024*1024*500;
 
 popupId = request.getParameter("popupid");
 if (popupId == null) popupId = "";
