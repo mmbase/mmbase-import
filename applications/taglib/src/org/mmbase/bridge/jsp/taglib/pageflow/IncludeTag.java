@@ -35,6 +35,7 @@ import org.mmbase.util.logging.Logging;
 public class IncludeTag extends UrlTag {
 
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName()); 
+    private static Logger pageLog = Logging.getLoggerInstance(org.mmbase.bridge.jsp.taglib.ContextReferrerTag.PAGE_CATEGORY);
 
     private static final int DEBUG_NONE = 0;
     private static final int DEBUG_HTML = 1;
@@ -143,9 +144,12 @@ public class IncludeTag extends UrlTag {
      * Encoding apparently work, but why they do isn't very clear.
      */
     private void internal(BodyContent bodyContent, String relativeUrl, HttpServletRequest req, HttpServletResponse resp) throws JspTagException {
-        if (log.isDebugEnabled()); log.debug("Internal: found url: >" + relativeUrl + "<");
+        if (log.isDebugEnabled()) {
+            log.debug("Internal: found url: >" + relativeUrl + "<");
+            String targetEncoding   = resp.getCharacterEncoding();
+            log.debug("encoding: " + targetEncoding);
+        }
         debugStart(relativeUrl);
-        String targetEncoding   = resp.getCharacterEncoding();
         ResponseWrapper response = new ResponseWrapper(resp);
         RequestWrapper request   = new RequestWrapper(req);
 
@@ -155,7 +159,8 @@ public class IncludeTag extends UrlTag {
             javax.servlet.RequestDispatcher rd = sc.getRequestDispatcher(relativeUrl);
             if (rd == null) log.error("Cannot retrieve RequestDispatcher from ServletContext");
             rd.include(request, response);    
-            bodyContent.write(response.toString());
+            // bodyContent.write(response.toString());
+            helper.setValue(response.toString());
         } catch (Exception e) {
             log.debug(Logging.stackTrace(e));
             throw new JspTagException(e.toString());
@@ -211,6 +216,9 @@ public class IncludeTag extends UrlTag {
     protected void includePage() throws JspTagException {
         try {
             String gotUrl = getUrl(false);// false: don't write &amp; tags but real &.
+            if (pageLog.isServiceEnabled()) {
+                pageLog.service("Parsing mm:include JSP page: " + gotUrl);
+            }
             // if not absolute, make it absolute:
             // (how does one check something like that?)
             String urlString;
@@ -256,7 +264,7 @@ public class IncludeTag extends UrlTag {
                 if (cite) {
                     cite(bodyContent, urlString, request); 
                 } else {
-                    // externalRelative(bodyContent, urlString, request, response);
+                    //externalRelative(bodyContent, urlString, request, response);
                     internal(bodyContent, urlString.substring(request.getContextPath().length()), request, response);
                 }
             } else { // really absolute
@@ -265,7 +273,10 @@ public class IncludeTag extends UrlTag {
           
         } catch (java.io.IOException e) {
             throw new JspTagException (e.toString());            
-        } 
+        }
+        if (pageLog.isDebugEnabled()) {
+            pageLog.debug("END Parsing mm:include JSP page"); 
+        }
     }
 
     /**
@@ -334,21 +345,25 @@ public class IncludeTag extends UrlTag {
  * makes it available through a toString() method.
  */
 class ResponseWrapper extends HttpServletResponseWrapper {
+
+    private static String DEFAULT_CHARSET = "utf-8";
+    private static String DEFAULT_CONTENTTYPE = "text/html;charset=" + DEFAULT_CHARSET;
     private static Logger log = Logging.getLoggerInstance(IncludeTag.class.getName());
 
     private CharArrayWriter caw;
     private PrintWriter writer;
     private MyServletOutputStream msos;
-    private String characterEncoding = "text/html;charset=utf-8";
+    private String contentType = DEFAULT_CONTENTTYPE;
+    private String characterEncoding = DEFAULT_CHARSET;
  
     /**
      * Public constructor
      */
     public ResponseWrapper(HttpServletResponse resp) {
         super(resp);
-        caw = new CharArrayWriter();
+        caw =    new CharArrayWriter();
         writer = new PrintWriter(caw);
-        msos = new MyServletOutputStream(writer);
+        msos =   new MyServletOutputStream(writer);
     }
     
     /**
@@ -375,18 +390,32 @@ class ResponseWrapper extends HttpServletResponseWrapper {
     }
     
     /**
-     * Sets the content type of the response being sent to the client. The content type may include the type of character encoding used, for example, text/html; charset=ISO-8859-4.
-     * If obtaining a PrintWriter, this method should be called first.
+     * Sets the content type of the response being sent to the
+     * client. The content type may include the type of character
+     * encoding used, for example, text/html; charset=ISO-8859-4.  If
+     * obtaining a PrintWriter, this method should be called first.
      */
-    public void setContentType(String encoding) {
-        log.debug("setting content of include page, we need better routine here (to coding : " +  encoding + ")");
-        this.characterEncoding = encoding;
+    public void setContentType(String ct) {
+        if (ct == null) {
+            contentType = DEFAULT_CONTENTTYPE;
+        } else {
+            contentType = ct;
+        }
+        int i = contentType.indexOf("charset=");
+        if (i >= 0) {
+            characterEncoding = contentType.substring(i + 8);
+        } else {
+            characterEncoding = DEFAULT_CHARSET;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("set contenttype of include page to: '" +  contentType + "' (and character encoding to '" + characterEncoding +  "')");
+        }
     }
     
     /**
      * Returns the name of the charset used for the MIME body sent in this response.
      * If no charset has been assigned, it is implicitly set to ISO-8859-1 (Latin-1).
-     * See RFC 2047 (http://ds.internic.net/rfc/rfc2045.txt) for more information about character encoding and MIME.
+     * See RFC 2047 (http://www.ietf.org/rfc/rfc2045.txt) for more information about character encoding and MIME.
      * returns the encoding
      */    
     public String getCharacterEncoding() {
