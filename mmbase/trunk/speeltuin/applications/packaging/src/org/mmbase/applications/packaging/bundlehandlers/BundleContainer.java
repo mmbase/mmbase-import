@@ -45,63 +45,62 @@ public class BundleContainer implements BundleInterface {
 
     private BundleInterface activeBundle;
 
-    private Hashtable versions=new Hashtable();
+    private Hashtable versions = new Hashtable();
     
     public BundleContainer(BundleInterface b) {
-	// its the first one so it has to be the best
-	this.activeBundle=b;
+        // its the first one so it has to be the best
+        this.activeBundle = b;
 
-	// also the first version so add it 
-	BundleVersionContainer bvc=new BundleVersionContainer(b);
-	versions.put(b.getVersion(),bvc);
+        // also the first version so add it 
+        BundleVersionContainer bvc=new BundleVersionContainer(b);
+        versions.put(b.getVersion(),bvc);
     }
 
 
     public boolean contains(String version,ProviderInterface provider) {
-	BundleVersionContainer vc=(BundleVersionContainer)versions.get(version);
-	if (vc!=null) {
-		return(vc.contains(provider));
-	}
-	return(false);
+        BundleVersionContainer vc=(BundleVersionContainer)versions.get(version);
+        if (vc!=null) {
+            return vc.contains(provider);
+        }
+        return false;
     }
 
 
     public boolean removeBundle(BundleInterface b) {
-	versions.remove(b.getVersion());
-	return true;
+        versions.remove(b.getVersion());
+        return true;
     }
 
     public int getBundleCount() {
-	return versions.size();
+        return versions.size();
     }
 
     public boolean addBundle(BundleInterface b) {
-	BundleVersionContainer vc=(BundleVersionContainer)versions.get(b.getVersion());
-	// we allready have this verion, so maybe its a different provider
-	if (vc!=null) {
-		vc.addBundle(b);
-	} else {
-		BundleVersionContainer bvc=new BundleVersionContainer(b);
-		versions.put(b.getVersion(),bvc);
-	}
+        BundleVersionContainer vc = (BundleVersionContainer)versions.get(b.getVersion());
+        // we allready have this verion, so maybe its a different provider
+        if (vc != null) {
+            vc.addBundle(b);
+        } else {
+            BundleVersionContainer bvc = new BundleVersionContainer(b);
+            versions.put(b.getVersion(),bvc);
+        }
 
-	// figure out if we have a new best version of this bundle
-	try {
-		int oldversion=Integer.parseInt(activeBundle.getVersion());
-		int newversion=Integer.parseInt(b.getVersion());
-		if (newversion>oldversion) {
-			// so we have a newer version, make that the active one
-			activeBundle=b;
-		} else if (newversion==oldversion) {
-			int oldbaseScore=activeBundle.getProvider().getBaseScore();
-			int newbaseScore=b.getProvider().getBaseScore();
-			if (newbaseScore>oldbaseScore) {
-				activeBundle=b;
-			}
-		}
-	} catch(Exception e) {};
-
-	return true;
+        // figure out if we have a new best version of this bundle
+        try {
+            int oldversion = Integer.parseInt(activeBundle.getVersion());
+            int newversion = Integer.parseInt(b.getVersion());
+            if (newversion > oldversion) {
+                // so we have a newer version, make that the active one
+                activeBundle = b;
+            } else if (newversion == oldversion) {
+                int oldbaseScore = activeBundle.getProvider().getBaseScore();
+                int newbaseScore = b.getProvider().getBaseScore();
+                if (newbaseScore > oldbaseScore) {
+                    activeBundle = b;
+                }
+            }
+        } catch(Exception e) {};
+        return true;
     }
 
     public Enumeration getNeededPackages() {
@@ -113,171 +112,171 @@ public class BundleContainer implements BundleInterface {
     }
 
     public String getName() {
-	return activeBundle.getName();
+        return activeBundle.getName();
     }
     
     public String getVersion() {
-	return activeBundle.getVersion();
+        return activeBundle.getVersion();
     }
 
     public String getState() {
-	return activeBundle.getState();
+        return activeBundle.getState();
     }
 
     public boolean setState(String state) {
-	return activeBundle.setState(state);
+        return activeBundle.setState(state);
     }
 
     public boolean install() {
-	return activeBundle.install();
+        return activeBundle.install();
     }
 
     public boolean uninstall() {
-	return activeBundle.uninstall();
+        return activeBundle.uninstall();
     }
 
     public String getCreationDate() {
-	return activeBundle.getCreationDate();
+        return activeBundle.getCreationDate();
     }
 
     public String getMaintainer() {
-	return activeBundle.getMaintainer();
+        return activeBundle.getMaintainer();
     }
 
     public String getType() {
-	return activeBundle.getType();
+        return activeBundle.getType();
     }
 
     public String getId() {
-	return activeBundle.getId();
+        return activeBundle.getId();
     }
 
     public String getPath() {
-	return activeBundle.getPath();
+        return activeBundle.getPath();
     }
 
-    public ProviderInterface getProvider() {	
-	return activeBundle.getProvider();
+    public ProviderInterface getProvider() {    
+        return activeBundle.getProvider();
     }
 
     public Enumeration getVersions() {
-	return versions.elements();
+        return versions.elements();
     }
 
     public BundleInterface getVersion(String version,ProviderInterface provider) {
-	BundleVersionContainer bvc=(BundleVersionContainer)versions.get(version);
-	if (bvc!=null) {
-		BundleInterface b=(BundleInterface)bvc.get(provider);
-		if (b!=null) {
-			return b;
-		} else {
-			return null;
-		}
-	} else {
-		return null;
-	}
+        BundleVersionContainer bvc = (BundleVersionContainer)versions.get(version);
+        if (bvc != null) {
+            BundleInterface b = (BundleInterface)bvc.get(provider);
+            if (b != null) {
+                return b;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
 
     public BundleInterface getBundleByScore(String version) {
-	BundleVersionContainer bvc=(BundleVersionContainer)versions.get(version);
-	if (bvc!=null) {
-		return bvc.getBundleByScore();
-	}
-	return null;
+        BundleVersionContainer bvc=(BundleVersionContainer)versions.get(version);
+        if (bvc!=null) {
+            return bvc.getBundleByScore();
+        }
+        return null;
     }
 
     public Enumeration getInstallSteps() {
-	return activeBundle.getInstallSteps();
+        return activeBundle.getInstallSteps();
     }
 
     public Enumeration getInstallSteps(int logid) {
-	return activeBundle.getInstallSteps(logid);
+        return activeBundle.getInstallSteps(logid);
     }
 
     public void clearInstallSteps() {
-	activeBundle.clearInstallSteps();
+         activeBundle.clearInstallSteps();
     }
 
-    public JarFile getJarFile() {	
-	return activeBundle.getJarFile();
+    public JarFile getJarFile() {    
+        return activeBundle.getJarFile();
     }
 
-    public JarFile getIncludedPackageJarFile(String packageid,String packageversion) {	
-	return activeBundle.getIncludedPackageJarFile(packageid,packageversion);
+    public JarFile getIncludedPackageJarFile(String packageid,String packageversion) {    
+        return activeBundle.getIncludedPackageJarFile(packageid,packageversion);
     }
 
-    public BufferedInputStream getJarStream() {	
-	return activeBundle.getJarStream();
+    public BufferedInputStream getJarStream() {    
+        return activeBundle.getJarStream();
     }
 
-    public boolean isShared() {	
-	if (shareinfo!=null) {
-		return(true);
-	}
-	return false;
+    public boolean isShared() {    
+        if (shareinfo != null) {
+            return true;
+        }
+        return false;
     }
 
-    public ShareInfo getShareInfo() {	
-	return shareinfo;
+    public ShareInfo getShareInfo() {    
+        return shareinfo;
     }
 
     public void setShareInfo(ShareInfo shareinfo) {
-	this.shareinfo=shareinfo;
+        this.shareinfo = shareinfo;
     }
 
     public void removeShare() {
-	this.shareinfo=null;
+        this.shareinfo = null;
     }
 
 
     public String getDescription() {
-	return activeBundle.getDescription();
+        return activeBundle.getDescription();
     }
     
     public String getReleaseNotes() {
-	return activeBundle.getReleaseNotes();
+        return activeBundle.getReleaseNotes();
     }
 
     public String getInstallationNotes() {
-	return activeBundle.getInstallationNotes();
+        return activeBundle.getInstallationNotes();
     }
 
 
     public String getLicenseType() {
-	return activeBundle.getLicenseType();
+        return activeBundle.getLicenseType();
     }
 
     public String getLicenseName() {
-	return activeBundle.getLicenseName();
+        return activeBundle.getLicenseName();
     }
 
     public String getLicenseVersion() {
-	return activeBundle.getLicenseVersion();
+        return activeBundle.getLicenseVersion();
     }
 
     public String getLicenseBody() {
-	return activeBundle.getLicenseBody();
+        return activeBundle.getLicenseBody();
     }
 
     public void setProgressBar(int stepcount) {
-	activeBundle.setProgressBar(stepcount);
+        activeBundle.setProgressBar(stepcount);
     }
 
     public void increaseProgressBar() {
-	activeBundle.increaseProgressBar();
+        activeBundle.increaseProgressBar();
     }
 
     public void increaseProgressBar(int stepcount) {
-	activeBundle.increaseProgressBar(stepcount);
+        activeBundle.increaseProgressBar(stepcount);
     }
 
    public int getProgressBarValue() {
-	return activeBundle.getProgressBarValue();
+       return activeBundle.getProgressBarValue();
    }
 
    public int getPackageProgressBarValue() {
-	return activeBundle.getPackageProgressBarValue();
+       return activeBundle.getPackageProgressBarValue();
    }
 
 }
