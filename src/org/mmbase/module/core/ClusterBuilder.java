@@ -41,7 +41,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.64 2004-09-17 09:24:34 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.65 2004-10-12 10:55:40 michiel Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -1218,7 +1218,7 @@ public class ClusterBuilder extends VirtualBuilder {
                 } catch (NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias
                     // table then
-                    nodeNumber= new Integer(mmb.OAlias.getNumber(str));
+                    nodeNumber= new Integer(mmb.getOAlias().getNumber(str));
                     if (nodeNumber.intValue() < 0) {
                         nodeNumber= new Integer(0);
                     }
