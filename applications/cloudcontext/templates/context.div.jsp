@@ -21,7 +21,7 @@
     <mm:import id="operations" vartype="list"><mm:write referid="visibleoperations" /></mm:import>
    <table class="rights">
     <tr><th>Groups</th><mm:stringlist referid="operations"><th><mm:write /></th></mm:stringlist></tr>
-    <mm:functioncontainer argumentsdefinition="org.mmbase.security.implementation.cloudcontext.builders.Contexts.GRANT_ARGUMENTS">
+    <mm:functioncontainer>
     <mm:listnodes id="thisgroup" type="mmbasegroups">
       <mm:param name="grouporuser"><mm:field name="number" /></mm:param>
       <tr><td class="text"><a href="<mm:url referids="parameters,$parameters,thisgroup@group"><mm:param name="url">index_groups.jsp</mm:param></mm:url>"><mm:nodeinfo type="gui" /><mm:field name="description"><mm:isnotempty>(<mm:write />)</mm:isnotempty></mm:field></a></td>

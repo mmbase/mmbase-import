@@ -4,7 +4,7 @@
 %><mm:import externid="language">nl</mm:import>
 <%@include file="settings.jsp"
 %><mm:content language="$language" type="text/html">
-<mm:cloud>
+<mm:cloud method="asis" jspvar="cloud">
   <html>
     <head>
     <title>Cloud Context Users Administration - Error page</title>
@@ -13,7 +13,6 @@
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
   </head>
     <body>
-      <mm:cloud jspvar="cloud">
         <mm:log jspvar="log">
 <%
     String domain = request.getServerName();
@@ -48,7 +47,7 @@
 	msg += "\n";
 
   if (cloud.getUser() != null) {
-      msg += "cloud-user: " + cloud.getUser().getIdentifier() + "\n";
+      msg += "cloud-user: " + cloud.getUser().getIdentifier() + " / " + cloud.getUser().getRank() + "\n";
   } else {
      msg += "cloud-user: NULL\n";
  }
@@ -88,7 +87,10 @@
   <div id="content">
 	<h1>Oeps, er is een fout opgetreden!</h1>
 	<p>
-   Er is iets misgegaan: <%= exception.getMessage() %>.
+    Er is iets misgegaan: <%= exception.getMessage() %>.
+  </p>
+  <p>
+    <a href="<mm:url page="index.jsp" />">terug</a>
   </p>
   <p>
     Als het niet duidelijk is wat er aan de hand is, kunt u het beste de beheerder van deze site
@@ -105,9 +107,7 @@
 </textarea>
    </div>
 </mm:log>
-</mm:cloud>
     </body>
 </html>
-</mm:log>
 </mm:cloud>
 </mm:content>
