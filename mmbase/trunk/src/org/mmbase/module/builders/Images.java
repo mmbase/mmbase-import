@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: Images.java,v 1.16 2000-06-02 11:20:45 wwwtech Exp $
+	$Id: Images.java,v 1.17 2000-06-05 14:42:15 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.16  2000/06/02 11:20:45  wwwtech
+	Rico: made the param checking more robust
+	
 	Revision 1.15  2000/06/02 10:57:48  wwwtech
 	Rico: seperated conversion from the builder
 	
@@ -59,10 +62,9 @@ import org.mmbase.util.*;
  * search on them.
  *
  * @author Daniel Ockeloen, Rico Jansen
- * @version $Id: Images.java,v 1.16 2000-06-02 11:20:45 wwwtech Exp $
+ * @version $Id: Images.java,v 1.17 2000-06-05 14:42:15 wwwtech Exp $
  */
 public class Images extends MMObjectBuilder {
-
 	private String classname = getClass().getName();
 	private boolean debug = true;
 
@@ -73,7 +75,12 @@ public class Images extends MMObjectBuilder {
 	protected static String ImageConvertClass="org.mmbase.module.builders.ConvertImageMagick";
 	protected static String ConverterRoot = "/usr/local/";
 	protected static String ConverterCommand = "bin/convert";
+	protected int MaxConcurrentRequests=2;
 
+	protected int MaxRequests=32;
+	protected Queue imageRequestQueue=new Queue(MaxRequests);
+	protected Hashtable imageRequestTable=new Hashtable(MaxRequests);
+	protected ImageRequestProcessor ireqprocessors[];
 
 	public boolean init() {
 		super.init();
@@ -82,6 +89,15 @@ public class Images extends MMObjectBuilder {
 		tmp=getParameter("ImageConvertClass");
 		if (tmp!=null) ImageConvertClass=tmp;
 		loadImageConvertParams(getParameters());
+		tmp=getParameter("MaxConcurrentRequests");
+		if (tmp!=null) {
+			try {
+				itmp=Integer.parseInt("MaxConcurrentRequests");
+			} catch ("NumberFormatException e");
+				itmp=2;
+			}
+			MaxConcurrentRequests=itmp;
+		}
 		*/
 
 		// HACK remove when above comes true
@@ -90,6 +106,14 @@ public class Images extends MMObjectBuilder {
 
 		imageconvert=loadImageConverter(ImageConvertClass);
 		imageconvert.init(ImageConvertParams);
+
+		ImageCaches bul=(ImageCaches)mmb.getMMObject("icaches");
+		// Startup parrallel converters
+		ireqprocessors=new ImageRequestProcessor[2];
+		debug("Starting "+MaxConcurrentRequests+" Converters");
+		for (int i=0;i<MaxConcurrentRequests;i++) {
+			ireqprocessors[i]=new ImageRequestProcessor(bul,imageconvert,imageRequestQueue,imageRequestTable);
+		}
 		return(true);
 	}
 
@@ -174,6 +198,10 @@ public class Images extends MMObjectBuilder {
 		return ConvertImage(sp,params);
 	}
 
+	public byte[] getImageBytes(scanpage sp,Vector params) {
+		return ConvertImage(sp,params);
+	}
+
 	public int convertAlias(String num) {
 		// check if its a number if not check for name
 		int number=-1;
@@ -195,6 +223,7 @@ public class Images extends MMObjectBuilder {
 		String ckey="",key;
 		byte[] picture=null;
 		int number=-1;
+		ImageRequest req=null;
 
 		if (params!=null && params.size()>0) {
 	
@@ -219,17 +248,17 @@ public class Images extends MMObjectBuilder {
 						if (node!=null) {
 							byte[] inputpicture=node.getByteValue("handle");
 							if (inputpicture!=null) {
-								picture=imageconvert.ConvertImage(inputpicture,params);
-								if (picture!=null) {
-									MMObjectNode newnode=bul.getNewNode("system");
-									newnode.setValue("ckey",ckey);
-									newnode.setValue("id",number);
-									newnode.setValue("handle",picture);
-									newnode.setValue("filesize",picture.length);
-									newnode.insert("imagesmodule");
-								} else {
-									debug("ConvertImage(): Convert problem params : "+params);
+								synchronized(imageRequestTable) {
+									req=(ImageRequest)imageRequestTable.get(ckey);
+									if (req==null) {
+										req=new ImageRequest(number,ckey,params,inputpicture);
+										imageRequestTable.put(ckey,req);
+										imageRequestQueue.append(req);
+									} else {
+										debug("ConvertImage: a conversion in progress...  (requests="+req.count()+")");
+									}
 								}
+								picture=req.getOutput();
 							} else {
 								debug("ConvertImage: Image Node is bad "+number);
 							}
