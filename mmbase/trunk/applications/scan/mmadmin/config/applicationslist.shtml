@@ -17,22 +17,24 @@ Display list of xml files in configuration category
 <tr>
   <td><b>Application</b></td>
   <td><b>Check</b></td>
+  <td><b>Source</b></td>
+  <td></td>
 </tr>
 <LIST SHOW category=$PARAM1>
 <tr>
+  <td><a href="xslconvert.shtml?$PARAM1/$ITEM1+appview">$ITEM1</a></td>
 <LIF $ITEM2=Etrue>
-  <td><a href="configdetail.shtml?show+$PARAM1+$ITEM1">$ITEM1</a></td>
   <td>ok</td>
+  <td><a href="configdetail.shtml?show+$PARAM1+$ITEM1">xml</a></td>
 </IF>
 <LIF $ITEM2=Enodtd>
-  <td><a href="configdetail.shtml?show+$PARAM1+$ITEM1">$ITEM1</a></td>
   <td>no dtd defined</td>
+  <td><a href="configdetail.shtml?show+$PARAM1+$ITEM1">xml</a></td>
 </IF>
 <LIF $ITEM2=Efalse>
-  <td><a href="configdetail.shtml?annotate+$PARAM1+$ITEM1">$ITEM1</a></td>
   <td>xml error!</td>
+  <td><a href="configdetail.shtml?annotate+$PARAM1+$ITEM1">annotated xml</a></td>
 </IF>
-  <td></td>
   <td></td>
 </tr>
 </LIST>
