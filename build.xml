@@ -67,6 +67,8 @@ NetComponents can be found at:
   <property name="build.dir" value="${source.dir}/build"/>
   <property name="download.dir" value="${build.dir}/download"/>
   <property name="expand.dir" value="${download.dir}/expanded"/>
+  <property name="download.zip" value="mmbase-downloads.zip" />
+
   <property name="build.compiler" value="classic"/>
   <property name="optimize" value="on"/>
   <property name="debug" value="off"/>
@@ -202,7 +204,8 @@ version=1.6.0-rc1
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib.release,jar,web,mmcidocs">
+          depends="lib.release,jar,web">
+
     <!-- copy a readme and other basic docs from documentation dir -->
     <copy todir="${build.dir}/mmbase" >
       <fileset dir="${source-documentation.dir}/releases"
@@ -213,28 +216,6 @@ version=1.6.0-rc1
     </copy>
     <copy file="${source-documentation.dir}/releases/legal/LICENSE.mmbase"
           tofile="${build.dir}/mmbase/LICENSE"/>
-    <!-- copy the config -->
-    <mkdir dir="${web.dir}/config"/>
-    <copy todir="${web.dir}/config">
-      <fileset dir="${source-config.dir}"
-               defaultexcludes="yes"/>
-    </copy>
-    <!-- copy the html -->
-    <copy todir="${webapp.dir}">
-      <fileset dir="${source-html.dir}"
-               defaultexcludes="yes">
-      </fileset>
-    </copy>
-    <!-- copy the libraries -->
-    <copy todir="${release.lib.dir}">
-      <fileset dir="${compile.lib.dir}"
-               defaultexcludes="yes">
-        <exclude name="oracle-jdbc.zip"/>
-        <exclude name="ifxjdbc.jar"/>
-      </fileset>
-    
-    </copy>
-
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip">
      <zipfileset dir="${build.dir}/mmbase" prefix="${name}-${version}" 
@@ -243,6 +224,12 @@ version=1.6.0-rc1
 
   </target>
 
+
+  <!-- =============================================================================== -->
+  <!-- Create al distro formats (serves as overview for those)                         -->
+  <!-- =============================================================================== -->
+  <target name="distros" description="Create the several mmbase-distros"
+          depends="bindist,srcdist,wars,lib.compile.zip" />
 
   <!-- =================================================================== -->
   <!-- Clean the binary distribution                                       -->
@@ -259,7 +246,8 @@ version=1.6.0-rc1
   <target
     name="lib.release"
     description="Create the lib directory"
-    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jspsmartupload">
+    depends="init,expand.xalan,expand.log4j,expand.hsqldb,expand.jspsmartupload,expand.jai">
+
     <mkdir dir="${release.lib.dir}" />
     <copy file="${xalan.jar}"          todir="${release.lib.dir}" />
     <copy file="${xerces.jar}"         todir="${release.lib.dir}" />
@@ -267,6 +255,8 @@ version=1.6.0-rc1
     <copy file="${log4j.jar}"          tofile="${release.lib.dir}/log4j.jar" />
     <copy file="${jspsmartupload.jar}" todir="${release.lib.dir}" />
     <copy file="${hsqldb.jar}"         todir="${release.lib.dir}" />
+    <copy file="${jai_codec.jar}"      todir="${release.lib.dir}" />
+    <copy file="${jai_core.jar}"       todir="${release.lib.dir}" />
 
     <!-- copy licenses for included jars -->
     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
@@ -298,13 +288,17 @@ version=1.6.0-rc1
 
   </target>
 
-  <target name="lib.compile" description="Create the lib directory"
+
+
+  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary form compilation" 
           depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation,get.jdbc">
+
     <mkdir dir="${compile.lib.dir}"/>
     <copy file="${xalan.jar}"     todir="${compile.lib.dir}" />
     <copy file="${xerces.jar}"    todir="${compile.lib.dir}" />
     <copy file="${xml-apis.jar}"  todir="${compile.lib.dir}" />
     <copy file="${servlet.jar}"   todir="${compile.lib.dir}" />
+
     <copy file="${jai_codec.jar}" todir="${compile.lib.dir}" />
     <copy file="${jai_core.jar}"  todir="${compile.lib.dir}" />
     <copy file="${log4j.jar}"     tofile="${compile.lib.dir}/log4j.jar" />
@@ -312,6 +306,15 @@ version=1.6.0-rc1
     <copy file="${javamail.jar}"  todir="${compile.lib.dir}" />
     <copy file="${javaactivation.jar}"  todir="${compile.lib.dir}" />
     <copy file="${jdbc.jar}"      todir="${compile.lib.dir}" />
+  </target>
+
+  <target name="lib.compile.zip" depends="lib.compile" description="Packages the download dir." >
+    <zip zipfile="${build.dir}/${download.zip}" >
+      <zipfileset dir="${download.dir}" prefix="">
+        <include name="**" />
+        <exclude name="expanded/**"/>
+      </zipfileset>
+    </zip>
   </target>
 
 
@@ -605,9 +608,8 @@ Main-Class: org.mmbase.Version
   </target>
 
 
-    <property name="config.build.dir" value="${build.dir}/config"/>
-    <property name="minconfig.build.dir" value="${build.dir}/min/config"/>
-    <property name="webroot.build.dir" value="${build.dir}/webroot"/>
+  <property name="minconfig.build.dir" value="${build.dir}/min/config"/>
+
 
     <!-- =================================================================== -->
     <!-- Create the MMBase config build dir                                  -->
@@ -687,43 +689,6 @@ Build-compiler: ${build.compiler}
     <!-- =================================================================== -->
     <!-- Create the MMBase html build dir                                    -->
     <!-- =================================================================== -->
-    <!--    <target name="war.webroot" depends="init.compile, javadocs">  -->
-
-    <!-- What for the war is so different?? -->
-    <!-- This should depend on bindist!! -->
-
-  <target name="war.webroot" depends="init.compile,documentation,javadocs">
-
-    <!-- copy the jsp editors to a reasonable place -->
-    <copy todir="${webroot.build.dir}/mmbase/edit">
-      <fileset dir="${source-html.dir}/mmeditors/jsp"/>
-    </copy>
-
-    <!-- copy the jsp admin pages to a reasonable place -->
-    <copy todir="${webroot.build.dir}/mmbase/admin">
-      <fileset dir="${source-html.dir}/mmadmin/jsp"/>
-    </copy>
-
-    <!-- copy the editwizards to a reasonable place -->
-    <copy todir="${webroot.build.dir}/mmbase/edit/wizard">
-      <fileset dir="${source-html.dir}/mmapps/editwizard"/>
-    </copy>
-
-    <!-- docs -->
-    <copy todir="${webroot.build.dir}/mmbase/documentation">
-      <fileset dir="${mmdocs.dir}"/>
-    </copy>
-
-    <!-- examples -->
-    <copy todir="${webroot.build.dir}/mmexamples">
-      <fileset dir="${source-html.dir}/mmexamples"/>
-    </copy>
-
-    <copy todir="${webroot.build.dir}/mmbase/documentation">
-      <fileset dir="${build.dir}/mmbase-src/docs"/>
-    </copy>
-
-  </target>
 
   <target name="clean.war">
     <delete dir="${webroot.build.dir}" />
@@ -736,24 +701,22 @@ Build-compiler: ${build.compiler}
     <!-- =================================================================== -->
     <!-- Create the MMBase war file                                          -->
     <!-- =================================================================== -->
-  <target name="wars" description="Create full-fledged and minimalistic mmbase.war" depends="war,minimalistic.war" />
+  <target name="wars" description="Create full-fledged and minimalistic mmbase.war" 
+          depends="war,minimalistic.war" 
+  />
 
-  <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar,war.config,war.webroot">
+  <target name="war" description="Create a MMBase war-file" depends="lib.release,web,jar">
 
-    <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+    <war warfile="${build.dir}/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
-      <!-- here our config has to be.. -->
-      <webinf dir="${build.dir}">
-        <include name="config/**"/>
-      </webinf>
-
       <!-- our file's on the server -->
-      <fileset dir="${build.dir}/webroot"/>
+      <fileset dir="${build.dir}/mmbase/mmbase-webapp"/>
     </war>
   </target>
 
-  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" depends="lib.release,web,jar,minimalistic.war.config">
-    <war warfile="${build.dir}/mmbase/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
+  <target name="minimalistic.war" description="Create a minimalistic MMBase war-file" 
+          depends="lib.release,jar,minimalistic.war.config">
+    <war warfile="${build.dir}/minimalistic-mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
       <lib dir="${release.lib.dir}" />
       <!-- here our config has to be.. -->
       <webinf dir="${build.dir}/min">
@@ -836,6 +799,23 @@ Build-compiler: ${build.compiler}
          depends="init.compile,taglib.tld,community.tld,documentation">
     <mkdir  dir="${web.dir}/config/builders/applications" />
     <chmod  file="${web.dir}/config/builders/applications" perm="ugo+xrw" type="dir" />
+
+    <!-- copy the config -->
+    <mkdir dir="${web.dir}/config"/>
+    <copy todir="${web.dir}/config">
+      <fileset dir="${source-config.dir}"
+               defaultexcludes="yes"/>
+    </copy>
+
+    <!-- copy the html -->
+    <copy todir="${webapp.dir}">
+      <fileset dir="${source-html.dir}"
+               defaultexcludes="yes">
+      </fileset>
+    </copy>
+
+
+
   </target>
 
   <target name="taglib.tld.check">
@@ -1096,7 +1076,18 @@ Build-compiler: ${build.compiler}
   <!-- =================================================================== -->
   <!-- Various targets for automated downloads                             -->
   <!-- =================================================================== -->
+  <target name="unzipdownloadzip" if="download.zip.present" unless="download.dir.present" >
+    <unzip src="${download.zip}" dest="${download.dir}" overwrite="false" />
+  </target>
+
   <target name="init.get">
+
+    <available property="download.zip.present" file="${download.zip}" />
+    <available property="download.dir.present" file="${download.dir}" />
+
+    <antcall target="unzipdownloadzip" />
+
+
     <property name="servlet.version" value="jakarta-servletapi-4"/>
     <property name="servlet.url" value="http://jakarta.apache.org/builds/jakarta-tomcat-4.0/archives/v4.0/${servlet.version}.tar.gz"/>
     <property name="servlet.jar" value="${expand.dir}/${servlet.version}/lib/servlet.jar"/>
@@ -1231,7 +1222,7 @@ Build-compiler: ${build.compiler}
   </target>
 
   <target name="get.servlet" depends="init.get" unless="servlet.present">
-<get src="${servlet.url}"
+    <get src="${servlet.url}"
          dest="${download.dir}/${servlet.version}.tar.gz"
          verbose="on"/>
   </target>
@@ -1571,7 +1562,7 @@ Version: MMBase build ${version}
 
 
   <target name="documentation"
-          depends="taglib.doc,community.doc,docbookumentation,documentation.builders">
+          depends="taglib.doc,community.doc,docbookumentation,documentation.builders,mmcidocs">
     <copy todir="${mmdocs.dir}/" >
       <fileset dir="${source-html.dir}/mmdocs" />
     </copy>
