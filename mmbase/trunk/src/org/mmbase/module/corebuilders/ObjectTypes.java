@@ -27,10 +27,11 @@ import org.mmbase.util.xml.BuilderReader;
  * The filename which shall be used depends on the fields 'name' of the Node. Also, a new node, means a new builder
  * removal of node is removal of builder (also of the xml). Changes to the config will also be active on commit of the
  * node.
- * TODO: update/merging code, and futher testing..
+ *
+ * @duplicate move code to TypeDef
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: ObjectTypes.java,v 1.34 2004-10-18 20:17:26 michiel Exp $
+ * @version $Id: ObjectTypes.java,v 1.35 2004-10-25 12:02:43 pierre Exp $
  */
 public class ObjectTypes extends TypeDef {
     private static final Logger log = Logging.getLoggerInstance(ObjectTypes.class);
@@ -131,14 +132,30 @@ public class ObjectTypes extends TypeDef {
     /**
      * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
      * This method indirectly calls {@link #preCommit}.
+     * Asside from that, this method loads the builder this node represents, and initalizes it. If you do
+     * not wish to load the builder (i.e. because it is already loaded), use {@link #insert(String, MMObjectNode, boolean)}
      * @param owner The administrator creating the node
      * @param node The object to insert. The object need be of the same type as the current builder.
      * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
      */
     public int insert(String owner, MMObjectNode node) {
+        return insert(owner, node, true);
+    }
+
+    /**
+     * Insert a new object (content provided) in the cloud, including an entry for the object alias (if provided).
+     * This method indirectly calls {@link #preCommit}.
+     * @param owner The administrator creating the node
+     * @param node The object to insert. The object need be of the same type as the current builder.
+     * @param loadBuilder if <code>true</code>, the builder should be loaded. This method is set to
+     *        <code>false</code> when it is called from the init() method of MMObjectBuilder to prevent
+     *        it from being loaded twice
+     * @return An <code>int</code> value which is the new object's unique number, -1 if the insert failed.
+     */
+    public int insert(String owner, MMObjectNode node, boolean loadBuilder) {
         if (log.isDebugEnabled()) {
             // would be logical to log this in SERVICE but the same occurance is logged on INFO already in MMObjectBuilder.init()
-            log.debug("Insert of builder-node with name '" + node.getStringValue("name") + "'");
+            log.debug("Insert of builder-node with name '" + node.getStringValue("name") + "', loadBuilder = " + loadBuilder);
         }
         // look if we can store to file, if it aint there yet...
         File file = new File(getBuilderFilePath(node));
@@ -149,17 +166,17 @@ public class ObjectTypes extends TypeDef {
             // first store our config....
             storeBuilderFile(node);
         }
-        // TODO: more generic code?
-        // try if it still not here...HACK HACK
-        if (getIntValue(node.getStringValue("name")) > 0) {
-            // there was already a node for the builder with this name!
-            // can happen, when an other thread was here first in multi-threaded
-            return getIntValue(node.getStringValue("name"));
+        // try if the builder was already in TypeDef for some reason
+        // this can happen when another thread was here first
+        int result = getIntValue(node.getStringValue("name"));
+        if (result < 0) {
+            // otherwise save the node
+            result = super.insert(owner, node, loadBuilder);
         }
-        // now save our node...
-        int result = super.insert(owner, node);
-        // load our builder
-        loadBuilder(node);
+        // Load the builder if needed
+        if (loadBuilder) {
+            loadBuilder(node);
+        }
         return result;
     }
 
@@ -373,6 +390,7 @@ public class ObjectTypes extends TypeDef {
             log.info("could not load builder from xml, is in inactive?(name: '" + node.getStringValue("name") + "' path: '" + path + "')");
             return null;
         }
+        mmb.initBuilder(builder);
         return builder;
     }
 

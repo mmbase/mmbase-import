@@ -62,7 +62,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.274 2004-10-25 08:08:37 pierre Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.275 2004-10-25 12:02:42 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -337,7 +337,7 @@ public class MMObjectBuilder extends MMTable {
      * @see #create
      */
     public boolean init() {
-        synchronized(mmb) { // syncrhonized on mmb because can only init builder if mmb is inited completely
+        synchronized(mmb) { // synchronized on mmb because can only init builder if mmb is inited completely
 
             // skip initialisation if oType has been set (happend at end of init)
             // note that init can be called twice
@@ -383,7 +383,7 @@ public class MMObjectBuilder extends MMTable {
                         node.setValue("otype", oType);
                     }
                     log.debug("Inserting the new typedef node");
-                    node.insert("system");
+                    typeDef.insert("system", node, false);
                     // for typedef, call it's parents init again, as otype is only now set
                     if (this == typeDef) {
                         initAncestors();
@@ -490,8 +490,8 @@ public class MMObjectBuilder extends MMTable {
             QueryResultCache.invalidateAll(this);
 
             if (n >= 0) {
-            	node = safeCache(new Integer(n),node);
-            } 
+                node = safeCache(new Integer(n),node);
+            }
             String alias = node.getAlias();
             if (alias != null) createAlias(n,alias);    // add alias, if provided
             return n;
@@ -786,26 +786,26 @@ public class MMObjectBuilder extends MMTable {
     public int getObjectType() {
         return oType;
     }
-    
-	/**
-	 * Stores a node in the cache provided the cache is not write locked.
-	 * @return a valid node. If the node already was in the cache, the cached node is returned.   
-	 * In that case the node given as parameter should become invalid
-	 */
-	public MMObjectNode safeCache(Integer n, MMObjectNode node) {
-		MMObjectNode retval = (MMObjectNode)nodeCache.get(n);
-		if (retval != null) {
-			return retval;
-		} else {
-			synchronized (nodeCache) {
-				if (cacheLocked == 0) {
-					nodeCache.put(n, node);
-				}
-			}
-			return node;
-		}
 
-	}
+    /**
+     * Stores a node in the cache provided the cache is not write locked.
+     * @return a valid node. If the node already was in the cache, the cached node is returned.
+     * In that case the node given as parameter should become invalid
+     */
+    public MMObjectNode safeCache(Integer n, MMObjectNode node) {
+        MMObjectNode retval = (MMObjectNode)nodeCache.get(n);
+        if (retval != null) {
+            return retval;
+        } else {
+            synchronized (nodeCache) {
+                if (cacheLocked == 0) {
+                    nodeCache.put(n, node);
+                }
+            }
+            return node;
+        }
+
+    }
 
     /**
      * Locks the node cache during the commit of a node.
