@@ -1,24 +1,16 @@
-<%@ page errorPage="exception.jsp" %>
-<%
-	String wizardname = request.getParameter("wizard");
-	String objectnumber = request.getParameter("objectnumber");
-	
-	if (wizardname!=null && objectnumber!=null && !wizardname.equals("") && !objectnumber.equals("") && wizardname.indexOf("|")==-1) {
-		String instancename = wizardname + "|" + new java.util.Date().getTime();
-		response.sendRedirect("wizard.jsp?wizard="+instancename+"&objectnumber="+objectnumber+"&popup=true");
-	} else {
-		response.addHeader("Cache-Control","no-cache");
-		response.addHeader("Pragma","no-cache");
-		response.addHeader("Expires","0");
+<%@ include file="settings.jsp"
+%><mm:cloud name="mmbase" method="http" jspvar="cloud"><%@ page errorPage="exception.jsp"
+%><%
+    // start a popup wizard.
+    String wizardname = request.getParameter("wizard");
+    String objectnumber = request.getParameter("objectnumber");
 
-		%>
-			<html>
-			<body>
-				Could not start a popup wizard because no wizardname and objectnumber are applied. <br />
-				Please make sure you define a wizardname and objectnumber in the wizard schema.<br />
-			</body>
-			</html>
-		<%
-	}
+    if (wizardname!=null && objectnumber!=null && !wizardname.equals("") && !objectnumber.equals("") && wizardname.indexOf("|")==-1) {
+        String sessionkey = wizardname + "|" + new java.util.Date().getTime();
+        response.sendRedirect("wizard.jsp?wizard="+wizardname+"&sessionkey="+sessionkey+"&objectnumber="+objectnumber+"&popup=true&referrer="+ewconfig.backPage);
+    } else {
+        throw new WizardException("Could not start a popup wizard because no wizardname and objectnumber are applied."+
+                                  " Please make sure you define a wizardname and objectnumber in the wizard schema.");
+    }
 %>
-
+</mm:cloud>
