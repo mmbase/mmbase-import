@@ -684,11 +684,10 @@ Distribution: ${distro}
              windowtitle="MMBase API"
              doctitle="MMBase"
              maxmemory="100M"
-             bottom="MMBase 2002">
+             bottom="MMBase build ${version}">
       <classpath>
         <fileset dir="${compile.lib.dir}">
           <include name="*.jar"/>
-          <exclude name="mmbase.jar"/>
         </fileset>
       </classpath>
     </javadoc>
