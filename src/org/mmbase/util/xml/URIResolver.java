@@ -42,12 +42,12 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen.
  * @since  MMBase-1.6
- * @version $Id: URIResolver.java,v 1.15 2003-02-11 18:51:04 michiel Exp $
+ * @version $Id: URIResolver.java,v 1.16 2004-02-19 16:36:05 michiel Exp $
  */
 
 public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasurable {
     
-    private static Logger log = Logging.getLoggerInstance(URIResolver.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(URIResolver.class);
 
     private EntryList     extraDirs;  // prefix -> File pairs
     private File          cwd;
@@ -64,7 +64,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
      * could wrap the file in such an empty URIResolver, and avoid all
      * further overhead.
      *
-     * @param cwd       The directory for which this URIResolver must (not) be created.
+     * @param c         The directory for which this URIResolver must (not) be created.
      * @param overhead  A boolean. It is ignored. It serves only to distinct this constructor from the other one.
      * @see org.mmbase.cache.xslt.FactoryCache
      */
@@ -75,7 +75,7 @@ public class URIResolver implements javax.xml.transform.URIResolver, SizeMeasura
     }
     /**
      * Create an URIResolver for a certain directory.
-     * @param cwd  The directory for which this URIResolver must be created.     
+     * @param c   The directory for which this URIResolver must be created.     
      * 
      */
 
