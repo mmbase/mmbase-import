@@ -16,21 +16,31 @@ import java.util.*;
 import java.io.*;
 
 import org.mmbase.util.*;
+import org.mmbase.cache.xslt.*;
 import org.mmbase.bridge.*;
 import org.mmbase.module.core.*;
+import org.mmbase.applications.mmbob.util.transformers.Smilies;
 
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
+
+import javax.xml.transform.*;
+
 
 /**
  * @author Daniel Ockeloen
  */
 public class Posting {
 
+
+    /** The smilies transformer */
+    private static Smilies smilies = new Smilies ();
+
     // logger
     static private Logger log = Logging.getLoggerInstance(Posting.class);
 
     private int id;
+    private int threadpos;
     private PostThread parent;
     private Node node;
 
@@ -53,6 +63,10 @@ public class Posting {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setThreadPos(int threadpos) {
+        this.threadpos = threadpos;
     }
 
     /**
@@ -102,6 +116,10 @@ public class Posting {
         return id;
     }
 
+    public int getThreadPos() {
+        return threadpos;
+    }
+
     /**
      * set the node of this posting
      *
@@ -126,6 +144,13 @@ public class Posting {
      * @return body of this posting
      */
     public String getBody() {
+        String parsed = node.getStringValue("c_body");
+	if (parsed.equals("")) {
+		parsed = translateBody(node.getStringValue("body"));
+		node.setValue("c_body",parsed);
+		node.commit();
+		return parsed;
+	}
         return node.getStringValue("c_body");
     }
 
@@ -184,5 +209,27 @@ public class Posting {
     public boolean save() {
         node.commit();
         return true;
+    }
+
+    private String translateBody(String body) {
+	String xsl = MMBaseContext.getConfigPath() + File.separator + "mmbob" + File.separator;
+	if (threadpos%2 == 0) {
+		xsl += parent.getParent().getParent().getXSLTPostingsEven();
+	} else {
+		xsl += parent.getParent().getParent().getXSLTPostingsOdd();
+	}
+ 	try {
+    		TransformerFactory tFactory = TransformerFactory.newInstance();
+    		Transformer transformer = tFactory.newTransformer(new javax.xml.transform.stream.StreamSource(xsl));
+		StringWriter result = new StringWriter();
+    		transformer.transform(new javax.xml.transform.stream.StreamSource(new StringReader(body)),new javax.xml.transform.stream.StreamResult(result));
+		body = result.toString();
+    	} catch (Exception e) { 
+		e.printStackTrace( );
+    	}
+	String themeid = "MMBob";
+	String imagecontext = "/mmbase/thememanager/images";
+        body = smilies.transform(body, themeid, imagecontext);
+	 return body;
     }
 }

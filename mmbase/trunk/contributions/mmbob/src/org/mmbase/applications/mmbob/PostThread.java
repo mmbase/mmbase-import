@@ -47,6 +47,7 @@ public class PostThread {
    private Node node;
    private PostArea parent;
    private Vector postings=null;
+   private int threadpos=0;
    private Vector writers=new Vector();
 
    public PostThread(PostArea parent,Node node) {
@@ -258,6 +259,7 @@ public class PostThread {
                         Node rel=rm.createRelation(node,pnode);
                         rel.commit();
         		Posting posting=new Posting(pnode,this);
+			posting.setThreadPos(threadpos++);
 		        postings.add(posting);
 
 			// update stats and signal parent of change
@@ -314,6 +316,7 @@ public class PostThread {
 		while (i.hasNext()) {
 			Node node=i.nextNode();
                         Posting posting=new Posting(node,this);
+			posting.setThreadPos(threadpos++);
 			addWriter(posting);
                       	postings.add(posting);
 		}
@@ -486,6 +489,10 @@ public class PostThread {
 
         // Also signal the parent PostArea to decrease it's postcount etc ..
         parent.signalRemovedReply(this);
+    }
+
+    public PostArea getParent() {
+	return parent;
     }
 }
 
