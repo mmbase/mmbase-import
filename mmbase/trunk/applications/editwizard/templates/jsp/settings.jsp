@@ -8,7 +8,7 @@
      * settings.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: settings.jsp,v 1.30 2003-05-01 17:32:49 pierre Exp $
+     * @version  $Id: settings.jsp,v 1.31 2003-05-02 09:11:29 pierre Exp $
      * @author   Kars Veling
      * @author   Pierre van Rooden
      * @author   Michiel Meeuwissen
@@ -55,7 +55,7 @@
                 c.constraints=null;
                 if (c.searchType.equals("like")) {
                     // actually we should unquote search...
-                    search=" like '%"+search+"%'";
+                    search=" LIKE '%"+search.toLowerCase()+"%'";
                 } else if (c.searchType.equals("string")) {
                     search=" = '"+search+"'";
                 } else {
@@ -78,11 +78,15 @@
                 while (searchtokens.hasMoreTokens()) {
                     String tok=searchtokens.nextToken();
                     if (c.constraints!=null) {
-                        c.constraints+=" or ";
+                        c.constraints+=" OR ";
                     } else {
                         c.constraints="";
                     }
-                    c.constraints+=tok+search;
+                    if (c.searchType.equals("like")) {
+                        c.constraints+="lower("+tok+")"+search;
+                    } else {
+                        c.constraints+=tok+search;
+                    }
                 }
                 if (c.baseConstraints!=null) {
                     c.constraints="("+c.baseConstraints+") and ("+c.constraints+")";
