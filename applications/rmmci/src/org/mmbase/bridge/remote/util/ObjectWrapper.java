@@ -1,11 +1,16 @@
 package org.mmbase.bridge.remote.util;
 
+import java.util.*;
 import java.rmi.*;
+import java.util.Vector;
+
 import org.mmbase.bridge.*;
 import org.mmbase.bridge.remote.*;
 import org.mmbase.bridge.remote.rmi.*;
 import org.mmbase.bridge.remote.implementation.*;
 
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.Step;
 import org.mmbase.util.logging.*;
 /**
  * Util class that performs translations of object to remote objects and 
@@ -23,6 +28,15 @@ public abstract class ObjectWrapper {
             return null;
         }
 
+        if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
+            List source = (List)o;
+            List list = new Vector();
+            for (int x = 0; x < source.size(); x++) {
+                list.add(localToRMIObject(source.get(x)));
+            }
+            return list;
+        }
+
         String className = o.getClass().getName();
 
         if (className.indexOf("mmbase") == -1) {
@@ -31,14 +45,12 @@ public abstract class ObjectWrapper {
         }
 
         //it's an mmbase object
-        Object retval = null;
-        if (o instanceof Node) {
-            retval = new RemoteNode_Rmi((Node)o);
-        } else if (o instanceof Query) {
-            retval = new RemoteQuery_Rmi((Query)o);
-        } else {
+        Object retval = ObjectWrapperHelper.localToRMIObject(o);
 
+        if (retval == null) {
             log.warn("please add a  wrapper for objects of type " + className);
+        } else {
+            log.debug(o.getClass().getName() + " -> " + retval.getClass().getName());
         }
         return retval;
     }
@@ -50,18 +62,23 @@ public abstract class ObjectWrapper {
         if (o == null) {
             return null;
         }
+		if (o.getClass().getName().indexOf("mmbase") == -1 && o instanceof List) {
+            List source = (List)o;
+            List list = new Vector();
+            for (int x = 0; x < source.size(); x++) {
+                list.add(rmiObjectToRemoteImplementation(source.get(x)));
+            }
+            return list;
+        }
+
         Object retval = null;
         String className = o.getClass().getName();
 
         if (className.indexOf("mmbase") != -1) {
-            if (o instanceof RemoteNode) {
-                retval = new RemoteNode_Impl((RemoteNode)o);
-            } else if (o instanceof RemoteQuery) {
-                retval = new RemoteQuery_Impl((RemoteQuery)o);
-            } else {
+            retval = ObjectWrapperHelper.rmiObjectToRemoteImplementation(o);
+            if (retval == null) {
                 log.warn("please add a  wrapper for objects of type " + className);
             }
-
         } else {
             retval = o;
         }
