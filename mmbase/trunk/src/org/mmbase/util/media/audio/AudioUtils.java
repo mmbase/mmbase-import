@@ -226,7 +226,7 @@ public class AudioUtils extends MediaUtils
 				}
 
 				String author=null;
-				Enumeration g=mmbase.getInsRel().getRelated(number,1573);
+				Enumeration g=mmbase.getInsRel().getRelated(number,"groups");
 				String an = null;
 				if (g.hasMoreElements()) {
 					an=((MMObjectNode)g.nextElement()).getStringValue("name");
