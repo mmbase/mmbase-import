@@ -17,6 +17,8 @@ readme.txt                  This file
 releasenotes-1.7.0.txt      Releasenotes for this distro (contains
                             changes/bugfixes/know issues) 
 installation.txt            Instructions for installing MMBase
+upgrade.txt                 Instructions for upgrading existing MMBase
+                            installations
 mmbase-webapp/              Webapplication dir, this dir goes into
                             your applicationserver/servlet engine
   WEB-INF/                  Webapplication config dir, contains both the
@@ -39,7 +41,7 @@ mmbase-webapp/              Webapplication dir, this dir goes into
       magic.xml             File with information about mimetypes
       modules/              All modules that can be used, including
                             core modules and optional modules. Not all
-			    modules are activated by default 
+                            modules are activated by default
       security/             Configuration for the security
       utils/                All config related to org.mmbase.util-classes 
         httppost.xml        Config related to upload files (max size,
@@ -47,11 +49,11 @@ mmbase-webapp/              Webapplication dir, this dir goes into
       xslt/                 Some xslt's for displaying config files in
                             adminpages
     lib/                    All jars needed by MMBase
-      legal		    Contains licenses for external jars which
-                            are distributed with MMBase
+      legal		            Contains licenses for external jars which
+                            are distributed with MMBase 
     web.xml                 a default configuration file for MMBase as
                             a webapp, should be sufficient for most
-     		            basic configurations
+                            basic configurations
   mmbase/                   All mmbase-related templates                 
     admin/                  Admin pages
     edit/                   
