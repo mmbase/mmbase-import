@@ -35,7 +35,7 @@ import org.mmbase.util.logging.*;
  * nodes.
  *
  * @author Pierre van Rooden
- * @version $Id: ClusterNode.java,v 1.9 2003-09-02 20:08:24 michiel Exp $
+ * @version $Id: ClusterNode.java,v 1.10 2003-09-03 10:03:18 michiel Exp $
  */
 public class ClusterNode extends VirtualNode {
 
@@ -199,7 +199,9 @@ public class ClusterNode extends VirtualNode {
             // there is no 'builder' specified,
             // so the fieldname itself is a builder name
             // -> so return the MMObjectNode for that buidler
-            return getRealNode(fieldName);
+            if (parent instanceof ClusterBuilder) {
+                return getRealNode(fieldName);
+            }
 
         }
         Object o = super.getValue(fieldName);
