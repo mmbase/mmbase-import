@@ -28,8 +28,8 @@ public class BasicRelation extends BasicNode implements Relation {
     private int snum = 0;
     private int dnum = 0;
 
-    private NodeManager snumtype = null;
-    private NodeManager dnumtype = null;
+    private int snumtype = 0;
+    private int dnumtype = 0;
 
 
     BasicRelation(MMObjectNode node, NodeManager nodeManager) {
@@ -40,8 +40,8 @@ public class BasicRelation extends BasicNode implements Relation {
         snum = node.getIntValue("snumber");
         dnum = node.getIntValue("dnumber");
         
-        snumtype = (NodeManager) getCloud().getNode(snum); 
-        dnumtype = (NodeManager) getCloud().getNode(dnum); 
+        snumtype = mmb.getTypeDef().getNodeType(snum);
+        dnumtype = mmb.getTypeDef().getNodeType(dnum);
     }
 
     BasicRelation(MMObjectNode node, NodeManager nodeManager, int id) {
@@ -80,8 +80,8 @@ public class BasicRelation extends BasicNode implements Relation {
         } else {
           getNode().setValue("snumber",source);
         }
-        snum=node.getNumber();
-        snumtype = node.getNodeManager();
+        snum = node.getNumber();
+        snumtype = node.getIntValue("otype");
     }
 
     public void setDestination(Node node) {
@@ -97,8 +97,8 @@ public class BasicRelation extends BasicNode implements Relation {
         } else {
           getNode().setValue("dnumber",dest);
         }
-       dnum=node.getNumber();
-       dnumtype = node.getNodeManager();
+       dnum = node.getNumber();
+       dnumtype = node.getIntValue("otype");
     }
 
     public RelationManager getRelationManager() {
@@ -115,12 +115,12 @@ public class BasicRelation extends BasicNode implements Relation {
         if (log.isDebugEnabled()) {
             log.debug("s : " + snum + " d: " + dnum);
         }
-        int snumber = snumtype.getNumber(); 
-        int dnumber = dnumtype.getNumber(); 
+        //int snumber = snumtype.getNumber(); 
+        //int dnumber = dnumtype.getNumber(); 
         int rnumber = getNode().getIntValue("rnumber");
-        if (!mmb.getTypeRel().reldefCorrect(snumber, dnumber, rnumber)) {
-            if (!mmb.getTypeRel().reldefCorrect(dnumber,snumber,rnumber)) {
-                throw new BasicBridgeException("Source and/or Destination node are not of the correct type. (" + snumtype.getName() + "," + dnumtype.getName() + "," + cloud.getNode(rnumber).getValue("sname"));
+        if (!mmb.getTypeRel().reldefCorrect(snumtype, dnumtype, rnumber)) {
+            if (!mmb.getTypeRel().reldefCorrect(dnumtype,snumtype,rnumber)) {
+                throw new BasicBridgeException("Source and/or Destination node are not of the correct type. (" + cloud.getNode(snumtype).getValue("name") + "," + cloud.getNode(dnumtype).getValue("name") + "," + cloud.getNode(rnumber).getValue("sname"));
             }
         }
         
