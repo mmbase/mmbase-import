@@ -95,7 +95,7 @@ public class Statistics extends MMObjectBuilder {
 			node.prefix="";
 			return(val);
 		} 
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 

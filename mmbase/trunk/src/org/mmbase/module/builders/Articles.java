@@ -45,7 +45,7 @@ public class Articles extends MMObjectBuilder {
 				return(str);
 			}
 		}
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 	public String getGUIIndicator(String field,MMObjectNode node) {

@@ -611,6 +611,6 @@ public class jazzdrives extends MMObjectBuilder implements MMBaseObserver {
 			System.out.println(buildername+": getValue: val="+val);
 			return(val);
 		}
-		return(null);
+		return(super.getValue(node,field));
 	}
 }

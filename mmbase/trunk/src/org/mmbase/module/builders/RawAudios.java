@@ -1,5 +1,5 @@
 /*
-$Id: RawAudios.java,v 1.2 2000-02-24 12:35:44 wwwtech Exp $
+$Id: RawAudios.java,v 1.3 2000-03-20 13:17:30 wwwtech Exp $
 VPRO (C)
 
 This source file is part of mmbase and is (c) by VPRO until it is being
@@ -7,6 +7,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 12:35:44  wwwtech
+Davzev fixed getFileName() & getHostName() and added getProtocolName().
+
 */
 package org.mmbase.module.builders;
 
@@ -22,7 +25,7 @@ import org.mmbase.util.*;
 /**
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.2 $ $Date: 2000-02-24 12:35:44 $
+ * @$Revision: 1.3 $ $Date: 2000-03-20 13:17:30 $
  *
  * 17 Dec 1999 davzev Added static methods getFileName, getHostName and getProtocolName used by Audioparts $MOD GETURL.
  */
@@ -127,7 +130,7 @@ public class RawAudios extends MMObjectBuilder {
 				default: return("Onbepaald");
 			}
 		}
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 

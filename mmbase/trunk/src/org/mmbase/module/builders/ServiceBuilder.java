@@ -134,6 +134,7 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 	// the Service builder _must_ update all the mmbase admins to reflect
 	// new state. Next version will support name with authentication.
 	public void addService(String name, String localclass, MMObjectNode mmserver) throws Exception {
+
 		boolean result = false;
 
 		if( debug ) debug("addService("+name+","+localclass+","+mmserver+"), inserting.");
@@ -141,12 +142,14 @@ public class ServiceBuilder extends MMObjectBuilder implements MMBaseObserver {
 		//System.out.println("Service Builder ("+tableName+") add service called !");
 		//System.out.println("Service Builder "+name+" "+localclass+" "+mmserver+" ");
 
+		if (debug) debug("addService : CREATING A NEW OBJECT NOW !!!!!!!!!!");
 		MMObjectNode newnode=getNewNode("system");
 		newnode.setValue("name",name);
 		newnode.setValue("cdtype","C="+localclass); // Warning this will be altered to devtype
 		newnode.setValue("state","waiting");
 		newnode.setValue("info","");
 		int newid=insert("system",newnode);
+		if (debug) debug("addService : CREATING A NEW OBJECT NOW !!!!!!!!!! IS DONE"+(new java.util.Date()).toGMTString());
 		if (newid!=-1) {
 			InsRel bul=(InsRel)mmb.getMMObject("insrel");
 			bul.insert("system",newid,mmserver.getIntValue("number"),14);	

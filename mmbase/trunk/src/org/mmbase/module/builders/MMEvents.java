@@ -86,7 +86,7 @@ public class MMEvents extends MMObjectBuilder {
 			int str=(int)node.getIntValue(field.substring(5));
 			return(DateSupport.getYear(str));
 		} 
-		return(null);
+		return(super.getValue(node,field));
 	}
 
 	public void probeCall() {

@@ -109,15 +109,5 @@ public class Question extends MMObjectBuilder {
 	}
 	*/
 
-	/*
-	public Object getValue(MMObjectNode node,String field) {
-		if (field.indexOf("html_")==0) {
-			String val=node.getStringValue(field.substring(5));
-			val=getHTML(val);
-			return(val);
-		}
-		return(null);
-	}
-	*/
 }
 
