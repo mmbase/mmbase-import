@@ -8,18 +8,12 @@
 <mm:import externid="fragment" required="true" />
 <mm:locale language="$language">
 
-<title>[ STREAM ]</title>
+<title>[ STREAM  DEMO ]</title>
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <link href="style/wizard.css" type="text/css" rel="stylesheet" />
 <link href="style/streammanager.css" type="text/css" rel="stylesheet" />
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;language=$language" />" language="javascript"><!--help IE--></script>
-<script language="javascript"><!--
-  function showInfo() {
-    // alert(document.embeddedplayer.GetCopyright());             
-     parent.forms['info'].copyright.value = document.embeddedplayer.GetCopyright();
-  }
---></script>
 </head>
 
 <body onLoad="showInfo();">
@@ -44,7 +38,7 @@
 			  <tr>
     			<td class="movie" width="35" height="180" ><img src="images/extra.gif" width="35" height="180" alt="" border="0" usemap="#nav"></td>
     			<td width="260" height="300" class="movie">
-       <embed src="<mm:url referids="source" page="display.ram.jsp" />" 
+       <embed src="<mm:url referids="source" page="demo.smil" />" 
                 width="260" 
                 height="200"   
                 type="audio/x-pn-realaudio-plugin"
