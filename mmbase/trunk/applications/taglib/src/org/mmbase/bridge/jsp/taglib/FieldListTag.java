@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.mmbase.bridge.Field;
+import org.mmbase.bridge.Node;
 import org.mmbase.bridge.FieldIterator;
 import org.mmbase.bridge.FieldList;
 import org.mmbase.bridge.NodeManager;
@@ -29,7 +30,7 @@ import org.mmbase.util.logging.Logging;
 *
 * @author Michiel Meeuwissen
 **/
-public class FieldListTag extends NodeReferrerTag implements ListItemInfo {
+public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeProvider {
 
     private static final int NO_TYPE = -100;
 
@@ -81,6 +82,14 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo {
         return nodeProvider;
     }
 
+    public Node getNodeVar() throws JspTagException {
+        if (nodeManagerString != null) {
+            return null;
+        }
+        nodeProvider = findNodeProvider();        
+        return nodeProvider.getNodeVar();
+    }
+
     /**
     *
     **/
@@ -89,8 +98,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo {
         NodeManager nodeManager;
         
         if (nodeManagerString == null) { // living as NodeReferrer
-            nodeProvider= findNodeProvider();
-            nodeManager = nodeProvider.getNodeVar().getNodeManager();
+            nodeManager = getNodeVar().getNodeManager();
         } else {
             nodeManager = getCloudProviderVar().getNodeManager(nodeManagerString);
         }
