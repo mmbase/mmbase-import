@@ -9,6 +9,9 @@ See http://www.MMBase.org/license
 */
 /*
 $Log: not supported by cvs2svn $
+Revision 1.11  2001/04/13 13:47:05  michiel
+michiel: new logging system, indentation
+
 Revision 1.10  2000/12/20 16:31:45  vpro
 Davzev: added changed some debug stuff
 
@@ -37,11 +40,17 @@ import org.mmbase.util.logging.Logging;
 
 
 /**
- * @version $Revision: 1.11 $ $Date: 2001-04-13 13:47:05 $  
+ * @version $Revision: 1.12 $ $Date: 2001-04-19 14:30:50 $  
  * @author Daniel Ockeloen
  */
 public class RemoteBuilder {
     private static Logger log = Logging.getLoggerInstance(RemoteBuilder.class.getName());
+
+	// Temporary insert the old logging style since cdplayers g2encoders and dropboxes havent got new style.
+	// Will be removed very soon
+    public boolean debug = true;
+    public String classname = getClass().getName();
+    public void debug(String msg) {System.out.println(classname +":"+ msg);}
 
     private MMProtocolDriver con;
     private Hashtable values=new Hashtable();
