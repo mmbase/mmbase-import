@@ -1,15 +1,15 @@
 <!-- ===========================================================================
 
 
-Generic project build file template. 
+Generic project build file template.
 
-Generates a jar for your project. 
+Generates a jar for your project.
 
 You can also do a test. (specify test.class).
 This makes sure you use the right class-path and so on.
 
 Create a build.xml with a DOCTYPE like this:
-<!DOCTYPE project 
+<!DOCTYPE project
  [ <!ENTITY base     SYSTEM "buildbase.xml" > ]
 >
 (point to this file)
@@ -33,7 +33,7 @@ Create a build.xml with a DOCTYPE like this:
   <property name="debug"          value="off" />
   <property name="deprecation"    value="on" />
   <property name="nowarn"         value="off" />
-  
+
 
   <property name="applications.dir"   location=".." />
   <property name="project.source.dir" location="." />
@@ -61,7 +61,7 @@ Create a build.xml with a DOCTYPE like this:
 
   <property name="webapp.dir"      value="${build.dir}/mmbase/mmbase-webapp"/>
 
-  <property name="templates.dir"   value="${webapp.dir}/mmbase" />  
+  <property name="templates.dir"   value="${webapp.dir}/mmbase" />
   <property name="examples.dir"    value="${webapp.dir}/mmexamples" />
 
   <property name="web.dir"         value="${webapp.dir}/WEB-INF"/>
@@ -78,6 +78,8 @@ Create a build.xml with a DOCTYPE like this:
   <property name="mail.jar" value="${build.dir}/lib/mail.jar"/>
   <property name="activation.jar" value="${build.dir}/lib/activation.jar"/>
   <property name="xalan.jar"   value="${build.dir}/lib/xalan.jar"/>
+  <property name="fileupload.jar"   value="${build.dir}/lib/commons-fileupload.jar"/>
+
   <property name="project.name" value="a-mmbase-project" />
   <property name="project.jar.name" value="mmbase-${project.name}" />
   <property name="project.target.templates.dir" value="${project.name}" />
@@ -139,7 +141,7 @@ Create a build.xml with a DOCTYPE like this:
     <property name="builddate"       value="${DSTAMP}"/>
 
     <property name="zip.name"      value="mmbase-${distro.version}.${builddate}-${project.name}" />
-    
+
     <property name="project.zip"     value="${project.zip.dir}/${zip.name}.zip" />
   </target>
 
@@ -161,16 +163,16 @@ Create a build.xml with a DOCTYPE like this:
     <echo message="${project.jar} is up-to-date (${project.source.dir}/src/** ${jar.uptodate})" />
   </target>
 
-  <target name="jar" description="Create the MMBase project jar file" 
+  <target name="jar" description="Create the MMBase project jar file"
     depends="jar.check" unless="jar.uptodate" if="src.available">
-  
+
     <antcall target="compile" />
     <echo message="Copying ${mmbase.classes} to ${project.build.dir}/classes" />
     <copy todir="${project.build.dir}/classes">
       <fileset dir="${build.dir}/classes" includes="${mmbase.classes}" />
     </copy>
     <mkdir dir="${project.metainf.dir}" />
-    
+
 
     <manifest file="${project.build.dir}/manifest.mf">
       <attribute name="Main-Class" value="${project.main.class}" />
@@ -210,11 +212,11 @@ Create a build.xml with a DOCTYPE like this:
     <antcall target="documentation" />
   </target>
 
-  <target name="package" depends="package.check,package.documentation" unless="package.uptodate">   
+  <target name="package" depends="package.check,package.documentation" unless="package.uptodate">
     <antcall target="jar" />
 
     <echo file="${project.build.dir}/README-PACKAGE.txt">
-This is the '${project.name}' package of MMBase. 
+This is the '${project.name}' package of MMBase.
 
 It can contain:
 
@@ -263,7 +265,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <exclude name="README*" />
       </patternset>
     </zipfileset>
-  </zip>          
+  </zip>
   </target>
 
 
@@ -297,6 +299,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
+        <pathelement path="${fileupload.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
@@ -312,7 +315,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <delete dir="${project.build.dir}" />
   </target>
 
-  
+
 
   <target name="documentation" description="Documentation" depends="javadocs,documentation.html,documentation.pdf,documentation.rawhtml">
     <available property="documentation.available"        file="${project.build.dir}/documentation"/>
@@ -361,6 +364,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
         <pathelement path="${mail.jar}" />
+        <pathelement path="${fileupload.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
         <pathelement path="${project.extra.path}" />
@@ -373,14 +377,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <copy todir="${templates.dir}/${project.target.templates.dir}">
       <fileset dir="${project.templates.dir}">
         <include name="${project.templates.include}" />
-      </fileset>      
+      </fileset>
     </copy>
   </target>
 
   <target name="install.examples" depends="init" if="examples.available">
     <copy todir="${examples.dir}/${project.target.examples.dir}">
       <fileset dir="${project.examples.dir}">
-      </fileset>      
+      </fileset>
     </copy>
   </target>
 
@@ -389,14 +393,14 @@ web-app/*                All kind of templates. They problably can (need?) to be
   <target name="install.config" depends="init" if="config.available">
     <copy todir="${mmbase.config}">
       <fileset dir="${project.config.dir}">
-      </fileset>      
+      </fileset>
     </copy>
   </target>
 
   <target name="install.documentation" depends="documentation" if="documentation.available">
     <copy todir="${mmdocs.dir}">
       <fileset dir="${project.build.dir}/documentation">
-      </fileset>      
+      </fileset>
     </copy>
   </target>
 
@@ -404,12 +408,12 @@ web-app/*                All kind of templates. They problably can (need?) to be
     <copy todir="${release.lib.dir}">
       <fileset dir="${project.jar.dir}">
         <include name="**/*.jar" />
-      </fileset>      
+      </fileset>
     </copy>
   </target>
 
 
-  <target name="test" depends="compile">   
+  <target name="test" depends="compile">
     <ant dir="${tests.source.dir}"   target="jar" />
     <java classname="${test.class}"
       classpathref="run.classpath"
@@ -421,6 +425,7 @@ web-app/*                All kind of templates. They problably can (need?) to be
         <pathelement path="${mmbase.jar}" />
         <pathelement path="${servlet.jar}" />
         <pathelement path="${xalan.jar}" />
+        <pathelement path="${fileupload.jar}" />
         <pathelement path="${mail.jar}" />
         <pathelement path="${activation.jar}" />
         <pathelement path="${project.build.dir}/classes" />
