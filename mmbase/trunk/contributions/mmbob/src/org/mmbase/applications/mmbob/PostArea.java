@@ -497,7 +497,7 @@ public class PostArea {
             ptnode.setStringValue("ttype", "post");
             ptnode.setIntValue("createtime", (int) (System.currentTimeMillis() / 1000));
             ptnode.commit();
-            RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "postthreads", "related");
+            RelationManager rm = ForumManager.getCloud().getRelationManager("postareas", "postthreads", "areathreadrel");
             if (rm != null) {
                 Node rel = rm.createRelation(node, ptnode);
                 rel.commit();
@@ -517,7 +517,7 @@ public class PostArea {
                 parent.signalNewPost(this);
                 return ptnode.getNumber();
             } else {
-                log.error("Forum can't load relation nodemanager postareas/postthreads/related");
+                log.error("Forum can't load relation nodemanager postareas/postthreads/areathreadrel");
             }
         } else {
             log.error("Forum can't load postthreads nodemanager");
