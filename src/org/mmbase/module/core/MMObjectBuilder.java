@@ -1479,7 +1479,7 @@ public class MMObjectBuilder extends MMTable {
         return rtn;
     }
 
-    protected Vector grabFunctionParameters(String fields) {
+    protected Vector getFunctionParameters(String fields) {
         int commapos=0;
         int nested=0;
         Vector v= new Vector();
@@ -1588,11 +1588,17 @@ public class MMObjectBuilder extends MMTable {
             String val=node.getStringValue(field);
             try {
                 int wrappos=Integer.parseInt(function.substring(5));
-                log.debug("WRAPPOS="+wrappos);
                 rtn=wrap(val,wrappos);
             } catch(Exception e) {}
         } else if (function.equals("wrap")) {
-            Vector v=grabFunctionParameters(field);
+            Vector v=getFunctionParameters(field);
+            try {
+                int wrappos=Integer.parseInt((String)v.get(0));
+                String val=node.getStringValue((String)v.get(1));
+                rtn=wrap(val,wrappos);
+            } catch(Exception e) {}
+        } else if (function.equals("substring")) {
+            Vector v=getFunctionParameters(field);
             try {
                 int wrappos=Integer.parseInt((String)v.get(0));
                 String val=node.getStringValue((String)v.get(1));

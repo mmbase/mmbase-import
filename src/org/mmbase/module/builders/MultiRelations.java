@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: MultiRelations.java,v 1.21 2001-03-12 11:32:22 pierre Exp $
+ * @version $Id: MultiRelations.java,v 1.22 2001-03-13 16:43:07 daniel Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 
@@ -406,7 +406,7 @@ public class MultiRelations extends MMObjectBuilder {
 		Vector result=new Vector();
 		String val;
 		int pos;
-		for (Enumeration e=grabFunctionParameters(fields).elements();e.hasMoreElements();) {
+		for (Enumeration e=getFunctionParameters(fields).elements();e.hasMoreElements();) {
 			val=(String)e.nextElement();
 			int idx=val.charAt(0) - 'a';
 			result.addElement(alltables.get(idx));
@@ -552,7 +552,7 @@ public class MultiRelations extends MMObjectBuilder {
 		        if (pos!=-1) {
 		            val=val.substring(0,pos);
 		        }
-		        Vector fields=grabFunctionParameters(val);
+		        Vector fields=getFunctionParameters(val);
 		        for (int i=0; i<fields.size(); i++) {
 		            field=parseSelectField(alltables,(String)fields.get(i));
 		            if(!field.equals("")) {
