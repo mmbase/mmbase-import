@@ -1,6 +1,6 @@
 <mm:import id="abc">5</mm:import>
 <p>
-  EL: <mm:write value="${6 + abc}" />
+  EL: <mm:write value="${6 + abc}" />, ${6 + abc}, <c:out value="${6 + abc}" />
 </p>
 <p>
   MMBase EL: <mm:write value="$[+ 6 + $abc]" />
