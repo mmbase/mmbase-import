@@ -20,7 +20,7 @@ import java.util.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSqlHandler.java,v 1.18 2003-11-26 09:37:46 robmaris Exp $
+ * @version $Id: BasicSqlHandler.java,v 1.19 2003-11-26 15:32:39 robmaris Exp $
  * @since MMBase-1.7
  */
 // TODO: (later) must wildcard characters be escaped?
@@ -225,7 +225,12 @@ public class BasicSqlHandler implements SqlHandler {
         List lFields = new ArrayList();
         lFields.addAll(query.getFields());
 
-        // if distinct,
+        // When 'distinct', make sure all fields used for sorting are 
+        // included in the query.
+        // Some databases require this (including PostgreSQL).
+        // By fixing this here, the result of the query remains consistent
+        // across databases, while requiring no modification in the calling
+        // code.
         if (query.isDistinct()) {
             Iterator iSortOrder = query.getSortOrders().iterator();
             while (iSortOrder.hasNext()) {
