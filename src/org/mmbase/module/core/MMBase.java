@@ -29,15 +29,23 @@ import org.mmbase.module.database.support.*;
 
 
 /**
- * The module which provides access to the MMbase defined
- * by the provided name/setup it holds the overal object
- * 'world' madeup of builders, objects and relations and
+ * The module which provides access to the MMBase database defined
+ * by the provided name/setup.
+ * It holds the overal object 'world' madeup of builders, objects and relations and
  * all the needed tools to use them.
  *
  * @author Daniel Ockeloen
+ * @author Pierre van Rooden
+ * @author Johan Verelst
+ * @version 13 november 2000
  */
 public class MMBase extends ProcessorModule  {
 
+        /**
+        *  The path to the builder configuration files
+        */
+	String builderpath = "";
+	
 	private String	_classname = getClass().getName();
 	private boolean debug=false;
 	private void 	debug( String msg ) { System.out.println( _classname +":"+ msg ); }
@@ -70,8 +78,6 @@ public class MMBase extends ProcessorModule  {
 	private String language="us";
 	private boolean mmbasestate=false;
 	String cookieDomain=null;
-
-
 
 	public void init() {
 		// is there a basename defined in MMBASE.properties ?
@@ -142,12 +148,12 @@ public class MMBase extends ProcessorModule  {
 			createMMBase();
 		}
 
-		// new loader system for now only checks the defines
-		String builderfile=getInitParameter("BUILDERFILE");
-		if (builderfile==null || builderfile.equals("")) {
-			builderfile=MMBaseContext.getConfigPath()+("/builders/");
-		}
-		initBuilders(builderfile);
+ 		builderpath = getInitParameter("BUILDERFILE");
+ 		if (builderpath==null || builderpath.equals("")) {
+ 			builderpath=MMBaseContext.getConfigPath() + File.separator + "builders" + File.separator;
+ 		}
+ 		
+		initBuilders();
 
 
 		if (debug) debug("Objects started");
@@ -172,9 +178,9 @@ public class MMBase extends ProcessorModule  {
 			while (t.hasMoreElements()) {
 				MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
 				String name=fbul.getTableName();
-				if (debug) debug("WRITING BUILDER FILE ="+writerpath+"/"+name);
+				if (debug) debug("WRITING BUILDER FILE ="+writerpath+File.separator+name);
 				if (!name.equals("multirelations")) {
-					XMLBuilderWriter.writeXMLFile(writerpath+"/"+fbul.getTableName()+".xml",fbul);
+					XMLBuilderWriter.writeXMLFile(writerpath+File.separator+fbul.getTableName()+".xml",fbul);
 				}
 			}
 		}
@@ -479,47 +485,37 @@ public class MMBase extends ProcessorModule  {
 
 	public void stop()
 	{
-
 	}
 
-	boolean initBuilders(String path) {
+	
+	/**
+	* Initializes the builders, using the builder xml files in the config directory
+	* @return Always <code>true</code>
+	*/
+	boolean initBuilders() {
 
-
-
-		initBuilder("typedef",path);
-		TypeDef=(TypeDef)getMMObject("typedef");
+		// first load the builders
+		
+ 		String path = "";
+ 		
+ 		TypeDef=(TypeDef)loadBuilder("typedef",path);
 		TypeDef.init();
 
-
-		initBuilder("reldef",path);
-		RelDef=(RelDef)getMMObject("reldef");
+		RelDef=(RelDef)loadBuilder("reldef",path);
 		RelDef.init();
 		
-		initBuilder("typerel",path);
-		TypeRel=(TypeRel)getMMObject("typerel");
+		TypeRel=(TypeRel)loadBuilder("typerel",path);
 		TypeRel.init();
 
-		initBuilder("insrel",path);
-		InsRel=(InsRel)getMMObject("insrel");
+		InsRel=(InsRel)loadBuilder("insrel",path);
 		InsRel.init();
 
-		initBuilder("oalias",path);
-		OAlias=(OAlias)getMMObject("oalias");
+		OAlias=(OAlias)loadBuilder("oalias",path);
 
-		// new code checks all the *.xml files in builder dir
-        	File bdir = new File(path);
-		if (bdir.isDirectory()) {
-			String files[] = bdir.list();		
-			for (int i=0;i<files.length;i++) {
-				String bname=files[i];
-				if (bname.endsWith(".xml")) {
-					bname=bname.substring(0,bname.length()-4);
-					initBuilder(bname,path);
-				}
-			}
-		}
+ 		// new code checks all the *.xml files in builder dir, recursively
+ 		loadBuilders(path);
 
-		Enumeration t = mmobjs.elements(); 
+		Enumeration t = mmobjs.elements();
 		while (t.hasMoreElements()) {
 			MMObjectBuilder fbul=(MMObjectBuilder)t.nextElement();
 			fbul.init();
@@ -543,15 +539,85 @@ public class MMBase extends ProcessorModule  {
 	}
 
 
+	/**
+	*  Loads all builders within a given path relative to the main builder config path, including builders in sub-paths
+	*  @param ipath the path to start searching. The path need be closed with a File.seperator character.
+	*/
+ 	void loadBuilders(String ipath) {
+ 		String path = builderpath + ipath;
+ 		// new code checks all the *.xml files in builder dir
+ 		File bdir = new File(path);
+                if (bdir.isDirectory()) {
+                	String files[] = bdir.list();
+                        for (int i=0;i<files.length;i++) {
+                        	String bname=files[i];
+                                if (bname.endsWith(".xml")) {
+                                         bname=bname.substring(0,bname.length()-4);
+                                         loadBuilderFromXML(bname,ipath);
+                                } else {
+ 				 	 loadBuilders(ipath +  bname + File.separator);
+ 				}
+                        }
+                }
+     	}
 
-	boolean initBuilder(String builder,String path) {
-		if (mmobjs.containsKey(builder)) {
+     	     	
+     	/**
+	*  Locate one specific builder within a given path, relative to the main builder config path, including sub-paths.
+	*  If the builder already exists, the existing object is returned instead.
+	*  @param builder name of the builder to initialize
+	*  @param ipath the path to start searching. The path need be closed with a File.seperator character.
+	*  @return the initialized builder object, or null if no builder could be created..
+	*/
+ 	MMObjectBuilder loadBuilder(String builder, String ipath) {
+		MMObjectBuilder bul=getMMObject(builder);
+		if (bul!=null) {
 			if (debug) debug("Builder '"+builder+"' is already loaded");
-			return true;
+			return bul;
 		}
+ 	
+ 	        String path = builderpath + ipath;
+ 		if ((new File(path+builder+".xml")).exists()) {
+ 			return loadBuilderFromXML(builder,ipath);
+ 		} else {
+ 			// not in the builders path, so we need to search recursively
+ 			File dirList = new File(path);
+ 			String[] files = dirList.list();
 
-		if (!(new File(path+builder+".xml")).exists()) return(false);
-		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
+ 			for (int i=0; i<files.length;i++) {
+ 				String lPath = ipath + files[i] + File.separator;
+ 				if ((new File(builderpath + lPath)).isDirectory()) {
+ 					bul = loadBuilder(builder, lPath);
+ 					if (bul!=null) {
+ 						return bul;
+ 					}
+ 				}
+ 			}
+ 			return(null);
+ 		}
+     	}
+
+	
+     	/**
+	*  Create a new builder object using a xml configfile located in a given path relative to the main builder config path,
+	*  and return the builder object.
+	*  If the builder already exists, the existing object is returned instead.
+	*  Note that the builder's init() method is NOT called (since some builders need other builders in memory when their init() is called,
+	*  this method is called seperately after all builders are loaded).
+	*  @param builder name of the builder to initialize
+	*  @param ipath the path to start searching. The path need be closed with a File.seperator character.
+	*  @return the loaded builder object.
+	*/
+	MMObjectBuilder loadBuilderFromXML(String builder, String ipath) {
+	
+		MMObjectBuilder bul=getMMObject(builder);
+		if (bul!=null) {
+			if (debug) debug("Builder '"+builder+"' is already loaded");
+			return bul;
+		}
+		
+		String path = builderpath + ipath;
+ 		XMLBuilderReader parser=new XMLBuilderReader(path+builder+".xml");
 		Hashtable descriptions=parser.getDescriptions();
 		String description=(String)descriptions.get(language);
 		String dutchsname="Default!";
@@ -574,9 +640,10 @@ public class MMBase extends ProcessorModule  {
 				}
 				//debug("Vwms -> Loaded load class : "+newclass);
 
-				MMObjectBuilder bul = (MMObjectBuilder)newclass.newInstance();
+				bul = (MMObjectBuilder)newclass.newInstance();
 				// debug("MMBase -> started : "+newclass);
 				
+ 				bul.setXMLPath(ipath);
 				bul.setXmlConfig(true);
 				bul.setMMBase(this);
 				bul.setTableName(objectname);
@@ -600,10 +667,10 @@ public class MMBase extends ProcessorModule  {
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					return(false);
+					return(null);
 				}
 		}
-		return(true);
+		return(bul);
 	}
 
 
@@ -615,7 +682,7 @@ public class MMBase extends ProcessorModule  {
 		if (database==null) {
 			try {
 				String databasename=getInitParameter("DATABASE");
-				String path=MMBaseContext.getConfigPath()+("/databases/"+databasename+".xml");
+ 				String path=MMBaseContext.getConfigPath()+ File.separator + "databases" + File.separator + databasename+".xml";
 				XMLDatabaseReader dbdriver=new XMLDatabaseReader(path);
 				Class newclass=Class.forName(dbdriver.getMMBaseDatabaseDriver());
 				if (debug) debug("Loaded load class : "+newclass);
@@ -629,7 +696,7 @@ public class MMBase extends ProcessorModule  {
 	}
 
 
-  public MMObjectNode castNode(MMObjectNode node) {
+  	public MMObjectNode castNode(MMObjectNode node) {
                 /* fake because solved
                 */
                 int otype=node.getIntValue("otype");
@@ -671,8 +738,10 @@ public class MMBase extends ProcessorModule  {
 	}
 	
 	private boolean checkBuilderVersion(String buildername,Versions ver) {
-		String builderfile=MMBaseContext.getConfigPath()+"/builders/"+buildername+".xml";
-		XMLBuilderReader bapp=new XMLBuilderReader(builderfile);
+		
+ 		MMObjectBuilder tmp = (MMObjectBuilder)mmobjs.get(buildername);
+ 		String builderfile = builderpath + tmp.getXMLPath() + buildername + ".xml";
+ 		XMLBuilderReader bapp=new XMLBuilderReader(builderfile);
 		if (bapp!=null) {
 			int version=bapp.getBuilderVersion();
 			String maintainer=bapp.getBuilderMaintainer();
