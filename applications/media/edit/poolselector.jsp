@@ -9,21 +9,24 @@
 <script src="<mm:url page="style/streammanager.js.jsp?dir=&amp;fragment=&amp;language=$language" />" language="javascript"><!--help IE--></script>
   </head>
   <mm:cloud>
-  <body background="images/bckplaceholder.gif">
+  <body class="left">
    <mm:node number="media.streams">
-   <span class="kop"><mm:field name="html(name)" /></span>
-   <mm:field name="html(description)" />
-   <span class="kop"><mm:nodeinfo nodetype="pools" type="guitype" /></span>
-   
+   <h1><mm:field name="html(name)" /></h1>
+   <p><mm:field name="html(description)" /></p>
+   <h1><mm:nodeinfo nodetype="pools" type="guitype" /></h1>   
     <ul>
     <mm:related path="parent,pools2" orderby="pools2.name">
       <mm:context>
        <mm:node id="origin" element="pools2">
-         <li><a href="javascript:setContentFrame('<mm:url referids="origin,language" page="entrancepage.jsp" />');"><mm:field name="name" /></a></li>
+         <li><a href="javascript:setContentFrame('<mm:url referids="origin,language" page="edit.jsp" />');"><mm:field name="name" /></a></li>
        </mm:node>
        </mm:context>
     </mm:related>
     </ul>
+    <hr />
+    <p align="right">
+      <a href="<mm:url page="search.jsp" />">Search</a>
+    </p>
    </mm:node>
   </body>
   </mm:cloud>

@@ -1,29 +1,35 @@
 body {
-	background-color: #FFFFFF;
+	background-color: #fff;
 	font-family : Verdana;
 	font-size : 10px;
 	color: #000000;
-	margin-bottom : 0px;
-	margin-left : 0px;
-	margin-right : 0%;
-	margin-top : 0%;
+	margin: 0 0 0 0;
 	scrollbar-face-color:#1C5BA2; 
 	scrollbar-highlight-color:#D0CECE; 
 	scrollbar-3dlight-color:#D0CECE; 
 	scrollbar-darkshadow-color:#000000; 
-	scrollbar-shadow-color:#FFFFFF; 
-	scrollbar-arrow-color:#FFFFFF; 
+	scrollbar-shadow-color:#fff; 
+	scrollbar-arrow-color:#fff; 
 	scrollbar-track-color:#BDC6D1;
+}
+
+body.left {
+   background-image: url(../images/bckplaceholder.png);
 }
 
 hr {
 	color : #1C5BA2;
 }
 
-.kop {
-    display: block;
+#colofon {
+     position: absolute;
+     left: 80%;
+     top:  80%;
+     width: 10%;
+}
+
+h1 {
 	background-color: #fff;
-	font-family : Verdana;
 	font-size : 12px;
 	font-weight: bold;
 	color: #1C5BA2;
@@ -35,16 +41,22 @@ table.entrance {
     margin-top: 20px;
 }
 
+
 input {
-	font-family: Verdana;
 	font-size:10px;
 	color: #000000;
 	font-weight:normal;
 	background-color : #F0F2F5;
 }
+
+body.left input {
+   background-color : #fff;
+}
+
+
+
 	
 textarea {
-  font-family: Verdana;
   font-size:10px;
   color: #000000;
   font-weight:normal;
@@ -70,7 +82,6 @@ table {
 td {
   padding: 2;
   margin: 0;
-  font-family : Verdana;
   font-size : 10px;
   color: #000000;
   valign: top;
@@ -94,10 +105,11 @@ table.movie td {
 
 }
 
+button:hover {
+  cursor: pointer;
+}
 
-
-a {
-	font-family : Verdana;
+a,button {
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -106,7 +118,6 @@ a {
 }
 
 a:link {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -114,7 +125,6 @@ a:link {
  	text-decoration: none;
 }
 a:active {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
 	border:  none;
@@ -122,7 +132,6 @@ a:active {
  	text-decoration: none;
 }
 a:visited {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #1C5BA2;
  	border:  none;
@@ -130,7 +139,6 @@ a:visited {
  	text-decoration: none;
 }
 a:hover {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -141,7 +149,6 @@ a:hover {
 /* wizard */
 
 a.bottombutton:link {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -149,7 +156,6 @@ a.bottombutton:link {
  	text-decoration: none;
 }
 a.bottombutton:active {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -190,7 +196,6 @@ a.bottombutton-cancel:active {
  	text-decoration: none;
 }
 a.bottombutton-cancel:visited {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #1C5BA2;
  	border:  none;
@@ -198,7 +203,6 @@ a.bottombutton-cancel:visited {
  	text-decoration: none;
 }
 a.bottombutton-cancel:hover {
-	font-family : Verdana;
 	font-size : 10px;
 	color: #EE333E;
  	border:  none;
@@ -207,33 +211,29 @@ a.bottombutton-cancel:hover {
 }
 
 td.fieldprompt {
-	font-family : Verdana;
 	font-size : 12px;
 	color: #1C5BA2;
-	background-color: #FFFFFF;
+	background-color: #fff;
 	border: 1;
 	border-color: #1C5BA2;
 	font-weight : bold;
 }
 
 .valid {
-	font-family : Verdana;
 	font-size : 10px;
   	color: #000000;
 }
 
 table.body tr.subtitle th {
-	font-family : Verdana;
 	font-size : 10px;
-  	color: #FFFFFF;
+  	color: #fff;
   	background-color: #B83A41;
 }
 
 
 .subhead th {
-	font-family : Verdana;
 	font-size : 10px;
-  	color: #FFFFFF;
+  	color: #fff;
  	background-color: #4A5A6D;
 }
 
@@ -241,23 +241,22 @@ table.body tr.subtitle th {
 /* for searchlist */
 
 table.searchresult {
-	font-family : Verdana;
 	font-size : 10px;
- 	color: #FFFFFF;
+ 	color: #fff;
   	background-color: #BCBDBF;
 }
 
-table.searchresult tr.even td { background-color: #FFFFFF; }
+table.searchresult tr.even td { background-color: #fff; }
 table.searchresult tr.odd  td { background-color: #DEE5EC; }
-table.searchresult tr.selected_even td { color: #FFFFFF; background-color: #ABB9C8; }
-table.searchresult tr.selected_odd  td { color: #FFFFFF; background-color: #6E88A6; }
+table.searchresult tr.selected_even td { color: #fff; background-color: #ABB9C8; }
+table.searchresult tr.selected_odd  td { color: #fff; background-color: #6E88A6; }
 
 
 /* for list */
 
 
 td.listcanvas {
-   background-color: #FFFFFF;
+   background-color: #fff;
    border-color: #1C5BA2;
 }
 
@@ -266,7 +265,7 @@ tr.itemrow td {
 }
 
 tr.itemrow-hover td	{
-   background-color: #FFFFFF;
+   background-color: #fff;
    text-decoration: none; 
    font-weight: bold;	
 }
