@@ -20,14 +20,14 @@ import java.util.*;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @since  MMBase-1.8
- * @version $Id: Parameters.java,v 1.11 2004-12-06 15:25:19 pierre Exp $
+ * @version $Id: Parameters.java,v 1.12 2004-12-16 10:24:12 pierre Exp $
  */
 
 public interface Parameters extends List {
     /**
      * No need to bother for the functions with no parameters. This is a constant you could supply.
      */
-    public static final Parameters VOID = new org.mmbase.util.functions.ParametersImpl(new Parameter[0]);
+    public static final Parameters VOID = new org.mmbase.util.functions.ParametersImpl(Parameter.EMPTY);
 
     /**
      * When using reflection, you might need the Parameters as a Class[]. This function provides it.
