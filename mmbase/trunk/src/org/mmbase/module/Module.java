@@ -1,6 +1,6 @@
 /*
 
-$Id: Module.java,v 1.2 2000-02-24 12:34:43 wwwtech Exp $
+$Id: Module.java,v 1.3 2000-03-24 14:40:39 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/02/24 12:34:43  wwwtech
+- (marcel) Replaced System.out with debug
+
 */
 
 package org.mmbase.module;
@@ -30,11 +33,11 @@ import org.mmbase.module.core.*;
  * @author Rico Jansen
  * @author Rob Vermeulen (securitypart)
  *
- * @version $Revision: 1.2 $ $Date: 2000-02-24 12:34:43 $
+ * @version $Revision: 1.3 $ $Date: 2000-03-24 14:40:39 $
  */
 public abstract class Module {
 
-	private static String   classname   = "mm.org.mmbase.module.Module"; // getClass().getName();
+	private static String   classname   = "org.mmbase.module.Module"; // getClass().getName();
 	private static void     debug( String msg ) { System.out.println( classname +":"+ msg ); }
 
 	private Object SecurityObj;
