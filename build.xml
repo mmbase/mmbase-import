@@ -95,6 +95,7 @@ NetComponents can be found at:
   <property name="web.dir"              value="${webapp.dir}/WEB-INF"/>
   <property name="release.lib.dir"      value="${web.dir}/lib"/>
   <property name="compile.lib.dir"      value="${build.dir}/lib"/>
+  <property name="optional.lib.dir"     value="${source.dir}" /> <!-- just a dir that does not contain libs..-->
   <property name="mmbase.jar"           value="${release.lib.dir}/mmbase.jar"/>
 
   <target name="init" depends="check.dir.all">
@@ -269,7 +270,7 @@ version=1.7.0-dev
 
   </target>
 
-  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary form compilation" 
+  <target name="lib.compile" description="Create the lib directory, containing the libraries necessary for compilation" 
           depends="init,expand.servlet,expand.xalan,expand.jai,expand.log4j,expand.junit,expand.javamail,expand.javaactivation,get.jdbc">
 
     <mkdir dir="${compile.lib.dir}"/>
@@ -381,6 +382,10 @@ version=1.7.0-dev
           <include name="*.jar"/>
           <include name="*.zip"/>
           <exclude name="mmbase.jar"/>
+        </fileset>
+         <fileset dir="${optional.lib.dir}">
+           <include name="*.jar"/>
+           <include name="*.zip"/>
         </fileset>
       </classpath>
     </available>
