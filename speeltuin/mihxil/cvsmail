@@ -41,7 +41,7 @@ if ($child = fork()) {
 	}
     }
            
-    my $message = "From: $cvsuser <$user\@mmbase.org>\n",join("", @message);
+    my $message = "From: $cvsuser <$user\@mmbase.org>\n".join("", @message);
     my $logfile = new FileHandle(">>$log_filename");
     
     print $logfile "--------------------------------------------------------\n";
