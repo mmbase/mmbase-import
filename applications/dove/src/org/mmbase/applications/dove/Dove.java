@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.39 2003-08-18 09:12:25 pierre Exp $
+ * @version $Id: Dove.java,v 1.40 2003-10-09 14:32:27 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -253,7 +253,7 @@ public class Dove extends AbstractDove {
                 if (thisNumber == nrel.getIntValue("snumber")) {
                     otherNumber = nrel.getIntValue("dnumber");
                 } else {
-                    otherNumber = nrel.getIntValue("snumber");                    
+                    otherNumber = nrel.getIntValue("snumber");
                 }
                 data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
                 out.appendChild(data);
@@ -560,6 +560,26 @@ public class Dove extends AbstractDove {
                 elm=addContentElement(DESCRIPTION,nm.getDescription(),out);
                 if (lang!=null) elm.setAttribute(ELM_LANG,lang);
 
+                // parent
+                try {
+                    NodeManager nmparent = nm.getParent();
+                    Element parent = doc.createElement(PARENT);
+                    out.appendChild(parent);
+                    parent.setAttribute(ELM_TYPE,nmparent.getName());
+                } catch (NotFoundException nfe) {}
+
+                // descendants
+                NodeManagerList nmdesclist = nm.getDescendants();
+                if (nmdesclist.size()>0) {
+                    Element descendants = doc.createElement(DESCENDANTS);
+                    out.appendChild(descendants);
+                    for (NodeManagerIterator i = nmdesclist.nodeManagerIterator(); i.hasNext();) {
+                        Element descendant=doc.createElement(DESCENDANT);
+                        descendants.appendChild(descendant);
+                        descendant.setAttribute(ELM_TYPE,i.nextNodeManager().getName());
+                    }
+                }
+
                 // fields
                 Element fields=doc.createElement(FIELDS);
                 out.appendChild(fields);
@@ -595,12 +615,12 @@ public class Dove extends AbstractDove {
                                 int itype = fielddef.getType();
                                 switch(itype) {
                                 case Field.TYPE_INTEGER:
-                                case Field.TYPE_NODE: 
+                                case Field.TYPE_NODE:
                                     dttype = "int";
                                     break;
                                 case Field.TYPE_LONG:
                                     dttype="long";
-                                    break;                                    
+                                    break;
                                 case Field.TYPE_FLOAT:
                                     dttype="float";
                                     break;

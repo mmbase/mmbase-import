@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.28 2003-08-27 21:27:17 michiel Exp $
+ * @version $Id: NodeManager.java,v 1.29 2003-10-09 14:32:28 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -56,6 +56,12 @@ public interface NodeManager extends Node {
      * @throws NotFoundException if no parent exists (i.e. this nodeManager is "object")
      */
     public NodeManager getParent() throws NotFoundException;
+
+    /**
+     * Retrieve a  list of descendant nodemanagers (the Nodemanager that - posisbly indirectly - extend from this nodemanager)
+     * @return a list of NodeManagers
+     */
+    public NodeManagerList getDescendants();
 
     /**
      * Returns the name of this node manager. This name is a unique name.
@@ -306,7 +312,7 @@ public interface NodeManager extends Node {
 
 
 
-    /** 
+    /**
      * Returns a list of 'argument' definition of a certain function on nodes manager by this NodeManager.
      *
      *

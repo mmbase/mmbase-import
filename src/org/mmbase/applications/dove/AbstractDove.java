@@ -47,14 +47,14 @@ import org.mmbase.bridge.Cloud;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.14 2003-06-02 12:21:59 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.15 2003-10-09 14:32:27 pierre Exp $
  */
 
 public abstract class AbstractDove {
 
     // dtds
     public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest_1_1.dtd";
-    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_1.dtd";
+    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_2.dtd";
 
     // keywords used for tags
     public static final String REQUEST = "request";
@@ -82,6 +82,9 @@ public abstract class AbstractDove {
     public static final String RELATION = "relation";
     public static final String ERROR = "error";
     public static final String QUERY = "query";
+    public static final String PARENT = "parent";
+    public static final String DESCENDANTS = "descendants";
+    public static final String DESCENDANT = "descendant";
 
     public static final String SINGULARNAME = "singularname";
     public static final String PLURALNAME = "pluralname";
