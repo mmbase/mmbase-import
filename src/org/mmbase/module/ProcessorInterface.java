@@ -14,6 +14,7 @@ import org.mmbase.module.core.*;
 import org.mmbase.util.*;
 
 /**
+ * @javadoc and/or deprecated because it seems to be for scan.
  */
 public interface  ProcessorInterface  {
 

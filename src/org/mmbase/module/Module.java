@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.50 2004-02-24 17:40:06 michiel Exp $
+ * @version $Id: Module.java,v 1.51 2004-03-26 12:32:18 michiel Exp $
  */
 public abstract class Module {
 
@@ -98,6 +98,7 @@ public abstract class Module {
      * is loaded but before any other modules are initailized.
      * <br />
      * This method is called by {@link #startModules()}. You should not call onload() directly.
+     * @scope protected
      */
     public abstract void onload();
     
@@ -177,7 +178,7 @@ public abstract class Module {
      * @return an <code>Iterator</code> with all active modules
      */
     public static final Iterator getModules() {
-        if (modules==null) {
+        if (modules == null) {
             return null;
         } else {
             return modules.values().iterator();
@@ -217,14 +218,14 @@ public abstract class Module {
         return getMimeTypeFile("dummy."+ext);
     }
     
-    public String getMimeTypeFile(String filename) {
-        ServletContext sx=MMBaseContext.getServletContext();
-        String mimetype=sx.getMimeType(filename);
-        if (mimetype==null) {
-            log.warn("getMimeType(" + filename + "): Can't find mimetype retval=null -> setting mimetype to default text/html");
-            mimetype="text/html";
+    public String getMimeTypeFile(String fileName) {
+        ServletContext sx = MMBaseContext.getServletContext();
+        String mimeType = sx.getMimeType(fileName);
+        if (mimeType == null) {
+            log.warn("getMimeType(" + fileName + "): Can't find mimetype retval=null -> setting mimetype to default text/html");
+            mimeType = "text/html";
         }
-        return mimetype;
+        return mimeType;
     }
     
     /**
@@ -238,6 +239,7 @@ public abstract class Module {
             Module m = (Module) i.next();
             log.service("Shutting down " + m.getName());
             m.shutdown();
+            log.service("Shut down " + m.getName());
         }
         modules = null;
     }
@@ -344,67 +346,73 @@ public abstract class Module {
     }
     
     public void setMaintainer(String m) {
-        maintainer=m;
+        maintainer = m;
     }
     
     public void setVersion(int v) {
-        version=v;
+        version = v;
     }
     
     public int getVersion() {
         return version;
     }
+
+    /**
+     * Loads all module-xml present in <mmbase-config-dir>/modules. 
+     * @return A HashTable with <module-name> --> Module-instance
+     * @scope  private (only called from getModule)
+     */
     
     public static synchronized Hashtable loadModulesFromDisk() {
         Hashtable results = new Hashtable();
         mmbaseconfig = MMBaseContext.getConfigPath();
-        String dirname=(mmbaseconfig+"/modules/");
-        File bdir = new File(dirname);
-        if (bdir.isDirectory()) {
-            String files[] = bdir.list();
-            for (int i=0;i<files.length;i++) {
-                String bname=files[i];
-                if (bname.endsWith(".xml")) {
-                    bname = bname.substring(0,bname.length()-4);
+        String dirName=(mmbaseconfig + "/modules/");
+        File dir = new File(dirName);
+        if (dir.isDirectory()) {
+            String files[] = dir.list();
+            for (int i = 0; i < files.length; i++) {
+                String fileName = files[i];
+                if (fileName.endsWith(".xml")) {
+                    fileName = fileName.substring(0, fileName.length() - 4);
                     XMLModuleReader parser = null;
                     try {
-                        parser = new XMLModuleReader(dirname + bname + ".xml");
+                        parser = new XMLModuleReader(dirName + fileName + ".xml");
                     } catch (Throwable t) {
-                        log.error("Could not load module with xml '" + dirname + bname + ".xml': " + t.getMessage());
+                        log.error("Could not load module with xml '" + dirName + fileName + ".xml': " + t.getMessage());
                         continue;
                     }
                     if (parser.getStatus().equals("active")) {
-                        String cname = parser.getClassFile();
+                        String className = parser.getClassFile();
                         // try starting the module and give it its properties
                         try {
-                            log.service("Loading module " + bname + " with class " + cname);
+                            log.service("Loading module " + fileName + " with class " + className);
                             Hashtable modprops = parser.getProperties();
                             Object mod;
                             if (parser.getURLString() != null){
                                 log.service("loading module from jar " + parser.getURLString());
                                 URL url = new URL(parser.getURLString());
-                                URLClassLoader c =new URLClassLoader(new URL[]{url},Module.class.getClassLoader());
-                                Class newclass = c.loadClass(cname);
-                                mod = newclass.newInstance();
+                                URLClassLoader c = new URLClassLoader(new URL[]{url}, Module.class.getClassLoader());
+                                Class newClass = c.loadClass(className);
+                                mod = newClass.newInstance();
                             } else {
-                                Class newclass = Class.forName(cname);
-                                mod = newclass.newInstance();
+                                Class newClass = Class.forName(className);
+                                mod = newClass.newInstance();
                             }
-                            if (mod!=null) {
-                                results.put(bname,mod);
+                            if (mod != null) {
+                                results.put(fileName, mod);
                                 
-                                if (modprops!=null) {
-                                    ((Module)mod).properties=modprops;
+                                if (modprops != null) {
+                                    ((Module)mod).properties = modprops;
                                 }
                                 // set the module name property using the module's filename
                                 // maybe we need a parser.getModuleName() function to improve on this
-                                ((Module)mod).setName(bname);
+                                ((Module)mod).setName(fileName);
                                 ((Module)mod).setMaintainer(parser.getModuleMaintainer());
                                 ((Module)mod).setVersion(parser.getModuleVersion());
                             }
                         } catch (java.lang.ClassNotFoundException cnfe) {
-                            log.error("Could not load class with name '" + cname + "', " +
-                                      "which was specified in the module:'" + dirname + bname + ".xml'(" + cnfe + ")" );
+                            log.error("Could not load class with name '" + className + "', " +
+                                      "which was specified in the module:'" + dirName + fileName + ".xml'(" + cnfe + ")" );
                         } catch (Exception e) {
                                 log.error("Error while loading module class" + Logging.stackTrace(e));
                         }
