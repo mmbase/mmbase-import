@@ -25,7 +25,7 @@
     </tr>
     <tr>
       <td colspan="2" ><br />
-            <mm:listnodes type="versions" constraints="name='MyNews' AND type='application'">
+            <mm:listnodes type="versions" constraints="[name]='MyNews' AND [type]='application'">
               <mm:first>
               </mm:first>
             </mm:listnodes>
