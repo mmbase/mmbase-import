@@ -59,11 +59,11 @@ one or more examplevalue tags is you want to give some example values.
     </p>
   </info>
   <taginterface>
+    <name>contextreferrer</name>
     <info>
       Contextreferrer tags refer to the context. This means that (most of) their attributes can
       contain `context' variables.
     </info>
-    <name>contextreferrer</name>
     <attribute>
       <name>context</name>
       <required>false</required>
@@ -74,12 +74,12 @@ one or more examplevalue tags is you want to give some example values.
     </attribute>
   </taginterface>
   <taginterface>
-    <info>
-      A contextwriter is a contextreferrer, but it can also write itself to the context (using the
-      id attibute), or read itself from it (using the 'referid' attribute).
-    </info>
     <name>contextwriter</name>
     <extends>contextreferrer</extends>
+    <info>
+      A contextwriter is a contextreferrer, but it can also write itself to the context (using the
+      id attibute).
+    </info>
     <attribute>
       <name>id</name>
       <required>false</required>
@@ -89,6 +89,15 @@ one or more examplevalue tags is you want to give some example values.
 	can refer to this directly and other tags by means of a context.
       </info>
     </attribute>
+  </taginterface>
+  <taginterface>
+    <name>contextreader</name>
+    <extends>contextwriter</extends>
+
+    <info>
+      A contextreader is a contextwriter, but besides writing itself to the context, it can also
+      read itself back from the context.
+    </info>
     <attribute>
       <name>referid</name>
       <required>false</required>
@@ -136,6 +145,8 @@ one or more examplevalue tags is you want to give some example values.
         Turns the condition around, such that precisely the inverse will happen. This attribute is
         of course false on default. You can set it to true.
       </info>
+      <possiblevalue><value>true</value></possiblevalue>
+      <possiblevalue><value>false</value></possiblevalue>
     </attribute>
   </taginterface>
   <taginterface>     
@@ -154,12 +165,12 @@ one or more examplevalue tags is you want to give some example values.
   </taginterface>
   <taginterface>     
     <name>clusternodeprovider</name>
-	<extends>nodeprovider</extends>
+    <extends>nodeprovider</extends>
     <info>
       A node provider makes an MMBase Cluster Node available to its
-	  body. A cluster nodes is in fact a combination of nodes. You can
-	  get a real node with a sub node tag with the 'element'
-	  attribute.
+      body. A cluster nodes is in fact a combination of nodes. You can
+      get a real node with a sub node tag with the 'element'
+      attribute.
     </info>
 	<see>node.element</see>
   </taginterface>
@@ -265,13 +276,15 @@ one or more examplevalue tags is you want to give some example values.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>Whether to write to the page or not. Normally the default value will suffice</info>
+      <possiblevalue><value>true</value></possiblevalue>
+      <possiblevalue><value>false</value></possiblevalue>
     </attribute>
   </taginterface>
   <tag>
     <name>list</name>
     <extends>clusternodeprovider</extends>
     <extends>listprovider</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
@@ -518,7 +531,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>clusternodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.RelatedTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -631,7 +644,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>cloudreferrer</extends>
     <extends>nodeprovider</extends>
     <extends>listprovider</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -692,7 +705,7 @@ one or more examplevalue tags is you want to give some example values.
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -799,7 +812,7 @@ one or more examplevalue tags is you want to give some example values.
   </tag>
   <tag>
     <name>cloud</name>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CloudTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.CloudTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -969,7 +982,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>cloudreferrer</extends>    
-	<extends>contextwriter</extends>
+	<extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.NodeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <info>
@@ -1001,7 +1014,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <extends>writer</extends>
     <extends>fieldreferrer</extends>
     <extends>nodereferrer</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.WriterTEI</teiclass>
     <info>
@@ -1177,6 +1190,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
     <name>createrelation</name>
     <extends>nodeprovider</extends>
     <extends>cloudreferrer</extends>
+    <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.CreateRelationTag</tagclass>
     <info>
       Creates a relation between two nodes.
@@ -1266,7 +1280,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   </tag>
   <tag>
     <name>transaction</name>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.edit.TransactionTEI</teiclass>
@@ -1362,7 +1376,7 @@ logged on as: &lt;bean:write name="cloud" property="user.identifier" /&gt;&lt;br
   <tag>
     <name>fieldlist</name>
     <extends>listprovider</extends>
-	<extends>contextwriter</extends>
+	<extends>contextreader</extends>
     <extends>cloudreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldListTag</tagclass>
     <bodycontent>JSP</bodycontent>
@@ -1817,6 +1831,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>include</name>
+    <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <info>
       Does an include. This tag is rather similar to mm:url, but in
@@ -1825,30 +1840,6 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     </info>
     <see>param</see>
     <see>url</see>
-    <attribute>
-        <name>referids</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-        <refercontext>true</refercontext>
-    <info>
-    Specify which parameters. A comma seperated list of context
-    variable id's.
-    </info>
-    </attribute>
-    <attribute>
-        <name>id</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>page</name>
-        <required>true</required>
-        <rtexprvalue>true</rtexprvalue>
-    <refercontext>true</refercontext>
-    <info>
-    The url to refer to.
-    </info>
-    </attribute>
   </tag>
   <tag>
     <name>param</name>
@@ -1912,11 +1903,11 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <extends>nodereferrer</extends>
     <extends>writer</extends>
     <extends>listprovider</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.AliasListTag</tagclass>
     <info>
-    This is a list which can only live under a NodeProvider. It has to
-    have an id, which can be used with the write tag in the body.
+      This is a list which can only live under a NodeProvider. In the body you can use the `writer'
+      functionality to actually write out the alias.
     </info>
   </tag>
   <tag>
@@ -1980,6 +1971,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
     <name>countrelations</name>
     <extends>writer</extends>
     <extends>nodereferrer</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.CountRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.IntegerWriterTEI</teiclass>
     <info>
@@ -1999,7 +1991,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   <tag>
     <name>listrelations</name>
     <extends>nodeprovider</extends>
-    <extends>contextwriter</extends>
+    <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListRelationsTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
