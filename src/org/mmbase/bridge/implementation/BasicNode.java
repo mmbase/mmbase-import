@@ -29,7 +29,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.117 2004-01-08 09:56:48 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.118 2004-01-08 10:33:24 johannes Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -448,7 +448,7 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         if (nodeManager.hasField(fieldName)) {
             int type = nodeManager.getField(fieldName).getType();
             switch(type) {
-            case Field.TYPE_STRING:  return getStringValue(fieldName);
+            case Field.TYPE_STRING:  return (getObjectValue(fieldName) == null ? null : getStringValue(fieldName));
             case Field.TYPE_BYTE:    return getByteValue(fieldName);
             case Field.TYPE_INTEGER: return (getObjectValue(fieldName) == null ? null : new Integer(getIntValue(fieldName)));
             case Field.TYPE_FLOAT:   return (getObjectValue(fieldName) == null ? null : new Float(getFloatValue(fieldName)));
