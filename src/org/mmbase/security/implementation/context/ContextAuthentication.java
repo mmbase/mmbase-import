@@ -12,8 +12,7 @@ package org.mmbase.security.implementation.context;
 import org.mmbase.security.*;
 import org.mmbase.security.SecurityException;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
@@ -30,12 +29,12 @@ import org.mmbase.util.logging.Logging;
  * contexts (used for ContextAuthorization).
  *
  * @author Eduard Witteveen
- * @version $Id: ContextAuthentication.java,v 1.17 2005-01-30 16:46:36 nico Exp $
+ * @version $Id: ContextAuthentication.java,v 1.18 2005-03-01 14:16:31 michiel Exp $
  * @see    ContextAuthorization
  */
 public class ContextAuthentication extends Authentication {
     private static final Logger log = Logging.getLoggerInstance(ContextAuthentication.class);
-    private HashMap  loginModules = new HashMap();
+    private Map  loginModules = new LinkedHashMap();
     private Document document;
     private long validKey;
 
@@ -145,5 +144,9 @@ public class ContextAuthentication extends Authentication {
      */
     public boolean isValid(UserContext usercontext) throws SecurityException {
         return validKey == ((ContextUserContext)usercontext).getKey();
+    }
+
+    public String[] getTypes() {
+        return (String[]) loginModules.keySet().toArray(new String[] {});
     }
 }
