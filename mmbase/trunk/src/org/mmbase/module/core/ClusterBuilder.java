@@ -42,7 +42,7 @@ import org.mmbase.util.logging.*;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.66 2004-11-09 09:36:55 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.67 2004-12-23 12:11:38 pierre Exp $
  * @see ClusterNode
  */
 public class ClusterBuilder extends VirtualBuilder {
@@ -200,12 +200,11 @@ public class ClusterBuilder extends VirtualBuilder {
         if ((pos != -1) && (node instanceof ClusterNode)) {
             bulname= field.substring(0, pos);
         }
-        MMObjectNode n= ((ClusterNode)node).getRealNode(bulname);
+        MMObjectNode n = ((ClusterNode)node).getRealNode(bulname);
         if (n == null) {
             n = node;
         }
-        bulname= getTrueTableName(bulname);
-        MMObjectBuilder bul= mmb.getMMObject(bulname);
+        MMObjectBuilder bul= n.getBuilder();
         if (bul != null) {
             String tmp= field.substring(pos + 1);
             return bul.getGUIIndicator(tmp, n);
