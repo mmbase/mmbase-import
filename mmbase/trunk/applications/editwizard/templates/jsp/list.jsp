@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.12 2002-05-28 14:15:14 pierre Exp $
+     * @version  $Id: list.jsp,v 1.13 2002-06-11 12:51:12 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -30,14 +30,21 @@ if (listConfig==null) {
 
 configurator.config(listConfig); // configure the thing, that means, look at the parameters.
 
+if (listConfig.nodePath == null) {
+   throw new JspTagException("No nodePath given");
+}
 // decide what kind of query: multilevel or single?
 boolean multilevel = listConfig.nodePath.indexOf(",") > -1;
+
 
 List fieldList     = new Vector();
 String numberField = null;
 
 StringTokenizer stok = new StringTokenizer(listConfig.fields, ",");
 String mainObjectName =null;
+
+
+
 while (stok.hasMoreTokens()) {
     String token = stok.nextToken();
     fieldList.add(token);
@@ -51,17 +58,23 @@ while (stok.hasMoreTokens()) {
 
 int nodecount=0;
 
+
 stok = new StringTokenizer(listConfig.nodePath, ",");
+
+
 nodecount = stok.countTokens();
 String lastObjectName=null;
+
 
 while (stok.hasMoreTokens()) {
     lastObjectName = stok.nextToken();
 }
 
+
 if (lastObjectName == null) {
     throw new JspException("No nodepath (" + listConfig.nodePath + ") was specified on URL, nor could it be found in the session");
 }
+
 if (mainObjectName==null) mainObjectName=lastObjectName;
 
 if (numberField==null || listConfig.fields.indexOf(numberField)==-1) {
