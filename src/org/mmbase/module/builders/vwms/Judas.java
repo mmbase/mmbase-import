@@ -45,9 +45,6 @@ private JudasURLpusher pusher=null;
 		}
 		
 		System.out.println("Judas -> Adding observers");
-		// add cdtracks for 3voor12 
-		Vwms.mmb.addLocalObserver("cdtracks",this);
-		Vwms.mmb.addRemoteObserver("cdtracks",this);
 
 		// add news for 3voor12 
 		Vwms.mmb.addLocalObserver("news",this);
@@ -103,14 +100,13 @@ private JudasURLpusher pusher=null;
 
 	
 		// checks for 3voor12
-		if (builder.equals("cdtracks")) {
-			get3voor12cdtracks(inumber);
-		} else if (builder.equals("news")) {
+		if (builder.equals("news")) {
 			get3voor12news(inumber);
 		} else if (builder.equals("episodes")) {
 			get3voor12episodes(inumber);
 		} else if (builder.equals("audioparts")) {
 			get3voor12audioparts(inumber,ctype);
+			get3voor12cdtracks(inumber);
 		} else if (builder.equals("groups")) {
 			get3voor12groups(inumber);
 		} else if (builder.equals("mmevents")) {
@@ -135,12 +131,12 @@ private JudasURLpusher pusher=null;
 		Vector tables=new Vector();
 		tables.addElement("programs");
 		tables.addElement("groups");
-		tables.addElement("funrel");
-		tables.addElement("cdtracks");
+		tables.addElement("insrel");
+		tables.addElement("audioparts");
 		Vector fields=new Vector();
 		fields.addElement("programs.number");
 		fields.addElement("groups.number");
-		fields.addElement("cdtracks.number");
+		fields.addElement("audioparts.number");
 		Vector ordervec=new Vector();
 		Vector dirvec=new Vector();
 
