@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.51 2002-10-31 10:22:24 michiel Exp $
+ * @version $Id: BasicNodeManager.java,v 1.52 2002-11-01 08:55:07 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -203,11 +203,11 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
     public FieldList getFields(int order) {
         if (builder!=null) {
             if (order == ORDER_EDIT) {
-                return new BasicFieldList(builder.getSortedFields(),this);
+                return new BasicFieldList(builder.getFields(FieldDefs.ORDER_EDIT),this);
             } else if (order == ORDER_LIST) {
-                return new BasicFieldList(builder.getSortedListFields(),this);
+                return new BasicFieldList(builder.getFields(FieldDefs.ORDER_LIST),this);
             } else if (order == ORDER_SEARCH) {
-                return new BasicFieldList(builder.getEditFields(),this);
+                return new BasicFieldList(builder.getFields(FieldDefs.ORDER_SEARCH),this);
             }
         }
         return getFields();
@@ -350,8 +350,7 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
             int items=1;
             try {
                 items=Integer.parseInt(params.Value("ITEMS"));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 log.warn("parameter 'ITEMS' must be a int value, it was :" + params.Value("ITEMS"));
             }
             Vector fieldlist=params.Values("FIELDS");
@@ -367,16 +366,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
                 }
                 res.add(node);
             }
-            NodeManager tempNodeManager = null;
             if (res.size()>0) {
-                tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
+                NodeManager tempNodeManager = new VirtualNodeManager((MMObjectNode)res.get(0),cloud);
+                return new BasicNodeList(res,tempNodeManager);
             }
-            return new BasicNodeList(res,tempNodeManager);
+            return new BasicNodeList();
         } catch (Exception e) {
-            String message;
-            message = e.getMessage();
-            log.error(message);
-            throw new BridgeException(message);
+            log.error(Logging.stackTrace(e));
+            throw new BridgeException(e);
         }
     }
 
