@@ -178,30 +178,30 @@ public class IncludeTag extends UrlTag {
 	    if (log.isDebugEnabled()) log.debug("Found nude url " + nudeUrl);
             javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             javax.servlet.http.HttpServletResponse response = (javax.servlet.http.HttpServletResponse)pageContext.getResponse();
-
-     
-            if (nudeUrl.indexOf('/') == 0) { // absolute on servercontex
-                urlString = nudeUrl + params;
-                externalRelative(bodyContent, request.getContextPath() + urlString, request, response);
-                //internal(bodyContent, urlString, request, response);
-            } else if (nudeUrl.indexOf(':') == -1) { // relative
-		log.debug("URL was relative");
-                urlString =
-		    // find the parent directory of the relativily given URL:
-		    // parent-file: the directory in which the current file is.
-		    // nude-Url   : is the relative path to this dir
-		    // canonicalPath: to get rid of /../../ etc
-		    // replace:  windows uses \ as path seperator..., but they may not be in URL's.. 
-		    new java.io.File(new java.io.File(request.getRequestURI()).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
-
-		// getCanonicalPath gives also gives c: in windows:
-		// take it off again if necessary:
-		int colIndex = urlString.indexOf(':');
-		if (colIndex == -1) {
-		    urlString += params;
-		} else {
-		    urlString = urlString.substring(colIndex + 1) + params;
-		}
+               
+            if (nudeUrl.indexOf(':') == -1) { // relative
+                if (nudeUrl.charAt(0) == '/') {
+                    log.debug("URL was absolute on servletcontext");
+                    urlString = gotUrl;
+                } else {
+                    log.debug("URL was relative");
+                    urlString =
+                        // find the parent directory of the relativily given URL:
+                        // parent-file: the directory in which the current file is.
+                        // nude-Url   : is the relative path to this dir
+                        // canonicalPath: to get rid of /../../ etc
+                        // replace:  windows uses \ as path seperator..., but they may not be in URL's.. 
+                        new java.io.File(new java.io.File(request.getRequestURI()).getParentFile(), nudeUrl).getCanonicalPath().toString().replace('\\', '/');
+                    
+                    // getCanonicalPath gives also gives c: in windows:
+                    // take it off again if necessary:
+                    int colIndex = urlString.indexOf(':');
+                    if (colIndex == -1) {
+                        urlString += params;
+                    } else {
+                        urlString = urlString.substring(colIndex + 1) + params;
+                    }
+                }
                 externalRelative(bodyContent, urlString, request, response);
                 //internal(bodyContent, urlString, request, response);
             } else { // really absolute

@@ -69,7 +69,7 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     
     public int doStartTag() throws JspTagException {  
         extraParameters = new HashMap();
-        if (page == null) {
+        if (page == null || "".equals(page)) {
             javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
             page = new java.io.File(req.getRequestURI()).getName();
         }
@@ -79,6 +79,12 @@ public class UrlTag extends CloudReferrerTag  implements Writer {
     protected String getUrl(boolean writeamp) throws JspTagException {        
         String show = page;
         String amp = (writeamp ? "&amp;" : "&");
+
+
+        if (show.charAt(0) == '/') { // absolute on servercontex
+            javax.servlet.http.HttpServletRequest req = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
+            show = req.getContextPath() + show;
+        }
         
         String connector = (show.indexOf('?') == -1 ? "?" : amp);
 
