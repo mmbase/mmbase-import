@@ -25,11 +25,11 @@ import org.mmbase.util.logging.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.32 2004-03-02 12:46:34 michiel Exp $
+ * @version $Id: Queries.java,v 1.33 2004-04-26 14:13:56 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
-public class Queries {
+abstract public  class Queries {
     private static final Logger log = Logging.getLoggerInstance(Queries.class);
 
     /**
@@ -115,11 +115,11 @@ public class Queries {
             search = ClusterBuilder.getSearchDir(searchDir);
         }
 
-        List snodes = StringSplitter.split(startNodes);
-        List tables = StringSplitter.split(nodePath);
-        List f = StringSplitter.split(fields);
+        List snodes   = StringSplitter.split(startNodes);
+        List tables   = StringSplitter.split(nodePath);
+        List f        = StringSplitter.split(fields);
         List orderVec = StringSplitter.split(orderby);
-        List d = StringSplitter.split(directions);
+        List d        = StringSplitter.split(directions);
         try {
             // pitty that we can't use cloud.createQuery for this.
             // but all essential methods are on ClusterBuilder
@@ -299,11 +299,13 @@ public class Queries {
     }
 
     /**
-     * Adds a Constraint to the already present constraint (with AND)
+     * Adds a Constraint to the already present constraint (with AND). 
+     * @return The new constraint.
      */
     public static Constraint addConstraint(Query query, Constraint newConstraint) {
-        if (newConstraint == null)
+        if (newConstraint == null) {
             return null;
+        }
 
         Constraint constraint = query.getConstraint();
 
@@ -311,11 +313,10 @@ public class Queries {
             log.debug("compositing constraint");
             Constraint compConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
             query.setConstraint(compConstraint);
-            return compConstraint;
         } else {
             query.setConstraint(newConstraint);
-            return newConstraint;
         }
+        return newConstraint;
     }
 
     public static final int OPERATOR_BETWEEN = -1; // not a FieldCompareConstraint (numeric)
@@ -550,7 +551,7 @@ public class Queries {
         List list = query.getSteps();
         int initialSize = list.size();
 
-        StringTokenizer pathTokenizer = new StringTokenizer(path, ",");
+        StringTokenizer pathTokenizer       = new StringTokenizer(path, ",");
         StringTokenizer searchDirsTokenizer = new StringTokenizer(searchDirs, ",");
 
         Cloud cloud = query.getCloud();
