@@ -167,6 +167,7 @@ public class ShareManager {
      */
     public static Enumeration getRemoteSharedPackages(String user,String password,String method,String host) {
 	// first get the PackageManager
+	log.info("SHARED="+user+" "+password);
 	if (PackageManager.isRunning()) {
 		Enumeration p=PackageManager.getPackages();
 		Vector reallyshared=new Vector();
