@@ -3,7 +3,7 @@
 #  Logs and mails CVS changes
 #
 #  @author Michiel Meeuwissen
-#  $Id: cvsmail,v 1.10 2004-11-23 10:01:25 michiel Exp $
+#  $Id: cvsmail,v 1.11 2004-11-23 10:11:26 michiel Exp $
 
 use strict;
 use FileHandle;
@@ -12,9 +12,9 @@ use FileHandle;
 my ($log_filename, $user, $files, $toaddress) = @ARGV;
 
 # configuration
-my $basedir     = "/usr/local/cvs/CVSROOT/log";
+my $basedir     = "/var/cvs/CVSROOT/log";
 my $defaulttoaddress   = "cvs\@mmbase.org";
-my $cvs         = "/usr/local/bin/cvs";
+my $cvs         = "/usr/bin/cvs";
 
 
 if (! defined $files) {
@@ -40,7 +40,7 @@ if ($child = fork()) {
     
     # determin user:
     
-    my $cvsuser = `/usr/ucb/whoami`;
+    my $cvsuser = `/usr/bin/whoami`;
     chomp $cvsuser;
     
     #{
