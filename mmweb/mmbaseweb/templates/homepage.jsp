@@ -118,8 +118,8 @@
 		<form name="searchform" id="searchhome" method="post" action="<mm:url page="/development/search/search.jsp" />">
 		<input type="hidden" name="exclude" value="testing" />
 		<input type="text" name="keywords" size="13" />&nbsp;<strong>|&nbsp;<a href="javascript:void(document.searchform.submit())">search</a></strong><br />
-		<input type="radio" name="restrict" value="" checked="checked" /> full site
-		<input type="radio" name="restrict" value="mmdocs" /> documentation
+		<input class="ie" type="radio" name="restrict" value="" checked="checked" /> full site
+		<input class="ie" type="radio" name="restrict" value="mmdocs" /> documentation
 		</form>
 	  </td>
 	</tr><tr>
