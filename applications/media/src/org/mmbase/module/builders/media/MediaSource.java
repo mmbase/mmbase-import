@@ -24,7 +24,7 @@ import org.mmbase.util.StringObject;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-import org.mmbase.util.media.MediaProviderFilter;
+import org.mmbase.util.media.*;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -69,8 +69,14 @@ public class MediaSource extends MMObjectBuilder {
     // MediaProviderFilter helps by resolving the best media provider
     private static MediaProviderFilter mediaProviderFilter = null;
     
-    // MediaProviderBuilder
+    // MediaUrlComposer helps by resolving the end of the url
+    private static MediaUrlComposer mediaUrlComposer = null;
+    
+    // MediaProvider builder
     private static MediaProvider mediaProviderBuilder = null;
+    
+    // MediaFragment builder
+    private static MediaFragment mediaFragmentBuilder = null;
     
     
     private org.mmbase.cache.Cache cache = new org.mmbase.cache.Cache(50) {
@@ -91,11 +97,6 @@ public class MediaSource extends MMObjectBuilder {
     public boolean init() {
         boolean result = super.init();
         
-        // set the mediaproviderfilter
-        if(mediaProviderFilter==null) {
-            mediaProviderFilter = new MediaProviderFilter(this);
-        }
-        
         // Retrieve a reference to the MediaProvider builder
         if(mediaProviderBuilder==null) {
             mediaProviderBuilder = (MediaProvider) mmb.getMMObject("mediaproviders");
@@ -106,6 +107,27 @@ public class MediaSource extends MMObjectBuilder {
                 log.debug("The builder mediaproviders is retrieved.");
             }
         }
+        // Retrieve a reference to the MediaFragment builder
+        if(mediaFragmentBuilder==null) {
+            mediaFragmentBuilder = (MediaFragment) mmb.getMMObject("mediafragments");
+            
+            if(mediaFragmentBuilder==null) {
+                log.error("Builder mediafragments is not loaded.");
+            } else {
+                log.debug("The builder mediapfragments is retrieved.");
+            }
+        }
+        
+        // set the mediaproviderfilter
+        if(mediaProviderFilter==null) {
+            mediaProviderFilter = new MediaProviderFilter(this);
+        }
+        
+        // set the mediaurlcomposer
+        if(mediaUrlComposer==null) {
+            mediaUrlComposer = new MediaUrlComposer(mediaFragmentBuilder, this);
+        }
+        
         return result;
     }
     
@@ -317,15 +339,18 @@ public class MediaSource extends MMObjectBuilder {
         // Find the provider for the url
         MMObjectNode mediaProvider = mediaProviderFilter.filterMediaProvider(mediasource, request, wantedspeed, wantedchannels);
         if(mediaProvider==null) {
-           log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
-           return null;
-        } 
+            log.error("Cannot selected mediaprovider, check mediaproviderfilter configuration");
+            return null;
+        }
         
         log.debug("Selected mediaprovider is "+mediaProvider.getNumber());
         // Get the protocol and the hostinfomation of the provider.
         String firstPartUrl = mediaProviderBuilder.getProtocol(mediasource) + mediaProvider.getStringValue("rooturl");
         
-        return firstPartUrl+"/rest";
+        // Maybe we have to give here everything...
+        String url = mediaUrlComposer.composeUrl(mediafragment, mediasource, request, wantedspeed, wantedchannels);
+        
+        return firstPartUrl+url;
     }
     
     /**
