@@ -52,7 +52,7 @@ import org.mmbase.util.logging.*;
  * @author Eduard Witteveen
  * @author Johan Verelst
  * @author Rob van Maris
- * @version $Id: MMObjectBuilder.java,v 1.202 2003-01-03 16:27:51 robmaris Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.203 2003-01-16 20:06:14 kees Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -931,7 +931,7 @@ public class MMObjectBuilder extends MMTable {
             return node;
         } catch (SQLException e) {
             // something went wrong print it to the logs
-            String msg = "The node #" + number + " could retrieved : " + e + "\n" + Logging.stackTrace(e);
+            String msg = "The node #" + number + " could not be retrieved : " + e + "\n" + Logging.stackTrace(e);
             log.error(msg);
             // do we need to throw an exception in this situation, of continue running?
             // throw new RuntimeException(msg);
