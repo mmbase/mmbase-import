@@ -23,8 +23,6 @@ import org.mmbase.bridge.*;
 import org.mmbase.bridge.ContextProvider;
 import org.mmbase.security.Rank; // hmm, not from bridge, but we do need it anyway
 
-import org.mmbase.util.StringSplitter;
-
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
@@ -36,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.104 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: CloudTag.java,v 1.105 2005-02-05 13:24:12 andre Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -1130,7 +1128,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
 
         {
             String s = logonatt.getString(this);
-            logon = s.equals("") ? null : StringSplitter.split(s);
+            // logon = s.equals("") ? null : StringSplitter.split(s);
+            logon = s.equals("") ? null : Arrays.asList(s.split(","));
         }
 
         if (checkReuse()) { // referid

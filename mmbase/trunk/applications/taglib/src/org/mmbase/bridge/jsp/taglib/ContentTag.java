@@ -19,7 +19,6 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.mmbase.util.transformers.*;
-import org.mmbase.util.StringSplitter;
 
 import org.mmbase.util.*;
 
@@ -35,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.29 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: ContentTag.java,v 1.30 2005-02-05 13:24:12 andre Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -284,7 +283,8 @@ public class ContentTag extends LocaleTag  {
     protected static CharTransformer getCharTransformer(String id) throws JspTagException {
         if (id.indexOf(',') > 0) {
             ChainedCharTransformer ct = new ChainedCharTransformer();
-            Iterator ids = StringSplitter.split(id).iterator();
+            // Iterator ids = StringSplitter.split(id).iterator();
+            Iterator ids = Arrays.asList(id.split(",")).iterator();
             while (ids.hasNext()) {
                 String i = (String) ids.next();
                 CharTransformer c = (CharTransformer) charTransformers.get(i);
