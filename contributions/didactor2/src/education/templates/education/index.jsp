@@ -355,8 +355,8 @@
         
    </mm:notpresent>
 </script>
-
 </mm:node>
+<br>
 
 <mm:treeinclude page="/cockpit/cockpit_footer.jsp" objectlist="$includePath" referids="$referids "/>
 </fmt:bundle>
