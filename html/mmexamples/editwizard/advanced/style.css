@@ -1,0 +1,43 @@
+
+
+body {
+ color: black;
+ background-color: lightblue;
+}
+
+p {
+  color: black;
+}
+
+table {
+  color:black;
+}
+
+h1 {
+   color:white;
+}
+td {
+  color:black;
+}
+
+a {
+ border:  none;
+ font-weight: bold;
+ text-decoration: none;
+
+}
+
+a:link {
+ color: #0000ff;
+}
+a:active {
+ color: #5050ff;
+}
+a:visited {
+ color: #a000a0;
+}
+a:hover {
+  color: red;
+}
+
+.tableheader		{ color:#FF0000; font-weight:900; }
