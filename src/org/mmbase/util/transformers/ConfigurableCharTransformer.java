@@ -26,8 +26,17 @@ public abstract class ConfigurableCharTransformer extends AbstractCharTransforme
     private static Logger log = Logging.getLoggerInstance(ConfigurableCharTransformer.class.getName());
     protected int to;
 
+    public ConfigurableCharTransformer() {
+        super();
+    }
+
+    public ConfigurableCharTransformer(int conf) {
+        super();
+        configure(conf);
+    }
+
     public void configure(int t) {
-        log.info("Setting config to " + t);
+        //log.info("Setting config to " + t);
         to = t;
     }
     abstract public Map transformers();
