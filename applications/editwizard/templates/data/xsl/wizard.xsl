@@ -9,7 +9,7 @@
   @author Kars Veling
   @author Michiel Meeuwissen
   @author Pierre van Rooden
-  @version $Id: wizard.xsl,v 1.36 2002-07-11 08:25:24 michiel Exp $
+  @version $Id: wizard.xsl,v 1.37 2002-07-15 12:19:36 michiel Exp $
   -->
 
   <xsl:import href="xsl/base.xsl" />
@@ -55,12 +55,87 @@
     </tr>   
   </xsl:template>
 
-  <xsl:template name="beforeform" />
+  <xsl:template name="beforeform" /> <!-- can be handy to add something to the top of your page -->
 
   <xsl:template name="bodycontent"> <!-- Madmen can try to override bodycontent.. -->
     <xsl:call-template name="javascript" />
     <xsl:call-template name="beforeform" />
+    <xsl:call-template name="bodyform" />
+  </xsl:template>
 
+
+  <!-- The form-content is the lay-out of the page. You can make this different, but don't forget to add the elements present in this one -->
+  <xsl:template name="formcontent">
+    <table cellspacing="0" cellpadding="3" border="0" width="100%">
+      <xsl:call-template name="superhead" />
+        <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>
+        
+        <xsl:apply-templates select="form[@id=/wizard/curform]" /><!-- produces <tr />'s -->
+        <xsl:apply-templates select="/*/steps-validator" />         <!-- produces <tr />'s -->
+    </table>
+  </xsl:template>
+
+  <!-- buttons are (always) called in the steps-validator -->
+  <xsl:template name="buttons">
+    <!-- our buttons -->
+    <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" />
+    <p>
+      <!-- cancel -->
+    <xsl:call-template name="cancelbutton" />
+      -
+      <!-- commit  -->
+      <xsl:call-template name="savebutton" />
+    </p><hr color="#005A4A" size="1" noshade="true" /></td></tr>    
+  </xsl:template>
+
+
+  <!-- The navigation buttons are only created (in steps-validator) if there is more than one step -->
+  <xsl:template name="nav-buttons">
+    <tr>
+      <td colspan="2" align="center">
+        <!-- previous -->
+        <xsl:call-template name="previousbutton" />
+          - -
+        <!-- next -->
+        <xsl:call-template name="nextbutton" />
+      </td>
+    </tr>    
+  </xsl:template>
+
+  <!-- The steps buttons are only created (in steps-validator) if there is more than one step -->
+  <xsl:template name="steps">
+    <tr>
+      <td colspan="2" align="center">
+        <hr color="#005A4A" size="1" noshade="true" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+      </td>
+      <td>
+        <!-- all steps -->
+        <xsl:for-each select="step">
+          <xsl:call-template name="stepbutton" />
+          <br />
+        </xsl:for-each>
+      </td>
+    </tr>
+  </xsl:template>
+
+  
+  <xsl:template name="javascript"><!-- you probably don't want to override this. -->
+    <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
+    <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
+  </xsl:template>
+
+
+  <!-- ================================================================================
+       The following is functionality. You probably don't want to override it.
+       ================================================================================ -->
+
+  <xsl:template name="bodyform">   
     <form name="form" method="post" action="{$wizardpage}" id="{/wizard/curform}"
       message_pattern="{$message_pattern}"
       message_required="{$message_required}"
@@ -74,31 +149,9 @@
       >
       <input type="hidden" name="curform" value="{/wizard/curform}" />
       <input type="hidden" name="cmd" value="" id="hiddencmdfield" />
-
-
-      <table cellspacing="0" cellpadding="3" border="0" width="100%">
-        <xsl:call-template name="superhead" />
-        <tr><td colspan="2" class="divider"><span class="head"><nobr><xsl:value-of select="form[@id=/wizard/curform]/subtitle" /><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></nobr></span></td></tr>
-        
-        <xsl:apply-templates select="form[@id=/wizard/curform]" />
-
-        <xsl:apply-templates select="/*/steps-validator" />
-      </table>
+      <xsl:call-template name="formcontent" />
     </form>
   </xsl:template>
-
-
-  <xsl:template name="javascript"><!-- .. or this -->
-    <script language="javascript" src="{$javascriptdir}tools.js"><xsl:comment>help IE</xsl:comment></script>
-    <script language="javascript" src="{$javascriptdir}validator.js"><xsl:comment>help IE</xsl:comment></script>
-    <script language="javascript" src="{$javascriptdir}editwizard.jsp{$sessionid}"><xsl:comment>help IE</xsl:comment></script>
-    <script language="javascript" src="{$javascriptdir}wysiwyg.js"><xsl:comment>help IE</xsl:comment></script>
-  </xsl:template>
-
-
-  <!-- ================================================================================
-       The following is functionality. You probably don't want to override it.
-       ================================================================================ -->
 
 
   <xsl:template match="@*">
@@ -111,7 +164,7 @@
     <xsl:apply-templates select="wizard" />
   </xsl:template>
 
-  <xsl:template match="wizard">
+  <xsl:template match="wizard"><!-- we produce HTML, this could be overriden, but it does not make sense -->
     <html>
       <head>
         <xsl:call-template name="style" />
@@ -602,71 +655,40 @@
   <xsl:template match="steps-validator">
     <!-- when multiple steps -->
     <xsl:if test="count(step) &gt; 1">
-      <tr>
-        <td colspan="2" align="center">
-          <hr color="#005A4A" size="1" noshade="true" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-        </td>
-        <td>
-          <!-- all steps -->
-          <xsl:for-each select="step">
-            <xsl:call-template name="stepbutton" />
-            <br />
-          </xsl:for-each>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          <!-- previous -->
-          <xsl:call-template name="previousbutton" />
-           - -
-          <!-- next -->
-          <xsl:call-template name="nextbutton" />
-        </td>
-      </tr>
+      <xsl:call-template name="steps" />
+      <xsl:call-template name="nav-buttons" />
     </xsl:if>
-
-    <!-- our buttons -->
-    <tr><td colspan="2" align="center"><hr color="#005A4A" size="1" noshade="true" /><p>
-          <!-- cancel -->
-          <xsl:call-template name="cancelbutton" />
-           -
-          <!-- commit  -->
-          <xsl:call-template name="savebutton" />
-        </p><hr color="#005A4A" size="1" noshade="true" /></td></tr>
+    <xsl:call-template name="buttons" />
   </xsl:template>
 
+
   <xsl:template name="savebutton">
-          <a href="javascript:doSave();" id="bottombutton-save" unselectable="on"
-           titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}"
-          >
-            <xsl:if test="@allowsave='true'">
-              <xsl:attribute name="class">bottombutton</xsl:attribute>
-              <xsl:attribute name="title"><xsl:value-of select="$tooltip_save" /></xsl:attribute>
-            </xsl:if>
-            <xsl:if test="@allowsave='false'">
-              <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
-              <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_save" /></xsl:attribute>
-            </xsl:if>
-            <xsl:choose>
-              <xsl:when test="step[@valid='false'][not(@form-schema=/wizard/curform)]">
-                <xsl:attribute name="otherforms">invalid</xsl:attribute>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:attribute name="otherforms">valid</xsl:attribute>
-              </xsl:otherwise>
-            </xsl:choose>
-            <xsl:call-template name="prompt_save" />
-          </a>
+    <a href="javascript:doSave();" id="bottombutton-save" unselectable="on"
+      titlesave="{$tooltip_save}" titlenosave="{$tooltip_no_save}" >
+      <xsl:if test="@allowsave='true'">
+        <xsl:attribute name="class">bottombutton</xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="$tooltip_save" /></xsl:attribute>
+      </xsl:if>
+      <xsl:if test="@allowsave='false'">
+        <xsl:attribute name="class">bottombutton-disabled</xsl:attribute>
+        <xsl:attribute name="title"><xsl:value-of select="$tooltip_no_save" /></xsl:attribute>
+      </xsl:if>
+      <xsl:choose>
+        <xsl:when test="step[@valid='false'][not(@form-schema=/wizard/curform)]">
+          <xsl:attribute name="otherforms">invalid</xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:attribute name="otherforms">valid</xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:call-template name="prompt_save" />
+      </a>
   </xsl:template>
 
   <xsl:template name="cancelbutton">
-            <a href="javascript:doCancel();"><span id="bottombutton-cancel" class="bottombutton" title="{$tooltip_cancel}">
-            <xsl:call-template name="prompt_cancel" />
-          </span></a>
+    <a href="javascript:doCancel();"><span id="bottombutton-cancel" class="bottombutton" title="{$tooltip_cancel}">
+    <xsl:call-template name="prompt_cancel" />
+    </span></a>
   </xsl:template>
 
   <xsl:template name="previousbutton">
@@ -693,14 +715,14 @@
 
 
   <xsl:template name="stepbutton">
-            <xsl:variable name="schemaid" select="@form-schema" />
-            <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
-             titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"
-            > <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
-              <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
-              <xsl:call-template name="prompt_step" />
-            </a>
-            <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
+    <xsl:variable name="schemaid" select="@form-schema" />
+      <a href="javascript:doGotoForm('{@form-schema}');" id="bottombutton-step-{$schemaid}" class="stepicon"
+        titlevalid="{$tooltip_valid}" titlenotvalid="{$tooltip_not_valid}"
+        > <xsl:attribute name="class"><xsl:if test="$schemaid=/wizard/curform">current</xsl:if>stepicon<xsl:if test="@valid='true'">-valid</xsl:if></xsl:attribute>
+      <xsl:attribute name="title"><xsl:value-of select="/*/form[@id=$schemaid]/title" /><xsl:if test="@valid='false'"><xsl:value-of select="$tooltip_step_not_valid" /></xsl:if></xsl:attribute>
+      <xsl:call-template name="prompt_step" />
+      </a>
+      <span class="step-info" ><xsl:value-of select="/*/form[@id=$schemaid]/title" /></span>
   </xsl:template>
 
   <xsl:template name="searchage">
