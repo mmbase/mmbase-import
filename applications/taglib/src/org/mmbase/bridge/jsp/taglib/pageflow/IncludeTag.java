@@ -33,7 +33,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @author Johannes Verelst
- * @version $Id: IncludeTag.java,v 1.59 2005-03-16 23:39:46 michiel Exp $
+ * @version $Id: IncludeTag.java,v 1.60 2005-03-17 00:08:34 michiel Exp $
  */
 
 public class IncludeTag extends UrlTag {
@@ -56,6 +56,7 @@ public class IncludeTag extends UrlTag {
     private Attribute encodingAttribute = Attribute.NULL;
 
     private   Attribute  attributes       = Attribute.NULL;
+
 
     /**
      * Test whether or not the 'cite' parameter is set
@@ -184,6 +185,10 @@ public class IncludeTag extends UrlTag {
                  request, response);
     }
 
+
+    protected boolean addContext() {
+        return false;
+    }
     /**
      * Use the RequestDispatcher to include a page without doing a request.
      * Encoding apparently work, but why they do isn't very clear.
