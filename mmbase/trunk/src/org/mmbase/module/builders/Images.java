@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.61 2002-09-30 13:00:51 michiel Exp $
+ * @version $Id: Images.java,v 1.62 2002-10-02 21:23:31 michiel Exp $
  */
 public class Images extends AbstractImages {
     private static Logger log = Logging.getLoggerInstance(Images.class.getName());
@@ -102,7 +102,7 @@ public class Images extends AbstractImages {
      *
      * @since MMBase-1.6
      */
-    public Object executeFunction(MMObjectNode node, String function, List args) {
+    protected Object executeFunction(MMObjectNode node, String function, List args) {
         log.debug("executeFunction of images builder");
         if ("cache".equals(function)) {
             if (args == null || args.size() != 1) throw new RuntimeException("Images cache functions needs 1 argument (now: " + args + ")");
