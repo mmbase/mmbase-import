@@ -1,6 +1,15 @@
 <%@ include file="settings.jsp"
 %><mm:cloud name="mmbase" method="http" jspvar="cloud"><%@ page errorPage="exception.jsp"
 %><%
+    /**
+     * popupwizard.jsp
+     *
+     * @since    MMBase-1.6
+     * @version  $Id: popupwizard.jsp,v 1.5 2002-05-22 13:57:17 pierre Exp $
+     * @author   Kars Veling
+     * @author   Pierre van Rooden
+     */
+
     // start a popup wizard.
     String wizardname = request.getParameter("wizard");
     String objectnumber = request.getParameter("objectnumber");
