@@ -45,8 +45,10 @@ public class Jumpers extends MMObjectBuilder {
 	}
 
 	public void delJumpCache(String key) {
-		if (debug) debug("Removing "+key+" from jumper cache");
-		jumpCache.remove(key);
+		if (key!=null) {
+			if (debug) debug("Removing "+key+" from jumper cache");
+			jumpCache.remove(key);
+		}
 	}
 
 	private static String jumperNotFoundURL = "/index.html"; 
