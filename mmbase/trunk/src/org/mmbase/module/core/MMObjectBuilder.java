@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.172 2002-10-17 09:43:31 eduard Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.173 2002-10-17 12:13:44 pierre Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -329,6 +329,7 @@ public class MMObjectBuilder extends MMTable {
         // add temporary fields
         checkAddTmpField("_number");
         checkAddTmpField("_exists");
+        checkAddTmpField("_status");
 
 	// get property dof maximum number of queries..
 	String property = getInitParameter(MAX_NODES_FROM_QUERY_PROPERY);
