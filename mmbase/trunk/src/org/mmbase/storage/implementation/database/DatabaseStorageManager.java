@@ -1,4 +1,4 @@
-/*
+d/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.14 2003-09-05 11:05:56 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.15 2003-09-08 09:42:39 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -926,7 +926,7 @@ public class DatabaseStorageManager implements StorageManager {
     // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
         if (log.isDebugEnabled()) {
-            log.debug("Creating a table for " + builder);
+            debug("Creating a table for " + builder);
         }
         // use the builder to get the fields and create a
         // valid create SQL string
@@ -1313,16 +1313,39 @@ public class DatabaseStorageManager implements StorageManager {
             getActiveConnection();
             String tableName = (String)factory.getStorageIdentifier(builder);
             DatabaseMetaData metaData = activeConnection.getMetaData();
-            ResultSet res = metaData.getColumns(null, null, tableName, null);
+            // skip if does not support inheritance, or if this is the object table
+            if (factory.hasOption(Attributes.SUPPORTS_INHERITANCE)) {
+                MMObjectBuilder parent = builder.getParentBuilder();
+                try {
+                    ResultSet superTablesSet = metaData.getSuperTables(null,null, tableName);
+                    if (superTablesSet.next()) {
+                        String parentName = superTablesSet.getString("SUPERTABLE_NAME");
+                        if (parent==null || !parentName.equals(factory.getStorageIdentifier(parent))) {
+                            log.error("VERIFY: parent builder in storage for builder " + builder.getTableName() +
+                                 " should be " + parent.getTableName() +" but defined as " + parentName);
+                        } else {
+                            debug("VERIFY: parent builder in storage for builder " + builder.getTableName() +
+                                 " defined as " + parentName);
+                        }
+                    } else if (parent != null) {
+                        log.error("VERIFY: no parent builder defined in storage for builder " + builder.getTableName());
+                    }
+                } catch (java.lang.AbstractMethodError ae) {
+                    // ignore: the method is not implemented by the JDBC Driver,
+                    // so no results can be retrieved
+                    log.warn("VERIFY: Driver does not fully implement the 3.0 API, skipping inheritance consistency tests.");
+                }
+            }
+            ResultSet columnsSet = metaData.getColumns(null, null, tableName, null);
             // get column information
             Map columns = new HashMap();
-            while (res.next()) {
+            while (columnsSet.next()) {
                 Map colInfo = new HashMap();
-                colInfo.put("DATA_TYPE", new Integer(res.getInt("DATA_TYPE")));
-                colInfo.put("TYPE_NAME", res.getString("TYPE_NAME"));
-                colInfo.put("COLUMN_SIZE", new Integer(res.getInt("COLUMN_SIZE")));
-                colInfo.put("NULLABLE", new Boolean(res.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
-                columns.put(res.getString("COLUMN_NAME"),colInfo);
+                colInfo.put("DATA_TYPE", new Integer(columnsSet.getInt("DATA_TYPE")));
+                colInfo.put("TYPE_NAME", columnsSet.getString("TYPE_NAME"));
+                colInfo.put("COLUMN_SIZE", new Integer(columnsSet.getInt("COLUMN_SIZE")));
+                colInfo.put("NULLABLE", new Boolean(columnsSet.getInt("NULLABLE") != DatabaseMetaData.columnNoNulls));
+                columns.put(columnsSet.getString("COLUMN_NAME"),colInfo);
             }
             // iterate through fields and check all fields present
             int pos = 0;
@@ -1352,7 +1375,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     field.setDBNotNull(!nullable);
                                     log.warn("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable + " (value corrected for this session)");
                                 } else {
-                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable);
+                                    debug("VERIFY: Field " + field.getDBName() + " mismatch : notnull in storage is " + !nullable);
                                 }
                             }
                             // compare size
@@ -1366,7 +1389,7 @@ public class DatabaseStorageManager implements StorageManager {
                                 } else if (cursize <= 255) {
                                     // ignore the size difference for large fields (blobs or texts) if
                                     // the storage size is larger than that defined for the builder
-                                    log.debug("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size);
+                                    debug("VERIFY: Field " + field.getDBName() + " mismatch : size defined as " + cursize + ", but in storage " + size);
                                 }
                             }
                         }
