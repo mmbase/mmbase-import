@@ -408,6 +408,25 @@ NetComponents can be found at:
     <antcall target="info14" />
     <antcall target="startcompile" />
 
+    <!-- for now -->
+    <mkdir dir="${web.dir}/classes/org/mmbase/resources/dtd" />
+    <copy todir="${build.dir}/classes/org/mmbase/resources/dtd">
+      <fileset dir="${source-config.dir}/default/dtd">
+        <include name="**/*.dtd" />
+      </fileset>
+    </copy>
+
+    <!-- as proposed by Rob van Maris 
+        Code must be adapted for this. XMLBasicReader. Done for Logging
+        -->
+    <mkdir dir="${web.dir}/classes/org/mmbase/util/logging/resources" />
+    <copy todir="${build.dir}/classes/org/mmbase/util/logging/resources">
+      <fileset dir="${source-config.dir}/default/dtd">
+        <include name="logging*.dtd" />
+      </fileset>
+    </copy>
+
+
     <copy todir="${build.dir}/classes">
       <fileset dir="${source-src.dir}">
         <include name="**/*.properties"/>
