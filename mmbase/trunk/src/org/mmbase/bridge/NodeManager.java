@@ -24,7 +24,7 @@ import javax.servlet.ServletRequest;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: NodeManager.java,v 1.18 2002-10-16 15:48:13 pierre Exp $
+ * @version $Id: NodeManager.java,v 1.19 2002-10-17 10:55:18 pierre Exp $
  */
 public interface NodeManager extends Node {
 
@@ -75,6 +75,7 @@ public interface NodeManager extends Node {
      * Returns the descriptive name of this node manager. This name will be in
      * the language of the current cloud  (defined in cloud.getLocale()).
      *
+     * @since MMBase-1.6
      * @param plurality the plurality (number of objects) for which to return a description
      *                  (1 = singular, 0,2 or greater = plural)
      * @return the descriptive name of this node manager
@@ -115,6 +116,7 @@ public interface NodeManager extends Node {
     /**
      * Tests whether the field with the specified name exists in this nodemanager.
      *
+     * @since MMBase-1.6
      * @param name  the name of the field to be returned
      * @return      <code>true</code> if the field with the requested name exists
      */

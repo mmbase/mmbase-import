@@ -19,7 +19,7 @@ import org.w3c.dom.Document;
  *
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: Node.java,v 1.36 2002-10-16 10:02:22 pierre Exp $
+ * @version $Id: Node.java,v 1.37 2002-10-17 10:55:17 pierre Exp $
  */
 public interface Node {
 
@@ -48,12 +48,14 @@ public interface Node {
 
     /**
      * Determine whether this Node is a Relation.
+     * @since MMBase-1.6
      * @return <code>true</code> if this Node is a Relation.
      */
     public boolean isRelation();
 
     /**
      * Returns this as a Relation.
+     * @since MMBase-1.6
      * @return a <code>Relation</code> object
      * @throws ClasscastException if the Node is not a Relation
      */
@@ -61,12 +63,14 @@ public interface Node {
 
     /**
      * Determine whether this Node is a NodeManager.
+     * @since MMBase-1.6
      * @return <code>true</code> if this Node is a NodeManager.
      */
     public boolean isNodeManager();
 
     /**
      * Returns this as a NodeManager.
+     * @since MMBase-1.6
      * @return a <code>NodeManager</code> object
      * @throws ClasscastException if the Node is not a NodeManager
      */
@@ -74,12 +78,14 @@ public interface Node {
 
     /**
      * Determine whether this Node is a RelationManager.
+     * @since MMBase-1.6
      * @return <code>true</code> if this Node is a RelationManager.
      */
     public boolean isRelationManager();
 
     /**
      * Returns this as a RelationManager.
+     * @since MMBase-1.6
      * @return a <code>NodeManager</code> object
      * @throws ClasscastException if the Node is not a RelationManager
      */
@@ -102,6 +108,7 @@ public interface Node {
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
+     * @since MMBase-1.6
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
@@ -112,6 +119,7 @@ public interface Node {
      * This change will not be visible to the cloud until the commit method is
      * called.
      *
+     * @since MMBase-1.6
      * @param fieldName  the name of the field to be updated
      * @param value      the new value for the given field
      */
@@ -315,6 +323,7 @@ public interface Node {
     /**
      * Returns the value of the specified field as a <code>FieldValue</code> object.
      *
+     * @since MMBase-1.6
      * @param fieldName  the name of the field whose value to return
      * @return           the value of the specified field
      * @throws NotFoundException is the field does not exist
@@ -324,6 +333,7 @@ public interface Node {
     /**
      * Returns the value of the specified field as a <code>FieldValue</code> object.
      *
+     * @since MMBase-1.6
      * @param field  the Field object whose value to return
      * @return       the value of the specified field
      */
@@ -507,10 +517,44 @@ public interface Node {
     public NodeList getRelatedNodes(String nodeManager);
 
     /**
+     * Returns all related nodes that have a specific node manager.
+     * The returned nodes are not the nodes directly attached to this node (the
+     * relation nodes) but the nodes attached to the relation nodes of this
+     * node.
+     *
+     * @param nodeManager  the node manager the returned nodes should have
+     * @return             a list of related nodes
+     */
+    public NodeList getRelatedNodes(NodeManager nodeManager);
+
+    /**
+     * Returns all related nodes that have a specific node manager and role.
+     * The returned nodes are not the nodes directly attached to this node (the
+     * relation nodes) but the nodes attached to the relation nodes of this
+     * node.
+     *
      * @since MMBase-1.6
+     * @param nodeManager  the name of the node manager the returned nodes
+     *                     should have
+     * @param role         the role of the relation
+     * @param direction    the direction of the relation
+     * @return             a list of related nodes
      */
     public NodeList getRelatedNodes(String nodeManager, String role, String direction);
 
+    /**
+     * Returns all related nodes that have a specific node manager and role.
+     * The returned nodes are not the nodes directly attached to this node (the
+     * relation nodes) but the nodes attached to the relation nodes of this
+     * node.
+     *
+     * @since MMBase-1.6
+     * @param nodeManager  the node manager the returned nodes should have
+     * @param role         the role of the relation
+     * @param direction    the direction of the relation
+     * @return             a list of related nodes
+     */
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction);
 
     /**
      * Returns the number of related nodes that have a specific node manager.

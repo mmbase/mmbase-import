@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.73 2002-10-16 10:02:23 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.74 2002-10-17 10:55:18 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -731,10 +731,13 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
         return new BasicNodeList(relvector,cloud);
     }
 
+    public NodeList getRelatedNodes(NodeManager nodeManager) {
+        return getRelatedNodes(nodeManager.getName());
+    }
+
     /**
      * @since MMBase-1.6
      */
-
     public NodeList getRelatedNodes(String type, String role, String direction) {
 
         log.debug("listing related nodes of role '" + role + "'" );
@@ -780,6 +783,10 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
             }
         }
         return new BasicNodeList(result, cloud);
+    }
+
+    public NodeList getRelatedNodes(NodeManager nodeManager, String role, String direction) {
+        return getRelatedNodes(nodeManager.getName(), role, direction);
     }
 
     public int countRelatedNodes(String type) {
