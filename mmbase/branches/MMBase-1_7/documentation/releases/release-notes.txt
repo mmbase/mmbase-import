@@ -178,7 +178,8 @@ Generic Bug Fixes:
 - #6457 jsp-editors: 'Stacking' of history doesn't work well if started with search on number. 
 - #6451 Problems on Windows with ImageMagick and text
 - #6543 Mmci: getNodeValue does not return proper Node instance 
-- #6450 Mmci: Node#countRelations can be a bit slow.  	
+- #6450 Mmci: Node#countRelations can be a bit slow.  
+- #6503 searchquery Search query may not set field values in mmobjectnode
 - #6484 searchquery maxNumber not supported   	
 - #6476 searchquery dissalowed fields do not take in account that sql keyword might be case insentitive  	
 - #6454 searchquery 'count' queries by bridge are not equal to count queries by MMObjectBuilder  	
@@ -189,6 +190,7 @@ Generic Bug Fixes:
 - #6489 Utils LinkFinder.java -- String index out of range: -1   	
 - #6464 Utils 'xmlfield' tranformer for 'emphasize' (_) is a bit to stupid.  
 - #6490 Utils java.util.DateSupport: public static String getTimeSec(int val) returns 12h clock instead of 24h 
+- #6421 Transactions Impossible to delete related nodes inside transaction 
 - Database Layer: Storagemanagerfactory does not set the correct default transactionlevel 
 - Database Layer: Killed connection can be put back in multi-pool.  	
 
