@@ -10,15 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.mmbase.bridge.Field;
-import org.mmbase.bridge.Node;
-import org.mmbase.bridge.FieldIterator;
-import org.mmbase.bridge.FieldList;
-import org.mmbase.bridge.NodeManager;
+import java.util.*;
+import org.mmbase.bridge.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -32,7 +30,7 @@ import org.mmbase.util.StringSplitter;
  */
 public class FieldListTag extends FieldReferrerTag implements ListProvider, FieldProvider {
 
-    private static Logger log = Logging.getLoggerInstance(FieldListTag.class.getName());
+    private static Logger log = Logging.getLoggerInstance(FieldListTag.class);
 
     private FieldList     returnList;
     private FieldIterator returnValues;
@@ -93,7 +91,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     public void setFields(String f) throws JspTagException {
         fields = getAttribute(f);
     }
-    protected java.util.List getFields() throws JspTagException {
+    protected List getFields() throws JspTagException {
         return StringSplitter.split(getAttributeValue(fields.getString(this)));
     }
 
@@ -120,9 +118,26 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
     }
 
     /**
+     * Lists do implement ContextProvider
+     */
+    protected ContextContainer container;
+    private   Map              collector;
+
+
+
+    // ContextProvider implementation
+    public ContextContainer getContainer() {
+        return container;
+    }
+
+
+    /**
     *
     **/
     public int doStartTag() throws JspTagException{
+        container = new ContextContainer(null, getContextProvider().getContainer());
+        collector = new HashMap();
+
         if (getReferid() != null) {
             if (nodeManagerAtt != Attribute.NULL || type != Attribute.NULL) {
                 throw new JspTagException("Cannot specify referid attribute together with nodetype/type attributes");
@@ -153,7 +168,7 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
                 returnList = nodeManager.getFields();
                 if (fields != Attribute.NULL) {
                     returnList.clear();
-                    java.util.Iterator i = getFields().iterator();
+                    Iterator i = getFields().iterator();
                     while (i.hasNext()) {
                         returnList.add(nodeManager.getField((String) i.next()));
                     }
@@ -177,9 +192,12 @@ public class FieldListTag extends FieldReferrerTag implements ListProvider, Fiel
             getContextProvider().getContainer().unRegister(getId());
         }
         if (returnValues.hasNext()){
+            collector.putAll(container);
+            container.clear();
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
+            getContextProvider().getContainer().registerAll(collector);
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());

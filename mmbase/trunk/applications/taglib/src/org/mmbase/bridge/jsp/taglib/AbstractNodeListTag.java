@@ -21,9 +21,13 @@ import org.mmbase.bridge.NodeList;
 
 import org.mmbase.util.StringSplitter;
 import org.mmbase.bridge.jsp.taglib.util.Attribute;
+import org.mmbase.bridge.jsp.taglib.util.ContextContainer;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
+
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * AbstractNodeListTag, provides basic functionality for listing objects
@@ -68,6 +72,13 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
      * Setting the list to conform to this ofsset is implementation specific.
      */
     protected Attribute offset = Attribute.NULL;
+
+
+    /**
+     * Lists do implement ContextProvider
+     */
+    protected ContextContainer container;
+    private   Map              collector;
 
     /**
      * Determines whether a field in {@link #orderby} changed
@@ -161,9 +172,20 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         constraints = getAttribute(where);
     }
 
+    // ContextProvider implementation
+    public ContextContainer getContainer() {
+        return container;
+    }
+
+
 
     protected static int NOT_HANDLED = -100;
     protected int doStartTagHelper() throws JspTagException {
+
+        // make a (temporary) container 
+        container = new ContextContainer(null, getContextProvider().getContainer());
+        collector = new HashMap();
+        
 
         // serve parent timer tag:
         TagSupport t = findParentTag(org.mmbase.bridge.jsp.taglib.debug.TimerTag.class, null, false);
@@ -257,8 +279,9 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         currentItemIndex= -1;
         previousValue = null;
         changed = true;
-        if (returnValues.hasNext())
+        if (returnValues.hasNext()) {
             return EVAL_BODY_BUFFERED;
+        }
         return SKIP_BODY;
     }
 
@@ -268,10 +291,15 @@ abstract public class AbstractNodeListTag extends AbstractNodeProviderTag implem
         if (getId() != null) {
             getContextProvider().getContainer().unRegister(getId());
         }
+
+        
         if (returnValues.hasNext()){
+            collector.putAll(container);
+            container.clear();
             doInitBody();
             return EVAL_BODY_AGAIN;
         } else {
+            getContextProvider().getContainer().registerAll(collector);
             if (bodyContent != null) {
                 try {
                     bodyContent.writeOut(bodyContent.getEnclosingWriter());

@@ -14,9 +14,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.http.*;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -26,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * there is searched for HashMaps in the HashMap.
  *
  * @author Michiel Meeuwissen
- * @version $Id: ContextContainer.java,v 1.5 2003-05-26 15:17:37 michiel Exp $
+ * @version $Id: ContextContainer.java,v 1.6 2003-05-26 21:14:18 michiel Exp $
  **/
 
 public class ContextContainer extends HashMap {
@@ -99,10 +97,10 @@ public class ContextContainer extends HashMap {
      * has an id.
      */
 
-    public ContextContainer(String _id, ContextContainer _parent) {
+    public ContextContainer(String i, ContextContainer p) {
         super();
-        id = _id;
-        parent = _parent;
+        id = i;
+        parent = p;
     }
 
 
@@ -307,6 +305,15 @@ public class ContextContainer extends HashMap {
 
     public void register(String newid, Object n) throws JspTagException {
         register(newid, n, true);
+    }
+
+    public void registerAll(Map map) throws JspTagException {
+        Iterator i = map.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry) i.next();
+            register((String) entry.getKey(), entry.getValue());
+        }
+        
     }
 
     public void registerNode(String newid,  org.mmbase.bridge.Node n) throws JspTagException {
