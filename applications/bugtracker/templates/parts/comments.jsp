@@ -4,7 +4,7 @@
 	       <td>
 			<mm:field name="rationale">
 			<mm:compare value="" inverse="true">
-				<mm:field name="html(rationale)" />
+				<mm:field name="rationale" escape="p" />
 			</mm:compare>
 			<mm:compare value="">
 				no maintainer statement yet
@@ -27,10 +27,12 @@
 					</mm:relatednodes>
 				</mm:node>
 				</td>
-				<td valign="top" width="430">
+				<th valign="top" width="430">
 				<mm:first><mm:import id="commentsfound" /></mm:first>
-				title <mm:field name="comments.title" />
-				<mm:field name="comments.body" />
+				<mm:field name="comments.title" />
+	                        </th>
+	                        </tr><tr><td>&nbsp;</td><td>
+				<mm:field name="comments.body" escape="p" />
 
 				</mm:related>
 				</td>
