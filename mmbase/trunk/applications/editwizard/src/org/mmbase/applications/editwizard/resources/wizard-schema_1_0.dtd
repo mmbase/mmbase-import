@@ -34,8 +34,8 @@
 
 <!ELEMENT query EMPTY >
 <!ATTLIST query xpath CDATA #REQUIRED >
-<!ATTLIST query where CDATA #REQUIRED >
-<!ATTLIST query orderby CDATA #REQUIRED >
+<!ATTLIST query where CDATA #IMPLIED >
+<!ATTLIST query orderby CDATA #IMPLIED >
 
 <!ELEMENT form-schema ( title | subtitle | field | fieldset | list)* >
 <!ATTLIST form-schema id NMTOKEN #IMPLIED >
