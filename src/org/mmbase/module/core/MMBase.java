@@ -37,7 +37,7 @@ import org.mmbase.util.xml.*;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Johannes Verelst
- * @version $Id: MMBase.java,v 1.113 2004-03-15 16:20:45 michiel Exp $
+ * @version $Id: MMBase.java,v 1.114 2004-05-03 14:56:32 keesj Exp $
  */
 public class MMBase extends ProcessorModule {
 
@@ -1105,7 +1105,7 @@ public class MMBase extends ProcessorModule {
         TypeDef.init();
 
         // first initialize versions, if available (table must exist for quereis to succeed)
-        log.debug("Versionves:");
+        log.debug("Versions:");
         Versions versions = (Versions)getMMObject("versions");
         if (versions != null) {
             versions.init();
