@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.52 2004-03-26 14:59:20 michiel Exp $
+ * @version $Id: Module.java,v 1.52.2.1 2005-03-29 13:41:46 michiel Exp $
  */
 public abstract class Module {
 
@@ -240,7 +240,7 @@ public abstract class Module {
      */
     public static synchronized final void shutdownModules() {
         Iterator i = getModules();
-        while (i.hasNext()) {
+        while (i != null && i.hasNext()) {
             Module m = (Module) i.next();
             log.service("Shutting down " + m.getName());
             m.shutdown();
