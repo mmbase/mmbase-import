@@ -31,7 +31,7 @@ import java.util.*;
  *
  * @author  Michiel Meeuwissen
  * @author  Rob Vermeulen
- * @version $Id: RealSorter.java,v 1.4 2003-03-04 10:23:15 rob Exp $
+ * @version $Id: RealSorter.java,v 1.5 2003-03-04 16:35:28 rob Exp $
  */
 public class RealSorter extends  ChainSorter {
     private static Logger log = Logging.getLoggerInstance(RealSorter.class.getName());
@@ -102,11 +102,13 @@ public class RealSorter extends  ChainSorter {
                 wantedSpeed = maxSpeed;
             }
 
-            int speed    = ri.getSource().getIntValue("speed");
+            int speed    = ri.getSource().getIntValue("bitrate");
 
             if (speed <= wantedSpeed) {
                 preference -= Math.abs(wantedSpeed - speed);
-            }
+            } else {
+                preference -= Math.abs(wantedSpeed - speed)*5; //Still sort them, but give them a lower priority
+	    }
             return preference;
         }
     }
