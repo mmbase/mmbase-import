@@ -25,17 +25,17 @@ import org.mmbase.util.logging.Logging;
 /**
  * SharedStorage is a thread object that reads the receive queue
  * and calls the objects (listeners) who need to know.
- * The SharedStorage starts communication threads to handle the sending 
+ * The SharedStorage starts communication threads to handle the sending
  * and receiving of messages.
- *  
+ *
  * @author Nico Klasens
- * @version $Id: SharedStorage.java,v 1.1.2.1 2004-10-09 10:51:44 nico Exp $
+ * @version $Id: SharedStorage.java,v 1.1.2.2 2005-04-03 14:20:40 nico Exp $
  */
 public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
 
     /** MMbase logging system */
     private static Logger log = Logging.getLoggerInstance(SharedStorage.class.getName());
-    
+
     /** Followup number of message */
     protected int follownr = 1;
     /** Number of processed messages */
@@ -54,15 +54,15 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
     /** MMBase instance */
     protected MMBase mmbase = null;
 
-    protected boolean spawnThreads = true; 
-    
+    protected boolean spawnThreads = true;
+
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#init(org.mmbase.module.core.MMBase)
      */
     public void init(MMBase mmb) {
         this.mmbase = mmb;
     }
-    
+
     /**
      * Subclasses should start the communication threads in this method
      */
@@ -72,7 +72,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
      */
     protected abstract void stopCommunicationThreads();
 
-    
+
     /**
      * Starts the Changer Thread.
      */
@@ -95,7 +95,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
         kicker.setPriority(Thread.MIN_PRIORITY);
         kicker = null;
     }
-    
+
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#changedNode(int, java.lang.String, java.lang.String)
      */
@@ -107,7 +107,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
 
     /**
      * Create message to send to other servers
-     * 
+     *
      * @param nodenr node number
      * @param tableName node type (tablename)
      * @param node Node with xml info
@@ -116,10 +116,10 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
     protected String createXmlMessage(String nodenr, String tableName, MMObjectNode node) {
         return createMessage(nodenr, tableName, "x", node.toXML());
     }
-    
+
     /**
      * Create message to send to other servers
-     * 
+     *
      * @param nodenr node number
      * @param tableName node type (tablename)
      * @param type command type
@@ -128,10 +128,10 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
     protected String createMessage(int nodenr, String tableName, String type) {
         return createMessage("" + nodenr, tableName, type, null);
     }
-    
+
     /**
      * Create message to send to other servers
-     * 
+     *
      * @param nodenr node number
      * @param tableName node type (tablename)
      * @param type command type
@@ -145,7 +145,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
         }
         return message;
     }
-    
+
     /**
      * @see org.mmbase.module.core.MMBaseChangeInterface#waitUntilNodeChanged(org.mmbase.module.core.MMObjectNode)
      */
@@ -172,7 +172,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
             log.error(Logging.stackTrace(e));
         }
     }
-    
+
     /**
      * Let the thread do his work
      */
@@ -215,7 +215,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
 
     /**
      * Handle message
-     * 
+     *
      * @param machine machine name
      * @param fnr follow up number
      * @param id node number
@@ -265,7 +265,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
 
     /**
      * Process node changed
-     * 
+     *
      * @param bul builder
      * @param machine machine name
      * @param id node number
@@ -275,7 +275,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
      */
     private void nodeChanged(MMObjectBuilder bul,String machine,
                             String id, String tb, String ctype, boolean remote) {
-        
+
         if (spawnThreads) {
             new MessageProbe(this,bul,machine,id,tb,ctype,remote);
         }
@@ -289,12 +289,12 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
                     checkWaitingNodes(id);
                 }
             } catch(Throwable t) {
-                log.equals(Logging.stackTrace(t));
+                log.error(Logging.stackTrace(t));
             }
-            
+
         }
     }
-    
+
     /**
      * Check collection of waiting nodes fir the changed node
      * @param snumber changed node number
@@ -313,7 +313,7 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
             log.error("not a valid number " + snumber);
         }
     }
-    
+
     /**
      * @javadoc
      */
@@ -375,5 +375,5 @@ public abstract class SharedStorage implements MMBaseChangeInterface, Runnable {
             bpos = nodedata.indexOf("<");
         }
     }
-    
+
 }
