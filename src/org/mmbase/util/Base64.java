@@ -21,7 +21,7 @@ package org.mmbase.util;
  * @deprecated-now use org.mmbase.util.transformers.BAse64 or sun.misc.BASE64Encoder
  * @author Robert Harder - rob@iharder.net
  * @author Rob van Maris
- * @version $Id: Base64.java,v 1.9 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: Base64.java,v 1.10 2005-03-16 19:04:17 michiel Exp $
  */
 public class Base64 {
 
@@ -117,17 +117,6 @@ public class Base64 {
     public static String encode(String mimel) {
        return encodeString(mimel);
     }
-
-   /**
-    * Encodes the first three bytes of array <var>threeBytes</var>
-    * and returns a four-byte array in Base64 notation.
-    *
-    * @param threeBytes the array to convert
-    * @return four byte array in Base64 notation.
-    */
-   private static byte[] encode3to4( byte[] threeBytes )
-   {   return encode3to4( threeBytes, 3 );
-   }   // end encodeToBytes
 
 
 
