@@ -9,8 +9,8 @@
     @author Pierre van Rooden
     @author Nico Klasens
     @author Martijn Houtman
-    @author   Robin van Meteren
-    @version $Id: wizard.xsl,v 1.136 2004-09-14 18:18:03 michiel Exp $
+    @author Robin van Meteren
+    @version $Id: wizard.xsl,v 1.137 2004-09-15 08:23:58 pierre Exp $
 
     This xsl uses Xalan functionality to call java classes
     to format dates and call functions on nodes
@@ -882,9 +882,6 @@
           <div class="imageupload">
             <div>
               <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="image" >
-                  <!-- changed Martijn Houtman
-                       <xsl:if test="@dtrequired=&apos;true&apos;">
-                         -->
                 <xsl:if test="@dtrequired=&apos;true&apos; and starts-with(@number, &apos;n&apos;)">
                   <xsl:attribute name="dtrequired">true</xsl:attribute>
                 </xsl:if>
@@ -946,7 +943,7 @@
         <xsl:choose>
           <xsl:when test="not(upload)">
             <input type="hidden" name="{@fieldname}" value="" dttype="binary" ftype="file" >
-              <xsl:if test="@dtrequired=&apos;true&apos;">
+              <xsl:if test="@dtrequired=&apos;true&apos; and starts-with(@number, &apos;n&apos;)">
                 <xsl:attribute name="dtrequired">true</xsl:attribute>
               </xsl:if>
             </input>
