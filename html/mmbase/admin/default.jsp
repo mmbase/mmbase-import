@@ -19,10 +19,10 @@
   <mm:present referid="category">
     <frameset rows="70,*" border="0" frameborder="0" framespacing="0">
       <mm:notpresent referid="subcategory">
-        <frame src="<mm:url page="nav.jsp?category=${category}&subcategory=${subcategory}" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+        <frame src="<mm:url referids="category,subcategory" page="nav.jsp" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
       </mm:notpresent>
       <mm:present referid="subcategory">
-        <frame src="<mm:url page="nav.jsp?category=${category}" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
+        <frame src="<mm:url referids="category,subcategory" page="nav.jsp" />" name="navigatie" scrolling="no" marginwidth="1" marginheight="0" />
       </mm:present>
       <mm:compare referid="category" value="examples">
         <mm:import id="url">/mmexamples/</mm:import>
