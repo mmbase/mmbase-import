@@ -49,7 +49,7 @@ import org.mmbase.bridge.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.19 2002-07-09 18:13:39 michiel Exp $
+ * @version $Id: Dove.java,v 1.20 2002-07-17 13:17:50 pierre Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -200,7 +200,7 @@ public class Dove extends AbstractDove {
     }
 
     /**
-     * Retrives the relations of a node and adds its content to a DOM element.
+     * Retrieves the relations of a node and adds its content to a DOM element.
      * This method accepts a DOM element (describing a relation), which may contain as it
      * child nodes elements describing the fields as well as the related object to retrieve.
      *
@@ -220,12 +220,25 @@ public class Dove extends AbstractDove {
             destinationType=(String)relation.getAttribute(ELM_DESTINATION);
         }
         if ("".equals(destinationType)) destinationType=null;
+        int searchDir=0;
+        String searchDirs=(String)relation.getAttribute(ELM_SEARCHDIR).toLowerCase();
+        if("destination".equals(searchDirs)) {
+            searchDir=1;
+        } else if("source".equals(searchDirs)) {
+            searchDir=2;
+        }
 
         // determines whether to load the object (and possible restrictions)
         Element objectDef=getFirstElement(relation,OBJECT);
         try {
             for (RelationIterator i=nd.getRelations(role,destinationType).relationIterator(); i.hasNext(); ) {
                 Relation nrel=i.nextRelation();
+                if (searchDir==1) {
+                    if (thisNumber!=nrel.getIntValue("snumber")) continue;
+                }
+                if (searchDir==2) {
+                    if (thisNumber!=nrel.getIntValue("dnumber")) continue;
+                }
                 Element data=doc.createElement(RELATION);
                 if (role!=null) {
                     data.setAttribute(ELM_ROLE, role);
