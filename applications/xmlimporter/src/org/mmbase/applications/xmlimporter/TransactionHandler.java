@@ -63,7 +63,7 @@ public class TransactionHandler extends Module implements TransactionHandlerInte
    
    /** XML file header, consisting of XML and DOCTYPE declaration. */
    private final String xmlHeader =
-   "<?xml version='1.0'?>\n<!DOCTYPE transactions SYSTEM \"transactions.dtd\">\n";
+   "<?xml version='1.0'?>\n<!DOCTYPE transactions SYSTEM \"transactions_1_0.dtd\">\n";
    
    /**
     * Create new TransactionHandler.

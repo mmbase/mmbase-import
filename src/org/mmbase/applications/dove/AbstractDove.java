@@ -58,14 +58,14 @@ import org.mmbase.security.MMBaseCop;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.1.2.2 2002-03-11 11:05:47 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.1.2.3 2002-06-18 07:52:28 pierre Exp $
  */
 
 public abstract class AbstractDove {
 
     // dtds
-    public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest.dtd";
-    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doverequest.dtd";
+    public static final String DOCTYPE_REQUEST  = "http://www.mmbase.org/dtd/doverequest_1_0.dtd";
+    public static final String DOCTYPE_RESPONSE = "http://www.mmbase.org/dtd/doveresponse_1_0.dtd";
 
     // keywords used for tags
     public static final String REQUEST = "request";

@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * Class for creating builder configuration files.
  *
  * @author Daniel Ockeloen
- * @version $Id: XMLBuilderWriter.java,v 1.12.4.1 2002-06-11 09:24:11 pierre Exp $
+ * @version $Id: XMLBuilderWriter.java,v 1.12.4.2 2002-06-18 07:52:34 pierre Exp $
  */
 public class XMLBuilderWriter  {
 
@@ -35,7 +35,7 @@ public class XMLBuilderWriter  {
      */
     public static boolean writeXMLFile(String filename,MMObjectBuilder bul) {
         String header = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"+
-                        "<!DOCTYPE builder PUBLIC \"-//MMBase/DTD builder config 1.0//EN\" \"http://www.mmbase.org/dtd/builder.dtd\">\n";
+                        "<!DOCTYPE builder PUBLIC \"-//MMBase/DTD builder config 1.0//EN\" \"http://www.mmbase.org/dtd/builder_1_0.dtd\">\n";
 
         String body=header+"<builder maintainer=\""+bul.getMaintainer()+"\" version=\""+bul.getVersion()+"\">\n\n";
 

@@ -42,7 +42,7 @@ public class XMLApplicationWriter  {
 
         String body =
             "<?xml version=\"1.0\"?>\n" +
-            "<!DOCTYPE application PUBLIC \"-//MMBase/DTD aplication config 1.0//EN\" \"http://www.mmbase.org/dtd/application.dtd\">\n" +
+            "<!DOCTYPE application PUBLIC \"-//MMBase/DTD application config 1.0//EN\" \"http://www.mmbase.org/dtd/application_1_0.dtd\">\n" +
             "<application name=\""+name+"\" maintainer=\""+maintainer+"\" version=\""+version+"\" auto-deploy=\""+deploy+"\">\n";
 
         // write the needed builders

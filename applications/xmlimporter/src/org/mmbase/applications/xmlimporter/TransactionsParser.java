@@ -93,7 +93,7 @@ public class TransactionsParser extends DefaultHandler {
     */
    public final String xmlHeader =
    "<?xml version='1.0'  encoding='" + ENCODING
-   + "'?>\n<!DOCTYPE transactions SYSTEM \"transactions.dtd\">\n";
+   + "'?>\n<!DOCTYPE transactions SYSTEM \"transactions_1_0.dtd\">\n";
    
     /** Logger instance. */
    private static Logger log = Logging.getLoggerInstance(
