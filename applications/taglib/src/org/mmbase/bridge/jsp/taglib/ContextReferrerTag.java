@@ -133,7 +133,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             log.debug("Attribute " + attribute + " contains reference to context (id=" + context + "), searching context");
             String param = tk.nextToken();            
             ContextTag ct = getContextTag(context);        
-            attributeValue = ct.getString(param);                       
+            attributeValue = ct.getObjectAsString(param);                       
             if (attributeValue == null) {
                 throw new JspTagException("Key " + param + " could not be found in context " + context);
             }
