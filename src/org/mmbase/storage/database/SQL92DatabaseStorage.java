@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.7 2003-04-18 13:06:35 michiel Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.8 2003-05-02 08:38:56 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -160,11 +160,11 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return the sql query
      */
     protected String createSQL(String tableName, String fields, String parentTableName, String parentFields) {
-        if (!supportsExtendedTables() && (parentFields!=null)) {
-            if (fields==null) {
-                fields=parentFields;
+        if (!supportsExtendedTables() && (parentFields != null) && (! "".equals(parentFields))) {
+            if (fields == null) {
+                fields = parentFields;
             } else {
-                fields=parentFields+", "+fields;
+                fields = parentFields + ", " + fields;
             }
         }
         return applyCreateScheme(tableName, fields, parentTableName)+";";
@@ -177,7 +177,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
      * @return the sql query
      */
     protected String dropSQL(String tableName) {
-        return "DROP TABLE "+tableName+";";
+        return "DROP TABLE " + tableName + ";";
     }
 
     /**
@@ -717,7 +717,7 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
                 // skip bytefields when values are written to file
                 if (getStoreBinaryAsFile() && (field.getDBType() == FieldDefs.TYPE_BYTE)) continue;
                 // convert a fielddef to a field SQL createdefinition
-                String part = constructFieldDefinition(builder,field);
+                String part = constructFieldDefinition(builder, field);
                 if (isParentField(builder, field.getDBName())) {
                     if (parentFields.length() > 0) {
                         parentFields.append(", ");
@@ -732,7 +732,9 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
             }
         }
         String tableName = builder.getFullTableName();
-        log.debug("table " + tableName);
+        if (log.isDebugEnabled()) {
+            log.debug("table " + tableName);
+        }
         String parentTableName = getParentTableName(builder);
         if (parentTableName!=null) parentTableName = getFullTableName(parentTableName);
         String sqlcreate = createSQL(tableName, createFields.toString(), parentTableName, parentFields.toString());
