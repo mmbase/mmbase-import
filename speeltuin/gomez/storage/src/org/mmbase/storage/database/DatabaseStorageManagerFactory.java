@@ -41,7 +41,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.13 2003-08-18 14:42:46 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.14 2003-08-19 10:32:42 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
@@ -123,7 +123,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             dataSource = new GenericDataSource(mmbase);
         }
         // store the datasource as an attribute
-        setAttribute("database.dataSource", dataSource);
+        setAttribute(Attributes.DATA_SOURCE, dataSource);
 
         // test the datasource and retrieves options, 
         // which are stored as options in the factory's attribute
@@ -133,10 +133,7 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             DatabaseMetaData metaData = con.getMetaData();
             // set transaction options
             supportsTransactions = metaData.supportsTransactions() && metaData.supportsMultipleTransactions();
-            setOption("database.dataDefinitionCausesTransactionCommit", metaData.dataDefinitionCausesTransactionCommit());
-            setOption("database.dataDefinitionIgnoredInTransactions", metaData.dataDefinitionIgnoredInTransactions());
-            setOption("database.supportsDataManipulationTransactionsOnly", metaData.supportsDataManipulationTransactionsOnly());
-            setOption("database.supportsDataDefinitionAndDataManipulationTransactions", metaData.supportsDataDefinitionAndDataManipulationTransactions());
+            setOption(Attributes.SUPPORTS_DATA_MANIPULATION_TRANSACTIONS_ONLY, metaData.supportsDataManipulationTransactionsOnly());
             // determine transactionlevels
             if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                 transactionIsolation = Connection.TRANSACTION_SERIALIZABLE;
@@ -147,10 +144,10 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
             } else if (metaData.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED)) {
                 transactionIsolation = Connection.TRANSACTION_READ_COMMITTED;
             }                 
-            setAttribute("database.transactionIsolationLevel", new Integer(transactionIsolation));
+            setAttribute(Attributes.TRANSACTION_ISOLATION_LEVEL, new Integer(transactionIsolation));
             // alter table support options
-            setOption("database.supportsAlterTableWithAddColumn",metaData.supportsAlterTableWithAddColumn());
-            setOption("database.supportsAlterTableWithDropColumn",metaData.supportsAlterTableWithDropColumn());
+            setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_ADD_COLUMN,metaData.supportsAlterTableWithAddColumn());
+            setOption(Attributes.SUPPORTS_ALTER_TABLE_WITH_DROP_COLUMN,metaData.supportsAlterTableWithDropColumn());
             // create a default disallowedfields list:
             // get the standard sql keywords
             StringTokenizer tokens = new StringTokenizer(STANDARD_SQL_KEYWORDS,", ");
@@ -224,12 +221,9 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
                     }
                 }
             }
-log.info("Use: "+databaseResourcePath);
             // get configuration
             InputStream stream = DatabaseStorageManagerFactory.class.getResourceAsStream(databaseResourcePath);
-log.info("stream: "+stream);
             InputSource in = new InputSource(stream);
-log.info("source: "+in);
             reader = new StorageReader(this, in);
         }
         return reader;

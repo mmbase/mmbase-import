@@ -15,7 +15,7 @@ package org.mmbase.storage;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: Attributes.java,v 1.1 2003-08-01 14:16:11 pierre Exp $
+ * @version $Id: Attributes.java,v 1.2 2003-08-19 10:32:42 pierre Exp $
  */
 public final class Attributes {
 
@@ -32,9 +32,30 @@ public final class Attributes {
      * Option: <code>disallowed-fields-case-sensitive</code>.
      * if <code>true</code>, matching MMBase fieldnames with the disallowed fieldnames list is case-sensitive.
      * By default, this option is <code>false</code>.
-     * Note that you can specify this attribute sperately, but the "case-sensitive" attribute 
+     * Note that you can specify this attribute seperately, but the "case-sensitive" attribute 
      * of the "disallowedfields" tag overrides this attribute.
      */
     public static final String DISALLOWED_FIELD_CASE_SENSITIVE = "disallowed-fields-case-sensitive";
+    
+    /**
+     * Attribute: <code>storage-identifier-case</code>.
+     * if set, the storage identifiers for builders and fieldnames are converted to lowercase (if the value is 'lower') or
+     * uppercase (if the value is 'upper') before they are passed to the storage manager.
+     * If you specify another value this attribute is ignored.
+     * This ensures that field or builder names that differ only by case will return the same storage identifier 
+     * (and thus point to the same storage element).
+     * You may need to set this value for some specific storage implementations. I.e. some databases expect table or fieldname to be 
+     * case sensitive, or expect them to be uppercase.
+     * By default, this option is not set.
+     */
+    public static final String STORAGE_IDENTIFIER_CASE = "storage-identifier-case";
+    
+    /**
+     * Atribute: <code>default-storage-identifier-prefix</code>.
+     * A default prefix to place in front of diallowedf fieldnames to make them suitabel for use in a storage layer. 
+     * By default, this option is not set.
+     */
+    public static final String DEFAULT_STORAGE_IDENTIFIER_PREFIX = "default-storage-identifier-prefix";
 
 }
+
