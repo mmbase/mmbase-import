@@ -46,14 +46,25 @@ public class Url extends ConfigurableStringTransformer implements CharTransforme
 
     public String transform(String r) {
         switch(to){
-        case ESCAPE:           return java.net.URLEncoder.encode(r);
+        case ESCAPE:
+            try { 
+                return java.net.URLEncoder.encode(r, "UTF-8");
+            } catch (java.io.UnsupportedEncodingException uee) { // cannot happen 
+                return r;                
+            }  
+             
         case PARAM_ESCAPE:     return URLParamEscape.escapeurl(r);
         default: throw new UnknownCodingException(getClass(), to);
         }
     }
     public String transformBack(String r) {
         switch(to){
-        case ESCAPE:           return java.net.URLDecoder.decode(r);
+        case ESCAPE:           
+            try {
+                return java.net.URLDecoder.decode(r, "UTF-8");
+            } catch (java.io.UnsupportedEncodingException uee) { // cannot happen 
+                return r;                
+            }  
         case PARAM_ESCAPE:     return URLParamEscape.unescapeurl(r);
         default: throw new UnknownCodingException(getClass(), to);
         }
