@@ -18,7 +18,7 @@ import org.mmbase.security.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: TransactionManager.java,v 1.20 2001-09-10 08:24:38 pierre Exp $
+ * @version $Id: TransactionManager.java,v 1.21 2002-01-18 15:26:45 robmaris Exp $
  */
 public class TransactionManager implements TransactionManagerInterface {
 
@@ -283,79 +283,9 @@ public class TransactionManager implements TransactionManagerInterface {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("performCommits: deleting relations");
-        }
-        // First commit all the RELATIONS that must be deleted
-        for (i=0;i<nodes.size();i++) {
-            if (nodetype[i]==RELATION) {
-                node=(MMObjectNode)nodes.elementAt(i);
-                switch(nodeexist[i]) {
-                    case I_EXISTS_YES:
-                        break;
-                    case I_EXISTS_NO:
-                        break;
-                    case I_EXISTS_NOLONGER:
-                        if (log.isDebugEnabled()) {
-                            log.debug("node "+i+" delete ");
-                        }
-                        if (!debug) {
-                            // no return information
-                            node.parent.removeNode(node);
-                            if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().remove((UserContext)user, node.getNumber());
-                            }
-                            nodestate[i]=COMMITED;
-                        } else {
-                            nodestate[i]=COMMITED;
-                        }
-                        break;
-                    default:
-                        nodestate[i]=FAILED;
-                        log.warn("performCommits invalid exists value "+nodeexist[i]);
-                        break;
-                }
-            }
-        }
-
-        if (log.isDebugEnabled()) {
-            log.debug("performCommits: deleting nodes");
-        }
-        // Then commit all the NODES that must be deleted
-        for (i=0;i<nodes.size();i++) {
-            if (nodetype[i]==NODE) {
-                node=(MMObjectNode)nodes.elementAt(i);
-                switch(nodeexist[i]) {
-                    case I_EXISTS_YES:
-                        break;
-                    case I_EXISTS_NO:
-                        break;
-                    case I_EXISTS_NOLONGER:
-                        if (log.isDebugEnabled()) {
-                            log.debug("node "+i+" delete ");
-                        }
-                        if (!debug) {
-                            // no return information
-                            node.parent.removeNode(node);
-                            if (user instanceof UserContext) {
-                                mmbaseCop.getAuthorization().remove((UserContext)user,node.getNumber());
-                            }
-                            nodestate[i]=COMMITED;
-                        } else {
-                            nodestate[i]=COMMITED;
-                        }
-                        break;
-                    default:
-                        nodestate[i]=FAILED;
-                        log.warn("performCommits invalid exists value "+nodeexist[i]);
-                        break;
-                }
-            }
-        }
-
-        if (log.isDebugEnabled()) {
             log.debug("performCommits: commiting nodes");
         }
-        // Then commit all the NODES
+        // First commit all the NODES
         for (i=0;i<nodes.size();i++) {
             if (nodetype[i]==NODE) {
                 node=(MMObjectNode)nodes.elementAt(i);
@@ -460,6 +390,77 @@ public class TransactionManager implements TransactionManagerInterface {
                 }
             }
         }
+
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: deleting relations");
+        }
+        // Then commit all the RELATIONS that must be deleted
+        for (i=0;i<nodes.size();i++) {
+            if (nodetype[i]==RELATION) {
+                node=(MMObjectNode)nodes.elementAt(i);
+                switch(nodeexist[i]) {
+                    case I_EXISTS_YES:
+                        break;
+                    case I_EXISTS_NO:
+                        break;
+                    case I_EXISTS_NOLONGER:
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" delete ");
+                        }
+                        if (!debug) {
+                            // no return information
+                            node.parent.removeNode(node);
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().remove((UserContext)user, node.getNumber());
+                            }
+                            nodestate[i]=COMMITED;
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        break;
+                    default:
+                        nodestate[i]=FAILED;
+                        log.warn("performCommits invalid exists value "+nodeexist[i]);
+                        break;
+                }
+            }
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("performCommits: deleting nodes");
+        }
+        // Then commit all the NODES that must be deleted
+        for (i=0;i<nodes.size();i++) {
+            if (nodetype[i]==NODE) {
+                node=(MMObjectNode)nodes.elementAt(i);
+                switch(nodeexist[i]) {
+                    case I_EXISTS_YES:
+                        break;
+                    case I_EXISTS_NO:
+                        break;
+                    case I_EXISTS_NOLONGER:
+                        if (log.isDebugEnabled()) {
+                            log.debug("node "+i+" delete ");
+                        }
+                        if (!debug) {
+                            // no return information
+                            node.parent.removeNode(node);
+                            if (user instanceof UserContext) {
+                                mmbaseCop.getAuthorization().remove((UserContext)user,node.getNumber());
+                            }
+                            nodestate[i]=COMMITED;
+                        } else {
+                            nodestate[i]=COMMITED;
+                        }
+                        break;
+                    default:
+                        nodestate[i]=FAILED;
+                        log.warn("performCommits invalid exists value "+nodeexist[i]);
+                        break;
+                }
+            }
+        }
+
         // check for failures
         okay=true;
         for (i=0;i<nodes.size();i++) {
