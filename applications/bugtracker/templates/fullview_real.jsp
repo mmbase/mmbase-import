@@ -1,28 +1,31 @@
-<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<mm:cloud>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" 
+%><mm:cloud>
 <mm:import externid="bugreport" />
 <mm:import externid="portal" jspvar="portal" />
 <mm:import externid="page" jspvar="page2" />
 <mm:import externid="flap" jspvar="flap">overview</mm:import>
 <mm:import externid="cw" from="cookie" />
 <mm:import externid="ca" from="cookie" />
+
+<mm:import externid="base" />
+
 <mm:present referid="ca">
-        <mm:present referid="cw">
-			<mm:listnodes type="users" constraints="account='$ca' and password='$cw'" max="1">
-				<mm:import id="user"><mm:field name="number" /></mm:import>
-			</mm:listnodes>
-        </mm:present>
+    <mm:present referid="cw">
+	   <mm:listnodes type="users" constraints="account='$ca' and password='$cw'" max="1">
+	       <mm:import id="user"><mm:field name="number" /></mm:import>
+	    </mm:listnodes>
+    </mm:present>
 </mm:present>
 <mm:present referid="user">
-	<mm:list path="users,groups" nodes="$user" constraints="groups.name='BugTrackerCommitors'" max="1">
-				<mm:import id="commitor"><mm:field name="users.number" /></mm:import>
-	</mm:list>
+    <mm:list path="users,groups" nodes="$user" constraints="groups.name='BugTrackerCommitors'" max="1">
+      <mm:field id="commitor" write="false" name="users.number" />
+   </mm:list>
 </mm:present>
 <%@include file="actions.jsp" %>
 
 <mm:node number="$bugreport">
 <mm:related path="rolerel,users" constraints="rolerel.role='maintainer'" max="1">
-	<mm:import id="hasmaintainers">yes</mm:import>
+   <mm:import id="hasmaintainers">yes</mm:import>
 </mm:related>
 
 
