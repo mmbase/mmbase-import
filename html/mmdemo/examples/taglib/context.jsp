@@ -14,16 +14,31 @@ parameters).
 <mm:import id="hoi" externid="haj" required="true" jspvar="groet" />
 <p>
 There are several ways to write something from the context to the
-page. Here are a few examples:
+page. Here are a few examples with the 'write' tag. The write tag uses
+the 'referid' attribute. Such an attribute expects the <em>name</em>
+of the variable:
 </p>
 <mm:write referid="hoi" />, 
 <mm:write referid="context.hoi" />,
 <mm:write context="context" referid="hoi" />,
 <mm:write referid="hoi" jspvar="greet"><%= greet %></mm:write>,
 <%= groet %>
+<p>
+Sometime you also want to use the value of a variable. In that case a
+construction with a dollar sign ($) must be used. Imagine for example
+that the <em>value</em> of the command-line variable 'haj' (which
+internally in this page is named 'hoi') must be used in an url:
+</p>
+<mm:url page="${hoi}.jsp">
+ <mm:param name="some_variable">value</mm:param>
+</mm:url>,
+<mm:url page="test.${context.hoi}.jsp">
+ <mm:param name="some_variable">another_example</mm:param>
+</mm:url>
 <br />
-<a href='<mm:url page="context2\.jsp" referids="hoi">
-           <mm:param name="hello">saluton</mm:param>
+<hr />
+<a href='<mm:url page="context2.jsp" referids="hoi">
+          <mm:param name="hello">saluton</mm:param>
          </mm:url>'>next page</a>	 
 </body>
 </html>
