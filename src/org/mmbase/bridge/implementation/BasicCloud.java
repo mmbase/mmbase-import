@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.110 2003-12-02 16:13:21 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.111 2003-12-17 20:50:26 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -612,7 +612,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
     protected List    getClusterNodes(Query query) {
         
-        
         ClusterBuilder clusterBuilder = BasicCloudContext.mmb.getClusterBuilder();
         // check multilevel cache if needed
         List resultList = (List)multilevelCache.get(query);
@@ -686,25 +685,73 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     */
 
     /**
+     * @since MMBase-1.7
+     */
+    boolean setSecurityConstraint(Query query) {   
+        Authorization auth = mmbaseCop.getAuthorization();
+        if (query instanceof BasicQuery) {  // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+            BasicQuery bquery = (BasicQuery) query;
+            if (bquery.isSecure()) {
+                return true;
+            } else {
+                Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
+                bquery.setSecurityConstraint(check);
+                return bquery.isSecure();
+            }
+        }
+        return false;
+    } 
+
+    void   checkNodes(BasicNodeList resultNodeList, Query query) {
+        Authorization auth = mmbaseCop.getAuthorization();
+        resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
+
+        if (log.isDebugEnabled()) {
+            log.trace(resultNodeList);
+        }
+
+        log.debug("Starting read-check");
+        // resultNodeList is now a BasicNodeList; read restriction should only be applied now
+        // assumed it though, that it contain _only_ MMObjectNodes..
+        
+        // get authorization for this call only
+        
+        UserContext user = userContext.getUserContext();
+        List steps = query.getSteps();
+        
+        log.debug("Creating iterator");
+        ListIterator li = resultNodeList.listIterator();
+        while (li.hasNext()) {
+            log.debug("next");
+            Object o = li.next();
+            if (log.isDebugEnabled()) {
+                log.debug(o.getClass().getName());
+            }
+            MMObjectNode node = (MMObjectNode)o;
+            boolean mayRead = true;
+            for (int j = 0; mayRead && (j < steps.size()); ++j) {
+                int nodenr = node.getIntValue(((Step)steps.get(j)).getTableName() + ".number");
+                if (nodenr != -1) {
+                    mayRead = auth.check(user, nodenr, Operation.READ);
+                }
+            }
+            if (!mayRead)
+                li.remove();
+        }
+        resultNodeList.autoConvert = true;
+        
+        
+    }
+
+
+    /**
      * Result with Cluster Nodes (checked security)
      * @since MMBase-1.7
      */
     protected NodeList getSecureList(Query query) {
-        Authorization auth = mmbaseCop.getAuthorization();
-        boolean checked = false; // query should alway be 'BasicQuery' but if not, for some on-fore-seen reason..
+     
+        boolean checked = setSecurityConstraint(query);
 
-        if (query instanceof BasicQuery) {
-            BasicQuery bquery = (BasicQuery) query;
-            if (bquery.isSecure()) {
-                checked = true;
-            } else {
-                Authorization.QueryCheck check = auth.check(userContext.getUserContext(), query, Operation.READ);
-                bquery.setSecurityConstraint(check);
-                checked = bquery.isSecure();
-            }
-        }
-        
-        //assert(resultList != null);
         List resultList = getClusterNodes(query);
 
         if (log.isDebugEnabled()) {
@@ -715,58 +762,20 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
 
         // create resultNodeList
 
-        if (query instanceof NodeQuery) {
-            resultNodeList = new BasicNodeList(resultList, query.getCloud());
+        NodeManager tempNodeManager = null;
+        if (resultList.size() > 0) {
+            tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
         } else {
-            NodeManager tempNodeManager = null;
-            if (resultList.size() > 0) {
-                tempNodeManager = new VirtualNodeManager((MMObjectNode)resultList.get(0), this);
-            } else {
-                tempNodeManager = new VirtualNodeManager(this);
-            }
-            resultNodeList = new BasicNodeList(resultList, tempNodeManager);
+            tempNodeManager = new VirtualNodeManager(this);
         }
+        resultNodeList = new BasicNodeList(resultList, tempNodeManager);
         
         resultNodeList.setProperty(NodeList.QUERY_PROPERTY, query);       
 
-        resultNodeList.autoConvert = false; // make sure no conversion to Node happen, until we are ready.
-
-        if (log.isDebugEnabled()) {
-            log.trace(resultNodeList);
-        }
-
         if (! checked) {
-            log.debug("Starting read-check");
-            // resultNodeList is now a BasicNodeList; read restriction should only be applied now
-            // assumed it though, that it contain _only_ MMObjectNodes..
-
-            // get authorization for this call only
-            
-            UserContext user = userContext.getUserContext();
-            List steps = query.getSteps();
-            
-            log.debug("Creating iterator");
-            ListIterator li = resultNodeList.listIterator();
-            while (li.hasNext()) {
-                log.debug("next");
-                Object o = li.next();
-                if (log.isDebugEnabled()) {
-                    log.debug(o.getClass().getName());
-                }
-                MMObjectNode node = (MMObjectNode)o;
-                boolean mayRead = true;
-                for (int j = 0; mayRead && (j < steps.size()); ++j) {
-                    int nodenr = node.getIntValue(((Step)steps.get(j)).getTableName() + ".number");
-                    if (nodenr != -1) {
-                        mayRead = auth.check(user, nodenr, Operation.READ);
-                    }
-                }
-                if (!mayRead)
-                    li.remove();
-            }
+            checkNodes(resultNodeList, query);
         }
-        resultNodeList.autoConvert = true;
-        
+
         return resultNodeList;
     }
 
