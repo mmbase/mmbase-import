@@ -518,7 +518,9 @@ public class Model {
 
 	body+="<builder name=\""+nb.getName()+"\" maintainer=\""+nb.getMaintainer()+"\" version=\""+nb.getVersion()+"\" extends=\""+nb.getExtends()+"\">\n";
 	body+="\t<status>"+nb.getStatus()+"</status>\n";
-	body+="\t<classfile>"+nb.getClassName()+"</classfile>\n";
+	if (!nb.getClassName().equals("Dummy")) {
+		body+="\t<classfile>"+nb.getClassName()+"</classfile>\n";
+	}
 	body+="\t<searchage>"+nb.getSearchAge()+"</searchage>\n";
 	body+="\t<names>\n";
 	body+="\t\t<!-- singles per language as defined by ISO 639 -->\n";
