@@ -1,4 +1,4 @@
-d/*
+/*
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.15 2003-09-08 09:42:39 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.16 2003-09-08 10:32:58 mark Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
