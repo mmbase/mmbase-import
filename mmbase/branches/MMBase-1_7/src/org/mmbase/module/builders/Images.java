@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.94.2.2 2004-08-26 12:18:26 michiel Exp $
+ * @version $Id: Images.java,v 1.94.2.3 2004-10-06 13:44:38 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -160,6 +160,14 @@ public class Images extends AbstractImages {
      * @javadoc
      */
     public void setDefaults(MMObjectNode node) {
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Parameter[] getParameterDefinition(String function) {
+        return org.mmbase.util.functions.NodeFunction.getParametersByReflection(Images.class, function);
     }
 
     /**
