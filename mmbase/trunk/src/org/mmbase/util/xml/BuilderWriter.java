@@ -13,7 +13,6 @@ import java.util.*;
 import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.module.corebuilders.FieldDefs;
 import org.mmbase.util.logging.*;
-import org.mmbase.util.XMLBuilderReader;
 
 import org.w3c.dom.*;
 
@@ -26,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.15 2003-04-11 09:22:42 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.16 2003-04-11 11:05:52 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -50,7 +49,7 @@ public class BuilderWriter extends DocumentWriter  {
      * @param builder the builder for which to create an XML document.
      */
     public BuilderWriter(MMObjectBuilder builder) throws DOMException {
-        super("builder", XMLBuilderReader.PUBLIC_ID_BUILDER,"http://www.mmbase.org/dtd/"+XMLBuilderReader.DTD_BUILDER);
+        super("builder", BuilderReader.PUBLIC_ID_BUILDER,"http://www.mmbase.org/dtd/"+BuilderReader.DTD_BUILDER);
         this.builder=builder;
         getMessageRetriever("org.mmbase.util.xml.resources.builderwriter");
     }
