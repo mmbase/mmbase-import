@@ -47,7 +47,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.46 2003-12-02 21:20:59 michiel Exp $
+ * @version $Id: Dove.java,v 1.47 2003-12-03 08:39:11 michiel Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -628,10 +628,7 @@ public class Dove extends AbstractDove {
                                 guiType = dttype + "/" + guiType;
                             }
                         }
-                        log.info("Setting guiType: " + guiType + " to " + getSerializedXML(field));
                         addContentElement(GUITYPE, guiType, field);
-                        log.info("Sett : " + guiType + " to " + getSerializedXML(field));
-
                         int maxLength = fielddef.getMaxLength();
                         if (maxLength>0) {
                             addContentElement(MAXLENGTH, "" + maxLength, field);
