@@ -4,7 +4,7 @@
 	<articleinfo>
 		<title>MMBase Editwizard Documentation</title>
 		<date>2 september 2002</date>
-		<edition>$Id: editwizard-doc.xml,v 1.14 2003-04-04 08:02:57 henk Exp $</edition>
+		<edition>$Id: editwizard-doc.xml,v 1.15 2003-04-15 14:33:33 kees Exp $</edition>
 		<authorgroup>
 			<author>
 				<firstname>Kars</firstname>
@@ -349,7 +349,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 					<search-fields>title|subtitle</search-fields>
 				</search-filter>
 			</command>
-			<!-- Action to create a relation, used by teh search command to create
+			<!-- Action to create a relation, used by the search command to create
 					 the relation once it is found and chosen.
 			-->
 			<action type="create">
@@ -510,7 +510,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 					<term>fields</term>
 					<listitem>
 						<para>The fields to show in the list. If you query only one nodetype (see nodepath), you can use simple field names. Otherwise, you need to preface the fieldnames with the name of the objecttype they belong to.
-						If the first field listed is a number field, teh objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
+						If the first field listed is a number field, the objecttype of that field is used as the objecttype to edit in the wizard (instead of the last object type in the nodepath list). This parameter is similar to the fields attribute of the taglib's &lt;mm:list&gt; tag.</para>
 						<programlisting format="linespecific">fields=firstname,lastname or fields=news.title,people.firstname,people.lastname</programlisting>
 					</listitem>
 				</varlistentry>
@@ -594,7 +594,7 @@ Type in the url to the editwizard examples, eg.: http://localhost:4242/mmexample
 					<term>searchtype</term>
 					<listitem>
 						<para>Determines what type of search is used to filter on the searchfields, using the specified search value.  This is only valid if you also specify the searchfields parameter.</para>
-						<para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare teh feild to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
+						<para>Allowed values are 'string', 'like', 'equalto', 'greaterthan', 'lessthan', 'notgreaterthan', and 'notlessthan'. use 'string' to compare the search value to the field using an exact match. Use 'like' to make a pattern search using the specified searchvalue. Use the other values to compare the field to numeric values or dates. I.e. using 'greaterthan' selects all fields whose (numeric) value is greater than the specified (numeric) value.
 						</para>
 						<programlisting format="linespecific">searchtype=like</programlisting>
 					</listitem>
