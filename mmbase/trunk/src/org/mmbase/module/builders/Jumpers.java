@@ -125,7 +125,9 @@ public class Jumpers extends MMObjectBuilder {
 	}
 
 	public boolean nodeChanged(String number,String builder,String ctype) {
-		System.out.println("JUMPERS="+builder+" no="+number+" "+ctype);
+		if(debug) {
+			System.out.println("JUMPERS="+builder+" no="+number+" "+ctype);
+		}
 		jumpCache.clear();
 		return(true);
 	}
