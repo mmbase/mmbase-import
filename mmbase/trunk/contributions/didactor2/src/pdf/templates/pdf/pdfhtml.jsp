@@ -1,4 +1,4 @@
-<%@ taglib prefix="jtidy" uri="http://jtidy.sf.net" %><jtidy:tidy config="indent: no; indent: no; output-xhtml: true; wrap: 0; clean: yes; fix-backslash: yes; fix-bad-comments: yes; fix-uri: yes; trim-empty-elements: yes; drop-empty-paras: yes; drop-proprietary-attributes: yes; word-2000: yes  ">
+<%@ taglib prefix="jtidy" uri="http://jtidy.sf.net" %><jtidy:tidy config="indent: no; indent: no; output-xhtml: true; wrap: 0; clean: yes; fix-backslash: yes; fix-bad-comments: yes; fix-uri: yes; trim-empty-elements: yes; drop-empty-paras: yes; drop-proprietary-attributes: yes; word-2000: yes; doctype: omit;">
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:content postprocessor="reducespace" expires="0">
