@@ -19,11 +19,14 @@ import java.io.Writer;
  *
  * @author Michiel Meeuwissen 
  * @since MMBase-1.7
+ * @version $Id: CopyCharTransformer.java,v 1.3 2003-05-09 22:33:56 michiel Exp $
  */
 
 public class CopyCharTransformer extends AbstractCharTransformer implements CharTransformer {
 
-    public CopyCharTransformer() {
+    public static CopyCharTransformer instance = new CopyCharTransformer();
+
+    private CopyCharTransformer() {
         super();
     }
 
