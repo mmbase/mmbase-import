@@ -35,7 +35,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Case Roole, cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: XSLTransformer.java,v 1.18 2003-06-30 15:50:20 michiel Exp $
+ * @version $Id: XSLTransformer.java,v 1.19 2003-07-18 14:56:53 michiel Exp $
  *
  */
 public class XSLTransformer {
@@ -259,7 +259,7 @@ public class XSLTransformer {
             log.info("special options can be:");
             log.info("   usecache=true:     Use the Template cache or not (to speed up)");
             log.info("   exclude=<filename>:  File/directory name to exclude (can be used multiple times");
-            log.info("   extenstion=<file extensions>:  File extensions to use in transformation results (defaults to html)");
+            log.info("   extension=<file extensions>:  File extensions to use in transformation results (defaults to html)");
             log.info("Other options are passed to XSL-stylesheet as parameters.");
 
         } else {
