@@ -11,8 +11,6 @@
 
 <form name="create" enctype="multipart/form-data" method="post" action='<mm:url referids="node_type" page="commit_node.jsp" />'>
 <input type="hidden" name="new" value="new" />
-<input type="hidden" name="backpage_ok" value="<mm:url page="change_node.jsp" referids="" />" />
-<input type="hidden" name="backpage_cancel" value="<mm:url page="search_node.jsp" referids="node_type" />" />
 <mm:import externid="node" />
 <mm:present referid="node">
     <mm:import externid="role_name" />

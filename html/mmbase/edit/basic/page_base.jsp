@@ -1,7 +1,32 @@
-<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=utf-8" 
+<%@page errorPage="error.jsp" language="java" contentType="text/html; charset=utf-8"  import="java.util.Stack"
 %><?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
-<% response.setContentType("text/html; charset=utf-8");
+<%!
+void push(Stack stack, String id,  String url) {
+   stack.push(new String[] {id, url});
+}
+void push(Stack stack, String id, HttpServletRequest request) {
+   push(stack, id, request.getServletPath() + "?" + request.getQueryString());
+}
+String peek(Stack stack) {
+  return ((String []) stack.peek())[1];
+}
+
+String toHtml(Stack stack, HttpServletRequest request) {
+  StringBuffer buf = new StringBuffer();
+  if (stack.size() < 1) return "";
+  String[] info = (String []) stack.get(0);
+  buf.append("<a href='" + request.getContextPath() +  info[1] + "'>" + info[0] + "</a>");
+  for (int i = 1; i < stack.size(); i++) {
+     info = (String []) stack.get(i);
+     buf.append("-&gt; <a href='" + request.getContextPath() +  info[1] + "&amp;pop=" + (stack.size() - i) + "'>" + info[0] + "</a>");
+  }
+  return buf.toString();
+}
+%>
+<% 
+
+response.setContentType("text/html; charset=utf-8");
 // as many browsers as possible should not cache:
 response.setHeader("Cache-Control", "no-cache");
 response.setHeader("Pragma","no-cache");
@@ -10,28 +35,43 @@ response.setDateHeader("Expires",  now);
 response.setDateHeader("Last-Modified",  now);
 response.setDateHeader("Date",  now);
 
-java.util.Stack urlStack = (java.util.Stack) session.getAttribute("editor_stack");
+
+Stack urlStack = (Stack) session.getAttribute("editor_stack");
+
 if (urlStack == null) {
-   urlStack = new java.util.Stack();
+   urlStack = new Stack();
    session.setAttribute("editor_stack", urlStack);
 }
 
+
 %><html>
 <head>
- <!-- <%= urlStack %> -->
 <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
 <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
 <%@ page import="org.mmbase.bridge.*"
 %><%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0"  prefix="mm"
 %>
-
 <mm:import externid="pop" />
 <mm:import externid="push" />
 <mm:import externid="nopush" />
+<mm:import externid="clearstack" />
+<mm:present referid="clearstack">
+  <% urlStack.clear(); %>
+</mm:present>
+
 <mm:notpresent referid="nopush">
-  <mm:present referid="push"><% urlStack.push(request.getServletPath() + "?" + request.getQueryString()); %></mm:present>
+  <mm:present referid="push">
+    <mm:write referid="push" jspvar="v" vartype="string">
+      <% push(urlStack, v, request); %>
+    </mm:write>
+  </mm:present>
 </mm:notpresent>
-<mm:present referid="pop"><% urlStack.pop(); %></mm:present>
+<mm:present referid="pop">
+  <mm:write referid="pop" jspvar="pop" vartype="integer">
+    <% for (int i = 0; i < pop.intValue(); i++) urlStack.pop(); %>
+  </mm:write>
+</mm:present>
+
 <mm:import id="config" externid="mmeditors_config" from="session" />
 
 <mm:context id="config" referid="config">
