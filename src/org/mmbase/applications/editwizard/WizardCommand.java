@@ -18,61 +18,72 @@ import org.mmbase.util.logging.*;
  * @javadoc
  * @author Kars Veling
  * @since   MMBase-1.6
- * @version $Id: WizardCommand.java,v 1.2 2002-02-25 11:53:58 pierre Exp $
+ * @version $Id: WizardCommand.java,v 1.3 2002-02-25 16:18:23 pierre Exp $
  */
 public class WizardCommand {
 
+    // logging
     private static Logger log = Logging.getLoggerInstance(WizardCommand.class.getName());
-  public String type;
-  public String name;
-  public String value;
-  public String fid;
-  public String did;
-  public String otherdid;
 
-  public WizardCommand() {
-    type = "none";
-    name = "";
-    value = "";
-    fid = "";
-    did = "";
-  }
+    // the original command as it was passed
+    private String command;
 
-  /**
-   * Sets a wizardcommand with the given name and value. It decodes the name into all stored properties.
-   *
-   * @param     aname   The name of the command
-   * @param     avalue  The value of the command
-   */
-  public WizardCommand(String aname, String avalue) {
+    public String type;
+    public String value;
+    public String fid;
+    public String did;
+    public String otherdid;
 
-    name = aname.toLowerCase();
-    value = avalue;
-    log.info("command: "+name + " : "+value);
-
-    // retrieve the fid and did again
-    int nr0=name.indexOf("/");
-    int nr1=name.indexOf("/", nr0+1);
-    int nr2=name.indexOf("/", nr1+1);
-    int nr3=name.indexOf("/", nr2+1);
-    int nr4=name.indexOf("/", nr3+1);
-
-    if (nr4<1) {
-    return;
+    public WizardCommand() {
+        type = "none";
+        command = "";
+        value = "";
+        fid = "";
+        did = "";
     }
 
-    type = name.substring(nr0+1, nr1);
-    fid = name.substring(nr1+1, nr2);
-    did = name.substring(nr2+1, nr3);
-    otherdid = name.substring(nr3+1, nr4);
-  }
+    /**
+     * Creates  a wizard command object with the given command and value.
+     * The command parsed should be of the format:
+     * <code>
+     * /type/fid/did/otherdid/
+     * </code>
+     * 'type' is the command itself (i.e. 'add-item'), fid, did, and otherdid are possible
+     * parameters to the command.
+     *
+     * @todo should use StringTokenizer here
+     * @param command The full command
+     * @param avalue The value of the command
+     */
+    public WizardCommand(String acommand, String avalue) {
 
-  /**
-   * This method returns true if there is need to store all values passed by the client.
-   *
-   * @returns   True if it is needed to store the values, False if not.
-   */
-  public boolean needToStoreValues() {
-    return (type!="cancel");
-  }
+        command = acommand.toLowerCase();
+        value = avalue;
+        log.debug("command: "+command + " : "+value);
+
+        // retrieve the fid and did again
+        int nr0=command.indexOf("/");
+        int nr1=command.indexOf("/", nr0+1);
+        int nr2=command.indexOf("/", nr1+1);
+        int nr3=command.indexOf("/", nr2+1);
+        int nr4=command.indexOf("/", nr3+1);
+
+        if (nr4<1) {
+            return;
+        }
+
+        type = command.substring(nr0+1, nr1);
+        fid = command.substring(nr1+1, nr2);
+        did = command.substring(nr2+1, nr3);
+        otherdid = command.substring(nr3+1, nr4);
+    }
+
+    /**
+     * This method returns true if there is need to store all values passed by the client.
+     *
+     * @returns   True if it is needed to store the values, False if not.
+     */
+    public boolean needToStoreValues() {
+        return !type.equals("cancel");
+    }
 }
