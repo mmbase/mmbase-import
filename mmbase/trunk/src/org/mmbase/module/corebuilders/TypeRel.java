@@ -12,6 +12,8 @@ package org.mmbase.module.corebuilders;
 import java.util.*;
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.storage.search.implementation.BasicRelationStep;
+import org.mmbase.storage.search.RelationStep;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
@@ -30,14 +32,14 @@ import org.mmbase.util.logging.Logging;
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: TypeRel.java,v 1.43 2003-04-03 17:26:02 vpro Exp $
+ * @version $Id: TypeRel.java,v 1.44 2003-08-07 14:31:18 michiel Exp $
  * @see    RelDef
  * @see    InsRel
  * @see    org.mmbase.module.core.MMBase
  */
 public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
 
-    private static Logger log = Logging.getLoggerInstance(TypeRel.class.getName());
+    private static Logger log = Logging.getLoggerInstance(TypeRel.class);
 
     /**
      * Constant for {@link #contains}: return only typerels that
@@ -432,16 +434,16 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
      * @since MMBase-1.6.2
      */
     public boolean contains(int n1,int n2, int r, int restriction) {
-        if (restriction==INCLUDE_DESCENDANTS) {
+        if (restriction == INCLUDE_DESCENDANTS) {
             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        } else if (restriction==INCLUDE_PARENTS) {
+        } else if (restriction == INCLUDE_PARENTS) {
             return parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
-        } else if (restriction==INCLUDE_PARENTS_AND_DESCENDANTS) {
+        } else if (restriction == INCLUDE_PARENTS_AND_DESCENDANTS) {
             return typeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r)) ||
                    parentTypeRelNodes.contains(new VirtualTypeRelNode(n1, n2, r));
         } else { // STRICT
             SortedSet existingNodes=typeRelNodes.getBySourceDestinationRole(n1,n2,r);
-            return (existingNodes.size()>0 && !((MMObjectNode)existingNodes.first()).isVirtual());
+            return (existingNodes.size() > 0 && !((MMObjectNode)existingNodes.first()).isVirtual());
         }
     }
 
@@ -471,6 +473,57 @@ public class TypeRel extends MMObjectBuilder implements MMBaseObserver {
         }
         return true;
     }
+
+    /**
+     * Optimize as relation step by considering restrictions of TypeRel. TypeRel defines which type of relations may be created, ergo can exist. 
+     *
+     * @since MMBase-1.7
+     */
+    public boolean  optimizeRelationStep(BasicRelationStep relationStep, int sourceType, int destinationType, int roleInt, int searchDir) {
+        // Determine in what direction(s) this relation can be followed:
+
+        // Check directionality is requested and supported.
+        if (searchDir != ClusterBuilder.SEARCH_ALL && InsRel.usesdir) {
+            relationStep.setCheckedDirectionality(true);
+        }
+
+        // this is a bit confusing, can the simple cases like explicit 'source' or 'destination' not be handled first?
+
+        boolean sourceToDestination = searchDir != ClusterBuilder.SEARCH_SOURCE      && mmb.getTypeRel().contains(sourceType, destinationType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
+        boolean destinationToSource = searchDir != ClusterBuilder.SEARCH_DESTINATION && mmb.getTypeRel().contains(destinationType, sourceType, roleInt, INCLUDE_PARENTS_AND_DESCENDANTS);
+
+
+        if (destinationToSource && sourceToDestination && (searchDir == ClusterBuilder.SEARCH_EITHER)) { // support old
+            destinationToSource= false;
+        }
+        
+        if (destinationToSource) {
+            // there is a typed relation from destination to src
+            if (sourceToDestination) {
+                // there is ALSO a typed relation from src to destination - make a more complex query
+                relationStep.setDirectionality(RelationStep.DIRECTIONS_BOTH);
+            } else {
+                // there is ONLY a typed relation from destination to src - optimized query
+                relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
+            }
+        } else {
+            if (sourceToDestination) {
+                // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
+                relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+            } else {
+                // no results possible, do something any way
+
+                if (searchDir == ClusterBuilder.SEARCH_SOURCE) { // explicitely asked for source, it would be silly to try destination now
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_SOURCE);
+                } else {
+                    relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION); // the 'normal' way
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     /**
      * Implements equals for a typerel node.
