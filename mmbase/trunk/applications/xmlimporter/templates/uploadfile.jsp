@@ -1,8 +1,9 @@
 <%@ page language="java" import="org.apache.commons.fileupload.*,java.util.*,java.io.File,
  org.mmbase.util.logging.Logger, org.mmbase.util.logging.Logging"%>
+<%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
+<mm:import externid="mmbase_xmlimportdir" jspvar="importDir" from="session" />
 <%!  Logger log = Logging.getLoggerInstance(
      "org.mmbase.applications.xmlimporter.jsp.uploadfile.jsp"); %>
-
 <html>
   <head>
     <title>XML Import</title>
@@ -18,10 +19,11 @@
         List fileItems = fu.parseRequest(request);
         int fileCount = 0;
         // Save the files with its original names in a virtual path of the web server
-        String importDir = System.getProperty("mmbase.config") + "/import/";
+        // String importDir = System.getProperty("mmbase.config") + "/import/";
         for (Iterator i = fileItems.iterator(); i.hasNext(); ) {
             FileItem fi = (FileItem)i.next();
-            if (!fi.isFormField()) {
+//            if (!fi.isFormField()) {
+            if (!fi.getName().equals("")) {
               fi.write(new File(importDir + fi.getName()));
               %>
                 <p>FilePathName = <%=fi.getName()%><br />
