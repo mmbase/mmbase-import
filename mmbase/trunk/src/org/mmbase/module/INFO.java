@@ -32,7 +32,7 @@ import org.mmbase.util.logging.Logger;
  * @author Daniel Ockeloen
  * @author Eduard Witteveen
  * @author Pierre van Rooden
- * @version $Id: INFO.java,v 1.45 2002-04-05 09:11:51 vpro Exp $
+ * @version $Id: INFO.java,v 1.46 2002-05-14 16:23:23 eduard Exp $
 .*/
 public class INFO extends ProcessorModule {
 
@@ -166,7 +166,7 @@ public class INFO extends ProcessorModule {
             if (cmd.equals("PARSETIME")) return doParseTime(tok);
 
             if (cmd.equals("USER")) return doUser(sp,tok);
-
+            if (cmd.equals("SERVERCONTEXT")) return  sp.req.getContextPath();
         }
         return "No command defined";
     }
