@@ -13,12 +13,11 @@ import java.io.*;
 import java.util.*;
 
 import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.*;
 
 import org.mmbase.module.corebuilders.*;
-
+import org.mmbase.util.logging.*;
 /**
  * Provides ErrorHandler methods for checking xml files by Config module
  *
@@ -30,50 +29,54 @@ import org.mmbase.module.corebuilders.*;
 
 public class XMLCheckErrorHandler implements ErrorHandler {
 
-    private String classname  = getClass().getName();
+    private static Logger log = Logging.getLoggerInstance(XMLCheckErrorHandler.class.getName());
 
-    private Vector warninglist,errorlist,fatallist,resultlist;
+    private List warninglist,errorlist,fatallist,resultlist;
 
     public XMLCheckErrorHandler() {
-	warninglist = new Vector();
-	errorlist = new Vector();
-	fatallist = new Vector();
-	resultlist = new Vector();
+        log.service("New xmlcheckerrorhandler");
+        warninglist = new Vector();
+        errorlist   = new Vector();
+        fatallist   = new Vector();
+        resultlist  = new Vector();
     }
     
-    public void warning(SAXParseException ex) {
-	ErrorStruct err = new ErrorStruct("warning",ex.getLineNumber(),ex.getColumnNumber(),ex.getMessage());
-	warninglist.addElement( err );
-	resultlist.addElement( err );
-	
+    public void warning(SAXParseException ex) throws SAXException {
+        log.debug("warn");
+        ErrorStruct err = new ErrorStruct("warning", ex.getLineNumber(), ex.getColumnNumber(), ex.getMessage());
+        warninglist.add(err);
+        resultlist.add(err);
+        
     }
-
-    public void error(SAXParseException ex) {
-	ErrorStruct err = new ErrorStruct("error",ex.getLineNumber(),ex.getColumnNumber(),ex.getMessage());
-	errorlist.addElement( err );
-	resultlist.addElement( err );
+    
+    public void error(SAXParseException ex) throws SAXException{
+        log.debug("error");
+        ErrorStruct err = new ErrorStruct("error", ex.getLineNumber(), ex.getColumnNumber(), ex.getMessage());
+        errorlist.add(err);
+        resultlist.add(err);
     }
 
     public void fatalError(SAXParseException ex) throws SAXException {
-	ErrorStruct err = new ErrorStruct("fatal error",ex.getLineNumber(),ex.getColumnNumber(),ex.getMessage());
-	fatallist.addElement( err );
-;	resultlist.addElement( err );
+        log.debug("fatalError");
+        ErrorStruct err = new ErrorStruct("fatal error", ex.getLineNumber(), ex.getColumnNumber(), ex.getMessage());
+        fatallist.add(err);
+        resultlist.add(err);
     }
 
-    public Vector getWarningList() {
-	return warninglist;
-    }
-
-    public Vector getErrorList() {
-	return errorlist;
-    }
-
-    public Vector getFatalList() {
-	return fatallist;
+    public List getWarningList() {
+        return warninglist;
     }
     
-    public Vector getResultList() {
-	return resultlist;
+    public List getErrorList() {
+        return errorlist;
+    }
+    
+    public List getFatalList() {
+        return fatallist;
+    }
+    
+    public List getResultList() {
+        return resultlist;
     }
 }
 
