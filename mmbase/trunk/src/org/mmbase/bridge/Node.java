@@ -335,7 +335,7 @@ public interface Node {
      *
      * @return a list of alias names for this node
      */
-    public List getAliases();
+    public StringList getAliases();
 
     /**
      * Create an alias for this node. An alias can be used to refer to a node in
