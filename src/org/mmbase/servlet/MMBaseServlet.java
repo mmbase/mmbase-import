@@ -24,10 +24,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 import java.util.Enumeration;
 
-
+import org.w3c.dom.*;
+import org.mmbase.util.XMLBasicReader;
 import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
@@ -37,12 +39,12 @@ import org.mmbase.util.logging.Logger;
  * store a MMBase instance for all its descendants, but it can also be used as a serlvet itself, to
  * show MMBase version information.
  *
- * @version $Id: MMBaseServlet.java,v 1.4 2002-04-02 12:50:53 michiel Exp $
+ * @version $Id: MMBaseServlet.java,v 1.5 2002-04-12 08:49:49 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
 public class MMBaseServlet extends  HttpServlet {
-    
+
     private   static Logger log;
     protected static MMBase mmbase;
     // private   static String context;
@@ -73,6 +75,10 @@ public class MMBaseServlet extends  HttpServlet {
      */
     private static int printCount;
 
+    private static int servletInstanceCount = 0;
+    private static Hashtable servletMappings = new Hashtable();;
+    private static Hashtable associatedServlets = new Hashtable();
+
 
     /**
      * The init of an MMBaseServlet checks if MMBase is running. It not then it is started.
@@ -90,17 +96,45 @@ public class MMBaseServlet extends  HttpServlet {
             log = Logging.getLoggerInstance(MMBaseServlet.class.getName());
         }
 
-        /*
-        if (context == null) {
-            try {
-                context = config.getServletContext().getServletContextName(); // only availabe in higher serlvet versions (e.g. not supported by Orion 1.5.4)
-            } catch (Exception e) {
-                log.error("hooi");
-            }
-        }
-        log.info("found context: " + context);
-        */
         log.info("Init of servlet " + config.getServletName() + ".");
+        boolean initialize=false;
+        // for retrieving servletmappings, determine status
+        synchronized (servletMappings) {
+            initialize=(servletInstanceCount==0);
+            servletInstanceCount+=1;
+        }
+        if (initialize) {
+            // read the servletmappings
+            // used to determine the accurate way to access a servlet
+            try {
+                // get config and do stuff.
+                String path=MMBaseContext.getHtmlRoot()+"/WEB-INF/web.xml";
+                XMLBasicReader webDotXml= new XMLBasicReader(path);
+                Enumeration mappings=webDotXml.getChildElements("web-app","servlet-mapping");
+                while (mappings.hasMoreElements()) {
+                    Element mapping=(Element)mappings.nextElement();
+                    Element servName=webDotXml.getElementByPath(mapping,"servlet-mapping.servlet-name");
+                    String name=webDotXml.getElementValue(servName);
+                    if (!(name.equals(""))) {
+                        Element urlPattern=webDotXml.getElementByPath(mapping,"servlet-mapping.url-pattern");
+                        String pattern=webDotXml.getElementValue(urlPattern);
+                        if (!(pattern.equals(""))) {
+                            List ls=(List)servletMappings.get(servName);
+                            if (ls==null) ls=new Vector();
+                            ls.add(pattern);
+                            log.info("map "+name+","+ls.toString());
+                            servletMappings.put(name,ls);
+                        }
+                    }
+                }
+                webDotXml=null;
+            } catch (Exception e) {
+                log.error(Logging.stackTrace(e));
+            }
+            log.info("Loaded servlet mappings");
+        }
+
+
         if (mmbase == null) {
             mmbase = (MMBase) org.mmbase.module.Module.getModule("MMBASEROOT");
             if (mmbase == null) {
@@ -111,11 +145,61 @@ public class MMBaseServlet extends  HttpServlet {
     }
 
     /**
+     * Gets all the mappings for a given servlet
+     * @param servletName the name of the servlet
+     * @return the list of servlet mappings for this servlet, or null if there are none
+     */
+    public static List getServletMappings(String servletName) {
+        List ls=(List)servletMappings.get(servletName);
+        log.info("found associated "+servletName+","+ls);
+        return ls;
+    }
+
+    /**
+     * Gets all the mappings for a given association
+     * Use this to find out how to call a servlet to handle a certain type of operation or data (i.e 'images');
+     * @param topic the topic that deidentifies the type of association
+     * @return the list of servlet mappings associated with the topic, or null if there are none
+     */
+    public static List getServletMappingsByAssociation(String topic) {
+        String name=getServletByAssociation(topic);
+        if (name!=null) {
+            return getServletMappings(name);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets the name of the servlet that performs actions associated with the
+     * the given keyword.
+     * Use this to find a servlet to handle a certain type of operation or data (i.e 'image-processing');
+     * @param topic the topic that deidentifies the type of association
+     * @return the name of the servlet associated with the topic, or null if there is none
+     */
+    public static String getServletByAssociation(String topic) {
+        String servletName=(String)associatedServlets.get(topic);
+        log.info("found associated "+topic+","+servletName);
+        return servletName;
+    }
+
+    /**
+     * Associate a given servlet with the the given topic.
+     * Use this to set a servlet to handle a certain type of operation or data (i.e 'image-processing');
+     * For now, only one servlet can be registered.
+     * @param topic the topic that deidentifies the type of association
+     * @param servletname name of the servlet to associate with the topic
+     */
+    public static synchronized void associate(String topic, String servletName) {
+        log.info("associate "+topic+","+servletName);
+        associatedServlets.put(topic,servletName);
+    }
+
+    /**
      * Serves MMBase version information. This doesn't do much usefull
      * yet, but one could image lots of cool stuff here. Any other
      * MMBase servlet will probably override this method.
      */
-
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         res.setContentType("text/plain");
         PrintWriter pw = res.getWriter();
@@ -137,7 +221,7 @@ public class MMBaseServlet extends  HttpServlet {
             decRefCount(req);
         }
     }
-    
+
     /**
      * Returns information about this servlet. Don't forget to override it.
      */
@@ -162,7 +246,7 @@ public class MMBaseServlet extends  HttpServlet {
         return result;
     }
 
-    
+
     /**
      * Decrease the reference count of the servlet
      * @param req The HttpServletRequest.
@@ -187,7 +271,7 @@ public class MMBaseServlet extends  HttpServlet {
             }//sync
         }// if (logServlets)
     }
-   
+
     /**
      * Increase the reference count of the servlet (for debugging)
      * and send running servlets to log once every 32 requests
@@ -195,7 +279,7 @@ public class MMBaseServlet extends  HttpServlet {
      * @scope private
      * @bad-constant  31 should be configurable.
      */
-    
+
     protected void incRefCount(HttpServletRequest req) {
         if (logServlets) {
             String url = getRequestURL(req);
@@ -218,11 +302,20 @@ public class MMBaseServlet extends  HttpServlet {
             }
         }
     }
-   
+
     public void destroy() {
         log.info("Servlet " + getServletName() + " is taken out of service");
         super.destroy();
-    }
+         // for retrieving servletmappings, determine status
+        synchronized (servletMappings) {
+           servletInstanceCount-=1;
+            if (servletInstanceCount==0) {
+                log.info("Unloaded servlet mappings");
+                associatedServlets.clear();
+                servletMappings.clear();
+            }
+        }
+   }
 
     /**
      * This class maintains current state information for a running servlet.
