@@ -28,7 +28,7 @@ import org.mmbase.util.logging.Logging;
 * @author Michiel Meeuwissen
 *
 **/
-public class TransactionTag extends SequenceTag implements CloudProvider {
+public class TransactionTag extends ContextTag implements CloudProvider {
 
     private static Logger log = Logging.getLoggerInstance(TransactionTag.class.getName());
     private Transaction transaction;
