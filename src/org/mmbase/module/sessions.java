@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.10 2000-04-25 21:30:44 wwwtech Exp $
+ $Id: sessions.java,v 1.11 2000-06-21 14:28:19 wwwtech Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.10  2000/04/25 21:30:44  wwwtech
+ daniel: fixed a bug that forgot to return sets with 1 value
+
  Revision 1.8  2000/04/21 11:14:55  wwwtech
  Rico: added command to get Set size
 
@@ -51,12 +54,12 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.10 2000-04-25 21:30:44 wwwtech Exp $
+ * @version $Id: sessions.java,v 1.11 2000-06-21 14:28:19 wwwtech Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
 	private String classname = getClass().getName();
-	private boolean debug=true;
+	private boolean debug=false;
 	
 	Hashtable sessions = new Hashtable();
     private MMBase mmbase;
@@ -482,7 +485,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	public Vector doGetSet(scanpage sp, StringTokenizer tok) {
 		Vector results=new Vector();
 		String line=getSetString(sp,tok);
-		debug("doGetSet(): SESSION LINE="+line);
+		if(debug) debug("doGetSet(): SESSION LINE="+line);
 		if (line!=null) {
 			StringTokenizer tok2 = new StringTokenizer(line,",\n\r");
 			while (tok2.hasMoreTokens()) {
