@@ -625,7 +625,7 @@ public class Forum {
             int onlinetime = ((int) (System.currentTimeMillis() / 1000)) - (getPosterExpireTime());
             int newtime = ((int) (System.currentTimeMillis() / 1000)) - (24 * 60 * 60 * 7);
 
-            NodeIterator i = node.getRelatedNodes("posters", "related", "both").nodeIterator();
+            NodeIterator i = node.getRelatedNodes("posters", "forposrel", "both").nodeIterator();
             while (i.hasNext()) {
                 Node node = i.nextNode();
                 Poster p = new Poster(node, this);
@@ -661,7 +661,7 @@ public class Forum {
             pnode.setIntValue("lastseen", ((int) (System.currentTimeMillis() / 1000)));
             pnode.commit();
 
-            RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "posters", "related");
+            RelationManager rm = ForumManager.getCloud().getRelationManager("forums", "posters", "forposrel");
             if (rm != null) {
 
                 Node rel = rm.createRelation(node, pnode);
@@ -676,7 +676,7 @@ public class Forum {
                 totalusersnew++;
                 return p;
             } else {
-                log.error("Forum can't load relation nodemanager forums/posters/related");
+                log.error("Forum can't load relation nodemanager forums/posters/forposrel");
                 return null;
             }
         } else {
