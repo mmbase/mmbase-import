@@ -47,10 +47,10 @@ public class MediaSourceFilter {
     private MediaFragments mediaFragmentBuilder = null;
     private MediaSources mediaSourceBuilder = null;
         
-    private static int MINSPEED        = 0;
-    private static int MAXSPEED        = 0;
-    private static int MINCHANNELS     = 0;
-    private static int MAXCHANNELS     = 0;
+    private static int minSpeed        = 0;
+    private static int maxSpeed        = 0;
+    private static int minChannels     = 0;
+    private static int maxChannels     = 0;
     
     // PreferredSource information
     private List preferredSources = null;
@@ -126,18 +126,18 @@ public class MediaSourceFilter {
         }
         
         try {
-            MINSPEED = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minspeed"));
-            MAXSPEED = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxspeed"));
-            MINCHANNELS = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minchannels"));
-            MAXCHANNELS = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxchannels"));
+            minSpeed = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minspeed"));
+            maxSpeed = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxspeed"));
+            minChannels = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.minchannels"));
+            maxChannels = Integer.parseInt(reader.getElementValue("mediasourcefilter.realaudio.maxchannels"));
         } catch (Exception e) {
             log.error("Check mediasourcefilter.xml, something went wrong while reading realaudio information");
         }
         if(log.isDebugEnabled()) {
-            log.debug("Minspeed="+MINSPEED);
-            log.debug("Maxspeed="+MAXSPEED);
-            log.debug("Minchannels="+MINCHANNELS);
-            log.debug("Maxchannels="+MAXCHANNELS);
+            log.debug("Minspeed="+minSpeed);
+            log.debug("Maxspeed="+maxSpeed);
+            log.debug("Minchannels="+minChannels);
+            log.debug("Maxchannels="+maxChannels);
         }
     }
     
@@ -262,21 +262,21 @@ public class MediaSourceFilter {
             wantedchannels=Integer.parseInt(""+info.get("wantedchannels"));
         }
         
-        if( wantedspeed < MINSPEED ) {
-            log.error("wantedspeed("+wantedspeed+") less than minspeed("+MINSPEED+")");
-            wantedspeed = MINSPEED;
+        if( wantedspeed < minSpeed ) {
+            log.error("wantedspeed("+wantedspeed+") less than minspeed("+minSpeed+")");
+            wantedspeed = minSpeed;
         }
-        if( wantedspeed > MAXSPEED ) {
-            log.error("wantedspeed("+wantedspeed+") greater than maxspeed("+MAXSPEED+")");
-            wantedspeed = MAXSPEED;
+        if( wantedspeed > maxSpeed ) {
+            log.error("wantedspeed("+wantedspeed+") greater than maxspeed("+maxSpeed+")");
+            wantedspeed = maxSpeed;
         }
-        if( wantedchannels < MINCHANNELS ) {
-            log.error("wantedchannels("+wantedchannels+") less than minchannels("+MINCHANNELS+")");
-            wantedchannels = MINCHANNELS;
+        if( wantedchannels < minChannels ) {
+            log.error("wantedchannels("+wantedchannels+") less than minchannels("+minChannels+")");
+            wantedchannels = minChannels;
         }
-        if( wantedchannels > MAXCHANNELS ) {
-            log.error("wantedchannels("+wantedchannels+") greater than maxchannels("+MAXCHANNELS+")");
-            wantedchannels = MAXCHANNELS;
+        if( wantedchannels > maxChannels ) {
+            log.error("wantedchannels("+wantedchannels+") greater than maxchannels("+maxChannels+")");
+            wantedchannels = maxChannels;
         }
         
         MMObjectNode bestR5 = null;
