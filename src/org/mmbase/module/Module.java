@@ -10,7 +10,6 @@ See http://www.MMBase.org/license
 package org.mmbase.module;
 
 import java.util.*;
-import java.io.*;
 import java.net.*;
 
 import javax.servlet.*;
@@ -34,7 +33,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Id: Module.java,v 1.55 2004-11-11 16:44:02 michiel Exp $
+ * @version $Id: Module.java,v 1.56 2004-11-18 21:45:08 keesj Exp $
  */
 public abstract class Module {
     private static final Logger log = Logging.getLoggerInstance(Module.class);
@@ -369,12 +368,11 @@ public abstract class Module {
 
         ResourceLoader rl = ResourceLoader.getConfigurationRoot().getChildResourceLoader("modules");
         Collection ms = rl.getResourcePaths(ResourceLoader.XML_PATTERN, true/* recursive*/);
-        log.info("Found modules in " + rl + " " + ms);
+        log.info("Searching for modules in " + rl + " " + ms);
         Iterator i = ms.iterator();
         while (i.hasNext()) {
             String file = (String) i.next();
             String fileName = ResourceLoader.getName(file);
-            
             XMLModuleReader parser;
             org.xml.sax.InputSource is = null;
             try {
