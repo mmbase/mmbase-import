@@ -35,7 +35,7 @@ import org.xml.sax.*;
  * its configuration file, contains this configuration.
  * 
  * @author   Michiel Meeuwissen
- * @version  $Id: ClassAuthentication.java,v 1.1 2004-04-19 16:16:57 michiel Exp $
+ * @version  $Id: ClassAuthentication.java,v 1.2 2004-04-20 10:54:06 michiel Exp $
  * @see      ClassAuthenticationWrapper
  * @since    MMBase-1.8
  */
@@ -47,11 +47,22 @@ public class ClassAuthentication {
     
     
     static {
-        XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthenticationWrapper.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_CLASSSECURITY_1_0, DTD_CLASSSECURITY_1_0, ClassAuthentication.class);
     }
     private static List authenticatedClasses = null;
 
+    static FileWatcher watcher = null;
 
+    /**
+     * Stop watchin the config file, if there is watched one. This is needed when security
+     * configuration switched to ClassAuthenticationWrapper (which will not happen very often).
+     */
+
+    static void stopWatching() {
+        if (watcher != null) {
+            watcher.exit();
+        }
+    }
 
     /**
      * Reads the configuration file and instantiates and loads the wrapped Authentication.
@@ -59,10 +70,9 @@ public class ClassAuthentication {
     protected static void load(File configFile) throws SecurityException {
         try {
             InputSource in = new InputSource(new FileInputStream(configFile));
-            Document document = DocumentReader.getDocumentBuilder(
-                                                                  true, // validate aggresively, because no further error-handling will be done
-               new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
-               new XMLEntityResolver(true, ClassAuthentication.class) // validate
+            Document document = DocumentReader.getDocumentBuilder(true, // validate aggresively, because no further error-handling will be done
+                        new XMLErrorHandler(false, 0), // don't log, throw exception if not valid, otherwise big chance on NPE and so on
+                        new XMLEntityResolver(true, ClassAuthentication.class) // validate
                ).parse(in);
                      
             authenticatedClasses = new ArrayList();
@@ -97,6 +107,7 @@ public class ClassAuthentication {
 
     }
 
+    
     /**
      * Checks wether the (indirectly) calling class is authenticated by the
      * ClassAuthenticationWrapper (using a stack trace). This method can be called from an
@@ -118,6 +129,14 @@ public class ClassAuthentication {
                 return null;
             }
             load(configFile);
+            watcher = new FileWatcher() {
+                public void onChange(File file) {
+                    load(file);
+                }
+            };
+            watcher.add(configFile);
+            watcher.start();
+
         }
         Throwable t = new Throwable();
         StackTraceElement[] stack = t.getStackTrace();

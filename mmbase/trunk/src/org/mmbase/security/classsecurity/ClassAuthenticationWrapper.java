@@ -35,7 +35,7 @@ import org.xml.sax.*;
  * can be linked to classes in this XML configuration file.
  *
  * @author   Michiel Meeuwissen
- * @version $Id: ClassAuthenticationWrapper.java,v 1.1 2004-04-19 16:16:57 michiel Exp $
+ * @version $Id: ClassAuthenticationWrapper.java,v 1.2 2004-04-20 10:54:06 michiel Exp $
  * @since    MMBase-1.8
  */
 public class ClassAuthenticationWrapper extends Authentication {
@@ -87,8 +87,9 @@ public class ClassAuthenticationWrapper extends Authentication {
             
             wrappedAuthentication = getAuthenticationInstance(wrappedClass);
             wrappedAuthentication.load(manager, fileWatcher, wrappedUrl);
-
+            classAuthentication.stopWatching();
             classAuthentication.load(configFile);
+
 
         } catch (Exception fnfe) {
             throw new SecurityException(fnfe);
