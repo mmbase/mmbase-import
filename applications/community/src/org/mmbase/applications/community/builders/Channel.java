@@ -123,7 +123,7 @@ public class Channel extends MMObjectBuilder {
     private String defaultrecordfile = "chat.log";
     // The default suer type used in searches
     private String defaultUserType = null;
-    
+
     /**
      * Constructor
      */
@@ -159,20 +159,22 @@ public class Channel extends MMObjectBuilder {
         tmpNodeManager = new TemporaryNodeManager(mmb);
         // create relation breaker for maintaining temporary relations
         chatboxConnections = new NodeBreaker(2 * expireTime, tmpNodeManager);
-        
-        // Open all channels 
+
+        // Open all channels
         // Comment it out to speed up start of server
         openChannels();
 
         return result;
     }
-    
+
     /**
      *  Lookup all channels in the cloud of who the field open is set to
      *  (want)open and try to open all these channels.
      */
 
     private void openChannels() {
+        communityBuilder.openAllCommunities();
+/*
         log.debug("Try to open all channels who are set open in the database");
         String where="WHERE "+mmb.getDatabase().getAllowedField(F_OPEN)+"=" + OPEN +
                      " OR "+mmb.getDatabase().getAllowedField(F_OPEN)+"=" + WANT_OPEN;
@@ -180,6 +182,7 @@ public class Channel extends MMObjectBuilder {
         while (openChannels.hasMoreElements()) {
             open((MMObjectNode)openChannels.nextElement());
         }
+*/
     }
 
     /**
@@ -189,17 +192,28 @@ public class Channel extends MMObjectBuilder {
      * @result <code>true</code> if opening the channel was successfull.
      */
     public boolean open(MMObjectNode channel) {
+        MMObjectNode community = communityParent(channel);
+        if (community==null) {
+            log.error("open(): Can't open channel " + channel.getNumber()+" : no relation with a community");
+            return false;
+        }
+        return open(channel,community);
+    }
+
+    /**
+     * Opens the channel.
+     *
+     * @param channel The channel to open.
+     * @param community The community with this channel's settings
+     * @result <code>true</code> if opening the channel was successfull.
+     */
+    public boolean open(MMObjectNode channel, MMObjectNode community) {
         // Try to open the channel, when the channel is part of a chatbox put
         // the channel with his highest sequence in the openChannels HashTable.
         Integer channelnr=new Integer(channel.getNumber());
         if (log.isDebugEnabled())
             log.debug("open(): Opening channel "+channelnr+" ("+channel.getValue("name")+")");
 
-        MMObjectNode community = communityParent(channel);
-        if (community==null) {
-            log.error("open(): Can't open channel " + channelnr+" : no relation with a community");
-            return false;
-        }
         channel.setValue(F_OPEN, OPEN);
         int highestSequence = channel.getIntValue("highseq");
         boolean isChatBox = community.getStringValue("kind").equalsIgnoreCase(Community.STR_CHATBOX);
@@ -621,7 +635,7 @@ public class Channel extends MMObjectBuilder {
         }
         return relatedUsers;
     }
-    
+
     /**
      * Returns to which community a channel belongs.
      *
@@ -640,7 +654,7 @@ public class Channel extends MMObjectBuilder {
            return (MMObjectNode)relatedCommunity.nextElement();
         return null;
     }
-               
+
     /**
      * Provides additional functionality when obtaining field values.
      * This method is called whenever a Node of the builder's type fails at
@@ -723,7 +737,7 @@ public class Channel extends MMObjectBuilder {
             log.error("replace(): channel number expected after $MOD-BUILDER-channel-.");
             return "";
         }
-        
+
         MMObjectNode channel = getNode(tok.nextToken());
 
         if (tok.hasMoreElements()) {
