@@ -23,7 +23,7 @@
 <table>
 <tr><th>Description</th><th>URL</th></tr>
 <mm:log jspvar="log">
-<mm:field name="filteredurls(ram,wmp,rm)" jspvar="urls" vartype="list">
+<mm:field name="filteredurls(html,ram,wmp,rm)" jspvar="urls" vartype="list">
    <%
       Iterator i = urls.iterator();
       while(i.hasNext()) {
@@ -37,7 +37,7 @@
            completeIndication = " (*)";
            foundNonFragments = true;
          }
-         out.println("<tr><td>" + uc.getGUIIndicator(locale) + "</td><td><a href='" + url + "'>" + url + "</a>" + completeIndication + "</td></tr>"); 
+         out.println("<tr><td>" + uc.getGUIIndicator(locale, options) + "</td><td><a href='" + url + "'>" + url + "</a>" + completeIndication + "</td></tr>"); 
        
 
       }

@@ -22,11 +22,12 @@
 <% 
    java.util.ResourceBundle m = null; // short var-name because we'll need it all over the place
    java.util.Locale locale = null; 
+   java.util.Map options = null;
 %>
 <mm:write referid="config.lang" jspvar="lang" vartype="string"><%
   locale  =  new java.util.Locale(lang, "");
   m = java.util.ResourceBundle.getBundle("org.mmbase.applications.media.resources.mediaedit", locale);
-  Map options = new HashMap();
+  options = new HashMap();
   options.put("locale", locale);
   options.put("host", getHost());
 
