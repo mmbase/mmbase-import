@@ -99,14 +99,22 @@ import org.mmbase.util.logging.*;
  * {@link org.mmbase.storage.search.LegacyConstraint LegacyConstraint}, i.e.
  * in that case the search condition string will not be interpreted, but
  * instead be used "as-is".
+ * Each time this occurs is logged with priority <code>service</code> to
+ * category <code>org.mmbase.storage.search.legacyConstraintParser.fallback</code>.
  *
  * @author  Rob van Maris
- * @version $Id: ConstraintParser.java,v 1.15 2003-11-27 12:49:22 robmaris Exp $
+ * @version $Id: ConstraintParser.java,v 1.16 2003-11-27 16:00:54 vpro Exp $
  * @since MMBase-1.7
  */
 public class ConstraintParser {
 
-    private final static Logger log = Logging.getLoggerInstance(ConstraintParser.class);
+    /** Logger instance. */
+    private final static Logger log = 
+        Logging.getLoggerInstance(ConstraintParser.class);
+    
+    /** Logger instance dedicated to logging fallback to legacy constraint. */
+    private final static Logger fallbackLog = 
+        Logging.getLoggerInstance(ConstraintParser.class.getName() + ".fallback");
 
     private List steps = null;
 
@@ -294,11 +302,12 @@ public class ConstraintParser {
 
         // If this doesn't work, fall back to legacy code.
         } catch (Exception e) {
-            if (log.isServiceEnabled()) {
-                log.service(
-                    "Failed to parse Constraint from search condition "
-                    + "string: \"" + sqlConstraint + "\", exception:\n"
-                    + e + Logging.stackTrace(e)
+            // Log to fallback logger.
+            if (fallbackLog.isServiceEnabled()) {
+                fallbackLog.service(
+                    "Failed to parse Constraint from search condition string: "
+                    + "\n     sqlConstraint = " + sqlConstraint 
+                    + "\n     exception: " + e + Logging.stackTrace(e)
                     + "\nFalling back to BasicLegacyConstraint...");
             }
             result = new BasicLegacyConstraint(sqlConstraint);
