@@ -17,6 +17,9 @@ import javax.servlet.http.*;
 
 import org.mmbase.module.gui.flash.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * Performance Servlet is used for 2 reasons as a basic Servlet test to see if
  * the install went oke (same as SimpleServlet) and to see how fast the JVM is
@@ -24,38 +27,40 @@ import org.mmbase.module.gui.flash.*;
  */
 public class servflash extends JamesServlet {
 
-	private MMFlash gen;
-	
-	public void init() {
-		gen=(MMFlash)getModule("mmflash");
-	}
+    private static Logger log = Logging.getLoggerInstance(servflash.class.getName());
 
-	/** 
-	 * reload
-	 */
-	public void reload() {
-	}
+    private MMFlash gen;
+    
+    public void init() {
+        gen=(MMFlash)getModule("mmflash");
+    }
 
-	/**
- 	* service call will be called by the server when a request is done
-	* by a user.
- 	*/
-	public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
-	{	
-		res.setContentType("application/x-shockwave-flash");
-		BufferedOutputStream out=null;
-		try {
-			out=new BufferedOutputStream(res.getOutputStream());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (gen!=null) {
+    /** 
+     * reload
+     */
+    public void reload() {
+    }
 
-			String url=req.getRequestURI();
-			String query=req.getQueryString();
-			byte[] bytes=gen.getScanParsedFlash(url,query,req);
+    /**
+     * service call will be called by the server when a request is done
+    * by a user.
+     */
+    public synchronized void service(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException
+    {    
+        res.setContentType("application/x-shockwave-flash");
+        BufferedOutputStream out=null;
+        try {
+            out=new BufferedOutputStream(res.getOutputStream());
+        } catch (Exception e) {
+            log.error(Logging.stackTrace(e));
+        }
+        if (gen!=null) {
+
+            String url=req.getRequestURI();
+            String query=req.getQueryString();
+            byte[] bytes=gen.getScanParsedFlash(url,query,req);
             out.write(bytes,0,bytes.length);
-		}
-	}
+        }
+    }
 
 }
