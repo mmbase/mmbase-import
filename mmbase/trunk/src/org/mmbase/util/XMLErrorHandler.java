@@ -24,25 +24,91 @@ import org.mmbase.util.logging.*;
  * Provides ErrorHandler methods
  *
  * @author Gerard van Enk
- * @version $Revision: 1.4 $ $Date: 2001-07-10 11:04:08 $
+ * @version $Revision: 1.5 $ $Date: 2002-03-20 11:06:51 $
  */
 
 public class XMLErrorHandler implements ErrorHandler {
+    public static int WARNING =   1;
+    public static int ERROR =   2;
+    public static int FATAL_ERROR = 3;
+    public static int NEVER = 4;
+    
     private static Logger log = Logging.getLoggerInstance(XMLErrorHandler.class.getName());
-
-    public void warning(SAXParseException ex) {
-        log.warn(getLocationString(ex)+": "+ ex.getMessage());
+    private int exceptionLevel = FATAL_ERROR;
+    private boolean logMessages = true;
+    private boolean warning = false;
+    private boolean error = false;
+    private boolean fatal = false;
+    
+    private StringBuffer messages = new StringBuffer();
+    
+    public XMLErrorHandler() {
+        // default keep old behaviour
+        logMessages = true;
+        exceptionLevel = FATAL_ERROR;
     }
 
-    public void error(SAXParseException ex) {
-        log.error(getLocationString(ex)+": "+ ex.getMessage());
+    public XMLErrorHandler(boolean log, int exceptionLevel) {
+        this.logMessages = log;
+        this.exceptionLevel = exceptionLevel;
+    }
+    
+    public void warning(SAXParseException ex) throws SAXException {
+        String message = getLocationString(ex)+": "+ ex.getMessage();
+        messages.append(message + "\n");
+        warning = true;
+        if(logMessages) {
+            log.warn(message);
+        }
+        if(exceptionLevel<=WARNING) {
+            throw ex;
+        }
+    }
+
+    public void error(SAXParseException ex) throws SAXException{
+        String message = getLocationString(ex)+": "+ ex.getMessage();
+        messages.append(message + "\n");
+        error = true;
+        if(logMessages) {
+            log.error(message);
+        }
+        if(exceptionLevel<=ERROR) {
+            throw ex;
+        }
     }
 
     public void fatalError(SAXParseException ex) throws SAXException {
-        log.fatal(getLocationString(ex)+": "+ ex.getMessage());
-	throw ex;
+        String message = getLocationString(ex)+": "+ ex.getMessage();
+        messages.append(message + "\n");
+        fatal = true;
+        if(logMessages) {
+            log.fatal(message);
+        }
+        if(exceptionLevel<=FATAL_ERROR) {
+            throw ex;
+        }
     }
 
+    public boolean foundWarning() {
+        return warning;
+    }
+    
+    public boolean foundError() {
+        return error;
+    }
+    
+    public boolean foundFatalError() {
+        return fatal;
+    }
+
+    public boolean foundNothing() {
+        return !(warning || error || fatal);
+    }
+
+    public String getMessageBuffer() {
+        return messages.toString();
+    }
+    
     /**
      * Returns a string of the location.
      */
@@ -64,4 +130,3 @@ public class XMLErrorHandler implements ErrorHandler {
 	return str.toString();
     }
 }
-
