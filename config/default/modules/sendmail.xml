@@ -16,7 +16,7 @@
 	a key/value system. Its a optional tag.
 	-->
 	<properties>
-		<property name="mailhost">localhost</property>
+		<property name="mailhost">mail</property>
 	</properties>
 
 </module>
