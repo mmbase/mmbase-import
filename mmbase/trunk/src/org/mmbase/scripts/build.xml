@@ -13,6 +13,7 @@ about the Ant build tool.
   <target name="init">
     <property name="name"    value="mmbase"/>
 
+    <!-- Change this to modern for JDK1.3 or to jikes for Jikes --> 
     <property name="build.compiler" value="classic"/>
     <property name="debug"          value="on"/>
     <property name="optimize"       value="on"/>
@@ -25,8 +26,29 @@ about the Ant build tool.
     <property name="build.dest"     value="${build.dir}/classes"/>
     <property name="build.javadocs" value="${build.dir}/javadocs"/>
 
+    <!-- needed packages -->
+    <available property="xerces.present"
+               classname="org.apache.xerces.parsers.DOMParser"/>
+    <available property="servlet.present"
+               classname="javax.servlet.http.HttpServlet"/>
+
+    <!-- optional packages -->
+    <available property="xalan.present"
+               classname="org.apache.xalan.xslt.XSLTProcessorFactory"/>
+    <available property="jai.present"
+               classname="javax.jai.JAI"/>
+
+    <!-- only needed for runnning MMBase with Apache Tomcat -->
     <available property="tomcat.present" 
                classname="org.apache.tomcat.startup.Tomcat" />
+   
+    <!-- check directory structure -->
+    <available property="dir.src.present"
+               file="../../../../src" />
+    <available property="dir.org.present"
+               file="../../../org" />
+    <available property="dir.mmbase.present"
+               file="../../mmbase" />
   </target>
 
   <!-- =================================================================== -->
@@ -48,10 +70,105 @@ about the Ant build tool.
     <echo message=""/>
   </target>
 
+
+  <!-- =================================================================== -->
+  <!-- Check the needed packages                                           -->
+  <!-- =================================================================== -->
+  <target name="check.needed.xerces" unless="xerces.present">
+    <echo message=""/>
+    <echo message="Error: Missing needed package Xerces."/>
+    <echo message="You first need to install Xerces (http://xml.apache.org/xerces-j/)"/>
+    <echo message="and add it to your classpath, before you can compile and use MMBase."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.needed.servlet" unless="servlet.present">
+    <echo message=""/>
+    <echo message="Error: Missing needed package javax.servlet."/>
+    <echo message="You first need to add javax.servlet to your classpath,"/>
+    <echo message="before you can compile and use MMBase."/>
+    <echo message="You'll probably find it somewhere in your servlet-engine dir."/>
+    <echo message=""/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Check the optional packages                                         -->
+  <!-- =================================================================== -->
+  <target name="check.optional.xalan" unless="xalan.present">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package Xalan."/>
+    <echo message="You first need to install Xalan (http://xml.apache.org/xalan/)"/>
+    <echo message="and add it to your classpath, before you can use all the features of MMBase."/>
+	<echo message="MMBase will compile and run without this package,"/> 
+    <echo message="if you remove the xslconvert module from your modules.xml."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.optional.jai" unless="jai.present">
+    <echo message=""/>
+    <echo message="Warning: Missing optional package javax.jai."/>
+    <echo message="You can't use the java based Image-Converter without this package,"/> 
+    <echo message="you've got to use ImageMagick."/>
+    <echo message="JAI can be downloaded from http://www.javasoft.com/products/java-media/jai/"/>
+	<echo message="MMBase will compile and run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Check packages needed by a specific servlet-engine                  -->
+  <!-- =================================================================== -->
+  <target name="check.needed.for.tomcat" unless="tomcat.present">
+    <echo message=""/>
+    <echo message="Message: Missing package Tomcat."/>
+    <echo message="If you're running MMBase with Apache Tomcat, "/>
+    <echo message="you'll need this package for the Jumpers."/>
+    <echo message="Add the webserver.jar from tomcat/lib to your classpath "/>
+    <echo message="and compile again."/>
+    <echo message="MMBase will compile and run without this package."/>
+    <echo message=""/>
+  </target>
+
+  <target name="check.package.all" depends="check.needed.xerces,check.needed.servlet,
+                                    check.optional.xalan,check.optional.jai, 
+                                    check.needed.for.tomcat">
+    <!-- Dummy target, only  to make sure all the packages are checked -->
+  </target> 
+
+  <!-- =================================================================== -->
+  <!-- Check the directory structure                                       -->
+  <!-- =================================================================== -->
+  <target name="check.dir.src" unless="dir.src.present">
+    <echo message=""/>
+    <echo message="Warning: Ant expects the following directory structure:"/>
+    <echo message="mmbase --> src --> org --> mmbase"/>
+    <echo message="Without this structure MMBase may or may not compile"/> 
+    <echo message=""/>
+  </target>
+
+  <target name="check.dir.org" unless="dir.org.present">
+    <echo message=""/>
+    <echo message="Warning: Ant expects the following directory structure:"/>
+    <echo message="mmbase --> src --> org --> mmbase"/>
+    <echo message="Without this structure MMBase may or may not compile"/> 
+    <echo message=""/>
+  </target>
+
+  <target name="check.dir.mmbase" unless="dir.mmbase.present">
+    <echo message=""/>
+    <echo message="Warning: Ant expects the following directory structure:"/>
+    <echo message="mmbase --> src --> org --> mmbase"/>
+    <echo message="Without this structure MMBase may or may not compile"/> 
+    <echo message=""/>
+  </target>
+
+  <target name="check.dir.all" depends="check.dir.src,check.dir.org,check.dir.mmbase">
+    <!-- Dummy target, only  to make sure the whole directory structure is checked -->
+  </target>
+
   <!-- =================================================================== -->
   <!-- Prepares the build directory                                        -->
   <!-- =================================================================== -->
-  <target name="prepare" depends="init">
+  <target name="prepare" depends="init,check.dir.all">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.dest}"/>
   </target>
@@ -59,15 +176,12 @@ about the Ant build tool.
   <!-- =================================================================== -->
   <!-- Compiles the source directory                                       -->
   <!-- =================================================================== -->
-  <target name="compile" depends="prepare">
+  <target name="compile" depends="check.package.all,prepare"> 
 
     <copydir src="${src.dir}" dest="${build.dest}">
       <include name="**/scripts/**" />
       <include name="**/platform/**" />
-      <include name="**/docs/**" />
       <include name="**/*.properties" />
-      <include name="**/*.xml" />
-      <include name="**/*.dtd" />
       <include name="**/*.sh" />
       <include name="**/LICENSE" />
     </copydir>
@@ -78,13 +192,10 @@ about the Ant build tool.
            optimize="${optimize}"
            deprecation="${deprecation}">
       <exclude name="**/jumpersInterceptor.java" unless="tomcat.present" />
+      <exclude name="**/ConvertJAI.java" unless="jai.present" />
       <exclude name="**/hitlisted/**" />
       <exclude name="**/scripts/**" />
-      <exclude name="**/docs/**" />
-      <exclude name="**/log/**" />
       <exclude name="**/*.properties" />
-      <exclude name="**/*.xml" />
-      <exclude name="**/*.dtd" />
       <exclude name="**/*.sh" />
       <exclude name="**/LICENSE" />
     </javac>
