@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logger;
  * @author Rob Vermeulen (securitypart)
  * @author Pierre van Rooden
  *
- * @version $Revision: 1.37 $ $Date: 2002-09-05 11:16:16 $
+ * @version $Revision: 1.38 $ $Date: 2002-09-20 13:34:11 $
  */
 public abstract class Module {
 
@@ -322,7 +322,7 @@ public abstract class Module {
         }
         for (Enumeration e=modules.elements();e.hasMoreElements();) {
             Module mod = (Module) e.nextElement();
-            log.info("Starting " + mod.getName() + "(" + mod + ")");
+            log.info("Starting module " + mod.getName());
             if ( log.isDebugEnabled()) {
                 log.debug("startModules(): mod.startModule(" + mod + ")");
             }
