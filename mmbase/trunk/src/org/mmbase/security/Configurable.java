@@ -17,12 +17,11 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
- * Both Authorization and Authentication are configurable with the same configuration file
- * ('security.xml'). This class provides the shared functionality for that.
+ * Both Authorization and Authentication are configurable. This class provides the shared functionality for that.
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen
- * @version $Id: Configurable.java,v 1.3 2003-07-28 15:00:28 pierre Exp $
+ * @version $Id: Configurable.java,v 1.4 2003-08-27 19:28:43 michiel Exp $
  * @since MMBase-1.7
  */
 public abstract class Configurable {
@@ -34,7 +33,8 @@ public abstract class Configurable {
     protected MMBaseCop manager;
 
     /**
-     * The security configuration file (security.xml). The file is absolute.
+     * This specific security configuration file (e.g. config.xml). The file is absolute. Might be
+     * null if the implementation does not have its own configuruation file.
      */
     protected File configFile;
 
