@@ -39,13 +39,13 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.277 2004-12-20 14:57:48 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.278 2005-01-03 21:35:02 michiel Exp $
 
 -->
 <taglib author="MMBase community">
   <tlibversion>1.1.0</tlibversion>
   <jspversion>1.1</jspversion>
-  <shortname>mmbase</shortname>
+  <shortname>mm</shortname>
   <uri>http://www.mmbase.org/mmbase-taglib-1.0</uri>
   <info>
     <p>
@@ -62,6 +62,18 @@ version: $Id: mmbase-taglib.xml,v 1.277 2004-12-20 14:57:48 michiel Exp $
       but there is only a link to the WriterReferrer documentation.
     </p>
   </info>
+  <function>
+    <description>
+      Tests whether a collection contains a certain element
+    </description>
+    <name>contains</name>
+    <function-class>org.mmbase.bridge.jsp.taglib.functions.Functions</function-class>
+    <function-signature>boolean contains(java.util.Collection, java.lang.Object)</function-signature>
+    <example>
+      &lt;c:if test="${mm:contains(list, case)}">
+    </example>
+  </function>
+
   <tagtypes>
   <type name="all">
   <description>all tags</description>
@@ -2281,6 +2293,27 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
         Pick up existing context.
       </info>
       <since>MMBase-1.7</since>
+    </attribute>
+    <attribute>
+      <name>scope</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Pick up existing context.
+      </info>
+      <possiblevalue>
+        <value>page</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>request</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>session</value>
+      </possiblevalue>
+      <possiblevalue>
+        <value>application</value>
+      </possiblevalue>
+      <since>MMBase-1.8</since>
     </attribute>
     <info>
       <p>
@@ -6202,6 +6235,10 @@ The 0 is just counter, which starts at 0 on every page.
         <value>rank</value>
         <info>The rank of the user of this cloud</info>
         <see tag="hasrank" />
+      </possiblevalue>
+      <possiblevalue>
+        <value>mmbaseversion</value>
+        <info>The version of the current instance of MMBase to which this cloud refers.</info>
       </possiblevalue>
     </attribute>
     <example><![CDATA[
