@@ -10,9 +10,8 @@ See http://www.MMBase.org/license
 package org.mmbase.module.corebuilders;
 
 import java.util.Enumeration;
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.module.core.MMObjectBuilder;
-import org.mmbase.module.core.MMObjectNode;
+
+import org.mmbase.module.core.*;
 import org.mmbase.util.logging.*;
 
 /**
@@ -23,13 +22,12 @@ import org.mmbase.util.logging.*;
  * node.
  * TODO: update/merging code, and futher testing..
  * @author Eduard Witteveen
- * @version $Id: ObjectTypes.java,v 1.25 2003-03-07 08:50:15 pierre Exp $
+ * @version $Id: ObjectTypes.java,v 1.26 2003-07-08 13:56:58 keesj Exp $
  */
 public class ObjectTypes extends TypeDef {
-    private static Logger log = Logging.getLoggerInstance(ObjectTypes.class.getName());
+    private static Logger log = Logging.getLoggerInstance(ObjectTypes.class);
     private java.io.File defaultDeploy = null;
     private boolean creationEnabled = true;
-
 
     /**
      * Sets the default deploy directory for the builders.
@@ -37,7 +35,7 @@ public class ObjectTypes extends TypeDef {
      */
     public boolean init() {
         boolean result = super.init();
-        if(defaultDeploy != null) {
+        if (defaultDeploy != null) {
             // XXX: This method should only be called once.
             // Maybe arrange it through parent's init,
             // which also checks on a second run?
@@ -46,28 +44,28 @@ public class ObjectTypes extends TypeDef {
         // look if we have a property set, where to deploy default our builders...
         String BUILDER_DEPLOY_PROPERTY = "deploy-dir";
         String builderDeployDir = "applications";
-        if(getInitParameter(BUILDER_DEPLOY_PROPERTY) != null) {
+        if (getInitParameter(BUILDER_DEPLOY_PROPERTY) != null) {
             builderDeployDir = getInitParameter(BUILDER_DEPLOY_PROPERTY);
-        }
-        else {
-            if (log.isDebugEnabled()) log.debug("property: '"+BUILDER_DEPLOY_PROPERTY+"' was not set using default :" + builderDeployDir);
+        } else {
+            if (log.isDebugEnabled())
+                log.debug("property: '" + BUILDER_DEPLOY_PROPERTY + "' was not set using default :" + builderDeployDir);
         }
         defaultDeploy = new java.io.File(MMBaseContext.getConfigPath() + java.io.File.separator + "builders" + java.io.File.separator + builderDeployDir);
         // create the dir, when it wasnt there...
-        if(!defaultDeploy.exists()) {
+        if (!defaultDeploy.exists()) {
             // try to create the directory for deployment....
-            if(!defaultDeploy.mkdirs()) {
+            if (!defaultDeploy.mkdirs()) {
                 log.warn("Could not create directory: " + defaultDeploy + ", new node-types cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }
             // check if we may write in the specified dir
-            else if(!defaultDeploy.canWrite()) {
+            else if (!defaultDeploy.canWrite()) {
                 log.error("Could not write in directory: " + defaultDeploy + ", new node-typess cannot be created, since we can't write the configs to file");
                 creationEnabled = false;
             }
         }
         defaultDeploy = defaultDeploy.getAbsoluteFile();
-        log.info("Using '"+defaultDeploy+"' as default deploy dir for our builders.");
+        log.info("Using '" + defaultDeploy + "' as default deploy dir for our builders.");
         return result;
     }
 
@@ -86,7 +84,7 @@ public class ObjectTypes extends TypeDef {
      * @param field the fieldname that is requested
      * @return the result of the 'function', or null if no valid functions could be determined.
      */
-    public Object getValue(MMObjectNode node,String field) {
+    public Object getValue(MMObjectNode node, String field) {
         if (log.isDebugEnabled()) {
             log.debug("node:" + node + " field: " + field);
         }
@@ -94,28 +92,28 @@ public class ObjectTypes extends TypeDef {
         // return the Document from the config file..
         if (field.equals("config")) {
             // first check if we already have a value in node fields...
-            Object o = super.getValue(node,field);
-            if(o != null) return o;
+            Object o = super.getValue(node, field);
+            if (o != null)
+                return o;
 
             // otherwise, open the file to return it...
-            if (log.isDebugEnabled()) log.debug("retrieving the document for node #" + node.getNumber());
+            if (log.isDebugEnabled())
+                log.debug("retrieving the document for node #" + node.getNumber());
             try {
                 // method node.getStringValue("name") should work, since getStringValue("path") checked it already...
                 java.io.File file = new java.io.File(getBuilderFilePath(node));
                 // when the file doesnt exist, the value we return should be null...
-                if(!file.exists()) {
+                if (!file.exists()) {
                     log.warn("file with name: " + file + " didnt exist, getValue will return null for builder config");
                     return null;
                 }
-                org.w3c.dom.Document doc =  org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(file);
+                org.w3c.dom.Document doc = org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(file);
                 // set the value in the node fields..
                 node.setValue(field, doc);
                 return doc;
-            }
-            catch(org.xml.sax.SAXException se) {
+            } catch (org.xml.sax.SAXException se) {
                 throw new RuntimeException(Logging.stackTrace(se));
-            }
-            catch(java.io.IOException ioe) {
+            } catch (java.io.IOException ioe) {
                 throw new RuntimeException(Logging.stackTrace(ioe));
             }
         }
@@ -137,15 +135,16 @@ public class ObjectTypes extends TypeDef {
 
         // look if we can store to file, if it aint there yet...
         java.io.File file = new java.io.File(getBuilderFilePath(node));
-        if(!file.exists()) {
-            if(!creationEnabled) throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
+        if (!file.exists()) {
+            if (!creationEnabled)
+                throw new RuntimeException("deploy directory for new builders was not set, look for error message in init");
             // first store our config....
             storeBuilderFile(node);
         }
 
         // TODO: more generic code?
         // try if it still not here...HACK HACK
-        if(getIntValue(node.getStringValue("name")) > 0) {
+        if (getIntValue(node.getStringValue("name")) > 0) {
             // there was already a node for the builder with this name!
             // can happen, when an other thread was here first in multi-threaded
             return getIntValue(node.getStringValue("name"));
@@ -166,7 +165,7 @@ public class ObjectTypes extends TypeDef {
      * @return true if commit successful
      */
     public boolean commit(MMObjectNode node) {
-        log.info("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+        log.info("Commit of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
 
         // in future make it also possible to change active / not active... als builder merging, first make this work!
         // TODO: merging code!
@@ -192,18 +191,18 @@ public class ObjectTypes extends TypeDef {
 
     private void testBuilderInUse(MMObjectBuilder builder) {
         if (builder instanceof InsRel) {
-            MMObjectNode reldef=mmb.getRelDef().getDefaultForBuilder((InsRel)builder);
-            if (reldef!=null) {
-                throw new RuntimeException("Cannot delete node which represents a builder, it is referenced in reldef #"+reldef.getNumber());
+            MMObjectNode reldef = mmb.getRelDef().getDefaultForBuilder((InsRel)builder);
+            if (reldef != null) {
+                throw new RuntimeException("Cannot delete node which represents a builder, it is referenced in reldef #" + reldef.getNumber());
             }
         }
-        Enumeration e = mmb.getTypeRel().search("WHERE snumber="+builder.oType+" OR dnumber="+builder.oType);
+        Enumeration e = mmb.getTypeRel().search("WHERE snumber=" + builder.oType + " OR dnumber=" + builder.oType);
         if (e.hasMoreElements()) {
-            String typerels="#"+((MMObjectNode)e.nextElement()).getNumber();
+            String typerels = "#" + ((MMObjectNode)e.nextElement()).getNumber();
             while (e.hasMoreElements()) {
-              typerels=typerels+", #"+((MMObjectNode)e.nextElement()).getNumber();
+                typerels = typerels + ", #" + ((MMObjectNode)e.nextElement()).getNumber();
             }
-            throw new RuntimeException("Cannot delete node which represents a builder, it is referenced by typerels: "+typerels);
+            throw new RuntimeException("Cannot delete node which represents a builder, it is referenced by typerels: " + typerels);
         }
     }
 
@@ -214,14 +213,14 @@ public class ObjectTypes extends TypeDef {
      * @throws RuntimeException When the operation could not be performed
      */
     public void removeNode(MMObjectNode node) {
-        log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+        log.info("Remove of builder-node with name '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
 
         // only delete when builder is completely empty...
         MMObjectBuilder builder = getBuilder(node);
-        if(builder == null) {
+        if (builder == null) {
             throw new RuntimeException("I can only delete active builders(otherwise we table's could stay in database..)");
         }
-        if(builder != null && builder.size() > 0 ) {
+        if (builder != null && builder.size() > 0) {
             throw new RuntimeException("Cannot delete node which represents a builder, (otherwise information could get lost..)");
         }
 
@@ -230,10 +229,11 @@ public class ObjectTypes extends TypeDef {
         builder = unloadBuilder(node);
 
         // now that the builder cannot be started again (since config is now really missing)
-        if(!deleteBuilderTable(builder))  throw new RuntimeException("Could not delete builder table");
+        if (!deleteBuilderTable(builder))
+            throw new RuntimeException("Could not delete builder table");
 
         // try to delete the configuration file first!.....
-        if(!deleteBuilderFile(node)) {
+        if (!deleteBuilderFile(node)) {
             // delete-ing failed, reload the builder again...
             loadBuilder(node);
             throw new RuntimeException("Could not delete builder config");
@@ -253,18 +253,18 @@ public class ObjectTypes extends TypeDef {
      *  @return <code>true</code> When an update is required(when changed),
      *	<code>false</code> if original value was set back into the field.
      */
-    public boolean setValue(MMObjectNode node,String fieldname, Object originalValue) {
+    public boolean setValue(MMObjectNode node, String fieldname, Object originalValue) {
         Object newValue = node.values.get(fieldname);
         // the field with the name 'name' may not be changed.....
-        if(originalValue != null && !originalValue.equals(newValue)) {
-            if(fieldname.equals("name")) {
+        if (originalValue != null && !originalValue.equals(newValue)) {
+            if (fieldname.equals("name")) {
                 // restore the original value...
-                node.values.put(fieldname,originalValue);
+                node.values.put(fieldname, originalValue);
                 return false;
             } else if (fieldname.equals("config")) {
                 MMObjectBuilder builder = getBuilder(node);
                 // TODO: active / not active code.. IT CAN MESS UP BUILDERS THAT ARE SET INACTIVE, AND STILL HAVE DATA IN DATABASE!
-                if(builder != null && builder.size() > 0) {
+                if (builder != null && builder.size() > 0) {
                     throw new RuntimeException("Cannot change builder config it has nodes (otherwise information could get lost..)");
                 }
             }
@@ -278,12 +278,12 @@ public class ObjectTypes extends TypeDef {
      * @return  The path where the builder should live or <code>null</code> in case of strange failures
      *          When the builder was not loaded.
      */
-    protected  String getBuilderFilePath(MMObjectNode node) {
+    protected String getBuilderFilePath(MMObjectNode node) {
         // call our code above, to get our path...
         String path = getBuilderPath(node);
 
         // do we have a path?
-        if(path == null) {
+        if (path == null) {
             log.error("field 'path' was empty.");
             return null;
         }
@@ -296,63 +296,68 @@ public class ObjectTypes extends TypeDef {
      * @return  The path where the builder should live or <code>null</code> in case of strange failures
      *          When the builder was not loaded.
      */
-    protected  String getBuilderPath(MMObjectNode node) {
-        if(log.isDebugEnabled()) log.debug("retrieving the path for node #" + node.getNumber());
+    protected String getBuilderPath(MMObjectNode node) {
+        if (log.isDebugEnabled())
+            log.debug("retrieving the path for node #" + node.getNumber());
         // some basic checking
-        if(node == null) {
+        if (node == null) {
             log.error("node was null");
             return null;
         }
-        if(node.getStringValue("name") == null ) {
+        if (node.getStringValue("name") == null) {
             log.error("field 'name' was null");
             return null;
         }
-        if(node.getStringValue("name").trim().length() == 0)  {
+        if (node.getStringValue("name").trim().length() == 0) {
             log.error("field 'name' was empty.");
             return null;
         }
 
         // first request the url from the active builder....
         MMObjectBuilder builder = getBuilder(node);
-        if(builder != null) {
+        if (builder != null) {
             // return the file path,..
             String file = builder.getConfigFile().getAbsoluteFile().getParent();
-            if (log.isDebugEnabled()) log.debug("builder file:" + file);
+            if (log.isDebugEnabled())
+                log.debug("builder file:" + file);
             return file;
         }
         // builder was inactive... try to get the correct path in some other way :(
         String pathInBuilderDir = mmb.getBuilderPath(node.getStringValue("name"), "");
-        if(pathInBuilderDir != null) {
+        if (pathInBuilderDir != null) {
             // return the file path,..
             String file = MMBaseContext.getConfigPath() + java.io.File.separator + "builders" + java.io.File.separator + pathInBuilderDir;
-            if (log.isDebugEnabled()) log.debug("builder file:" + file);
+            if (log.isDebugEnabled())
+                log.debug("builder file:" + file);
             return file;
         }
         // still null, make up a nice url for our builder!
         String file = defaultDeploy.getPath();
-        if (log.isDebugEnabled()) log.debug("builder file:" + file);
+        if (log.isDebugEnabled())
+            log.debug("builder file:" + file);
         return file;
     }
 
     /**
      */
-    protected  MMObjectBuilder loadBuilder(MMObjectNode node) {
-        if (log.isDebugEnabled()) log.debug("Load builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+    protected MMObjectBuilder loadBuilder(MMObjectNode node) {
+        if (log.isDebugEnabled())
+            log.debug("Load builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         String path = getBuilderPath(node);
         // remove everything till last '/builders/'
         // TODO: find a better way for whole file location stuff
         String search = java.io.File.separator + "builders";
         int pos = path.lastIndexOf(search);
-        if(pos == -1) {
+        if (pos == -1) {
             String msg = "could not retrieve the path to store the file..(path: " + path + " search: " + search + ")";
             log.fatal(msg);
             throw new RuntimeException(msg);
         }
         path = path.substring(pos + search.length()) + java.io.File.separator;
         MMObjectBuilder builder = mmb.loadBuilderFromXML(node.getStringValue("name"), path);
-        if(builder == null) {
+        if (builder == null) {
             // inactive builder?
-            log.info("could not load builder from xml, is in inactive?(name: '" + node.getStringValue("name") + "' path: '"+ path +"')");
+            log.info("could not load builder from xml, is in inactive?(name: '" + node.getStringValue("name") + "' path: '" + path + "')");
             return null;
         }
         mmb.initBuilder(builder);
@@ -361,33 +366,37 @@ public class ObjectTypes extends TypeDef {
 
     /**
      */
-    protected  java.io.File storeBuilderFile(MMObjectNode node) {
-        if (log.isDebugEnabled()) log.debug("Store builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+    protected java.io.File storeBuilderFile(MMObjectNode node) {
+        if (log.isDebugEnabled())
+            log.debug("Store builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
 
         org.w3c.dom.Document doc = node.getXMLValue("config");
-        if(doc==null) {
+        if (doc == null) {
             throw new RuntimeException("Field config was null! Could not save the file");
         }
         java.io.File file = new java.io.File(getBuilderFilePath(node));
-        if(file == null) {
+        if (file == null) {
             throw new RuntimeException("file was null, could not continue");
         }
-        if(file.exists()) {
-            if (log.isDebugEnabled()) log.debug("found file: " + file + ", only store when changed.");
+        if (file.exists()) {
+            if (log.isDebugEnabled())
+                log.debug("found file: " + file + ", only store when changed.");
             // we already had a file, look if we have to save it (only needed when was modified)
             try {
-                org.w3c.dom.Document original =  org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(file);
-                if(equals(doc,original)) {
+                org.w3c.dom.Document original = org.mmbase.util.XMLBasicReader.getDocumentBuilder(org.mmbase.util.XMLBuilderReader.class).parse(file);
+                if (equals(doc, original)) {
                     // doc's were the same..
-                    if (log.isDebugEnabled()) log.debug("document already there, with same data, xml will not be written to file:" + file);
+                    if (log.isDebugEnabled())
+                        log.debug("document already there, with same data, xml will not be written to file:" + file);
                     return file;
                 }
-            }
-            catch(org.xml.sax.SAXException se) {
+            } catch (org.xml.sax.SAXException se) {
                 // original document wasnt a xml document?
-                log.warn("found an other file on location, which wasnt xml(can't compare), gonna overwrite the file with current config.(error:" + se.toString() + ")");
-            }
-            catch(java.io.IOException ioe) {
+                log.warn(
+                    "found an other file on location, which wasnt xml(can't compare), overwriting the file with current config.(error:"
+                        + se.toString()
+                        + ")");
+            } catch (java.io.IOException ioe) {
                 // original document gave an io exception, strange...
                 throw new RuntimeException("failure opening old configuration for comparison, error: " + ioe.toString());
             }
@@ -398,11 +407,11 @@ public class ObjectTypes extends TypeDef {
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_PUBLIC, doc.getDoctype().getPublicId());
             transformer.setOutputProperty(javax.xml.transform.OutputKeys.DOCTYPE_SYSTEM, doc.getDoctype().getSystemId());
-            log.service("gonna save builderconfig to file:" + file);
+            log.service("saving builderconfig to file:" + file);
             transformer.transform(new javax.xml.transform.dom.DOMSource(doc), new javax.xml.transform.stream.StreamResult(file));
-        }
-        catch(javax.xml.transform.TransformerException te) {
-            throw new RuntimeException("failure saving configuration to disk : " + te.toString() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement());
+        } catch (javax.xml.transform.TransformerException te) {
+            throw new RuntimeException(
+                "failure saving configuration to disk : " + te.toString() + "\nbuilder-doc:\n" + doc + "\nbuilder-rootelement:\n" + doc.getDocumentElement());
             // storing the builder failed!
         }
         return file;
@@ -421,19 +430,19 @@ public class ObjectTypes extends TypeDef {
 
             // maybe some better code?
             java.io.StringWriter asw = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(a),  new javax.xml.transform.stream.StreamResult(asw));
+            serializer.transform(new javax.xml.transform.dom.DOMSource(a), new javax.xml.transform.stream.StreamResult(asw));
 
             java.io.StringWriter bsw = new java.io.StringWriter();
-            serializer.transform(new javax.xml.transform.dom.DOMSource(b),  new javax.xml.transform.stream.StreamResult(bsw));
+            serializer.transform(new javax.xml.transform.dom.DOMSource(b), new javax.xml.transform.stream.StreamResult(bsw));
 
             // compare the 2 document-strings
             return asw.toString().equals(bsw.toString());
 
-        } catch(javax.xml.transform.TransformerConfigurationException tce) {
+        } catch (javax.xml.transform.TransformerConfigurationException tce) {
             String message = tce.toString() + " " + Logging.stackTrace(tce);
             log.error(message);
             throw new RuntimeException(message);
-        } catch(javax.xml.transform.TransformerException te) {
+        } catch (javax.xml.transform.TransformerException te) {
             String message = te.toString() + " " + Logging.stackTrace(te);
             log.error(message);
             throw new RuntimeException(message);
@@ -442,14 +451,14 @@ public class ObjectTypes extends TypeDef {
 
     /**
      */
-    protected  MMObjectBuilder unloadBuilder(MMObjectNode node) {
+    protected MMObjectBuilder unloadBuilder(MMObjectNode node) {
         if (log.isDebugEnabled()) {
-            log.debug("Unload builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+            log.debug("Unload builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
         }
 
         // unload the builder,...
         MMObjectBuilder builder = getBuilder(node);
-        if(builder != null) {
+        if (builder != null) {
             mmb.unloadBuilder(builder);
         }
         return builder;
@@ -457,34 +466,35 @@ public class ObjectTypes extends TypeDef {
 
     /**
      */
-    protected  boolean deleteBuilderTable(MMObjectBuilder builder) {
-        if (log.isDebugEnabled()) log.debug("Delete table of builder '" + builder + "'");
+    protected boolean deleteBuilderTable(MMObjectBuilder builder) {
+        if (log.isDebugEnabled())
+            log.debug("Delete table of builder '" + builder + "'");
 
         // well, since the whole thing doesnt exist anymore, now also drop the table, to clean the system a little bit...
         try {
             return builder.drop();
-        }
-        catch(Exception e) {
-            log.fatal("please report this error: "  + e);
+        } catch (Exception e) {
+            log.fatal("please report this error: " + e);
             return false;
         }
     }
 
-
     /**
      */
-    protected  boolean deleteBuilderFile(MMObjectNode node) {
-        if (log.isDebugEnabled()) log.debug("Delete file of builder '" + node.getStringValue("name") + "' ( #"+node.getNumber()+")");
+    protected boolean deleteBuilderFile(MMObjectNode node) {
+        if (log.isDebugEnabled())
+            log.debug("Delete file of builder '" + node.getStringValue("name") + "' ( #" + node.getNumber() + ")");
 
         java.io.File file = new java.io.File(getBuilderFilePath(node));
-        if(file.exists())  {
-            if(!file.canWrite()) {
-                log.error("file: "+file+" had no write rights for me.");
+        if (file.exists()) {
+            if (!file.canWrite()) {
+                log.error("file: " + file + " had no write rights for me.");
                 return false;
             }
             // remove the file from the file system..
             file.delete();
-            if (log.isDebugEnabled()) log.debug("file: "+file+" has been deleted");
+            if (log.isDebugEnabled())
+                log.debug("file: " + file + " has been deleted");
         }
         return true;
     }
@@ -496,7 +506,7 @@ public class ObjectTypes extends TypeDef {
      * @return the display of the node as a <code>String</code>
      */
     public String getGUIIndicator(MMObjectNode node) {
-        return getSingularName(node.getStringValue("name"),null);
+        return getSingularName(node.getStringValue("name"), null);
     }
 
 }
