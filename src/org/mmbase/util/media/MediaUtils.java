@@ -20,7 +20,7 @@ public class MediaUtils
 	// vars 
 	// ----
 
-	private static 	String		classname 		 = "org.mmbase.util.MediaUtil"; //getClass().getName();
+	private static 	String		classname 		 = getClass().getName();
 	private static 	boolean 	debug 			 = false;
 	private static	void 		debug( String msg ) { System.out.println( classname +":"+ msg ); } 
 
