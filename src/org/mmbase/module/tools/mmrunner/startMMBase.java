@@ -15,23 +15,33 @@ import java.util.*;
 
 public class startMMBase extends Object {
 
+	static String runnerVersion="0.2";
+	static String appserverVersion="Orion 1.4.5";
+	static String cmsVersion="MMBase 1.2.3";
+	static String databaseVersion="Hypersonic 2.3";
+
 
 	public static void main(String[] args) {
 		String mode;
-		System.out.println("\nStarting MMBase (runner version 0.2)");
+		System.out.println("\nStarting MMBase (runner version "+runnerVersion+")");
 		if (args.length>0) {
 			mode=args[0];
 		} else {
 			mode="loop";
 		}
-		
 
 		// should be moved to own method in time
-		System.out.println("\n----- starting java with parameters  -----");
             	String curdir=System.getProperty("user.dir");
             	if (curdir.endsWith("orion")) {
                 	curdir=curdir.substring(0,curdir.length()-6);
            	}
+
+		// detect if this is the first startup
+		if (firstContact(curdir)) {
+			System.out.println("\nDetecting this is first run, need to ask a few questions.");
+		}		
+
+		System.out.println("\n----- starting java with parameters  -----");
 		String configdir="-Dmmbase.config="+curdir+"/config/ ";
 		System.out.println(configdir);
 		String htmlrootdir="-Dmmbase.htmlroot="+curdir+"/html/ ";
@@ -42,7 +52,9 @@ public class startMMBase extends Object {
 		System.out.println(orion);
 		String startupstring="java "+configdir+htmlrootdir+logdir+orion;
 		System.out.println("-------------------------------------------\n");
-		System.out.println("Starting orion 1.4.5 loaded with mmbase 1.2.3\n");
+		System.out.println("Starting Application server : "+appserverVersion);
+		System.out.println("Loading  CMS : "+cmsVersion);
+		System.out.println("Loading  JDBC Database : "+databaseVersion+"\n");
 		if (mode.equals("loop")) {
 			System.out.println("Logfiles active in the log dir (log/mmbase.log for example)");
 			System.out.println("Within seconds server can be found at http://127.0.0.1:4242");
@@ -119,4 +131,8 @@ public class startMMBase extends Object {
 
 	}
 
+	static private boolean firstContact(String curdir) {
+                File f=new File(curdir+"/config/.timestamp");
+                return (!f.exists() || !f.isFile());
+	}
 }
