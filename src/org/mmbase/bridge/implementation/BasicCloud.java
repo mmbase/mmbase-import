@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.61 2002-07-16 11:58:52 eduard Exp $
+ * @version $Id: BasicCloud.java,v 1.62 2002-07-17 14:13:42 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -49,9 +49,6 @@ public class BasicCloud implements Cloud, Cloneable {
     // It is meant to uniquely identify this session to MMBase
     // It is NOT used for authorisation!
     protected String account = null;
-
-    // language
-    protected String language = null;
 
     // description
     // note: in future, this is dependend on language settings!
@@ -80,6 +77,8 @@ public class BasicCloud implements Cloud, Cloneable {
 
     private MultilevelCacheHandler multilevel_cache;
 
+    private Locale locale;
+    
     /**
      *  basic constructor for descendant clouds (i.e. Transaction)
      */
@@ -87,7 +86,7 @@ public class BasicCloud implements Cloud, Cloneable {
         cloudContext=cloud.cloudContext;
         parentCloud=cloud;
         typedef = cloud.typedef;
-        language=cloud.language;
+        locale = cloud.locale;
         if (cloudName==null) {
             name = cloud.name;
         } else {
@@ -132,7 +131,7 @@ public class BasicCloud implements Cloud, Cloneable {
 
         // other settings of the cloud...
         typedef = mmb.getTypeDef();
-        language = mmb.getLanguage();
+        locale = new Locale(mmb.getLanguage(), "");
 
         // normally, we want the cloud to read it's context from an xml file.
         // the current system does not support multiple clouds yet,
@@ -720,6 +719,17 @@ public class BasicCloud implements Cloud, Cloneable {
      */
     StringList getPossibleContexts(int nodeNumber) {
         return new BasicStringList(mmbaseCop.getAuthorization().getPossibleContexts(userContext.getUserContext(), nodeNumber));
+    }
+
+    public void setLocale(Locale l) {
+        if (l == null) {
+            locale = new Locale(cloudContext.mmb.getLanguage(), "");
+        } else {
+            locale = l;
+        }
+    }
+    public Locale getLocale() {
+        return locale;
     }
 
     /** returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) */

@@ -17,7 +17,7 @@ import org.mmbase.module.corebuilders.FieldDefs;
  * @javadoc
  *
  * @author Pierre van Rooden
- * @version $Id: BasicField.java,v 1.6 2002-04-09 09:01:39 eduard Exp $
+ * @version $Id: BasicField.java,v 1.7 2002-07-17 14:13:43 michiel Exp $
  */
 public class BasicField implements Field {
 
@@ -42,7 +42,7 @@ public class BasicField implements Field {
     }
 
     public String getGUIName() {
-        return field.getGUIName(((BasicCloud)nodeManager.getCloud()).language);
+        return field.getGUIName(((BasicCloud)nodeManager.getCloud()).getLocale().getLanguage());
     }
 
     public int getType() {
