@@ -10,12 +10,10 @@
   <!-- singles per language as defined by ISO 639 -->
   <singular xml:lang="nl">InsRel</singular>
   <singular xml:lang="en">InsRel</singular>
-  <singular xml:lang="us">InsRel</singular>
   <singular xml:lang="eo">Rilato</singular>
   <!-- multiple per language as defined by ISO 639 -->
   <plural xml:lang="nl">InsRels</plural>
   <plural xml:lang="en">InsRels</plural>
-  <plural xml:lang="us">InsRels</plural>
   <plural xml:lang="eo">Rilatoj</plural>
 </names>
 
@@ -26,7 +24,6 @@
 <!-- descriptions per language as defined by ISO 639  -->
   <description xml:lang="nl">Basis relatie</description>
   <description xml:lang="en">Basic relation</description>
-  <description xml:lang="us">Basic relation</description>
   <description xml:lang="eo">Baza rilato</description>
 </descriptions>
 
@@ -49,7 +46,6 @@ a key/value system. Its a optional tag.
     <gui>
       <guiname xml:lang="nl">Bron</guiname>
       <guiname xml:lang="en">Source</guiname>
-      <guiname xml:lang="us">Source</guiname>
       <guiname xml:lang="eo">Fonto</guiname>
       <guitype>integer</guitype>
     </gui>
@@ -79,7 +75,6 @@ a key/value system. Its a optional tag.
     <gui>
       <guiname xml:lang="nl">Bestemming</guiname>
       <guiname xml:lang="en">Destination</guiname>
-      <guiname xml:lang="us">Destination</guiname>
       <guiname xml:lang="eo">Celo</guiname>
       <guitype>integer</guitype>
     </gui>
@@ -109,7 +104,6 @@ a key/value system. Its a optional tag.
     <gui>
       <guiname xml:lang="nl">Relatie</guiname>
       <guiname xml:lang="en">Relation</guiname>
-      <guiname xml:lang="us">Relation</guiname>
       <guiname xml:lang="eo">Rilato</guiname>
       <guitype>integer</guitype>
     </gui>
@@ -140,7 +134,6 @@ a key/value system. Its a optional tag.
       <guiname xml:lang="fr">Direction</guiname>
       <guiname xml:lang="nl">Richting</guiname>
       <guiname xml:lang="en">Direction</guiname>
-      <guiname xml:lang="us">Direction</guiname>
       <guiname xml:lang="eo">Direkto</guiname>
       <guitype>dirs</guitype>
     </gui>
