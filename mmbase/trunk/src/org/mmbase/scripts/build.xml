@@ -76,6 +76,8 @@ NetComponents can be found at:
   <property name="source-src.dir" location="${source.dir}/src"/>
   <property name="source-taglib.xml" location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/mmbase-taglib.xml" />
   <property name="source-community.xml" location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml" />
+  <property name="xml2tld"  location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+  <property name="xml2html" location="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
   <property name="webapp.dir" value="${build.dir}/mmbase/mmbase-webapp"/>
   <property name="mmdocs.dir" value="${webapp.dir}/mmdocs"/>
   <property name="web.dir" value="${webapp.dir}/WEB-INF"/>
@@ -704,9 +706,9 @@ Distribution: ${distro}
          depends="init.compile,taglib.tld,taglib.doc,community.tld,community.doc">
   </target>
 
-  <target name="taglib.tld.check">
+  <target name="taglib.tld.check">    
     <uptodate property="taglib.tld.uptodate" targetfile="${web.dir}/mmbase-taglib.tld" >
-      <srcfiles dir="." includes="${source-taglib.xml}" />
+      <srcfiles dir="." includes="${source-taglib.xml},${xml2tld}" />
     </uptodate>
   </target>
 
@@ -727,13 +729,13 @@ Distribution: ${distro}
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+      <arg value="${xml2tld}" />
     </java>
   </target>
 
   <target name="taglib.doc.check">
     <uptodate property="taglib.doc.uptodate" targetfile="${mmdocs.dir}/mmbase-taglib.html" >
-      <srcfiles dir="." includes="${source-taglib.xml}" />
+      <srcfiles dir="." includes="${source-taglib.xml},${xml2html}" />
     </uptodate>
   </target>
 
@@ -754,7 +756,7 @@ Distribution: ${distro}
       <arg value="files"/>
       <arg value="taglib" />
       <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+      <arg value="${xml2html}" />
       <arg value="-IN"/>
       <arg value="file:///${source-taglib.xml}" />
       <arg value="-OUT"/>
@@ -764,7 +766,7 @@ Distribution: ${distro}
 
   <target name="community.tld.check">
     <uptodate property="community.tld.uptodate" targetfile="${web.dir}/mmcommunity-taglib.tld" >
-      <srcfiles dir="." includes="${source-community.xml}" />
+      <srcfiles dir="." includes="${source-community.xml},${xml2tld}" />
     </uptodate>
   </target>
 
@@ -783,14 +785,14 @@ Distribution: ${distro}
       <arg value="-OUT"/>
       <arg value="${web.dir}/mmcommunity-taglib.tld"/>
       <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
+      <arg value="${xml2tld}" />
     </java>
   </target>
 
 
   <target name="community.doc.check">
     <uptodate property="community.doc.uptodate" targetfile="${mmdocs.dir}/mmcommunity-taglib.html" >
-      <srcfiles dir="." includes="${source-community.xml}" />
+      <srcfiles dir="." includes="${source-community.xml},${xml2html}" />
     </uptodate>
   </target>
 
@@ -815,7 +817,7 @@ Distribution: ${distro}
       <arg value="-OUT"/>
       <arg value="${mmdocs.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
-      <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
+      <arg value="${xml2html}" />
     </java>
   </target>
 
