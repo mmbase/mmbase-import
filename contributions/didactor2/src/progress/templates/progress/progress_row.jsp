@@ -7,6 +7,7 @@
 <%@include file="/education/tests/definitions.jsp" %>
 
 <mm:import externid="student" required="true"/>
+<mm:import externid="startAt" jspvar="startAt" vartype="Integer" required="true"/>
 
 <di:may component="education" action="isSelfOrTeacherOf" arguments="student">
  
@@ -39,7 +40,9 @@
         </mm:field>
         </mm:node>
     </td>
-
+<% 
+    int testCounter = 0;
+%>
   <%-- find copybook --%>
   <mm:import id="copybookNo"/>
   <mm:relatedcontainer path="classrel,classes">
@@ -61,6 +64,9 @@
 
       <mm:import id="nodetype"><mm:nodeinfo type="type" /></mm:import>
       <mm:compare referid="nodetype" value="tests">
+        <% if (testCounter >= startAt.intValue() && testCounter < startAt.intValue()+20) { %>
+
+      
         <mm:import id="testNo" reset="true"><mm:field  name="number" /></mm:import>
         <mm:field id="feedback" name="feedbackpage" write="false"/>
  
@@ -69,6 +75,7 @@
              testStatus = testStatus.trim();
          %><mm:import id="teststatus" reset="true" jspvar="testStatus" escape="reducespace"><%= testStatus %></mm:import>
 --%>
+    
         <%@include file="teststatus.jsp"%>
        <mm:compare referid="teststatus" value="incomplete" inverse="true">
        
@@ -99,13 +106,16 @@
         <mm:remove referid="madetestscore"/>
          <mm:remove referid="save_madetestscore"/>
          <mm:remove referid="testNo"/>
+            <%
+        } testCounter++;
+         %>
          </mm:compare>
       <mm:remove referid="nodetype"/>
     </mm:tree>
   </mm:relatednodescontainer> <%-- learnobjects --%>
 </mm:node> <%-- education --%>
-</tr>
 <mm:remove referid="copybookNo"/>
+</tr>
 </mm:node> <%-- student --%>
 </di:may>
 
