@@ -64,6 +64,9 @@
             </fileset>
         </copy>
       </then>
+      <else>
+        <echo message="WARNING! provider ${provider} does not have any templates in src/core/templates/${provider}!!!"/>
+      </else>
     </if>
   </target>
 
