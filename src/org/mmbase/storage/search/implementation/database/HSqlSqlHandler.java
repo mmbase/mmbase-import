@@ -19,13 +19,12 @@ import org.mmbase.util.logging.*;
  * hsql functionality.
 
  * @author Michiel Meeuwissen
- * @version $Id: HSqlSqlHandler.java,v 1.2 2003-11-27 17:58:42 robmaris Exp $
+ * @version $Id: HSqlSqlHandler.java,v 1.3 2003-12-11 12:32:00 michiel Exp $
  * @since MMBase-1.7
  */
 public class HSqlSqlHandler extends BasicSqlHandler implements SqlHandler {
 
-    /** Logger instance. */
-    private static Logger log = Logging.getLoggerInstance(HSqlSqlHandler.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(HSqlSqlHandler.class);
 
     /**
      * Constructor.
