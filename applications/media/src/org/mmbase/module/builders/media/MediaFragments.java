@@ -39,7 +39,7 @@ import javax.servlet.http.*;
  *
  * @author Rob Vermeulen (VPRO)
  * @author Michiel Meeuwissen
- * @version $Id: MediaFragments.java,v 1.21 2003-01-14 20:36:20 michiel Exp $
+ * @version $Id: MediaFragments.java,v 1.22 2003-01-21 17:46:24 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -59,10 +59,7 @@ public class MediaFragments extends MMObjectBuilder {
 
     
     // This filter is able to find the best mediasource by a mediafragment.
-    private  static MediaSourceFilter mediaSourceFilter = null;
-    
-    // The media source builder
-    private static MediaSources      mediaSourceBuilder;
+    // private  static MediaSourceFilter mediaSourceFilter = null;
     
    // Is the mediafragment builders already inited ?
     // this class is used for several builders (mediafragments and descendants)
@@ -75,20 +72,7 @@ public class MediaFragments extends MMObjectBuilder {
         log.service("Init of media-fragments");
         initDone = true;  // because of inheritance we do init-protections
         
-        boolean result = super.init();
-        
-        // Retrieve a reference to the MediaSource builder
-
-        mediaSourceBuilder = (MediaSources) mmb.getMMObject("mediasources");
-        
-        if(mediaSourceBuilder == null) {
-            log.error("Builder mediasources is not loaded.");
-        } else {
-            log.debug("The builder mediasources is retrieved.");
-        }
-        
-        mediaSourceFilter = MediaSourceFilter.getInstance();
-
+        boolean result = super.init();       
         // deprecated:
         retrieveClassificationInfo();
 
@@ -159,7 +143,7 @@ public class MediaFragments extends MMObjectBuilder {
             return getFormat(node, translateURLArguments(args, null));
         } else if (function.equals("longurl")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
-            return getLongURL(node, new Hashtable());
+            // return getLongURL(node, new Hashtable());
         } else if (function.equals("contenttype")) {
             // hashtable can be filled with speed/channel/ or other info to evalute the url.
             //            return getContentType(node, new Hashtable());
@@ -214,6 +198,7 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info extra information (i.e. request, wanted bitrate, etc.)
      * @return the url of the audio file
      */
+    /*
     protected String getLongURL(MMObjectNode mediaFragment, Map info) {
         log.debug("Getting longurl");
         MMObjectNode mediaSource = filterMediaSource(mediaFragment, info);
@@ -223,6 +208,7 @@ public class MediaFragments extends MMObjectBuilder {
         }
         return mediaSourceBuilder.getLongUrl(mediaFragment, mediaSource, info);
     }
+    */
 
     /** 
      * Returns a List of all possible (unfiltered) ResponseInfo's for this Fragment.
@@ -238,7 +224,11 @@ public class MediaFragments extends MMObjectBuilder {
         while (i.hasNext()) {
             MMObjectNode source = (MMObjectNode) i.next();
             MediaSources bul    = (MediaSources) source.parent; // cast everytime, because it can be extended
-            result.addAll(bul.getURLs(source, fragment, info));
+            List sourcesurls = bul.getURLs(source, fragment, info);
+            if (sourcesurls.removeAll(result)) {
+                log.debug("removed duplicates");
+            }
+            result.addAll(sourcesurls);
         }
         return result;        
     }   
@@ -246,7 +236,7 @@ public class MediaFragments extends MMObjectBuilder {
     protected List getSortedURLs(MMObjectNode fragment, Map info) {
         log.debug("getsortedurls");
         List urls =  getURLs(fragment, info);
-        return mediaSourceFilter.filter(urls);
+        return MediaSourceFilter.getInstance().filter(urls);
     }
 
       
@@ -286,10 +276,8 @@ public class MediaFragments extends MMObjectBuilder {
      * @param info additional information provider by a user
      * @return the most appropriate media source
      */
+    /*
     private MMObjectNode filterMediaSource(MMObjectNode fragment, Map info) {
-        if (log.isDebugEnabled()) {
-            log.debug("mediasourcefilter " + mediaSourceFilter + " info " + info);
-        }
         List urls = getSortedURLs(fragment, info); 
         if(urls.size() == 0) {
             log.error("No matching media source found by media fragment (" + fragment.getIntValue("number") + ")");
@@ -297,8 +285,8 @@ public class MediaFragments extends MMObjectBuilder {
         }
         MMObjectNode mediaSource = (MMObjectNode) urls.get(0);
         return mediaSource;
-    }
-    
+    }   
+    */
     /**
      * returns the content type of the mediasource that matches best.
      *
@@ -374,9 +362,9 @@ public class MediaFragments extends MMObjectBuilder {
     public  void removeSources(MMObjectNode mediafragment) {
         List ms = getSources(mediafragment);
         for (Iterator mediaSources = ms.iterator() ;mediaSources.hasNext();) {
-            MMObjectNode mediaSourceNode = (MMObjectNode) mediaSources.next();
-            mediaSourceBuilder.removeRelations(mediaSourceNode);
-            mediaSourceBuilder.removeNode(mediaSourceNode);
+            MMObjectNode source = (MMObjectNode) mediaSources.next();
+            source.parent.removeRelations(source);
+            source.parent.removeNode(source);
         }
     }
 
