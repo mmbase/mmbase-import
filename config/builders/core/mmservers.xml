@@ -45,7 +45,7 @@
 		table. Defaults to 60 seconds.
 		You can safely set it higher if you have only one server (and spare
 		some SQL-queries)    -->
-		<property name="ProbeInterval">60</property>
+		<property name="ProbeInterval">6000</property>
 	</properties>
 
 

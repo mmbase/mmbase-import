@@ -34,7 +34,7 @@
         </positions>
       </editor>
       <db>
-        <name xml:lang="en">pos</name>
+        <name>pos</name>
         <type key="false" notnull="false" state="persistent">INTEGER</type>
       </db>
     </field>
