@@ -561,10 +561,14 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the MMBase jar file                                          -->
   <!-- =================================================================== -->
   <target name="jar" description="Create the MMBase jar file"
-          depends="compile">
+          depends="compile,web">
+    <copy file="${web.dir}/mmbase-taglib.tld"
+          tofile="${web.dir}/taglib.tld" />
     <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
          basedir="${build.dir}/classes"
-	 includes="org/mmbase/**" />
+	 includes="org/mmbase/**">
+        <metainf dir="${web.dir}" includes="taglib.tld" />
+    </jar>
   </target>
 
 
