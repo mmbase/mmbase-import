@@ -62,6 +62,21 @@
     </mm:compare>
   </mm:field>
   <input type="hidden" name="user" value="<mm:field name="number" />" />
+  <tr>
+    <td colspan="2">
+      <mm:field id="defaultcontext" name="defaultcontext" write="false" />
+      <mm:field id="usertocheck"    name="number"         write="false" />
+      <mm:node number="$defaultcontext">
+        <mm:functioncontainer>
+          <mm:param name="operation"    value="write" />
+          <mm:param name="usertocheck"  value="$usertocheck" />
+          <mm:booleanfunction inverse="true" name="may">
+            WARN. User may not edit nodes created by himself.
+          </mm:booleanfunction>
+        </mm:functioncontainer>
+      </mm:node>
+    </td>
+  </tr>
 </table>
 <mm:import id="back">index_users.jsp</mm:import>
 <%@include file="groupOrUserRights.table.jsp" %>

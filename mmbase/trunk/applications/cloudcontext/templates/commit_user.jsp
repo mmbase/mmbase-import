@@ -4,8 +4,15 @@
 %>
 <mm:content language="$language">
 <mm:import externid="user" required="true" />
-
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+
+
+<mm:compare referid="user" value="new">
+  <mm:remove referid="user" />
+  <mm:import id="wasnew" />
+  <mm:createnode id="user" type="mmbaseusers" />
+</mm:compare>
+
 <mm:node id="user" referid="user">
 <mm:import id="current">users</mm:import>
 <%@include file="navigate.div.jsp" %>

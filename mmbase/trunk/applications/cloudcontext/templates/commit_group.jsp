@@ -6,11 +6,18 @@
 <mm:import externid="group" required="true" />
 
 <mm:cloud method="loginpage" loginpage="login.jsp" jspvar="cloud" rank="$rank">
+
+
+<mm:compare referid="group" value="new">
+  <mm:remove referid="group" />
+  <mm:import id="wasnew" />
+  <mm:createnode id="group" type="mmbasegroups" />
+</mm:compare>
+
+
+
 <mm:node id="group" referid="group">
-
-   <mm:context>
-
-
+  <mm:context>
     <mm:fieldlist type="edit">
       <mm:fieldinfo type="useinput" />
     </mm:fieldlist>
@@ -55,14 +62,47 @@
         </mm:node>
      </mm:stringlist>
      </mm:write>
-    <mm:import externid="createcontext" /> 
-    <mm:present referid="createcontext">
-      <mm:import externid="contextname" /> 
-      <mm:createnode type="mmbasecontexts">
-        <mm:setfield name="name"><mm:write referid="contextname" /></mm:setfield>
-      </mm:createnode>
-    </mm:present>
-   <%@include file="commitGroupOrUserRights.jsp" %>
+     <mm:present referid="wasnew">
+       <mm:import externid="createcontext" /> 
+       <mm:present referid="createcontext">
+         <mm:import externid="contextname" /> 
+         <mm:createnode id="context" type="mmbasecontexts">
+           <mm:setfield name="name"><mm:write referid="contextname" /></mm:setfield>
+         </mm:createnode>
+         <mm:node referid="context">
+           <mm:functioncontainer>
+             <mm:param name="grouporuser" value="$group" />
+             <mm:param name="operation"   value="read" />
+             <mm:booleanfunction name="maygrant">
+               <mm:voidfunction name="grant" />
+             </mm:booleanfunction>
+             <mm:param name="operation"   value="write" />
+             <mm:booleanfunction name="maygrant">
+               <mm:voidfunction name="grant" />
+             </mm:booleanfunction>
+             <mm:param name="operation"   value="delete" />
+             <mm:booleanfunction name="maygrant">
+               <mm:voidfunction name="grant" />
+             </mm:booleanfunction>
+           </mm:functioncontainer>             
+         </mm:node>
+         <!-- if a group with alias 'mayreadallgroup" exists, 'read' rights will be switched on automaticly -->
+         <mm:node id="group" number="mayreadallgroup" notfound="skip">
+           <mm:node referid="context" id="context">
+             <mm:functioncontainer>
+               <mm:param name="grouporuser"><mm:field node="group" name="number" /></mm:param>
+               <mm:param name="operation">read</mm:param>
+               <mm:booleanfunction name="maygrant">
+                 <mm:voidfunction name="grant" />
+               </mm:booleanfunction>
+             </mm:functioncontainer>
+           </mm:node>
+         </mm:node>
+       </mm:present>
+     </mm:present>
+     <mm:notpresent referid="wasnew">
+       <%@include file="commitGroupOrUserRights.jsp" %>
+     </mm:notpresent>
    </mm:context>
 <mm:import id="current">groups</mm:import>
 <%@include file="navigate.div.jsp" %>
