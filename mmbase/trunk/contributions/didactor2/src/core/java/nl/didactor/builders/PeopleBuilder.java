@@ -80,9 +80,20 @@ public class PeopleBuilder extends CreationNotifyBuilder {
     public boolean setValue(MMObjectNode node, String fieldname, Object originalValue) {
         if (fieldname.equals("username")) {
             Object newValue = node.values.get(fieldname);
-            if (originalValue != null && !originalValue.equals(newValue)) {
+
+            // forbid changing a username after it's been set
+            if (originalValue != null && ! originalValue.equals("") && !originalValue.equals(newValue)) {
                 node.values.put(fieldname, originalValue);
                 return false;
+            }
+
+            // forbid setting a username to an existing one
+            if (originalValue != null && originalValue.equals("") && !newValue.equals("")) {
+                if (countUsernamesInCloud((String) newValue) != 0) {
+                    log.info("setValues() cleared username "+((String) newValue)+" because it already exists");
+                    node.values.put("username", "");
+                    return false;
+                }
             }
         }
         if (fieldname.equals("password")) {
@@ -137,10 +148,35 @@ public class PeopleBuilder extends CreationNotifyBuilder {
         return super.getValue(node, field);
     }
 
-	public int insert(String owner, MMObjectNode node) {
-		 int number = super.insert(owner, node);
-		 log.info( " insert people node" );
-		 return number;
-	 }
+    public int insert(String owner, MMObjectNode node) {
+        // forbid setting a username to an existing one
+
+        String newValue = (String) node.values.get("username");
+        if (newValue != null && !newValue.equals("")) {
+            if (countUsernamesInCloud(newValue) != 0) {
+                log.info("insert() cleared username "+newValue+" because it already exists");
+                node.values.put("username", "");
+                node.values.put("password","");
+            }
+        }
+        int number = super.insert(owner, node);
+        log.info( " insert people node" );
+        return number;
+    }
+
+    
+    private int countUsernamesInCloud(String username) {
+        try {
+            NodeSearchQuery nsq = new NodeSearchQuery(this);
+            nsq.setConstraint(new BasicFieldValueConstraint(nsq.getField(getField("username")),username));
+            return count(nsq);
+        }
+        catch (SearchQueryException e) {
+            log.error(e.toString());
+            return -1;
+        }
+    }
 
 }
+
+

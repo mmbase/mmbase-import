@@ -9,6 +9,7 @@
         <field name="name" ftype="data">
             <prompt>Naam</prompt>
         </field>
+        <field wizardname="urls" ftype="startwizard" />
     </item>
 
     <command name="startwizard" inline="true" wizardname="urls" objectnumber="new" />
