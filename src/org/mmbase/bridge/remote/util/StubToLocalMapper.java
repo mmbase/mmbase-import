@@ -19,7 +19,7 @@ import org.mmbase.util.logging.Logger;
  * StubToLocalMapper is a utitity class that helps
  * a Stub to find it's Local implementation
  * @author Kees Jongenburger
- * @version $Id: StubToLocalMapper.java,v 1.11 2003-02-27 18:08:38 kees Exp $
+ * @version $Id: StubToLocalMapper.java,v 1.12 2003-03-21 17:55:17 michiel Exp $
  **/
 public class StubToLocalMapper{
     static private Logger log = Logging.getLoggerInstance(StubToLocalMapper.class.getName());
@@ -137,12 +137,8 @@ public class StubToLocalMapper{
      * @return the required object or null if there was no such object
      **/
     public static Object get(String mapperCode){
-        log.debug("access=("+ mapperCode +")");
-        
+        log.debug("access=("+ mapperCode +")");        
         Object o = hash.get(mapperCode);
-        if (o ==null){
-            log.warn("hash.get("  + mapperCode +") has null value");
-        }
         return o;
     }
     
