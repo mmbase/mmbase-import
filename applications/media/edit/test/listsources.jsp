@@ -11,18 +11,21 @@
   <mm:locale language="$language">
   <mm:cloud>
  <hr />
-  <mm:listnodes type="mediafragments" >
+  <mm:listnodes type="mediafragments" max="10">
       <mm:field name="title" />:<br />
-        issub: <mm:field name="subfragment()" /><br />
+        issub: <mm:booleanfunction name="issubfragment">Yes!</mm:booleanfunction><br />
       <a href="<mm:field name="url()" />">url</a>,
       <a href="<mm:field name="url(rm)" />">rm-url</a>,
-      <a href="<mm:field name="url(asf)" />">asf-url</a>,   
+      <a href="<mm:field name="url(asf)" />">asf-url</a>
      <hr />
   </mm:listnodes>
-  <mm:listnodes type="mediasources">
-    <mm:field name="mimetype()" />:     <mm:field name="format()" />
-    <br />
-    <mm:field name="urls()" />
+  <mm:listnodes type="mediasources" max="10">
+    <mm:function name="mimetype" />:  <mm:function name="format" />
+    <ul>
+      <mm:listfunction name="urls" jspvar="uc">
+        <li><%= ((org.mmbase.applications.media.urlcomposers.URLComposer)uc).getURL() %></li>
+      </mm:listfunction>
+    </ul>
   </mm:listnodes> 
   </mm:cloud>
   </mm:locale>

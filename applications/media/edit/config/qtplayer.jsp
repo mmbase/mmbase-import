@@ -1,9 +1,13 @@
-<mm:field name="format(mov,ram,wmp)" jspvar="url" vartype="string">
-   <% if (url.equals("ram")) { %>
+<mm:functioncontainer>
+  <mm:param name="format" value="mov,ram,wmp" />
+  <mm:function name="format" jspvar="format" vartype="string">
+    <% Format f = Format.get(format); %>
+   <% if (f.isReal()) { %>
        <mm:write id="player" value="real" write="false" />
-   <% } else if (url.equals("wmp")) { %>
+   <% } else if (f.isWindowsMedia()) { %>
        <mm:write id="player" value="qt" write="false" /> 
    <% } else { %>
        <mm:write id="player" value="qt" write="false" />
    <% } %>
-</mm:field>
+  </mm:function>
+</mm:functioncontainer>
