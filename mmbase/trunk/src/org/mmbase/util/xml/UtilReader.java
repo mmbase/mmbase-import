@@ -9,26 +9,25 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util.xml;
 
-import org.w3c.dom.Element;
-import java.util.*;
 import java.io.File;
-import org.mmbase.module.core.MMBaseContext;
-import org.mmbase.util.FileWatcher;
-import org.mmbase.util.XMLBasicReader;
+import java.util.*;
 
-import org.mmbase.util.logging.Logger;
-import org.mmbase.util.logging.Logging;
+import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.util.*;
+import org.mmbase.util.logging.*;
+import org.w3c.dom.Element;
 /**
  * This class reads configuration files for utilities, that are
  * placed in /config/utils/.
  * @since MMBase-1.6.4
  * @author Rob Vermeulen
  * @author Michiel Meeuwissen
- * @version $Id: UtilReader.java,v 1.5 2003-06-27 09:55:38 michiel Exp $
+ * @version $Id: UtilReader.java,v 1.6 2003-12-03 11:28:35 keesj Exp $
  */
 public class UtilReader {
 
-    private static Logger log = null;
+    private static Logger log = Logging.getLoggerInstance(UtilReader.class);
+
     public static final String CONFIG_UTILS = "utils";
 
     /** Public ID of the Utilities config DTD version 1.0 */
@@ -46,7 +45,7 @@ public class UtilReader {
      * This method is called by XMLEntityResolver.
      */
     public static void registerPublicIDs() {
-        org.mmbase.util.XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
+        XMLEntityResolver.registerPublicID(PUBLIC_ID_UTIL_1_0, DTD_UTIL_1_0, UtilReader.class);
     }
 
     private class UtilFileWatcher extends FileWatcher {
@@ -60,7 +59,6 @@ public class UtilReader {
         }
     }
 
-
     private Map properties;
     private FileWatcher watcher;
 
@@ -68,15 +66,14 @@ public class UtilReader {
      * @param filename The name of the property file (e.g. httppost.xml).
      */
     public UtilReader(String filename) {
-        if (log == null) {
-            log = Logging.getLoggerInstance(UtilReader.class.getName());
-        }
         File file = new File(MMBaseContext.getConfigPath() + File.separator + CONFIG_UTILS + File.separator + filename);
         readProperties(file);
         if (file.exists()) {
             watcher = new UtilFileWatcher();
             watcher.add(file);
             watcher.start();
+        } else {
+            log.warn(file.getName() + " does not exist:" + Logging.stackTrace());
         }
     }
 
@@ -86,6 +83,7 @@ public class UtilReader {
     public Map getProperties() {
         return Collections.unmodifiableMap(properties);
     }
+
     protected void readProperties(File f) {
         if (properties == null) {
             properties = new HashMap();
@@ -103,11 +101,12 @@ public class UtilReader {
                     p = (Element)enum.nextElement();
                     name = reader.getElementAttributeValue(p, "name");
                     value = reader.getElementValue(p);
-                    properties.put(name,value);
+                    properties.put(name, value);
                 }
             }
         } else {
             log.warn("File " + f + " does not exist");
         }
     }
+
 }
