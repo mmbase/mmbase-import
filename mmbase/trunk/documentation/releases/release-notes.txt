@@ -43,6 +43,7 @@ BUG FIXES AND IMPROVEMENTS:
 Taglib Bug Fixes:
 -----------------
 [1.7.0] 
+ - Working with resin now
 
 ------------------
 Generic Bug Fixes:
@@ -63,6 +64,13 @@ Taglib Bug Fixes:
 Example Bug Fixes:
 -----------------
 [1.7.0] 
+
+========
+Upgrade:
+========
+[1.7.0]
+- Replace mmbase.jar, and jsp's.
+- Clean the working directory of your app-server (to recompile jsp's)
 
 
 ========================
@@ -130,19 +138,19 @@ Know Issues and Problems:
   Please keep in mind that the image builder is less powerfull when
   using JAI instead of Imagemagick.
 
-- Jumpers don't jump to /index.html by default. It gives a 404 error
-  if a location can't be found, but you can changes this behaviour by
-  setting a property in jumpers.xml.
+- Jumpers jump to /index.html by default, which can e.g. shield the
+  image servlet (if 'dotlessly' mapped). Remove the setting from
+  jumpers.xml if you prefer nice 404's.
 
 - Hsqldb uses the current dir for writing the database-files. This can
   be the bin dir from where you're starting the servlet-engine. You
   can change this to a dir you want, by changing the database-property
   in jdbc.xml.
 
-- In Resin the mmbase-taglib is not fully working, because extensive tag-instance reuse causes the
-  $-variable evalution in attributes to work always. This will be fixed in 1.6.1.
-  Because Resis provides its own XSL-transformation implementation, also on this area are some known
-  problems. 
+- Resin provides its own XSL-transformation implementation, on this
+  area are some known problems.
+
+- Resin cannot swallow some of the larger jsp/taglib pages. 
 
 
 ============
@@ -174,8 +182,8 @@ Applicationservers
 - Tomcat 4.0.4 
 - Orion 1.5.2, 1.5.4
 - Jetty 4.0.0
-- Resin 2.1.0 (Taglib attribute problems, filed as bug in www.mmbase.org/bug)
-- Tomcat 4.1.12 
+- Resin 2.1.0, 2.1.8
+- Tomcat 4.1.12, 4.1.21
 
 ---------
 Databases
