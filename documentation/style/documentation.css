@@ -1,7 +1,7 @@
 /*
  CSS for MMBase documentation
  @author Michiel Meeuwissen
- @version $Id: documentation.css,v 1.6.2.1 2002-12-04 16:08:46 pierre Exp $;
+ @version $Id: documentation.css,v 1.6.2.2 2002-12-05 16:15:26 michiel Exp $;
 */
 
 
@@ -88,7 +88,7 @@ div.navigation[class] {
 
 
 div.navigation:before {
-  content: url(logo.png);
+//  content: url(logo.png);
 }
 
 

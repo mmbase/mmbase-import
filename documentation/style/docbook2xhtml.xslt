@@ -16,6 +16,7 @@
 
 	<xsl:template name="user.header.content">
 		<div class="navigation">
+          <img src="{$root}style/logo.png" alt="mmbase logo" />
 			<h2><xsl:value-of select="//*/title" /></h2>
 			<xsl:for-each select="//section|//sect1">
 				<xsl:if test="not(ancestor::section)">
