@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: JamesServlet.java,v 1.8 2000-05-04 10:01:34 wwwtech Exp $
+$Id: JamesServlet.java,v 1.9 2000-05-10 13:08:42 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/05/04 10:01:34  wwwtech
+Davzev: Changed error log in method getCookie, for the Properties=null situation.
+
 Revision 1.7  2000/05/01 14:21:06  wwwtech
 davzev: Changed implementation of method getCookie. It now returns a cookie with name: MMBase_Ident instead of James_Ident. Any James_Ident cookies that were stored in the Properties table will get a new value: MMBase_Ident/cur-time-in-millis. New cookies either get an implicit domain (from httpheader) or an explicit domain depending on the COOKIEDOMAIN value in the configfile MMBASEROOT.properties.
 
@@ -32,7 +35,7 @@ import org.mmbase.util.*;
 * JamesServlet is a addaptor class its used to extend the basic Servlet
 * to with the calls that where/are needed for 'James' servlets to provide
 * services not found in suns Servlet API.
-* @version $Id: JamesServlet.java,v 1.8 2000-05-04 10:01:34 wwwtech Exp $
+* @version $Id: JamesServlet.java,v 1.9 2000-05-10 13:08:42 wwwtech Exp $
 */
 
 class DebugServlet {
@@ -150,7 +153,7 @@ public class JamesServlet extends HttpServlet {
 	 */
 	public String getCookie(HttpServletRequest req, HttpServletResponse res) {
 
-		String methodName = "getCookie"; 
+		String methodName = "getCookie()"; 
 		String HEADERNAME = "COOKIE";
 		String JAMES_COOKIENAME = "James_Ident";
 		String MMBASE_COOKIENAME = "MMBase_Ident"; 
@@ -169,13 +172,18 @@ public class JamesServlet extends HttpServlet {
 					return cookie.replace('=','/');
 				}
 			}
-			System.out.println("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
+			debug("JamesServlet:"+methodName+": ERROR: Can't retrieve "+MMBASE_COOKIENAME+" from "+cookies);
 			return null;
 		} else {
-			debug(methodName+": User has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
+
+			// Added address in output to see if multiple cookies are being requested from same computer.
+			// This would imply improper use of our service :)
+			// ------------------------------------------------------------------------------------------
+
+			debug(methodName+": address("+req.getRemoteHost()+"), User has no "+MMBASE_COOKIENAME+" cookie yet, adding now.");
 			MMBase mmbase = (MMBase)Module.getModule("MMBASEROOT");
 			if (mmbase == null) {
-				System.out.println("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
+				debug("JamesServlet:"+methodName+": ERROR: mmbase="+mmbase+" can't create cookie.");
 				return null;
 			}
 
@@ -197,7 +205,7 @@ public class JamesServlet extends HttpServlet {
 				Properties propBuilder = null;
 				propBuilder = (Properties) mmbase.getMMObject("properties");
 				if (propBuilder==null) {
-					System.out.println("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
+					debug("JamesServlet:"+methodName+": ERROR: Properties builder ="+propBuilder+", can't change old "+JAMES_COOKIENAME+" property if it was necessary, (maybe Properties builder is not activated in mmbase?");
 				}
 				StringTokenizer st = new StringTokenizer(cookies, ";");
 				while (st.hasMoreTokens()) {
@@ -218,7 +226,7 @@ public class JamesServlet extends HttpServlet {
 						formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 						Date d = new Date(System.currentTimeMillis()+24*3600*1000);
 						String expires = formatter.format(d);
-						System.out.println("newGC: Found 'old' cookie: "+cookie+" setting new expiry to: "+expires);
+						debug("newGC: Found 'old' cookie: "+cookie+" setting new expiry to: "+expires);
 						res.setHeader("Set-Cookie", (cookie+"; path="+PATH+"; expires="+expires));
 						*/
 					}
