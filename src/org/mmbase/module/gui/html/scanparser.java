@@ -8,9 +8,13 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.27 2000-10-15 22:51:46 gerard Exp $
+$Id: scanparser.java,v 1.28 2000-11-02 11:15:52 install Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.27  2000/10/15 22:51:46  gerard
+gerard: added some checks
+submitted by Eduard Witteveen
+
 Revision 1.26  2000/10/13 12:52:39  case
 cjr: added length check on taking substring to fix out of bounds error if no
 other text follows </LIST> tag.
@@ -103,7 +107,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.27 $ $Date: 2000-10-15 22:51:46 $
+ * @$Revision: 1.28 $ $Date: 2000-11-02 11:15:52 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -451,6 +455,33 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(body,"<SAVE ",'>',18,session,sp);
 		body=part; 
 
+		// <TRANSACTION text1> text2 </TRANSACTION>
+		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
+		newbody=new StringBuffer();
+		postcmd=-1;
+
+		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
+			newbody.append(body.substring(postcmd+1,precmd));
+			prepostcmd=precmd+12;
+			if ((postcmd=body.indexOf('>',precmd))!=-1) {
+				end_pos2=body.indexOf("</TRANSACTION>",prepostcmd);
+				if (end_pos2!=-1) {
+					postcmd=end_pos2+14;
+					try {
+						newbody.append(do_transaction(body.substring(precmd,postcmd),session,sp));
+					} catch(Exception e) {
+						debug("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
+						e.printStackTrace();
+					}
+				} 
+			} else {
+				postcmd=prepostcmd;
+			}
+		}
+
+		newbody.append(body.substring(postcmd+1));
+		body=newbody.toString();
+
 
 		// <GOTO, make it possible to jump pages
 		part=finddocmd(body,"<GOTO ",'>',10,session,sp);
@@ -481,33 +512,6 @@ public class scanparser extends ProcessorModule {
 		// <LEAFPART, LEAFFILE
 		part=finddocmd(body,"<LEAF",'>',22,session,sp);
 		body=part; 
-
-		// <TRANSACTION text1> text2 </TRANSACTION>
-		// The code below will hand text1 and text2 to the method do_transaction(text1, text2, session, sp)
-		newbody=new StringBuffer();
-		postcmd=-1;
-
-		while ((precmd=body.indexOf("<TRANSACTION",postcmd))!=-1) {
-			newbody.append(body.substring(postcmd+1,precmd));
-			prepostcmd=precmd+12;
-			if ((postcmd=body.indexOf('>',precmd))!=-1) {
-				end_pos2=body.indexOf("</TRANSACTION>",prepostcmd);
-				if (end_pos2!=-1) {
-					postcmd=end_pos2+14;
-					try {
-						newbody.append(do_transaction(body.substring(precmd,postcmd),session,sp));
-					} catch(Exception e) {
-						debug("handle_line(): ERROR: do_transaction(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
-						e.printStackTrace();
-					}
-				} 
-			} else {
-				postcmd=prepostcmd;
-			}
-		}
-
-		newbody.append(body.substring(postcmd+1));
-		body=newbody.toString();
 
 		// Last one always
 		part=finddocmd(body,"$LBJ-",'^',4,session,sp);
