@@ -16,6 +16,7 @@ import org.mmbase.bridge.CloudContext;
 import org.mmbase.bridge.LocalContext;
 
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -35,14 +36,27 @@ import org.mmbase.util.logging.Logging;
 
 public abstract class ContextReferrerTag extends BodyTagSupport {
 
-
     private static Logger log = Logging.getLoggerInstance(ContextReferrerTag.class.getName());
 
-    /// private ContextTag contextTag;
+    static private ContextTag pageContextTag;
+    
     private String     contextId = null;
+    protected String   referid = null;
 
-    protected String referid = null;
 
+    public void setPageContext(PageContext pc) {
+        super.setPageContext(pc);
+        if (pageContextTag == null) {
+            log.debug("making the pageContextTag.");
+            pageContextTag = new ContextTag(); 
+            pageContextTag.setPageContext(pc);
+            pageContextTag.setId("context");
+            // there is one implicit ContextTag in every page.
+            // it's id is 'context'.
+            // it is called pageContext, because it is similar to the pageContext, but not the same.
+        }
+    }
+    
     public void setReferid(String r) throws JspTagException {
         referid = getReferIdValue(r);
     }
@@ -59,7 +73,7 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         id = null;
         referid = null;
         contextId = null;
-        //contextTag = null;
+        pageContextTag = null;
     }
 
 
@@ -148,9 +162,10 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
      *
      * @param classname the classname of the Tag to find.
      * @param id        the id of the Tag to find.
+     * @param exception if it has to throw an exception if the parent can not be found (default: yes).
      */
    
-    protected TagSupport findParentTag(String classname, String id) throws JspTagException {
+    final protected TagSupport findParentTag(String classname, String id, boolean exception) throws JspTagException {
         log.debug("finding " + classname);
         Class clazz ;
         try {
@@ -161,7 +176,11 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
 
         TagSupport cTag = (TagSupport) findAncestorWithClass((Tag)this, clazz); 
         if (cTag == null) {
-            throw new JspTagException ("Could not find parent of type " + classname);  
+            if (exception) {
+                throw new JspTagException ("Could not find parent of type " + classname);  
+            } else {
+                return null;
+            }
         }
         
         if (id != null) { // search further, if necessary            
@@ -169,12 +188,19 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
             while (! id.equals(cTag.getId())) {
                 cTag = (TagSupport) findAncestorWithClass((Tag)cTag, clazz);
                 if (cTag == null) {
-                    throw new JspTagException ("Could not find parent Tag of type " + classname + " with id " + id);  
+                    if (exception) {
+                        throw new JspTagException ("Could not find parent Tag of type " + classname + " with id " + id);  
+                    } else {
+                        return null;
+                    }
                 }
             }            
         }
         return cTag;
 
+    }
+    final protected TagSupport findParentTag(String classname, String id) throws JspTagException {
+        return findParentTag(classname, id, true);
     }
 
     /**
@@ -189,7 +215,15 @@ public abstract class ContextReferrerTag extends BodyTagSupport {
         log.debug("searching in context " + contextid);
         //if (contextTag == null) {
         log.debug("searching context " + contextid);
-        ContextTag contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextid);
+        ContextTag contextTag = (ContextTag) findParentTag("org.mmbase.bridge.jsp.taglib.ContextTag", contextid, false);
+        if (contextTag == null) {
+            contextTag = pageContextTag;
+            if (contextid != null) {
+                if(! contextTag.getId().equals(contextid)) {
+                    throw new JspTagException("Could not find contex tag with id " + contextid + " (page context has id " + contextTag.getId() + ")");
+                }
+            }
+        }
         log.debug("found a context with ID= " + contextTag.getId());
         //}
         return contextTag;
