@@ -48,7 +48,7 @@ import org.mmbase.util.logging.*;
  * @author Pierre van Rooden
  * @author Eduard Witteveen
  * @author Johan Verelst
- * @version $Id: MMObjectBuilder.java,v 1.166 2002-10-10 19:52:34 michiel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.167 2002-10-11 15:15:54 eduard Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -1484,10 +1484,8 @@ public class MMObjectBuilder extends MMTable {
 		if(oType != -1 && oType != node.getOType()){
 		    // try to retrieve the correct node from the 
 		    // nodecache
-		    if(nodeCache.containsKey(number)) {
-			// this is not thread safe!
-			// (nodeCache can at this point not contain the node)
-			node = (MMObjectNode) nodeCache.get(number);
+		    node = (MMObjectNode) nodeCache.get(number);
+		    if(node != null) {
 			fromCache = true;
 			cacheGetCount ++;
 		    }
@@ -1508,11 +1506,12 @@ public class MMObjectBuilder extends MMTable {
 		    }
 		}
 		else if (oType == node.getOType()) {
+		    MMObjectNode oldNode = (MMObjectNode)nodeCache.get(number);
 		    // when we want to use cache also for new found nodes
 		    // and cache may not be replaced, use the one from the
 		    // cache..
-		    if(nodeCache.containsKey(number) && !REPLACE_CACHE){
-			node=(MMObjectNode)nodeCache.get(number);
+		    if(!REPLACE_CACHE && oldNode != null) {
+			node = oldNode;
 			fromCache = true;
 			cacheGetCount++;
 		    }
@@ -1523,7 +1522,7 @@ public class MMObjectBuilder extends MMTable {
 		
 		// add the result to the result vector
                 results.add(node);
-
+		
 		// we can add the node to the cache _if_
 		// it was not from cache already, and it 
 		// is of the correct type..
@@ -1539,7 +1538,7 @@ public class MMObjectBuilder extends MMTable {
 	catch(java.sql.SQLException e) {
             log.error(Logging.stackTrace(e));
         }
-
+	
 	if(CORRECT_NODE_TYPES && convert.size() > 0){
 	    // retieve the nodes from the builders....
 	    // and put them into one big hashmap (integer/node)
@@ -1557,7 +1556,7 @@ public class MMObjectBuilder extends MMTable {
 		if(typedefNode == null) {
 		    // builder not known in typedef?
 		    // skip this builder and process to next one..
-		    // TODO: add incorrect node to node's cache?
+		    // TODO: research: add incorrect node to node's cache?
 		    log.error("Could not find typdef node #"+otype);
 		    continue;
 		}
@@ -1565,13 +1564,13 @@ public class MMObjectBuilder extends MMTable {
 		if(builder == null) {
 		    // could not find the builder that was in typedef..
 		    // maybe it is not active?
-		    // TODO: add incorrect node's to node cache?
+		    // TODO: research: add incorrect node's to node cache?
 		    log.error("Could not find builder with name:"+typedefNode.getStringValue("name")+" refered by node #"+typedefNode.getNumber()+", is it active?");
 		    continue;
 		}		
 		Iterator i = nodes.iterator();
 		String numbers = null;
-		// TODO: is there an upper limit for a sql query?
+		// TODO: research: is there an upper limit for a sql query?
 		while(i.hasNext()) {
 		    MMObjectNode current = (MMObjectNode)i.next();
 		    if(numbers == null) numbers = "" + current.getNumber();
