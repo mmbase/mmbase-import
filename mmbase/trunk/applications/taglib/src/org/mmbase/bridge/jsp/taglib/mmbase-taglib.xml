@@ -526,6 +526,10 @@ See mmexamples/taglib for more elaborated examples.
         <value>Float</value>
         <info>java.lang.Float</info>
       </possiblevalue>
+      <possiblevalue>
+        <value>Date</value>
+        <info>java.util.Date</info>
+      </possiblevalue>
     </attribute>
     <attribute>
       <name>write</name>
