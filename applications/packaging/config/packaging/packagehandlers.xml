@@ -4,6 +4,9 @@
 	<packagehandler type="display/html" class="org.mmbase.applications.packaging.packagehandlers.DisplayHtmlPackage">
 		<description>Installs/Uninstalls html pages</description>
 	</packagehandler>
+	<packagehandler type="display/theme" class="org.mmbase.applications.packaging.packagehandlers.DisplayThemePackage">
+		<description>Installs/Uninstalls theme pages</description>
+	</packagehandler>
 	<packagehandler type="cloud/model" class="org.mmbase.applications.packaging.packagehandlers.CloudModelPackage">
 		<description>Installs/Uninstalls mmbase cloud models</description>
 	</packagehandler>
