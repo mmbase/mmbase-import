@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Michiel Meeuwissen
- * @version $Id: Images.java,v 1.67 2003-03-04 20:10:55 michiel Exp $
+ * @version $Id: Images.java,v 1.68 2003-03-13 13:26:18 michiel Exp $
  */
 public class Images extends AbstractImages {
 
@@ -233,12 +233,65 @@ public class Images extends AbstractImages {
      * If the node is not an icache node, but e.g. an images node, then
      * it will return either the node's 'itype' field, or
      * (if that field is empty) the default image format, which is {@link #defaultImageType}.
-     * @since MMBase-1.6
+     * @since MMBase-1.7
      */
     protected String getImageFormat(MMObjectNode node) {
         String format = node.getStringValue("itype");
         if (format == null || format.equals("")) format = defaultImageType;
         return format;
+    }
+
+    /**
+     * Parses the 'image conversion template' to a List. I.e. it break
+     * it up in substrings, with '+' delimiter. However a + char does
+     * not count if it is somewhere between brackets (). Brackets nor
+     * +-chars count if they are in quotes (single or double)
+     *
+     * @since MMBase-1.6.2
+     */
+    protected static final char NOQUOTING = '-';
+    protected List parseTemplate(MMObjectNode node, String template) {
+        List params = new ArrayList();
+        params.add("" + node.getNumber());
+        if (template != null) {
+            int bracketDepth = 0;
+            char quoteState = NOQUOTING; // can be - (not in quote), ' or ".
+            StringBuffer buf = new StringBuffer();
+
+            for (int i = 0; i < template.length(); i++) {
+                char c = template.charAt(i);
+                switch(c) {
+                case '\'': 
+                case '"':  
+                    if (quoteState == c) {
+                        quoteState = NOQUOTING;
+                    } else if (quoteState == NOQUOTING) {
+                        quoteState = c;
+                    }
+                    break;
+                case '(': if (quoteState == NOQUOTING) bracketDepth++; break;
+                case ')': if (quoteState == NOQUOTING) bracketDepth--; break;
+                case '+': 
+                    if (bracketDepth == 0 && quoteState == NOQUOTING) {
+                        params.add(buf.toString());
+                        buf = new StringBuffer();
+                        continue;
+                    }
+                    break;
+                }
+                
+                buf.append(c);
+            }
+            if (bracketDepth != 0) log.warn("Unbalanced brackets in " + template);
+
+            // remove surrounding quotes --> "+contrast" will be changed to +constrast 
+            if (buf.charAt(0) == '\"' && buf.charAt(buf.length() -1) == buf.charAt(0)) {
+                buf.deleteCharAt(0);
+                buf.deleteCharAt(buf.length() -1);
+            }
+            if (! buf.toString().equals("")) params.add(buf.toString());
+        }
+        return params;
     }
 
 
@@ -256,14 +309,7 @@ public class Images extends AbstractImages {
             return i.intValue();
         }
 
-        List params = new Vector();
-        params.add("" + node.getNumber());
-        if (template != null) {
-            StringTokenizer tok=new StringTokenizer(template,"+");
-            while(tok.hasMoreTokens()) {
-                params.add(tok.nextToken());
-            }
-        }
+        List params = parseTemplate(node, template);       
         i = new Integer(cacheImage(params));
         templateCacheNumberCache.put(cacheKey, i);
         return i.intValue();
@@ -462,7 +508,7 @@ public class Images extends AbstractImages {
         synchronized(imageRequestTable) {
             req = (ImageRequest) imageRequestTable.get(ckey);
             if (req != null) {
-                log.info("ConvertImage: a conversion in progress ("+ckey+")...  (requests="+(req.count()+1)+")");
+                log.info("ConvertImage: a conversion in progress (" + ckey + ")...  (requests="+ ( req.count() + 1) + ")");
             } else {
                 req = new ImageRequest(objectId, ckey, params, inputPicture);
                 imageRequestTable.put(ckey,req);
