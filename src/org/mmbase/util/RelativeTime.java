@@ -17,8 +17,9 @@ import org.mmbase.util.logging.*;
  * The relative time value has to be provided as either one integer value (representing the time in milliseconds),
  * or as a set of time attribute integers (hours,minutes,seconds and milliseconds).
  *
+ * @application SCAN (INFO, AnnotRel builder)
  * @author David V van Zeventer
- * @version $Id: RelativeTime.java,v 1.5 2003-03-10 11:51:11 pierre Exp $
+ * @version $Id: RelativeTime.java,v 1.6 2004-09-30 14:07:13 pierre Exp $
  */
 public class RelativeTime {
 
@@ -106,11 +107,11 @@ public class RelativeTime {
             }
 
             //Invalid timePosition used -> returning -1
-            log.warn("RelativeTime::getTimeValue: Invalid timePos used -> timePos="+timePos+" returning -1");
+            log.warn("Invalid timePos used -> timePos="+timePos+" returning -1");
             return -1;
 
         } else {    //Negative timeValue used -> returning -1
-            log.warn("RelativeTime::getTimeValue: Negative timeValue used at position "+timePos+" -> timeValue="+timeValue+" returning -1");
+            log.warn("Negative timeValue used at position "+timePos+" -> timeValue="+timeValue+" returning -1");
             return -1;
         }
     }
@@ -220,31 +221,31 @@ public class RelativeTime {
     private static boolean testTimeValue(int timeAttrValue, int timePos) {
         // Test if value is negative.
         if (timeAttrValue < 0) {
-            log.warn("RelativeTime::testTimeValue: Negative timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+            log.warn("Negative timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
             return false;
         }
         if (timePos == HOUR_POS) {
             if (timeAttrValue >23) {
-                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else if (timePos == MINUTE_POS) {
             if (timeAttrValue >59) {
-                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else if (timePos == SECOND_POS) {
             if (timeAttrValue >59) {
-                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else if (timePos == MILLI_POS) {
             if (timeAttrValue >999) {
-                log.warn("RelativeTime::testTimeValue: Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
+                log.warn("Invalid timeAttrValue used at position "+timePos+" -> timeAttrValue="+timeAttrValue+" returning false");
                 return false;
             }
         } else {     //Invalid timePosition provided -> returning false
-            log.warn("RelativeTime::testTimeValue: Invalid timePos provided -> timePos="+timePos+" returning false");
+            log.warn("Invalid timePos provided -> timePos="+timePos+" returning false");
             return false;
         }
 

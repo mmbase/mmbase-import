@@ -15,9 +15,10 @@ package org.mmbase.util;
  * Calling {@link #stir} takes care of generating a new 'random' number.
  * Calling {@link #value} returns the current random number.
  *
+ * @application SCAN (users)
  * @author Rico Jansen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: RandomPool.java,v 1.5 2003-03-10 11:51:10 pierre Exp $
+ * @version $Id: RandomPool.java,v 1.6 2004-09-30 14:07:13 pierre Exp $
  */
 public class RandomPool {
 

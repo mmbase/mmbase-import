@@ -14,8 +14,11 @@ import javax.servlet.ServletException;
 /**
  * This exception gets thrown when the user hasn't logged in yet.
  *
+ * @deprecated only used by HttpAuth.
+ * @application SCAN
+ * @move org.mmbase.servlet
  * @author vpro
- * @version $Id: NotLoggedInException.java,v 1.6 2003-08-29 09:36:55 pierre Exp $
+ * @version $Id: NotLoggedInException.java,v 1.7 2004-09-30 14:07:11 pierre Exp $
  */
 public class NotLoggedInException extends ServletException {
 
