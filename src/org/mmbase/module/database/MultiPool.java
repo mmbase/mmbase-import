@@ -21,32 +21,32 @@ import org.mmbase.util.logging.Logging;
  * JDBC Pool, a dummy interface to multiple real connection
  * @javadoc
  * @author vpro
- * @version $Id: MultiPool.java,v 1.13 2002-09-05 13:01:51 vpro Exp $
+ * @version $Id: MultiPool.java,v 1.14 2002-10-10 14:53:28 michiel Exp $
  */
 public class MultiPool {
 
     private static Logger log = Logging.getLoggerInstance(MultiPool.class.getName());
 
-    Vector pool=new Vector();
-    Vector busypool=new Vector();
-    int conPos=0;
-    int conMax=4;
-    int totalConnections=0;
-    int maxQuerys=500;
-    String url;
-    String name;
-    String password;
-    String dbm;
-    Object synobj=new Object();
-    Object synobj_getfree=new Object();
-    DatabaseSupport databasesupport;
+    private Vector   pool     = new Vector();
+    private Vector   busyPool = new Vector();
+    private int      conPos   = 0;
+    private int      conMax   = 4;
+    private int      totalConnections = 0;
+    private int      maxQuerys = 500;
+    private String   url;
+    private String   name;
+    private String   password;
+    private String   dbm;
+    private Object   synobj          = new Object();
+    private Object   synobj_getfree  = new Object();
+    private DatabaseSupport databasesupport;
 
-    boolean doReconnect=true;
+    private boolean doReconnect    = true;
 
     /**
      * @javadoc
      */
-    MultiPool(DatabaseSupport databasesupport,String url, String name, String password,int conMax) throws SQLException {
+    MultiPool(DatabaseSupport databasesupport, String url, String name, String password,int conMax) throws SQLException {
         this(databasesupport,url,name,password,conMax,500);
 
     }
@@ -62,15 +62,15 @@ public class MultiPool {
         this.databasesupport=databasesupport;
 
         // put connections on the pool
-        for (int i=0;i<conMax;i++) {
+        for (int i = 0; i < conMax ; i++) {
             if (name.equals("url") && password.equals("url")) {
                 Connection con=DriverManager.getConnection(url);
                 initConnection(con);
-                pool.addElement(new MultiConnection(this,con));
+                pool.add(new MultiConnection(this,con));
             } else {
                 Connection con=DriverManager.getConnection(url,name,password);
                 initConnection(con);
-                pool.addElement(new MultiConnection(this,con));
+                pool.add(new MultiConnection(this,con));
             }
         }
         dbm=getDBMfromURL(url);
@@ -80,16 +80,12 @@ public class MultiPool {
      * Check the connections
      */
     public void checkTime() {
-        MultiConnection con,bcon;
-        int nowTime;
-        int diff;
-
-//		log.debug("JDBC -> Starting the pool check ("+this+") : busy="+busypool.size()+" free="+pool.size());
-        nowTime=(int)(System.currentTimeMillis()/1000);
+//		log.debug("JDBC -> Starting the pool check ("+this+") : busy="+busyPool.size()+" free="+pool.size());
+        int nowTime = (int) (System.currentTimeMillis() / 1000);
         synchronized(synobj) {
-            for (Enumeration e=busypool.elements();e.hasMoreElements();) {
-                con=(MultiConnection)e.nextElement();
-                diff=nowTime-con.getStartTime();
+            for (Enumeration e = busyPool.elements(); e.hasMoreElements();) {
+                MultiConnection con = (MultiConnection) e.nextElement();
+                int diff = nowTime - con.getStartTime();
                 if (diff>5) {
                      if (log.isDebugEnabled()) {
                          log.debug("Checking a busy connection "+con);
@@ -120,39 +116,38 @@ public class MultiPool {
                     } catch(Exception re) {
                         log.error("ERROR Can't add connection to pool");
                     }
-                    busypool.removeElement(con);
+                    busyPool.remove(con);
                     try {
                         con.realclose();
                     } catch(Exception re) {
                         log.error("Can't close a connection !!!");
                     }
-                    if (newcon!=null) pool.addElement(newcon);
+                    if (newcon!=null) pool.add(newcon);
                 }
             }
-            if ((busypool.size()+pool.size())>conMax) {
-                int i;
+            if ((busyPool.size() + pool.size()) > conMax) {
                 if (log.isDebugEnabled()) {
-                    log.debug("JDBC -> Warning number of connections exceeds conMax "+(busypool.size()+pool.size()));
+                    log.debug("JDBC -> Warning number of connections exceeds conMax "+(busyPool.size()+pool.size()));
                 }
                 // Check if there are dups in the pools
-                for(Enumeration e=busypool.elements();e.hasMoreElements();) {
-                    bcon=(MultiConnection)e.nextElement();
-                    i=pool.indexOf(bcon);
-                    if (i>=0) {
+                for(Enumeration e=busyPool.elements();e.hasMoreElements();) {
+                    MultiConnection bcon = (MultiConnection) e.nextElement();
+                    int i = pool.indexOf(bcon);
+                    if (i >= 0) {
                         if (log.isDebugEnabled()) {
                             log.debug("duplicate connection found at "+i);
                         }
-                        pool.removeElementAt(i);
+                        pool.remove(i);
                     }
                 }
 
-                while(((busypool.size()+pool.size())>conMax) && pool.size()>2) {
+                while(((busyPool.size()+pool.size())>conMax) && pool.size()>2) {
                     // Remove too much ones.
-                    con=(MultiConnection)pool.elementAt(0);
+                    MultiConnection con = (MultiConnection) pool.elementAt(0);
                     if (log.isDebugEnabled()) {
                         log.debug("removing connection "+con);
                     }
-                    pool.removeElementAt(0);
+                    pool.remove(0);
                 }
             }
         }
@@ -179,11 +174,11 @@ public class MultiPool {
         	synchronized(synobj) {
             	con=(MultiConnection)pool.elementAt(0);
             	con.claim();
-            	pool.removeElementAt(0);
-            	busypool.addElement(con);
+            	pool.remove(0);
+            	busyPool.add(con);
         	}
 		}
-        return(con);
+        return con;
     }
 
     /**
@@ -193,7 +188,7 @@ public class MultiPool {
         if (!pool.contains(con)) {
             synchronized(synobj) {
                 con.release();
-                if (busypool.contains(con)) {
+                if (busyPool.contains(con)) {
                     if (doReconnect && (con.getUsage()>maxQuerys)) {
                         MultiConnection oldcon;
                         if (log.isDebugEnabled()) {
@@ -218,12 +213,12 @@ public class MultiPool {
                         } catch(Exception re) {
                             log.error("Can't add connection to pool");
                         }
-                        pool.addElement(con);
-                        busypool.removeElement(oldcon);
+                        pool.add(con);
+                        busyPool.remove(oldcon);
                         oldcon=null;
                     } else {
-                        pool.addElement(con);
-                        busypool.removeElement(con);
+                        pool.add(con);
+                        busyPool.remove(con);
                     }
                 } else {
                     log.error("can't remove from putback");
@@ -243,35 +238,35 @@ public class MultiPool {
      * get the pool size
      */
     public int getSize() {
-        return(pool.size());
+        return pool.size();
     }
 
     /**
      * get the number of statements performed
      */
     public int getTotalConnectionsCreated() {
-        return(totalConnections);
+        return totalConnections;
     }
 
     /**
      * @javadoc
      */
     public Enumeration elements() {
-        return(pool.elements());
+        return pool.elements();
     }
 
     /**
      * @javadoc
      */
     public Enumeration busyelements() {
-        return(busypool.elements());
+        return busyPool.elements();
     }
 
     /**
      * @javadoc
      */
     public String toString() {
-        return("dbm="+dbm+",name="+name+",conmax="+conMax);
+        return "dbm=" + dbm + ",name=" + name + ",conmax=" + conMax;
     }
 
     /**
