@@ -80,7 +80,14 @@ public class MMObjectNode {
 	public MMObjectNode(int id,int type, String owner) {
 	}
 
-	/** 
+    /*
+    * Tests whether the data in a node is valid (throws an exception if this is not the case).
+    */
+	public void testValidData() throws InValidDataException {
+	  parent.testValidData(this);
+	};
+ 	
+ 	/**
 	* commit : commits the node to the database or other storage system
 	* this can only be done on a existing (inserted) node. it will use the
 	* changed Vector as its base of what to commit/changed
