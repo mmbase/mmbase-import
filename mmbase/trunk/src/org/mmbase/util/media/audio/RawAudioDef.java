@@ -8,10 +8,6 @@ See http://www.MMBase.org/license
 
 */
 
-/**
- * (c) 2000 VPRO
- * @version $Id: RawAudioDef.java,v 1.9 2002-01-25 14:03:57 pierre Exp $
- */
 package org.mmbase.util.media.audio;
 
 import java.util.Vector;
@@ -23,11 +19,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
+ * @deprecation-used CompareInterface is deprecated, use java.lang.Comparable
  * @javadoc
  * @author Daniel Ockeloen
  * @author David van Zeventer
  * @author Rico Jansen
- * @version $Id: RawAudioDef.java,v 1.9 2002-01-25 14:03:57 pierre Exp $
+ * @version $Id: RawAudioDef.java,v 1.10 2002-01-28 16:35:01 pierre Exp $
  */
 public class RawAudioDef implements Sortable, CompareInterface {
     private static Logger log = Logging.getLoggerInstance(RawAudioDef.class.getName());
