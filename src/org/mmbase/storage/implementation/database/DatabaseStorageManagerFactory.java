@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 import javax.naming.*;
 import javax.sql.DataSource;
 
+import org.mmbase.module.core.MMBaseContext;
 import org.mmbase.storage.*;
 import org.mmbase.storage.util.StorageReader;
 import org.mmbase.util.logging.*;
@@ -34,11 +35,10 @@ import org.xml.sax.InputSource;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.10 2004-01-02 15:41:54 nico Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.11 2004-02-06 21:37:01 michiel Exp $
  */
 public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
-    // logger
     private static final Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
     // standard sql reserved words
@@ -88,6 +88,12 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
      * Whether transactions and rollback are supported by this database
      */
     protected boolean supportsTransactions = false;
+
+
+    /**
+     * Used by #getBinaryFileBasePath
+     */
+    private String basePath = null;
 
     public double getVersion() {
         return 0.1;
@@ -246,6 +252,25 @@ public class DatabaseStorageManagerFactory extends StorageManagerFactory {
         }
         return reader;
     }
+
+
+    /**
+     * Returns the base path for 'binary file'
+     */
+    
+    protected String getBinaryFileBasePath() {
+        if (basePath == null) {
+            basePath = (String) getAttribute(Attributes.BINARY_FILE_PATH);
+            if (basePath == null || basePath.equals("")) {
+                basePath = MMBaseContext.getServletContext().getRealPath("/WEB-INF/data");
+            } else if (!basePath.startsWith("/")) {
+                basePath = MMBaseContext.getServletContext().getRealPath("/") + java.io.File.separator + basePath;
+            }
+        }
+        return basePath;
+    }
+    
+
 
 }
 
