@@ -43,6 +43,7 @@ public class XMLApplicationReader  {
             parser.parse(filename);
             document = parser.getDocument();
 
+	    /*
 	    System.out.println("*** START XML APPLICATION READER FOR : "+filename);	
 	    System.out.println("Application name="+getApplicationName());	
 	    System.out.println("Application version="+getApplicationVersion());	
@@ -52,6 +53,7 @@ public class XMLApplicationReader  {
 	    System.out.println("DataSources="+getDataSources());	
 	    System.out.println("RelationSources="+getRelationSources());	
 	    System.out.println("*** END XML APPLICATION READER FOR : "+filename);	
+	    */
 	} catch(Exception e) {
 	    e.printStackTrace();
 	}
