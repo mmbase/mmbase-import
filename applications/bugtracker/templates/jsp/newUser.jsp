@@ -1,80 +1,40 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml/DTD/transitional.dtd">
-<HTML>
-<HEAD>
-   <TITLE>MMBase bugtracker</TITLE>
+<html>
+<head>
+   <title>MMBase bugtracker</title>
+   <link rel="stylesheet" type="text/css" href="css/mmbase.css" />
    <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 </HEAD>
 <mm:cloud>
 <mm:import externid="error">none</mm:import>
-<BODY BACKGROUND="images/back.gif" TEXT="#42BDAD" BGCOLOR="#00425B" LINK="#000000" ALINK="#555555" VLINK="#555555">
-<BR>
-<FORM ACTION="executes/newAccount.jsp" METHOD="POST">
-<TABLE width="90%" cellspacing=1 cellpadding=3 border=0>
-<TR>
-	<TD WIDTH="50"><IMG SRC="../beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
-	<TD BGCOLOR="42BDAD" COLSPAN=2>
-	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
-	<B>Create Account
+<body class="basic">
+<form action="executes/newAccount.jsp" method="post">
+<table>
+<tr>
+	<td width="50"><img src="../beeld/trans.gif" width="50" height="1" /></td>
+	<td colspan="2">
+	<b>Create Account
 	<mm:compare referid="error" value="email">
-		<br><br><center>*** Email allready has a account, use resend account info !! ***</center><br><br>
+		*** Email already has a account, use resend account info !! ***
 	</mm:compare>
 	<mm:compare referid="error" value="account">
-		<br><br><center>*** Account name allready in use pick a new one ***</center><br><br>
+		*** Account name allready in use pick a new one ***
 	</mm:compare>
 	<mm:compare referid="error" value="info">
-		<br><br><center>*** Not all field where provided ***</center><br><br>
+		*** Not all field where provided ***
 	</mm:compare>
-	</B>
-	</TD>
-</TR>
+	</b>
+	</td>
+</tr>
 
-<TR>
-		<TD WIDTH="30"></TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-		Account name	
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-        		<INPUT NAME="newaccount" VALUE="" SIZE="20">
-		</TD>
-</TR>
-<TR>
-		<TD WIDTH="30"></TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-		Firstname
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-        		<INPUT NAME="newfirstname" VALUE="" SIZE="20">
-		</TD>
-</TR>
-<TR>
-		<TD WIDTH="30"></TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-		Lastname
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-        		<INPUT NAME="newlastname" VALUE="" SIZE="20">
-		</TD>
-</TR>
-<TR>
-		<TD WIDTH="30"></TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-		Email	
-		</TD>
-		<TD BGCOLOR="#00425A" COLSPAN="1">
-       			<INPUT NAME="newemail" VALUE="" SIZE="20">
-		</TD>
-</TR>
-<TR>
-		<TD WIDTH="30"></TD>
-		<TD BGCOLOR="#00425A" COLSPAN="2">
-			<BR>
-			<CENTER>
-			<INPUT TYPE="SUBMIT" VALUE="Create Account">
-			<BR>
-		</TD>
-</TR>
-</TABLE>
-</FORM>
+<tr> <td>Account name </td> <td> <input name="newaccount"  value=""   /> </td></tr>
+<tr> <td>Firstname    </td> <td> <input name="newfirstname" value=""  /> </td></tr>
+<tr> <td>Lastname     </td> <td> <input name="newlastname"  value=""  /> </td></tr>
+<tr> <td>Email	      </td> <td> <input name="newemail"     value=""  /> </td></tr>
+<tr> <td colspan="2"> <input type="submit" value="Create Account" />     </td></tr>
+
+</table>
+</form>
 </mm:cloud>
-</BODY>
-</HTML>
+</body>
+</html>

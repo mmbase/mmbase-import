@@ -4,7 +4,7 @@
 %><html>
 <head>
    <title>MMBase Bugtracker</title>
-      <link rel="stylesheet" type="text/css" href="css/mmbase.css" />
+   <link rel="stylesheet" type="text/css" href="css/mmbase.css" />
 </head>
 <mm:cloud>
 <mm:import externid="sbugid" jspvar="sbugid" />
