@@ -29,7 +29,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.31 2004-01-13 12:23:46 michiel Exp $
+ * @version $Id: MultiConnection.java,v 1.32 2004-02-02 18:35:18 michiel Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -180,20 +180,40 @@ public class MultiConnection implements Connection {
         con.rollback();
     }
     
+
+    /**
+     * @since MMBase-1.7
+     */
+    private String getLogSqlMessage(long time) {
+        StringBuffer mes = new StringBuffer();
+        if (time < 10) mes.append(' ');
+        if (time < 100) mes.append(' ');
+        if (time < 1000) mes.append(' ');
+        mes.append(time);
+        mes.append(" ms: ").append(getLastSQL());
+        return mes.toString();
+    }
     /**
      * Close connections
      */
-    public void close() throws SQLException {
-        if (log.isDebugEnabled()) {
-            StringBuffer mes = new StringBuffer();
-            long time = System.currentTimeMillis() - getStartTimeMillis();
-            if (time < 10) mes.append(' ');
-            if (time < 100) mes.append(' ');
-            if (time < 1000) mes.append(' ');
-            mes.append(time);
-            mes.append(" ms: ").append(getLastSQL());
-            log.debug(mes.toString());
+    public void close() throws SQLException {        
+        long time = System.currentTimeMillis() - getStartTimeMillis();
+        
+        if (time < 5000) {  //  ok, you can switch on query logging with setting logging of this class on debug
+            if (log.isDebugEnabled()) {
+                log.debug(getLogSqlMessage(time));
+            }
+        } else if (time < 30000) {     // 5 s is too long, but perhaps that's still ok.
+            if (log.isServiceEnabled()) {
+                log.service(getLogSqlMessage(time));
+            }
+        } else if (time < 60000) {   // over 30 s, that too is good to know
+            log.info(getLogSqlMessage(time));
+        } else {                      // query took more than 60 s, that's worth a warning
+            log.warn(getLogSqlMessage(time));
         }
+
+
         state = CON_FINISHED;
         // If there is a parent object, this connection belongs to a pool and should not be closed,
         // but placed back in the pool
@@ -300,7 +320,7 @@ public class MultiConnection implements Connection {
      * @javadoc
      */
     public boolean checkSQLError(Exception e) {
-        log.error("JDBC CHECK ERROR="+e.toString());
+        log.error("JDBC CHECK ERROR=" + e.toString());
         return true;
     }
     
