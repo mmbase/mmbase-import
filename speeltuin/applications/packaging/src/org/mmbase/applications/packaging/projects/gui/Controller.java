@@ -211,6 +211,22 @@ public class Controller {
 				virtual.setValue("lastdate",""+t.getLastDate());
 				virtual.setValue("description",t.getDescription());
 				virtual.setValue("maintainer",t.getMaintainer());
+				virtual.setValue("syntaxerrors",t.hasSyntaxErrors());
+        			if (t.getRelatedPeople("initiators")==null || t.getRelatedPeople("initiators").size()==0) {
+					virtual.setValue("haveinitiators","false");
+				} else {
+					virtual.setValue("haveinitiators","true");
+				}
+        			if (t.getRelatedPeople("developers")==null || t.getRelatedPeople("developers").size()==0) {
+					virtual.setValue("havedevelopers","false");
+				} else {
+					virtual.setValue("havedevelopers","true");
+				}
+        			if (t.getRelatedPeople("contacts")==null || t.getRelatedPeople("contacts").size()==0) {
+					virtual.setValue("havecontacts","false");
+				} else {
+					virtual.setValue("havecontacts","true");
+				}
 				virtual.setValue("name",t.getName());
 				if (t.isBundle()) {
 					virtual.setValue("bundlename",t.getPackageName());
