@@ -70,10 +70,10 @@ public class WriteTag extends ContextReferrerTag {
             }
         } else {
             if (log.isDebugEnabled()) {
-                log.debug("-> " + getContextTag().getObject(getReferid()));
+                log.debug("-> " + getObject(getReferid()));
             }
             
-            Object value = getContextTag().getObject(getReferid());
+            Object value = getObject(getReferid());
             
             extraBodyContent = null;
             if (jspvar != null) { // a jspvar was defined, don't write to page.

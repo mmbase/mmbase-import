@@ -76,8 +76,8 @@ public class UrlTag extends ContextReferrerTag {
             while (i.hasNext()) {
                 String key = (String)i.next();
                 if (getContextTag().isPresent(key)) {
-                    String value = getContextTag().getObjectAsString(key);                
-                    show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", getContextTag().getObjectAsString(key));
+                    String value = getString(key);                
+                    show += connector + key + "=" + org.mmbase.util.Encode.encode("ESCAPE_URL_PARAM", value);
                     connector = "&amp;";
                 }
             }

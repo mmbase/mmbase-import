@@ -33,7 +33,7 @@ public class CompareTag extends PresentTag implements ConditionTag {
     }
                
     public int doStartTag() throws JspTagException {
-        if (value.equals(getContextTag().getObject(getReferid())) != inverse ) {
+        if (value.equals(getObject(getReferid())) != inverse ) {
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
