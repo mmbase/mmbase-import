@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Rico Jansen
  * @author Pierre van Rooden
  * @author Rob van Maris
- * @version $Id: ClusterBuilder.java,v 1.36 2003-04-03 17:19:59 pierre Exp $
+ * @version $Id: ClusterBuilder.java,v 1.37 2003-05-07 13:02:56 kees Exp $
  */
 public class ClusterBuilder extends VirtualBuilder {
 
@@ -47,23 +47,23 @@ public class ClusterBuilder extends VirtualBuilder {
      * When searching relations, return both relations from source to deastination and from destination to source,
      * provided directionality allows
      */
-    public static final int SEARCH_BOTH = 0;
+    public static final int SEARCH_BOTH= 0;
     /**
      * Search for destinations,
      * When searching relations, return only relations from source to deastination.
      */
-    public static final int SEARCH_DESTINATION = 1;
+    public static final int SEARCH_DESTINATION= 1;
     /**
      * Seach for sources.
      * When searching a multilevel, return only relations from destination to source, provided directionality allows
      */
-    public static final int SEARCH_SOURCE = 2;
+    public static final int SEARCH_SOURCE= 2;
     /**
      * Search for all relations.
      * When searching a multilevel, return both relations from source to deastination and from destination to source.
      * Directionality is not checked - ALL relations are used.
      */
-    public static final int SEARCH_ALL = 3;
+    public static final int SEARCH_ALL= 3;
 
     /**
      * Search for either destination or source.
@@ -72,10 +72,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * system onyl returns source to destination relations.
      * This is the default value (for compatibility purposes).
      */
-    public static final int SEARCH_EITHER = 4;
+    public static final int SEARCH_EITHER= 4;
 
     // logging variable
-    private static Logger log = Logging.getLoggerInstance(ClusterBuilder.class.getName());
+    private static Logger log= Logging.getLoggerInstance(ClusterBuilder.class.getName());
 
     /**
      * Creates <code>ClusterBuilder</code> instance.
@@ -84,7 +84,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @scope package
      */
     public ClusterBuilder(MMBase m) {
-        super(m,"clusternodes");
+        super(m, "clusternodes");
     }
 
     /**
@@ -93,8 +93,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.6
      */
     public static int getSearchDir(String search) {
-        if (search == null) return SEARCH_EITHER;
-        search = search.toUpperCase();
+        if (search == null)
+            return SEARCH_EITHER;
+        search= search.toUpperCase();
         if ("DESTINATION".equals(search)) {
             return SEARCH_DESTINATION;
         } else if ("SOURCE".equals(search)) {
@@ -106,7 +107,7 @@ public class ClusterBuilder extends VirtualBuilder {
         } else if ("EITHER".equals(search)) {
             return SEARCH_EITHER;
         } else {
-            throw  new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
+            throw new RuntimeException("'" + search + "' cannot be converted to a search-direction constant");
         }
 
     }
@@ -117,13 +118,13 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.6
      */
     public static String getSearchDirString(int search) {
-        if (search==SEARCH_DESTINATION) {
+        if (search == SEARCH_DESTINATION) {
             return "DESTINATION";
-        } else if (search==SEARCH_SOURCE) {
+        } else if (search == SEARCH_SOURCE) {
             return "SOURCE";
-        } else if (search==SEARCH_BOTH) {
+        } else if (search == SEARCH_BOTH) {
             return "BOTH";
-        } else if (search==SEARCH_ALL) {
+        } else if (search == SEARCH_ALL) {
             return "ALL";
         } else {
             return "EITHER";
@@ -139,7 +140,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return A newly initialized <code>VirtualNode</code>.
      */
     public MMObjectNode getNewNode(String owner) {
-        MMObjectNode node=new ClusterNode(this);
+        MMObjectNode node= new ClusterNode(this);
         return node;
     }
 
@@ -150,24 +151,25 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param node The node to display
      * @return the display of the node as a <code>String</code>
      */
-     public String getGUIIndicator(MMObjectNode node) {
+    public String getGUIIndicator(MMObjectNode node) {
         // Return "name"-field when available.
-        String s = node.getStringValue("name");
-        if (s!=null) {
+        String s= node.getStringValue("name");
+        if (s != null) {
             return s;
         }
 
         // Else "name"-fields of contained nodes.
-        s = "";
-        for (Enumeration i=node.values.keys(); i.hasMoreElements(); ) {
-            String key = (String)i.nextElement();
+        s= "";
+        for (Enumeration i= node.values.keys(); i.hasMoreElements();) {
+            String key= (String)i.nextElement();
             if (key.endsWith(".name")) {
-                if (s.length()!=0) s+=", ";
-                s+=node.values.get(key);
+                if (s.length() != 0)
+                    s += ", ";
+                s += node.values.get(key);
             }
         }
-        if (s.length()>15) {
-            return s.substring(0,12)+"...";
+        if (s.length() > 15) {
+            return s.substring(0, 12) + "...";
         } else {
             return s;
         }
@@ -183,18 +185,19 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param field the name field of the field to display
      * @return the display of the node's field as a <code>String</code>, null if not specified
      */
-    public String getGUIIndicator(String field,MMObjectNode node) {
-        int pos=field.indexOf('.');
-        String bulname=null;
-        if ((pos!=-1) && (node instanceof ClusterNode)) {
-            bulname=field.substring(0,pos);
+    public String getGUIIndicator(String field, MMObjectNode node) {
+        int pos= field.indexOf('.');
+        String bulname= null;
+        if ((pos != -1) && (node instanceof ClusterNode)) {
+            bulname= field.substring(0, pos);
         }
-        MMObjectNode n=((ClusterNode)node).getRealNode(bulname);
-        if (n==null) n=node;
-        bulname=getTrueTableName(bulname);
-        MMObjectBuilder bul=mmb.getMMObject(bulname);
-        if (bul!=null) {
-            String tmp=field.substring(pos+1);
+        MMObjectNode n= ((ClusterNode)node).getRealNode(bulname);
+        if (n == null)
+            n= node;
+        bulname= getTrueTableName(bulname);
+        MMObjectBuilder bul= mmb.getMMObject(bulname);
+        if (bul != null) {
+            String tmp= field.substring(pos + 1);
             return bul.getGUIIndicator(tmp, n);
         }
         return null;
@@ -206,10 +209,10 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the name of the field's builder
      */
     public String getBuilderNameFromField(String fieldname) {
-        String bulname="";
-        int pos=fieldname.indexOf(".");
-        if (pos!=-1) {
-            bulname=fieldname.substring(0,pos);
+        String bulname= "";
+        int pos= fieldname.indexOf(".");
+        if (pos != -1) {
+            bulname= fieldname.substring(0, pos);
             return getTrueTableName(bulname);
         }
         return "";
@@ -221,9 +224,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the name of the field without its builder
      */
     public String getFieldNameFromField(String fieldname) {
-        int pos=fieldname.indexOf(".");
-        if (pos!=-1) {
-            fieldname=fieldname.substring(pos+1);
+        int pos= fieldname.indexOf(".");
+        if (pos != -1) {
+            fieldname= fieldname.substring(pos + 1);
         }
         return fieldname;
     }
@@ -234,9 +237,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the field
      */
     public FieldDefs getField(String fieldName) {
-        String buildername=getBuilderNameFromField(fieldName);
-        if (buildername.length()>0) {
-            MMObjectBuilder bul=mmb.getMMObject(buildername);
+        String buildername= getBuilderNameFromField(fieldName);
+        if (buildername.length() > 0) {
+            MMObjectBuilder bul= mmb.getMMObject(buildername);
             return bul.getField(getFieldNameFromField(fieldName));
         }
         return null;
@@ -263,10 +266,17 @@ public class ClusterBuilder extends VirtualBuilder {
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
      * @return a <code>Vector</code> containing all matching nodes
      */
-    public Vector searchMultiLevelVector(int snode,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
-        Vector v=new Vector();
-        v.addElement(""+snode);
-        return searchMultiLevelVector(v,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
+    public Vector searchMultiLevelVector(
+        int snode,
+        Vector fields,
+        String pdistinct,
+        Vector tables,
+        String where,
+        Vector orderVec,
+        Vector direction) {
+        Vector v= new Vector();
+        v.addElement("" + snode);
+        return searchMultiLevelVector(v, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER);
     }
 
     /**
@@ -290,8 +300,15 @@ public class ClusterBuilder extends VirtualBuilder {
      *      the first value in the list is used for the remaining fields. Default value is <code>'UP'</code>.
      * @return a <code>Vector</code> containing all matching nodes
      */
-    public Vector searchMultiLevelVector(Vector snodes,Vector fields,String pdistinct,Vector tables,String where, Vector orderVec,Vector direction) {
-        return searchMultiLevelVector(snodes,fields,pdistinct,tables,where,orderVec,direction, SEARCH_EITHER);
+    public Vector searchMultiLevelVector(
+        Vector snodes,
+        Vector fields,
+        String pdistinct,
+        Vector tables,
+        String where,
+        Vector orderVec,
+        Vector direction) {
+        return searchMultiLevelVector(snodes, fields, pdistinct, tables, where, orderVec, direction, SEARCH_EITHER);
     }
 
     /**
@@ -318,46 +335,51 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a <code>Vector</code> containing all matching nodes
      */
     public Vector searchMultiLevelVector(
-            Vector snodes,Vector fields,String pdistinct,
-            Vector tables,String where, Vector orderVec,Vector direction,
-            int searchdir) {
+        Vector snodes,
+        Vector fields,
+        String pdistinct,
+        Vector tables,
+        String where,
+        Vector orderVec,
+        Vector direction,
+        int searchdir) {
 
         // Try to handle using the SearchQuery framework.
         try {
-            SearchQuery query =
-            getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where,
-            orderVec, direction, searchdir);
-            List clusterNodes = getClusterNodes(query);
+            SearchQuery query=
+                getMultiLevelSearchQuery(snodes, fields, pdistinct, tables, where, orderVec, direction, searchdir);
+            List clusterNodes= getClusterNodes(query);
             return new Vector(clusterNodes);
 
-        // If this fails, fall back to legacy code.
+            // If this fails, fall back to legacy code.
         } catch (Exception e) {
             if (log.isServiceEnabled()) {
                 log.service(
                     "Failed to create SearchQuery for multilevel search, "
-                    + "exception:\n"
-                    + Logging.stackTrace(e)
-                    + "\nFalling back to legacy code in ClusterBuilder...");
+                        + "exception:\n"
+                        + Logging.stackTrace(e)
+                        + "\nFalling back to legacy code in ClusterBuilder...");
             }
         }
 
         // Legacy code starts here.
-        String stables,relstring,select,order,basenodestring,distinct;
-        Vector alltables,selectTypes;
+        String stables, relstring, select, order, basenodestring, distinct;
+        Vector alltables, selectTypes;
         MMObjectNode basenode;
         HashMap roles= new HashMap();
         int snode;
 
-        boolean isdistinct = pdistinct!=null && pdistinct.equalsIgnoreCase("YES");
+        boolean isdistinct= pdistinct != null && pdistinct.equalsIgnoreCase("YES");
         if (isdistinct) {
-            distinct="distinct";
-        }  else {
-            distinct="";
+            distinct= "distinct";
+        } else {
+            distinct= "";
         }
 
         // Get ALL tables (including missing reltables)
-        alltables=getAllTables(tables,roles);
-        if (alltables==null) return null;
+        alltables= getAllTables(tables, roles);
+        if (alltables == null)
+            return null;
 
         // Get the destination select string;
         // if the requested set is not DISTINCT, the
@@ -368,113 +390,129 @@ public class ClusterBuilder extends VirtualBuilder {
         // Note that due to teh problems with distinct result sets, this is not
         // yet an optimal sollution for the multilevel authorization problem
 
-        select=getSelectString(alltables,tables,fields,!isdistinct);
-        if (select==null) return null;
+        select= getSelectString(alltables, tables, fields, !isdistinct);
+        if (select == null)
+            return null;
 
         // Get the tables names corresponding to the fields (for the mapping)
-        selectTypes=getSelectTypes(alltables,select);
+        selectTypes= getSelectTypes(alltables, select);
 
         // create the order parts
-        order=getOrderString(alltables,orderVec,direction);
+        order= getOrderString(alltables, orderVec, direction);
 
         // get all the table names
-        stables=getTableString(alltables,roles);
+        stables= getTableString(alltables, roles);
 
         // Supporting more then 1 source node or no source node at all
         // Note that node number -1 is seen as no source node
-        if ((snodes!=null) && (snodes.size()>0)) {
+        if ((snodes != null) && (snodes.size() > 0)) {
             String str;
-            basenode=null;
+            basenode= null;
 
             // go trough the whole list and verify that it are all integers
             // from last to first,,... since we want snode to be the one that contains the first..
-            for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
-                str = ((String)snodes.elementAt(i)).trim();
+            for (int i= snodes.size() - 1; i >= 0; i--) {
+                str= ((String)snodes.elementAt(i)).trim();
                 // '-1' means no node, so skip
                 if (!str.equals("-1")) {
-                    basenode=getNode(str);
-                    if (basenode==null) {
-                        throw new RuntimeException("Cannot find node: "+str);
+                    basenode= getNode(str);
+                    if (basenode == null) {
+                        throw new RuntimeException("Cannot find node: " + str);
                     }
-                    snodes.setElementAt(""+basenode.getNumber(), i);
+                    snodes.setElementAt("" + basenode.getNumber(), i);
                 }
             }
 
             int sidx;
-            StringBuffer bb=new StringBuffer();
+            StringBuffer bb= new StringBuffer();
 
             // if a basenode is given (i.e. node is not -1)
-            if (basenode!=null) {
+            if (basenode != null) {
                 // not very neat... but it works
-                sidx=alltables.indexOf(basenode.parent.tableName);
-                if (sidx<0) sidx=alltables.indexOf(basenode.parent.tableName+"1");
+                sidx= alltables.indexOf(basenode.parent.tableName);
+                if (sidx < 0)
+                    sidx= alltables.indexOf(basenode.parent.tableName + "1");
                 // if we can't find the real parent assume object
-                if (sidx<0) sidx=alltables.indexOf("object");
-                if (sidx<0) sidx=0;
-                str=idx2char(sidx);
-                bb.append(getNodeString(str,snodes));
+                if (sidx < 0)
+                    sidx= alltables.indexOf("object");
+                if (sidx < 0)
+                    sidx= 0;
+                str= idx2char(sidx);
+                bb.append(getNodeString(str, snodes));
                 // Check if we got a relation to ourself
-                basenodestring=bb.toString();
+                basenodestring= bb.toString();
             } else {
-                basenodestring="";
+                basenodestring= "";
             }
         } else {
-            basenodestring="";
+            basenodestring= "";
         }
 
         // get the relation string
-        relstring=getRelationString(alltables, searchdir, roles);
+        relstring= getRelationString(alltables, searchdir, roles);
         // check if this is an 'invalid' condition (one which never produces results,
         // in that case, return empty resultset
-        if (relstring==null) {
+        if (relstring == null) {
             return new Vector();
         }
-        if ((relstring.length()>0) && (basenodestring.length()>0)) {
-                relstring=" AND "+relstring;
+        if ((relstring.length() > 0) && (basenodestring.length() > 0)) {
+            relstring= " AND " + relstring;
         }
 
         // create the extra where parts
 
-        if (where!=null && !where.trim().equals("")) {
-            where=QueryConvertor.altaVista2SQL(where).substring(5);
-            where=getWhereConvert(alltables,where,tables);
-            if (basenodestring.length()+relstring.length()>0) {
-                where=" AND ("+where+")";
+        if (where != null && !where.trim().equals("")) {
+            where= QueryConvertor.altaVista2SQL(where).substring(5);
+            where= getWhereConvert(alltables, where, tables);
+            if (basenodestring.length() + relstring.length() > 0) {
+                where= " AND (" + where + ")";
             }
         } else {
-            where="";
+            where= "";
         }
 
-        String query="";
+        String query= "";
         try {
-            MultiConnection con=null;
-            Statement stmt=null;
+            MultiConnection con= null;
+            Statement stmt= null;
             try {
-                con=mmb.getConnection();
-                stmt=con.createStatement();
-                if (basenodestring.length()+relstring.length()+where.length()>1) {
-                    query="select "+distinct+" "+select+" from "+stables+" where "+basenodestring+relstring+where+" "+order;
+                con= mmb.getConnection();
+                stmt= con.createStatement();
+                if (basenodestring.length() + relstring.length() + where.length() > 1) {
+                    query=
+                        "select "
+                            + distinct
+                            + " "
+                            + select
+                            + " from "
+                            + stables
+                            + " where "
+                            + basenodestring
+                            + relstring
+                            + where
+                            + " "
+                            + order;
                 } else {
-                    query="select "+distinct+" "+select+" from "+stables+" "+order;
+                    query= "select " + distinct + " " + select + " from " + stables + " " + order;
                 }
-                log.debug("Query "+query);
+                log.debug("Query " + query);
 
-                ResultSet rs=stmt.executeQuery(query);
+                ResultSet rs= stmt.executeQuery(query);
                 try {
                     ClusterNode node;
-                    Vector results=new Vector();
-                    String tmp,prefix;
-                    while(rs.next()) {
+                    Vector results= new Vector();
+                    String tmp, prefix;
+                    while (rs.next()) {
                         // create a new VIRTUAL object and add it to the result vector
-                        node=new ClusterNode(this,tables.size());
-                        ResultSetMetaData rd=rs.getMetaData();
+                        node= new ClusterNode(this, tables.size());
+                        ResultSetMetaData rd= rs.getMetaData();
                         String fieldname;
-                        for (int i=1;i<=rd.getColumnCount();i++) {
-                            prefix=selectTypes.elementAt(i-1)+".";
-                            fieldname=rd.getColumnName(i);
-                            mmb.getDatabase().decodeDBnodeField(node,fieldname,rs,i,prefix);
+                        for (int i= 1; i <= rd.getColumnCount(); i++) {
+                            prefix= selectTypes.elementAt(i - 1) + ".";
+                            fieldname= rd.getColumnName(i);
+                            mmb.getDatabase().decodeDBnodeField(node, fieldname, rs, i, prefix);
                         }
-                        node.initializing=false;
+                        node.initializing= false;
                         results.addElement(node);
                     }
                     //  return the results
@@ -483,11 +521,11 @@ public class ClusterBuilder extends VirtualBuilder {
                     rs.close();
                 }
             } finally {
-                mmb.closeConnection(con,stmt);
+                mmb.closeConnection(con, stmt);
             }
         } catch (Exception e) {
             // something went wrong print it to the logs
-            log.error("Query failed:"+query);
+            log.error("Query failed:" + query);
             log.error(Logging.stackTrace(e));
             return null;
         }
@@ -517,17 +555,16 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a list of prefixes of fieldnames
      */
     private Vector getSelectTypes(Vector alltables, String fields) {
-        Vector result=new Vector();
+        Vector result= new Vector();
         String val;
         int pos;
-        for (Enumeration e=getFunctionParameters(fields).elements();e.hasMoreElements();) {
-            val=(String)e.nextElement();
-            int idx=val.charAt(0) - 'a';
+        for (Enumeration e= getFunctionParameters(fields).elements(); e.hasMoreElements();) {
+            val= (String)e.nextElement();
+            int idx= val.charAt(0) - 'a';
             result.addElement(alltables.get(idx));
         }
         return result;
     }
-
 
     /**
      * Creates a full chain of table names.
@@ -541,46 +578,47 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return an expanded list of tablesnames
      */
     private Vector getAllTables(Vector tables, HashMap roles) {
-        Vector alltables=new Vector();
-        boolean lastrel=true;  // true: prevents the first table to be preceded by a relation table
-        String orgtable,curtable;
+        Vector alltables= new Vector();
+        boolean lastrel= true; // true: prevents the first table to be preceded by a relation table
+        String orgtable, curtable;
 
-        for (Enumeration e=tables.elements();e.hasMoreElements();) {
-            orgtable=(String)e.nextElement();
+        for (Enumeration e= tables.elements(); e.hasMoreElements();) {
+            orgtable= (String)e.nextElement();
             curtable= getTableName(orgtable);
             // check builder - should throw exception if builder doesn't exist ?
-            MMObjectBuilder bul = mmb.getMMObject(curtable);
-            if (bul==null) {
+            MMObjectBuilder bul= mmb.getMMObject(curtable);
+            if (bul == null) {
                 // check if it is a role name. if so, use the builder of the rolename and
                 // store a filter on rnumber.
-                int rnumber = mmb.getRelDef().getNumberByName(curtable);
-                if (rnumber==-1) {
-                    String msg = "Specified builder "+curtable+" does not exist.";
+                int rnumber= mmb.getRelDef().getNumberByName(curtable);
+                if (rnumber == -1) {
+                    String msg= "Specified builder " + curtable + " does not exist.";
                     log.error(msg);
                     throw new RuntimeException(msg);
                 } else {
-                    bul=mmb.getInsRel(); // dummy
-                    roles.put(orgtable,new Integer(rnumber));
+                    bul= mmb.getInsRel(); // dummy
+                    roles.put(orgtable, new Integer(rnumber));
                 }
             } else if (bul instanceof InsRel) {
-                int rnumber = mmb.getRelDef().getNumberByName(curtable);
-                if (rnumber!=-1) {
-                    roles.put(orgtable,new Integer(rnumber));
+                int rnumber= mmb.getRelDef().getNumberByName(curtable);
+                if (rnumber != -1) {
+                    roles.put(orgtable, new Integer(rnumber));
                 }
             }
             if (bul instanceof InsRel) {
                 alltables.addElement(orgtable);
-                lastrel=!lastrel;  // toggle lastrel - allows for relations to be made to relationnnodes
+                lastrel= !lastrel;
+                // toggle lastrel - allows for relations to be made to relationnnodes
             } else {
                 // nonrel, nonrel
                 if (!lastrel) {
                     alltables.addElement(mmb.getInsRel().getTableName());
                 }
                 alltables.addElement(orgtable);
-                lastrel=false;
+                lastrel= false;
             }
         }
-        return alltables ;
+        return alltables;
     }
 
     /**
@@ -591,9 +629,9 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     private int getTableNumber(String table) {
         char ch;
-        ch=table.charAt(table.length()-1);
+        ch= table.charAt(table.length() - 1);
         if (Character.isDigit(ch)) {
-            return Integer.parseInt(""+ch);
+            return Integer.parseInt("" + ch);
         } else {
             return -1;
         }
@@ -608,9 +646,9 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     private String getTableName(String table) {
         char ch;
-        ch=table.charAt(table.length()-1);
+        ch= table.charAt(table.length() - 1);
         if (Character.isDigit(ch)) {
-            return table.substring(0,table.length()-1);
+            return table.substring(0, table.length() - 1);
         } else {
             return table;
         }
@@ -623,9 +661,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return A <code>String</code> containing the table name
      */
     private String getTrueTableName(String table) {
-        String tab=getTableName(table);
-        int rnumber = mmb.getRelDef().getNumberByName(tab);
-        if (rnumber!=-1) {
+        String tab= getTableName(table);
+        int rnumber= mmb.getRelDef().getNumberByName(tab);
+        if (rnumber != -1) {
             return mmb.getRelDef().getBuilderName(getNode(rnumber));
         } else {
             return tab;
@@ -640,9 +678,9 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param table the table name to convert
      * @return the SQL table alias as a <code>String</code>
      */
-    private String getSQLTableAlias(Vector alltables,String table) {
-        int idx=alltables.indexOf(table);
-        if (idx>=0) {
+    private String getSQLTableAlias(Vector alltables, String table) {
+        int idx= alltables.indexOf(table);
+        if (idx >= 0) {
             return idx2char(idx);
         } else {
             return null;
@@ -660,20 +698,20 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return the SQL field name as a <code>String</code>
      */
     private String getSQLFieldName(Vector alltables, String fieldName) {
-        int pos=fieldName.indexOf('.'); // check if a tablename precedes the fieldname
-        if (pos!=-1) {
-            String table=fieldName.substring(0,pos); // the table
-            String idxn=getSQLTableAlias(alltables,table);
-            if (idxn==null) {
-                log.error("getSQLFieldName(): The field \""+fieldName+"\" has an invalid type specified");
+        int pos= fieldName.indexOf('.'); // check if a tablename precedes the fieldname
+        if (pos != -1) {
+            String table= fieldName.substring(0, pos); // the table
+            String idxn= getSQLTableAlias(alltables, table);
+            if (idxn == null) {
+                log.error("getSQLFieldName(): The field \"" + fieldName + "\" has an invalid type specified");
             } else {
-                String field=fieldName.substring(pos+1); // the field
-                field=mmb.getDatabase().getAllowedField(field);
-                return idxn+"."+field;
+                String field= fieldName.substring(pos + 1); // the field
+                field= mmb.getDatabase().getAllowedField(field);
+                return idxn + "." + field;
             }
         } else {
             // field has no type
-            log.error("getSQLFieldName(): The field \""+fieldName+"\" has no type specified");
+            log.error("getSQLFieldName(): The field \"" + fieldName + "\" has no type specified");
         }
         return null;
     }
@@ -690,21 +728,21 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     private void obtainSelectField(Vector alltables, String val, HashSet realfields) {
         // strip the function(s)
-        int pos=val.indexOf('(');
-        if (pos!=-1) {
-            val=val.substring(pos+1);
-            pos=val.lastIndexOf(')');
-            if (pos!=-1) {
-                val=val.substring(0,pos);
+        int pos= val.indexOf('(');
+        if (pos != -1) {
+            val= val.substring(pos + 1);
+            pos= val.lastIndexOf(')');
+            if (pos != -1) {
+                val= val.substring(0, pos);
             }
-            Vector fields=getFunctionParameters(val);
-            for (int i=0; i<fields.size(); i++) {
-                obtainSelectField(alltables,(String)fields.get(i), realfields);
+            Vector fields= getFunctionParameters(val);
+            for (int i= 0; i < fields.size(); i++) {
+                obtainSelectField(alltables, (String)fields.get(i), realfields);
             }
         } else {
             if (!Character.isDigit(val.charAt(0))) {
-                String field=getSQLFieldName(alltables,val);
-                if (field!=null) {
+                String field= getSQLFieldName(alltables, val);
+                if (field != null) {
                     realfields.add(field);
                 }
             }
@@ -718,8 +756,8 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param rfields the fields that were requested
      * @return a select <code>String</code>
      */
-    protected String getSelectString(Vector alltables,Vector rfields) {
-        return getSelectString(alltables, null,rfields,false);
+    protected String getSelectString(Vector alltables, Vector rfields) {
+        return getSelectString(alltables, null, rfields, false);
     }
 
     /**
@@ -735,29 +773,32 @@ public class ClusterBuilder extends VirtualBuilder {
      *        only for those tables for which fields have been requested).
      * @return a select <code>String</code>
      */
-    protected String getSelectString(Vector alltables,Vector originaltables,
-                                     Vector rfields, boolean includeAllReferences) {
-        String result=null;
-        String val,field;
-        HashSet realfields = new HashSet();
-        for (Enumeration r=rfields.elements();r.hasMoreElements();) {
-            val=(String)r.nextElement();
-            obtainSelectField(alltables,val,realfields);
+    protected String getSelectString(
+        Vector alltables,
+        Vector originaltables,
+        Vector rfields,
+        boolean includeAllReferences) {
+        String result= null;
+        String val, field;
+        HashSet realfields= new HashSet();
+        for (Enumeration r= rfields.elements(); r.hasMoreElements();) {
+            val= (String)r.nextElement();
+            obtainSelectField(alltables, val, realfields);
         }
 
         // optionally add "number" fields for all originally specified tables
         if (includeAllReferences) {
-            for (Enumeration r=originaltables.elements();r.hasMoreElements();) {
-                val=(String)r.nextElement();
-                realfields.add(numberOf(getSQLTableAlias(alltables,val)));
+            for (Enumeration r= originaltables.elements(); r.hasMoreElements();) {
+                val= (String)r.nextElement();
+                realfields.add(numberOf(getSQLTableAlias(alltables, val)));
             }
         }
-        for (Iterator r=realfields.iterator();r.hasNext();) {
-            val=(String)r.next();
-            if (result==null) {
-              result=val;
+        for (Iterator r= realfields.iterator(); r.hasNext();) {
+            val= (String)r.next();
+            if (result == null) {
+                result= val;
             } else {
-              result+=", "+val;
+                result += ", " + val;
             }
         }
         return result;
@@ -771,40 +812,41 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param direction the direction of each order field ("UP" or "DOWN")
      * @return a order <code>String</code>
      */
-    private String getOrderString(Vector alltables,Vector orders,Vector direction) {
-        String result="";
-        String val,field,dir;
+    private String getOrderString(Vector alltables, Vector orders, Vector direction) {
+        String result= "";
+        String val, field, dir;
         int opos;
 
-        if (orders==null) return result.toString();
+        if (orders == null)
+            return result.toString();
         // Convert direction table
-        for (int pos=0; pos<direction.size(); pos++) {
-            val=(String)direction.elementAt(pos);
+        for (int pos= 0; pos < direction.size(); pos++) {
+            val= (String)direction.elementAt(pos);
             if (val.equalsIgnoreCase("DOWN")) {
-                direction.setElementAt("DESC",pos); // DOWN is DESC
+                direction.setElementAt("DESC", pos); // DOWN is DESC
             } else {
-                direction.setElementAt("ASC",pos);  // UP is ASC
+                direction.setElementAt("ASC", pos); // UP is ASC
             }
         }
 
-        opos=0;
-        for (Enumeration r=orders.elements();r.hasMoreElements();opos++) {
-            val=(String)r.nextElement();
-            field=getSQLFieldName(alltables,val);
-            if (field==null) {
+        opos= 0;
+        for (Enumeration r= orders.elements(); r.hasMoreElements(); opos++) {
+            val= (String)r.nextElement();
+            field= getSQLFieldName(alltables, val);
+            if (field == null) {
                 return null;
             } else {
                 if (!result.equals("")) {
-                    result+=", ";
+                    result += ", ";
                 } else {
-                    result+=" ORDER BY ";
+                    result += " ORDER BY ";
                 }
-                if (opos<direction.size()) {
-                    dir=(String)direction.elementAt(opos);
+                if (opos < direction.size()) {
+                    dir= (String)direction.elementAt(opos);
                 } else {
-                    dir=(String)direction.elementAt(0);
+                    dir= (String)direction.elementAt(0);
                 }
-                result+=field+" "+dir;
+                result += field + " " + dir;
             }
         }
         return result;
@@ -818,37 +860,40 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param tables ?
      * @return a where clause <code>String</code>
      */
-    private String getWhereConvert(Vector alltables,String where,Vector tables) {
-        String atable,table,result=where;
+    private String getWhereConvert(Vector alltables, String where, Vector tables) {
+        String atable, table, result= where;
         int cx;
         char ch;
 
-        for (Enumeration e=tables.elements();e.hasMoreElements();) {
-            atable=(String)e.nextElement();
-            table = getSQLTableAlias(alltables,atable);
+        for (Enumeration e= tables.elements(); e.hasMoreElements();) {
+            atable= (String)e.nextElement();
+            table= getSQLTableAlias(alltables, atable);
 
             // This translates the long tablename to the short one
             // i.e. people.account to a.account.
-            cx=result.indexOf(atable+".",0);
-            while (cx!=-1) {
-                if (cx>0)
-                    ch=result.charAt(cx-1);
+            cx= result.indexOf(atable + ".", 0);
+            while (cx != -1) {
+                if (cx > 0)
+                    ch= result.charAt(cx - 1);
                 else
-                    ch=0;
+                    ch= 0;
                 if (!isTableNameChar(ch)) {
-                    int fx=cx+atable.length()+1;
+                    int fx= cx + atable.length() + 1;
                     int lx;
-                    for (lx=fx;
-                         lx < result.length() && (Character.isLetterOrDigit(result.charAt(lx)) || result.charAt(lx) == '_');
-                         lx++);
-                    result=result.substring(0,cx)+
-                           table+"."+
-                           mmb.getDatabase().getAllowedField(result.substring(fx,lx))+
-                           result.substring(lx);
+                    for (lx= fx;
+                        lx < result.length()
+                            && (Character.isLetterOrDigit(result.charAt(lx)) || result.charAt(lx) == '_');
+                        lx++);
+                    result=
+                        result.substring(0, cx)
+                            + table
+                            + "."
+                            + mmb.getDatabase().getAllowedField(result.substring(fx, lx))
+                            + result.substring(lx);
                 }
-                cx=result.indexOf(atable+".",cx+1);
+                cx= result.indexOf(atable + ".", cx + 1);
             }
-            log.debug("getWhereConvert for table "+atable+"|"+result+"|");
+            log.debug("getWhereConvert for table " + atable + "|" + result + "|");
         }
         return result;
     }
@@ -858,7 +903,7 @@ public class ClusterBuilder extends VirtualBuilder {
      * Multilevel uses this to find out what is a tablename and what not
      */
     private boolean isTableNameChar(char ch) {
-        return  (ch=='_') || Character.isLetterOrDigit(ch);
+        return (ch == '_') || Character.isLetterOrDigit(ch);
     }
 
     /**
@@ -874,23 +919,24 @@ public class ClusterBuilder extends VirtualBuilder {
      * Multilevel uses this to find out what is a tablename and what not
      */
     protected String getTableString(Vector alltables, HashMap roles) {
-        StringBuffer result=new StringBuffer("");
+        StringBuffer result= new StringBuffer("");
         String val;
-        int idx=0;
+        int idx= 0;
 
-        for (Enumeration r=alltables.elements();r.hasMoreElements();) {
-            val=(String)r.nextElement();
-            if (!result.toString().equals("")) result.append(", ");
+        for (Enumeration r= alltables.elements(); r.hasMoreElements();) {
+            val= (String)r.nextElement();
+            if (!result.toString().equals(""))
+                result.append(", ");
 
-            Integer role=(Integer)roles.get(val);
-            if (role!=null) {
-                val=mmb.getRelDef().getBuilderName(getNode(role.intValue()));
-                result.append(mmb.baseName+"_"+val);
+            Integer role= (Integer)roles.get(val);
+            if (role != null) {
+                val= mmb.getRelDef().getBuilderName(getNode(role.intValue()));
+                result.append(mmb.baseName + "_" + val);
             } else {
-                result.append(mmb.baseName+"_"+getTableName(val));
+                result.append(mmb.baseName + "_" + getTableName(val));
             }
 
-            result.append(" "+idx2char(idx));
+            result.append(" " + idx2char(idx));
             idx++;
         }
         return result.toString();
@@ -920,35 +966,37 @@ public class ClusterBuilder extends VirtualBuilder {
      * @return a condition as a <code>String</code>, or null id no valid condiiton can be made
      */
     protected String getRelationString(Vector alltables, int searchdir, HashMap roles) {
-        StringBuffer result = new StringBuffer(40); // 40: reasonable size for the result
-        TypeDef typedef = mmb.getTypeDef();
-        TypeRel typerel = mmb.getTypeRel();
-        InsRel insrel   = mmb.getInsRel();
-        RelDef reldef   = mmb.getRelDef();
-        int siz = alltables.size() - 2;
+        StringBuffer result= new StringBuffer(40); // 40: reasonable size for the result
+        TypeDef typedef= mmb.getTypeDef();
+        TypeRel typerel= mmb.getTypeRel();
+        InsRel insrel= mmb.getInsRel();
+        RelDef reldef= mmb.getRelDef();
+        int siz= alltables.size() - 2;
 
         // get basic object builder
         // if it exists, you can use 'object' in nodepaths
-        int rootnr = mmb.getRootType();
+        int rootnr= mmb.getRootType();
 
-        if (log.isDebugEnabled()) log.debug("SEARCHDIR=" + searchdir);
+        if (log.isDebugEnabled())
+            log.debug("SEARCHDIR=" + searchdir);
 
+        for (int i= 0; i < siz; i += 2) {
 
-        for (int i = 0; i < siz; i += 2) {
+            String relChar= idx2char(i + 1);
+            if (result.length() > 0)
+                result.append(" AND ");
 
-            String relChar    = idx2char(i + 1);
-            if (result.length() > 0) result.append(" AND ");
-
-            boolean desttosrc = false; // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
-            boolean srctodest = false; // And from 'destination' to 'source'.
+            boolean desttosrc= false;
+            // Wether the relation must be followed from 'source' to 'destination' (first and second given node-typ)e
+            boolean srctodest= false; // And from 'destination' to 'source'.
             { // determine desttosrc and srctodest
 
                 // the typedef number of the source-type
-                int s        = typedef.getIntValue(getTableName((String) alltables.elementAt(i)));
+                int s= typedef.getIntValue(getTableName((String)alltables.elementAt(i)));
                 // role ?
-                Integer rnum = (Integer) roles.get((String) alltables.elementAt(i + 1));
+                Integer rnum= (Integer)roles.get((String)alltables.elementAt(i + 1));
                 // the typdef number of the destination-type
-                int d = typedef.getIntValue(getTableName((String) alltables.elementAt(i + 2)));
+                int d= typedef.getIntValue(getTableName((String)alltables.elementAt(i + 2)));
 
                 // try to find an optimal way to query the relation
                 // by determining the possible allowed relations, we can simplify the
@@ -966,56 +1014,94 @@ public class ClusterBuilder extends VirtualBuilder {
                 // In this, we have to take into account that 'a' or 'b' may also be the parent of an objecttype that
                 // has this relation. i.e. a relation news-related->images also validates object-related->images,
                 // news-related->object, and object-related->object.
-                int rnumber=-1;
+                int rnumber= -1;
                 if (rnum != null) {
                     result.append(relChar + ".rnumber=" + rnum.intValue() + " AND ");
-                    rnumber=rnum.intValue();
+                    rnumber= rnum.intValue();
                 }
-                srctodest = (searchdir != SEARCH_SOURCE)      && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
-                desttosrc = (searchdir != SEARCH_DESTINATION) && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+                srctodest=
+                    (searchdir != SEARCH_SOURCE)
+                        && typerel.contains(s, d, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
+                desttosrc=
+                    (searchdir != SEARCH_DESTINATION)
+                        && typerel.contains(d, s, rnumber, TypeRel.INCLUDE_PARENTS_AND_DESCENDANTS);
             }
 
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
-                desttosrc = false;
+                desttosrc= false;
             }
 
             if (desttosrc) {
                 // check for directionality if supported
                 String dirstring;
                 if (InsRel.usesdir && (searchdir != SEARCH_ALL)) {
-                    dirstring = " AND " + relChar + ".dir <> 1";
+                    dirstring= " AND " + relChar + ".dir <> 1";
                 } else {
-                    dirstring = "";
+                    dirstring= "";
                 }
                 // there is a typed relation from destination to src
                 if (srctodest) {
-                    String sourceNumber = numberOf(idx2char(i));
-                    String destNumber   = numberOf(idx2char(i + 2));
+                    String sourceNumber= numberOf(idx2char(i));
+                    String destNumber= numberOf(idx2char(i + 2));
                     // there is ALSO a typed relation from src to destination - make a more complex query
                     result.append(
-                           "(("+ sourceNumber     + "=" + relChar + ".snumber AND "+
-                                 destNumber       + "=" + relChar + ".dnumber ) OR ("+
-                                 sourceNumber     + "=" + relChar + ".dnumber AND "+
-                                 destNumber       + "=" + relChar + ".snumber" + dirstring + "))");
+                        "(("
+                            + sourceNumber
+                            + "="
+                            + relChar
+                            + ".snumber AND "
+                            + destNumber
+                            + "="
+                            + relChar
+                            + ".dnumber ) OR ("
+                            + sourceNumber
+                            + "="
+                            + relChar
+                            + ".dnumber AND "
+                            + destNumber
+                            + "="
+                            + relChar
+                            + ".snumber"
+                            + dirstring
+                            + "))");
                 } else {
                     // there is ONLY a typed relation from destination to src - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".dnumber AND "+
-                                  numberOf(idx2char(i + 2)) + "=" + relChar + ".snumber" + dirstring);
+                    result.append(
+                        numberOf(idx2char(i))
+                            + "="
+                            + relChar
+                            + ".dnumber AND "
+                            + numberOf(idx2char(i + 2))
+                            + "="
+                            + relChar
+                            + ".snumber"
+                            + dirstring);
                 }
             } else {
                 if (srctodest) {
                     // there is no typed relation from destination to src (assume a relation between src and destination)  - optimized query
-                    result.append(numberOf(idx2char(i))     + "=" + relChar + ".snumber AND "+
-                              numberOf(idx2char(i + 2)) + "=" + relChar + ".dnumber");
+                    result.append(
+                        numberOf(idx2char(i))
+                            + "="
+                            + relChar
+                            + ".snumber AND "
+                            + numberOf(idx2char(i + 2))
+                            + "="
+                            + relChar
+                            + ".dnumber");
                 } else {
                     // no results possible
                     // terminate, return null!
-                    log.warn("There are no relations possible (no typerel specified) between "+
-                               getTableName((String) alltables.elementAt(i)) + " and "+
-                               getTableName((String) alltables.elementAt(i + 2)) + " using "+
-                               alltables.elementAt(i + 1)+ " in "+
-                               getSearchDirString(searchdir) + " direction(s)"
-                               );
+                    log.warn(
+                        "There are no relations possible (no typerel specified) between "
+                            + getTableName((String)alltables.elementAt(i))
+                            + " and "
+                            + getTableName((String)alltables.elementAt(i + 2))
+                            + " using "
+                            + alltables.elementAt(i + 1)
+                            + " in "
+                            + getSearchDirString(searchdir)
+                            + " direction(s)");
                     return null;
                 }
             }
@@ -1033,22 +1119,22 @@ public class ClusterBuilder extends VirtualBuilder {
      * XXX: So, why does this not return simply a 'char'?
      */
     protected String idx2char(int idx) {
-        return ""+new Character((char)('a'+idx));
+        return "" + new Character((char) ('a' + idx));
     }
 
-    private String getNodeString(String bstr,Vector snodes) {
-        String snode,str;
-        StringBuffer bb=new StringBuffer();
-        snode=(String)snodes.elementAt(0);
-        if (snodes.size()>1) {
-            bb.append(bstr+"."+mmb.getDatabase().getNumberString()+" in ("+snode);
-            for (int i=1;i<snodes.size();i++) {
-                str=(String)snodes.elementAt(i);
-                bb.append(","+str);
+    private String getNodeString(String bstr, Vector snodes) {
+        String snode, str;
+        StringBuffer bb= new StringBuffer();
+        snode= (String)snodes.elementAt(0);
+        if (snodes.size() > 1) {
+            bb.append(bstr + "." + mmb.getDatabase().getNumberString() + " in (" + snode);
+            for (int i= 1; i < snodes.size(); i++) {
+                str= (String)snodes.elementAt(i);
+                bb.append("," + str);
             }
             bb.append(")");
         } else {
-            bb.append(bstr+"."+mmb.getDatabase().getNumberString()+"="+snode);
+            bb.append(bstr + "." + mmb.getDatabase().getNumberString() + "=" + snode);
         }
         return bb.toString();
     }
@@ -1060,15 +1146,14 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param number number of the object in the table
      * @return a <code>String</code> containing the contents of a field as text
      */
-    public String getShortedText(String fieldname,int number) {
-        String buildername=getBuilderNameFromField(fieldname);
-        if (buildername.length()>0) {
-            MMObjectBuilder bul=mmb.getMMObject(buildername);
-            return bul.getShortedText(getFieldNameFromField(fieldname),number);
+    public String getShortedText(String fieldname, int number) {
+        String buildername= getBuilderNameFromField(fieldname);
+        if (buildername.length() > 0) {
+            MMObjectBuilder bul= mmb.getMMObject(buildername);
+            return bul.getShortedText(getFieldNameFromField(fieldname), number);
         }
         return null;
     }
-
 
     /**
      * Get binary data of a database blob field.
@@ -1077,11 +1162,11 @@ public class ClusterBuilder extends VirtualBuilder {
      * @param number number of the object in the table
      * @return an array of <code>byte</code> containing the contents of a field as text
      */
-    public byte[] getShortedByte(String fieldname,int number) {
-        String buildername=getBuilderNameFromField(fieldname);
-        if (buildername.length()>0) {
-            MMObjectBuilder bul=mmb.getMMObject(buildername);
-            return bul.getShortedByte(getFieldNameFromField(fieldname),number);
+    public byte[] getShortedByte(String fieldname, int number) {
+        String buildername= getBuilderNameFromField(fieldname);
+        if (buildername.length() > 0) {
+            MMObjectBuilder bul= mmb.getMMObject(buildername);
+            return bul.getShortedByte(getFieldNameFromField(fieldname), number);
         }
         return null;
     }
@@ -1125,32 +1210,34 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // TODO RvM: update javadoc
-    public BasicSearchQuery getMultiLevelSearchQuery (
-            List snodes, List fields, String pdistinct,
-            List tables, String where, List sortFields, List directions,
-            int searchdir) {
-        String stables,relstring,select,order,basenodestring;
-        Vector alltables,selectTypes;
+    public BasicSearchQuery getMultiLevelSearchQuery(
+        List snodes,
+        List fields,
+        String pdistinct,
+        List tables,
+        String where,
+        List sortFields,
+        List directions,
+        int searchdir) {
+        String stables, relstring, select, order, basenodestring;
+        Vector alltables, selectTypes;
 
         // Create the query.
-        BasicSearchQuery query = new BasicSearchQuery();
+        BasicSearchQuery query= new BasicSearchQuery();
 
         // Set the distinct property.
-        boolean distinct =
-            pdistinct != null && pdistinct.equalsIgnoreCase("YES");
+        boolean distinct= pdistinct != null && pdistinct.equalsIgnoreCase("YES");
         query.setDistinct(distinct);
 
         // Get ALL tables (including missing reltables)
         Map roles= new HashMap();
-        Map fieldsByAlias = new HashMap();
-        Map stepsByAlias
-            = addSteps(query, tables, roles, !distinct, fieldsByAlias);
+        Map fieldsByAlias= new HashMap();
+        Map stepsByAlias= addSteps(query, tables, roles, !distinct, fieldsByAlias);
 
         // Add fields.
-        Iterator iFields = fields.iterator();
+        Iterator iFields= fields.iterator();
         while (iFields.hasNext()) {
-            addFields(
-                query, (String) iFields.next(), stepsByAlias, fieldsByAlias);
+            addFields(query, (String)iFields.next(), stepsByAlias, fieldsByAlias);
         }
 
         // Add sortorders.
@@ -1159,36 +1246,35 @@ public class ClusterBuilder extends VirtualBuilder {
         // Supporting more then 1 source node or no source node at all
         // Note that node number -1 is seen as no source node
         if (snodes != null && snodes.size() > 0) {
-            Integer nodeNumber = new Integer(-1);
+            Integer nodeNumber= new Integer(-1);
 
             // Copy list, so the original list is not affected.
-            snodes = new ArrayList(snodes);
+            snodes= new ArrayList(snodes);
 
             // Go trough the whole list of strings (each representing
             // either a nodenumber or an alias), convert all to Integer objects.
             // from last to first,,... since we want snode to be the one that
             // contains the first..
-           for (int i=snodes.size() - 1 ; i >= 0 ; i--) {
-                String str = (String)snodes.get(i);
+            for (int i= snodes.size() - 1; i >= 0; i--) {
+                String str= (String)snodes.get(i);
                 try {
                     nodeNumber= new Integer(str);
-                } catch(NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     // maybe it was not an integer, hmm lets look in OAlias
                     // table then
-                    nodeNumber = new Integer(mmb.OAlias.getNumber(str));
+                    nodeNumber= new Integer(mmb.OAlias.getNumber(str));
                     if (nodeNumber.intValue() < 0) {
-                        nodeNumber = new Integer(0);
+                        nodeNumber= new Integer(0);
                     }
                 }
                 snodes.set(i, nodeNumber);
             }
 
-            BasicStep nodesStep
-                = getNodesStep(query.getSteps(), nodeNumber.intValue());
+            BasicStep nodesStep= getNodesStep(query.getSteps(), nodeNumber.intValue());
             if (nodesStep != null) {
-                Iterator iNodeNumbers = snodes.iterator();
+                Iterator iNodeNumbers= snodes.iterator();
                 while (iNodeNumbers.hasNext()) {
-                    Integer number = (Integer) iNodeNumbers.next();
+                    Integer number= (Integer)iNodeNumbers.next();
                     nodesStep.addNode(number.intValue());
                 }
             }
@@ -1197,8 +1283,12 @@ public class ClusterBuilder extends VirtualBuilder {
         addRelationDirections(query, searchdir, roles);
 
         // Add constraint for the where part.
-        QueryConvertor.setConstraint(query, where);
-
+        if (where != null && where.trim().length() != 0) {
+            //is the query contained a constraint we need to parse that constrataint
+            //and add it to the query, the ConstraintParser takes a query as argument 
+            //in order to be abble to resolve tablenames etc..
+            query.setConstraint(new ConstraintParser(query).toConstraint(where));
+        }
         return query;
     }
 
@@ -1223,62 +1313,61 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    Map addSteps(BasicSearchQuery query, List tables,
-            Map roles, boolean includeAllReference, Map fieldsByAlias) {
+    Map addSteps(BasicSearchQuery query, List tables, Map roles, boolean includeAllReference, Map fieldsByAlias) {
 
-        Map stepsByAlias = new HashMap(); // Maps original table names to steps.
-        Set tableAliases = new HashSet(); // All table aliases that are in use.
+        Map stepsByAlias= new HashMap(); // Maps original table names to steps.
+        Set tableAliases= new HashSet(); // All table aliases that are in use.
 
-        Iterator iTables = tables.iterator();
+        Iterator iTables= tables.iterator();
         if (iTables.hasNext()) {
             // First table.
-            String tableName = (String) iTables.next();
-            MMObjectBuilder bul = getBuilder(tableName, roles);
-            String tableAlias = getUniqueTableAlias(tableName, tableAliases, tables);
-            BasicStep step = query.addStep(bul);
+            String tableName= (String)iTables.next();
+            MMObjectBuilder bul= getBuilder(tableName, roles);
+            String tableAlias= getUniqueTableAlias(tableName, tableAliases, tables);
+            BasicStep step= query.addStep(bul);
             step.setAlias(tableAlias);
             stepsByAlias.put(tableName, step);
             if (includeAllReference) {
-                 // Add number field.
+                // Add number field.
                 addField(query, step, "number", fieldsByAlias);
             }
         }
         while (iTables.hasNext()) {
             String tableName;
             InsRel bul;
-            String tableName2 = (String) iTables.next();
-            MMObjectBuilder bul2 = getBuilder(tableName2, roles);
+            String tableName2= (String)iTables.next();
+            MMObjectBuilder bul2= getBuilder(tableName2, roles);
             BasicRelationStep relation;
             BasicStep step2;
             if (bul2 instanceof InsRel) {
                 // Explicit relation step.
-                tableName = tableName2;
-                bul = (InsRel) bul2;
-                tableName2 = (String) iTables.next();
-                bul2 = getBuilder(tableName2, roles);
-                relation = query.addRelationStep(bul, bul2);
-                step2 = (BasicStep) relation.getNext();
+                tableName= tableName2;
+                bul= (InsRel)bul2;
+                tableName2= (String)iTables.next();
+                bul2= getBuilder(tableName2, roles);
+                relation= query.addRelationStep(bul, bul2);
+                step2= (BasicStep)relation.getNext();
                 if (includeAllReference) {
                     // Add number fields.
                     relation.setAlias(tableName);
                     addField(query, relation, "number", fieldsByAlias);
                     step2.setAlias(tableName2);
                     addField(query, step2, "number", fieldsByAlias);
-                 }
+                }
             } else {
                 // Not a relation, relation step is implicit.
-                tableName = "insrel";
-                bul = mmb.getInsRel();
-                relation = query.addRelationStep(bul, bul2);
-                step2 = (BasicStep) relation.getNext();
+                tableName= "insrel";
+                bul= mmb.getInsRel();
+                relation= query.addRelationStep(bul, bul2);
+                step2= (BasicStep)relation.getNext();
                 if (includeAllReference) {
                     // Add number field.
                     step2.setAlias(tableName2);
                     addField(query, step2, "number", fieldsByAlias);
                 }
             }
-            String tableAlias = getUniqueTableAlias(tableName, tableAliases, tables);
-            String tableAlias2 = getUniqueTableAlias(tableName2, tableAliases, tables);
+            String tableAlias= getUniqueTableAlias(tableName, tableAliases, tables);
+            String tableAlias2= getUniqueTableAlias(tableName2, tableAliases, tables);
             relation.setAlias(tableAlias);
             step2.setAlias(tableAlias2);
             stepsByAlias.put(tableAlias, relation);
@@ -1305,33 +1394,32 @@ public class ClusterBuilder extends VirtualBuilder {
      */
     // package access!
     MMObjectBuilder getBuilder(String tableAlias, Map roles) {
-        String tableName = getTableName(tableAlias);
+        String tableName= getTableName(tableAlias);
         // check builder - should throw exception if builder doesn't exist ?
-        MMObjectBuilder bul = null;
+        MMObjectBuilder bul= null;
         try {
-            bul = mmb.getBuilder(tableName);
+            bul= mmb.getBuilder(tableName);
         } catch (BuilderConfigurationException e) {}
         if (bul == null) {
             // check if it is a role name. if so, use the builder of the
             // rolename and store a filter on rnumber.
-            int rnumber = mmb.getRelDef().getNumberByName(tableName);
+            int rnumber= mmb.getRelDef().getNumberByName(tableName);
             if (rnumber == -1) {
-                String msg = "Specified builder " + tableName + " does not exist.";
+                String msg= "Specified builder " + tableName + " does not exist.";
                 log.error(msg);
                 throw new IllegalArgumentException(msg);
             } else {
-                bul = mmb.getRelDef().getBuilder(rnumber); // relation builder
+                bul= mmb.getRelDef().getBuilder(rnumber); // relation builder
                 roles.put(tableAlias, new Integer(rnumber));
             }
         } else if (bul instanceof InsRel) {
-            int rnumber = mmb.getRelDef().getNumberByName(tableName);
-            if (rnumber!=-1) {
+            int rnumber= mmb.getRelDef().getNumberByName(tableName);
+            if (rnumber != -1) {
                 roles.put(tableAlias, new Integer(rnumber));
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("Resolved table alias \"" + tableAlias
-                + "\" to builder \"" + bul.getTableName() + "\"");
+            log.debug("Resolved table alias \"" + tableAlias + "\" to builder \"" + bul.getTableName() + "\"");
         }
         return bul;
     }
@@ -1351,26 +1439,25 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    String getUniqueTableAlias(String tableAlias, Set tableAliases,
-            Collection originalAliases) {
+    String getUniqueTableAlias(String tableAlias, Set tableAliases, Collection originalAliases) {
 
         // If provided alias is not unique, try alternatives,
         // skipping alternatives that are already in originalAliases.
         if (tableAliases.contains(tableAlias)) {
-            tableName = getTableName(tableAlias);
+            tableName= getTableName(tableAlias);
 
-            tableAlias = tableName;
-            char ch = '0';
-            while (originalAliases.contains(tableAlias)
-                    || tableAliases.contains(tableAlias)) {
+            tableAlias= tableName;
+            char ch= '0';
+            while (originalAliases.contains(tableAlias) || tableAliases.contains(tableAlias)) {
                 // Can't create more than 11 aliases for same tablename.
                 if (ch > '9') {
                     throw new IndexOutOfBoundsException(
                         "Failed to create unique table alias, because there "
-                        + "are already 11 aliases for this tablename: \""
-                        + tableName + "\"");
+                            + "are already 11 aliases for this tablename: \""
+                            + tableName
+                            + "\"");
                 }
-                tableAlias = tableName + ch;
+                tableAlias= tableName + ch;
                 ch++;
             }
         }
@@ -1398,40 +1485,34 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package access!
-    void addFields(BasicSearchQuery query,
-            String expression, Map stepsByAlias, Map fieldsByAlias) {
+    void addFields(BasicSearchQuery query, String expression, Map stepsByAlias, Map fieldsByAlias) {
 
         // TODO RvM: stripping functions is this (still) necessary?.
         // Strip function(s).
-        int pos1 = expression.indexOf('(');
-        int pos2 = expression.indexOf(')');
+        int pos1= expression.indexOf('(');
+        int pos2= expression.indexOf(')');
         if (pos1 != -1 ^ pos2 != -1) {
             // Parenthesis do not match.
-            throw new IllegalArgumentException(
-                "Parenthesis do not match in expression: \""
-                    + expression + "\"");
+            throw new IllegalArgumentException("Parenthesis do not match in expression: \"" + expression + "\"");
         } else if (pos1 != -1) {
             // Function parameter list containing subexpression(s).
-            String parameters = expression.substring(pos1 + 1, pos2);
-            Iterator iParameters = getFunctionParameters(parameters).iterator();
+            String parameters= expression.substring(pos1 + 1, pos2);
+            Iterator iParameters= getFunctionParameters(parameters).iterator();
             while (iParameters.hasNext()) {
-                String parameter = (String) iParameters.next();
-                addFields(
-                    query, parameter, stepsByAlias, fieldsByAlias);
+                String parameter= (String)iParameters.next();
+                addFields(query, parameter, stepsByAlias, fieldsByAlias);
             }
         } else if (!Character.isDigit(expression.charAt(0))) {
-            int pos = expression.indexOf('.');
+            int pos= expression.indexOf('.');
             if (pos < 1 || pos == (expression.length() - 1)) {
-                throw new IllegalArgumentException(
-                    "Invalid fieldname: \"" + expression + "\"");
+                throw new IllegalArgumentException("Invalid fieldname: \"" + expression + "\"");
             }
-            String stepAlias = expression.substring(0, pos);
-            String fieldName = expression.substring(pos + 1);
+            String stepAlias= expression.substring(0, pos);
+            String fieldName= expression.substring(pos + 1);
 
-            BasicStep step = (BasicStep) stepsByAlias.get(stepAlias);
+            BasicStep step= (BasicStep)stepsByAlias.get(stepAlias);
             if (step == null) {
-                throw new IllegalArgumentException(
-                    "Invalid step alias: \"" + stepAlias + "\"");
+                throw new IllegalArgumentException("Invalid step alias: \"" + stepAlias + "\"");
             }
             addField(query, step, fieldName, fieldsByAlias);
         }
@@ -1448,29 +1529,26 @@ public class ClusterBuilder extends VirtualBuilder {
      *        An entry is added for each stepfield added to the query.
      * @since MMBase-1.7
      */
-    private void addField(BasicSearchQuery query, BasicStep step,
-            String fieldName, Map fieldsByAlias) {
+    private void addField(BasicSearchQuery query, BasicStep step, String fieldName, Map fieldsByAlias) {
 
         // Fieldalias = stepalias.fieldname.
         // This value is used to store the field in fieldsByAlias.
         // The actual alias of the field is not set.
-        String fieldAlias = step.getAlias() + "." + fieldName;
+        String fieldAlias= step.getAlias() + "." + fieldName;
         if (fieldsByAlias.containsKey(fieldAlias)) {
             // Added already.
             return;
         }
 
-        MMObjectBuilder builder = mmb.getBuilder(step.getTableName());
-        FieldDefs fieldDefs = builder.getField(fieldName);
+        MMObjectBuilder builder= mmb.getBuilder(step.getTableName());
+        FieldDefs fieldDefs= builder.getField(fieldName);
         if (fieldDefs == null) {
             throw new IllegalArgumentException(
-                "Not a known field of builder " + step.getTableName()
-                    + ": \"" + fieldName + "\"");
+                "Not a known field of builder " + step.getTableName() + ": \"" + fieldName + "\"");
         }
 
         // Add the stepfield.
-        BasicStepField stepField
-            = query.addField(step, fieldDefs);
+        BasicStepField stepField= query.addField(step, fieldDefs);
         fieldsByAlias.put(fieldAlias, stepField);
     }
 
@@ -1485,41 +1563,39 @@ public class ClusterBuilder extends VirtualBuilder {
      * @since MMBase-1.7
      */
     // package visibility!
-    void addSortOrders(BasicSearchQuery query, List fieldNames,
-            List directions, Map fieldsByAlias) {
+    void addSortOrders(BasicSearchQuery query, List fieldNames, List directions, Map fieldsByAlias) {
 
         // Test if fieldnames are specified.
         if (fieldNames == null || fieldNames.size() == 0) {
             return;
         }
 
-        int defaultSortOrder = SortOrder.ORDER_ASCENDING;
+        int defaultSortOrder= SortOrder.ORDER_ASCENDING;
         if (directions != null && directions.size() != 0) {
-            if (((String) directions.get(0)).trim().equalsIgnoreCase("DOWN")) {
-                defaultSortOrder = SortOrder.ORDER_DESCENDING;
+            if (((String)directions.get(0)).trim().equalsIgnoreCase("DOWN")) {
+                defaultSortOrder= SortOrder.ORDER_DESCENDING;
             }
         }
 
-        Iterator iFieldNames = fieldNames.iterator();
-        Iterator iDirections = directions.iterator();
+        Iterator iFieldNames= fieldNames.iterator();
+        Iterator iDirections= directions.iterator();
         while (iFieldNames.hasNext()) {
-            String fieldName = (String) iFieldNames.next();
-            StepField field = (BasicStepField) fieldsByAlias.get(fieldName);
+            String fieldName= (String)iFieldNames.next();
+            StepField field= (BasicStepField)fieldsByAlias.get(fieldName);
             if (field == null) {
                 // Field has not been added.
-                field = ConstraintParser.getField(fieldName, query.getSteps());
+                field= ConstraintParser.getField(fieldName, query.getSteps());
             }
             if (field == null) {
-                throw new IllegalArgumentException(
-                "Invalid fieldname: \"" + fieldName + "\"");
+                throw new IllegalArgumentException("Invalid fieldname: \"" + fieldName + "\"");
             }
 
             // Add sort order.
-            BasicSortOrder sortOrder = query.addSortOrder(field); // ascending
+            BasicSortOrder sortOrder= query.addSortOrder(field); // ascending
 
             // Change direction if needed.
             if (iDirections.hasNext()) {
-                String direction = (String) iDirections.next();
+                String direction= (String)iDirections.next();
                 if (direction.trim().equalsIgnoreCase("DOWN")) {
                     sortOrder.setDirection(SortOrder.ORDER_DESCENDING);
                 }
@@ -1544,26 +1620,27 @@ public class ClusterBuilder extends VirtualBuilder {
             return null;
         }
 
-        MMObjectNode node = getNode(nodeNumber);
+        MMObjectNode node= getNode(nodeNumber);
         if (node == null) {
             return null;
         }
 
-        MMObjectBuilder builder = node.parent;
-        BasicStep result = null;
+        MMObjectBuilder builder= node.parent;
+        BasicStep result= null;
         do {
             // Find step corresponding to builder.
-            Iterator iSteps = steps.iterator();
+            Iterator iSteps= steps.iterator();
             while (iSteps.hasNext() && result == null) {
-                BasicStep step = (BasicStep) iSteps.next();
+                BasicStep step= (BasicStep)iSteps.next();
                 if (step.getTableName().equals(builder.tableName)) {
                     // Found.
-                    result = step;
+                    result= step;
                 }
             }
             // Not found, then try again with parentbuilder.
-            builder = builder.getParentBuilder();
-        } while (builder != null && result == null);
+            builder= builder.getParentBuilder();
+        }
+        while (builder != null && result == null);
 
         return result;
     }
@@ -1581,15 +1658,15 @@ public class ClusterBuilder extends VirtualBuilder {
     // package visibility!
     void addRelationDirections(BasicSearchQuery query, int searchdir, Map roles) {
 
-        Iterator iSteps = query.getSteps().iterator();
-        BasicStep sourceStep = (BasicStep) iSteps.next();
-        BasicStep destinationStep = null;
+        Iterator iSteps= query.getSteps().iterator();
+        BasicStep sourceStep= (BasicStep)iSteps.next();
+        BasicStep destinationStep= null;
         while (iSteps.hasNext()) {
             if (destinationStep != null) {
-                sourceStep = destinationStep;
+                sourceStep= destinationStep;
             }
-            BasicRelationStep relationStep = (BasicRelationStep) iSteps.next();
-            destinationStep = (BasicStep) iSteps.next();
+            BasicRelationStep relationStep= (BasicRelationStep)iSteps.next();
+            destinationStep= (BasicStep)iSteps.next();
 
             // Check directionality is requested and supported.
             if (searchdir != SEARCH_ALL && InsRel.usesdir) {
@@ -1597,43 +1674,45 @@ public class ClusterBuilder extends VirtualBuilder {
             }
 
             // Determine in what direction(s) this relation can be followed:
-            boolean desttosrc = false; // From 'source' to 'destination'.
-            boolean srctodest = false; // From 'destination' to 'source'.
+            boolean desttosrc= false; // From 'source' to 'destination'.
+            boolean srctodest= false; // From 'destination' to 'source'.
 
             // Determine typedef number of the source-type.
-            int srcType = mmb.getTypeDef().getIntValue(
-                getTableName(sourceStep.getAlias()));
+            int srcType= mmb.getTypeDef().getIntValue(getTableName(sourceStep.getAlias()));
             // Determine reldef number of the role.
-            Integer role = (Integer) roles.get(relationStep.getAlias());
+            Integer role= (Integer)roles.get(relationStep.getAlias());
             // Determine the typdef number of the destination-type.
-            int destType = mmb.getTypeDef().getIntValue(
-                getTableName(destinationStep.getAlias()));
+            int destType= mmb.getTypeDef().getIntValue(getTableName(destinationStep.getAlias()));
 
             // check if  a definite rnumber was requested...
             if (role != null) {
                 relationStep.setRole(role);
-                srctodest = searchdir != SEARCH_SOURCE
-                    && mmb.getTypeRel().reldefCorrect(srcType, destType, role.intValue());
-                desttosrc = searchdir != SEARCH_DESTINATION
-                    && mmb.getTypeRel().reldefCorrect(destType, srcType, role.intValue());
+                srctodest=
+                    searchdir != SEARCH_SOURCE && mmb.getTypeRel().reldefCorrect(srcType, destType, role.intValue());
+                desttosrc=
+                    searchdir != SEARCH_DESTINATION
+                        && mmb.getTypeRel().reldefCorrect(destType, srcType, role.intValue());
             } else {
-                Enumeration e = mmb.getTypeRel().getAllowedRelations(srcType, destType);
+                Enumeration e= mmb.getTypeRel().getAllowedRelations(srcType, destType);
                 while (e.hasMoreElements()) {
                     // get the allowed relation definitions
-                    MMObjectNode typenode = (MMObjectNode) e.nextElement();
-                    desttosrc = (searchdir != SEARCH_DESTINATION) &&
-                        (desttosrc || destType ==  mmb.getRootType() || // ignore root 'object' type
-                            typenode.getIntValue("snumber") == destType);
+                    MMObjectNode typenode= (MMObjectNode)e.nextElement();
+                        desttosrc=
+                            (searchdir != SEARCH_DESTINATION)
+                                && (desttosrc || destType == mmb.getRootType() || // ignore root 'object' type
+    typenode.getIntValue("snumber") == destType);
 
-                    srctodest = (searchdir != SEARCH_SOURCE) &&
-                        (srctodest || srcType ==  mmb.getRootType() || // ignore root 'object' type
-                            typenode.getIntValue("snumber") == srcType);
-                    if (desttosrc && srctodest) break;
+                        srctodest=
+                            (searchdir != SEARCH_SOURCE)
+                                && (srctodest || srcType == mmb.getRootType() || // ignore root 'object' type
+    typenode.getIntValue("snumber") == srcType);
+                    if (desttosrc && srctodest)
+                        break;
                 }
             }
 
             if (desttosrc && srctodest && (searchdir == SEARCH_EITHER)) { // support old
-                desttosrc = false;
+                desttosrc= false;
             }
 
             if (desttosrc) {
@@ -1652,11 +1731,15 @@ public class ClusterBuilder extends VirtualBuilder {
                 } else {
                     // no results possible...
                     relationStep.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
-                    log.warn("No relation defined between "
-                        + sourceStep.getAlias() + " and "
-                        + destinationStep.getAlias() + " using "
-                        + relationStep + " with direction(s) "
-                        + getSearchDirString(searchdir));
+                    log.warn(
+                        "No relation defined between "
+                            + sourceStep.getAlias()
+                            + " and "
+                            + destinationStep.getAlias()
+                            + " using "
+                            + relationStep
+                            + " with direction(s) "
+                            + getSearchDirString(searchdir));
                 }
             }
         }
