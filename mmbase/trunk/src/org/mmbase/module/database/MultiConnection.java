@@ -37,7 +37,7 @@ import org.mmbase.util.logging.Logging;
  *      This also goes for freeing the connection once it is 'closed'.
  * @author vpro
  * @author Pierre van Rooden
- * @version $Id: MultiConnection.java,v 1.24 2003-07-03 13:07:25 keesj Exp $
+ * @version $Id: MultiConnection.java,v 1.25 2003-08-04 12:33:18 pierre Exp $
  */
 public class MultiConnection implements Connection {
     // states
@@ -77,7 +77,7 @@ public class MultiConnection implements Connection {
     /**
      * @javadoc
      */
-    MultiConnection(MultiPool parent,Connection con) {
+    public MultiConnection(MultiPool parent,Connection con) {
         this.con=con;
         this.parent=parent;
         state=CON_UNUSED;
@@ -196,7 +196,9 @@ public class MultiConnection implements Connection {
             log.debug(mes.toString());
         }
         state=CON_FINISHED;
-        parent.putBack(this);
+        if (parent != null) {
+            parent.putBack(this);
+        }
     }
     
     /**
