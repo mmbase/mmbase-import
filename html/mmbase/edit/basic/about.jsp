@@ -1,4 +1,4 @@
-<%@ include file="page_base.jsp"
+<%@include file="page_base.jsp"
 %><mm:content type="text/html" language="$config.lang" expires="0">
 <mm:cloud sessionname="$config.session" method="asis" jspvar="cloud">
   <mm:write referid="style" escape="none" />

@@ -18,7 +18,8 @@
       <tr><th colspan="2"><%= m.getString("config.config") %></th></tr>
       <tr>
         <td><%= m.getString("config.pagesize")%></td>  
-        <td><input type="text" size="30" name="page_size" value="<mm:write referid="config.page_size" />" /></td>
+        <td><input type="text" size="30" name="page_size" value="<mm:write referid="config.page_size" />" />
+            <input type="text" size="30" name="indexoffset" value="<mm:write referid="config.indexoffset" />" /></td>
       </tr>
       <tr>
         <td><%= m.getString("config.stylesheet") %></td>

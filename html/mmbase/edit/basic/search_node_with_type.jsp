@@ -5,7 +5,8 @@
 <mm:cloud method="$config.method" loginpage="login.jsp" logon="$username" sessionname="$config.session" jspvar="cloud">
 <mm:context id="context_search">
 <%-- for selecting next page with listings --%>
-<mm:import externid="page" vartype="integer" from="parameters">0</mm:import>
+<mm:import externid="page" vartype="integer" from="parameters"><mm:write referid="config.indexoffset" /></mm:import>
+
 
 <mm:import externid="node_type"  required="true" from="parameters"/>
 <mm:import externid="to_page"    required="true" from="parameters"/><!-- where to link to -->
@@ -77,23 +78,34 @@
 
  <mm:size id="totalsize" write="false" />
 
- <mm:offset    value="${+$page*$config.page_size}"  />
+ <mm:write id="offset" value="${+($page - $config.indexoffset)*$config.page_size}" write="false" />
+ <mm:offset    value="$offset"  />
  <mm:maxnumber value="$config.page_size" />  
 
- <mm:write id="offset" value="${+$page*$config.page_size}" write="false" />
+
 
 <mm:import id="pager">
 <table><!-- pager -->
   <tr>
   <mm:context>
-    <td class="navigate">
-    <nobr>
-    <mm:previousbatches max="20">
+    <td class="navigate" colspan="1" style="text-align: left;">
+
+      <mm:isgreaterthan referid="page" value="$config.indexoffset">
+        <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
+           <mm:param name="page" value="${+ $page - 1}" />
+           </mm:url>'>
+          <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
+        </a>
+      </mm:isgreaterthan>
+    </td>
+    <td class="navigate" colspan="1">
+    <nobr style="width:100%;">
+    <mm:previousbatches max="20" indexoffset="$config.indexoffset">
       <mm:first>
         <mm:index>
-          <mm:compare value="0" inverse="true">
-          ...
-           </mm:compare>
+          <mm:compare value="$config.indexoffset" inverse="true">
+            ...
+          </mm:compare>
         </mm:index>
       </mm:first>
       <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
@@ -103,21 +115,16 @@
            <mm:fieldinfo type="reusesearchinput" />
         </mm:fieldlist>        
        </mm:url>' ><mm:index />
-      <mm:last>
-         <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
-      </mm:last>
     </a>
    </mm:previousbatches>
-     </nobr>
-   </td>
    </mm:context>
-   <td>
-   <mm:write value="$page" />
-   </td>
+   <mm:isgreaterthan referid="totalsize" value="$config.page_size">
+     <span class="currentpage" style="font-size: 120%; font-weight: bold;">
+       <mm:write value="$page" />
+     </span>
+   </mm:isgreaterthan>
    <mm:context>
-      <td class="navigate">    
-      <nobr>  
-      <mm:nextbatches max="21">
+      <mm:nextbatches max="21" indexoffset="$config.indexoffset">
        <mm:index offset="1">
        <mm:compare value="21" inverse="true">
        <a href='<mm:url referids="node,node_type,role_name,direction,orderby,search">
@@ -127,18 +134,27 @@
              <mm:fieldinfo type="reusesearchinput" />
          </mm:fieldlist>
          </mm:url>' >
-         <mm:first>
-        <span class="next"></span><span class="alt">[next page ->]</span>
-         </mm:first>
           <mm:index />
             </a>
        </mm:compare>
        <mm:compare value="21">
         ...
        </mm:compare>
+       <mm:last>
+         <mm:import id="needsnext" />
+       </mm:last>
        </mm:index>  
     </mm:nextbatches>
       </nobr>
+      </td>
+      <td class="navigate" colspan="1" style="text-align: right;">
+        <mm:present referid="needsnext">
+          <a href='<mm:url referids="node,node_type,role_name,direction,search,orderby">
+          <mm:param name="page" value="${+ $page + 1}" />
+          </mm:url>'>
+          <span class="next"></span><span class="alt">[next page ->]</span>
+        </a>
+        </mm:present>
       </td>
     </mm:context>
    </tr>
