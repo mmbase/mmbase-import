@@ -38,7 +38,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.114 2005-03-16 13:02:30 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.115 2005-03-16 16:49:52 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -1053,7 +1053,8 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
             cloud = getDefaultCloudContext().getCloud(getName(), getAuthenticate(), user == null ? null : user.toMap());
             log.debug("Logged in " );
             if (!cloud.getUser().isValid()) {
-                throw new RuntimeException("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
+                log.warn("Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
+                return deny(DENYREASON_FAIL, "Just acquired user " + cloud.getUser().getIdentifier() + " is not valid!");
             }
             // ok, logging on work, now check rank if necessary
             if (rank != Attribute.NULL) {
