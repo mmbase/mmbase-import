@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.265 2004-07-15 16:56:02 michiel Exp $
+version: $Id: mmbase-taglib.xml,v 1.266 2004-07-19 15:20:14 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -3472,6 +3472,18 @@ like the parameter list or the session (where ever it is available) --&gt;
          documenation of page-creating/taglib itself.
       </info>
     </attribute>
+    <attribute>
+      <name>encoding</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <refercontext>true</refercontext>
+      <info>
+        The encoding of the to-be-included page. If the included page does provide the right
+        information about this, then there should be no need to use this attribute ever. But if it
+        fails, then you can explicitely try to repair it, using this attribute.
+      </info>
+      <since>MMBase-1.7.1</since>
+    </attribute>
     <see tag="context" />
     <see tag="param" />
     <see tag="url" />
@@ -5354,7 +5366,7 @@ The 0 is just counter, which starts at 0 on every page.
     <since>MMBase-1.7</since>
     <attribute>
       <name>element</name>
-      <required>true</required>
+      <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
       </info>
@@ -5366,7 +5378,44 @@ The 0 is just counter, which starts at 0 on every page.
       <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
-        The name of the alias.
+        The name of the alias, or (since MMBase-1.8) a list of possible aliases.
+      </info>
+    </attribute>
+    <attribute>
+      <name>inverse</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        Inverses the constraint. So adds a NOT.
+      </info>
+    </attribute>
+  </tag>
+  <tag>
+    <name>typeconstraint</name>
+    <type>mmbase.list</type>
+    <extends>querycontainerreferrer</extends>
+    <see tag="listnodescontainer" />
+    <see tag="listcontainer" />
+    <tagclass>org.mmbase.bridge.jsp.taglib.containers.QueryTypeConstraintTag</tagclass>
+    <info>
+      Pinpoints one of the elements to a certain type, which can be useful in some cases.
+    </info>
+    <since>MMBase-1.8</since>
+    <attribute>
+      <name>element</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+      </info>
+      <see tag="listcontainer" />
+      <see tag="listnodescontainer" />
+    </attribute>
+    <attribute>
+      <name>name</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <info>
+        A list of nodemanager names.
       </info>
     </attribute>
     <attribute>
@@ -5900,7 +5949,7 @@ The 0 is just counter, which starts at 0 on every page.
     </attribute>
   </tag>
 
-  <!--tag>
+  <tag>
     <name>test</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.TestTag</tagclass>
     <attribute>
@@ -5908,6 +5957,6 @@ The 0 is just counter, which starts at 0 on every page.
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
     </attribute>
-  </tag-->
+  </tag>
 
 </taglib>
