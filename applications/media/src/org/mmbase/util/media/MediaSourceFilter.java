@@ -53,13 +53,13 @@ public class MediaSourceFilter {
     private static int MAXCHANNELS     = 0;
     
     // PreferedSource information
-    private Vector preferedSources = null;
+    private List preferedSources = null;
     
     // contains the external filters
-    private Hashtable externFilters = null;
+    private Map externFilters = null;
     
     // This chain contains the filters for the mediaproviders
-    private static Vector filterChain = null;
+    private static List filterChain = null;
     
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -94,7 +94,7 @@ public class MediaSourceFilter {
         
         // reading filterchain information
         externFilters = new Hashtable();
-        filterChain = new Vector();
+        filterChain   = new Vector();
         for(Enumeration e = reader.getChildElements("mediasourcefilter.chain","filter");e.hasMoreElements();) {
             Element chainelement=(Element)e.nextElement();
             String chainvalue = reader.getElementValue(chainelement);
@@ -103,7 +103,7 @@ public class MediaSourceFilter {
                 try {
                     Class newclass=Class.forName(chainvalue);
                     externFilters.put(chainvalue,(MediaSourceFilterInterface)newclass.newInstance());
-                    filterChain.addElement(chainvalue);
+                    filterChain.add(chainvalue);
                 } catch (Exception exception) {
                     log.error("Cannot load MediaSourceFilter "+chainvalue+"\n"+exception);
                 }
@@ -112,7 +112,7 @@ public class MediaSourceFilter {
                 
             } else {
                 log.debug("Read standard chain: "+chainvalue);
-                filterChain.addElement(chainvalue);
+                filterChain.add(chainvalue);
             }
         }
         // reading preferedSource information
@@ -120,7 +120,7 @@ public class MediaSourceFilter {
         for( Enumeration e = reader.getChildElements("mediasourcefilter.preferedSource","source");e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String format = reader.getElementAttributeValue(n3,"format");
-            preferedSources.addElement(format.toLowerCase());
+            preferedSources.add(format.toLowerCase());
             log.debug("Adding preferedSource format: "+format);
         }
         
@@ -149,17 +149,17 @@ public class MediaSourceFilter {
      * @param info Additional information given by an user
      * @return the most appropriate media source
      */
-    public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Hashtable info) {
+    public MMObjectNode filterMediaSource(MMObjectNode mediaFragment, Map info) {
         
-        Vector mediaSources = mediaFragmentBuilder.getMediaSources(mediaFragment);
+        List mediaSources = mediaFragmentBuilder.getMediaSources(mediaFragment);
         if( mediaSources == null ) {
             log.warn("mediaFragment "+mediaFragment.getStringValue("title")+" does not have media sources");
         }
         
         // passing the mediasources through al the filters
-        for (Enumeration e = filterChain.elements();e.hasMoreElements();) {
-            String filter = (String)e.nextElement();
-            log.debug("Using filter "+filter);
+        for (Iterator i = filterChain.iterator(); i.hasNext();) {
+            String filter = (String) i.next();
+            log.debug("Using filter " + filter);
             if(filter.equals("preferedSource")) {
                 mediaSources = preferedSource(mediaSources, info);
             } else {
@@ -177,13 +177,14 @@ public class MediaSourceFilter {
      * @param mediasources list of appropriate media sources
      * @return The mediasource that is going to handle the request
      */
-    private MMObjectNode takeOneMediaSource(Vector mediasources) {
-        if(mediasources==null) return null;
+    private MMObjectNode takeOneMediaSource(List mediasources) {
+
+        if(mediasources == null) return null;
         
-        Enumeration e = mediasources.elements();
-        while(e.hasMoreElements()) {
+        Iterator i = mediasources.iterator();
+        while(i.hasNext()) {
             // just return first found media source.
-            return (MMObjectNode) e.nextElement();
+            return (MMObjectNode) i.next();
         }
         return null;
     }
@@ -195,11 +196,11 @@ public class MediaSourceFilter {
      * @param info Additional information
      * @return The most appropriate media source
      */
-    private Vector preferedSource(Vector mediasources, Hashtable info) {
+    private List preferedSource(List mediasources, Map info) {
         MMObjectNode node = null;
         
-        for (Enumeration e=preferedSources.elements();e.hasMoreElements();) {
-            String format = (String)e.nextElement();
+        for (Iterator i=preferedSources.iterator(); i.hasNext();) {
+            String format = (String) i.next();
             log.debug("checking format "+format);
             if(format.equals("ra")) {
                 node = getRealAudio(mediasources, info);
@@ -208,8 +209,8 @@ public class MediaSourceFilter {
             } 
             if (node!=null) {
                 log.debug("found mediasource format "+format);
-                Vector mediasource = new Vector();
-                mediasource.addElement(node);
+                List mediasource = new Vector();
+                mediasource.add(node);
                 return mediasource;
             }
         }
@@ -223,10 +224,10 @@ public class MediaSourceFilter {
      * @param format the wanted format
      * @return a mediasource of wanted format
      */
-    private MMObjectNode getFormat(Vector mediaSources, int format) {
+    private MMObjectNode getFormat(List mediaSources, int format) {
         log.debug("Getting format "+format);
-        for(Enumeration e=mediaSources.elements();e.hasMoreElements();) {
-            MMObjectNode mediaSource = (MMObjectNode)e.nextElement();
+        for(Iterator i=mediaSources.iterator(); i.hasNext();) {
+            MMObjectNode mediaSource = (MMObjectNode) i.next();
             
             // Is the MediaSource ready for use && is it of format surestream
             if(mediaSource.getIntValue("format") == format ) {
@@ -246,7 +247,7 @@ public class MediaSourceFilter {
      * @param mediaSources the list of appropriate mediasources
      * @return the best realaudio mediasource
      */
-    private MMObjectNode getRealAudio(Vector mediaSources, Hashtable info) {
+    private MMObjectNode getRealAudio(List mediaSources, Map info) {
         int wantedspeed=0;
         int wantedchannels=0;
         if(info.containsKey("wantedspeed")) {
@@ -274,8 +275,8 @@ public class MediaSourceFilter {
         }
         
         MMObjectNode bestR5 = null;
-        for(Enumeration e=mediaSources.elements();e.hasMoreElements();) {
-            MMObjectNode mediaSource = (MMObjectNode) e.nextElement();
+        for(Iterator i=mediaSources.iterator(); i.hasNext();) {
+            MMObjectNode mediaSource = (MMObjectNode) i.next();
             
             // Is the MediaSource ready for use && is format realaudio
             if( mediaSource.getIntValue("status") == MediaSources.DONE  &&

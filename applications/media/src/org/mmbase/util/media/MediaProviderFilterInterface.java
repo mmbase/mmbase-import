@@ -32,6 +32,6 @@ public interface MediaProviderFilterInterface {
      * @param info information such as: bit rate/ httprequest/ number of channels
      * @return A new set of filtered mediaproviders.
      */
-    public Vector filterMediaProvider(Vector mediaproviders, MMObjectNode mediasource, Hashtable info);
+    public List filterMediaProvider(List mediaproviders, MMObjectNode mediasource, Map info);
 }
 

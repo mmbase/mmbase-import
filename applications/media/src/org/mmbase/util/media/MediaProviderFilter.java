@@ -45,22 +45,22 @@ import org.w3c.dom.Element;
  */
 public class MediaProviderFilter {
     
-    private static Logger log = Logging.getLoggerInstance(MediaSourceFilter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(MediaProviderFilter.class.getName());
     
     // A reference to the MediaSource class.
     private MediaSources mediasourcebuilder = null;
     
     // Contains information about which host will result in which provider
-    private static Hashtable hostFilter = null;
+    private static Map hostFilter = null;
     
     // Contains a list of prefered providers (from most to least prefered)
-    private Vector preferFilter = null;
+    private List preferFilter = null;
     
     // This chain contains the filters for the mediaproviders
-    private static Vector filterChain = null;
+    private static List filterChain = null;
     
     // contains the external filters
-    private Hashtable externFilters = null;
+    private Map externFilters = null;
     
     private FileWatcher configWatcher = new FileWatcher(true) {
         protected void onChange(File file) {
@@ -73,8 +73,7 @@ public class MediaProviderFilter {
      * construct the MediaProviderFilter
      */
     public MediaProviderFilter(MediaSources ms) {
-        mediasourcebuilder = ms;
-        
+        mediasourcebuilder = ms;        
         File configFile = new File(org.mmbase.module.core.MMBaseContext.getConfigPath(), "media" + File.separator + "mediaproviderfilter.xml");
         if (! configFile.exists()) {
             log.error("Configuration file for mediaproviderfilter " + configFile + " does not exist");
@@ -95,16 +94,16 @@ public class MediaProviderFilter {
         
         // reading filterchain information
         externFilters = new Hashtable();
-        filterChain = new Vector();
+        filterChain   = new Vector();
         for(Enumeration e = reader.getChildElements("mediaproviderfilter.chain","filter");e.hasMoreElements();) {
             Element chainelement=(Element)e.nextElement();
             String chainvalue = reader.getElementValue(chainelement);
             if(!chainvalue.equals("sortProviders") && !chainvalue.equals("filterOnHost")) {
                 
                 try {
-                    Class newclass=Class.forName(chainvalue);
+                    Class newclass = Class.forName(chainvalue);
                     externFilters.put(chainvalue,(MediaProviderFilterInterface)newclass.newInstance());
-                    filterChain.addElement(chainvalue);
+                    filterChain.add(chainvalue);
                 } catch (Exception exception) {
                     log.error("Cannot load MediaProviderFilter "+chainvalue+"\n"+exception);
                 }
@@ -113,7 +112,7 @@ public class MediaProviderFilter {
                 
             } else {
                 log.debug("Read standard chain: "+chainvalue);
-                filterChain.addElement(chainvalue);
+                filterChain.add(chainvalue);
             }
         }
         
@@ -132,8 +131,8 @@ public class MediaProviderFilter {
         for( Enumeration e = reader.getChildElements("mediaproviderfilter.sortProviders","provider");e.hasMoreElements();) {
             Element n3=(Element)e.nextElement();
             String host = reader.getElementAttributeValue(n3,"host");
-            log.error("Adding preferedHost "+host);
-            preferFilter.addElement(host);
+            log.service("Adding preferedHost " + host);
+            preferFilter.add(host);
             
         }
     }
@@ -143,17 +142,17 @@ public class MediaProviderFilter {
      * The mediaprovider will be found by passing a list of mediaproviders through a chain
      * of mediaprovider filters.
      */
-    public synchronized MMObjectNode filterMediaProvider(MMObjectNode mediasource, Hashtable info) {
-        Vector mediaproviders = mediasourcebuilder.getMediaProviders(mediasource);
+    public synchronized MMObjectNode filterMediaProvider(MMObjectNode mediasource, Map info) {
+        List mediaproviders = mediasourcebuilder.getMediaProviders(mediasource);
         
         // passing the mediaproviders through al the filters
-        for (Enumeration e = filterChain.elements();e.hasMoreElements();) {
-            String filter = (String)e.nextElement();
-            log.debug("Using filter "+filter);
+        for (Iterator i = filterChain.iterator(); i.hasNext();) {
+            String filter = (String) i.next();
+            log.debug("Using filter " + filter);
             if(filter.equals("sortProviders")) {
                 mediaproviders = sortMediaProviders(mediaproviders);
             } else if(filter.equals("filterOnHost")) {
-                mediaproviders = filterHostOnDomain("userinfo",mediaproviders);
+                mediaproviders = filterHostOnDomain("userinfo", mediaproviders);
             } else {
                 MediaProviderFilterInterface mpfi = (MediaProviderFilterInterface)externFilters.get(filter);
                 mediaproviders = mpfi.filterMediaProvider(mediaproviders, mediasource, info);
@@ -170,12 +169,12 @@ public class MediaProviderFilter {
      * @param mediaproviders list of appropriate media providers
      * @return The mediaprovider that is going to handle the request
      */
-    private MMObjectNode takeOneMediaProvider(Vector mediaproviders) {
+    private MMObjectNode takeOneMediaProvider(List mediaproviders) {
         
-        Enumeration e = mediaproviders.elements();
-        while(e.hasMoreElements()) {
+        Iterator i = mediaproviders.iterator();
+        while(i.hasNext()) {
             // just return first found media provider.
-            return (MMObjectNode) e.nextElement();
+            return (MMObjectNode) i.next();
         }
         return null;
     }
@@ -184,21 +183,21 @@ public class MediaProviderFilter {
     /**
      * sort the mediaproviders with the most prefered providers first.
      */
-    protected Vector sortMediaProviders(Vector mediaproviders) {
+    protected List sortMediaProviders(List mediaproviders) {
         
-        Vector sortedProviders = new Vector();
+        List sortedProviders = new Vector();
         
-        Enumeration pp = preferFilter.elements();
-        while (pp.hasMoreElements()) {
+        Iterator pp = preferFilter.iterator();
+        while (pp.hasNext()) {
             
-            String prefname = (String)pp.nextElement();
-            
+            String prefname = (String)pp.next();
+           
             MMObjectNode node = null;
-            Enumeration e = mediaproviders.elements();
-            while(e.hasMoreElements()) {
-                node = (MMObjectNode) e.nextElement();
+            Iterator e = mediaproviders.iterator();
+            while(e.hasNext()) {
+                node = (MMObjectNode) e.next();
                 if(prefname.equals(node.getStringValue("rooturl"))) {
-                    sortedProviders.addElement(node);
+                    sortedProviders.add(node);
                 }
             }
         }
@@ -215,7 +214,7 @@ public class MediaProviderFilter {
      * @return vector of provider names. Not the real providers because this will cause to
      * many database calls.
      */
-    protected Vector filterHostOnDomain(String userhost, Vector mediaproviders) {
+    protected List filterHostOnDomain(String userhost, List mediaproviders) {
         
         String result = null;
         
@@ -232,19 +231,19 @@ public class MediaProviderFilter {
             }
             userhost = userhost.substring(point+1);
         }
-        result = (String)hostFilter.get(userhost);
+        result = (String) hostFilter.get(userhost);
         StringTokenizer st = new StringTokenizer(result,",");
-        Vector providers = new Vector();
+        List providers = new Vector();
         
         while(st.hasMoreTokens()) {
-            String hostname = (String)st.nextElement();
+            String hostname = (String) st.nextElement();
             
             MMObjectNode node = null;
-            Enumeration e = mediaproviders.elements();
-            while(e.hasMoreElements()) {
-                node = (MMObjectNode) e.nextElement();
+            Iterator e = mediaproviders.iterator();
+            while(e.hasNext()) {
+                node = (MMObjectNode) e.next();
                 if(hostname.equals(node.getStringValue("rooturl"))) {
-                    providers.addElement(node);
+                    providers.add(node);
                 }
                 
             }
