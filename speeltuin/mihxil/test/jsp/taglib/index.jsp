@@ -22,6 +22,9 @@
   Start <a href="<mm:url page="transaction.jsp" />">here</a>.
 </p>
 <hr />
+<p>
+  An alternative <a href="<mm:url page="caches.jsp" />">Caches overview</a>
+</p>
 <a href="mailto:mihxil@komputilo.org">Michiel Meeuwissen</a>
 </body>
 </html>
