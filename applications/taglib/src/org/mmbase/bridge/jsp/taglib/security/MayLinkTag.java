@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
-import org.mmbase.bridge.jsp.taglib.ConditionTag;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import javax.servlet.jsp.JspTagException;
 
 
@@ -18,7 +18,7 @@ import javax.servlet.jsp.JspTagException;
 * 
 * @author Michiel Meeuwissen
 */
-public class MayLinkTag extends MayWriteTag implements ConditionTag {
+public class MayLinkTag extends MayWriteTag implements Condition {
                
     public int doStartTag() throws JspTagException {
         if ((getNode().mayLink()) != inverse) {

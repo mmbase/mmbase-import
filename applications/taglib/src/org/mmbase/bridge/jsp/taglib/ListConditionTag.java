@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen 
  **/
 
-public class ListConditionTag extends ListReferrerTag implements ConditionTag {
+public class ListConditionTag extends ListReferrerTag implements Condition {
     
     private static Logger log = Logging.getLoggerInstance(ListConditionTag.class.getName()); 
     

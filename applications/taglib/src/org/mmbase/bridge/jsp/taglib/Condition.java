@@ -10,13 +10,13 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.jsp.taglib;
 
 /**
-* Interface for 'condition' tags. ConditionTags are things like
-* 'listcondition' (and descendants like 'first' and 'last'), present,
-* compare. These tags are similar, therefore all implement this ConditionTag interface.
-*
-* @author Michiel Meeuwissen
-**/
-public interface ConditionTag {
+ * Interface for 'condition' tags. ConditionTags are things like
+ * 'listcondition' (and descendants like 'first' and 'last'), present,
+ * compare. These tags are similar, therefore all implement this ConditionTag interface.
+ *
+ * @author Michiel Meeuwissen
+ **/
+public interface Condition {
 
     /**
      * This attribute inverses the sense of the condition.

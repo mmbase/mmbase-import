@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.pageflow;
 
-import org.mmbase.bridge.jsp.taglib.ConditionTag;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.Writer;
 import javax.servlet.jsp.JspTagException;
 
@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  * @author Michiel Meeuwissen 
  */
 
-public class CompareTag extends PresentTag implements ConditionTag {
+public class CompareTag extends PresentTag implements Condition {
 
     private static Logger log = Logging.getLoggerInstance(CompareTag.class.getName());
 

@@ -9,7 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.jsp.taglib.security;
 
-import org.mmbase.bridge.jsp.taglib.ConditionTag;
+import org.mmbase.bridge.jsp.taglib.Condition;
 import org.mmbase.bridge.jsp.taglib.CloudReferrerTag;
 
 import javax.servlet.jsp.JspTagException;
@@ -20,7 +20,7 @@ import javax.servlet.jsp.JspTagException;
  * 
  * @author Michiel Meeuwissen
  */
-public class MayCreateTag extends CloudReferrerTag implements ConditionTag {
+public class MayCreateTag extends CloudReferrerTag implements Condition {
 
     protected boolean inverse = false;
     protected String type = null;
