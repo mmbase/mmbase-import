@@ -32,12 +32,12 @@ public class FieldTag extends NodeReferrerTag {
     private String name;   
     private String head;
        
-    public void setName(String n) {
-        name = n;
+    public void setName(String n) throws JspTagException {
+        name = getAttributeValue(n);
     }
     
-    public void setHead(String h) {
-        head = h;
+    public void setHead(String h) throws JspTagException {
+        head = getAttributeValue(h);
     }
     
     public int doStartTag() throws JspTagException{
@@ -62,6 +62,9 @@ public class FieldTag extends NodeReferrerTag {
         // firstly, search the node:
         node = findNodeProvider().getNodeVar();
         
+        if (node == null) {
+            throw new JspTagException ("Did not find node in the parent node provider");
+        }
         // found the node now. Now we can decide what must be shown:
         String show;
         
