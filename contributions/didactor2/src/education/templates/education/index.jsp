@@ -260,11 +260,9 @@
   javascript:addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
   </script>
 
-
   <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" />
 
   <a href="javascript:openContent( '<mm:nodeinfo type="type"/>','<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a> 
-  <br/>
 
   <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
 
@@ -301,22 +299,10 @@
       <mm:import id="previousnumber"><mm:field name="number"/></mm:import>
       <mm:compare referid="nodetype" valueset="educations,learnblocks,tests,pages,flashpages,preassessments,postassessments">
         <mm:import jspvar="depth" vartype="Integer"><mm:depth /></mm:import>
-        <%
-          for (int i=2; i<depth.intValue(); i++) {
-        %>
-          <img src="<mm:write referid="gfx_item_none" />" />
-        <%
-          }
-        %>
-
-        <script>
+        <div style="padding: 0px 0px 0px <%= 18 + depth.intValue() * 8 %>px;"><script>
         addContent('<mm:nodeinfo type="type"/>','<mm:field name="number"/>');
-        </script>
-
-        <img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" />
-
-          <a href="javascript:openContent( '<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');"><mm:field name="name"/></a> 
-        <br/>
+        </script><img class="imgClosed" src="<mm:write referid="gfx_item_closed" />" id="img<mm:field name="number"/>" onclick="openClose('div<mm:field name="number"/>','img<mm:field name="number"/>')" style="margin: 0px 4px 0px -18px; padding: 0px 0px 0px 0px"/><a href="javascript:openContent( '<mm:nodeinfo type="type"/>', '<mm:field name="number"/>' ); openOnly('div<mm:field name="number"/>','img<mm:field name="number"/>');" style="padding-left: 0px"><mm:field name="name"/></a> 
+        </div>
       </mm:compare>
 
       <mm:shrink/>
