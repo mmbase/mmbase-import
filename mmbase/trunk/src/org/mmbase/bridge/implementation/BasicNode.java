@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicNode.java,v 1.112 2003-12-21 17:52:59 michiel Exp $
+ * @version $Id: BasicNode.java,v 1.113 2003-12-22 10:28:46 michiel Exp $
  * @see org.mmbase.bridge.Node
  * @see org.mmbase.module.core.MMObjectNode
  */
@@ -477,7 +477,9 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
                 result = new BasicNode(mmobjectNode, cloud); //.getNodeManager(noderes.getBuilder().getTableName()));
             }
         }
-        result = (Node) ValueIntercepter.processGet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), result);
+        if (nodeManager.hasField(fieldName)) { // only if this is actually a field of this node-manager, otherewise it might be e.g. a request for an 'element' of a cluster node
+            result = (Node) ValueIntercepter.processGet(Field.TYPE_NODE, this, nodeManager.getField(fieldName), result);
+        }
         return result;
     }
 
