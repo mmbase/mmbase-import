@@ -75,6 +75,15 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private static javax.xml.parsers.DocumentBuilder        documentBuilder;
     private File cwd;
 
+    private static final class Counter {
+        private int i = 0;
+        public int inc() { return ++i;}
+        public String toString() {
+            return "" + i;
+        }
+    }
+    private Counter  counter; // times that formatter was called in this page, can be usefull for some transformations to know.
+
 
     // formats that needs XML input, when setting these 'wantXML' will be true, and a DOM Document will be created.
 
@@ -105,6 +114,7 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     private static final int WANTS_DOM             = 1;
     private static final int WANTS_STRING          = 2;
 
+    private static final String PAGECONTEXT_COUNTER = "formatter__counter";
 
     static {
         log.service("static init of FormatterTag.");
@@ -213,10 +223,21 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         javax.servlet.http.HttpServletRequest request = (javax.servlet.http.HttpServletRequest)pageContext.getRequest();
-        cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile();
+        cwd = new File(pageContext.getServletContext().getRealPath(request.getServletPath())).getParentFile();        
     }
 
+
     public int doStartTag() throws JspTagException {
+        counter = (Counter) pageContext.getAttribute(PAGECONTEXT_COUNTER);
+        if (counter == null) {
+            log.debug("counter not found");
+            counter = new Counter();
+            pageContext.setAttribute(PAGECONTEXT_COUNTER, counter);
+        } 
+        counter.inc();
+
+        if (log.isDebugEnabled()) log.debug("startag of formatter tag " + counter);
+
         // serve parent timer tag:
         TagSupport t = findParentTag("org.mmbase.bridge.jsp.taglib.debug.TimerTag", null, false);
         if (t != null) {
@@ -413,6 +434,8 @@ public class FormatterTag extends ContextReferrerTag  implements Writer {
         // but for the moment, I don't know a sensible other place to get it from.
         // --> should be get from bridge as soon as possible.
         params.put("formatter_language", Locale.getDefault().getLanguage());
+
+        params.put("formatter_counter", counter.toString());
 
         //other options
         // a=b,c=d,e=f
