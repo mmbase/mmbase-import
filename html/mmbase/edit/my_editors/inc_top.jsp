@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html" %>
+<%@ page language="java" contentType="text/html; charset=utf-8" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
-<% response.setHeader("Content-Type", "text/html; charset=iso-8859-1"); %>
-<%@ page import="org.mmbase.bridge.*"%>
-<%@ page import="java.util.*" %>
+<%@ page import="org.mmbase.bridge.*,java.util.*" %>
+<% response.setContentType("text/html; charset=utf-8"); %>
