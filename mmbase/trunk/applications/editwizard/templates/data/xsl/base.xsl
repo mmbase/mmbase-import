@@ -6,7 +6,7 @@
 
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.8 2002-06-24 12:36:23 pierre Exp $
+  @version $Id: base.xsl,v 1.9 2002-06-28 21:22:57 michiel Exp $
   -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -22,7 +22,6 @@
 
   <xsl:param name="ew_path"></xsl:param>
   <xsl:param name="ew_context"></xsl:param>
-  <xsl:param name="ew_imgdb"><xsl:value-of select="$ew_context" />/img.db?</xsl:param>
 
   <xsl:param name="username">(unknown)</xsl:param>
 
