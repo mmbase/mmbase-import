@@ -4,7 +4,7 @@
 ]>
   <article>
   <articleinfo>
-    <date>$Id: configuration.xml,v 1.9 2002-10-10 14:26:05 michiel Exp $</date>
+    <date>$Id: configuration.xml,v 1.10 2002-10-15 09:31:53 michiel Exp $</date>
     <title>MMBase configuration documentation</title>
   </articleinfo>
   <section>
@@ -238,8 +238,8 @@
 
  <resource-ref>
     <description>
-      Email module mail resource. This resource must be configured in
-      the application server.
+      Email module mail resource (JMSendMail). This resource must be
+      configured in the application server. See also config/modules/sendmail.xml.
     </description>
     <res-ref-name>mail/MMBase</res-ref-name>
     <res-type>javax.mail.Session</res-type>
@@ -249,7 +249,7 @@
   <resource-ref>
     <description>
       Datasource for the MMBase Database. This datasource must be
-      configured in the application server.
+      configured in the application server. See also config/modules/jdbc.xml
     </description>
     <res-ref-name>jdbc/MMBase</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
@@ -345,16 +345,17 @@
   <status>active</status>  
   <classfile>org.mmbase.module.database.JDBC</classfile>
   <properties>  
+    <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
+    <property name="driver">org.gjt.mm.mysql.Driver</property>
     <property name="url">jdbc:mysql://localhost/$DBM?user=mmbase&amp;password=abcdef</property>
     <property name="user">url</property>
     <property name="password">url</property>
-    <property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
     <property name="database">bbol2_db</property>
-    <property name="connections">20</property>
-    <property name="driver">org.gjt.mm.mysql.Driver</property>
     <property name="host">localhost</property>
     <property name="port">3306</property>
-    <property name="querys">256</property>
+    <property name="connections">20</property> <!-- size of connection pool -->
+    <property name="queries">256</property>    <!-- connections are refreshed after 256 uses -->
+    <property name="probetime">300</property>  <!-- running connections are checked once every 300 s -->
   </properties>
 </module>
 ]]>
@@ -366,7 +367,7 @@
       server. The jdbc.xml then looks like this:
       <example>
         <title>An example jdbc.xml, using data-source</title>        
-        <programlisting id="jdbc.xml"><![CDATA[
+        <programlisting id="datasourcejdbc.xml"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//MMBase/ DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd">
 <module maintainer="mmbase.org" version="0">
