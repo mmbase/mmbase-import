@@ -20,7 +20,7 @@ import org.mmbase.storage.search.implementation.*;
 /**
  * @javadoc
  * @author Daniel Ockeloen
- * @version $Id: Versions.java,v 1.10 2003-05-19 07:50:15 kees Exp $
+ * @version $Id: Versions.java,v 1.10.2.1 2004-06-04 13:34:39 keesj Exp $
  */
 public class Versions extends MMObjectBuilder implements MMBaseObserver {
 
@@ -42,6 +42,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
      * @param type the type of tye component we want to get information about (application/builder)
      * @return the node that contains version information about "name", "type" or null if no version information is avaiable
      * @throws SearchQueryException
+     * @since MMBase-1.7
      */
     public MMObjectNode getVersionNode(String name, String type) throws SearchQueryException {
         MMObjectNode retval = null;
@@ -58,7 +59,7 @@ public class Versions extends MMObjectBuilder implements MMBaseObserver {
         }
         //should not happend
         if (i.hasNext()) {
-            log.warn("More then one version was found for (name,type)()" + name + "," + type + ")");
+            log.warn("more than one version was found for " + type+" with name " + name  +" .");
         }
         return retval;
 
