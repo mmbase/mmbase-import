@@ -153,8 +153,51 @@ Ok, did not throw exception with 'reset'.<br />
 <% } catch (Exception e) { %>
  WRONG, should not have thrown exception with reset="true".<br />
 <% } %>
-
 </p>
+<h2>Combo with lists</h2>
+<mm:import id="testlist" vartype="list">A,B,C,D,E,F</mm:import>
+<% try { %>
+<mm:stringlist referid="testlist">
+   <mm:write id="some_list_id" />
+   <mm:first inverse="true">
+     <mm:present referid="some_list_id">
+       <mm:index>
+         <mm:compare value="2">
+           Ok, in second iteration the id can be overwritten, but yet is present (already in parent)<br />
+         </mm:compare>
+       </mm:index>
+     </mm:present>
+     <mm:notpresent referid="some_list_id">
+        WRONG, 'some_list_id' was registered in first iteration!.<br />
+     </mm:notpresent>
+   </mm:first>
+</mm:stringlist>
+Ok, did not throw exception with id in a list (Does in 1.6)<br />
+ <% } catch (Exception e) { %>
+ WRONG, should not have thrown exception.<br />
+<% } %>
+
+
+<% try { %>
+<mm:stringlist referid="testlist">
+   <mm:write id="some_list_id" />
+</mm:stringlist>
+ WRONG, should have thrown exception (id was used already(.<br />
+ <% } catch (Exception e) { %>
+ Ok, did throw exception.<br />
+<% } %>
+
+<% try { %>
+<mm:stringlist referid="testlist">
+   <mm:write id="testlist" />
+</mm:stringlist>
+ WRONG, should have thrown exception (id was used already(.<br />
+ <% } catch (Exception e) { %>
+ Ok, did throw exception.<br />
+<% } %>
+
+
+
 
 <hr />
 This link should result an exception: <a href="<mm:url page="present.jsp" />">present.jsp</a><br />
