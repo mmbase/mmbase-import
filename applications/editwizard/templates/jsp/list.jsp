@@ -6,7 +6,7 @@
      * list.jsp
      *
      * @since    MMBase-1.6
-     * @version  $Id: list.jsp,v 1.27 2002-09-03 16:28:39 michiel Exp $
+     * @version  $Id: list.jsp,v 1.28 2002-10-29 11:05:51 michiel Exp $
      * @author   Kars Veling
      * @author   Michiel Meeuwissen
      * @author   Pierre van Rooden
@@ -179,7 +179,7 @@ boolean creatable = false;
 String deletedescription = "";
 String deleteprompt = "";
 String title = "editwizard list";
-
+org.w3c.dom.NodeList titles = null;
 if (listConfig.wizard != null) {
 
     Wizard wiz = null;
@@ -188,7 +188,7 @@ if (listConfig.wizard != null) {
     creatable = (Utils.selectSingleNode(wiz.getSchema(), "/*/action[@type='create']")!=null);
     deletedescription = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/description", null);
     deleteprompt      = Utils.selectSingleNodeText(wiz.getSchema(), "/*/action[@type='delete']/prompt", null);
-    title             = Utils.selectSingleNodeText(wiz.getSchema(), "/wizard-schema/title", null);
+    titles            = Utils.selectNodeList(wiz.getSchema(), "/wizard-schema/title");
 
 }
 
@@ -224,8 +224,14 @@ String s = "<list count=\"" + results.size() + "\" />";
 Document doc = Utils.parseXML(s);
 
 log.trace("Create document");
-
 org.w3c.dom.Node docel = doc.getDocumentElement();
+
+if (titles != null) {
+   Document owner = docel.getOwnerDocument();
+   for (int i = 0; i < titles.getLength(); i++) {
+       docel.appendChild(owner.importNode(titles.item(i),  true));
+   }
+}
 
 log.trace("hoi");
 
@@ -238,7 +244,7 @@ if (!manager.mayCreateNode()) creatable=false;
 for (int i=start; i< end; i++) {
     Node item = results.getNode(i);
     org.w3c.dom.Node obj = addObject(docel, item.getStringValue((String)fieldList.get(0)), (i+1)+"",
-                                     manager.getName());
+                                     manager.getName(), manager.getGUIName(2));
     for (int j=1; j < fieldList.size(); j++) {
         String fieldname = (String)fieldList.get(j);
         String fieldguiname=fieldname;
@@ -314,11 +320,12 @@ if (log.isDebugEnabled()) log.trace("ready: " + ewconfig.subObjects);
 
 %><%!
 
-private org.w3c.dom.Node addObject(org.w3c.dom.Node el, String number, String index, String type) {
+private org.w3c.dom.Node addObject(org.w3c.dom.Node el, String number, String index, String type, String guitype) {
     org.w3c.dom.Node n = el.getOwnerDocument().createElement("object");
     Utils.setAttribute(n, "number", number);
     Utils.setAttribute(n, "index", index);
     Utils.setAttribute(n, "type", type);
+    Utils.setAttribute(n, "guitype", guitype);
     el.appendChild(n);
     return n;
 
