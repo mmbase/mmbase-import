@@ -30,18 +30,20 @@ import org.mmbase.util.logging.Logging;
  * of a 'Writer' tag.
  *
  * @author Michiel Meeuwissen
- * @version $Id: WriteTag.java,v 1.39 2003-11-19 16:57:43 michiel Exp $ 
+ * @version $Id: WriteTag.java,v 1.40 2003-11-20 11:11:05 michiel Exp $ 
  */
 
 public class WriteTag extends ContextReferrerTag implements Writer, FunctionContainerReferrer {
 
     public static final int MAX_COOKIE_AGE = 60*60*24*30*6; // half year
     public static final String COOKIE_PATH    = "/";
-    private static final Logger log = Logging.getLoggerInstance(WriteTag.class.getName());
+    private static final Logger log = Logging.getLoggerInstance(WriteTag.class);
 
     private Attribute sessionvar = Attribute.NULL;
-    private Attribute cookie = Attribute.NULL;
-    private Attribute value = Attribute.NULL;
+    private Attribute cookie     = Attribute.NULL;
+    // private Attribute page       = Attribute.NULL;
+
+    private Attribute value      = Attribute.NULL;
     private Attribute container = Attribute.NULL;
 
     public void setSession(String s) throws JspTagException {
@@ -51,6 +53,13 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
     public void setCookie(String s) throws JspTagException {
         cookie = getAttribute(s);
     }
+
+    /*
+      // A page attribute is not needed, because we have already taglib vars, which take the same function (and are actually stored here)
+      public void setPage(String s) throws JspTagException {
+      page = getAttribute(s);
+    }
+    */
     public void setValue(String v) throws JspTagException {
         value = getAttribute(v);
     }
@@ -93,10 +102,12 @@ public class WriteTag extends ContextReferrerTag implements Writer, FunctionCont
             getContextProvider().getContextContainer().register(getId(), helper.getValue());
         }
         if (sessionvar != Attribute.NULL) {
-            if (pageContext.getSession() == null) {
-                throw new JspTagException("Cannot write to session if session is disabled");
-            }
-            pageContext.getSession().setAttribute(sessionvar.getString(this), helper.getValue());
+            if (sessionvar != Attribute.NULL) {
+                if (pageContext.getSession() == null) {
+                    throw new JspTagException("Cannot write to session if session is disabled");
+                }
+                pageContext.getSession().setAttribute(sessionvar.getString(this), helper.getValue());
+            } 
             helper.overrideWrite(false); // default behavior is not to write to page if wrote to session.
         }
         if (cookie != Attribute.NULL) {

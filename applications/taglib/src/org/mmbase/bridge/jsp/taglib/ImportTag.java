@@ -15,7 +15,7 @@ import org.mmbase.util.transformers.CharTransformer;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * The importtag puts things in the context. It can find them from the
@@ -23,7 +23,7 @@ import java.util.Iterator;
  *
  * @author Michiel Meeuwissen
  * @see    ContextTag
- * @version $Id: ImportTag.java,v 1.40 2003-11-19 16:57:42 michiel Exp $
+ * @version $Id: ImportTag.java,v 1.41 2003-11-20 11:11:05 michiel Exp $
  */
 
 public class ImportTag extends ContextReferrerTag {
@@ -96,13 +96,24 @@ public class ImportTag extends ContextReferrerTag {
             if (from.getString(this).equals("")) {
                 found = (getContextProvider().getContextContainer().findAndRegister(pageContext, externid.getString(this), useId, ! res) != null);
             } else {
-                Iterator froms = from.getList(this).iterator();
+                List fromsList = from.getList(this);
+                boolean searchThis =  fromsList.contains("this") || fromsList.contains("THIS");
+
+                if (searchThis) {
+                    res = true;
+                }
+                Iterator froms = fromsList.iterator();
                 ContextContainer cc = getContextProvider().getContextContainer();
                 while (froms.hasNext() && ! found) {
                     int from = ContextContainer.stringToLocation((String) froms.next());
-                    found = (cc.findAndRegister(pageContext, from, externid.getString(this), useId, !res) != null);
-                    if (!found && froms.hasNext()) {
-                        cc.unRegister(useId);                        
+                    Object result = cc.find(pageContext, from, externid.getString(this));
+                    if (from == ContextContainer.LOCATION_THIS && result == null) {
+                        result = cc.find(pageContext, from, useId);
+                    }
+                    if (result != null) {
+                        cc.register(useId, result, ! res);
+                        found = true;
+                        break;
                     }
                 }
             }
