@@ -67,10 +67,11 @@ one or more examplevalue tags is you want to give some example values.
   </info>
   <tagtypes>
   <type name="all">
-  <description>All MMBase tags</description>
+  <description>all tags</description>
   <info>
     <p>
-      There are quite a lot of MMBase tags. This documents gives an overview of all tags.
+      There are quite a lot of MMBase tags. This documents gives an
+      overview of all tags of the MMBase Taglib.
     </p>
     <p>
      Tags can use a 'context' to exchange variables with other tags.
@@ -162,7 +163,7 @@ See mmexamples/taglib for more elaborated examples.
   </info>
   </type>
   <type name="mmbase.basic">
-  <description>All basic MMBase tags</description>
+  <description>basic tags</description>
   <info>
     <p>
       These are the most basic MMBase tags, which supply the basic functionality to access MMBase data
@@ -170,18 +171,56 @@ See mmexamples/taglib for more elaborated examples.
     </p>
   </info>
   </type>
-  <type name="mmbase.security">
-  <description>All MMBase security tags</description>
+  <type name="mmbase">
+  <description>mmbase tags</description>
   <info>
     <p>
-      These are the MMBase tags which relate to the MMBase security system.  An overview of all
-      MMBase tags can be found in <a href="mmbase-taglib-all.html">here</a>.
+      These are the MMBase tags, which supply the functionality to
+      access MMBase data. This includes e.g. security tags but not the
+      'utility' tags.
+    </p>
+  </info>
+  </type>
+  <type name="mmbase.security">
+  <description>security tags</description>
+  <info>
+    <p>
+      These are the MMBase tags which relate to the MMBase security
+      system. 
+    </p>
+  </info>
+  </type>
+  <type name="util">
+  <description>utility tags</description>
+  <info>
+    <p>
+      These are the MMBase tags which do directy relate to MMBase
+      data, but are merely handy to have.
+    </p>
+  </info>
+  </type>
+  <type name="util.context">
+  <description>context/variable tags</description>
+  <info>
+    <p>
+       All MMBase utility tags related to 'contextes' and  'taglib
+       variables'.
+    </p>
+  </info>
+  </type>
+  <type name="list">
+  <description>list related tags</description>
+  <info>
+    <p>
+      These are the MMBase tags which do relate to lists (lists and
+      subtags of lists).
     </p>
   </info>
   </type>
   </tagtypes>
   <taginterface>
     <name>contextreferrer</name>
+    <type>util.context</type>
     <info>
       Contextreferrer tags refer to the context. This means that (most of) their attributes can
       contain `context' variables. All tags are contextreferrers or specialisations of it.
@@ -197,6 +236,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>contextwriter</name>
+    <type>util.context</type>
     <extends>contextreferrer</extends>
     <info>
       A contextwriter is a contextreferrer, but it can also write itself to the context (using the
@@ -214,6 +254,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>contextreader</name>
+    <type>util.context</type>
     <extends>contextwriter</extends>
     <type>mmbase</type>
     <info>
@@ -231,6 +272,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>listreferrer</name>
+    <type>list</type>
     <info>
       A listreferrer tag has to live in the body of list tags.
     </info>
@@ -246,6 +288,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>listprovider</name>
+    <type>list</type>
     <info>
       A list provider has a body which is evaluated repeatedly.  If a list is a  contextwriter,
       then in the body of the list a list item is in the context, and afterwards a 'List', which can
@@ -255,6 +298,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>condition</name>
+    <type>util</type>
     <info>
       Condition tags have a body which is evaluated or not depending on certain attributes or on the
       surrounding tags.
@@ -292,6 +336,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>clusternodeprovider</name>
+    <type>mmbase</type>
     <extends>nodeprovider</extends>
     <info>
       A clusternode provider makes an MMBase Cluster Node available to its
@@ -303,6 +348,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>fieldreferrer</name>
+    <type>mmbase</type>
     <info>
       A tag that can live in the body of a fieldprovider tag.
     </info>
@@ -318,6 +364,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>fieldprovider</name>
+    <type>mmbase</type>
     <info>
       Fieldprovider tags provide a field to their body. The 'value' of
       the field is not necessary filled, but a fieldprovider still has
@@ -354,6 +401,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>cloudreferrer</name>
+    <type>mmbase</type>
     <info>
       A cloud referrer tag is a tag that needs to live in the body of a cloud tag. This means that
       it can use MMBase data.
@@ -370,6 +418,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>writerreferrer</name>
+    <type>util</type>
     <info>
       A writerreferrer tag can live in the body of a writer tag, and use the supplied information.
     </info>
@@ -386,6 +435,7 @@ See mmexamples/taglib for more elaborated examples.
   </taginterface>
   <taginterface>
     <name>writer</name>
+    <type>util</type>
     <info>
       A writer is a tag that can produce output. Normally the default will be to
       write to the page, unless the tag has a body.
@@ -478,7 +528,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>listprovider</extends>
     <extends>contextreader</extends>
     <extends>cloudreferrer</extends>
-    <type>mmbase.basic</type>
+    <type>mmbase.basic.list</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -825,7 +875,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>nodeprovider</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
-    <type>mmbase.basic</type>
+    <type>mmbase.basic.list</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -891,7 +941,7 @@ See mmexamples/taglib for more elaborated examples.
     <extends>nodereferrer</extends>
     <extends>listprovider</extends>
     <extends>contextreader</extends>
-    <type>mmbase.basic</type>
+    <type>mmbase.basic.list</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodesTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.NodeProviderTEI</teiclass>
     <bodycontent>JSP</bodycontent>
@@ -952,6 +1002,7 @@ See mmexamples/taglib for more elaborated examples.
   </tag>
   <tag>
     <name>even</name>
+    <type>list</type>
     <extends>condition</extends>
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListEvenTag</tagclass>
@@ -961,6 +1012,7 @@ See mmexamples/taglib for more elaborated examples.
   </tag>
   <tag>
     <name>odd</name>
+    <type>list</type>
     <extends>condition</extends>
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListOddTag</tagclass>
@@ -970,6 +1022,7 @@ See mmexamples/taglib for more elaborated examples.
   </tag>
   <tag>
     <name>changed</name>
+    <type>list</type>
     <extends>condition</extends>
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListChangedTag</tagclass>
@@ -986,7 +1039,7 @@ See mmexamples/taglib for more elaborated examples.
     <name>first</name>
     <extends>condition</extends>
     <extends>listreferrer</extends>
-    <type>mmbase.basic</type>
+    <type>mmbase.basic.list</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListFirstTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
@@ -1009,7 +1062,7 @@ See mmexamples/taglib for more elaborated examples.
     <name>last</name>
     <extends>condition</extends>
     <extends>listreferrer</extends>
-    <type>mmbase.basic</type>
+    <type>mmbase.basic.list</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.macro.ListLastTag</tagclass>
     <bodycontent>JSP</bodycontent>
     <info>Can be used in a list to determine if this is the
@@ -1382,6 +1435,7 @@ Why should deletealias live in a NodeProvider ???
   </tag>
   <tag>
     <name>listcondition</name>
+    <type>list</type>
     <extends>condition</extends>
     <extends>listreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ListConditionTag</tagclass>
@@ -1440,6 +1494,7 @@ is equivalent to: &lt;mm:first&gt;(first)&lt;/mm:first&gt;
   </tag>
   <tag>
     <name>context</name>
+    <type>util.context</type>
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.ContextTag</tagclass>
     <bodycontent>JSP</bodycontent>
@@ -2001,6 +2056,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>present</name>
+    <type>util.context</type>
     <extends>condition</extends>
     <extends>contextreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.PresentTag</tagclass>
@@ -2030,6 +2086,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>notpresent</name>
+    <type>util.context</type>
     <extends>present</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.NotPresentTag</tagclass>
     <info>
@@ -2040,6 +2097,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>write</name>
+    <type>util.context</type>
     <extends>writer</extends>
     <extends>writerreferrer</extends>
     <extends>contextwriter</extends>
@@ -2108,6 +2166,7 @@ Node of type &lt;mm:nodeinfo type="guitype" /&gt;&lt;br /&gt;
   </tag>
   <tag>
     <name>import</name>
+    <type>util.context</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.ImportTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.ImportTEI</teiclass>
     <info>
@@ -2252,6 +2311,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>remove</name>
+    <type>util.context</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.RemoveTag</tagclass>
     <info>
     Remove an object from the context.
@@ -2268,6 +2328,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>url</name>
+    <type>util</type>
     <extends>writer</extends>
     <extends>contextwriter</extends>
     <extends>cloudreferrer</extends>
@@ -2372,6 +2433,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>include</name>
+    <type>util</type>
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.IncludeTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
@@ -2431,6 +2493,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>compare</name>
+    <type>util.context</type>
     <extends>condition</extends>
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.CompareTag</tagclass>
@@ -2481,6 +2544,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>isnotempty</name>
+    <type>util</type>
     <extends>condition</extends>
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsNotEmptyTag</tagclass>
@@ -2500,6 +2564,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>isempty</name>
+    <type>util</type>
     <extends>condition</extends>
     <extends>writerreferrer</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsEmptyTag</tagclass>
@@ -2526,6 +2591,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>isgreaterthan</name>
+    <type>util</type>
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsGreaterThanTag</tagclass>
     <info>
@@ -2547,6 +2613,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>islessthan</name>
+    <type>util</type>
     <extends>compare</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.macro.IsLessThanTag</tagclass>
     <info>
@@ -2558,6 +2625,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>aliaslist</name>
+    <type>mmbase.list</type>
     <extends>nodereferrer</extends>
     <extends>writer</extends>
     <extends>listprovider</extends>
@@ -2743,6 +2811,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>listrelations</name>
+    <type>mmbase.list</type>
     <extends>nodeprovider</extends>
     <extends>nodereferrer</extends>
     <extends>contextreader</extends>
@@ -2778,6 +2847,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>relatednode</name>
+    <type>mmbase.list</type>
     <extends>nodeprovider</extends>
     <extends>contextwriter</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.RelatedNodeTag</tagclass>
@@ -2801,6 +2871,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>size</name>
+    <type>list</type>
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <extends>listreferrer</extends>
@@ -2822,6 +2893,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>index</name>
+    <type>list</type>
     <extends>contextwriter</extends>
     <extends>writer</extends>
     <extends>listreferrer</extends>
@@ -2842,6 +2914,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>timer</name>
+    <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.debug.TimerTag</tagclass>
     <info>
       <p>
@@ -2878,6 +2951,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>treefile</name>
+     <type>util</type>
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeFileTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
@@ -2900,6 +2974,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>leaffile</name>
+    <type>util</type>
     <extends>url</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafFileTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.pageflow.UrlTEI</teiclass>
@@ -2923,6 +2998,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>treeinclude</name>
+    <type>util</type>
     <extends>include</extends>
     <extends>treefile</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.TreeIncludeTag</tagclass>
@@ -2979,6 +3055,7 @@ like the parameter list or the session (whereever it is availabe) --&gt;
   </tag>
   <tag>
     <name>leafinclude</name>
+    <type>util</type>
     <extends>include</extends>
     <extends>leaffile</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.LeafIncludeTag</tagclass>
@@ -3008,6 +3085,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
   </tag>
   <tag>
     <name>param</name>
+    <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.pageflow.ParamTag</tagclass>
     <info>
     Adds a parameter to the parent URL Tag.
@@ -3036,12 +3114,13 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
   </tag>
   <tag>
     <name>formatter</name>
+    <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.FormatterTag</tagclass>
     <info>
       This tag performs XSL and other transformations.
     </info>
     <attribute>
-      <name>xslt</name>
+      <name>xslt</name>       
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
       <info>
@@ -3131,6 +3210,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
   </tag>
   <tag>
     <name>xslt</name>
+    <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.XsltTag</tagclass>
     <info>
       This tag must live as a subtag of Formatter. You can add 'inline' XSL with this. (EXPERIMENTAL)
@@ -3140,6 +3220,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
   </tag>
   <tag>
     <name>time</name>
+    <type>util</type>
     <extends>writer</extends>
     <extends>contextreader</extends>
     <tagclass>org.mmbase.bridge.jsp.taglib.TimeTag</tagclass>
@@ -3216,6 +3297,7 @@ Ofcourse, the default behavior of getSmartPath can still be overridden.
   </tag>
   <tag>
     <name>log</name>
+    <type>util</type>
     <tagclass>org.mmbase.bridge.jsp.taglib.debug.LogTag</tagclass>
     <teiclass>org.mmbase.bridge.jsp.taglib.debug.LogTEI</teiclass>
     <info>
