@@ -1,4 +1,4 @@
-/*
+/* -*- tab-width: 4; -*-
 
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: EncodeHandler.java,v 1.16 2001-02-28 10:57:26 vpro Exp $
+$Id: EncodeHandler.java,v 1.17 2001-04-10 13:01:37 michiel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.16  2001/02/28 10:57:26  vpro
+Davzev: Removed mkdir() from doG2Encode(), since remotebuilder g2encoders performs it now. Also G2 rawaudio node cpu field gets right value depending on which mmserver the code runs, instead of hardcoded.
+
 Revision 1.15  2001/02/15 13:28:07  vpro
 Davzev: Renamed methods comments etc... and most importantly tracknr is already in cdplayers.info field so additional cdrip info like audiopartobj nr is added.
 
@@ -60,15 +63,16 @@ import org.mmbase.module.builders.*;
 import org.mmbase.util.media.audio.*;
 import org.mmbase.util.media.audio.audioparts.*;
 
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * @author Rico Jansen
- * @version $Revision: 1.16 $ $Date: 2001-02-28 10:57:26 $
+ * @version $Revision: 1.17 $ $Date: 2001-04-10 13:01:37 $
  */
 public class EncodeHandler implements Runnable {
-
-	private String 	classname = getClass().getName();
-	private boolean debug = true;
-	private void 	debug( String msg ) { System.out.println( classname +":"+ msg ); }
+  
+    private static Logger log = Logging.getLoggerInstance(EncodeHandler.class.getName()); 
 
 	public boolean waitingForFreeG2Node = false;
 
@@ -81,7 +85,9 @@ public class EncodeHandler implements Runnable {
 	 * Constructor initializes EncodeHandler task and related node.
 	 */
 	public EncodeHandler(EncodeCop parent,String task,MMObjectNode node) {
-		if (debug) debug("EncodeHandler("+parent+","+task+","+node+"): Creating/Initializing EncodeHandler");
+		if (log.isDebugEnabled()) {
+            log.debug("EncodeHandler(" + parent + "," + task + "," + node + "): Creating/Initializing  EncodeHandler");
+        }
 		this.parent=parent;
 		this.task=task;
 		this.node=node;
@@ -89,7 +95,7 @@ public class EncodeHandler implements Runnable {
 	}
 
 	public void init() {
-		if (debug) debug("init()");
+		log.info("init of EncodeHandler");
 		this.start();	
 	}
 
@@ -99,7 +105,9 @@ public class EncodeHandler implements Runnable {
 	public void start() {
 		/* Start up the main thread */
 		if (kicker == null) {
-			if (debug) debug("start: Creating and starting a new Thread.");
+			if (log.isDebugEnabled()) {
+                log.debug("start: Creating and starting a new Thread.");
+            }
 			kicker = new Thread(this,"EncodeHandler");
 			kicker.start();
 		}
@@ -123,13 +131,15 @@ public class EncodeHandler implements Runnable {
 	 * The second task is g2encode which is the actual encode task for encoding an audiopart.
 	 */
 	public void run () {
-		if (debug) debug("run: Task is:'"+task+"', handling it now.");
+		if (log.isDebugEnabled()) {
+            log.debug("run: Task is:'" + task + "', handling it now.");
+        }
 		if (task.equals("newcdtrack")) {
 			doCDRip();
 		} else if (task.equals("g2encode")) {
 			doG2Encode();
 		} else  {
-			debug("run: ERROR, unknown task :"+task);
+			log.error("run: unknown task :"+task);
 		}
 	}
 
@@ -145,31 +155,39 @@ public class EncodeHandler implements Runnable {
 	public void doCDRip() {
 		// node is a reference to an audioparts node.
 		int number = node.getIntValue("number");	
-		if (debug) debug("doCDRip(): started for node("+number+") which is an audiopart");
+		if (log.isDebugEnabled()) {
+            log.debug("doCDRip(): started for node(" + number + ") which is an audiopart");
+        }
 
 		// Get the cdplayersnode through the owner value of the current audiopartnode.
 		String owner=node.getStringValue("owner");	
-		if (debug) debug("doCDRip(): Getting cdplayer that is claimed by owner: "+owner);
+		if (log.isDebugEnabled()) {
+            log.debug("doCDRip(): Getting cdplayer that is claimed by owner: " + owner);
+        }
 		cdplayers bul=(cdplayers)parent.Vwms.mmb.getMMObject("cdplayers");	
 		MMObjectNode cdplayersnode=bul.getClaimedBy(owner);
 		if (cdplayersnode!=null) {
-			debug("doCDRip(): Found cdplayer "+cdplayersnode.getStringValue("name")+" that is claimed by "+owner);
+            if (log.isServiceEnabled()) {
+                log.service("doCDRip(): Found cdplayer " + cdplayersnode.getStringValue("name") + " that is claimed by " + owner);
+            }
 			// create a new RawAudio to signal we have a wav
 			MMObjectNode wavnode=addRawAudio(number,RawAudioDef.STATUS_ONDERWEG,RawAudioDef.FORMAT_WAV,RawAudioDef.WAV_MAXSPEED,2); 
 
 			// Adding the audiopart objectnumber to the cdplayer.info field (which already contains tracknr.)
-			debug("doCDRip: Adding id (audiopartobjnr) to the cdplayer.info");
+			if (log.isServiceEnabled()) {
+                log.service("doCDRip: Adding id (audiopartobjnr) to the cdplayer.info");
+            }
 			String info=cdplayersnode.getStringValue("info");
 			StringTagger tagger=new StringTagger(info);
 			String tracknr=tagger.Value("tracknr");
 			if (tracknr!=null) {
 				// Set the cdplayers node state to 'record',
 				// The node change will eventually signal remote builder to start ripping
-				debug("doCDRip(): Setting state to 'record' to rip tracknr "+tracknr+" for id "+number);
+                log.service("doCDRip(): Setting state to 'record' to rip tracknr " + tracknr + " for id " + number);
 				cdplayersnode.setValue("state","record");
-				cdplayersnode.setValue("info","tracknr="+tracknr+" id="+number);
+				cdplayersnode.setValue("info","tracknr=" + tracknr + " id=" + number);
 			} else {
-				debug("doCDRip(): ERROR: Can't get selected tracknr from cdplayers.info field value="+tracknr);
+				log.error("doCDRip(): Can't get selected tracknr from cdplayers.info field value=" + tracknr);
 				cdplayersnode.setValue("state","error");
 				cdplayersnode.setValue("info","ERROR: Can't get selected tracknr from cdplayers.info field value="+tracknr);
 			}
@@ -182,26 +200,36 @@ public class EncodeHandler implements Runnable {
 				parent.Vwms.mmb.mmc.waitUntilNodeChanged(cdplayersnode);
 
 				newnode=bul.getNode(cdplayersnode.getIntValue("number"));
-				if (debug) debug("doCDRip(): waitUntilNodeChanged done, gettingNode: "+newnode);
+				if (log.isDebugEnabled()) {
+                    log.debug("doCDRip(): waitUntilNodeChanged done, gettingNode: " + newnode);
+                }
 				String state=newnode.getStringValue("state");
 				if (state.equals("waiting")||state.equals("error")) changed=true;
 			}
 
-			if (debug) debug("doCDRip: cdplayersnode state has become '"+newnode.getStringValue("state")+"', continuing.");
+			if (log.isDebugEnabled()) {
+                log.debug("doCDRip: cdplayersnode state has become '" + newnode.getStringValue("state") + "', continuing.");
+            }
 			// asume all went oke for now
 
 			// put wav node in done state
-			if (debug) debug("doCDRip: Assuming all went ok and setting RawAudio wavnode state to: "+RawAudioDef.STATUS_GEDAAN);
+			if (log.isDebugEnabled()) {
+                log.debug("doCDRip: Assuming all went ok and setting RawAudio wavnode state to: " + RawAudioDef.STATUS_GEDAAN);
+            }
 			wavnode.setValue("status",RawAudioDef.STATUS_GEDAAN);
 			wavnode.commit();
 		
 			// create the needed g2 RawAudio node
-			if (debug) debug("doCDRip(): Creating new Rawaudio node of type G2 with state: "+RawAudioDef.STATUS_VERZOEK+" id:"+number);
+			if (log.isDebugEnabled()) {
+                log.debug("doCDRip(): Creating new Rawaudio node of type G2 with state: " + RawAudioDef.STATUS_VERZOEK + " id:"+number);
+            }
 			addRawAudio(number,RawAudioDef.STATUS_VERZOEK,RawAudioDef.FORMAT_G2,RawAudioDef.G2_MAXSPEED,2);   
-			if (debug) debug("doCDRip(): Removing this EncodeHandler now.");
+			if (log.isDebugEnabled()) {
+               log.debug("doCDRip(): Removing this EncodeHandler now.");
+            }
 			parent.removeEncodeHandler(this);
 		} else {
-			debug("doCDRip(): ERROR: Can't find a cdplayer claimed by owner("+owner+")");
+			log.error("doCDRip(): Can't find a cdplayer claimed by owner(" + owner + ")");
 		}
 	}
 
@@ -210,21 +238,25 @@ public class EncodeHandler implements Runnable {
 	 * Handles the Real G2 Encoding of an audiopart.
 	 */
 	public void doG2Encode() {
-		if (debug) debug("doG2Encode(): Started for node("+node.getIntValue("number")+") which is a rawaudio");
+		if (log.isDebugEnabled()) {
+            log.debug("doG2Encode(): Started for node(" + node.getIntValue("number") + ") which is a rawaudio");
+        }
 
 		g2encoders bul=(g2encoders)parent.Vwms.mmb.getMMObject("g2encoders");	
 		MMObjectNode g2node	= null;
 
 		// wait while no node found .. try x times y secs before giving up...
 		g2node = getFreeG2Node(bul);
-		if(g2node!=null)
-			debug("doG2Enode(): GOOD!: found testnode("+g2node+")");
-		else
-			debug("doG2Enode(): WARNING: No node found in getFreeG2Node("+bul+")!");
-
+		if(g2node!=null) {
+			log.info("doG2Enode(): found testnode(" + g2node + ")");
+		} else {
+			log.warn("doG2Enode(): No node found in getFreeG2Node("+bul+")!");
+        }
 		if (g2node!=null) {
 			if (g2node.getStringValue("state").equals("waiting")) {
-				if (debug) debug("doG2Encode: Found free g2node, setting RawAudio node state from "+node.getIntValue("status")+" to "+RawAudioDef.STATUS_ONDERWEG);
+				if (log.isDebugEnabled()) {
+                   log.debug("doG2Encode: Found free g2node, setting RawAudio node state from " + node.getIntValue("status") + " to " + RawAudioDef.STATUS_ONDERWEG);
+                }
 				node.setValue("status",RawAudioDef.STATUS_ONDERWEG);
 				node.commit();
 	
@@ -232,7 +264,9 @@ public class EncodeHandler implements Runnable {
 	
 				// Encoded files will be stored in subdir, where name is the id nr. (mkdir is done remotely).	
 				String params="subdir="+id+" inputname=/data/audio/wav/"+id+".wav outputname=/data/audio/ra/"+id+"/surestream.rm sureStream=true encodeAudio=true forceOverwrite=true audioFormat=\"stereo music\"";
-				if (debug) debug("doG2Encode: Changing g2node setting state to 'encode' info to '"+params+"'");
+				if (log.isDebugEnabled()) {
+                   log.debug("doG2Encode: Changing g2node setting state to 'encode' info to '" + params + "'");
+                }
 				g2node.setValue("info",params);
 				g2node.setValue("state","encode");
 				g2node.commit();	
@@ -244,31 +278,36 @@ public class EncodeHandler implements Runnable {
 					parent.Vwms.mmb.mmc.waitUntilNodeChanged(g2node);
 	
 					newnode=bul.getNode(g2node.getIntValue("number"));
-					if (debug) debug("doG2Encode: waitUntilNodeChanged done, gettingNode: "+newnode);
+					if (log.isDebugEnabled()) {
+                        log.debug("doG2Encode: waitUntilNodeChanged done, gettingNode: " + newnode);
+                    }
 					String state=newnode.getStringValue("state");
 					if (state.equals("waiting")||state.equals("error")) changed=true;
 				}
 	
-				if (debug) debug("doG2Encode: g2node state has become '"+newnode.getStringValue("state")+"', continuing.");
-				if (debug) debug("doG2Encode: Changing RawAudio node url= 'F=/"+id+"/surestream.rm H1=station.vpro.nl' , status= "+RawAudioDef.STATUS_GEDAAN);
+				if (log.isDebugEnabled()) {
+                    log.debug("doG2Encode: g2node state has become '" + newnode.getStringValue("state") + "', continuing.");
+				    log.debug("doG2Encode: Changing RawAudio node url= 'F=/" + id + "/surestream.rm H1=station.vpro.nl' , status= " + RawAudioDef.STATUS_GEDAAN);
+                }
 				// asume all went oke for now
 				node.setValue("url","F=/"+id+"/surestream.rm H1=station.vpro.nl");
 				node.setValue("status",RawAudioDef.STATUS_GEDAAN);
 
 				// Searching mmserver running this code.
-				debug("doG2Encode: Searching for mmserver that runs this code.");
+				log.info("doG2Encode: Searching for mmserver that runs this code.");
 				Enumeration e=parent.Vwms.mmb.getInsRel().getRelated(parent.wvmnode.getIntValue("number"),"mmservers");
 				if (e.hasMoreElements()) {
 					MMObjectNode mmserverNode = (MMObjectNode) e.nextElement();
-					debug("doG2Encode: Found mmserverNode: "+mmserverNode);
+					log.info("doG2Encode: Found mmserverNode: " + mmserverNode);
 					node.setValue("cpu",mmserverNode.getStringValue("name"));
 				}
 				node.commit();
 				parent.removeEncodeHandler( this );
 			}
-			debug("doG2Encode(): EncodeHandler done ");
-		} else 
-			debug("doG2Encode(): ERROR: No encoders found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			log.info("doG2Encode(): EncodeHandler done ");
+		} else {
+			log.error("doG2Encode(): No encoders found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
 	}
 
 	/**
@@ -300,7 +339,9 @@ public class EncodeHandler implements Runnable {
 	 * @return a free g2encoders node.
 	 */
 	private synchronized MMObjectNode getFreeG2Node(g2encoders builder) {
-		if (debug) debug("getFreeG2Node: Searching for the first g2encodersnode having a 'waiting' state."); 
+		if (log.isDebugEnabled()) {
+            log.debug("getFreeG2Node: Searching for the first g2encodersnode having a 'waiting' state."); 
+        }
 		MMObjectNode result = null;
 		int i = 1;
 		try {
@@ -309,19 +350,21 @@ public class EncodeHandler implements Runnable {
 				if(e.hasMoreElements()) {
 					result = (MMObjectNode)e.nextElement();
 				} else {
-					debug("getFreeG2Node(): no free node found.. waiting 60 secs.. goodbye!");
+					log.debug("getFreeG2Node(): no free node found.. waiting 60 secs.. goodbye!");
 					parent.addWaitingEncodeHandler(this);
 					wait( (60*1000) ); 
 					parent.removeWaitingEncodeHandler(this);
 					i++;
-					debug("getFreeG2Node(): checking for "+i+" time for free enoder..");
+					log.debug("getFreeG2Node(): checking for " + i + " time for free enoder..");
 				}	
 			}
 		} catch(InterruptedException ie) {
-			debug("getFreeG2Node(): ERROR: " + ie);		
-			ie.printStackTrace();
+			log.error("getFreeG2Node(): ERROR: " + ie);		
+			log.error(Logging.stackTrace(ie));
 		}
-		if (debug) debug("getFreeG2Node: Found free node "+result);
+		if (log.isDebugEnabled()) {
+            log.debug("getFreeG2Node: Found free node " + result);
+        }
 		return result;
 	}
 
