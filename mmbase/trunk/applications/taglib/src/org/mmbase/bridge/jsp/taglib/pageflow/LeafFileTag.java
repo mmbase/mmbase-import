@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * Note that the interesting functionality is implemented in the 'TreeHelper' class.
  * @author Johannes Verelst
- * @version $Id: LeafFileTag.java,v 1.7 2003-08-27 21:33:41 michiel Exp $
+ * @version $Id: LeafFileTag.java,v 1.8 2004-01-20 09:38:54 johannes Exp $
  */
 
 public class LeafFileTag extends UrlTag {
@@ -60,5 +60,11 @@ public class LeafFileTag extends UrlTag {
     
     public void setObjectlist(String p) throws JspTagException {
         objectList = getAttribute(p);
+    }
+    
+    // override to cancel 
+    protected StringBuffer makeRelative(StringBuffer show) {
+    	log.debug("makeRelative() overridden!");
+    	return show;
     }
 }
