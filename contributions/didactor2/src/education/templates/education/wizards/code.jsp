@@ -120,7 +120,7 @@ menu.makeLastSubmenu(rolestree, true);
        menu.addItem("<fmt:message key="filemanagement"/>", 
                "<mm:treefile write="true" page="/education/filemanagement/index.jsp" objectlist="$includePath" />",
                              null,
-                         "<fmt:message key="filemanagement"/",
+                         "<fmt:message key="filemanagement"/>",
                           "<mm:treefile write="true" page="/education/wizards/gfx/new_education.gif" objectlist="$includePath" />");                                           </di:hasrole>
 
 
