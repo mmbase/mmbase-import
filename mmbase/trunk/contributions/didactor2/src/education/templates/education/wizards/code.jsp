@@ -204,7 +204,7 @@ var edutree<%= treeCount %> = new MTMenu();
 </mm:first>
  <mm:node element="learnobjects">
     <mm:nodeinfo type="type" id="this_node_type">
-  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:compare referid="this_node_type" value="pages"></a> (<a href='<%= request.getContextPath() %>/pdf.db?number=<mm:field name="number"/>'>PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> (<a href='<%= request.getContextPath() %>/pdf.db?number=<mm:field name="number"/>'>PDF)</mm:compare>",
+  edutree<%= treeCount %>.addItem("<mm:field name="name" /><mm:compare referid="this_node_type" value="pages"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>PDF)</mm:compare><mm:compare referid="this_node_type" value="learnblocks"></a> (<a href='pdf.jsp?number=<mm:field name="number"/>' target='text'>PDF)</mm:compare>",
                   "<mm:write referid="wizardjsp"/>?wizard=<mm:nodeinfo type="type" />&objectnumber=<mm:field name="number" />",
                   null,
                   "<fmt:message key="treatLearnobject"/> <mm:nodeinfo type="type" />",

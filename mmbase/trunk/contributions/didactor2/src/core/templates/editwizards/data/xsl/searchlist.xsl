@@ -13,7 +13,7 @@
     @author Kars Veling
     @author Michiel Meeuwissen
     @author Nico Klasens
-    @version $Id: searchlist.xsl,v 1.2 2004-11-18 12:45:28 jdiepenmaat Exp $
+    @version $Id: searchlist.xsl,v 1.3 2004-11-19 13:03:48 jdiepenmaat Exp $
   -->
 
   <xsl:import href="xsl/baselist.xsl" />
@@ -104,7 +104,7 @@
                 id="cb_{@number}" />
               </td>
               <td width="30%">
-                <xsl:value-of select="util:realNodeType(@number)"/>
+                <xsl:value-of select="util:nodeManagerGUIName($cloud,@number,1)"/>
               </td>
               <xsl:choose>
                 <xsl:when test="@type=&apos;images&apos;">
