@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.72 2004-09-17 12:31:10 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.73 2004-09-20 12:00:26 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -862,6 +862,7 @@ public class DatabaseStorageManager implements StorageManager {
             // Store strings
         case FieldDefs.TYPE_XML :
             setXMLValue(statement, index, value, field);
+            break;
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
             // retrieve a (old, or nonexistent) value from the storage
@@ -968,6 +969,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
+
         int nodeNumber = Casting.toInt(node);
 
         if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
@@ -1749,16 +1751,19 @@ public class DatabaseStorageManager implements StorageManager {
             }
         case Types.BIT :
         case Types.BOOLEAN :
-            if (mmbaseType == FieldDefs.TYPE_BOOLEAN) {
-                return mmbaseType;
-            }  else {
-                return FieldDefs.TYPE_BOOLEAN;
-            }
+            return FieldDefs.TYPE_BOOLEAN;
+        case Types.DATE :
+        case Types.TIME :
         case Types.TIMESTAMP :
-            if (mmbaseType == FieldDefs.TYPE_DATETIME) {
+            return FieldDefs.TYPE_DATETIME;
+        case Types.ARRAY :
+            return FieldDefs.TYPE_LIST;
+        case Types.JAVA_OBJECT :
+        case Types.OTHER :
+            if (mmbaseType == FieldDefs.TYPE_LIST) {
                 return mmbaseType;
             }  else {
-                return FieldDefs.TYPE_DATETIME;
+                return FieldDefs.TYPE_UNKNOWN;
             }
         default :
             return FieldDefs.TYPE_UNKNOWN;
