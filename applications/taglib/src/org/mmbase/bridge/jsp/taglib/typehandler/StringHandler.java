@@ -27,7 +27,7 @@ import org.mmbase.util.logging.Logging;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: StringHandler.java,v 1.12 2003-08-07 14:35:21 michiel Exp $
+ * @version $Id: StringHandler.java,v 1.13 2003-08-08 12:11:12 michiel Exp $
  */
 
 public class StringHandler extends AbstractTypeHandler {
@@ -102,24 +102,18 @@ public class StringHandler extends AbstractTypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        String search =  super.getSearchValue(field.getName());
-        if (search == null) {
-            return null;
-        }
-      
-        if ("".equals(search)) {
-            return null;
-        }
-        Sql sql = new Sql(Sql.ESCAPE_QUOTES);
-        
-        return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search.toUpperCase()) + "%')";
+        String search =  findString(field);
+        if (search == null) return null;
+
+        Sql sql = new Sql(Sql.ESCAPE_QUOTES);        
+        return "( UPPER( [" + field.getName() + "] ) LIKE '%" + sql.transform(search) + "%')";
     }
     
     protected int getOperator() {
         return FieldCompareConstraint.LIKE;
     }
     protected String getSearchValue(String string) {
-        return "%" + string + "%";
+        return "%" + string.toUpperCase() + "%";
     }
    public Constraint whereHtmlInput(Field field, Query query) throws JspTagException {
        FieldConstraint cons = (FieldConstraint) super.whereHtmlInput(field, query);

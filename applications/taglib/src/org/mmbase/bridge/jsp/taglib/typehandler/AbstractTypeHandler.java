@@ -23,7 +23,7 @@ import org.mmbase.bridge.jsp.taglib.ParamHandler;
  * @author Gerard van de Looi
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
- * @version $Id: AbstractTypeHandler.java,v 1.12 2003-08-07 14:35:21 michiel Exp $
+ * @version $Id: AbstractTypeHandler.java,v 1.13 2003-08-08 12:11:12 michiel Exp $
  */
 
 public abstract class AbstractTypeHandler implements TypeHandler {
@@ -76,16 +76,20 @@ public abstract class AbstractTypeHandler implements TypeHandler {
      * @see TypeHandler#whereHtmlInput(Field)
      */
     public String whereHtmlInput(Field field) throws JspTagException {
-        return "( [" + field.getName() + "] =" + getSearchValue(findString(field)) + ")";
+        String string = findString(field);
+        if (string == null) return null;
+        return "( [" + field.getName() + "] =" + getSearchValue(string) + ")";
     }
 
     /**
+     * The operator to be used by whereHtmlInput(field, query)
      * @since MMBase-1.7
      */
     protected int getOperator() {
         return FieldCompareConstraint.EQUAL;
     }
     /**
+     * Converts the value to the actual value to be searched. (mainly targeted at StringHandler).
      * @since MMBase-1.7
      */
     protected String getSearchValue(String string) {
@@ -95,7 +99,7 @@ public abstract class AbstractTypeHandler implements TypeHandler {
     /**
      * @since MMBase-1.7
      */
-    protected String findString(Field field) throws JspTagException {
+    final protected String findString(Field field) throws JspTagException {
         String fieldName = field.getName();
         String search = (String) context.getContextProvider().getContainer().find(context.getPageContext(), prefix(fieldName));
         if (search == null || "".equals(search)) {
