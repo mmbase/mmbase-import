@@ -31,4 +31,12 @@ public interface User {
      *	@return the rank of this user
      */
     public String getRank();
+    
+    /**
+     *  Is valid
+     *	@return <code>true</code>   if the user is still valid.
+     *      	<code>false</code>  if the user is expired..
+     */
+    public boolean isValid();
+    
 }

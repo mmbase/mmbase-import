@@ -40,4 +40,8 @@ public class BasicUser implements User {
     	// if(!securityManager.getAuthentication().isValid(usercontext)) throw new org.mmbase.security.SecurityException("usercontext invalid");
     	return usercontext;
     }
+    
+    public boolean isValid() {
+    	return securityManager.getAuthentication().isValid(usercontext);
+    }
 }
