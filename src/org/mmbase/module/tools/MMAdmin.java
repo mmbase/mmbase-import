@@ -37,18 +37,20 @@ import javax.servlet.http.*;
  * @application Admin, Application
  * @author Daniel Ockeloen
  * @author Pierre van Rooden
- * @version $Id: MMAdmin.java,v 1.96 2005-01-30 16:46:35 nico Exp $
+ * @version $Id: MMAdmin.java,v 1.97 2005-02-22 15:20:23 keesj Exp $
  */
 public class MMAdmin extends ProcessorModule {
     private static final Logger log = Logging.getLoggerInstance(MMAdmin.class);
 
     // true: ready (probeCall was called)
     private boolean state = false;
+    
     /**
      * reference to MMBase
      * @scope private
      */
     MMBase mmb = null;
+    
     /**
      * @javadoc
      * @scope private
@@ -317,6 +319,7 @@ public class MMAdmin extends ProcessorModule {
         if (s == null) {
             return "";
         } else {
+            
             StringObject obj = new StringObject(s);
             obj.replace("&", "&amp;");
             obj.replace(">", "&gt;");
@@ -543,16 +546,25 @@ public class MMAdmin extends ProcessorModule {
         }
 
     }
+    
+    /**
+     * This method uses the {@link ResourceLoader} to fetch an application by name. for this purpose
+     * it requests the resource by adding <code>applications/</code> to the start of the appName and appends <code>.xml</core> to the end 
+     * @param appName the name of the application to be read. 
+     * @return the XmlApplication reader for the application, or null is the application wat not found or an exception occured. In the later a message is logged
+     */
     private XMLApplicationReader getApplicationReader(String appName) {
+        String resourceName = "applications/" + appName + ".xml";
         try {
-            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource("applications/" + appName + ".xml");
-            if (is == null) return null;
+            InputSource is = ResourceLoader.getConfigurationRoot().getInputSource(resourceName);
+            if (is == null) {
+                return null;
+            }
             return new XMLApplicationReader(is);
         } catch (Exception e) {
-            log.error(e);
+            log.error("error while reading application from resource " + resourceName  + " : " + e.getMessage() , e);
             return null;
         }
-
     }
 
     /**
