@@ -2,21 +2,21 @@
 <news exportsource="mmbase://127.0.0.1/test_db/mm" timestamp="20020214102415">
   <node number="6375" owner="system" alias="codings">
 	<date>1013677994</date>
-	<body>nederlands: Café tweeëntwintig
+	<body>dutch: Café tweeëntwintig
 
-hebreews: דשךצ
+hebrew: דשךצ
 
-russisch: перестоыка
+russian: перестоыка
 
 esperanto: Eĥoŝanĝo ĉiuĵaŭde
 
-tsjechisch: Jiři Šimek
+czech: Jiři Šimek
 
-japans: 寛治 カタカナ
+japanese: 寛治 カタカナ
 
-grieks: παντα ρει
+greek: παντα ρει
 
-koreaans: ㅐ먈갬
+corean: ㅐ먈갬
 
 ipa: hʉ xaːt ɚt met ɨ?
 
