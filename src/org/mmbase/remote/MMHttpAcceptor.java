@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMHttpAcceptor.java,v 1.8 2000-11-28 16:41:12 vpro Exp $
+$Id: MMHttpAcceptor.java,v 1.9 2000-11-29 13:57:22 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.8  2000/11/28 16:41:12  vpro
+davzev: Added some method comments and debug.
+
 */
 package org.mmbase.remote;
 
@@ -21,35 +24,26 @@ import java.io.*;
 
 /**
  *
- * @version $Revision: 1.8 $ $Date: 2000-11-28 16:41:12 $
+ * @version $Revision: 1.9 $ $Date: 2000-11-29 13:57:22 $
  * @author Daniel Ockeloen
  */
 public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 
     private String  classname   = getClass().getName();
     private boolean debug       = true;
-
-    private void debug( String msg ) { if( debug ) System.out.println( classname +":"+ msg ); }
+    private void debug(String msg) { if (debug) System.out.println(classname +":"+ msg);}
 
 	Thread kicker = null;
 
-	/**
- 	* Server Socket
- 	*/
-	ServerSocket serversocket;
-
-	/**
- 	* Clients/sequest socket
- 	*/
-	Socket clientsocket;
+	ServerSocket serversocket; // Server Socket
+	Socket clientsocket;       // Clients/request socket
 
 	Hashtable listeners=new Hashtable();
 
-	int port =  8080;
+	int port=8080;
 	String remoteHost;
 	int remotePort=80;
 	
-
 	public MMHttpAcceptor(String servername,String remoteHost,int remotePort) {
 		this.remoteHost=remoteHost;
 		this.remotePort=remotePort;
@@ -104,7 +98,6 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		kicker = null;
 	}
 
-
 	/**
 	 * Sets the priority of the admin thread a little higher and continuous with work.
 	 */
@@ -152,14 +145,11 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		   /**
 			* let the typerhandler service this request.
 			*/
-
 		}
 	}
 
-
 	public synchronized boolean commitNode(String nodename,String tableName,String xml) {
-		
-		if( debug ) debug("commitNode("+nodename+","+tableName+","+xml+"): xml.length():"+xml.length());
+		if (debug) debug("commitNode("+nodename+","+tableName+","+xml+"): xml.length():"+xml.length());
 		String line=null;
 		Socket connect;
 		BufferedInputStream in=null;
@@ -170,10 +160,9 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		String name="xmlnode";
 		String url="/remoteXML.db";
 
-
 		//System.out.println("DO POST ON : "+xml);
 		try {
-			if(debug) debug("commitNode: Performing HTTP POST and send the xml data to "+remoteHost+", "+remotePort);
+			if (debug) debug("commitNode: Performing HTTP POST and send the xml data to "+remoteHost+", "+remotePort);
 			connect=new Socket(remoteHost,remotePort);
 			try {
 				out=new PrintStream(connect.getOutputStream());
@@ -216,14 +205,18 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		return(true);
 	}
 
-
+	/**
+	 * Stores remote builder reference in hashtable using the service Reference name as key.
+	 * @return true, always
+	 */
 	public boolean addListener(String buildername,String nodename,RemoteBuilder serv) {
- 		if( debug ) debug("addListerer("+buildername+","+nodename+","+serv+")");
+ 		if (debug) debug("addListerer("+buildername+","+nodename+","+serv+"): Adding remote builder ref to listeners hashtable key:"+nodename);
 		listeners.put(nodename,serv);	
 		return(true);
 	}
 
 	/**
+	 * Connects to itself to retrieve the node information (in XML format) and save it as a hashtable.
 	 * @return true, always
 	 */
 	public boolean getNode(String nodename,String tableName) {
@@ -235,7 +228,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			String proto=getProtocol();
 			String host =getLocalHost();
 			String sport=""+getLocalPort();
-			if (debug) debug("getNode("+nodename+","+tableName+"): proto("+proto+"), host("+host+"), sport("+sport+")");
+			if (debug) debug("getNode("+nodename+","+tableName+"): proto:"+proto+", host:"+host+", sport:"+sport);
  
 			Socket connect=new Socket(remoteHost,remotePort);
 			PrintStream out=new PrintStream(connect.getOutputStream());
@@ -250,6 +243,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 			if (debug) debug("getNode("+nodename+","+tableName+"): Return value on GET request:"+line);
 			if (line!=null && !line.equals("")) {
 				if (line.indexOf("200 OK")!=-1) {
+					if (debug) debug("getNode("+nodename+","+tableName+"): Reading XML data from header of requested file");
 					Hashtable headers=readHeaders(in);
 					try {
 						int len=Integer.parseInt((String)headers.get("Content-Length"));
@@ -257,6 +251,7 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 						String xml=new String(buffer,0,0,buffer.length);
 						RemoteBuilder serv=(RemoteBuilder)listeners.get(nodename);
 						if (serv==null) return(true);
+						if (debug) debug("getNode("+nodename+","+tableName+"): Saving XML data as Hashtable with key value pairs");
 						serv.gotXMLValues(xml);
 					} catch(Exception e) {
 	 					debug("getNode("+nodename+","+tableName+"): ERROR: while connecting to host("+remoteHost+","+remotePort+"): ");
@@ -287,11 +282,16 @@ public class MMHttpAcceptor implements Runnable,MMProtocolDriver {
 		try {
 			return(InetAddress.getLocalHost().getHostName());
 		} catch(Exception e) {
+			debug("getLocalHost(): ERROR"); e.printStackTrace();
 			return("");
 		}
 	}
 
-
+	/**
+	 * Reads the data stored in HTTP header file that was sent back on request
+	 * @param in the DataInputStream from which data will be read.
+	 * @return a Hashtable with data from the header. 
+	 */
 	Hashtable readHeaders(DataInputStream in) {
 		Hashtable headers=new Hashtable();
 		String line=readline(in);
