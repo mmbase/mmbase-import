@@ -116,7 +116,7 @@ public class Email extends MMObjectBuilder {
 	/**
 	*/
 	public int sendMailNode(MMObjectNode node) {
-			String subject=node.getStringValue("subject");
+			String subject=getSubject(node);
 			String to=node.getStringValue("to");
 			String from=node.getStringValue("from");
 			String replyto=node.getStringValue("replyto");
@@ -151,13 +151,31 @@ public class Email extends MMObjectBuilder {
 				System.out.println("Email -> mail failed");
 				node.setValue("mailstatus",STATE_FAILED);
 			} else {
-				System.out.println("Email -> mail send to : "+to);
 				node.setValue("mailstatus",STATE_DELIVERED);
 			}
 			node.setValue("mailedtime",(int)(System.currentTimeMillis()/1000));
 			return(node.getIntValue("mailstatus"));
 	}
 
+
+	String getSubject(MMObjectNode node) {
+		String subject=node.getStringValue("subject");
+		if (subject!=null) {
+			if (subject.startsWith("/")) {
+				// we need a url=".." in tcp !
+				String pagesubject=getPage(subject);
+				if (pagesubject!=null) {
+					return(pagesubject);
+				} else {
+					return("subject page 404 : "+subject);
+				}
+			} else {
+				return(subject);
+			}
+		} else {
+			return(""); // should we make the subject empty on defailt ?
+		}
+	}
 
 	/**
 	* check the message object, now if state is 1 (oneshot)
@@ -217,7 +235,6 @@ public class Email extends MMObjectBuilder {
 	}
 
 	public boolean performTask(MMObjectNode node) {
-		System.out.println("GOT perform="+node);
 		checkMailNode(node);
 		return(true);
 	}
