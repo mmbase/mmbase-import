@@ -25,7 +25,7 @@ import org.w3c.dom.*;
  *
  * @since MMBase-1.6
  * @author Pierre van Rooden
- * @version $Id: BuilderWriter.java,v 1.6 2002-06-18 09:19:30 pierre Exp $
+ * @version $Id: BuilderWriter.java,v 1.7 2002-07-12 07:31:52 pierre Exp $
  */
 public class BuilderWriter extends DocumentWriter  {
 
@@ -95,7 +95,7 @@ public class BuilderWriter extends DocumentWriter  {
         root.appendChild(names);
         // names.singular
         Map datamap=builder.getSingularNames();
-        addComment("builder.singular",root);
+        addComment("builder.singular",names);
         for (Iterator i=datamap.keySet().iterator(); i.hasNext();) {
             String language=(String)i.next();
             String name=(String)datamap.get(language);
@@ -104,9 +104,9 @@ public class BuilderWriter extends DocumentWriter  {
                 elm.setAttribute("xml:lang",language);
             }
         }
-        // names.pluralname
+        // names.plural
         datamap=builder.getPluralNames();
-        addComment("builder.plural",root);
+        addComment("builder.plural",names);
         for (Iterator i=datamap.keySet().iterator(); i.hasNext();) {
             String language=(String)i.next();
             String name=(String)datamap.get(language);
@@ -148,9 +148,8 @@ public class BuilderWriter extends DocumentWriter  {
         Element fieldlist=document.createElement("fieldlist");
         addComment("builder.fieldlist",root);
         root.appendChild(fieldlist);
-        // field
-        List fields=builder.getFields();
-        Collections.sort(fields);
+        // obtain all fields defined in the builder
+        List fields=builder.getFields(FieldDefs.ORDER_CREATE);
         for (Iterator f=fields.iterator(); f.hasNext();) {
             FieldDefs fielddef=(FieldDefs)f.next();
             // skip otype, cannot occur in a builder xml file (doh)

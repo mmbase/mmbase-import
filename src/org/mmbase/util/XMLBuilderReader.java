@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  * @author Case Roole
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBuilderReader.java,v 1.24 2002-03-22 10:55:30 michiel Exp $
+ * @version $Id: XMLBuilderReader.java,v 1.25 2002-07-12 07:31:52 pierre Exp $
  */
 public class XMLBuilderReader extends XMLBasicReader {
 
@@ -197,10 +197,9 @@ public class XMLBuilderReader extends XMLBasicReader {
         HashMap oldset=new HashMap();
         int pos=1;
         if (parentBuilder!=null) {
-            List parentfields = parentBuilder.getFields();
+            List parentfields = parentBuilder.getFields(FieldDefs.ORDER_CREATE);
             if (parentfields!=null) {
                 // have to clone the parent fields...
-                FieldDefs.sort(parentfields,FieldDefs.ORDER_CREATE);
                 for (Iterator i=parentfields.iterator();i.hasNext();) {
                     FieldDefs f=(FieldDefs)i.next();
                     FieldDefs newfield=
@@ -219,7 +218,7 @@ public class XMLBuilderReader extends XMLBasicReader {
                         Map.Entry p = (Map.Entry) guinames.next();
                         newfield.setGUIName((String)p.getKey(), (String)p.getValue());
                     }
-                    
+
                     results.add(newfield);
                     oldset.put(newfield.getDBName(),newfield);
                 }
@@ -418,7 +417,7 @@ public class XMLBuilderReader extends XMLBasicReader {
              enum.hasMoreElements(); ) {
             tmp = (Element)enum.nextElement();
             lang = getElementAttributeValue(tmp,"xml:lang");
-            results.put(lang,getElementValue(tmp));        
+            results.put(lang,getElementValue(tmp));
         }
         if (results.isEmpty()) { // nothing, thats little. Try parent.
             if (parentBuilder!=null) {
@@ -448,7 +447,7 @@ public class XMLBuilderReader extends XMLBasicReader {
             lang = getElementAttributeValue(tmp,"xml:lang");
             results.put(lang,getElementValue(tmp));
         }
-        if (results.isEmpty()) { // nothing, try parent, to have something at least.. 
+        if (results.isEmpty()) { // nothing, try parent, to have something at least..
             if (parentBuilder!=null) {
                 Map parentnames= parentBuilder.getSingularNames();
                 if (parentnames!=null) {
