@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  * @author Michiel Meeuwissen
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: Wizard.java,v 1.10 2002-02-27 16:54:22 pierre Exp $
+ * @version $Id: Wizard.java,v 1.11 2002-03-01 15:27:54 pierre Exp $
  *
  */
 public class Wizard {
@@ -822,13 +822,15 @@ public class Wizard {
             if (nrOfItems > minoccurs && hiddenCommands.indexOf("|delete-item|") == -1){
                 addSingleCommand(newitem,"delete-item", datacontext);
             }
-            if (dataindex > 0 && hiddenCommands.indexOf("|move-up|") == -1){
-                addSingleCommand(newitem,"move-up", datacontext,
+            if (orderby!=null) {
+                if (dataindex > 0 && hiddenCommands.indexOf("|move-up|") == -1){
+                    addSingleCommand(newitem,"move-up", datacontext,
                                                    (Node)entrylist[dataindex-1].getValue());
-            }
-            if ((dataindex+1) < entrylist.length && hiddenCommands.indexOf("|move-down|") == -1){
-                addSingleCommand(newitem,"move-down", datacontext,
-                                                   (Node)entrylist[dataindex+1].getValue());
+                }
+                if ((dataindex+1) < entrylist.length && hiddenCommands.indexOf("|move-down|") == -1){
+                    addSingleCommand(newitem,"move-down", datacontext,
+                                                       (Node)entrylist[dataindex+1].getValue());
+                }
             }
         }
 
