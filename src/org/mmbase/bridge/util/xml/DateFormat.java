@@ -34,7 +34,7 @@ import org.mmbase.util.logging.Logging;
  * @author Nico Klasens
  * @author Martijn Houtman
  * @author Michiel Meeuwissen
- * @version $Id: DateFormat.java,v 1.7 2004-06-02 16:20:02 michiel Exp $
+ * @version $Id: DateFormat.java,v 1.8 2004-06-03 08:44:10 michiel Exp $
  * @since   MMBase-1.7
  */
 public class DateFormat {
@@ -65,8 +65,8 @@ public class DateFormat {
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String format(String number, String fieldName, String pattern, String timeZone, String language) {
-        return format("mmbase", number, fieldName, pattern, timeZone, language);
+    public static String format(String number, String fieldName, String pattern, String timeZone, String language, String country) {
+        return format("mmbase", number, fieldName, pattern, timeZone, language, country);
     }   
 
 
@@ -79,10 +79,10 @@ public class DateFormat {
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String format(String cloudName, String number, String fieldName, String pattern, String timeZone, String language) {
+    public static String format(String cloudName, String number, String fieldName, String pattern, String timeZone, String language, String country) {
         try {
             Cloud cloud = LocalContext.getCloudContext().getCloud(cloudName);
-            cloud.setLocale(new Locale(language));
+            cloud.setLocale(new Locale(language, country));
             return format(cloud, number, fieldName, pattern, timeZone);
         } catch (BridgeException e) {
             return "could not find '" + fieldName + "' on node '" + number + "' (" + e.toString() + ")";
@@ -121,8 +121,8 @@ public class DateFormat {
      * @param timeZone  timezone
      * @return the formatted string
      */
-    public static String format(String fieldValue, String pattern, String timeZone, String language) {
-        return format(fieldValue, pattern, 1000, timeZone, language);
+    public static String format(String fieldValue, String pattern, String timeZone, String language, String country) {
+        return format(fieldValue, pattern, 1000, timeZone, language, country);
     }
 
     /** Formats the fieldvalue to a date pattern
@@ -134,8 +134,8 @@ public class DateFormat {
      * @param language  The language for which the date must be formatted.
      * @return the formatted string
      */
-    public static String format(String fieldValue, String pattern, int factor, String timeZone, String language) {
-        return format(fieldValue, pattern, factor, timeZone, new Locale(language));
+    public static String format(String fieldValue, String pattern, int factor, String timeZone, String language, String country) {
+        return format(fieldValue, pattern, factor, timeZone, new Locale(language, country));
     }
 
     protected static String format(String fieldValue, String pattern, int factor, String timeZone, Locale locale) {
