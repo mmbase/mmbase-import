@@ -24,7 +24,7 @@ import org.mmbase.util.logging.*;
  *
  * @author  Michiel Meeuwissen
  * @since   MMBase-1.6
- * @version $Id: Config.java,v 1.24 2002-08-19 13:46:31 michiel Exp $
+ * @version $Id: Config.java,v 1.25 2002-08-21 16:40:56 michiel Exp $
  */
 
 public class Config {
@@ -45,6 +45,7 @@ public class Config {
     public String      language;
 
     static public abstract class SubConfig {
+        public boolean debug = false;
         public String wizard;
         public String page;
         public Map   popups     = new HashMap(); // all popups now in use below this (key -> Config)
@@ -218,6 +219,12 @@ public class Config {
             if (i == null || i.equals("")) return def;
             return new Integer(i);
         }
+
+        protected boolean getParam(String paramName, boolean def) {
+            if (request.getParameter(paramName) == null) return def;
+            return new Boolean(request.getParameter(paramName)).booleanValue();
+        }
+
         protected Boolean getParam(String paramName, Boolean def) {
             if (request.getParameter(paramName) == null) return def;
             return new Boolean(request.getParameter(paramName));
