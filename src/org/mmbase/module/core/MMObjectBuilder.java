@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.264.2.4 2004-11-08 13:27:14 marcel Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.264.2.5 2004-11-12 22:37:10 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -339,7 +339,7 @@ public class MMObjectBuilder extends MMTable {
      * @see #create
      */
     public boolean init() {
-        synchronized(mmb) { // syncrhonized on mmb because can only init builder if mmb is inited completely
+        synchronized(mmb) { // synchronized on mmb because can only init builder if mmb is inited completely
 
             // skip initialisation if oType has been set (happend at end of init)
             // note that init can be called twice
@@ -3143,7 +3143,11 @@ public class MMObjectBuilder extends MMTable {
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
         for (Enumeration e=remoteObservers.elements();e.hasMoreElements();) {
             MMBaseObserver o=(MMBaseObserver)e.nextElement();
-            o.nodeRemoteChanged(machine,number,builder,ctype);
+            if (o != this) {
+                o.nodeRemoteChanged(machine,number,builder,ctype);
+            } else {
+                log.warn(getClass().getName()  + " " + toString() + " observes itself");
+            }
         }
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
@@ -3194,9 +3198,13 @@ public class MMObjectBuilder extends MMTable {
 
         }
         // signal all the other objects that have shown interest in changes of nodes of this builder type.
-        for (Enumeration e=localObservers.elements();e.hasMoreElements();) {
-            MMBaseObserver o=(MMBaseObserver)e.nextElement();
-            o.nodeLocalChanged(machine,number,builder,ctype);
+        for (Enumeration e = localObservers.elements();e.hasMoreElements();) {
+            MMBaseObserver o = (MMBaseObserver)e.nextElement();
+            if (o != this) {
+                o.nodeLocalChanged(machine,number,builder,ctype);
+            } else {
+                log.warn(getClass().getName()  + " " + toString() + " observes itself");
+            }
         }
 
         MMObjectBuilder bul = mmb.getBuilder(builder);
