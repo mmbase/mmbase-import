@@ -64,7 +64,9 @@
 <!ATTLIST list type NMTOKEN #IMPLIED >
 <!ATTLIST list fields CDATA #IMPLIED >
 <!ATTLIST list include CDATA #IMPLIED >
-<!ATTLIST list directions CDATA #IMPLIED > <!-- ?? -->
+<!ATTLIST list directions CDATA #IMPLIED >
+<!ATTLIST list searchdir (source | destination | both | all | either) #IMPLIED >
+
 
 <!ELEMENT item ( title | description | field | fieldset | list )* >
 <!ATTLIST item displaytype NMTOKEN #IMPLIED >
