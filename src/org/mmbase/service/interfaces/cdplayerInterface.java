@@ -13,10 +13,11 @@ import org.mmbase.service.*;
 
 /**
  * @author Daniel Ockeloen
+ * @version $Revision: 1.4 $ $Date: 2001-04-19 12:03:08 $
  */
 public interface cdplayerInterface extends serviceInterface {
 	public String getVersion();
-	public boolean getTrack(int number,String filename);
+	public int getTrack(int number,String filename);
 	public String getListCD();
 	public String getInfoCDtoString();
 }
