@@ -38,6 +38,7 @@ public class ForumManager {
     private static ForumMMBaseSyncer syncfast,syncslow;
     private static ForumSwapManager swapmanager;
     private static String defaultaccount, defaultpassword;
+    private static HashMap fieldaliases=new HashMap();
 
     public static final int FASTSYNC = 1;
     public static final int SLOWSYNC = 2;
@@ -335,6 +336,52 @@ public class ForumManager {
                             }
                         }
 
+                        for(Enumeration ns2=reader.getChildElements(n,"alias");ns2.hasMoreElements(); ) {
+                                   	Element n2=(Element)ns2.nextElement();
+                                        	nm=n2.getAttributes();
+                                		if (nm!=null) {
+							String object=null;
+							String extern=null;
+							String field=null;
+							String externfield=null;
+							String key=null;
+							String externkey=null;
+                                        		n3=nm.getNamedItem("object");
+                                        		if (n3!=null) {
+                                                		object=n3.getNodeValue();
+                                        		}
+                                        		n3=nm.getNamedItem("extern");
+                                        		if (n3!=null) {
+                                                		extern=n3.getNodeValue();
+                                        		}
+                                        		n3=nm.getNamedItem("field");
+                                        		if (n3!=null) {
+                                                		field=n3.getNodeValue();
+                                        		}
+                                        		n3=nm.getNamedItem("externfield");
+                                        		if (n3!=null) {
+                                                		externfield=n3.getNodeValue();
+                                        		}
+                                        		n3=nm.getNamedItem("key");
+                                        		if (n3!=null) {
+                                                		key=n3.getNodeValue();
+                                        		}
+                                        		n3=nm.getNamedItem("externkey");
+                                        		if (n3!=null) {
+                                                		externkey=n3.getNodeValue();
+                                        		}
+							id="default."+object+"."+field;
+							FieldAlias fa=new FieldAlias(id);
+							fa.setObject(object);
+							fa.setExtern(extern);
+							fa.setField(field);
+							fa.setExternField(externfield);
+							fa.setKey(key);
+							fa.setExternKey(externkey);
+							fieldaliases.put(id,fa);
+						}
+					}
+
                     }
                 }
             }
@@ -353,4 +400,15 @@ public class ForumManager {
             f.maintainMemoryCaches();
         }
     }
+
+   /**
+   * get aliased version of this field
+   */
+   public static String getAliased(org.mmbase.bridge.Node node,String key) {
+        FieldAlias fa=(FieldAlias)fieldaliases.get(key);
+        if (fa!=null) {
+                return fa.getValue(node);
+        }
+        return null;
+   }
 }

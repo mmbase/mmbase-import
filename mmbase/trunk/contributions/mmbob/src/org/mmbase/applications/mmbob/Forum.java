@@ -41,6 +41,8 @@ public class Forum {
     private int viewcount;
     private int postcount;
     private int postthreadcount = -1;
+    private int lastposternumber;
+    private int lastpostnumber;
 
     private int lastposttime;
     private String lastposter;
@@ -73,9 +75,11 @@ public class Forum {
         this.postthreadcount = node.getIntValue("postthreadcount");
         if (postthreadcount == -1) postthreadcount = 0;
 
-        this.lastpostsubject = node.getStringValue("lastpostsubject");
-        this.lastposter = node.getStringValue("lastposter");
-        this.lastposttime = node.getIntValue("lastposttime");
+        this.lastpostsubject = node.getStringValue("c_lastpostsubject");
+        this.lastposter = node.getStringValue("c_lastposter");
+        this.lastposttime = node.getIntValue("c_lastposttime");
+        this.lastposternumber=node.getIntValue("lastposternumber");
+        this.lastpostnumber=node.getIntValue("lastpostnumber");
 
         // read postareas
         preCachePosters();
@@ -194,6 +198,15 @@ public class Forum {
     }
 
     /**
+     * get last poster on the forum
+     *
+     * @return poster id
+     */
+   public int getLastPosterNumber() {
+        return lastposternumber;
+   }
+
+    /**
      * get the date/time (Epoch) of the last post on the forum
      *
      * @return date/time (Epoch) of the last post on the forum
@@ -230,9 +243,11 @@ public class Forum {
         node.setIntValue("postcount", postcount);
         node.setIntValue("postthreadcount", postthreadcount);
         node.setIntValue("viewcount", viewcount);
-        node.setIntValue("lastposttime", lastposttime);
-        node.setStringValue("lastposter", lastposter);
-        node.setStringValue("lastpostsubject", lastpostsubject);
+        node.setIntValue("c_lastposttime", lastposttime);
+        node.setStringValue("c_lastposter", lastposter);
+        node.setStringValue("c_lastpostsubject", lastpostsubject);
+        node.setIntValue("lastposternumber",lastposternumber);
+        node.setIntValue("lastpostnumber",lastpostnumber);
         ForumManager.syncNode(node, queue);
     }
 
@@ -505,6 +520,8 @@ public class Forum {
         lastposttime = child.getLastPostTime();
         lastposter = child.getLastPoster();
         lastpostsubject = child.getLastSubject();
+        lastposternumber=child.getLastPosterNumber();
+        lastpostnumber=child.getLastPostNumber();
         syncNode(ForumManager.FASTSYNC);
     }
 
@@ -835,5 +852,21 @@ public class Forum {
             a.maintainMemoryCaches();
         }
     }
+  
+   /**
+   * provide the number of the last poster in this forum
+   */
+   public int getLastPostNumber() {
+        return lastpostnumber;
+   }
+
+   /**
+   * get aliased version of this field
+   */
+   public String getAliased(org.mmbase.bridge.Node node,String key) {
+        String value=ForumManager.getAliased(node,"default."+key);
+        return value;
+   }
+
 
 }

@@ -47,6 +47,8 @@ public class PostArea {
     private int postcount;
     private int postthreadcount;
     private int lastposttime;
+    private int lastpostnumber;
+    private int lastposternumber;
     private int numberofpinned = 0;
     private String lastposter;
     private String lastpostsubject;
@@ -68,9 +70,11 @@ public class PostArea {
         this.postthreadcount = node.getIntValue("postthreadcount");
         if (postthreadcount == -1) postthreadcount = 0;
 
-        this.lastpostsubject = node.getStringValue("lastpostsubject");
-        this.lastposter = node.getStringValue("lastposter");
-        this.lastposttime = node.getIntValue("lastposttime");
+        this.lastpostsubject = node.getStringValue("c_lastpostsubject");
+        this.lastposter = node.getStringValue("c_lastposter");
+        this.lastposttime = node.getIntValue("c_lastposttime");
+        this.lastpostnumber=node.getIntValue("lastpostnumber");
+        this.lastposternumber=node.getIntValue("lastposternumber");
 
         // read postareas
         // don't read all, readPostThreads();
@@ -184,6 +188,22 @@ public class PostArea {
     public String getLastPoster() {
         return lastposter;
     }
+
+    /**
+     * get the last poster in the postarea
+     * @return last poster
+     */
+   public int getLastPosterNumber() {
+        return lastposternumber;
+   }
+
+    /**
+     * get the last post in the postarea
+     * @return postnumber
+     */
+   public int getLastPostNumber() {
+        return lastpostnumber;
+   }
 
     /**
      * get the date/time of the last post in the postarea
@@ -514,6 +534,8 @@ public class PostArea {
         lastposttime = child.getLastPostTime();
         lastposter = child.getLastPoster();
         lastpostsubject = child.getLastSubject();
+        lastpostnumber=child.getLastPostNumber();
+        lastposternumber=child.getLastPosterNumber();
         syncNode(ForumManager.FASTSYNC);
 
         resort(child);
@@ -573,9 +595,11 @@ public class PostArea {
         node.setIntValue("postcount", postcount);
         node.setIntValue("postthreadcount", postthreadcount);
         node.setIntValue("viewcount", viewcount);
-        node.setIntValue("lastposttime", lastposttime);
-        node.setStringValue("lastposter", lastposter);
-        node.setStringValue("lastpostsubject", lastpostsubject);
+        node.setIntValue("c_lastposttime", lastposttime);
+        node.setStringValue("c_lastposter", lastposter);
+        node.setStringValue("c_lastpostsubject", lastpostsubject);
+        node.setIntValue("lastposternumber",lastposternumber);
+        node.setIntValue("lastpostnumber",lastpostnumber);
         ForumManager.syncNode(node, queue);
     }
 

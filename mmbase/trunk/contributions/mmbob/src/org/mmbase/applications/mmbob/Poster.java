@@ -49,13 +49,13 @@ public class Poster {
         this.parent = parent;
         this.node = node;
         this.id = node.getNumber();
-        this.firstname = node.getStringValue("firstname");
-        this.lastname = node.getStringValue("lastname");
-        this.email = node.getStringValue("email");
+        this.firstname=getAliased("firstname");
+        this.lastname=getAliased("lastname");
+        this.email=getAliased("email");
         this.postcount = node.getIntValue("postcount");
         this.level = node.getStringValue("level");
-        this.location = node.getStringValue("location");
-        this.gender = node.getStringValue("gender");
+        this.location=getAliased("location");
+        this.gender=getAliased("gender");
         int fl = node.getIntValue("firstlogin");
         if (fl == -1) {
             node.setIntValue("firstlogin", ((int) (System.currentTimeMillis() / 1000)));
@@ -142,7 +142,7 @@ public class Poster {
      * @return accountname / nick
      */
     public String getAccount() {
-        return node.getStringValue("account");
+        return getAliased("account");
     }
 
     /**
@@ -198,8 +198,13 @@ public class Poster {
      * @return firstname
      */
     public String getFirstName() {
-        return node.getStringValue("firstname");
+        return getAliased("firstname");
     }
+
+   public String getPassword() {
+        return getAliased("password");
+   }
+
 
     /**
      * get the lastname of the poster
@@ -207,7 +212,7 @@ public class Poster {
      * @return lastname
      */
     public String getLastName() {
-        return node.getStringValue("lastname");
+        return getAliased("lastname");
     }
 
     /**
@@ -492,4 +497,19 @@ public class Poster {
         }
         return null;
     }
+
+   /** 
+   * get aliases version of this field
+   */
+   public String getAliased(String key) {
+        // long start = System.currentTimeMillis();
+        String value = parent.getAliased(node,"posters."+key);
+        if (value==null)  {
+                value=node.getStringValue(key);
+        }
+        // long end = System.currentTimeMillis();
+        // log.info("getAlias Speed = "+(end-start)+"ms");
+        return value;
+   }
+
 }

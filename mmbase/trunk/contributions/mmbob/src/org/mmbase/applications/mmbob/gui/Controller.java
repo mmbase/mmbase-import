@@ -78,6 +78,8 @@ public class Controller {
                     virtual.setValue("lastposttime", area.getLastPostTime());
                     virtual.setValue("lastsubject", area.getLastSubject());
                     virtual.setValue("moderators", area.getModeratorsLine("profile.jsp"));
+                    virtual.setValue("lastposternumber",area.getLastPosterNumber());
+                    virtual.setValue("lastpostnumber",area.getLastPostNumber());
                     list.add(virtual);
 
                     if (activeid != -1) {
@@ -125,6 +127,8 @@ public class Controller {
             virtual.setValue("lastposter", f.getLastPoster());
             virtual.setValue("lastposttime", f.getLastPostTime());
             virtual.setValue("lastsubject", f.getLastSubject());
+            virtual.setValue("lastposternumber",f.getLastPosterNumber());
+            virtual.setValue("lastposrnumber",f.getLastPostNumber());
             list.add(virtual);
         }
         return list;
@@ -178,6 +182,8 @@ public class Controller {
                 virtual.setValue("lastsubject", thread.getLastSubject());
                 //newnode.setStringValue("threadnav",thread.getLastSubject());
                 virtual.setValue("navline", thread.getNavigationLine(baseurl, pagesize, cssclass));
+                virtual.setValue("lastposternumber",thread.getLastPosterNumber());
+                virtual.setValue("lastpostnumber",thread.getLastPostNumber());
                 list.add(virtual);
             }
         }
@@ -1023,4 +1029,31 @@ public class Controller {
         node.setValue("active_avatar", p.getAvatar());
         node.setValue("active_postcount", p.getPostCount());
     }
+
+
+    /**
+    * get login information for this poster
+    */
+    public MMObjectNode forumLogin(String forumid,String account,String password) {
+                VirtualBuilder builder = new VirtualBuilder(MMBase.getMMBase());
+                MMObjectNode virtual = builder.getNewNode("admin");
+		Forum f=ForumManager.getForum(forumid);
+		if (f!=null) {
+			Poster po=f.getPoster(account);
+			if (po!=null) {
+				if (po.getPassword().equals(password)) {
+					virtual.setValue("state","passed");
+					virtual.setValue("posterid",po.getId());
+				} else {
+					virtual.setValue("state","failed");
+					virtual.setValue("reason","password not valid");
+				}	
+			} else {
+				virtual.setValue("state","failed");
+				virtual.setValue("reason","account not valid");
+			}
+		
+		}
+		return virtual;
+	}
 }
