@@ -6,7 +6,7 @@
        
   @since  MMBase-1.6
   @author Michiel Meeuwissen
-  @version $Id: base.xsl,v 1.1 2003-12-19 11:09:54 nico Exp $
+  @version $Id: base.xsl,v 1.2 2004-05-24 13:13:23 michiel Exp $
        -->
   <xsl:import href="xsl/prompts.xsl" />
 
@@ -19,6 +19,10 @@
     doctype-public="-//W3C//DTD XHTML 1.0 Transitional//"
     indent="no"
     />
+
+  <xsl:template name="prompt_edit_wizard"><xsl:value-of select="$tooltip_edit_wizard" /></xsl:template>
+  <xsl:template name="prompt_add_wizard"><xsl:value-of select="$tooltip_add_wizard" /></xsl:template>
+  
 
   <xsl:param name="ew_context"></xsl:param><!-- The web-application's context -->
   <xsl:param name="ew_path"></xsl:param><!-- The directory in which the editwizards are installed (relative to context root) -->
