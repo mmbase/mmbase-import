@@ -8,98 +8,169 @@ See http://www.MMBase.org/license
 
 */
 
-/*
-    (c) 2000 VPRO
-*/
-
 package org.mmbase.util.media.video.videoparts;
 
-import    java.util.*; 
-import java.net.URLEncoder;
+import java.util.Vector;
 
-import    org.mmbase.module.core.*;
-import    org.mmbase.util.*;
-import    org.mmbase.util.media.*;
-import    org.mmbase.util.media.video.*;
+import org.mmbase.module.core.*;
+import org.mmbase.util.scanpage;
+import org.mmbase.util.media.MediaUtils;
+import org.mmbase.util.media.video.*;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
+/**
+ * @javadoc
+ * @author    vpro
+ * @version   $Id: VideoPartDef.java,v 1.7 2002-01-28 16:35:03 pierre Exp $
+ */
 
-public class VideoPartDef
-{
+public class VideoPartDef {
+
+    // logging
     private static Logger log = Logging.getLoggerInstance(VideoPartDef.class.getName());
 
-    public int        number;
-    public int        otype;        // not nes, but anyway
-    public String    owner;
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public int number;
 
-    public String    title;
-    public String    subtitle;
-    public int        source;
-    public int        playtime;
-    public String    intro;
-    public String    body;
-    public int        storage;
+    /**
+     * @javadoc
+     * @scope private
+     * @deprecated not used, implied by number
+     */
+    public int otype;        // not nes, but anyway
 
-    public String    starttime;
-    public String    stoptime;
+    /**
+     * @javadoc
+     * @scope private
+     * @deprecated not used, implied by number
+     */
+    public String owner;
 
-    public Vector        rawvideos;        // all the rawvideos connected to this node
-    public RawVideoDef    rawvideo;        // the best for the user in speed/channels.
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String title;
 
-// ----------------------------------------------------------------------------
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String subtitle;
 
-    public VideoPartDef()
-    { }
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public int source;
 
-    public VideoPartDef( MMBase mmbase, int number )
-    {
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public int playtime;
+
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String intro;
+
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String body;
+
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public int storage;
+
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String starttime;
+
+    /**
+     * @javadoc
+     * @scope private
+     */
+    public String stoptime;
+
+    /**
+     * all the rawvideos connected to this node
+     * @scope private
+     */
+    public Vector rawvideos;
+
+    /**
+     * the best for the user in speed/channels.
+     * @scope private
+     */
+    public RawVideoDef rawvideo;
+
+    public VideoPartDef() {
+    }
+
+    /**
+     * @javadoc
+     */
+    public VideoPartDef( MMBase mmbase, int number ) {
         if( !setparameters( mmbase, number ) )
             log.error("VideoPartDef("+mmbase+","+number+"): Not initialised, something went wrong");
     }
 
-    public boolean setparameters( MMBase mmbase, int number )
-    {
-        boolean result = false; 
-        if( mmbase != null )
-        {
-            if( number > 0 )
-            {
+    /**
+     * @javadoc
+     */
+    public boolean setparameters( MMBase mmbase, int number ) {
+        boolean result = false;
+        if( mmbase != null ) {
+            if( number > 0 ) {
                 MMObjectBuilder builder = mmbase.getMMObject("videoparts");
-                if( builder != null )
-                {
+                if( builder != null ) {
                     MMObjectNode    node    = builder.getNode( number );
-                    if( node != null )
-                        result = setparameters( mmbase, node ); 
-                    else
+                    if( node != null ) {
+                        result = setparameters( mmbase, node );
+                    } else {
                         log.error("VideoPartDef("+mmbase+","+number+"): No node found for this number!");
-                }
-                else
+                    }
+                } else {
                     log.error("VideoPartDef("+mmbase+","+number+"): no builder(videoparts) found in mmbase!");
-            }
-            else
+                }
+            } else {
                 log.error("VideoPartDef("+mmbase+","+number+"): Number is not greater than 0!");
-        }
-        else
+            }
+        } else {
             log.error("VideoPartDef("+mmbase+","+number+"): mmbase not initialised!");
+        }
 
         return result;
     }
 
-// ----------------------------------------------------------------------------
-
-    public VideoPartDef( MMBase mmbase, MMObjectNode node )
-    {
+    /**
+     * @javadoc
+     */
+    public VideoPartDef( MMBase mmbase, MMObjectNode node ) {
         if( !setparameters( mmbase, node ) )
             log.error("VideoPartDef("+node+"): Not initialised, something went wrong!");
     }
 
-    public boolean setparameters( MMBase mmbase, MMObjectNode node )
-    {
+    /**
+     * @javadoc
+     * @performance why are fields stored as properties, rather than the node itself?
+     */
+    public boolean setparameters( MMBase mmbase, MMObjectNode node ) {
         boolean result = false;
-        if( node != null )
-        {
+        if( node != null ) {
             number         = node.getIntValue("number");
             otype        = node.getIntValue("otype");
             owner        = node.getStringValue("owner");
@@ -111,73 +182,71 @@ public class VideoPartDef
             intro        = node.getStringValue("intro");
             body        = node.getStringValue("body");
             storage        = node.getIntValue("storage");
-            
+
             getStartStop( mmbase );
 
             result        = true;
+        } else {
+            log.error("VideoPartsDef("+node+"): Node is null!");
         }
-        else
-            log.error("VideoPartsDef("+node+"): Node is null!"); 
-    
         return result;
     }
 
-// ----------------------------------------------------------------------------
-
-    public boolean getRawVideos( MMBase mmbase, int wantedspeed, int wantedchannels, boolean sorted )
-    {
+    /**
+     * @javadoc
+     */
+    public boolean getRawVideos( MMBase mmbase, int wantedspeed, int wantedchannels, boolean sorted ) {
         boolean result = false;
 
         rawvideos = VideoUtils.getRawVideos( mmbase , number, sorted );
-        if(rawvideos != null )
-        {
+        if(rawvideos != null ) {
             rawvideo = VideoUtils.getBestRawVideo( rawvideos, wantedspeed, wantedchannels );
-            if( rawvideo != null )
-            {
+            if( rawvideo != null ) {
                 result = true;
-            }
-            else
+            } else {
                 log.warn("getRawVideos("+number+","+wantedspeed+","+wantedchannels+","+sorted+"): No best rawvideo found for this speed/channels!");
-        }
-        else
+            }
+        } else {
             log.warn("getRawVideos("+number+","+wantedspeed+","+wantedchannels+","+sorted+"): No rawvideos found for this node!");
-
+        }
         return result;
     }
 
-    public void getStartStop( MMBase mmbase )
-    {
-        if( mmbase != null )
-        {
-            if( number > 0 )
-            {
+    /**
+     * @javadoc
+     */
+    public void getStartStop( MMBase mmbase ) {
+        if( mmbase != null ) {
+            if( number > 0 ) {
                 MMObjectBuilder builder = mmbase.getMMObject("properties");
-                if( builder != null )
-                {
+                if( builder != null ) {
                     MMObjectNode node = builder.getNode( number );
-                    if( node != null )
-                    {
+                    if( node != null ) {
                         MMObjectNode start = (MMObjectNode)node.getProperty("starttime");
                         MMObjectNode stop  = (MMObjectNode)node.getProperty("stoptime");
 
-                        if( start != null )
+                        if( start != null ) {
                             starttime = start.getStringValue("value");
-                        if( stop  != null )
+                        }
+                        if( stop  != null ) {
                             stoptime = stop.getStringValue("value");
-                    }    
-                }    
-                else
+                        }
+                    }
+                } else {
                     log.warn("getStartStop(): builder(properties("+builder+")) not found!");
-            }
-            else
+                }
+            } else {
                 log.warn("getStartStop(): number("+number+") not valid!");
-        }
-        else
+            }
+        } else {
             log.warn("getStartStop("+mmbase+"): mmbase not valid!");
+        }
     }
 
-    public String toText()
-    {
+    /**
+     * @javadoc
+     */
+    public String toText() {
         String classname = this.getClass().getName();
         StringBuffer b = new StringBuffer();
         b.append( classname +":" + "number("+number+")\n");
@@ -194,13 +263,15 @@ public class VideoPartDef
         b.append( classname +":" + "starttime("+starttime+")\n");
         b.append( classname +":" + "stoptime("+stoptime+")\n");
         b.append( classname +":" + "rawvideos found : " + rawvideos.size() + "\n");
-        b.append( classname +":" + "best rawvideo   : " + rawvideo.toString() + "\n"); 
+        b.append( classname +":" + "best rawvideo   : " + rawvideo.toString() + "\n");
         return b.toString();
     }
 
     /**
      * Gets the Realvideo url and ads the 'title','start' and 'end' name and values parameters.
-     * davzev: Removed the double quotes around the values since Real SMIL doesn't handle it correctly. 
+     * davzev: Removed the double quotes around the values since Real SMIL doesn't handle it correctly.
+     * @deprecation-used contains commented-out code
+     * @dependency scanpage (SCAN)
      * @param sp the scanepage
      * @return a String with the url.
      */
@@ -211,7 +282,7 @@ public class VideoPartDef
         if( result != null ) {
 
             if( title != null && !title.equals("") ) {
-                
+
                 //result += "?title=\""+title+"\"";
                 //result += "?title="+MediaUtils.plusToProcent20(URLEncoder.encode(title)); //URLEncode value.
                 //Our realserver can't handle URLEncoded strings, aargh.
@@ -238,13 +309,15 @@ public class VideoPartDef
                 }
             }
             if( ss != null && !ss.equals(""))
-                result += ss;                
+                result += ss;
         }
         return result;
     }
 
-    public String toString()
-    {
+    /**
+     * @javadoc
+     */
+    public String toString() {
         return this.getClass().getName() +"( number("+number+") otype("+otype+") owner("+owner+") title("+title+") subtitle("+subtitle+") source("+source+") playtime("+playtime+") intro("+intro+") body("+body+") storage("+storage+"), starttime("+starttime+"), stoptime("+stoptime+"), rawvideos("+rawvideos.size()+"), rawvideo("+rawvideo.toString()+")";
     }
 }
