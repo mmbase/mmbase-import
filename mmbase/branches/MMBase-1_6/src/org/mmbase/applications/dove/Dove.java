@@ -49,7 +49,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: Dove.java,v 1.26.2.5 2003-06-02 12:20:57 vpro Exp $
+ * @version $Id: Dove.java,v 1.26.2.6 2004-04-01 08:16:07 mark Exp $
  */
 
 public class Dove extends AbstractDove {
@@ -249,23 +249,23 @@ public class Dove extends AbstractDove {
                 } else {
                     data.setAttribute(ELM_ROLE,nrel.getRelationManager().getForwardRole());
                 }
-                int othernumber=nrel.getIntValue("dnumber");
-                if (thisNumber==nrel.getIntValue("snumber")) {
-                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("snumber"));
-                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("dnumber"));
+                data.setAttribute(ELM_SOURCE,      "" + nrel.getIntValue("snumber"));
+                data.setAttribute(ELM_DESTINATION, "" + nrel.getIntValue("dnumber"));
+
+                int otherNumber;
+                if (thisNumber == nrel.getIntValue("snumber")) {
+                    otherNumber = nrel.getIntValue("dnumber");
                 } else {
-                    data.setAttribute(ELM_SOURCE, ""+nrel.getValue("dnumber"));
-                    data.setAttribute(ELM_DESTINATION, ""+nrel.getValue("snumber"));
-                    othernumber=nrel.getIntValue("snumber");
+                    otherNumber=nrel.getIntValue("snumber");
                 }
                 data.setAttribute(ELM_NUMBER, ""+nrel.getNumber());
                 out.appendChild(data);
                 getDataNode(relation,data,nrel);
                 if (objectDef!=null) {
                     Element nodeData=doc.createElement(OBJECT);
-                    nodeData.setAttribute(ELM_NUMBER, ""+othernumber);
+                    nodeData.setAttribute(ELM_NUMBER, ""+otherNumber);
                     data.appendChild(nodeData);
-                    getDataNode(objectDef,nodeData,nd.getCloud().getNode(othernumber));
+                    getDataNode(objectDef,nodeData,nd.getCloud().getNode(otherNumber));
                 }
             }
         } catch (RuntimeException e) {
