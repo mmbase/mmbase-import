@@ -42,9 +42,9 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.10 2003-08-04 10:16:04 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.11 2003-08-04 11:38:23 pierre Exp $
  */
-public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
+public class DatabaseStorageManagerFactory extends StorageManagerFactory {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
