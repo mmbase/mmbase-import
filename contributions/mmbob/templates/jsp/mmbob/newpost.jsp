@@ -49,7 +49,8 @@
 		</mm:node>
 		</mm:compare>
 		<mm:compare referid="posterid" value="-1">
-		<input name="poster" size="32" value="gast" >
+		<input name="poster" type="hidden" size="32" value="<mm:write referid="mlg_guest" /> " >
+		<mm:write referid="mlg_guest" />	
 		</mm:compare>
 	</td></tr>
 	<tr><th width="150"><mm:write referid="mlg_Topic" /></th><td colspan="2"><input name="subject" style="width: 100%" ></td></th>
