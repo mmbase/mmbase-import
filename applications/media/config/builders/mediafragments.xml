@@ -134,7 +134,7 @@
 			<!-- name of the field in the database -->
 			<name>start</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">LONG</type>
 		</db>
 	</field>
 
@@ -162,7 +162,7 @@
 			<!-- name of the field in the database -->
 			<name>stop</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">LONG</type>
 		</db>
 	</field>
 
@@ -190,7 +190,7 @@
 			<!-- name of the field in the database -->
 			<name>length</name>
 			<!-- MMBase datatype and demands on it -->
-			<type state="persistent" notnull="false" key="false">INTEGER</type>
+			<type state="persistent" notnull="false" key="false">LONG</type>
 		</db>
 	</field>
 
