@@ -326,7 +326,6 @@ public class HttpProvider extends BasicProvider implements ProviderInterface {
             return jarFile;
         } catch (Exception e) {
             log.error("can't load : " + path);
-            e.printStackTrace();
         }
         return null;
     }
