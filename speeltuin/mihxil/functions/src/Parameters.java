@@ -12,7 +12,7 @@ package org.mmbase.util.functions;
 
 import org.mmbase.util.Casting;
 import java.util.*;
-//import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.*;
 
 /**
  * Arguments for functions, a way to make variable arguments in Java. In fact this class does
@@ -24,12 +24,12 @@ import java.util.*;
  *
  * @author Michiel Meeuwissen
  * @since  MMBase-1.7
- * @version $Id: Parameters.java,v 1.4 2003-11-21 22:01:50 michiel Exp $
+ * @version $Id: Parameters.java,v 1.5 2003-11-24 16:08:40 michiel Exp $
  * @see Parameter
  */
 
 public class Parameters extends AbstractList implements List  {
-    //private static Logger log = Logging.getLoggerInstance(Parameters.class);
+    private static final Logger log = Logging.getLoggerInstance(Parameters.class);
 
 
     public static final Parameters VOID = new Parameters(new Parameter[0]);
@@ -42,7 +42,7 @@ public class Parameters extends AbstractList implements List  {
         Parameters a;
         if (args instanceof Parameters) {
             a = (Parameters) args;
-            if (a.definition != def) throw new IllegalArgumentException("Given arguments has other difinition.");
+            if ( ! Arrays.equals(a.definition, def))  throw new IllegalArgumentException("Given arguments '" + args + "' has other definition. ('" + Arrays.asList(a.definition) + "')' incompatible with '" + Arrays.asList(def) + "')");
         } else {
             a = new Parameters(def, args);
         }
@@ -87,12 +87,26 @@ public class Parameters extends AbstractList implements List  {
      */
     public Parameters(Parameter [] def, List values) {
         this(def);
-        if (values.size() > definition.length) throw new IllegalArgumentException("Given too many values. " + values + " does not match " + Arrays.asList(definition).toString());
+        if (log.isDebugEnabled()) {
+            if (values.size() > definition.length) {
+                log.debug("Given too many values. " + values + " does not match " + Arrays.asList(definition));
+            }
+        }
         for (int i = 0; i < values.size(); i++) {
             set(i, values.get(i));
         }
     }
     
+
+    public String toString() {
+        StringBuffer buf = new StringBuffer("[");
+        for (int i = 0; i < definition.length; i++) {
+            if (i > 0) buf.append(", ");
+            buf.append(definition[i]).append('=').append(get(i));
+        }
+        buf.append("]");
+        return buf.toString();
+    }
 
 
     /**
@@ -145,7 +159,7 @@ public class Parameters extends AbstractList implements List  {
 
 
     /**
-     * @throws NullPointerException if definition not set 
+     * Checks wether a certain parameter is available.
      */
     public boolean hasParameter(Parameter arg) {
         for (int i = 0; i < definition.length; i++) {
