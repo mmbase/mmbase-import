@@ -25,7 +25,7 @@ import org.mmbase.util.logging.Logging;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: NodeListHelper.java,v 1.7 2004-12-14 15:15:53 pierre Exp $
+ * @version $Id: NodeListHelper.java,v 1.8 2005-01-04 16:58:52 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -253,6 +253,9 @@ public class NodeListHelper implements ListProvider {
 
         // clean vars which will be reset in doStartTag (so it is possible with tag reuse). These
         // can be gc-ed then.
+        if (collector != null) {
+            collector.getContextContainer().release();
+        }
         collector = null;
         nodeIterator = null;
         returnList = null;
