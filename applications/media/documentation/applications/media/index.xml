@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd"
+[]>
+<article>
+   <articleinfo>
+    <title>Media-project documentation</title>
+    <date>17 December 2002</date>
+    <edition>$Id: index.xml,v 1.1 2002-12-17 11:55:48 michiel Exp $</edition>
+    <authorgroup>
+      <author>
+        <firstname>Michiel</firstname>
+        <surname>Meeuwissen</surname>
+        <affiliation>
+          <orgname>Publieke Omroep</orgname>
+        </affiliation>
+      </author>
+    </authorgroup>
+    <legalnotice>
+      <para>
+        This software is OSI Certified Open Source Software. OSI
+        Certified is a certification mark of the Open Source
+        Initiative.
+      </para>
+      <para>
+        The license (Mozilla version 1.0) can
+        be read at the MMBase site. See <ulink
+          url="http://www.mmbase.org/license">http://www.mmbase.org/license</ulink>
+      </para>
+    </legalnotice>
+  </articleinfo>
+  <section id="intro">
+    <title>Introduction</title>
+    <para>
+      The `media' project provides a generalized way to handle streams
+      in MMBase.
+    </para>
+  </section>
+  <section id="objectmodel">
+   <title>Object model</title>
+    <para>
+      link to builder docs, object model image
+    </para>
+  </section>
+  <section id="use">
+   <title>Using the media objects</title>
+    <para>
+      How to get an url, some demo's
+    </para>
+  </section>
+  <section id="edit">
+    <title>Creating and editing media objects (meta information)</title>
+    <para>
+      'streammanager', editors
+    </para>
+  </section>
+  <section id="">
+    <title>Creating new streams</title>
+    <para>
+      Uploading, CD-ripping etc. (phase 2).
+    </para>
+  </section>
+</article>
