@@ -7,7 +7,7 @@
 
     <date>6 July 2003</date>
 
-    <edition>$Id: storage.xml,v 1.5 2003-07-01 10:06:38 pierre Exp $</edition>
+    <edition>$Id: storage.xml,v 1.6 2003-07-01 13:15:55 pierre Exp $</edition>
 
     <authorgroup>
       <author>
@@ -574,6 +574,10 @@ public interface Storage extends SearchQueryHandler {
 									  <term>{1}</term>
 										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
 									</varlistentry>
+									<varlistentry>
+									  <term>{2}</term>
+										<listitem><para>the index name</para></listitem>
+									</varlistentry>
 								</variablelist>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
 							</listitem>
@@ -598,6 +602,10 @@ public interface Storage extends SearchQueryHandler {
 									<varlistentry>
 									  <term>{1}</term>
 										<listitem><para>the field type definition (i.e. 'varchar(64)' )</para></listitem>
+									</varlistentry>
+									<varlistentry>
+									  <term>{2}</term>
+										<listitem><para>the index name</para></listitem>
 									</varlistentry>
 								</variablelist>
 								<note><para>Should be moved to a separate utility class (Schemes)</para></note>
@@ -845,7 +853,240 @@ public class DatabaseTransaction {
 
 		<section id="AbstractDatabaseStorage">
 			<title>AbstractDatabaseStorage Class</title>
-			<para>TODO: explain class</para>
+			<para>This class functions as an abstract class for DatabseStorage. It implements a number of methods, and provides a efw utility methods. It creates all non-transactional versions of methods (each non-transactional method creates a Transaction object and calls the transactional method).</para>
+			<para>The code below lists only methods that are not also in the DatabaseStorage interface.</para>
+<programlisting format="linespecific"><![CDATA[
+public abstract class AbstractDatabaseStorage extends Support2Storage implements DatabaseStorage {
+
+    protected void deployDatabaseReader(XMLDatabaseReader reader);
+
+    protected String getFullTableName(String tableName);
+
+    protected final String getFullTableName(MMObjectBuilder buil);
+
+    protected String getTableName(String tableName);
+
+    protected String applyScheme(String scheme, String a1, String a2, String a3);
+
+    protected String applyPrimaryKeyScheme(String fieldName, String fieldType);
+
+    protected String applyNotNullScheme(String fieldName, String fieldType);
+		
+    protected String applyKeyScheme(String fieldName, String fieldType, String indexName);
+
+    protected String applyForeignKeyScheme(String fieldName, String fieldType, String reference);
+
+    protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);
+
+    protected String createSQL(String tableName, String fields);
+
+    abstract protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);
+
+    abstract protected String insertSQL(String tableName,String fieldNames, String fieldValues);
+
+    abstract protected String updateSQL(String tableName,String setFields,int number);
+
+    abstract protected String deleteSQL(String tableName,int number);
+
+    protected String selectSQL(String tableName, String fieldNames, int number);
+
+    protected String selectSQL(String tableName, String fieldNames);
+
+    protected String selectSQL(String tableName, String fieldNames, String where, String orderby);
+
+    abstract protected String selectSQL(String tableName, String fieldNames, String where, String orderby,
+                               int offset, int max);
+
+    protected String constructFieldDefinition(MMObjectBuilder builder, FieldDefs field);
+		
+    protected String matchType(int type, int size);
+
+    protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType)/
+
+    public DatabaseTransaction createDatabaseTransaction() throws StorageException;
+
+    public DatabaseTransaction createDatabaseTransaction(boolean useRollback) throws StorageException;
+
+    protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx);
+
+}]]></programlisting>
+			<formalpara>
+				<title>AbstractDatabaseStorage Methods (in addition to the methods in DatabaseStorage):</title>
+				<para><variablelist>
+						<varlistentry>
+							<term><methodname>protected void deployDatabaseReader(XMLDatabaseReader reader);</methodname></term>
+							<listitem>
+								<para>Reads database specific content from the database configuration document. Called by the init() of AbstractDatabaseStorage.</para>
+								<note><para>This method should be removed and replaced by a Configuration class</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String getFullTableName(String tableName);</methodname></term>
+							<listitem>
+								<para>Returns the fully expanded tablename (includes the MMbase basename prefix) of a builder.</para>
+								<note><para>Maybe rename to <methodname>mapToTableName</methodname>(), similar to <methodname>mapToTableFieldName()</methodname></para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected final String getFullTableName(MMObjectBuilder buil);</methodname></term>
+							<listitem>
+								<para>Returns the fully expanded tablename (includes the MMbase basename prefix) of a builder.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String getTableName(String tableName);</methodname></term>
+							<listitem>
+								<para>Maps the full table name to a table name acceptable to the database.</para>
+								<note><para>Should be dropped. mapping to a database acceptable name should be done by <methodname>getFullTableName()</methodname>.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyScheme(String scheme, String a1, String a2, String a3);</methodname></term>
+							<listitem>
+								<para>Applies a given scheme. Substitutes parameters a1, a2 and a3 for the values {0}, {1} and {2} in the scheme string</para>
+								<note><para>Move to new class Schemes</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyPrimaryKeyScheme(String fieldName, String fieldType);</methodname></term>
+							<listitem>
+								<para>Retrieves and applies the primary key scheme. Substitutes parameters fieldName and fieldType for the values {0}, and {1} in the scheme string</para>
+								<note><para>Move to new class Schemes</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyNotNullScheme(String fieldName, String fieldType);</methodname></term>
+							<listitem>
+								<para>Retrieves and applies the not null scheme. Substitutes parameters fieldName and fieldType for the values {0}, and {1} in the scheme string</para>
+								<note><para>Move to new class Schemes</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyKeyScheme(String fieldName, String fieldType, String indexName);</methodname></term>
+							<listitem>
+								<para>Retrieves and applies the key scheme. Substitutes parameters fieldName, fieldType and indexName for the values {0}, {1} and {2} in the scheme string</para>
+								<note><para>Move to new class Schemes</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyForeignKeyScheme(String fieldName, String fieldType, String reference);</methodname></term>
+							<listitem>
+								<para>Retrieves and applies the foreign key scheme. Substitutes parameters fieldName, fieldType and reference for the values {0}, {1} and {2} in the scheme string</para>
+								<note><para>Move to new class Schemes</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String applyCreateScheme(String tableName, String fieldDefinitions, String parentTableName);</methodname></term>
+							<listitem>
+								<para>Retrieves and applies the table create scheme. Substitutes parameters tableName, feidlDefinitions and parentTableName for the values {0}, {1} and {2} in the scheme string</para>
+								<note><para>Move to new class Schemes. Add a <methodname>applyCreateExtendednScheme()</methodname> method.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String createSQL(String tableName, String fields);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for creating a specified table.</para>
+								<note><para>This is useful as it can be overridden by implementations that do not like to use schemes (the default implementation will use the schemes to buidl the sql statement).</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>abstract protected String createSQL(String tableName, String fields, String parentTableName, String parentFields);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for creating a specified table, optionally extending another supplied table.
+								Implement this method to add a database-specific syntax or optimalization.</para>
+								<note><para>see createSQL() above</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>abstract protected String insertSQL(String tableName,String fieldNames, String fieldValues);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for inserting an object in a table. Override this method to add a database-specific syntax or optimalization.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>abstract protected String updateSQL(String tableName,String setFields,int number);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for updating an object in a table. Override this method to add a database-specific syntax or optimalization.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>abstract protected String deleteSQL(String tableName,int number);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for deleting an object in a table. Override this method to add a database-specific syntax or optimalization.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String selectSQL(String tableName, String fieldNames, int number);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for selecting data from one object.</para>
+								<note><para>Replace with query if possible</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String selectSQL(String tableName, String fieldNames);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for selecting data from a table.</para>
+								<note><para>Replace with query if possible</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String selectSQL(String tableName, String fieldNames, String where, String orderby);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for selecting data from a table.</para>
+								<note><para>Replace with query if possible</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>abstract protected String selectSQL(String tableName, String fieldNames, String where, String orderby,
+                               int offset, int max);</methodname></term>
+							<listitem>
+								<para>Returns the SQL command to use for selecting data from a table.</para>
+								<note><para>Replace with query if possible</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String constructFieldDefinition(MMObjectBuilder builder, FieldDefs field);</methodname></term>
+							<listitem>
+								<para>Constructs a creation definition segment for one field, to use in a CREATE TABLE sql comand. uses schemes by default.</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String matchType(int type, int size);</methodname></term>
+							<listitem>
+								<para>Map a MMBase Type to a database specific type. If the type cannot be determined the result is null</para>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected String constructFieldDefinition(String tablename, String fieldname, int type, int size, int keyType)/</methodname></term>
+							<listitem>
+								<para>Constructs a creation definition segment for one field, to use in a CREATE TABLE sql command</para>
+								<note><para>This is a variation of <methodname>constructFieldDefinition(MMObjectBuilder builder, FieldDefs field)</methodname>. It can be removed, though an alternate way of constructing the 'object' fields (using fielddefs) should first be found.</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public DatabaseTransaction createDatabaseTransaction() throws StorageException;</methodname></term>
+							<listitem>
+								<para>Returns a newly created database transaction object.</para>
+								<note><para>Add to DatabaseStorage</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>public DatabaseTransaction createDatabaseTransaction(boolean useRollback) throws StorageException;</methodname></term>
+							<listitem>
+								<para>Returns a newly created database transaction object. You can explicitly turn off rollback facilities (to speed up  database access) for internal routines by specifying useRollback as false.</para>
+								<note><para>Add to DatabaseStorage</para></note>
+							</listitem>
+						</varlistentry>
+						<varlistentry>
+							<term><methodname>protected final byte[] getDBByteBinaryStream(ResultSet rs,int idx);</methodname></term>
+							<listitem>
+								<para>Returns a binary object using a stream to retrieve it from JDBC.</para>
+								<note><para>Should be moved or renamed</para></note>
+							</listitem>
+						</varlistentry>
+					</variablelist>
+				</para>
+			</formalpara>
 		</section>
 	
 		<section id="SQL92DatabaseStorage">
@@ -865,7 +1106,50 @@ public class DatabaseTransaction {
 		
 		<section id="Support2Storage">
 			<title>Support2Storage Class</title>
-			<para>TODO: explain class</para>
+			<para>The function of this class is to implement the methods for the <classname>MMJDBC2NodeInterface</classname>, making the storage classes compatible with the support classes. This will allow for the implementation of Storage classes while still using this interface. In later stages, the interface and supportclasses will be dropped, and the core will switch to using Storage.</para>
+			<note><para>It is more useful to reverse the situation, and instead make a class that implements Storage for support classes.</para></note>
+			<para>The code below lists only methods that are not also in the DatabaseStorage interface.</para>
+<programlisting format="linespecific"><![CDATA[
+public abstract class Support2Storage extends BaseJdbc2Node implements MMJdbc2NodeInterface {
+
+    public String getDisallowedField(String allowedfield);
+
+    public String getAllowedField(String disallowedfield);
+
+    public String getOTypeString();
+
+    public String getOwnerString();
+
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i);
+
+    public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldname, ResultSet rs,int i,String prefix);
+
+    public String getMMNodeSearch2SQL(String where, MMObjectBuilder builder);
+
+    final public String getShortedText(String tableName, String fieldName, int number);
+
+    final public byte[] getShortedByte(String tableName, String fieldName, int number);
+
+    public MultiConnection getConnection(JDBCInterface jdbc) throws SQLException;
+
+    public int insert(MMObjectBuilder builder,String owner, MMObjectNode node);
+
+    public boolean commit(MMObjectBuilder builder,MMObjectNode node);
+
+    public void removeNode(MMObjectBuilder builder,MMObjectNode node);
+
+    public boolean createObjectTable(String baseName);
+		
+    public int getDBKey();
+
+    public boolean updateTable(MMObjectBuilder builder);
+
+    abstract public byte[] getDBByte(ResultSet rs,int idx);
+
+    abstract public String getDBText(ResultSet rs,int idx);
+		
+}]]></programlisting>
+			<para>See the <classname>MMJDBC2NodeInterface</classname> for more details on these methods.</para>
 		</section>
 	</section>
 		
@@ -876,11 +1160,23 @@ public class DatabaseTransaction {
 		<section id="StorageException">
 			<title>StorageException</title>
 			<para>TODO: explain exception</para>
-		</section>
+<programlisting format="linespecific"><![CDATA[
+public class StorageException extends Exception {
+
+    public StorageException(String s);
+
+}]]></programlisting>
+			</section>
 		
 		<section id="UnsupportedDatabaseOperationException">
 			<title>UnsupportedDatabaseOperationException</title>
 			<para>TODO: explain exception</para>
+<programlisting format="linespecific"><![CDATA[
+public class UnsupportedDatabaseOperationException extends StorageException {
+
+  	public UnsupportedDatabaseOperationException(String s);
+
+}]]></programlisting>
 		</section>
 	</section>
 
