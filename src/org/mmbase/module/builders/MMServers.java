@@ -1,6 +1,6 @@
 /*
 
-$Id: MMServers.java,v 1.4 2000-03-07 16:54:37 wwwtech Exp $
+$Id: MMServers.java,v 1.5 2000-03-13 10:41:11 wwwtech Exp $
 
 VPRO (C)
 
@@ -9,6 +9,9 @@ placed under opensource. This is a private copy ONLY to be used by the
 MMBase partners.
 
 $Log: not supported by cvs2svn $
+Revision 1.4  2000/03/07 16:54:37  wwwtech
+Rico: added extra debug
+
 Revision 1.3  2000/03/07 16:25:25  wwwtech
 Rico: added extra debug
 
@@ -31,7 +34,7 @@ import org.mmbase.module.builders.protocoldrivers.*;
 
 /**
  * @author  $Author: wwwtech $
- * @version $Revision: 1.4 $ $Date: 2000-03-07 16:54:37 $
+ * @version $Revision: 1.5 $ $Date: 2000-03-13 10:41:11 $
  */
 public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 
@@ -39,6 +42,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 	private boolean debug	  = true;
 	private void	debug(String msg){System.out.println(classname+":"+msg);}
 
+	private int serviceTimeout=60*15; // 15 minutes
 	private String javastr;
 	private String osstr;
 	private String host;
@@ -131,9 +135,9 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 	private void checkOther(MMObjectNode node) {
 		int now=(int)(System.currentTimeMillis()/1000);
 		int then=node.getIntValue("atime");
-		if (debug) debug("checkOther() updating state for "+node.getStringValue("host"));
-		if ((now-then)>(60*2)) {
+		if ((now-then)>(serviceTimeout)) {
 			if (node.getIntValue("state")!=2) {
+				if (debug) debug("checkOther() updating state for "+node.getStringValue("host"));
 				node.setValue("state",2);
 				node.commit();
 				
@@ -163,7 +167,7 @@ public class MMServers extends MMObjectBuilder implements MMBaseObserver {
 			Enumeration e=mmb.getInsRel().getRelated(node.getIntValue("number"),type);
 			while (e.hasMoreElements()) {
 				MMObjectNode node2=(MMObjectNode)e.nextElement();
-				debug("setServicesDown(): downnode("+node2+")");
+				debug("setServicesDown(): downnode("+node2+") REMOVING node");
 				node2.parent.removeRelations(node2);
 				node2.parent.removeNode(node2);
 			
