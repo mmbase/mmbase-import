@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: MMSQL92Node.java,v 1.2 2000-04-15 21:31:33 wwwtech Exp $
+$Id: MMSQL92Node.java,v 1.3 2000-04-18 23:16:17 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.2  2000/04/15 21:31:33  wwwtech
+daniel: removed overrriden methods
+
 Revision 1.1  2000/04/15 20:42:44  wwwtech
 fixes for informix and split in sql92 poging 2
 
@@ -52,7 +55,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.2 $ $Date: 2000-04-15 21:31:33 $
+* @$Revision: 1.3 $ $Date: 2000-04-18 23:16:17 $
 */
 public class MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -60,10 +63,22 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	private boolean debug = true;
 	private void debug( String msg ) { System.out.println( classname +":"+ msg ); }
 	String createString="CREATETABLE_SQL92";
+	Hashtable typesmap = new Hashtable();
 
 	MMBase mmb;
 
+	final static int TYPE_STRING = 1;
+	final static int TYPE_INTEGER = 2;
+	final static int TYPE_TEXT = 3;
+	final static int TYPE_BLOB = 4;
+
 	public MMSQL92Node() {
+		typesmap.put("VARCHAR",new Integer(TYPE_STRING));
+		typesmap.put("VARSTRING",new Integer(TYPE_STRING));
+		typesmap.put("STRING",new Integer(TYPE_STRING));
+		typesmap.put("LONG",new Integer(TYPE_INTEGER));
+		typesmap.put("text",new Integer(TYPE_TEXT));
+		typesmap.put("BLOB",new Integer(TYPE_BLOB));
 	}
 
 	public void init(MMBase mmb) {
@@ -108,44 +123,33 @@ public class MMSQL92Node implements MMJdbc2NodeInterface {
 	}
 
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
-			try {
-				if (fieldtype.equals("VARSTRING") || fieldtype.equals("STRING") || fieldtype.equals("VARCHAR")) {
-					String tmp=rs.getString(i);
-					if (tmp==null) {
-						node.setValue(prefix+fieldname,"");
-					} else {
-						node.setValue(prefix+fieldname,tmp);
-					} 
-				} else if (fieldtype.equals("VARSTRING_EX")) {
-					String tmp=rs.getString(i);
-					if (tmp==null) {
-						node.setValue(prefix+fieldname,"");
-					} else {
-						node.setValue(prefix+fieldname,tmp);
-					}
-				} else if (fieldtype.equals("lvarchar")) {
-					String tmp=rs.getString(i);
-					if (tmp==null) {
-						node.setValue(prefix+fieldname,"");
-					} else {
-						node.setValue(prefix+fieldname,tmp);
-					}
-				} else if (fieldtype.equals("LONG")) {
-					node.setValue(prefix+fieldname,rs.getInt(i));
-				} else if (fieldtype.equals("text")) {
-					//node.setValue(prefix+fieldname,getDBText(rs,i));
-					node.setValue(prefix+fieldname,"$SHORTED");
-				} else if (fieldtype.equals("BLOB")) {
-					//node.setValue(prefix+fieldname,getDBByte(rs,i));
-					node.setValue(prefix+fieldname,"$SHORTED");
+		try {
+		
+		int type=((Integer)typesmap.get(fieldtype)).intValue();
+		switch (type) {
+			case TYPE_STRING:
+				String tmp=rs.getString(i);
+				if (tmp==null) { 
+					node.setValue(prefix+fieldname,"");
 				} else {
-					System.out.println("MMysql42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+					node.setValue(prefix+fieldname,tmp);
 				}
-			} catch(SQLException e) {
-				System.out.println("MMysql42Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
-				e.printStackTrace();	
+				return(node);
+			case TYPE_INTEGER:
+				node.setValue(prefix+fieldname,rs.getInt(i));
+				return(node);
+			case TYPE_BLOB:
+				node.setValue(prefix+fieldname,"$SHORTED");
+				return(node);
+			case TYPE_TEXT:
+				node.setValue(prefix+fieldname,"$SHORTED");
+				return(node);
 			}
-			return(node);
+		} catch(SQLException e) {
+			System.out.println("MMSQL92Node mmObject->"+fieldname+"="+fieldtype+" node="+node.getIntValue("number"));
+			e.printStackTrace();	
+		}
+		return(node);
 	}
 
 

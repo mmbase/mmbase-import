@@ -28,7 +28,7 @@ import org.mmbase.util.*;
 *
 * @author Daniel Ockeloen
 * @version 12 Mar 1997
-* @$Revision: 1.11 $ $Date: 2000-04-15 21:31:33 $
+* @$Revision: 1.12 $ $Date: 2000-04-18 23:16:17 $
 */
 public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -36,6 +36,7 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 		createString="CREATETABLE_MYSQL";
 	}
 
+	/*
 	public MMObjectNode decodeDBnodeField(MMObjectNode node,String fieldtype,String fieldname, ResultSet rs,int i,String prefix) {
 			try {
 				if (fieldtype.equals("VARSTRING") || fieldtype.equals("STRING") || fieldtype.equals("VARCHAR")) {
@@ -76,6 +77,7 @@ public class MMMysql42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 			}
 			return(node);
 	}
+	*/
 
 
 	public String parseFieldPart(String fieldname,String dbtype,String part) {
