@@ -30,7 +30,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: ContentTag.java,v 1.5 2003-05-09 22:31:37 michiel Exp $
+ * @version $Id: ContentTag.java,v 1.6 2003-05-10 22:25:29 michiel Exp $
  **/
 
 public class ContentTag extends LocaleTag  {
@@ -86,7 +86,7 @@ public class ContentTag extends LocaleTag  {
             }
 
             String config = element.getAttribute("config");
-            if (ct instanceof ConfigurableCharTransformer) {
+            if (ct instanceof ConfigurableTransformer) {
                 log.debug("Trying to configure with '" + config + "'");
                 if (! config.equals("")) {
                     int conf;
@@ -205,7 +205,7 @@ public class ContentTag extends LocaleTag  {
     }
 
     protected CharTransformer getPostProcessor() throws JspTagException {
-        if (postprocessor != Attribute.NULL) {
+        if (! postprocessor.getString(this).equals("")) {
             CharTransformer result =  (CharTransformer) postProcessors.get(postprocessor.getString(this));
             if (result == null) throw new JspTagException("The postprocessor " + postprocessor.getString(this) + " is not defined");
             return result;
