@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * cache yourself. The cache() function of Images can be used for
  * this.
  *
- * @version $Id: ImageServlet.java,v 1.4 2002-04-12 08:56:05 pierre Exp $
+ * @version $Id: ImageServlet.java,v 1.5 2002-04-12 09:00:34 pierre Exp $
  * @author Michiel Meeuwissen
  * @since  MMBase-1.6
  */
@@ -86,7 +86,6 @@ public class ImageServlet extends  MMBaseServlet {
         if (query == null) { // also possible to use /img.db/<number>
             query = new java.io.File(req.getRequestURI()).getName();
         }
-        log.info("Gonna do image "+query);
 
         Integer imageNumber = new Integer(query);
         Vector params = new Vector();
