@@ -10,7 +10,6 @@ distribution:
 - A MMBase source distribution.
 - A MMBase binary distribution.
 - A customized mmbase.jar.
-- A ready to run MMBase build on top of Tomcat and Hypersonic. 
 - A test environment.
 
 The main properties are source.dir and build.dir. The source.dir is expected
@@ -28,15 +27,11 @@ The build.dir will have the following sub directory's:
   junit               (test environment)
   mmbase              (the MMBase binary distribution)
   mmbase-src          (the MMBase source distribution)
-  tomcat              (the Tomcat distribution adjusted to run MMBase)
-  orion               (the Orion distribution adjusted to run MMBase)
-
 
 Compiler
 ========
 
 Change the property build.compiler to 'modern' for JDK1.3 or to 'jikes' for Jikes.
-
 
 Ant
 ===
@@ -65,23 +60,6 @@ classes are optional and the java files that need them are excluded from the
 compilation process.
 
 
-Starting Tomcat
-===============
-
-You can start the ajusted Tomcat just like you would start a "normal" Tomcat
-from the tomcat/bin directory. E.g.:
-
-  tomat.sh start
-
-
-Starting Orion
-==============
-
-Change directory to ${build.dir}/orion and run:
-
-  java -Dmmbase.config=conf.mmbase -Dmmbase.htmlroot=default-web-app -jar orion.jar
-
-
 ============================================================================ -->
 
 <project name="MMBase" default="usage" basedir=".">
@@ -101,18 +79,17 @@ Change directory to ${build.dir}/orion and run:
   <property name="debug" value="off"/>
   <property name="deprecation" value="on"/>
   <property name="javadoc.packages" value="org.mmbase.*"/>
-  <property name="database.name" value="install"/>
-  <property name="database.user" value="mmuser"/>
   <property name="mmbase-taglib" value="mmbase-taglib.xml"/>
-  <property name="database.password" value="mmpassword"/>
   <property name="manifest"      value="manifest.mf"/>
   <!-- Don't change the following properties unless you know what you're doing -->
-  <property name="mmbase.jar" value="${build.dir}/mmbase/lib/mmbase.jar"/>
+  <property name="mmbase.jar" value="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"/>
   <property name="source-config.dir" location="${source.dir}/config"/>
   <property name="source-html.dir" location="${source.dir}/html"/>
   <property name="source-src.dir" location="${source.dir}/src"/>
-  <property name="lib.dir" value="${build.dir}/mmbase/lib"/>
-  <property name="web.dir" value="${build.dir}/mmbase/web"/>
+  <property name="webapp.dir" value="${build.dir}/mmbase/mmbase-webapp"/>
+  <property name="mmdocs.dir" value="${webapp.dir}/mmdocs"/>
+  <property name="lib.dir" value="${webapp.dir}/WEB-INF/lib"/>
+  <property name="web.dir" value="${webapp.dir}/WEB-INF"/>
   <target name="init" depends="check.dir.all">
     <tstamp/>
     <mkdir dir="${build.dir}"/>
@@ -136,12 +113,11 @@ Change directory to ${build.dir}/orion and run:
     <echo message=""/>
   </target>
 
-
   <!-- =================================================================== -->
   <!-- Create the source distribution                                      -->
   <!-- =================================================================== -->
   <target name="srcdist" description="Create the source distribution"
-          depends="init">
+          depends="init,javadocs">
     <!-- copy the java-sources -->
     <mkdir dir="${build.dir}/mmbase-src/src"/>
     <copy todir="${build.dir}/mmbase-src/src">
@@ -188,39 +164,76 @@ Change directory to ${build.dir}/orion and run:
   <!-- Create the binary distribution                                      -->
   <!-- =================================================================== -->
   <target name="bindist"  description="Create the binary distribution"
-          depends="lib,jar,javadocs">
-    <!-- copy the scripts -->
-    <copy todir="${build.dir}/mmbase/scripts">
-      <fileset dir="${source-src.dir}/org/mmbase/scripts">
-        <exclude name="build.xml"/>
-        <exclude name="build-in-distro.xml"/>
-        <exclude name="compile"/>
-        <exclude name="compile2"/>
-        <exclude name="createjar"/>
-        <exclude name="oriondoc"/>
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    <!-- make scripts executable -->
-    <chmod perm="ugo+x">
-      <fileset dir="${build.dir}/mmbase/scripts">
-        <exclude name="**/*.xml"/>
-      </fileset>
-    </chmod>
+          depends="lib,jar,web">
     <!-- copy a readme from somewhere -->
     <!-- not in cvs yet -->
     <!-- copy the config -->
-    <copy todir="${build.dir}/mmbase/config">
-      <fileset dir="${source-config.dir}">
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config"/>
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config">
+      <fileset dir="${source-config.dir}/default">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
     <!-- copy the html -->
-    <copy todir="${build.dir}/mmbase/html">
+    <copy todir="${build.dir}/mmbase/mmbase-webapp">
       <fileset dir="${source-html.dir}">
         <exclude name="**/CVS/*"/>
       </fileset>
     </copy>
+    <!-- use web.xml.sample as default -->
+    <copy file="${webapp.dir}/WEB-INF/web.xml.sample"
+          tofile="${webapp.dir}/WEB-INF/web.xml" overwrite="yes"/>
+   <delete file="${webapp.dir}/WEB-INF/web.xml.sample" />
+    <!-- copy builders/modules from application dir into default config dir -->
+    <!-- Basics -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/Basics/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>   
+    <!-- BasicAuth -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/BasicAuth/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- BugTracker -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/BugTracker/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- Community-builders -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/Community/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- Community-module -->
+    <!-- isn't in cvs at the moment, so don't try to copy it. Maybe I'll add it
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/modules" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/Community/modules">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    -->
+    <!-- MyNews -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/MyNews/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+    <!-- MyYahoo -->
+     <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/config/builders" overwrite="yes">
+      <fileset dir="${source-config.dir}/default/applications/MyYahoo/builders">
+        <exclude name="**/CVS/*"/>
+      </fileset>
+    </copy>  
+
+    <!-- remove servlet.jar from lib-dir otherwise it might be giving problems -->
+    <delete file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/servlet.jar" />
+    <!-- remove junit.jar from lib-dir because it isn't used in the bindist -->
+    <delete file="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/junit.jar" />
     <!-- zip -->
     <zip zipfile="${build.dir}/${name}-${version}.zip"
          basedir="${build.dir}/mmbase"/>
@@ -242,15 +255,23 @@ Change directory to ${build.dir}/orion and run:
   <target name="lib" description="Create the lib directory"
           depends="init,expand.servlet,expand.xalan,expand.jai,
                    expand.log4j,expand.junit">
-    <mkdir dir="${build.dir}/mmbase/lib"/>
-    <copy file="${servlet.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${xalan.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${xerces.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${xml-apis.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${log4j.jar}" todir="${build.dir}/mmbase/lib"/>
-    <copy file="${junit.jar}" todir="${build.dir}/mmbase/lib"/>
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp"/>
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF"/>
+    <mkdir dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${xalan.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${xerces.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${xml-apis.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${servlet.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${jai_codec.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${jai_core.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${log4j.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+    <copy file="${junit.jar}" todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib"/>
+
+    <!-- copy licenses for included jars -->
+    <copy todir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/legal">
+      <fileset dir="${source-src.dir}/org/mmbase/scripts/legal"/>
+    </copy>
+
   </target>
 
   
@@ -259,7 +280,7 @@ Change directory to ${build.dir}/orion and run:
   <!-- =================================================================== -->
 
   <target name="clean.lib" description="Clean the lib directory">
-     <delete dir="${build.dir}/mmbase/lib" />
+     <delete dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" />
   </target>
 
   <!-- =================================================================== -->
@@ -363,7 +384,6 @@ Change directory to ${build.dir}/orion and run:
     <available property="log4j2.in.classpath"
 	           classpathref="compile"
                classname="org.apache.log4j.Logger" />
-
 
     <javac srcdir="${source-src.dir}"
            destdir="${build.dir}/classes"
@@ -568,12 +588,20 @@ Change directory to ${build.dir}/orion and run:
           depends="compile,taglib.tld">
     <copy file="${web.dir}/mmbase-taglib.tld"
           tofile="${web.dir}/taglib.tld" />
-    <jar jarfile="${build.dir}/mmbase/lib/mmbase.jar"
+    <jar jarfile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/mmbase.jar"
          basedir="${build.dir}/classes"
 	     includes="org/mmbase/**"
 	     manifest="${manifest}" >
         <metainf dir="${web.dir}" includes="taglib.tld" />
+        <metainf dir="${web.dir}" includes="mmcommunity-taglib.tld" />
     </jar>
+
+    <delete file="${web.dir}/taglib.tld" />
+    <!-- don't delete these, because multiple tld's inside a jar, -->
+    <!-- can cause problems on certain servlet-engines -->
+    <!--<delete file="${web.dir}/mmbase-taglib.tld" />-->
+    <!--<delete file="${web.dir}/mmcommunity-taglib.tld" />-->
+
   </target>
 
 
@@ -622,16 +650,15 @@ Change directory to ${build.dir}/orion and run:
         </copy>
                 
         <!-- taglib docs -->
-        <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${build.dir}/mmbase/web/mmbase-taglib.html" />
+        <copy tofile="${webroot.build.dir}/mmbase/taglib.html" file="${mmdocs.dir}/mmbase-taglib.html" />
         <copy todir="${webroot.build.dir}/mmbase/taglib">
-             <fileset dir="${build.dir}/mmbase/web/taglib"/>
-        </copy>        
- 
+             <fileset dir="${mmdocs.dir}/taglib"/>
+        </copy>         
         
         <!-- javadocs -->
         <!-- skipping javadocs (also depend on target 'javadocs', when uncommenting.... ) 
         <copy todir="${webroot.build.dir}/mmbase/docs">
-            <fileset dir="${build.dir}/mmbase/docs"/>
+            <fileset dir="${build.dir}/mmbase-src/docs"/>
         </copy>
         -->
     </target>
@@ -642,12 +669,12 @@ Change directory to ${build.dir}/orion and run:
     <!-- =================================================================== -->
     <target name="war" description="Create a MMBase war-file" depends="web,jar,war.config,war.webroot,expand.hsqldb">
         <!-- copy the hsqldb file explicit, war clause doesnt accept the ${hsqldb.jar}  -->
-        <copy file="${hsqldb.jar}" tofile="${build.dir}/mmbase/lib/hsqldb.jar"/>
+        <copy file="${hsqldb.jar}" tofile="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib/hsqldb.jar"/>
         
         <war warfile="${build.dir}/mmbase/mmbase.war" webxml="${source-html.dir}/WEB-INF/web.xml">
 
             <!-- which libs are needed? -->
-            <lib dir="${build.dir}/mmbase/lib" defaultexcludes="true">
+            <lib dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib" defaultexcludes="true">
                 <include name="mmbase.jar"/>
                 <include name="log4j.jar"/>
                 <include name="xml-apis.jar"/>
@@ -683,10 +710,11 @@ Change directory to ${build.dir}/orion and run:
   <target name="javadocs"
           description="Create the API documentation"
           depends="init">
-    <mkdir dir="${build.dir}/mmbase/docs/api"/>
+    <mkdir dir="${build.dir}/mmbase-src/docs"/>
+    <mkdir dir="${build.dir}/mmbase-src/docs/api"/>
     <javadoc packagenames="${javadoc.packages}"
              sourcepath="${source-src.dir}"
-             destdir="${build.dir}/mmbase/docs/api"
+             destdir="${build.dir}/mmbase-src/docs/api"
              author="true"
              version="true"
              use="false"
@@ -696,7 +724,7 @@ Change directory to ${build.dir}/orion and run:
              maxmemory="100M"
              bottom="MMBase 2002">
       <classpath>
-        <fileset dir="${build.dir}/mmbase/lib">
+        <fileset dir="${build.dir}/mmbase/mmbase-webapp/WEB-INF/lib">
           <include name="*.jar"/>
           <exclude name="mmbase.jar"/>
         </fileset>
@@ -737,6 +765,7 @@ Change directory to ${build.dir}/orion and run:
   <target name="taglib.tld" description="Make the MMBase taglib  tld"
           depends="init.compile">          
     <mkdir dir="${web.dir}"/>
+    <mkdir dir="${mmdocs.dir}"/>
     <!-- create the mmbase-taglib tld: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -754,7 +783,7 @@ Change directory to ${build.dir}/orion and run:
   </target>
   <target name="taglib.doc" description="Make the MMBase taglib documentation"
           depends="init.compile">          
-    <mkdir dir="${web.dir}/taglib"/>
+    <mkdir dir="${mmdocs.dir}/taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -764,7 +793,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-DIAG"/>
       <arg value="-PARAM"/>
       <arg value="basedir"/>
-      <arg value="${web.dir}"/>
+      <arg value="${mmdocs.dir}"/>
       <arg value="-PARAM"/>
       <arg value="files"/>
       <arg value="taglib" />
@@ -773,7 +802,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmbase-taglib.html"/>
+      <arg value="${mmdocs.dir}/mmbase-taglib.html"/>
     </java>
   </target>
   <target name="community.tld" description="Make the MMBase community taglib tld"
@@ -796,7 +825,7 @@ Change directory to ${build.dir}/orion and run:
   </target>
   <target name="community.doc" description="Make the MMBase community taglib documentation"
           depends="init.compile">          
-    <mkdir dir="${web.dir}/community-taglib"/>
+    <mkdir dir="${mmdocs.dir}/community-taglib"/>
     <!-- and its documentation: -->
     <java classname="org.apache.xalan.xslt.Process"
           classpathref="compile"
@@ -812,7 +841,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="files"/>
       <arg value="community-taglib" />
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmcommunity-taglib.html"/>
+      <arg value="${mmdocs.dir}/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
@@ -834,7 +863,7 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/${mmbase-taglib}"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmbase-taglib.tld"/>
+      <arg value="${build.dir}/mmbase/mmbase-webapp/mmdocs/mmbase-taglib.tld"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2tld.xslt"/>
     </java>
@@ -871,367 +900,12 @@ Change directory to ${build.dir}/orion and run:
       <arg value="-IN"/>
       <arg value="file:///${source-src.dir}/org/mmbase/bridge/jsp/taglib/community/mmcommunity-taglib.xml"/>
       <arg value="-OUT"/>
-      <arg value="${web.dir}/mmcommunity-taglib.html"/>
+      <arg value="${build.dir}/mmbase/mmbase-webapp/mmdocs/mmcommunity-taglib.html"/>
       <arg value="-XSL"/>
       <arg value="${source-src.dir}/org/mmbase/bridge/jsp/taglib/xml2html.xslt"/>
     </java>
   </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Tomcat without database                    -->
-  <!-- =================================================================== -->
-  <target name="tomcat"
-          depends="init,jar,expand.tomcat,expand.xalan,expand.jai,expand.log4j,web">
-    <mkdir dir="${build.dir}/tomcat"/>
-    <mkdir dir="${build.dir}/tomcat/webapps/ROOT"/>
-    <copy todir="${build.dir}/tomcat">
-      <fileset dir="${expand.dir}/${tomcat.version}">
-        <exclude name="webapps/**"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/tomcat/conf.mmbase">
-      <fileset dir="${source-config.dir}/default">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    <replace file="${build.dir}/tomcat/conf.mmbase/log/log4j.xml"
-             token="!ENTITY logdir   &quot;/tmp/&quot;"
-             value="!ENTITY logdir   &quot;../logs/&quot;"/>
-    <!-- Prevent multiple replaces by multiple builds by allways copying the
-         file. -->
-    <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.bat"
-          todir="${build.dir}/tomcat/bin"
-          overwrite="yes"/>
-    <copy file="${expand.dir}/${tomcat.version}/bin/tomcat.sh"
-          todir="${build.dir}/tomcat/bin"
-          overwrite="yes"/>
-    <replace file="${build.dir}/tomcat/bin/tomcat.bat"
-             token="-Dtomcat.home=&quot;%TOMCAT_HOME%&quot;"
-             value="-Dtomcat.home=&quot;%TOMCAT_HOME%&quot; -Dmmbase.config=&quot;%TOMCAT_HOME%\\conf.mmbase&quot; -Dmmbase.htmlroot=&quot;%TOMCAT_HOME%\\webapps\\ROOT&quot;"/>
-    <replace file="${build.dir}/tomcat/bin/tomcat.sh"
-             token="-Dtomcat.home=${TOMCAT_HOME}"
-             value="-Dtomcat.home=${TOMCAT_HOME} -Dmmbase.config=${TOMCAT_HOME}/conf.mmbase -Dmmbase.htmlroot=${TOMCAT_HOME}/webapps/ROOT"/>
-    <chmod perm="ugo+x">
-      <fileset dir="${build.dir}/tomcat/bin">
-        <include name="*.sh"/>
-        <include name="ant"/>
-        <include name="antRun"/>
-      </fileset>
-    </chmod>
-    <copy file="${mmbase.jar}" todir="${build.dir}/tomcat/lib"/>
-    <copy file="${xalan.jar}" todir="${build.dir}/tomcat/lib"/>
-    <copy file="${xml-apis.jar}" todir="${build.dir}/tomcat/lib"/>
-    <copy file="${xerces.jar}" todir="${build.dir}/tomcat/lib"/>
-    <!--    xalan and xerces provide the functionality which is also provided by
-    	    the tomcat/lib/parser.jar and lib/jaxp.jar.. but newer
-	    to prevent it from load the class which is older and has less 
-	    functionaltiy move the old ones...
-    -->        
-    <delete file="${build.dir}/tomcat/lib/parser.jar" />
-    <delete file="${build.dir}/tomcat/lib/jaxp.jar" />    
-    
-    <copy file="${jai_codec.jar}" todir="${build.dir}/tomcat/lib"/>
-    <copy file="${jai_core.jar}" todir="${build.dir}/tomcat/lib"/>
-    <copy file="${log4j.jar}" todir="${build.dir}/tomcat/lib"/>
-    <copy todir="${build.dir}/tomcat/webapps/ROOT">
-      <fileset dir="${source-html.dir}">
-        <exclude name="**/CVS/*"/>
-        <exclude name="LICENSE"/>
-        <exclude name="**/~*"/>
-      </fileset>
-    </copy>
-    <copy file="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"
-          tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/web.xml"/>
-    <copy file="${web.dir}/mmbase-taglib.tld"
-          tofile="${build.dir}/tomcat/webapps/ROOT/WEB-INF/mmbase-taglib.tld" />
-    <copy file="${web.dir}/mmbase-taglib.html"
-          tofile="${build.dir}/tomcat/webapps/ROOT/mmdocs/mmbase-taglib.html"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Clean the Tomcat installation                                       -->
-  <!-- =================================================================== -->
-  <target name="clean.tomcat" description="Clean the Tomcat installation"
-          depends="clean.compile">
-    <delete dir="${build.dir}/tomcat"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Tomcat and Hypersonic                      -->
-  <!-- =================================================================== -->
-  <target name="tomcat.hsql"
-          description="Install MMBase on top of Tomcat and Hypersonic"
-          depends="tomcat,expand.hsql">
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/mmbaseroot.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
-    </replace>
-    <copy file="${hsql.jar}" todir="${build.dir}/tomcat/lib"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Tomcat and MySQL                           -->
-  <!-- =================================================================== -->
-  <target name="tomcat.mysql"
-          description="Install MMBase on top of Tomcat and MySQL"
-          depends="tomcat,get.mysql">
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;"
-             value="&lt;property name=&quot;database&quot;&gt;${database.name}&lt;/property&gt;"/>
-    <replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
-             value="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=${database.user}&amp;amp;password=${database.password}&lt;/property&gt;"/>
-    <copy file="${mysql.jar}" todir="${build.dir}/tomcat/lib"/>
-  </target>
-
-
-    <!-- =================================================================== -->
-    <!-- Install MMBase on top of Tomcat and PostSQL                         -->
-    <!-- =================================================================== -->
-    <target name="tomcat.postgresql"
-    	  description="Install MMBase on top of Tomcat and PostgreSQL"
-          depends="tomcat,get.postgresql">
-	
-	<!-- 
-	    replace the following things in mmbaseroot.xml : 
-	    	<property name="database">mysql</property> 
-	    	    into: <property name="database">postgresql71</property>    	    	    
-	-->  
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/mmbaseroot.xml"
-             token="&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;"
-             value="&lt;property name=&quot;database&quot;&gt;postgresql71&lt;/property&gt;"/>	
-	<!-- 
-	    replace the following things in jdbc.xml : 
-		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
-	    	    into: <property name="url">jdbc:postgresql://$HOST:$PORT/$DBM</property>
-		 <property name="database">install</property>
-		    into: <property name="database"></property> with value: ${database.name}
-    	    	<property name="user">url</property>
-		    into: <property name="user"></property> with value: ${database.user}
-    	    	<property name="password">url</property>
-		    into: <property name="password"></property> with value: ${database.password}
-		<property name="driver">org.gjt.mm.mysql.Driver</property>
-		    into: <property name="driver">org.postgresql.Driver</property>
-		 <property name="port">3306</property>
-		    into: <property name="port">5432</property>
-	-->  	
-	<!-- connect url -->
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
-             value="&lt;property name=&quot;url&quot;&gt;jdbc:postgresql://$$HOST:$$PORT/$$DBM&lt;/property&gt;"/>
-	<!-- database name -->
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;"
-             value="&lt;property name=&quot;database&quot;&gt;${database.name}&lt;/property&gt;"/>	     
-	<!-- database user name -->
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;"
-             value="&lt;property name=&quot;user&quot;&gt;${database.user}&lt;/property&gt;"/>
-	<!-- database password name -->
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;"
-             value="&lt;property name=&quot;password&quot;&gt;${database.password}&lt;/property&gt;" />	     
-	<!-- database driver -->
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;"             
-	     value=" &lt;property name=&quot;driver&quot;&gt;org.postgresql.Driver&lt;/property&gt;"/>
-	<!-- database portnumer -->
-    	<replace file="${build.dir}/tomcat/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;port&quot;&gt;3306&lt;/property&gt;"
-             value="&lt;property name=&quot;port&quot;&gt;5432&lt;/property&gt;"/>
-    	<copy file="${postgresql.jar}" todir="${build.dir}/tomcat/lib"/>
-    </target>
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Orion without database                     -->
-  <!-- =================================================================== -->
-  <target name="orion"
-          depends="init,jar,expand.orion,expand.xalan,expand.jai,expand.log4j,web">
-    <mkdir dir="${build.dir}/orion"/>
-    <mkdir dir="${build.dir}/orion/default-web-app"/>
-    <copy todir="${build.dir}/orion">
-      <fileset dir="${expand.dir}/${orion.version}">
-        <exclude name="default-web-app"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/orion/conf.mmbase">
-      <fileset dir="${source-config.dir}/default">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    
-    <!-- the log4J dtd  location -->
-    <property name="log4j.dtd" value="jar:file:${build.dir}/orion/lib/log4j.jar!/org/apache/log4j/xml/log4j.dtd" />            
-    <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
-             token="DOCTYPE log4j:configuration SYSTEM &quot;log4j.dtd&quot;"
-             value="DOCTYPE log4j:configuration SYSTEM &quot;${log4j.dtd}&quot;"/>
-	     
-    <replace file="${build.dir}/orion/conf.mmbase/log/log4j.xml"
-             token="!ENTITY logdir   &quot;/tmp/&quot;"
-             value="!ENTITY logdir   &quot;${build.dir}/orion/log/&quot;" />
-	     
-    <copy file="${mmbase.jar}" todir="${build.dir}/orion/lib"/>
-    <copy file="${xalan.jar}" todir="${build.dir}/orion/lib"/>
-    <copy file="${xerces.jar}" todir="${build.dir}/orion/lib"/>
-    <copy file="${jai_codec.jar}" todir="${build.dir}/orion/lib"/>
-    <copy file="${jai_core.jar}" todir="${build.dir}/orion/lib"/>
-    <copy file="${log4j.jar}" todir="${build.dir}/orion/lib"/>
-    <copy todir="${build.dir}/orion/default-web-app">
-      <fileset dir="${source-html.dir}">
-        <exclude name="**/CVS/*"/>
-      </fileset>
-    </copy>
-    <copy file="${build.dir}/orion/default-web-app/WEB-INF/web.xml"
-          tofile="${build.dir}/orion/default-web-app/WEB-INF/web.xml"/>
  
-    <copy file="${web.dir}/mmbase-taglib.tld"
-          tofile="${build.dir}/orion/default-web-app/WEB-INF/mmbase-taglib.tld" />
-    <copy file="${web.dir}/mmbase-taglib.html"
-          tofile="${build.dir}/orion/default-web-app/mmdocs/mmbase-taglib.html"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Clean the Orion installation                                        -->
-  <!-- =================================================================== -->
-  <target name="clean.orion" description="Clean the Orion installation"
-          depends="clean.compile">
-    <delete dir="${build.dir}/orion"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Orion and Hypersonic                      -->
-  <!-- =================================================================== -->
-  <target name="orion.hsql"
-          description="Install MMBase on top of Orion and Hypersonic"
-          depends="orion,expand.hsql">
-    <replace file="${build.dir}/orion/conf.mmbase/modules/mmbaseroot.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;hypersonic&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;password&quot;&gt;&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;database&quot;&gt;.&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;user&quot;&gt;sa&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;driver&quot;&gt;org.hsql.jdbcDriver&lt;/property&gt;</replacevalue>
-    </replace>
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml">
-      <replacetoken>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;</replacetoken>
-      <replacevalue>&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$HOST:$PORT/$DBM?user=xsuser;password=xs4local&lt;/property&gt;</replacevalue>
-    </replace>
-    <copy file="${hsql.jar}" todir="${build.dir}/orion/lib"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Orion and MySQL                            -->
-  <!-- =================================================================== -->
-  <target name="orion.mysql"
-          description="Install MMBase on top of Orion and MySQL"
-          depends="orion,get.mysql">
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;"
-             value="&lt;property name=&quot;database&quot;&gt;${database.name}&lt;/property&gt;"/>
-    <replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
-             value="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=${database.user}&amp;amp;password=${database.password}&lt;/property&gt;"/>
-    <copy file="${mysql.jar}" todir="${build.dir}/orion/lib"/>
-  </target>
-
-
-  <!-- =================================================================== -->
-  <!-- Install MMBase on top of Orion and PostgreSQL                       -->
-  <!-- =================================================================== -->
-  <target name="orion.postgresql"
-          description="Install MMBase on top of Orion and PostgreSQL"
-          depends="orion,get.postgresql">
-	<!-- 
-	    replace the following things in mmbaseroot.xml : 
-	    	<property name="database">mysql</property> 
-	    	    into: <property name="database">postgresql71</property>    	    	    
-	-->  
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/mmbaseroot.xml"
-             token="&lt;property name=&quot;database&quot;&gt;mysql&lt;/property&gt;"
-             value="&lt;property name=&quot;database&quot;&gt;postgresql71&lt;/property&gt;"/>	
-	<!-- 
-	    replace the following things in jdbc.xml : 
-		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
-	    	    into: <property name="url">jdbc:postgresql://$HOST:$PORT/$DBM</property>
-		 <property name="database">install</property>
-		    into: <property name="database"></property> with value: ${database.name}
-    	    	<property name="user">url</property>
-		    into: <property name="user"></property> with value: ${database.user}
-    	    	<property name="password">url</property>
-		    into: <property name="password"></property> with value: ${database.password}
-		<property name="driver">org.gjt.mm.mysql.Driver</property>
-		    into: <property name="driver">org.postgresql.Driver</property>
-		 <property name="port">3306</property>
-		    into: <property name="port">5432</property>
-	-->  	
-	<!-- connect url -->
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;url&quot;&gt;jdbc:mysql://$$HOST:$$PORT/$$DBM?user=*****&amp;amp;password=*****&lt;/property&gt;"
-             value="&lt;property name=&quot;url&quot;&gt;jdbc:postgresql://$$HOST:$$PORT/$$DBM&lt;/property&gt;"/>
-	<!-- database name -->
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;database&quot;&gt;install&lt;/property&gt;"
-             value="&lt;property name=&quot;database&quot;&gt;${database.name}&lt;/property&gt;"/>	     
-	<!-- database user name -->
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;user&quot;&gt;url&lt;/property&gt;"
-             value="&lt;property name=&quot;user&quot;&gt;${database.user}&lt;/property&gt;"/>
-	<!-- database password name -->
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;password&quot;&gt;url&lt;/property&gt;"
-             value="&lt;property name=&quot;password&quot;&gt;${database.password}&lt;/property&gt;" />	     
-	<!-- database driver -->
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;driver&quot;&gt;org.gjt.mm.mysql.Driver&lt;/property&gt;"             
-	     value=" &lt;property name=&quot;driver&quot;&gt;org.postgresql.Driver&lt;/property&gt;"/>
-	<!-- database portnumer -->
-    	<replace file="${build.dir}/orion/conf.mmbase/modules/jdbc.xml"
-             token="&lt;property name=&quot;port&quot;&gt;3306&lt;/property&gt;"
-             value="&lt;property name=&quot;port&quot;&gt;5432&lt;/property&gt;"/>
-	     
-	<!-- copy the jdbc jar -->
-    	<copy file="${postgresql.jar}" todir="${build.dir}/orion/lib"/>
-    </target>	  
-
   <!-- =================================================================== -->
   <!-- Build the JUnit test environment                                    -->
   <!-- =================================================================== -->
@@ -1381,35 +1055,7 @@ Change directory to ${build.dir}/orion and run:
                file="${expand.dir}/${servlet.version}"/>
     <available property="servlet.jar.present"
                file="${servlet.jar}"/>
-    <!-- Tomcat -->
-    <property name="tomcat.version" value="jakarta-tomcat-3.2.3"/>
-    <property name="tomcat.url" value="http://jakarta.apache.org/builds/jakarta-tomcat/release/v3.2.3/bin/${tomcat.version}.tar.gz"/>
-    <property name="webserver.jar" value="${expand.dir}/${tomcat.version}/lib/webserver.jar"/>
-    <available property="tomcat.present"
-               file="${download.dir}/${tomcat.version}.tar.gz"/>
-    <available property="tomcat.expanded"
-               file="${expand.dir}/${tomcat.version}"/>
-    <available property="webserver.jar.present"
-               file="${webserver.jar}"/>
-    <!-- Orion -->
-    <property name="orion.version" value="orion1.5.2"/>
-    <property name="orion.url" value="http://www.orionserver.com/mirrordownload.jsp?file=${orion.version}.zip"/>
-    <available property="orion.present"
-               file="${download.dir}/${orion.version}.zip"/>
-    <available property="orion.expanded"
-               file="${expand.dir}/${orion.version}"/>
-    <!-- MySQL -->
-    <property name="mysql.version" value="mm.mysql-2.0.4-bin"/>
-    <property name="mysql.url" value="http://mmmysql.sourceforge.net/dist/${mysql.version}.jar"/>
-    <property name="mysql.jar" value="${download.dir}/${mysql.version}.jar"/>
-    <available property="mysql.present"
-               file="${download.dir}/${mysql.version}.jar"/>
-    <!-- PostgresSQL -->
-    <property name="postgresql.version" value="jdbc7.1-1.2"/>
-    <property name="postgresql.url" value="http://jdbc.postgresql.org/download/${postgresql.version}.jar"/>
-    <property name="postgresql.jar" value="${download.dir}/${postgresql.version}.jar"/>
-    <available property="postgresql.present"
-               file="${download.dir}/${postgresql.version}.jar"/>
+
     <!-- HypersonicSQL -->
     <property name="hsql.version" value="hsql_142"/>
     <property name="hsql.url" value="http://download.sourceforge.net/hsql/${hsql.version}.zip"/>
@@ -1426,7 +1072,7 @@ Change directory to ${build.dir}/orion and run:
     <available property="hsqldb.present"
                file="${download.dir}/${hsqldb.version}.zip"/>
     <available property="hsqldb.expanded"
-               file="${expand.dir}/${hsqldb.version}"/>
+               file="${expand.dir}/hsqldb/lib/hsqldb.jar"/>
                
     <!-- Xalan and Xerces -->
     <property name="xalan.version" value="xalan-j_2_2"/>
@@ -1488,60 +1134,11 @@ Change directory to ${build.dir}/orion and run:
     <delete file="${expand.dir}/${servlet.version}.tar"/>
   </target>
 
-  <target name="get.tomcat" depends="init.get" unless="tomcat.present">
-    <get src="${tomcat.url}"
-         dest="${download.dir}/${tomcat.version}.tar.gz"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.tomcat" depends="get.tomcat" unless="tomcat.expanded">
-    <gunzip src="${download.dir}/${tomcat.version}.tar.gz" dest="${expand.dir}"/>
-    <untar src="${expand.dir}/${tomcat.version}.tar" dest="${expand.dir}"/>
-    <delete file="${expand.dir}/${tomcat.version}.tar"/>
-  </target>
-
-  <target name="get.orion" depends="init.get" unless="orion.present">
-    <get src="${orion.url}"
-         dest="${download.dir}/${orion.version}.zip"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.orion" depends="get.orion" unless="orion.expanded">
-    <mkdir dir="${expand.dir}/${orion.version}"/>
-    <unzip src="${download.dir}/${orion.version}.zip" dest="${expand.dir}/${orion.version}"/>
-    <move todir="${expand.dir}/${orion.version}">
-      <fileset dir="${expand.dir}/${orion.version}/orion"/>
-    </move>
-  </target>
-
-  <target name="get.hsql" depends="init.get" unless="hsql.present">
-    <get src="${hsql.url}"
-         dest="${download.dir}/${hsql.version}.zip"
-         verbose="on"/>
-  </target>
-
   <target name="get.hsqldb" depends="init.get" unless="hsqldb.present">
     <get src="${hsqldb.url}"
          dest="${download.dir}/${hsqldb.version}.zip"
          verbose="on"
     />
-  </target>
-
-  <target name="get.mysql" depends="init.get" unless="mysql.present">
-    <get src="${mysql.url}"
-         dest="${download.dir}/${mysql.version}.jar"
-         verbose="on"/>
-  </target>
-
-  <target name="get.postgresql" depends="init.get" unless="postgresql.present">
-    <get src="${postgresql.url}"
-         dest="${download.dir}/${postgresql.version}.jar"
-         verbose="on"/>
-  </target>
-
-  <target name="expand.hsql" depends="get.hsql" unless="hsql.expanded">
-    <mkdir dir="${expand.dir}/${hsql.version}"/>
-    <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
   </target>
 
   <target name="expand.hsqldb" depends="get.hsqldb" unless="hsqldb.expanded">
@@ -1596,6 +1193,18 @@ Change directory to ${build.dir}/orion and run:
   <target name="expand.junit" depends="get.junit" unless="junit.expanded">
     <unzip src="${download.dir}/${junit.version}.zip" dest="${expand.dir}"/>
   </target>
+
+  <target name="get.hsql" depends="init.get" unless="hsql.present">
+    <get src="${hsql.url}"
+         dest="${download.dir}/${hsql.version}.zip"
+         verbose="on"/>
+  </target>
+
+  <target name="expand.hsql" depends="get.hsql" unless="hsql.expanded">
+    <mkdir dir="${expand.dir}/${hsql.version}"/>
+    <unzip src="${download.dir}/${hsql.version}.zip" dest="${expand.dir}/${hsql.version}"/>
+  </target>
+
 
 
   <!-- =================================================================== -->
@@ -1761,3 +1370,7 @@ Change directory to ${build.dir}/orion and run:
     <delete file="${source-src.dir}/MMCI.xml"/>
   </target>
 </project>
+
+
+
+
