@@ -92,8 +92,9 @@ Generic Improvement:
 -------------------
 
 [1.7.0]
-- Several tags in builder xmls are no longer mandatory, and sensible defaults will be used in stead
+- Several tags in builder xmls are no longer mandatory, and sensible defaults will be used instead
   (for example in the editor section)
+- jspsmartupload has been replaced with jakarta's commons FileUpload component.
 
 ------------------
 Generic Bug Fixes:
