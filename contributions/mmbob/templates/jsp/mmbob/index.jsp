@@ -7,7 +7,7 @@
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
-   <title>MMBase forums</title>
+   <title>MMBob</title>
 </head>
 <body>
 <mm:import externid="forumid" jspvar="forumid">unknown</mm:import>

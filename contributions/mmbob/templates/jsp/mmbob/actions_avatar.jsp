@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "xhtml1-strict.dtd">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 <mm:cloud sessionname="forum" username="admin" password="admin2k">
-
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <mm:import externid="selectedavatar"/>
 <mm:import externid="pathtype">poster_index</mm:import>
 <mm:import externid="avatarset">otherset</mm:import>
@@ -38,6 +38,9 @@
 <%@ include file="getposterid.jsp" %>
 <%@ include file="thememanager/loadvars.jsp" %>
 <%-- end login part --%>
+
+<mm:locale language="$lang">
+<%@ include file="loadtranslations.jsp" %>
 
   <mm:present referid="addavatar">
     <mm:transaction name="avatartrans">
@@ -155,16 +158,21 @@
   <%@ include file="includes/profile_updated.jsp" %>
 </mm:present>
 
-
-
 <mm:notpresent referid="selectedavatarnumber">
 <mm:notpresent referid="addavatar">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>MMBase Forum Profile</title>
+    <title>MMBob Member Profile</title>
     <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
   </head>
   <body>
+
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+                                                                                                                    
+<div class="bodypart">
+
     <mm:include page="path.jsp?type=$pathtype" />
 
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
@@ -202,7 +210,7 @@
         <mm:param name="avatarset" value="ownset"  />
         <mm:param name="selectedavatar" value="true" />
         <mm:param name="profile" value="$profile" />
-        </mm:url>">eigen avatars</a>
+        </mm:url>"><mm:write referid="mlg_own_avatars"/></a>
         </li>
         <mm:compare value="otherset" referid="avatarset">
         <li class="selected">
@@ -218,7 +226,7 @@
         <mm:param name="avatarset" value="otherset" />
         <mm:param name="selectedavatar" value="true " />
         <mm:param name="profile" value="$profile" />
-        </mm:url>">overige avatars</a>
+        </mm:url>"><mm:write referid="mlg_other_avatars"/></a>
         </li>
       </ul>
     </div>
@@ -237,7 +245,7 @@
                   </mm:import>
                 </mm:notpresent>
                 <mm:import id="headdisplayed">true</mm:import>
-                <span class="label">Selecteer categorie:</span>
+                <span class="label"><mm:write referid="mlg_Select_category"/>:</span>
                 <span class="formw">
                   <select name="avatarsets">
               </mm:first>
@@ -260,7 +268,7 @@
                     </mm:notpresent>
                     <mm:notpresent referid="headdisplayed">
                       <mm:import id="headdisplayed">true</mm:import>
-                      <span class="label">Selecteer categorie:</span>
+                      <span class="label"><mm:write referid="mlg_Select_category"/>:</span>
                       <span class="formw">
                         <select name="avatarsets">
                     </mm:notpresent>
@@ -279,7 +287,7 @@
       
 
      <mm:notpresent referid="headdisplayed">
-       <span class="label">Geen avatars geinstalleerd</span>
+       <span class="label"><mm:write referid="mlg_No_avatars_installed"/></span>
        
      </mm:notpresent>
 
@@ -366,7 +374,17 @@
     </div> 
     </div>
   </form>
+
+</div>                                                                                                                     
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                                                    
 </body>
 </html>
+                                                                                                                    
 </mm:notpresent></mm:notpresent>
+
+</mm:locale>
+</mm:content>
 </mm:cloud>
