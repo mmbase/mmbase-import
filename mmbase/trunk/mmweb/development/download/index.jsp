@@ -8,7 +8,6 @@
 <%@ include file="last_builds.jsp" %>
 
 <mm:node number="$page">
-  <h2><mm:field name="title" /></h2>
   <mm:related path="posrel,articles" orderby="posrel.pos" directions="UP" searchdir="destination">
 	<mm:node element="articles"><%@include file="/includes/article.jsp"%></mm:node>
   </mm:related>
