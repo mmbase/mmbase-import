@@ -54,7 +54,9 @@ public class BasicBundle implements BundleInterface {
     private ShareInfo shareinfo;
     private Hashtable neededpackages = new Hashtable();
     private ArrayList initiators,supporters,contacts,developers;
-
+    private float progressbar=0;
+    private float progressstep=1;
+    private PackageInterface pkg=null;
 
     // the install manager keeps track of what happend during a install
     // of a package or bundle. These are called steps because they not
@@ -122,11 +124,17 @@ public class BasicBundle implements BundleInterface {
 		}	
 	}
 
+	if (UninstallManager.isActive()) {
+		if (this==UninstallManager.getUnInstallingBundle()) {
+			return "uninstalling";
+		}	
+	}
+
 	if (BundleManager.isInstalledVersion(this)) {
 		return "installed";
 	}
 
-	if (state==null) return"";
+	if (state==null) return "";
 	return state;
     }
 
@@ -150,7 +158,18 @@ public class BasicBundle implements BundleInterface {
 	installStep step=getNextInstallStep();
 	step.setUserFeedBack("bundle/basic installer started");
 
+	setProgressBar(1000); // lets have 100 steps;
 	JarFile jf=getJarFile();
+	increaseProgressBar(100); // downloading is 25%
+
+	int pbs=0; 
+	// figure out how many packages we have for the progressbar
+	Enumeration d=getNeededPackages();
+	while (d.hasMoreElements()) {
+		pbs++;
+		d.nextElement();
+	}
+	int pss=800/pbs; // guess the progressbar per installed package
 
 	boolean changed=true; // signals something was installed
 	while (changed) {
@@ -158,7 +177,7 @@ public class BasicBundle implements BundleInterface {
 	changed=false;
 	while (e.hasMoreElements()) {
 			Hashtable np=(Hashtable)e.nextElement();
-			PackageInterface pkg=PackageManager.getPackage((String)np.get("id"));
+			pkg=PackageManager.getPackage((String)np.get("id"));
 			if (pkg!=null) {
 				String state=pkg.getState();
 				String name=pkg.getName();
@@ -168,6 +187,7 @@ public class BasicBundle implements BundleInterface {
 					boolean ins=pkg.install(step);
 					if (ins) {
 						step.setUserFeedBack("calling package installer "+name+"...done");
+						increaseProgressBar(pss);
 						changed=true;
 					} else {
 						if (pkg.getDependsFailed()) {
@@ -188,6 +208,7 @@ public class BasicBundle implements BundleInterface {
         step=getNextInstallStep();
         step.setUserFeedBack("updating mmbase registry ..");
         updateRegistryInstalled();
+	increaseProgressBar(100);
         step.setUserFeedBack("updating mmbase registry ... done");
 
 	step=getNextInstallStep();
@@ -224,6 +245,10 @@ public class BasicBundle implements BundleInterface {
 		// step 3
 		step=getNextInstallStep();
 		step.setUserFeedBack("updating mmbase registry ..");
+		try {
+			Thread.sleep(3000);
+		} catch (Exception f) {
+		}
 		updateRegistryUninstalled();
 		step.setUserFeedBack("updating mmbase registry ... done");
 
@@ -574,4 +599,27 @@ public class BasicBundle implements BundleInterface {
 	return licensebody;
     }
 
+    public void setProgressBar(int stepcount) {
+	progressbar=1;
+	progressstep=100/(float)stepcount;
+    }
+
+    public void increaseProgressBar() {
+	increaseProgressBar(1);
+    }
+
+    public void increaseProgressBar(int stepcount) {
+	progressbar+=(stepcount*progressstep);
+    }
+
+   public int getProgressBarValue() {
+	return (int)progressbar;
+   }
+
+   public int getPackageProgressBarValue() {
+	if (pkg!=null) {
+		return pkg.getProgressBarValue(); 
+	}
+	return 0;
+   }
 }
