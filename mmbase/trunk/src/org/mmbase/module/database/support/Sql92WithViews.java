@@ -21,7 +21,7 @@ import org.mmbase.util.logging.*;
  * @deprecated This code is scheduled for removal once MMBase has been fully converted to the new
  *             StorageManager implementation.
  * @author Eduard Witteveen
- * @version $Id: Sql92WithViews.java,v 1.5 2004-02-09 13:50:37 pierre Exp $
+ * @version $Id: Sql92WithViews.java,v 1.6 2004-03-11 23:25:03 eduard Exp $
  */
 public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInterface {
     private static Logger log = Logging.getLoggerInstance(Sql92WithViews.class.getName());
@@ -220,15 +220,15 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
     private String getFieldContrains(MMObjectBuilder bul) {
         // retrieve the field of the builder
         Vector sfields = (Vector) bul.getFields(FieldDefs.ORDER_CREATE);
+		
         if(sfields == null) {
             log.error("sfield was null for builder with name :" + bul);
             return "";
         }
-
         String constrains = "";
         // process all the fields..
         for (Enumeration e = sfields.elements();e.hasMoreElements();) {
-            String name=((FieldDefs)e.nextElement()).getDBName();
+            String name = ((FieldDefs)e.nextElement()).getDBName();
             FieldDefs def = bul.getField(name);
             if (def.getDBState() != org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
                 String  fieldName = getAllowedField(def.getDBName());
@@ -245,20 +245,20 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                         fieldIsReferer = inheritedTable;
                     }
                     // we cannot reference to itselve,incase of a reference
-                    if(fieldIsReferer) {
-                        constrains += ",   CONSTRAINT " +  constrainName(bul) +  " FOREIGN KEY (" + fieldName +")";
-                        constrains += " REFERENCES " + objectTableName() + " (" + getNumberString() + ") ON DELETE CASCADE ";
-                    }
-                    // is this field unique? (and not primary key, since that one always is
-                    // unique
-                    if(fieldUnique) {
-                        constrains += ",   CONSTRAINT " +  constrainName(bul) +  " UNIQUE (" + fieldName +") USING INDEX";
-                    }
+                    else if(fieldIsReferer) {
+						constrains += ",   CONSTRAINT " +  constrainName(bul) +  " FOREIGN KEY (" + fieldName +")";
+                	    constrains += " REFERENCES " + objectTableName() + " (" + getNumberString() + ") ON DELETE CASCADE ";
+					}		    
+					// is this field unique? (and not primary key, since that one always is
+					// unique
+                	else if(fieldUnique) {
+                    	constrains += ",   CONSTRAINT " +  constrainName(bul) +  " UNIQUE (" + fieldName +") USING INDEX";
+					}
                 }
             }
         }
         // return the result
-        log.debug("fieldcontrains was:" + constrains);
+        log.debug("fieldcontrains for table:" + bul + " are:" + constrains);
         return constrains;
     }
 
@@ -408,7 +408,8 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
 
         // Now fill the fields
         try {
-            preStmt.setEscapeProcessing(false);
+			// why did we do the next?
+            // preStmt.setEscapeProcessing(false);
             Enumeration enumeration = ((Vector) bul.getFields(FieldDefs.ORDER_CREATE)).elements();
             while (enumeration.hasMoreElements()) {
                 currentField = (FieldDefs) enumeration.nextElement();
@@ -419,7 +420,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                     || ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM)
                     || ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")))
                     ) {
-                        if (log.isDebugEnabled()) log.trace("DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+current);
+                        if (log.isDebugEnabled()) log.trace("DBState = "+DBState+", setValuePreparedStatement for key: "+key+", at pos:"+current+ " value:" + node.getStringValue(key));
                         setValuePreparedStatement( preStmt, node, key, current);
                         log.trace("we did set the value for field " + key + " with the number " + current);
                         current++;
@@ -431,6 +432,9 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                         log.warn("DBState = "+DBState+" unknown!, skipping setValuePreparedStatement for key: "+key+" of builder:"+node.getName());
                     }
                 }
+				else {
+					log.trace("DBState = "+DBState+", skipping setValuePreparedStatement for key: "+key);
+				}
             }
             preStmt.executeUpdate();
             preStmt.close();
@@ -465,10 +469,10 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             String fieldName = getAllowedField(key);
             int DBState = node.getDBState(key);
             // only create for the fields that are of this builder,..
+			log.trace("Insert: fieldname:" + key);
             if (!isInheritedField(bul, fieldName)) {
-                if ( DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT || DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM ) {
-                    log.trace("Insert: DBState = "+DBState+", adding key: "+key);
-
+                if ( DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_PERSISTENT 
+				|| DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_SYSTEM ) {
                     // add the values to our lists....
                     if (fieldNames == null) {
                         fieldNames = fieldName;
@@ -484,7 +488,7 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                     }
                 }
                 else if (DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_VIRTUAL) {
-                    log.trace("Insert: DBState = "+DBState+", skipping key: "+key);
+                    log.trace("Insert: DBState = "+DBState+", skipping vitual field: "+key);
                 }
                 else {
                     if ((DBState == org.mmbase.module.corebuilders.FieldDefs.DBSTATE_UNKNOWN) && node.getName().equals("typedef")) {
@@ -507,6 +511,9 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
                     }
                 }
             }
+			else {
+				log.trace("Insert: skipping inherited field" + key);
+			}
         }
         String sql = "INSERT INTO " +  getTableName(bul) + " ("+ fieldNames+") VALUES ("+fieldValues+")";
         log.trace("created pre sql: " + sql);
@@ -650,6 +657,25 @@ public class Sql92WithViews extends Sql92SingleFields implements MMJdbc2NodeInte
             return false;
         }
     }
+
+    public String getDisallowedField(String allowedfield) {
+        log.trace(allowedfield);
+		allowedfield = allowedfield.toLowerCase();
+        if (allowed2disallowed.containsKey(allowedfield)) {
+            allowedfield=(String)allowed2disallowed.get(allowedfield);
+        }
+        return allowedfield;
+    }
+
+    public String getAllowedField(String disallowedfield) {
+        log.trace(disallowedfield);
+		disallowedfield = disallowedfield.toLowerCase();
+        if (disallowed2allowed.containsKey(disallowedfield)) {
+            disallowedfield=(String)disallowed2allowed.get(disallowedfield);
+        }
+        return disallowedfield;
+    }
+
 
     public boolean addField(MMObjectBuilder bul,String fieldname) {
         log.debug("addField");
