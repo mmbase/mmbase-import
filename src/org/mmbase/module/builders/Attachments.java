@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author cjr@dds.nl
  * @author Michiel Meeuwissen
- * @version $Id: Attachments.java,v 1.18 2002-08-13 11:28:47 michiel Exp $
+ * @version $Id: Attachments.java,v 1.19 2002-09-03 17:50:28 michiel Exp $
  */
 public class Attachments extends AbstractServletBuilder {
     private static Logger log = Logging.getLoggerInstance(Attachments.class.getName());
@@ -141,35 +141,35 @@ public class Attachments extends AbstractServletBuilder {
     }
 
     /**
-     *
+     * If mimetype is not filled on storage in the database, then we
+     * can try to do smart things.
      */
 
-    public boolean setValue(MMObjectNode node, String field) {
-
-        // does not seem to work...
-        // Using the bridge (jsp), mimetype is never filled automaticly
-        // TODO: fix MagicFile
-        if (log.isDebugEnabled()) log.debug("Setting field " + field + " of node " + node);
-        if(field.equals("handle")) {
-            String mimetype = node.getStringValue("mimetype");
-            if (mimetype != null && !mimetype.equals("")) {
-                log.debug("mimetype was set already");
-            } else {
-                byte[] handle = node.getByteValue("handle");
-                log.debug("Attachment size of file = " + handle.length);
-                node.setValue("size", handle.length);
-                MagicFile magic = new MagicFile();
-                try {
-                    node.setValue("mimetype", magic.test(handle));
-                } catch (Throwable e) {
-                    log.warn("Exception in MagicFile  for " + node);
-                    node.setValue("mimetype", "application/octet-stream");                    
-                }
-
-                log.debug("ATTACHMENT mimetype of file = " + magic.test(handle));
-            }
-            return true;
+    protected void checkHandle(MMObjectNode node) {
+        String mimetype = node.getStringValue("mimetype");
+        if (mimetype == null || mimetype.equals("")) {
+            log.service("Mimetype of attachment '" + node.getStringValue("title") + "' was not set. Using magic to determin it automaticly.");
+            byte[] handle = node.getByteValue("handle");
+            node.setValue("size", handle.length); // also the size, why not.
+            log.debug("Attachment size of file = " + handle.length);
+            MagicFile magic = new MagicFile();
+            try {
+                String mime = magic.test(handle);
+                log.service("Found mime-type: " + mime);
+                node.setValue("mimetype", mime);
+            } catch (Throwable e) {
+                log.warn("Exception in MagicFile  for " + node);
+                node.setValue("mimetype", "application/octet-stream");                    
+            }            
         }
-        return super.setValue(node, field);
+    }
+
+    public int insert(String owner, MMObjectNode node) {
+        checkHandle(node);
+        return super.insert(owner, node);
+    }
+    public boolean commit(MMObjectNode node) {
+        checkHandle(node);
+        return super.commit(node);
     }
 }
