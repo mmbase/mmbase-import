@@ -5,11 +5,13 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">audiofragments</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">videofragments</builder>
 
-    <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
-
     <builder maintainer="mediaproject.mmbase.org" version="1">mediasources</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">audiosources</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">videosources</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">mediaproviders</builder>
+
+    <builder maintainer="mediaproject.mmbase.org" version="1">templates</builder>
 
     <builder maintainer="mediaproject.mmbase.org" version="1">insrel</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">posrel</builder>
@@ -17,8 +19,6 @@
     <builder maintainer="mediaproject.mmbase.org" version="1">pools</builder>
     <builder maintainer="mediaproject.mmbase.org" version="1">publishtimes</builder>
 
-
-    <builder maintainer="mediaproject.mmbase.org" version="1">templates</builder>
   </neededbuilderlist>
 
   <neededreldeflist>
@@ -29,33 +29,41 @@
   </neededreldeflist>
 
   <allowedrelationlist>
-    <relation from="videofragments"  to="videofragments"  type="parent" />
-    <relation from="audiofragments"  to="audiofragments"  type="parent" />
 
-    <relation from="videofragments"  to="videofragments"  type="posrel" />
-    <relation from="audiofragments"  to="audiofragments"  type="posrel" />
-
-    <relation from="mediafragments"  to="publishtimes"    type="related" />
-    <relation from="mediafragments"  to="mediafragments"  type="previous" /> <!-- for introduction -->
-
-    <relation from="pools"           to="pools"           type="parent"  />  <!-- grouping -->
- 
+    <!-- these relations are the core of the Media project -->
     <relation from="videofragments"  to="videosources"    type="related" />
     <relation from="audiofragments"  to="audiosources"    type="related" />
 
     <relation from="mediasources"    to="mediaproviders"  type="related" />
 
-    <relation from="pools"           to="mediafragments"  type="related" />
 
+    <!-- The fragment related to the sources is special and is linked with 'parent' to the other fragments -->
+    <relation from="videofragments"  to="videofragments"  type="parent" />
+    <relation from="audiofragments"  to="audiofragments"  type="parent" />
+
+    <!-- subfragments -->
+    <relation from="videofragments"  to="videofragments"  type="posrel" />
+    <relation from="audiofragments"  to="audiofragments"  type="posrel" />
+
+    
+    <!-- it is possible to associated 'templates' (probably jsp) to a certain fragment -->
     <relation from="mediafragments"  to="templates"    type="related" />
-   
-    <relation from="pools"           to="mediafragments"  type="related" />
+    
+    <!-- more specific stuff follows -->
 
+    <!-- a subfragment can be e.g. nog valid by linking to a 'publishtimes' object -->
+    <relation from="mediafragments"  to="publishtimes"    type="related" />
+
+    <!-- for introduction -->
+    <relation from="mediafragments"  to="mediafragments"  type="previous" /> 
+
+    <!-- grouping / categorizing -->
+    <relation from="pools"           to="pools"           type="parent"  />  
+    <relation from="pools"           to="mediafragments"  type="related" />
+   
   </allowedrelationlist>
 
   <datasourcelist>
-		<datasource builder="pools"            path="Media/pools.xml" />
-
 		<datasource builder="mediafragments"   path="Media/mediafragments.xml" />
 		<datasource builder="audiofragments"   path="Media/audiofragments.xml" />
 		<datasource builder="videofragments"   path="Media/videofragments.xml" />
@@ -67,6 +75,8 @@
 		<datasource builder="mediaproviders"     path="Media/mediaproviders.xml" />
 
 		<datasource builder="templates"          path="Media/templates.xml" />
+
+		<datasource builder="pools"            path="Media/pools.xml" />
 	</datasourcelist>
 
 	<relationsourcelist>
