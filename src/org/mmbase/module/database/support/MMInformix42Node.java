@@ -27,7 +27,7 @@ import org.mmbase.util.*;
 * @author Daniel Ockeloen
 * @author Mark Huijser
 * @version 12 Mar 1997
-* @$Revision: 1.28 $ $Date: 2000-11-27 23:40:34 $
+* @$Revision: 1.29 $ $Date: 2001-03-03 23:25:04 $
 */
 public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterface {
 
@@ -951,4 +951,25 @@ public class MMInformix42Node extends MMSQL92Node implements MMJdbc2NodeInterfac
                         return(results);
                 }
         }
+
+        public boolean addField(MMObjectBuilder bul,String fieldname) {
+		System.out.println("Database doesn't support table changes !");
+		return(false);
+	}
+
+
+        public boolean removeField(MMObjectBuilder bul,String fieldname) {
+		System.out.println("Database doesn't support table changes !");
+		return(false);
+	}
+
+        public boolean changeField(MMObjectBuilder bul,String fieldname) {
+		System.out.println("Database doesn't support table changes !");
+		return(false);
+	}
+
+        public boolean drop_real(MMObjectBuilder bul,String tableName) {
+		System.out.println("Database doesn't support table changes !");
+		return(false);
+	}
 }
