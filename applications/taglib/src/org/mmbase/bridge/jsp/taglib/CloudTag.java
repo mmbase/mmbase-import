@@ -36,7 +36,7 @@ import org.mmbase.util.logging.Logging;
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
  * @author Vincent van der Locht
- * @version $Id: CloudTag.java,v 1.101 2004-09-14 17:57:25 michiel Exp $
+ * @version $Id: CloudTag.java,v 1.102 2004-11-17 13:35:28 michiel Exp $
  */
 
 public class CloudTag extends ContextReferrerTag implements CloudProvider {
@@ -589,18 +589,22 @@ public class CloudTag extends ContextReferrerTag implements CloudProvider {
                 throw new TaglibException("The session variable '" + getSessionName() + "' is not of type Cloud (but it is a '" + c.getClass().getName() + "'), and perhaps is used for another goal. This error could be avoided by use of the 'sessionname' attribute of the cloud-tag.");
             }
             cloud = (Cloud) c;
-            if (log.isDebugEnabled()) {
-                if (cloud != null) {
-                    if (cloud.getUser().isValid()) {
+            if (cloud != null) {
+                if (cloud.getUser().isValid()) {
+                    if (log.isDebugEnabled()) {
                         log.debug("Created/found a session. Cloud in it is of: " + cloud.getUser());
-                    } else {
-                        log.debug("Found invalid cloud in session of '" + cloud.getUser() + "'. Discarding.");
-                        cloud = null;
                     }
+                    
                 } else {
-                    log.debug("No cloud found");
+                    if (log.isDebugEnabled()) {                        
+                        log.debug("Found invalid cloud in session of '" + cloud.getUser() + "'. Discarding.");
+                    }                    
+                    cloud = null;
                 }
+            } else {
+                log.debug("No cloud found");
             }
+            
         } else {
             log.debug("Not succeeded creating a session");
         }
