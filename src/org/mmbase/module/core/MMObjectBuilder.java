@@ -65,7 +65,7 @@ import org.mmbase.util.logging.Logging;
  * @author Johannes Verelst
  * @author Rob van Maris
  * @author Michiel Meeuwissen
- * @version $Id: MMObjectBuilder.java,v 1.265 2004-05-06 12:34:36 keesj Exp $
+ * @version $Id: MMObjectBuilder.java,v 1.266 2004-05-07 13:21:32 michiel Exp $
  */
 public class MMObjectBuilder extends MMTable {
 
@@ -486,12 +486,12 @@ public class MMObjectBuilder extends MMTable {
     public int insert(String owner, MMObjectNode node) {
         try {
             int n;
-            n = mmb.getDatabase().insert(this,owner,node);
+            n = mmb.getDatabase().insert(this, owner, node);
             // it is in the database now, all caches can allready be invalidated, this makes sure
             // that imediate 'select' after 'insert' will be correct'.
             QueryResultCache.invalidateAll(this);
 
-            if (n>=0) safeCache(new Integer(n),node);
+            if (n >= 0) safeCache(new Integer(n),node);
             String alias = node.getAlias();
             if (alias != null) createAlias(n,alias);    // add alias, if provided
             return n;
@@ -1351,11 +1351,11 @@ public class MMObjectBuilder extends MMTable {
 
         AggregatedResultCache cache = AggregatedResultCache.getCache();
 
-        List results = (List) cache.get(query);
+        List results = (List) cache.get(modifiedQuery);
         if (results == null) {
             // Execute query, return result.
             results = mmb.getDatabase().getNodes(modifiedQuery, new ResultBuilder(mmb, modifiedQuery));
-            cache.put(query, results);
+            cache.put(modifiedQuery, results);
         }
         ResultNode result = (ResultNode) results.get(0);
         return result.getIntValue("number");
@@ -2795,7 +2795,7 @@ public class MMObjectBuilder extends MMTable {
             } else {
                 return info.get(arguments.get(0));
             }
-        } else if (function.equals("wrap")) {
+       } else if (function.equals("wrap")) {
             if (arguments.size() < 2) throw new IllegalArgumentException("wrap function needs 2 arguments (currenty:" + arguments.size() + " : "  + arguments + ")");
             try {
                 String val  = node.getStringValue((String)arguments.get(0));
@@ -4070,10 +4070,11 @@ public class MMObjectBuilder extends MMTable {
      * @return the value of the property as a <code>String</code>
      */
     public String getInitParameter(String name) {
-        if (properties==null)
+        if (properties == null) {
             return null;
-        else
+        } else {
             return (String)properties.get(name);
+        }
     }
 
     /**
