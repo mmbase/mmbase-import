@@ -68,6 +68,22 @@
 
     <field>
       <descriptions>
+        <description xml:lang="en">Type</description>
+        <description xml:lang="nl">Type</description>
+      </descriptions>
+      <gui>
+        <guiname xml:lang="en">Type</guiname>
+        <guiname xml:lang="nl">Type</guiname>
+        <guitype>org.mmbase.module.builders.resources.resourcetypes</guitype>
+      </gui>
+      <db>
+        <name>type</name>
+        <type key="false" notnull="true"  state="persistent">INTEGER</type>
+      </db>
+    </field>
+
+    <field>
+      <descriptions>
         <description xml:lang="en">The resource itself (binary data)</description>
         <description xml:lang="nl">De resource zelf (binaire data)</description>
       </descriptions>
