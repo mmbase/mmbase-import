@@ -23,7 +23,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Michiel Meeuwissen
  * @since MMBase-1.7
- * @version $Id: HSqlStorage.java,v 1.5 2003-05-08 15:25:54 kees Exp $
+ * @version $Id: HSqlStorage.java,v 1.6 2003-06-18 15:25:10 kees Exp $
  */
 public class HSqlStorage extends RelationalDatabaseStorage {
     /**
@@ -49,7 +49,7 @@ public class HSqlStorage extends RelationalDatabaseStorage {
     private Map tableConstraints = new HashMap(); // String fulltablename -> StringBuffer constraints definitions
     
     /**
-     * Hsql wants the contraint definition (uniuqe, primary key etc) _after_ the collumn definition, so not mixed.
+     * Hsql wants the constraint definition (uniuqe, primary key etc) _after_ the collumn definition, so not mixed.
      *
      */   
     protected String constructFieldDefinition(String tableName, String fieldName, int type, int size, int keyType) {
