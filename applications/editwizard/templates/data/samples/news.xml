@@ -21,21 +21,10 @@
 
 	<form-schema id="step1">
 		<title>Enter form title here</title>
-		<field name="title" >
-			<prompt>Title</prompt>
-		</field>
-
-		<field name="subtitle" >
-			<prompt>Subtitle</prompt>
-		</field>
-
-		<field name="intro" ftype="text" rows="4" >
-			<prompt>Intro</prompt>
-		</field>
-		
-		<field name="body" ftype="text" rows="8" >
-			<prompt>Body</prompt>
-		</field>
+		<field name="title" />
+		<field name="subtitle" />
+		<field name="intro" ftype="text" rows="4" />
+		<field name="body" ftype="text" rows="8" />
 
 		<list role="related" destination="people" minoccurs="0" maxoccurs="*">
 			<command name="search" nodepath="people" fields="firstname,lastname" orderby="lastname" age="-1">
@@ -51,12 +40,8 @@
 			</command>
 
 			<item>
-				<field ftype="data" name="firstname" >
-					<prompt>first name</prompt>
-				</field>
-				<field ftype="data" name="lastname" >
-					<prompt>last name</prompt>
-				</field>
+				<field ftype="data" name="firstname" />
+				<field ftype="data" name="lastname" />
 			</item>
 			
 			<action type="create">
