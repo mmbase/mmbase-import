@@ -144,42 +144,54 @@ public class XMLNodeReader  {
                                     if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
                                         if (value==null) value="";
                                         newnode.setValue(key,value);
-                                    } if (type==FieldDefs.TYPE_NODE) {
+                                    } 
+                                    else if (type==FieldDefs.TYPE_NODE) {
                                         try {
                                             newnode.setValue(key,Integer.parseInt(value));
-                                        } catch(Exception e) {
+                                        } 
+                                        catch(Exception e) {
                                             newnode.setValue(key,-1);
                                         }
-                                    } else if (type==FieldDefs.TYPE_INTEGER) {
+                                    } 
+                                    else if (type==FieldDefs.TYPE_INTEGER) {
                                         try {
                                             newnode.setValue(key,Integer.parseInt(value));
-                                        } catch(Exception e) {
+                                        } 
+                                        catch(Exception e) {
                                             newnode.setValue(key,-1);
                                         }
-                                    } else if (type==FieldDefs.TYPE_FLOAT) {
+                                    } 
+                                    else if (type==FieldDefs.TYPE_FLOAT) {
                                         try {
                                             newnode.setValue(key,Float.parseFloat(value));
-                                        } catch(Exception e) {
+                                        } 
+                                        catch(Exception e) {
                                             newnode.setValue(key,-1);
                                         }
-                                    } else if (type==FieldDefs.TYPE_DOUBLE) {
+                                    } 
+                                    else if (type==FieldDefs.TYPE_DOUBLE) {
                                         try {
                                             newnode.setValue(key,Double.parseDouble(value));
-                                        } catch(Exception e) {
+                                        } 
+                                        catch(Exception e) {
                                             newnode.setValue(key,-1);
                                         }
-                                    } else if (type==FieldDefs.TYPE_LONG) {
+                                    }
+                                    else if (type==FieldDefs.TYPE_LONG) {
                                         try {
                                             newnode.setValue(key,Long.parseLong(value));
-                                        } catch(Exception e) {
+                                        } 
+                                        catch(Exception e) {
                                             newnode.setValue(key,-1);
                                         }
-                                    } else if (type==FieldDefs.TYPE_BYTE) {
+                                    } 
+                                    else if (type==FieldDefs.TYPE_BYTE) {
                                         NamedNodeMap nm2=n5.getAttributes();
                                         Node n7=nm2.getNamedItem("file");
                                         newnode.setValue(key,readBytesFile(applicationpath+n7.getNodeValue()));
-                                    } else {
-                                        log.error("XMLNodeReader node error : "+key+" "+value+" "+type);
+                                    } 
+                                    else {
+                                        log.error("FieldDefs not found for #" + type + " was not known for field with name: '"+key+"' and with value: '"+value+"'");
                                     }
                                 }
                             }
