@@ -147,7 +147,7 @@ public class TypeDef extends MMObjectBuilder {
 	public String getDutchSName(String name) {
 		MMObjectBuilder bul=(MMObjectBuilder)mmb.mmobjs.get(name);
 		if (bul!=null) {
-			return(bul.dutchSName);
+			return(bul.getDutchSName());
 		} else {
 			return("probleem!");
 		}
@@ -158,7 +158,7 @@ public class TypeDef extends MMObjectBuilder {
 		Enumeration enum = mmb.mmobjs.elements();
 		while (enum.hasMoreElements()){
 			MMObjectBuilder bul=(MMObjectBuilder)enum.nextElement();
-			if (bul.dutchSName.equals(dutchname)) {
+			if (bul.getDutchSName().equals(dutchname)) {
 				return(bul.tableName);
 			}
 		} 
