@@ -32,10 +32,22 @@ import org.mmbase.util.logging.Logging;
 import org.mmbase.util.logging.Logger;
 
 /**
+ * XMLBasicReader has two goals.
+ <ul> 
+   <li>
+   It provides a way for parsing XML
+   </li>
+   <li>
+   It provides a way for searching in this XML, without the need for an XPath implementation, and without the hassle of org.w3c.dom alone.
+   It uses dots to lay a path in the XML (XPath uses slashes).
+   </li>
+ </ul>
+ *
  * @author Case Roule
  * @author Rico Jansen
  * @author Pierre van Rooden
- * @version $Id: XMLBasicReader.java,v 1.28 2003-02-10 23:44:38 nico Exp $
+ * @author Michiel Meeuwissen
+ * @version $Id: XMLBasicReader.java,v 1.29 2003-03-11 14:55:26 michiel Exp $
  */
 public class XMLBasicReader  {
     private static Logger log = Logging.getLoggerInstance(XMLBasicReader.class.getName());
@@ -65,7 +77,9 @@ public class XMLBasicReader  {
 
     private static InputSource getInputSource(String path) {
         try {
-            return new InputSource(new FileInputStream(path));
+            InputSource is = new InputSource(new FileInputStream(path));
+            is.setSystemId("file://" + path);
+            return is;                
         } catch (java.io.FileNotFoundException e) {
             log.error("Error reading " + path + ": " + e.toString());
             log.service("Using empty source");
@@ -109,7 +123,12 @@ public class XMLBasicReader  {
             throw new RuntimeException("failure reading document: " + source.getSystemId() + "\n" + ioe);
         }
     }
-
+    /*
+    public XMLBasicReader(Document doc) {
+        document = doc;
+        xmlFilePath = doc.getDoctype().getSystemId();
+    }
+    */
     private static DocumentBuilder createDocumentBuilder(boolean validating, ErrorHandler handler, EntityResolver resolver) {
         DocumentBuilder db;
         try {
