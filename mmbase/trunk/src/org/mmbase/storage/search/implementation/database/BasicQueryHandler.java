@@ -27,7 +27,7 @@ import java.util.*;
  * by the handler, and in this form executed on the database.
  *
  * @author Rob van Maris
- * @version $Id: BasicQueryHandler.java,v 1.6 2003-03-10 11:50:58 pierre Exp $
+ * @version $Id: BasicQueryHandler.java,v 1.7 2003-03-25 19:38:06 robmaris Exp $
  * @since MMBase-1.7
  */
 public class BasicQueryHandler implements SearchQueryHandler {
@@ -138,56 +138,60 @@ public class BasicQueryHandler implements SearchQueryHandler {
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sqlString);
             
-//            // Skip results to provide weak support for offset.
-//            if (mustSkipResults) {
-//                for (int i = 0; i < query.getOffset(); i++) {
-//                    rs.next();
+            try {
+//                // Skip results to provide weak support for offset.
+//                if (mustSkipResults) {
+//                    for (int i = 0; i < query.getOffset(); i++) {
+//                        rs.next();
+//                    }
 //                }
-//            }
-            
-            // Read results.
-            // Truncate results to provide weak support for maxnumber.
-            while (rs.next() 
+
+                // Read results.
+                // Truncate results to provide weak support for maxnumber.
+                while (rs.next() 
 //                && (sqlHandlerSupportsMaxNumber || results.size() < query.getMaxNumber())
-                ) {
-                MMObjectNode node = null;
-                if (builder instanceof ClusterBuilder) {
-                    // Cluster nodes.
-                    node = new ClusterNode(builder, steps.size());
-                } else if (builder instanceof ResultBuilder) {
-                    // Result nodes.
-                    node = new ResultNode((ResultBuilder) builder);
-                } else {
-                    // Real nodes.
-                    node = new MMObjectNode(builder);
-                }
-                for (int i = 0; i < fields.length; i++) {
-                    String fieldName;
-                    String prefix;
+) {
+                    MMObjectNode node = null;
                     if (builder instanceof ClusterBuilder) {
-                        fieldName = fields[i].getFieldName();
-                        prefix = fields[i].getStep().getAlias() + ".";
+                        // Cluster nodes.
+                        node = new ClusterNode(builder, steps.size());
                     } else if (builder instanceof ResultBuilder) {
-                        fieldName = fields[i].getAlias();
-                        if (fieldName == null) {
-                            fieldName = fields[i].getFieldName();
-                        }
-                        prefix = "";
+                        // Result nodes.
+                        node = new ResultNode((ResultBuilder) builder);
                     } else {
-                        fieldName = fields[i].getFieldName();
-                        prefix = "";
+                        // Real nodes.
+                        node = new MMObjectNode(builder);
                     }
-                    int fieldType = fields[i].getType();
-                    // TODO: (later) use alternative to decodeDBnodeField, to
-                    // circumvent the code in decodeDBnodeField that tries to
-                    // reverse replacement of "disallowed" fieldnames.
-                    database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
+                    for (int i = 0; i < fields.length; i++) {
+                        String fieldName;
+                        String prefix;
+                        if (builder instanceof ClusterBuilder) {
+                            fieldName = fields[i].getFieldName();
+                            prefix = fields[i].getStep().getAlias() + ".";
+                        } else if (builder instanceof ResultBuilder) {
+                            fieldName = fields[i].getAlias();
+                            if (fieldName == null) {
+                                fieldName = fields[i].getFieldName();
+                            }
+                            prefix = "";
+                        } else {
+                            fieldName = fields[i].getFieldName();
+                            prefix = "";
+                        }
+                        int fieldType = fields[i].getType();
+                        // TODO: (later) use alternative to decodeDBnodeField, to
+                        // circumvent the code in decodeDBnodeField that tries to
+                        // reverse replacement of "disallowed" fieldnames.
+                        database.decodeDBnodeField(node, fieldName, rs, i + 1, prefix);
+                    }
+                    if (builder instanceof ClusterBuilder) {
+                        // Finished initializing clusternode.
+                        ((ClusterNode) node).initializing = false;
+                    }
+                    results.add(node);
                 }
-                if (builder instanceof ClusterBuilder) {
-                    // Finished initializing clusternode.
-                    ((ClusterNode) node).initializing = false;
-                }
-                results.add(node);
+            } finally {
+                rs.close();
             }
         } catch (Exception e) {
             // Something went wrong, log exception
