@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-$Id: scanparser.java,v 1.23 2000-09-14 09:14:52 install Exp $
+$Id: scanparser.java,v 1.24 2000-10-10 12:02:59 vpro Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.23  2000/09/14 09:14:52  install
+Rob made a change for Gerard ;-)
+
 Revision 1.22  2000/09/12 12:22:45  install
 Rob added the connection for the transaction handler <TRANSACTION arg1> arg2 </TRANSACTION>
 
@@ -79,6 +82,7 @@ import java.io.*;
 import org.mmbase.module.*;
 import org.mmbase.servlet.*;
 import org.mmbase.util.*;
+import org.mmbase.module.core.*;
 
 import org.mmbase.module.CounterInterface;
 
@@ -89,7 +93,7 @@ import org.mmbase.module.CounterInterface;
  * because we want extend the model of offline page generation.
  *
  * @author Daniel Ockeloen
- * @$Revision: 1.23 $ $Date: 2000-09-14 09:14:52 $
+ * @$Revision: 1.24 $ $Date: 2000-10-10 12:02:59 $
  */
 public class scanparser extends ProcessorModule {
 
@@ -103,6 +107,7 @@ public class scanparser extends ProcessorModule {
     private static ProcessorModule grab=null;
     private static sessionsInterface sessions=null;
     private static idInterface id=null;
+	private static MMBase mmbase=null;
     private static Hashtable processors = new Hashtable();
     private static boolean debug=false;
 
@@ -111,11 +116,26 @@ public class scanparser extends ProcessorModule {
 	// needs fix !
     private static String loadmode="no-cache";
     private static String htmlroot;
+	private static String documentRoot;
     Hashtable Roots;
 
 
 	public scanparser() {
-
+		documentRoot=System.getProperty("mmbase.htmlroot");
+		if (documentRoot==null) {
+			debug("ERROR: could not retrieve document root !");
+		} else {
+			if (documentRoot.endsWith(File.separator)) {
+				documentRoot=documentRoot.substring(0,documentRoot.length()-1);
+			}
+			htmlroot=documentRoot+File.separatorChar;
+			debug("Using documentRoot : "+documentRoot);
+			String dtmp=System.getProperty("mmbase.mode");
+			if (dtmp!=null && dtmp.equals("demo")) {
+				String curdir=System.getProperty("user.dir");
+				htmlroot=curdir+"/default-web-app/";
+			}
+		}
 	}
 
     /**
@@ -130,6 +150,7 @@ public class scanparser extends ProcessorModule {
         sessions=(sessionsInterface)getModule("SESSION");
 		scancache=(scancacheInterface)getModule("SCANCACHE");
 		counter=(CounterInterface)getModule("COUNTER");
+		mmbase=(MMBase)getModule("MMBASEROOT");
         // org.mmbase stats=(StatisticsInterface)getModule("STATS");
     }
 
@@ -343,6 +364,8 @@ public class scanparser extends ProcessorModule {
 					try {
 						newbody.append(do_list(body.substring(prepostcmd,postcmd),body.substring(postcmd+1,end_pos2),session,sp));
 					} catch(Exception e) {
+						String errorMsg = "Error in list: "+e.getMessage()+" in page "+sp.getUrl();
+						newbody.append(errorMsg);
 						debug("handle_line(): ERROR: do_list(): "+prepostcmd+","+postcmd+","+end_pos2+" in page("+sp.getUrl()+") : "+e);
 						e.printStackTrace();
 					}
@@ -411,11 +434,6 @@ public class scanparser extends ProcessorModule {
 		// Macro's (special commands)
 		part=finddocmd(body,"<MACRO ",'>',1,session,sp);
 		body=part;
-
-		// Counter tag
-		part=finddocmd(body,"<COUNTER",'>',20,session,sp);
-		body=part;
-
 		// Do the dollar commands
 		body=dodollar(body,session,sp);
 
@@ -464,6 +482,17 @@ public class scanparser extends ProcessorModule {
 		part=finddocmd(body,"<PART ",'>',19,session,sp);
 		body=part; 
 
+		// Counter tag
+		part=finddocmd(body,"<COUNTER",'>',20,session,sp);
+		body=part;
+
+		// <TREEPART, TREEFILE
+		part=finddocmd(body,"<TREE",'>',21,session,sp);
+		body=part; 
+
+		// <LEAFPART, LEAFFILE
+		part=finddocmd(body,"<LEAF",'>',22,session,sp);
+		body=part; 
 
 		// Last one always
 		part=finddocmd(body,"$LBJ-",'^',4,session,sp);
@@ -582,12 +611,19 @@ public class scanparser extends ProcessorModule {
 							newbody.append(do_save(session,body.substring(prepostcmd,postcmd)));
 						break;
 					case 19: // '<PART '
-						newbody.append(do_part(body.substring(prepostcmd,postcmd),session,sp));
+						newbody.append(do_part(body.substring(prepostcmd,postcmd),session,sp,0));
 						break;
 					case 20: // '<COUNTER'
 						newbody.append(do_counter(body.substring(prepostcmd,postcmd),session,sp));
 						break;
+					case 21: // '<TREEPART, TREEFILE' 
+						newbody.append(do_smart(body.substring(prepostcmd,postcmd),session,sp, false));
+						break;
+					case 22: // '<LEAFPART, LEAFFILE' 
+						newbody.append(do_smart(body.substring(prepostcmd,postcmd),session,sp, true));
+						break;
 					default: 
+						debug("Woops broken case in method finddocmd");
 						break;
 				}
 			} else {
@@ -627,7 +663,7 @@ public class scanparser extends ProcessorModule {
 	}
 
 
-	private final String do_part(String part2,sessionInfo session,scanpage sp) throws ParseException {
+	private final String do_part(String part2,sessionInfo session,scanpage sp,int markPart) throws ParseException {
 
 		String part="",filename,paramline=null;;
 		Vector oldparams=sp.getParamsVector();
@@ -658,33 +694,30 @@ public class scanparser extends ProcessorModule {
 		part=getfile(filename);
 		if (part!=null) {
 		
-			// start cache
-			String wantCache=null;
-			if (part.indexOf("<CACHE HANK>")!=-1) {
-				wantCache="HENK";
-				String rst=scancache.get(wantCache,part2);
-				String pragma = sp.getHeader("Pragma:");
-				if (rst!=null && (pragma==null || !pragma.equals(loadmode))) {
-	//				debug("do_part(): scancache=PARTHIT");
-					sp.partlevel--;
-					return(rst);
-				}	
-			}
-	
-			// end cache
 				// unlike include we need to map this ourselfs before including it
 				// in this page !!
 			try {
 				part=handle_line(part,session,sp);
 			} catch (Exception e) {
-				debug("do_part(): handle_line exception ("+sp.getUrl()+") file : "+filename);
+				String errorMsg = "Error in part "+filename;
+				if (paramline!=null) errorMsg += "?" + paramline;
+				errorMsg += "\n" + e.getMessage() + "\n Parted by "+sp.getUrl();
+				part = errorMsg;
+				debug("do_part(): "+errorMsg);
 				e.printStackTrace();
 			}
 	
-			if (wantCache!=null) {
-	//			debug("do_part(): PUT CACHE OF FILE="+part2);
-				scancache.put(wantCache,part2,part);
+			if (markPart>0) {
+				// Add start and end comments to part
+				String marker = "part "+filename;
+				if (paramline!=null) marker += "?"+paramline;
+				String startComment, endComment;
+				if (markPart==1) { startComment = "<!--"; endComment = "-->"; }
+				else  { startComment = "/*"; endComment = "*/"; }
+				marker += "\n"+endComment;
+				part = startComment+"\nStart "+ marker + part + startComment+"\nEnd of " + marker;
 			}
+
 			sp.setParamsVector(oldparams);
 			sp.partlevel--;
 			return(part);
@@ -696,6 +729,166 @@ public class scanparser extends ProcessorModule {
 	}
 
 
+	/**
+	 * Support method for do_smart
+	 * Add version to path if version defined
+	 */
+	private static String getVersion(String name, sessionInfo session) {
+		String version = session.getValue(name+"version");
+		if (version!=null) {
+			version=version.trim();
+			if (version.equals("")) version = null;
+		}
+		return version;
+	}
+	
+	/**
+	 * Support method for do_smart
+	 * Return the path for the file to part
+	 */
+	private String getSmartFileName( String path, // Path currently investigated
+									 String builderPath, // path to add between path and filename for LEAVE version
+									 String fileName, // File name of part we are looking for
+									 String bestFile, // Last found file which is ok
+									 Enumeration nodes, // The passed object nodes
+									 sessionInfo session, // The session for version control
+									 boolean leaf // TREE or LEAF version
+									) throws ParseException {
+		// Get node from args
+		MMObjectNode node = (MMObjectNode)nodes.nextElement();
+		String nodeNumber = ""+node.getValue("number");
+				
+		// Ask the builder of the node to create the path to search for the part
+		// If null returned we're done and return bestFile
+		path = node.parent.getSmartPath(documentRoot, path, nodeNumber, getVersion(node.getName(), session));
+		if (path==null) {
+			if (debug) debug("getSmartFile: no dir found for node "+nodeNumber+". Returning "+bestFile);
+			return bestFile;
+		}
+
+		String newFileName;
+		if (leaf) {
+			// Remove one builder name from the builder path
+			int i = builderPath.indexOf(File.separatorChar);
+			if (i<0) newFileName = path+fileName;
+			else {
+				builderPath = builderPath.substring(i+1);
+				newFileName = path + builderPath + File.separator + fileName;
+			}
+		} else newFileName = path + fileName;
+					
+		// Check if file present if so, select it as the new bestFile to use
+		String fileToCheck = documentRoot+newFileName;
+		File f = new File(fileToCheck);
+		if (f.exists()) {
+			bestFile = newFileName;
+			if (debug) debug("Found and selecting " + newFileName + " as new best file");
+		} else if (debug) debug(fileToCheck + " not found, continuing search");
+		
+		// If no more object numbers then return the bestFile so far else continue the travel
+		if (!nodes.hasMoreElements())
+			return bestFile;
+		
+		return getSmartFileName( path, builderPath, fileName, bestFile, nodes, session, leaf);
+	}
+	
+	/**
+	 * TREEPART, TREEFILE, LEAFPART or LEAFFILE
+	 * @param args action+objectnumbers+filepath
+	 * action: PATH or FILE
+	 * objectnumbers: + seperated list of objectnumbers
+	 * filepath: (optional) file to part
+	 * @param leaf TREE or LEAF version
+	 */
+	
+	private String do_smart(String args, sessionInfo session, scanpage sp, boolean leaf) throws ParseException {
+		// Get action: PART or FILE
+		String cmdName;
+		if (leaf) cmdName = "LEAF"; else cmdName = "TREE";
+		int pos = args.indexOf(" ");
+		if (pos<0) throw new ParseException("Blank expected after <"+cmdName+"PART or FILE");
+		String action = args.substring(0, pos);
+		if (!(action.equals("PART") || action.equals("FILE")))
+			throw new ParseException("PART or FILE expected after <"+cmdName);
+		args = args.substring(pos+1);
+		args = dodollar(args, session, sp);
+		if (debug) debug(cmdName+action+" "+args);
+		
+		int addMarkers = 0;
+		if ((args.length()>=6) && args.substring(0,6).equals("DEBUG ")) {
+			addMarkers = 1;
+			args = args.substring(6); // Returns empty if length 6, no exception
+		}	
+		if ((args.length()>=12) && args.substring(0,12).equals("DEBUGCSTYLE ")) {
+			addMarkers = 2;
+			args = args.substring(12); // Returns empty if length 12, no exception
+		}	
+	
+		// Set root path
+		String path = File.separator;
+				
+		// Use the last argument or the builder name of last arg to compose the filename to find
+		// Add the buildernames of the passed nodes to builderPath for leafpart and leaffile
+		String filename = "";
+		String builderPath = "";
+		Vector nodes = new Vector();
+		String arg = "";
+		StringTokenizer tokens = new StringTokenizer(args, "+");
+		while (tokens.hasMoreTokens()) {
+			arg = tokens.nextToken().trim();
+			if ((arg==null) || arg.equals(""))
+				throw new ParseException(cmdName+action+" "+args+": no or empty object number specified");
+			boolean isNumber = true;
+			try { Integer.parseInt(arg); } catch (NumberFormatException n) { isNumber = false; }
+			if (isNumber) {
+				MMObjectNode node = mmbase.getTypeDef().getNode(arg);
+				if (node==null) throw new ParseException(cmdName+action+" node "+arg+" not found");
+				nodes.addElement(node);
+				if (leaf) builderPath += File.separator + node.getName();
+			}
+			else {
+				// Select the non number as filename to part, first add the remaining tokens
+				while (tokens.hasMoreTokens()) arg+="+"+tokens.nextToken();
+				filename = arg; // Use it as filename
+				args = "";		// Clear args to pass to part and split filename on ? for new args
+				pos = filename.indexOf('?');
+				if (pos>=0) {
+					if (pos<filename.length()-1) args = filename.substring(pos+1);
+					filename = filename.substring(0, pos);
+				}
+				break; // Save one test, we're done
+			}//else
+		}//while
+		
+		// If no part name passed as arg, use parts/buildername.shtml?args
+		if (filename.equals("")) {
+			MMObjectNode node = mmbase.getTypeDef().getNode(arg);
+			if (node==null) throw new ParseException(cmdName+action + " node " + arg + " not found");
+			filename = "parts"+File.separator+node.getName()+".shtml";
+		}
+		
+		String bestFile;
+		if (leaf) {
+			// Remove leading slash from builderPath
+			if (builderPath.length()>0) builderPath = builderPath.substring(1);
+			// If nothing better found part bestFile
+			bestFile = path + builderPath + File.separator +filename;
+		} else bestFile = path + filename; // If nothing better found part bestFile
+		
+		// Travel the smart object tree to find an override of the default part
+		Enumeration e = nodes.elements();
+		if (e.hasMoreElements())
+			bestFile = getSmartFileName( path, builderPath, filename, bestFile, e, session, leaf);
+		
+		if (!args.equals("")) bestFile += "?"+args;
+		if (debug) debug(cmdName+action+" using "+bestFile);
+
+		if (action.equals("FILE"))
+			return bestFile;
+		
+		return do_part(bestFile, session, sp, addMarkers);
+	}
+
 	public final String getfile(String where) {
 		File scanfile=null;
 		int filesize,len=-1;
@@ -704,23 +897,6 @@ public class scanparser extends ProcessorModule {
 		Date lastmod;
 		String rtn=null;
 
-		// org.mmbase fileroot=(String)Roots.get(rq.getAcceptor());
-
-		// org.mmbase if (fileroot==null) fileroot=(String)Roots.get("www");
-
-		if (htmlroot==null) {
-			if (debug) debug("getfile("+where+"): mmbase.htmlroot="+System.getProperty("mmbase.htmlroot"));
-
-			String dtmp=System.getProperty("mmbase.mode");
-			if (dtmp!=null && dtmp.equals("demo")) {
-				String curdir=System.getProperty("user.dir");
-				htmlroot=curdir+"/default-web-app/";
-			} else {
-				htmlroot=System.getProperty("mmbase.htmlroot");
-			}
-		}
-
-		//String filename=htmlroot+where; // seems to give a problem on NT without the trim
 		String filename=htmlroot.trim()+where.trim();
 
 		filename=filename.replace('/',(System.getProperty("file.separator")).charAt(0));
@@ -870,6 +1046,15 @@ public class scanparser extends ProcessorModule {
 				if (sp.querystring == null) 
 					return "";
 				return sp.querystring;
+			}
+			if (part2.equals("T")) {
+				// Eval $PARAMT: Returns value of the tail parameter.
+				if (sp.params==null) {
+					sp.getParam(0); // Force build of params
+					if (sp.params==null) // No params
+						return "";
+				}
+				return sp.getParam(sp.params.size()-1);
 			}
 		}
 		
@@ -1308,14 +1493,13 @@ public class scanparser extends ProcessorModule {
 		String oldcmd=cmd;
 
 		String  wantCache="HENK";
-		String pragma = sp.getHeader("Pragma:");
-		if (pragma==null || !pragma.equals(loadmode)) {
-		if (cmd.indexOf(" CACHE=")!=-1) {
-			String rst=scancache.get("HENK","/LISTS/"+cmd+template);
-			if (rst!=null) {
-				return(rst);
+		if (sp.reload) {
+			if (cmd.indexOf(" CACHE=")!=-1) {
+				String rst=scancache.get("HENK","/LISTS/"+cmd+template);
+				if (rst!=null) {
+					return(rst);
+				}
 			}
-		}
 		}
 
 		cmds=tokenizestring(cmd);
@@ -1444,14 +1628,9 @@ public class scanparser extends ProcessorModule {
 
 				if (sorted!=null && sorted.equals("MALPHA")) {
 					if (sortedpos!=null) {
-						try {
-							int i=Integer.parseInt(sortedpos);
-							result=doMAlphaSort(result,i,numitems);	
-						} catch(Exception e) {
-							debug("do_list(): ERROR in SORTPOS (sortpos counts from 0 .. n)");
-						}	
+						result=doMAlphaSort(result,sortedpos,numitems);	
 					} else {
-						result=doMAlphaSort(result,1,numitems);	
+						result=doMAlphaSort(result,"1",numitems);	
 					}
 				}
 
@@ -1781,14 +1960,22 @@ public class scanparser extends ProcessorModule {
 		}
 	}
 
-
-	/*
+	/**
+	* davzev changed method syntax from int sortonnumber to String sortonnumbers.
 	* Sort the lines in the vector, to do this we need to first group
 	* them and then sort them by item number defined
+	* @param input - the result Vector unsorted.
+	* @param sortonnumbers - a String with colpositions eg. "6:4" denoting the 
+	* order and colpositions for the sort.
+	* @param numberofitems - integer with the amount of items.
+	* @return a Vector with sorted items.
 	*/
-	Vector doMAlphaSort(Vector input,int sortonnumber,int numberofitems) {
+	//Vector doMAlphaSort(Vector input,int sortonnumber,int numberofitems) {
+	Vector doMAlphaSort(Vector input,String sortonnumbers,int numberofitems) {
 
-		SortedVector output = new SortedVector(new RowVectorCompare(sortonnumber));
+		//SortedVector output = new SortedVector(new RowVectorCompare(sortonnumber));
+		if (debug) debug("doMAlphaSort: Sorting using MultiColCompare("+sortonnumbers+ ")");
+		SortedVector output = new SortedVector(new MultiColCompare(sortonnumbers));
 		// first create vectors with numberofitems per vector
 		Enumeration einput=input.elements();
 		while (einput.hasMoreElements()) {
