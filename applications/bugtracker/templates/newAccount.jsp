@@ -10,21 +10,21 @@
 
 
   <!-- first check if all fields where entered -->
-  <mm:url id="infoerrorpage" referids="parameters,$parameters" write="false"><mm:param name="template" value="newUser.jsp" /><mm:param name="error" value="info" /></mm:url>
+  <mm:url id="infoerrorpage" referids="parameters,$parameters" write="false"><mm:param name="btemplate" value="newUser.jsp" /><mm:param name="error" value="info" /></mm:url>
 	<mm:isempty referid="newaccount"><mm:redirect referid="infoerrorpage" /></mm:isempty>
 	<mm:isempty referid="newfirstname"><mm:redirect referid="infoerrorpage" /></mm:isempty>
 	<mm:isempty referid="newlastname"><mm:redirect referid="infoerrorpage" /></mm:isempty>
 
 
 	<!-- check if email allready has a account and warn the user -->	
-  <mm:url id="emailerrorpage" referids="parameters,$parameters" write="false"><mm:param name="template" value="newUser.jsp" /><mm:param name="error" value="email" /></mm:url>
+  <mm:url id="emailerrorpage" referids="parameters,$parameters" write="false"><mm:param name="btemplate" value="newUser.jsp" /><mm:param name="error" value="email" /></mm:url>
 	<mm:listnodes type="users" constraints="email='$newemail'" max="1">
     <mm:redirect referid="emailerrorpage" />
 	</mm:listnodes>
 
 
 	<!-- check of the account name is allready in use -->
-  <mm:url id="accounterrorpage" referids="parameters,$parameters" write="false"><mm:param name="template" value="newUser.jsp" /><mm:param name="error" value="account" /></mm:url>
+  <mm:url id="accounterrorpage" referids="parameters,$parameters" write="false"><mm:param name="btemplate" value="newUser.jsp" /><mm:param name="error" value="account" /></mm:url>
 	<mm:listnodes type="users" constraints="account='$newaccount'" max="1">
     <mm:redirect referid="accounterrorpage" />
   </mm:listnodes>
@@ -75,7 +75,7 @@
 	<!-- end of sending the email -->
 
   <mm:redirect referids="parameters,$parameters">
-    <mm:param name="template" value="showMessage.jsp" />
+    <mm:param name="btemplate" value="showMessage.jsp" />
     <mm:param name="message" value="newuser" />
   </mm:redirect>
 

@@ -5,7 +5,7 @@
 <mm:import externid="bugreport" required="true"/>
 
 <center>
-<form action="<mm:url referids="parameters,$parameters"><mm:param name="template">fullview.jsp</mm:param><mm:param name="flap">change</mm:param></mm:url>" method="GET">
+<form action="<mm:url referids="parameters,$parameters"><mm:param name="btemplate">fullview.jsp</mm:param><mm:param name="flap">change</mm:param></mm:url>" method="GET">
 <table cellspacing="0" cellpadding="0" style="margin-top : 70px;" class="list" width="70%">
 <tr>
 	<th>

@@ -2,7 +2,7 @@
 <mm:cloud method="asis">
   <%@include file="parameters.jsp" %>
   <form action="<mm:url referids="parameters,$parameters"/>" method="GET">
-  <input type="hidden" name="template" value="changeUser.jsp"/>
+  <input type="hidden" name="btemplate" value="changeUser.jsp"/>
   <input type="hidden" name="action" value="sendaccountinfo"/>
   <table class="list">
     <tr>
