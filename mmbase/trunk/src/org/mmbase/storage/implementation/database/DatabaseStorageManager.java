@@ -28,7 +28,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.68 2004-07-26 16:56:53 michiel Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.69 2004-09-17 09:29:41 pierre Exp $
  */
 public class DatabaseStorageManager implements StorageManager {
 
@@ -357,11 +357,32 @@ public class DatabaseStorageManager implements StorageManager {
             }
         } else {
             untrimmedResult = result.getString(index);
+            if (result.wasNull()) {
+                return null;
+            }
         }
         if(untrimmedResult!=null && factory.hasOption(Attributes.TRIM_STRINGS)) {
              return untrimmedResult.trim();
         }
         return untrimmedResult;
+    }
+
+    /**
+     * Retrieve the XML (as a string) for a specified object field.
+     * The default method uses {@link ResultSet#getString(int)} to obtain text.
+     * Unlike
+     * Override this method if you want to optimize retrieving large texts,
+     * i.e by using clobs or streams.
+
+     * @param result the resultset to retrieve the xml from
+     * @param index the index of the xml in the resultset
+     * @param field the (MMBase) fieldtype. This value can be null
+     * @return the retrieved xml as text, <code>null</code> if nothing was stored
+     * @throws SQLException when a database error occurs
+     * @throws StorageException when data is incompatible or the function is not supported
+     */
+    protected String getXMLValue(ResultSet result, int index, FieldDefs field) throws StorageException, SQLException {
+        return getStringValue(result, index, field);
     }
 
     /**
@@ -767,7 +788,7 @@ public class DatabaseStorageManager implements StorageManager {
      */
     protected void setValue(PreparedStatement statement, int index, MMObjectNode node, FieldDefs field) throws StorageException, SQLException {
         String fieldName = field.getDBName();
-        Object value = node.getValue(fieldName); 
+        Object value = node.getValue(fieldName);
         switch (field.getDBType()) {
             // Store numeric values
         case FieldDefs.TYPE_INTEGER :
@@ -775,14 +796,14 @@ public class DatabaseStorageManager implements StorageManager {
         case FieldDefs.TYPE_DOUBLE :
         case FieldDefs.TYPE_LONG :
             setNumericValue(statement, index, value, field);
-            break;           
+            break;
             // Store nodes
         case FieldDefs.TYPE_NODE :
             // cannot do getNodeValue here because that might cause a new connection to be needed -> deadlocks
-            setNodeValue(statement, index, value, field);            
+            setNodeValue(statement, index, value, field);
             break;
             // Store strings
-        case FieldDefs.TYPE_XML : 
+        case FieldDefs.TYPE_XML :
             setXMLValue(statement, index, value, field);
         case FieldDefs.TYPE_STRING :
             // note: do not use getStringValue, as this may attempt to
@@ -888,7 +909,7 @@ public class DatabaseStorageManager implements StorageManager {
     protected void setNodeValue(PreparedStatement statement, int index, Object node, FieldDefs field) throws StorageException, SQLException {
         if (setNullValue(statement, index, node, field, java.sql.Types.INTEGER)) return;
         int nodeNumber = Casting.toInt(node);
-        
+
         if (nodeNumber < 0 && field.getDBNotNull()) { // node numbers cannot be negative
             throw new StorageException("The NODE field with name " + field.getDBName() + " can not be NULL.");
         }
@@ -937,7 +958,7 @@ public class DatabaseStorageManager implements StorageManager {
      * @throws SQLException if an error occurred while filling in the fields
      */
     protected void setStringValue(PreparedStatement statement, int index, Object objectValue, FieldDefs field) throws StorageException, SQLException {
-        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;        
+        if (setNullValue(statement, index, objectValue, field, java.sql.Types.VARCHAR)) return;
         String value = Casting.toString(objectValue);
 
         // Store data as a binary stream when the code is a clob or blob, or
@@ -956,7 +977,7 @@ public class DatabaseStorageManager implements StorageManager {
             statement.setString(index, value);
         }
     }
-    
+
     /**
      * This default implementation calls {@link #setStringValue}.
      * Override this method if you want to override this behavior.
@@ -1120,6 +1141,9 @@ public class DatabaseStorageManager implements StorageManager {
             switch (dbtype) {
                 // string-type fields
                 case FieldDefs.TYPE_XML :
+                    {
+                        return getXMLValue(result, index, field);
+                    }
                 case FieldDefs.TYPE_STRING :
                     {
                         return getStringValue(result, index, field);
@@ -1312,7 +1336,7 @@ public class DatabaseStorageManager implements StorageManager {
                 FieldDefs field = (FieldDefs)f.next();
                 if (
                     (field.getDBState() == FieldDefs.DBSTATE_PERSISTENT || field.getDBState() == FieldDefs.DBSTATE_SYSTEM) &&
-                    field.getDBType() == FieldDefs.TYPE_NODE &&  
+                    field.getDBType() == FieldDefs.TYPE_NODE &&
                     ! field.getDBName().equals("number")) {
                     String query = createIndex.format(new Object[] { this, builder, field.getDBName()});
                     try {
@@ -1793,8 +1817,8 @@ public class DatabaseStorageManager implements StorageManager {
      * Drop a constraint for a composite index.
      * You should have an active connection before calling this method.
      * @param builder the builder for which to drop the composite key
-     * @throws
-     * @throws
+     * @throws StorageException if the composite index cannot be deleted
+     * @throws SQLException when a database error occurs
      */
     protected void deleteCompositeIndex(MMObjectBuilder builder) throws StorageException, SQLException {
         if (factory.hasOption(Attributes.SUPPORTS_COMPOSITE_INDEX)) {
@@ -2005,7 +2029,7 @@ public class DatabaseStorageManager implements StorageManager {
                         FieldDefs field = (FieldDefs)fields.next();
                         String fieldName = field.getDBName();
                         if (field.getDBType() == FieldDefs.TYPE_BYTE) { // check all binaries
-                            
+
                             // check whether it might be in a column
                             boolean foundColumn = false;
                             {
@@ -2030,7 +2054,7 @@ public class DatabaseStorageManager implements StorageManager {
                                     releaseActiveConnection();
                                 }
                             }
-                            
+
                             List nodes = builder.getNodes(new org.mmbase.storage.search.implementation.NodeSearchQuery(builder));
                             log.service("Checking all " + nodes.size() + " nodes of '" + builder.getTableName() + "'");
                             Iterator i = nodes.iterator();
@@ -2069,7 +2093,7 @@ public class DatabaseStorageManager implements StorageManager {
                     if (fromDatabase > 0) {
                         log.info("You may drop byte array columns from the database now. See the the VERIFY warning during initialisation.");
                     }
-                    
+
                 } else {
                     log.service("Converted no fields");
                 }
