@@ -21,10 +21,10 @@ import org.mmbase.util.logging.Logging;
 /**
  * This removes all URLComposers wich are not available.
  * @author  Michiel Meeuwissen
- * @version $Id: AvailableFilter.java,v 1.3 2003-02-05 16:31:36 michiel Exp $
+ * @version $Id: AvailableFilter.java,v 1.4 2003-07-15 12:50:24 vpro Exp $
  */
 public class AvailableFilter implements Filter {
-    private static Logger log = Logging.getLoggerInstance(AvailableFilter.class.getName());
+    private static Logger log = Logging.getLoggerInstance(AvailableFilter.class);
 
     public List filter(List urlcomposers) {
         ListIterator i = urlcomposers.listIterator();
