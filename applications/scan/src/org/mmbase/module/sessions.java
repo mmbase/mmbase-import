@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
- $Id: sessions.java,v 1.18 2000-12-13 11:18:31 install Exp $
+ $Id: sessions.java,v 1.19 2000-12-15 22:28:57 daniel Exp $
 
  $Log: not supported by cvs2svn $
+ Revision 1.18  2000/12/13 11:18:31  install
+ Rob: redirect keywords through database mapper
+
  Revision 1.17  2000/11/21 16:00:17  vpro
  Rico: fixed bug in which getSetString return a "null" istead of ""
 
@@ -71,6 +74,7 @@ import javax.servlet.http.*;
 
 import org.mmbase.util.*;
 import org.mmbase.module.core.*;
+import org.mmbase.module.builders.*;
 
 /**
  * CLEARSET-NAME : This command clears the session variable called NAME
@@ -85,7 +89,7 @@ import org.mmbase.module.core.*;
  *
  * @author Daniel Ockeloen
  *
- * @version $Id: sessions.java,v 1.18 2000-12-13 11:18:31 install Exp $
+ * @version $Id: sessions.java,v 1.19 2000-12-15 22:28:57 daniel Exp $
  */
 public class sessions extends ProcessorModule implements sessionsInterface {
 
@@ -229,6 +233,18 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 	}
 
 	public void loadProperties(sessionInfo session) {	
+		// daniel, added a check to switch between old and new users
+		// system. the new one uses a cookies builder so i use
+		// that as a check.
+		if (mmbase!=null) {
+			MMObjectBuilder bul=mmbase.getMMObject("cookies");
+			if (bul!=null) {
+				loadNewProperties(session);
+				return;
+			}
+				
+		}
+			
 		try {
 			String sid;
 			if (session!=null) {
@@ -236,8 +252,7 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 				if (mmbase!=null) {
 					props=mmbase.getMMObject("properties");
 					// MOET ANDERS
-					// Enumeration res=props.search("key=='SID'+value=='"+sid+"'");
-					Enumeration res=props.search("WHERE "+mmbase.getDatabase().getAllowedField("key")+"='SID' AND value='"+sid+"'");
+					Enumeration res=props.search("WHERE "+mmbase.getDatabase().getAllowedField("key")+"='SID' AND "+mmbase.getDatabase().getAllowedField("value")+"='"+sid+"'");
 					if( debug ) debug("loadProperties(): got SID("+sid+")"); 
 					if (res.hasMoreElements()) {
 						MMObjectNode snode = (MMObjectNode)res.nextElement();
@@ -255,13 +270,58 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 		}
 	}
 
-	public String saveValue(sessionInfo session,String key) 
-	{
+
+	public void loadNewProperties(sessionInfo session) {	
+		// new system uses cookies/users builder to find
+		// the correct SID
+
+		try {
+			String sid;
+			if (session!=null) {
+				if (mmbase!=null) {
+					sid=session.getCookie();
+					Users users=(Users)mmbase.getMMObject("users");
+					int id=users.getNumber(sid);
+					if (id==-1) {
+						Cookies cookies=(Cookies)mmbase.getMMObject("cookies");
+						id=cookies.getNumber(sid);
+					}
+					if (id!=-1) {
+						props=mmbase.getMMObject("properties");
+						System.out.println("NEW SID="+id);
+						Enumeration res=props.search("parent=="+id);
+						while (res.hasMoreElements()) {
+							setValueFromNode( session, (MMObjectNode)res.nextElement() );
+						}
+					}					
+          		} else debug("loadProperties(): mmbase is null!");
+            } else debug("loadProperties(): session is null!");
+		} catch (Exception e) {
+			//	e.printStackTrace();
+		}
+	}
+
+
+	public String saveValue(sessionInfo session,String key) {
+
+		// daniel, added a check to switch between old and new users
+		// system. the new one uses a cookies builder so i use
+		// that as a check.
+		if (mmbase!=null) {
+			MMObjectBuilder bul=mmbase.getMMObject("cookies");
+			if (bul!=null) {
+				return(saveValueNew(session,key));
+			}
+				
+		}
+
 		if (mmbase==null) 
 		{
 			debug("saveValue("+session+","+key+"): ERROR: mmbase is null!");
 			return(null);
 		}
+
+
 
 		if (session!=null) 
 		{
@@ -329,6 +389,112 @@ public class sessions extends ProcessorModule implements sessionsInterface {
 							}
 							else
 								debug("saveValue("+session+","+key+"): ERROR: No node("+id+") could be created for this user("+sid+")!");
+						}
+					}
+				} else {
+					id=node.getIntValue("number");	
+				}
+
+				// set value in the users node and save in database
+				// ------------------------------------------------
+
+				if (node!=null) {
+					MMObjectNode pnode=node.getProperty(key);
+					if (pnode!=null) {
+						String value=session.getSetString(key);
+						if (value==null) {
+							value=session.getValue(key);
+						}
+						pnode.setValue("value",value);
+						pnode.commit();
+					} else {
+						MMObjectNode snode = props.getNewNode ("system");
+						String value=session.getSetString(key);
+						if (value==null) {
+							value=session.getValue(key);
+							if( value==null )
+							{
+								debug("saveValue("+key+"): value("+value+") is null!");
+								debug(" - values(" + session.values +")" );
+								debug(" - setvalues(" + session.setvalues +")" );
+							}
+							snode.setValue ("ptype","string");
+						} else {
+							snode.setValue ("ptype","vector");
+						}
+						snode.setValue ("parent",id);
+						snode.setValue ("key",key);
+						snode.setValue ("value",value);
+						int id2=props.insert("system", snode); 
+						snode.setValue("number",id2);
+						node.putProperty(snode);
+					}
+
+					return(null);
+				}
+				else
+				{
+					debug("saveValue("+session+","+key+"): ERROR: no node("+node+") found for user("+sid+")!");
+					return(null);
+				}
+			} else {
+				debug("saveValue("+session+","+key+"): ERROR: key is null!");
+				return(null);
+			}
+		} else {
+			debug("saveValue("+session+","+key+"): ERROR: session is null!");
+			return(null);
+		}
+	}
+
+
+	public String saveValueNew(sessionInfo session,String key) {
+		if (mmbase==null) 
+		{
+			debug("saveValue("+session+","+key+"): ERROR: mmbase is null!");
+			return(null);
+		}
+
+		if (session!=null) 
+		{
+			if( key != null )
+			{
+				int id=-1;
+				String sid=session.getCookie();
+				MMObjectNode node=session.getNode();
+
+				if (node==null) {
+
+					// node not found
+					// --------------
+
+					props=mmbase.getMMObject("properties");
+					Users users=(Users)mmbase.getMMObject("users");
+
+
+					// does the sid have any properties?
+					if (props==null || users==null) {
+						debug("Can't Save: One of the needed builders is not loaded either users or properties");
+					} else {
+						id=users.getNumber(sid);
+						// get use the new way !
+						if (id!=-1) {
+							node=users.getNode(id);
+							if( node != null )
+							{
+								session.setNode(node);
+							}
+							else
+							{
+								debug("saveValue("+key+"): WARNING: node("+id+") for user("+sid+") not found in usersdb, maybe long-time-no-see and forgotten?!");
+							}
+	
+						} else {
+							// ----------------------------------------------------------------------
+							// Server has given a cookie, but *now* we create a new user & properties
+							// ----------------------------------------------------------------------
+	
+							// Daniel for now removed what should we do ??
 						}
 					}
 				} else {
