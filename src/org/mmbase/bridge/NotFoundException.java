@@ -16,13 +16,44 @@ package org.mmbase.bridge;
 public class NotFoundException extends BridgeException {
 
     /**
+     * Constructs a <code>NotFoundException</code> with <code>null</code> as its
+     * message.
+     */
+    public NotFoundException() {
+        super();
+    }
+
+    /**
      * Constructs a <code>NotFoundException</code> with the specified detail
-     * message. It can be used when something is not found.
+     * message.
      *
      * @param message a description of the error
      */
     public NotFoundException(String message) {
         super(message);
+    }
+
+    /**
+     * Constructs a <code>NotFoundException</code> with the detail
+     * message of the original exception.
+     * The cause can be retrieved with getCause().
+     *
+     * @param Throwable the cause of the error
+     */
+    public NotFoundException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a <code>NotFoundException</code> with the detail
+     * message of the original exception.
+     * The cause can be retrieved with getCause().
+     *
+     * @param message a description of the error
+     * @param Throwable the cause of the error
+     */
+    public NotFoundException(String message, Throwable cause) {
+        super(message,cause);
     }
 
 }

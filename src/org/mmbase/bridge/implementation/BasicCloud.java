@@ -24,7 +24,7 @@ import java.util.*;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicCloud.java,v 1.67 2002-09-20 09:18:17 pierre Exp $
+ * @version $Id: BasicCloud.java,v 1.68 2002-09-23 12:07:11 pierre Exp $
  */
 public class BasicCloud implements Cloud, Cloneable {
     private static Logger log = Logging.getLoggerInstance(BasicCloud.class.getName());
@@ -168,7 +168,7 @@ public class BasicCloud implements Cloud, Cloneable {
         }
     }
 
-    public Node getNode(String nodenumber) {
+    public Node getNode(String nodenumber) throws NotFoundException {
         MMObjectNode node;
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account,nodenumber);
@@ -188,19 +188,19 @@ public class BasicCloud implements Cloud, Cloneable {
         }
     }
 
-    public Node getNode(int nodenumber) {
+    public Node getNode(int nodenumber) throws NotFoundException {
         return getNode(""+nodenumber);
     }
 
-    public Node getNodeByAlias(String aliasname) {
+    public Node getNodeByAlias(String aliasname) throws NotFoundException {
         return getNode(aliasname);
     }
 
-    public Relation getRelation(int nodenumber) {
+    public Relation getRelation(int nodenumber) throws NotFoundException {
         return getRelation(""+nodenumber);
     }
 
-    public Relation getRelation(String nodenumber) {
+    public Relation getRelation(String nodenumber) throws NotFoundException {
         return (Relation)getNode(nodenumber);
     }
 
@@ -255,7 +255,7 @@ public class BasicCloud implements Cloud, Cloneable {
         return new BasicNodeManagerList(nodeManagers,this);
     }
 
-    public NodeManager getNodeManager(String nodeManagerName) {
+    public NodeManager getNodeManager(String nodeManagerName) throws NotFoundException {
         // cache quicker, and you don't get 2000 nodetypes when you do a search....
         BasicNodeManager nodeManager=(BasicNodeManager)nodeManagerCache.get(nodeManagerName);
         MMObjectBuilder bul = cloudContext.mmb.getMMObject(nodeManagerName);
@@ -264,7 +264,7 @@ public class BasicCloud implements Cloud, Cloneable {
             String message;
             message = "Node manager with name " + nodeManagerName + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         }
         if (nodeManager==null) {
             // not found in cache
@@ -281,11 +281,11 @@ public class BasicCloud implements Cloud, Cloneable {
     }
 
     /**
-     * Retrieves a node manager (aka builder)
+     * Retrieves a node manager
      * @param nodeManagerId ID of the NodeManager to retrieve
      * @return the requested <code>NodeManager</code> if the manager exists, <code>null</code> otherwise
      */
-    NodeManager getNodeManager(int nodeManagerId) {
+    public NodeManager getNodeManager(int nodeManagerId) throws NotFoundException {
         return getNodeManager(typedef.getValue(nodeManagerId));
     }
 
@@ -297,7 +297,7 @@ public class BasicCloud implements Cloud, Cloneable {
      * @param roleID number of the role
      * @return the requested RelationManager
      */
-    RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId) {
+    RelationManager getRelationManager(int sourceManagerId, int destinationManagerId, int roleId){
         // cache. pretty ugly but at least you don't get 1000+ instances of a relationmanager
         RelationManager relManager=(RelationManager)relationManagerCache.get(""+sourceManagerId+"/"+destinationManagerId+"/"+roleId);
         if (relManager==null) {
@@ -347,21 +347,21 @@ public class BasicCloud implements Cloud, Cloneable {
     }
 
     public RelationManager getRelationManager(String sourceManagerName,
-        String destinationManagerName, String roleName) {
+        String destinationManagerName, String roleName) throws NotFoundException {
         // uses getguesed number, maybe have to fix this later
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             String message;
             message = "Role " + roleName + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         }
         int n1=typedef.getIntValue(sourceManagerName);
         if (n1==-1) {
             String message;
             message = "Source type " + sourceManagerName + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         }
         int n2=typedef.getIntValue(destinationManagerName);
         if (n2==-1) {
@@ -369,7 +369,7 @@ public class BasicCloud implements Cloud, Cloneable {
             message = "Destination type " + destinationManagerName
                       + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         }
         RelationManager rm=getRelationManager(n1,n2,r);
         if (rm==null) {
@@ -378,26 +378,26 @@ public class BasicCloud implements Cloud, Cloneable {
                       + destinationManagerName + " as " + roleName
                       + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         } else {
             return rm;
         }
     }
 
-    public RelationManager getRelationManager(String roleName) {
+    public RelationManager getRelationManager(String roleName) throws NotFoundException {
         int r=cloudContext.mmb.getRelDef().getNumberByName(roleName);
         if (r==-1) {
             String message;
             message = "Role " + roleName + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         }
         RelationManager rm=getRelationManager(r);
         if (rm==null) {
             String message;
             message = "Relation manager for " + roleName + " does not exist.";
             log.error(message);
-            throw new BridgeException(message);
+            throw new NotFoundException(message);
         } else {
             return rm;
         }
@@ -436,11 +436,11 @@ public class BasicCloud implements Cloud, Cloneable {
         return createTransaction(null,false);
     }
 
-    public Transaction createTransaction(String name){
+    public Transaction createTransaction(String name) throws AlreadyExistsException {
         return createTransaction(name,false);
     }
 
-    public Transaction createTransaction(String name, boolean overwrite) {
+    public Transaction createTransaction(String name, boolean overwrite) throws AlreadyExistsException {
         if (name==null) {
             name="Tran"+uniqueId();
           } else {
@@ -453,7 +453,7 @@ public class BasicCloud implements Cloud, Cloneable {
                       message = "Transaction with name " + name
                                 + "already exists.";
                       log.error(message);
-                      throw new BridgeException(message);
+                      throw new AlreadyExistsException(message);
                   }
               }
         }
