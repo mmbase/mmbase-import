@@ -5,7 +5,7 @@
   It is not a good idea to change things in this XML (because this might cause portability issues), but
   you can _add_ (and propose them to the community) or _remove_ things (if you find them undesirable).
 
-  version: $Id: taglibcontent.xml,v 1.21 2004-04-22 17:29:23 michiel Exp $
+  version: $Id: taglibcontent.xml,v 1.22 2004-06-17 16:28:52 michiel Exp $
   -->
 
   <!-- First per content-type default escapers and postprocessors are defined.
@@ -72,8 +72,10 @@
   -->
 
   <escaper id="text/plain">
+    <!-- no need for escaping -->
   </escaper>
   <escaper id="none">
+    <!-- explicitely no escaping -->
   </escaper>
   <escaper id="text/html">
     <class config="ESCAPE">org.mmbase.util.transformers.Xml</class>
@@ -103,7 +105,16 @@
     <class config="HTML_BLOCK_NOSURROUNDINGP"  back="true">org.mmbase.util.transformers.XmlField</class>
   </escaper>
   <escaper id="sql">
+    <!-- Escapes for use in SQL (escaping of quotes). You will _not_ have to use this if use mm:constraint. -->
     <class config="ESCAPE_QUOTES">org.mmbase.util.transformers.Sql</class>
+  </escaper>
+  <escaper id="url">
+    <!-- Escapes for use in an URL (using escaping with %). When you use mm:url with mm:param tags you will not have to use this. -->
+    <class config="ESCAPE">org.mmbase.util.transformers.Url</class>
+  </escaper>
+  <escaper id="urlparam">
+    <!-- Similar to 'url' but also escapes '+' -->
+    <class config="PARAM_ESCAPE">org.mmbase.util.transformers.Url</class>
   </escaper>
   <escaper id="uppercase">
     <class>org.mmbase.util.transformers.UpperCaser</class>
