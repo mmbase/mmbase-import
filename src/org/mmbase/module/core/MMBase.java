@@ -214,7 +214,7 @@ public class MMBase extends ProcessorModule  {
 		debug(" creating new multimedia base : "+baseName);
 		Vector v;
 		database=getDatabase();
-		database.create("object");
+		database.create(null,"object");
 		return(true);
 	}
 

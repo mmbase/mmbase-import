@@ -110,7 +110,7 @@ public class MMObjectBuilder extends MMTable {
 	* create new object type , normally not used (only subtables are used)
 	*/
 	public boolean create() {
-		return(database.create(tableName));
+		return(database.create(this,tableName));
 	}
 
 	/**
