@@ -26,11 +26,12 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* This class makes a tag which can list the fields of a NodeManager.
-*
-* @author Michiel Meeuwissen
-**/
-public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeProvider {
+ * This class makes a tag which can list the fields of a NodeManager.
+ *
+ * @author Michiel Meeuwissen
+ *
+ */
+public class FieldListTag extends FieldReferrerTag implements ListItemInfo, FieldProvider {
 
     private static final int NO_TYPE = -100;
 
@@ -56,7 +57,7 @@ public class FieldListTag extends NodeReferrerTag implements ListItemInfo, NodeP
         return true;
     }
 
-    public Field getField() {
+    public Field getFieldVar() {
         return currentField;
     }
 

@@ -24,14 +24,15 @@ import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 
 /**
-* The FieldInfoTag can be used as a child of a 'FieldListTag' or
-* directly under a 'NodeProvider'tag.
-* 
-* @author Michiel Meeuwissen 
-* @author Jaco de Groot
-*/
+ * The FieldInfoTag can be used as a child of a 'FieldProvider' or
+ * directly under a 'NodeProvider'tag (this last behaviour perhaps
+ * should be deprecated?)
+ * 
+ * @author Michiel Meeuwissen 
+ * @author Jaco de Groot 
+ */
 
-public class FieldInfoTag extends NodeReferrerTag {
+public class FieldInfoTag extends FieldReferrerTag {
     
     private static Logger log = Logging.getLoggerInstance(FieldInfoTag.class.getName()); 
 
@@ -78,8 +79,20 @@ public class FieldInfoTag extends NodeReferrerTag {
         }
     }
 
-    public void setField(String f) throws JspTagException  {
-        whichField = getAttributeValue(f);
+    /**
+     *
+     * @deprecated Use FieldInfo under a FieldTag
+     */
+    public void setField(String f) {
+
+        // This functions now overrided 'setField' of FieldReferrer. That is very wrong!
+        // should change this.
+        // This function should be removed.
+        try {
+            whichField = getAttributeValue(f);
+        } catch (JspTagException e) {
+            throw new RuntimeException(e.toString());
+        }
     }
     
     public int doStartTag() throws JspTagException{
@@ -476,39 +489,21 @@ public class FieldInfoTag extends NodeReferrerTag {
 
 
     /**
-    * Write the value of the fieldinfo.
-    */
+     * Write the value of the fieldinfo.
+     */
     public int doAfterBody() throws JspTagException {
         
         Field field;
         Node node = null;
-        FieldListTag fieldListTag = null;
-        NodeProvider np = null;
+        NodeProvider fieldProvider = null;
 
-        if (whichField == null) { // must be in FieldList then
-            // firstly, search the field:
-            Class fieldClass;
-            try {
-                fieldClass = Class.forName("org.mmbase.bridge.jsp.taglib.FieldListTag");
-                
-            } catch (java.lang.ClassNotFoundException e) {
-                throw new JspTagException ("Could not find FieldListTag class");  
-            }
-            
-            fieldListTag = (FieldListTag) findAncestorWithClass((Tag)this, fieldClass); 
-            if (fieldListTag == null) {
-                throw new JspTagException ("Could not find parent FieldListTag");  
-            }
-            
-            if (getId() == null) { // inherit id..
-                setId(fieldListTag.getId());
-            }
-
-
-            field = fieldListTag.getField();
-        } else { // not in List, get it from a parent Node            
-            np = findNodeProvider();
-            node = np.getNodeVar();
+        if (whichField == null) { // must be in FieldProvider then
+            fieldProvider = findFieldProvider();
+            field = ((FieldProvider) fieldProvider).getFieldVar();
+        } else { // not in FieldProvider, get it from a parent Node directly
+            // should be deprecated.
+            fieldProvider = findNodeProvider();
+            node = fieldProvider.getNodeVar();
              
             field = node.getNodeManager().getField(whichField);
             if (field == null) {
@@ -521,17 +516,21 @@ public class FieldInfoTag extends NodeReferrerTag {
 
         // set node if necessary:
         switch(type) {
+        case TYPE_INPUT: 
+            if (node == null) { // try to find nodeProvider
+                node = fieldProvider.getNodeVar();                
+            } // node can stay null.
+            break;
+            // these types do really need a NodeProvider somewhere:
+            // so 'node' may not stay null.
         case TYPE_VALUE:
         case TYPE_GUIVALUE:
-        case TYPE_INPUT:
-            if (node == null) { // try to find nodeProvider
-                node = fieldListTag.getNodeVar();                
-            }
-            break;
         case TYPE_USEINPUT:
             if (node == null) { 
-                np = findNodeProvider();
-                node = np.getNodeVar();
+                node = fieldProvider.getNodeVar();  
+            }
+            if (node == null) {
+                throw new JspTagException("Could not find surrounding NodeProvider, which is needed");
             }
             break;
         default:            
@@ -548,7 +547,9 @@ public class FieldInfoTag extends NodeReferrerTag {
             show = decode(node.getStringValue(field.getName()), node);
             break;
         case TYPE_GUIVALUE:
-            log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
+            if (log.isDebugEnabled()) {
+                log.debug("field " + field.getName() + " --> " + node.getStringValue(field.getName()));
+            }
             show = decode(node.getStringValue("gui("+field.getName()+")"), node);
             if (show.trim().equals("")) {
                 show = decode(node.getStringValue(field.getName()), node);
@@ -559,7 +560,7 @@ public class FieldInfoTag extends NodeReferrerTag {
             break;
         case TYPE_USEINPUT:
             show = useHtmlInput(node, field);
-            np.setModified();
+            fieldProvider.setModified();
             break;
         case TYPE_SEARCHINPUT:
             show = htmlInput(node, field, true);
