@@ -34,8 +34,8 @@ div.navilayer div {
 div.navilayer div.fill {
 	width: 140px;
 	border-top-width: 0px;
-	padding-top: 1px;
-	padding-bottom: 0px;
+	padding-top: 6px;
+	padding-bottom: 5px;
 	margin-left: 0px;
 	background: transparent;
 }
