@@ -31,7 +31,7 @@ import org.mmbase.module.gui.html.*;
  * designers and gfx designers its provides as a option but not demanded you can
  * also use the provides jsp for a more traditional parser system.
  * 
- * @version $Id: servscan.java,v 1.12 2000-06-05 16:16:07 wwwtech Exp $
+ * @version $Id: servscan.java,v 1.13 2000-06-07 11:35:54 wwwtech Exp $
  * @author Daniel Ockeloen
  * @author Rico Jansen
  * @author Jan van Oosterom
@@ -251,8 +251,6 @@ public class servscan extends JamesServlet {
 	}
 
 
-
-
 	public String getServletInfo() {
 		return("extended html parser that adds extra html commands and a interface to modules.");
 	}
@@ -355,21 +353,26 @@ public class servscan extends JamesServlet {
 			// This depends on the PRAGMA: no-cache header
 			// Which Internet Explorer does not send.
 
-			if (sp.body!=null && sp.body.indexOf("<CACHE HENK>")!=-1) {
-				sp.wantCache="HENK";
-//				debug("handleCache(): CACHE="+parser.scancache);
-				String rst=parser.scancache.get(sp.wantCache,req_line);
-				String pragma = sp.getHeader("Pragma");
-				if (rst!=null && (pragma==null || !pragma.equals(sp.loadmode))) {
-					setHeaders(sp,res,rst.length());
-					// org.mmbase res.writeHeaders();
-					out.print(rst);
-					out.flush();
-					out.close();
-					if (debug) debug("handleCache(): cache.hit("+req_line+")");
-					return(true);
-				} else {
-					debug("hanldeCache(): cache.miss("+req_line+")");
+			if (sp.body!=null) {
+				int start = sp.body.indexOf("<CACHE HENK");
+				if (start>=0) {
+					start+=11;
+					int end = sp.body.indexOf(">", start);
+					sp.wantCache="HENK";
+//					debug("handleCache(): CACHE="+parser.scancache);
+					String rst=parser.scancache.get(sp.wantCache,req_line, sp.body.substring(start,end+1));
+					String pragma = sp.getHeader("Pragma");
+					if (rst!=null && (pragma==null || !pragma.equals(sp.loadmode))) {
+						setHeaders(sp,res,rst.length());
+						// org.mmbase res.writeHeaders();
+						out.print(rst);
+						out.flush();
+						out.close();
+						if (debug) debug("handleCache(): cache.hit("+req_line+")");
+						return(true);
+					} else {
+						debug("hanldeCache(): cache.miss("+req_line+")");
+					}
 				}
 			}
 
