@@ -32,7 +32,7 @@
   <td width="200">
 <%-- ### news ### --%>
 	<mm:list nodes="$portal" 
-		path="portals,category,news,mmevents"
+		path="portals,category,news,mmevents" searchdir="destination"
 		fields="category.number,category.title,news.number,news.title,mmevents.start" 
 		orderby="mmevents.start" directions="DOWN"
 		max="3">
@@ -52,7 +52,7 @@
 	
 	<mm:notpresent referid="nonewsyet">
 		<h2>News</h2>
-		<mm:listnodes type="news" max="5" orderby="number" directions="DOWN">
+		<mm:listnodes type="news" max="3" orderby="number" directions="DOWN">
 			<mm:field name="number" id="newsnr" write="false" />
 			<p><a href="<mm:url page="index.jsp" referids="portal,newsnr"><mm:param name="page">mmbase_news</mm:param></mm:url>"><mm:field name="title" /></a>
 			<br /><mm:related path="mmevents"><mm:field name="mmevents.start"><mm:time format=":MEDIUM" /></mm:field></mm:related>
@@ -71,7 +71,7 @@
 	</mm:related>
 	<mm:related path="posrel,documentation" orderby="posrel.pos" directions="UP">
 		<mm:first>
-		<div z-index="2">
+		<div style="margin-top:12px" z-index="2">
 		<form name="infoform" action="" method="post">
 		<select name="doc" style="width:200;" onchange="javascript:postInfoForm();">
 		</mm:first><option value="<mm:field name="documentation.number" />"><mm:field name="documentation.title" /></option>
@@ -112,7 +112,7 @@
 	  <td>
 		<form name="searchform" method="get" action="<mm:url page="/development/search/search_results.jsp" />">
 		<h4>Search</h4>
-		<input name="words" size="13" type="text"> | <a href="javascript:void(document.searchform.submit())">go</A> 
+		<input name="words" size="13" type="text" /> | <a href="javascript:void(document.searchform.submit())">go</a> 
 		</form>
 	  </td>
 	</tr><tr>
@@ -146,14 +146,14 @@
 	      <mm:sortorder field="time"  direction="DOWN" />
               <mm:constraint field="time"    operator=">=" value="$lastweek" />
               <mm:constraint field="bstatus" operator=">" value="4" />
-	      <a href="<mm:url page="/?portal=199&page=546&sstatus=6" />">Solved : <mm:size /><a>
+	      <a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=6" />">Solved : <mm:size /></a>
 	  </mm:listnodescontainer>
 	  <br />
 	  <mm:listnodescontainer type="bugreports">
 	      <mm:sortorder field="time"  direction="DOWN" />
               <mm:constraint field="time"    operator=">=" value="$lastweek" />
               <mm:constraint field="bstatus" operator="<" value="2" />
-	      <a href="<mm:url page="/?portal=199&page=546&sstatus=1" />">New : <mm:size /><a>
+	      <a href="<mm:url page="/?portal=199&amp;page=546&amp;sstatus=1" />">New : <mm:size /></a>
 	  </mm:listnodescontainer>
 	  </p>
 	  </td>
@@ -166,8 +166,12 @@
 --%>	
 	</table>
 <%-- ### /search, agenda, dev mail ? ### --%>
-</td></tr>
+</td>
+</tr>
 </table>
+</td>
+</tr><tr>
+<td valign="top" colspan="3">
 <%-- logo's @ pagebottom --%>
 <mm:related path="posrel,organisation,posrel,images" searchdir="destination"
     fields="posrel.pos,organisation.number,organisation.name"
@@ -176,15 +180,18 @@
 	<mm:field name="organisation.name" id="org_name" write="false" />
 	<mm:field name="organisation.number" id="org" write="false" />
 	<mm:node element="images">
-	  <mm:first><div style="margin-top:20px;" align="center"></mm:first>
+	  <mm:first><div style="margin-bottom:12px;" align="center"></mm:first>
 	  <a title="More about <mm:write referid="org_name" />" href="<mm:url referids="org"
 		  ><mm:param name="portal">foundation</mm:param
 		  ><mm:param name="page">organisations</mm:param></mm:url>"><img src="<mm:image template="s(60x35)" />" 
-			  border="0" hspace="6" vspace="4" alt="<mm:write referid="org_name" />"></a>
+			  border="0" hspace="6" vspace="4" alt="<mm:write referid="org_name" />" /></a>
 	  <mm:last></div></mm:last>
 	</mm:node>
 </mm:related>
-
+</td>
+</tr><tr>
+<td colspan="3">
+&nbsp;
 </mm:node>
 </mm:notpresent>
 </td>
