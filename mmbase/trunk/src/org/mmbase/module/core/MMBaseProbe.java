@@ -16,12 +16,15 @@ import java.io.*;
 
 
 /**
- * MMBaseProbe is a thread object that gets activated by MMbase
- * maintainance call every X seconds and takes this signal to call all the 
- * builders probeCalls this is done my a callback in MMbase.
+ * MMBaseProbe is a thread-like object that gets instantiated by MMbase.
+ * It calls the callback method {@link MMBase.ProbeRun} in MMbase, which in turn probes the builders.
+ * After the probe has been preformed, it schedules itself to be destroyed after an alotted time (10 minutes),
+ * which also clears the reference in MMBase and prompts that module to create a new probe instance.
+ * This way, maintanance is scheduled to run every ten minutes.
  *
  * @author Daniel Ockeloen
- * @version $Id: MMBaseProbe.java,v 1.4 2000-10-05 11:35:43 vpro Exp $
+ * @author Pierer van Rooden (javadoc)
+ * @version $Id: MMBaseProbe.java,v 1.5 2001-01-31 11:49:42 pierre Exp $
  */
 public class MMBaseProbe implements Runnable {
 
@@ -31,18 +34,24 @@ public class MMBaseProbe implements Runnable {
 	String input;
 	int len;
 
+	/**
+	* Constructor, which ties this probe object to an MMBase module
+	*/
 	public MMBaseProbe(MMBase parent) {
 		this.parent=parent;
 		init();
 	}
-
+	
+    /**
+    * Initializes the probe and starts a probe thread.
+    */
 	public void init() {
 		this.start();	
 	}
 
 
 	/**
-	 * Starts the admin Thread.
+	 * Starts a thread to perform the probes.
 	 */
 	public void start() {
 		/* Start up the main thread */
@@ -53,7 +62,8 @@ public class MMBaseProbe implements Runnable {
 	}
 	
 	/**
-	 * Stops the admin Thread.
+	 * Stops the probing thread.
+	 * Uses deprecated methods (suspend/stop), should be changed or removed.
 	 */
 	public void stop() {
 		/* Stop thread */
@@ -64,7 +74,10 @@ public class MMBaseProbe implements Runnable {
 	}
 
 	/**
-	 * admin probe, try's to make a call to all the maintainance calls.
+	 * Calls a callback method in the MMBase module.
+	 * After the maintenance is performed, it sleeps itself for ten minutes before terminating.
+	 * During this time is functions as a placeholder, preventing another probe to be started
+	 * and allowing for scheduling of the probe task.
 	 */
 	public void run() {
 		parent.doProbeRun();
@@ -72,5 +85,5 @@ public class MMBaseProbe implements Runnable {
 			Thread.sleep(10*60*1000);
 		} catch (InterruptedException e) {}
 		parent.probe=null;
-	}
+ 	}
 }
