@@ -19,25 +19,13 @@
 
 <mm:import id="linkedlist" jspvar="linkedlist" vartype="List"/>
 
-<mm:node number="$provider">
-  <mm:relatednodes type="components">
+  <mm:listnodes type="components">
     <mm:remove referid="objectnumber"/>
     <mm:import id="objectnumber" jspvar="objectnumber"><mm:field name="number"/></mm:import>
     <%
       linkedlist.add( objectnumber );
     %>
-  </mm:relatednodes>
-</mm:node>
-
-<mm:node number="$education" notfound="skip">
-  <mm:relatednodes type="components">
-    <mm:remove referid="objectnumber"/>
-    <mm:import id="objectnumber" jspvar="objectnumber"><mm:field name="number"/></mm:import>
-    <%
-      linkedlist.add( objectnumber );
-    %>
-  </mm:relatednodes>
-</mm:node>
+  </mm:listnodes>
 
 
 <div class="rows">
