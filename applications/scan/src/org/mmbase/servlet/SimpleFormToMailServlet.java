@@ -174,7 +174,6 @@ public abstract class SimpleFormToMailServlet extends JamesServlet {
 	private void displaySuccess( HttpServletResponse res ) {
 		String titel = "Formulier is verstuurd";
 		String body  = "Uw formulier is verstuurd.<BR>\n";
-			   body += "Bedankt voor het meedoen aan deze quiz!";
 		displayResult(res, titel, body);
 	}
 	
