@@ -20,7 +20,7 @@ import org.mmbase.util.logging.*;
  * A list of nodes
  *
  * @author Pierre van Rooden
- * @version $Id: BasicNodeList.java,v 1.25 2003-10-09 14:32:28 pierre Exp $
+ * @version $Id: BasicNodeList.java,v 1.26 2003-12-16 22:24:58 michiel Exp $
  */
 public class BasicNodeList extends BasicList implements NodeList {
     private static final Logger log = Logging.getLoggerInstance(BasicNodeList.class);
@@ -48,7 +48,7 @@ public class BasicNodeList extends BasicList implements NodeList {
      *
      */
     protected Object convert(Object o, int index) {
-        if (o instanceof Node) {
+        if (o instanceof Node || o == null) {
             return o;
         }
         Node node = null;
