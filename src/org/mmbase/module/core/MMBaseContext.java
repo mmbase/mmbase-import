@@ -1,13 +1,10 @@
 /*
-$Id: MMBaseContext.java,v 1.3 2000-02-24 14:40:44 wwwtech Exp $
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
+$Id: MMBaseContext.java,v 1.4 2000-03-29 10:48:19 wwwtech Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.3  2000/02/24 14:40:44  wwwtech
+Davzev added CVS again
+
 Revision 1.2  2000/02/24 13:57:38  wwwtech
 Davzev added CVS comment.
 
@@ -29,7 +26,7 @@ import org.mmbase.module.database.*;
  * @version 23 December 1999
  * @author Daniel Ockeloen
  * @author David van Zeventer
- * @$Revision: 1.3 $ $Date: 2000-02-24 14:40:44 $
+ * @$Revision: 1.4 $ $Date: 2000-03-29 10:48:19 $
  */
 public class MMBaseContext {
 

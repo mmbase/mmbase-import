@@ -1,16 +1,10 @@
 /*
-
-VPRO (C)
-
-This source file is part of mmbase and is (c) by VPRO until it is being
-placed under opensource. This is a private copy ONLY to be used by the
-MMBase partners.
-
-*/
-/*
-	$Id: JDBC.java,v 1.6 2000-03-06 22:47:25 wwwtech Exp $
+	$Id: JDBC.java,v 1.7 2000-03-29 10:45:02 wwwtech Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.6  2000/03/06 22:47:25  wwwtech
+	Rico: fixed shim reference
+	
 	Revision 1.5  2000/03/01 16:28:46  wwwtech
 	Rico: fixed bug forgetting to init databasesupport
 	
@@ -34,7 +28,7 @@ import org.mmbase.module.*;
  * we use this as the base to get multiplexes/pooled JDBC connects.
  *
  * @see org.mmbase.module.servlets.JDBCServlet
- * @version $Id: JDBC.java,v 1.6 2000-03-06 22:47:25 wwwtech Exp $
+ * @version $Id: JDBC.java,v 1.7 2000-03-29 10:45:02 wwwtech Exp $
  */
 public class JDBC extends ProcessorModule implements JDBCInterface {
 
