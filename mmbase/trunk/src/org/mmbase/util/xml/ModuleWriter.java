@@ -35,7 +35,7 @@ public class ModuleWriter extends DocumentWriter  {
      * @param module the module for which to create an XML document.
      */
     public ModuleWriter(Module module) throws DOMException {
-        super("module", "-//MMBase/DTD module config 1.0//EN","http://www.mmbase.org/dtd/module.dtd");
+        super("module", "-//MMBase/DTD module config 1.0//EN","http://www.mmbase.org/dtd/module_1_0.dtd");
         this.module=module;
         getMessageRetriever("org.mmbase.util.xml.resources.modulewriter");
     }
