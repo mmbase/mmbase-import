@@ -37,7 +37,7 @@ import org.mmbase.util.logging.*;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.6
- * @version $Id: SQL92DatabaseStorage.java,v 1.12 2003-05-16 07:27:18 kees Exp $
+ * @version $Id: SQL92DatabaseStorage.java,v 1.13 2003-05-23 16:08:32 michiel Exp $
  */
 public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage implements DatabaseStorage {
 
@@ -263,58 +263,64 @@ public abstract class SQL92DatabaseStorage extends AbstractDatabaseStorage imple
     public boolean setValuePreparedStatement( PreparedStatement stmt, MMObjectNode node, String fieldName, int i) throws SQLException {
         switch (node.getDBType(fieldName)) {
             // string-type fields, use mmbase encoding
-            case FieldDefs.TYPE_INTEGER:
-                stmt.setInt(i, node.getIntValue(fieldName));
-                break;
-            case FieldDefs.TYPE_NODE:
-                // retrieve node as a numeric value
-                int nodeRef=node.getIntValue(fieldName);
-                stmt.setInt(i, nodeRef);
-                break;
-            case FieldDefs.TYPE_FLOAT:
-                stmt.setFloat(i, node.getFloatValue(fieldName));
-                break;
-            case FieldDefs.TYPE_DOUBLE:
-                stmt.setDouble(i, node.getDoubleValue(fieldName));
-                break;
-            case FieldDefs.TYPE_LONG:
-                stmt.setLong(i, node.getLongValue(fieldName));
-                break;
-            case FieldDefs.TYPE_STRING:;
-            case FieldDefs.TYPE_XML:
-                String stringvalue = node.getStringValue(fieldName);
-                if (stringvalue != null) {
-                    setDBText(i, stmt, stringvalue);
-                } else {
-                    setDBText(i, stmt," ");
-                }
-                break;
-            case FieldDefs.TYPE_BYTE:
-                if (getStoreBinaryAsFile()) {
-                    String stype = node.getBuilder().getTableName();
-                    File file = new File(getBinaryFilePath() + stype);
-                    try {
-                        file.mkdirs();
-                    } catch(Exception e) {
-                        log.error("Can't create dir : " + getBinaryFilePath() + stype);
-                        return false;
-                    }
-                    byte[] value = node.getByteValue(fieldName);
-                    writeBytesToFile(getBinaryFilePath() + stype + File.separator + node.getNumber() + "." + fieldName,
-                                     value);
+        case FieldDefs.TYPE_INTEGER:
+            stmt.setInt(i, node.getIntValue(fieldName));
+            break;
+        case FieldDefs.TYPE_NODE: {
+            Object value = node.getValue(fieldName);
+            if (value == MMObjectNode.VALUE_NULL) {
+                stmt.setNull(i, java.sql.Types.INTEGER);
+            } else {
+                // retrieve node as a numeric value                    
+                int nodeNumber = node.getIntValue(fieldName);
+                stmt.setInt(i, nodeNumber);
+            }
+            break;
+        }
+        case FieldDefs.TYPE_FLOAT:
+            stmt.setFloat(i, node.getFloatValue(fieldName));
+            break;
+        case FieldDefs.TYPE_DOUBLE:
+            stmt.setDouble(i, node.getDoubleValue(fieldName));
+            break;
+        case FieldDefs.TYPE_LONG:
+            stmt.setLong(i, node.getLongValue(fieldName));
+            break;
+        case FieldDefs.TYPE_STRING:;
+        case FieldDefs.TYPE_XML:
+            String stringvalue = node.getStringValue(fieldName);
+            if (stringvalue != null) {
+                setDBText(i, stmt, stringvalue);
+            } else {
+                setDBText(i, stmt," ");
+            }
+            break;
+        case FieldDefs.TYPE_BYTE:
+            if (getStoreBinaryAsFile()) {
+                String stype = node.getBuilder().getTableName();
+                File file = new File(getBinaryFilePath() + stype);
+                try {
+                    file.mkdirs();
+                } catch(Exception e) {
+                    log.error("Can't create dir : " + getBinaryFilePath() + stype);
                     return false;
-                } else {
-                    log.debug("Setting byte field");
-                    setDBByte(i, stmt, node.getByteValue(fieldName));
                 }
-                break;
-            default:
-                String value = node.getStringValue(fieldName);
-                if (value != null) {
-                    stmt.setString(i, value);
-                } else {
-                    stmt.setString(i, "");
-                }
+                byte[] value = node.getByteValue(fieldName);
+                writeBytesToFile(getBinaryFilePath() + stype + File.separator + node.getNumber() + "." + fieldName,
+                                 value);
+                return false;
+            } else {
+                log.debug("Setting byte field");
+                setDBByte(i, stmt, node.getByteValue(fieldName));
+            }
+            break;
+        default:
+            String value = node.getStringValue(fieldName);
+            if (value != null) {
+                stmt.setString(i, value);
+            } else {
+                stmt.setString(i, "");
+            }
         }
         return true;
     }
