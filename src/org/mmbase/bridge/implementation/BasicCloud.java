@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.111 2003-12-17 20:50:26 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.112 2004-02-24 12:18:14 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -111,21 +111,33 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         this.cloudContext = (BasicCloudContext)cloudContext;
         MMBase mmb = BasicCloudContext.mmb;
 
-        // do authentication.....
+        log.debug("Creating a cloud");
+
+        if (! mmb.getState()) {
+            throw new BridgeException("MMBase not yet, or not successfully initialized (check mmbase log)");
+        }
+
+        if (mmb.isShutdown()) {
+            throw new BridgeException("MMBase is shutting down.");
+        }
+
+        log.debug("Doing authentication");
         mmbaseCop = mmb.getMMBaseCop();
 
         if (mmbaseCop == null) {
-            String message = "Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs";
+            String message = "Couldn't find the MMBaseCop. Perhaps your MMBase did not start up correctly; check application server and mmbase logs ";
             log.error(message);
             throw new BridgeException(message);
         }
         org.mmbase.security.UserContext uc = mmbaseCop.getAuthentication().login(authenticationType, loginInfo, null);
         if (uc == null) {
-            throw new BridgeException("Login invalid (login-module: " + authenticationType + ")");
+            log.debug("Login failed");
+            throw new java.lang.SecurityException("Login invalid (login-module: " + authenticationType + ")");
         }
         userContext = new BasicUser(mmbaseCop, uc, authenticationType);
         // end authentication...
 
+        log.debug("Setting up cloud object");
         // other settings of the cloud...
         typedef = mmb.getTypeDef();
         locale = new Locale(mmb.getLanguage(), "");
@@ -216,7 +228,7 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         MMObjectNode node;
         try {
             node = BasicCloudContext.tmpObjectManager.getNode(account, nodeNumber);
-        } catch (RuntimeException e) {
+        } catch (Throwable e) {
             return false; // error - node inaccessible or does not exist
         }
         if (node == null) {
