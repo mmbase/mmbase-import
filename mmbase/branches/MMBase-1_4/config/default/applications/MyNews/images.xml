@@ -1,0 +1,38 @@
+<images exportsource="mmbase://127.0.0.1/install/b1" timestamp="20000602143030">
+	<node number="103" owner="admin">
+		<description>sdafdf
+sd
+f
+
+sd
+
+f
+fdsf</description>
+		<handle file="images/103.handle" />
+		<title>plaatje nummer 3</title>
+		<itype></itype>
+	</node>
+
+	<node number="105" owner="admin">
+		<description>asdasd
+asd
+asd
+d
+sa
+sad
+sa
+ad
+as</description>
+		<handle file="images/105.handle" />
+		<title>plaatje nummer 2</title>
+		<itype></itype>
+	</node>
+
+	<node number="107" owner="admin">
+		<description></description>
+		<handle file="images/107.handle" />
+		<title>test</title>
+		<itype></itype>
+	</node>
+
+</images>

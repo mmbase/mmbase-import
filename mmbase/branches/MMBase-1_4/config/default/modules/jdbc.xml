@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module maintainer="mmbase.org" version="0">
+
+	<!-- <status>
+	what is the status of this module options : active or inactive
+	-->
+	<status>active</status>
+
+	<!-- <classfile>
+	main classfile that this module is defined in
+	-->
+	<classfile>org.mmbase.module.database.JDBC</classfile>
+
+	<!-- <properties>
+	you can define properties to be used by the classfile (if used) it uses
+	a key/value system. Its a optional tag.
+	-->
+	<properties>
+	
+      	<!--
+	     name="url"  defines the jdbc url mmbase will use to connect to your database
+    	 it can use the following vars
+
+	     $HOST , set by <host>
+    	 $PORT , set by <port>
+	     $DBM  , set by <database>
+
+    	 this way we can provide the url for several databases and you only need to
+	     set the above variables.
+     	 -->
+		<property name="url">jdbc:mysql://$HOST:$PORT/$DBM?user=*****&amp;password=*****</property>
+			
+      	<!--
+	    name="user", what is the user we will use to login to the database, if set to 'url' it
+    	will use one defined with the 'url' command above this is needed for several
+	    databases including mysql.
+     	 -->
+		<property name="user">url</property>
+		
+      	<!--
+	    name="password", what is the password we will use to login to the database, if set
+    	to 'url' it will use one defined with the 'url' command above this is needed
+	    for several databases including mysql.
+     	 -->
+		<property name="password">url</property>
+		
+      	<!--
+	    name="supportclass>, the jdbc module will use this class to do database
+    	specific things to a connection (ie for informix it sets the lockmode)
+  	    -->
+		<property name="supportclass">org.mmbase.module.database.DatabaseSupportShim</property>
+		
+      	<!--
+	    name="database", most database engines allow you to store multiple databases in one
+    	engine we need to select the database root we want to use within this engine.
+	    make sure you are using a 'empty' database when you start using mmbase to make
+    	sure you don't create problems for other users of the database engine you are
+	    using.
+     	-->
+		<property name="database">install</property>
+		
+      	<!--
+	    name="connections",  mmbase does its own database connection pooling
+    	(keeping connections to the database open over several database
+	    query's, to speed up query's by not logging in and closing
+    	the connection on every qeury). 'connections' allows you to set
+	    the number of connections mmbase keeps open to the database.
+     	 -->
+		<property name="connections">20</property>
+		
+  	    <!--
+    	name="driver", defines the classname for the used jdbc driver this can be
+	    obtained from the documentation from the jdbc driver you use.
+      	-->	
+		<property name="driver">org.gjt.mm.mysql.Driver</property>
+		
+      	<!--
+	    name="host", what host will we connect to (that is running the database)
+	    when you run mmbase on the same machine as this mmbase node it can
+    	be set to 'localhost'
+  	    -->
+		<property name="host">localhost</property>
+		
+      	<!--
+	    name="port" what port is this database engine running on ? you can find the is
+    	your database manual or ask the database admin. default ports for
+	    supported databases are :
+
+    	 3306 for mysql.
+ 	     -->
+		<property name="port">3306</property>
+		
+      	<!--
+	    name="querys", mmbase will replace these connections every x query's
+    	because alot of the databases drivers, jdbc drivers etc etc have
+	    memory leaks or other possible problems. with 'querys' you can set
+    	the number that will be done per connection before it gets replaced
+	    with a new connection.
+      	-->
+		<property name="querys">256</property>
+		
+	</properties>
+</module>

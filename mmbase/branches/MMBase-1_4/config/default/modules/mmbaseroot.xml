@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE module PUBLIC "//MMBase - module//" "http://www.mmbase.org/dtd/module.dtd">
+<module maintainer="mmbase.org" version="0">
+
+	<!-- <status>
+	what is the status of this module options : active or inactive
+	-->
+	<status>active</status>
+
+	<!-- <classfile>
+	main classfile that this module is defined in
+	-->
+	<classfile>org.mmbase.module.core.MMBase</classfile>
+
+	<!-- <properties>
+	you can define properties to be used by the classfile (if used) it uses
+	a key/value system. Its a optional tag.
+	-->
+	<properties>
+	
+      	<!--
+	    name="machinename" defines the name that is used in the mmbase cluster,
+    	it is used for the mmservers objects. Make sure that this is different
+	    for each node in your cluster. This is not the machines dns name
+	    (as defined by host as name or ip number).
+      	-->
+        <property name="machinename">MMBaseserver</property>
+
+  	    <!--
+    	name="database" defines which database we are using as defined in your config
+	    databases directory (default : org/mmbase/config/default/databases/). It
+    	is defined by a xml file for example sql92.xml or mysql.xml. This should
+	    be set in combo with the jdbc.xml files (where you define the database
+    	server and how to connect to it.
+
+	    sql92 for default SQL92 database (normally not used)
+    	mysql for MySQL (www.mysql.com)
+	    informix for Informix Universal Server (www.informix.com)
+
+    	** remark : more database are supported or are easy to support, check
+	                www.mmbase.org's howto's on this we will complete this list
+	    	    as soon as possble **
+
+      	-->
+        <property name="database">mysql</property>
+
+  	    <!--
+    	name="multicasthost" mmbase nodes in a cluster use multicast to talk to
+	    eachother this defines what 'channel' we are talking to its now set
+    	to the default local network so unless you know what you are doing
+	    leave it to ALL-SYSTEMS.MCAST.NET.
+      	-->
+        <property name="multicasthost">224.0.0.1</property><!-- ALL-SYSTEMS.MCAST.NET -->
+
+      	<!--
+    	name="multicastport" on what port does this multicast talking between nodes
+	    take place, This can be set to any port but check if something else on
+    	your network is allready using multicast when you have problems.
+  	    -->
+		<property name="multicastport">16080</property>
+		
+  	    <!--
+    	name="host" the host or ip number of the machine this mmbase node is
+	    running on. Its important that this name is set correctly because its
+    	used for communication between mmbase nodes and external devices
+	    (xml or jini based).
+      	-->
+        <property name="host">10.10.10.45</property>
+
+        <!--
+    	name="authtype" defines what authorisation type is used, This is a plugin
+	    system at the moment we only support 2 types :
+
+    	none (only perform name/password checks based on accounts.properties)
+
+	    basic (use the default authorisation system, based on groups and
+    	relations see the install/example docs how to enable this DON'T
+	    set it before creating the needed tables/objects as defined in these docs).
+      	-->
+        <property name="authtype">none</property>
+
+  	    <!--
+    	name="dtdbase" defines the homebase for the DTD's used by the objects
+	    (urls, cdtracks, images etc etc). Normally this is set to
+    	www.mmbase.org but you can aim it to your own system if you defined
+	    extra objects yourself. Its not used at the moment for anything vital.
+     	 -->
+        <property name="dtdbase">http://www.mmbase.org/dtd/</property>
+
+	    <!--
+      	name="basename" You can have multiple mmbase systems inside your database
+	    if you want this can be very handy when testing of for running multiple
+    	setups inside one database its added as a preset to all your table names
+	    like : BASENAME=test will result in table names like test_object and
+    	test_urls.
+ 	     -->
+        <property name="basename">install</property>
+
+  	    <!--
+    	name="language" defines the used language in the gui when possible,
+	    it is defined with the domain postfix like uk, nl, us etc etc these are
+    	used in MMLANGUAGE.properties, *.def files (example urls.def).
+  	    -->
+       <property name="language">en</property>
+
+	</properties>
+</module>
+

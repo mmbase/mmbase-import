@@ -1,0 +1,17 @@
+<TR>
+	<TD><IMG SRC="../../images/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+		<FONT COLOR="#000000">
+		<B>1.2 Setting a object alias</B>
+		</FONT>
+	</TD>
+</TR>
+<TR>
+		<TD></TD>
+		<TD BGCOLOR="#00425A">
+			<BR>
+			In the previous example we used a object number to talk to the cloud when we wanted to display the people node for Rob but we urge you to use names instead of numbers in site starting pages and never used fixed numbers in your shtml pages (like we showed in 1.1).<P>
+			This can by attaching a name to a number/node, this is similar as ip numbers vs hostnames where a www.xxx.com adress is a alias for a ip number. Just like when a ip-number is changes the hostname can stay the same we want important nodes to have a name so we can refer to it as that and not by its object number.<P>
+You can set a alias for every node you want using the editors (oalias), in this example we set a alias called Rob for the node from example 1.1. We will now repeat 1.1 but using the alias.
+		</TD>
+</TR>

@@ -1,0 +1,45 @@
+<insrel exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+
+<node number="602" owner="system" snumber="600" dnumber="601" rtype="related">
+</node>
+
+<node number="604" owner="system" snumber="601" dnumber="603" rtype="related">
+</node>
+
+<node number="607" owner="system" snumber="601" dnumber="605" rtype="related">
+</node>
+
+<node number="608" owner="system" snumber="601" dnumber="606" rtype="related">
+</node>
+
+<node number="614" owner="system" snumber="600" dnumber="609" rtype="related">
+</node>
+
+<node number="615" owner="system" snumber="600" dnumber="610" rtype="related">
+</node>
+
+<node number="616" owner="system" snumber="600" dnumber="611" rtype="related">
+</node>
+
+<node number="617" owner="system" snumber="600" dnumber="612" rtype="related">
+</node>
+
+<node number="618" owner="system" snumber="600" dnumber="613" rtype="related">
+</node>
+
+<node number="619" owner="system" snumber="603" dnumber="609" rtype="related">
+</node>
+
+<node number="620" owner="system" snumber="603" dnumber="610" rtype="related">
+</node>
+
+<node number="621" owner="system" snumber="603" dnumber="611" rtype="related">
+</node>
+
+<node number="622" owner="system" snumber="603" dnumber="612" rtype="related">
+</node>
+
+<node number="623" owner="system" snumber="603" dnumber="613" rtype="related">
+</node>
+
+</insrel>

@@ -1,0 +1,10 @@
+<mags exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+	<node number="600" owner="system" alias="default.mags">
+		<title>MMbase.org</title>
+		<subtitle> </subtitle>
+		<intro>Example of a magazine in MMbase based on MMbase.org mags</intro>
+		<body>Example of a magazine in MMbase based on MMbase.org mags</body>
+	</node>
+
+</mags>
+

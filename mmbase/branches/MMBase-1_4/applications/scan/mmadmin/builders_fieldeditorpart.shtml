@@ -1,0 +1,65 @@
+<TR>
+	<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Editor variables</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Values</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Change</B>
+	</TD>
+	<TD BGCOLOR="#44BDAD" COLSPAN="2">
+	<FONT COLOR="000000" FACE=helvetica,arial,geneva SIZE=2>
+	<B>Change</B>
+	</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			input
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorinput^
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#editorinput" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+				<A HREF="builders_seteditorinput.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			list 
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorlist
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#editorlist" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+				<A HREF="builders_seteditorlist.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>
+<TR>
+		<TD><IMG SRC="beeld/trans.gif" WIDTH="50" HEIGHT="1"></TD>
+		<TD BGCOLOR="#00425A">
+			search
+		</TD>
+		<TD BGCOLOR="#00425A">
+			$MOD-MMADMIN-GETBUILDERFIELD-$PARAM1-$PARAM2-editorsearch
+		</TD>
+		<TD BGCOLOR="#00425A">
+			<A HREF="/mmdocs/config/builders.html#editorsearch" TARGET="_new">explain</A>
+		</TD>
+		<TD BGCOLOR="#00425A" COLSPAN="2">
+				<A HREF="builders_seteditorsearch.shtml?$PARAM1+$PARAM2">change</A>
+		</TD>
+</TR>

@@ -1,0 +1,11 @@
+<urls exportsource="mmbase://wizard.xs4all.nl:8242/xsbase/xsa" timestamp="20000602143030">
+	<node number="605" owner="system">
+		<url>http://www.mmbase.org/download</url>
+		<description>Download MMbase</description>
+	</node>
+
+	<node number="606" owner="system">
+		<url>http://www.mmbase.org/mmbase/pool/project.shtml?452+3022</url>
+		<description>The Defining Builders project</description>
+	</node>
+</urls>
