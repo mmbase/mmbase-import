@@ -27,6 +27,10 @@
 <%@ include file="menu.jsp"%>
 
 <h1>Using the related tag</h1>
+<p>
+  The related tag is very much like the <a href="list.jsp">list</a> tag. The only difference being that it takes the first element of the path and the first element of 'nodes' from the 
+  surrounding node, listnodes  or relatednodes (or other provider of 'real' nodes).
+</p>
 
 <table cellpadding="5">
   <tr>
