@@ -11,7 +11,7 @@ See http://www.MMBase.org/license
 package org.mmbase.bridge.remote.generator;
 import org.w3c.dom.*;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.*;
 import org.apache.xml.serialize.*;
 import java.io.*;
 import java.util.*;
@@ -102,8 +102,31 @@ public class MMCI{
         OutputStream os = System.out;
         if (argv.length >1){
             System.err.println("Usage: java org.mmbase.bridge.remote.generator.MMCI <outputfile>");
-        } else {
-            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        } else {    	    
+	    DocumentBuilderFactory docBuilderFac = DocumentBuilderFactory.newInstance();
+	    /*  
+	    	below the build.xml fails with an :
+    	    	
+		    java.lang.LinkageError: loader constraints violated when linking org/xml/sax/ErrorHandler class
+	    	    at org.apache.xerces.jaxp.DocumentBuilderFactoryImpl.newDocumentBuilder(DocumentBuilderFactoryImpl.java:82)
+	    	    at org.mmbase.bridge.remote.generator.MMCI.main(MMCI.java:107)
+		
+		even if i place something like the followin in the build.xml :
+		    
+    	    	    <java classname="org.mmbase.bridge.remote.generator.MMCI">
+    	    		<arg value="${source-src.dir}/MMCI.xml" />
+    	    		<classpath>
+		    	    <pathelement location="${xerces.jar}" />
+		    	    <pathelement location="${build.dir}/classes" />
+	    	    	</classpath>
+    	    	    </java>
+    	    	
+		NB: put it here, since i modified this file, to highlight the position on which it fails.....
+		Could it be a classloader problem? ant it's parser conflicts with the xerces parser?		    		   		
+	    */
+    	    DocumentBuilder docBuilder = docBuilderFac.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+	    
             Element xmle =doc.createElement("mmci");
             doc.appendChild(xmle);
             MMCI.addDefaultBridgeClasses(xmle, doc);
