@@ -58,7 +58,7 @@ import org.mmbase.security.MMBaseCop;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.5
- * @version $Id: AbstractDove.java,v 1.3 2002-02-27 16:54:21 pierre Exp $
+ * @version $Id: AbstractDove.java,v 1.4 2002-03-08 14:07:02 pierre Exp $
  */
 
 public abstract class AbstractDove {
@@ -116,6 +116,7 @@ public abstract class AbstractDove {
     public static final String ELM_NAME = "name";
     public static final String ELM_ROLE = "role";
     public static final String ELM_DESTINATION = "destination";
+    public static final String ELM_DESTINATIONTYPE = "destinationtype";
     public static final String ELM_LANG = "xml:lang";
     public static final String ELM_XPATH = "xpath";
     public static final String ELM_SOURCE = "source";
