@@ -19,7 +19,7 @@ import org.mmbase.storage.search.*;
  * Basic implementation.
  *
  * @author Rob van Maris
- * @version $Id: BasicSearchQuery.java,v 1.6 2003-07-21 20:50:04 michiel Exp $
+ * @version $Id: BasicSearchQuery.java,v 1.7 2003-07-25 21:17:57 michiel Exp $
  * @since MMBase-1.7
  */
 public class BasicSearchQuery implements SearchQuery {
@@ -63,6 +63,22 @@ public class BasicSearchQuery implements SearchQuery {
     public BasicSearchQuery() {
         this(false);
     }
+
+    /**
+     * A deep copy, but sets also aggregating, and clear fields if aggregating is true then.
+     */
+
+    public BasicSearchQuery(SearchQuery q, boolean aggregating) {
+        this(q);
+        this.aggregating = aggregating;
+        if (aggregating) {
+            fields.clear();
+            sortOrders.clear();
+            offset = DEFAULT_OFFSET;
+            maxNumber = DEFAULT_MAX_NUMBER;
+        }
+    }
+
 
     /**
      * A deep copy. Needed if you want to do multiple queries (and change the query between them).
@@ -110,6 +126,7 @@ public class BasicSearchQuery implements SearchQuery {
                 }
             }
         }
+        
         i = q.getFields().iterator();
         while (i.hasNext()) {
             StepField field = (StepField) i.next();
@@ -129,6 +146,7 @@ public class BasicSearchQuery implements SearchQuery {
             BasicSortOrder newSortOrder = addSortOrder(newField);
             newSortOrder.setDirection(sortOrder.getDirection());
         }
+
         Constraint c = q.getConstraint();
         if (c != null) {
             setConstraint(copyConstraint(q, c));
@@ -286,8 +304,7 @@ public class BasicSearchQuery implements SearchQuery {
      */
     public BasicStepField addField(Step step, FieldDefs fieldDefs) {
         if (aggregating) {
-            throw new UnsupportedOperationException(
-            "Adding non-aggregated field to aggregating query.");
+            throw new UnsupportedOperationException("Adding non-aggregated field to aggregating query.");
         }
         BasicStepField field = new BasicStepField(step, fieldDefs);
         fields.add(field);
