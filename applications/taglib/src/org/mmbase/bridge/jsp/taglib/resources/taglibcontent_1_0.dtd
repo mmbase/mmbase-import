@@ -2,7 +2,7 @@
 <!ATTLIST taglibcontent  defaulttype   CDATA  #REQUIRED > 
 
 <!ELEMENT content  EMPTY >
-<!ATTLIST content  type   CDATA  #REQUIRED > 
+<!ATTLIST content type   CDATA  #REQUIRED > 
 <!ATTLIST content defaultescaper       CDATA  #REQUIRED > 
 <!ATTLIST content defaultpostprocessor CDATA  #REQUIRED > 
 <!ATTLIST content defaultencoding      CDATA  #IMPLIED  > 

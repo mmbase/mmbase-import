@@ -39,7 +39,7 @@ The following additional tags are possible between <attribute> and </attribute>:
 Use one or more possiblevalue tags if you want to list all possible values. Use
 one or more examplevalue tags is you want to give some example values.
 
-version: $Id: mmbase-taglib.xml,v 1.215 2003-11-17 10:33:58 keesj Exp $
+version: $Id: mmbase-taglib.xml,v 1.216 2003-11-18 19:36:22 michiel Exp $
 
 -->
 <taglib author="MMBase community">
@@ -609,6 +609,7 @@ See mmexamples/taglib for more elaborated examples.
 		<see tag="nodeprovider" />
 		<see tag="list" />
 		<see tag="listnodes" />
+		<see tag="nodelistcontainerreferrer" />
 		<since>MMBase-1.7</since>
 	</taginterface>
 	<taginterface>
@@ -617,6 +618,7 @@ See mmexamples/taglib for more elaborated examples.
 		<info>
 			Refers to a nodelist container. Normally these kind of tags are 'query modifiers'.
 		</info>
+		<see tag="nodelistcontainer" />
 		<since>MMBase-1.7</since>
 	</taginterface>
 	<taginterface>
@@ -4407,6 +4409,24 @@ The 0 is just counter, which starts at 0 on every page.
 			</examplevalue>
 		</attribute>
 		<attribute>
+			<name>expires</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<info>
+        <p>
+          When this page expires (in seconds after now). If you set this, this has influence on some
+          http header being set ('Cache-Control' and 'Expires'). This default to one minute if there
+          is no session used on the page, and to no caching otherwise.
+        </p>
+        <p>
+          Setting this to 0 has the effect of disabling all proxy-caching.
+        </p>
+			</info>
+			<examplevalue>
+				<value>UTF-8</value>
+			</examplevalue>
+		</attribute>
+		<attribute>
 			<name>postprocessor</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -4497,24 +4517,25 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>type</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>
-
-			</info>
+      <see tag="listnodes" attribute="type" />
 		</attribute>
 		<attribute>
 			<name>path</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-
+        Though a relatednodescontainer is to query real nodes (so not clusternodes), this does not
+        mean that there can only one node type in the query. Only one element of this path is
+        actually queried, but constraints and sortorderds can be applied to the other ones. 
 			</info>
+      <see tag="list" attribute="path" />
 		</attribute>
 		<attribute>
 			<name>searchdirs</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-
+        Per element in the path you can indicate an alternative 'searchdir' (source, destination or both)
 			</info>
 		</attribute>
 		<attribute>
@@ -4522,8 +4543,10 @@ The 0 is just counter, which starts at 0 on every page.
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<info>
-
+        The 'element' of the path to be queried. This defaults to the first element, but the other
+        ones can be pointed to as well.
 			</info>
+      <see tag="node" attribute="element" />
 		</attribute>
 		<attribute>
 			<name>id</name>
@@ -4549,42 +4572,33 @@ The 0 is just counter, which starts at 0 on every page.
 			<name>type</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>
-
-			</info>
 			<see tag="relatednodes" attribute="type" />
 		</attribute>
 		<attribute>
 			<name>role</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>
-			</info>
 			<see tag="relatednodes" attribute="role" />
 		</attribute>
+
 		<attribute>
 			<name>path</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>
-
-			</info>
+      <see tag="listnodes" attribute="path" />
 		</attribute>
 		<attribute>
 			<name>searchdirs</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>
-
-			</info>
+      <see tag="listnodes" attribute="searchdirs" />
 		</attribute>
 		<attribute>
 			<name>element</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-			<info>
-
-			</info>
+      <see tag="listnodes" attribute="element" />
+      <see tag="node" attribute="element" />
 		</attribute>
 		<attribute>
 			<name>id</name>
