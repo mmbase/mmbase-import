@@ -3,7 +3,7 @@
   <!-- 
   Demonstrating overriding of standard list.xsl 
 
-  @version   $Id: list.xsl,v 1.1 2002-04-19 14:00:41 michiel Exp $
+  @version   $Id: list.xsl,v 1.1 2002-05-08 10:50:41 michiel Exp $
   @author    Michiel Meeuwissen
   @since     MMBase-1.6
 

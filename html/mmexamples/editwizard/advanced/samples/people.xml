@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<wizard-schema id="empty">
+	<title>Example 1 people editor!</title>
+	<action type="load">
+    <object type="people" />
+		<relation destination="news"     role="related"  />
+		<relation destination="images"   role="related"  />
+	</action>
+	
+	<action type="create">
+		<object type="people">
+			<field name="firstname" ftype="string">John</field>
+			<field name="lastname"  ftype="string">Doe</field>
+		</object>
+	</action>
+	
+	<form-schema id="step1">
+		<title>Step 1</title>
+		<field name="firstname" ftype="string" xdttype="html">
+			<prompt>First name</prompt>
+		</field>
+
+		<field name="lastname" ftype="string" xdttype="html">
+			<prompt>Last name</prompt>
+		</field>
+		
+    <list include="lib/addimages.xml" />
+		
+	</form-schema>
+</wizard-schema>
