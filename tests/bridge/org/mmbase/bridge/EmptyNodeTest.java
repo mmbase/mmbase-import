@@ -10,6 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 import org.w3c.dom.Document;
+import java.util.*;
 
 /**
  * Test class <code>Node</code> from the bridge package. The tests are done on
@@ -126,6 +127,32 @@ public class EmptyNodeTest extends NodeTest {
             Node value = node.getNodeValue(fieldTypes[i] + "field");
             assertTrue("Empty " + fieldTypes[i] + " field queried as Node did not return null, but " + value,
                         value == null);
+       }
+    }
+
+    public void testGetBooleanValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            boolean value = node.getBooleanValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return false, but " + value,
+                        !value);
+       }
+    }
+
+    public void testGetDateTimeValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Date value = node.getDateValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value!=null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
+                        value.getTime()==-1);
+       }
+    }
+
+    public void testGetListValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            List value = node.getListValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value!=null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value,
+                        value.size() == 0);
        }
     }
 

@@ -10,7 +10,7 @@ See http://www.MMBase.org/license
 
 package org.mmbase.bridge;
 
-import java.util.Date;
+import java.util.*;
 import org.mmbase.util.Casting;
 import org.w3c.dom.Document;
 
@@ -159,7 +159,8 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
             Document value = node.getXMLValue(fieldTypes[i] + "field");
             assertTrue("Empty " + fieldTypes[i] + " field queried as XML returns null",value !=null);
             if (fieldTypes[i].equals("node") || fieldTypes[i].equals("long") || fieldTypes[i].equals("int") ||
-                fieldTypes[i].equals("double") || fieldTypes[i].equals("float") || fieldTypes.equals("datetime") ) {
+                fieldTypes[i].equals("double") || fieldTypes[i].equals("float") || fieldTypes[i].equals("boolean")
+                || fieldTypes[i].equals("list") || fieldTypes.equals("datetime") ) {
                 assertTrue("Empty " + fieldTypes[i] + " field queried as XML does not give an mmxf document but '" + value.getDoctype() + "'",
                     value.getDoctype().getName().equals("mmxf"));
             }
@@ -180,6 +181,43 @@ public class EmptyNotNullNodeTest extends EmptyNodeTest {
             }
        }
     }
+
+    public void testGetBooleanValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            boolean value = node.getBooleanValue(fieldTypes[i] + "field");
+            if (fieldTypes[i].equals("node")) {
+                assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return true, but " + value,
+                            value);
+            } else {
+                assertTrue("Empty " + fieldTypes[i] + " field queried as boolean did not return false, but " + value,
+                            !value);
+            }
+       }
+    }
+
+    public void testGetDateTimeValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            Date value = node.getDateValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime returned null", value!=null);
+            assertTrue("Empty " + fieldTypes[i] + " field queried as datetime did not return "+new Date(-1)+", but " + value,
+                        value.getTime()==-1);
+       }
+    }
+
+    public void testGetListValue() {
+        for (int i = 0; i < fieldTypes.length; i++) {
+            List value = node.getListValue(fieldTypes[i] + "field");
+            assertTrue("Empty " + fieldTypes[i] + " field queried as list returned null", value!=null);
+            if (fieldTypes[i].equals("list")) {
+                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [], but " + value,
+                            value.size() == 0);
+            } else {
+                assertTrue("Empty " + fieldTypes[i] + " field queried as list did not return [<object>], but " + value,
+                            value.size() == 1);
+            }
+       }
+    }
+
 
     public void setUp() {
         // Create a empty test node.
