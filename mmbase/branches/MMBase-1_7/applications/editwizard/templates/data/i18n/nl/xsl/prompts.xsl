@@ -9,7 +9,7 @@
 
   @since  MMBase-1.6
   @author Pierre van Rooden
-  @version $Id: prompts.xsl,v 1.11.2.2 2004-09-15 13:04:25 jaco Exp $
+  @version $Id: prompts.xsl,v 1.11.2.3 2005-03-22 09:38:28 pierre Exp $
   -->
 
 <!-- prompts used in this editwizard. Override these prompts to change the view in your own versions -->
@@ -113,6 +113,16 @@
   <xsl:value-of select="$title" disable-output-escaping="yes"  />(items <xsl:value-of select="/list/@offsetstart"/>-<xsl:value-of select="/list/@offsetend"/>/<xsl:value-of select="/list/@totalcount" />, pagina <xsl:value-of select="/list/pages/@currentpage" />/<xsl:value-of select="/list/pages/@count" />)
 </xsl:template>
 <xsl:variable name="tooltip_edit_list" >Dit zijn de items die u kan wijzigen.</xsl:variable>
+<xsl:variable name="tooltip_sort_on">Sort on</xsl:variable>
+<xsl:variable name="tooltip_sort_up">up</xsl:variable>
+<xsl:variable name="tooltip_sort_down">down</xsl:variable>
+<xsl:template name="prompt_sort_up">
+  <img src="{$mediadir}up.gif" alt="{$tooltip_up}" height="15" width="15" />
+</xsl:template>
+<xsl:template name="prompt_sort_down">
+  <img src="{$mediadir}down.gif" alt="{$tooltip_up}" height="15" width="15" />
+</xsl:template>
+
 <!-- searchlist prompts/tooltips -->
 <xsl:variable name="tooltip_select_search">Selecteer een of meer items uit de lijst</xsl:variable>
 <xsl:template name="prompt_no_results" >Geen items gevonden</xsl:template>
