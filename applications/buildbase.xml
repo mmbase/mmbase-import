@@ -398,7 +398,11 @@ web-app/*                All kind of templates. They problably can (need?) to be
     </copy>
   </target>
 
-  <target name="install.documentation" depends="documentation" if="documentation.available">
+
+  <target name="check.documentation.build">
+    <available property="do.install.documentation" file="${project.build..dir}/documentation" />
+  </target>
+  <target name="install.documentation" depends="documentation,check.documentation.build" if="do.install.documentation">
     <copy todir="${mmdocs.dir}">
       <fileset dir="${project.build.dir}/documentation">
       </fileset>
