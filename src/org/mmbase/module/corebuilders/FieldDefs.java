@@ -22,7 +22,7 @@ import org.mmbase.util.logging.*;
  * @author Daniel Ockeloen
  * @author Hans Speijer
  * @author Pierre van Rooden
- * @version $Id: FieldDefs.java,v 1.26 2002-04-16 14:59:57 michiel Exp $
+ * @version $Id: FieldDefs.java,v 1.27 2002-04-17 08:27:39 pierre Exp $
  */
 public class FieldDefs implements Comparable {
     public final static int DBSTATE_MINVALUE = 0;
@@ -60,21 +60,20 @@ public class FieldDefs implements Comparable {
     /**
      * @scope private
      */
-    public String GUIName;
-    public Hashtable GUINames = new Hashtable();
-    public String GUIType;
-    public int GUISearch;
-    public int GUIList;
-    public String DBName;
-    public int DBType = TYPE_UNKNOWN;
-    public int GUIPos;
-    public int DBState = DBSTATE_UNKNOWN;
-    public boolean DBNotNull=false;
-    public String DBDocType = null;
-    public boolean isKey=false;
-    public int DBPos;
-    public int DBSize=-1;
-    public MMObjectBuilder parent = null;
+    private Hashtable GUINames = new Hashtable();
+    private String GUIType;
+    private int GUISearch;
+    private int GUIList;
+    private String DBName;
+    private int DBType = TYPE_UNKNOWN;
+    private int GUIPos;
+    private int DBState = DBSTATE_UNKNOWN;
+    private boolean DBNotNull=false;
+    private String DBDocType = null;
+    private boolean isKey=false;
+    private int DBPos;
+    private int DBSize=-1;
+    private MMObjectBuilder parent = null;
 
     /**
      * Constructor for default FieldDef.
@@ -93,14 +92,7 @@ public class FieldDefs implements Comparable {
      */
     public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName,
                      int DBType) {
-        this.GUIName=GUIName;
-        this.GUIType=GUIType;
-        this.GUISearch=GUISearch;
-        this.GUIList=GUIList;
-        this.DBName=DBName;
-        this.DBType=DBType;
-        this.GUIPos=2;
-        this.DBState=DBSTATE_PERSISTENT;
+        this(GUIName, GUIType, GUISearch, GUIList, DBName, DBType, 2, DBSTATE_PERSISTENT);
     }
 
     /**
@@ -116,14 +108,14 @@ public class FieldDefs implements Comparable {
      */
     public FieldDefs(String GUIName, String GUIType, int GUISearch, int GUIList, String DBName,
                      int DBType, int GUIPos, int DBState) {
-        this.GUIName=GUIName;
-        this.GUIType=GUIType;
-        this.GUISearch=GUISearch;
-        this.GUIList=GUIList;
-        this.DBName=DBName;
-        this.DBType=DBType;
-        this.GUIPos=GUIPos;
-        this.DBState=DBState;
+        setDBName(DBName);
+        setDBState(DBState);
+        setDBType(DBType);
+        setGUIType(GUIType);
+        setGUIName("en",GUIName);
+        setGUISearch(GUISearch);
+        setGUIList(GUIList);
+        setGUIPos(GUIPos);
     }
 
     /**
@@ -205,7 +197,7 @@ public class FieldDefs implements Comparable {
     /**
      * Retrieve the GUI name of the field depending on specified langauge.
      * If the language is not available, the "en" value is returned instead.
-     * If that one is unavailable a 'default' is returned.
+     * If that one is unavailable the internal fieldname is returned.
      * @param lang the language to return the name in
      * @return the GUI Name
      */
@@ -221,15 +213,17 @@ public class FieldDefs implements Comparable {
     /**
      * Retrieve the GUI name of the field.
      * If possible, the "en" value is returned.
-     * If that one is unavailable a 'default' is returned.
+     * If that one is unavailable the internal fieldname is returned.
      * @param lang the language to return the name in
      * @return the GUI Name
-     
      */
     public String getGUIName() {
-        String tmp = (String) GUINames.get("en");
-        if (tmp!=null) return tmp;
-        return GUIName;
+        String value=(String) GUINames.get("en");
+        if (value!=null) {
+            return value;
+        } else {
+            return DBName;
+        }
     }
 
     /**
@@ -334,7 +328,11 @@ public class FieldDefs implements Comparable {
      * @param value the value to set
      */
     public void setGUIName(String country,String value) {
-        GUINames.put(country,value);
+        if ((value==null) || value.equals("")) {
+            GUINames.remove(country);
+        } else {
+            GUINames.put(country,value);
+        }
     }
 
     /**
