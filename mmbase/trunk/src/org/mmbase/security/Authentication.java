@@ -24,7 +24,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Eduard Witteveen
  * @author Michiel Meeuwissen (javadocs)
- * @version $Id: Authentication.java,v 1.25 2005-03-01 16:40:22 michiel Exp $
+ * @version $Id: Authentication.java,v 1.26 2005-03-07 15:12:51 michiel Exp $
  */
 public abstract class Authentication extends Configurable implements AuthenticationData {
     private static final Logger log = Logging.getLoggerInstance(Authentication.class);
@@ -98,7 +98,7 @@ public abstract class Authentication extends Configurable implements Authenticat
      * @since MMBase-1.8
      */
     public String[] getTypes() {
-        return getTypes(METHOD_ASIS);
+        return getTypes(METHOD_UNSET);
     }
     /**
      * @inheritDoc
@@ -106,9 +106,9 @@ public abstract class Authentication extends Configurable implements Authenticat
      */
     public String[] getTypes(int method) {
         if (method == METHOD_ASIS) {
-            return new String[] {"anonymous", "name/password"};
+            return new String[] {"anonymous", "name/password", "class"};
         } else {
-            return new String[] {"name/password"};
+            return new String[] {"name/password", "class"};
         }
     }
 
