@@ -17,7 +17,7 @@
 
         long name : nl.vpro.mmbase.module.builders.Urls will start that class
 -->
-<classfile>PosRel</classfile>
+<classfile>org.mmbase.module.corebuilders.InsRel</classfile>
 
 <!-- <names>
     names defines the different names used in user visible parts, singular for
