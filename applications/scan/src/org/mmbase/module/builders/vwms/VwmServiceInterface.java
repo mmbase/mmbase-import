@@ -16,9 +16,10 @@ package org.mmbase.module.builders.vwms;
  * VWMS implementing this interface keep track of filechanges and update the filecache when needed.
  * @see PageMaster
  *
+ * @application SCAN
  * @author Daniel Ockeloen
- * @author Pierre van Rodoen (javadocs)
- * @version $Id: VwmServiceInterface.java,v 1.6 2003-03-10 11:50:27 pierre Exp $
+ * @author Pierre van Rooden (javadocs)
+ * @version $Id: VwmServiceInterface.java,v 1.7 2004-10-08 10:57:57 pierre Exp $
  */
 public interface VwmServiceInterface extends VwmInterface {
 

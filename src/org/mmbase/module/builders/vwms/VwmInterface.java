@@ -18,11 +18,11 @@ import org.mmbase.module.builders.*;
  * The routines defined here are entry routines for initializing a VWM, associating listeners (clients) with the VWM,
  * and managing changes in local and remote nodes.
  *
- * Note: This interface defines a few methods also defined by the MMBaseObserver interface. Maybe it should extend it?
- *
+ * @application VWMs
+ * @deprecated all known implementations extend {@link Vwm} so why use an interface?
  * @author Daniel Ockeloen
  * @author Pierre van Rooden (javadocs)
- * @version $Id: VwmInterface.java,v 1.6 2003-03-10 11:50:26 pierre Exp $
+ * @version $Id: VwmInterface.java,v 1.7 2004-10-08 10:57:57 pierre Exp $
  */
 
 public interface VwmInterface extends MMBaseObserver {

@@ -1,11 +1,11 @@
 /*
- 
+
 This software is OSI Certified Open Source Software.
 OSI Certified is a certification mark of the Open Source Initiative.
- 
+
 The license (Mozilla version 1.0) can be read at the MMBase site.
 See http://www.MMBase.org/license
- 
+
  */
 package org.mmbase.module.builders.vwms;
 
@@ -20,14 +20,15 @@ import org.mmbase.util.logging.*;
  * and adds/kills workers if needed (depending on
  * there load and info from the config module).
  *
- * @version $Id: VwmProbe.java,v 1.10 2003-07-02 06:20:45 keesj Exp $ current version $Id: VwmProbe.java,v 1.10 2003-07-02 06:20:45 keesj Exp $
+ * @application VWMs
  * @author Daniel Ockeloen
+ * @version $Id: VwmProbe.java,v 1.11 2004-10-08 10:57:57 pierre Exp $ current version $Id: VwmProbe.java,v 1.11 2004-10-08 10:57:57 pierre Exp $
  */
 public class VwmProbe implements Runnable {
-    
+
     // logging variable
     private static Logger log = Logging.getLoggerInstance(VwmProbe.class.getName());
-    
+
     Thread kicker = null;
     VwmProbeInterface parent=null;
     SortedVector tasks= new SortedVector(new MMObjectCompare("wantedtime"));
@@ -35,17 +36,17 @@ public class VwmProbe implements Runnable {
     MMObjectNode anode=null;
     PerformProbe pp;
     private final static int TASK_PICKUP_TIMEDIFFERENCE = 3;
-    
+
     public VwmProbe(VwmProbeInterface parent) {
         this.parent=parent;
         init();
     }
-    
+
     public void init() {
         this.start();
     }
-    
-    
+
+
     /**
      * Starts the admin Thread.
      */
@@ -57,7 +58,7 @@ public class VwmProbe implements Runnable {
             kicker.start();
         }
     }
-    
+
     /**
      * Stops the admin Thread.
      */
@@ -66,7 +67,7 @@ public class VwmProbe implements Runnable {
         kicker.interrupt();
         kicker = null;
     }
-    
+
     /**
      * blocked on the first task in the queue
      */
@@ -116,7 +117,7 @@ public class VwmProbe implements Runnable {
             } catch (InterruptedException e){}
         }
     }
-    
+
     /**
      * Puts a task node to the vector (sorted on task start time) of new tasks.
      * If the tasks vector already contains the node, it will be replaced.
@@ -131,7 +132,7 @@ public class VwmProbe implements Runnable {
         } else {
             res=replaceTask(node);
         }
-        
+
         if (tasks.size()==0) {
             // notiy when tasks size is 0 ?
             log.service("Tasks vector size is 0, calling notify()");
@@ -145,7 +146,7 @@ public class VwmProbe implements Runnable {
         // huh ?!#
         return true;
     }
-    
+
     /**
      * Checks if a task node already exists in the task nodes vector.
      * @param node task node
@@ -166,7 +167,7 @@ public class VwmProbe implements Runnable {
         }
         return false;
     }
-    
+
     /**
      * Replaces a task node entry in the sorted task nodes vector with a new one.
      * @param node task node
