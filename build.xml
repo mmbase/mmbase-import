@@ -425,7 +425,7 @@ version=1.6.2
  it look like compiling is part of 'info14' target.... -->
 
   <target name="compile.local" description="Compile the source directory(exclude remote)"
-          depends="init.compile">
+          depends="init,init.compile">
 
     <echo message="java version: ${ant.java.version}" />
     <condition property="java14"><equals arg1="${ant.java.version}" arg2="1.4" /></condition>
@@ -480,7 +480,7 @@ version=1.6.2
       <exclude name="org/mmbase/module/database/support/MMInformix42Node.java" unless="informix.in.classpath" />
     </javac>
     <tstamp/>
-    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${DSTAMP}</echo>
+    <echo file="${build.dir}/classes/org/mmbase/builddate.properties">${version}</echo>
   </target>
 
   <!-- =================================================================== -->
