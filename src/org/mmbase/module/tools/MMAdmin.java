@@ -33,6 +33,7 @@ public class MMAdmin extends ProcessorModule {
 	MMBase mmb=null;
 	MMAdminProbe probe=null;
 	String lastmsg="";
+	private boolean restartwanted=false;
 
 	public void init() {
 		mmb=(MMBase)getModule("MMBASEROOT");		
@@ -69,8 +70,9 @@ public class MMAdmin extends ProcessorModule {
 			cmdline=(String)h.nextElement();	
 			StringTokenizer tok = new StringTokenizer(cmdline,"-\n\r");
 			token = tok.nextToken();
-			if (token.equals("INSTALL")) {
-				doInstall(cmds,vars);
+			if (token.equals("SERVERRESTART")) {
+				String user=(String)cmds.get(cmdline);
+				doRestart(user);
 			} else if (token.equals("LOAD")) {
 				Versions ver=(Versions)mmb.getMMObject("versions");
 				String appname=(String)cmds.get(cmdline);
@@ -208,14 +210,11 @@ public class MMAdmin extends ProcessorModule {
 	public void maintainance() {
 	}
 
-	public void doInstall(Hashtable cmds, Hashtable vars) {
-		
-		if ((String)vars.get("NAME-MyYahoo")!=null) installApplication("MyYahoo");
-		if ((String)vars.get("NAME-Basics")!=null) installApplication("Basics");
-		if ((String)vars.get("NAME-BasicAuth")!=null) installApplication("BasicAuth");
-		/*
-		if ((String)vars.get("NAME-writetest")!=null) writeApplication("MyYahoo");
-		*/
+	public void doRestart(String user) {
+		lastmsg="Server Reset requested by '"+user+"' Restart in 3 seconds<BR><BR>\n";
+		System.out.println("Server Reset requested by '"+user+"' Restart in 3 seconds");
+		restartwanted=true;
+		probe = new MMAdminProbe(this,3*1000);
 	}
 
 	private boolean installApplication(String applicationname) {
@@ -555,6 +554,9 @@ public class MMAdmin extends ProcessorModule {
 
 
 	public void probeCall() {
+		if (restartwanted) {
+			System.exit(0);
+		}
 		Versions ver=(Versions)mmb.getMMObject("versions");
 		if (ver==null) {
 			System.out.println("Versions builder not installed, Can't auto deploy apps");

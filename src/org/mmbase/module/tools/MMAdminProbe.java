@@ -9,9 +9,12 @@ See http://www.MMBase.org/license
 */
 /*
 
-$Id: MMAdminProbe.java,v 1.1 2000-08-27 19:04:46 daniel Exp $
+$Id: MMAdminProbe.java,v 1.2 2000-08-27 21:00:41 daniel Exp $
 
 $Log: not supported by cvs2svn $
+Revision 1.1  2000/08/27 19:04:46  daniel
+changed from examples to admin module
+
 */
 
 package org.mmbase.module.tools;
@@ -27,7 +30,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Daniel Ockeloen
- * @version0 $Revision: 1.1 $ $Date: 2000-08-27 19:04:46 $ 
+ * @version0 $Revision: 1.2 $ $Date: 2000-08-27 21:00:41 $ 
  */
 public class MMAdminProbe implements Runnable {
 
@@ -37,12 +40,22 @@ public class MMAdminProbe implements Runnable {
 
 	Thread kicker = null;
 	MMAdmin parent=null;
+	long sleeptime=0;
+	long startdelay=2000;
 
 	public MMAdminProbe() {
 	}
 
 	public MMAdminProbe(MMAdmin parent) {
 		this.parent=parent;
+		startdelay=2000;
+		init();
+	}
+
+	public MMAdminProbe(MMAdmin parent,long sleeptime) {
+		this.sleeptime=sleeptime;
+		this.parent=parent;
+		startdelay=0;
 		init();
 	}
 
@@ -98,10 +111,16 @@ public class MMAdminProbe implements Runnable {
 		// ugly pre up polling
 		while (parent.mmb.getState()==false) {
 			try {
-				Thread.sleep(2*1000);
+				Thread.sleep(startdelay);
 			} catch (InterruptedException e){
 			}
 		}
+
+		try {
+			Thread.sleep(sleeptime);
+		} catch (InterruptedException e){
+		}
+
 		parent.probeCall();
 	}
 
