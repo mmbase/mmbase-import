@@ -18,7 +18,7 @@ import java.util.Locale;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Jaco de Groot
- * @version $Id: Cloud.java,v 1.41 2003-08-29 12:12:29 keesj Exp $
+ * @version $Id: Cloud.java,v 1.42 2003-09-03 19:30:02 michiel Exp $
  */
 public interface Cloud {
 
@@ -234,7 +234,7 @@ public interface Cloud {
      * @param sourceManagerName      name of the node manager of the source node
      * @param destinationManagerName name of the node manager of the destination node
      * @param roleName               name of the role
-     * @return                       <code>true</code> if the specified relation manager could not be found
+     * @return                       <code>true</code> if the specified relation manager could be found
      */
     public boolean hasRelationManager(String sourceManagerName, String destinationManagerName, String roleName);
 
@@ -244,11 +244,20 @@ public interface Cloud {
      *
      * @param sourceManage          name of the node manager of the source node
      * @param destinationManager    name of the node manager of the destination node
-     * @param roleName               name of the role
-     * @return                       <code>true</code> if the specified relation manager could not be found
+     * @param roleName              name of the role
+     * @return                      <code>true</code> if the specified relation manager could be found
      * @since MMBase-1.7
      */
     public boolean hasRelationManager(NodeManager sourceManager, NodeManager destinationManager, String roleName);
+
+
+    /**
+     * Returns whether the specified role exists.
+     * @param roleName              name of the role
+     * @return                      <code>true</code> if the specified role could  be found
+     * @since MMBase-1.7
+     */
+    public boolean hasRole(String roleName);
 
 
     /**

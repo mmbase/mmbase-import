@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.103 2003-09-02 22:16:55 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.104 2003-09-03 19:30:02 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -360,6 +360,12 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
         int n2 = typedef.getIntValue(destinationManagerName);
         if (n2 == -1) return false;
         return getRelationManager(n1, n2, r) != null;
+    }
+
+    public boolean hasRole(String roleName) {
+        int r = BasicCloudContext.mmb.getRelDef().getNumberByName(roleName);
+        if (r == -1)  return false;
+        return true;        
     }
 
     public boolean  hasRelationManager(NodeManager source, NodeManager destination, String roleName) {
