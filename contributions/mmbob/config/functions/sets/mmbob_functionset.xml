@@ -98,6 +98,57 @@
 		</return> 
 	</function>
 
+	<function name="getQuotaInfo">
+		<description>Provide quota info on a poster</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getQuotaInfo</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="Id for poster we want (string/account field)" />
+		<param name="barsize" type="int" description="total size of the wanted used bar" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="getMailboxInfo">
+		<description>Provide info on a mailbox</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getMailboxInfo</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="Id for poster we want (string/account field)" />
+		<param name="mailboxid" type="String" description="Id for mailbox we want" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
+
+	<function name="signalMailboxChange">
+		<description>signal change on a mailbox</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>signalMailboxChange</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="posterid" type="int" description="Id for poster we want (string/account field)" />
+		<param name="mailboxid" type="String" description="Id for mailbox we want" />
+		<return type="Boolean"> 
+		</return> 
+	</function>
+
+
+	<function name="forumLogin">
+		<description>get/check login of a user</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>forumLogin</method>
+		<param name="forumid" type="String" description="MMBase node number of the forum" />
+		<param name="account" type="String" description="account" />
+		<param name="password" type="String" description="password" />
+		<return type="Node"> 
+		</return> 
+	</function>
+
 	<function name="newPost">
 		<description>add a new post (postthread+1 posting) in a postarea, use postReply for all following postings in the postthread</description>
 		<type>class</type>
@@ -324,7 +375,6 @@
 			<field name="lastposttime" type="int" description="Time of the last posting in this postarea, -1 if no posting was done sofar" />
 			<field name="lastsubject" type="String" description="Subject of the last postthread that changed in this postarea" />
 			<field name="isadministrator" type="String" description="Is the posterid given a administrator of this forum ?  true/false." />
-                        <field name="ismoderator" type="String" description="Is the posterid given a moderator of this postarea ?  true/false." />
 			<field name="active_id" type="int" description="MMBase node number of active Poster (on the page)" />
 			<field name="active_account" type="String" description="Account name of active poster" />
 			<field name="active_firstname" type="String" description="Firstname of the active poster" />
@@ -535,6 +585,24 @@
 		<param name="forumid" type="String" description="id of the forum we are in" />
 		<param name="posterid" type="int" description="id of the poster that has changed" />
 		<return type="Boolean"> 
+		</return> 
+	</function>
+
+	<function name="getDefaultPassword">
+		<description>default create account for this forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getDefaultPassword</method>
+		<return type="String"> 
+		</return> 
+	</function>
+
+	<function name="getDefaultAccount">
+		<description>default create account for this forum</description>
+		<type>class</type>
+		<class>org.mmbase.applications.mmbob.gui.Controller</class>
+		<method>getDefaultAccount</method>
+		<return type="String"> 
 		</return> 
 	</function>
 </functionset>

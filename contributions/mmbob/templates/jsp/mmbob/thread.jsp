@@ -25,22 +25,6 @@
 </mm:present>
 <!-- end action check -->
 
-<mm:node number="$postthreadid">
-  <mm:import id="threadstate"><mm:field name="state" /></mm:import>
-  <mm:import id="threadmood"><mm:field name="mood" /></mm:import>
-  <mm:import id="threadtype"><mm:field name="type" /></mm:import>
-</mm:node>
-
-<%--Check if the poster is an moderator --%>
-<mm:nodefunction set="mmbob" name="getPostAreaInfo" referids="forumid,postareaid,posterid,page">
-  <mm:import id="ismoderator"><mm:field name="ismoderator" /></mm:import>
-</mm:nodefunction>
-
-<%-- reset the threadstate if the poster is a moderator --%>
-<mm:compare referid="ismoderator" value="true">
-  <mm:import reset="true" id="threadstate">normal</mm:import>
-</mm:compare>
-
 <center>
 <mm:include page="path.jsp?type=postthread" />
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="95%">
@@ -79,13 +63,10 @@
 			<mm:remove referid="toid" />
 			<mm:import id="toid"><mm:field name="posterid" /></mm:import>
 			<mm:import id="postingid"><mm:field name="id" /></mm:import>
-                                
-                           <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
-                           <mm:compare referid="threadstate" value="closed" inverse="true">
-                              <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
-                           </mm:compare>
+                                <a href="<mm:url page="newprivatemessage.jsp" referids="forumid,postareaid,postthreadid,postingid,toid" />"><img src="<mm:write referid="image_privatemsg" />"  border="0" /></a>
+            <a href="<mm:url page="posting.jsp" referids="forumid,postareaid,postthreadid,posterid,postingid" />"><img src="<mm:write referid="image_quotemsg" />"  border="0" /></a>
 		     
-			   <mm:field name="ismoderator">
+			<mm:field name="ismoderator">
 				<mm:compare value="true">
   				<a href="<mm:url page="editpost.jsp">
 				<mm:param name="forumid" value="$forumid" />
@@ -104,8 +85,7 @@
 				</mm:compare>
 			</mm:field>
 			&nbsp;
-                        <mm:compare referid="threadstate" value="closed" inverse="true">
-			  <mm:field name="isowner">
+			<mm:field name="isowner">
 				<mm:compare value="true">
 				<mm:remove referid="postingid" />
 				<mm:import id="postingid"><mm:field name="id" /></mm:import>
@@ -117,31 +97,23 @@
 				</mm:url>"><img src="<mm:write referid="image_editmsg" />"  border="0" /></a>
 				</mm:compare>
 			</mm:field>
-                        </mm:compare>
 
 			</td>
 			</tr>
 			<tr>
 			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
-                        <p>
-                        <mm:field name="guest">
-                        <mm:compare value="true">
-				<b><mm:field name="poster" /></b>
-                        </mm:compare>
-
+			<b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />"><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
+	    <mm:field name="avatar">
+		<mm:compare value="-1" inverse="true">
+               <mm:node number="$_">
+                 <img src="<mm:image template="s(80x80)" />" width="80" border="0">
+               </mm:node>
+		</mm:compare>
+	    </mm:field>
+			</a>
+			<p />
+			<mm:field name="guest">
 			<mm:compare value="true" inverse="true">
-			
-                            <b><a href="profile.jsp?forumid=<mm:write referid="forumid" />&postareaid=<mm:write referid="postareaid" />&type=poster_thread&posterid=<mm:field name="posterid" />&postthreadid=<mm:write referid="postthreadid" />"><mm:field name="poster" /></b>  (<mm:field name="firstname" /> <mm:field name="lastname" />)<br />
-                            <mm:field name="avatar">
-                              <mm:compare value="-1" inverse="true">
-                                <mm:node number="$_">
-                                  <img src="<mm:image template="s(80x80)" />" width="80" border="0">
-                                </mm:node>
-                              </mm:compare>
-                            </mm:field>
-                        </a>
-                        <p />
-
 			Level : <mm:field name="level" /><br />
 			Posts : <mm:field name="accountpostcount" /><br />
 			Geslacht : <mm:field name="gender" /><br />
@@ -149,30 +121,22 @@
 			Lid sinds : <mm:field name="firstlogin"><mm:time format="d MMMM  yyyy" /></mm:field><br />
 			Laatste bezoek : <mm:field name="lastseen"><mm:time format="d/MM/yy HH:mm" /> </mm:field><br />
 			</mm:compare>
+			<mm:compare value="true">
+			</mm:compare>
 			</mm:field>
 			<br /><br /><br /><br /><br />
-                        </p>
 			</td>
 			<td class="<mm:write referid="tdvar" />" valign="top" align="left">
 			<mm:field name="edittime"><mm:compare value="-1" inverse="true">** Laatste keer aangepast op : <mm:field name="edittime"><mm:time format="MMMM d, yyyy, HH:mm:ss" /></mm:field></mm:compare><p /></mm:field>
            
             <mm:node referid="postingid">
 
-            <mm:even> 
-              <mm:formatter xslt="xslt/posting2xhtmlDark.xslt">
-                <mm:function referids="imagecontext,themeid" name="escapesmilies">
-                <mm:write/>
-                </mm:function>
-              </mm:formatter>
-            </mm:even>
-            <mm:odd>
-               <mm:formatter xslt="xslt/posting2xhtmlLight.xslt">
-                <mm:function referids="imagecontext,themeid" name="escapesmilies">
-                <mm:write/>
-                </mm:function>
-              </mm:formatter>
-            </mm:odd> 
+            <mm:formatter xslt="xslt/posting2xhtml.xslt">
 
+            <mm:function referids="imagecontext,themeid" name="escapesmilies">
+            <mm:write/>
+            </mm:function>
+            </mm:formatter>
             </mm:node>
 
 			<br /><br /><br /><br /><br />
@@ -193,8 +157,6 @@
 
 
 <mm:compare referid="lastpage" value="true">
-<mm:compare referid="threadstate" value="closed" inverse="true">
-
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 10px;" width="85%">
    <a name="reply" />
   <tr><th colspan="3">snelle reactie</th></tr>
@@ -218,7 +180,6 @@
 	</td></tr>
   </form>
 </table>
-</mm:compare>
 </mm:compare>
 <p />
 <p />

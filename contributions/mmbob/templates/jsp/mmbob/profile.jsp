@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm"%>
 
 <mm:cloud sessionname="forum">
@@ -23,6 +22,7 @@
 </mm:present>
 <%-- end action check --%>
 
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>MMBase Forum Profile</title>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
@@ -248,13 +248,19 @@
             <mm:fieldlist nodetype="images" fields="handle">
             <mm:fieldinfo type="input"/>
             </mm:fieldlist>
-            <input type="submit" name="addavatar" value="Upload" />
           </span>
         </div>
         <div class="row">
           <span class="label">Selecteer avatar uit de lijst</span>
           <span class="formw">
             <input type="submit" name="selectavatar" value="Selecteer"/>
+          </span>
+        </div>
+     
+        <div class="row">
+          <span class="label"></span>
+          <span class="formw">
+            <input type="submit" name="addavatar" value="Bewaren" />
           </span>
         </div>
 
