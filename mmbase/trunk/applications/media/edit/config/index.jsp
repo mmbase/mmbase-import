@@ -24,16 +24,6 @@
          </select></nobr>
          </td>
      </tr>
-     <tr><td>Format</td>  
-         <td>
-          <select name="format">
-           <mm:write referid="config.format">
-             <option value="any" <mm:compare value="any">selected="selected"</mm:compare>>Any</option>
-             <option value="rm"  <mm:compare value="rm">selected="selected"</mm:compare>>Real audio</option>
-             <option value="asf" <mm:compare value="asf">selected="selected"</mm:compare>>Windows Media</option>
-           </mm:write>
-         </select>
-         </td></tr>
      <tr><td>Quality</td>  
          <td>
           <select name="quality">
