@@ -13,7 +13,7 @@
 <mm:import externid="ok" />
 <mm:import externid="node_number" />
 
-<mm:import id="redirectTo"><mm:url escapeamps="false"  page="<%=peek(urlStack)%>"><mm:param name="nopush" value="url" /></mm:url></mm:import>
+<mm:import id="redirectTo"><mm:url escapeamps="false"  page="<%=peek(urlStack)%>"><% if (urlStack.size() > 1) { %><mm:param name="nopush" value="url" /><% } %></mm:url></mm:import>
 
 <mm:present referid="cancel">
     <!-- do nothing,... will be redirected -->

@@ -60,12 +60,12 @@
 
 <mm:listnodescontainer type="$node_type">
 
-<mm:present referid="search">  
-
-  <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
-    <mm:fieldinfo type="usesearchinput" /><%-- 'usesearchinput' can add constraints to the surrounding container --%>
-  </mm:fieldlist>             
-
+<mm:present referid="search">
+  <mm:context>
+    <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
+      <mm:fieldinfo type="usesearchinput" /><%-- 'usesearchinput' can add constraints to the surrounding container --%>
+    </mm:fieldlist>             
+  </mm:context>
 </mm:present>
 
 <%-- apply age-constraint always --%>
@@ -100,7 +100,7 @@
         <!--pass all search field values -->
         <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
            <mm:fieldinfo type="reusesearchinput" />
-        </mm:fieldlist>
+        </mm:fieldlist>        
        </mm:url>' ><mm:index />
       <mm:last>
          <span class="previous"></span><span class="alt">[&lt;-previous page]</span>
@@ -119,7 +119,7 @@
       <mm:nextbatches max="21">
        <mm:index>
        <mm:compare value="21" inverse="true">
-       <a href='<mm:url referids="node,node_type,role_name,direction,orderby">
+       <a href='<mm:url referids="node,node_type,role_name,direction,orderby,search">
        <mm:param name="page"><mm:index /></mm:param>
         <!--pass all search field values -->
          <mm:fieldlist id="search_form" nodetype="$node_type" type="search">
@@ -150,7 +150,7 @@
 <a name="searchresult" />
 <table width="100%" class="list"><!-- list table -->      
   <tr align="left"><!-- header -->
-         <th>Gui()</th>
+  <th>Gui()</th>
     <mm:context>
     <mm:fieldlist nodetype="$node_type" type="list" jspvar="field">
          <% if (field.hasIndex()) { %>
@@ -179,19 +179,17 @@
 
 <mm:listnodes id="node_number" directions="$directions"  orderby="$orderby" jspvar="sn">
   <tr>
-        <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;</td>
+    <td class="listdata"><mm:nodeinfo type="gui" />&nbsp;</td>
    <mm:fieldlist nodetype="$node_type" type="list">
         <td class="listdata"><mm:fieldinfo type="guivalue" />&nbsp;</td>
    </mm:fieldlist>
     <td class="navigate">
         <mm:maydelete>
-          <mm:countrelations>
-            <mm:compare value="0">
-              <a href="<mm:url referids="node_type,node_number,page" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
-                  <span class="delete"></span><span class="alt">[delete]</span>
-              </a>
-            </mm:compare>
-          </mm:countrelations>
+          <mm:hasrelations inverse="true">
+            <a href="<mm:url referids="node_type,node_number,page" page="commit_node.jsp" ><mm:param name="delete">true</mm:param></mm:url>">
+              <span class="delete"></span><span class="alt">[delete]</span>
+            </a>
+          </mm:hasrelations>
         </mm:maydelete>
         &nbsp;
      </td>    

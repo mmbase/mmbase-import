@@ -1,5 +1,6 @@
 <%@ include file="page_base.jsp" 
-%><mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
+%><mm:content type="text/html" language="$config.lang" expires="0">
+<mm:cloud jspvar="cloud" sessionname="$config.session" method="asis">
   <mm:import id="username"><%= "" + cloud.getUser().getIdentifier() %></mm:import>
 </mm:cloud>
 <mm:notpresent referid="username">
@@ -23,6 +24,5 @@ request.getSession().invalidate(); // start all over again %>
   <input type="submit" name="back" value="back to editors" />
   As: <input type="text" name="username" value="<mm:write referid="username" />" />
 </form>
-<mm:log />
 <%@ include file="footfoot.jsp"  %>
-
+</mm:content>

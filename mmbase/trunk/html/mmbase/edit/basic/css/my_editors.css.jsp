@@ -10,6 +10,8 @@ span.change:before   { content: url(<mm:url page="${myeditors}mmbase-edit.gif" /
 span.delete:before   { content: url(<mm:url page="${myeditors}mmbase-delete.gif" />); }
 span.previous:before { content: url(<mm:url page="${myeditors}mmbase-left.gif" />);   }
 span.next:before     { content: url(<mm:url page="${myeditors}mmbase-right.gif" />);  }
+span.search:before   { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
+span.tree:before   { content: url(<mm:url page="${myeditors}mmbase-search.gif" />);  }
 
 
 body.basic { 
