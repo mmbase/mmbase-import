@@ -124,11 +124,30 @@ This "enhanced" tld file will be converted to a "normal" tld and a html file.
       <name>method</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+      How to get the authentication information. Can have the
+      following values:
+      <ul>
+       <li>'http': will use http protocol to ask name and password
+       from the user. If the 'logon' password is specified too, then
+       logging on will fail if the user does not use that
+       username. The 'pwd' attribute will be ignored.</li>
+       <li>'anonymous': Ignore the 'logon' attribute and create (or
+       reuse) a cloud with an anonymous user</li>
+       <li>'asIs': Ignore the 'logon' attribute and reuse the cloud as
+       it is in the session</li>   
+      </ul>
+      </info>
     </attribute>
     <attribute>
       <name>authenticate</name>
       <required>false</required>
       <rtexprvalue>true</rtexprvalue>
+      <info>
+        The authentitation module which must be used by the security
+        system. The default is "name/password", which will do in most
+        cases.
+      </info>
     </attribute>
   </tag>
   <tag>
@@ -201,27 +220,41 @@ This "enhanced" tld file will be converted to a "normal" tld and a html file.
   <tag>
     <name>field</name>
     <tagclass>org.mmbase.bridge.jsp.taglib.FieldTag</tagclass>
-    <info>Gets the field 'name' from node 'node' (can also be
-    list). 'type' can be specified as well, but you perhaps shouldn't.</info>
+    <info>
+      Gets the field 'name' from node 'node' (can also be
+      list).
+    </info>
     <attribute>
         <name>node</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+	   <p>
+             The 'id' of the node or list from which this field must be
+             taken from.
+           </p>
+	   <p> 
+	     On default this is the node or list which is enclosing
+	     this field.
+	   </p>
+        </info>
     </attribute>
     <attribute>
         <name>name</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+	  The name of the field to get. 
+	</info>
     </attribute>
     <attribute>
         <name>head</name>
         <required>false</required>
         <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    <attribute>
-        <name>type</name>
-        <required>false</required>
-        <rtexprvalue>true</rtexprvalue>
+	<info>
+	  Like 'name', but does not return the value of the field, but
+	  the GUI-name of the field.
+	</info>
     </attribute>
   </tag>
   <tag>
@@ -232,16 +265,26 @@ This "enhanced" tld file will be converted to a "normal" tld and a html file.
         <name>value</name>
         <required>true</required>
         <rtexprvalue>true</rtexprvalue>
+	<info>
+          One of 'first', 'last', 'odd', 'even' or 'changed'.
+	</info>
     </attribute>
     <attribute>
         <name>inverse</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
+	<info>
+	  Inverse the sense of the condition.
+	</info>
     </attribute>
     <attribute>
         <name>list</name>
         <required>false</required>
         <rtexprvalue>false</rtexprvalue>
+	<info>
+	  The id of the list to which this condition must apply
+	  to. Default it it the enclosing one.
+        </info>
     </attribute>
   </tag>
 </taglib>
