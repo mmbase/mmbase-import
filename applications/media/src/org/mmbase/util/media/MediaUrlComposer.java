@@ -64,7 +64,7 @@ public class MediaUrlComposer {
         
         // Evaluate title
         String title = makeRealCompatible(mediafragment.getStringValue("title"));
-        if(title!=null && !title("")) {
+        if(title!=null && !title.equals("")) {
             params.addElement("title="+title);
         }
         
@@ -87,11 +87,11 @@ public class MediaUrlComposer {
         
         // Evaluate start & end
         if(mediaFragmentBuilder.isSubFragment(mediafragment)) {
-            String start = makeRealCompatible(mediafragment.getStringValue("start"));
+            String start = makeRealTime(mediafragment.getLongValue("start"));
             if(start!=null && !start.equals("")) {
                 params.addElement("start="+start);
             }
-            String stop = makeRealCompatible(mediafragment.getStringValue("stop"));
+            String stop = makeRealTime(mediafragment.getLongValue("stop"));
             if(stop!=null && !stop.equals("")) {
                 params.addElement("end="+stop);
             }
@@ -151,5 +151,44 @@ public class MediaUrlComposer {
         }
         return null;
         
+    }
+    
+    /**
+     * Real is using times that look like hh:mm:ss:t, where t is tenths of seconds.
+     * @param time the time in milliseconds
+     * @return the time in real format
+     */
+    public static String makeRealTime(long time) {
+        String ret="";
+        time = time/100;
+        long t=0;
+        
+        // tenths of seconds
+        if(time!=0) {
+            t = time%10;
+            time = time/10;
+            ret = "0."+t;
+        }
+        
+        // seconds
+        if(time!=0) {
+            long sec = time%60;
+            time = time/60;
+            ret = ""+sec+"."+t;
+        }
+        
+        // minutes
+        if(time!=0) {
+            long min = time%60;
+            time = time/60;
+            ret = ""+min+":"+ret;
+        }
+        
+        if(time!=0) {
+            long hour = time%24;
+            time = time/24;
+            ret = ""+hour+":"+ret;
+        }
+        return ret;
     }
 }
