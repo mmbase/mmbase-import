@@ -10,9 +10,7 @@ See http://www.MMBase.org/license
 package org.mmbase.util.xml;
 
 import org.w3c.dom.Element;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Enumeration;
+import java.util.*;
 import java.io.File;
 import org.mmbase.module.core.MMBaseContext;
 
@@ -49,6 +47,6 @@ public class UtilReader extends org.mmbase.util.XMLBasicReader {
 		map.put(name,value);
 	    }
 	}
-        return map;
+        return Collections.unmodifiableMap(map);
     }
 }
