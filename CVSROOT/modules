@@ -25,6 +25,7 @@
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
 
+# $Id: modules,v 1.7 2002-10-09 17:06:44 michiel Exp $
 
 # this will enable you to check out 'src'
 src -d src/org/mmbase mmbase
