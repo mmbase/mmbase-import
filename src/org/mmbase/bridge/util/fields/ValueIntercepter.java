@@ -23,7 +23,7 @@ import java.util.*;
 /**
  *
  * @author Michiel Meeuwissen
- * @version $Id: ValueIntercepter.java,v 1.2 2003-12-21 17:39:49 michiel Exp $
+ * @version $Id: ValueIntercepter.java,v 1.3 2003-12-23 19:58:19 michiel Exp $
  * @since MMBase-1.7
  */
 
@@ -47,7 +47,7 @@ public class ValueIntercepter {
 
     private static final Processor[][] defaultSetProcessor = {
         //set  setString setInteger ... 
-        null,                                                         /* 0=object (does not exist as field type, so this row is empty) */ 
+        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
         {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
         {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
         null,                                                         /* 3 not used */
@@ -59,7 +59,7 @@ public class ValueIntercepter {
         {null, null, null, null, null, null, null, null, null, null}  /* 9=mode */
     };
     private static final Map[][] setProcessor = { // maps with guiType -> Processor
-        null,                                                         /* 0 not used */
+        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
         {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
         {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
         null,                                                         /* 3 not used */
@@ -73,7 +73,7 @@ public class ValueIntercepter {
 
     private static final Processor[][] defaultGetProcessor = {
         //set  setString setInteger ... 
-        null,                                                         /* 0=object (does not exist as field type, so this row is empty) */ 
+        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
         {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
         {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
         null,                                                         /* 3 not used */
@@ -85,7 +85,7 @@ public class ValueIntercepter {
         {null, null, null, null, null, null, null, null, null, null}  /* 9=mode */
     };
     private static final Map[][] getProcessor = { // maps with guiType -> Processor
-        null,                                                         /* 0 not used */
+        {null, null, null, null, null, null, null, null, null, null}, /* 0=object */
         {null, null, null, null, null, null, null, null, null, null}, /* 1=string */
         {null, null, null, null, null, null, null, null, null, null}, /* 2=integer */
         null,                                                         /* 3 not used */
@@ -105,6 +105,11 @@ public class ValueIntercepter {
         } catch (Throwable t) {
             log.error(t.getClass().getName() + ": " + Logging.stackTrace(t));
         }
+    }
+
+    protected static int getType(final String s) {
+        if (s.equals("object")) return 0;
+        return org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(s);
     }
 
     private static Processor createProcessor(XMLBasicReader reader, Element processorElement) {
@@ -165,7 +170,7 @@ public class ValueIntercepter {
         while (e.hasMoreElements()) {
             Element typeElement = (Element) e.nextElement();
             String typeString = typeElement.getAttribute("id");
-            int fieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(typeString);
+            int fieldType =  getType(typeString);
 
             // fill the set-processor for no, or unknown, guitype
             Enumeration f = reader.getChildElements(typeElement, "setprocessor");
@@ -176,7 +181,7 @@ public class ValueIntercepter {
                 if (setTypeString.equals("")) {
                     defaultSetProcessor[fieldType][0] = newProcessor;
                 } else {
-                    int setFieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(setTypeString);
+                    int setFieldType =  getType(setTypeString);
                     defaultSetProcessor[fieldType][setFieldType] = newProcessor;
                 }
                 log.service("Defined for field type " + typeString + "/DEFAULT setprocessor (" + setTypeString + ")" + newProcessor);
@@ -190,7 +195,7 @@ public class ValueIntercepter {
                 if (getTypeString.equals("")) {
                     defaultGetProcessor[fieldType][0] = newProcessor;
                 } else {
-                    int getFieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(getTypeString);
+                    int getFieldType = getType(getTypeString);
                     defaultGetProcessor[fieldType][getFieldType] = newProcessor;
                 }
                 log.service("Defined for field type " + typeString + "/DEFAULT getprocessor (" + getTypeString + ")" + newProcessor);
@@ -210,7 +215,7 @@ public class ValueIntercepter {
                     if (setTypeString.equals("")) {
                         map = setProcessor[fieldType][0];
                     } else {
-                        int setFieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(setTypeString);
+                        int setFieldType = getType(setTypeString);
                         map = setProcessor[fieldType][setFieldType];
                     }
 
@@ -219,7 +224,7 @@ public class ValueIntercepter {
                         if (setTypeString.equals("")) {
                             setProcessor[fieldType][0] = map;
                         } else {
-                            int setFieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(setTypeString);
+                            int setFieldType =  getType(setTypeString);
                             setProcessor[fieldType][setFieldType] = map;
                         }
                     }
@@ -236,7 +241,7 @@ public class ValueIntercepter {
                     if (getTypeString.equals("")) {
                         map = getProcessor[fieldType][0];
                     } else {
-                        int getFieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(getTypeString);
+                        int getFieldType =  getType(getTypeString);
                         map = getProcessor[fieldType][getFieldType];
                     }
 
@@ -245,7 +250,7 @@ public class ValueIntercepter {
                         if (getTypeString.equals("")) {
                             getProcessor[fieldType][0] = map;
                         } else {
-                            int getFieldType =  org.mmbase.module.corebuilders.FieldDefs.getDBTypeId(getTypeString);
+                            int getFieldType =  getType(getTypeString);
                             getProcessor[fieldType][getFieldType] = map;
                         }
                     }
@@ -299,7 +304,7 @@ public class ValueIntercepter {
             }
         }
         if (processor == null) return value;
-        return processor.process(node, value);
+        return processor.process(node, field, value);
         
     }
 
@@ -327,7 +332,7 @@ public class ValueIntercepter {
             }
         }
         if (processor == null) return value;
-        return processor.process(node, value);
+        return processor.process(node, field, value);
         
     }
 

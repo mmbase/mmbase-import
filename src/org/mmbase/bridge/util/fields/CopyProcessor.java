@@ -9,19 +9,19 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.bridge.util.fields;
 
-import org.mmbase.bridge.Node;
+import org.mmbase.bridge.*;
 /**
  * The Processor that does nothing.
  *
  * @author Michiel Meeuwissen
- * @version $Id: CopyProcessor.java,v 1.2 2003-12-09 22:26:17 michiel Exp $
+ * @version $Id: CopyProcessor.java,v 1.3 2003-12-23 19:58:19 michiel Exp $
  * @since MMBase-1.7
  */
 
 public class CopyProcessor implements Processor {
 
 
-    public final Object process(Node node, Object value) {
+    public final Object process(Node node, Field field, Object value) {
         return value;
     }        
 }
