@@ -1,4 +1,13 @@
 <%@ include file="settings.jsp" %><%
+    /**
+     * upload.jsp
+     *
+     * @since    MMBase-1.6
+     * @version  $Id: upload.jsp,v 1.5 2002-05-28 14:15:15 pierre Exp $
+     * @author   Kars Veling
+     * @author   Pierre van Rooden
+     * @author   Michiel Meeuwissen
+     */
 
 String did = request.getParameter("did");
 if (did==null) {
