@@ -2,12 +2,14 @@
 <%@ page contentType="text/html; charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.mmbase.org/mmbase-taglib-1.0" prefix="mm" %>
 <mm:cloud sessionname="forum" username="admin" password="admin2k">
+<mm:content type="text/html" encoding="UTF-8" escaper="entities">
 <%@ include file="thememanager/loadvars.jsp" %>
 <html>
 <head>
    <link rel="stylesheet" type="text/css" href="<mm:write referid="style_default" />" />
    <title>MMBob</title>
-</HEAD>
+</head>
+<body>
 <mm:import externid="forumid" />
 
 <!-- action check -->
@@ -44,47 +46,63 @@
 </mm:compare>
 </mm:present>
 <!-- end action check -->
-<center>
+
+<div class="header">
+    <%@ include file="header.jsp" %>
+</div>
+										      
+<div class="bodypart">
+
 <table cellpadding="0" cellspacing="0" class="list" style="margin-top : 50px;" width="40%">
-	<mm:present referid="mailed">
-  	<form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
-  	<tr><th align="left" ><p />
-	Account informatie gemailed naar : <mm:write referid="wemail" />, <br />
-	Met de informatie uit deze mail kunt u opnieuw inloggen.<p />
-	</th></tr>
-	<tr><td>
-	<center>
-	<input type="submit" value="Terug naar het forum">
-	</form>
-	</td></tr>
-	</mm:present>
-	<mm:notpresent referid="mailed">
-  	<form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
-  	<tr><th colspan="3" align="left" >
-	<mm:present referid="action">
-	<p />
-	<center>	** acount naam niet gevonden ** </center>
-	</mm:present>
-	<p />
-	Geef uw login naam, let op niet uw email adres !<p />
-	Login naam : <input name="wantedaccount" size="15">
-	</th></tr>
-  <tr><td>
-	<input type="hidden" name="action" value="remail">
-	<center>
-	<input type="submit" value="Stuur de mail">
-  	</form>
-	</td>
-	<td>
-  	<form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
-	<p />
-	<center>
-	<input type="submit" value="Laat maar">
-  	</form>
-	</td>
-	</tr>
-	</mm:notpresent>
+<mm:present referid="mailed">
+<form action="<mm:url page="index.jsp" referids="forumid" />" method="post">
+<tr><th align="left" ><p />
+Account informatie gemailed naar : <mm:write referid="wemail" />, <br />
+Met de informatie uit deze mail kunt u opnieuw inloggen.<p />
+</th></tr>
+<tr><td>
+<center>
+<input type="submit" value="Terug naar het forum">
+</form>
+</td></tr>
+</mm:present>
+<mm:notpresent referid="mailed">
+<form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
+<tr><th colspan="3" align="left" >
+<mm:present referid="action">
+<p />
+<center>	** acount naam niet gevonden ** </center>
+</mm:present>
+<p />
+Geef uw login naam, let op niet uw email adres !<p />
+Login naam : <input name="wantedaccount" size="15">
+</th></tr>
+<tr><td>
+<input type="hidden" name="action" value="remail">
+<center>
+<input type="submit" value="Stuur de mail">
+</form>
+</td>
+<td>
+<form action="<mm:url page="remail.jsp" referids="forumid" />" method="post">
+<p />
+<center>
+<input type="submit" value="Laat maar">
+</form>
+</td>
+</tr>
+</mm:notpresent>
 
 </table>
+
+</div>
+
+<div class="footer">
+  <%@ include file="footer.jsp" %>
+</div>
+                                                                                              
+</body>
+</html>
+</mm:content>
 </mm:cloud>
 

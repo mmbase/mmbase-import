@@ -244,8 +244,8 @@
     <mm:import externid="pid$forumid">-1</mm:import>
     <mm:compare referid="pid$forumid" value="-1" inverse="true">
        <mm:node referid="pid$forumid"> 
-         <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="pid$forumid" />"><mm:field name="account" /></a> 
-         <!--<a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a>-->
+         login: <a href="profile.jsp?forumid=<mm:write referid="forumid" />&posterid=<mm:write referid="pid$forumid" />"><mm:field name="account" /></a> 
+         [<a href="logout.jsp?forumid=<mm:write referid="forumid" />">Logout</a>]
        </mm:node> 
     </mm:compare>
     <mm:compare referid="pid$forumid" value="-1" >
