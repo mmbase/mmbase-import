@@ -26,7 +26,7 @@ import org.w3c.dom.Document;
  * @javadoc
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNode.java,v 1.72 2002-10-15 15:28:29 pierre Exp $
+ * @version $Id: BasicNode.java,v 1.73 2002-10-16 10:02:23 pierre Exp $
  */
 public class BasicNode implements Node, Comparable, SizeMeasurable {
 
@@ -422,6 +422,14 @@ public class BasicNode implements Node, Comparable, SizeMeasurable {
 
     public String getStringValue(String attribute) {
         return noderef.getStringValue(attribute);
+    }
+
+    public FieldValue getFieldValue(String fieldName) throws NotFoundException {
+        return new BasicFieldValue(this,getNodeManager().getField(fieldName));
+    }
+
+    public FieldValue getFieldValue(Field field) {
+        return new BasicFieldValue(this,field);
     }
 
     public FieldValue getFunctionValue(String functionName, List arguments) {

@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * the use of an administration module (which is why we do not include setXXX methods here).
  * @author Rob Vermeulen
  * @author Pierre van Rooden
- * @version $Id: BasicNodeManager.java,v 1.41 2002-10-15 15:28:29 pierre Exp $
+ * @version $Id: BasicNodeManager.java,v 1.42 2002-10-16 10:02:23 pierre Exp $
  */
 public class BasicNodeManager extends BasicNode implements NodeManager, Comparable {
     private static Logger log = Logging.getLoggerInstance(BasicNodeManager.class.getName());
@@ -175,9 +175,14 @@ public class BasicNodeManager extends BasicNode implements NodeManager, Comparab
         return getFields();
     }
 
-    public Field getField(String fieldName) {
+    public Field getField(String fieldName) throws NotFoundException {
         Field f= (Field)fieldTypes.get(fieldName);
+        if (f==null) throw new NotFoundException("Field "+fieldName+" does not exist.");
         return f;
+    }
+
+    public boolean hasField(String fieldName) {
+        return fieldTypes.get(fieldName)!=null;
     }
 
     public NodeList getList(String constraints, String orderby, String directions) {

@@ -40,7 +40,7 @@ public class ImageTag extends FieldTag {
     public int doStartTag() throws JspTagException {
         node = null;
         Node node = getNodeVar();
-        if (node.getNodeManager().getField("handle") == null) {
+        if (!node.getNodeManager().hasField("handle")) {
             throw new JspTagException("Found parent node does not have 'handle' field, therefore cannot be a image. Perhaps you have the wrong node, perhaps you'd have to use the 'node' attribute?");
         }
 
@@ -49,17 +49,17 @@ public class ImageTag extends FieldTag {
         String context = req.getContextPath();
 
         /* perhaps 'getSessionName' should be added to CloudProvider
-         * EXPERIMENTAL 
+         * EXPERIMENTAL
          */
         String sessionName = "";
 
-        if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) { 
+        if(! getCloud().getUser().getRank().equals(org.mmbase.security.Rank.ANONYMOUS.toString())) {
             sessionName = "cloud_mmbase";
             CloudTag ct = null;
             ct = (CloudTag) findParentTag("org.mmbase.bridge.jsp.taglib.CloudTag", null, false);
             if (ct != null) {
                 sessionName = ct.getSessionName();
-            }        
+            }
         }
 
         String number;
