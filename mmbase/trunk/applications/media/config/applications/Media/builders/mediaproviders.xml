@@ -25,8 +25,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">
-          An name for this provider, which can be used as an
-          identifier to the user.
+          An name for this provider, which can be used as an identifier to the user.
         </description>
         <description xml:lang="nl">
           Naam van deze media-server.
@@ -52,8 +51,7 @@
     <field>
       <descriptions>
         <description xml:lang="en">
-          The root-url is in fact the servername of the provider which
-          serves the stream.
+          The root-url is in fact the servername of the provider which serves the stream.
         </description>
         <description xml:lang="nl">
           De naam van deze media-server.

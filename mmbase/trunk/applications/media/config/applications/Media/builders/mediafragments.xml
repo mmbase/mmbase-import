@@ -22,6 +22,10 @@
 
   <fieldlist>
     <field>
+      <descriptions>
+       <description xml:lang="nl">Een beschrijvende titel voor dit fragment</description>
+       <description xml:lang="en">A descriptive title</description>
+      </descriptions>
       <gui>
         <guiname xml:lang="nl">Titel</guiname>
         <guiname xml:lang="en">Title</guiname>
@@ -94,10 +98,14 @@
 
     <!-- <field> 'start'  -->
     <field>
+       <descriptions>
+         <description xml:lang="nl">Starttijd (in millisecondes na het begin van de 'bron' stream)</description>
+         <description xml:lang="en">Start time (in milliseconds after the start of the 'source' stream)</description>
+       </descriptions>
       <gui>
         <guiname xml:lang="nl">Start</guiname>
         <guiname xml:lang="en">Start</guiname>
-	<guitype>relativetime</guitype>
+      	<guitype>relativetime</guitype>
       </gui>
       <editor>
         <positions>
@@ -112,6 +120,10 @@
 
     <!-- <field> 'stop'  -->
     <field>
+       <descriptions>
+         <description xml:lang="nl">Stoptijd (in millisecondes na het eind van de 'bron' stream)</description>
+         <description xml:lang="en">Stop time (in milliseconds after the end of the 'source' stream)</description>
+       </descriptions>
       <gui>
         <guiname xml:lang="nl">Stop</guiname>
         <guiname xml:lang="en">Stop</guiname>
@@ -130,6 +142,10 @@
 
     <!-- <field> 'length'  -->
     <field>
+       <descriptions>
+         <description xml:lang="nl">Duur van dit clipje (ms)</description>
+         <description xml:lang="en">Duration of this fragment (ms)</description>
+       </descriptions>
       <gui>
         <guiname xml:lang="nl">Lengte</guiname>
         <guiname xml:lang="en">Length</guiname>
@@ -148,6 +164,10 @@
     
     <!-- <field> 'class'  -->
     <field>
+       <descriptions>
+         <description xml:lang="nl">Niet-te-gebruiken?</description>
+         <description xml:lang="en">Deprecated?</description>
+       </descriptions>
       <gui>
         <guiname xml:lang="en">Classification</guiname>
         <guiname xml:lang="nl">Classificatie</guiname>
