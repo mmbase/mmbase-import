@@ -21,7 +21,7 @@ import org.mmbase.util.logging.Logging;
 
 /**
  * @author Pierre van Rooden
- * @version $Id: StorageReader.java,v 1.7 2003-08-01 14:16:13 pierre Exp $
+ * @version $Id: StorageReader.java,v 1.8 2003-08-04 10:16:05 pierre Exp $
  */
 public class StorageReader extends DocumentReader  {
 
@@ -78,7 +78,8 @@ public class StorageReader extends DocumentReader  {
     /**
      * Attempt to load a StorageManager class, using the classname as given in the configuration.
      * The method verifies whether the instantiated class is of the correct version.
-     * @return the storage manager Class
+     * @return the storage manager Class, or null if none was configured
+     * @throws StorageConfigurationException if the factory version did not match, or the class configured is invalid
      */
     public Class getStorageManagerClass() throws StorageConfigurationException {
         Element root = document.getDocumentElement();
@@ -137,7 +138,30 @@ public class StorageReader extends DocumentReader  {
                 throw new StorageConfigurationException(ie);
             }
         } else {
-            throw new StorageConfigurationException("No StorageManager class specified.");
+            return null;
+        }
+    }
+
+    /**
+     * Attempt to load a SearchQueryHandler class, using the classname as given in the configuration.
+     * @return the SearchQueryHandler class, or null if none was configured
+     * @throws StorageConfigurationException if the class configured is invalid
+     */
+    public Class getSearchQueryHandlerClass() throws StorageConfigurationException {
+        // override if otherwise specified
+        Element root = document.getDocumentElement();
+        NodeList handlerTagList = root.getElementsByTagName("searchqueryhandler");
+        if (handlerTagList.getLength()>0) {
+            Element handlerTag = (Element)handlerTagList.item(0);
+            String queryHandlerClassName = handlerTag.getAttribute("classname");
+            //  get class
+            try {
+                return Class.forName(queryHandlerClassName);
+            } catch (ClassNotFoundException cnfe) {
+                throw new StorageConfigurationException(cnfe);
+            }
+        } else {
+            return null;
         }
     }
 

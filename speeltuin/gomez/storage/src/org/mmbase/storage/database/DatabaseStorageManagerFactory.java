@@ -42,14 +42,15 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManagerFactory.java,v 1.9 2003-08-01 14:16:12 pierre Exp $
+ * @version $Id: DatabaseStorageManagerFactory.java,v 1.10 2003-08-04 10:16:04 pierre Exp $
  */
 public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory implements StorageManagerFactory {
 
     // logger
     private static Logger log = Logging.getLoggerInstance(DatabaseStorageManagerFactory.class);
 
-    private static final String STANDARD_SQL_KEYWORDS =
+    // standard sql reserved words
+    private final static String STANDARD_SQL_KEYWORDS =
       "ABSOLUTE,ACTION,ADD,ALL,ALLOCATE,ALTER,AND,ANY,ARE,AS,ASC,ASSERTION,AT,AUTHORIZATION,AVG,BEGIN,BETWEEN,BIT,BIT_LENGTH,"+
       "BOTH,BY,CASCADE,CASCADED,CASE,CAST,CATALOG,CHAR,CHARACTER,CHAR_LENGTH,CHARACTER_LENGTH,CHECK,CLOSE,COALESCE,COLLATE,COLLATION,"+
       "COLUMN,COMMIT,CONNECT,CONNECTION,CONSTRAINT,CONSTRAINTS,CONTINUE,CONVERT,CORRESPONDING,COUNT,CREATE,CROSS,CURRENT,CURRENT_DATE,"+
@@ -64,6 +65,10 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
       "SUM,SYSTEM_USER,TABLE,TEMPORARY,THEN,TIME,TIMESTAMP,TIMEZONE_HOUR,TIMEZONE_MINUTE,TO,TRAILING,TRANSACTION,TRANSLATE,TRANSLATION,"+
       "TRIM,TRUE,UNION,UNIQUE,UNKNOWN,UPDATE,UPPER,USAGE,USER,USING,VALUE,VALUES,VARCHAR,VARYING,VIEW,WHEN,WHENEVER,WHERE,WITH,WORK,"+
       "WRITE,YEAR,ZONE";
+    
+    // default sql handler. Copied from org.mmbase.module.databse.support.BaseJdbc2Node
+    private final static Class DEFAULT_SQL_HANDLER =
+        org.mmbase.storage.search.implementation.database.BasicSqlHandler.class;
     
     /**
      * The datasource in use by this factory.
@@ -166,6 +171,10 @@ public class DatabaseStorageManagerFactory extends AbstractStorageManagerFactory
         } catch (SQLException se) {
             throw new StorageInaccessibleException(se);
         }
+        
+        // default searchquery handler
+        queryHandlerClass = DEFAULT_SQL_HANDLER;
+        
         // load configuration data.
         super.load();
     }

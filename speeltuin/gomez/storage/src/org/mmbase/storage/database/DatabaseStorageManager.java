@@ -31,7 +31,7 @@ import org.mmbase.util.logging.Logging;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: DatabaseStorageManager.java,v 1.16 2003-08-01 15:00:21 pierre Exp $
+ * @version $Id: DatabaseStorageManager.java,v 1.17 2003-08-04 10:16:04 pierre Exp $
  */
 public abstract class DatabaseStorageManager implements StorageManager {
 
@@ -71,17 +71,19 @@ public abstract class DatabaseStorageManager implements StorageManager {
      * Pool of changed nodes in a transaction
      */
     protected Map changes;
-
+    
     /**
      * Constructor
      */
     public DatabaseStorageManager() {
     }
 
+    // javadoc is inherited
     public double getVersion() {
         return 1.0;
     }
-
+    
+    // javadoc is inherited
     public void init(StorageManagerFactory factory) throws StorageException {
         this.factory = factory;
         dataSource = (DataSource)factory.getAttribute("database.dataSource");
@@ -125,6 +127,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public void beginTransaction() throws StorageException {
         if (inTransaction) {
             throw new StorageException("Cannot start Transaction when one is already active.");
@@ -144,6 +147,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         inTransaction = true;
     }
 
+    // javadoc is inherited
     public void commit() throws StorageException {
         if (!inTransaction) {
             throw new StorageException("No transaction started.");
@@ -162,6 +166,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public boolean rollback() throws StorageException {
         if (!inTransaction) {
             throw new StorageException("No transaction started.");
@@ -226,6 +231,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public String getStringValue(MMObjectNode node, FieldDefs field) throws StorageException {
         try {
             MMObjectBuilder builder = node.getBuilder();
@@ -279,6 +285,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         return field.getDBType() == FieldDefs.TYPE_BYTE;
     }
 
+    // javadoc is inherited
     public byte[] getBinaryValue(MMObjectNode node, FieldDefs field) throws StorageException {
         if (factory.hasOption(Attributes.STORE_BINARY_AS_FILE)) {
             return readBinaryFromFile(node, field);
@@ -390,6 +397,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public int insert(MMObjectNode node) throws StorageException {
         // assign a new number if the node has not yet been assigned one
         if (node.getNumber() == -1) {
@@ -467,6 +475,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         return node.getNumber();
     }
 
+    // javadoc is inherited
     public void commit(MMObjectNode node) throws StorageException {
         MMObjectBuilder builder = node.getBuilder();
         // precommit call, needed to convert or add things before a save
@@ -711,6 +720,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         statement.setString(index, value);
     }
 
+    // javadoc is inherited
     public void delete(MMObjectNode node) throws StorageException {
         delete(node,node.getBuilder());
     }
@@ -743,6 +753,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         commitChange(node,"d");
     }
 
+    // javadoc is inherited
     public MMObjectNode getNode(MMObjectBuilder builder, int number) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE, Schemes.SELECT_NODE_DEFAULT);
         try {
@@ -828,6 +839,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public int getNodeType(int number) throws StorageException {
         Scheme scheme = factory.getScheme(Schemes.SELECT_NODE_TYPE, Schemes.SELECT_NODE_TYPE_DEFAULT);
         try {
@@ -907,6 +919,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         return parent;
     }
 
+    // javadoc is inherited
     public void create(MMObjectBuilder builder) throws StorageException {
         if (log.isDebugEnabled()) {
             log.debug("Creating a table for " + builder);
@@ -1075,6 +1088,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public void create() throws StorageException {
         MMBase mmbase = factory.getMMBase();
         create(getRootBuilder()); 
@@ -1091,6 +1105,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
     abstract protected void createSequence() throws StorageException;
     
     
+    // javadoc is inherited
     public boolean exists(MMObjectBuilder builder) throws StorageException {
         return exists((String)factory.getStorageIdentifier(builder));
     }
@@ -1114,10 +1129,12 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public boolean exists() throws StorageException {
         return exists(getRootBuilder());
     }
 
+    // javadoc is inherited
     public int size(MMObjectBuilder builder) throws StorageException {
         try {
             getActiveConnection();
@@ -1133,10 +1150,12 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public int size() throws StorageException {
         return size(getRootBuilder());
     }
 
+    // javadoc is inherited
     public void drop(MMObjectBuilder builder) throws StorageException {
         int size = size(builder);
         if (size != 0) {
@@ -1161,6 +1180,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         }
     }
 
+    // javadoc is inherited
     public void addField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
         // test if you can make changes 
         // test if this is a field to add (persistent/nobinary)
@@ -1172,6 +1192,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         throw new StorageException("Operation not supported");
     }
 
+    // javadoc is inherited
     public void removeField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
         // test if you can make changes 
         // test if this is a field to remove (persistent/nobinary)
@@ -1183,6 +1204,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         throw new StorageException("Operation not supported");
     }
 
+    // javadoc is inherited
     public void changeField(MMObjectBuilder builder, FieldDefs field) throws StorageException {
         // test if you can make changes 
         // remove the composite key (in case the key property has changed) Scheme: DROP_INDEX
@@ -1193,6 +1215,7 @@ public abstract class DatabaseStorageManager implements StorageManager {
         throw new StorageException("Operation not supported");
     }
 
+    // javadoc is inherited
     public void updateStorage(MMObjectBuilder builder) throws StorageException {
         // test if you can make changes 
         // iterate through the fields,

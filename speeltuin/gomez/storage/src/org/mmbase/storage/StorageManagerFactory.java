@@ -12,6 +12,7 @@ package org.mmbase.storage;
 import java.util.List;
 import java.util.Map;
 
+import org.mmbase.storage.search.SearchQueryHandler;
 import org.mmbase.storage.util.*;
 
 import org.mmbase.module.core.MMBase;
@@ -22,7 +23,7 @@ import org.mmbase.module.core.MMBase;
  *
  * @author Pierre van Rooden
  * @since MMBase-1.7
- * @version $Id: StorageManagerFactory.java,v 1.12 2003-07-31 09:53:36 pierre Exp $
+ * @version $Id: StorageManagerFactory.java,v 1.13 2003-08-04 10:16:04 pierre Exp $
  */
 public interface StorageManagerFactory {
 
@@ -49,6 +50,16 @@ public interface StorageManagerFactory {
      * @throws StorageException when the storagemanager cannot be created
      */
     public StorageManager getStorageManager() throws StorageException;
+
+    /**
+     * Obtains a SearchQueryHandler from the factory.
+     * This provides ways to query for data using the SearchQuery interface.
+     * Note that  cannot run the querys on a transaction (since SearchQuery does not support them).
+     *
+     * @return a SearchQueryHandler instance
+     * @throws StorageException when the handler cannot be created
+     */
+    public SearchQueryHandler getSearchQueryHandler() throws StorageException;
 
     /**
      * Locates and opens the storage configuration document.
