@@ -8,9 +8,12 @@ See http://www.MMBase.org/license
 
 */
 /*
-	$Id: MultiRelations.java,v 1.14 2000-11-16 18:04:07 vpro Exp $
+	$Id: MultiRelations.java,v 1.15 2000-12-02 17:46:52 daniel Exp $
 
 	$Log: not supported by cvs2svn $
+	Revision 1.14  2000/11/16 18:04:07  vpro
+	(marcel) fixed bug when multiple relations between objects where allowed and LISTed
+	
 	Revision 1.13  2000/11/09 12:16:49  eduard
 	Eduard : searchMultiLevelVector now supports OAliases
 	
@@ -61,7 +64,7 @@ import org.mmbase.util.*;
 
 /**
  * @author Rico Jansen
- * @version $Id: MultiRelations.java,v 1.14 2000-11-16 18:04:07 vpro Exp $
+ * @version $Id: MultiRelations.java,v 1.15 2000-12-02 17:46:52 daniel Exp $
  */
 public class MultiRelations extends MMObjectBuilder {
 	
@@ -413,6 +416,7 @@ public class MultiRelations extends MMObjectBuilder {
 				}
 				if (idx>=0) {
 					field=val.substring(pos+1); // the field
+					field=mmb.getDatabase().getAllowedField(field);
 					if (!result.equals("")) result+=", ";
 					result+=""+idx2char(idx)+"."+field;	
 				}
@@ -594,9 +598,9 @@ public class MultiRelations extends MMObjectBuilder {
 
 			if (!result.toString().equals("")) result.append(" AND ");
 			if (insrel.reldefCorrect(so,ro,rnum)) {
-				result.append(idx2char(i)+".number="+idx2char(i+1)+".snumber AND "+idx2char(i+2)+".number="+idx2char(i+1)+".dnumber");
+				result.append(idx2char(i)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".snumber AND "+idx2char(i+2)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".dnumber");
 			} else {
-				result.append(idx2char(i)+".number="+idx2char(i+1)+".dnumber AND "+idx2char(i+2)+".number="+idx2char(i+1)+".snumber");
+				result.append(idx2char(i)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".dnumber AND "+idx2char(i+2)+"."+mmb.getDatabase().getNumberString()+"="+idx2char(i+1)+".snumber");
 
 			}
 		}
@@ -613,14 +617,14 @@ public class MultiRelations extends MMObjectBuilder {
 
 		snode=Strip.DoubleQuote((String)snodes.elementAt(0),Strip.BOTH);
 		if (snodes.size()>1) {
-			bb.append(bstr+".number in ("+snode);
+			bb.append(bstr+"."+mmb.getDatabase().getNumberString()+" in ("+snode);
 			for (int i=1;i<snodes.size();i++) {
 				str=Strip.DoubleQuote((String)snodes.elementAt(i),Strip.BOTH);
 				bb.append(","+str);
 			}
 			bb.append(")");
 		} else {
-			bb.append(bstr+".number="+snode);
+			bb.append(bstr+"."+mmb.getDatabase().getNumberString()+"="+snode);
 		}
 		return(bb.toString());
 	}
@@ -642,8 +646,7 @@ public class MultiRelations extends MMObjectBuilder {
 			
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			// debug("getShortedText(): SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where number="+number);
-			ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where number="+number);
+			ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where "+mmb.getDatabase().getNumberString()+"="+number);
 			if (rs.next()) {
 				result=getDBText(rs,1);
 			}
@@ -674,7 +677,7 @@ public class MultiRelations extends MMObjectBuilder {
 			}
 			MultiConnection con=mmb.getConnection();
 			Statement stmt=con.createStatement();
-			ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where number="+number);
+			ResultSet rs=stmt.executeQuery("SELECT "+fname+" FROM "+mmb.baseName+"_"+tname+" where "+mmb.getDatabase().getNumberString()+"="+number);
 			if (rs.next()) {
 				result=getDBByte(rs,1);
 			}
