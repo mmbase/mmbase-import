@@ -9,12 +9,14 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.util.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.Enumeration;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.mmbase.module.*;
-import org.mmbase.util.logging.*;
+import org.mmbase.module.ParseException;
+import org.mmbase.module.ProcessorInterface;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
 * Class which is the super-class for ALL the HTMLElements.<br>
@@ -346,7 +348,9 @@ public abstract class HTMLElement
     protected String getValue(String str) {
         StringTokenizer tok = new StringTokenizer(str,"=");
         if (tok.hasMoreTokens()) {
-            Object dummy = tok.nextElement();
+            // nextToken() would only return a Object dummy, becaue we are only
+            // interested in the value after the =
+            tok.nextElement();
             if (tok.hasMoreTokens()) {
                 return (String) tok.nextElement();
             }

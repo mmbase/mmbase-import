@@ -10,16 +10,24 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util.magicfile;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
-import org.mmbase.util.logging.*;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+
 /**
  * This Parser translates the configuration file of UNIX's file to a
  * list of Detectors (and to a magic.xml) Perhaps it's easier to
  * rewrite this stuff to perl or something like that.
  *
- * @version: $Id: MagicParser.java,v 1.2 2003-01-24 14:24:22 kees Exp $
+ * @version: $Id: MagicParser.java,v 1.3 2003-02-10 23:44:47 nico Exp $
  * NOT TESTED YET
  */
 
@@ -204,9 +212,7 @@ public class MagicParser implements DetectorProvider {
         } else {
             StringBuffer buf = new StringBuffer();
             
-            int testIndex = 0;
             int m = s.length();
-            int m1 = i;
             while (i<m) {
                 c = s.charAt(i);
                 if (backslashmode) {
@@ -385,8 +391,6 @@ public class MagicParser implements DetectorProvider {
     
     
     private Detector createDetector(String line) {
-        String offsetString, typeString, testString, messageString;
-        
         Detector detector = new Detector();
         // rawinput = line;
         

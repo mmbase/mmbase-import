@@ -9,8 +9,7 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import javax.servlet.*;
-import java.lang.Exception;
+import javax.servlet.ServletException;
 
 /**
  * This exception will occur if the getPostParameterByte method is used

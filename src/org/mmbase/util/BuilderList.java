@@ -9,22 +9,27 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import org.w3c.dom.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 
-import java.util.*;
+import org.w3c.dom.Document;
+
 
 /**
  * Gives an xml-representation of a dir structure with builders
  * @since mmbase 1.6
  * @author Gerard van Enk, Pierre van Rooden
- * @version $Id: BuilderList.java,v 1.3 2002-11-29 08:02:52 gerard Exp $
+ * @version $Id: BuilderList.java,v 1.4 2003-02-10 23:44:37 nico Exp $
  */
 public class BuilderList {
     // logger not used at the moment

@@ -9,10 +9,13 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
+
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.mmbase.util.logging.*;
 
@@ -78,7 +81,6 @@ public class CVSReader {
         Vector results=new Vector();
 
         while (mtok.hasMoreTokens()) {
-            int u=0;
             String line=mtok.nextToken();
             Vector results2=new Vector();
             StringTokenizer tok=new StringTokenizer(line,",\"\n\r",true);

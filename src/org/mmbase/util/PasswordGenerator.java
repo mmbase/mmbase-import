@@ -10,11 +10,10 @@ See http://www.MMBase.org/license
 
 package org.mmbase.util;
 
-import java.lang.*;
-import java.util.*;
-import org.mmbase.util.logging.*;
+
 import org.mmbase.module.Module;
-import org.mmbase.util.RandomPool;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
 
 /**
  * Module for the automatic generation of passwords.

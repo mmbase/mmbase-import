@@ -9,217 +9,247 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
+import java.util.Locale;
+import java.util.Vector;
 
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
+import org.apache.xerces.parsers.DOMParser;
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMObjectBuilder;
+import org.mmbase.module.core.MMObjectNode;
+import org.mmbase.module.corebuilders.FieldDefs;
+import org.mmbase.module.corebuilders.InsRel;
+import org.mmbase.module.corebuilders.RelDef;
+import org.mmbase.util.logging.Logger;
+import org.mmbase.util.logging.Logging;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.EntityResolver;
 
-import org.mmbase.module.core.*;
-import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.*;
-import org.mmbase.util.logging.*;
+public class XMLRelationNodeReader {
 
-/**
-*/
-public class XMLRelationNodeReader  {
+   /**
+   * Logger routine
+   */
+   private static Logger log =
+      Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
 
-    /**
-    * Logger routine
-    */
-    private static Logger log = Logging.getLoggerInstance(XMLRelationNodeReader.class.getName());
+   Document document;
+   DOMParser parser;
 
-    Document document;
-    DOMParser parser;
+   public XMLRelationNodeReader(String filename, MMBase mmbase) {
+      try {
+         parser = new DOMParser();
+         parser.setFeature(
+            "http://apache.org/xml/features/dom/defer-node-expansion",
+            true);
+         parser.setFeature(
+            "http://apache.org/xml/features/continue-after-fatal-error",
+            true);
+         //Errors errors = new Errors();
+         //parser.setErrorHandler(errors);
 
+         EntityResolver resolver = new XMLEntityResolver();
+         parser.setEntityResolver(resolver);
+         filename = "file:///" + filename;
+         parser.parse(filename);
+         document = parser.getDocument();
 
-    public XMLRelationNodeReader(String filename,MMBase mmbase) {
-        try {
-            parser = new DOMParser();
-            parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-            parser.setFeature("http://apache.org/xml/features/continue-after-fatal-error", true);
-            //Errors errors = new Errors();
-            //parser.setErrorHandler(errors);
+         /*
+         log.debug("*** START XML RELATION READER FOR : "+filename);
+         log.debug("ExportSource="+getExportSource());
+         log.debug("TimeStamp="+getTimeStamp());
+         log.debug("Nodes nodes="+getNodes(mmbase));
+         log.debug("*** END XML RELATION READER FOR : "+filename);
+         */
+      }
+      catch (Exception e) {
+         log.error(e);
+         log.error(Logging.stackTrace(e));
+      }
+   }
 
-            EntityResolver resolver = new XMLEntityResolver();
-            parser.setEntityResolver(resolver);
-        filename="file:///"+filename;
-            parser.parse(filename);
-            document = parser.getDocument();
+   /**
+   * get the name of this application
+   */
+   public String getExportSource() {
+      Node n1 = document.getFirstChild();
 
-        /*
-        log.debug("*** START XML RELATION READER FOR : "+filename);
-        log.debug("ExportSource="+getExportSource());
-        log.debug("TimeStamp="+getTimeStamp());
-        log.debug("Nodes nodes="+getNodes(mmbase));
-        log.debug("*** END XML RELATION READER FOR : "+filename);
-        */
-    } catch(Exception e) {
-        log.error(e);
-        log.error(Logging.stackTrace(e));
-    }
-    }
+      if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
+         n1 = n1.getNextSibling();
+      }
+      while (n1 != null) {
+         NamedNodeMap nm = n1.getAttributes();
+         if (nm != null) {
+            Node n2 = nm.getNamedItem("exportsource");
+            return (n2.getNodeValue());
+         }
+      }
+      return (null);
+   }
 
-
-    /**
-    * get the name of this application
-    */
-    public String getExportSource() {
-    Vector nodes=new Vector();
-    Node n1=document.getFirstChild();
-
-    if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-        n1=n1.getNextSibling();
-    }
-    while (n1!=null) {
-        NamedNodeMap nm=n1.getAttributes();
-        if (nm!=null) {
-            Node n2=nm.getNamedItem("exportsource");
-            return(n2.getNodeValue());
-        }
-    }
-    return(null);
-    }
-
-
-    /**
-    * get the name of this application
-    */
-    public int getTimeStamp() {
-        Vector nodes=new Vector();
-        Node n1=document.getFirstChild();
-        if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-            n1=n1.getNextSibling();
-        }
-        while (n1!=null) {
-            NamedNodeMap nm=n1.getAttributes();
-            if (nm!=null) {
-                Node n2=nm.getNamedItem("timestamp");
-                try {
-                    java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat ("yyyyMMddhhmmss", Locale.US);
-                    int times = (int) (formatter.parse(n2.getNodeValue()).getTime()/ 1000);
-                    //int times=DateSupport.parsedatetime(n2.getNodeValue());
-                    return times;
-                } catch (java.text.ParseException e) {
-                    return -1;
-                }
-
+   /**
+   * get the name of this application
+   */
+   public int getTimeStamp() {
+      Node n1 = document.getFirstChild();
+      if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
+         n1 = n1.getNextSibling();
+      }
+      while (n1 != null) {
+         NamedNodeMap nm = n1.getAttributes();
+         if (nm != null) {
+            Node n2 = nm.getNamedItem("timestamp");
+            try {
+               java.text.SimpleDateFormat formatter =
+                  new java.text.SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
+               int times =
+                  (int) (formatter.parse(n2.getNodeValue()).getTime() / 1000);
+               //int times=DateSupport.parsedatetime(n2.getNodeValue());
+               return times;
             }
-        }
-        return-1;
-    }
-
-
-    /**
-    */
-    public Vector getNodes(MMBase mmbase) {
-    Vector nodes=new Vector();
-    Node n1=document.getFirstChild();
-    if (n1.getNodeType()==Node.DOCUMENT_TYPE_NODE) {
-        n1=n1.getNextSibling();
-    }
-    while (n1!=null) {
-        MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
-	if(bul == null) {
-            log.error("Can't get builder with name: '" + n1.getNodeName() + "'");
-	}
-        else {
-            Node n2=n1.getFirstChild();
-            while (n2!=null) {
-                if (n2.getNodeName().equals("node")) {
-                    NamedNodeMap nm=n2.getAttributes();
-                    if (nm!=null) {
-                        Node n4=nm.getNamedItem("owner");
-                        MMObjectNode newnode=bul.getNewNode(n4.getNodeValue());
-                        try {
-                            n4=nm.getNamedItem("number");
-                            int num=Integer.parseInt(n4.getNodeValue());
-                            newnode.setValue("number",num);
-
-                            n4=nm.getNamedItem("snumber");
-                            int rnum=Integer.parseInt(n4.getNodeValue());
-                            newnode.setValue("snumber",rnum);
-                            n4=nm.getNamedItem("dnumber");
-                            int dnum=Integer.parseInt(n4.getNodeValue());
-                            newnode.setValue("dnumber",dnum);
-                            n4=nm.getNamedItem("rtype");
-                            String rname=n4.getNodeValue();
-                            RelDef reldef=mmbase.getRelDef();
-                            if (reldef==null) {
-                                log.error("XMLRelationReader -> can't get reldef builder");
-                                return null;
-                            }
-                            // figure out rnumber
-                            int rnumber=reldef.getNumberByName(rname);
-                            newnode.setValue("rnumber",rnumber);
-
-                            // directionality
-
-                            if (InsRel.usesdir) {
-                                n4=nm.getNamedItem("dir");
-                                int dir=0;
-                                if (n4!=null) {
-                                    String dirs=n4.getNodeValue();
-                                    if ("unidirectional".equals(dirs)) {
-                                        dir=1;
-                                    } else if ("bidirectional".equals(dirs)) {
-                                        dir=2;
-                                    } else {
-                                        log.error("invalid 'dir' attribute encountered in "+bul.getTableName()+" value="+dirs);
-                                    }
-                                }
-                                if (dir==0) {
-                                    MMObjectNode relnode = reldef.getNode(rnumber);
-                                    if (relnode!=null) {
-                                        dir = relnode.getIntValue("dir");
-                                    }
-                                }
-                                if (dir!=1) dir=2;
-                                newnode.setValue("dir",dir);
-                            }
-
-                        } catch(Exception e) {
-                            log.error(e);
-                            log.error(Logging.stackTrace(e));
-                        }
-                        Node n5=n2.getFirstChild();
-                        while (n5!=null) {
-                            String key=n5.getNodeName();
-                            if (!key.equals("#text")) {
-                                Node n6=n5.getFirstChild();
-                                String value="";
-                                if (n6!=null) value=n6.getNodeValue();
-                                int type=bul.getDBType(key);
-                                if (type!=-1) {
-                                    if (type==FieldDefs.TYPE_STRING || type==FieldDefs.TYPE_XML) {
-                                        if (value==null)  value="";
-                                        newnode.setValue(key,value);
-                                    } else if ((type==FieldDefs.TYPE_NODE) ||
-                                               (type==FieldDefs.TYPE_INTEGER)) {
-                                        try {
-                                            newnode.setValue(key,Integer.parseInt(value));
-                                        } catch(Exception e) {
-                                            newnode.setValue(key,-1);
-                                        }
-                                    } else {
-                                        log.error("XMLRelationNodeReader node error : "+key+" "+value+" "+type);
-                                    }
-                                }
-                            }
-                            n5=n5.getNextSibling();
-                        }
-                        nodes.addElement(newnode);
-                    }
-                }
-                n2=n2.getNextSibling();
+            catch (java.text.ParseException e) {
+               return -1;
             }
-        }
-        n1=n1.getNextSibling();
-    }
-    return(nodes);
-    }
 
+         }
+      }
+      return -1;
+   }
+
+   /**
+   */
+   public Vector getNodes(MMBase mmbase) {
+      Vector nodes = new Vector();
+      Node n1 = document.getFirstChild();
+      if (n1.getNodeType() == Node.DOCUMENT_TYPE_NODE) {
+         n1 = n1.getNextSibling();
+      }
+      while (n1 != null) {
+         MMObjectBuilder bul = mmbase.getMMObject(n1.getNodeName());
+         if (bul == null) {
+            log.error(
+               "Can't get builder with name: '" + n1.getNodeName() + "'");
+         }
+         else {
+            Node n2 = n1.getFirstChild();
+            while (n2 != null) {
+               if (n2.getNodeName().equals("node")) {
+                  NamedNodeMap nm = n2.getAttributes();
+                  if (nm != null) {
+                     Node n4 = nm.getNamedItem("owner");
+                     MMObjectNode newnode = bul.getNewNode(n4.getNodeValue());
+                     try {
+                        n4 = nm.getNamedItem("number");
+                        int num = Integer.parseInt(n4.getNodeValue());
+                        newnode.setValue("number", num);
+
+                        n4 = nm.getNamedItem("snumber");
+                        int rnum = Integer.parseInt(n4.getNodeValue());
+                        newnode.setValue("snumber", rnum);
+                        n4 = nm.getNamedItem("dnumber");
+                        int dnum = Integer.parseInt(n4.getNodeValue());
+                        newnode.setValue("dnumber", dnum);
+                        n4 = nm.getNamedItem("rtype");
+                        String rname = n4.getNodeValue();
+                        RelDef reldef = mmbase.getRelDef();
+                        if (reldef == null) {
+                           log.error(
+                              "XMLRelationReader -> can't get reldef builder");
+                           return null;
+                        }
+                        // figure out rnumber
+                        int rnumber = reldef.getNumberByName(rname);
+                        newnode.setValue("rnumber", rnumber);
+
+                        // directionality
+
+                        if (InsRel.usesdir) {
+                           n4 = nm.getNamedItem("dir");
+                           int dir = 0;
+                           if (n4 != null) {
+                              String dirs = n4.getNodeValue();
+                              if ("unidirectional".equals(dirs)) {
+                                 dir = 1;
+                              }
+                              else
+                                 if ("bidirectional".equals(dirs)) {
+                                    dir = 2;
+                                 }
+                                 else {
+                                    log.error(
+                                       "invalid 'dir' attribute encountered in "
+                                          + bul.getTableName()
+                                          + " value="
+                                          + dirs);
+                                 }
+                           }
+                           if (dir == 0) {
+                              MMObjectNode relnode = reldef.getNode(rnumber);
+                              if (relnode != null) {
+                                 dir = relnode.getIntValue("dir");
+                              }
+                           }
+                           if (dir != 1)
+                              dir = 2;
+                           newnode.setValue("dir", dir);
+                        }
+
+                     }
+                     catch (Exception e) {
+                        log.error(e);
+                        log.error(Logging.stackTrace(e));
+                     }
+                     Node n5 = n2.getFirstChild();
+                     while (n5 != null) {
+                        String key = n5.getNodeName();
+                        if (!key.equals("#text")) {
+                           Node n6 = n5.getFirstChild();
+                           String value = "";
+                           if (n6 != null)
+                              value = n6.getNodeValue();
+                           int type = bul.getDBType(key);
+                           if (type != -1) {
+                              if (type == FieldDefs.TYPE_STRING
+                                 || type == FieldDefs.TYPE_XML) {
+                                 if (value == null)
+                                    value = "";
+                                 newnode.setValue(key, value);
+                              }
+                              else
+                                 if ((type == FieldDefs.TYPE_NODE)
+                                    || (type == FieldDefs.TYPE_INTEGER)) {
+                                    try {
+                                       newnode.setValue(
+                                          key,
+                                          Integer.parseInt(value));
+                                    }
+                                    catch (Exception e) {
+                                       newnode.setValue(key, -1);
+                                    }
+                                 }
+                                 else {
+                                    log.error(
+                                       "XMLRelationNodeReader node error : "
+                                          + key
+                                          + " "
+                                          + value
+                                          + " "
+                                          + type);
+                                 }
+                           }
+                        }
+                        n5 = n5.getNextSibling();
+                     }
+                     nodes.addElement(newnode);
+                  }
+               }
+               n2 = n2.getNextSibling();
+            }
+         }
+         n1 = n1.getNextSibling();
+      }
+      return (nodes);
+   }
 
 }

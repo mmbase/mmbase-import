@@ -9,13 +9,18 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+
 import org.mmbase.util.xml.BuilderWriter;
-import org.mmbase.module.core.*;
 
-import org.mmbase.module.corebuilders.*;
-
+import org.mmbase.module.core.MMBase;
+import org.mmbase.module.core.MMBaseContext;
+import org.mmbase.module.core.MMObjectBuilder;
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
 

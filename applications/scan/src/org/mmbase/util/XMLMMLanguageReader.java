@@ -9,25 +9,22 @@ See http://www.MMBase.org/license
 */
 package org.mmbase.util;
 
-import java.io.*;
-import java.util.*;
-
-import org.xml.sax.*;
-import org.apache.xerces.parsers.*;
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.*;
-
-import org.mmbase.module.corebuilders.*;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import org.mmbase.util.logging.Logger;
 import org.mmbase.util.logging.Logging;
-
+import org.w3c.dom.Element;
 
 /**
  * @author cjr@dds.nl
- * @version $Id: XMLMMLanguageReader.java,v 1.6 2002-10-25 21:25:14 michiel Exp $
+ * @version $Id: XMLMMLanguageReader.java,v 1.7 2003-02-10 23:44:38 nico Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.6  2002/10/25 21:25:14  michiel
+ * michiel: hack location of dtds
+ *
  * Revision 1.5  2001/04/19 12:00:25  michiel
  * michiel: logging, indentation
  *
@@ -103,7 +100,6 @@ public class XMLMMLanguageReader extends XMLBasicReader {
      */
     public static void main(String[] argv) {
         String path = "/opt2/mmbase/org/mmbase/config/future/modules/languages/nl.xml";
-
 
         File f = new File(path);
         if (f.exists()) {
