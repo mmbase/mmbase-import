@@ -33,7 +33,7 @@ import org.mmbase.util.logging.*;
 
 /**
  * @author Daniel Ockeloen, David van Zeventer, Rico Jansen
- * @version $Id: AudioParts.java,v 1.22 2001-05-16 15:48:37 vpro Exp $
+ * @version $Id: AudioParts.java,v 1.23 2001-06-05 15:32:13 vpro Exp $
  * 
  */
 public class AudioParts extends MediaParts {
@@ -45,7 +45,6 @@ public class AudioParts extends MediaParts {
 	public final static int AUDIOSOURCE_CD=6;
 	public final static int AUDIOSOURCE_JAZZ=7;
 	public final static int AUDIOSOURCE_VWM=8;
-	public final static int AUDIOSOURCE_EXCERPT=9;
 
 	/**
 	* Just before commiting or inserting this method is called and 
@@ -209,9 +208,6 @@ public class AudioParts extends MediaParts {
 				break;
 			case AUDIOSOURCE_VWM:
 				rtn="vwm";
-				break;
-			case AUDIOSOURCE_EXCERPT:
-				rtn="excerpt";
 				break;
 			default:
 				rtn="unknown";
@@ -462,9 +458,6 @@ public class AudioParts extends MediaParts {
 	
 	/**
 	 * Gets the url for a audiopart using the mediautil classes.
-	 * First the source fieldvalue is checked to see if audiopart is an excerpt or not.
-	 * If it is, we call a method that creates the audio url for an excerpt audiopart.
-	 * If it isn't we return the audio url.
 	 * @param mmbase mmbase reference
 	 * @param sp the scanpage
 	 * @param number the audiopart object number
@@ -473,76 +466,7 @@ public class AudioParts extends MediaParts {
 	 * @return a String with url to a audiopart.
 	 */
 	public String getAudiopartUrl(MMBase mmbase,scanpage sp,int number,int speed,int channels){
-		// Check if the audiopart is an excerpt taken from another audiopart,
-		// which is indicated by the source value.
-		// If it isn't then return the audiopart url
-		MMObjectNode apnode = getNode(number);
-		if (apnode.getIntValue("source")==AUDIOSOURCE_EXCERPT) {
-			log.debug("Audiopart "+number+" is an excerpt of another audiopart.");
-			return makeExcerptUrl(mmbase,sp,number,speed,channels,apnode);
-		} else {
-       		return AudioUtils.getAudioUrl(mmbase,sp,number,speed,channels);
-		}
-	}
-
-	/**
-	 * Returns the audiourl for an excerpt audiopart.
-	 * The original audiopart is retrieved through the excerpt rawaudio, 
-	 * which holds the original audiopart number in his url field.
-	 * From the original audiopart we use the url except for the querystring.
-	 * Then we buildup the querystring using the info from the excerpt audiopart.
-	 * And finally we put everything together and return this as the audiourl.
-	 * @param mmbase mmbase reference
-	 * @param sp the scanpage
-	 * @param number the audiopart object number
-	 * @param speed the user speed value
-	 * @param channels the user channels value
-	 * @param apnode the excerpt audiopart node.
-	 * @return a String with url to a audiopart.
-	 */
-	private String makeExcerptUrl(MMBase mmbase,scanpage sp,int number,int speed,int channels,
-	        MMObjectNode apnode) {
-		MMObjectBuilder rabul = (RawAudios) mmb.getMMObject("rawaudios");
-		Enumeration e=rabul.search("WHERE id="+number+" and format="+RawAudioDef.FORMAT_EXCERPT);
-		if (!e.hasMoreElements()) {
-			log.error("Can't find rawaudio object for audiopart "+number);
-			return null;
-		} else {
-			log.debug("Found rawaudio.");
-			MMObjectNode ranode = (MMObjectNode)e.nextElement(); 
-			// ognumber = original audiopart objectnumber.
-			String ognrstr = null;
-			int ognumber = -1;
-			try {
-				ognrstr = ranode.getStringValue("url");
-				ognumber = Integer.parseInt(ognrstr);
-			} catch (NumberFormatException nfe) {
-				log.error("ranode.url should be an int but insn't, value:"+ognrstr);
-				nfe.printStackTrace();
-			}
-			MMObjectNode ogapnode = getNode(ognumber);
-			String ogurl = getAudiopartUrl(mmbase,sp,ognumber,speed,channels);	
-			String leftside = ogurl.substring(0,ogurl.indexOf('?'));
-			// get start and stoptimes.
-			String title = MediaUtils.makeRealCompatible(apnode.getStringValue("title"));
-			MMObjectNode startprop = (MMObjectNode)apnode.getProperty("starttime");
-			MMObjectNode stopprop = (MMObjectNode)apnode.getProperty("stoptime");
-			if ((startprop==null) && (stopprop==null)) {
-				log.warn("Can't find start(null) & stop(null) properties for audiopart "+number
-				        +" returning url without them");
-				return (leftside+"?"+"title="+title);
-			} else {
-				String start = startprop.getStringValue("value");
-				String stop = stopprop.getStringValue("value");
-				if ((start==null) && (stop==null)) {
-					log.warn("Start("+start+") & stop("+stop+") values are null for audiopart "+number
-					        +" returning url without them");
-					return (leftside+"?"+"title="+title);
-				} else {
-					return (leftside+"?"+"title="+title+"&start="+start+"&end="+stop);
-				}
-			}
-		}
+    	return AudioUtils.getAudioUrl(mmbase,sp,number,speed,channels);
 	}
 
 	/**
