@@ -17,7 +17,7 @@ import org.mmbase.cache.MultilevelCache;
 import org.mmbase.cache.AggregatedResultCache;
 import org.mmbase.module.core.*;
 import org.mmbase.module.corebuilders.*;
-import org.mmbase.module.database.support.MMJdbc2NodeInterface;
+
 import org.mmbase.security.*;
 import org.mmbase.storage.search.*;
 import org.mmbase.util.*;
@@ -29,7 +29,7 @@ import org.mmbase.util.logging.*;
  * @author Rob Vermeulen
  * @author Pierre van Rooden
  * @author Michiel Meeuwissen
- * @version $Id: BasicCloud.java,v 1.102 2003-09-02 20:11:51 michiel Exp $
+ * @version $Id: BasicCloud.java,v 1.103 2003-09-02 22:16:55 michiel Exp $
  */
 public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable {
     private static final Logger log = Logging.getLoggerInstance(BasicCloud.class);
@@ -558,68 +558,6 @@ public class BasicCloud implements Cloud, Cloneable, Comparable, SizeMeasurable 
     */
     void updateSecurityInfo(int nodeID) {
         mmbaseCop.getAuthorization().update(userContext.getUserContext(), nodeID);
-    }
-
-    /**
-     * Converts a constraint by turning all 'quoted' fields into
-     * database supported fields.
-     * XXX: todo: escape characters for '[' and ']'.
-     */
-    private String convertClausePartToDBS(String constraints) {
-        // obtain dbs for fieldname checks
-        MMJdbc2NodeInterface dbs = BasicCloudContext.mmb.getDatabase();
-        StringBuffer result = new StringBuffer();
-        int posa = constraints.indexOf('[');
-        while (posa > -1) {
-            int posb = constraints.indexOf(']', posa);
-            if (posb == -1) {
-                posa = -1;
-            } else {
-                String fieldName = constraints.substring(posa + 1, posb);
-                int posc = fieldName.indexOf('.', posa);
-                if (posc == -1) {
-                    fieldName = dbs.getAllowedField(fieldName);
-                } else {
-                    fieldName = fieldName.substring(0, posc + 1) + dbs.getAllowedField(fieldName.substring(posc + 1));
-                }
-                result.append(constraints.substring(0, posa)).append(fieldName);
-                constraints = constraints.substring(posb + 1);
-                posa = constraints.indexOf('[');
-            }
-        }
-        result.append(constraints);
-        return result.toString();
-    }
-
-    /**
-     * Converts a constraint by turning all 'quoted' fields into
-     * database supported fields.
-     * XXX: todo: escape characters for '[' and ']'.
-     */
-    String convertClauseToDBS(String constraints) {
-        if (constraints.startsWith("MMNODE")) {
-            return constraints;
-        } else if (constraints.startsWith("ALTA")) {
-            return constraints.substring(5);
-        }
-        StringBuffer result = new StringBuffer();
-        int posa = constraints.indexOf('\'');
-        while (posa > -1) {
-            int posb = constraints.indexOf('\'', 1);
-            if (posb == -1) {
-                posa = -1;
-            } else {
-                String part = constraints.substring(0, posa);
-                result.append(convertClausePartToDBS(part)).append(constraints.substring(posa, posb + 1));
-                constraints = constraints.substring(posb + 1);
-                posa = constraints.indexOf('\'');
-            }
-        }
-        result.append(convertClausePartToDBS(constraints));
-        if (!constraints.startsWith("WHERE ")) {
-            result.insert(0, "WHERE ");
-        }
-        return result.toString();
     }
 
     // javadoc inherited

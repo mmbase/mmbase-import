@@ -18,6 +18,7 @@ import org.mmbase.util.Encode;
 import org.mmbase.util.logging.*;
 import org.mmbase.module.core.ClusterBuilder;
 import org.mmbase.module.core.MMBase;
+import org.mmbase.module.database.support.MMJdbc2NodeInterface;
 import java.util.*;
 
 /**
@@ -26,7 +27,7 @@ import java.util.*;
  * methods are put here.
  *
  * @author Michiel Meeuwissen
- * @version $Id: Queries.java,v 1.1 2003-09-02 19:45:52 michiel Exp $
+ * @version $Id: Queries.java,v 1.2 2003-09-02 22:16:56 michiel Exp $
  * @see  org.mmbase.bridge.Query
  * @since MMBase-1.7
  */
@@ -35,7 +36,7 @@ public class Queries {
 
     /**
      * Creates a Query object using arguments for {@link Cloud#getList} (this function is of course
-     * implemented using this utility). This is usefull the convert (legacy) code which uses
+     * implemented using this utility). This is usefull to convert (legacy) code which uses
      * getList, but you want to use new Query features without rewriting the complete thing.
      *
      * It can also be simply handy to specify things as Strings.
@@ -66,14 +67,20 @@ public class Queries {
             // if(startNodes != null) startNodes = encoder.encode(startNodes);
             // if(nodePath != null) nodePath = encoder.encode(nodePath);
             // if(fields != null) fields = encoder.encode(fields);
-            if (orderby != null)
+            if (orderby != null) {
                 orderby = encoder.encode(orderby);
-            if (directions != null)
+            }
+            if (directions != null) {
                 directions = encoder.encode(directions);
-            if (searchDir != null)
+            }
+            if (searchDir != null) {
                 searchDir = encoder.encode(searchDir);
-            if (constraints != null && !validConstraints(constraints)) {
-                throw new BridgeException("invalid constraints:" + constraints);
+            }
+            if (constraints != null) {
+                constraints = convertClauseToDBS(constraints);
+                if (!validConstraints(constraints)) {
+                    throw new BridgeException("invalid constraints:" + constraints);
+                }
             }
         }
 
@@ -103,8 +110,11 @@ public class Queries {
     }
 
 
-    /** returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) */
-    static boolean validConstraints(String constraints) {
+    /** 
+     * returns false, when escaping wasnt closed, or when a ";" was found outside a escaped part (to prefent spoofing) 
+     * This is used by createQuery (i wonder if it still makes sense)
+     */
+    static private boolean validConstraints(String constraints) {
         // first remove all the escaped "'" ('' occurences) chars...
         String remaining = constraints;
         while (remaining.indexOf("''") != -1) {
@@ -174,15 +184,94 @@ public class Queries {
     }
 
 
-    public static Query addConstraints(NodeQuery query, String constraints) {
-
-        if (constraints != null) {
-            query.setConstraint(new ConstraintParser(query).toConstraint(constraints));
+    /**
+     * Converts a constraint by turning all 'quoted' fields into
+     * database supported fields.
+     * XXX: todo: escape characters for '[' and ']'.
+     */
+    private static String convertClausePartToDBS(String constraints) {
+        // obtain dbs for fieldname checks
+        MMJdbc2NodeInterface dbs = MMBase.getMMBase().getDatabase();
+        StringBuffer result = new StringBuffer();
+        int posa = constraints.indexOf('[');
+        while (posa > -1) {
+            int posb = constraints.indexOf(']', posa);
+            if (posb == -1) {
+                posa = -1;
+            } else {
+                String fieldName = constraints.substring(posa + 1, posb);
+                int posc = fieldName.indexOf('.', posa);
+                if (posc == -1) {
+                    fieldName = dbs.getAllowedField(fieldName);
+                } else {
+                    fieldName = fieldName.substring(0, posc + 1) + dbs.getAllowedField(fieldName.substring(posc + 1));
+                }
+                result.append(constraints.substring(0, posa)).append(fieldName);
+                constraints = constraints.substring(posb + 1);
+                posa = constraints.indexOf('[');
+            }
         }
+        result.append(constraints);
+        return result.toString();
+    }
+
+    /**
+     * Converts a constraint by turning all 'quoted' fields into
+     * database supported fields.
+     * XXX: todo: escape characters for '[' and ']'.
+     */
+    private static String convertClauseToDBS(String constraints) {
+        if (constraints.startsWith("MMNODE")) {
+            //  wil probably not work
+            // @todo check
+            return constraints;
+        } else if (constraints.startsWith("ALTA")) {
+            //  wil probably not work
+            // @todo check
+            return constraints.substring(5);
+        } else if (constraints.startsWith("WHERE")) {
+            constraints = constraints.substring(5);
+        }
+        StringBuffer result = new StringBuffer();
+        int posa = constraints.indexOf('\'');
+        while (posa > -1) {
+            int posb = constraints.indexOf('\'', 1);
+            if (posb == -1) {
+                posa = -1;
+            } else {
+                String part = constraints.substring(0, posa);
+                result.append(convertClausePartToDBS(part)).append(constraints.substring(posa, posb + 1));
+                constraints = constraints.substring(posb + 1);
+                posa = constraints.indexOf('\'');
+            }
+        }
+        result.append(convertClausePartToDBS(constraints));
+        return result.toString();
+    }
+
+
+    /**
+     * Adds a 'legacy' constraint to the query. Alreading existing constraints remain ('AND' is used)
+     */
+    public static Query addConstraints(Query query, String constraints) {
+        if (constraints == null || constraints.equals("")) return query;
+        constraints = convertClauseToDBS(constraints);
+        Constraint newConstraint = query.createConstraint(constraints);
+        Constraint constraint = query.getConstraint();
+        if (constraint != null) {
+            log.debug("compositing constraint");
+            newConstraint = query.createConstraint(constraint, CompositeConstraint.LOGICAL_AND, newConstraint);
+        }
+        query.setConstraint(newConstraint);
+
         return query;
 
     }
 
+    /**
+     * Adds sort orders to the query, using two strings. Like in 'getList' of Cloud. Several tag-attributes need this.
+     *
+     */
     public static Query addSortOrders(NodeQuery query, String sorted, String directions) {
         // following code was copied from MMObjectBuilder.setSearchQuery (bit ugly)
         if (directions == null) {
@@ -190,15 +279,22 @@ public class Queries {
         }
         
         if (sorted != null) {
-            NodeManager nodeManager = query.getNodeManager();
-
             StringTokenizer sortedTokenizer     = new StringTokenizer(sorted, ",");
             StringTokenizer directionsTokenizer = new StringTokenizer(directions, ",");
-            
+
+            Step step = query.getNodeStep();
+            NodeManager nodeManager = query.getNodeManager();
+
             while (sortedTokenizer.hasMoreElements()) {
                 String    fieldName = sortedTokenizer.nextToken().trim();
-                Field field = nodeManager.getField(fieldName);
-                StepField stepField = query.getStepField(field);
+                int dot = fieldName.indexOf('.');
+
+                StepField sf;
+                if (dot == -1) {
+                    sf = query.getStepField(nodeManager.getField(fieldName));
+                } else {
+                    sf =  query.createStepField(fieldName);
+                }
 
                 int dir = SortOrder.ORDER_ASCENDING;
                 if (directionsTokenizer.hasMoreElements()) {
@@ -209,7 +305,7 @@ public class Queries {
                         dir = SortOrder.ORDER_ASCENDING;
                     }
                 }
-                query.addSortOrder(stepField, dir);
+                query.addSortOrder(sf, dir);
             }
         }
         return query;
